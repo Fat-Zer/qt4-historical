@@ -266,6 +266,7 @@ QStringList qmake_feature_paths(QMakeProperty *prop=0)
         const QString base_concat = QDir::separator() + QString("features");
         switch(Option::target_mode) {
         case Option::TARG_MACX_MODE:                     //also a unix
+            concat << base_concat + QDir::separator() + "mac";
             concat << base_concat + QDir::separator() + "macx";
             concat << base_concat + QDir::separator() + "unix";
             break;
@@ -276,6 +277,7 @@ QStringList qmake_feature_paths(QMakeProperty *prop=0)
             concat << base_concat + QDir::separator() + "win32";
             break;
         case Option::TARG_MAC9_MODE:
+            concat << base_concat + QDir::separator() + "mac";
             concat << base_concat + QDir::separator() + "mac9";
             break;
         case Option::TARG_QNX6_MODE: //also a unix
@@ -1095,6 +1097,7 @@ QMakeProject::read(uchar cmd)
 {
     if(cfile.isEmpty()) {
         // hack to get the Option stuff in there
+        base_vars["QMAKE_EXT_OBJ"] = QStringList(Option::obj_ext);
         base_vars["QMAKE_EXT_CPP"] = Option::cpp_ext;
         base_vars["QMAKE_EXT_H"] = Option::h_ext;
         if(!Option::user_template_prefix.isEmpty())
@@ -1150,7 +1153,7 @@ QMakeProject::read(uchar cmd)
             }
 
             if(QDir::isRelativePath(Option::mkfile::qmakespec) &&
-               !QFile::exists(Option::mkfile::qmakespec)) {
+               !QFile::exists(Option::mkfile::qmakespec+"/qmake.conf")) {
                 bool found_mkspec = false;
                 for(QStringList::ConstIterator it = mkspec_roots.begin(); it != mkspec_roots.end(); ++it) {
                     QString mkspec = (*it) + QDir::separator() + Option::mkfile::qmakespec;
@@ -1519,10 +1522,14 @@ QMakeProject::doProjectInclude(QString file, uchar flags, QMap<QString, QStringL
     FunctionBlock *fu = function;
     bool parsed = false;
     if(flags & IncludeFlagNewProject) {
-        QMakeProject proj(place);
-        if(proj.doProjectInclude("default_pre", IncludeFlagFeature, place) == IncludeNoExist)
-            proj.doProjectInclude("default", IncludeFlagFeature, place);
-        parsed = proj.read(file, place);
+        // The "project's variables" are used in other places (eg. export()) so it's not
+        // possible to use "place" everywhere. Instead just set variables and grab them later
+        QMakeProject proj;
+        proj.variables() = place;
+        if(proj.doProjectInclude("default_pre", IncludeFlagFeature, proj.variables()) == IncludeNoExist)
+            proj.doProjectInclude("default", IncludeFlagFeature, proj.variables());
+        parsed = proj.read(file, proj.variables());
+        place = proj.variables();
     } else {
         parsed = read(file, place);
     }
@@ -2172,16 +2179,28 @@ QMakeProject::doProjectTest(QString func, QStringList args, QMap<QString, QStrin
         }
         return false;
     } else if(func == "contains") {
-        if(args.count() != 2) {
-            fprintf(stderr, "%s:%d: contains(var, val) requires two arguments.\n", parser.file.toLatin1().constData(),
-                    parser.line_no);
+        if(args.count() < 2 || args.count() > 3) {
+            fprintf(stderr, "%s:%d: contains(var, val) requires at lesat 2 arguments.\n",
+                    parser.file.toLatin1().constData(), parser.line_no);
             return false;
         }
         QRegExp regx(args[1]);
         const QStringList &l = place[args[0]];
-        for(QStringList::ConstIterator it = l.begin(); it != l.end(); ++it) {
-            if(regx.exactMatch((*it)) || (*it) == args[1])
-                return true;
+        if(args.count() == 2) {
+            for(int i = 0; i < l.size(); ++i) {
+                const QString val = l[i];
+                if(regx.exactMatch(val) || val == args[1])
+                    return true;
+            }
+        } else {
+            const QStringList mutuals = args[2].split('|');
+            for(int i = l.size()-1; i >= 0; i--) {
+                const QString val = l[i];
+                for(int mut = 0; mut < mutuals.count(); mut++) {
+                    if(val == mutuals[mut].trimmed())
+                        return (regx.exactMatch(val) || val == args[1]);
+                }
+            }
         }
         return false;
     } else if(func == "infile") {
@@ -2482,7 +2501,7 @@ QMakeProject::doVariableReplace(QString &str, QMap<QString, QStringList> &place)
                 }
                 if(term) {
                     if(unicode != term) {
-                        qmake_error_msg("Missing " + QChar(term) + " terminator [found " + QChar(unicode) + "]");
+                        qmake_error_msg("Missing " + QString(term) + " terminator [found " + QString(unicode) + "]");
                         return false;
                     }
                     unicode = 0;

@@ -20,9 +20,11 @@
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 **
 ****************************************************************************/
+
 #include "ui3reader.h"
 #include "parser.h"
 #include "domtool.h"
+#include "globaldefs.h"
 
 // uic4
 #include "uic.h"
@@ -30,13 +32,12 @@
 #include "driver.h"
 #include "option.h"
 
-#include <qstringlist.h>
-#include <qfile.h>
-#include <qfileinfo.h>
-#include <qdir.h>
-#include <qregexp.h>
-#include <globaldefs.h>
-#include <qdebug.h>
+#include <QStringList>
+#include <QFile>
+#include <QFileInfo>
+#include <QDir>
+#include <QRegExp>
+#include <QtDebug>
 
 QByteArray combinePath(const char *infile, const char *outfile)
 {

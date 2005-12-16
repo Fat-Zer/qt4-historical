@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/src/corelib/tools/qline.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/corelib/tools/qline.cpp -->
 <head>
-    <title>Qt 4.0: QLine Class Reference</title>
+    <title>Qt 4.1: QLine Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -45,8 +45,8 @@ body { background: #ffffff; color: black; }</style>
 <a name="related-non-members"></a>
 <h3>Related Non-Members</h3>
 <ul>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qline.html#operator-lt-lt-35">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>stream</i>, const QLine &amp; <i>line</i> )</li>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qline.html#operator-gt-gt-22">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>stream</i>, QLine &amp; <i>line</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qline.html#operator-lt-lt-40">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>stream</i>, const QLine &amp; <i>line</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qline.html#operator-gt-gt-23">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>stream</i>, QLine &amp; <i>line</i> )</li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -55,7 +55,7 @@ body { background: #ffffff; color: black; }</style>
 <p>A QLine describes a finite length line (or line segment) on a two-dimensional surface. The start and end points of the line are specified using integer point coordinates.</p>
 <p>Use <a href="qline.html#isNull">isNull</a>() to determine whether the QLine represents a valid line or a null line.</p>
 <table align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" bgcolor="#f0f0f0"><td><font color="red">[Missing image qline-point.png]</font></td><td><font color="red">[Missing image qline-coordinates.png]</font></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><img src="images/qline-point.png" /></td><td><img src="images/qline-coordinates.png" /></td></tr>
 </table>
 <p>The positions of the line's end points can be found with the <a href="qline.html#p1">p1</a>(), <a href="qline.html#x1">x1</a>(), <a href="qline.html#y1">y1</a>(), <a href="qline.html#p2">p2</a>(), <a href="qline.html#x2">x2</a>(), and <a href="qline.html#y2">y2</a>() functions. The horizontal and vertical components of the line are returned by the <a href="qline.html#dx">dx</a>() and <a href="qline.html#dy">dy</a>() functions.</p>
 <p>The line can be translated along the length of another line with the <a href="qline.html#translate">translate</a>() function.</p>
@@ -107,11 +107,11 @@ body { background: #ffffff; color: black; }</style>
 <p>A line is identical to another line if the points are the same and their order is the same.</p>
 <hr />
 <h2>Related Non-Members</h2>
-<h3 class="fn"><a name="operator-lt-lt-35"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, const QLine &amp; <i>line</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-40"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, const QLine &amp; <i>line</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Writes the <i>line</i> to the <i>stream</i> and returns a reference to the stream.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
-<h3 class="fn"><a name="operator-gt-gt-22"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, QLine &amp; <i>line</i> )</h3>
+<h3 class="fn"><a name="operator-gt-gt-23"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, QLine &amp; <i>line</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Reads a <a href="qline.html">QLine</a> from the <i>stream</i> into the <i>line</i> and returns a reference to the stream.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
@@ -119,6 +119,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

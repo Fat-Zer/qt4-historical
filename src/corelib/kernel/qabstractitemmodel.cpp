@@ -22,13 +22,14 @@
 ****************************************************************************/
 
 #include "qabstractitemmodel.h"
+#include <private/qabstractitemmodel_p.h>
 #include <qdatastream.h>
 #include <qstringlist.h>
 #include <qsize.h>
 #include <qmimedata.h>
 #include <qdebug.h>
 #include <qvector.h>
-#include <private/qabstractitemmodel_p.h>
+#include <qstack.h>
 #include <qbitarray.h>
 
 #include <limits.h>
@@ -58,14 +59,13 @@ QPersistentModelIndexData *QPersistentModelIndexData::create(const QModelIndex &
 void QPersistentModelIndexData::destroy(QPersistentModelIndexData *data)
 {
     Q_ASSERT(data);
+    Q_ASSERT(data->ref == 0);
     QAbstractItemModel *model = const_cast<QAbstractItemModel*>(data->model);
     // a valid persistent model index with a null model pointer can only happen if the model was destroyed
     if (model) {
         QAbstractItemModelPrivate *p = model->d_func();
-        int position = p->persistent.indexes.indexOf(data);
-        p->persistent.changed.removeAll(position);
-        p->persistent.invalidated.removeAll(position);
-        p->persistent.indexes.removeAll(data);
+        Q_ASSERT(p);
+        p->removePersistentIndexData(data);
     }
     delete data;
 }
@@ -143,8 +143,6 @@ QPersistentModelIndex::~QPersistentModelIndex()
 }
 
 /*!
-  \fn bool QPersistentModelIndex::operator==(const QPersistentModelIndex &other) const
-
   Returns true if this persistent model index is equal to the \a other
   persistent model index, otherwist returns false.
 */
@@ -157,10 +155,10 @@ bool QPersistentModelIndex::operator==(const QPersistentModelIndex &other) const
 }
 
 /*!
-  \fn bool QPersistentModelIndex::operator<(const QPersistentModelIndex &other) const
+    \since 4.1
 
-  Returns true if this persistent model index is smaller than the \a other
-  persistent model index; otherwise returns false.
+    Returns true if this persistent model index is smaller than the \a other
+    persistent model index; otherwise returns false.
 */
 
 bool QPersistentModelIndex::operator<(const QPersistentModelIndex &other) const
@@ -343,6 +341,16 @@ QModelIndex QPersistentModelIndex::child(int row, int column) const
     return QModelIndex();
 }
 
+/*
+  Returns the data for the given \a role for the item referred to by the index.
+*/
+QVariant QPersistentModelIndex::data(int role) const
+{
+    if (d)
+        return d->index.data(role);
+    return QVariant();
+}
+
 /*!
   Returns the model that the index belongs to.
 */
@@ -358,6 +366,9 @@ const QAbstractItemModel *QPersistentModelIndex::model() const
 
     Returns true if this persistent model index is valid; otherwise returns
     false.
+    A valid index belongs to a model, and has non-negative row and column numbers.
+
+    \sa model(), row(), column()
 */
 
 bool QPersistentModelIndex::isValid() const
@@ -370,7 +381,7 @@ QDebug operator<<(QDebug dbg, const QModelIndex &idx)
 {
 #ifndef Q_BROKEN_DEBUG_STREAM
     dbg.nospace() << "QModelIndex(" << idx.row() << "," << idx.column()
-                  << "," << idx.internalId() << "," << idx.model() << ")";
+                  << "," << idx.internalPointer() << "," << idx.model() << ")";
     return dbg.space();
 #else
     qWarning("This compiler doesn't support streaming QModelIndex to QDebug");
@@ -399,15 +410,37 @@ QAbstractItemModelPrivate::~QAbstractItemModelPrivate()
     }
 }
 
-void QAbstractItemModelPrivate::invalidate(int position)
+void QAbstractItemModelPrivate::removePersistentIndexData(QPersistentModelIndexData *data)
 {
-    QModelIndex parent = persistent.indexes.at(position)->index;
-    for (int i = 0; i < persistent.indexes.count(); ++i) {
-        if (persistent.indexes.at(i)->index.parent() == parent) {
-            Q_ASSERT((persistent.indexes.at(i)));
-            invalidate(i); // recursive
+    int data_index = persistent.indexes.indexOf(data);
+    persistent.indexes.removeAt(data_index);
+    Q_ASSERT(!persistent.indexes.contains(data));
+    // update the references to moved persistend indexes
+    for (int i = persistent.moved.count() - 1; i >= 0; --i) {
+        QList<int> moved = persistent.moved.at(i);
+        for (int j = moved.count() - 1; j >= 0; --j) {
+            if (moved.at(j) > data_index)
+                --persistent.moved[i][j];
+            else if (moved.at(j) == data_index)
+                persistent.moved[i].removeAll(j);
         }
     }
+    // update the references to invalidated persistend indexes
+    for (int i = persistent.invalidated.count() - 1; i >= 0; --i) {
+        QList<int> invalidated = persistent.invalidated.at(i);
+        for (int j = invalidated.count() - 1; j >= 0; --j) {
+            if (invalidated.at(j) > data_index)
+                --persistent.invalidated[i][j];
+            else if (invalidated.at(j) == data_index)
+                persistent.invalidated[i].removeAll(j);
+        }
+    }
+}
+
+void QAbstractItemModelPrivate::invalidate(int position)
+{
+    // no need to make invalidate recursive, since the *AboutToBeRemoved functions
+    // will register indexes to be invalidated recursively
     persistent.indexes[position]->index = QModelIndex();
 }
 
@@ -415,117 +448,148 @@ void QAbstractItemModelPrivate::rowsAboutToBeInserted(const QModelIndex &parent,
                                                       int first, int last)
 {
     Q_UNUSED(last);
-    persistent.changed.clear();
+    QList<int> persistent_moved;
     for (int position = 0; position < persistent.indexes.count(); ++position) {
         QModelIndex index = persistent.indexes.at(position)->index;
         if (index.isValid() && index.parent() == parent && index.row() >= first)
-            persistent.changed.append(position);
+            persistent_moved.append(position);
     }
+    persistent.moved.push(persistent_moved);
 }
 
 void QAbstractItemModelPrivate::rowsInserted(const QModelIndex &parent,
                                              int first, int last)
 {
-    int count = (last - first) + 1;
-    for (int i = 0; i < persistent.changed.count(); ++i) {
-        int position = persistent.changed.at(i);
+    QList<int> persistent_moved = persistent.moved.pop();
+    int count = (last - first) + 1; // it is important to only use the delta, because the change could be nested
+    for (int i = 0; i < persistent_moved.count(); ++i) {
+        int position = persistent_moved.at(i);
         QModelIndex old = persistent.indexes.at(position)->index;
         persistent.indexes[position]->index =
             q_func()->index(old.row() + count, old.column(), parent);
     }
-    persistent.changed.clear();
 }
 
 void QAbstractItemModelPrivate::rowsAboutToBeRemoved(const QModelIndex &parent,
                                                      int first, int last)
 {
-    persistent.changed.clear();
-    persistent.invalidated.clear();
+    QList<int> persistent_moved;
+    QList<int> persistent_invalidated;
+
+    // find the persistent indexes that are affected by the change, either by being in the removed subtree
+    // or by being on the same level and below the removed rows
     for (int position = 0; position < persistent.indexes.count(); ++position) {
-        QModelIndex index = persistent.indexes.at(position)->index;
-        if (index.isValid() && index.parent() == parent) {
-            if (index.row() > last) { // below the removed rows
-                persistent.changed.append(position);
-            } else if (index.row() >= first) { // about to be removed
-                if (q_func()->hasChildren(index)) // the children are invalidated too                    
-                    rowsAboutToBeRemoved(index, 0, q_func()->rowCount(index) - 1);
-                persistent.invalidated.append(position);
+        bool level_changed = false;
+        QModelIndex current = persistent.indexes.at(position)->index;
+        while (current.isValid()) {
+            QModelIndex current_parent = current.parent();
+            if (current_parent == parent) { // on the same level as the change
+                if (!level_changed && current.row() > last) // below the removed rows
+                    persistent_moved.append(position);
+                else if (current.row() <= last && current.row() >= first) // in the removed subtree
+                    persistent_invalidated.append(position);
+                break;
             }
+            current = current_parent;
+            level_changed = true;
         }
     }
+
+    persistent.moved.push(persistent_moved);
+    persistent.invalidated.push(persistent_invalidated);
 }
 
 void QAbstractItemModelPrivate::rowsRemoved(const QModelIndex &parent,
-                                               int first, int last)
+                                            int first, int last)
 {
-    int count = (last - first) + 1;
-    for (int i = 0; i < persistent.changed.count(); ++i) {
-        int position = persistent.changed.at(i);
+    QList<int> persistent_moved = persistent.moved.pop();
+    // it is important that we update the persistent index positions first and then invalidate indexes later
+    // this is because the invalidation of indexes may remove them from the list of persistent indexes
+    // and this in turn will go through the list of moved and invalidated indexes and update them
+    int count = (last - first) + 1; // it is important to only use the delta, because the change could be nested
+    for (int i = 0; i < persistent_moved.count(); ++i) {
+        int position = persistent_moved.at(i);
         QModelIndex old = persistent.indexes.at(position)->index;
         persistent.indexes[position]->index =
             q_func()->index(old.row() - count, old.column(), parent);
     }
-    persistent.changed.clear();
-    for (int j = 0; j < persistent.invalidated.count(); ++j)
-        invalidate(persistent.invalidated.at(j));
-    persistent.invalidated.clear();
+    QList<int> persistent_invalidated = persistent.invalidated.pop();
+    for (int j = 0; j < persistent_invalidated.count(); ++j)
+        invalidate(persistent_invalidated.at(j));
 }
 
 void QAbstractItemModelPrivate::columnsAboutToBeInserted(const QModelIndex &parent,
                                                          int first, int last)
 {
     Q_UNUSED(last);
-    persistent.changed.clear();
+    QList<int> persistent_moved;
     for (int position = 0; position < persistent.indexes.count(); ++position) {
         QModelIndex index = persistent.indexes.at(position)->index;
         if (index.isValid() && index.parent() == parent && index.column() >= first)
-            persistent.changed.append(position);
+            persistent_moved.append(position);
     }
+    persistent.moved.push(persistent_moved);
 }
 
 void QAbstractItemModelPrivate::columnsInserted(const QModelIndex &parent,
                                                 int first, int last)
 {
-    int count = (last - first) + 1;
-    for (int i = 0; i < persistent.changed.count(); ++i) {
-        int position = persistent.changed.at(i);
+    QList<int> persistent_moved = persistent.moved.pop();
+    int count = (last - first) + 1; // it is important to only use the delta, because the change could be nested
+    for (int i = 0; i < persistent_moved.count(); ++i) {
+        int position = persistent_moved.at(i);
         QModelIndex old = persistent.indexes.at(position)->index;
         persistent.indexes[position]->index =
             q_func()->index(old.row(), old.column() + count, parent);
     }
-    persistent.changed.clear();
 }
 
 void QAbstractItemModelPrivate::columnsAboutToBeRemoved(const QModelIndex &parent,
                                                         int first, int last)
 {
-    persistent.changed.clear();
-    persistent.invalidated.clear();
+    QList<int> persistent_moved;
+    QList<int> persistent_invalidated;
+
+    // find the persistent indexes that are affected by the change, either by being in the removed subtree
+    // or by being on the same level and to the right of the removed columns
     for (int position = 0; position < persistent.indexes.count(); ++position) {
-        QModelIndex index = persistent.indexes.at(position)->index;
-        if (index.isValid() && index.parent() == parent) {
-            if (index.column() > last) // after the removed columns
-                persistent.changed.append(position);
-            else if (index.column() >= first) // about to be removed
-                persistent.invalidated.append(position);
+        bool level_changed = false;
+        QModelIndex current = persistent.indexes.at(position)->index;
+        while (current.isValid()) {
+            QModelIndex current_parent = current.parent();
+            if (current_parent == parent) { // on the same level as the change
+                if (!level_changed && current.column() > last) // right of the removed columns
+                    persistent_moved.append(position);
+                else if (current.column() <= last && current.column() >= first) // in the removed subtree
+                    persistent_invalidated.append(position);
+                break;
+            }
+            current = current_parent;
+            level_changed = true;
         }
     }
+
+    persistent.moved.push(persistent_moved);
+    persistent.invalidated.push(persistent_invalidated);
 }
 
 void QAbstractItemModelPrivate::columnsRemoved(const QModelIndex &parent,
                                                int first, int last)
 {
-    int count = (last - first) + 1;
-    for (int i = 0; i < persistent.changed.count(); ++i) {
-        int position = persistent.changed.at(i);
+    QList<int> persistent_moved = persistent.moved.pop();
+    // it is important that we update the persistent index positions first and then invalidate indexes later
+    // this is because the invalidation of indexes may remove them from the list of persistent indexes
+    // and this in turn will go through the list of moved and invalidated indexes and update them
+    int count = (last - first) + 1; // it is important to only use the delta, because the change could be nested
+    for (int i = 0; i < persistent_moved.count(); ++i) {
+        int position = persistent_moved.at(i);
         QModelIndex old = persistent.indexes.at(position)->index;
         persistent.indexes[position]->index =
             q_func()->index(old.row(), old.column() - count, parent);
     }
-    persistent.changed.clear();
-    for (int j = 0; j < persistent.invalidated.count(); ++j)
-        invalidate(persistent.invalidated.at(j));
-    persistent.invalidated.clear();
+    QList<int> persistent_invalidated = persistent.invalidated.pop();
+    for (int j = 0; j < persistent_invalidated.count(); ++j)
+        invalidate(persistent_invalidated.at(j));
 }
 
 void QAbstractItemModelPrivate::reset()
@@ -547,7 +611,9 @@ void QAbstractItemModelPrivate::reset()
     selection models to locate an item in the model.
 
     New QModelIndex objects are created by the model using the
-    QAbstractItemModel::createIndex() function.
+    QAbstractItemModel::createIndex() function. An \e invalid model index
+    can be constructed with the QModelIndex constructor. Invalid indexes are
+    often used as parent indexes when referring to top-level items in a model.
 
     Model indexes refer to items in models, and contain all the information
     required to specify their locations in those models. Each index is located
@@ -627,6 +693,8 @@ void QAbstractItemModelPrivate::reset()
 
     Returns a \c{void} \c{*} pointer used by the model to associate
     the index with the internal data structure.
+
+    \sa QAbstractItemModel::createIndex()
 */
 
 /*!
@@ -634,13 +702,17 @@ void QAbstractItemModelPrivate::reset()
 
     Returns a \c{qint64} used by the model to associate
     the index with the internal data structure.
+
+    \sa QAbstractItemModel::createIndex()
 */
 
 /*!
     \fn bool QModelIndex::isValid() const
 
-    Returns true if this model index is valid; otherwise returns
-    false.
+    Returns true if this model index is valid; otherwise returns false.
+    A valid index belongs to a model, and has non-negative row and column numbers.
+
+    \sa model(), row(), column()
 */
 
 /*!
@@ -666,6 +738,12 @@ void QAbstractItemModelPrivate::reset()
     \a row and \a column.
 
     \sa parent() sibling()
+*/
+
+/*!
+    \fn QVariant QModelIndex::data(int role) const
+
+    Returns the data for the given \a role for the item referred to by the index.
 */
 
 /*!
@@ -761,10 +839,9 @@ void QAbstractItemModelPrivate::reset()
     \section1 Subclassing
 
     When subclassing QAbstractItemModel, at the very least you must
-    implement index(), parent(), rowCount(), columnCount(), hasChildren(),
-    and data().  To enable editing in your model, you must
-    also implement setData(), and reimplement flags() to ensure that
-    \c ItemIsEditable is returned.
+    implement index(), parent(), rowCount(), columnCount(), and data().
+    To enable editing in your model, you must also implement setData(),
+    and reimplement flags() to ensure that \c ItemIsEditable is returned.
 
     You can also reimplement headerData() and setHeaderData() to control
     the way the headers for your model are presented.
@@ -775,8 +852,19 @@ void QAbstractItemModelPrivate::reset()
     pointer or as an integer value. Custom models typically use these
     unique identifiers in other reimplemented functions to retrieve item
     data and access information about the item's parents and children.
-    See the \l{Simple Tree Model} example for more information about unique
-    identifiers.
+    See the \l{itemviews/simpletreemodel}{Simple Tree Model} example for
+    more information about unique identifiers.
+
+    It is not necessary to support every role defined in Qt::ItemDataRole.
+    Depending on the type of data contained within a model, it may only be
+    useful to implement the data() function to return valid information for
+    some of the more common roles. Most models provide at least a textual
+    representation of item data for the Qt::DisplayRole, and well-behaved
+    models should also provide valid information for the Qt::ToolTipRole
+    and Qt::WhatsThisRole. Supporting these roles enables models to be used
+    with standard Qt views. However, for some models that handle
+    highly-specialized data, it may be appropriate to provide data only for
+    user-defined roles.
 
     Models that provide interfaces to resizable data structures can
     provide implementations of insertRows(), removeRows(), insertColumns(),
@@ -807,8 +895,8 @@ void QAbstractItemModelPrivate::reset()
     \bold{If you want selections to be handled properly, you must ensure that
     you call these functions.}
 
-    \sa \link model-view-programming.html Model/View Programming\endlink QModelIndex QAbstractItemView
-
+    \sa \link model-view-programming.html Model/View Programming\endlink, QModelIndex,
+        QAbstractItemView, {Using Drag and Drop with Item Views}
 */
 
 /*!
@@ -944,7 +1032,6 @@ QAbstractItemModel::~QAbstractItemModel()
 
 /*!
     \fn void QAbstractItemModel::rowsInserted(const QModelIndex &parent, int start, int end)
-    \internal
 
     This signal is emitted after rows have been inserted into the
     model. The new items are those between \a start and \a end
@@ -955,7 +1042,6 @@ QAbstractItemModel::~QAbstractItemModel()
 
 /*!
     \fn void QAbstractItemModel::rowsAboutToBeInserted(const QModelIndex &parent, int start, int end)
-    \internal
 
     This signal is emitted just before rows are inserted into the
     model. The new items will be positioned between \a start and \a end
@@ -966,7 +1052,6 @@ QAbstractItemModel::~QAbstractItemModel()
 
 /*!
     \fn void QAbstractItemModel::rowsRemoved(const QModelIndex &parent, int start, int end)
-    \internal
 
     This signal is emitted after rows have been removed from the
     model. The removed items are those between \a start and \a end
@@ -977,7 +1062,6 @@ QAbstractItemModel::~QAbstractItemModel()
 
 /*!
     \fn void QAbstractItemModel::rowsAboutToBeRemoved(const QModelIndex &parent, int start, int end)
-    \internal
 
     This signal is emitted just before rows are removed from the
     model. The items that will be removed are those between \a start and \a end
@@ -988,7 +1072,6 @@ QAbstractItemModel::~QAbstractItemModel()
 
 /*!
     \fn void QAbstractItemModel::columnsInserted(const QModelIndex &parent, int start, int end)
-    \internal
 
     This signal is emitted after columns have been inserted into the
     model. The new items are those between \a start and \a end
@@ -999,7 +1082,6 @@ QAbstractItemModel::~QAbstractItemModel()
 
 /*!
     \fn void QAbstractItemModel::columnsAboutToBeInserted(const QModelIndex &parent, int start, int end)
-    \internal
 
     This signal is emitted just before columns are inserted into the
     model. The new items will be positioned between \a start and \a end
@@ -1010,7 +1092,6 @@ QAbstractItemModel::~QAbstractItemModel()
 
 /*!
     \fn void QAbstractItemModel::columnsRemoved(const QModelIndex &parent, int start, int end)
-    \internal
 
     This signal is emitted after columns have been removed from the
     model. The removed items are those between \a start and \a end
@@ -1021,7 +1102,6 @@ QAbstractItemModel::~QAbstractItemModel()
 
 /*!
     \fn void QAbstractItemModel::columnsAboutToBeRemoved(const QModelIndex &parent, int start, int end)
-    \internal
 
     This signal is emitted just before columns are removed
     from the model. The items to be removed are those between \a start and
@@ -1044,6 +1124,7 @@ bool QAbstractItemModel::hasIndex(int row, int column, const QModelIndex &parent
 
 /*!
   Returns true if \a parent has any children; otherwise returns false.
+  Use rowCount() on the parent to find out the number of children.
 
   \sa parent() index()
 */
@@ -1128,9 +1209,9 @@ QStringList QAbstractItemModel::mimeTypes() const
 }
 
 /*!
-    Returns an object that contains a serialized description of the specified
-    \a indexes. The format used to describe the items corresponding to the
-    indexes is obtained from the mimeTypes() function.
+    Returns an object that contains serialized items of data corresponding to the
+    list of \a indexes specified. The formats used to describe the encoded data
+    is obtained from the mimeTypes() function.
 
     If the list of indexes is empty, 0 is returned rather than a serialized
     empty list.
@@ -1192,9 +1273,9 @@ Qt::DropActions QAbstractItemModel::supportedDropActions() const
 }
 
 /*!
-  Inserts \a count rows into the model before the given \a row.
-  The items in the new row will be children of the item represented by the
-  \a parent model index.
+  On models that support this, inserts \a count rows into the model before the
+  given \a row.  The items in the new row will be children of the item
+  represented by the \a parent model index.
 
   If \a row is 0, the rows are prepended to any existing rows in the parent.
   If \a row is rowCount(), the rows are appended to any existing rows in the
@@ -1206,11 +1287,9 @@ Qt::DropActions QAbstractItemModel::supportedDropActions() const
 
   The base class implementation does nothing and returns false.
 
-  If you want to be able to insert rows in a subclass, you must reimplement
-  this function, calling the beginInsertRows() function \e before inserting
-  new rows into your underlying data store, and call the endInsertRows()
-  function \e afterwards. Return true to indicate success; otherwise return
-  false.
+  If you implement your own model, you can reimplement this function if you
+  want to support insertions. Alternatively, you can provide you own API for
+  altering the data.
 */
 bool QAbstractItemModel::insertRows(int, int, const QModelIndex &)
 {
@@ -1218,9 +1297,9 @@ bool QAbstractItemModel::insertRows(int, int, const QModelIndex &)
 }
 
 /*!
-  Inserts \a count new columns into the model before the given \a column.
-  The items in each new column will be children of the item represented by the
-  \a parent model index.
+  On models that support this, inserts \a count new columns into the model
+  before the given \a column.  The items in each new column will be children
+  of the item represented by the \a parent model index.
 
   If \a column is 0, the columns are prepended to any existing columns.
   If \a column is columnCount(), the columns are appended to any existing
@@ -1232,11 +1311,9 @@ bool QAbstractItemModel::insertRows(int, int, const QModelIndex &)
 
   The base class implementation does nothing and returns false.
 
-  If you want to be able to insert columns in a subclass, you must reimplement
-  this function, calling the beginInsertColumns() function \e before inserting
-  new columns into your underlying data store, and call the endInsertColumns()
-  function \e afterwards. Return true to indicate success; otherwise return
-  false.
+  If you implement your own model, you can reimplement this function if you
+  want to support insertions. Alternatively, you can provide you own API for
+  altering the data.
 */
 bool QAbstractItemModel::insertColumns(int, int, const QModelIndex &)
 {
@@ -1244,17 +1321,15 @@ bool QAbstractItemModel::insertColumns(int, int, const QModelIndex &)
 }
 
 /*!
-    Removes \a count rows starting with the given \a row under parent
-    \a parent from the model. Returns true if the rows were successfully
-    removed; otherwise returns false.
+    On models that support this, removes \a count rows starting with the given
+    \a row under parent \a parent from the model. Returns true if the rows
+    were successfully removed; otherwise returns false.
 
     The base class implementation does nothing and returns false.
 
-    If you want to be able to remove rows in a subclass, you must reimplement
-    this function, calling the beginRemoveRows() function \e before removing
-    new rows into your underlying data store, and call the endRemoveRows()
-    function \e afterwards. Return true to indicate success; otherwise return
-    false.
+    If you implement your own model, you can reimplement this function if you
+    want to support removing. Alternatively, you can provide you own API for
+    altering the data.
 
     \sa removeRow(), removeColumns(), insertColumns()
 */
@@ -1264,17 +1339,15 @@ bool QAbstractItemModel::removeRows(int, int, const QModelIndex &)
 }
 
 /*!
-    Removes \a count columns starting with the given \a column under
-    parent \a parent from the model. Returns true if the columns were
-    successfully removed; otherwise returns false.
+    On models that support this, removes \a count columns starting with the
+    given \a column under parent \a parent from the model. Returns true if the
+    columns were successfully removed; otherwise returns false.
 
     The base class implementation does nothing and returns false.
 
-    If you want to be able to remove columns in a subclass, you must reimplement
-    this function, calling the beginRemoveColumns() function \e before removing
-    new columns into your underlying data store, and call the endRemoveColumns()
-    function \e afterwards. Return true to indicate success; otherwise return
-    false.
+    If you implement your own model, you can reimplement this function if you
+    want to support removing. Alternatively, you can provide you own API for
+    altering the data.
 
     \sa removeColumn(), removeRows(), insertColumns()
 */
@@ -1322,7 +1395,9 @@ bool QAbstractItemModel::canFetchMore(const QModelIndex &) const
 */
 Qt::ItemFlags QAbstractItemModel::flags(const QModelIndex &index) const
 {
-    Q_UNUSED(index);
+    if (!index.isValid())
+        return 0;
+
     return Qt::ItemIsSelectable|Qt::ItemIsEnabled;
 }
 
@@ -1368,7 +1443,7 @@ QModelIndexList QAbstractItemModel::match(const QModelIndex &start, int role,
 {
     QModelIndexList result;
     uint matchType = flags & 0x0F;
-    bool caseSesitive = flags & Qt::MatchCaseSensitive;
+    bool caseSensitive = flags & Qt::MatchCaseSensitive;
     bool recurse = flags & Qt::MatchRecursive;
     bool wrap = flags & Qt::MatchWrap;
     bool allHits = (hits == -1);
@@ -1376,10 +1451,13 @@ QModelIndexList QAbstractItemModel::match(const QModelIndex &start, int role,
     QModelIndex p = parent(start);
     int from = start.row();
     int to = rowCount(p);
+
     // iterates twice if wrapping
     for (int i = 0; (wrap && i < 2) || (!wrap && i < 1); ++i) {
         for (int r = from; (r < to) && (allHits || result.count() < hits); ++r) {
             QModelIndex idx = index(r, start.column(), p);
+            if (!idx.isValid())
+                 continue;
             QVariant v = data(idx, role);
             // QVariant based matching
             if (matchType == Qt::MatchExactly) {
@@ -1388,11 +1466,11 @@ QModelIndexList QAbstractItemModel::match(const QModelIndex &start, int role,
             } else { // QString based matching
                 if (text.isEmpty()) { // lazy conversion
                     text = value.toString();
-                    if (!caseSesitive)
+                    if (!caseSensitive)
                         text = text.toLower();
                 }
                 QString t = v.toString();
-                if (!caseSesitive)
+                if (!caseSensitive)
                     t = t.toLower();
                 switch (matchType) {
                 case Qt::MatchRegExp:
@@ -1470,11 +1548,10 @@ void QAbstractItemModel::revert()
 
 QVariant QAbstractItemModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    if (role == Qt::DisplayRole) {
-        if ((orientation == Qt::Horizontal && section < columnCount())
-            || (orientation == Qt::Vertical && section < rowCount()))
-            return QString::number(section + 1);
-    } else if (role == Qt::TextAlignmentRole)
+    Q_UNUSED(orientation);
+    if (role == Qt::DisplayRole)
+        return section + 1;
+    else if (role == Qt::TextAlignmentRole)
         return Qt::AlignVCenter;
     return QVariant();
 }
@@ -1520,11 +1597,8 @@ bool QAbstractItemModel::setHeaderData(int section, Qt::Orientation orientation,
 void QAbstractItemModel::encodeData(const QModelIndexList &indexes, QDataStream &stream) const
 {
     QModelIndexList::ConstIterator it = indexes.begin();
-    for (; it != indexes.end(); ++it) {
-        stream << (*it).row();
-        stream << (*it).column();
-        stream << itemData(*it);
-    }
+    for (; it != indexes.end(); ++it)
+        stream << (*it).row() << (*it).column() << itemData(*it);
 }
 
 /*!
@@ -1537,22 +1611,16 @@ bool QAbstractItemModel::decodeData(int row, int column, const QModelIndex &pare
     int left = INT_MAX;
     int bottom = 0;
     int right = 0;
+    QVector<int> rows, columns;
     QVector<QMap<int, QVariant> > data;
-    QVector<int> rows;
-    QVector<int> columns;
-    // get data, positions and dimensions of the dragged data (the positions are from the source table)
+
     while (!stream.atEnd()) {
         int r, c;
-        QMap<int, QVariant> d;
-
-        stream >> r;
-        stream >> c;
-        stream >> d;
-
+        QMap<int, QVariant> v;
+        stream >> r >> c >> v;
         rows.append(r);
         columns.append(c);
-        data.append(d);
-
+        data.append(v);
         top = qMin(r, top);
         left = qMin(c, left);
         bottom = qMax(r, bottom);
@@ -1617,9 +1685,7 @@ bool QAbstractItemModel::decodeData(int row, int column, const QModelIndex &pare
 void QAbstractItemModel::beginInsertRows(const QModelIndex &parent, int first, int last)
 {
     Q_D(QAbstractItemModel);
-    d->change.parent = parent;
-    d->change.first = first;
-    d->change.last = last;
+    d->changes.push(QAbstractItemModelPrivate::Change(parent, first, last));
     emit rowsAboutToBeInserted(parent, first, last);
     d->rowsAboutToBeInserted(parent, first, last);
 }
@@ -1636,8 +1702,9 @@ void QAbstractItemModel::beginInsertRows(const QModelIndex &parent, int first, i
 void QAbstractItemModel::endInsertRows()
 {
     Q_D(QAbstractItemModel);
-    d->rowsInserted(d->change.parent, d->change.first, d->change.last);
-    emit rowsInserted(d->change.parent, d->change.first, d->change.last);
+    QAbstractItemModelPrivate::Change change = d->changes.pop();
+    d->rowsInserted(change.parent, change.first, change.last);
+    emit rowsInserted(change.parent, change.first, change.last);
 }
 
 /*!
@@ -1656,9 +1723,7 @@ void QAbstractItemModel::endInsertRows()
 void QAbstractItemModel::beginRemoveRows(const QModelIndex &parent, int first, int last)
 {
     Q_D(QAbstractItemModel);
-    d->change.parent = parent;
-    d->change.first = first;
-    d->change.last = last;
+    d->changes.push(QAbstractItemModelPrivate::Change(parent, first, last));
     emit rowsAboutToBeRemoved(parent, first, last);
     d->rowsAboutToBeRemoved(parent, first, last);
 }
@@ -1675,8 +1740,9 @@ void QAbstractItemModel::beginRemoveRows(const QModelIndex &parent, int first, i
 void QAbstractItemModel::endRemoveRows()
 {
     Q_D(QAbstractItemModel);
-    d->rowsRemoved(d->change.parent, d->change.first, d->change.last);
-    emit rowsRemoved(d->change.parent, d->change.first, d->change.last);
+    QAbstractItemModelPrivate::Change change = d->changes.pop();
+    d->rowsRemoved(change.parent, change.first, change.last);
+    emit rowsRemoved(change.parent, change.first, change.last);
 }
 
 /*!
@@ -1695,9 +1761,7 @@ void QAbstractItemModel::endRemoveRows()
 void QAbstractItemModel::beginInsertColumns(const QModelIndex &parent, int first, int last)
 {
     Q_D(QAbstractItemModel);
-    d->change.parent = parent;
-    d->change.first = first;
-    d->change.last = last;
+    d->changes.push(QAbstractItemModelPrivate::Change(parent, first, last));
     emit columnsAboutToBeInserted(parent, first, last);
     d->columnsAboutToBeInserted(parent, first, last);
 }
@@ -1714,8 +1778,9 @@ void QAbstractItemModel::beginInsertColumns(const QModelIndex &parent, int first
 void QAbstractItemModel::endInsertColumns()
 {
     Q_D(QAbstractItemModel);
-    d->columnsInserted(d->change.parent, d->change.first, d->change.last);
-    emit columnsInserted(d->change.parent, d->change.first, d->change.last);
+    QAbstractItemModelPrivate::Change change = d->changes.pop();
+    d->columnsInserted(change.parent, change.first, change.last);
+    emit columnsInserted(change.parent, change.first, change.last);
 }
 
 /*!
@@ -1734,9 +1799,7 @@ void QAbstractItemModel::endInsertColumns()
 void QAbstractItemModel::beginRemoveColumns(const QModelIndex &parent, int first, int last)
 {
     Q_D(QAbstractItemModel);
-    d->change.parent = parent;
-    d->change.first = first;
-    d->change.last = last;
+    d->changes.push(QAbstractItemModelPrivate::Change(parent, first, last));
     emit columnsAboutToBeRemoved(parent, first, last);
     d->columnsAboutToBeRemoved(parent, first, last);
 }
@@ -1753,8 +1816,9 @@ void QAbstractItemModel::beginRemoveColumns(const QModelIndex &parent, int first
 void QAbstractItemModel::endRemoveColumns()
 {
     Q_D(QAbstractItemModel);
-    d->columnsRemoved(d->change.parent, d->change.first, d->change.last);
-    emit columnsRemoved(d->change.parent, d->change.first, d->change.last);
+    QAbstractItemModelPrivate::Change change = d->changes.pop();
+    d->columnsRemoved(change.parent, change.first, change.last);
+    emit columnsRemoved(change.parent, change.first, change.last);
 }
 
 /*!
@@ -1764,7 +1828,11 @@ void QAbstractItemModel::endRemoveColumns()
     the model is now invalid and has to be queried for again.
 
     When a model radically changes its data it can sometimes be easier
-    to just emit this signal rather than dataChanged().
+    to just call this function rather than emit dataChanged() to inform
+    other components when the underlying data source, or its structure,
+    has changed.
+
+    \sa modelReset()
 */
 void QAbstractItemModel::reset()
 {
@@ -1772,7 +1840,6 @@ void QAbstractItemModel::reset()
     emit modelReset();
     d->reset();
 }
-
 
 /*!
   Changes the QPersistentModelIndex that is equal to the given \a from
@@ -1786,9 +1853,39 @@ void QAbstractItemModel::changePersistentIndex(const QModelIndex &from, const QM
     // ### optimize (use QMap ?)
     Q_D(QAbstractItemModel);
     QList<QPersistentModelIndexData*> persistentIndexes = d->persistent.indexes;
-    for (int i = 0; i < persistentIndexes.count(); ++i)
-        if (persistentIndexes.at(i)->index == from)
-            persistentIndexes.at(i)->index = to; // there could be more pointing to the same index
+    for (int i = 0; i < persistentIndexes.count(); ++i) {
+        if (persistentIndexes.at(i)->index == from) {
+            persistentIndexes.at(i)->index = to;
+            break;
+        }
+    }
+}
+
+/*!
+  \since 4.1
+      
+  Changes the QPersistentModelIndexes that is equal to the indexes in the given \a from
+  model index list to the given \a to model index list.
+
+  If no persistent model indexes equal to the indexes in the given \a from model index list
+  was found, nothing is changed.
+*/
+void QAbstractItemModel::changePersistentIndexList(const QModelIndexList &from,
+                                                   const QModelIndexList &to)
+{
+    // ### optimize (use QMap ?)
+    Q_D(QAbstractItemModel);
+    QList<QPersistentModelIndexData*> persistentIndexes = d->persistent.indexes;
+    QBitArray changed(persistentIndexes.count());
+    for (int i = 0; i < from.count(); ++i) {
+        for (int j = 0; j < persistentIndexes.count(); ++j) {
+            if (!changed.at(j) && persistentIndexes.at(j)->index == from.at(i)) {
+                persistentIndexes.at(j)->index = to.at(i);
+                changed.setBit(j);
+                break;
+            }
+        }
+    }
 }
 
 /*!
@@ -2051,4 +2148,116 @@ bool QAbstractListModel::hasChildren(const QModelIndex &parent) const
     \relates QModelIndex
 
     Synonym for QList<QModelIndex>.
+*/
+
+/*!
+  \reimp
+*/
+bool QAbstractTableModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
+                                       int row, int column, const QModelIndex &parent)
+{
+    if (!data || action != Qt::CopyAction)
+        return false;
+
+    QString format = mimeTypes().at(0);
+    if (!data->hasFormat(format))
+        return false;
+
+    QByteArray encoded = data->data(format);
+    QDataStream stream(&encoded, QIODevice::ReadOnly);
+
+    // if the drop is on an item, replace the data in the items
+    if (parent.isValid() && row == -1 && column == -1) {
+        int top = INT_MAX;
+        int left = INT_MAX;
+        QVector<int> rows, columns;
+        QVector<QMap<int, QVariant> > data;
+
+        while (!stream.atEnd()) {
+            int r, c;
+            QMap<int, QVariant> v;
+            stream >> r >> c >> v;
+            rows.append(r);
+            columns.append(c);
+            data.append(v);
+            top = qMin(r, top);
+            left = qMin(c, left);
+        }
+
+        for (int i = 0; i < data.size(); ++i) {
+            int r = (rows.at(i) - top) + parent.row();
+            int c = (columns.at(i) - left) + parent.column();
+            if (hasIndex(r, c))
+                setItemData(index(r, c), data.at(i));
+        }
+
+        return true;
+    }
+
+    // otherwise insert new rows for the data
+    return decodeData(row, column, parent, stream);
+}
+
+/*!
+  \reimp
+*/
+bool QAbstractListModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
+                                      int row, int column, const QModelIndex &parent)
+{
+    if (!data || action != Qt::CopyAction)
+        return false;
+
+    QString format = mimeTypes().at(0);
+    if (!data->hasFormat(format))
+        return false;
+
+    QByteArray encoded = data->data(format);
+    QDataStream stream(&encoded, QIODevice::ReadOnly);
+
+    // if the drop is on an item, replace the data in the items
+    if (parent.isValid() && row == -1 && column == -1) {
+        int top = INT_MAX;
+        int left = INT_MAX;
+        QVector<int> rows, columns;
+        QVector<QMap<int, QVariant> > data;
+
+        while (!stream.atEnd()) {
+            int r, c;
+            QMap<int, QVariant> v;
+            stream >> r >> c >> v;
+            rows.append(r);
+            columns.append(c);
+            data.append(v);
+            top = qMin(r, top);
+            left = qMin(c, left);
+        }
+
+        for (int i = 0; i < data.size(); ++i) {
+            int r = (rows.at(i) - top) + parent.row();
+            if (columns.at(i) == left && hasIndex(r, 0))
+                setItemData(index(r), data.at(i));
+        }
+
+        return true;
+    }
+
+    // otherwise insert new rows for the data
+    return decodeData(row, column, parent, stream);
+}
+
+/*!
+    \fn QAbstractItemModel::modelReset()
+    \since 4.1
+
+    This signal is emitted when reset() is called.
+
+    \sa reset()
+*/
+
+/*!
+    \fn bool QModelIndex::operator<(const QModelIndex &other) const
+    \since 4.1
+
+    Returns true if this model index is smaller than the \a other
+    model index; otherwise returns false.
 */

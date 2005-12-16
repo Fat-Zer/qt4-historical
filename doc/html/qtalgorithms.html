@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/doc/src/qalgorithms.qdoc -->
+<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/doc/src/qalgorithms.qdoc -->
 <head>
-    <title>Qt 4.0: &lt;QtAlgorithms&gt; - Generic Algorithms</title>
+    <title>Qt 4.1: &lt;QtAlgorithms&gt; - Generic Algorithms</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -50,7 +50,7 @@ body { background: #ffffff; color: black; }</style>
 <p>If STL is available on all your target platforms, you can use the STL algorithms instead of their Qt counterparts. One reason why you might want to use the the STL algorithms is that STL provides dozens and dozens of algorithms, whereas Qt only provides the most important ones, making no attempt to duplicate functionality that is already provided by the C++ standard.</p>
 <p>Most algorithms take <a href="containers.html#stl-style-iterators">STL-style iterators</a> as parameters. The algorithms are generic in the sense that they aren't bound to a specific iterator class; you can use them with any iterators that meet a certain set of requirements.</p>
 <p>Let's take the <a href="qtalgorithms.html#qFill">qFill</a>() algorithm as an example. Unlike <a href="qvector.html">QVector</a>, <a href="qlist.html">QList</a> has no fill() function that can be used to fill a list with a particular value. If you need that functionality, you can use <a href="qtalgorithms.html#qFill">qFill</a>():</p>
-<pre>&nbsp;   QList&lt;QString&gt; list;
+<pre>&nbsp;   QStringList list;
     list &lt;&lt; &quot;one&quot; &lt;&lt; &quot;two&quot; &lt;&lt; &quot;three&quot;;
 
     qFill(list.begin(), list.end(), &quot;eleven&quot;);
@@ -135,7 +135,7 @@ body { background: #ffffff; color: black; }</style>
 <pre>&nbsp;   QVector&lt;int&gt; vect;
     vect &lt;&lt; 3 &lt;&lt; 3 &lt;&lt; 6 &lt;&lt; 6 &lt;&lt; 6 &lt;&lt; 8;
 
-    QVector&lt;int&gt;::Iterator i =
+    QVector&lt;int&gt;::iterator i =
             qBinaryFind(vect.begin(), vect.end(), 6);
     // i == vect.begin() + 2 (or 3 or 4)</pre>
 <p>This function requires the item type (in the example above, <a href="qstring.html">QString</a>) to implement <tt>operator&lt;()</tt>.</p>
@@ -145,7 +145,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Copies the items from range [<i>begin1</i>, <i>end1</i>) to range [<i>begin2</i>, ...), in the order in which they appear.</p>
 <p>The item at position <i>begin1</i> is assigned to that at position <i>begin2</i>; the item at position <i>begin1</i> + 1 is assigned to that at position <i>begin2</i> + 1; and so on.</p>
 <p>Example:</p>
-<pre>&nbsp;   QList&lt;QString&gt; list;
+<pre>&nbsp;   QStringList list;
     list &lt;&lt; &quot;one&quot; &lt;&lt; &quot;two&quot; &lt;&lt; &quot;three&quot;;
 
     QVector&lt;QString&gt; vect1(3);
@@ -160,7 +160,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Copies the items from range [<i>begin1</i>, <i>end1</i>) to range [..., <i>end2</i>).</p>
 <p>The item at position <i>end1</i> - 1 is assigned to that at position <i>end2</i> - 1; the item at position <i>end1</i> - 2 is assigned to that at position <i>end2</i> - 2; and so on.</p>
 <p>Example:</p>
-<pre>&nbsp;   QList&lt;QString&gt; list;
+<pre>&nbsp;   QStringList list;
     list &lt;&lt; &quot;one&quot; &lt;&lt; &quot;two&quot; &lt;&lt; &quot;three&quot;;
 
     QVector&lt;QString&gt; vect(5);
@@ -199,7 +199,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="qEqual"></a>bool qEqual ( InputIterator1 <i>begin1</i>, InputIterator1 <i>end1</i>, InputIterator2 <i>begin2</i> )</h3>
 <p>Compares the items in the range [<i>begin1</i>, <i>end1</i>) with the items in the range [<i>begin2</i>, ...). Returns true if all the items compare equal; otherwise returns false.</p>
 <p>Example:</p>
-<pre>&nbsp;   QList&lt;QString&gt; list;
+<pre>&nbsp;   QStringList list;
     list &lt;&lt; &quot;one&quot; &lt;&lt; &quot;two &lt;&lt; &quot;three&quot;;
 
     QVector&lt;QString&gt; vect[3];
@@ -218,7 +218,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="qFill"></a>void qFill ( ForwardIterator <i>begin</i>, ForwardIterator <i>end</i>, const T &amp; <i>value</i> )</h3>
 <p>Fills the range [<i>begin</i>, <i>end</i>) with <i>value</i>.</p>
 <p>Example:</p>
-<pre>&nbsp;   QList&lt;QString&gt; list;
+<pre>&nbsp;   QStringList list;
     list &lt;&lt; &quot;one&quot; &lt;&lt; &quot;two&quot; &lt;&lt; &quot;three&quot;;
 
     qFill(list.begin(), list.end(), &quot;eleven&quot;);
@@ -230,15 +230,13 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="qFind"></a>InputIterator qFind ( InputIterator <i>begin</i>, InputIterator <i>end</i>, const T &amp; <i>value</i> )</h3>
 <p>Returns an iterator to the first occurrence of <i>value</i> in a container in the range [<i>begin</i>, <i>end</i>). Returns <i>end</i> if <i>value</i> isn't found.</p>
 <p>Example:</p>
-<pre>&nbsp;   QList&lt;QString&gt; list;
+<pre>&nbsp;   QStringList list;
     list &lt;&lt; &quot;one&quot; &lt;&lt; &quot;two&quot; &lt;&lt; &quot;three&quot;;
 
-    QList&lt;QString&gt;::Iterator i1 = qFind(list.begin(), list.end(),
-                                        &quot;two&quot;);
+    QStringList::iterator i1 = qFind(list.begin(), list.end(), &quot;two&quot;);
     // i1 == list.begin() + 1
 
-    QList&lt;QString&gt;::Iterator i2 = qFind(list.begin(), list.end(),
-                                        &quot;seventy&quot;);
+    QStringList::iterator i2 = qFind(list.begin(), list.end(), &quot;seventy&quot;);
     // i2 == list.end()</pre>
 <p>This function requires the item type (in the example above, <a href="qstring.html">QString</a>) to implement <tt>operator==()</tt>.</p>
 <p>If the items in the range are in ascending order, you can get faster results by using <a href="qtalgorithms.html#qLowerBound">qLowerBound</a>() or <a href="qtalgorithms.html#qBinaryFind">qBinaryFind</a>() instead of qFind().</p>
@@ -250,7 +248,7 @@ body { background: #ffffff; color: black; }</style>
 <pre>&nbsp;   QList&lt;int&gt; list;
     list &lt;&lt; 3 &lt;&lt; 3 &lt;&lt; 6 &lt;&lt; 6 &lt;&lt; 6 &lt;&lt; 8;
 
-    QList&lt;int&gt;::Iterator i = qLowerBound(list.begin(), list.end(), 5);
+    QList&lt;int&gt;::iterator i = qLowerBound(list.begin(), list.end(), 5);
     list.insert(i, 5);
     // list: [ 3, 3, 5, 6, 6, 6, 8 ]
 
@@ -261,12 +259,12 @@ body { background: #ffffff; color: black; }</style>
 <p>qLowerBound() can be used in conjunction with <a href="qtalgorithms.html#qUpperBound">qUpperBound</a>() to iterate over all occurrences of the same value:</p>
 <pre>&nbsp;   QVector&lt;int&gt; vect;
     vect &lt;&lt; 3 &lt;&lt; 3 &lt;&lt; 6 &lt;&lt; 6 &lt;&lt; 6 &lt;&lt; 8;
-    QVector&lt;int&gt;::Iterator begin6 =
+    QVector&lt;int&gt;::iterator begin6 =
             qLowerBound(vect.begin(), vect.end(), 6);
-    QVector&lt;int&gt;::Iterator end6 =
+    QVector&lt;int&gt;::iterator end6 =
             qUpperBound(begin6, vect.end(), 6);
 
-    QVector&lt;int&gt;::Iterator i = begin6;
+    QVector&lt;int&gt;::iterator i = begin6;
     while (i != end6) {
         *i = 7;
         ++i;
@@ -287,7 +285,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="qSort-2"></a>void qSort ( BiIterator <i>begin</i>, BiIterator <i>end</i>, LessThan <i>lessThan</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Uses the <i>lessThan</i> function instead of <tt>operator&lt;()</tt> to compare the items.</p>
-<p>For example, here's how to sort the strings in a <a href="qlist.html">QList</a>&lt;<a href="qstring.html">QString</a>&gt; in case-insensitive alphabetical order:</p>
+<p>For example, here's how to sort the strings in a <a href="qstringlist.html">QStringList</a> in case-insensitive alphabetical order:</p>
 <pre>&nbsp;   bool caseInsensitiveLessThan(const QString &amp;s1, const QString &amp;s2)
     {
         return s1.toLower() &lt; s2.toLower();
@@ -295,7 +293,7 @@ body { background: #ffffff; color: black; }</style>
 
     int doSomething()
     {
-        QList&lt;QString&gt; list;
+        QStringList list;
         list &lt;&lt; &quot;AlPha&quot; &lt;&lt; &quot;beTA&quot; &lt;&lt; &quot;gamma&quot; &lt;&lt; &quot;DELTA&quot;;
         qSort(list.begin(), list.end(), caseInsensitiveLessThan);
         // list: [ &quot;AlPha&quot;, &quot;beTA&quot;, &quot;DELTA&quot;, &quot;gamma&quot; ]
@@ -306,6 +304,16 @@ body { background: #ffffff; color: black; }</style>
     qSort(list.begin(), list.end(), qGreater&lt;int&gt;());
     // list: [ 68, 33, 12, 12, 6 ]</pre>
 <p>If of two items neither is &quot;less than&quot; the other, the items are taken to be equal. It is then undefined which one of the two items will appear before the other after the sort.</p>
+<p>An alternative to using <a href="qtalgorithms.html#qSort">qSort</a>() is to put the items to sort in a <a href="qmap.html">QMap</a>, using the sort key as the <a href="qmap.html">QMap</a> key. This is often more convenient than defining a <i>lessThan</i> function. For example, the following code shows how to sort a list of strings case insensitively using <a href="qmap.html">QMap</a>:</p>
+<pre>&nbsp;   QStringList list;
+    list &lt;&lt; &quot;AlPha&quot; &lt;&lt; &quot;beTA&quot; &lt;&lt; &quot;gamma&quot; &lt;&lt; &quot;DELTA&quot;;
+
+    QMap&lt;QString, QString&gt; map;
+    foreach (QString str, list)
+        map.insert(str.toLower(), str);
+
+    list = map.values();</pre>
+<p>See also <a href="qmap.html">QMap</a>.</p>
 <h3 class="fn"><a name="qSort-3"></a>void qSort ( Container &amp; <i>container</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>This is the same as qSort(<i>container</i>.begin(), <i>container</i>.end());</p>
@@ -323,7 +331,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="qStableSort-2"></a>void qStableSort ( BiIterator <i>begin</i>, BiIterator <i>end</i>, LessThan <i>lessThan</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Uses the <i>lessThan</i> function instead of <tt>operator&lt;()</tt> to compare the items.</p>
-<p>For example, here's how to sort the strings in a <a href="qlist.html">QList</a>&lt;<a href="qstring.html">QString</a>&gt; in case-insensitive alphabetical order:</p>
+<p>For example, here's how to sort the strings in a <a href="qstringlist.html">QStringList</a> in case-insensitive alphabetical order:</p>
 <pre>&nbsp;   bool caseInsensitiveLessThan(const QString &amp;s1, const QString &amp;s2)
     {
         return s1.toLower() &lt; s2.toLower();
@@ -331,7 +339,7 @@ body { background: #ffffff; color: black; }</style>
 
     int doSomething()
     {
-        QList&lt;QString&gt; list;
+        QStringList list;
         list &lt;&lt; &quot;AlPha&quot; &lt;&lt; &quot;beTA&quot; &lt;&lt; &quot;gamma&quot; &lt;&lt; &quot;DELTA&quot;;
         qStableSort(list.begin(), list.end(), caseInsensitiveLessThan);
         // list: [ &quot;AlPha&quot;, &quot;beTA&quot;, &quot;DELTA&quot;, &quot;gamma&quot; ]
@@ -360,7 +368,7 @@ body { background: #ffffff; color: black; }</style>
 <pre>&nbsp;   QList&lt;int&gt; list;
     list &lt;&lt; 3 &lt;&lt; 3 &lt;&lt; 6 &lt;&lt; 6 &lt;&lt; 6 &lt;&lt; 8;
 
-    QList&lt;int&gt;::Iterator i = qUpperBound(list.begin(), list.end(), 5);
+    QList&lt;int&gt;::iterator i = qUpperBound(list.begin(), list.end(), 5);
     list.insert(i, 5);
     // list: [ 3, 3, 5, 6, 6, 6, 8 ]
 
@@ -371,12 +379,12 @@ body { background: #ffffff; color: black; }</style>
 <p>qUpperBound() can be used in conjunction with <a href="qtalgorithms.html#qLowerBound">qLowerBound</a>() to iterate over all occurrences of the same value:</p>
 <pre>&nbsp;   QVector&lt;int&gt; vect;
     vect &lt;&lt; 3 &lt;&lt; 3 &lt;&lt; 6 &lt;&lt; 6 &lt;&lt; 6 &lt;&lt; 8;
-    QVector&lt;int&gt;::Iterator begin6 =
+    QVector&lt;int&gt;::iterator begin6 =
             qLowerBound(vect.begin(), vect.end(), 6);
-    QVector&lt;int&gt;::Iterator end6 =
+    QVector&lt;int&gt;::iterator end6 =
             qUpperBound(vect.begin(), vect.end(), 6);
 
-    QVector&lt;int&gt;::Iterator i = begin6;
+    QVector&lt;int&gt;::iterator i = begin6;
     while (i != end6) {
         *i = 7;
         ++i;
@@ -387,6 +395,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

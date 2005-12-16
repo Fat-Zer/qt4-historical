@@ -21,16 +21,16 @@
 **
 ****************************************************************************/
 
-#include <qplatformdefs.h>
+#include "qplatformdefs.h"
+#include "qabstractfileengine.h"
+#include "private/qfsfileengine_p.h"
 #ifndef QT_NO_REGEXP
-# include <qregexp.h>
+# include "qregexp.h"
 #endif
-
-#include <qfileengine.h>
-#include <private/qfsfileengine_p.h>
-#include <qfile.h>
-#include <qdir.h>
-#include <qdebug.h>
+#include "qfile.h"
+#include "qdir.h"
+#include "qdatetime.h"
+#include "qdebug.h"
 
 #include <stdlib.h>
 #include <limits.h>
@@ -195,6 +195,10 @@ QStringList QFSFileEngine::entryList(QDir::Filters filters, const QStringList &f
                      (doWritable && !fi.isWritable()) ||
                      (doExecable && !fi.isExecutable()))
                     continue;
+            if (!doSymLinks && fi.isSymLink() || !doFiles && fi.isFile() || !doDirs && fi.isDir())
+                continue;
+            if (filters & QDir::NoDotAndDotDot && (fn == QLatin1String(".") || fn == QLatin1String("..")))
+                continue;
             if(!doHidden && fn.at(0) == QLatin1Char('.') && fn.length() > 1 && fn != QLatin1String(".."))
                 continue;
             ret.append(fn);
@@ -268,26 +272,31 @@ QFileInfoList QFSFileEngine::drives()
 
 bool QFSFileEnginePrivate::doStat() const
 {
-    if(!tried_stat) {
+    if (tried_stat == 0) {
         QFSFileEnginePrivate *that = const_cast<QFSFileEnginePrivate*>(this);
-	that->tried_stat = true;
-	that->could_stat = true;
-        if(fd != -1) {
+	that->tried_stat = 1;
+	that->could_stat = 1;
+        if (fd != -1) {
             that->could_stat = !QT_FSTAT(fd, &st);
         } else {
             const QByteArray file = QFile::encodeName(this->file);
-            if(QT_LSTAT(file, &st) == 0)
+            if (QT_LSTAT(file, &st) == 0)
                 that->isSymLink = S_ISLNK(st.st_mode);
+            else
+                that->isSymLink = false;
             that->could_stat = !QT_STAT(file, &st);
         }
     }
-    return could_stat;
+    return could_stat || isSymLink;
 }
 
-QFileEngine::FileFlags QFSFileEngine::fileFlags(QFileEngine::FileFlags type) const
+QAbstractFileEngine::FileFlags QFSFileEngine::fileFlags(QAbstractFileEngine::FileFlags type) const
 {
     Q_D(const QFSFileEngine);
-    QFileEngine::FileFlags ret = 0;
+    // Force a stat, so that we're guaranteed to get up-to-date results
+    d->tried_stat = 0;
+
+    QAbstractFileEngine::FileFlags ret = 0;
     if(!d->doStat())
         return ret;
     if(type & PermsMask) {
@@ -341,7 +350,7 @@ QFileEngine::FileFlags QFSFileEngine::fileFlags(QFileEngine::FileFlags type) con
         }
     }
     if(type & FlagsMask) {
-        ret |= QFileEngine::FileFlags(ExistsFlag | LocalDiskFlag);
+        ret |= QAbstractFileEngine::FileFlags(ExistsFlag | LocalDiskFlag);
         if(fileName(BaseName)[0] == QLatin1Char('.'))
             ret |= HiddenFlag;
         if(d->file == QLatin1String("/"))
@@ -490,7 +499,7 @@ QString QFSFileEngine::owner(FileOwner own) const
     return QString();
 }
 
-bool QFSFileEngine::chmod(uint perms)
+bool QFSFileEngine::setPermissions(uint perms)
 {
     Q_D(QFSFileEngine);
     mode_t mode = 0;
@@ -533,3 +542,17 @@ bool QFSFileEngine::setSize(qint64 size)
     return !QT_TRUNCATE(file.data(), size);
 }
 
+QDateTime QFSFileEngine::fileTime(FileTime time) const
+{
+    Q_D(const QFSFileEngine);
+    QDateTime ret;
+    if(d->doStat()) {
+        if(time == CreationTime)
+            ret.setTime_t(d->st.st_ctime ? d->st.st_ctime : d->st.st_mtime);
+        else if(time == ModificationTime)
+            ret.setTime_t(d->st.st_mtime);
+        else if(time == AccessTime)
+            ret.setTime_t(d->st.st_atime);
+    }
+    return ret;
+}

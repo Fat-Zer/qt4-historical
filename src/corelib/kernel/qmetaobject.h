@@ -24,8 +24,8 @@
 #ifndef QMETAOBJECT_H
 #define QMETAOBJECT_H
 
-#include "QtCore/qobjectdefs.h"
-#include "QtCore/qvariant.h"
+#include <QtCore/qobjectdefs.h>
+#include <QtCore/qvariant.h>
 
 QT_MODULE(Core)
 
@@ -94,10 +94,12 @@ public:
 
     bool isReadable() const;
     bool isWritable() const;
+    bool isResettable() const;
     bool isDesignable(const QObject *obj = 0) const;
     bool isScriptable(const QObject *obj = 0) const;
     bool isStored(const QObject *obj = 0) const;
     bool isEditable(const QObject *obj = 0) const;
+    bool isUser(const QObject *obj = 0) const;
 
     bool isFlagType() const;
     bool isEnumType() const;

@@ -26,13 +26,13 @@
 
 #ifndef QT_NO_QOBJECT
 #include <QtCore/qobject.h>
+#else
+#include <QtCore/qobjectdefs.h>
 #endif
 #include <QtCore/qstring.h>
 
-#include "QtCore/qobjectdefs.h"
-
 #ifdef open
-#error qiodevice.h must be included before any system header that defines open
+#error qiodevice.h must be included before any header file that defines open
 #endif
 
 QT_MODULE(Core)
@@ -100,6 +100,9 @@ public:
     inline qint64 write(const QByteArray &data)
     { return write(data.constData(), data.size()); }
 
+    qint64 peek(char *data, qint64 maxlen);
+    QByteArray peek(qint64 maxlen);
+
     virtual bool waitForReadyRead(int msecs);
     virtual bool waitForBytesWritten(int msecs);
 
@@ -111,7 +114,7 @@ public:
     QString errorString() const;
 
 #ifndef QT_NO_QOBJECT
-signals:
+Q_SIGNALS:
     void readyRead();
     void bytesWritten(qint64 bytes);
     void aboutToClose();
@@ -211,6 +214,11 @@ inline QT3_SUPPORT int QIODevice::state() const
 {
     return isOpen() ? 0x1000 : 0;
 }
+#endif
+
+#if !defined(QT_NO_DEBUG_STREAM)
+class QDebug;
+Q_CORE_EXPORT QDebug operator<<(QDebug debug, QIODevice::OpenMode modes);
 #endif
 
 #endif // QIODEVICE_H

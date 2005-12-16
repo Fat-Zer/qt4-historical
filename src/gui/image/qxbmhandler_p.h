@@ -21,10 +21,21 @@
 **
 ****************************************************************************/
 
-#ifndef QXBMHANDLER_H
-#define QXBMHANDLER_H
+#ifndef QXBMHANDLER_P_H
+#define QXBMHANDLER_P_H
 
-#include "qimageiohandler.h"
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of the QLibrary class.  This header file may change from
+// version to version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include "QtGui/qimageiohandler.h"
 
 #ifndef QT_NO_IMAGEFORMAT_XBM
 
@@ -48,4 +59,5 @@ private:
 };
 
 #endif // QT_NO_IMAGEFORMAT_XBM
-#endif // QXBMHANDLER_H
+
+#endif // QXBMHANDLER_P_H

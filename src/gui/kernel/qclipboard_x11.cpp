@@ -101,9 +101,9 @@ void setupOwner()
     if (owner)
         return;
     owner = new QWidget(0);
-    owner->setObjectName("internal clipboard owner");
+    owner->setObjectName(QLatin1String("internal clipboard owner"));
     requestor = new QWidget(0);
-    requestor->setObjectName("internal clipboard requestor");
+    requestor->setObjectName(QLatin1String("internal clipboard requestor"));
     qAddPostRoutine(cleanup);
 }
 
@@ -423,11 +423,10 @@ bool QX11Data::clipboardWaitForEvent(Window win, int type, XEvent *event, int ti
             if (started > now)                        // crossed midnight
                 started = now;
 
-            // 0x08 == ExcludeTimers for X11 only
             QEventLoop::ProcessEventsFlags flags(QEventLoop::ExcludeUserInputEvents
                                                  | QEventLoop::ExcludeSocketNotifiers
                                                  | QEventLoop::WaitForMoreEvents
-                                                 | 0x08);
+                                                 | QEventLoop::X11ExcludeTimers);
             QAbstractEventDispatcher *eventDispatcher = QAbstractEventDispatcher::instance();
             eventDispatcher->processEvents(flags);
 
@@ -645,7 +644,7 @@ QByteArray QX11Data::clipboardReadIncrementalProperty(Window win, Atom property,
     // could consider next request to be still part of this timed out request
     delete requestor;
     requestor = new QWidget(0);
-    requestor->setObjectName("internal clipboard requestor");
+    requestor->setObjectName(QLatin1String("internal clipboard requestor"));
 
     return QByteArray();
 }
@@ -969,7 +968,8 @@ bool QClipboard::event(QEvent *e)
             // someone wants our data
             XSelectionRequestEvent *req = &xevent->xselectionrequest;
 
-            if (req->requestor == requestor->winId()) break;
+            if (requestor && req->requestor == requestor->winId())
+                break;
 
             XEvent event;
             event.xselection.type      = SelectionNotify;

@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/src/gui/text/qtextobject.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/gui/text/qtextobject.cpp -->
 <head>
-    <title>Qt 4.0: QTextBlock Class Reference</title>
+    <title>Qt 4.1: QTextBlock Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -46,8 +46,12 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>QTextBlock <b><a href="qtextblock.html#next">next</a></b> () const</li>
 <li><div class="fn"/>int <b><a href="qtextblock.html#position">position</a></b> () const</li>
 <li><div class="fn"/>QTextBlock <b><a href="qtextblock.html#previous">previous</a></b> () const</li>
+<li><div class="fn"/>void <b><a href="qtextblock.html#setUserData">setUserData</a></b> ( QTextBlockUserData * <i>data</i> )</li>
+<li><div class="fn"/>void <b><a href="qtextblock.html#setUserState">setUserState</a></b> ( int <i>state</i> )</li>
 <li><div class="fn"/>QString <b><a href="qtextblock.html#text">text</a></b> () const</li>
 <li><div class="fn"/>QTextList * <b><a href="qtextblock.html#textList">textList</a></b> () const</li>
+<li><div class="fn"/>QTextBlockUserData * <b><a href="qtextblock.html#userData">userData</a></b> () const</li>
+<li><div class="fn"/>int <b><a href="qtextblock.html#userState">userState</a></b> () const</li>
 <li><div class="fn"/>bool <b><a href="qtextblock.html#operator-not-eq">operator!=</a></b> ( const QTextBlock &amp; <i>other</i> ) const</li>
 <li><div class="fn"/>bool <b><a href="qtextblock.html#operator-lt">operator&lt;</a></b> ( const QTextBlock &amp; <i>other</i> ) const</li>
 <li><div class="fn"/>QTextBlock &amp; <b><a href="qtextblock.html#operator-eq">operator=</a></b> ( const QTextBlock &amp; <i>other</i> )</li>
@@ -110,11 +114,29 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the text block in the document before this block, or an empty text block if this is the first one.</p>
 <p>Note that the next block may be in a different frame or table to this block.</p>
 <p>See also <a href="qtextblock.html#next">next</a>(), <a href="qtextblock.html#begin">begin</a>(), and <a href="qtextblock.html#end">end</a>().</p>
+<h3 class="fn"><a name="setUserData"></a>void QTextBlock::setUserData ( <a href="qtextblockuserdata.html">QTextBlockUserData</a> * <i>data</i> )</h3>
+<p>Attaches the given <i>data</i> object to the text block.</p>
+<p><a href="qtextblockuserdata.html">QTextBlockUserData</a> can be used to store custom settings. The ownership is passed to the underlying text document, i.e. the provided <a href="qtextblockuserdata.html">QTextBlockUserData</a> object will be deleted if the corresponding text block gets deleted.</p>
+<p>For example, if you write a programming editor in an IDE, you may want to let your user set breakpoints visually in your code for an integrated debugger. In a programming editor a line of text usually corresponds to one <a href="qtextblock.html">QTextBlock</a>. The <a href="qtextblockuserdata.html">QTextBlockUserData</a> interface allows the developer to store data for each <a href="qtextblock.html">QTextBlock</a>, like for example in which lines of the source code the user has a breakpoint set. Of course this could also be stored externally, but by storing it inside the <a href="qtextdocument.html">QTextDocument</a>, it will for example be automatically deleted when the user deletes the associated line. It's really just a way to store custom information in the <a href="qtextdocument.html">QTextDocument</a> without using custom properties in <a href="qtextformat.html">QTextFormat</a> which would affect the undo/redo stack.</p>
+<p>This function was introduced in Qt 4.1.</p>
+<p>See also <a href="qtextblock.html#userData">userData</a>().</p>
+<h3 class="fn"><a name="setUserState"></a>void QTextBlock::setUserState ( int <i>state</i> )</h3>
+<p>Stores the specified <i>state</i> integer value in the text block. This may be useful for example in a syntax highlighter to store a text parsing state.</p>
+<p>This function was introduced in Qt 4.1.</p>
+<p>See also <a href="qtextblock.html#userState">userState</a>().</p>
 <h3 class="fn"><a name="text"></a><a href="qstring.html">QString</a> QTextBlock::text () const</h3>
 <p>Returns the block's contents as plain text.</p>
 <p>See also <a href="qtextblock.html#length">length</a>(), <a href="qtextblock.html#charFormat">charFormat</a>(), and <a href="qtextblock.html#blockFormat">blockFormat</a>().</p>
 <h3 class="fn"><a name="textList"></a><a href="qtextlist.html">QTextList</a> * QTextBlock::textList () const</h3>
 <p>If the block represents a list item, returns the list that the item belongs to; otherwise returns 0.</p>
+<h3 class="fn"><a name="userData"></a><a href="qtextblockuserdata.html">QTextBlockUserData</a> * QTextBlock::userData () const</h3>
+<p>Returns a pointer to a <a href="qtextblockuserdata.html">QTextBlockUserData</a> object if previously set with <a href="qtextblock.html#setUserData">setUserData</a>() or a null pointer.</p>
+<p>This function was introduced in Qt 4.1.</p>
+<p>See also <a href="qtextblock.html#setUserData">setUserData</a>().</p>
+<h3 class="fn"><a name="userState"></a>int QTextBlock::userState () const</h3>
+<p>Returns the integer value previously set with <a href="qtextblock.html#setUserState">setUserState</a>() or -1.</p>
+<p>This function was introduced in Qt 4.1.</p>
+<p>See also <a href="qtextblock.html#setUserState">setUserState</a>().</p>
 <h3 class="fn"><a name="operator-not-eq"></a>bool QTextBlock::operator!= ( const QTextBlock &amp; <i>other</i> ) const</h3>
 <p>Returns true if this text block is different from the <i>other</i> text block.</p>
 <h3 class="fn"><a name="operator-lt"></a>bool QTextBlock::operator&lt; ( const QTextBlock &amp; <i>other</i> ) const</h3>
@@ -127,6 +149,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

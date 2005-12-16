@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/doc/src/exportedfunctions.qdoc -->
+<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/doc/src/exportedfunctions.qdoc -->
 <head>
-    <title>Qt 4.0: Special-Purpose Global Functions Exported by Qt</title>
+    <title>Qt 4.1: Special-Purpose Global Functions Exported by Qt</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -39,8 +39,6 @@ body { background: #ffffff; color: black; }</style>
 <p>Functions:</p>
 <ul><li><a href="#void-qt-set-library-config-file-const-qstring-filename">void qt_set_library_config_file(const QString &amp;<i>fileName</i>)</a></li>
 <li><a href="#void-qt-set-sequence-auto-mnemonic-bool-enable">void qt_set_sequence_auto_mnemonic(bool <i>enable</i>)</a></li>
-<li><a href="#hdc-qt-win-display-dc">HDC qt_win_display_dc()</a></li>
-<li><a href="#void-qt-x11-set-fallback-font-family-int-script-const-qstring-family">void qt_x11_set_fallback_font_family(int <i>script</i>, const QString &amp;<i>family</i>)</a></li>
 <li><a href="#void-qt-x11-wait-for-window-manager-qwidget-widget">void qt_x11_wait_for_window_manager(QWidget *<i>widget</i>)</a></li>
 <li><a href="#void-qt-mac-secure-keyboard-bool-enable">void qt_mac_secure_keyboard(bool <i>enable</i>)</a></li>
 <li><a href="#void-qt-mac-set-dock-menu-qmenu-menu">void qt_mac_set_dock_menu(QMenu *<i>menu</i>)</a></li>
@@ -55,12 +53,6 @@ body { background: #ffffff; color: black; }</style>
 <a name="void-qt-set-sequence-auto-mnemonic-bool-enable"></a>
 <h2>void qt_set_sequence_auto_mnemonic(bool <i>enable</i>)</h2>
 <p>Specifies whether mnemonics for menu items, labels, etc., should be honored or not. On Windows and X11, this feature is on by default; on Mac OS X, it is off. When this feature is off, the <a href="qkeysequence.html#mnemonic">QKeySequence::mnemonic</a>() function always returns an empty string. This feature is also enabled on embedded Linux.</p>
-<a name="hdc-qt-win-display-dc"></a>
-<h2>HDC qt_win_display_dc()</h2>
-<p>Returns the Windows device context for the display. Use this at your own risks and perils.</p>
-<a name="void-qt-x11-set-fallback-font-family-int-script-const-qstring-family"></a>
-<h2>void qt_x11_set_fallback_font_family(int <i>script</i>, const QString &amp;<i>family</i>)</h2>
-<p>Sets the font family to be used for a given script as the fallback when the current font doesn't contain a character. The values for the <i>script</i> parameter are defined by the <tt>Script</tt> enum, located in <tt>&lt;private/qunicodetable_p.h&gt;</tt>.</p>
 <a name="void-qt-x11-wait-for-window-manager-qwidget-widget"></a>
 <h2>void qt_x11_wait_for_window_manager(QWidget *<i>widget</i>)</h2>
 <p>Blocks until the X11 window manager has shown the widget after a call to <a href="qwidget.html#show">QWidget::show</a>().</p>
@@ -86,6 +78,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

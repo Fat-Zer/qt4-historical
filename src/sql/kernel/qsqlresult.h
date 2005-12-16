@@ -24,7 +24,9 @@
 #ifndef QSQLRESULT_H
 #define QSQLRESULT_H
 
-#include "QtSql/qsql.h"
+#include <QtCore/qvariant.h>
+#include <QtCore/qvector.h>
+#include <QtSql/qsql.h>
 
 QT_MODULE(Sql)
 
@@ -32,8 +34,6 @@ class QString;
 class QSqlRecord;
 template <typename T> class QVector;
 class QVariant;
-
-
 class QSqlDriver;
 class QSqlError;
 class QSqlResultPrivate;
@@ -75,7 +75,6 @@ protected:
     // prepared query support
     virtual bool exec();
     virtual bool prepare(const QString& query);
-    // ### TODO - find a much better name
     virtual bool savePrepare(const QString& sqlquery);
     virtual void bindValue(int pos, const QVariant& val, QSql::ParamType type);
     virtual void bindValue(const QString& placeholder, const QVariant& val,
@@ -107,7 +106,10 @@ protected:
     virtual QSqlRecord record() const;
     virtual QVariant lastInsertId() const;
 
+    enum VirtualHookOperation { BatchOperation };
     virtual void virtual_hook(int id, void *data);
+
+    bool execBatch(bool arrayBind = false);
 
 private:
     QSqlResultPrivate* d;

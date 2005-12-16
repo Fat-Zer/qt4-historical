@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/src/xml/qdom.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/xml/qdom.cpp -->
 <head>
-    <title>Qt 4.0: QDomNodeList Class Reference</title>
+    <title>Qt 4.1: QDomNodeList Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -29,9 +29,12 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="qdomnodelist.html#QDomNodeList">QDomNodeList</a></b> ()</li>
 <li><div class="fn"/><b><a href="qdomnodelist.html#QDomNodeList-2">QDomNodeList</a></b> ( const QDomNodeList &amp; <i>n</i> )</li>
 <li><div class="fn"/><b><a href="qdomnodelist.html#dtor.QDomNodeList">~QDomNodeList</a></b> ()</li>
+<li><div class="fn"/>QDomNode <b><a href="qdomnodelist.html#at">at</a></b> ( int <i>index</i> ) const</li>
 <li><div class="fn"/>int <b><a href="qdomnodelist.html#count">count</a></b> () const</li>
+<li><div class="fn"/>bool <b><a href="qdomnodelist.html#isEmpty">isEmpty</a></b> () const</li>
 <li><div class="fn"/>QDomNode <b><a href="qdomnodelist.html#item">item</a></b> ( int <i>index</i> ) const</li>
 <li><div class="fn"/>uint <b><a href="qdomnodelist.html#length">length</a></b> () const</li>
+<li><div class="fn"/>int <b><a href="qdomnodelist.html#size">size</a></b> () const</li>
 <li><div class="fn"/>bool <b><a href="qdomnodelist.html#operator-not-eq">operator!=</a></b> ( const QDomNodeList &amp; <i>n</i> ) const</li>
 <li><div class="fn"/>QDomNodeList &amp; <b><a href="qdomnodelist.html#operator-eq">operator=</a></b> ( const QDomNodeList &amp; <i>n</i> )</li>
 <li><div class="fn"/>bool <b><a href="qdomnodelist.html#operator-eq-eq">operator==</a></b> ( const QDomNodeList &amp; <i>n</i> ) const</li>
@@ -41,7 +44,7 @@ body { background: #ffffff; color: black; }</style>
 <h2>Detailed Description</h2>
 <p>The QDomNodeList class is a list of <a href="qdomnode.html">QDomNode</a> objects.</p>
 <p>Lists can be obtained by <a href="qdomdocument.html#elementsByTagName">QDomDocument::elementsByTagName</a>() and <a href="qdomnode.html#childNodes">QDomNode::childNodes</a>(). The Document Object Model (DOM) requires these lists to be &quot;live&quot;: whenever you change the underlying document, the contents of the list will get updated.</p>
-<p>You can get a particular node from the list with <a href="qdomnodelist.html#item">item</a>(). The number of items in the list is returned by <a href="qdomnodelist.html#count">count</a>() (and by <a href="qdomnodelist.html#length">length</a>()).</p>
+<p>You can get a particular node from the list with <a href="qdomnodelist.html#item">item</a>(). The number of items in the list is returned by <a href="qdomnodelist.html#length">length</a>().</p>
 <p>For further information about the Document Object Model see <a href="http://www.w3.org/TR/REC-DOM-Level-1/">Level 1</a> and <a href="http://www.w3.org/TR/DOM-Level-2-Core/">Level 2 Core</a>. For a more general introduction of the DOM implementation see the <a href="qdomdocument.html">QDomDocument</a> documentation.</p>
 <p>See also <a href="qdomnode.html#childNodes">QDomNode::childNodes</a>() and <a href="qdomdocument.html#elementsByTagName">QDomDocument::elementsByTagName</a>().</p>
 <hr />
@@ -52,16 +55,21 @@ body { background: #ffffff; color: black; }</style>
 <p>Constructs a copy of <i>n</i>.</p>
 <h3 class="fn"><a name="dtor.QDomNodeList"></a>QDomNodeList::~QDomNodeList ()</h3>
 <p>Destroys the object and frees its resources.</p>
+<h3 class="fn"><a name="at"></a><a href="qdomnode.html">QDomNode</a> QDomNodeList::at ( int <i>index</i> ) const</h3>
+<p>This function is provided for Qt API consistency. It is equivalent to <a href="qdomnodelist.html#item">item</a>().</p>
+<p>If <i>index</i> is negative or if <i>index</i> &gt;= <a href="qdomnodelist.html#length">length</a>() then a null node is returned (i.e. a node for which <a href="qdomnode.html#isNull">QDomNode::isNull</a>() returns true).</p>
 <h3 class="fn"><a name="count"></a>int QDomNodeList::count () const</h3>
-<p>Returns the number of nodes in the list.</p>
-<p>This function is the same as <a href="qdomnodelist.html#length">length</a>().</p>
+<p>This function is provided for Qt API consistency. It is equivalent to <a href="qdomnodelist.html#length">length</a>().</p>
+<h3 class="fn"><a name="isEmpty"></a>bool QDomNodeList::isEmpty () const</h3>
+<p>Returns true if the list contains no items; otherwise returns false. This function is provided for Qt API consistency.</p>
 <h3 class="fn"><a name="item"></a><a href="qdomnode.html">QDomNode</a> QDomNodeList::item ( int <i>index</i> ) const</h3>
 <p>Returns the node at position <i>index</i>.</p>
 <p>If <i>index</i> is negative or if <i>index</i> &gt;= <a href="qdomnodelist.html#length">length</a>() then a null node is returned (i.e. a node for which <a href="qdomnode.html#isNull">QDomNode::isNull</a>() returns true).</p>
-<p>See also <a href="qdomnodelist.html#count">count</a>().</p>
+<p>See also <a href="qdomnodelist.html#length">length</a>().</p>
 <h3 class="fn"><a name="length"></a><a href="qtglobal.html#uint-typedef">uint</a> QDomNodeList::length () const</h3>
 <p>Returns the number of nodes in the list.</p>
-<p>This function is the same as <a href="qdomnodelist.html#count">count</a>().</p>
+<h3 class="fn"><a name="size"></a>int QDomNodeList::size () const</h3>
+<p>This function is provided for Qt API consistency. It is equivalent to <a href="qdomnodelist.html#length">length</a>().</p>
 <h3 class="fn"><a name="operator-not-eq"></a>bool QDomNodeList::operator!= ( const QDomNodeList &amp; <i>n</i> ) const</h3>
 <p>Returns true the node list <i>n</i> and this node list are not equal; otherwise returns false.</p>
 <h3 class="fn"><a name="operator-eq"></a>QDomNodeList &amp; QDomNodeList::operator= ( const QDomNodeList &amp; <i>n</i> )</h3>
@@ -72,6 +80,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

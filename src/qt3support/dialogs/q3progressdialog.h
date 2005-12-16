@@ -24,7 +24,7 @@
 #ifndef Q3PROGRESSDIALOG_H
 #define Q3PROGRESSDIALOG_H
 
-#include "QtGui/qdialog.h"
+#include <QtGui/qdialog.h>
 
 QT_MODULE(Qt3SupportLight)
 
@@ -77,7 +77,7 @@ public:
     void setAutoClose(bool b);
     bool autoClose() const;
 
-public slots:
+public Q_SLOTS:
     void cancel();
     void reset();
     void setTotalSteps(int totalSteps);
@@ -90,7 +90,7 @@ public slots:
 public:
     int minimumDuration() const;
 
-signals:
+Q_SIGNALS:
     void canceled();
 
 protected:
@@ -99,7 +99,7 @@ protected:
     void changeEvent(QEvent *);
     void showEvent(QShowEvent *e);
 
-protected slots:
+protected Q_SLOTS:
     void forceShow();
 
 private:

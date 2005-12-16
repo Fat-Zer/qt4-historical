@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/doc/src/examples/tutorial.qdoc -->
+<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/doc/src/examples/tutorial.qdoc -->
 <head>
-    <title>Qt 4.0: Qt Tutorial 7 - One Thing Leads to Another</title>
+    <title>Qt 4.1: Qt Tutorial 7 - One Thing Leads to Another</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -32,7 +32,7 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="tutorial-t7-lcdrange-h.html">tutorial/t7/lcdrange.h</a></li>
 <li><a href="tutorial-t7-main-cpp.html">tutorial/t7/main.cpp</a></li>
 </ul>
-<p align="center"><img src="images/t7.png" alt="Screenshot of tutorial seven" /></p><p>This example shows how to create custom widgets with signals and slots, and how to connect them together in more complex ways. For the first time, the source is split among several files which we've placed in the <tt>examples/tutorial/t7</tt> directory.</p>
+<p align="center"><img src="images/t7.png" alt="Screenshot of Chapter 7" /></p><p>This example shows how to create custom widgets with signals and slots, and how to connect them together in more complex ways. For the first time, the source is split among several files which we've placed in the <tt>examples/tutorial/t7</tt> directory.</p>
 <a name="line-by-line-walkthrough"></a>
 <h2>Line by Line Walkthrough</h2>
 <a name="t7-lcdrange-h"></a>
@@ -90,8 +90,8 @@ body { background: #ffffff; color: black; }</style>
 <h3><a href="tutorial-t7-main-cpp.html">t7/main.cpp</a></h3>
 <pre>&nbsp;       LCDRange *previousRange = 0;
 
-        for (int row = 0; row &lt; 4; ++row) {
-            for (int column = 0; column &lt; 4; ++column) {
+        for (int row = 0; row &lt; 3; ++row) {
+            for (int column = 0; column &lt; 3; ++column) {
                 LCDRange *lcdRange = new LCDRange;
                 grid-&gt;addWidget(lcdRange, row, column);
                 if (previousRange)
@@ -100,7 +100,7 @@ body { background: #ffffff; color: black; }</style>
                 previousRange = lcdRange;
             }
         }</pre>
-<p>All of <tt>main.cpp</tt> is copied from the previous chapter except in the constructor for <tt>MyWidget</tt>. When we create the 16 <tt>LCDRange</tt> objects, we now connect them using the <a href="signalsandslots.html">signals and slots</a> mechanism. Each has its <tt>valueChanged()</tt> signal connected to the previous one's <tt>setValue()</tt> slot. Because <tt>LCDRange</tt> emits the <tt>valueChanged()</tt> signal when its value changes, we are here creating a chain of signals and slots.</p>
+<p>All of <tt>main.cpp</tt> is copied from the previous chapter except in the constructor for <tt>MyWidget</tt>. When we create the nine <tt>LCDRange</tt> objects, we connect them using the <a href="signalsandslots.html">signals and slots</a> mechanism. Each has its <tt>valueChanged()</tt> signal connected to the previous one's <tt>setValue()</tt> slot. Because <tt>LCDRange</tt> emits the <tt>valueChanged()</tt> signal when its value changes, we are here creating a chain of signals and slots.</p>
 <a name="compiling"></a><a name="compiling-the-application"></a>
 <h2>Compiling the Application</h2>
 <p>Creating a makefile for a multi-file application is no different from creating one for a single-file application. If you've saved all the files in this example in their own directory, all you have to do is:</p>
@@ -123,6 +123,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

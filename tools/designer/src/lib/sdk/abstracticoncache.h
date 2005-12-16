@@ -24,15 +24,15 @@
 #ifndef ABSTRACTICONCACHE_H
 #define ABSTRACTICONCACHE_H
 
-#include <QtCore/QObject>
-
 #include <QtDesigner/sdk_global.h>
+
+#include <QtCore/QObject>
 
 class QIcon;
 class QPixmap;
 class QString;
 
-class QT_SDK_EXPORT QDesignerIconCacheInterface : public QObject
+class QDESIGNER_SDK_EXPORT QDesignerIconCacheInterface : public QObject
 {
     Q_OBJECT
 public:

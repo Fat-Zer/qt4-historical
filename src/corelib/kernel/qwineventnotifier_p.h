@@ -35,8 +35,8 @@
 // We mean it.
 //
 
-#include "qobject.h"
-#include "qt_windows.h"
+#include "QtCore/qobject.h"
+#include "QtCore/qt_windows.h"
 
 class Q_CORE_EXPORT QWinEventNotifier : public QObject
 {
@@ -52,10 +52,10 @@ public:
 
     bool isEnabled() const;
 
-public slots:
+public Q_SLOTS:
     void setEnabled(bool enable);
 
-signals:
+Q_SIGNALS:
     void activated(HANDLE hEvent);
 
 protected:

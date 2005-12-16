@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/extensions/activeqt/container/qaxbase.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/activeqt/container/qaxbase.cpp -->
 <head>
-    <title>Qt 4.0: QAxBase Class Reference</title>
+    <title>Qt 4.1: QAxBase Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -56,6 +56,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>bool <b><a href="qaxbase.html#control-prop">setControl</a></b> ( const QString &amp; )</li>
 <li><div class="fn"/>void <b><a href="qaxbase.html#setPropertyBag">setPropertyBag</a></b> ( const PropertyBag &amp; <i>bag</i> )</li>
 <li><div class="fn"/>virtual void <b><a href="qaxbase.html#setPropertyWritable">setPropertyWritable</a></b> ( const char * <i>prop</i>, bool <i>ok</i> )</li>
+<li><div class="fn"/>QStringList <b><a href="qaxbase.html#verbs">verbs</a></b> () const</li>
 </ul>
 <a name="signals"></a>
 <h3>Signals</h3>
@@ -152,6 +153,7 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="PropertyBag-typedef"></a>typedef QAxBase::PropertyBag</h3>
+<p>A <a href="qmap.html">QMap</a>&lt;<a href="qstring.html">QString</a>,<a href="qvariant.html">QVariant</a>&gt; that can store properties as name:value pairs.</p>
 <hr />
 <h2>Property Documentation</h2>
 <h3 class="fn"><a name="control-prop"></a>control : <a href="qstring.html">QString</a></h3>
@@ -313,10 +315,14 @@ body { background: #ffffff; color: black; }</style>
         }
     }</pre>
 <p>Use this signal if the event has parameters of unsupported data types. Otherwise, connect directly to the signal <i>name</i>.</p>
+<h3 class="fn"><a name="verbs"></a><a href="qstringlist.html">QStringList</a> QAxBase::verbs () const</h3>
+<p>Returns the list of verbs that the COM object can execute. If the object does not implement IOleObject, or does not support any verbs, then this function returns an empty stringlist.</p>
+<p>Note that the OLE default verbs (OLEIVERB_SHOW etc) are not included in the list.</p>
+<p>This function was introduced in Qt 4.1.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

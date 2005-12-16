@@ -24,9 +24,9 @@
 #ifndef Q3WIDGETSTACK_H
 #define Q3WIDGETSTACK_H
 
-#include "Qt3Support/q3frame.h"
-#include "Qt3Support/q3intdict.h"
-#include "Qt3Support/q3ptrdict.h"
+#include <Qt3Support/q3frame.h>
+#include <Qt3Support/q3intdict.h>
+#include <Qt3Support/q3ptrdict.h>
 
 QT_MODULE(Qt3SupportLight)
 
@@ -55,11 +55,11 @@ public:
 
     void setFrameRect(const QRect &);
 
-signals:
+Q_SIGNALS:
     void aboutToShow(int);
     void aboutToShow(QWidget *);
 
-public slots:
+public Q_SLOTS:
     void raiseWidget(int);
     void raiseWidget(QWidget *);
 
@@ -83,4 +83,4 @@ private:
     Q_DISABLE_COPY(Q3WidgetStack)
 };
 
-#endif // QWIDGETSTACK_H
+#endif // Q3WIDGETSTACK_H

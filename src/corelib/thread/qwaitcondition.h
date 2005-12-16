@@ -24,16 +24,17 @@
 #ifndef QWAITCONDITION_H
 #define QWAITCONDITION_H
 
-#include "QtCore/qglobal.h"
+#include <QtCore/qglobal.h>
 
 #include <limits.h>
 
 QT_MODULE(Core)
 
+#ifndef QT_NO_THREAD
+
 class QWaitConditionPrivate;
 class QMutex;
 
-#ifndef QT_NO_THREAD
 class Q_CORE_EXPORT QWaitCondition
 {
 public:
@@ -50,7 +51,10 @@ private:
 
     QWaitConditionPrivate * d;
 };
+
 #else
+
+class QMutex;
 class Q_CORE_EXPORT QWaitCondition
 {
 public:
@@ -67,5 +71,7 @@ public:
     void wakeOne() {}
     void wakeAll() {}
 };
+
 #endif // QT_NO_THREAD
+
 #endif // QWAITCONDITION_H

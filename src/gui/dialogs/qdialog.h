@@ -24,7 +24,7 @@
 #ifndef QDIALOG_H
 #define QDIALOG_H
 
-#include "QtGui/qwidget.h"
+#include <QtGui/qwidget.h>
 
 QT_MODULE(Gui)
 
@@ -73,7 +73,12 @@ public:
 
     void setResult(int r);
 
-public slots:
+Q_SIGNALS:
+    void finished(int result);
+    void accepted();
+    void rejected();
+
+public Q_SLOTS:
     int exec();
     virtual void done(int);
     virtual void accept();
@@ -95,6 +100,5 @@ protected:
 private:
     Q_DISABLE_COPY(QDialog)
 };
-
 
 #endif // QDIALOG_H

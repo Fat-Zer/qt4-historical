@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/doc/src/qt4-intro.qdoc -->
+<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/doc/src/qt4-intro.qdoc -->
 <head>
-    <title>Qt 4.0: What's New in Qt 4</title>
+    <title>Qt 4.1: What's New in Qt 4</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -25,6 +25,9 @@ body { background: #ffffff; color: black; }</style>
 <h1 align="center">What's New in Qt 4<br /><small></small></h1>
 <p>This document covers the most important differences between Qt 3 and Qt 4. Although it is not intended to be a comprehensive porting guide, it tells you about the most important portability issues that you may encounter. It also explains how to turn on Qt 3 compatibility support.</p>
 <ul><li><a href="#new-technologies">New Technologies</a></li>
+<ul><li><a href="#what-s-new-in-qt-4-1">What's New in Qt 4.1</a></li>
+</ul>
+<li><a href="#significant-improvements">Significant Improvements</a></li>
 <li><a href="#build-system">Build System</a></li>
 <li><a href="#include-syntax">Include Syntax</a></li>
 <li><a href="#namespaces">Namespaces</a></li>
@@ -45,8 +48,26 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="qt4-scribe.html">Scribe</a>, the Unicode text renderer with a public API for performing low-level text layout.</li>
 <li><a href="qt4-mainwindow.html">Mainwindow</a>, a modern action-based mainwindow, toolbar, menu, and docking architecture.</li>
 </ul>
-<p>Qt 4 also includes the new <i>Qt Designer</i> user interface design tool. See the <a href="qt4-designer.html">Qt Designer overview</a> to get started.</p>
-<p>In addition, the following modules have been significantly improved since Qt 3:</p>
+<p>Qt 4 also includes the new <a href="qt4-designer.html"><i>Qt Designer</i></a> user interface design tool.</p>
+<a name="what-s-new-in-qt-4-1"></a>
+<h3>What's New in Qt 4.1</h3>
+<p>Qt 4.1 extends Qt 4's new technologies with the following features:</p>
+<ul>
+<li>Integrated support for rendering <a href="qt4-arthur.html#svg-rendering-support">Scalable Vector Graphics</a> (SVG) drawings and animations.</li>
+<li>A Portable Document Format (PDF) backend for Qt's printing system.</li>
+<li>A <a href="qtestlib-manual.html">unit testing framework</a> for Qt applications and libraries.</li>
+<li>Modules for <a href="qtdesigner.html">extending <i>Qt Designer</i></a> and <a href="qtuitools.html">dynamic user interface building</a>.</li>
+<li>New <a href="model-view-proxy-models.html">proxy models</a> to enable view-specific sorting and filtering of data displayed using item views.</li>
+<li>Support for <a href="install-mac.html">universal binaries</a> on Mac OS X.</li>
+<li>Additional features for developers using <a href="qtopengl.html">OpenGL</a>, such as support for pixel and sample buffers.</li>
+<li>A flexible <a href="qsyntaxhighlighter.html">syntax highlighting class</a> based on the <a href="qt4-scribe.html#scribe">Scribe</a> rich text framework.</li>
+<li>Support for <a href="qnetworkproxy.html">network proxy</a> servers using the SOCKS5 protocol.</li>
+<li>Support for OLE verbs and MIME data handling in <a href="activeqt.html#activeqt">ActiveQt</a>.</li>
+</ul>
+<p>For more information about improvements in the current release, see the <a href="http://www.trolltech.com/developer/changes/changes-4.1.0.html">detailed list of changes</a>.</p>
+<a name="significant-improvements"></a>
+<h2>Significant Improvements</h2>
+<p>The following modules have been significantly improved for Qt 4:</p>
 <ul>
 <li>A fully cross-platform <a href="accessibility.html">accessibility</a> module, with support for the emerging SP-API Unix standard in addition to Microsoft and Mac Accessibility.</li>
 <li>The <a href="qt4-sql.html">SQL module</a>, which is now based on the Interview model/view framework.</li>
@@ -65,12 +86,15 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qtnetwork.html">QtNetwork</a></td><td>Network module</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qtopengl.html">QtOpenGL</a></td><td>OpenGL module</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qtsql.html">QtSql</a></td><td>SQL module</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qtxml.html">QtXml</a></td><td>XML module</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt3support.html">Qt3Support</a></td><td>Qt 3 support classes</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qaxcontainer.html">QAxContainer</a></td><td><a href="activeqt.html#activeqt">ActiveQt</a> client extension</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qaxserver.html">QAxServer</a></td><td><a href="activeqt.html#activeqt">ActiveQt</a> server extension</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qtdesigner.html">QtDesigner</a></td><td>Classes for extending and embedding Qt Designer</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qtsvg.html">QtSvg</a></td><td>SVG rendering classes</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qtxml.html">QtXml</a></td><td>XML module</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt3support.html">Qt3Support</a></td><td>Qt 3 support classes</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qaxcontainer.html">QAxContainer</a></td><td><a href="activeqt.html#activeqt">ActiveQt</a> client extension</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qaxserver.html">QAxServer</a></td><td><a href="activeqt.html#activeqt">ActiveQt</a> server extension</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qtassistant.html">QtAssistant</a></td><td>Classes for launching Qt Assistant</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qtdesigner.html">QtDesigner</a></td><td>Classes for extending and embedding Qt Designer</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qtuitools.html">QtUiTools</a></td><td>Classes for dynamic GUI generation</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qttest.html">QtTest</a></td><td>Tool classes for unit testing</td></tr>
 </table>
 <p><a href="qtcore.html">QtCore</a> contains tool classes like <a href="qstring.html">QString</a>, <a href="qlist.html">QList</a>, and <a href="qfile.html">QFile</a>, as well as kernel classes like <a href="qobject.html">QObject</a> and <a href="qtimer.html">QTimer</a>. The <a href="qapplication.html">QApplication</a> class has been refactored so that it can be used in non-GUI applications. It is split into <a href="qcoreapplication.html">QCoreApplication</a> (in <a href="qtcore.html">QtCore</a>) and <a href="qapplication.html">QApplication</a> (in <a href="qtgui.html">QtGui</a>).</p>
 <p>This split makes it possible to develop server applications using Qt without linking in any unnecessary GUI-related code and without requiring GUI-related system libraries to be present on the target machine (e.g. Xlib on X11, Carbon on Mac OS X).</p>
@@ -106,9 +130,22 @@ body { background: #ffffff; color: black; }</style>
 <a name="qobject-qwidget-constructors"></a>
 <h2>QObject/QWidget Constructors</h2>
 <p>In Qt 4 we have tried to simplify the constructors of <a href="qobject.html">QObject</a>/<a href="qwidget.html">QWidget</a> subclasses. This makes subclassing easier, at the same time as it helps make the Qt library more efficient.</p>
-<p>Constructors no longer take a &quot;const char *name&quot; parameter. If you want to specify a name for a <a href="qobject.html">QObject</a>, you must call <a href="qobject.html#objectName-prop">QObject::setObjectName</a>() after construction. The object name is now a <a href="qstring.html">QString</a>.</p>
+<p>Constructors no longer take a &quot;const char *name&quot; parameter. If you want to specify a name for a <a href="qobject.html">QObject</a>, you must call <a href="qobject.html#objectName-prop">QObject::setObjectName</a>() after construction. The object name is now a <a href="qstring.html">QString</a>. The reasons for this change are:</p>
+<ul>
+<li>Code that used it looked confusing, for example:<pre>&nbsp;   QLabel *label1 = new QLabel(&quot;Hello&quot;, this);
+    QLabel *label2 = new QLabel(this, &quot;Hello&quot;);</pre>
+<p><tt>label1</tt> is a <a href="qlabel.html">QLabel</a> that displays the text &quot;Hello&quot;; <tt>label2</tt> is a <a href="qlabel.html">QLabel</a> with no text, with the object name &quot;Hello&quot;.</p>
+</li>
+<li>From surveys we did, most users didn't use the name, although they blindly followed Qt's convention and provided a &quot;const char *name&quot; in their subclasses's constructors. For example:<pre>&nbsp;   MyWidget::MyWidget(QWidget *parent, const char *name)
+        : QWidget(parent, name)
+    {
+        ...
+    }</pre>
+</li>
+<li>The name parameter was in Qt since version 1, and it always was documented as: &quot;It is not very useful in the current version of Qt, but it will become increasingly important in the future.&quot; Ten years later, it still hasn't fulfilled its promise.</li>
+</ul>
 <p><a href="qwidget.html">QWidget</a>'s <tt>WFlags</tt> data type has been split in two: <a href="qt.html#WindowType-enum">Qt::WindowFlags</a> specifies low-level window flags (the type of window and the frame style), whereas <a href="qt.html#WidgetAttribute-enum">Qt::WidgetAttribute</a> specifies various higher-level attributes about the widget (e.g., WA_StaticContents). Widget attributes can be set at any time using <a href="qwidget.html#setAttribute">QWidget::setAttribute</a>(); low-level window flags can be passed to the <a href="qwidget.html">QWidget</a> constructor or set later using <a href="qwidget.html#setParent">QWidget::setParent</a>(). As a consequence, the constructors of most <a href="qwidget.html">QWidget</a> subclasses don't need to provide a <tt>WFlags</tt> parameter.</p>
-<p>The <i>parent</i> parameter of all <a href="qobject.html">QObject</a> classes in Qt defaults to a null pointer, as it used to do in Qt 1. This enables a style of programming where widgets are created without parents and then inserted in a layout, at which point the layout automatically reparents them.</p>
+<p>The <i>parent</i> parameter of all <a href="qobject.html">QObject</a> classes in Qt defaults to a 0 pointer, as it used to do in Qt 1. This enables a style of programming where widgets are created without parents and then inserted in a layout, at which point the layout automatically reparents them.</p>
 <a name="dynamic-casts"></a>
 <h2>Dynamic Casts</h2>
 <p>Qt 4 provides a qobject_cast&lt;&gt;() function that performs a dynamic cast based on the meta-information generated by moc for <a href="qobject.html">QObject</a> subclasses. Unlike the standard C++ <a href="#dynamic-casts">dynamic_cast</a>&lt;&gt;() construct, qobject_cast&lt;&gt;() works even when RTTI is disabled, and it works correctly across DLL boundaries.</p>
@@ -166,6 +203,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

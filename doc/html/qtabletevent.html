@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/src/gui/kernel/qevent.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/gui/kernel/qevent.cpp -->
 <head>
-    <title>Qt 4.0: QTabletEvent Class Reference</title>
+    <title>Qt 4.1: QTabletEvent Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -27,7 +27,7 @@ body { background: #ffffff; color: black; }</style>
 <h3>Public Types</h3>
 <ul>
 <li><div class="fn"/>enum <b><a href="qtabletevent.html#PointerType-enum">PointerType</a></b> { UnknownPointer, Pen, Cursor, Eraser }</li>
-<li><div class="fn"/>enum <b><a href="qtabletevent.html#TabletDevice-enum">TabletDevice</a></b> { NoDevice, Puck, Stylus, Airbrush, FourDMouse }</li>
+<li><div class="fn"/>enum <b><a href="qtabletevent.html#TabletDevice-enum">TabletDevice</a></b> { NoDevice, Puck, Stylus, Airbrush, FourDMouse, RotationStylus }</li>
 </ul>
 <a name="public-functions"></a>
 <h3>Public Functions</h3>
@@ -89,7 +89,9 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QTabletEvent::Stylus</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">A Stylus.</td></tr>
 <tr><td valign="top"><tt>QTabletEvent::Airbrush</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">An airbrush</td></tr>
 <tr><td valign="top"><tt>QTabletEvent::FourDMouse</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">A 4D Mouse.</td></tr>
+<tr><td valign="top"><tt>QTabletEvent::RotationStylus</tt></td><td align="center" valign="top"><tt>6</tt></td><td valign="top">A special stylus that also knows about rotation (a 6D stylus).</td></tr>
 </table>
+<p>This enum was introduced in Qt 4.1.</p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QTabletEvent"></a>QTabletEvent::QTabletEvent ( <a href="qevent.html#Type-enum">Type</a> <i>type</i>, const <a href="qpoint.html">QPoint</a> &amp; <i>pos</i>, const <a href="qpoint.html">QPoint</a> &amp; <i>globalPos</i>, const <a href="qpointf.html">QPointF</a> &amp; <i>hiResGlobalPos</i>, int <i>device</i>, int <i>pointerType</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>pressure</i>, int <i>xTilt</i>, int <i>yTilt</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>tangentialPressure</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>rotation</i>, int <i>z</i>, <a href="qt.html#KeyboardModifier-enum">Qt::KeyboardModifiers</a> <i>keyState</i>, <a href="qtglobal.html#qint64-typedef">qint64</a> <i>uniqueID</i> )</h3>
@@ -161,6 +163,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

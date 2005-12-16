@@ -25,11 +25,10 @@
 #define WRITEINITIALIZATION_H
 
 #include "treewalker.h"
-
-#include <qpair.h>
-#include <qhash.h>
-#include <qstack.h>
-#include <qtextstream.h>
+#include <QPair>
+#include <QHash>
+#include <QStack>
+#include <QTextStream>
 
 class Driver;
 class Uic;
@@ -86,8 +85,8 @@ private:
     static QString domColor2QString(DomColor *c);
 
     QString pixCall(DomProperty *prop) const;
-    QString trCall(const QString &str, const QString &className) const;
-    QString trCall(const DomString *str, const QString &className) const;
+    QString trCall(const QString &str, const QString &comment = QString()) const;
+    QString trCall(DomString *str) const;
 
     void writeProperties(const QString &varName, const QString &className,
                          const QList<DomProperty*> &lst);
@@ -120,8 +119,9 @@ private:
     void initializeSqlDataBrowser(DomWidget *w);
 
     DomWidget *findWidget(const QString &widgetClass);
-
     DomImage *findImage(const QString &name) const;
+
+    bool isValidObject(const QString &name) const;
 
 private:
     Uic *uic;
@@ -146,6 +146,7 @@ private:
     QHash<QString, QString> m_buttonGroups;
     QHash<QString, DomWidget*> m_registeredWidgets;
     QHash<QString, DomImage*> m_registeredImages;
+    QHash<QString, DomAction*> m_registeredActions;
 
     // layout defaults
     int m_defaultMargin;
@@ -156,6 +157,9 @@ private:
     QString m_generatedClass;
 
     QString m_delayedInitialization;
+    QTextStream delayedOut;
+
+    QString m_refreshInitialization;
     QTextStream refreshOut;
 
     QString m_delayedActionInitialization;

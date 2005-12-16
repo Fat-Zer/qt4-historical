@@ -22,7 +22,6 @@
 ****************************************************************************/
 
 #include "qtimer.h"
-
 #include "qabstracteventdispatcher.h"
 #include "qcoreapplication.h"
 
@@ -287,7 +286,7 @@ void QSingleShotTimer::timerEvent(QTimerEvent *)
         int main(int argc, char *argv[])
         {
             QApplication app(argc, argv);
-            QTimer::singleShot(60000, &app, SLOT(quit()));
+            QTimer::singleShot(600000, &app, SLOT(quit()));
             ...
             return app.exec();
         }

@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/doc/src/examples/simpletreemodel.qdoc -->
+<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/doc/src/examples/simpletreemodel.qdoc -->
 <head>
-    <title>Qt 4.0: Simple Tree Model</title>
+    <title>Qt 4.1: Simple Tree Model Example</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -17,7 +17,7 @@ body { background: #ffffff; color: black; }</style>
 <tr>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Simple Tree Model<br /><small></small></h1>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Simple Tree Model Example<br /><small></small></h1>
 <p>Files:</p>
 <ul>
 <li><a href="itemviews-simpletreemodel-treeitem-cpp.html">itemviews/simpletreemodel/treeitem.cpp</a></li>
@@ -264,13 +264,13 @@ body { background: #ffffff; color: black; }</style>
 <h2>Setting Up the Data in the Model</h2>
 <p>We use the <tt>setupModelData()</tt> function to set up the initial data in the model. This function parses a text file, extracting strings of text to use in the model, and creates item objects that record both the data and the overall model structure. Naturally, this function works in a way that is very specific to this model. We provide the following description of its behavior, and refer the reader to the example code itself for more information.</p>
 <p>We begin with a text file in the following format:</p>
-<pre>&nbsp;   Getting Started                             How to familiarize yourself with Qt Designer
-        Launching Designer                      Running the Qt Designer application
-        The User Interface                      How to interact with Qt Designer
+<pre>&nbsp;   Getting Started                         How to familiarize yourself with Qt Designer
+        Launching Designer                  Running the Qt Designer application
+        The User Interface                  How to interact with Qt Designer
         ...</pre>
-<pre>&nbsp;   Connection Editing Mode                     Connecting widgets together with signals and slots
-        Connecting Objects                      Making connections in Qt Designer
-        Editing Connections                     Changing existing connections</pre>
+<pre>&nbsp;   Connection Editing Mode                 Connecting widgets together with signals and slots
+        Connecting Objects                  Making connections in Qt Designer
+        Editing Connections                 Changing existing connections</pre>
 <p>We process the text file with the following two rules:</p>
 <ul>
 <li>For each pair of strings on each line, create an item (or node) in a tree structure, and place each string in a column of data in the item.</li>
@@ -281,6 +281,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

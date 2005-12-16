@@ -554,6 +554,10 @@ Q3PtrList<Q3NetworkOperation> Q3UrlOperator::copy( const QString &from, const QS
     // prepare some string for later usage
     QString frm = *uFrom;
     QString file = uFrom->fileName();
+
+    if (frm == to + file)
+         return ops;
+    
     file.prepend( "/" );
 
     // uFrom and uTo are deleted when the Q3NetworkProtocol deletes itself via
@@ -913,8 +917,10 @@ void Q3UrlOperator::getNetworkProtocol()
 
 void Q3UrlOperator::deleteNetworkProtocol()
 {
-    delete d->networkProtocol;
-    d->networkProtocol = 0;
+    if (d->networkProtocol) {
+        d->networkProtocol->deleteLater();
+        d->networkProtocol = 0;
+    }
 }
 
 /*!
@@ -1188,4 +1194,5 @@ void Q3UrlOperator::slotItemChanged( Q3NetworkOperation *op )
     }
 }
 
+#include "moc_q3urloperator.cpp"
 #endif // QT_NO_NETWORKPROTOCOL

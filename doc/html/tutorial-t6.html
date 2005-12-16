@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/doc/src/examples/tutorial.qdoc -->
+<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/doc/src/examples/tutorial.qdoc -->
 <head>
-    <title>Qt 4.0: Qt Tutorial 6 - Building Blocks Galore!</title>
+    <title>Qt 4.1: Qt Tutorial 6 - Building Blocks Galore!</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -30,14 +30,8 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><a href="tutorial-t6-main-cpp.html">tutorial/t6/main.cpp</a></li>
 </ul>
-<p align="center"><img src="images/t6.png" alt="Screenshot of tutorial six" /></p><p>This example shows how to encapsulate two widgets into a new component and how easy it is to use many widgets. For the first time, we use a custom widget as a child widget.</p>
-<pre>&nbsp;   /****************************************************************
-    **
-    ** Qt tutorial 6
-    **
-    ****************************************************************/
-
-    #include &lt;QApplication&gt;
+<p align="center"><img src="images/t6.png" alt="Screenshot of Chapter 6" /></p><p>This example shows how to encapsulate two widgets into a new component and how easy it is to use many widgets. For the first time, we use a custom widget as a child widget.</p>
+<pre>&nbsp;   #include &lt;QApplication&gt;
     #include &lt;QFont&gt;
     #include &lt;QGridLayout&gt;
     #include &lt;QLCDNumber&gt;
@@ -56,6 +50,8 @@ body { background: #ffffff; color: black; }</style>
         : QWidget(parent)
     {
         QLCDNumber *lcd = new QLCDNumber(2);
+        lcd-&gt;setSegmentStyle(QLCDNumber::Filled);
+
         QSlider *slider = new QSlider(Qt::Horizontal);
         slider-&gt;setRange(0, 99);
         slider-&gt;setValue(0);
@@ -77,14 +73,15 @@ body { background: #ffffff; color: black; }</style>
     MyWidget::MyWidget(QWidget *parent)
         : QWidget(parent)
     {
-        QPushButton *quit = new QPushButton(&quot;Quit&quot;);
+        QPushButton *quit = new QPushButton(tr(&quot;Quit&quot;));
         quit-&gt;setFont(QFont(&quot;Times&quot;, 18, QFont::Bold));
         connect(quit, SIGNAL(clicked()), qApp, SLOT(quit()));
 
         QGridLayout *grid = new QGridLayout;
-        for (int row = 0; row &lt; 4; ++row) {
-            for (int column = 0; column &lt; 4; ++column) {
-                grid-&gt;addWidget(new LCDRange, row, column);
+        for (int row = 0; row &lt; 3; ++row) {
+            for (int column = 0; column &lt; 3; ++column) {
+                LCDRange *lcdRange = new LCDRange;
+                grid-&gt;addWidget(lcdRange, row, column);
             }
         }
 
@@ -113,6 +110,8 @@ body { background: #ffffff; color: black; }</style>
         : QWidget(parent)
     {
         QLCDNumber *lcd = new QLCDNumber(2);
+        lcd-&gt;setSegmentStyle(QLCDNumber::Filled);
+
         QSlider *slider = new QSlider(Qt::Horizontal);
         slider-&gt;setRange(0, 99);
         slider-&gt;setValue(0);
@@ -134,18 +133,19 @@ body { background: #ffffff; color: black; }</style>
 <pre>&nbsp;   MyWidget::MyWidget(QWidget *parent)
         : QWidget(parent)
     {
-        QPushButton *quit = new QPushButton(&quot;Quit&quot;);
+        QPushButton *quit = new QPushButton(tr(&quot;Quit&quot;));
         quit-&gt;setFont(QFont(&quot;Times&quot;, 18, QFont::Bold));
         connect(quit, SIGNAL(clicked()), qApp, SLOT(quit()));</pre>
 <p>The push button that used to be in what is now <tt>LCDRange</tt> has been separated so that we can have one <b>Quit</b> button and many <tt>LCDRange</tt> objects.</p>
 <pre>&nbsp;       QGridLayout *grid = new QGridLayout;</pre>
-<p>We create a <a href="qwidget.html">QWidget</a> with a <a href="qgridlayout.html">QGridLayout</a> that will contain four columns. The <a href="qgridlayout.html">QGridLayout</a> automatically arranges its widgets in rows and columns; you can specify the row and column numbers when adding widgets to the layout, and <a href="qgridlayout.html">QGridLayout</a> will fit them into the grid.</p>
-<pre>&nbsp;       for (int row = 0; row &lt; 4; ++row) {
-            for (int column = 0; column &lt; 4; ++column) {
-                grid-&gt;addWidget(new LCDRange, row, column);
+<p>We create a <a href="qwidget.html">QWidget</a> with a <a href="qgridlayout.html">QGridLayout</a> that will contain three columns. The <a href="qgridlayout.html">QGridLayout</a> automatically arranges its widgets in rows and columns; you can specify the row and column numbers when adding widgets to the layout, and <a href="qgridlayout.html">QGridLayout</a> will fit them into the grid.</p>
+<pre>&nbsp;       for (int row = 0; row &lt; 3; ++row) {
+            for (int column = 0; column &lt; 3; ++column) {
+                LCDRange *lcdRange = new LCDRange;
+                grid-&gt;addWidget(lcdRange, row, column);
             }
         }</pre>
-<p>We create 16 <tt>LCDRange</tt> widgets, all of which are children of the grid object. The <a href="qgridlayout.html">QGridLayout</a> will arrange them in four columns.</p>
+<p>We create nine <tt>LCDRange</tt> widgets, all of which are children of the grid object, and we arrange them in three rows and three columns.</p>
 <pre>&nbsp;   }</pre>
 <p>That's all.</p>
 <a name="running-the-application"></a>
@@ -163,6 +163,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

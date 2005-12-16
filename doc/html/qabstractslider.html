@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/src/gui/widgets/qabstractslider.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/gui/widgets/qabstractslider.cpp -->
 <head>
-    <title>Qt 4.0: QAbstractSlider Class Reference</title>
+    <title>Qt 4.1: QAbstractSlider Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -50,7 +50,7 @@ body { background: #ffffff; color: black; }</style>
 </td></tr>
 </table>
 <ul>
-<li><div class="fn"/>52 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
+<li><div class="fn"/>54 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
 <li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
 </ul>
 <a name="public-functions"></a>
@@ -82,7 +82,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>int <b><a href="qabstractslider.html#value-prop">value</a></b> () const</li>
 </ul>
 <ul>
-<li><div class="fn"/>184 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -303,13 +303,15 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="sliderChange"></a>void QAbstractSlider::sliderChange ( <a href="qabstractslider.html#SliderChange-enum">SliderChange</a> <i>change</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>Reimplement this virtual function to track slider changes such as <a href="qabstractslider.html#SliderChange-enum">SliderRangeChange</a>, <a href="qabstractslider.html#SliderChange-enum">SliderOrientationChange</a>, <a href="qabstractslider.html#SliderChange-enum">SliderStepsChange</a>, or <a href="qabstractslider.html#SliderChange-enum">SliderValueChange</a>. The default implementation only updates the display and ignores the <i>change</i> parameter.</p>
 <h3 class="fn"><a name="sliderMoved"></a>void QAbstractSlider::sliderMoved ( int <i>value</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This signal is emitted when the slider is dragged by the user, with the new slider <i>value</i> as an argument.</p>
+<p>This signal is emitted when <a href="qabstractslider.html#sliderDown-prop">sliderDown</a> is true and the slider moves. This usually happens when the user is dragging the slider. The <i>value</i> is the new slider position.</p>
 <p>This signal is emitted even when tracking is turned off.</p>
-<p>See also <a href="qabstractslider.html#tracking-prop">setTracking</a>() and <a href="qabstractslider.html#valueChanged">valueChanged</a>().</p>
+<p>See also <a href="qabstractslider.html#tracking-prop">setTracking</a>(), <a href="qabstractslider.html#valueChanged">valueChanged</a>(), <a href="qabstractslider.html#sliderDown-prop">isSliderDown</a>(), <a href="qabstractslider.html#sliderPressed">sliderPressed</a>(), and <a href="qabstractslider.html#sliderReleased">sliderReleased</a>().</p>
 <h3 class="fn"><a name="sliderPressed"></a>void QAbstractSlider::sliderPressed ()&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This signal is emitted when the user presses the slider with the mouse.</p>
+<p>This signal is emitted when the user presses the slider with the mouse, or programmatically when setSliderDown(true) is called.</p>
+<p>See also <a href="qabstractslider.html#sliderReleased">sliderReleased</a>(), <a href="qabstractslider.html#sliderMoved">sliderMoved</a>(), and <a href="qabstractslider.html#sliderDown-prop">isSliderDown</a>().</p>
 <h3 class="fn"><a name="sliderReleased"></a>void QAbstractSlider::sliderReleased ()&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This signal is emitted when the user releases the slider with the mouse.</p>
+<p>This signal is emitted when the user releases the slider with the mouse, or programmatically when setSliderDown(false) is called.</p>
+<p>See also <a href="qabstractslider.html#sliderPressed">sliderPressed</a>(), <a href="qabstractslider.html#sliderMoved">sliderMoved</a>(), and <a href="qabstractslider.html#sliderDown-prop">sliderDown</a>.</p>
 <h3 class="fn"><a name="triggerAction"></a>void QAbstractSlider::triggerAction ( <a href="qabstractslider.html#SliderAction-enum">SliderAction</a> <i>action</i> )</h3>
 <p>Triggers a slider <i>action</i>. Possible actions are <a href="qabstractslider.html#SliderAction-enum">SliderSingleStepAdd</a>, <a href="qabstractslider.html#SliderAction-enum">SliderSingleStepSub</a>, <a href="qabstractslider.html#SliderAction-enum">SliderPageStepAdd</a>, <a href="qabstractslider.html#SliderAction-enum">SliderPageStepSub</a>, <a href="qabstractslider.html#SliderAction-enum">SliderToMinimum</a>, <a href="qabstractslider.html#SliderAction-enum">SliderToMaximum</a>, and <a href="qabstractslider.html#SliderAction-enum">SliderMove</a>.</p>
 <p>See also <a href="qabstractslider.html#actionTriggered">actionTriggered</a>().</p>
@@ -319,6 +321,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

@@ -35,9 +35,10 @@
 // We mean it.
 //
 
-#include <private/qabstractitemview_p.h>
+#include "private/qabstractitemview_p.h"
 
 #ifndef QT_NO_TABLEVIEW
+
 class QTableViewPrivate : public QAbstractItemViewPrivate
 {
     Q_DECLARE_PUBLIC(QTableView)
@@ -45,17 +46,27 @@ public:
     QTableViewPrivate()
         : showGrid(true), gridStyle(Qt::SolidLine),
           rowSectionAnchor(0), columnSectionAnchor(0),
+          columnResizeTimerID(0), rowResizeTimerID(0),
           horizontalHeader(0), verticalHeader(0) {}
     void init();
     void updateVerticalScrollbar();
     void updateHorizontalScrollbar();
+    void trimHiddenSelections(QItemSelectionRange *range) const;
+    int firstVisualIndex(int y) const;
 
     bool showGrid;
     Qt::PenStyle gridStyle;
     int rowSectionAnchor;
     int columnSectionAnchor;
+    int columnResizeTimerID;
+    int rowResizeTimerID;
+    QList<int> columnsToUpdate;
+    QList<int> rowsToUpdate;
     QHeaderView *horizontalHeader;
     QHeaderView *verticalHeader;
+
 };
+
 #endif // QT_NO_TABLEVIEW
+
 #endif // QTABLEVIEW_P_H

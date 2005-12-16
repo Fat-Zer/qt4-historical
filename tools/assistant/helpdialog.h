@@ -29,15 +29,15 @@
 #include "helpwindow.h"
 #include "docuparser.h"
 
-#include <qlist.h>
-#include <qpair.h>
-#include <qlistwidget.h>
-#include <qtreewidget.h>
-#include <qmap.h>
-#include <qstringlist.h>
-#include <qvalidator.h>
-#include <qmenu.h>
-#include <qhash.h>
+#include <QList>
+#include <QPair>
+#include <QListWidget>
+#include <QTreeWidget>
+#include <QMap>
+#include <QStringList>
+#include <QValidator>
+#include <QMenu>
+#include <QHash>
 
 class QProgressBar;
 class MainWindow;
@@ -155,4 +155,4 @@ private:
     QAction *actionOpenLinkInNewTab;
 };
 
-#endif
+#endif // HELPDIALOG_H

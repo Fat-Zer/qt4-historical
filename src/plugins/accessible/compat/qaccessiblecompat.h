@@ -24,7 +24,7 @@
 #ifndef QACCESSIBLECOMPAT_H
 #define QACCESSIBLECOMPAT_H
 
-#include <qaccessiblewidget.h>
+#include <QtGui/qaccessiblewidget.h>
 
 #ifndef QT_NO_ACCESSIBILITY
 

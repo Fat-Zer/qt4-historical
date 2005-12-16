@@ -24,7 +24,7 @@
 #ifndef QCLIPBOARD_H
 #define QCLIPBOARD_H
 
-#include "QtCore/qobject.h"
+#include <QtCore/qobject.h>
 
 QT_MODULE(Gui)
 
@@ -70,11 +70,11 @@ public:
     void setImage(const QImage &, Mode mode  = Clipboard);
     void setPixmap(const QPixmap &, Mode mode  = Clipboard);
 
-signals:
+Q_SIGNALS:
     void selectionChanged();
     void dataChanged();
 
-private slots:
+private Q_SLOTS:
     void ownerDestroyed();
 
 protected:

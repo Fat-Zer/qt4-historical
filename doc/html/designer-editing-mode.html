@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/doc/src/designer-manual.qdoc -->
+<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/doc/src/designer-manual.qdoc -->
 <head>
-    <title>Qt 4.0: Qt Designer's Form Editing Mode</title>
+    <title>Qt 4.1: Qt Designer's Widget Editing Mode</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -25,8 +25,8 @@ body { background: #ffffff; color: black; }</style>
 [<a href="designer-manual.html">Contents</a>]
 [Next: <a href="designer-using-containers.html">Using Containers in Qt Designer</a>]
 </p>
-<h1 align="center">Qt Designer's Form Editing Mode<br /><small></small></h1>
-<p align="center"><img src="images/designer-editing-mode.png" /></p><p>In <i>Qt Designer</i>'s form editing mode, objects can be dragged from the main window's toolbox to a form, edited, resized, dragged around on the form, and even dragged between forms. Their properties can be modified interactively, so that changes can be seen immediately. The editing interface is intuitive for simple operations, yet still supports Qt's powerful layout facilities.</p>
+<h1 align="center">Qt Designer's Widget Editing Mode<br /><small></small></h1>
+<p align="center"><img src="images/designer-editing-mode.png" /></p><p>In <i>Qt Designer</i>'s Widget Editing Mode, objects can be dragged from the main window's widget box to a form, edited, resized, dragged around on the form, and even dragged between forms. Their properties can be modified interactively, so that changes can be seen immediately. The editing interface is intuitive for simple operations, yet it still supports Qt's powerful layout facilities.</p>
 <ul><li><a href="#managing-forms">Managing Forms</a></li>
 <li><a href="#editing-a-form">Editing a Form</a></li>
 <li><a href="#the-property-editor">The Property Editor</a></li>
@@ -41,14 +41,14 @@ body { background: #ffffff; color: black; }</style>
 <a name="managingforms"></a><a name="managing-forms"></a>
 <h2>Managing Forms</h2>
 <p><i>Qt Designer</i> allows you to create and edit new forms (open the <b>File</b> menu and select <b>New Form...</b> or press <b>Ctrl N</b>). Existing forms can also be edited (open the <b>File</b> menu and select <b>Open Form...</b> or press <b>Ctrl O</b>).</p>
-<p>At any point, it is possible to save a form by selecting the <b>Save Form As...</b> option from the <b>File</b> menu. The .ui files saved by <i>Qt Designer</i> contain information about the objects used, and record the details of any signal and slot connections between them.</p>
+<p>At any point, it is possible to save a form by selecting the <b>Save Form As...</b> option from the <b>File</b> menu. The <tt>.ui</tt> files saved by <i>Qt Designer</i> contain information about the objects used, and record the details of any signal and slot connections between them.</p>
 <a name="editingaform"></a><a name="editing-a-form"></a>
 <h2>Editing a Form</h2>
-<p>By default, new forms are opened in editing mode. If <i>Qt Designer</i> is in another mode, you can enter editing mode by opening the <b>Edit</b> menu and selecting <b>Edit Widgets</b>, or by pressing the <b>F3</b> key.</p>
-<p>Objects are added to the form by dragging them from the main toolbox and dropping them in the desired location on the form. Once there, they can be moved around simply by dragging them. Objects can be selected by clicking on them using the left mouse button.</p>
-<p>The toolbox contains objects in a number of different categories, all of which can be simply placed on the form as required. The only objects that require a little more preparation are the <i>Container</i> widgets. These are described in more detail in the chapter on <a href="designer-using-containers.html">Using Containers</a>.</p>
+<p>By default, new forms are opened in widget editing mode. If <i>Qt Designer</i> is in another mode, you can enter widget editing mode by opening the <b>Edit</b> menu and selecting <b>Edit Widgets</b>, or by pressing the <b>F3</b> key.</p>
+<p>Objects are added to the form by dragging them from the main widget box and dropping them in the desired location on the form. Once there, they can be moved around simply by dragging them, or by using the cursor keys. Pressing the <b>Ctrl</b> key at the same time moves the selected widget pixel by pixel, while using the cursor keys alone make the selected widget snap to the grid when it is moved. Objects can be selected by clicking on them using the left mouse button. You can also use the <b>Tab</b> key to change the selection.</p>
+<p>The widget box contains objects in a number of different categories, all of which can be simply placed on the form as required. The only objects that require a little more preparation are the <b>Container</b> widgets. These are described in more detail in the <a href="designer-using-containers.html">Using Containers in Qt Designer</a> chapter.</p>
 <a name="selectingobjects"></a><table align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" bgcolor="#f0f0f0"><td><img src="images/designer-selecting-widget.png" /></td><td><b>Selecting objects</b><p>Objects on the form are selected by clicking on them with the left mouse button. When an object is selected, resize handles are shown at each corner and at the midpoint of each side, indicating that it can be resized.</p>
+<tr valign="top" bgcolor="#f0f0f0"><td><img src="images/designer-selecting-widget.png" /></td><td><b>Selecting Objects</b><p>Objects on the form are selected by clicking on them with the left mouse button. When an object is selected, resize handles are shown at each corner and at the midpoint of each side, indicating that it can be resized.</p>
 <p>If more than one object is selected, the current object will be displayed with resize handles that are colored differently to the others.</p>
 </td></tr>
 </table>
@@ -59,13 +59,13 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#e0e0e0"><td>Copy</td><td><b>Ctrl+C</b></td><td>Copies the selected objects to the clipboard.</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>Paste</td><td><b>Ctrl+V</b></td><td>Pastes the objects in the clipboard onto the form.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>Delete</td><td><b>Delete</b></td><td>Deletes the selected objects.</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>Clone object</td><td><b>Ctrl+drag</b> (left mouse button)</td><td>Makes a copy of the selected object or group of objects.</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>Clone object</td><td><b>Ctrl+drag</b> (leftmouse button)</td><td>Makes a copy of the selected object or group of objects.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>Preview</td><td><b>Ctrl+R</b></td><td>Shows a preview of the form.</td></tr>
 </table>
-<p>All the above actions (apart from cloning) can be accessed via both the <b>Edit</b> and the form's context menu. These menus also provide a <b>Select All</b> function to select all the objects on the form. They also provide functions for laying out objects.</p>
+<p>All the above actions (apart from cloning) can be accessed via both the <b>Edit</b> menu and the form's context menu. These menus also provide a <b>Select All</b> function to select all the objects on the form. They also provide functions for laying out objects.</p>
 <p>Widgets are not unique objects; you can make as many copies of them as you need. To quickly duplicate a widget, you can clone it by holding down the <b>Ctrl</b> key and dragging it. This allows widgets to be copied and placed on the form much more quickly than with clipboard operations.</p>
 <a name="draganddrop"></a><table align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" bgcolor="#f0f0f0"><td><img src="images/designer-dragging-onto-form.png" /></td><td><b>Drag and drop</b><p><i>Qt Designer</i> makes extensive use of the drag and drop facilities provided by Qt. Widgets can be dragged from the toolbox and dropped onto the form.</p>
+<tr valign="top" bgcolor="#f0f0f0"><td><img src="images/designer-dragging-onto-form.png" /></td><td><b>Drag and Drop</b><p><i>Qt Designer</i> makes extensive use of the drag and drop facilities provided by Qt. Widgets can be dragged from the widget box and dropped onto the form.</p>
 <p>Widgets can also be &quot;cloned&quot; on the form: Holding down <b>Ctrl</b> and dragging the widget creates a copy of the widget that can be dragged to a new position.</p>
 </td></tr>
 </table>
@@ -74,32 +74,32 @@ body { background: #ffffff; color: black; }</style>
 <h2>The Property Editor</h2>
 <p>The Property Editor always displays the properties of the currently selected object on the form. The properties available depend on the object being edited, but all of the widgets provided have common properties such as <tt>objectName</tt> (the object's internal name) and <tt>enabled</tt> (whether it can be interacted with).</p>
 <a name="editingproperties"></a><table align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" bgcolor="#f0f0f0"><td><img src="images/designer-property-editor.png" /></td><td><b>Editing properties</b><p>The Property Editor uses standard Qt input widgets to manage the properties of objects on the form. Textual properties are shown in line edits, integer properties are displayed in spinboxes, and compound properties such as colors and sizes are presented in drop-down lists of input widgets.</p>
+<tr valign="top" bgcolor="#f0f0f0"><td><img src="images/designer-property-editor.png" /></td><td><b>Editing Properties</b><p>The property editor uses standard Qt input widgets to manage the properties of objects on the form. Textual properties are shown in line edits, integer properties are displayed in spinboxes, and compound properties such as colors and sizes are presented in drop-down lists of input widgets.</p>
 </td></tr>
 </table>
 <a name="the-object-inspector"></a>
 <h2>The Object Inspector</h2>
 <p>The Object Inspector shows an up-to-date hierarchical list of the objects (widgets, layouts, spacers, and other objects) on the form that is currently being edited.</p>
 <a name="theobjectinspector"></a><table align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" bgcolor="#f0f0f0"><td><img src="images/designer-object-inspector.png" /></td><td><b>The Object Inspector</b><p>The Object Inspector displays a hierarchical list of all the objects on the form that is currently being edited. To show the child objects of a container widget or a layout, click the &quot;+&quot; handle next to the object label.</p>
+<tr valign="top" bgcolor="#f0f0f0"><td><img src="images/designer-object-inspector.png" /></td><td><b>The Object Inspector</b><p>The Object Inspector displays a hierarchical list of all the objects on the form that is currently being edited. To show the child objects of a container widget or a layout, click the <b>+</b> handle next to the object label.</p>
 <p>Each object on a form can be selected by double clicking on the corresponding item in the Object Inspector. This feature can be useful if you have many overlapping objects.</p>
 </td></tr>
 </table>
 <a name="layouts"></a><a name="layouts"></a>
 <h2>Layouts</h2>
-<p>Before the form can be used the objects on the form need to be placed into layouts, this ensures that they will be displayed properly when the form is previewed or deployed in an application. Placing objects in a layout also ensures that they will be resized correctly when the form is resized.</p>
+<p>Before the form can be used the objects on the form need to be placed into layouts. This ensures that they will be displayed properly when the form is previewed or deployed in an application. Placing objects in a layout also ensures that they will be resized correctly when the form is resized.</p>
 <a name="applying-and-breaking-layouts"></a>
 <h3>Applying and Breaking Layouts</h3>
-<p>The simplest way to manage objects is to apply a layout to a group of existing objects. This is achieved by selecting the objects that you need to manage and applying one of the standard layouts from the main toolbar, the <b>Edit</b> menu, or the form's context menu.</p>
-<p>Once widgets have been inserted into a layout, it is not possible to move and resize them individually because the layout itself controls the geometry of each widget within it, taking account of the hints provided by spacers. Instead, you must either break the layout (<b>Ctrl+B</b> or <b>Break Layout</b>) and adjust each object's geometry manually, or you can influence the widget's geometry by resizing the layout. You can also add and remove spacers from the layout to influence the geometries of the widgets.</p>
+<p>The simplest way to manage objects is to apply a layout to a group of existing objects. This is achieved by selecting the objects that you need to manage and applying one of the standard layouts using the main toolbar, the <b>Form</b> menu, or the form's context menu.</p>
+<p>Once widgets have been inserted into a layout, it is not possible to move and resize them individually because the layout itself controls the geometry of each widget within it, taking account of the hints provided by spacers. Instead, you must either break the layout and adjust each object's geometry manually, or you can influence the widget's geometry by resizing the layout. To break the layout you can press <b>Ctrl+B</b> or choose <b>Break Layout</b> from the form's context menu, the <b>Form</b> menu or the main toolbar. You can also add and remove spacers from the layout to influence the geometries of the widgets.</p>
 <a name="insertingobjectsintoalayout"></a><table align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" bgcolor="#f0f0f0"><td><img src="images/designer-layout-inserting.png" /></td><td><b>Inserting objects into a layout</b><p>Objects can be inserted into an existing layout by dragging them from their current positions and dropping them at the required location. A blue cursor is displayed in the layout as an object is dragged over it to indicate where the object will be added.</p>
+<tr valign="top" bgcolor="#f0f0f0"><td><img src="images/designer-layout-inserting.png" /></td><td><b>Inserting Objects into a Layout</b><p>Objects can be inserted into an existing layout by dragging them from their current positions and dropping them at the required location. A blue cursor is displayed in the layout as an object is dragged over it to indicate where the object will be added.</p>
 </td></tr>
 </table>
 <p>The form's top level layout can be set by clearing the selection (click the left mouse button on the form itself) and applying a layout.</p>
 <a name="hoizontalandverticallayouts"></a><a name="horizontal-and-vertical-layouts"></a>
 <h3>Horizontal and Vertical Layouts</h3>
-<p>The simplest way to arrange objects on a form is to place them in a horizontal or vertical layout. For example, the dialog shown at the beginning of this chapter contains two push buttons and a spacer that can be placed in a horizontal layout; this makes sure that the buttons remain next to each other when more layouts are added to the dialog. In the same way, vertical layouts ensure that each of the widgets within are aligned horizontally.</p>
+<p>The simplest way to arrange objects on a form is to place them in a horizontal or vertical layout. For example, the dialog shown at the beginning of this chapter contains two push buttons and a spacer that are placed in a horizontal layout; this makes sure that the buttons remain next to each other when more layouts are added to the dialog. In the same way, vertical layouts ensure that each of the widgets within are aligned horizontally.</p>
 <p>Horizontal and vertical layouts can be combined, and nested to any depth. However, if you need more control over the placement of objects, you should consider using the grid layout.</p>
 <a name="thegridlayout"></a><a name="the-grid-layout"></a>
 <h3>The Grid Layout</h3>
@@ -117,6 +117,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

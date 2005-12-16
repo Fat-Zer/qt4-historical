@@ -30,33 +30,6 @@
 #include <qdebug.h>
 
 // #### stil missing: identify invalid character combinations
-static bool hebrew_shape(QShaperItem *item)
-{
-    Q_ASSERT(item->script == QUnicodeTables::Hebrew);
-
-#if defined(QT_HAVE_FREETYPE) && !defined(QT_NO_FREETYPE)
-    QOpenType *openType = item->font->openType();
-
-    if (openType && openType->supportsScript(item->script)) {
-        int nglyphs = item->num_glyphs;
-        if (!item->font->stringToCMap(item->string->unicode()+item->from, item->length, item->glyphs, &item->num_glyphs, QFlag(item->flags)))
-            return false;
-        heuristicSetGlyphAttributes(item);
-        openType->init(item);
-
-        openType->applyGSUBFeature(FT_MAKE_TAG('c', 'c', 'm', 'p'));
-        // Uniscribe also defines dlig for Hebrew, but we leave this out for now, as it's mostly
-        // ligatures one does not want in modern Hebrew (as lam-alef ligatures).
-
-        openType->applyGPOSFeatures();
-        item->num_glyphs = nglyphs;
-        return openType->appendTo(item);
-    }
-#endif
-    return basic_shape(item);
-}
-
-// #### stil missing: identify invalid character combinations
 static bool syriac_shape(QShaperItem *item)
 {
     Q_ASSERT(item->script == QUnicodeTables::Syriac);
@@ -79,16 +52,12 @@ static bool thaana_shape(QShaperItem *item)
     QOpenType *openType = item->font->openType();
 
     if (openType && openType->supportsScript(item->script)) {
-        int nglyphs = item->num_glyphs;
+        openType->selectScript(QUnicodeTables::Thaana);
         if (!item->font->stringToCMap(item->string->unicode()+item->from, item->length, item->glyphs, &item->num_glyphs, QFlag(item->flags)))
             return false;
         heuristicSetGlyphAttributes(item);
-        openType->init(item);
-
-        // thaana only uses positioning features
-        openType->applyGPOSFeatures();
-        item->num_glyphs = nglyphs;
-        return openType->appendTo(item);
+        openType->shape(item);
+        return openType->positionAndAdd(item);
     }
 #endif
     return basic_shape(item);
@@ -389,7 +358,7 @@ static const unsigned char indicForms[0xe00-0x900] = {
     Matra, Halant, Invalid, Invalid,
 
     Invalid, Invalid, Invalid, Invalid,
-    Invalid, LengthMark, LengthMark, Invalid,
+    Invalid, LengthMark, Matra, Invalid,
     Invalid, Invalid, Invalid, Invalid,
     Invalid, Invalid, Invalid, Invalid,
 
@@ -1160,11 +1129,95 @@ static inline void splitMatra(unsigned short *reordered, int matra, int &len, in
     len++;
 }
 
+enum IndicProperties {
+    // these two are already defined
+//     CcmpProperty = 0x1, 
+//     InitProperty = 0x2,
+    NuktaProperty = 0x4,
+    AkhantProperty = 0x8,
+    RephProperty = 0x10,
+    PreFormProperty = 0x20,
+    BelowFormProperty = 0x40,
+    AboveFormProperty = 0x80, 
+    HalfFormProperty = 0x100,
+    PostFormProperty = 0x200,
+    VattuProperty = 0x400,
+    PreSubstProperty = 0x800,
+    BelowSubstProperty = 0x1000,
+    AboveSubstProperty = 0x2000,
+    PostSubstProperty = 0x4000,
+    HalantProperty = 0x8000, 
+    CligProperty = 0x10000
+};
+
+#if defined(QT_HAVE_FREETYPE) && !defined(QT_NO_FREETYPE)
+static const QOpenType::Features indic_features[] = {
+    { FT_MAKE_TAG('c', 'c', 'm', 'p'), CcmpProperty }, 
+    { FT_MAKE_TAG('i', 'n', 'i', 't'), InitProperty },
+    { FT_MAKE_TAG('n', 'u', 'k', 't'), NuktaProperty },
+    { FT_MAKE_TAG('a', 'k', 'h', 'n'), AkhantProperty },
+    { FT_MAKE_TAG('r', 'p', 'h', 'f'), RephProperty },
+    { FT_MAKE_TAG('b', 'l', 'w', 'f'), BelowFormProperty },
+    { FT_MAKE_TAG('h', 'a', 'l', 'f'), HalfFormProperty },
+    { FT_MAKE_TAG('p', 's', 't', 'f'), PostFormProperty },
+    { FT_MAKE_TAG('v', 'a', 't', 'u'), VattuProperty },
+    { FT_MAKE_TAG('p', 'r', 'e', 's'), PreSubstProperty },
+    { FT_MAKE_TAG('b', 'l', 'w', 's'), BelowSubstProperty },
+    { FT_MAKE_TAG('a', 'b', 'v', 's'), AboveSubstProperty },
+    { FT_MAKE_TAG('p', 's', 't', 's'), PostSubstProperty },
+    { FT_MAKE_TAG('h', 'a', 'l', 'n'), HalantProperty }, 
+    { 0, 0 }
+};
+#endif
+
 // #define INDIC_DEBUG
 #ifdef INDIC_DEBUG
 #define IDEBUG qDebug
 #else
 #define IDEBUG if(0) qDebug
+#endif
+
+#ifdef INDIC_DEBUG
+static QString propertiesToString(int properties)
+{
+    QString res;
+    properties = ~properties;
+    if (properties & CcmpProperty)
+        res += "Ccmp ";
+    if (properties & InitProperty)
+        res += "Init ";
+    if (properties & NuktaProperty)
+        res += "Nukta ";
+    if (properties & AkhantProperty)
+        res += "Akhant ";
+    if (properties & RephProperty)
+        res += "Reph ";
+    if (properties & PreFormProperty)
+        res += "PreForm ";
+    if (properties & BelowFormProperty)
+        res += "BelowForm ";
+    if (properties & AboveFormProperty)
+        res += "AboveForm ";
+    if (properties & HalfFormProperty)
+        res += "HalfForm ";
+    if (properties & PostFormProperty)
+        res += "PostForm ";
+    if (properties & VattuProperty)
+        res += "Vattu ";
+    if (properties & PreSubstProperty)
+        res += "PreSubst ";
+    if (properties & BelowSubstProperty)
+        res += "BelowSubst ";
+    if (properties & AboveSubstProperty)
+        res += "AboveSubst ";
+    if (properties & PostSubstProperty)
+        res += "PostSubst ";
+    if (properties & HalantProperty)
+        res += "Halant ";
+    if (properties & CligProperty)
+        res += "Clig ";
+    return res;
+}
 #endif
 
 static bool indic_shape_syllable(QOpenType *openType, QShaperItem *item, bool invalid)
@@ -1243,8 +1296,6 @@ static bool indic_shape_syllable(QOpenType *openType, QShaperItem *item, bool in
 
             int lastConsonant = 0;
             int matra = -1;
-            int skipped = 0;
-            Position pos = Post;
             // we remember:
             // * the last consonant since we need it for rule 2
             // * the matras position for rule 3 and 4
@@ -1275,19 +1326,19 @@ static bool indic_shape_syllable(QOpenType *openType, QShaperItem *item, bool in
                         matra = i;
                 }
             }
+            int skipped = 0;
+            Position pos = Post;
             for (i = len-1; i > base; i--) {
-                if (position[i] != Consonant
-                    && (position[i] != Control || script == QUnicodeTables::Kannada))
+                if (position[i] != Consonant && (position[i] != Control || script == QUnicodeTables::Kannada))
                     continue;
 
                 Position charPosition = indic_position(uc[i]);
                 if (pos == Post && charPosition == Post) {
-                    pos = Below;
+                    pos = Post;
                 } else if ((pos == Post || pos == Below) && charPosition == Below) {
-                    if (script != QUnicodeTables::Kannada && script != QUnicodeTables::Telugu)
-                        pos = None;
                     if (script == QUnicodeTables::Devanagari || script == QUnicodeTables::Gujarati)
                         base = i;
+                    pos = Below;
                 } else {
                     base = i;
                     break;
@@ -1306,12 +1357,18 @@ static bool indic_shape_syllable(QOpenType *openType, QShaperItem *item, bool in
             // If the base consonant is not the last one, Uniscribe
             // moves the halant from the base consonant to the last
             // one.
-            if (lastConsonant > base && uc[base+1] == halant
-                && (script != QUnicodeTables::Telugu || lastConsonant == len - 1 || uc[lastConsonant+1] != halant)) {
-                IDEBUG("    moving halant from %d to %d!", base+1, lastConsonant);
-                for (i = base+1; i < lastConsonant; i++)
-                    uc[i] = uc[i+1];
-                uc[lastConsonant] = halant;
+            if (lastConsonant > base) {
+                int halantPos = 0;
+                if (uc[base+1] == halant)
+                    halantPos = base + 1;
+                else if (uc[base+1] == nukta && uc[base+2] == halant)
+                    halantPos = base + 2;
+                if (halantPos > 0) {
+                    IDEBUG("    moving halant from %d to %d!", base+1, lastConsonant);
+                    for (i = halantPos; i < lastConsonant; i++)
+                        uc[i] = uc[i+1];
+                    uc[lastConsonant] = halant;
+                }
             }
 
             // Rule 3:
@@ -1469,16 +1526,16 @@ static bool indic_shape_syllable(QOpenType *openType, QShaperItem *item, bool in
 
     }
 
-    int nglyphs = item->num_glyphs;
-    if (!item->font->stringToCMap((const QChar *)reordered.data(), len, item->glyphs, &item->num_glyphs, QFlag(item->flags)))
-        return false;
-
     if (reph > 0) {
         // recalculate reph, it might have changed.
         for (i = base+1; i < len; ++i)
             if (reordered[i] == ra)
                 reph = i;
     }
+    
+    if (!item->font->stringToCMap((const QChar *)reordered.data(), len, item->glyphs, &item->num_glyphs, QFlag(item->flags)))
+        return false;
+
 
     IDEBUG("  base=%d, reph=%d", base, reph);
     IDEBUG("reordered:");
@@ -1489,8 +1546,6 @@ static bool indic_shape_syllable(QOpenType *openType, QShaperItem *item, bool in
         item->glyphs[i].attributes.zeroWidth = false;
         IDEBUG("    %d: %4x", i, reordered[i]);
     }
-    item->glyphs[0].attributes.clusterStart = true;
-
 
     // now we have the syllable in the right order, and can start running it through open type.
 
@@ -1502,42 +1557,47 @@ static bool indic_shape_syllable(QOpenType *openType, QShaperItem *item, bool in
     if (openType) {
 
         // we need to keep track of where the base glyph is for some
-        // scripts and abuse the logcluster feature for this.  This
+        // scripts and use the cluster feature for this.  This
         // also means we have to correct the logCluster output from
         // the open type engine manually afterwards.  for indic this
         // is rather simple, as all chars just point to the first
         // glyph in the syllable.
-        QVarLengthArray<unsigned short> logClusters(len);
-        QVarLengthArray<bool> where(len);
-        memset(where.data(), 0, len*sizeof(bool));
+        QVarLengthArray<unsigned short> clusters(len);
+        QVarLengthArray<unsigned int> properties(len);
+
         for (i = 0; i < len; ++i)
-            logClusters[i] = i;
+            clusters[i] = i;
 
-        item->log_clusters = logClusters.data();
-        openType->init(item);
+        // features we should always apply
+        for (i = 0; i < len; ++i)
+            properties[i] = ~(CcmpProperty
+                              | NuktaProperty
+                              | VattuProperty
+                              | PreSubstProperty
+                              | BelowSubstProperty
+                              | AboveSubstProperty
+                              | HalantProperty
+                              | PositioningProperties);
 
-        // substitutions
+        // Ccmp always applies
+        // Init
+        if (item->from == 0
+            || !(item->string->unicode()[item->from-1].isLetter() ||  item->string->unicode()[item->from-1].isMark()))
+            properties[0] &= ~InitProperty;
 
-        openType->applyGSUBFeature(FT_MAKE_TAG('c', 'c', 'm', 'p'));
-
- 	where[0] = (item->from == 0
-                    || !(item->string->unicode()[item->from-1].isLetter() ||  item->string->unicode()[item->from-1].isMark()));
-        openType->applyGSUBFeature(FT_MAKE_TAG('i', 'n', 'i', 't'), where.data());
-        openType->applyGSUBFeature(FT_MAKE_TAG('n', 'u', 'k', 't'));
-
+        // Nukta always applies
+        // Akhant
         for (i = 0; i <= base; ++i)
-            where[i] = true;
-        openType->applyGSUBFeature(FT_MAKE_TAG('a', 'k', 'h', 'n'), where.data());
-
-        memset(where.data(), 0, len*sizeof(bool));
+            properties[i] &= ~AkhantProperty;
+        // Reph
         if (reph >= 0) {
-            where[reph] = where[reph+1] = true;
-            openType->applyGSUBFeature(FT_MAKE_TAG('r', 'p', 'h', 'f'), where.data());
-            where[reph] = where[reph+1] = false;
+            properties[reph] &= ~RephProperty;
+            properties[reph+1] &= ~RephProperty;
         }
-
+        // BelowForm
         for (i = base+1; i < len; ++i)
-            where[i] = true;
+            properties[i] &= ~BelowFormProperty;
+
         if (script == QUnicodeTables::Devanagari || script == QUnicodeTables::Gujarati) {
             // vattu glyphs need this aswell
             bool vattu = false;
@@ -1546,83 +1606,84 @@ static bool indic_shape_syllable(QOpenType *openType, QShaperItem *item, bool in
                     vattu = (!vattu && reordered[i] == ra);
                     if (vattu) {
                         IDEBUG("forming vattu ligature at %d", i);
-                        where[i] = where[i+1] = true;
+                        properties[i] &= ~BelowFormProperty;
+                        properties[i+1] &= ~BelowFormProperty;
                     }
                 }
             }
         }
-        openType->applyGSUBFeature(FT_MAKE_TAG('b', 'l', 'w', 'f'), where.data());
-        memset(where.data(), 0, len*sizeof(bool));
+        // HalfFormProperty
         for (i = 0; i < base; ++i)
-            where[i] = true;
+            properties[i] &= ~HalfFormProperty;
         if (control) {
             for (i = 2; i < len; ++i) {
                 if (reordered[i] == 0x200d /* ZWJ */) {
-                    where[i-1] = true;
-                    where[i-2] = true;
+                    properties[i-1] &= ~HalfFormProperty;
+                    properties[i-2] &= ~HalfFormProperty;
                 } else if (reordered[i] == 0x200c /* ZWNJ */) {
-                    where[i-1] = false;
-                    where[i-2] = false;
+                    properties[i-1] &= ~HalfFormProperty;
+                    properties[i-2] &= ~HalfFormProperty;
                 }
             }
         }
-        openType->applyGSUBFeature(FT_MAKE_TAG('h', 'a', 'l', 'f'), where.data());
-        memset(where.data(), 0, len*sizeof(bool));
+        // PostFormProperty
         for (i = base+1; i < len; ++i)
-            where[i] = true;
-        openType->applyGSUBFeature(FT_MAKE_TAG('p', 's', 't', 'f'), where.data());
-        openType->applyGSUBFeature(FT_MAKE_TAG('v', 'a', 't', 'u'));
+            properties[i] &= ~PostFormProperty;
+        // vattu always applies
+        // pres always applies
+        // blws always applies
+        // abvs always applies
 
-        // Conjunkts and typographical forms
-        openType->applyGSUBFeature(FT_MAKE_TAG('p', 'r', 'e', 's'));
-        openType->applyGSUBFeature(FT_MAKE_TAG('b', 'l', 'w', 's'));
-        openType->applyGSUBFeature(FT_MAKE_TAG('a', 'b', 'v', 's'));
+        // psts
+        // ### this looks slightly different from before, but I believe it's correct
+        if (reordered[len-1] != halant || base != len-2) 
+            properties[base] &= ~PostSubstProperty;
+        for (i = base+1; i < len; ++i)
+            properties[i] &= ~PostSubstProperty;
 
-        if (reordered[len-1] != halant || base != len-2) {
-            where[base] = true;
-            openType->applyGSUBFeature(FT_MAKE_TAG('p', 's', 't', 's'), where.data());
+        // halant always applies
+
+#ifdef INDIC_DEBUG
+        {
+            IDEBUG("OT properties:");
+            for (int i = 0; i < len; ++i)
+                qDebug("    i: %s", ::propertiesToString(properties[i]).toLatin1().data());
         }
+#endif
+        
+        // initialize
+        item->log_clusters = clusters.data();
+        openType->shape(item, properties.data());
 
-        // halant forms
-        if (base < len-1 && reordered[base+1] == halant || script == QUnicodeTables::Malayalam) {
-            // The hlnt feature needs to get always applied for malayalam according to the MS docs.
-//             memset(where, script == QUnicodeTables::Malayalam ? 1 : 0, len*sizeof(bool));
-//             where[base] = where[base+1] = true;
-            openType->applyGSUBFeature(FT_MAKE_TAG('h', 'a', 'l', 'n'));
-        }
-
-        int newLen;
-        const int *char_map = openType->mapping(newLen);
+        int newLen = openType->len();
+        OTL_GlyphItem otl_glyphs = openType->glyphs();
 
         // move the left matra back to it's correct position in malayalam and tamil
         if ((script == QUnicodeTables::Malayalam || script == QUnicodeTables::Tamil) && (form(reordered[0]) == Matra)) {
+//             qDebug("reordering matra, len=%d", newLen);
             // need to find the base in the shaped string and move the matra there
             int basePos = 0;
-            while (basePos < newLen && char_map[basePos] <= base)
+            while (basePos < newLen && (int)otl_glyphs[basePos].cluster <= base)
                 basePos++;
             --basePos;
             if (basePos < newLen && basePos > 1) {
-                IDEBUG("moving prebase matra to position %d in syllable newlen=%d", basePos, newLen);
-                unsigned short *g = openType->glyphs();
-                unsigned short m = g[0];
+//                 qDebug("moving prebase matra to position %d in syllable newlen=%d", basePos, newLen);
+                OTL_GlyphItemRec m = otl_glyphs[0];
                 --basePos;
                 for (i = 0; i < basePos; ++i)
-                    g[i] = g[i+1];
-                g[basePos] = m;
+                    otl_glyphs[i] = otl_glyphs[i+1];
+                otl_glyphs[basePos] = m;
             }
         }
 
-        openType->applyGPOSFeatures();
-
-        item->num_glyphs = nglyphs;
-        if (!openType->appendTo(item, false))
+        if (!openType->positionAndAdd(item, false))
             return false;
 
         if (control) {
             IDEBUG("found a control char in the syllable");
             int i = 0, j = 0;
             while (i < item->num_glyphs) {
-                if (form(reordered[char_map[i]]) == Control) {
+                if (form(reordered[otl_glyphs[i].cluster]) == Control) {
                     ++i;
                     if (i >= item->num_glyphs)
                         break;
@@ -1636,6 +1697,7 @@ static bool indic_shape_syllable(QOpenType *openType, QShaperItem *item, bool in
 
     }
 #endif
+    item->glyphs[0].attributes.clusterStart = true;
 
     IDEBUG("<<<<<<");
     return true;
@@ -1662,7 +1724,7 @@ static int indic_nextSyllableBoundary(int script, const QString &s, int start, i
     pos++;
 
     if (state != Consonant && state != IndependentVowel) {
-        if (state != Other && state != Control)
+        if (state != Other)
             *invalid = true;
         goto finish;
     }
@@ -1738,8 +1800,8 @@ static bool indic_shape(QShaperItem *item)
 
 #if defined(QT_HAVE_FREETYPE) && !defined(QT_NO_FREETYPE)
     QOpenType *openType = item->font->openType();
-    if (openType && !openType->supportsScript(item->script))
-        openType = 0;
+    if (openType)
+        openType->selectScript(item->script, indic_features);
 #else
     QOpenType *openType = 0;
 #endif
@@ -1791,21 +1853,12 @@ static void indic_attributes(int script, const QString &text, int from, int len,
     while (i < len) {
         bool invalid;
         int boundary = indic_nextSyllableBoundary(script, text, from+i, end, &invalid) - from;
-
-        attributes[i].whiteSpace = ::isSpace(*uc) && (uc->unicode() != 0xa0);
-        attributes[i].softBreak = false;
-        attributes[i].charStop = true;
-        attributes[i].wordStop = false;
-        attributes[i].invalid = invalid;
+         attributes[i].charStop = true;
 
         if (boundary > len-1) boundary = len;
         i++;
         while (i < boundary) {
-            attributes[i].whiteSpace = ::isSpace(*uc) && (uc->unicode() != 0xa0);
-            attributes[i].softBreak = false;
             attributes[i].charStop = false;
-            attributes[i].wordStop = false;
-            attributes[i].invalid = invalid;
             ++uc;
             ++i;
         }
@@ -1870,24 +1923,9 @@ static void thaiWordBreaks(const QChar *string, const int len, QCharAttributes *
 
 static void thai_attributes( int script, const QString &text, int from, int len, QCharAttributes *attributes )
 {
-    const QChar *uc = text.unicode() + from;
-    attributes += from;
-
-    QCharAttributes *a = attributes;
-    for ( int i = 0; i < len; i++ ) {
-	QChar::Category cat = ::category( *uc );
-	a->whiteSpace = (cat == QChar::Separator_Space) && (uc->unicode() != 0xa0);
-	a->charStop = (cat != QChar::Mark_NonSpacing);
-        // if we don't know any better, every charstop is a possible line break.
-	a->softBreak = a->charStop;
-	a->wordStop = false;
-	a->invalid = false;
-	++uc;
-	++a;
-    }
-
-    if (script == QUnicodeTables::Thai)
-        thaiWordBreaks(text.unicode() + from, len, attributes);
+    Q_UNUSED(script);
+    Q_ASSERT(script == QUnicodeTables::Thai);
+    thaiWordBreaks(text.unicode() + from, len, attributes);
 }
 
 
@@ -1963,6 +2001,15 @@ static inline TibetanForm tibetan_form(const QChar &c)
     return (TibetanForm)tibetanForm[c.unicode() - 0x0f40];
 }
 
+#if defined(QT_HAVE_FREETYPE) && !defined(QT_NO_FREETYPE)
+static const QOpenType::Features tibetan_features[] = {
+    { FT_MAKE_TAG('c', 'c', 'm', 'p'), CcmpProperty },
+    { FT_MAKE_TAG('a', 'b', 'v', 's'), AboveSubstProperty },
+    { FT_MAKE_TAG('b', 'l', 'w', 's'), BelowSubstProperty },
+    {0, 0}
+};
+#endif
+
 static bool tibetan_shape_syllable(QOpenType *openType, QShaperItem *item, bool invalid)
 {
     Q_UNUSED(openType)
@@ -1984,7 +2031,6 @@ static bool tibetan_shape_syllable(QOpenType *openType, QShaperItem *item, bool 
         str = (QChar *)reordered.data();
     }
 
-    int nglyphs = item->num_glyphs;
     if (!item->font->stringToCMap(str, len, item->glyphs, &item->num_glyphs, QFlag(item->flags)))
         return false;
 
@@ -1995,33 +2041,20 @@ static bool tibetan_shape_syllable(QOpenType *openType, QShaperItem *item, bool 
         item->glyphs[i].attributes.zeroWidth = false;
         IDEBUG("    %d: %4x", i, str[i].unicode());
     }
-    item->glyphs[0].attributes.clusterStart = true;
 
     // now we have the syllable in the right order, and can start running it through open type.
 
 #if defined(QT_HAVE_FREETYPE) && !defined(QT_NO_FREETYPE)
-    if (openType) {
-        // we need to keep track of where the base glyph is for some scripts and abuse the logcluster feature for this.
-        // This also means we have to correct the logCluster output from the open type engine manually afterwards.
-        // for indic this is rather simple, as all chars just point to the first glyph in the syllable.
-        QVarLengthArray<unsigned short> logClusters(len);
-        for (i = 0; i < len; ++i)
-            logClusters[i] = i;
-        item->log_clusters = logClusters.data();
+    if (openType && openType->supportsScript(QUnicodeTables::Tibetan)) {
+        openType->selectScript(QUnicodeTables::Tibetan, tibetan_features);
 
-        openType->init(item);
-
-        // substitutions
-        openType->applyGSUBFeature(FT_MAKE_TAG('c', 'c', 'm', 'p'));
-        openType->applyGSUBFeature(FT_MAKE_TAG('a', 'b', 'v', 's'));
-        openType->applyGSUBFeature(FT_MAKE_TAG('b', 'l', 'w', 's'));
-        openType->applyGPOSFeatures();
-
-        item->num_glyphs = nglyphs;
-        return openType->appendTo(item, false);
+        openType->shape(item);
+        if (!openType->positionAndAdd(item, false))
+            return false;
     }
 #endif
 
+    item->glyphs[0].attributes.clusterStart = true;
     return true;
 }
 
@@ -2123,20 +2156,12 @@ static void tibetan_attributes(int script, const QString &text, int from, int le
         bool invalid;
         int boundary = tibetan_nextSyllableBoundary(text, from+i, end, &invalid) - from;
 
-        attributes[i].whiteSpace = ::isSpace(*uc);
-        attributes[i].softBreak = false;
         attributes[i].charStop = true;
-        attributes[i].wordStop = false;
-        attributes[i].invalid = invalid;
 
         if (boundary > len-1) boundary = len;
         i++;
         while (i < boundary) {
-            attributes[i].whiteSpace = ::isSpace(*uc);
-            attributes[i].softBreak = false;
             attributes[i].charStop = false;
-            attributes[i].wordStop = false;
-            attributes[i].invalid = invalid;
             ++uc;
             ++i;
         }
@@ -2403,12 +2428,12 @@ static const signed char khmerStateTable[][CC_COUNT] =
     {-1, -1, -1, -1, 12, 13, -1, 10, 16, 17,  1, 14}, //  9 - First consonant or type 3 after ceong
     {-1, 11, 11, 11, -1, -1, -1, -1, -1, -1, -1, -1}, // 10 - Second Coeng (no register shifter before)
     {-1, -1, -1, -1, 15, -1, -1, -1, 16, 17,  1, 14}, // 11 - Second coeng consonant (or ind. vowel) no register shifter before
-    {-1, -1,  1, -1, -1, 13, -1, -1, 16, -1, -1, -1}, // 12 - Second ZWNJ before a register shifter
+    {-1, -1, -1, -1, -1, 13, -1, -1, 16, -1, -1, -1}, // 12 - Second ZWNJ before a register shifter
     {-1, -1, -1, -1, 15, -1, -1, -1, 16, 17,  1, 14}, // 13 - Second register shifter
     {-1, -1, -1, -1, -1, -1, -1, -1, 16, -1, -1, -1}, // 14 - ZWJ before vowel
     {-1, -1, -1, -1, -1, -1, -1, -1, 16, -1, -1, -1}, // 15 - ZWNJ before vowel
     {-1, -1, -1, -1, -1, -1, -1, -1, -1, 17,  1, 18}, // 16 - dependent vowel
-    {-1, -1,  1, -1, -1, -1, -1, -1, -1, -1,  1, 18}, // 17 - sign above
+    {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1,  1, 18}, // 17 - sign above
     {-1, -1, -1, -1, -1, -1, -1, 19, -1, -1, -1, -1}, // 18 - ZWJ after vowel
     {-1,  1, -1,  1, -1, -1, -1, -1, -1, -1, -1, -1}, // 19 - Third coeng
     {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1,  1, -1}, // 20 - dependent vowel after a Robat
@@ -2428,7 +2453,7 @@ static const signed char khmerStateTable[][CC_COUNT] =
 //
 static inline int khmer_nextSyllableBoundary(const QString &s, int start, int end, bool *invalid)
 {
-    *invalid = FALSE;
+    *invalid = false;
     const QChar *uc = s.unicode() + start;
     int state = 0;
     int pos = start;
@@ -2453,9 +2478,28 @@ static inline int khmer_nextSyllableBoundary(const QString &s, int start, int en
 }
 
 
+#if defined(QT_HAVE_FREETYPE) && !defined(QT_NO_FREETYPE)
+static const QOpenType::Features khmer_features[] = {
+    { FT_MAKE_TAG( 'p', 'r', 'e', 'f' ), PreFormProperty },
+    { FT_MAKE_TAG( 'b', 'l', 'w', 'f' ), BelowFormProperty },
+    { FT_MAKE_TAG( 'a', 'b', 'v', 'f' ), AboveFormProperty },
+    { FT_MAKE_TAG( 'p', 's', 't', 'f' ), PostFormProperty }, 
+    { FT_MAKE_TAG( 'p', 'r', 'e', 's' ), PreSubstProperty }, 
+    { FT_MAKE_TAG( 'b', 'l', 'w', 's' ), BelowSubstProperty }, 
+    { FT_MAKE_TAG( 'a', 'b', 'v', 's' ), AboveSubstProperty }, 
+    { FT_MAKE_TAG( 'p', 's', 't', 's' ), PostSubstProperty }, 
+    { FT_MAKE_TAG( 'c', 'l', 'i', 'g' ), CligProperty }, 
+    { 0, 0 }
+};
+#endif
+
 
 static bool khmer_shape_syllable(QOpenType *openType, QShaperItem *item)
 {
+#if defined(QT_HAVE_FREETYPE) && !defined(QT_NO_FREETYPE)
+    if (openType)
+        openType->selectScript(QUnicodeTables::Khmer, khmer_features);
+#endif
     // according to the specs this is the max length one can get
     // ### the real value should be smaller
     assert(item->length < 13);
@@ -2516,7 +2560,7 @@ static bool khmer_shape_syllable(QOpenType *openType, QShaperItem *item)
     }
 
     // write coeng + ro if found
-    if (coengRo > 0) {
+    if (coengRo > -1) {
         reordered[len] = C_COENG;
         properties[len] = PreForm;
         ++len;
@@ -2637,13 +2681,12 @@ static bool khmer_shape_syllable(QOpenType *openType, QShaperItem *item)
 
     KHDEBUG("after shaping: len=%d", len);
     for (int i = 0; i < len; i++) {
-	item->glyphs[i].attributes.mark = FALSE;
-	item->glyphs[i].attributes.clusterStart = FALSE;
+	item->glyphs[i].attributes.mark = false;
+	item->glyphs[i].attributes.clusterStart = false;
 	item->glyphs[i].attributes.justification = 0;
-	item->glyphs[i].attributes.zeroWidth = FALSE;
+	item->glyphs[i].attributes.zeroWidth = false;
 	KHDEBUG("    %d: %4x property=%x", i, reordered[i], properties[i]);
     }
-    item->glyphs[0].attributes.clusterStart = TRUE;
 
     // now we have the syllable in the right order, and can start running it through open type.
 
@@ -2653,39 +2696,28 @@ static bool khmer_shape_syllable(QOpenType *openType, QShaperItem *item)
 	for (int i = 0; i < len; ++i)
 	    logClusters[i] = i;
 
+ 	uint where[16];
 
-	openType->init(item);
+        for (int i = 0; i < len; ++i) {
+            where[i] = ~(PreSubstProperty
+                         | BelowSubstProperty
+                         | AboveSubstProperty
+                         | PostSubstProperty
+                         | CligProperty
+                         | PositioningProperties);
+            if (properties[i] == PreForm)
+                where[i] &= ~PreFormProperty;
+            else if (properties[i] == BelowForm)
+                where[i] &= ~BelowFormProperty;
+            else if (properties[i] == AboveForm)
+                where[i] &= ~AboveFormProperty;
+            else if (properties[i] == PostForm)
+                where[i] &= ~PostFormProperty;
+        }
 
- 	bool where[16];
-
-	// substitutions
-	const struct {
-	    int feature; int form;
-	} features[] = {
-	    { FT_MAKE_TAG( 'p', 'r', 'e', 'f' ), PreForm },
-	    { FT_MAKE_TAG( 'b', 'l', 'w', 'f' ), BelowForm },
-	    { FT_MAKE_TAG( 'a', 'b', 'v', 'f' ), AboveForm },
-	    { FT_MAKE_TAG( 'p', 's', 't', 'f' ), PostForm }
-	};
-	for (int j = 0; j < 4; ++j) {
-	    for (int i = 0; i < len; ++i)
-		where[i] = (properties[i] & features[j].form);
-	    openType->applyGSUBFeature(features[j].feature, where);
-	}
-
-	const int features2 [] = {
-	    FT_MAKE_TAG( 'p', 'r', 'e', 's' ),
-	    FT_MAKE_TAG( 'b', 'l', 'w', 's' ),
-	    FT_MAKE_TAG( 'a', 'b', 'v', 's' ),
-	    FT_MAKE_TAG( 'p', 's', 't', 's' ),
-	    FT_MAKE_TAG( 'c', 'l', 'i', 'g' )
-	};
-	for (int i = 0; i < 5; ++i)
-	    openType->applyGSUBFeature(features2[i]);
-
-	openType->applyGPOSFeatures();
-
-	openType->appendTo(item, FALSE);
+        openType->shape(item, where);
+	if (!openType->positionAndAdd(item, false))
+            return false;
     } else
 #endif
     {
@@ -2693,6 +2725,7 @@ static bool khmer_shape_syllable(QOpenType *openType, QShaperItem *item)
 	Q_UNUSED(openType);
     }
 
+    item->glyphs[0].attributes.clusterStart = true;
     return true;
 }
 
@@ -2757,20 +2790,12 @@ static void khmer_attributes( int script, const QString &text, int from, int len
 	bool invalid;
 	int boundary = khmer_nextSyllableBoundary( text, from+i, end, &invalid ) - from;
 
-	attributes[i].whiteSpace = ::isSpace(*uc);
-	attributes[i].softBreak = FALSE;
-	attributes[i].charStop = TRUE;
-	attributes[i].wordStop = FALSE;
-	attributes[i].invalid = invalid;
+	attributes[i].charStop = true;
 
 	if ( boundary > len-1 ) boundary = len;
 	i++;
 	while ( i < boundary ) {
-	    attributes[i].whiteSpace = ::isSpace(*uc);
-	    attributes[i].softBreak = FALSE;
-	    attributes[i].charStop = FALSE;
-	    attributes[i].wordStop = FALSE;
-	    attributes[i].invalid = invalid;
+	    attributes[i].charStop = false;
 	    ++uc;
 	    ++i;
 	}
@@ -2883,6 +2908,16 @@ static int hangul_nextSyllableBoundary(const QString &s, int start, int end)
     return start+pos;
 }
 
+#if defined(QT_HAVE_FREETYPE) && !defined(QT_NO_FREETYPE)
+static const QOpenType::Features hangul_features [] = {
+    { FT_MAKE_TAG('c', 'c', 'm', 'p'), CcmpProperty }, 
+    { FT_MAKE_TAG('l', 'j', 'm', 'o'), CcmpProperty }, 
+    { FT_MAKE_TAG('j', 'j', 'm', 'o'), CcmpProperty }, 
+    { FT_MAKE_TAG('t', 'j', 'm', 'o'), CcmpProperty }, 
+    { 0, 0 }
+};
+#endif
+
 static bool hangul_shape_syllable(QOpenType *openType, QShaperItem *item)
 {
     Q_UNUSED(openType)
@@ -2920,7 +2955,6 @@ static bool hangul_shape_syllable(QOpenType *openType, QShaperItem *item)
         len = 1;
     }
 
-    int nglyphs = item->num_glyphs;
     if (!item->font->stringToCMap(ch, len, item->glyphs, &item->num_glyphs, QFlag(item->flags)))
         return false;
     for (i = 0; i < len; i++) {
@@ -2930,7 +2964,6 @@ static bool hangul_shape_syllable(QOpenType *openType, QShaperItem *item)
         item->glyphs[i].attributes.zeroWidth = false;
         IDEBUG("    %d: %4x", i, ch[i].unicode());
     }
-    item->glyphs[0].attributes.clusterStart = true;
 
 #if defined(QT_HAVE_FREETYPE) && !defined(QT_NO_FREETYPE)
     if (openType && !composed) {
@@ -2940,26 +2973,14 @@ static bool hangul_shape_syllable(QOpenType *openType, QShaperItem *item)
             logClusters[i] = i;
         item->log_clusters = logClusters.data();
 
-        openType->init(item);
-
-        const int features[] = {
-            FT_MAKE_TAG('c', 'c', 'm', 'p'),
-            FT_MAKE_TAG('l', 'j', 'm', 'o'),
-            FT_MAKE_TAG('j', 'j', 'm', 'o'),
-            FT_MAKE_TAG('t', 'j', 'm', 'o'),
-            0
-        };
-        const int *f = features;
-        while (*f)
-            openType->applyGSUBFeature(*f++);
-        openType->applyGPOSFeatures();
-
-        item->num_glyphs = nglyphs;
-        return openType->appendTo(item, false);
+        openType->shape(item);
+        if (!openType->positionAndAdd(item, false))
+            return false;
 
     }
 #endif
 
+    item->glyphs[0].attributes.clusterStart = true;
     return true;
 }
 
@@ -2982,6 +3003,8 @@ static bool hangul_shape(QShaperItem *item)
         QOpenType *openType = item->font->openType();
         if (openType && !openType->supportsScript(item->script))
             openType = 0;
+        if (openType)
+            openType->selectScript(QUnicodeTables::Hangul, hangul_features);
 #else
         QOpenType *openType = 0;
 #endif
@@ -3028,20 +3051,12 @@ static void hangul_attributes(int script, const QString &text, int from, int len
     while (i < len) {
         int boundary = hangul_nextSyllableBoundary(text, from+i, end) - from;
 
-        attributes[i].whiteSpace = false;
-        attributes[i].softBreak = true;
         attributes[i].charStop = true;
-        attributes[i].wordStop = false;
-        attributes[i].invalid = false;
 
         if (boundary > len-1) boundary = len;
         i++;
         while (i < boundary) {
-            attributes[i].whiteSpace = false;
-            attributes[i].softBreak = true;
             attributes[i].charStop = false;
-            attributes[i].wordStop = false;
-            attributes[i].invalid = false;
             ++uc;
             ++i;
         }
@@ -3057,15 +3072,15 @@ static void hangul_attributes(int script, const QString &text, int from, int len
 
 const q_scriptEngine qt_scriptEngines[] = {
     // Common
-    { basic_shape, basic_attributes },
+    { basic_shape, 0},
     // Hebrew
-    { hebrew_shape, basic_attributes },
+    { hebrew_shape, 0 },
     // Arabic
-    { arabic_shape, arabic_attributes },
+    { arabic_shape, 0},
     // Syriac
-    { syriac_shape, arabic_attributes },
+    { syriac_shape, 0},
     // Thaana
-    { thaana_shape, basic_attributes },
+    { thaana_shape, 0 },
     // Devanagari
     { indic_shape, indic_attributes },
     // Bengali
@@ -3089,20 +3104,13 @@ const q_scriptEngine qt_scriptEngines[] = {
     // Thai
     { basic_shape, thai_attributes },
     // Lao
-    { basic_shape, thai_attributes },
+    { basic_shape, 0 },
     // Tibetan
     { tibetan_shape, tibetan_attributes },
     // Myanmar
-    { basic_shape, basic_attributes },
+    { basic_shape, 0 },
     // Hangul
     { hangul_shape, hangul_attributes },
     // Khmer
     { khmer_shape, khmer_attributes }
-
-#if 0
-    // ### What about this one?
-    // Unicode
-    { unicode_shape, basic_attributes }
-#endif
-
 };

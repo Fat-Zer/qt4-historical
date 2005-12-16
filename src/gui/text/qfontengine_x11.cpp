@@ -26,6 +26,7 @@
 // #define FONTENGINE_DEBUG
 
 #include <qbytearray.h>
+#include <qdebug.h>
 #include <qtextcodec.h>
 
 #include "qfontdatabase.h"
@@ -47,8 +48,6 @@
 #include <private/qt_x11_p.h>
 #include "qx11info_x11.h"
 
-#include <qdebug.h>
-
 #include <math.h>
 #include <limits.h>
 
@@ -56,7 +55,7 @@ QFontEngine::~QFontEngine()
 {
 }
 
-qreal QFontEngine::lineThickness() const
+QFixed QFontEngine::lineThickness() const
 {
     // ad hoc algorithm
     int score = fontDef.weight * fontDef.pixelSize;
@@ -69,7 +68,7 @@ qreal QFontEngine::lineThickness() const
     return lw;
 }
 
-qreal QFontEngine::underlinePosition() const
+QFixed QFontEngine::underlinePosition() const
 {
     return ((lineThickness() * 2) + 3) / 6;
 }
@@ -80,10 +79,10 @@ qreal QFontEngine::underlinePosition() const
 // ------------------------------------------------------------------
 
 QFontEngineMultiXLFD::QFontEngineMultiXLFD(const QFontDef &r, const QList<int> &l, int s)
-    : QFontEngineMulti(l.size()), encodings(l), screen(s)
+    : QFontEngineMulti(l.size()), encodings(l), screen(s), request(r)
 {
-    fontDef = r;
     loadEngine(0);
+    fontDef = engines[0]->fontDef;
 }
 
 QFontEngineMultiXLFD::~QFontEngineMultiXLFD()
@@ -94,12 +93,7 @@ void QFontEngineMultiXLFD::loadEngine(int at)
     Q_ASSERT(at < engines.size());
     Q_ASSERT(engines.at(at) == 0);
     const int encoding = encodings.at(at);
-    QFontDef req = fontDef;
-    QFontEngine *fontEngine = QFontDatabase::findFont(QUnicodeTables::Common, 0, req, encoding);
-    if (!fontEngine) {
-        req.family.clear();
-        fontEngine = QFontDatabase::findFont(QUnicodeTables::Common, 0, req, encoding);
-    }
+    QFontEngine *fontEngine = QFontDatabase::loadXlfd(0, QUnicodeTables::Common, request, encoding);
     Q_ASSERT(fontEngine != 0);
     fontEngine->ref.ref();
     engines[at] = fontEngine;
@@ -118,25 +112,22 @@ static inline XCharStruct *charStruct(XFontStruct *xfs, uint ch)
     XCharStruct *xcs = 0;
     unsigned char r = ch>>8;
     unsigned char c = ch&0xff;
-    if (r >= xfs->min_byte1 &&
+    if (xfs->per_char &&
+         r >= xfs->min_byte1 &&
          r <= xfs->max_byte1 &&
          c >= xfs->min_char_or_byte2 &&
          c <= xfs->max_char_or_byte2) {
-        if (!xfs->per_char)
-            xcs = &(xfs->min_bounds);
-        else {
-            xcs = xfs->per_char + ((r - xfs->min_byte1) *
-                                   (xfs->max_char_or_byte2 -
-                                    xfs->min_char_or_byte2 + 1)) +
-                  (c - xfs->min_char_or_byte2);
-            if (xcs->width == 0 && xcs->ascent == 0 &&  xcs->descent == 0)
-                xcs = 0;
-        }
+        xcs = xfs->per_char + ((r - xfs->min_byte1) *
+                               (xfs->max_char_or_byte2 -
+                                xfs->min_char_or_byte2 + 1)) +
+              (c - xfs->min_char_or_byte2);
+        if (xcs->width == 0 && xcs->ascent == 0 &&  xcs->descent == 0)
+            xcs = 0;
     }
     return xcs;
 }
 
-QFontEngineXLFD::QFontEngineXLFD(XFontStruct *fs, const char *name, int mib)
+QFontEngineXLFD::QFontEngineXLFD(XFontStruct *fs, const QByteArray &name, int mib)
     : _fs(fs), _name(name), _codec(0), _cmap(mib)
 {
     if (_cmap) _codec = QTextCodec::codecForMib(_cmap);
@@ -222,8 +213,16 @@ bool QFontEngineXLFD::stringToCMap(const QChar *str, int len, QGlyphLayout *glyp
         xcs = &_fs->min_bounds;
         while (g != glyphs) {
             --g;
-            g->advance.rx() = xcs->width;
-            g->advance.ry() = 0;
+            const unsigned char r = g->glyph >> 8;
+            const unsigned char c = g->glyph & 0xff;
+            if (r >= _fs->min_byte1 &&
+                r <= _fs->max_byte1 &&
+                c >= _fs->min_char_or_byte2 &&
+                c <= _fs->max_char_or_byte2) {
+                g->advance.x = xcs->width;
+            } else {
+                g->glyph = 0;
+            }
         }
     }
     else if (!_fs->max_byte1) {
@@ -232,15 +231,21 @@ bool QFontEngineXLFD::stringToCMap(const QChar *str, int len, QGlyphLayout *glyp
             unsigned int gl = (--g)->glyph;
             xcs = (gl >= _fs->min_char_or_byte2 && gl <= _fs->max_char_or_byte2) ?
                   base + gl : 0;
-            g->advance.rx() = (!xcs || (!xcs->width && !xcs->ascent && !xcs->descent)) ? _fs->ascent : xcs->width;
-            g->advance.ry() = 0;
+            if (!xcs || (!xcs->width && !xcs->ascent && !xcs->descent)) {
+                g->glyph = 0;
+            } else {
+                g->advance.x = xcs->width;
+            }
         }
     }
     else {
         while (g != glyphs) {
             xcs = charStruct(_fs, (--g)->glyph);
-            g->advance.rx() = xcs ? xcs->width : _fs->ascent;
-            g->advance.ry() = 0;
+            if (!xcs) {
+                g->glyph = 0;
+            } else {
+                g->advance.x = xcs->width;
+            }
         }
     }
     return true;
@@ -251,20 +256,20 @@ glyph_metrics_t QFontEngineXLFD::boundingBox(const QGlyphLayout *glyphs, int num
     int i;
 
     glyph_metrics_t overall;
-    qreal ymax = 0.;
-    qreal xmax = 0.;
+    QFixed ymax;
+    QFixed xmax;
     for (i = 0; i < numGlyphs; i++) {
         XCharStruct *xcs = charStruct(_fs, glyphs[i].glyph);
         if (xcs) {
-            qreal x = overall.xoff + glyphs[i].offset.x() - xcs->lbearing;
-            qreal y = overall.yoff + glyphs[i].offset.y() - xcs->ascent;
+            QFixed x = overall.xoff + glyphs[i].offset.x - xcs->lbearing;
+            QFixed y = overall.yoff + glyphs[i].offset.y - xcs->ascent;
             overall.x = qMin(overall.x, x);
             overall.y = qMin(overall.y, y);
-            xmax = qMax(xmax, overall.xoff + glyphs[i].offset.x() + xcs->rbearing);
+            xmax = qMax(xmax, overall.xoff + glyphs[i].offset.x + xcs->rbearing);
             ymax = qMax(ymax, y + xcs->ascent + xcs->descent);
-            overall.xoff += glyphs[i].advance.x();
+            overall.xoff += glyphs[i].advance.x;
         } else {
-            qreal size = _fs->ascent;
+            QFixed size = _fs->ascent;
             overall.x = qMin(overall.x, overall.xoff);
             overall.y = qMin(overall.y, overall.yoff - size);
             ymax = qMax(ymax, overall.yoff);
@@ -286,28 +291,28 @@ glyph_metrics_t QFontEngineXLFD::boundingBox(glyph_t glyph)
         gm = glyph_metrics_t(xcs->lbearing, -xcs->ascent, xcs->rbearing- xcs->lbearing, xcs->ascent + xcs->descent,
                               xcs->width, 0);
     } else {
-        qreal size = ascent();
+        QFixed size = ascent();
         gm = glyph_metrics_t(0, size, size, size, size, 0);
     }
     return gm;
 }
 
 
-qreal QFontEngineXLFD::ascent() const
+QFixed QFontEngineXLFD::ascent() const
 {
     return _fs->ascent;
 }
 
-qreal QFontEngineXLFD::descent() const
+QFixed QFontEngineXLFD::descent() const
 {
     return (_fs->descent-1);
 }
 
-qreal QFontEngineXLFD::leading() const
+QFixed QFontEngineXLFD::leading() const
 {
-    qreal l = (qMin<int>(_fs->ascent, _fs->max_bounds.ascent)
-                 + qMin<int>(_fs->descent, _fs->max_bounds.descent)) * qreal(0.15);
-    return ceil(l);
+    QFixed l = QFixed(qMin<int>(_fs->ascent, _fs->max_bounds.ascent)
+                      + qMin<int>(_fs->descent, _fs->max_bounds.descent)) * QFixed::fromReal(0.15);
+    return l.ceil();
 }
 
 qreal QFontEngineXLFD::maxCharWidth() const
@@ -409,6 +414,10 @@ bool QFontEngineXLFD::canRender(const QChar *string, int len)
     return allExist;
 }
 
+void QFontEngineXLFD::addOutlineToPath(qreal x, qreal y, const QGlyphLayout *glyphs, int numGlyphs, QPainterPath *path, QTextItem::RenderFlags flags)
+{
+    addBitmapFontToPath(x, y, glyphs, numGlyphs, path, flags);
+}
 
 #ifndef QT_NO_FONTCONFIG
 
@@ -417,11 +426,14 @@ bool QFontEngineXLFD::canRender(const QChar *string, int len)
 // ------------------------------------------------------------------
 
 #include FT_OUTLINE_H
+#include FT_TRUETYPE_TABLES_H
 
-QFontEngineMultiFT::QFontEngineMultiFT(FcFontSet *fs, int s)
+QFontEngineMultiFT::QFontEngineMultiFT(FcFontSet *fs, int s, const QFontDef &request)
     : QFontEngineMulti(fs->nfont), fontSet(fs), screen(s)
 {
+    fontDef = request;
     loadEngine(0);
+    fontDef = engines[0]->fontDef;
     cache_cost = 100;
 }
 
@@ -435,8 +447,8 @@ void QFontEngineMultiFT::loadEngine(int at)
     Q_ASSERT(at < engines.size());
     Q_ASSERT(engines.at(at) == 0);
     FcPattern *pattern = fontSet->fonts[at];
-    extern QFontDef FcPatternToQFontDef(FcPattern *pattern);
-    QFontDef fontDef = FcPatternToQFontDef(fontSet->fonts[at]);
+    extern QFontDef qt_FcPatternToQFontDef(FcPattern *pattern, const QFontDef &);
+    QFontDef fontDef = qt_FcPatternToQFontDef(fontSet->fonts[at], this->fontDef);
     // note: we use -1 for the script to make sure that we keep real
     // FT engines separate from Multi engines in the font cache
     QFontCache::Key key(fontDef, -1, screen);
@@ -471,7 +483,7 @@ void QFontEngineMultiFT::loadEngine(int at)
  * for matching sizes in the BDF and PCF loaders.
  * This has been fixed for 2.1.8.
  */
-#if HAVE_FT_BITMAP_SIZE_Y_PPEM
+#if (FREETYPE_MAJOR*10000+FREETYPE_MINOR*100+FREETYPE_PATCH) >= 20105
 #define X_SIZE(face,i) ((face)->available_sizes[i].x_ppem)
 #define Y_SIZE(face,i) ((face)->available_sizes[i].y_ppem)
 #else
@@ -536,6 +548,11 @@ QFontEngineFT::QFontEngineFT(FcPattern *pattern, const QFontDef &fd, int screen)
     cache_cost = 100;
     fontDef = fd;
     _pattern = pattern;
+    transform = false;
+    matrix.xx = 0x10000;
+    matrix.yy = 0x10000;
+    matrix.xy = 0;
+    matrix.yx = 0;
 //     FcPatternPrint(pattern);
 
     antialias = X11->fc_antialias;
@@ -547,6 +564,11 @@ QFontEngineFT::QFontEngineFT(FcPattern *pattern, const QFontDef &fd, int screen)
     if (!antialias || subpixel == FC_RGBA_UNKNOWN)
         subpixel = FC_RGBA_NONE;
 
+#ifdef FC_HINT_STYLE
+    if (FcPatternGetInteger (pattern, FC_HINT_STYLE, 0, &hint_style) == FcResultNoMatch)
+	hint_style = X11->fc_hint_style;
+#endif
+    
     if (!library)
         FT_Init_FreeType(&library);
 
@@ -562,12 +584,57 @@ QFontEngineFT::QFontEngineFT(FcPattern *pattern, const QFontDef &fd, int screen)
         freetype->lock = 0;
         freetype->xsize = 0;
         freetype->ysize = 0;
+        freetype->matrix.xx = 0x10000;
+        freetype->matrix.yy = 0x10000;
+        freetype->matrix.xy = 0;
+        freetype->matrix.yx = 0;
+        freetype->unicode_map = 0;
+        freetype->symbol_map = 0;
+
         FcCharSet *cs;
         FcPatternGetCharSet (pattern, FC_CHARSET, 0, &cs);
         freetype->charset = FcCharSetCopy(cs);
 
         memset(freetype->cmapCache, 0, sizeof(freetype->cmapCache));
         FT_New_Face(library, face_id.filename, face_id.index, &freetype->face);
+
+        for (int i = 0; i < freetype->face->num_charmaps; ++i) {
+            FT_CharMap cm = freetype->face->charmaps[i];
+            switch(cm->encoding) {
+            case ft_encoding_unicode:
+                freetype->unicode_map = cm;
+                break;
+            case ft_encoding_apple_roman:
+            case ft_encoding_latin_1:
+                if (!freetype->unicode_map || freetype->unicode_map->encoding != ft_encoding_unicode)
+                    freetype->unicode_map = cm;
+                break;
+            case ft_encoding_adobe_custom:
+            case ft_encoding_symbol:
+                if (!freetype->symbol_map)
+                    freetype->symbol_map = cm;
+                break;
+            default:
+                break;
+            }
+        }
+# if 0
+        FcChar8 *name;
+        FcPatternGetString(pattern, FC_FAMILY, 0, &name);
+        qDebug("%s: using maps: default: %x unicode: %x, symbol: %x", name,
+               freetype->face->charmap ? freetype->face->charmap->encoding : 0, 
+               freetype->unicode_map ? freetype->unicode_map->encoding : 0, 
+               freetype->symbol_map ? freetype->symbol_map->encoding : 0);
+
+        for (int i = 0; i < 256; i += 8) 
+            qDebug("    %x: %d %d %d %d %d %d %d %d", i,
+                   FcCharSetHasChar(freetype->charset, i), FcCharSetHasChar(freetype->charset, i), 
+                   FcCharSetHasChar(freetype->charset, i), FcCharSetHasChar(freetype->charset, i), 
+                   FcCharSetHasChar(freetype->charset, i), FcCharSetHasChar(freetype->charset, i), 
+                   FcCharSetHasChar(freetype->charset, i), FcCharSetHasChar(freetype->charset, i));
+#endif
+        
+        FT_Set_Charmap(freetype->face, freetype->unicode_map);
         freetypeFaces->insert(face_id, freetype);
     }
     freetype->ref.ref();
@@ -581,8 +648,16 @@ QFontEngineFT::QFontEngineFT(FcPattern *pattern, const QFontDef &fd, int screen)
     //underline metrics
     FT_Face face = freetype->face;
     if (FT_IS_SCALABLE(face)) {
-        line_thickness =  FT_MulFix(face->underline_thickness, face->size->metrics.y_scale)/64.;
-        underline_position = -FT_MulFix(face->underline_position, face->size->metrics.y_scale)/64.;
+        line_thickness =  QFixed::fromFixed(FT_MulFix(face->underline_thickness, face->size->metrics.y_scale));
+        underline_position = QFixed::fromFixed(-FT_MulFix(face->underline_position, face->size->metrics.y_scale));
+        int width = fontDef.stretch;
+        bool fake_oblique = (fontDef.style != QFont::StyleNormal) && !(face->style_flags & FT_STYLE_FLAG_ITALIC);
+        matrix.xx = 0x10000 * width/100;
+        if (fake_oblique)
+            matrix.xy = 0x10000*2/10;
+        FT_Set_Transform(face, &matrix, 0);
+        if (width != 100 || fake_oblique)
+            transform = true;
     } else {
         // copied from QFontEngineQPF
         // ad hoc algorithm
@@ -602,18 +677,17 @@ QFontEngineFT::QFontEngineFT(FcPattern *pattern, const QFontDef &fd, int screen)
 
 #ifndef QT_NO_XRENDER
     if (X11->use_xrender) {
-    int format = PictStandardA8;
-    if (!antialias) {
-        format = PictStandardA1;
-    } else {
-        if (subpixel == FC_RGBA_RGB || subpixel == FC_RGBA_BGR) {
+        int format = PictStandardA8;
+        if (!antialias) 
+            format = PictStandardA1;
+        else if (subpixel == FC_RGBA_RGB
+                 || subpixel == FC_RGBA_BGR
+                 || subpixel == FC_RGBA_VRGB
+                 || subpixel == FC_RGBA_VBGR) 
             format = PictStandardARGB32;
-        } else if (subpixel == FC_RGBA_VRGB || subpixel == FC_RGBA_VBGR) {
-            format = PictStandardARGB32;
-        }
-    }
         glyphSet = XRenderCreateGlyphSet(X11->display,
                                          XRenderFindStandardFormat(X11->display, format));
+        xglyph_format = format;
     } else {
         glyphSet = 0;
     }
@@ -624,6 +698,8 @@ QFontEngineFT::QFontEngineFT(FcPattern *pattern, const QFontDef &fd, int screen)
 
 QFontEngineFT::~QFontEngineFT()
 {
+    delete _openType;
+    _openType = 0;
     if (!freetype->ref.deref()) {
         FT_Done_Face(freetype->face);
         FcCharSetDestroy(freetype->charset);
@@ -644,7 +720,6 @@ QFontEngineFT::~QFontEngineFT()
     if (glyphSet)
         XRenderFreeGlyphSet(X11->display, glyphSet);
 #endif
-    delete _openType;
 }
 
 FT_Face QFontEngineFT::lockFace() const
@@ -658,6 +733,14 @@ FT_Face QFontEngineFT::lockFace() const
         freetype->xsize = xsize;
         freetype->ysize = ysize;
     }
+    if (freetype->matrix.xx != matrix.xx ||
+        freetype->matrix.yy != matrix.yy ||
+        freetype->matrix.xy != matrix.xy ||
+        freetype->matrix.yx != matrix.yx) {
+        freetype->matrix = matrix;
+        FT_Set_Transform(face, &freetype->matrix, 0);
+    }
+
     return face;
 }
 
@@ -671,6 +754,13 @@ void QFontEngineFT::unlockFace() const
 #define CEIL(x)	    (((x)+63) & -64)
 #define TRUNC(x)    ((x) >> 6)
 #define ROUND(x)    (((x)+32) & -64)
+
+static const uint subpixel_filter[3][3] = {
+    { 180, 60, 16 },
+    { 38, 180, 38 },
+    { 16, 60, 180 }
+};
+
 
 QFontEngineFT::Glyph *QFontEngineFT::loadGlyph(uint glyph, GlyphFormat format) const
 {
@@ -705,6 +795,15 @@ QFontEngineFT::Glyph *QFontEngineFT::loadGlyph(uint glyph, GlyphFormat format) c
         }
 
     }
+#ifdef FC_HINT_STYLE
+    if (hint_style == FC_HINT_NONE)
+        load_flags = FT_LOAD_NO_HINTING;
+    else if (hint_style < FC_HINT_FULL)
+        load_flags |= FT_LOAD_TARGET_LIGHT;
+#endif
+    
+    if (transform)
+        load_flags |= FT_LOAD_NO_BITMAP;
 
     {
         Glyph *g = glyph_data.value(glyph);
@@ -720,10 +819,48 @@ QFontEngineFT::Glyph *QFontEngineFT::loadGlyph(uint glyph, GlyphFormat format) c
 
     FT_GlyphSlot slot = face->glyph;
 
-    int left  = FLOOR(slot->metrics.horiBearingX);
-    int right = CEIL(slot->metrics.horiBearingX + slot->metrics.width);
-    int top    = CEIL(slot->metrics.horiBearingY);
-    int bottom = FLOOR(slot->metrics.horiBearingY - slot->metrics.height);
+    int left  = slot->metrics.horiBearingX;
+    int right = slot->metrics.horiBearingX + slot->metrics.width;
+    int top    = slot->metrics.horiBearingY;
+    int bottom = slot->metrics.horiBearingY - slot->metrics.height;
+    if(transform && slot->format != FT_GLYPH_FORMAT_BITMAP) {
+        int l, r, t, b;
+        FT_Vector vector;
+        vector.x = left;
+        vector.y = top;
+        FT_Vector_Transform(&vector, &matrix);
+        l = r = vector.x;
+        t = b = vector.y;
+        vector.x = right;
+        vector.y = top;
+        FT_Vector_Transform(&vector, &matrix);
+        if (l > vector.x) l = vector.x;
+        if (r < vector.x) r = vector.x;
+        if (t < vector.y) t = vector.y;
+        if (b > vector.y) b = vector.y;
+        vector.x = right;
+        vector.y = bottom;
+        FT_Vector_Transform(&vector, &matrix);
+        if (l > vector.x) l = vector.x;
+        if (r < vector.x) r = vector.x;
+        if (t < vector.y) t = vector.y;
+        if (b > vector.y) b = vector.y;
+        vector.x = left;
+        vector.y = bottom;
+        FT_Vector_Transform(&vector, &matrix);
+        if (l > vector.x) l = vector.x;
+        if (r < vector.x) r = vector.x;
+        if (t < vector.y) t = vector.y;
+        if (b > vector.y) b = vector.y;
+        left = l;
+        right = r;
+        top = t;
+        bottom = b;
+    }
+    left = FLOOR(left);
+    right = CEIL(right);
+    bottom = FLOOR(bottom);
+    top = CEIL(top);
 
 #ifndef QT_NO_XRENDER
     XGlyphInfo info;
@@ -774,18 +911,40 @@ QFontEngineFT::Glyph *QFontEngineFT::loadGlyph(uint glyph, GlyphFormat format) c
             uchar *newBuf = new uchar[size];
             uint *dst = (uint *)newBuf;
             int h = info.height;
-            const uint r = (subpixel == FC_RGBA_RGB || subpixel == FC_RGBA_VRGB) ? 16 : 0;
-            const uint b = 16 - r;
-            while (h--) {
-                uint *dd = dst;
-                for (int x = 0; x < bitmap.width; x += 3) {
-                    // ############# filter
-                    uint res = (src[x] << r) + (src[x+1] << 8) + (src[x+2] << b);
-                    *dd = res;
-                    ++dd;
+            if (subpixel == FC_RGBA_RGB) {
+                while (h--) {
+                    uint *dd = dst;
+                    for (int x = 0; x < bitmap.width; x += 3) {
+                        uint red = src[x];
+                        uint green = src[x+1];
+                        uint blue = src[x+2];
+                        uint high = (red*subpixel_filter[0][0] + green*subpixel_filter[0][1] + blue*subpixel_filter[0][2]) >> 8;
+                        uint mid = (red*subpixel_filter[1][0] + green*subpixel_filter[1][1] + blue*subpixel_filter[1][2]) >> 8;
+                        uint low = (red*subpixel_filter[2][0] + green*subpixel_filter[2][1] + blue*subpixel_filter[2][2]) >> 8;
+                        uint res = (high << 16) + (mid << 8) + low;
+                        *dd = res;
+                        ++dd;
+                    }
+                    dst += info.width;
+                    src += bitmap.pitch;
                 }
-                dst += info.width;
-                src += bitmap.pitch;
+            } else {
+                while (h--) {
+                    uint *dd = dst;
+                    for (int x = 0; x < bitmap.width; x += 3) {
+                        uint blue = src[x];
+                        uint green = src[x+1];
+                        uint red = src[x+2];
+                        uint high = (red*subpixel_filter[0][0] + green*subpixel_filter[0][1] + blue*subpixel_filter[0][2]) >> 8;
+                        uint mid = (red*subpixel_filter[1][0] + green*subpixel_filter[1][1] + blue*subpixel_filter[1][2]) >> 8;
+                        uint low = (red*subpixel_filter[2][0] + green*subpixel_filter[2][1] + blue*subpixel_filter[2][2]) >> 8;
+                        uint res = (high << 16) + (mid << 8) + low;
+                        *dd = res;
+                        ++dd;
+                    }
+                    dst += info.width;
+                    src += bitmap.pitch;
+                }
             }
             delete [] buffer;
             buffer = newBuf;
@@ -795,16 +954,36 @@ QFontEngineFT::Glyph *QFontEngineFT::loadGlyph(uint glyph, GlyphFormat format) c
             uchar *newBuf = new uchar[size];
             uint *dst = (uint *)newBuf;
             int h = info.height;
-            const uint r = (subpixel == FC_RGBA_RGB || subpixel == FC_RGBA_VRGB) ? 16 : 0;
-            const uint b = 16 - r;
-            while (h--) {
-                for (int x = 0; x < info.width; x++) {
-                    // ############# filter
-                    uint res = src[x] << r + src[x+bitmap.pitch] << 8 + src[x+2*bitmap.pitch] << b;
-                    dst[x] = res;
+            if (subpixel == FC_RGBA_VRGB) {
+                while (h--) {
+                    for (int x = 0; x < info.width; x++) {
+                        uint red = src[x];
+                        uint green = src[x+bitmap.pitch];
+                        uint blue = src[x+2*bitmap.pitch];
+                        uint high = (red*subpixel_filter[0][0] + green*subpixel_filter[0][1] + blue*subpixel_filter[0][2]) >> 8;
+                        uint mid = (red*subpixel_filter[1][0] + green*subpixel_filter[1][1] + blue*subpixel_filter[1][2]) >> 8;
+                        uint low = (red*subpixel_filter[2][0] + green*subpixel_filter[2][1] + blue*subpixel_filter[2][2]) >> 8;
+                        uint res = (high << 16) + (mid << 8) + low;
+                        dst[x] = res;
+                    }
+                    dst += info.width;
+                    src += 3*bitmap.pitch;
                 }
-                dst += info.width;
-                src += 3*bitmap.pitch;
+            } else {
+                while (h--) {
+                    for (int x = 0; x < info.width; x++) {
+                        uint blue = src[x];
+                        uint green = src[x+bitmap.pitch];
+                        uint red = src[x+2*bitmap.pitch];
+                        uint high = (red*subpixel_filter[0][0] + green*subpixel_filter[0][1] + blue*subpixel_filter[0][2]) >> 8;
+                        uint mid = (red*subpixel_filter[1][0] + green*subpixel_filter[1][1] + blue*subpixel_filter[1][2]) >> 8;
+                        uint low = (red*subpixel_filter[2][0] + green*subpixel_filter[2][1] + blue*subpixel_filter[2][2]) >> 8;
+                        uint res = (high << 16) + (mid << 8) + low;
+                        dst[x] = res;
+                    }
+                    dst += info.width;
+                    src += 3*bitmap.pitch;
+                }
             }
             delete [] buffer;
             buffer = newBuf;
@@ -822,29 +1001,13 @@ QFontEngineFT::Glyph *QFontEngineFT::loadGlyph(uint glyph, GlyphFormat format) c
                 src += slot->bitmap.pitch;
             }
         } else {
-            if (hfactor != 1) {
+            if (hfactor != 1 || vfactor != 1) {
                 while (h--) {
-                    uchar *dd = dst;
+                    uint *dd = (uint *)dst;
                     for (int x = 0; x < slot->bitmap.width; x++) {
                         unsigned char a = ((src[x >> 3] & (0x80 >> (x & 7))) ? 0xff : 0x00);
-                        *dd++ = a;
-                        *dd++ = a;
-                        *dd++ = a;
-                        *dd++ = a;
+                        *dd++ = (a << 16) | (a << 8) | a;
                     }
-                    dst += pitch * vfactor;
-                    src += slot->bitmap.pitch;
-                }
-
-            } else if (vfactor != 1) {
-                while (h--) {
-                    for (int x = 0; x < slot->bitmap.width; x++) {
-                        unsigned char a = ((src[x >> 3] & (0x80 >> (x & 7))) ? 0xff : 0x00);
-                        dst[x] = a;
-                    }
-                    memcpy(dst + pitch, dst, pitch);
-                    dst += pitch;
-                    memcpy(dst + pitch, dst, pitch);
                     dst += pitch;
                     src += slot->bitmap.pitch;
                 }
@@ -923,16 +1086,6 @@ QFontEngineFT::Glyph *QFontEngineFT::loadGlyph(uint glyph, GlyphFormat format) c
     return g;
 }
 
-#if 0
-static inline glyph_t getAdobeCharIndex(FT_Face _face, int cmap, uint ucs4)
-{
-    // ############## save and restore charmap
-    FT_Set_Charmap(_face, _face->charmaps[cmap]);
-    glyph_t g = FT_Get_Char_Index(_face, ucs4);
-    return g;
-}
-#endif
-
 inline unsigned int getChar(const QChar *str, int &i, const int len)
 {
     unsigned int uc = str[i].unicode();
@@ -956,26 +1109,34 @@ bool QFontEngineFT::stringToCMap(const QChar *str, int len, QGlyphLayout *glyphs
 
     bool mirrored = flags & QTextEngine::RightToLeft;
     int glyph_pos = 0;
-#if 0
-    if (_cmap != -1) {
-        FT_Face _face = lockFace();
-       for ( int i = 0; i < len; ++i ) {
-           unsigned int uc = getChar(str, i, len);
-           glyphs[glyph_pos].glyph = uc < cmapCacheSize ? cmapCache[uc] : 0;
-           if ( !glyphs[glyph_pos].glyph ) {
-               glyph_t glyph = FT_Get_Char_Index(_face, uc);
-               if (!glyph)
-                   glyph = getAdobeCharIndex(_face, _cmap, uc);
-              glyphs[glyph_pos].glyph = glyph;
-               if ( uc < cmapCacheSize )
-                    ((QFontEngineFT *)this)->cmapCache[uc] = glyph;
-           }
-           ++glyph_pos;
-       }
-        unlockFace();
-    } else
-#endif
-    {
+    if (freetype->symbol_map) {
+        FT_Face face = freetype->face;
+        for ( int i = 0; i < len; ++i ) {
+            unsigned int uc = getChar(str, i, len);
+            if (mirrored)
+                uc = QUnicodeTables::mirroredChar(uc);
+            glyphs[glyph_pos].glyph = uc < QFreetypeFace::cmapCacheSize ? freetype->cmapCache[uc] : 0;
+            if ( !glyphs[glyph_pos].glyph ) {
+                glyph_t glyph;
+                if (FcCharSetHasChar(freetype->charset, uc)) {
+                redo0:
+                    glyph = FT_Get_Char_Index(face, uc);
+                    if (!glyph && (uc == 0xa0 || uc == 0x9)) {
+                        uc = 0x20;
+                        goto redo0;
+                    }
+                } else {
+                    FT_Set_Charmap(face, freetype->symbol_map);
+                    glyph = FT_Get_Char_Index(face, uc);
+                    FT_Set_Charmap(face, freetype->unicode_map);
+                }
+                glyphs[glyph_pos].glyph = glyph;
+                if (uc < QFreetypeFace::cmapCacheSize)
+                    freetype->cmapCache[uc] = glyph;
+            }
+            ++glyph_pos;
+        }
+    } else {
         FT_Face face = freetype->face;
         for (int i = 0; i < len; ++i) {
             unsigned int uc = getChar(str, i, len);
@@ -1015,8 +1176,8 @@ void QFontEngineFT::recalcAdvances(int len, QGlyphLayout *glyphs, QTextEngine::S
                 g = loadGlyph(glyphs[i].glyph);
             }
             // for uncachable glyph, get advance from glyphslot
-            glyphs[i].advance.rx() = g ? g->linearAdvance/65536. : face->glyph->linearHoriAdvance/65536.;
-            glyphs[i].advance.ry() = 0.;
+            glyphs[i].advance.x = QFixed::fromFixed(g ? g->linearAdvance : (face->glyph->linearHoriAdvance >> 10));
+            glyphs[i].advance.y = 0;
         }
     } else {
         for (int i = 0; i < len; i++) {
@@ -1027,8 +1188,8 @@ void QFontEngineFT::recalcAdvances(int len, QGlyphLayout *glyphs, QTextEngine::S
                 g = loadGlyph(glyphs[i].glyph);
             }
             // for uncachable glyph, get advance from glyphslot
-            glyphs[i].advance.rx() = g ? g->advance : face->glyph->metrics.horiAdvance/64.;
-            glyphs[i].advance.ry() = 0.;
+            glyphs[i].advance.x = g ? QFixed(g->advance) : QFixed::fromFixed(face->glyph->metrics.horiAdvance);
+            glyphs[i].advance.y = 0;
         }
     }
     if (face)
@@ -1041,8 +1202,8 @@ glyph_metrics_t QFontEngineFT::boundingBox(const QGlyphLayout *glyphs, int numGl
     FT_Face face = 0;
 
     glyph_metrics_t overall;
-    qreal ymax = 0;
-    qreal xmax = 0;
+    QFixed ymax = 0;
+    QFixed xmax = 0;
     for (int i = 0; i < numGlyphs; i++) {
         Glyph *g = glyph_data.value(glyphs[i].glyph);
         if (!g) {
@@ -1051,8 +1212,8 @@ glyph_metrics_t QFontEngineFT::boundingBox(const QGlyphLayout *glyphs, int numGl
             g = loadGlyph(glyphs[i].glyph);
         }
         if (g) {
-            qreal x = overall.xoff + glyphs[i].offset.x() - g->x;
-            qreal y = overall.yoff + glyphs[i].offset.y() - g->y;
+            QFixed x = overall.xoff + glyphs[i].offset.x - g->x;
+            QFixed y = overall.yoff + glyphs[i].offset.y - g->y;
             overall.x = qMin(overall.x, x);
             overall.y = qMin(overall.y, y);
             xmax = qMax(xmax, x + g->width);
@@ -1064,8 +1225,8 @@ glyph_metrics_t QFontEngineFT::boundingBox(const QGlyphLayout *glyphs, int numGl
             int top    = CEIL(face->glyph->metrics.horiBearingY);
             int bottom = FLOOR(face->glyph->metrics.horiBearingY - face->glyph->metrics.height);
 
-            qreal x = overall.xoff + glyphs[i].offset.x() - (-TRUNC(left));
-            qreal y = overall.yoff + glyphs[i].offset.y() - TRUNC(top);
+            QFixed x = overall.xoff + glyphs[i].offset.x - (-TRUNC(left));
+            QFixed y = overall.yoff + glyphs[i].offset.y - TRUNC(top);
             overall.x = qMin(overall.x, x);
             overall.y = qMin(overall.y, y);
             xmax = qMax(xmax, x + TRUNC(right - left));
@@ -1149,120 +1310,141 @@ void QFontEngineFT::doKerning(int num_glyphs, QGlyphLayout *g, QTextEngine::Shap
     for (int i = 0; i < num_glyphs-1; ++i) {
         FT_Vector kerning;
         FT_Get_Kerning(face, g[i].glyph, g[i+1].glyph, f, &kerning);
-        g[i].advance.rx() += kerning.x / 64.;
-        g[i].advance.ry() += kerning.y / 64.;
+        g[i].advance.x += QFixed::fromFixed(kerning.x);
+        g[i].advance.y += QFixed::fromFixed(kerning.y);
     }
     unlockFace();
 }
 
-static void addCurve(QPainterPath *path, const QPointF &cp, const QPointF &endPoint,
-                     int startOff, int nOff, FT_GlyphSlot g)
+
+void QFontEngineFT::addGlyphsToPath(glyph_t *glyphs, QFixedPoint *positions, int numGlyphs,
+                                    QPainterPath *path, QTextItem::RenderFlags)
 {
-    int j;
-    QPointF c0 = QPointF(g->outline.points[startOff-1].x/64., -g->outline.points[startOff-1].y/64.);
-    QPointF current = QPointF(g->outline.points[startOff].x/64., -g->outline.points[startOff].y/64.);
-    for(j = 1; j <= nOff; j++) {
-        QPointF next = (j == nOff)
-                       ? endPoint
-                       : QPointF(g->outline.points[startOff + j].x/64., -g->outline.points[startOff + j].y/64.);
-        QPointF c3 = (j == nOff) ? next : (next + current)/2;
-        QPointF c1 = (2*current + c0)/3;
-        QPointF c2 = (2*current + c3)/3;
-//         qDebug("cubicTo %f/%f %f/%f %f/%f", (cp + c1).x(), (cp + c1).y(),
-//                (cp + c2).x(), (cp + c2).y(), (cp + c3).x(), (cp + c3).y());
-        path->cubicTo(cp + c1, cp + c2, cp + c3);
-        c0 = c3;
-        current = next;
+    FT_Face face = lockFace();
+
+    for (int gl = 0; gl < numGlyphs; gl++) {
+        FT_UInt glyph = glyphs[gl];
+
+        FT_Load_Glyph(face, glyph, FT_LOAD_NO_HINTING|FT_LOAD_NO_BITMAP);
+
+        FT_GlyphSlot g = face->glyph;
+        if (g->format != FT_GLYPH_FORMAT_OUTLINE)
+            continue;
+
+        QPointF cp = positions[gl].toPointF();
+        
+        // convert the outline to a painter path
+        int i = 0;
+        for (int c = 0; c < g->outline.n_contours; ++c) {
+            int last_point = g->outline.contours[c];
+            QPointF start = cp + QPointF(g->outline.points[i].x/64., -g->outline.points[i].y/64.);
+            if(!(g->outline.tags[i] & 1)) {
+                start += cp + QPointF(g->outline.points[last_point].x/64., -g->outline.points[last_point].y/64.);
+                start /= 2;
+            }
+//                 qDebug("contour: %d -- %d", i, g->outline.contours[c]);
+//                 qDebug("first point at %f %f", start.x(), start.y());
+            path->moveTo(start);
+
+            QPointF c[4];
+            c[0] = start;
+            int n = 1;
+            while (i < last_point) {
+                ++i;
+                c[n] = cp + QPointF(g->outline.points[i].x/64., -g->outline.points[i].y/64.);
+//                     qDebug() << "    i=" << i << " flag=" << (int)g->outline.tags[i] << "point=" << c[n];
+                ++n;
+                switch (g->outline.tags[i] & 3) {
+                case 2:
+                    // cubic bezier element
+                    if (n < 4)
+                        continue;
+                    c[3] = (c[3] + c[2])/2;
+                    --i;
+                    break;
+                case 0:
+                    // quadratic bezier element
+                    if (n < 3)
+                        continue;
+                    c[3] = (c[1] + c[2])/2;
+                    c[2] = (2*c[1] + c[3])/3;
+                    c[1] = (2*c[1] + c[0])/3;
+                    --i;
+                    break;
+                case 1:
+                case 3:
+                    if (n == 2) {
+//                             qDebug() << "lineTo" << c[1];
+                        path->lineTo(c[1]);
+                        c[0] = c[1];
+                        n = 1;
+                        continue;
+                    } else if (n == 3) {
+                        c[3] = c[2];
+                        c[2] = (2*c[1] + c[3])/3;
+                        c[1] = (2*c[1] + c[0])/3;
+                    } 
+                    break;
+                }
+//                     qDebug() << "cubicTo" << c[1] << c[2] << c[3];
+                path->cubicTo(c[1], c[2], c[3]);
+                c[0] = c[3];
+                n = 1;
+            }
+            if (n == 1) {
+//                     qDebug() << "closeSubpath";
+                path->closeSubpath();
+            } else {
+                c[3] = start;
+                if (n == 2) {
+                    c[2] = (2*c[1] + c[3])/3;
+                    c[1] = (2*c[1] + c[0])/3;
+                }
+//                     qDebug() << "cubicTo" << c[1] << c[2] << c[3];
+                path->cubicTo(c[1], c[2], c[3]);
+            }
+            ++i;
+        }
     }
+    unlockFace();
 }
 
 void QFontEngineFT::addOutlineToPath(qreal x, qreal y, const QGlyphLayout *glyphs, int numGlyphs, QPainterPath *path, QTextItem::RenderFlags flags)
 {
     if (FT_IS_SCALABLE(freetype->face)) {
-        FT_Face face = lockFace();
-        QPointF point = QPointF(x, y);
-        if (flags & QTextItem::RightToLeft) {
-            for (int gl = 0; gl < numGlyphs; gl++)
-                point += glyphs[gl].advance;
-        }
-        for (int gl = 0; gl < numGlyphs; gl++) {
-            FT_UInt glyph = glyphs[gl].glyph;
-            if (flags & QTextItem::RightToLeft)
-                point -= glyphs[gl].advance;
-            QPointF cp = point + glyphs[gl].offset;
-            if (!(flags & QTextItem::RightToLeft))
-                point += glyphs[gl].advance;
-
-            FT_Load_Glyph(face, glyph, FT_LOAD_NO_HINTING|FT_LOAD_NO_BITMAP);
-
-            FT_GlyphSlot g = face->glyph;
-            if (g->format != FT_GLYPH_FORMAT_OUTLINE)
-                continue;
-
-            // convert the outline to a painter path
-            int i = 0;
-            for (int c = 0; c < g->outline.n_contours; ++c) {
-                QPointF p = cp + QPointF(g->outline.points[i].x/64., -g->outline.points[i].y/64.);
-//                 qDebug("contour: %d -- %d", i, g->outline.contours[c]);
-//                 qDebug("first point at %f %f", p.x(), p.y());
-                path->moveTo(p);
-
-                int first = i;
-                int startOff = 0;
-                int nOff = 0;
-                ++i;
-                while (i <= g->outline.contours[c]) {
-                    QPointF p = cp + QPointF(g->outline.points[i].x/64., -g->outline.points[i].y/64.);
-//                     qDebug("     point at %f %f, on curve=%d", p.x(), p.y(), g->outline.tags[i] & 1);
-                    if (!(g->outline.tags[i] & 1)) {
-                        /* Off curve */
-                        if (!startOff) {
-                            startOff = i;
-                            nOff = 1;
-                        } else {
-                            ++nOff;
-                        }
-                    } else {
-                        /* On Curve */
-                        if (startOff) {
-                            // ###### fix 3rd order beziers
-                            addCurve(path, cp, QPointF(g->outline.points[i].x/64., -g->outline.points[i].y/64.),
-                                     startOff, nOff, g);
-                            startOff = 0;
-                        } else {
-                            p = cp + QPointF(g->outline.points[i].x/64., -g->outline.points[i].y/64.);
-                            path->lineTo(p);
-                        }
-                    }
-                    ++i;
-                }
-                QPointF end(g->outline.points[first].x/64., -g->outline.points[first].y/64.);
-                if (startOff)
-                    addCurve(path, cp, end, startOff, nOff, g);
-                else
-                    path->lineTo(end + cp);
-            }
-        }
-        unlockFace();
+        QFontEngine::addOutlineToPath(x, y, glyphs, numGlyphs, path, flags);
     } else {
         addBitmapFontToPath(x, y, glyphs, numGlyphs, path, flags);
     }
 }
 
-qreal QFontEngineFT::ascent() const
+QFixed QFontEngineFT::ascent() const
 {
-    return TRUNC(ROUND(metrics.ascender));
+    return QFixed::fromFixed(metrics.ascender);
 }
 
-qreal QFontEngineFT::descent() const
+QFixed QFontEngineFT::descent() const
 {
-    return -TRUNC(ROUND(metrics.descender)) + 1;
+    return QFixed::fromFixed(-metrics.descender + (1<<6));
 }
 
-qreal QFontEngineFT::leading() const
+QFixed QFontEngineFT::leading() const
 {
-    return (metrics.height - metrics.ascender + metrics.descender) >> 6;
+    return QFixed::fromFixed(metrics.height - metrics.ascender + metrics.descender);
 }
+
+QFixed QFontEngineFT::xHeight() const
+{
+    FT_Face face = lockFace();
+    TT_PCLT *pct = (TT_PCLT *)FT_Get_Sfnt_Table(face, ft_sfnt_pclt);
+    if (pct && pct->xHeight) {
+        unlockFace();
+        return QFixed(pct->xHeight*face->size->metrics.y_ppem)/face->units_per_EM;
+    }
+    unlockFace();
+    return QFontEngine::xHeight();
+}
+
 
 qreal QFontEngineFT::maxCharWidth() const
 {
@@ -1297,7 +1479,7 @@ qreal QFontEngineFT::minLeftBearing() const
 {
     if (lbearing == SHRT_MIN)
         (void) minRightBearing(); // calculates both
-    return lbearing;
+    return lbearing.toReal();
 }
 
 qreal QFontEngineFT::minRightBearing() const
@@ -1316,15 +1498,15 @@ qreal QFontEngineFT::minRightBearing() const
             }
         }
     }
-    return rbearing;
+    return rbearing.toReal();
 }
 
-qreal QFontEngineFT::lineThickness() const
+QFixed QFontEngineFT::lineThickness() const
 {
     return line_thickness;
 }
 
-qreal QFontEngineFT::underlinePosition() const
+QFixed QFontEngineFT::underlinePosition() const
 {
     return underline_position;
 }

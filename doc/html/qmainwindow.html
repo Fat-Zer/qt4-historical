@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/src/gui/widgets/qmainwindow.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/gui/widgets/qmainwindow.cpp -->
 <head>
-    <title>Qt 4.0: QMainWindow Class Reference</title>
+    <title>Qt 4.1: QMainWindow Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -31,7 +31,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="qmainwindow.html#toolButtonStyle-prop">toolButtonStyle</a></b> : Qt::ToolButtonStyle</li>
 </ul>
 <ul>
-<li><div class="fn"/>52 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
+<li><div class="fn"/>54 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
 <li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
 </ul>
 <a name="public-functions"></a>
@@ -69,7 +69,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>Qt::ToolButtonStyle <b><a href="qmainwindow.html#toolButtonStyle-prop">toolButtonStyle</a></b> () const</li>
 </ul>
 <ul>
-<li><div class="fn"/>184 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -97,6 +97,7 @@ body { background: #ffffff; color: black; }</style>
 <h2>Detailed Description</h2>
 <p>The QMainWindow class provides a main application window.</p>
 <p>QMainWindow provides a main application window, with a menu bar, tool bars, dock widgets and a status bar around a large central widget, such as a text edit, drawing canvas or <a href="qworkspace.html">QWorkspace</a> (for MDI applications).</p>
+<p>Note that QMainWindow comes with its own customized layout and that setting a layout on a QMainWindow, or creating a layout with a QMainWindow as a parent is considered an error. You should set your own layout on the <a href="qmainwindow.html#centralWidget">central widget</a> instead.</p>
 <p>Topics:</p>
 <ul><li><a href="#saving-and-restoring-state">Saving and restoring state</a></li>
 <li><a href="#behavior-of-dock-widgets">Behavior of Dock Widgets</a></li>
@@ -207,9 +208,9 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the menu bar for the main window. This function creates and returns an empty menu bar if the menu bar does not exist.</p>
 <p>See also <a href="qmainwindow.html#setMenuBar">setMenuBar</a>().</p>
 <h3 class="fn"><a name="removeDockWidget"></a>void QMainWindow::removeDockWidget ( <a href="qdockwidget.html">QDockWidget</a> * <i>dockwidget</i> )</h3>
-<p>Removes the <i>dockwidget</i> from the main window.</p>
+<p>Removes the <i>dockwidget</i> from the main window layout and hides it. Note that the <i>dockwidget</i> is <i>not</i> deleted.</p>
 <h3 class="fn"><a name="removeToolBar"></a>void QMainWindow::removeToolBar ( <a href="qtoolbar.html">QToolBar</a> * <i>toolbar</i> )</h3>
-<p>Removes the <i>toolbar</i> from the main window.</p>
+<p>Removes the <i>toolbar</i> from the main window layout and hides it. Note that the <i>toolbar</i> is <i>not</i> deleted.</p>
 <h3 class="fn"><a name="restoreState"></a>bool QMainWindow::restoreState ( const <a href="qbytearray.html">QByteArray</a> &amp; <i>state</i>, int <i>version</i> = 0 )</h3>
 <p>Restores the <i>state</i> of this mainwindow's toolbars and dockwidgets. The <i>version</i> number is compared with that stored in <i>state</i>. If they do not match, the mainwindow's state is left unchanged, and this function returns <tt>false</tt>; otherwise, the state is restored, and this function returns <tt>true</tt>.</p>
 <p>See also <a href="qmainwindow.html#saveState">saveState</a>().</p>
@@ -252,6 +253,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

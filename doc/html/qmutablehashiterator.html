@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/doc/src/qiterator.qdoc -->
+<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/doc/src/qiterator.qdoc -->
 <head>
-    <title>Qt 4.0: QMutableHashIterator Class Reference</title>
+    <title>Qt 4.1: QMutableHashIterator Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -41,6 +41,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>void <b><a href="qmutablehashiterator.html#toBack">toBack</a></b> ()</li>
 <li><div class="fn"/>void <b><a href="qmutablehashiterator.html#toFront">toFront</a></b> ()</li>
 <li><div class="fn"/>const T &amp; <b><a href="qmutablehashiterator.html#value">value</a></b> () const</li>
+<li><div class="fn"/>T &amp; <b><a href="qmutablehashiterator.html#value-2">value</a></b> ()</li>
 <li><div class="fn"/>QMutableHashIterator &amp; <b><a href="qmutablehashiterator.html#operator-eq">operator=</a></b> ( QHash&lt;Key, T&gt; &amp; <i>hash</i> )</li>
 </ul>
 <a name="details"></a>
@@ -55,7 +56,7 @@ body { background: #ffffff; color: black; }</style>
     QMutableHashIterator&lt;QString, QWidget *&gt; i(hash);
     while (i.hasNext()) {
         i.next();
-        cout &lt;&lt; i.key() &lt;&lt; &quot;: &quot; &lt;&lt; i.value() &lt;&lt; endl;
+        qDebug() &lt;&lt; i.key() &lt;&lt; &quot;: &quot; &lt;&lt; i.value();
     }</pre>
 <p>The <a href="qmutablehashiterator.html#next">next</a>() function returns the next item in the hash and advances the iterator. The <a href="qmutablehashiterator.html#key">key</a>() and <a href="qmutablehashiterator.html#value">value</a>() functions return the key and value of the last item that was jumped over.</p>
 <p>Unlike STL-style iterators, Java-style iterators point <i>between</i> items rather than directly <i>at</i> items. The first call to <a href="qmutablehashiterator.html#next">next</a>() advances the iterator to the position between the first and second item, and returns the first item; the second call to <a href="qmutablehashiterator.html#next">next</a>() advances the iterator to the position between the second and third item; and so on.</p>
@@ -64,13 +65,13 @@ body { background: #ffffff; color: black; }</style>
     i.toBack();
     while (i.hasPrevious()) {
         i.previous();
-        cout &lt;&lt; i.key() &lt;&lt; &quot;: &quot; &lt;&lt; i.value() &lt;&lt; endl;
+        qDebug() &lt;&lt; i.key() &lt;&lt; &quot;: &quot; &lt;&lt; i.value();
     }</pre>
 <p>If you want to find all occurrences of a particular value, use <a href="qmutablehashiterator.html#findNext">findNext</a>() or <a href="qmutablehashiterator.html#findPrevious">findPrevious</a>() in a loop. For example:</p>
 <pre>&nbsp;   QMutableHashIterator&lt;int, QWidget *&gt; i(hash);
     while (i.findNext(widget)) {
-        cout &lt;&lt; &quot;Found widget &quot; &lt;&lt; widget &lt;&lt; &quot; under key &quot;
-             &lt;&lt; i.key() &lt;&lt; endl;
+        qDebug() &lt;&lt; &quot;Found widget &quot; &lt;&lt; widget &lt;&lt; &quot; under key &quot;
+                 &lt;&lt; i.key();
     }</pre>
 <p>If you want to remove items as you iterate over the hash, use <a href="qmutablehashiterator.html#remove">remove</a>(). If you want to modify the value of an item, use <a href="qmutablehashiterator.html#setValue">setValue</a>().</p>
 <p>Example:</p>
@@ -146,6 +147,9 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the value of the last item that was jumped over using one of the traversal functions (<a href="qmutablehashiterator.html#next">next</a>(), <a href="qmutablehashiterator.html#previous">previous</a>(), <a href="qmutablehashiterator.html#findNext">findNext</a>(), <a href="qmutablehashiterator.html#findPrevious">findPrevious</a>()).</p>
 <p>After a call to <a href="qmutablehashiterator.html#next">next</a>() or <a href="qmutablehashiterator.html#findNext">findNext</a>(), value() is equivalent to <a href="qmutablehashiterator.html#peekPrevious">peekPrevious</a>().value(). After a call to <a href="qmutablehashiterator.html#previous">previous</a>() or <a href="qmutablehashiterator.html#findPrevious">findPrevious</a>(), value() is equivalent to <a href="qmutablehashiterator.html#peekNext">peekNext</a>().value().</p>
 <p>See also <a href="qmutablehashiterator.html#key">key</a>() and <a href="qmutablehashiterator.html#setValue">setValue</a>().</p>
+<h3 class="fn"><a name="value-2"></a>T &amp; QMutableHashIterator::value ()</h3>
+<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>Returns a non-const reference to the value of the last item that was jumped over using one of the traversal functions.</p>
 <h3 class="fn"><a name="operator-eq"></a>QMutableHashIterator &amp; QMutableHashIterator::operator= ( <a href="qhash.html">QHash</a>&lt;Key, T&gt; &amp; <i>hash</i> )</h3>
 <p>Makes the iterator operate on <i>hash</i>. The iterator is set to be at the front of the hash (before the first item).</p>
 <p>See also <a href="qmutablehashiterator.html#toFront">toFront</a>() and <a href="qmutablehashiterator.html#toBack">toBack</a>().</p>
@@ -153,6 +157,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

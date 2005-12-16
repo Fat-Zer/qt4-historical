@@ -24,7 +24,7 @@
 #ifndef Q3PROGRESSBAR_H
 #define Q3PROGRESSBAR_H
 
-#include "QtGui/qframe.h"
+#include <QtGui/qframe.h>
 
 QT_MODULE(Qt3SupportLight)
 
@@ -63,7 +63,7 @@ public:
 
     void setVisible(bool visible);
 
-public slots:
+public Q_SLOTS:
     void reset();
     virtual void setTotalSteps(int totalSteps);
     virtual void setProgress(int progress);

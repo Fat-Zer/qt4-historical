@@ -37,6 +37,7 @@
 
 #include "qplatformdefs.h"
 
+#include "qdebug.h"
 #include "qiodevice.h"
 #include "qpixmap_p.h"
 #include "qbitmap.h"
@@ -48,7 +49,6 @@
 #include <private/qt_x11_p.h>
 #include "qx11info_x11.h"
 #include <private/qdrawhelper_p.h>
-#include  "qdebug.h"
 
 #include <stdlib.h>
 
@@ -387,8 +387,10 @@ QPixmapData::~QPixmapData()
 
 void QPixmap::detach()
 {
-    if (data->count != 1)
+    if (data->count != 1) {
         *this = copy();
+        data->ser_no = ++qt_pixmap_serial;
+    }
     data->uninit = false;
 
     // reset the cache data
@@ -396,7 +398,6 @@ void QPixmap::detach()
         XFreePixmap(X11->display, data->hd2);
         data->hd2 = 0;
     }
-    data->ser_no = ++qt_pixmap_serial;
 }
 
 
@@ -1986,6 +1987,11 @@ int QPixmap::x11SetDefaultScreen(int screen)
 */
 void QPixmap::x11SetScreen(int screen)
 {
+    if (paintingActive()) {
+        qWarning("QPixmap::x11SetScreen(): Cannot change screens during painting");
+        return;
+    }
+
     if (screen < 0)
         screen = QX11Info::appScreen();
 
@@ -2035,8 +2041,10 @@ bool QPixmap::hasAlphaChannel() const
 }
 
 /*!
-    Returns a pointer to a QX11Info object. This pointer is owned by
-    QPixmap and should not be deleted.
+    Returns information about the configuration of the X display used to display
+    the widget.
+
+    \warning This function is only available on X11.
 */
 const QX11Info &QPixmap::x11Info() const
 {
@@ -2156,7 +2164,7 @@ void QPixmapData::convertToARGB32()
     if (!X11->use_xrender)
         return;
 
-    Q_ASSERT(count == 1);
+    // Q_ASSERT(count == 1);
 
     Pixmap pm = XCreatePixmap(X11->display, RootWindow(X11->display, xinfo.screen()),
                               w, h, 32);

@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/doc/src/qt4-scribe.qdoc -->
+<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/doc/src/qt4-scribe.qdoc -->
 <head>
-    <title>Qt 4.0: The Scribe Classes</title>
+    <title>Qt 4.1: The Scribe Classes</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -26,7 +26,7 @@ body { background: #ffffff; color: black; }</style>
 [Next: <a href="qt4-mainwindow.html">The Qt 4 Main Window Classes</a>]
 </p>
 <h1 align="center">The Scribe Classes<br /><small></small></h1>
-<p>Scribe introduces a set of text layout classes to Qt 4. These classes replace the old rich text engine found in Qt 3, and provide new features for processing and laying out both plain and rich text.</p>
+<a name="scribe"></a><p>Scribe introduces a set of text layout classes to Qt 4. These classes replace the old rich text engine found in Qt 3, and provide new features for processing and laying out both plain and rich text.</p>
 <ul><li><a href="#overview-of-scribe">Overview of Scribe</a></li>
 <ul><li><a href="#the-document-interface">The Document Interface</a></li>
 <li><a href="#document-structure">Document Structure</a></li>
@@ -36,6 +36,7 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="#example-code">Example Code</a></li>
 <ul><li><a href="#manipulating-rich-text">Manipulating Rich Text</a></li>
 <li><a href="#plain-text-layout">Plain Text Layout</a></li>
+<li><a href="#printing-features">Printing Features</a></li>
 </ul>
 <li><a href="#comparison-with-qt-3">Comparison with Qt 3</a></li>
 </ul>
@@ -62,37 +63,16 @@ body { background: #ffffff; color: black; }</style>
 <a name="document-layout"></a>
 <h3>Document Layout</h3>
 <p>The layout of a document is only relevant when it is to be displayed on a device, or when some information is requested that requires a visual representation of the document. Until this occurs, the document does not need to be formatted and prepared for a device.</p>
-<p>Each document's layout is managed by a subclass of the <a href="qabstracttextdocumentlayout.html">QAbstractTextDocumentLayout</a> class. This class provides a common interface for layout and rendering engines. The default rendering behavior is currently implemented in a private class.</p>
+<p>Each document's layout is managed by a subclass of the <a href="qabstracttextdocumentlayout.html">QAbstractTextDocumentLayout</a> class. This class provides a common interface for layout and rendering engines. The default rendering behavior is currently implemented in a private class. This approach makes it possible to create custom layouts, and provides the mechanism used when preparing pages for printing or exporting to Portable Document Format (PDF) files.</p>
 <a name="example-code"></a>
 <h2>Example Code</h2>
 <p>Here we present two different ways in which the Scribe classes can be used: for creating and manipulating rich text, and for laying out plain text.</p>
 <a name="manipulating-rich-text"></a>
 <h3>Manipulating Rich Text</h3>
 <p>Rich text is stored in text documents that can either be created by importing HTML from an external source, or generated using a <a href="qtextcursor.html">QTextCursor</a>. The easiest way to use a rich text document is through the <a href="qtextedit.html">QTextEdit</a> class, providing an editable view onto a document. The code below imports HTML into a document, and displays the document using a text edit widget.</p>
-<pre>&nbsp;   void mergeFormat(QTextEdit *edit)
-    {
-        QTextDocument *document = edit-&gt;document();
-        QTextCursor cursor(document);
-
-        cursor.movePosition(QTextCursor::Start);
-        cursor.movePosition(QTextCursor::EndOfLine, QTextCursor::KeepAnchor);
-
-        QTextCharFormat format;
-        format.setFontWeight(QFont::Bold);
-
-        cursor.mergeCharFormat(format);
-    }
-
-    int main(int argc, char *argv[])
-    {
-        QWidget *parent = 0;
-        QString aStringContainingHTMLtext(&quot;&lt;h1&gt;Scribe Overview&lt;/h1&gt;&quot;);
-
-        QApplication app(argc, argv);
-
-        QTextEdit *edit = new QTextEdit(parent);
-        edit-&gt;setHtml(aStringContainingHTMLtext);
-        edit-&gt;show();</pre>
+<pre>&nbsp;       QTextEdit *editor = new QTextEdit(parent);
+        editor-&gt;setHtml(aStringContainingHTMLtext);
+        editor-&gt;show();</pre>
 <p>You can retrieve the document from the text edit using the document() function. The document can then be edited programmatically using the <a href="qtextcursor.html">QTextCursor</a> class. This class is modeled after a screen cursor, and editing operations follow the same semantics. The following code changes the first line of the document to a bold font, leaving all other font properties untouched. The editor will be automatically updated to reflect the changes made to the underlying document data.</p>
 <pre>&nbsp;       QTextDocument *document = edit-&gt;document();
         QTextCursor cursor(document);
@@ -195,6 +175,23 @@ body { background: #ffffff; color: black; }</style>
         painter.end();</pre>
 <p>We create a text layout, specifying the text string we want to display and the font to use. We ensure that the text we supplied is formatted correctly by obtaining text lines from the text format, and wrapping the remaining text using the available space. The lines are positioned as we move down the page.</p>
 <p>The formatted text can be drawn onto a paint device; in the above code, the text is drawn directly onto a widget.</p>
+<a name="printing-features"></a>
+<h3>Printing Features</h3>
+<p>The layout system used to display rich text documents also supports paged layout of documents, and this is used by Qt to generate output for printing. The printing process is performed by <a href="qprinter.html">QPrinter</a> and controlled by the user via options displayed in a <a href="qprintdialog.html">QPrintDialog</a>:</p>
+<pre>&nbsp;       QTextDocument *document = editor-&gt;document();
+        QPrinter printer;
+
+        QPrintDialog *dlg = new QPrintDialog(&amp;printer, this);
+        if (dlg-&gt;exec() != QDialog::Accepted)
+            return;
+
+        document-&gt;print(&amp;printer);</pre>
+<p>Rich text documents can also be exported as PDF files using <a href="qprinter.html">QPrinter</a> and the appropriate print engine:</p>
+<pre>&nbsp;       QPrinter printer(QPrinter::HighResolution);
+        printer.setFullPage(true);
+        QPrintDialog *dlg = new QPrintDialog(&amp;printer, this);
+        if (dlg-&gt;exec() == QDialog::Accepted) {
+            textEdit-&gt;document()-&gt;print(&amp;printer);</pre>
 <a name="comparison-with-qt-3"></a>
 <h2>Comparison with Qt 3</h2>
 <p>The cursor-based editing features, combined with the structural document model, provide a powerful set of tools for manipulating and displaying rich text documents. These provide features that were unavailable in Qt 3's public API. The engine used is a complete rewrite and does not use the rich text engine supplied with Qt 3.</p>
@@ -208,6 +205,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

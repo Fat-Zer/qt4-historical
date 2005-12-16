@@ -31,7 +31,7 @@
 #include "databaseinfo.h"
 #include "customwidgetsinfo.h"
 
-#include <qtextstream.h>
+#include <QTextStream>
 
 WriteDeclaration::WriteDeclaration(Uic *uic)
     : driver(uic->driver()), output(uic->output()), option(uic->option())

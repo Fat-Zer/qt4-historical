@@ -35,13 +35,13 @@
 // We mean it.
 //
 
-#include "qobject.h"
+#include "QtCore/qobject.h"
+#include "QtCore/qmap.h"
+#include "QtGui/qmime.h"
+#include "QtGui/qdrag.h"
+#include "QtGui/qpixmap.h"
+#include "QtCore/qpoint.h"
 #include "private/qobject_p.h"
-#include "qmap.h"
-#include "qmime.h"
-#include "qdrag.h"
-#include "qpixmap.h"
-#include "qpoint.h"
 #ifdef Q_WS_MAC
 # include "private/qt_mac_p.h"
 #endif
@@ -157,7 +157,9 @@ public:
     QDropData *dropData;
 
     void emitActionChanged(Qt::DropAction newAction) { if (object) emit object->actionChanged(newAction); }
-    void emitTargetChanged(QWidget *newTarget) { if (object) emit object->targetChanged(newTarget); }
+
+    void setCurrentTarget(QWidget *target, bool dropped = false);
+    QWidget *currentTarget();
 
 #ifdef Q_WS_MAC
     static OSErr qt_mac_send_handler(FlavorType, void *, DragItemRef, DragRef); //qdnd_mac.cpp
@@ -166,6 +168,8 @@ public:
 private:
     QPixmap *pm_cursor;
     int n_cursor;
+
+    QWidget *currentDropTarget;
 
     static QDragManager *instance;
     Q_DISABLE_COPY(QDragManager)
@@ -178,6 +182,7 @@ class QOleDataObject : public IDataObject
 {
 public:
     explicit QOleDataObject(QMimeData *mimeData);
+    virtual ~QOleDataObject();
 
     void releaseQt();
     const QMimeData *mimeData() const;
@@ -211,4 +216,5 @@ private:
 #endif
 
 #endif // QT_NO_DRAGANDDROP
+
 #endif // QDND_P_H

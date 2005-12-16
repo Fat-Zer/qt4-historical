@@ -35,13 +35,13 @@
 // We mean it.
 //
 
-#include "qpaintengine.h"
-#include "qregion.h"
-#include "qpen.h"
-#include "qpoint.h"
-#include <private/qpaintengine_p.h>
-#include <private/qpainter_p.h>
-#include <private/qpolygonclipper_p.h>
+#include "QtGui/qpaintengine.h"
+#include "QtGui/qregion.h"
+#include "QtGui/qpen.h"
+#include "QtCore/qpoint.h"
+#include "private/qpaintengine_p.h"
+#include "private/qpainter_p.h"
+#include "private/qpolygonclipper_p.h"
 
 class QX11PaintEnginePrivate;
 class QFontEngineFT;
@@ -154,6 +154,14 @@ public:
     void strokePolygon_translated(const QPointF *points, int pointCount, bool close);
     void setupAdaptedOrigin(const QPoint &p);
     void resetAdaptedOrigin();
+    void decidePathFallback() {
+        use_path_fallback = has_alpha_brush
+                            || has_alpha_pen
+                            || has_custom_pen
+                            || has_complex_xform
+                            || (cpen.widthF() > 0 && has_complex_xform)
+                            || (render_hints & QPainter::Antialiasing);
+    }
 
     Display *dpy;
     int scrn;
@@ -177,6 +185,8 @@ public:
     QRegion crgn;
     QMatrix matrix;
 
+    uint has_complex_xform : 1;
+    uint has_custom_pen : 1;
     uint use_path_fallback : 1;
     uint has_clipping : 1;
     uint adapted_brush_origin : 1;
@@ -185,8 +195,8 @@ public:
     uint has_brush : 1;
     uint has_texture : 1;
     uint has_pattern : 1;
-    uint alpha_pen : 1;
-    uint alpha_brush : 1;
+    uint has_alpha_pen : 1;
+    uint has_alpha_brush : 1;
     uint render_hints;
 
     const QX11Info *xinfo;

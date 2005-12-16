@@ -20,8 +20,10 @@
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 **
 ****************************************************************************/
+
 #ifndef CODEMODELWALKER_H
 #define CODEMODELWALKER_H
+
 #include "codemodel.h"
 
 class CodeModelWalker

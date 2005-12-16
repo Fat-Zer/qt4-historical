@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 2004-2005 Trolltech AS. All rights reserved.
 **
 ** This file is part of the demonstration applications of the Qt Toolkit.
 **
@@ -24,7 +24,7 @@
 #ifndef TOOLBAR_H
 #define TOOLBAR_H
 
-#include <qtoolbar.h>
+#include <QToolBar>
 
 class QAction;
 class QActionGroup;

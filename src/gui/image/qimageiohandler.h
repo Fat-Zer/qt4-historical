@@ -46,9 +46,10 @@ public:
     QIODevice *device() const;
 
     void setFormat(const QByteArray &format);
+    void setFormat(const QByteArray &format) const;
     QByteArray format() const;
 
-    virtual QByteArray name() const = 0;
+    virtual QByteArray name() const;
 
     virtual bool canRead() const = 0;
     virtual bool read(QImage *image) = 0;
@@ -66,7 +67,9 @@ public:
         Name,
         SubType,
         IncrementalReading,
-        Endianness
+        Endianness,
+        Animation,
+        BackgroundColor
     };
     virtual QVariant option(ImageOption option) const;
     virtual void setOption(ImageOption option, const QVariant &value);
@@ -114,4 +117,6 @@ public:
     virtual QImageIOHandler *create(QIODevice *device, const QByteArray &format = QByteArray()) const = 0;
 };
 
-#endif
+Q_DECLARE_OPERATORS_FOR_FLAGS(QImageIOPlugin::Capabilities)
+
+#endif // QIMAGEIOHANDLER_H

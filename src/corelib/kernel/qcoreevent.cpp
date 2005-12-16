@@ -118,6 +118,7 @@
     \value Leave                            Mouse leaves widget's boundaries.
     \value LeaveWhatsThisMode               Send to toplevel widgets when the application leaves "What's This?" mode.
     \value LocaleChange                     The system locale has changed.
+    \value MenubarUpdated                   The window's menu bar has been updated.
     \value MetaCall                         An asynchronous method invocation via QMetaObject::invokeMethod().
     \value ModifiedChange                   Widgets modification state has been changed.
     \value MouseButtonDblClick              Mouse press again (QMouseEvent).
@@ -147,6 +148,7 @@
     \value Timer                            Regular timer events (QTimerEvent).
     \value ToolBarChange                    The toolbar button is toggled on Mac OS X.
     \value ToolTip                          A tooltip was requested (QHelpEvent).
+    \value UpdateLater                      The widget should be queued to be repainted at a later time.
     \value UpdateRequest                    The widget should be repainted.
     \value WhatsThis                        The widget should reveal "What's This?" help (QHelpEvent).
     \value WhatsThisClicked                 A link in a widget's "What's This?" help was clicked.
@@ -169,6 +171,7 @@
     \omitvalue Accel
     \omitvalue AccelAvailable
     \omitvalue AccelOverride
+    \omitvalue AcceptDropsChange
     \omitvalue ActivateControl
     \omitvalue CaptionChange
     \omitvalue ChildInserted
@@ -181,13 +184,13 @@
     \omitvalue IconChange
     \omitvalue LayoutHint
     \omitvalue OkRequest
-    \omitvalue QWSUpdate
     \omitvalue Quit
     \omitvalue Reparent
     \omitvalue ShowWindowRequest
     \omitvalue Speech
     \omitvalue Style
     \omitvalue ThreadChange
+    \omitvalue ZeroTimerEvent
 */
 
 /*!

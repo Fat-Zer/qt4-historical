@@ -155,7 +155,7 @@ QToolButton::QToolButton(QWidget * parent, const char *name)
     : QAbstractButton(*new QToolButtonPrivate, parent)
 {
     Q_D(QToolButton);
-    setObjectName(name);
+    setObjectName(QString::fromAscii(name));
     d->init();
 }
 
@@ -176,7 +176,7 @@ QToolButton::QToolButton(const QIcon& icon, const QString &textLabel,
     : QAbstractButton(*new QToolButtonPrivate, parent)
 {
     Q_D(QToolButton);
-    setObjectName(name);
+    setObjectName(QString::fromAscii(name));
     d->init();
     setIcon(icon);
     setText(textLabel);
@@ -203,7 +203,7 @@ QToolButton::QToolButton(Qt::ArrowType type, QWidget *parent, const char *name)
     : QAbstractButton(*new QToolButtonPrivate, parent)
 {
     Q_D(QToolButton);
-    setObjectName(name);
+    setObjectName(QString::fromAscii(name));
     d->init();
     setAutoRepeat(true);
     d->arrowType = type;
@@ -222,7 +222,12 @@ void QToolButtonPrivate::init()
     menu = 0;
 #endif
     defaultAction = 0;
-    autoRaise = false;
+#ifndef QT_NO_TOOLBAR
+    if (qobject_cast<QToolBar*>(q->parentWidget()))
+        autoRaise = true;
+    else
+#endif
+        autoRaise = false;
     arrowType = Qt::NoArrow;
     menuButtonDown = false;
     popupMode = QToolButton::DelayedPopup;
@@ -244,9 +249,23 @@ QStyleOptionToolButton QToolButtonPrivate::getStyleOption() const
     opt.init(q);
     bool down = q->isDown();
     bool checked = q->isChecked();
+#ifndef QT_NO_TOOLBAR
+    if (q->parentWidget()
+        && (qobject_cast<const QToolBar *>(q->parentWidget())
+#ifdef QT3_SUPPORT
+            || q->parentWidget()->inherits("Q3ToolBar")
+#endif
+            )
+        ) {
+        int iconSize = q->style()->pixelMetric(QStyle::PM_ToolBarIconSize, &opt, q);
+        opt.iconSize = QSize(iconSize, iconSize);
+    } else
+#endif // QT_NO_TOOLBAR
+    {
+        opt.iconSize = q->iconSize();
+    }
     opt.text = text;
     opt.icon = icon;
-    opt.iconSize = q->iconSize();
     opt.arrowType = arrowType;
     if (down)
         opt.state |= QStyle::State_Sunken;
@@ -279,7 +298,7 @@ QStyleOptionToolButton QToolButtonPrivate::getStyleOption() const
     if (popupMode == QToolButton::DelayedPopup)
         opt.features |= QStyleOptionToolButton::PopupDelay;
     opt.toolButtonStyle = toolButtonStyle;
-    if (icon.isNull()) {
+    if (icon.isNull() && arrowType == Qt::NoArrow) {
         if (!text.isEmpty())
             opt.toolButtonStyle = Qt::ToolButtonTextOnly;
         else if (opt.toolButtonStyle != Qt::ToolButtonTextOnly)
@@ -315,7 +334,7 @@ QSize QToolButton::sizeHint() const
 
     QFontMetrics fm = fontMetrics();
     if (opt.toolButtonStyle != Qt::ToolButtonTextOnly) {
-        QSize icon = iconSize();
+        QSize icon = opt.iconSize;
         w = icon.width();
         h = icon.height();
     }
@@ -886,11 +905,19 @@ void QToolButton::setDefaultAction(QAction *action)
 #ifndef QT_NO_TOOLTIP
     setToolTip(action->toolTip());
 #endif
+#ifndef QT_NO_STATUSTIP
     setStatusTip(action->statusTip());
+#endif
+#ifndef QT_NO_WHATSTHIS
     setWhatsThis(action->whatsThis());
+#endif
 #ifndef QT_NO_MENU
-    if (QMenu *menu = action->menu())
+    if (QMenu *menu = action->menu()) {
+        // new 'default' popup mode defined introduced by tool bar. We
+        // should have changed QToolButton's default instead.
+        setPopupMode(QToolButton::MenuButtonPopup);
         setMenu(menu);
+    }
 #endif
     setCheckable(action->isCheckable());
     setChecked(action->isChecked());
@@ -922,6 +949,12 @@ void QToolButton::nextCheckState()
         QAbstractButton::nextCheckState();
     else
         d->defaultAction->trigger();
+}
+
+/*! \reimp */
+bool QToolButton::event(QEvent *e)
+{
+    return QAbstractButton::event(e);
 }
 
 /*! \internal
@@ -988,7 +1021,7 @@ QToolButton::QToolButton(QToolButtonPrivate &dd, QWidget *parent)
 */
 
 /*!
-    \fn void QToolButton::setTextPosition(TextPosition pos)
+    \fn void QToolButton::setTextPosition(QToolButton::TextPosition pos)
 
     Use setToolButtonStyle() instead.
 */

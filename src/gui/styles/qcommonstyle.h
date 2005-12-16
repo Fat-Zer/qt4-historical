@@ -24,14 +24,16 @@
 #ifndef QCOMMONSTYLE_H
 #define QCOMMONSTYLE_H
 
-#include "QtGui/qstyle.h"
+#include <QtGui/qstyle.h>
+
+class QCommonStylePrivate;
 
 QT_MODULE(Gui)
 
 class Q_GUI_EXPORT QCommonStyle: public QStyle
 {
     Q_OBJECT
-
+    
 public:
     QCommonStyle();
     ~QCommonStyle();
@@ -60,10 +62,12 @@ public:
 
     QPixmap generatedIconPixmap(QIcon::Mode iconMode, const QPixmap &pixmap,
                                 const QStyleOption *opt) const;
-
+protected:
+    QCommonStyle(QCommonStylePrivate &dd);
+    
 private:
+    Q_DECLARE_PRIVATE(QCommonStyle)
     Q_DISABLE_COPY(QCommonStyle)
 };
-
 
 #endif // QCOMMONSTYLE_H

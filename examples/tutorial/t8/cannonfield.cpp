@@ -21,12 +21,6 @@
 **
 ****************************************************************************/
 
-/****************************************************************
-**
-** Implementation CannonField class, Qt tutorial 8
-**
-****************************************************************/
-
 #include <QPainter>
 
 #include "cannonfield.h"
@@ -36,6 +30,7 @@ CannonField::CannonField(QWidget *parent)
 {
     currentAngle = 45;
     setPalette(QPalette(QColor(250, 250, 200)));
+    setAutoFillBackground(true);
 }
 
 void CannonField::setAngle(int angle)
@@ -54,5 +49,6 @@ void CannonField::setAngle(int angle)
 void CannonField::paintEvent(QPaintEvent * /* event */)
 {
     QPainter painter(this);
-    painter.drawText(200, 200, "Angle = " + QString::number(currentAngle));
+    painter.drawText(200, 200,
+                     tr("Angle = ") + QString::number(currentAngle));
 }

@@ -36,15 +36,15 @@
 // We mean it.
 //
 
-#include "qfont.h"
-#include "qcursor.h"
-#include "qmutex.h"
-#include "qtranslator.h"
-#include "qshortcutmap_p.h"
-
-#include <private/qcoreapplication_p.h>
-#include "qapplication.h"
-#include "qbasictimer.h"
+#include "QtGui/qapplication.h"
+#include "QtGui/qfont.h"
+#include "QtGui/qcursor.h"
+#include "QtGui/qregion.h"
+#include "QtCore/qmutex.h"
+#include "QtCore/qtranslator.h"
+#include "QtCore/qbasictimer.h"
+#include "private/qcoreapplication_p.h"
+#include "private/qshortcutmap_p.h"
 
 class QWidget;
 class QObject;
@@ -72,8 +72,8 @@ extern QSysInfo::MacVersion qt_macver;
 class QWSManager;
 #endif
 
-#ifndef QT_NO_TABLET_SUPPORT
-struct TabletDeviceData
+#ifndef QT_NO_TABLET
+struct QTabletDeviceData
 {
     int minPressure;
     int maxPressure;
@@ -104,7 +104,7 @@ static inline int sign(int x)
     return x >= 0 ? 1 : -1;
 }
 
-inline QPointF TabletDeviceData::scaleCoord(int coordX, int coordY,
+inline QPointF QTabletDeviceData::scaleCoord(int coordX, int coordY,
                                             int outOriginX, int outExtentX,
                                             int outOriginY, int outExtentY) const
 {
@@ -123,8 +123,8 @@ inline QPointF TabletDeviceData::scaleCoord(int coordX, int coordY,
     return ret;
 }
 
-typedef QList<TabletDeviceData> TabletDeviceDataList;
-TabletDeviceDataList *qt_tablet_devices();
+typedef QList<QTabletDeviceData> QTabletDeviceDataList;
+QTabletDeviceDataList *qt_tablet_devices();
 #endif
 
 #ifdef QT3_SUPPORT
@@ -149,16 +149,15 @@ public:
     static void reset_instance_pointer();
 #elif defined(Q_WS_QWS)
     static bool qws_apply_settings();
-    static QWidget *findChildWidget(const QWidget *p, const QPoint &pos);
     static QWidget *findWidget(const QObjectList&, const QPoint &, bool rec);
 #endif
     static bool quitOnLastWindowClosed;
     static void emitLastWindowClosed();
 
     void createEventDispatcher();
+    QString appName() const;
 
     static void dispatchEnterLeave(QWidget *enter, QWidget *leave);
-    static QWidget *widgetAt_sys(int x, int y);
 
     //modality
     static void enterModal(QWidget*);
@@ -251,10 +250,13 @@ public:
     static bool widgetCount; // Coupled with -widgetcount switch
 
     static void setSystemPalette(const QPalette &pal);
+    static void setPalette_helper(const QPalette &palette, const char* className, bool clearWidgetPaletteHash);
+    static void initializeWidgetPaletteHash();
 
 #if defined(Q_WS_X11)
     static void applyX11SpecificCommandLineArguments(QWidget *main_widget);
 #endif
+
 #ifdef Q_WS_MAC
     bool do_mouse_down(const QPoint &, bool *);
     static OSStatus globalEventProcessor(EventHandlerCallRef, EventRef, void *);
@@ -262,13 +264,24 @@ public:
     static void qt_context_timer_callbk(EventLoopTimerRef, void *);
     static bool qt_mac_apply_settings();
 #endif
+
 #ifdef Q_WS_QWS
     QPointer<QWSManager> last_manager;
+# ifndef QT_NO_DIRECTPAINTER
+    int directPainterID;
+    bool seenRegionEvent;
+    QRegion directPainterRegion;
+# endif
 #endif
 
     static QApplicationPrivate *instance() { return self; }
 
     static QString *styleOverride;
+
+#ifdef QT_KEYPAD_NAVIGATION
+    static bool keypadNavigation;
+    static QWidget *oldEditFocus;
+#endif
 
 private:
     static QApplicationPrivate *self;

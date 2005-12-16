@@ -23,12 +23,16 @@
 
 #include <QtDesigner/QDesignerComponents>
 
+#include <actioneditor_p.h>
+#include <widgetdatabase_p.h>
+#include <widgetfactory_p.h>
+
 #include <formeditor/formeditor.h>
 #include <widgetbox/widgetbox.h>
 #include <propertyeditor/propertyeditor.h>
 #include <objectinspector/objectinspector.h>
 #include <taskmenu/taskmenu_component.h>
-#include <resourceeditor/resourceeditor.h>
+#include <resourceeditor.h>
 #include <signalsloteditor/signalsloteditorwindow.h>
 
 #include <buddyeditor/buddyeditor_plugin.h>
@@ -82,6 +86,23 @@ void QDesignerComponents::initializeResources()
 }
 
 /*!
+    Initializes the plugins used by the components.*/
+void QDesignerComponents::initializePlugins(QDesignerFormEditorInterface *core)
+{
+    using namespace qdesigner_internal;
+
+    // load the plugins
+    if (WidgetDataBase *widgetDatabase = qobject_cast<WidgetDataBase*>(core->widgetDataBase())) {
+        widgetDatabase->loadPlugins();
+        widgetDatabase->grabDefaultPropertyValues();
+    }
+
+    if (WidgetFactory *widgetFactory = qobject_cast<WidgetFactory*>(core->widgetFactory())) {
+        widgetFactory->loadPlugins();
+    }
+}
+
+/*!
     Constructs a form editor interface with the given \a parent.*/
 QDesignerFormEditorInterface *QDesignerComponents::createFormEditor(QObject *parent)
 {
@@ -124,6 +145,13 @@ QDesignerPropertyEditorInterface *QDesignerComponents::createPropertyEditor(QDes
 QDesignerObjectInspectorInterface *QDesignerComponents::createObjectInspector(QDesignerFormEditorInterface *core, QWidget *parent)
 {
     return new qdesigner_internal::ObjectInspector(core, parent);
+}
+
+/*!
+    Returns a new action editor interface with the given \a parent for the \a core interface.*/
+QDesignerActionEditorInterface *QDesignerComponents::createActionEditor(QDesignerFormEditorInterface *core, QWidget *parent)
+{
+    return new qdesigner_internal::ActionEditor(core, parent);
 }
 
 /*!

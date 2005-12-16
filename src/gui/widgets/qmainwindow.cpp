@@ -106,6 +106,12 @@ void QMainWindowPrivate::init()
     widget, such as a text edit, drawing canvas or QWorkspace (for MDI
     applications).
 
+    Note that QMainWindow comes with its own customized layout and
+    that setting a layout on a QMainWindow, or creating a layout with
+    a QMainWindow as a parent is considered an error. You should set
+    your own layout on the \l{centralWidget()}{central widget}
+    instead.
+
     Topics:
 
     \tableofcontents
@@ -273,7 +279,7 @@ QMainWindow::QMainWindow(QWidget *parent, Qt::WFlags flags)
 QMainWindow::QMainWindow(QWidget *parent, const char *name, Qt::WFlags flags)
     : QWidget(*(new QMainWindowPrivate()), parent, flags | Qt::WType_TopLevel)
 {
-    setObjectName(name);
+    setObjectName(QString::fromAscii(name));
     d_func()->init();
 }
 #endif
@@ -485,7 +491,12 @@ void QMainWindow::addToolBar(Qt::ToolBarArea area, QToolBar *toolbar)
     Q_ASSERT_X(toolbar->isAreaAllowed(area),
                "QMainWIndow::addToolBar", "specified 'area' is not an allowed area");
 
-    removeToolBar(toolbar);
+    disconnect(this, SIGNAL(iconSizeChanged(QSize)),
+               toolbar, SLOT(updateIconSize(QSize)));
+    disconnect(this, SIGNAL(toolButtonStyleChanged(Qt::ToolButtonStyle)),
+               toolbar, SLOT(updateToolButtonStyle(Qt::ToolButtonStyle)));
+
+    d->layout->removeWidget(toolbar);
 
     toolbar->d_func()->updateIconSize(d->iconSize);
     toolbar->d_func()->updateToolButtonStyle(d->toolButtonStyle);
@@ -552,16 +563,20 @@ void QMainWindow::insertToolBar(QToolBar *before, QToolBar *toolbar)
 }
 
 /*!
-    Removes the \a toolbar from the main window.
+    Removes the \a toolbar from the main window layout and hides
+    it. Note that the \a toolbar is \e not deleted.
 */
 void QMainWindow::removeToolBar(QToolBar *toolbar)
 {
-    disconnect(this, SIGNAL(iconSizeChanged(QSize)),
-               toolbar, SLOT(updateIconSize(QSize)));
-    disconnect(this, SIGNAL(toolButtonStyleChanged(Qt::ToolButtonStyle)),
-               toolbar, SLOT(updateToolButtonStyle(Qt::ToolButtonStyle)));
+    if (toolbar) {
+        disconnect(this, SIGNAL(iconSizeChanged(QSize)),
+                   toolbar, SLOT(updateIconSize(QSize)));
+        disconnect(this, SIGNAL(toolButtonStyleChanged(Qt::ToolButtonStyle)),
+                   toolbar, SLOT(updateToolButtonStyle(Qt::ToolButtonStyle)));
 
-    d_func()->layout->removeWidget(toolbar);
+        d_func()->layout->removeWidget(toolbar);
+        toolbar->hide();
+    }
 }
 
 /*!
@@ -647,10 +662,16 @@ void QMainWindow::splitDockWidget(QDockWidget *after, QDockWidget *dockwidget,
 }
 
 /*!
-    Removes the \a dockwidget from the main window.
+    Removes the \a dockwidget from the main window layout and hides
+    it. Note that the \a dockwidget is \e not deleted.
 */
 void QMainWindow::removeDockWidget(QDockWidget *dockwidget)
-{ d_func()->layout->removeRecursive(dockwidget); }
+{
+    if (dockwidget) {
+        d_func()->layout->removeRecursive(dockwidget);
+        dockwidget->hide();
+    }
+}
 
 /*!
     Returns the Qt::DockWidgetArea for \a dockwidget.

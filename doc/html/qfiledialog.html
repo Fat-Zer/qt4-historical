@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/src/gui/dialogs/qfiledialog.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/gui/dialogs/qfiledialog.cpp -->
 <head>
-    <title>Qt 4.0: QFileDialog Class Reference</title>
+    <title>Qt 4.1: QFileDialog Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -52,7 +52,7 @@ body { background: #ffffff; color: black; }</style>
 </table>
 <ul>
 <li><div class="fn"/>2 properties inherited from <a href="qdialog.html#properties">QDialog</a></li>
-<li><div class="fn"/>52 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
+<li><div class="fn"/>54 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
 <li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
 </ul>
 <a name="public-functions"></a>
@@ -96,7 +96,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <ul>
 <li><div class="fn"/>9 public functions inherited from <a href="qdialog.html#public-functions">QDialog</a></li>
-<li><div class="fn"/>184 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -107,6 +107,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>void <b><a href="qfiledialog.html#filesSelected">filesSelected</a></b> ( const QStringList &amp; <i>selected</i> )</li>
 </ul>
 <ul>
+<li><div class="fn"/>3 signals inherited from <a href="qdialog.html#signals">QDialog</a></li>
 <li><div class="fn"/>1 signal inherited from <a href="qwidget.html#signals">QWidget</a></li>
 <li><div class="fn"/>1 signal inherited from <a href="qobject.html#signals">QObject</a></li>
 </ul>
@@ -144,9 +145,9 @@ body { background: #ffffff; color: black; }</style>
 <p>In the above example, a modal QFileDialog is created using a static function. The dialog initially displays the contents of the &quot;/home&quot; directory, and displays files matching the patterns given in the string &quot;Images (*.png *.xpm *.jpg)&quot;. The parent of the file dialog is set to <i>this</i>, and the dialog is named &quot;open file dialog&quot;. The caption at the top of file dialog is set to &quot;Choose a file&quot; instead of the default.</p>
 <p>If you want to use multiple filters, separate each one with <i>two</i> semicolons. For example:</p>
 <pre>&nbsp;   &quot;Images (*.png *.xpm *.jpg);;Text files (*.txt);;XML files (*.xml)&quot;</pre>
-<p>You can create your own QFileDialog without using the static functions. By calling <a href="qfiledialog-qt3.html#setMode">setMode</a>(), you can specify what the user must select in the dialog:</p>
+<p>You can create your own QFileDialog without using the static functions. By calling <a href="qfiledialog.html#fileMode-prop">setFileMode</a>(), you can specify what the user must select in the dialog:</p>
 <pre>&nbsp;     QFileDialog *fd = new QFileDialog(this);
-      fd-&gt;setMode(QFileDialog::AnyFile);</pre>
+      fd-&gt;setFileMode(QFileDialog::AnyFile);</pre>
 <p>In the above example, the mode of the file dialog is set to <a href="qfiledialog.html#FileMode-enum">AnyFile</a>, meaning that the user can select any file, or even specify a file that doesn't exist. This mode is useful for creating a &quot;Save As&quot; file dialog. Use <a href="qfiledialog.html#FileMode-enum">ExistingFile</a> if the user must select an existing file, or <a href="qfiledialog.html#FileMode-enum">Directory</a> if only a directory may be selected. See the <a href="qfiledialog.html#FileMode-enum">QFileDialog::FileMode</a> enum for the complete list of modes.</p>
 <p>You can retrieve the dialog's mode with <a href="qfiledialog-qt3.html#mode">mode</a>(). Use <a href="qfiledialog.html#setFilter">setFilter</a>() to set the dialog's file filter. For example:</p>
 <pre>&nbsp;     fd-&gt;setFilter( &quot;Images (*.png *.xpm *.jpg)&quot; );</pre>
@@ -156,7 +157,7 @@ body { background: #ffffff; color: black; }</style>
 <p>The last important function you will need to use when creating your own file dialog is <a href="qfiledialog.html#selectedFiles">selectedFiles</a>().</p>
 <pre>&nbsp;     QStringList fileNames;
       if (fileDialog-&gt;exec())
-          fileNames = fileNames-&gt;selectedFiles();</pre>
+          fileNames = fileDialog-&gt;selectedFiles();</pre>
 <p>In the above example, a modal file dialog is created and shown. If the user clicked OK, the file they selected is put in <tt>fileName</tt>.</p>
 <p>The dialog's working directory can be set with <a href="qfiledialog.html#setDirectory">setDirectory</a>(). Each file in the current directory can be selected using the <a href="qfiledialog.html#selectFile">selectFile</a>() function.</p>
 <p>The <a href="dialogs-standarddialogs.html">Standard Dialogs</a> example shows how to use QFileDialog as well as other built-in Qt dialogs.</p>
@@ -294,7 +295,7 @@ body { background: #ffffff; color: black; }</style>
                     this,
                     &quot;Choose a directory&quot;,
                     &quot;/home&quot;,
-                    DontResolveSymlinks);</pre>
+                    QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);</pre>
 <p>This function creates a modal file dialog with the given <i>parent</i> widget. If the parent is not 0, the dialog will be shown centered over the parent widget.</p>
 <p>The dialog's working directory is set to <i>dir</i>, and the caption is set to <i>caption</i>. Either of these may be an empty string in which case the current directory and a default caption will be used respectively. The <i>options</i> argument holds various options about how to run the dialog, see the <a href="qfiledialog.html#Option-enum">QFileDialog::Option</a> enum for more information on the flags you can pass.</p>
 <p>Under Unix/X11, the normal behavior of the file dialog is to resolve and follow symlinks. For example, if <tt>/usr/tmp</tt> is a symlink to <tt>/var/tmp</tt>, the file dialog will change to <tt>/var/tmp</tt> after entering <tt>/usr/tmp</tt>. If <i>options</i> includes <a href="qfiledialog.html#Option-enum">DontResolveSymlinks</a>, the file dialog will treat symlinks as regular directories.</p>
@@ -411,6 +412,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

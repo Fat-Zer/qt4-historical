@@ -24,11 +24,11 @@
 #ifndef QACTION_H
 #define QACTION_H
 
-#include "QtGui/qicon.h"
-#include "QtGui/qkeysequence.h"
-#include "QtCore/qstring.h"
-#include "QtGui/qwidget.h"
-#include "QtCore/qvariant.h"
+#include <QtGui/qkeysequence.h>
+#include <QtCore/qstring.h>
+#include <QtGui/qwidget.h>
+#include <QtCore/qvariant.h>
+#include <QtGui/qicon.h>
 
 QT_MODULE(Gui)
 
@@ -148,7 +148,7 @@ public:
 protected:
     bool event(QEvent *);
 
-public slots:
+public Q_SLOTS:
 #ifdef QT3_SUPPORT
     inline QT_MOC_COMPAT void setOn(bool b) { setChecked(b); }
 #endif
@@ -160,7 +160,7 @@ public slots:
     inline void setDisabled(bool b) { setEnabled(!b); }
     void setVisible(bool);
 
-signals:
+Q_SIGNALS:
     void changed();
     void triggered(bool checked = false);
     void hovered();
@@ -182,7 +182,8 @@ private:
     friend class QShortcutMap;
 };
 
-#include "QtGui/qactiongroup.h" // ### remove after tech-preview 1
+#include <QtGui/qactiongroup.h>
 
 #endif // QT_NO_ACTION
+
 #endif // QACTION_H

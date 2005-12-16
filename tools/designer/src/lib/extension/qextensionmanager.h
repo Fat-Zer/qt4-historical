@@ -28,12 +28,13 @@
 #include <QtDesigner/extension.h>
 #include <QtCore/QHash>
 
-class QT_EXTENSION_EXPORT QExtensionManager: public QObject, public QAbstractExtensionManager
+class QDESIGNER_EXTENSION_EXPORT QExtensionManager: public QObject, public QAbstractExtensionManager
 {
     Q_OBJECT
     Q_INTERFACES(QAbstractExtensionManager)
 public:
     QExtensionManager(QObject *parent = 0);
+    ~QExtensionManager();
 
     virtual void registerExtensions(QAbstractExtensionFactory *factory, const QString &iid = QString());
     virtual void unregisterExtensions(QAbstractExtensionFactory *factory, const QString &iid = QString());

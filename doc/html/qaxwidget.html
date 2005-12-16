@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/extensions/activeqt/container/qaxwidget.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/activeqt/container/qaxwidget.cpp -->
 <head>
-    <title>Qt 4.0: QAxWidget Class Reference</title>
+    <title>Qt 4.1: QAxWidget Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -31,10 +31,11 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="qaxwidget.html#QAxWidget-3">QAxWidget</a></b> ( IUnknown * <i>iface</i>, QWidget * <i>parent</i> = 0, Qt::WFlags <i>f</i> = 0 )</li>
 <li><div class="fn"/><b><a href="qaxwidget.html#dtor.QAxWidget">~QAxWidget</a></b> ()</li>
 <li><div class="fn"/>virtual QAxAggregated * <b><a href="qaxwidget.html#createAggregate">createAggregate</a></b> ()</li>
+<li><div class="fn"/>bool <b><a href="qaxwidget.html#doVerb">doVerb</a></b> ( const QString &amp; <i>verb</i> )</li>
 </ul>
 <ul>
-<li><div class="fn"/>184 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
-<li><div class="fn"/>18 public functions inherited from <a href="qaxbase.html#public-functions">QAxBase</a></li>
+<li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>19 public functions inherited from <a href="qaxbase.html#public-functions">QAxBase</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -51,7 +52,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <h3>Additional Inherited Members</h3>
 <ul>
-<li><div class="fn"/>52 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
+<li><div class="fn"/>54 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
 <li><div class="fn"/>1 property inherited from <a href="qaxbase.html#properties">QAxBase</a></li>
 <li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
 <li><div class="fn"/>17 public slots inherited from <a href="qwidget.html#public-slots">QWidget</a></li>
@@ -89,6 +90,10 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="createHostWindow"></a>bool QAxWidget::createHostWindow ( bool <i>initialized</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>Creates the client site for the ActiveX control, and returns true if the control could be embedded successfully, otherwise returns false. If <i>initialized</i> is true the control has already been initialized.</p>
 <p>This function is called by <a href="qaxbase.html#initialize">initialize</a>(). If you reimplement initialize to customize the actual control instantiation, call this function in your reimplementation to have the control embedded by the default client side. Creates the client site for the ActiveX control, and returns true if the control could be embedded successfully, otherwise returns false.</p>
+<h3 class="fn"><a name="doVerb"></a>bool QAxWidget::doVerb ( const <a href="qstring.html">QString</a> &amp; <i>verb</i> )</h3>
+<p>Requests the ActiveX control to perform the action <i>verb</i>. The possible verbs are returned by <a href="qaxbase.html#verbs">verbs</a>().</p>
+<p>The function returns true if the object could perform the action, otherwise returns false.</p>
+<p>This function was introduced in Qt 4.1.</p>
 <h3 class="fn"><a name="translateKeyEvent"></a>bool QAxWidget::translateKeyEvent ( int <i>message</i>, int <i>keycode</i> ) const&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>Reimplement this function to pass certain key events to the ActiveX control. <i>message</i> is the Window message identifier specifying the message type (ie. WM_KEYDOWN), and <i>keycode</i> is the virtual keycode (ie. VK_TAB).</p>
 <p>If the function returns true the key event is passed on to the ActiveX control, which then either processes the event or passes the event on to Qt.</p>
@@ -103,6 +108,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

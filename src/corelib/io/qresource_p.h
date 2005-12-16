@@ -20,13 +20,25 @@
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 **
 ****************************************************************************/
-#ifndef __QRESOURCE_P_H__
-#define __QRESOURCE_P_H__
 
-#include <qfileengine.h>
+#ifndef QRESOURCE_P_H
+#define QRESOURCE_P_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists purely as an
+// implementation detail.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include "QtCore/qabstractfileengine.h"
 
 class QResourceFileEnginePrivate;
-class QResourceFileEngine : public QFileEngine
+class QResourceFileEngine : public QAbstractFileEngine
 {
 private:
     Q_DECLARE_PRIVATE(QResourceFileEngine)
@@ -36,14 +48,13 @@ public:
 
     virtual void setFileName(const QString &file);
 
-    virtual bool open(int flags) ;
+    virtual bool open(QIODevice::OpenMode flags) ;
     virtual bool close();
-    virtual void flush();
+    virtual bool flush();
     virtual qint64 size() const;
-    virtual qint64 at() const;
+    virtual qint64 pos() const;
     virtual bool atEnd() const;
     virtual bool seek(qint64);
-    virtual int ungetch(int);
     virtual qint64 read(char *data, qint64 maxlen);
     virtual qint64 write(const char *data, qint64 len);
 
@@ -67,16 +78,17 @@ public:
 
     virtual FileFlags fileFlags(FileFlags type) const;
 
-    virtual bool chmod(uint perms);
+    virtual bool setPermissions(uint perms);
 
-    virtual QString fileName(QFileEngine::FileName file) const;
+    virtual QString fileName(QAbstractFileEngine::FileName file) const;
 
     virtual uint ownerId(FileOwner) const;
     virtual QString owner(FileOwner) const;
 
     virtual QDateTime fileTime(FileTime time) const;
 
-    virtual Type type() const;
+    bool extension(Extension extension, const ExtensionOption *option = 0, ExtensionReturn *output = 0);
+    bool supportsExtension(Extension extension) const;
 };
 
-#endif /* __QRESOURCE_P_H__ */
+#endif // QRESOURCE_P_H

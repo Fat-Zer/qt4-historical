@@ -35,8 +35,8 @@
 // We mean it.
 //
 
-#include "qwindowdefs.h"
-#include "qlist.h"
+#include "QtGui/qwindowdefs.h"
+#include "QtCore/qlist.h"
 
 // the following is necessary to work around breakage in many versions
 // of XFree86's Xlib.h still in use
@@ -65,13 +65,13 @@
 #endif // QT_NO_SHAPE
 
 
-#if !defined (QT_NO_TABLET_SUPPORT)
+#if !defined (QT_NO_TABLET)
 #  include <X11/extensions/XInput.h>
 #if defined (Q_OS_IRIX)
 #  include <X11/extensions/SGIMisc.h>
 #  include <wacom.h>
 #endif
-#endif // QT_NO_TABLET_SUPPORT
+#endif // QT_NO_TABLET
 
 
 // #define QT_NO_XINERAMA
@@ -388,6 +388,9 @@ struct QX11Data
     bool has_fontconfig;
     qreal fc_scale;
     bool fc_antialias;
+    int fc_hint_style;
+
+    char *startupId;
 
     /* Warning: if you modify this list, modify the names of atoms in qapplication_x11.cpp as well! */
     enum X11Atom {
@@ -442,6 +445,7 @@ struct QX11Data
 
         _NET_WM_NAME,
         _NET_WM_ICON_NAME,
+        _NET_WM_ICON,
 
         _NET_WM_PID,
 
@@ -467,6 +471,9 @@ struct QX11Data
         _NET_WM_WINDOW_TYPE_UTILITY,
 
         _KDE_NET_WM_FRAME_STRUT,
+
+        _NET_STARTUP_INFO,
+        _NET_STARTUP_INFO_BEGIN,
 
         // Property formats
         COMPOUND_TEXT,

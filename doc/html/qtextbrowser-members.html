@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/src/gui/widgets/qtextbrowser.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/gui/widgets/qtextbrowser.cpp -->
 <head>
-    <title>Qt 4.0: List of All Members for QTextBrowser</title>
+    <title>Qt 4.1: List of All Members for QTextBrowser</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -33,6 +33,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qframe.html#Shadow_Mask-var">Shadow_Mask</a> : const int</li>
 <li><div class="fn"/><a href="qframe.html#Shape_Mask-var">Shape_Mask</a> : const int</li>
 <li><div class="fn"/><a href="qwidget.html#acceptDrops-prop">acceptDrops</a> () const : bool</li>
+<li><div class="fn"/><a href="qtextedit.html#acceptRichText-prop">acceptRichText</a> () const : bool</li>
 <li><div class="fn"/><a href="qwidget.html#accessibleDescription-prop">accessibleDescription</a> () const : QString</li>
 <li><div class="fn"/><a href="qwidget.html#accessibleName-prop">accessibleName</a> () const : QString</li>
 <li><div class="fn"/><a href="qwidget.html#actionEvent">actionEvent</a> ( QActionEvent * )</li>
@@ -45,6 +46,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qtextedit.html#anchorAt">anchorAt</a> ( const QPoint &amp; ) const : QString</li>
 <li><div class="fn"/><a href="qtextbrowser.html#anchorClicked">anchorClicked</a> ( const QUrl &amp; )</li>
 <li><div class="fn"/><a href="qtextedit.html#append">append</a> ( const QString &amp; )</li>
+<li><div class="fn"/><a href="qwidget.html#autoFillBackground-prop">autoFillBackground</a> () const : bool</li>
 <li><div class="fn"/><a href="qtextedit.html#autoFormatting-prop">autoFormatting</a> () const : AutoFormatting</li>
 <li><div class="fn"/><a href="qwidget.html#backgroundRole">backgroundRole</a> () const : QPalette::ColorRole</li>
 <li><div class="fn"/><a href="qtextbrowser.html#backward">backward</a> ()</li>
@@ -86,7 +88,6 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qwidget.html#customContextMenuRequested">customContextMenuRequested</a> ( const QPoint &amp; )</li>
 <li><div class="fn"/><a href="qobject.html#customEvent">customEvent</a> ( QEvent * )</li>
 <li><div class="fn"/><a href="qtextedit.html#cut">cut</a> ()</li>
-<li><div class="fn"/><a href="qobject.html#d_ptr-var">d_ptr</a> : QObjectData *</li>
 <li><div class="fn"/><a href="qobject.html#deleteLater">deleteLater</a> ()</li>
 <li><div class="fn"/><a href="qpaintdevice.html#depth">depth</a> () const : int</li>
 <li><div class="fn"/><a href="qwidget.html#destroy">destroy</a> ( bool, bool )</li>
@@ -228,13 +229,13 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qobject.html#moveToThread">moveToThread</a> ( QThread * )</li>
 <li><div class="fn"/><a href="qwidget.html#nextInFocusChain">nextInFocusChain</a> () const : QWidget *</li>
 <li><div class="fn"/><a href="qwidget.html#normalGeometry-prop">normalGeometry</a> () const : QRect</li>
-</ul></td><td valign="top"><ul>
 <li><div class="fn"/><a href="qpaintdevice.html#numColors">numColors</a> () const : int</li>
 <li><div class="fn"/><a href="qobject.html#objectName-prop">objectName</a> () const : QString</li>
 <li><div class="fn"/><a href="qwidget.html#overrideWindowFlags">overrideWindowFlags</a> ( Qt::WindowFlags )</li>
+<li><div class="fn"/><a href="qtextedit.html#overwriteMode-prop">overwriteMode</a> () const : bool</li>
+</ul></td><td valign="top"><ul>
 <li><div class="fn"/><a href="qwidget.html#paintEngine">paintEngine</a> () const : QPaintEngine *</li>
 <li><div class="fn"/><a href="qabstractscrollarea.html#paintEvent">paintEvent</a> ( QPaintEvent * )</li>
-<li><div class="fn"/><a href="qpaintdevice.html#painters-var">painters</a> : ushort</li>
 <li><div class="fn"/><a href="qpaintdevice.html#paintingActive">paintingActive</a> () const : bool</li>
 <li><div class="fn"/><a href="qwidget.html#palette-prop">palette</a> () const : const QPalette &amp;</li>
 <li><div class="fn"/><a href="qobject.html#parent">parent</a> () const : QObject *</li>
@@ -271,10 +272,12 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qtextedit.html#selectionChanged">selectionChanged</a> ()</li>
 <li><div class="fn"/><a href="qobject.html#sender">sender</a> () const : QObject *</li>
 <li><div class="fn"/><a href="qwidget.html#acceptDrops-prop">setAcceptDrops</a> ( bool )</li>
+<li><div class="fn"/><a href="qtextedit.html#acceptRichText-prop">setAcceptRichText</a> ( bool )</li>
 <li><div class="fn"/><a href="qwidget.html#accessibleDescription-prop">setAccessibleDescription</a> ( const QString &amp; )</li>
 <li><div class="fn"/><a href="qwidget.html#accessibleName-prop">setAccessibleName</a> ( const QString &amp; )</li>
 <li><div class="fn"/><a href="qtextedit.html#setAlignment">setAlignment</a> ( Qt::Alignment )</li>
 <li><div class="fn"/><a href="qwidget.html#setAttribute">setAttribute</a> ( Qt::WidgetAttribute, bool )</li>
+<li><div class="fn"/><a href="qwidget.html#autoFillBackground-prop">setAutoFillBackground</a> ( bool )</li>
 <li><div class="fn"/><a href="qtextedit.html#autoFormatting-prop">setAutoFormatting</a> ( AutoFormatting )</li>
 <li><div class="fn"/><a href="qwidget.html#setBackgroundRole">setBackgroundRole</a> ( QPalette::ColorRole )</li>
 <li><div class="fn"/><a href="qwidget.html#baseSize-prop">setBaseSize</a> ( const QSize &amp; )</li>
@@ -331,6 +334,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qwidget.html#minimumWidth-prop">setMinimumWidth</a> ( int )</li>
 <li><div class="fn"/><a href="qwidget.html#mouseTracking-prop">setMouseTracking</a> ( bool )</li>
 <li><div class="fn"/><a href="qobject.html#objectName-prop">setObjectName</a> ( const QString &amp; )</li>
+<li><div class="fn"/><a href="qtextedit.html#overwriteMode-prop">setOverwriteMode</a> ( bool )</li>
 <li><div class="fn"/><a href="qwidget.html#palette-prop">setPalette</a> ( const QPalette &amp; )</li>
 <li><div class="fn"/><a href="qwidget.html#setParent">setParent</a> ( QWidget * )</li>
 <li><div class="fn"/><a href="qwidget.html#setParent-2">setParent</a> ( QWidget *, Qt::WFlags )</li>
@@ -348,6 +352,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qwidget.html#setStyle">setStyle</a> ( QStyle * )</li>
 <li><div class="fn"/><a href="qtextedit.html#tabChangesFocus-prop">setTabChangesFocus</a> ( bool )</li>
 <li><div class="fn"/><a href="qwidget.html#setTabOrder">setTabOrder</a> ( QWidget *, QWidget * )</li>
+<li><div class="fn"/><a href="qtextedit.html#tabStopWidth-prop">setTabStopWidth</a> ( int )</li>
 <li><div class="fn"/><a href="qtextedit.html#setTextColor">setTextColor</a> ( const QColor &amp; )</li>
 <li><div class="fn"/><a href="qtextedit.html#setTextCursor">setTextCursor</a> ( const QTextCursor &amp; )</li>
 <li><div class="fn"/><a href="qwidget.html#toolTip-prop">setToolTip</a> ( const QString &amp; )</li>
@@ -360,6 +365,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qwidget.html#windowFlags-prop">setWindowFlags</a> ( Qt::WindowFlags )</li>
 <li><div class="fn"/><a href="qwidget.html#windowIcon-prop">setWindowIcon</a> ( const QIcon &amp; )</li>
 <li><div class="fn"/><a href="qwidget.html#windowIconText-prop">setWindowIconText</a> ( const QString &amp; )</li>
+<li><div class="fn"/><a href="qwidget.html#windowModality-prop">setWindowModality</a> ( Qt::WindowModality )</li>
 <li><div class="fn"/><a href="qwidget.html#windowModified-prop">setWindowModified</a> ( bool )</li>
 <li><div class="fn"/><a href="qwidget.html#windowOpacity-prop">setWindowOpacity</a> ( qreal )</li>
 <li><div class="fn"/><a href="qwidget.html#setWindowRole">setWindowRole</a> ( const QString &amp; )</li>
@@ -381,10 +387,10 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qtextbrowser.html#sourceChanged">sourceChanged</a> ( const QUrl &amp; )</li>
 <li><div class="fn"/><a href="qwidget.html#stackUnder">stackUnder</a> ( QWidget * )</li>
 <li><div class="fn"/><a href="qobject.html#startTimer">startTimer</a> ( int ) : int</li>
-<li><div class="fn"/><a href="qobject.html#staticQtMetaObject-var">staticQtMetaObject</a> : const QMetaObject</li>
 <li><div class="fn"/><a href="qwidget.html#statusTip-prop">statusTip</a> () const : QString</li>
 <li><div class="fn"/><a href="qwidget.html#style">style</a> () const : QStyle *</li>
 <li><div class="fn"/><a href="qtextedit.html#tabChangesFocus-prop">tabChangesFocus</a> () const : bool</li>
+<li><div class="fn"/><a href="qtextedit.html#tabStopWidth-prop">tabStopWidth</a> () const : int</li>
 <li><div class="fn"/><a href="qwidget.html#tabletEvent">tabletEvent</a> ( QTabletEvent * )</li>
 <li><div class="fn"/><a href="qwidget.html#testAttribute">testAttribute</a> ( Qt::WidgetAttribute ) const : bool</li>
 <li><div class="fn"/><a href="qtextedit.html#textChanged">textChanged</a> ()</li>
@@ -423,6 +429,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qwidget.html#windowFlags-prop">windowFlags</a> () const : Qt::WindowFlags</li>
 <li><div class="fn"/><a href="qwidget.html#windowIcon-prop">windowIcon</a> () const : QIcon</li>
 <li><div class="fn"/><a href="qwidget.html#windowIconText-prop">windowIconText</a> () const : QString</li>
+<li><div class="fn"/><a href="qwidget.html#windowModality-prop">windowModality</a> () const : Qt::WindowModality</li>
 <li><div class="fn"/><a href="qwidget.html#windowOpacity-prop">windowOpacity</a> () const : qreal</li>
 <li><div class="fn"/><a href="qwidget.html#windowRole">windowRole</a> () const : QString</li>
 <li><div class="fn"/><a href="qwidget.html#windowState">windowState</a> () const : Qt::WindowStates</li>
@@ -443,6 +450,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

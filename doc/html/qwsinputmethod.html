@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/src/gui/embedded/qwindowsystem_qws.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/gui/embedded/qwindowsystem_qws.cpp -->
 <head>
-    <title>Qt 4.0: QWSInputMethod Class Reference</title>
+    <title>Qt 4.1: QWSInputMethod Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -18,7 +18,7 @@ body { background: #ffffff; color: black; }</style>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QWSInputMethod Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
-<p>The QWSInputMethod class provides international input methods for Qt/Embedded. <a href="#details">More...</a></p>
+<p>The QWSInputMethod class provides international input methods for Qtopia Core. <a href="#details">More...</a></p>
 <pre>#include &lt;QWSInputMethod&gt;</pre><p>Inherits <a href="qobject.html">QObject</a>.</p>
 <ul>
 <li><a href="qwsinputmethod-members.html">List of all members, including inherited members</a></li>
@@ -59,7 +59,7 @@ body { background: #ffffff; color: black; }</style>
 <a name="details"></a>
 <hr />
 <h2>Detailed Description</h2>
-<p>The QWSInputMethod class provides international input methods for Qt/Embedded.</p>
+<p>The QWSInputMethod class provides international input methods for Qtopia Core.</p>
 <p>Subclass this class to implement your own input method.</p>
 <p>An input methods consists of a keyboard filter and optionally a graphical interface. The keyboard filter intercepts key events from physical or virtual keyboards by implementing the <a href="qwsinputmethod.html#filter">filter</a>() function.</p>
 <p>Use <a href="qwsinputmethod.html#sendIMEvent">sendIMEvent</a>() to send composition events.</p>
@@ -82,7 +82,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="queryResponse"></a>void QWSInputMethod::queryResponse ( int <i>property</i>, const <a href="qvariant.html">QVariant</a> &amp; <i>result</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>This event handler is implemented in subclasses to receive replies to an input method query.</p>
 <p>The specified <i>property</i> and <i>result</i> contain the property queried and the result returned in the reply.</p>
-<p>See also sendIMQuery().</p>
+<p>See also <a href="qwsserver.html#sendIMQuery">QWSServer::sendIMQuery</a>().</p>
 <h3 class="fn"><a name="reset"></a>void QWSInputMethod::reset ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Implemented in subclasses to reset the state of the input method.</p>
 <p>The default implementation calls <a href="qwsinputmethod.html#sendIMEvent">sendIMEvent</a>() with empty preedit and commit strings, if the input method is in compose mode.</p>
@@ -90,7 +90,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Sends an input method event with commit string <i>commitString</i>. This is a convenience function for <a href="qwsinputmethod.html#sendEvent">sendEvent</a>().</p>
 <p>If <i>replaceLength</i> is greater than 0, the commit string will replace <i>replaceLength</i> characters of the receiving widget's previous text, starting at <i>replaceFrom</i> relative to the start of the preedit string.</p>
 <p>This will cause the input method to leave compose mode.</p>
-<p>See also sendEvent, sendPreeditString, and <a href="qinputmethodevent.html">QInputMethodEvent</a>.</p>
+<p>See also <a href="qwsinputmethod.html#sendEvent">sendEvent</a>(), <a href="qwsinputmethod.html#sendPreeditString">sendPreeditString</a>(), and <a href="qinputmethodevent.html">QInputMethodEvent</a>.</p>
 <h3 class="fn"><a name="sendEvent"></a>void QWSInputMethod::sendEvent ( const <a href="qinputmethodevent.html">QInputMethodEvent</a> * )&nbsp;&nbsp;<tt> [protected]</tt></h3>
 <h3 class="fn"><a name="sendIMEvent"></a>void QWSInputMethod::sendIMEvent ( QWSServer::IMState <i>state</i>, const <a href="qstring.html">QString</a> &amp; <i>txt</i>, int <i>cpos</i>, int <i>selLen</i> = 0 )&nbsp;&nbsp;<tt> [protected]</tt></h3>
 <p>Causes a QIMEvent to be sent to the focus widget.</p>
@@ -102,7 +102,7 @@ body { background: #ffffff; color: black; }</style>
 <p>This is a convenience function for <a href="qwsinputmethod.html#sendEvent">sendEvent</a>().</p>
 <p>The preedit string is marked with <tt>QInputContext::PreeditFormat</tt>, and the selected part is marked with <tt>QInputContext::SelectionFormat</tt>.</p>
 <p>Sending an input method event with a non-empty preedit string will cause the input method to enter compose mode. Sending an input method event with an empty preedit string will cause the input method to leave compose mode.</p>
-<p>See also sendEvent, sendCommitString, and <a href="qinputmethodevent.html">QInputMethodEvent</a>.</p>
+<p>See also <a href="qwsinputmethod.html#sendEvent">sendEvent</a>(), <a href="qwsinputmethod.html#sendCommitString">sendCommitString</a>(), and <a href="qinputmethodevent.html">QInputMethodEvent</a>.</p>
 <h3 class="fn"><a name="sendQuery"></a>void QWSInputMethod::sendQuery ( int <i>property</i> )&nbsp;&nbsp;<tt> [protected]</tt></h3>
 <p>Sends an input method query for the specified <i>property</i>.</p>
 <p>Reimplement the virtual function <a href="qwsinputmethod.html#queryResponse">queryResponse</a>() to receive responses to input method queries.</p>
@@ -115,6 +115,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

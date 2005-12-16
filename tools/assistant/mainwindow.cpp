@@ -28,25 +28,25 @@
 #include "settingsdialog.h"
 #include "config.h"
 
-#include <qdockwidget.h>
-#include <qdir.h>
-#include <qtimer.h>
-#include <qstatusbar.h>
-#include <qshortcut.h>
-#include <qmessagebox.h>
-#include <qpainter.h>
-#include <qeventloop.h>
-#include <qevent.h>
-#include <qfontdatabase.h>
-#include <qwhatsthis.h>
-#include <qtextdocumentfragment.h>
-#include <qlibraryinfo.h>
-#include <qprinter.h>
-#include <qprintdialog.h>
-#include <qabstracttextdocumentlayout.h>
-#include <qtextdocument.h>
-#include <qtextobject.h>
-#include <qfiledialog.h>
+#include <QDockWidget>
+#include <QDir>
+#include <QTimer>
+#include <QStatusBar>
+#include <QShortcut>
+#include <QMessageBox>
+#include <QPainter>
+#include <QEventLoop>
+#include <QtEvents>
+#include <QFontDatabase>
+#include <QWhatsThis>
+#include <QTextDocumentFragment>
+#include <QLibraryInfo>
+#include <QPrinter>
+#include <QPrintDialog>
+#include <QAbstractTextDocumentLayout>
+#include <QTextDocument>
+#include <QTextObject>
+#include <QFileDialog>
 
 QList<MainWindow*> MainWindow::windows;
 
@@ -303,6 +303,8 @@ void MainWindow::on_actionEditFind_triggered()
         findDialog = new FindDialog(this);
     findDialog->reset();
     findDialog->show();
+    findDialog->raise();
+    findDialog->activateWindow();
 }
 
 void MainWindow::on_actionEditFindAgain_triggered()
@@ -492,22 +494,7 @@ void MainWindow::showSettingsDialog(int page)
     if (page != -1)
         settingsDia->settingsTab()->setCurrentIndex(page);
 
-    if (settingsDia->exec() != QDialog::Accepted)
-        return;
-
-
-    QObjectList lst = ui.Toolbar->children();
-    for (int i = 0; i < lst.size(); ++i) {
-        QObject *obj = lst.at(i);
-        if (qstrcmp(obj->metaObject()->className(), "QToolBarSeparator") == 0) {
-            delete obj;
-            break;
-        }
-    }
-    setupGoActions();
-
-    tabs->currentBrowser()->reload();
-    //showLink(tabs->currentBrowser()->source().toString());
+    settingsDia->exec();
 }
 
 MainWindow* MainWindow::newWindow()

@@ -108,10 +108,9 @@ QIODevicePrivate::~QIODevicePrivate()
     random-access devices.
 
     \o Sequential devices don't support seeking to arbitrary
-    positions. The data must be read in one pass. Functions
-    like pos(), seek(), and size() don't work for sequential
-    devices. QTcpSocket and QProcess are examples of sequential
-    devices.
+    positions. The data must be read in one pass. The functions
+    pos() and size() don't work for sequential devices.
+    QTcpSocket and QProcess are examples of sequential devices.
     \endlist
 
     You can use isSequential() to determine the type of device.
@@ -222,8 +221,10 @@ QIODevicePrivate::~QIODevicePrivate()
                      written to the end of the file.
     \value Truncate  If possible, the device is truncated before it is opened.
                      All earlier contents of the device are lost.
-    \value Text When reading lines using readLine(), end-of-line
-                     terminators are translated to the local encoding.
+    \value Text      When reading, the end-of-line terminators are
+                     translated to '\n'. When writing, the end-of-line
+                     terminators are translated to the local encoding, for
+                     example '\r\n' for Win32.
     \value Unbuffered Any buffer in the device is bypassed.
 
     Certain flags, such as QIODevice::Unbuffered and
@@ -584,13 +585,13 @@ qint64 QIODevice::read(char *data, qint64 maxSize)
     if (int ungetSize = d->ungetBuffer.size()) {
         do {
             if (readSoFar + 1 > maxSize) {
-                d->ungetBuffer.resize(d->ungetBuffer.size() - readSoFar);
+                seek(pos() + readSoFar);
                 return readSoFar;
             }
 
             data[readSoFar++] = d->ungetBuffer[ungetSize-- - 1];
         } while (ungetSize > 0);
-        d->ungetBuffer.resize(d->ungetBuffer.size() - readSoFar);
+        seek(pos() + readSoFar);
     }
 
     qint64 ret = readData(data + readSoFar, maxSize - readSoFar);
@@ -684,21 +685,16 @@ QByteArray QIODevice::readAll()
         forever {
             tmp.resize(tmp.size() + chunkSize);
             qint64 readBytes = read(tmp.data() + totalRead, chunkSize);
-            if (readBytes < chunkSize) {
-                tmp.chop(chunkSize - (readBytes < 0 ? qint64(0) : readBytes));
+            tmp.chop(chunkSize - (readBytes < 0 ? 0 : readBytes));
+            if (readBytes <= 0)
                 return tmp;
-            }
             totalRead += readBytes;
         }
     } else {
         // Read it all in one go.
         tmp.resize(int(bytesAvailable()));
         qint64 readBytes = read(tmp.data(), tmp.size());
-        if (readBytes < tmp.size()) {
-            if (readBytes == -1)
-                return QByteArray();
-            tmp.resize(int(readBytes));
-        }
+        tmp.resize(readBytes < 0 ? 0 : int(readBytes));
     }
     return tmp;
 }
@@ -708,8 +704,8 @@ QByteArray QIODevice::readAll()
     maximum of \a maxSize - 1 bytes, stores the characters in \a data, and
     returns the number of bytes read. If an error occurred, -1 is returned.
 
-    A '\0' byte is always appended to \a data, so \a maxSize must be larger
-    than 1.
+    A terminating '\0' byte is always appended to \a data, so \a
+    maxSize must be larger than 1.
 
     Data is read until either of the following conditions are met:
 
@@ -770,7 +766,7 @@ qint64 QIODevice::readLine(char *data, qint64 maxSize)
     }
 
     qint64 readBytes = readLineData(data + readSoFar, maxSize - readSoFar);
-    if (readBytes == -1) {
+    if (readBytes <= 0) {
         data[readSoFar] = '\0';
         return readSoFar ? readSoFar : -1;
     }
@@ -980,6 +976,82 @@ void QIODevice::ungetChar(char c)
             d->ungetBuffer = tmp;
         }
     }
+}
+
+/*!
+    \since 4.1
+
+    Reads at most \a maxSize bytes from the device into \a data, without side
+    effects (i.e., if you call read() after peek(), you will get the same
+    data).  Returns the number of bytes read. If an error occurs, such as
+    when attempting to peek a device opened in WriteOnly mode, this function
+    returns -1.
+
+    0 is returned when no more data is available for reading.
+
+    Example:
+
+    \code
+        bool isExeFile(QFile *file)
+        {
+            char buf[2];
+            if (file->peek(buf, sizeof(buf)) == sizeof(buf))
+                return (buf[0] == 'M' && buf[1] == 'Z');
+            return false;
+        }
+    \endcode
+
+    \sa read()
+*/
+qint64 QIODevice::peek(char *data, qint64 maxSize)
+{
+    qint64 oldPos = pos();
+    qint64 readBytes = read(data, maxSize);
+    if (isSequential()) {
+        int i = readBytes;
+        while (i > 0)
+            ungetChar(data[i-- - 1]);
+    } else {
+        seek(oldPos);
+    }
+    return readBytes;
+}
+
+/*!
+    \since 4.1
+    \overload
+
+    Peeks at most \a maxSize bytes from the device, returning the data peeked
+    as a QByteArray.
+
+    Example:
+
+    \code
+        bool isExeFile(QFile *file)
+        {
+            return file->peek(2) == "MZ";
+        }
+    \endcode
+
+    This function has no way of reporting errors; returning an empty
+    QByteArray() can mean either that no data was currently available
+    for peeking, or that an error occurred.
+
+    \sa read()
+*/
+QByteArray QIODevice::peek(qint64 maxSize)
+{
+    qint64 oldPos = pos();
+    QByteArray result = read(maxSize);
+    if (isSequential()) {
+        int i = result.size();
+        const char *data = result.constData();
+        while (i > 0)
+            ungetChar(data[i-- - 1]);
+    } else {
+        seek(oldPos);
+    }
+    return result;
 }
 
 /*!
@@ -1234,3 +1306,30 @@ void QIODevice::resetStatus()
 }
 #endif
 
+#if !defined(QT_NO_DEBUG_STREAM)
+QDebug operator<<(QDebug debug, QIODevice::OpenMode modes)
+{
+    debug << "OpenMode(";
+    QStringList modeList;
+    if (modes == QIODevice::NotOpen) {
+        modeList << "NotOpen";
+    } else {
+        if (modes & QIODevice::ReadOnly)
+            modeList << "ReadOnly";
+        if (modes & QIODevice::WriteOnly)
+            modeList << "WriteOnly";
+        if (modes & QIODevice::Append)
+            modeList << "Append";
+        if (modes & QIODevice::Truncate)
+            modeList << "Truncate";
+        if (modes & QIODevice::Text)
+            modeList << "Text";
+        if (modes & QIODevice::Unbuffered)
+            modeList << "Unbuffered";
+    }
+    qSort(modeList);
+    debug << modeList.join("|");
+    debug << ")";
+    return debug;
+}
+#endif

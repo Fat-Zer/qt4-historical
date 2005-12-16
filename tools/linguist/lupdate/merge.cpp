@@ -21,7 +21,7 @@
 **
 ****************************************************************************/
 
-#include <metatranslator.h>
+#include "metatranslator.h"
 #include <stdio.h>
 
 // defined in numberh.cpp

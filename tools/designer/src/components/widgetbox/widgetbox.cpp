@@ -241,6 +241,8 @@ QWidget *WidgetBoxItemDelegate::createEditor(QWidget *parent,
 WidgetBoxTreeView::WidgetBoxTreeView(QDesignerFormEditorInterface *core, QWidget *parent)
     : QTreeWidget(parent)
 {
+    setFocusPolicy(Qt::NoFocus);
+
     setItemDelegate(new WidgetBoxItemDelegate(this, this));
     setRootIsDecorated(false);
     setColumnCount(1);
@@ -552,7 +554,7 @@ WidgetBoxTreeView::CategoryList WidgetBoxTreeView::loadCustomCategoryList() cons
 {
     CategoryList result;
 
-    PluginManager *pm = m_core->pluginManager();
+    QDesignerPluginManager *pm = m_core->pluginManager();
 
     QList<QDesignerCustomWidgetInterface*> customWidgets = pm->registeredCustomWidgets();
 

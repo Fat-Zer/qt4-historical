@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/src/corelib/tools/qmap.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/corelib/tools/qmap.cpp -->
 <head>
-    <title>Qt 4.0: QMap Class Reference</title>
+    <title>Qt 4.1: QMap Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -45,6 +45,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>void <b><a href="qmap.html#clear">clear</a></b> ()</li>
 <li><div class="fn"/>const_iterator <b><a href="qmap.html#constBegin">constBegin</a></b> () const</li>
 <li><div class="fn"/>const_iterator <b><a href="qmap.html#constEnd">constEnd</a></b> () const</li>
+<li><div class="fn"/>const_iterator <b><a href="qmap.html#constFind">constFind</a></b> ( const Key &amp; <i>key</i> ) const</li>
 <li><div class="fn"/>bool <b><a href="qmap.html#contains">contains</a></b> ( const Key &amp; <i>key</i> ) const</li>
 <li><div class="fn"/>int <b><a href="qmap.html#count">count</a></b> ( const Key &amp; <i>key</i> ) const</li>
 <li><div class="fn"/>int <b><a href="qmap.html#count-2">count</a></b> () const</li>
@@ -82,8 +83,8 @@ body { background: #ffffff; color: black; }</style>
 <a name="related-non-members"></a>
 <h3>Related Non-Members</h3>
 <ul>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qmap.html#operator-lt-lt-10">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>out</i>, const QMap&lt;Key, T&gt; &amp; <i>map</i> )</li>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qmap.html#operator-gt-gt-10">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>in</i>, QMap&lt;Key, T&gt; &amp; <i>map</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qmap.html#operator-lt-lt-11">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>out</i>, const QMap&lt;Key, T&gt; &amp; <i>map</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qmap.html#operator-gt-gt-11">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>in</i>, QMap&lt;Key, T&gt; &amp; <i>map</i> )</li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -94,7 +95,7 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><a href="qhash.html">QHash</a> provides faster lookups than QMap.</li>
 <li>When iterating over a <a href="qhash.html">QHash</a>, the items are arbitrarily ordered. With QMap, the items are always sorted by key.</li>
-<li>The key type of a <a href="qhash.html">QHash</a> must provide operator==() and a global qHash(Key) function. The key type of a QMap must provide operator&lt;().</li>
+<li>The key type of a <a href="qhash.html">QHash</a> must provide operator==() and a global qHash(Key) function. The key type of a QMap must provide operator&lt;() specifying a total order.</li>
 </ul>
 <p>Here's an example QMap with <a href="qstring.html">QString</a> keys and <tt>int</tt> values:</p>
 <pre>&nbsp;   QMap&lt;QString, int&gt; map;</pre>
@@ -200,7 +201,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qmap.html#operator-eq">operator=</a>().</p>
 <h3 class="fn"><a name="QMap-3"></a>QMap::QMap ( const std::map&lt;Key, T&gt; &amp; <i>other</i> )</h3>
 <p>Constructs a copy of <i>other</i>.</p>
-<p>This function is only available if Qt is configured with STL compabitility enabled.</p>
+<p>This function is only available if Qt is configured with STL compatibility enabled.</p>
 <p>See also <a href="qmap.html#toStdMap">toStdMap</a>().</p>
 <h3 class="fn"><a name="dtor.QMap"></a>QMap::~QMap ()</h3>
 <p>Destroys the map. References to the values in the map, and all iterators over this map, become invalid.</p>
@@ -218,6 +219,11 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="constEnd"></a><a href="qmap-const-iterator.html">const_iterator</a> QMap::constEnd () const</h3>
 <p>Returns a const <a href="containers.html#stl-style-iterators">STL-style iterator</a> pointing to the imaginary item after the last item in the map.</p>
 <p>See also <a href="qmap.html#constBegin">constBegin</a>() and <a href="qmap.html#end">end</a>().</p>
+<h3 class="fn"><a name="constFind"></a><a href="qmap-const-iterator.html">const_iterator</a> QMap::constFind ( const Key &amp; <i>key</i> ) const</h3>
+<p>Returns an const iterator pointing to the item with key <i>key</i> in the map.</p>
+<p>If the map contains no item with key <i>key</i>, the function returns <a href="qmap.html#constEnd">constEnd</a>().</p>
+<p>This function was introduced in Qt 4.1.</p>
+<p>See also <a href="qmap.html#find">find</a>().</p>
 <h3 class="fn"><a name="contains"></a>bool QMap::contains ( const Key &amp; <i>key</i> ) const</h3>
 <p>Returns true if the map contains an item with key <i>key</i>; otherwise returns false.</p>
 <p>See also <a href="qmap.html#count">count</a>().</p>
@@ -248,7 +254,7 @@ body { background: #ffffff; color: black; }</style>
         cout &lt;&lt; i.value() &lt;&lt; endl;
         ++i;
     }</pre>
-<p>See also <a href="qmap.html#value">value</a>(), <a href="qmap.html#values">values</a>(), <a href="qmap.html#lowerBound">lowerBound</a>(), and <a href="qmap.html#upperBound">upperBound</a>().</p>
+<p>See also <a href="qmap.html#constFind">constFind</a>(), <a href="qmap.html#value">value</a>(), <a href="qmap.html#values">values</a>(), <a href="qmap.html#lowerBound">lowerBound</a>(), and <a href="qmap.html#upperBound">upperBound</a>().</p>
 <h3 class="fn"><a name="find-2"></a><a href="qmap-const-iterator.html">const_iterator</a> QMap::find ( const Key &amp; <i>key</i> ) const</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <h3 class="fn"><a name="insert"></a><a href="qmap-iterator.html">iterator</a> QMap::insert ( const Key &amp; <i>key</i>, const T &amp; <i>value</i> )</h3>
@@ -314,7 +320,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qmap.html#remove">remove</a>().</p>
 <h3 class="fn"><a name="toStdMap"></a>std::map&lt;Key, T&gt; QMap::toStdMap () const</h3>
 <p>Returns an STL map equivalent to this <a href="qmap.html">QMap</a>.</p>
-<p>This function is only available if Qt is configured with STL compabitility enabled.</p>
+<p>This function is only available if Qt is configured with STL compatibility enabled.</p>
 <h3 class="fn"><a name="unite"></a>QMap&lt;Key, T&gt; &amp; QMap::unite ( const QMap&lt;Key, T&gt; &amp; <i>other</i> )</h3>
 <p>Inserts all the items in the <i>other</i> map into this map. If a key is common to both maps, the resulting map will contain the key multiple times.</p>
 <p>See also <a href="qmap.html#insertMulti">insertMulti</a>().</p>
@@ -369,12 +375,12 @@ body { background: #ffffff; color: black; }</style>
 <p>Same as <a href="qmap.html#value">value</a>().</p>
 <hr />
 <h2>Related Non-Members</h2>
-<h3 class="fn"><a name="operator-lt-lt-10"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>out</i>, const QMap&lt;Key, T&gt; &amp; <i>map</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-11"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>out</i>, const QMap&lt;Key, T&gt; &amp; <i>map</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Writes the map <i>map</i> to stream <i>out</i>.</p>
 <p>This function requires the key and value types to implement <tt>operator&lt;&lt;()</tt>.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
-<h3 class="fn"><a name="operator-gt-gt-10"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>in</i>, QMap&lt;Key, T&gt; &amp; <i>map</i> )</h3>
+<h3 class="fn"><a name="operator-gt-gt-11"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>in</i>, QMap&lt;Key, T&gt; &amp; <i>map</i> )</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Reads a map from stream <i>in</i> into <i>map</i>.</p>
 <p>This function requires the key and value types to implement <tt>operator&gt;&gt;()</tt>.</p>
@@ -383,6 +389,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

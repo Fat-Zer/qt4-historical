@@ -24,15 +24,15 @@
 #ifndef Q3TABLE_H
 #define Q3TABLE_H
 
-#include "Qt3Support/q3scrollview.h"
-#include "QtGui/qpixmap.h"
-#include "Qt3Support/q3ptrvector.h"
-#include "Qt3Support/q3header.h"
-#include "Qt3Support/q3memarray.h"
-#include "Qt3Support/q3ptrlist.h"
-#include "Qt3Support/q3shared.h"
-#include "Qt3Support/q3intdict.h"
-#include "QtCore/qstringlist.h"
+#include <Qt3Support/q3scrollview.h>
+#include <QtGui/qpixmap.h>
+#include <Qt3Support/q3ptrvector.h>
+#include <Qt3Support/q3header.h>
+#include <Qt3Support/q3memarray.h>
+#include <Qt3Support/q3ptrlist.h>
+#include <Qt3Support/q3shared.h>
+#include <Qt3Support/q3intdict.h>
+#include <QtCore/qstringlist.h>
 
 QT_MODULE(Qt3Support)
 
@@ -326,7 +326,7 @@ public:
     bool isRowStretchable(int row) const;
     bool dragEnabled() const;
 
-public slots:
+public Q_SLOTS:
     virtual void setNumRows(int r);
     virtual void setNumCols(int r);
     virtual void setShowGrid(bool b);
@@ -414,14 +414,14 @@ protected:
     int currEditRow() const;
     int currEditCol() const;
 
-protected slots:
+protected Q_SLOTS:
     virtual void columnWidthChanged(int col);
     virtual void rowHeightChanged(int row);
     virtual void columnIndexChanged(int section, int fromIndex, int toIndex);
     virtual void rowIndexChanged(int section, int fromIndex, int toIndex);
     virtual void columnClicked(int col);
 
-signals:
+Q_SIGNALS:
     void currentChanged(int row, int col);
     void clicked(int row, int col, int button, const QPoint &mousePos);
     void doubleClicked(int row, int col, int button, const QPoint &mousePos);
@@ -433,7 +433,7 @@ signals:
     void dropped(QDropEvent *e);
 #endif
 
-private slots:
+private Q_SLOTS:
     void doAutoScroll();
     void doValueChanged();
     void updateGeometriesSlot();
@@ -518,4 +518,4 @@ private:
     Q_DISABLE_COPY(Q3Table)
 };
 
-#endif // TABLE_H
+#endif // Q3TABLE_H

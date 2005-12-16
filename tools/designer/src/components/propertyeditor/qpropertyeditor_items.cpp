@@ -84,6 +84,7 @@ QWidget *AbstractPropertyGroup::createEditor(QWidget *parent, const QObject *tar
 
     QLabel *label = new QLabel(parent);
     label->setIndent(2); // ### hardcode it should have the same value of textMargin in QItemDelegate
+    label->setBackgroundRole(QPalette::Base);
     return label;
 }
 
@@ -252,9 +253,42 @@ QWidget *PropertyCollection::createExternalEditor(QWidget *parent)
 
 // -------------------------------------------------------------------------
 
-StringProperty::StringProperty(const QString &value, const QString &name)
-    : AbstractProperty<QString>(value, name)
+StringProperty::StringProperty(const QString &value, const QString &name, bool hasComment, const QString &comment)
+    : AbstractPropertyGroup(name),
+      m_value(value),
+      m_checkValidObjectName(false),
+      m_allowScope(false)
 {
+    if (hasComment) {
+        StringProperty *pcomment = new StringProperty(comment, QLatin1String("comment"));
+        pcomment->setParent(this);
+        m_properties << pcomment;
+    }
+}
+
+bool StringProperty::checkValidObjectName() const
+{
+    return m_checkValidObjectName;
+}
+
+void StringProperty::setCheckValidObjectName(bool b)
+{
+    m_checkValidObjectName = b;
+}
+
+bool StringProperty::allowScope() const
+{
+    return m_allowScope;
+}
+
+void StringProperty::setAllowScope(bool b)
+{
+    m_allowScope = b;
+}
+
+QVariant StringProperty::value() const
+{
+    return m_value;
 }
 
 void StringProperty::setValue(const QVariant &value)
@@ -267,13 +301,19 @@ QString StringProperty::toString() const
     return m_value;
 }
 
+bool StringProperty::hasEditor() const
+{
+    return true;
+}
+
 QWidget *StringProperty::createEditor(QWidget *parent, const QObject *target, const char *receiver) const
 {
     QLineEdit *lineEdit = new QLineEdit(parent);
     lineEdit->setFrame(0);
 
-    if (propertyName() == QLatin1String("objectName")) {
-        lineEdit->setValidator(new QRegExpValidator(QRegExp(QLatin1String("[_a-zA-Z][_a-zA-Z0-9]*")), lineEdit));
+    if (checkValidObjectName()) {
+        QString rx = allowScope() ? QString("[_a-zA-Z:][_a-zA-Z0-9:]*") : QString("[_a-zA-Z][_a-zA-Z0-9]*");
+        lineEdit->setValidator(new QRegExpValidator(QRegExp(rx), lineEdit));
     }
 
     QObject::connect(lineEdit, SIGNAL(textChanged(QString)), target, receiver);
@@ -389,6 +429,20 @@ void SizeProperty::setValue(const QVariant &value)
 }
 
 // -------------------------------------------------------------------------
+// QIntPropertySpinBox also emits editingFinished when the spinbox is used
+class QIntPropertySpinBox: public QSpinBox
+{
+public:
+    QIntPropertySpinBox(QWidget *parent = 0)
+        : QSpinBox(parent) { }
+
+    void stepBy(int steps)
+    {
+        QSpinBox::stepBy(steps);
+        emit editingFinished();
+    }
+};
+
 IntProperty::IntProperty(int value, const QString &name)
     : AbstractProperty<int>(value, name), m_low(INT_MIN), m_hi(INT_MAX)
 {
@@ -422,14 +476,14 @@ QString IntProperty::toString() const
 
 QWidget *IntProperty::createEditor(QWidget *parent, const QObject *target, const char *receiver) const
 {
-    QSpinBox *spinBox = new QSpinBox(parent);
+    QSpinBox *spinBox = new QIntPropertySpinBox(parent);
     spinBox->setFrame(0);
     spinBox->setSpecialValueText(m_specialValue);
     spinBox->setRange(m_low, m_hi);
     spinBox->setValue(m_value);
     spinBox->selectAll();
 
-    QObject::connect(spinBox, SIGNAL(valueChanged(int)), target, receiver);
+    QObject::connect(spinBox, SIGNAL(editingFinished()), target, receiver);
 
     return spinBox;
 }
@@ -737,13 +791,26 @@ QWidget *FlagsProperty::createEditor(QWidget *parent, const QObject *target, con
 {
     QList<FlagBoxModelItem> l;
     QMapIterator<QString, QVariant> it(items());
+    unsigned int v = m_value.toUInt();
+    int initialIndex = -1;
+    int i = 0;
     while (it.hasNext()) {
         it.next();
-        l.append(FlagBoxModelItem(it.key(), it.value().toUInt(), /*checked=*/false));
+        unsigned int value = it.value().toUInt();
+        bool checked = (value == 0) ? (v == 0) : ((value & v) == value);
+        l.append(FlagBoxModelItem(it.key(), value, checked));
+        if ((value & v) == value) {
+            if (initialIndex == -1)
+                initialIndex = i;
+            else if (FlagBoxModel::bitcount(value) > FlagBoxModel::bitcount(l.at(initialIndex).value()))
+                initialIndex = i;
+        }
+        ++i;
     }
 
     FlagBox *editor = new FlagBox(parent);
     editor->setItems(l);
+    editor->setCurrentIndex(initialIndex);
     QObject::connect(editor, SIGNAL(activated(int)), target, receiver);
     return editor;
 }
@@ -754,45 +821,66 @@ void FlagsProperty::updateEditorContents(QWidget *editor)
     if (box == 0)
         return;
 
-    unsigned int v = m_value.toUInt();
-
-    // step 0) clear the contents
-    for (int i=0; i<box->count(); ++i) {
-        FlagBoxModelItem &item = box->item(i);
-        item.setChecked(false);
-    }
-
-    // step 1) perfect match
-    bool foundPerfectMatch = false;
-    for (int i=0; !foundPerfectMatch && i<box->count(); ++i) {
-        FlagBoxModelItem &item = box->item(i);
-        foundPerfectMatch = item.value() == v;
-        item.setChecked(foundPerfectMatch);
-    }
-
-    if (!foundPerfectMatch) {
-        // step 2)
-        for (int i=0; i<box->count(); ++i) {
-            FlagBoxModelItem &item = box->item(i);
-            item.setChecked((item.value() & v) == item.value());
-        }
-    }
-
     box->view()->reset();
 }
 
 void FlagsProperty::updateValue(QWidget *editor)
 {
     FlagBox *box = qobject_cast<FlagBox*>(editor);
-    if (box == 0)
+    if ((box == 0) || (box->currentIndex() < 0))
         return;
 
     unsigned int newValue = 0;
 
-    for (int i=0; i<box->count(); ++i) {
-        FlagBoxModelItem &item = box->item(i);
-        if (item.isChecked())
-            newValue |= item.value();
+    FlagBoxModelItem &thisItem = box->item(box->currentIndex());
+    if (thisItem.value() == 0) {
+        // Uncheck all items except 0-mask
+        for (int i=0; i<box->count(); ++i)
+            box->item(i).setChecked(i == box->currentIndex());
+    } else {
+        // Compute new value, without including (additional) supermasks
+        if (thisItem.isChecked())
+            newValue = thisItem.value();
+        for (int i=0; i<box->count(); ++i) {
+            FlagBoxModelItem &item = box->item(i);
+            if (item.isChecked() && (FlagBoxModel::bitcount(item.value()) == 1))
+                newValue |= item.value();
+        }
+        if (newValue == 0) {
+            // Uncheck all items except 0-mask
+            for (int i=0; i<box->count(); ++i) {
+                FlagBoxModelItem &item = box->item(i);
+                item.setChecked(item.value() == 0);
+            }
+        } else if (newValue == m_value) {
+            if (!thisItem.isChecked() && (FlagBoxModel::bitcount(thisItem.value()) > 1)) {
+                // We unchecked something, but the original value still holds
+                thisItem.setChecked(true);
+            }
+        } else {
+            // Make sure 0-mask is not selected
+            for (int i=0; i<box->count(); ++i) {
+                FlagBoxModelItem &item = box->item(i);
+                if (item.value() == 0)
+                        item.setChecked(false);
+            }
+            // Check/uncheck proper masks
+            if (thisItem.isChecked()) {
+                // Make sure submasks and supermasks are selected
+                for (int i=0; i<box->count(); ++i) {
+                    FlagBoxModelItem &item = box->item(i);
+                    if ((item.value() != 0) && ((item.value() & newValue) == item.value()) && !item.isChecked())
+                        item.setChecked(true);
+                }
+            } else {
+                // Make sure supermasks are not selected if they're no longer valid
+                for (int i=0; i<box->count(); ++i) {
+                    FlagBoxModelItem &item = box->item(i);
+                    if (item.isChecked() && ((item.value() == thisItem.value()) || ((item.value() & newValue) != item.value())))
+                        item.setChecked(false);
+                }
+            }
+        }
     }
 
     if (newValue != m_value) {
@@ -1160,8 +1248,13 @@ QVariant AlignmentProperty::value() const
 
 void AlignmentProperty::setValue(const QVariant &value)
 {
-    propertyAt(0)->setValue(value.toUInt() & Qt::AlignHorizontal_Mask);
-    propertyAt(1)->setValue(value.toUInt() & Qt::AlignVertical_Mask);
+    QVariant v = value;
+    if (qVariantCanConvert<FlagType>(value))
+        v = qvariant_cast<FlagType>(value).value;
+    else if (qVariantCanConvert<EnumType>(value))
+        v = qvariant_cast<EnumType>(value).value;
+    propertyAt(0)->setValue(v.toUInt() & Qt::AlignHorizontal_Mask);
+    propertyAt(1)->setValue(v.toUInt() & Qt::AlignVertical_Mask);
 }
 
 // -------------------------------------------------------------------------
@@ -1213,9 +1306,11 @@ void DoubleProperty::updateValue(QWidget *editor)
 }
 
 // -------------------------------------------------------------------------
-PaletteProperty::PaletteProperty(const QPalette &value, const QString &name)
+PaletteProperty::PaletteProperty(const QPalette &value, QWidget *selectedWidget,
+                const QString &name)
     : AbstractProperty<QPalette>(value, name)
 {
+    m_selectedWidget = selectedWidget;
 }
 
 void PaletteProperty::setValue(const QVariant &value)
@@ -1230,7 +1325,7 @@ QString PaletteProperty::toString() const
 
 QWidget *PaletteProperty::createEditor(QWidget *parent, const QObject *target, const char *receiver) const
 {
-    PaletteEditorButton *btn = new PaletteEditorButton(m_value, parent);
+    PaletteEditorButton *btn = new PaletteEditorButton(m_value, m_selectedWidget, parent);
     QObject::connect(btn, SIGNAL(changed()), target, receiver);
     return btn;
 }
@@ -1247,7 +1342,7 @@ void PaletteProperty::updateValue(QWidget *editor)
     if (PaletteEditorButton *btn = qobject_cast<PaletteEditorButton*>(editor)) {
         QPalette newValue = btn->palette();
 
-        if (newValue != m_value) {
+        if (newValue.resolve() != m_value.resolve() || newValue != m_value) {
             m_value = newValue;
             setChanged(true);
         }

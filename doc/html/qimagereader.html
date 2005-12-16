@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/src/gui/image/qimagereader.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/gui/image/qimagereader.cpp -->
 <head>
-    <title>Qt 4.0: QImageReader Class Reference</title>
+    <title>Qt 4.1: QImageReader Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -35,6 +35,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="qimagereader.html#QImageReader-2">QImageReader</a></b> ( QIODevice * <i>device</i>, const QByteArray &amp; <i>format</i> = QByteArray() )</li>
 <li><div class="fn"/><b><a href="qimagereader.html#QImageReader-3">QImageReader</a></b> ( const QString &amp; <i>fileName</i>, const QByteArray &amp; <i>format</i> = QByteArray() )</li>
 <li><div class="fn"/><b><a href="qimagereader.html#dtor.QImageReader">~QImageReader</a></b> ()</li>
+<li><div class="fn"/>QColor <b><a href="qimagereader.html#backgroundColor">backgroundColor</a></b> () const</li>
 <li><div class="fn"/>bool <b><a href="qimagereader.html#canRead">canRead</a></b> () const</li>
 <li><div class="fn"/>QRect <b><a href="qimagereader.html#clipRect">clipRect</a></b> () const</li>
 <li><div class="fn"/>int <b><a href="qimagereader.html#currentImageNumber">currentImageNumber</a></b> () const</li>
@@ -52,6 +53,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>QImage <b><a href="qimagereader.html#read">read</a></b> ()</li>
 <li><div class="fn"/>QRect <b><a href="qimagereader.html#scaledClipRect">scaledClipRect</a></b> () const</li>
 <li><div class="fn"/>QSize <b><a href="qimagereader.html#scaledSize">scaledSize</a></b> () const</li>
+<li><div class="fn"/>void <b><a href="qimagereader.html#setBackgroundColor">setBackgroundColor</a></b> ( const QColor &amp; <i>color</i> )</li>
 <li><div class="fn"/>void <b><a href="qimagereader.html#setClipRect">setClipRect</a></b> ( const QRect &amp; <i>rect</i> )</li>
 <li><div class="fn"/>void <b><a href="qimagereader.html#setDevice">setDevice</a></b> ( QIODevice * <i>device</i> )</li>
 <li><div class="fn"/>void <b><a href="qimagereader.html#setFileName">setFileName</a></b> ( const QString &amp; <i>fileName</i> )</li>
@@ -59,6 +61,9 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>void <b><a href="qimagereader.html#setScaledClipRect">setScaledClipRect</a></b> ( const QRect &amp; <i>rect</i> )</li>
 <li><div class="fn"/>void <b><a href="qimagereader.html#setScaledSize">setScaledSize</a></b> ( const QSize &amp; <i>size</i> )</li>
 <li><div class="fn"/>QSize <b><a href="qimagereader.html#size">size</a></b> () const</li>
+<li><div class="fn"/>bool <b><a href="qimagereader.html#supportsAnimation">supportsAnimation</a></b> () const</li>
+<li><div class="fn"/>QString <b><a href="qimagereader.html#text">text</a></b> ( const QString &amp; <i>key</i> ) const</li>
+<li><div class="fn"/>QStringList <b><a href="qimagereader.html#textKeys">textKeys</a></b> () const</li>
 </ul>
 <a name="static-public-members"></a>
 <h3>Static Public Members</h3>
@@ -75,6 +80,9 @@ body { background: #ffffff; color: black; }</style>
 <p>To read an image, you start by constructing a QImageReader object. Pass either a file name or a device pointer, and the image format to QImageReader's constructor. You can then set several options, such as the clip rect (by calling <a href="qimagereader.html#setClipRect">setClipRect</a>()) and scaled size (by calling <a href="qimagereader.html#setScaledSize">setScaledSize</a>()). <a href="qimagereader.html#canRead">canRead</a>() returns the image if the QImageReader can read the image (i.e., the image format is supported and the device is open for reading). Call <a href="qimagereader.html#read">read</a>() to read the image.</p>
 <p>If any error occurs when reading the image, <a href="qimagereader.html#read">read</a>() will return a null <a href="qimage.html">QImage</a>. You can then call <a href="qimagereader.html#error">error</a>() to find the type of error that occurred, or <a href="qimagereader.html#errorString">errorString</a>() to get a human readable description of what went wrong.</p>
 <p>Call <a href="qimagereader.html#supportedImageFormats">supportedImageFormats</a>() for a list of formats that QImageReader can read. QImageReader supports all built-in image formats, in addition to any image format plugins that support reading.</p>
+<p>Qt supports GIF reading if it is configured that way during installation. If it is, we are required to state that &quot;The Graphics Interchange Format(c) is the Copyright property of CompuServe Incorporated. GIF(sm) is a Service Mark property of CompuServe Incorporated.&quot;</p>
+<p><b>Warning:</b> If you are in a country that recognizes software patents and in which Unisys holds a patent on LZW compression and/or decompression and you want to use GIF, Unisys may require you to license that technology. Such countries include Canada, Japan, the US, France, Germany, Italy and the UK.</p>
+<p>GIF support may be removed completely in a future version of Qt. We recommend using the MNG or PNG format.</p>
 <p>See also <a href="qimagewriter.html">QImageWriter</a>, <a href="qimageiohandler.html">QImageIOHandler</a>, and <a href="qimageioplugin.html">QImageIOPlugin</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
@@ -99,17 +107,24 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qimagereader.html#setFileName">setFileName</a>().</p>
 <h3 class="fn"><a name="dtor.QImageReader"></a>QImageReader::~QImageReader ()</h3>
 <p>Destructs the <a href="qimagereader.html">QImageReader</a> object.</p>
+<h3 class="fn"><a name="backgroundColor"></a><a href="qcolor.html">QColor</a> QImageReader::backgroundColor () const</h3>
+<p>Returns the background color that's used when reading an image. If the image format does not support setting the background color an invalid color is returned.</p>
+<p>This function was introduced in Qt 4.1.</p>
+<p>See also <a href="qimagereader.html#setBackgroundColor">setBackgroundColor</a>() and <a href="qimagereader.html#read">read</a>().</p>
 <h3 class="fn"><a name="canRead"></a>bool QImageReader::canRead () const</h3>
 <p>Returns true if an image can be read for the device (i.e., the image format is supported, and the device seems to contain valid data); otherwise returns false.</p>
 <p>canRead() is a lightweight function that only does a quick test to see if the image data is valid. <a href="qimagereader.html#read">read</a>() may still return false after canRead() returns true, if the image data is corrupt.</p>
+<p>For images that support animation, canRead() returns false when all frames have been read.</p>
 <p>See also <a href="qimagereader.html#read">read</a>() and <a href="qimagereader.html#supportedImageFormats">supportedImageFormats</a>().</p>
 <h3 class="fn"><a name="clipRect"></a><a href="qrect.html">QRect</a> QImageReader::clipRect () const</h3>
 <p>Returns the clip rect (also known as the ROI, or Region Of Interest) of the image. If no clip rect has been set, an invalid <a href="qrect.html">QRect</a> is returned.</p>
 <p>See also <a href="qimagereader.html#setClipRect">setClipRect</a>().</p>
 <h3 class="fn"><a name="currentImageNumber"></a>int QImageReader::currentImageNumber () const</h3>
 <p>For image formats that support animation, this function returns the sequence number of the current frame. Otherwise, -1 is returned.</p>
+<p>See also <a href="qimagereader.html#supportsAnimation">supportsAnimation</a>() and <a href="qimageiohandler.html#currentImageNumber">QImageIOHandler::currentImageNumber</a>().</p>
 <h3 class="fn"><a name="currentImageRect"></a><a href="qrect.html">QRect</a> QImageReader::currentImageRect () const</h3>
-<p>For image formats that support animation, this function returns the rect for the current frame. Otherwise, -1 is returned.</p>
+<p>For image formats that support animation, this function returns the rect for the current frame. Otherwise, a null rect is returned.</p>
+<p>See also <a href="qimagereader.html#supportsAnimation">supportsAnimation</a>() and <a href="qimageiohandler.html#currentImageRect">QImageIOHandler::currentImageRect</a>().</p>
 <h3 class="fn"><a name="device"></a><a href="qiodevice.html">QIODevice</a> * QImageReader::device () const</h3>
 <p>Returns the device currently assigned to <a href="qimagereader.html">QImageReader</a>, or 0 if no device has been assigned.</p>
 <p>See also <a href="qimagereader.html#setDevice">setDevice</a>().</p>
@@ -126,8 +141,9 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the format <a href="qimagereader.html">QImageReader</a> uses for reading images.</p>
 <p>See also <a href="qimagereader.html#setFormat">setFormat</a>().</p>
 <h3 class="fn"><a name="imageCount"></a>int QImageReader::imageCount () const</h3>
-<p>For image formats that support animation, this function returns the number of images in the animation. Otherwise, -1 is returned.</p>
-<p>Certain animation formats do not support this feature, in which case -1 is returned.</p>
+<p>For image formats that support animation, this function returns the total number of images in the animation.</p>
+<p>Certain animation formats do not support this feature, in which case 0 is returned.</p>
+<p>See also <a href="qimagereader.html#supportsAnimation">supportsAnimation</a>() and <a href="qimageiohandler.html#imageCount">QImageIOHandler::imageCount</a>().</p>
 <h3 class="fn"><a name="imageFormat"></a><a href="qbytearray.html">QByteArray</a> QImageReader::imageFormat ( const <a href="qstring.html">QString</a> &amp; <i>fileName</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>If supported, this function returns the image format of the file <i>fileName</i>. Otherwise, an empty string is returned.</p>
 <h3 class="fn"><a name="imageFormat-2"></a><a href="qbytearray.html">QByteArray</a> QImageReader::imageFormat ( <a href="qiodevice.html">QIODevice</a> * <i>device</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
@@ -142,18 +158,24 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qimagereader.html#jumpToImage">jumpToImage</a>() and <a href="qimageiohandler.html#jumpToNextImage">QImageIOHandler::jumpToNextImage</a>().</p>
 <h3 class="fn"><a name="loopCount"></a>int QImageReader::loopCount () const</h3>
 <p>For image formats that support animation, this function returns the number of times the animation should loop. Otherwise, it returns -1.</p>
+<p>See also <a href="qimagereader.html#supportsAnimation">supportsAnimation</a>() and <a href="qimageiohandler.html#loopCount">QImageIOHandler::loopCount</a>().</p>
 <h3 class="fn"><a name="nextImageDelay"></a>int QImageReader::nextImageDelay () const</h3>
-<p>For image formats that support animation, this function returns the number of milliseconds to wait until displaying the next frame in the animation. Otherwise, -1 is returned.</p>
+<p>For image formats that support animation, this function returns the number of milliseconds to wait until displaying the next frame in the animation. Otherwise, 0 is returned.</p>
+<p>See also <a href="qimagereader.html#supportsAnimation">supportsAnimation</a>() and <a href="qimageiohandler.html#nextImageDelay">QImageIOHandler::nextImageDelay</a>().</p>
 <h3 class="fn"><a name="read"></a><a href="qimage.html">QImage</a> QImageReader::read ()</h3>
 <p>Reads an image from the device. On success, the image that was read is returned; otherwise, a null <a href="qimage.html">QImage</a> is returned. You can then call <a href="qimagereader.html#error">error</a>() to find the type of error that occurred, or <a href="qimagereader.html#errorString">errorString</a>() to get a human readable description of the error.</p>
-<p>For image formats that support animation, calling read() repeatedly will return the next frame (or use <a href="qmovie.html">QMovie</a>).</p>
-<p>See also <a href="qimagereader.html#canRead">canRead</a>() and <a href="qimagereader.html#supportedImageFormats">supportedImageFormats</a>().</p>
+<p>For image formats that support animation, calling read() repeatedly will return the next frame. When all frames have been read, a null image will be returned.</p>
+<p>See also <a href="qimagereader.html#canRead">canRead</a>(), <a href="qimagereader.html#supportedImageFormats">supportedImageFormats</a>(), <a href="qimagereader.html#supportsAnimation">supportsAnimation</a>(), and <a href="qmovie.html">QMovie</a>.</p>
 <h3 class="fn"><a name="scaledClipRect"></a><a href="qrect.html">QRect</a> QImageReader::scaledClipRect () const</h3>
 <p>Returns the scaled clip rect of the image.</p>
 <p>See also <a href="qimagereader.html#setScaledClipRect">setScaledClipRect</a>().</p>
 <h3 class="fn"><a name="scaledSize"></a><a href="qsize.html">QSize</a> QImageReader::scaledSize () const</h3>
 <p>Returns the scaled size of the image.</p>
 <p>See also <a href="qimagereader.html#setScaledSize">setScaledSize</a>().</p>
+<h3 class="fn"><a name="setBackgroundColor"></a>void QImageReader::setBackgroundColor ( const <a href="qcolor.html">QColor</a> &amp; <i>color</i> )</h3>
+<p>Sets the background color to <i>color</i>. Image formats that support this operation are expected to initialize the background to <i>color</i> before reading an image.</p>
+<p>This function was introduced in Qt 4.1.</p>
+<p>See also <a href="qimagereader.html#backgroundColor">backgroundColor</a>() and <a href="qimagereader.html#read">read</a>().</p>
 <h3 class="fn"><a name="setClipRect"></a>void QImageReader::setClipRect ( const <a href="qrect.html">QRect</a> &amp; <i>rect</i> )</h3>
 <p>Sets the image clip rect (also known as the ROI, or Region Of Interest) to <i>rect</i>. The coordinates of <i>rect</i> are relative to the untransformed image size, as returned by <a href="qimagereader.html#size">size</a>().</p>
 <p>See also <a href="qimagereader.html#clipRect">clipRect</a>(), <a href="qimagereader.html#setScaledSize">setScaledSize</a>(), and <a href="qimagereader.html#setScaledClipRect">setScaledClipRect</a>().</p>
@@ -180,12 +202,42 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="size"></a><a href="qsize.html">QSize</a> QImageReader::size () const</h3>
 <p>Returns the size of the image. This function may or may not read the entire image, depending on whether the image format supports checking the size of an image before loading it.</p>
 <h3 class="fn"><a name="supportedImageFormats"></a><a href="qlist.html">QList</a>&lt;<a href="qbytearray.html">QByteArray</a>&gt; QImageReader::supportedImageFormats ()&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Returns a list of image formats supported by <a href="qimagereader.html">QImageReader</a>.</p>
-<p>See also <a href="qimagereader.html#setFormat">setFormat</a>() and <a href="qimagewriter.html#supportedImageFormats">QImageWriter::supportedImageFormats</a>().</p>
+<p>Returns the list of image formats supported by <a href="qimagereader.html">QImageReader</a>.</p>
+<p>By default, Qt can read the following formats:</p>
+<table align="center" cellpadding="2" cellspacing="1" border="0">
+<tr valign="top" bgcolor="#a2c511"><th>Format</th><th>Description</th></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>BMP</td><td>Windows Bitmap</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>GIF</td><td>Graphic Interchange Format (optional)</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>JPG</td><td>Joint Photographic Experts Group</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>JPEG</td><td>Joint Photographic Experts Group</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>MNG</td><td>Multiple-image Network Graphics</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>PNG</td><td>Portable Network Graphics</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>PBM</td><td>Portable Bitmap</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>PGM</td><td>Portable Graymap</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>PPM</td><td>Portable Pixmap</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>XBM</td><td>X11 Bitmap</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>XPM</td><td>X11 Pixmap</td></tr>
+</table>
+<p>To configure Qt with GIF support, pass <tt>-qt-gif</tt> to the <tt>configure</tt> script or check the appropriate option in the graphical installer.</p>
+<p>See also <a href="qimagereader.html#setFormat">setFormat</a>(), <a href="qimagewriter.html#supportedImageFormats">QImageWriter::supportedImageFormats</a>(), and <a href="qimageioplugin.html">QImageIOPlugin</a>.</p>
+<h3 class="fn"><a name="supportsAnimation"></a>bool QImageReader::supportsAnimation () const</h3>
+<p>Returns true if the image format supports animation; otherwise, false is returned.</p>
+<p>This function was introduced in Qt 4.1.</p>
+<p>See also <a href="qmovie.html#supportedFormats">QMovie::supportedFormats</a>().</p>
+<h3 class="fn"><a name="text"></a><a href="qstring.html">QString</a> QImageReader::text ( const <a href="qstring.html">QString</a> &amp; <i>key</i> ) const</h3>
+<p>Returns the image text associated with <i>key</i>.</p>
+<p>Support for this option is implemented through <a href="qimageiohandler.html#ImageOption-enum">QImageIOHandler::Description</a>.</p>
+<p>This function was introduced in Qt 4.1.</p>
+<p>See also <a href="qimagereader.html#textKeys">textKeys</a>() and <a href="qimagewriter.html#setText">QImageWriter::setText</a>().</p>
+<h3 class="fn"><a name="textKeys"></a><a href="qstringlist.html">QStringList</a> QImageReader::textKeys () const</h3>
+<p>Returns the text keys for this image. You can use these keys with <a href="qimagereader.html#text">text</a>() to list the image text for a certain key.</p>
+<p>Support for this option is implemented through <a href="qimageiohandler.html#ImageOption-enum">QImageIOHandler::Description</a>.</p>
+<p>This function was introduced in Qt 4.1.</p>
+<p>See also <a href="qimagereader.html#text">text</a>(), <a href="qimagewriter.html#setText">QImageWriter::setText</a>(), and <a href="qimage.html#textKeys">QImage::textKeys</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

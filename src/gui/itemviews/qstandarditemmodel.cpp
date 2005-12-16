@@ -35,6 +35,7 @@
 /*!
     \class QStandardItemModel
     \brief The QStandardItemModel class provides a generic model for storing custom data.
+    \ingroup model-view
 
     QStandardItemModel provides a model that that can be used as a repository
     for standard Qt data types. Data is written to the model and read back using
@@ -230,7 +231,7 @@ bool QStandardItemModel::setData(const QModelIndex &index, const QVariant &value
             modelRow->items.insert(count, index.column() + 1 - count, 0);
         // make sure we have a QStdModelItem at the position
         if (!modelRow->items.at(index.column()))
-            modelRow->items[index.column()] = new QStdModelItem();
+            modelRow->items[index.column()] = new QStdModelItem;
         modelRow->items.at(index.column())->setValue(role, value);
         emit dataChanged(index, index);
         return true;
@@ -283,7 +284,7 @@ bool QStandardItemModel::setHeaderData(int section, Qt::Orientation orientation,
         header.resize(section + 1);
     headerItem = header[section];
     if (!headerItem) {
-        headerItem = new QStdModelItem();
+        headerItem = new QStdModelItem;
         header.replace(section, headerItem);
     }
 
@@ -492,6 +493,9 @@ bool QStandardItemModel::removeColumns(int column, int count, const QModelIndex 
 */
 Qt::ItemFlags QStandardItemModel::flags(const QModelIndex &index) const
 {
+    if (!index.isValid())
+        return 0;
+
     return QAbstractItemModel::flags(index) | Qt::ItemIsEditable | Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
 }
 

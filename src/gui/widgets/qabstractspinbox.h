@@ -87,7 +87,7 @@ public:
     virtual void fixup(QString &input) const;
 
     virtual void stepBy(int steps);
-public slots:
+public Q_SLOTS:
     void stepUp();
     void stepDown();
     void selectAll();
@@ -115,7 +115,7 @@ protected:
     void setLineEdit(QLineEdit *e);
 
     virtual StepEnabled stepEnabled() const;
-signals:
+Q_SIGNALS:
     void editingFinished();
 protected:
     QAbstractSpinBox(QAbstractSpinBoxPrivate &dd, QWidget *parent = 0);
@@ -128,5 +128,7 @@ private:
     Q_DISABLE_COPY(QAbstractSpinBox)
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS(QAbstractSpinBox::StepEnabled)
+
 #endif // QT_NO_SPINBOX
+
 #endif // QABSTRACTSPINBOX_H

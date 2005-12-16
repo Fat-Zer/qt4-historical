@@ -24,9 +24,9 @@
 #ifndef QMAP_H
 #define QMAP_H
 
-#include "QtCore/qatomic.h"
-#include "QtCore/qiterator.h"
-#include "QtCore/qlist.h"
+#include <QtCore/qatomic.h>
+#include <QtCore/qiterator.h>
+#include <QtCore/qlist.h>
 
 #ifndef QT_NO_STL
 #include <map>
@@ -231,8 +231,8 @@ public:
         typedef std::bidirectional_iterator_tag iterator_category;
         typedef ptrdiff_t difference_type;
         typedef T value_type;
-        typedef T *pointer;
-        typedef T &reference;
+        typedef const T *pointer;
+        typedef const T &reference;
 
         inline operator QMapData::Node *() const { return i; }
         inline const_iterator() : i(0) { }
@@ -264,7 +264,7 @@ public:
             return *this;
         }
         inline const_iterator operator--(int) {
-            iterator r = *this;
+            const_iterator r = *this;
             i = i->backward;
             return r;
         }
@@ -298,6 +298,7 @@ public:
     inline int count() const { return d->size; }
     iterator find(const Key &key);
     const_iterator find(const Key &key) const;
+    const_iterator constFind(const Key &key) const;
     iterator lowerBound(const Key &key);
     const_iterator lowerBound(const Key &key) const;
     iterator upperBound(const Key &key);
@@ -494,6 +495,12 @@ Q_INLINE_TEMPLATE typename QMap<Key, T>::iterator QMap<Key, T>::insertMulti(cons
 
 template <class Key, class T>
 Q_INLINE_TEMPLATE typename QMap<Key, T>::const_iterator QMap<Key, T>::find(const Key &akey) const
+{
+    return const_iterator(findNode(akey));
+}
+
+template <class Key, class T>
+Q_INLINE_TEMPLATE typename QMap<Key, T>::const_iterator QMap<Key, T>::constFind(const Key &akey) const
 {
     return const_iterator(findNode(akey));
 }

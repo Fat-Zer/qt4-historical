@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/doc/src/qmake-manual.qdoc -->
+<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/doc/src/qmake-manual.qdoc -->
 <head>
-    <title>Qt 4.0: qmake Advanced Usage</title>
+    <title>Qt 4.1: qmake Advanced Usage</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -13,7 +13,7 @@ tr.address { font-family: sans-serif }
 body { background: #ffffff; color: black; }</style>
     <link rel="prev" href="qmake-environment-reference.html" />
     <link rel="contents" href="qmake-manual.html" />
-    <link rel="next" href="qmake-tutorial.html" />
+    <link rel="next" href="qmake-reference.html" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
@@ -23,7 +23,7 @@ body { background: #ffffff; color: black; }</style>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><p>
 [Previous: <a href="qmake-environment-reference.html">Configuring qmake's Environment</a>]
 [<a href="qmake-manual.html">Contents</a>]
-[Next: <a href="qmake-tutorial.html">qmake Tutorial</a>]
+[Next: <a href="qmake-reference.html">qmake Reference</a>]
 </p>
 <h1 align="center">qmake Advanced Usage<br /><small></small></h1>
 <p>Many <tt>qmake</tt> project files simply describe the sources and header files used by the project, using a list of <tt>name = value</tt> and <tt>name += value</tt> definitions. <tt>qmake</tt> also provides other operators, functions, and scopes that can be used to process the information supplied in variable declarations. These advanced features allow Makefiles to be generated for multiple platforms from a single project file.</p>
@@ -140,10 +140,25 @@ body { background: #ffffff; color: black; }</style>
     message(The project will be installed in $$DESTDIR)
 
     DESTDIR = $(PWD)
-    message(Qt is currently installed in $(PWD))
     message(The project will be installed in the value of PWD)
     message(when the Makefile is processed.)</pre>
 <p>In the above assignment, the value of <tt>$PWD</tt> is read immediately when the project file is processed, but <tt>$(PWD)</tt> is assigned to <tt>DESTDIR</tt> in the generated Makefile. This makes the build process more flexible as long as the environment variable is set correctly when the Makefile is processed.</p>
+<p>The special <tt>$$[...]</tt> operator can be used to access various configuration options that were set when Qt was built:</p>
+<pre>&nbsp;   message(Qt version: $$[QT_VERSION])
+    message(Qt is installed in $$[QT_INSTALL_PREFIX])
+    message(Qt resources can be found in the following locations:)
+    message(Documentation: $$[QT_INSTALL_DOCS])
+    message(Header files: $$[QT_INSTALL_HEADERS])
+    message(Libraries: $$[QT_INSTALL_LIBS])
+    message(Binary files (executables): $$[QT_INSTALL_BINS])
+    message(Plugins: $$[QT_INSTALL_PLUGINS])
+    message(Data files: $$[QT_INSTALL_DATA])
+    message(Translation files: $$[QT_INSTALL_TRANSLATIONS])
+    message(Settings: $$[QT_INSTALL_SETTINGS])
+    message(Examples: $$[QT_INSTALL_EXAMPLES])
+    message(Demonstrations: $$[QT_INSTALL_DEMOS])</pre>
+<p>The variables accessible with this operator are typically used to enable third party plugins and components to be integrated with Qt. For example, a <i>Qt Designer</i> plugin can be installed alongside <i>Qt Designer</i>'s built-in plugins if the following declaration is made in its project file:</p>
+<pre>&nbsp;   DESTDIR = $$[QT_INSTALL_PLUGINS]/designer</pre>
 <a name="variableprocessingfunctions"></a><a name="variable-processing-functions"></a>
 <h2>Variable Processing Functions</h2>
 <p><tt>qmake</tt> provides a selection of built-in functions to allow the contents of variables to be processed. These functions process the arguments supplied to them and return a value, or list of values, as a result. In order to assign a result to a variable, it is necessary to use the <tt>$$</tt> operator with this type of function in the same way used to assign contents of one variable to another:</p>
@@ -194,7 +209,7 @@ body { background: #ffffff; color: black; }</style>
 <ol type="1">
 <li>In a directory listed in the <tt>QMAKEFEATURES</tt> environment variable; this contains a colon-separated list of directories.</li>
 <li>In a directory listed in the <tt>QMAKEFEATURES</tt> property variable; this contains a colon-spearated list of directories.</li>
-<li>In a features directory beneath the project's root directory (where the .qmake.cache file is generated).</li>
+<li>In a features directory beneath the project's root directory (where the <tt>.qmake.cache</tt> file is generated).</li>
 <li>In a features directory residing within a <tt>mkspecs</tt> directory. <tt>mkspecs</tt> directories can be located beneath any of the directories listed in the <tt>QMAKEPATH</tt> environment variable (a colon-separated list of directories). (<tt>$QMAKEPATH/mkspecs/&lt;features&gt;</tt>)</li>
 <li>In a features directory residing beneath the directory provided by the <tt>QMAKESPEC</tt> environment variable. (<tt>$QMAKESPEC/&lt;features&gt;</tt>)</li>
 <li>In a features directory residing in the <tt>data_install/mkspecs</tt> directory. (<tt>data_install/mkspecs/&lt;features&gt;</tt>)</li>
@@ -220,12 +235,12 @@ body { background: #ffffff; color: black; }</style>
 <p>
 [Previous: <a href="qmake-environment-reference.html">Configuring qmake's Environment</a>]
 [<a href="qmake-manual.html">Contents</a>]
-[Next: <a href="qmake-tutorial.html">qmake Tutorial</a>]
+[Next: <a href="qmake-reference.html">qmake Reference</a>]
 </p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

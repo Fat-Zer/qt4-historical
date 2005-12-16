@@ -25,9 +25,62 @@
 
 /*!
     \class QDesignerFormWindowManagerInterface
-    \brief The QDesignerFormWindowManagerInterface class provides an interface that is used
-    to control form windows in Qt Designer.
+
+    \brief The QDesignerFormWindowManagerInterface class allows you to
+    manipulate the collection of form windows in Qt Designer, and
+    control Qt Designer's form editing actions.
+
     \inmodule QtDesigner
+
+    QDesignerFormWindowManagerInterface is not intended to be
+    instantiated directly. \QD uses the form window manager to
+    control the various form windows in its workspace. You can
+    retrieve an interface to \QD's form window manager using
+    the QDesignerFormEditorInterface::formWindowManager()
+    function. For example:
+
+    \code
+        QDesignerFormWindowManagerInterface *manager = 0;
+        QDesignerFormWindowInterface *formWindow = 0;
+
+        manager = formEditor->formWindowManager();
+        formWindow = manager->formWindow(0);
+
+        manager->setActiveFormWindow(formWindow);
+    \endcode
+
+    When implementing a custom widget plugin, a pointer to \QD's
+    current QDesignerFormEditorInterface object (\c formEditor in the
+    example above) is provided by the
+    QDesignerCustomWidgetInterface::initialize() function's parameter.
+    You must subclass the QDesignerCustomWidgetInterface to expose
+    your plugin to Qt Designer.
+
+    The form window manager interface provides the createFormWindow()
+    function that enables you to create a new form window which you
+    can add to the collection of form windows that the manager
+    maintains, using the addFormWindow() slot. It also provides the
+    formWindowCount() function returning the number of form windows
+    currently under the manager's control, the formWindow() function
+    returning the form window associated with a given index, and the
+    activeFormWindow() function returning the currently selected form
+    window. The removeFormWindow() slot allows you to reduce the
+    number of form windows the manager must maintain, and the
+    setActiveFormWindow() slot allows you to change the form window
+    focus in \QD's workspace.
+
+    In addition, QDesignerFormWindowManagerInterface contains a
+    collection of functions that enables you to intervene and control
+    \QD's form editing actions. All these functions return the
+    original action, making it possible to propagate the function
+    further after intervention.
+
+    Finally, the interface provides three signals which are emitted
+    when a form window is added, when the currently selected form
+    window changes, or when a form window is removed, respectively. All
+    the signals carry the form window in question as their parameter.
+
+    \sa QDesignerFormEditorInterface, QDesignerFormWindowInterface
 */
 
 /*!
@@ -47,6 +100,10 @@ QDesignerFormWindowManagerInterface::~QDesignerFormWindowManagerInterface()
 }
 
 /*!
+    Allows you to intervene and control \QD's "cut" action. The function
+    returns the original action.
+
+    \sa QAction
 */
 QAction *QDesignerFormWindowManagerInterface::actionCut() const
 {
@@ -54,6 +111,10 @@ QAction *QDesignerFormWindowManagerInterface::actionCut() const
 }
 
 /*!
+    Allows you to intervene and control \QD's "copy" action. The
+    function returns the original action.
+
+    \sa QAction
 */
 QAction *QDesignerFormWindowManagerInterface::actionCopy() const
 {
@@ -61,6 +122,10 @@ QAction *QDesignerFormWindowManagerInterface::actionCopy() const
 }
 
 /*!
+    Allows you to intervene and control \QD's "paste" action. The
+    function returns the original action.
+
+    \sa QAction
 */
 QAction *QDesignerFormWindowManagerInterface::actionPaste() const
 {
@@ -68,6 +133,10 @@ QAction *QDesignerFormWindowManagerInterface::actionPaste() const
 }
 
 /*!
+    Allows you to intervene and control \QD's "delete" action. The function
+    returns the original action.
+
+    \sa QAction
 */
 QAction *QDesignerFormWindowManagerInterface::actionDelete() const
 {
@@ -75,6 +144,10 @@ QAction *QDesignerFormWindowManagerInterface::actionDelete() const
 }
 
 /*!
+    Allows you to intervene and control \QD's "select all" action. The
+    function returns the original action.
+
+    \sa QAction
 */
 QAction *QDesignerFormWindowManagerInterface::actionSelectAll() const
 {
@@ -82,6 +155,11 @@ QAction *QDesignerFormWindowManagerInterface::actionSelectAll() const
 }
 
 /*!
+    Allows you to intervene and control the action of lowering a form
+    window in \QD's workspace. The function returns the original
+    action.
+
+    \sa QAction
 */
 QAction *QDesignerFormWindowManagerInterface::actionLower() const
 {
@@ -89,6 +167,11 @@ QAction *QDesignerFormWindowManagerInterface::actionLower() const
 }
 
 /*!
+    Allows you to intervene and control the action of raising of a
+    form window in \QD's workspace. The function returns the original
+    action.
+
+    \sa QAction
 */
 QAction *QDesignerFormWindowManagerInterface::actionRaise() const
 {
@@ -96,6 +179,11 @@ QAction *QDesignerFormWindowManagerInterface::actionRaise() const
 }
 
 /*!
+    Allows you to intervene and control a request for horizontal
+    layout for a form window in \QD's workspace. The function returns
+    the original action.
+
+    \sa QAction
 */
 QAction *QDesignerFormWindowManagerInterface::actionHorizontalLayout() const
 {
@@ -103,6 +191,11 @@ QAction *QDesignerFormWindowManagerInterface::actionHorizontalLayout() const
 }
 
 /*!
+    Allows you to intervene and control a request for vertical layout
+    for a form window in \QD's workspace. The function returns the
+    original action.
+
+    \sa QAction
 */
 QAction *QDesignerFormWindowManagerInterface::actionVerticalLayout() const
 {
@@ -110,6 +203,10 @@ QAction *QDesignerFormWindowManagerInterface::actionVerticalLayout() const
 }
 
 /*!
+    Allows you to intervene and control \QD's "split horizontal"
+    action. The function returns the original action.
+
+    \sa QAction
 */
 QAction *QDesignerFormWindowManagerInterface::actionSplitHorizontal() const
 {
@@ -117,6 +214,10 @@ QAction *QDesignerFormWindowManagerInterface::actionSplitHorizontal() const
 }
 
 /*!
+    Allows you to intervene and control \QD's "split vertical"
+    action. The function returns the original action.
+
+    \sa QAction
 */
 QAction *QDesignerFormWindowManagerInterface::actionSplitVertical() const
 {
@@ -124,6 +225,11 @@ QAction *QDesignerFormWindowManagerInterface::actionSplitVertical() const
 }
 
 /*!
+    Allows you to intervene and control a request for grid layout for
+    a form window in \QD's workspace. The function returns the
+    original action.
+
+    \sa QAction
 */
 QAction *QDesignerFormWindowManagerInterface::actionGridLayout() const
 {
@@ -131,6 +237,10 @@ QAction *QDesignerFormWindowManagerInterface::actionGridLayout() const
 }
 
 /*!
+    Allows you to intervene and control \QD's "break layout" action. The
+    function returns the original action.
+
+    \sa QAction
 */
 QAction *QDesignerFormWindowManagerInterface::actionBreakLayout() const
 {
@@ -138,6 +248,10 @@ QAction *QDesignerFormWindowManagerInterface::actionBreakLayout() const
 }
 
 /*!
+    Allows you to intervene and control \QD's "adjust size" action. The
+    function returns the original action.
+
+    \sa QAction
 */
 QAction *QDesignerFormWindowManagerInterface::actionAdjustSize() const
 {
@@ -145,6 +259,9 @@ QAction *QDesignerFormWindowManagerInterface::actionAdjustSize() const
 }
 
 /*!
+   Returns the currently active form window in \QD's workspace.
+
+   \sa setActiveFormWindow(), removeFormWindow()
 */
 QDesignerFormWindowInterface *QDesignerFormWindowManagerInterface::activeFormWindow() const
 {
@@ -152,6 +269,8 @@ QDesignerFormWindowInterface *QDesignerFormWindowManagerInterface::activeFormWin
 }
 
 /*!
+    Returns a pointer to \QD's current QDesignerFormEditorInterface
+    object.
 */
 QDesignerFormEditorInterface *QDesignerFormWindowManagerInterface::core() const
 {
@@ -159,6 +278,10 @@ QDesignerFormEditorInterface *QDesignerFormWindowManagerInterface::core() const
 }
 
 /*!
+   Adds the given \a formWindow to the collection of windows that
+   \QD's form window manager maintains.
+
+   \sa formWindowAdded()
 */
 void QDesignerFormWindowManagerInterface::addFormWindow(QDesignerFormWindowInterface *formWindow)
 {
@@ -166,6 +289,10 @@ void QDesignerFormWindowManagerInterface::addFormWindow(QDesignerFormWindowInter
 }
 
 /*!
+   Removes the given \a formWindow from the collection of windows that
+   \QD's form window manager maintains.
+
+   \sa formWindow(), formWindowRemoved()
 */
 void QDesignerFormWindowManagerInterface::removeFormWindow(QDesignerFormWindowInterface *formWindow)
 {
@@ -173,6 +300,10 @@ void QDesignerFormWindowManagerInterface::removeFormWindow(QDesignerFormWindowIn
 }
 
 /*!
+   Sets the given \a formWindow to be the currently active form window in
+   \QD's workspace.
+
+   \sa activeFormWindow(), activeFormWindowChanged()
 */
 void QDesignerFormWindowManagerInterface::setActiveFormWindow(QDesignerFormWindowInterface *formWindow)
 {
@@ -180,6 +311,8 @@ void QDesignerFormWindowManagerInterface::setActiveFormWindow(QDesignerFormWindo
 }
 
 /*!
+   Returns the number of form windows maintained by \QD's form window
+   manager.
 */
 int QDesignerFormWindowManagerInterface::formWindowCount() const
 {
@@ -187,6 +320,9 @@ int QDesignerFormWindowManagerInterface::formWindowCount() const
 }
 
 /*!
+   Returns the form window at the given \a index.
+
+   \sa setActiveFormWindow(), removeFormWindow()
 */
 QDesignerFormWindowInterface *QDesignerFormWindowManagerInterface::formWindow(int index) const
 {
@@ -195,6 +331,12 @@ QDesignerFormWindowInterface *QDesignerFormWindowManagerInterface::formWindow(in
 }
 
 /*!
+  \fn QDesignerFormWindowInterface *QDesignerFormWindowManagerInterface::createFormWindow(QWidget *parent, Qt::WindowFlags flags)
+
+   Creates a form window with the given \a parent and the given window
+   \a flags.
+
+   \sa addFormWindow()
 */
 QDesignerFormWindowInterface *QDesignerFormWindowManagerInterface::createFormWindow(QWidget *parentWidget, Qt::WindowFlags flags)
 {
@@ -204,6 +346,10 @@ QDesignerFormWindowInterface *QDesignerFormWindowManagerInterface::createFormWin
 }
 
 /*!
+    Allows you to intervene and control \QD's "undo" action. The
+    function returns the original action.
+
+    \sa QAction
 */
 QAction *QDesignerFormWindowManagerInterface::actionUndo() const
 {
@@ -211,6 +357,10 @@ QAction *QDesignerFormWindowManagerInterface::actionUndo() const
 }
 
 /*!
+    Allows you to intervene and control \QD's "redo" action. The
+    function returns the original action.
+
+    \sa QAction
 */
 QAction *QDesignerFormWindowManagerInterface::actionRedo() const
 {
@@ -220,19 +370,31 @@ QAction *QDesignerFormWindowManagerInterface::actionRedo() const
 /*!
     \fn void QDesignerFormWindowManagerInterface::formWindowAdded(QDesignerFormWindowInterface *formWindow)
 
-    This signal is emitted ...
+    This signal is emitted when a new form window is added to the
+    collection of windows that \QD's form window manager maintains. A
+    pointer to the new \a formWindow is passed as an argument.
+
+    \sa addFormWindow(), setActiveFormWindow()
 */
 
 /*!
     \fn void QDesignerFormWindowManagerInterface::formWindowRemoved(QDesignerFormWindowInterface *formWindow)
 
-    This signal is emitted ...
+    This signal is emitted when a form window is removed from the
+    collection of windows that \QD's form window manager maintains. A
+    pointer to the removed \a formWindow is passed as an argument.
+
+    \sa removeFormWindow()
 */
 
 /*!
     \fn void QDesignerFormWindowManagerInterface::activeFormWindowChanged(QDesignerFormWindowInterface *formWindow)
 
-    This signal is emitted ...
+    This signal is emitted when the contents of the currently active
+    form window in \QD's workspace changed. A pointer to the currently
+    active \a formWindow is passed as an argument.
+
+    \sa activeFormWindow()
 */
 
 /*!

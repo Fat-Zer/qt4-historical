@@ -35,12 +35,13 @@
 // We mean it.
 //
 
-#include <private/qabstractscrollarea_p.h>
-#include <qtextdocumentfragment.h>
-#include <qscrollbar.h>
-#include <qtextcursor.h>
-#include <qtextformat.h>
-#include <qbasictimer.h>
+#include "private/qabstractscrollarea_p.h"
+#include "QtGui/qtextdocumentfragment.h"
+#include "QtGui/qscrollbar.h"
+#include "QtGui/qtextcursor.h"
+#include "QtGui/qtextformat.h"
+#include "QtGui/qmenu.h"
+#include "QtCore/qbasictimer.h"
 
 #ifndef QT_NO_TEXTEDIT
 
@@ -59,7 +60,9 @@ public:
 #endif
           lineWrap(QTextEdit::WidgetWidth), lineWrapColumnOrWidth(0),
           lastSelectionState(false), ignoreAutomaticScrollbarAdjustement(false), textFormat(Qt::AutoText),
-          preferRichText(false)
+          preferRichText(false),
+          overwriteMode(false),
+          acceptRichText(true)
     {}
 
     bool cursorMoveKeyEvent(QKeyEvent *e);
@@ -74,8 +77,9 @@ public:
 
     void createAutoBulletList();
 
-    void init(const QTextDocumentFragment &fragment = QTextDocumentFragment(),
-              QTextDocument *document = 0);
+    void init(const QString &html = QString());
+    void setContent(Qt::TextFormat format = Qt::RichText, const QString &text = QString(),
+                    QTextDocument *document = 0);
 #ifndef QT_NO_DRAGANDDROP
     void startDrag();
 #endif
@@ -88,16 +92,13 @@ public:
 
     void repaintContents(const QRectF &contentsRect);
     void repaintCursor();
+    inline void repaintSelection()
+    { viewport->update(selectionRect()); }
 
     inline QPoint mapToContents(const QPoint &point) const
     { return QPoint(point.x() + hbar->value(), point.y() + vbar->value()); }
 
     void selectionChanged();
-
-    inline int contentsX() const { return hbar->value(); }
-    inline int contentsY() const { return vbar->value(); }
-    inline int contentsWidth() const { return hbar->maximum() + viewport->width(); }
-    inline int contentsHeight() const { return vbar->maximum() + viewport->height(); }
 
     void pageUp(QTextCursor::MoveMode moveMode);
     void pageDown(QTextCursor::MoveMode moveMode);
@@ -109,6 +110,9 @@ public:
     void setClipboardSelection();
 #endif
     void ensureVisible(int documentPosition);
+    void ensureVisible(const QRect &rect);
+
+    void ensureViewportLayouted();
 
     void emitCursorPosChanged(const QTextCursor &someCursor);
 
@@ -118,6 +122,11 @@ public:
     void extendLinewiseSelection(int suggestedNewPosition);
 
     void relayoutDocument();
+
+    void deleteSelected();
+
+    QRect rectForPosition(int position) const;
+    QRect selectionRect() const;
 
     QTextDocument *doc;
     bool cursorOn;
@@ -143,7 +152,7 @@ public:
     QPoint dragStartPos;
     QBasicTimer dragStartTimer;
 #endif
-    
+
     QTextEdit::LineWrapMode lineWrap;
     int lineWrapColumnOrWidth;
 
@@ -163,7 +172,29 @@ public:
 
     // for QTextBrowser:
     QTextCursor focusIndicator;
-};
 
+#ifdef QT_KEYPAD_NAVIGATION
+    QBasicTimer deleteAllTimer;
+#endif
+
+    bool overwriteMode;
+    bool acceptRichText;
+};
 #endif // QT_NO_TEXTEDIT
+
+#ifndef QT_NO_MENU
+class QUnicodeControlCharacterMenu : public QMenu
+{
+    Q_OBJECT
+public:
+    QUnicodeControlCharacterMenu(QWidget *editWidget, QWidget *parent);
+
+private Q_SLOTS:
+    void actionTriggered();
+
+private:
+    QWidget *editWidget;
+};
+#endif // QT_NO_MENU
+
 #endif // QTEXTEDIT_P_H

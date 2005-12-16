@@ -35,8 +35,9 @@
 // We mean it.
 //
 
-#include <qabstracttextdocumentlayout.h>
-#include <QtGui/qtextoption.h>
+#include "QtGui/qabstracttextdocumentlayout.h"
+#include "QtGui/qtextoption.h"
+#include "QtGui/qtextobject.h"
 
 class QTextListFormat;
 
@@ -54,7 +55,6 @@ public:
     void draw(QPainter *painter, const PaintContext &context);
     int hitTest(const QPointF &point, Qt::HitTestAccuracy accuracy) const;
 
-
     int pageCount() const;
     QSizeF documentSize() const;
 
@@ -67,11 +67,20 @@ public:
     void setWordWrapMode(QTextOption::WrapMode mode);
     QTextOption::WrapMode wordWrapMode() const;
 
+    void setTabStopWidth(qreal width);
+    qreal tabStopWidth() const;
+
     // internal, to support the ugly FixedColumnWidth wordwrap mode in QTextEdit
     void setFixedColumnWidth(int width);
 
     virtual QRectF frameBoundingRect(QTextFrame *frame) const;
     virtual QRectF blockBoundingRect(const QTextBlock &block) const;
+
+    // ####
+    int layoutStatus() const;
+    int dynamicPageCount() const;
+    QSizeF dynamicDocumentSize() const;
+    void ensureLayouted(qreal);
 
 protected:
     void documentChanged(int from, int oldLength, int length);
@@ -79,6 +88,10 @@ protected:
     void positionInlineObject(QTextInlineObject item, int posInDocument, const QTextFormat &format);
     void drawInlineObject(QPainter *p, const QRectF &rect, QTextInlineObject item,
                           int posInDocument, const QTextFormat &format);
+    virtual void timerEvent(QTimerEvent *e);
+private:
+    void doLayout(int from, int oldLength, int length);
+    void layoutFinished();
 };
 
 #endif // QTEXTDOCUMENTLAYOUT_P_H

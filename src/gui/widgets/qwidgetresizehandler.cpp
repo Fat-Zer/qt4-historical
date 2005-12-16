@@ -75,14 +75,13 @@ bool QWidgetResizeHandler::isActive(Action ac) const
 
 bool QWidgetResizeHandler::eventFilter(QObject *o, QEvent *ee)
 {
-    if (!isActive() || !ee->spontaneous())
-        return false;
-
-    if (ee->type() != QEvent::MouseButtonPress &&
-         ee->type() != QEvent::MouseButtonRelease &&
-         ee->type() != QEvent::MouseMove &&
-         ee->type() != QEvent::KeyPress &&
-         ee->type() != QEvent::ShortcutOverride)
+    if (!isActive()
+        || (ee->type() != QEvent::MouseButtonPress
+            && ee->type() != QEvent::MouseButtonRelease
+            && ee->type() != QEvent::MouseMove
+            && ee->type() != QEvent::KeyPress
+            && ee->type() != QEvent::ShortcutOverride)
+        )
         return false;
 
     Q_ASSERT(o == widget);
@@ -101,6 +100,20 @@ bool QWidgetResizeHandler::eventFilter(QObject *o, QEvent *ee)
         if (!widget->rect().contains(widget->mapFromGlobal(e->globalPos())))
             return false;
         if (e->button() == Qt::LeftButton) {
+#if defined(Q_WS_X11)
+            /*
+               Implicit grabs do not stop the X server from changing
+               the cursor in children, which looks *really* bad when
+               doing resizingk, so we grab the cursor. Note that we do
+               not do this on Windows since double clicks are lost due
+               to the grab (see change 198463).
+            */
+#  if !defined(QT_NO_CURSOR)
+            widget->grabMouse(widget->cursor());
+#  else
+            widget->grabMouse();
+#  endif // QT_NO_CURSOR
+#endif // Q_WS_X11
             emit activate();
             bool me = movingEnabled;
             movingEnabled = (me && o == widget);
@@ -109,6 +122,12 @@ bool QWidgetResizeHandler::eventFilter(QObject *o, QEvent *ee)
             buttonDown = true;
             moveOffset = widget->mapFromGlobal(e->globalPos());
             invertedMoveOffset = widget->rect().bottomRight() - moveOffset;
+            if (mode == Center) {
+                if (movingEnabled)
+                    return true;
+            } else {
+                return true;
+            }
         }
     } break;
     case QEvent::MouseButtonRelease:
@@ -119,6 +138,12 @@ bool QWidgetResizeHandler::eventFilter(QObject *o, QEvent *ee)
             buttonDown = false;
             widget->releaseMouse();
             widget->releaseKeyboard();
+            if (mode == Center) {
+                if (movingEnabled)
+                    return true;
+            } else {
+                return true;
+            }
         }
         break;
     case QEvent::MouseMove: {
@@ -128,8 +153,12 @@ bool QWidgetResizeHandler::eventFilter(QObject *o, QEvent *ee)
         movingEnabled = (me && o == widget && buttonDown);
         mouseMoveEvent(e);
         movingEnabled = me;
-        if (mode != Center)
+        if (mode == Center) {
+            if (movingEnabled)
+                return true;
+        } else {
             return true;
+        }
     } break;
     case QEvent::KeyPress:
         keyPressEvent((QKeyEvent*)e);
@@ -286,9 +315,11 @@ void QWidgetResizeHandler::setMouseCursor(MousePosition m)
 #ifndef QT_NO_CURSOR
     QObjectList children = widget->children();
     for (int i = 0; i < children.size(); ++i) {
-        if (QWidget *w = qobject_cast<QWidget*>(children.at(i)))
-            if (!w->testAttribute(Qt::WA_SetCursor))
+        if (QWidget *w = qobject_cast<QWidget*>(children.at(i))) {
+            if (!w->testAttribute(Qt::WA_SetCursor) && !w->inherits("QWorkspaceTitleBar")) {
                 w->setCursor(Qt::ArrowCursor);
+            }
+        }
     }
 
     switch (m) {

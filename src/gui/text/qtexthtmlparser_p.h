@@ -35,14 +35,13 @@
 // We mean it.
 //
 
-#include <qvector.h>
-#include <qcolor.h>
-#include <qfont.h>
-#include <private/qtextformat_p.h>
-#include <private/qtextdocument_p.h>
-
-#include "qtextdocument.h"
-#include "qtextcursor.h"
+#include "QtCore/qvector.h"
+#include "QtGui/qcolor.h"
+#include "QtGui/qfont.h"
+#include "QtGui/qtextdocument.h"
+#include "QtGui/qtextcursor.h"
+#include "private/qtextformat_p.h"
+#include "private/qtextdocument_p.h"
 
 enum QTextHTMLElements {
     Html_qt,
@@ -142,6 +141,8 @@ struct QTextHtmlParserAttribute {
 };
 Q_DECLARE_TYPEINFO(QTextHtmlParserAttribute, Q_MOVABLE_TYPE);
 
+enum QTriState { Off = 0, On = 1, Unspecified = 2 };
+
 struct QTextHtmlParserNode {
     enum WhiteSpaceMode {
         WhiteSpaceNormal,
@@ -163,14 +164,15 @@ struct QTextHtmlParserNode {
     uint isListStart : 1;
     uint isTableCell : 1;
     uint isAnchor : 1;
-    uint fontItalic : 1;
-    uint fontUnderline : 1;
-    uint fontOverline : 1;
-    uint fontStrikeOut : 1;
-    uint fontFixedPitch : 1;
+    uint fontItalic : 2; // Tristate
+    uint fontUnderline : 2; // Tristate
+    uint fontOverline : 2; // Tristate
+    uint fontStrikeOut : 2; // Tristate
+    uint fontFixedPitch : 2; // Tristate
     uint cssFloat : 2;
     uint hasOwnListStyle : 1;
     uint hasFontPointSize : 1;
+    uint hasFontPixelSize : 1;
     uint hasFontSizeAdjustment : 1;
     uint hasCssBlockIndent : 1;
     uint hasCssListIndent : 1;
@@ -180,6 +182,7 @@ struct QTextHtmlParserNode {
     uint displayMode : 3; // QTextHtmlElement::DisplayMode
     QString fontFamily;
     int fontPointSize;
+    int fontPixelSize;
     int fontSizeAdjustment;
     int fontWeight;
     QColor color;
@@ -232,7 +235,6 @@ struct QTextHtmlParserNode {
 
     inline int uncollapsedMargin(int mar) const { return margin[mar]; }
 
-private:
     bool isNestedList(const QTextHtmlParser *parser) const;
 
     int margin[4];

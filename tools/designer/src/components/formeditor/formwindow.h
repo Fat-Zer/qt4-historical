@@ -40,7 +40,6 @@
 #include <QtGui/QPixmap>
 
 class DomConnections;
-class Connection;
 
 class QLabel;
 class QTimer;
@@ -48,7 +47,6 @@ class QAction;
 class QMenu;
 class QtUndoStack;
 class QRubberBand;
-class BreakLayoutCommand;
 
 namespace qdesigner_internal {
 
@@ -59,6 +57,9 @@ class WidgetEditorTool;
 class FormWindowWidgetStack;
 class FormWindowManager;
 class FormWindowDnDItem;
+class SetPropertyCommand;
+class BreakLayoutCommand;
+class Connection;
 
 class QT_FORMEDITOR_EXPORT FormWindow: public QDesignerFormWindowInterface
 {
@@ -275,13 +276,16 @@ private:
     QWidget *findContainer(QWidget *w, bool excludeLayout) const;
     QWidget *findTargetContainer(QWidget *widget) const;
 
+    bool isPageOfContainerWidget(QWidget *widget) const;
+
     static int widgetDepth(QWidget *w);
     static bool isChildOf(QWidget *c, const QWidget *p);
 
     void editWidgets();
 
     void updateWidgets();
-    void bfs(QWidget *widget);
+
+    void handleArrowKeyEvent(int key, bool modifier);
 
 private:
     Feature m_feature;
@@ -325,7 +329,7 @@ private:
     QList<QWidget*> orderedWidgets;
     QList<QWidget*> stackedWidgets;
 
-    QMap<QWidget*, QPalette> palettesBeforeHighlight;
+    QMap<QWidget*, QPair<QPalette ,bool> > palettesBeforeHighlight;
 
     QRubberBand *m_rubberBand;
 
@@ -348,6 +352,9 @@ private:
     QString m_marginFunction, m_spacingFunction;
     QString m_exportMacro;
     QStringList m_includeHints;
+
+    QList<QPointer<SetPropertyCommand> > m_moveSelection;
+    int m_lastUndoIndex;
 
 private:
 //    friend class FormWindowManager;

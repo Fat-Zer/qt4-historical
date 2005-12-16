@@ -35,6 +35,7 @@
 **
 ****************************************************************************/
 
+#include "qdebug.h"
 #include "qximinputcontext_p.h"
 
 #if !defined(QT_NO_IM)
@@ -52,7 +53,6 @@
 #include "qtextformat.h"
 
 #include "qx11info_x11.h"
-#include <qdebug.h>
 
 #include <stdlib.h>
 #include <limits.h>
@@ -333,8 +333,10 @@ QXIMInputContext::QXIMInputContext()
         ximServerName = "";
 
     if (!XSupportsLocale())
-        qWarning("Qt: Locales not supported on X server");
-
+#ifndef QT_NO_DEBUG
+        qWarning("Qt: Locale not supported on X server")
+#endif
+            ;    
 #ifdef USE_X11R6_XIM
     else if (XSetLocaleModifiers (ximServerName.constData()) == 0)
         qWarning("Qt: Cannot set locale modifiers: %s", ximServerName.constData());

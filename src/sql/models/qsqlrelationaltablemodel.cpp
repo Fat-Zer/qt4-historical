@@ -95,9 +95,9 @@
     returns false.
 */
 
-struct Relation
+struct QRelation
 {
-    Relation(): model(0) {}
+    QRelation(): model(0) {}
     QSqlRelation rel;
     QSqlTableModel *model;
     QHash<int, QVariant> displayValues;
@@ -110,9 +110,11 @@ public:
         : QSqlTableModelPrivate()
     {}
 
-    mutable QVector<Relation> relations;
+    int nameToIndex(const QString &name) const;
+    mutable QVector<QRelation> relations;
     QSqlRecord baseRec; // the record without relations
     void clearChanges();
+    void clearEditBuffer();
 };
 
 static void qAppendWhereClause(QString &query, const QString &clause1, const QString &clause2)
@@ -130,10 +132,20 @@ static void qAppendWhereClause(QString &query, const QString &clause1, const QSt
 void QSqlRelationalTableModelPrivate::clearChanges()
 {
     for (int i = 0; i < relations.count(); ++i) {
-        Relation &rel = relations[i];
+        QRelation &rel = relations[i];
         delete rel.model;
         rel.displayValues.clear();
     }
+}
+
+int QSqlRelationalTableModelPrivate::nameToIndex(const QString &name) const
+{
+    return baseRec.indexOf(name);
+}
+
+void QSqlRelationalTableModelPrivate::clearEditBuffer()
+{
+    editBuffer = baseRec;
 }
 
 /*!
@@ -193,8 +205,16 @@ void QSqlRelationalTableModelPrivate::clearChanges()
 
     \image relationaltable.png
 
-    Note: The table's primary key may not contain a relation to
-    another table.
+    Notes:
+
+    \list
+    \o The table's primary key may not contain a relation to
+       another table.
+    \o If a relational table contains keys that refer to non-existent
+       rows in the referenced table, the rows containing the invalid
+       keys will not be exposed through the model. The user or the
+       database is responsible for keeping referential integrity.
+    \endlist
 
     \sa QSqlRelation, QSqlRelationalDelegate
 */
@@ -222,11 +242,11 @@ QSqlRelationalTableModel::~QSqlRelationalTableModel()
 */
 QVariant QSqlRelationalTableModel::data(const QModelIndex &index, int role) const
 {
-    Q_D(const QSqlRelationalTableModel);
-    if (role == Qt::DisplayRole && index.column() > 0 && index.column() < d->relations.count()) {
+    Q_D(const QSqlRelationalTableModel);    
+    if (role == Qt::DisplayRole && index.column() > 0 && index.column() < d->relations.count()) {      
         const QVariant v = d->relations.at(index.column()).displayValues.value(index.row());
         if (v.isValid())
-            return v;
+            return v;       
     }
 
     return QSqlTableModel::data(index, role);
@@ -317,17 +337,18 @@ QString QSqlRelationalTableModel::selectStatement() const
 
     QSqlRecord rec = database().record(tableName());
     QStringList tables;
-    const Relation nullRelation;
+    const QRelation nullRelation;
     for (int i = 0; i < rec.count(); ++i) {
         QSqlRelation relation = d->relations.value(i, nullRelation).rel;
         if (relation.isValid()) {
-            fList.append(relation.tableName()).append(QLatin1Char('.'));
+            QString relTableAlias = QString::fromLatin1("relTblAl_%1").arg(i);
+            fList.append(relTableAlias).append(QLatin1Char('.'));
             fList.append(relation.displayColumn()).append(QLatin1Char(','));
             if (!tables.contains(relation.tableName()))
-                tables.append(relation.tableName());
+                tables.append(relation.tableName().append(QLatin1String(" AS ")).append(relTableAlias));
             where.append(tableName()).append(QLatin1Char('.')).append(rec.fieldName(i));
-            where.append(QLatin1Char('=')).append(relation.tableName()).append(QLatin1Char('.'));
-            where.append(relation.indexColumn()).append(QLatin1String(" and "));
+            where.append(QLatin1Char('=')).append(relTableAlias).append(QLatin1Char('.'));
+            where.append(relation.indexColumn()).append(QLatin1String(" AND "));
         } else {
             fList.append(tableName()).append(QLatin1Char('.')).append(rec.fieldName(i)).append(
                             QLatin1Char(','));
@@ -366,7 +387,7 @@ QString QSqlRelationalTableModel::selectStatement() const
 QSqlTableModel *QSqlRelationalTableModel::relationModel(int column) const
 {
     Q_D(const QSqlRelationalTableModel);
-    Relation relation = d->relations.value(column);
+    QRelation relation = d->relations.value(column);
     if (!relation.rel.isValid())
         return 0;
 
@@ -456,7 +477,7 @@ QString QSqlRelationalTableModel::orderByClause() const
         return QSqlTableModel::orderByClause();
 
     QString s = QLatin1String("ORDER BY ");
-    s.append(rel.tableName()).append(QLatin1Char('.')).append(d->rec.field(d->sortColumn).name());
+    s.append(QString::fromLatin1("relTblAl_%1").arg(d->sortColumn)).append(QLatin1Char('.')).append(rel.displayColumn());      
     s += d->sortOrder == Qt::AscendingOrder ? QLatin1String(" ASC") : QLatin1String(" DESC");
     return s;
 }

@@ -35,19 +35,19 @@
 qreal QTextItem::descent() const
 {
     const QTextItemInt *ti = static_cast<const QTextItemInt *>(this);
-    return ti->descent;
+    return ti->descent.toReal();
 }
 
 qreal QTextItem::ascent() const
 {
     const QTextItemInt *ti = static_cast<const QTextItemInt *>(this);
-    return ti->ascent;
+    return ti->ascent.toReal();
 }
 
 qreal QTextItem::width() const
 {
     const QTextItemInt *ti = static_cast<const QTextItemInt *>(this);
-    return ti->width;
+    return ti->width.toReal();
 }
 
 QTextItem::RenderFlags QTextItem::renderFlags() const
@@ -151,10 +151,46 @@ QFont QTextItem::font() const
     \enum QPaintEngine::DirtyFlag
     \typedef QPaintEngine::DirtyFlags
 
-    \internal
+    \value DirtyPen The pen is dirty and needs to be updated.
+
+    \value DirtyBrush The brush is dirty and needs to be updated.
+
+    \value DirtyBrushOrigin The brush origin is dirty and needs to
+    updated.
+
+    \value DirtyFont The font is dirty and needs to be updated.
+
+    \value DirtyBackground The background is dirty and needs to be
+    updated.
+
+    \value DirtyBackgroundMode The background mode is dirty and needs
+    to be updated.
+
+    \value DirtyTransform The transform is dirty and needs to be
+    updated.
+
+    \value DirtyClipRegion The clip region is dirty and needs to be
+    updated.
+
+    \value DirtyClipPath The clip path is dirty and needs to be
+    updated.
+
+    \value DirtyHints The render hints is dirty and needs to be
+    updated.
+
+    \value DirtyCompositionMode The composition mode is dirty and
+    needs to be updated.
+
+    \value DirtyClipEnabled Whether clipping is enabled or not is
+    dirty and needs to be updated.
+
+    \value AllDirty Convenience enum used internally.
 
     These types are used by QPainter to trigger lazy updates of the
-    various states in the QPaintEngine.
+    various states in the QPaintEngine using
+    QPaintEngine::updateState().
+
+    A paint engine must update every dirty state.
 */
 
 /*!
@@ -237,7 +273,7 @@ void QPaintEngine::drawPolygon(const QPoint *points, int pointCount, PolygonDraw
     \value MacPrinter
     \value CoreGraphics Mac OS X's Quartz2D (CoreGraphics)
     \value QuickDraw Mac OS X's older QuickDraw-based painting
-    \value QWindowSystem Qt/Embedded
+    \value QWindowSystem Qtopia Core
     \value PostScript
     \value OpenGL
     \value Picture QPicture format
@@ -291,7 +327,7 @@ void QPaintEngine::drawPolygon(const QPoint *points, int pointCount, PolygonDraw
 void QPaintEngine::drawPoints(const QPointF *points, int pointCount)
 {
     for (int i=0; i<pointCount; ++i) {
-        QLineF line(points[i].x(), points[i].y(), points[i].x(), points[i].y());
+        QLineF line(points[i].x(), points[i].y(), points[i].x(), points[i].y() + 0.001);
         drawLines(&line, 1);
     }
 }
@@ -496,11 +532,20 @@ void QPaintEngine::drawImage(const QRectF &r, const QImage &image, const QRectF 
 /*!
     \fn void QPaintEngine::updateState(const QPaintEngineState &state)
 
-    \internal
+    Reimplement this function to update the state of a paint engine.
+
+    When implemented, this function is responsible for checking the
+    paint engine's current \a state and update the properties that are
+    changed. Use the QPaintEngineState::state() function to find out
+    which properties that must be updated, then use the corresponding
+    \l {GetFunction}{get function} to retrieve the current values for
+    the given properties.
+
+    \sa QPaintEngineState
 */
 
 /*!
-  Creates a paint engine with the featureset specified by \a caps.
+    Creates a paint engine with the featureset specified by \a caps.
 */
 
 QPaintEngine::QPaintEngine(PaintEngineFeatures caps)
@@ -563,61 +608,34 @@ void QPaintEngine::drawPath(const QPainterPath &)
 void QPaintEngine::drawTextItem(const QPointF &p, const QTextItem &textItem)
 {
     const QTextItemInt &ti = static_cast<const QTextItemInt &>(textItem);
-    if (!ti.num_glyphs)
-        return;
 
     QPainterPath path;
     path.setFillRule(Qt::WindingFill);
-    ti.fontEngine->addOutlineToPath(p.x(), p.y(), ti.glyphs, ti.num_glyphs, &path, ti.flags);
-    if (!path.isEmpty()) {
+    if (ti.num_glyphs)
+        ti.fontEngine->addOutlineToPath(p.x(), p.y(), ti.glyphs, ti.num_glyphs, &path, ti.flags);
+    if (ti.flags) {
         const QFontEngine *fe = ti.fontEngine;
-        const qreal lw = fe->lineThickness();
+        const qreal lw = fe->lineThickness().toReal();
         if (ti.flags & QTextItem::Underline) {
-            qreal pos = fe->underlinePosition();
-            path.addRect(p.x(), p.y() + pos, ti.width, lw);
+            qreal pos = fe->underlinePosition().toReal();
+            path.addRect(p.x(), p.y() + pos, ti.width.toReal(), lw);
         }
         if (ti.flags & QTextItem::Overline) {
-            qreal pos = fe->ascent() + 1;
-            path.addRect(p.x(), p.y() - pos, ti.width, lw);
+            qreal pos = fe->ascent().toReal() + 1;
+            path.addRect(p.x(), p.y() - pos, ti.width.toReal(), lw);
         }
         if (ti.flags & QTextItem::StrikeOut) {
-            qreal pos = fe->ascent() / 3;
-            path.addRect(p.x(), p.y() - pos, ti.width, lw);
+            qreal pos = fe->ascent().toReal() / 3;
+            path.addRect(p.x(), p.y() - pos, ti.width.toReal(), lw);
         }
+    }
+    if (!path.isEmpty()) {
         painter()->save();
+        painter()->setRenderHint(QPainter::Antialiasing, true);
         painter()->setBrush(state->pen().brush());
         painter()->setPen(Qt::NoPen);
         painter()->drawPath(path);
         painter()->restore();
-    } else {
-        // Fallback: rasterize into a pixmap and draw the pixmap
-        QPixmap pm(qRound(ti.width), qRound(ti.ascent + ti.descent));
-        pm.fill(Qt::white);
-
-        QPainter painter;
-        painter.begin(&pm);
-        painter.setPen(Qt::black);
-        painter.drawTextItem(QPointF(0., ti.ascent), ti);
-        painter.end();
-
-        QImage img = pm.toImage();
-        if (img.depth() != 32)
-            img = img.convertToFormat(QImage::Format_ARGB32);
-        int i = 0;
-        QRgb pen_rgb = state->pen().color().rgb() & 0x00ffffff;
-        while (i < img.height()) {
-            uint *p = (uint *) img.scanLine(i);
-            uint *end = p + img.width();
-
-            while (p < end) {
-                *p = ((0xff - qGray(*p)) << 24) | pen_rgb;
-                ++p;
-            }
-            ++i;
-        }
-
-        pm = QPixmap::fromImage(img);
-        this->painter()->drawPixmap(qRound(p.x()), qRound(p.y() - ti.ascent), pm);
     }
 }
 
@@ -816,4 +834,30 @@ void QPaintEngine::setSystemClip(const QRegion &region)
 QRegion QPaintEngine::systemClip() const
 {
     return d_func()->systemClip;
+}
+
+/*!
+    \internal
+
+    Sets the target rect for drawing within the backing store. This
+    function should ONLY be used by the backing store.
+*/
+void QPaintEngine::setSystemRect(const QRect &rect)
+{
+    if (isActive()) {
+        qWarning("QPaintEngine::setSystemRect, should not be changed while engine is active");
+        return;
+    }
+    d_func()->systemRect = rect;
+}
+
+/*!
+    \internal
+
+    Retreives the rect for drawing within the backing store. This
+    function should ONLY be used by the backing store.
+ */
+QRect QPaintEngine::systemRect() const
+{
+    return d_func()->systemRect;
 }

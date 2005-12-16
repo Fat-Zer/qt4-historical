@@ -1272,9 +1272,11 @@ void Q3ComboTableItem::paint(QPainter *p, const QColorGroup &cg,
         flags |= QStyle::State_Enabled;
     // Since we still have the "fakeCombo" may as well use it in this case.
     QStyleOptionComboBox opt;
+    opt.initFrom(table());
     opt.rect = fakeCombo->rect();
     opt.palette = pal2;
-    opt.state = flags;
+    opt.state &= ~QStyle::State_HasFocus;
+    opt.state |= flags;
     opt.subControls = QStyle::SC_All;
     opt.activeSubControls = QStyle::SC_None;
     opt.editable = fakeCombo->editable();
@@ -1530,16 +1532,15 @@ void Q3CheckTableItem::paint(QPainter *p, const QColorGroup &cg,
                  selected ? pal.brush(QPalette::Highlight)
                           : pal.brush(QPalette::Base));
 
-    int w = cr.width();
-    int h = cr.height();
     QSize sz = QSize(table()->style()->pixelMetric(QStyle::PM_IndicatorWidth),
                       table()->style()->pixelMetric(QStyle::PM_IndicatorHeight));
     QPalette pal2(pal);
     pal2.setBrush(QPalette::Background, pal.brush(QPalette::Base));
     QStyleOptionButton opt;
+    opt.initFrom(table());
     opt.rect.setRect(0, (cr.height() - sz.height()) / 2, sz.width(), sz.height());
     opt.palette = pal2;
-    opt.state = QStyle::State_None;
+    opt.state &= ~QStyle::State_HasFocus;
     if(isEnabled())
         opt.state |= QStyle::State_Enabled;
     if (checked)
@@ -1549,13 +1550,13 @@ void Q3CheckTableItem::paint(QPainter *p, const QColorGroup &cg,
     if (isEnabled() && table()->isEnabled())
         opt.state |= QStyle::State_Enabled;
     table()->style()->drawPrimitive(QStyle::PE_IndicatorCheckBox, &opt, p, table());
-    int x = sz.width() + 6;
-    w = w - x;
     if (selected)
         p->setPen(pal.highlightedText().color());
     else
         p->setPen(pal.text().color());
-    p->drawText(x, 0, w, h, wordWrap() ? (alignment() | Qt::WordBreak) : alignment(), text());
+    opt.rect.setRect(0, 0, cr.width(), cr.height());
+    QRect textRect = table()->style()->subElementRect(QStyle::SE_CheckBoxContents, &opt, table());
+    p->drawText(textRect, wordWrap() ? (alignment() | Qt::WordBreak) : alignment(), text());
 }
 
 /*!
@@ -1934,6 +1935,8 @@ QSize Q3CheckTableItem::sizeHint() const
     This signal is emitted when mouse button \a button is clicked. The
     cell where the event took place is at \a row, \a col, and the
     mouse's position is in \a mousePos.
+
+    \sa Qt::MouseButton
 */
 
 /*!
@@ -1942,6 +1945,8 @@ QSize Q3CheckTableItem::sizeHint() const
     This signal is emitted when mouse button \a button is
     double-clicked. The cell where the event took place is at \a row,
     \a col, and the mouse's position is in \a mousePos.
+
+    \sa Qt::MouseButton
 */
 
 /*!
@@ -1950,6 +1955,8 @@ QSize Q3CheckTableItem::sizeHint() const
     This signal is emitted when mouse button \a button is pressed. The
     cell where the event took place is at \a row, \a col, and the
     mouse's position is in \a mousePos.
+
+    \sa Qt::MouseButton
 */
 
 /*!
@@ -2941,13 +2948,15 @@ void Q3Table::paintFocus(QPainter *p, const QRect &cr)
         p->drawRect(focusRect.x() - 1, focusRect.y() - 1, focusRect.width() + 1, focusRect.height() + 1);
     } else {
         QStyleOptionFocusRect opt;
+        opt.init(this);
         opt.rect = focusRect;
         opt.palette = palette();
+        opt.state |= QStyle::State_KeyboardFocusChange;
         if (isSelected(curRow, curCol, false)) {
-            opt.state = QStyle::State_FocusAtBorder;
+            opt.state |= QStyle::State_FocusAtBorder;
             opt.backgroundColor = palette().highlight().color();
         } else {
-            opt.state = QStyle::State_None;
+            opt.state |= QStyle::State_None;
             opt.backgroundColor = palette().base().color();
         }
         style()->drawPrimitive(QStyle::PE_FrameFocusRect, &opt, p, this);
@@ -5881,6 +5890,11 @@ void Q3Table::setCellWidget(int row, int col, QWidget *e)
     clearCellWidget(row, col);
     if (e->parent() != viewport())
 	e->reparent(viewport(), QPoint(0,0));
+    Q3TableItem *itm = item(row, col);
+    if (itm) { // get the correct row and col if the item is spanning
+        row = itm->row();
+        col = itm->col();
+    }
     insertWidget(row, col, e);
     QRect cr = cellGeometry(row, col);
     e->resize(cr.size());
@@ -6596,6 +6610,7 @@ void Q3TableHeader::paintEvent(QPaintEvent *e)
 	     orientation() == Vertical && r. bottom() >= e->rect().bottom())
 	    return;
     }
+    p.end();
     if (!reg.isEmpty())
 	erase(reg);
 }

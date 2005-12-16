@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/doc/src/examples/fortuneclient.qdoc -->
+<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/doc/src/examples/fortuneclient.qdoc -->
 <head>
-    <title>Qt 4.0: Fortune Client Example</title>
+    <title>Qt 4.1: Fortune Client Example</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -109,7 +109,10 @@ body { background: #ffffff; color: black; }</style>
             QMessageBox::information(this, tr(&quot;Fortune Client&quot;),
                                      tr(&quot;The following error occurred: %1.&quot;)
                                      .arg(tcpSocket-&gt;errorString()));
-        }</pre>
+        }
+
+        getFortuneButton-&gt;setEnabled(true);
+    }</pre>
 <p>We pop up all errors in a dialog using <a href="qmessagebox.html#information">QMessageBox::information</a>(). <a href="qabstractsocket.html#SocketError-enum">QTcpSocket::RemoteHostClosedError</a> is silently ignored, because the fortune server protocol ends with the server closing the connection.</p>
 <p>Now for the <a href="qiodevice.html#readyRead">readyRead()</a> alternative. This signal is connected to <tt>Client::readFortune()</tt>:</p>
 <pre>&nbsp;   void Client::readFortune()
@@ -146,6 +149,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

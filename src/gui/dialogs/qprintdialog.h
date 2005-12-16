@@ -24,7 +24,7 @@
 #ifndef QPRINTDIALOG_H
 #define QPRINTDIALOG_H
 
-#include "QtGui/qabstractprintdialog.h"
+#include <QtGui/qabstractprintdialog.h>
 
 QT_MODULE(Gui)
 
@@ -71,4 +71,5 @@ private:
 };
 
 #endif // QT_NO_PRINTDIALOG
+
 #endif // QPRINTDIALOG_H

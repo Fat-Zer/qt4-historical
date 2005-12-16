@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 2004-2005 Trolltech AS. All rights reserved.
 **
 ** This file is part of the demonstration applications of the Qt Toolkit.
 **
@@ -24,7 +24,7 @@
 #include "qsqlconnectiondialog.h"
 #include "ui_qsqlconnectiondialog.h"
 
-#include <qsqldatabase.h>
+#include <QSqlDatabase>
 
 QSqlConnectionDialog::QSqlConnectionDialog(QWidget *parent)
     : QDialog(parent)
@@ -95,4 +95,3 @@ void QSqlConnectionDialog::on_okButton_clicked()
         accept();
     }
 }
-

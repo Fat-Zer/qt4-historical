@@ -324,14 +324,14 @@ QIBaseResultPrivate::QIBaseResultPrivate(QIBaseResult *d, const QIBaseDriver *dd
 
 void QIBaseResultPrivate::cleanup()
 {
+    commit();
+    if (!localTransaction)
+        trans = 0;
+
     if (stmt) {
         isc_dsql_free_statement(status, &stmt, DSQL_drop);
         stmt = 0;
     }
-
-    commit();
-    if (!localTransaction)
-        trans = 0;
 
     delDA(sqlda);
     delDA(inda);
@@ -352,7 +352,7 @@ bool QIBaseResultPrivate::writeBlob(int i, const QByteArray &ba)
             isc_put_segment(status, &handle, qMin(ba.size() - i, SHRT_MAX), const_cast<char*>(ba.data()) + i);
             if (isError(QT_TRANSLATE_NOOP("QIBaseResult", "Unable to write BLOB")))
                 return false;
-            i += SHRT_MAX;
+            i += qMin(ba.size() - i, SHRT_MAX);
         }
     }
     isc_close_blob(status, &handle);
@@ -492,7 +492,7 @@ QVariant QIBaseResultPrivate::fetchArray(int pos, ISC_QUAD *arr)
         return list;
 
     QByteArray relname(sqlda->sqlvar[pos].relname, sqlda->sqlvar[pos].relname_length);
-    QByteArray sqlname(sqlda->sqlvar[pos].sqlname, sqlda->sqlvar[pos].sqlname_length);
+    QByteArray sqlname(sqlda->sqlvar[pos].aliasname, sqlda->sqlvar[pos].aliasname_length);
 
     isc_array_lookup_bounds(status, &ibase, &trans, relname.data(), sqlname.data(), &desc);
     if (isError(QT_TRANSLATE_NOOP("QIBaseResult", "Could not find array"),
@@ -678,7 +678,7 @@ bool QIBaseResultPrivate::writeArray(int column, const QList<QVariant> &list)
     ISC_ARRAY_DESC desc;
 
     QByteArray relname(inda->sqlvar[column].relname, inda->sqlvar[column].relname_length);
-    QByteArray sqlname(inda->sqlvar[column].sqlname, inda->sqlvar[column].sqlname_length);
+    QByteArray sqlname(inda->sqlvar[column].aliasname, inda->sqlvar[column].aliasname_length);
 
 
     isc_array_lookup_bounds(status, &ibase, &trans, relname.data(), sqlname.data(), &desc);
@@ -794,7 +794,7 @@ QIBaseResult::~QIBaseResult()
 
 bool QIBaseResult::prepare(const QString& query)
 {
-    //qDebug("prepare: %s", query.ascii());
+    //qDebug("prepare: %s\n", qPrintable(query));
     if (!driver() || !driver()->isOpen() || driver()->isOpenError())
         return false;
     d->cleanup();
@@ -855,6 +855,9 @@ bool QIBaseResult::exec()
 {
     bool ok = true;
 
+    if (!d->trans)
+        d->transaction();
+
     if (!driver() || !driver()->isOpen() || driver()->isOpenError())
         return false;
     setActive(false);
@@ -878,9 +881,10 @@ bool QIBaseResult::exec()
             if (d->inda->sqlvar[para].sqltype & 1) {
                 if (val.isNull()) {
                     // set null indicator
-                    *(d->inda->sqlvar[para].sqlind) = 1;
+                    *(d->inda->sqlvar[para].sqlind) = -1;
                     // and set the value to 0, otherwise it would count as empty string.
-                    *((short*)d->inda->sqlvar[para].sqldata) = 0;
+                    // it seems to be working with just setting sqlind to -1
+                    //*((char*)d->inda->sqlvar[para].sqldata) = 0;
                     continue;
                 }
                 // a value of 0 means non-null.
@@ -890,7 +894,7 @@ bool QIBaseResult::exec()
             case SQL_INT64:
                 if (d->inda->sqlvar[para].sqlscale < 0)
                     *((qint64*)d->inda->sqlvar[para].sqldata) =
-                        qint64(val.toDouble() * pow(10, d->inda->sqlvar[para].sqlscale * -1));
+                        qint64(val.toDouble() * pow(10.0, d->inda->sqlvar[para].sqlscale * -1));
                 else
                     *((qint64*)d->inda->sqlvar[para].sqldata) = val.toLongLong();
                 break;
@@ -948,6 +952,9 @@ bool QIBaseResult::exec()
         isc_dsql_execute(d->status, &d->trans, &d->stmt, FBVERSION, d->inda);
         if (d->isError(QT_TRANSLATE_NOOP("QIBaseResult", "Unable to execute query")))
             return false;
+    
+        if (d->queryType != isc_info_sql_stmt_select)
+             d->commit();
 
         setActive(true);
         return true;
@@ -998,7 +1005,7 @@ bool QIBaseResult::gotoNext(QSqlCachedResult::ValueCache& row, int rowIdx)
             break;
         case SQL_INT64:
             if (d->sqlda->sqlvar[i].sqlscale < 0)
-                row[idx] = *(qint64*)buf * pow(10, d->sqlda->sqlvar[i].sqlscale);
+                row[idx] = *(qint64*)buf * pow(10.0, d->sqlda->sqlvar[i].sqlscale);
             else
                 row[idx] = QVariant(*(qint64*)buf);
             break;
@@ -1146,7 +1153,7 @@ QSqlRecord QIBaseResult::record() const
     XSQLVAR v;
     for (int i = 0; i < d->sqlda->sqld; ++i) {
         v = d->sqlda->sqlvar[i];
-        QSqlField f(QString::fromLatin1(v.sqlname, v.sqlname_length).simplified(),
+        QSqlField f(QString::fromLatin1(v.aliasname, v.aliasname_length).simplified(),
                     qIBaseTypeName2(d->sqlda->sqlvar[i].sqltype));
         f.setLength(v.sqllen);
         f.setPrecision(v.sqlscale);
@@ -1186,16 +1193,19 @@ QIBaseDriver::~QIBaseDriver()
 bool QIBaseDriver::hasFeature(DriverFeature f) const
 {
     switch (f) {
+    case QuerySize:
+    case NamedPlaceholders:
+    case LastInsertId:
+    case BatchOperations:
+        return false;
     case Transactions:
-//    case QuerySize:
     case PreparedQueries:
     case PositionalPlaceholders:
     case Unicode:
     case BLOB:
         return true;
-    default:
-        return false;
     }
+    return false;
 }
 
 bool QIBaseDriver::open(const QString & db,

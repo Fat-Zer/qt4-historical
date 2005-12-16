@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/doc/src/examples/tutorial.qdoc -->
+<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/doc/src/examples/tutorial.qdoc -->
 <head>
-    <title>Qt 4.0: Qt Tutorial 3 - Family Values</title>
+    <title>Qt 4.1: Qt Tutorial 3 - Family Values</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -30,15 +30,9 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><a href="tutorial-t3-main-cpp.html">tutorial/t3/main.cpp</a></li>
 </ul>
-<p align="center"><img src="images/t3.png" alt="Screenshot of tutorial three" /></p><p>This example shows how to create parent and child widgets.</p>
+<p align="center"><img src="images/t3.png" alt="Screenshot of Chapter 3" /></p><p>This example shows how to create parent and child widgets.</p>
 <p>We'll keep it simple and use just a single parent and a lone child.</p>
-<pre>&nbsp;   /****************************************************************
-    **
-    ** Qt tutorial 3
-    **
-    ****************************************************************/
-
-    #include &lt;QApplication&gt;
+<pre>&nbsp;   #include &lt;QApplication&gt;
     #include &lt;QFont&gt;
     #include &lt;QPushButton&gt;
     #include &lt;QWidget&gt;
@@ -68,8 +62,7 @@ body { background: #ffffff; color: black; }</style>
 <pre>&nbsp;       window.resize(200, 120);</pre>
 <p>We set the window's width to 200 pixels and its height to 120 pixels.</p>
 <pre>&nbsp;       QPushButton quit(&quot;Quit&quot;, &amp;window);</pre>
-<p>A child is born.</p>
-<p>This <a href="qpushbutton.html">QPushButton</a> is created with a parent widget (<tt>window</tt>). A child widget is always displayed within its parent's area. When displayed, it is clipped by its parent's bounds. By default, it is rooted at the top-left corner of its parent, at position (0, 0).</p>
+<p>A child is born. This <a href="qpushbutton.html">QPushButton</a> is created with a parent widget (<tt>window</tt>). A child widget is always displayed within its parent's area. When displayed, it is clipped by its parent's bounds. By default, it is rooted at the top-left corner of its parent, at position (0, 0).</p>
 <pre>&nbsp;       quit.setGeometry(10, 40, 180, 40);</pre>
 <p>The <a href="qwidget.html#geometry-prop">QWidget::setGeometry</a>() function takes four arguments: The first two arguments are the x and y coordinates of the button's top-left corner. The coordinates are relative to the parent widget. The last two arguments are the button's width and height. The result is a button that extends from position (10, 40) to position (190, 80).</p>
 <pre>&nbsp;       window.show();</pre>
@@ -89,6 +82,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

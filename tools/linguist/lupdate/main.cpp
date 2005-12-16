@@ -21,15 +21,15 @@
 **
 ****************************************************************************/
 
-#include <metatranslator.h>
-#include <proparser.h>
+#include "metatranslator.h"
+#include "proparser.h"
 
-#include <qdir.h>
-#include <qfile.h>
-#include <qfileinfo.h>
-#include <qstring.h>
-#include <qstringlist.h>
-#include <qtextstream.h>
+#include <QDir>
+#include <QFile>
+#include <QFileInfo>
+#include <QString>
+#include <QStringList>
+#include <QTextStream>
 
 #include <errno.h>
 #include <string.h>
@@ -169,7 +169,7 @@ int main( int argc, char **argv )
             QMap<QString, QString>::Iterator it;
 
             for ( it = tagMap.begin(); it != tagMap.end(); ++it ) {
-                QStringList toks = it.value().split(' ');
+                QStringList toks = tokenizeFileNames(it.value());
                 QStringList::Iterator t;
 
                 for ( t = toks.begin(); t != toks.end(); ++t ) {

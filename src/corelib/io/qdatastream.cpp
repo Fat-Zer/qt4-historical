@@ -231,7 +231,7 @@
 #endif
 
 enum {
-    DefaultStreamVersion = 7
+    DefaultStreamVersion = QDataStream::Qt_4_1
 };
 
 // ### 4.0: when streaming invalid QVariants, just the type should
@@ -509,7 +509,8 @@ void QDataStream::setByteOrder(ByteOrder bo)
     \value Qt_3_0 Version 4 (Qt 3.0)
     \value Qt_3_1 Version 5 (Qt 3.1, 3.2)
     \value Qt_3_3 Version 6 (Qt 3.3)
-    \value Qt_4_0 Version 7 (Qt 4.0)
+    \value Qt_4_0 Version 7 (Qt 4.0, Qt 4.1)
+    \value Qt_4_1 Version 7 (Qt 4.0, Qt 4.1)
 
     \sa setVersion(), version()
 */
@@ -723,10 +724,9 @@ QDataStream &QDataStream::operator>>(bool &i)
 {
     qint8 v;
     *this >> v;
-    i = bool(v);
+    i = !!v;
     return *this;
 }
-
 
 /*!
     \overload
@@ -985,9 +985,9 @@ QDataStream &QDataStream::operator<<(qint64 i)
 {
     CHECK_STREAM_PRECOND(*this)
     if (version() < 6) {
-        quint32 i1, i2;
-        *this >> i2 >> i1;
-        i = ((quint64)i1 << 32) + i2;
+	quint32 i1 = i & 0xffffffff;
+	quint32 i2 = i >> 32;
+	*this << i2 << i1;
     } else if (noswap) {                        // no conversion needed
         dev->write((char *)&i, sizeof(qint64));
     } else {                                        // swap bytes
@@ -1124,8 +1124,9 @@ QDataStream &QDataStream::writeBytes(const char *s, uint len)
 
 
 /*!
-    Writes \a len bytes from \a s to the stream and returns a
-    reference to the stream. The data is \e not encoded.
+    Writes \a len bytes from \a s to the stream. Returns the
+    number of bytes actually written, or -1 on error.
+    The data is \e not encoded.
 
     \sa writeBytes(), QIODevice::write(), readRawData()
 */
@@ -1134,6 +1135,46 @@ int QDataStream::writeRawData(const char *s, int len)
 {
     CHECK_STREAM_PRECOND(-1)
     return dev->write(s, len);
+}
+
+/*!
+    \since 4.1
+
+    Skips \a len bytes from the device. Returns the number of bytes
+    actually skipped, or -1 on error.
+    
+    This is equivalent to calling readRawData() on a buffer of length
+    \a len and ignoring the buffer.
+
+    \sa QIODevice::seek()
+*/
+int QDataStream::skipRawData(int len)
+{
+    CHECK_STREAM_PRECOND(-1)
+
+    if (dev->isSequential()) {
+        char buf[4096];
+        int sumRead = 0;
+
+        while (len > 0) {
+            int blockSize = qMin(len, (int)sizeof(buf));
+            int n = dev->read(buf, blockSize);
+            if (n == -1)
+                return -1;
+            if (n == 0)
+                return sumRead;
+
+            sumRead += n;
+            len -= blockSize;
+        }
+        return sumRead;
+    } else {
+        quint64 pos = dev->pos();
+        len = qMin(int(dev->size() - pos), len);
+        if (!dev->seek(pos + len))
+            return -1;
+        return len;
+    }
 }
 
 #ifdef QT3_SUPPORT

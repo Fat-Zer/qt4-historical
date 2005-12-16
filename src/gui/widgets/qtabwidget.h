@@ -24,8 +24,8 @@
 #ifndef QTABWIDGET_H
 #define QTABWIDGET_H
 
-#include "QtGui/qwidget.h"
-#include "QtGui/qicon.h"
+#include <QtGui/qwidget.h>
+#include <QtGui/qicon.h>
 
 QT_MODULE(Gui)
 
@@ -40,7 +40,7 @@ class Q_GUI_EXPORT QTabWidget : public QWidget
     Q_ENUMS(TabPosition TabShape)
     Q_PROPERTY(TabPosition tabPosition READ tabPosition WRITE setTabPosition)
     Q_PROPERTY(TabShape tabShape READ tabShape WRITE setTabShape)
-    Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex)
+    Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentChanged)
     Q_PROPERTY(int count READ count)
 
 public:
@@ -64,8 +64,15 @@ public:
     QIcon tabIcon(int index) const;
     void setTabIcon(int index, const QIcon & icon);
 
+#ifndef QT_NO_TOOLTIP
     void setTabToolTip(int index, const QString & tip);
     QString tabToolTip(int index) const;
+#endif
+
+#ifndef QT_NO_WHATSTHIS
+    void setTabWhatsThis(int index, const QString &text);
+    QString tabWhatsThis(int index) const;
+#endif
 
     int currentIndex() const;
     QWidget *currentWidget() const;
@@ -91,11 +98,11 @@ public:
     void setCornerWidget(QWidget * w, Qt::Corner corner = Qt::TopRightCorner);
     QWidget * cornerWidget(Qt::Corner corner = Qt::TopRightCorner) const;
 
-public slots:
+public Q_SLOTS:
     void setCurrentIndex(int index);
     void setCurrentWidget(QWidget *widget);
 
-signals:
+Q_SIGNALS:
     void currentChanged(int index);
 
 protected:
@@ -109,6 +116,7 @@ protected:
     void setTabBar(QTabBar *);
     QTabBar* tabBar() const;
     void changeEvent(QEvent *);
+    bool event(QEvent *);
 
 #ifdef QT3_SUPPORT
 public:
@@ -143,12 +151,12 @@ public:
     inline QT3_SUPPORT int margin() const { return 0; }
     inline QT3_SUPPORT void setMargin(int) {}
 
-public slots:
+public Q_SLOTS:
     inline QT_MOC_COMPAT void setCurrentPage(int index) { setCurrentIndex(index); }
     inline QT_MOC_COMPAT void showPage(QWidget *w) { setCurrentIndex(indexOf(w)); }
     inline QT_MOC_COMPAT void removePage(QWidget *w) { removeTab(indexOf(w)); }
 
-signals:
+Q_SIGNALS:
     QT_MOC_COMPAT void currentChanged(QWidget *);
 #endif // QT3_SUPPORT
 

@@ -24,7 +24,7 @@
 #ifndef QWINDOWSXPSTYLE_H
 #define QWINDOWSXPSTYLE_H
 
-#include "QtGui/qwindowsstyle.h"
+#include <QtGui/qwindowsstyle.h>
 
 QT_MODULE(Gui)
 
@@ -61,13 +61,18 @@ public:
                   QStyleHintReturn *returnData = 0) const;
 
     QPalette standardPalette() const;
-    
+    QPixmap standardPixmap(StandardPixmap standardIcon, const QStyleOption *option,
+                           const QWidget *widget = 0) const;
+
+protected Q_SLOTS:
+    QIcon standardIconImplementation(StandardPixmap standardIcon, const QStyleOption *option,
+                           const QWidget *widget = 0) const;
+
 private:
     Q_DISABLE_COPY(QWindowsXPStyle)
-
+    Q_DECLARE_PRIVATE(QWindowsXPStyle)
     friend class QStyleFactory;
-    friend class QWindowsXPStylePrivate;
-    QWindowsXPStylePrivate *dd;
+    void *reserved;
 };
 
 #endif // QT_NO_STYLE_WINDOWSXP

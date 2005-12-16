@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/src/corelib/io/qfile.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/corelib/io/qfile.cpp -->
 <head>
-    <title>Qt 4.0: QFile Class Reference</title>
+    <title>Qt 4.1: QFile Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -64,7 +64,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>void <b><a href="qfile.html#unsetError">unsetError</a></b> ()</li>
 </ul>
 <ul>
-<li><div class="fn"/>30 public functions inherited from <a href="qiodevice.html#public-functions">QIODevice</a></li>
+<li><div class="fn"/>32 public functions inherited from <a href="qiodevice.html#public-functions">QIODevice</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 </ul>
 <a name="static-public-members"></a>
@@ -299,11 +299,13 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qfile.html#remove">remove</a>().</p>
 <h3 class="fn"><a name="rename"></a>bool QFile::rename ( const <a href="qstring.html">QString</a> &amp; <i>newName</i> )</h3>
 <p>Renames the file currently specified by <a href="qfile.html#fileName">fileName</a>() to <i>newName</i>. Returns true if successful; otherwise returns false.</p>
+<p>On most file systems, rename() fails only if <i>oldName</i> does not exist, if <i>newName</i> and the file are not on the same partition or if a file with the new name already exists. However, there are also other reasons why rename() can fail.</p>
 <p>The file is closed before it is renamed.</p>
 <p>See also <a href="qfile.html#setFileName">setFileName</a>().</p>
 <h3 class="fn"><a name="rename-2"></a>bool QFile::rename ( const <a href="qstring.html">QString</a> &amp; <i>oldName</i>, const <a href="qstring.html">QString</a> &amp; <i>newName</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Renames the file <i>oldName</i> to <i>newName</i>. Returns true if successful; otherwise returns false.</p>
+<p>On most file systems, <a href="qfile.html#rename">rename</a>() fails only if <i>oldName</i> does not exist, if <i>newName</i> and <i>oldName</i> are not on the same partition or if a file with the new name already exists. However, there are also other reasons why <a href="qfile.html#rename">rename</a>() can fail. For example, on at least one file system <a href="qfile.html#rename">rename</a>() fails if <i>newName</i> points to an open file.</p>
 <p>See also <a href="qfile.html#rename">rename</a>().</p>
 <h3 class="fn"><a name="resize"></a>bool QFile::resize ( <a href="qtglobal.html#qint64-typedef">qint64</a> <i>sz</i> )</h3>
 <p>Sets the file size (in bytes) <i>sz</i>. Returns true if the file if the resize succeeds; false otherwise. If <i>sz</i> is larger than the file currently is the new bytes will be set to 0, if <i>sz</i> is smaller the file is simply truncated.</p>
@@ -345,6 +347,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

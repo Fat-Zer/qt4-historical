@@ -24,13 +24,12 @@
 #ifndef QBYTEARRAY_H
 #define QBYTEARRAY_H
 
-#include "QtCore/qglobal.h"
-#include "QtCore/qatomic.h"
+#include <QtCore/qglobal.h>
+#include <QtCore/qatomic.h>
 
 #include <string.h>
 #include <stdarg.h>
 
-// POSIX defines truncate to truncate64
 #ifdef truncate
 #error qbytearray.h must be included before any header file that defines truncate
 #endif
@@ -216,6 +215,8 @@ public:
     ushort toUShort(bool *ok = 0, int base = 10) const;
     int toInt(bool *ok = 0, int base = 10) const;
     uint toUInt(bool *ok = 0, int base = 10) const;
+    long toLong(bool *ok = 0, int base = 10) const;
+    ulong toULong(bool *ok = 0, int base = 10) const;
     qlonglong toLongLong(bool *ok = 0, int base = 10) const;
     qulonglong toULongLong(bool *ok = 0, int base = 10) const;
     float toFloat(bool *ok = 0) const;
@@ -251,6 +252,8 @@ public:
     const_iterator constEnd() const;
 
     // stl compatibility
+    typedef const char & const_reference;
+    typedef char & reference;
     void push_back(char c);
     void push_back(const char *c);
     void push_back(const QByteArray &a);

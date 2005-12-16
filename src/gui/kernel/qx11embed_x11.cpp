@@ -21,6 +21,7 @@
 **
 ****************************************************************************/
 
+#include "qx11embed_x11.h"
 #include <qapplication.h>
 #include <qevent.h>
 #include <qpainter.h>
@@ -30,8 +31,7 @@
 #include <qdatetime.h>
 #include <qpointer.h>
 #include <qdebug.h>
-
-#include <QX11Info>
+#include <qx11info_x11.h>
 #include <private/qt_x11_p.h>
 #include <private/qwidget_p.h>
 
@@ -48,9 +48,8 @@
 #define XK_ISO_Left_Tab 0xFE20
 #endif
 
-#include "qx11embed_x11.h"
-
-/*! \class QX11EmbedWidget
+/*! 
+    \class QX11EmbedWidget
 
     \brief The QX11EmbedWidget class provides an XEmbed client widget.
 
@@ -118,7 +117,8 @@
     \sa QX11EmbedContainer, {XEmbed Specification}
 */
 
-/*! \class QX11EmbedContainer
+/*! 
+    \class QX11EmbedContainer
 
     \brief The QX11EmbedContainer class provides an XEmbed container
     widget.
@@ -188,13 +188,13 @@
     \sa QX11EmbedWidget, {XEmbed Specification}
 */
 
-/*! \fn QX11EmbedWidget::embedded()
+/*! \fn void QX11EmbedWidget::embedded()
 
     This signal is emitted by the widget that has been embedded by an
     XEmbed container.
 */
 
-/*! \fn QX11EmbedWidget::containerClosed()
+/*! \fn void QX11EmbedWidget::containerClosed()
 
     This signal is emitted by the client widget when the container
     closes the widget. This can happen if the container itself
@@ -205,20 +205,20 @@
     widget into a container that already has an embedded widget.
 */
 
-/*! \fn QX11EmbedContainer::clientIsEmbedded()
+/*! \fn void QX11EmbedContainer::clientIsEmbedded()
 
     This signal is emitted by the container when a client widget has
     been embedded.
 */
 
-/*! \fn QX11EmbedContainer::clientClosed()
+/*! \fn void QX11EmbedContainer::clientClosed()
 
     This signal is emitted by the container when the client widget
     closes.
 */
 
 /*!
-    \fn void QX11EmbedWidget::error(Error error)
+    \fn void QX11EmbedWidget::error(QX11EmbedWidget::Error error)
 
     This signal is emitted if an error occurred as a result of
     embedding into or communicating with a container. The specified
@@ -233,7 +233,7 @@
     Returns the last error that occurred.
 */
 
-/*! \fn void QX11EmbedContainer::error(Error error)
+/*! \fn void QX11EmbedContainer::error(QX11EmbedContainer::Error error)
 
     This signal is emitted if an error occurred when embedding or
     communicating with a client. The specified \a error describes the
@@ -242,7 +242,8 @@
     \sa QX11EmbedContainer::Error
 */
 
-/*! \enum QX11EmbedWidget::Error
+/*! 
+    \enum QX11EmbedWidget::Error
 
     \value Unknown An unrecognized error occurred.
 
@@ -253,7 +254,7 @@
     \omitvalue Internal
 */
 
-/*! 
+/*!
     \enum QX11EmbedContainer::Error
 
     \value Unknown An unrecognized error occurred.
@@ -261,6 +262,8 @@
     \value InvalidWindowID The X11 window ID of the container was
         invalid. This error is usually triggered by passing an invalid
         window ID to embed().
+
+    \omitvalue Internal
 */
 
 const int XButtonPress = ButtonPress;
@@ -270,7 +273,7 @@ const int XButtonRelease = ButtonRelease;
 
 // This is a hack to move topData() out from QWidgetPrivate to public.  We
 // need to to inspect window()'s embedded state.
-class HackWidget : public QWidget
+class QHackWidget : public QWidget
 {
     Q_DECLARE_PRIVATE(QWidget)
 public:
@@ -378,7 +381,7 @@ static void sendXEmbedMessage(WId window, Display *display, long message,
 // From qapplication_x11.cpp
 static XKeyEvent lastKeyEvent;
 
-QCoreApplication::EventFilter oldX11EventFilter;
+static QCoreApplication::EventFilter oldX11EventFilter;
 
 // The purpose of this global x11 filter is for one to capture the key
 // events in their original state, but most importantly this is the
@@ -609,7 +612,7 @@ void QX11EmbedWidgetPrivate::clearFocus()
 void QX11EmbedWidgetPrivate::setEmbedded()
 {
     Q_Q(QX11EmbedWidget);
-    ((HackWidget *)q->window())->topData()->embedded = 1;
+    ((QHackWidget *)q->window())->topData()->embedded = 1;
 }
 
 /*! \internal
@@ -1025,7 +1028,7 @@ void QX11EmbedContainer::paintEvent(QPaintEvent *)
 bool QX11EmbedContainerPrivate::isEmbedded() const
 {
     Q_Q(const QX11EmbedContainer);
-    return ((HackWidget *)q->window())->topData()->embedded == 1;
+    return ((QHackWidget *)q->window())->topData()->embedded == 1;
 }
 
 /*! \internal
@@ -1035,7 +1038,7 @@ bool QX11EmbedContainerPrivate::isEmbedded() const
 WId QX11EmbedContainerPrivate::topLevelParentWinId() const
 {
     Q_Q(const QX11EmbedContainer);
-    return ((HackWidget *)q->window())->topData()->parentWinId;
+    return ((QHackWidget *)q->window())->topData()->parentWinId;
 }
 
 /*!
@@ -1420,7 +1423,7 @@ bool QX11EmbedContainer::x11Event(XEvent *event)
 	if (!d->clientIsXEmbed) {
             setFocus(Qt::MouseFocusReason);
             XAllowEvents(x11Info().display(), ReplayPointer, CurrentTime);
-            return TRUE;
+            return true;
 	}
 	break;
     case XButtonRelease:

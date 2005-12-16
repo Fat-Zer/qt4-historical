@@ -34,7 +34,6 @@ class QDesigner;
 class QDesignerActions;
 class QDesignerToolWindow;
 class QDesignerFormWindow;
-class QDesignerIntegration;
 
 class QAction;
 class QActionGroup;
@@ -49,6 +48,10 @@ class QCloseEvent;
 class QDesignerFormEditorInterface;
 class QDesignerFormWindowInterface;
 class QDesignerFormWindowManagerInterface;
+
+namespace qdesigner_internal {
+class QDesignerIntegration;
+}
 
 class QDesignerWorkbench: public QObject
 {
@@ -105,7 +108,6 @@ public slots:
     void removeToolWindow(QDesignerToolWindow *toolWindow);
     void removeFormWindow(QDesignerFormWindow *formWindow);
     void setUIMode(UIMode mode);
-    void setUseBigIcons(bool superSizeMe);
 
 // ### private slots:
     void switchToNeutralMode();
@@ -129,12 +131,10 @@ private:
 
     QDesignerFormWindowManagerInterface *formWindowManager() const;
     void changeBringToFrontVisiblity(bool visible);
-    void changeToolBarIconSize(bool big);
-
 
 private:
     QDesignerFormEditorInterface *m_core;
-    QDesignerIntegration *m_integration;
+    qdesigner_internal::QDesignerIntegration *m_integration;
 
     QDesignerActions *m_actionManager;
     QActionGroup *m_toolActions;

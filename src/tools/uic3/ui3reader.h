@@ -24,15 +24,14 @@
 #ifndef UI3READER_H
 #define UI3READER_H
 
-#include <qnamespace.h>
-#include <qdom.h>
-#include <qstring.h>
-#include <qstringlist.h>
-#include <qmap.h>
-#include <qtextstream.h>
-#include <qvariant.h>
-#include <qbytearray.h>
-#include <qpair.h>
+#include <QDomDocument>
+#include <QString>
+#include <QStringList>
+#include <QMap>
+#include <QTextStream>
+#include <QVariant>
+#include <QByteArray>
+#include <QPair>
 
 class DomUI;
 class DomWidget;
@@ -190,4 +189,4 @@ private:
     Porting *m_porting;
 };
 
-#endif
+#endif // UI3READER_H

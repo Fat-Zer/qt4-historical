@@ -776,7 +776,7 @@ static bool block_set_alignment = false;
 */
 
 /*!
-    \fn void Q3TextEdit::currentVerticalAlignmentChanged(VerticalAlignment a)
+    \fn void Q3TextEdit::currentVerticalAlignmentChanged(Q3TextEdit::VerticalAlignment a)
 
     This signal is emitted if the vertical alignment of the current
     format has changed.
@@ -1087,8 +1087,7 @@ bool Q3TextEdit::event(QEvent *e)
         case Qt::ShiftButton:
             if (ke->key() < Qt::Key_Escape) {
                 ke->accept();
-            } else if (ke->state() == Qt::NoButton
-                        || ke->state() == Qt::ShiftButton) {
+            } else {
                 switch (ke->key()) {
                 case Qt::Key_Return:
                 case Qt::Key_Enter:
@@ -1353,7 +1352,7 @@ void Q3TextEdit::keyPressEvent(QKeyEvent *e)
         repaintChanged();
         break;
     default: {
-            char ascii = e->text().length() ? e->text().unicode()->latin1() : 0;
+            unsigned char ascii = e->text().length() ? e->text().unicode()->latin1() : 0;
             if (e->text().length() &&
                 (!(e->state() & Qt::ControlButton) &&
 #ifndef Q_OS_MAC
@@ -1520,10 +1519,14 @@ void Q3TextEdit::inputMethodEvent(QInputMethodEvent *e)
 
     if (hasSelectedText())
         removeSelectedText();
+    clearUndoRedo();
+    undoRedoInfo.type = UndoRedoInfo::IME;
 
     bool oldupdate = updatesEnabled();
     if (oldupdate)
         setUpdatesEnabled(false);
+    bool sigs_blocked = signalsBlocked();
+    blockSignals(true);
     const int preeditSelectionBase = 31900;
     for (int i = 0; i < d->numPreeditSelections; ++i)
         doc->removeSelection(preeditSelectionBase + i);
@@ -1543,14 +1546,17 @@ void Q3TextEdit::inputMethodEvent(QInputMethodEvent *e)
         cursor->setIndex(cursor->index() + e->replacementLength());
         doc->setSelectionEnd(Q3TextDocument::Standard, *cursor);
         removeSelectedText();
+	if (undoRedoInfo.type == UndoRedoInfo::IME)
+	    undoRedoInfo.type = UndoRedoInfo::Invalid;
         insert(e->commitString());
+	undoRedoInfo.type = UndoRedoInfo::IME;
         cursor->setIndex(c);
     }
 
     if (!e->preeditString().isEmpty()) {
         d->preeditStart = cursor->index();
         d->preeditLength = e->preeditString().length();
-        insert(e->preeditString());
+	insert(e->preeditString());
         cursor->setIndex(d->preeditStart);
 
         Q3TextCursor c = *cursor;
@@ -1572,10 +1578,15 @@ void Q3TextEdit::inputMethodEvent(QInputMethodEvent *e)
                 doc->setSelectionTextColor(preeditSelectionBase + d->numPreeditSelections, f.foreground().color());
                 ++d->numPreeditSelections;
             }
-        }
+	}
+    } else {
+	undoRedoInfo.type = UndoRedoInfo::Invalid;
     }
+    blockSignals(sigs_blocked);
     if (oldupdate)
         setUpdatesEnabled(true);
+    if (!e->commitString().isEmpty())
+        emit textChanged();
     repaintChanged();
 }
 
@@ -1746,13 +1757,12 @@ void Q3TextEdit::readFormats(Q3TextCursor &c1, Q3TextCursor &c2, Q3TextString &t
             text.insert(lastIndex++, c1.paragraph()->at(i), true);
         int num = 2; // start and end, being different
         text += "\n"; lastIndex++;
-        Q3TextParagraph *p = c1.paragraph()->next();
-        while (p && p != c2.paragraph()) {
-            for (i = 0; i < p->length()-1; ++i)
-                text.insert(lastIndex++ , p->at(i), true);
-            text += "\n"; num++; lastIndex++;
-            p = p->next();
+
+        if (c1.paragraph()->next() != c2.paragraph()) {
+            num += text.appendParagraphs(c1.paragraph()->next(), c2.paragraph());
+            lastIndex = text.length();
         }
+
         for (i = 0; i < c2.index(); ++i)
             text.insert(i + lastIndex, c2.paragraph()->at(i), true);
 #ifndef QT_NO_DATASTREAM
@@ -2889,7 +2899,7 @@ void Q3TextEdit::insert(const QString &text, uint insertionFlags)
     Q3TextCursor c2 = *cursor;
     int oldLen = 0;
 
-    if (undoEnabled && !isReadOnly()) {
+    if ( undoEnabled && !isReadOnly() && undoRedoInfo.type != UndoRedoInfo::IME ) {
         checkUndoRedoInfo(UndoRedoInfo::Insert);
 
         // If we are inserting at the end of the previous insertion, we keep this in
@@ -2925,7 +2935,7 @@ void Q3TextEdit::insert(const QString &text, uint insertionFlags)
     ensureCursorVisible();
     drawCursor(true);
 
-    if (undoEnabled && !isReadOnly()) {
+    if ( undoEnabled && !isReadOnly() && undoRedoInfo.type != UndoRedoInfo::IME ) {
         undoRedoInfo.d->text += txt;
         if (!doc->preProcessor()) {
             for (int i = 0; i < (int)txt.length(); ++i) {
@@ -3193,6 +3203,8 @@ void Q3TextEdit::repaintChanged()
     if (!updatesEnabled() || !viewport()->updatesEnabled())
         return;
 
+    if (doc->firstParagraph())
+        lastFormatted = doc->firstParagraph();
     updateContents(); // good enough until this class is rewritten
 }
 
@@ -3773,6 +3785,9 @@ void Q3TextEdit::setText(const QString &text, const QString &context)
     Please note that this function will make the next occurrence of
     the string (if found) the current selection, and will thus
     modify the cursor position.
+
+    Using the \a para and \a index parameters will not work correctly
+    in case the document contains tables.
 */
 
 bool Q3TextEdit::find(const QString &expr, bool cs, bool wo, bool forward,
@@ -5332,6 +5347,10 @@ bool Q3TextEdit::getParagraphFormat(int para, QFont *font, QColor *color,
     at the document position \a pos. If you want to create a custom
     popup menu, reimplement this function and return the created popup
     menu. Ownership of the popup menu is transferred to the caller.
+
+    \warning The QPopupMenu ID values 0-7 are reserved, and they map to the
+    standard operations. When inserting items into your custom popup menu, be
+    sure to specify ID values larger than 7.
 */
 
 Q3PopupMenu *Q3TextEdit::createPopupMenu(const QPoint& pos)
@@ -7053,7 +7072,7 @@ int Q3TextEdit::maxLogLines() const
  */
 void Q3TextEdit::optimCheckLimit(const QString& str)
 {
-    if (d->maxLogLines > -1 && d->maxLogLines == d->od->numLines) {
+    if (d->maxLogLines > -1 && d->maxLogLines <= d->od->numLines) {
         // NB! Removing the top line in the buffer will potentially
         // destroy the structure holding the formatting tags - if line
         // spanning tags are used.

@@ -24,8 +24,8 @@
 #ifndef PHRASE_H
 #define PHRASE_H
 
-#include <qstring.h>
-#include <qlist.h>
+#include <QString>
+#include <QList>
 
 class Phrase
 {

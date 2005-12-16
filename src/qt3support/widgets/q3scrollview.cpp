@@ -90,7 +90,10 @@ class QAbstractScrollAreaWidget : public QWidget
 
 public:
     QAbstractScrollAreaWidget(Q3ScrollView* parent=0, const char* name=0, Qt::WFlags f = 0)
-        : QWidget(parent, name, f) {}
+        : QWidget(parent, name, f)
+    {
+        setAutoFillBackground(true);
+    }
 };
 
 class QClipperWidget : public QWidget
@@ -133,6 +136,7 @@ public:
         fake_scroll = false;
         hbarPressed = false;
         vbarPressed = false;
+        hbar->setLayoutDirection(Qt::LeftToRight);
     }
     ~Q3ScrollViewData();
 
@@ -245,9 +249,7 @@ void Q3ScrollViewData::hideOrShowAll(Q3ScrollView* sv, bool isScroll)
         int nx = (viewport->width() - clipped_viewport->width()) / 2;
         int ny = (viewport->height() - clipped_viewport->height()) / 2;
         clipped_viewport->move(nx,ny);
-        // no need to update, we'll receive a paintevent after move
-        // (with the safe assumption that the newly exposed area
-        // covers the entire viewport)
+        clipped_viewport->update();
     }
     for (QSVChildRec *r = children.first(); r; r=children.next()) {
         r->hideOrShow(sv, clipped_viewport);
@@ -2655,9 +2657,9 @@ QSize Q3ScrollView::sizeHint() const
     } else {
         sz += QSize(d->contentsWidth(), contentsHeight());
     }
-    if (d->hMode == AlwaysOn)
-        sz.setWidth(sz.width() + d->hbar->sizeHint().width());
     if (d->vMode == AlwaysOn)
+        sz.setWidth(sz.width() + d->vbar->sizeHint().width());
+    if (d->hMode == AlwaysOn)
         sz.setHeight(sz.height() + d->hbar->sizeHint().height());
     return sz.expandedTo(QSize(12 * h, 8 * h))
              .boundedTo(QSize(36 * h, 24 * h));

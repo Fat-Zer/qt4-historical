@@ -21,7 +21,9 @@
 **
 ****************************************************************************/
 
+#include "qdebug.h"
 #include "qhostaddress.h"
+#include "qplatformdefs.h"
 #include "qstringlist.h"
 
 #define QT_ENSURE_PARSED(a) \
@@ -29,6 +31,33 @@
         if (!(a)->d->isParsed) \
             (a)->d->parse(); \
     } while (0)
+
+#ifdef Q_OS_WIN
+#    if !defined (QT_NO_IPV6)
+// sockaddr_in6 size changed between old and new SDK
+// Only the new version is the correct one, so always
+// use this structure.
+struct qt_in6_addr {
+    u_char qt_s6_addr[16];
+};
+typedef struct {
+    short   sin6_family;            /* AF_INET6 */
+    u_short sin6_port;              /* Transport level port number */
+    u_long  sin6_flowinfo;          /* IPv6 flow information */
+    struct  qt_in6_addr sin6_addr;  /* IPv6 address */
+    u_long  sin6_scope_id;          /* set of interfaces for a scope */
+} qt_sockaddr_in6;
+#    else
+typedef void * qt_sockaddr_in6 ;
+#    endif
+#    ifndef AF_INET6
+#        define AF_INET6        23  /* Internetwork Version 6 */
+#    endif
+#else
+#define qt_sockaddr_in6 sockaddr_in6
+#define qt_s6_addr s6_addr
+#endif
+
 
 class QHostAddressPrivate
 {
@@ -49,6 +78,7 @@ private:
 
     QString ipString;
     bool isParsed;
+    QString scopeId;
 
     friend class QHostAddress;
 };
@@ -103,9 +133,18 @@ static bool parseIp4(const QString& address, quint32 *addr)
     return true;
 }
 
-static bool parseIp6(const QString &address, quint8 *addr)
+static bool parseIp6(const QString &address, quint8 *addr, QString *scopeId)
 {
-    QStringList ipv6 = address.split(":");
+    QString tmp = address;
+    int scopeIdPos = tmp.lastIndexOf('%');
+    if (scopeIdPos != -1) {
+        *scopeId = tmp.mid(scopeIdPos + 1);
+        tmp.chop(tmp.size() - scopeIdPos);
+    } else {
+        scopeId->clear();
+    }
+
+    QStringList ipv6 = tmp.split(":");
     int count = ipv6.count();
     if (count < 3 || count > 8)
         return false;
@@ -173,7 +212,7 @@ bool QHostAddressPrivate::parse()
     // All IPv6 addresses contain a ':', and may contain a '.'.
     if (a.contains(':')) {
         quint8 maybeIp6[16];
-        if (parseIp6(a, maybeIp6)) {
+        if (parseIp6(a, maybeIp6, &scopeId)) {
             setAddress(maybeIp6);
             protocol = QAbstractSocket::IPv6Protocol;
             return true;
@@ -285,6 +324,16 @@ QHostAddress::QHostAddress(const QString &address)
     d->isParsed = false;
 }
 
+QHostAddress::QHostAddress(const struct sockaddr *sockaddr)
+{
+    if (sockaddr->sa_family == AF_INET)
+        setAddress(htonl(((sockaddr_in *)sockaddr)->sin_addr.s_addr));
+#ifndef QT_NO_IPV6
+    else if (sockaddr->sa_family == AF_INET6)
+        setAddress(((qt_sockaddr_in6 *)sockaddr)->sin6_addr.qt_s6_addr);
+#endif
+}
+
 /*!
     Constructs a copy of the given \a address.
 */
@@ -339,6 +388,18 @@ QHostAddress &QHostAddress::operator=(const QHostAddress &address)
 }
 
 /*!
+    Assigns the host address \a address to this object, and returns a
+    reference to this object.
+
+    \sa setAddress()
+*/
+QHostAddress &QHostAddress::operator=(const QString &address)
+{
+    setAddress(address);
+    return *this;
+}
+
+/*!
     Sets the host address to 0.0.0.0.
 */
 void QHostAddress::clear()
@@ -389,6 +450,24 @@ bool QHostAddress::setAddress(const QString &address)
 {
     d->ipString = address;
     return d->parse();
+}
+
+/*!
+    \overload
+
+    Sets the IPv4 or IPv6 address specified by the native structure \a
+    sockaddr.  Returns true and sets the address if the address was
+    successfully parsed; otherwise returns false.
+*/
+void QHostAddress::setAddress(const struct sockaddr *sockaddr)
+{
+    clear();
+    if (sockaddr->sa_family == AF_INET)
+        setAddress(htonl(((sockaddr_in *)sockaddr)->sin_addr.s_addr));
+#ifndef QT_NO_IPV6
+    else if (sockaddr->sa_family == AF_INET6)
+        setAddress(((qt_sockaddr_in6 *)sockaddr)->sin6_addr.qt_s6_addr);
+#endif
 }
 
 /*!
@@ -466,10 +545,72 @@ QString QHostAddress::toString() const
         QString s;
         s.sprintf("%X:%X:%X:%X:%X:%X:%X:%X",
                   ugle[0], ugle[1], ugle[2], ugle[3], ugle[4], ugle[5], ugle[6], ugle[7]);
+        if (!d->scopeId.isEmpty())
+            s.append(QLatin1Char('%') + d->scopeId);
         return s;
     }
 
     return QString();
+}
+
+/*!
+    \since 4.1
+
+    Returns the scope ID of an IPv6 address. For IPv4 addresses, or if the
+    address does not contain a scope ID, an empty QString is returned.
+
+    The IPv6 scope ID specifies the scope of \e reachability for non-global
+    IPv6 addresses, limiting the area in which the address can be used. All
+    IPv6 addresses are associated with such a reachability scope. The scope ID
+    is used to disambiguate addresses that are not guaranteed to be globally
+    unique.
+
+    IPv6 specifies the following four levels of reachability:
+
+    \list
+
+    \o Node-local: Addresses that are only used for communicating with
+    services on the same interface (e.g., the loopback interface "::1").
+
+    \o Link-local: Addresses that are local to the network interface
+    (\e{link}). There is always one link-local address for each IPv6 interface
+    on your host. Link-local addresses ("fe80...") are generated from the MAC
+    address of the local network adaptor, and are not guaranteed to be unique.
+
+    \o Site-local: Addresses that are local to the site / private network
+    (e.g., the company intranet). Site-local addresses ("fec0...")  are
+    usually distributed by the site router, and are not guaranteed to be
+    unique outside of the local site.
+
+    \o Global: For globally routable addresses, such as public servers on the
+    Internet.
+
+    \endlist
+
+    When using a link-local or site-local address for IPv6 connections, you
+    must specify the scope ID. The scope ID for a link-local address is
+    usually the same as the interface name (e.g., "eth0", "en1") or number
+    (e.g., "1", "2").
+
+    \sa setScopeId()
+*/
+QString QHostAddress::scopeId() const
+{
+    QT_ENSURE_PARSED(this);
+    return (d->protocol == QAbstractSocket::IPv6Protocol) ? d->scopeId : QString();
+}
+
+/*!
+    \since 4.1
+
+    Sets the IPv6 scope ID of the address to \a id. If the address
+    protocol is not IPv6, this function does nothing.
+*/
+void QHostAddress::setScopeId(const QString &id)
+{
+    QT_ENSURE_PARSED(this);
+    if (d->protocol == QAbstractSocket::IPv6Protocol)
+        d->scopeId = id;
 }
 
 /*!
@@ -487,7 +628,7 @@ bool QHostAddress::operator==(const QHostAddress &other) const
         return other.d->protocol == QAbstractSocket::IPv6Protocol
                && memcmp(&d->a6, &other.d->a6, sizeof(Q_IPV6ADDR)) == 0;
     }
-    return true;
+    return d->protocol == other.d->protocol;
 }
 
 /*!
@@ -506,7 +647,7 @@ bool QHostAddress::operator ==(SpecialAddress other) const
         return otherAddress.d->protocol == QAbstractSocket::IPv6Protocol
                && memcmp(&d->a6, &otherAddress.d->a6, sizeof(Q_IPV6ADDR)) == 0;
     }
-    return true;
+    return int(other) == int(Null);
 }
 
 /*!
@@ -543,3 +684,11 @@ bool QHostAddress::isNull() const
 
     Use protocol() instead.
 */
+
+#ifndef QT_NO_DEBUG_STREAM
+QDebug operator<<(QDebug d, const QHostAddress &address)
+{
+    d.maybeSpace() << "QHostAddress(" << address.toString() << ")";
+    return d.space();
+}
+#endif

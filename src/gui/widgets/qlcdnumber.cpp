@@ -321,7 +321,7 @@ static const char *getSegments(char ch)               // gets list of segments f
 QLCDNumber::QLCDNumber(QWidget *parent, const char *name)
         : QFrame(*new QLCDNumberPrivate, parent)
 {
-    setObjectName(name);
+    setObjectName(QString::fromAscii(name));
     Q_D(QLCDNumber);
     d->ndigits = 5;
     d->init();
@@ -343,7 +343,7 @@ QLCDNumber::QLCDNumber(QWidget *parent, const char *name)
 QLCDNumber::QLCDNumber(uint numDigits, QWidget *parent, const char *name)
         : QFrame(*new QLCDNumberPrivate, parent)
 {
-    setObjectName(name);
+    setObjectName(QString::fromAscii(name));
     Q_D(QLCDNumber);
     d->ndigits = numDigits;
     d->init();
@@ -1221,5 +1221,10 @@ QSize QLCDNumber::sizeHint() const
     return QSize(10 + 9 * (numDigits() + (smallDecimalPoint() ? 0 : 1)), 23);
 }
 
+/*! \reimp */
+bool QLCDNumber::event(QEvent *e)
+{
+    return QFrame::event(e);
+}
 
 #endif // QT_NO_LCDNUMBER

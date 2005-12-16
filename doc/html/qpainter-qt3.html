@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/src/gui/painting/qpainter.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/gui/painting/qpainter.cpp -->
 <head>
-    <title>Qt 4.0: Qt 3 Support Members for QPainter</title>
+    <title>Qt 4.1: Qt 3 Support Members for QPainter</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -18,7 +18,7 @@ body { background: #ffffff; color: black; }</style>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Qt 3 Support Members for QPainter</h1>
-<p><b>The following class members are part of the Qt 3 support layer.</b> They are provided to help you port old code to Qt 4. We advise against using them in new code.</p>
+<p><b>The following class members are part of the <a href="qt3support.html">Qt 3 support layer</a>.</b> They are provided to help you port old code to Qt 4. We advise against using them in new code.</p>
 <p><ul><li><a href="qpainter.html">QPainter class reference</a></li></ul></p>
 <h3>Public Functions</h3>
 <ul>
@@ -142,53 +142,33 @@ body { background: #ffffff; color: black; }</style>
 <p>Use <a href="qpainter.html#matrix">matrix</a>() instead.</p>
 <p>See also <a href="qpainter-qt3.html#setWorldMatrix">setWorldMatrix</a>().</p>
 <h3 class="fn"><a name="xForm"></a><a href="qpoint.html">QPoint</a> QPainter::xForm ( const <a href="qpoint.html">QPoint</a> &amp; <i>p</i> ) const</h3>
-<p>Returns the point <i>p</i> transformed from model coordinates to device coordinates.</p>
-<p>See also <a href="qpainter-qt3.html#xFormDev">xFormDev</a>() and <a href="qmatrix.html#map">QMatrix::map</a>().</p>
+<p>Use <i>p</i> * <a href="qpainter.html#matrix">matrix</a>() instead.</p>
 <h3 class="fn"><a name="xForm-2"></a><a href="qrect.html">QRect</a> QPainter::xForm ( const <a href="qrect.html">QRect</a> &amp; <i>r</i> ) const</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
-<p>Returns the rectangle <i>r</i> transformed from model coordinates to device coordinates.</p>
-<p>If world transformation is enabled and rotation or shearing has been specified, then the bounding rectangle is returned.</p>
-<p>See also <a href="qpainter-qt3.html#xFormDev">xFormDev</a>() and <a href="qmatrix.html#map">QMatrix::map</a>().</p>
+<p>Use <i>r</i> * <a href="qpainter.html#matrix">matrix</a>() instead.</p>
 <h3 class="fn"><a name="xForm-3"></a><a href="qpolygon.html">QPolygon</a> QPainter::xForm ( const <a href="qpolygon.html">QPolygon</a> &amp; <i>a</i> ) const</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
-<p>Returns the point array <i>a</i> transformed from model coordinates to device coordinates.</p>
-<p>See also <a href="qpainter-qt3.html#xFormDev">xFormDev</a>() and <a href="qmatrix.html#map">QMatrix::map</a>().</p>
+<p>Use <i>a</i> * <a href="qpainter.html#matrix">matrix</a>() instead.</p>
 <h3 class="fn"><a name="xForm-4"></a><a href="qpolygon.html">QPolygon</a> QPainter::xForm ( const <a href="qpolygon.html">QPolygon</a> &amp; <i>av</i>, int <i>index</i>, int <i>npoints</i> ) const</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
-<p>Returns the point array <i>av</i> transformed from model coordinates to device coordinates. The <i>index</i> is the first point in the array and <i>npoints</i> denotes the number of points to be transformed. If <i>npoints</i> is negative, all points from <i>av</i><i>[index]</i> until the last point in the array are transformed.</p>
-<p>The returned point array consists of the number of points that were transformed.</p>
-<p>Example:</p>
-<pre>&nbsp;   QPolygon a(10);
-    QPolygon b;
-    b = painter.xForm(a, 2, 4);  // b.size() == 4
-    b = painter.xForm(a, 2, -1); // b.size() == 8</pre>
-<p>See also <a href="qpainter-qt3.html#xFormDev">xFormDev</a>() and <a href="qmatrix.html#map">QMatrix::map</a>().</p>
+<p>Use <i>av</i> * <a href="qpainter.html#matrix">matrix</a>() instead.</p>
+<p>If <i>index</i> and <i>npoints</i> are specified, you will need to create a sub-<a href="qpolygon.html">QPolygon</a> before you can apply the transformation.</p>
 <h3 class="fn"><a name="xFormDev"></a><a href="qrect.html">QRect</a> QPainter::xFormDev ( const <a href="qrect.html">QRect</a> &amp; <i>r</i> ) const</h3>
-<p>Returns the rectangle <i>r</i> transformed from device coordinates to model coordinates.</p>
-<p>If world transformation is enabled and rotation or shearing is used, then the bounding rectangle is returned.</p>
-<p>See also <a href="qpainter-qt3.html#xForm">xForm</a>() and <a href="qmatrix.html#map">QMatrix::map</a>().</p>
+<p>Use <i>r</i> * <a href="qpainter.html#matrix">matrix</a>().inverted() instead.</p>
 <h3 class="fn"><a name="xFormDev-2"></a><a href="qpoint.html">QPoint</a> QPainter::xFormDev ( const <a href="qpoint.html">QPoint</a> &amp; <i>p</i> ) const</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
-<p>Returns the point <i>p</i> transformed from device coordinates to model coordinates.</p>
-<p>See also <a href="qpainter-qt3.html#xForm">xForm</a>() and <a href="qmatrix.html#map">QMatrix::map</a>().</p>
+<p>Use <i>p</i> * <a href="qpainter.html#matrix">matrix</a>().inverted() instead.</p>
 <h3 class="fn"><a name="xFormDev-3"></a><a href="qpolygon.html">QPolygon</a> QPainter::xFormDev ( const <a href="qpolygon.html">QPolygon</a> &amp; <i>a</i> ) const</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
-<p>Returns the point array <i>a</i> transformed from device coordinates to model coordinates.</p>
-<p>See also <a href="qpainter-qt3.html#xForm">xForm</a>() and <a href="qmatrix.html#map">QMatrix::map</a>().</p>
+<p>Use <i>a</i> * <a href="qpainter.html#matrix">matrix</a>().inverted() instead.</p>
 <h3 class="fn"><a name="xFormDev-4"></a><a href="qpolygon.html">QPolygon</a> QPainter::xFormDev ( const <a href="qpolygon.html">QPolygon</a> &amp; <i>ad</i>, int <i>index</i>, int <i>npoints</i> ) const</h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
-<p>Returns the point array <i>ad</i> transformed from device coordinates to model coordinates. The <i>index</i> is the first point in the array and <i>npoints</i> denotes the number of points to be transformed. If <i>npoints</i> is negative, all points from <i>ad</i><i>[index]</i> until the last point in the array are transformed.</p>
-<p>The returned point array consists of the number of points that were transformed.</p>
-<p>Example:</p>
-<pre>&nbsp;   QPolygon a(10);
-    QPolygon b;
-    b = painter.xFormDev(a, 1, 3);  // b.size() == 3
-    b = painter.xFormDev(a, 1, -1); // b.size() == 9</pre>
-<p>See also <a href="qpainter-qt3.html#xForm">xForm</a>() and <a href="qmatrix.html#map">QMatrix::map</a>().</p>
+<p>Use <i>ad</i> * <a href="qpainter.html#matrix">matrix</a>().inverted() instead.</p>
+<p>If <i>index</i> and <i>npoints</i> are specified, you will need to create a sub-<a href="qpolygon.html">QPolygon</a> before you can apply the transformation.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

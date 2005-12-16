@@ -42,13 +42,20 @@
 
 #include <QtCore/qdebug.h>
 
+namespace qdesigner_internal {
+
 class FriendlyLayout: public QLayout
 {
 public:
     inline FriendlyLayout(): QLayout() { Q_ASSERT(0); }
 
-    friend class QLayoutWidgetItem;
+    friend class ::QLayoutWidgetItem;
 };
+
+} // namespace qdesigner_internal
+
+
+using namespace qdesigner_internal;
 
 // ---- QLayoutSupport ----
 QLayoutSupport::QLayoutSupport(QDesignerFormWindowInterface *formWindow, QWidget *widget, QObject *parent)
@@ -59,21 +66,25 @@ QLayoutSupport::QLayoutSupport(QDesignerFormWindowInterface *formWindow, QWidget
       m_currentInsertMode(QDesignerLayoutDecorationExtension::InsertWidgetMode)
 {
     QPalette p;
-    p.setColor(QPalette::Background, Qt::red);
+    p.setColor(QPalette::Base, Qt::red);
 
     m_indicatorLeft = new InvisibleWidget(m_widget);
+    m_indicatorLeft->setAutoFillBackground(true);
     m_indicatorLeft->setPalette(p);
     m_indicatorLeft->hide();
 
     m_indicatorTop = new InvisibleWidget(m_widget);
+    m_indicatorTop->setAutoFillBackground(true);
     m_indicatorTop->setPalette(p);
     m_indicatorTop->hide();
 
     m_indicatorRight = new InvisibleWidget(m_widget);
+    m_indicatorRight->setAutoFillBackground(true);
     m_indicatorRight->setPalette(p);
     m_indicatorRight->hide();
 
     m_indicatorBottom = new InvisibleWidget(m_widget);
+    m_indicatorBottom->setAutoFillBackground(true);
     m_indicatorBottom->setPalette(p);
     m_indicatorBottom->hide();
 
@@ -509,7 +520,7 @@ Qt::Orientations QLayoutWidgetItem::expandingDirections() const
 
 void QLayoutWidgetItem::addTo(QLayout *layout)
 {
-    static_cast<FriendlyLayout*>(layout)->addChildWidget(widget());
+    static_cast<qdesigner_internal::FriendlyLayout*>(layout)->addChildWidget(widget());
 }
 
 bool QLayoutWidgetItem::hasHeightForWidth() const
@@ -919,3 +930,4 @@ void QLayoutWidget::setLayoutSpacing(int layoutSpacing)
     if (layout())
         layout()->setSpacing(layoutSpacing);
 }
+

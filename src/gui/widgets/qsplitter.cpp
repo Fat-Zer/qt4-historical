@@ -37,94 +37,15 @@
 #include "qtextstream.h"
 #include "qvarlengtharray.h"
 #include "qvector.h"
-#include "private/qframe_p.h"
 #include "private/qlayoutengine_p.h"
+#include "private/qsplitter_p.h"
 #include "qdebug.h"
 
 #include <ctype.h>
 
 //#define QSPLITTER_DEBUG
 
-const uint Default = 2;
 static int mouseOffset;
-
-class QSplitterLayoutStruct
-{
-public:
-    QRect rect;
-    int sizer;
-    uint collapsed : 1;
-    uint collapsible : 2;
-    QWidget *widget;
-    QSplitterHandle *handle;
-
-    QSplitterLayoutStruct() : sizer(-1), collapsed(false), collapsible(Default), widget(0), handle(0) {}
-    ~QSplitterLayoutStruct() { delete handle; }
-    int getWidgetSize(Qt::Orientation orient);
-    int getHandleSize(Qt::Orientation orient);
-    int pick(const QSize &size, Qt::Orientation orient)
-    { return (orient == Qt::Horizontal) ? size.width() : size.height(); }
-};
-
-class QSplitterPrivate : public QFramePrivate
-{
-    Q_DECLARE_PUBLIC(QSplitter)
-public:
-    QSplitterPrivate() : rubberBand(0), opaque(true), firstShow(true),
-                         childrenCollapsible(true), compatMode(false), handleWidth(0), blockChildAdd(false) {}
-
-    QPointer<QRubberBand> rubberBand;
-    mutable QList<QSplitterLayoutStruct *> list;
-    Qt::Orientation orient;
-    bool opaque : 8;
-    bool firstShow : 8;
-    bool childrenCollapsible : 8;
-    bool compatMode : 8;
-    int handleWidth;
-    bool blockChildAdd;
-
-    inline int pick(const QPoint &pos) const
-    { return orient == Qt::Horizontal ? pos.x() : pos.y(); }
-    inline int pick(const QSize &s) const
-    { return orient == Qt::Horizontal ? s.width() : s.height(); }
-
-    inline int trans(const QPoint &pos) const
-    { return orient == Qt::Vertical ? pos.x() : pos.y(); }
-    inline int trans(const QSize &s) const
-    { return orient == Qt::Vertical ? s.width() : s.height(); }
-
-    void init();
-    void recalc(bool update = false);
-    void doResize();
-    void storeSizes();
-    void getRange(int index, int *, int *, int *, int *) const;
-    void addContribution(int, int *, int *, bool) const;
-    int adjustPos(int, int, int *, int *, int *, int *) const;
-    bool collapsible(QSplitterLayoutStruct *) const;
-    QSplitterLayoutStruct *findWidget(QWidget *) const;
-    QSplitterLayoutStruct *insertWidget(int index, QWidget *);
-    void doMove(bool backwards, int pos, int index, int delta,
-                bool mayCollapse, int *positions, int *widths);
-    void setGeo(QSplitterLayoutStruct *s, int pos, int size, bool allowCollapse);
-    int findWidgetJustBeforeOrJustAfter(int index, int delta, int &collapsibleSize) const;
-    void updateHandles();
-
-};
-
-class QSplitterHandlePrivate : public QWidgetPrivate
-{
-    Q_DECLARE_PUBLIC(QSplitterHandle)
-public:
-    QSplitterHandlePrivate() : orient(Qt::Horizontal), opaq(false), s(0) {}
-
-    inline int pick(const QPoint &pos) const
-    { return orient == Qt::Horizontal ? pos.x() : pos.y(); }
-
-    Qt::Orientation orient;
-    bool opaq;
-    QSplitter *s;
-    bool hover;
-};
 
 /*!
     \class QSplitterHandle
@@ -450,6 +371,7 @@ void QSplitterPrivate::recalc(bool update)
                 q->setMinimumSize(mint,minl);
         }
         doResize();
+        q->updateGeometry();
     } else {
         firstShow = true;
     }
@@ -694,17 +616,19 @@ void QSplitterPrivate::setGeo(QSplitterLayoutStruct *sls, int p, int s, bool all
     }
     sls->rect = r;
 
-    /*
-      Hide the child widget, but without calling hide() so that the
-      splitter handle is still shown.
-    */
     int minSize = pick(qSmartMinSize(w));
+
+    if (orient == Qt::Horizontal && q->isRightToLeft())
+        r.moveRight(contents.width() - r.left());
 
     if (allowCollapse)
         sls->collapsed = s <= 0 && minSize > 0 && !w->isHidden();
 
-    if (orient == Qt::Horizontal && q->isRightToLeft())
-        r.moveRight(contents.width() - r.left());
+    //   Hide the child widget, but without calling hide() so that
+    //   the splitter handle is still shown.
+    if (sls->collapsed)
+        r.moveTopLeft(QPoint(-r.width()-1, -r.height()-1));
+
     w->setGeometry(r);
 
     if (!sls->handle->isHidden()) {
@@ -755,7 +679,6 @@ void QSplitterPrivate::doMove(bool backwards, int hPos, int index, int delta, bo
     }
 
 }
-
 
 QSplitterLayoutStruct *QSplitterPrivate::findWidget(QWidget *w) const
 {
@@ -833,7 +756,7 @@ QSplitter::QSplitter(QWidget *parent, const char *name)
     : QFrame(*new QSplitterPrivate, parent)
 {
     Q_D(QSplitter);
-    setObjectName(name);
+    setObjectName(QString::fromAscii(name));
     d->orient = Qt::Horizontal;
     d->init();
 }
@@ -847,7 +770,7 @@ QSplitter::QSplitter(Qt::Orientation orientation, QWidget *parent, const char *n
     : QFrame(*new QSplitterPrivate, parent)
 {
     Q_D(QSplitter);
-    setObjectName(name);
+    setObjectName(QString::fromAscii(name));
     d->orient = orientation;
     d->init();
 }
@@ -1262,7 +1185,7 @@ void QSplitter::childEvent(QChildEvent *c)
             if (s->widget == w) {
                 d->list.removeAt(i);
                 delete s;
-                d->doResize();
+                d->recalc(isVisible());
                 return;
             }
         }
@@ -1289,10 +1212,10 @@ void QSplitter::setRubberBand(int pos)
     if (!d->rubberBand)
         d->rubberBand = new QRubberBand(QRubberBand::Line, this);
     if (d->orient == Qt::Horizontal)
-        d->rubberBand->setGeometry(QRect(mapToGlobal(QPoint(pos + hw / 2 - rBord, r.y())),
-                                   QSize(2 * rBord, r.height())));
+        d->rubberBand->setGeometry(QRect(QPoint(pos + hw / 2 - rBord, r.y()),
+                                         QSize(2 * rBord, r.height())));
     else
-        d->rubberBand->setGeometry(QRect(mapToGlobal(QPoint(r.x(), pos + hw / 2 - rBord)),
+        d->rubberBand->setGeometry(QRect(QPoint(r.x(), pos + hw / 2 - rBord),
                                    QSize(r.width(), 2 * rBord)));
     if (!d->rubberBand->isVisible())
         d->rubberBand->show();
@@ -1306,11 +1229,18 @@ bool QSplitter::event(QEvent *e)
 {
     Q_D(QSplitter);
     switch (e->type()) {
+    case QEvent::Hide:
+        // Reset firstShow to false here since things can be done to the splitter in between
+        if (!d->firstShow)
+            d->firstShow = true;
+        break;
     case QEvent::Show:
         if (!d->firstShow)
             break;
         d->firstShow = false;
         // fall through
+    case QEvent::HideToParent:
+    case QEvent::ShowToParent:
     case QEvent::LayoutRequest:
 #ifdef QT3_SUPPORT
     case QEvent::LayoutHint:

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 2004-2005 Trolltech AS. All rights reserved.
 **
 ** This file is part of the demonstration applications of the Qt Toolkit.
 **
@@ -21,16 +21,17 @@
 **
 ****************************************************************************/
 
-#ifndef BROWSERWIDGET_H
-#define BROWSERWIDGET_H
+#ifndef BROWSER_H
+#define BROWSER_H
 
-#include <qwidget.h>
+#include <QWidget>
 #include "ui_browserwidget.h"
 
 class ConnectionWidget;
 class QTableView;
 class QPushButton;
 class QTextEdit;
+class QSqlError;
 
 class Browser: public QWidget, private Ui::Browser
 {
@@ -39,18 +40,26 @@ public:
     Browser(QWidget *parent = 0);
     virtual ~Browser();
 
+    QSqlError addConnection(const QString &driver, const QString &dbName, const QString &host,
+                  const QString &user, const QString &passwd, int port = -1);
+
 public slots:
     void exec();
     void showTable(const QString &table);
+    void showMetaData(const QString &table);
     void addConnection();
 
     void on_connectionWidget_tableActivated(const QString &table)
     { showTable(table); }
-    void on_submitButton_clicked() {
+    void on_connectionWidget_metaDataRequested(const QString &table)
+    { showMetaData(table); }
+    void on_submitButton_clicked()
+    {
         exec();
         sqlEdit->setFocus();
     }
-    void on_clearButton_clicked() {
+    void on_clearButton_clicked()
+    {
         sqlEdit->clear();
         sqlEdit->setFocus();
     }

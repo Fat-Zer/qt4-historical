@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/src/gui/widgets/qtextedit.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/gui/widgets/qtextedit.cpp -->
 <head>
-    <title>Qt 4.0: Qt 3 Support Members for QTextEdit</title>
+    <title>Qt 4.1: Qt 3 Support Members for QTextEdit</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -18,7 +18,7 @@ body { background: #ffffff; color: black; }</style>
 <td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Qt 3 Support Members for QTextEdit</h1>
-<p><b>The following class members are part of the Qt 3 support layer.</b> They are provided to help you port old code to Qt 4. We advise against using them in new code.</p>
+<p><b>The following class members are part of the <a href="qt3support.html">Qt 3 support layer</a>.</b> They are provided to help you port old code to Qt 4. We advise against using them in new code.</p>
 <p><ul><li><a href="qtextedit.html">QTextEdit class reference</a></li></ul></p>
 <h3>Public Types</h3>
 <ul>
@@ -39,6 +39,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>bool <b><a href="qtextedit-qt3.html#isUndoAvailable">isUndoAvailable</a></b> () const</li>
 <li><div class="fn"/>bool <b><a href="qtextedit-qt3.html#italic">italic</a></b> () const</li>
 <li><div class="fn"/>void <b><a href="qtextedit-qt3.html#moveCursor">moveCursor</a></b> ( CursorAction <i>action</i>, QTextCursor::MoveMode <i>mode</i> = QTextCursor::MoveAnchor )</li>
+<li><div class="fn"/>void <b><a href="qtextedit-qt3.html#moveCursor-2">moveCursor</a></b> ( CursorAction <i>action</i>, bool <i>select</i> )</li>
 <li><div class="fn"/>int <b><a href="qtextedit-qt3.html#pointSize">pointSize</a></b> () const</li>
 <li><div class="fn"/>QString <b><a href="qtextedit-qt3.html#selectedText">selectedText</a></b> () const</li>
 <li><div class="fn"/>void <b><a href="qtextedit-qt3.html#setBold">setBold</a></b> ( bool <i>b</i> )</li>
@@ -124,6 +125,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qtextedit-qt3.html#setItalic">setItalic</a>().</p>
 <h3 class="fn"><a name="moveCursor"></a>void QTextEdit::moveCursor ( <a href="qtextedit.html#CursorAction-enum">CursorAction</a> <i>action</i>, <a href="qtextcursor.html#MoveMode-enum">QTextCursor::MoveMode</a> <i>mode</i> = QTextCursor::MoveAnchor )</h3>
 <p>Use the QTextCursor() class instead.</p>
+<h3 class="fn"><a name="moveCursor-2"></a>void QTextEdit::moveCursor ( <a href="qtextedit.html#CursorAction-enum">CursorAction</a> <i>action</i>, bool <i>select</i> )</h3>
+<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <h3 class="fn"><a name="pointSize"></a>int QTextEdit::pointSize () const</h3>
 <p>Use int(<a href="qtextedit.html#fontPointSize">fontPointSize</a>()+0.5) instead.</p>
 <p>See also <a href="qtextedit-qt3.html#setPointSize">setPointSize</a>().</p>
@@ -180,6 +183,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

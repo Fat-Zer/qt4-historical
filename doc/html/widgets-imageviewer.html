@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/doc/src/examples/imageviewer.qdoc -->
+<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/doc/src/examples/imageviewer.qdoc -->
 <head>
-    <title>Qt 4.0: ImageViewer Example</title>
+    <title>Qt 4.1: ImageViewer Example</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -137,12 +137,13 @@ body { background: #ffffff; color: black; }</style>
         }
     }</pre>
 <p>If the format is supported, we display the image in <tt>imageLabel</tt> by setting the label's <a href="qlabel.html#pixmap-prop">pixmap</a>. Then we enable the <b>Print</b> and <b>Fit to Window</b> menu entries and update the rest of the view menu entries. The <b>Open</b> and <b>Exit</b> entries are enabled by default.</p>
-<p>If the <b>Fit to Window</b> option is turned off, the <a href="qscrollarea.html#widgetResizable-prop">QScrollArea::widgetResizable</a> property is <tt>false</tt> and is it is our responsibility (not <a href="qscrollarea.html">QScrollArea</a>'s) to give the <a href="qlabel.html">QLabel</a> a reasonable size based on its contents. We call {<a href="qwidget.html#adjustSize">QWidget::adjustSize</a>()}{adjustSize()} to achieve this, which is essentially the same as</p>
-<pre>&nbsp;   imageLabel-&gt;resize(imageLabel-&gt;pixmap()-&gt;size());
-    void ImageViewer::print()
+<p>If the <b>Fit to Window</b> option is turned off, the <a href="qscrollarea.html#widgetResizable-prop">QScrollArea::widgetResizable</a> property is <tt>false</tt> and it is our responsibility (not <a href="qscrollarea.html">QScrollArea</a>'s) to give the <a href="qlabel.html">QLabel</a> a reasonable size based on its contents. We call {<a href="qwidget.html#adjustSize">QWidget::adjustSize</a>()}{adjustSize()} to achieve this, which is essentially the same as</p>
+<pre>&nbsp;   imageLabel-&gt;resize(imageLabel-&gt;pixmap()-&gt;size());</pre>
+<p>In the <tt>print()</tt> slot, we first make sure that an image has been loaded into the application:</p>
+<pre>&nbsp;   void ImageViewer::print()
     {
         Q_ASSERT(imageLabel-&gt;pixmap());</pre>
-<p>In the <tt>print()</tt> slot, we first make sure that an image has been loaded into the application. If the application is built in debug mode, the <tt>Q_ASSERT()</tt> macro will expand to</p>
+<p>If the application is built in debug mode, the <tt>Q_ASSERT()</tt> macro will expand to</p>
 <pre>&nbsp;   if (!imageLabel-&gt;pixmap())
          qFatal(&quot;ASSERT: &quot;imageLabel-&gt;pixmap()&quot; in file ...&quot;);</pre>
 <p>In release mode, the macro simply disappear. The mode can be set in the application's <tt>.pro</tt> file. One way to do so is to add an option to <b>qmake</b> when building the appliction:</p>
@@ -187,9 +188,9 @@ body { background: #ffffff; color: black; }</style>
     {
         bool fitToWindow = fitToWindowAct-&gt;isChecked();
         scrollArea-&gt;setWidgetResizable(fitToWindow);
-        if (!fitToWindow)
-            imageLabel-&gt;adjustSize();
-
+        if (!fitToWindow) {
+            normalSize();
+        }
         updateActions();
     }</pre>
 <p>The <tt>fitToWindow()</tt> slot is called each time the user toggled the <b>Fit to Window</b> option. If the slot is called to turn on the option, we tell the scroll area to resize its child widget with the <a href="qscrollarea.html#widgetResizable-prop">QScrollArea::setWidgetResizable</a>() function. Then we disable the <b>Zoom In</b>, <b>Zoom Out</b> and <b>Normal Size</b> menu entries using the private <tt>updateActions()</tt> function.</p>
@@ -318,6 +319,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

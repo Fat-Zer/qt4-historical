@@ -31,6 +31,7 @@
 #include "qdesigner_propertyeditor.h"
 #include "qdesigner_objectinspector.h"
 #include "qdesigner_signalsloteditor.h"
+#include "qdesigner_actioneditor.h"
 #include "qdesigner_resourceeditor.h"
 
 #include <QtDesigner/QtDesigner>
@@ -125,7 +126,10 @@ void QDesignerWorkbench::initialize()
     QDesignerSettings settings;
     m_core = QDesignerComponents::createFormEditor(this);
 
+    (void) QDesignerComponents::createTaskMenu(core(), this);
+
     initializeCorePlugins();
+    QDesignerComponents::initializePlugins(core());
 
     m_toolActions = new QActionGroup(this);
     m_toolActions->setExclusive(false);
@@ -178,14 +182,9 @@ void QDesignerWorkbench::initialize()
         previewSubMenu->addAction(action);
     }
 
-
     m_toolMenu = m_globalMenuBar->addMenu(tr("&Tools"));
 
     m_toolMenu->addSeparator();
-
-    QAction *bigAction = m_actionManager->useBigIconsAction();
-    connect(bigAction, SIGNAL(triggered(bool)), this, SLOT(setUseBigIcons(bool)));
-    m_toolMenu->addAction(bigAction);
 
     m_windowMenu = m_globalMenuBar->addMenu(tr("&Window"));
     foreach (QAction *action, m_actionManager->windowActions()->actions()) {
@@ -212,10 +211,11 @@ void QDesignerWorkbench::initialize()
     tw = new QDesignerResourceEditor(this);
     tw->setObjectName(QLatin1String("qt_designer_resourceeditor"));
     addToolWindow(tw);
+    tw = new QDesignerActionEditor(this);
+    tw->setObjectName(QLatin1String("qt_designer_actioneditor"));
+    addToolWindow(tw);
 
-    m_integration = new QDesignerIntegration(core(), this);
-
-    (void) QDesignerComponents::createTaskMenu(core(), this);
+    m_integration = new qdesigner_internal::QDesignerIntegration(core(), this);
 
     // create the toolbars
     m_editToolBar = new QToolBar;
@@ -248,7 +248,6 @@ void QDesignerWorkbench::initialize()
     toolbarMenu->addAction(m_formToolBar->toggleViewAction());
 
     m_geometries.clear();
-
 
     emit initialized();
 
@@ -406,7 +405,6 @@ void QDesignerWorkbench::switchToDockedMode()
     m_editToolBar->show();
     m_toolToolBar->show();
     m_formToolBar->show();
-    changeToolBarIconSize(QDesignerSettings().useBigIcons());
 
     qDesigner->setMainWindow(mw);
     (void) mw->statusBar();
@@ -421,6 +419,11 @@ void QDesignerWorkbench::switchToDockedMode()
         }
 
         dockWidget->setWidget(tw);
+    }
+
+    foreach (QDesignerToolWindow *tw, m_toolWindows) {
+        QDockWidget *dockWidget = magicalDockWidget(tw);
+        tw->setVisible(true);
         dockWidget->setVisible(m_visibilities.value(tw, true));
     }
 
@@ -500,7 +503,6 @@ void QDesignerWorkbench::switchToTopLevelMode()
         widgetBoxWrapper->addToolBar(m_formToolBar);
 
         widgetBoxWrapper->insertToolBarBreak(m_formToolBar);
-        changeToolBarIconSize(QDesignerSettings().useBigIcons());
     }
 
     QDesignerSettings settings;
@@ -543,6 +545,10 @@ QDesignerFormWindow *QDesignerWorkbench::createFormWindow()
     QRect g = formWindow->geometryHint();
     formWindow->resize(g.size());
     formWindow->move(availableGeometry().center() - g.center());
+
+    if (m_workspace) {
+        m_workspace->setActiveWindow(formWindow);
+    }
 
     return formWindow;
 }
@@ -656,6 +662,12 @@ void QDesignerWorkbench::saveSettings() const
     QDesignerSettings settings;
     foreach (QDesignerToolWindow *tw, m_toolWindows) {
         settings.saveGeometryFor(tw);
+    }
+    if (m_mode == DockedMode) {
+        if (qFindChild<QWorkspace *>(qDesigner->mainWindow())) {
+            settings.saveGeometryFor(qDesigner->mainWindow());
+            settings.setValue(qDesigner->mainWindow()->objectName() + QLatin1String("/visible"), false);
+        }
     }
 }
 
@@ -773,31 +785,18 @@ void QDesignerWorkbench::updateWindowMenu(QDesignerFormWindowInterface *fw)
         dfw->action()->setChecked(true);
 }
 
-void QDesignerWorkbench::setUseBigIcons(bool superSizeMe)
-{
-    QDesignerSettings settings;
-    if (settings.useBigIcons() == superSizeMe)
-        return;
-    settings.setUseBigIcons(superSizeMe);
-    changeToolBarIconSize(superSizeMe);
-}
-
-void QDesignerWorkbench::changeToolBarIconSize(bool big)
-{
-    QSize sz = big ? QSize(32, 32) : QSize(16, 16);
-    m_toolToolBar->setIconSize(sz);
-    m_formToolBar->setIconSize(sz);
-    m_editToolBar->setIconSize(sz);
-}
-
 void QDesignerWorkbench::formWindowActionTriggered(QAction *a)
 {
     QWidget *widget = a->parentWidget();
     Q_ASSERT(widget != 0);
 
-    widget->setWindowState(widget->windowState() & ~Qt::WindowMinimized);
-    widget->activateWindow();
-    widget->raise();
+    if (m_mode == DockedMode) {
+        m_workspace->setActiveWindow(widget);
+    } else {
+        widget->setWindowState(widget->windowState() & ~Qt::WindowMinimized);
+        widget->activateWindow();
+        widget->raise();
+    }
 }
 
 void QDesignerWorkbench::showToolBars()

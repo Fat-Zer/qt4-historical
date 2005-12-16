@@ -35,7 +35,7 @@
 // We mean it.
 //
 
-#include "qobject.h"
+#include "QtCore/qobject.h"
 
 #ifndef QT_NO_SOUND
 

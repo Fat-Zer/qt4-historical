@@ -24,9 +24,9 @@
 #ifndef TRANSLATOR_H
 #define TRANSLATOR_H
 
-#include "QtCore/qobject.h"
-#include "QtCore/qbytearray.h"
-#include <qtranslator.h>
+#include <QObject>
+#include <QByteArray>
+#include <QTranslator>
 
 class TranslatorPrivate;
 template <typename T> class QList;

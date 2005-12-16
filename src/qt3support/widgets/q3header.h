@@ -24,9 +24,9 @@
 #ifndef Q3HEADER_H
 #define Q3HEADER_H
 
-#include "QtGui/qicon.h"
-#include "QtGui/qwidget.h"
-#include "QtCore/qstring.h"
+#include <QtGui/qicon.h>
+#include <QtGui/qwidget.h>
+#include <QtCore/qstring.h>
 
 QT_MODULE(Qt3SupportLight)
 
@@ -113,11 +113,11 @@ public:
 
     void        adjustHeaderSize() { adjustHeaderSize(-1); }
 
-public slots:
+public Q_SLOTS:
     void         setUpdatesEnabled(bool enable);
     virtual void setOffset(int pos);
 
-signals:
+Q_SIGNALS:
     void        clicked(int section);
     void        pressed(int section);
     void        released(int section);

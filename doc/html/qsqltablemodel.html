@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/src/sql/models/qsqltablemodel.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/sql/models/qsqltablemodel.cpp -->
 <head>
-    <title>Qt 4.0: QSqlTableModel Class Reference</title>
+    <title>Qt 4.1: QSqlTableModel Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -56,7 +56,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>QString <b><a href="qsqltablemodel.html#tableName">tableName</a></b> () const</li>
 </ul>
 <ul>
-<li><div class="fn"/>12 public functions inherited from <a href="qsqlquerymodel.html#public-functions">QSqlQueryModel</a></li>
+<li><div class="fn"/>15 public functions inherited from <a href="qsqlquerymodel.html#public-functions">QSqlQueryModel</a></li>
 <li><div class="fn"/>1 public function inherited from <a href="qabstracttablemodel.html#public-functions">QAbstractTableModel</a></li>
 <li><div class="fn"/>32 public functions inherited from <a href="qabstractitemmodel.html#public-functions">QAbstractItemModel</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
@@ -82,7 +82,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>void <b><a href="qsqltablemodel.html#primeInsert">primeInsert</a></b> ( int <i>row</i>, QSqlRecord &amp; <i>record</i> )</li>
 </ul>
 <ul>
-<li><div class="fn"/>3 signals inherited from <a href="qabstractitemmodel.html#signals">QAbstractItemModel</a></li>
+<li><div class="fn"/>12 signals inherited from <a href="qabstractitemmodel.html#signals">QAbstractItemModel</a></li>
 <li><div class="fn"/>1 signal inherited from <a href="qobject.html#signals">QObject</a></li>
 </ul>
 <a name="protected-functions"></a>
@@ -99,7 +99,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <ul>
 <li><div class="fn"/>3 protected functions inherited from <a href="qsqlquerymodel.html#protected-functions">QSqlQueryModel</a></li>
-<li><div class="fn"/>12 protected functions inherited from <a href="qabstractitemmodel.html#protected-functions">QAbstractItemModel</a></li>
+<li><div class="fn"/>13 protected functions inherited from <a href="qabstractitemmodel.html#protected-functions">QAbstractItemModel</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
 </ul>
 <h3>Additional Inherited Members</h3>
@@ -230,7 +230,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Reverts all changes for the specified <i>row</i>.</p>
 <p>See also <a href="qsqltablemodel.html#revert">revert</a>(), <a href="qsqltablemodel.html#revertAll">revertAll</a>(), <a href="qsqltablemodel.html#submit">submit</a>(), and <a href="qsqltablemodel.html#submitAll">submitAll</a>().</p>
 <h3 class="fn"><a name="select"></a>bool QSqlTableModel::select ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>Populates the model with data from the table that was set via <a href="qsqltablemodel.html#setTable">setTable</a>(), using the specified filter and sort condition.</p>
+<p>Populates the model with data from the table that was set via <a href="qsqltablemodel.html#setTable">setTable</a>(), using the specified filter and sort condition, and returns true if successful; otherwise returns false.</p>
 <p>See also <a href="qsqltablemodel.html#setTable">setTable</a>(), <a href="qsqltablemodel.html#setFilter">setFilter</a>(), and <a href="qsqltablemodel.html#selectStatement">selectStatement</a>().</p>
 <h3 class="fn"><a name="selectStatement"></a><a href="qstring.html">QString</a> QSqlTableModel::selectStatement () const&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>Returns the SQL <tt>SELECT</tt> statement used internally to populate the model. The statement includes the filter and the <tt>ORDER BY</tt> clause.</p>
@@ -290,6 +290,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

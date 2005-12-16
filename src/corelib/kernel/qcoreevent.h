@@ -102,9 +102,8 @@ public:
         Polish = 75,                            // widget is polished
         LayoutRequest = 76,                     // widget should be relayouted
         UpdateRequest = 77,                     // widget should be repainted
-#ifdef Q_WS_QWS
-        QWSUpdate = 78,
-#endif
+        UpdateLater = 78,                       // request update() later
+
         EmbeddingControl = 79,                  // ActiveX embedding
         ActivateControl = 80,                   // ActiveX activation
         DeactivateControl = 81,                 // ActiveX deactivation
@@ -179,6 +178,17 @@ public:
         AccessibilityDescription = 130,         // accessibility description text request
 
         // last event id used = 132
+
+#ifdef QT_KEYPAD_NAVIGATION
+        EnterEditFocus = 150,                   // enter edit mode in keypad navigation
+        LeaveEditFocus = 151,                   // enter edit mode in keypad navigation
+#endif
+        AcceptDropsChange = 152,
+
+        MenubarUpdated = 153,                    // Support event for Q3MainWindow, which needs to 
+                                                 // knwow when QMenubar is updated.
+
+        ZeroTimerEvent = 154,                   // Used for Windows Zero timer events
 
         User = 1000,                            // first user event id
         MaxUser = 65535                         // last user event id

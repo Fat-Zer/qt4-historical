@@ -48,12 +48,13 @@ public:
 private:
     QList<int> encodings;
     int screen;
+    QFontDef request;
 };
 
 class QFontEngineXLFD : public QFontEngine
 {
 public:
-    QFontEngineXLFD(XFontStruct *f, const char *name, int mib);
+    QFontEngineXLFD(XFontStruct *f, const QByteArray &name, int mib);
     ~QFontEngineXLFD();
 
     FECaps capabilites() const;
@@ -64,9 +65,10 @@ public:
     glyph_metrics_t boundingBox(const QGlyphLayout *glyphs, int numGlyphs);
     glyph_metrics_t boundingBox(glyph_t glyph);
 
-    qreal ascent() const;
-    qreal descent() const;
-    qreal leading() const;
+    void addOutlineToPath(qreal x, qreal y, const QGlyphLayout *glyphs, int numGlyphs, QPainterPath *path, QTextItem::RenderFlags);
+    QFixed ascent() const;
+    QFixed descent() const;
+    QFixed leading() const;
     qreal maxCharWidth() const;
     qreal minLeftBearing() const;
     qreal minRightBearing() const;
@@ -98,7 +100,7 @@ private:
 class Q_GUI_EXPORT QFontEngineMultiFT : public QFontEngineMulti
 {
 public:
-    QFontEngineMultiFT(FcFontSet *fs, int s);
+    QFontEngineMultiFT(FcFontSet *fs, int s, const QFontDef &request);
     ~QFontEngineMultiFT();
 
     void loadEngine(int at);
@@ -120,6 +122,9 @@ struct QFreetypeFace {
     FcCharSet *charset;
     int xsize; // 26.6
     int ysize; // 26.6
+    FT_Matrix matrix;
+    FT_CharMap unicode_map;
+    FT_CharMap symbol_map;
 
     enum { cmapCacheSize = 0x200 };
     glyph_t cmapCache[cmapCacheSize];
@@ -149,14 +154,16 @@ public:
     glyph_metrics_t boundingBox(const QGlyphLayout *glyphs, int numGlyphs);
     glyph_metrics_t boundingBox(glyph_t glyph);
 
-    qreal ascent() const;
-    qreal descent() const;
-    qreal leading() const;
+    QFixed ascent() const;
+    QFixed descent() const;
+    QFixed leading() const;
+    QFixed xHeight() const;
+
     qreal maxCharWidth() const;
     qreal minLeftBearing() const;
     qreal minRightBearing() const;
-    qreal lineThickness() const;
-    qreal underlinePosition() const;
+    QFixed lineThickness() const;
+    QFixed underlinePosition() const;
 
     inline Type type() const
     { return QFontEngine::Freetype; }
@@ -167,7 +174,10 @@ public:
 
     void recalcAdvances(int len, QGlyphLayout *glyphs, QTextEngine::ShaperFlags flags) const;
     void doKerning(int , QGlyphLayout *, QTextEngine::ShaperFlags) const;
-    void addOutlineToPath(qreal x, qreal y, const QGlyphLayout *glyphs, int numGlyphs, QPainterPath *path, QTextItem::RenderFlags flags);
+    void addGlyphsToPath(glyph_t *glyphs, QFixedPoint *positions, int nglyphs,
+                         QPainterPath *path, QTextItem::RenderFlags flags);
+    void addOutlineToPath(qreal x, qreal y, const QGlyphLayout *glyphs, int numGlyphs,
+                          QPainterPath *path, QTextItem::RenderFlags flags);
 
     FcPattern *pattern() const { return _pattern; }
     QOpenType *openType() const;
@@ -184,16 +194,19 @@ private:
     static QHash<QFreetypeFaceId, QFreetypeFace *> *freetypeFaces;
     QFreetypeFace *freetype;
 
-    mutable qreal lbearing;
-    mutable qreal rbearing;
-    qreal line_thickness;
-    qreal underline_position;
+    mutable QFixed lbearing;
+    mutable QFixed rbearing;
+    QFixed line_thickness;
+    QFixed underline_position;
     FcPattern *_pattern;
     int xsize;
     int ysize;
     bool antialias;
     bool outline_drawing;
     int subpixel;
+    bool transform;
+    int hint_style;
+    mutable FT_Matrix matrix; // need mutable because the freetype API doesn't use const
 
 public:
     enum GlyphFormat {
@@ -218,6 +231,7 @@ public:
     };
     Glyph *loadGlyph(uint glyph, GlyphFormat = Format_None) const;
 #ifndef QT_NO_XRENDER
+    int xglyph_format;
     GlyphSet glyphSet;
 #endif
 private:

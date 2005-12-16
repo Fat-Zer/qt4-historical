@@ -46,7 +46,7 @@ void MainWindow::openFile(const QString &path)
 
     if (fileName.isNull())
         fileName = QFileDialog::getOpenFileName(this,
-            tr("Open File"), "", "qmake Files (*.pro *.prf *.pri)");
+            tr("Open File"), "", "C++ Files (*.cpp *.h)");
 
     if (!fileName.isEmpty()) {
         QFile file(fileName);
@@ -57,25 +57,6 @@ void MainWindow::openFile(const QString &path)
 
 void MainWindow::setupEditor()
 {
-    QTextCharFormat variableFormat;
-    variableFormat.setFontWeight(QFont::Bold);
-    variableFormat.setForeground(Qt::blue);
-    highlighter.addMapping("\\b[A-Z_]+\\b", variableFormat);
-
-    QTextCharFormat singleLineCommentFormat;
-    singleLineCommentFormat.setBackground(QColor("#77ff77"));
-    highlighter.addMapping("#[^\n]*", singleLineCommentFormat);
-
-    QTextCharFormat quotationFormat;
-    quotationFormat.setBackground(Qt::cyan);
-    quotationFormat.setForeground(Qt::blue);
-    highlighter.addMapping("\".*\"", quotationFormat);
-
-    QTextCharFormat functionFormat;
-    functionFormat.setFontItalic(true);
-    functionFormat.setForeground(Qt::blue);
-    highlighter.addMapping("\\b[a-z0-9_]+\\(.*\\)", functionFormat);
-
     QFont font;
     font.setFamily("Courier");
     font.setFixedPitch(true);
@@ -83,7 +64,12 @@ void MainWindow::setupEditor()
 
     editor = new QTextEdit;
     editor->setFont(font);
-    highlighter.addToDocument(editor->document());
+
+    highlighter = new Highlighter(editor->document());
+
+    QFile file("mainwindow.h");
+    if (file.open(QFile::ReadOnly | QFile::Text))
+        editor->setPlainText(file.readAll());
 }
 
 void MainWindow::setupFileMenu()
@@ -91,7 +77,7 @@ void MainWindow::setupFileMenu()
     QMenu *fileMenu = new QMenu(tr("&File"), this);
     menuBar()->addMenu(fileMenu);
 
-    fileMenu->addAction(tr("&New..."), this, SLOT(newFile()),
+    fileMenu->addAction(tr("&New"), this, SLOT(newFile()),
                         QKeySequence(tr("Ctrl+N", "File|New")));
     fileMenu->addAction(tr("&Open..."), this, SLOT(openFile()),
                         QKeySequence(tr("Ctrl+O", "File|Open")));

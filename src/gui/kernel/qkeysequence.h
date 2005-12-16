@@ -24,8 +24,8 @@
 #ifndef QKEYSEQUENCE_H
 #define QKEYSEQUENCE_H
 
-#include "QtCore/qnamespace.h"
-#include "QtCore/qstring.h"
+#include <QtCore/qnamespace.h>
+#include <QtCore/qstring.h>
 
 QT_MODULE(Gui)
 
@@ -64,9 +64,18 @@ public:
 #endif
     };
 
+    enum SequenceFormat {
+        NativeText,
+        PortableText
+    };
+
+    QString toString(SequenceFormat format = PortableText) const;
+    static QKeySequence fromString(const QString &str, SequenceFormat format = PortableText);
+
     SequenceMatch matches(const QKeySequence &seq) const;
     static QKeySequence mnemonic(const QString &text);
 
+    // ### Qt 5: kill 'operator QString' - it's evil (ask Trenton or Jasmin if you need more reasons)
     operator QString() const;
     operator QVariant() const;
     operator int() const;

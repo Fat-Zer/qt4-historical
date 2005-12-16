@@ -24,17 +24,16 @@
 #ifndef Q3DOCKAREA_H
 #define Q3DOCKAREA_H
 
-#include "QtGui/qwidget.h"
-#include "QtCore/qlist.h"
-#include "Qt3Support/q3dockwindow.h"
-#include "QtGui/qlayout.h"
-#include "QtCore/qpointer.h"
+#include <QtGui/qwidget.h>
+#include <QtCore/qlist.h>
+#include <Qt3Support/q3dockwindow.h>
+#include <QtGui/qlayout.h>
+#include <QtCore/qpointer.h>
 
 QT_MODULE(Qt3SupportLight)
 
 #ifndef QT_NO_MAINWINDOW
 
-class QSplitter;
 class QBoxLayout;
 class Q3DockAreaLayout;
 class QMouseEvent;
@@ -130,7 +129,7 @@ public:
     bool isDockWindowAccepted(Q3DockWindow *dw);
     void setAcceptDockWindow(Q3DockWindow *dw, bool accept);
 
-public slots:
+public Q_SLOTS:
     void lineUp(bool keepNewLines);
 
 private:
@@ -169,6 +168,6 @@ Q_COMPAT_EXPORT QTextStream &operator<<(QTextStream &, const Q3DockArea &);
 Q_COMPAT_EXPORT QTextStream &operator>>(QTextStream &, Q3DockArea &);
 #endif
 
-#endif //QT_NO_MAINWINDOW
+#endif // QT_NO_MAINWINDOW
 
-#endif //Q3DOCKAREA_H
+#endif // Q3DOCKAREA_H

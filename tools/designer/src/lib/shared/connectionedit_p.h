@@ -49,10 +49,13 @@
 
 class QDesignerFormWindowInterface;
 class QtUndoStack;
+
+namespace qdesigner_internal {
+
 class Connection;
 class ConnectionEdit;
 
-class QT_SHARED_EXPORT CETypes
+class QDESIGNER_SHARED_EXPORT CETypes
 {
 public:
     typedef QList<Connection*> ConnectionList;
@@ -72,18 +75,26 @@ public:
     enum LineDir { UpDir = 0, DownDir, RightDir, LeftDir };
 };
 
-class QT_SHARED_EXPORT Connection : public CETypes
+class QDESIGNER_SHARED_EXPORT Connection : public CETypes
 {
 public:
     Connection(ConnectionEdit *edit);
-    Connection(ConnectionEdit *edit, QWidget *source, QWidget *target);
+    Connection(ConnectionEdit *edit, QObject *source, QObject *target);
     virtual ~Connection() {}
 
+    QObject *object(EndPoint::Type type) const
+    {
+        return (type == EndPoint::Source ? m_source : m_target);
+    }
+
     QWidget *widget(EndPoint::Type type) const
-        { return type == EndPoint::Source ? m_source : m_target; }
+    {
+        return qobject_cast<QWidget*>(object(type));
+    }
+
     QPoint endPointPos(EndPoint::Type type) const;
     QRect endPointRect(EndPoint::Type) const;
-    void setEndPoint(EndPoint::Type type, QWidget *w, const QPoint &pos)
+    void setEndPoint(EndPoint::Type type, QObject *w, const QPoint &pos)
         { type == EndPoint::Source ? setSource(w, pos) : setTarget(w, pos); }
 
     bool isVisible() const;
@@ -111,7 +122,7 @@ public:
 
 private:
     QPoint m_source_pos, m_target_pos;
-    QWidget *m_source, *m_target;
+    QObject *m_source, *m_target;
     QList<QPoint> m_knee_list;
     QPolygonF m_arrow_head;
     ConnectionEdit *m_edit;
@@ -120,8 +131,8 @@ private:
     QRect m_source_rect, m_target_rect;
     bool m_visible;
 
-    void setSource(QWidget *source, const QPoint &pos);
-    void setTarget(QWidget *target, const QPoint &pos);
+    void setSource(QObject *source, const QPoint &pos);
+    void setTarget(QObject *target, const QPoint &pos);
     void updateKneeList();
     void trimLine();
     void updatePixmap(EndPoint::Type type);
@@ -130,7 +141,7 @@ private:
     QRect groundRect() const;
 };
 
-class QT_SHARED_EXPORT ConnectionEdit : public QWidget, public CETypes
+class QDESIGNER_SHARED_EXPORT ConnectionEdit : public QWidget, public CETypes
 {
     Q_OBJECT
 public:
@@ -193,7 +204,6 @@ protected:
 private:
     QWidget *m_bg_widget;
     QtUndoStack *m_undo_stack;
-    QPixmap m_bg_pixmap;
     bool m_enable_update_background;
 
     Connection *m_tmp_con; // the connection we are currently editing
@@ -233,7 +243,7 @@ private:
     friend class SetEndPointCommand;
 };
 
-class QT_SHARED_EXPORT CECommand : public QtCommand, public CETypes
+class QDESIGNER_SHARED_EXPORT CECommand : public QtCommand, public CETypes
 {
     Q_OBJECT
 public:
@@ -244,7 +254,7 @@ private:
     ConnectionEdit *m_edit;
 };
 
-class QT_SHARED_EXPORT AddConnectionCommand : public CECommand
+class QDESIGNER_SHARED_EXPORT AddConnectionCommand : public CECommand
 {
     Q_OBJECT
 public:
@@ -255,7 +265,7 @@ private:
     Connection *m_con;
 };
 
-class QT_SHARED_EXPORT DeleteConnectionsCommand : public CECommand
+class QDESIGNER_SHARED_EXPORT DeleteConnectionsCommand : public CECommand
 {
 public:
     DeleteConnectionsCommand(ConnectionEdit *edit, const ConnectionList &con_list);
@@ -265,5 +275,6 @@ private:
     ConnectionList m_con_list;
 };
 
+} // namespace qdesigner_internal
 
 #endif // CONNECTIONEDIT_H

@@ -24,13 +24,13 @@
 #ifndef Q3STRVEC_H
 #define Q3STRVEC_H
 
-#include "QtCore/qstring.h"
-#include "Qt3Support/q3ptrvector.h"
-#include "QtCore/qdatastream.h"
+#include <QtCore/qstring.h>
+#include <Qt3Support/q3ptrvector.h>
+#include <QtCore/qdatastream.h>
 
 QT_MODULE(Qt3SupportLight)
 
-class Q_COMPAT_EXPORT Q3StrVec : public Q3PtrVector<char>
+class Q3StrVec : public Q3PtrVector<char>
 {
 public:
     Q3StrVec()  { dc = true; }
@@ -52,7 +52,7 @@ private:
 };
 
 
-class Q_COMPAT_EXPORT Q3StrIVec : public Q3StrVec	// case insensitive string vec
+class Q3StrIVec : public Q3StrVec	// case insensitive string vec
 {
 public:
     Q3StrIVec() {}

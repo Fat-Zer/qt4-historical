@@ -30,6 +30,7 @@
 QT_MODULE(Network)
 
 class QHostAddress;
+class QNetworkProxy;
 class QAbstractSocketPrivate;
 
 class Q_NETWORK_EXPORT QAbstractSocket : public QIODevice
@@ -124,12 +125,21 @@ public:
     bool waitForBytesWritten(int msecs = 30000);
     bool waitForDisconnected(int msecs = 30000);
 
-signals:
+#ifndef QT_NO_NETWORKPROXY
+    void setProxy(const QNetworkProxy &networkProxy);
+    QNetworkProxy proxy() const;
+#endif
+
+Q_SIGNALS:
     void hostFound();
     void connected();
     void disconnected();
     void stateChanged(QAbstractSocket::SocketState);
     void error(QAbstractSocket::SocketError);
+
+protected Q_SLOTS:
+    void connectToHostImplementation(const QString &hostName, quint16 port, OpenMode mode = ReadWrite);
+    void disconnectFromHostImplementation();
 
 protected:
     qint64 readData(char *data, qint64 maxlen);
@@ -138,8 +148,12 @@ protected:
 
     void setSocketState(SocketState state);
     void setSocketError(SocketError socketError);
+    void setLocalPort(quint16 port);
+    void setLocalAddress(const QHostAddress &address);
+    void setPeerPort(quint16 port);
+    void setPeerAddress(const QHostAddress &address);
+    void setPeerName(const QString &name);
 
-protected:
     QAbstractSocket(SocketType socketType, QAbstractSocketPrivate &dd, QObject *parent = 0);
 
 private:
@@ -150,8 +164,8 @@ private:
     Q_PRIVATE_SLOT(d_func(), void startConnecting(const QHostInfo &))
     Q_PRIVATE_SLOT(d_func(), void abortConnectionAttempt())
     Q_PRIVATE_SLOT(d_func(), void testConnection())
-    Q_PRIVATE_SLOT(d_func(), bool canReadNotification(int))
-    Q_PRIVATE_SLOT(d_func(), bool canWriteNotification(int))
+    Q_PRIVATE_SLOT(d_func(), bool canReadNotification())
+    Q_PRIVATE_SLOT(d_func(), bool canWriteNotification())
 
 #ifdef QT3_SUPPORT
 public:
@@ -172,7 +186,7 @@ public:
         return 0;
     }
     typedef SocketState State;
-signals:
+Q_SIGNALS:
     QT_MOC_COMPAT void connectionClosed(); // same as disconnected()
     QT_MOC_COMPAT void delayedCloseFinished(); // same as disconnected()
 

@@ -81,9 +81,8 @@
     \relates QPluginLoader
 
     This macro associates the given \a Identifier (a string literal)
-    to the interface class called \a ClassName.
-
-    Example:
+    to the interface class called \a ClassName. The \a Identifier must
+    be unique. For example:
 
     \quotefromfile tools/plugandpaint/interfaces.h
     \skipto Q_DECLARE_INTERFACE
@@ -93,26 +92,89 @@
     \a ClassName, in a header file. See the
     \l{tools/plugandpaint}{Plug & Paint} example for details.
 
+    If you want to use Q_DECLARE_INTERFACE with interface classes
+    declared in a namespace then you have to make sure the Q_DECLARE_INTERFACE
+    is not inside a namespace though. For example:
+    \code
+        namespace Foo
+        {
+            struct MyInterface { ... };
+        }
+        Q_DECLARE_INTERFACE(Foo::MyInterface, "org.examples.MyInterface")
+    \endcode
+
     \sa Q_INTERFACES(), Q_EXPORT_PLUGIN(), {How to Create Qt Plugins}
 */
 
 /*!
     \macro Q_EXPORT_PLUGIN(ClassName)
     \relates QPluginLoader
+    \obsolete
 
-    This macro exports the plugin class \a ClassName. There should be
-    exactly one occurrence of this macro in a Qt plugin's source code
-    (in an implementation file).
+    Use Q_EXPORT_PLUGIN2 instead. This macro is equivalent to
+    Q_EXPORT_PLUGIN2(\a ClassName, \a ClassName).
+*/
+
+/*!
+    \macro Q_EXPORT_PLUGIN2(PluginName, ClassName)
+    \relates QPluginLoader
+    \since 4.1
+
+    This macro exports the plugin class \a ClassName with the name \a
+    PluginName. There should be exactly one occurrence of this macro in a Qt
+    plugin's source code (in an implementation file).
 
     Example:
 
     \code
-        Q_EXPORT_PLUGIN(ExtraFiltersPlugin)
+        Q_EXPORT_PLUGIN2(pnp_extrafilters, ExtraFiltersPlugin)
     \endcode
 
     See the \l{tools/plugandpaint}{Plug & Paint} example for details.
 
     \sa Q_DECLARE_INTERFACE(), {How to Create Qt Plugins}
+*/
+
+/*!
+    \macro Q_IMPORT_PLUGIN(ClassName)
+    \relates QPluginLoader
+
+    This macro imports the plugin class \a ClassName. Inserting this macro
+    into your application's source code will allow you to
+    make use of a static plugin.
+
+    Example:
+
+    \code
+        Q_IMPORT_PLUGIN(QJpegPlugin)
+    \endcode
+
+    Static plugins must also be included by the linker when your
+    application is built. With qmake, you can use QTPLUGIN to add
+    the required plugins to your build.
+
+    Example:
+
+    \code
+        TEMPLATE = app
+        QTPLUGIN += jpeg gif mng # image formats
+        QTPLUGIN += cn tw        # codecs
+    \endcode
+
+    Depending on your build, Qt provides the following static plugins:
+
+    \table
+    \header
+    \i Plugin class     \i Type     \i Description         \i QTPLUGIN entry
+    \row
+    \i QJpegPlugin      \i Image format \i The JPEG image format \i jpeg
+    \row
+    \i QGifPlugin      \i Image format \i The GIF image format \i gif
+    \row
+    \i QMngPlugin      \i Image format \i The MNG image format \i mng
+    \endtable
+
+    \sa {How to Create Qt Plugins}, {Using qmake}
 */
 
 /*!
@@ -195,14 +257,12 @@ QObject *QPluginLoader::instance()
     the plugin loaded in advance, in which case you would use this
     function.
 
-    On Darwin and Mac OS X this function uses code from dlcompat, part of the
+    On Mac OS X this function uses code from dlcompat, part of the
     OpenDarwin project.
 
     \sa unload()
 
     \legalese
-    \code
-
     Copyright (c) 2002 Jorge Acereda and Peter O'Gorman.
 
     Permission is hereby granted, free of charge, to any person obtaining
@@ -223,7 +283,6 @@ QObject *QPluginLoader::instance()
     LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
     OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
     WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-    \endcode
 */
 bool QPluginLoader::load()
 {

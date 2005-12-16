@@ -179,7 +179,7 @@ void QMutex::lock()
     int sentinel;
     forever {
         sentinel = d->lock;
-        if (d->lock.testAndSet(sentinel, sentinel + 1))
+        if (d->lock.testAndSetAcquire(sentinel, sentinel + 1))
             break;
     }
     if (sentinel != 0) {
@@ -217,7 +217,7 @@ bool QMutex::tryLock()
     int sentinel;
     forever {
         sentinel = d->lock;
-        if (d->lock.testAndSet(sentinel, sentinel + 1))
+        if (d->lock.testAndSetAcquire(sentinel, sentinel + 1))
             break;
     }
     if (sentinel != 0) {
@@ -249,7 +249,7 @@ void QMutex::unlock()
 
     if (!--d->count) {
         d->owner = 0;
-        if (!d->lock.testAndSet(1, 0))
+        if (!d->lock.testAndSetRelease(1, 0))
             d->wakeUp();
     }
 }

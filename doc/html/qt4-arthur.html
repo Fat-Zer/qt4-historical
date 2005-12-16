@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/doc/src/qt4-arthur.qdoc -->
+<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/doc/src/qt4-arthur.qdoc -->
 <head>
-    <title>Qt 4.0: The Arthur Paint System</title>
+    <title>Qt 4.1: The Arthur Paint System</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -42,6 +42,7 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="#pen-and-brush-transformation">Pen and Brush Transformation</a></li>
 <li><a href="#custom-filled-pens">Custom Filled Pens</a></li>
 <li><a href="#qimage-as-a-paint-device">QImage as a Paint Device</a></li>
+<li><a href="#svg-rendering-support">SVG Rendering Support</a></li>
 </ul>
 </ul>
 <a name="architecture"></a>
@@ -96,7 +97,7 @@ body { background: #ffffff; color: black; }</style>
 <p>The code shown above produces a pattern as shown in the following pixmap:</p>
 <p align="center"><img src="images/conicalGradient.png" /></p><a name="alpha-blended-drawing"></a>
 <h3>Alpha-Blended Drawing</h3>
-<p>With Qt 4 we support alpha-blended outlining and filling. The alpha channel of a color is specified through <a href="qcolor.html">QColor</a>.</p>
+<p>With Qt 4 we support alpha-blended outlining and filling. The alpha channel of a color is defined through <a href="qcolor.html">QColor</a>. The alpha channel specifies the transparency effect, 0 represents a fully transparent color, while 255 represents a fully opaque color. For example:</p>
 <pre>&nbsp;   // Specfiy semi-transparent red
     painter.setBrush(QColor(255, 0, 0, 127));
     painter.drawRect(0, 0, width()/2, height());
@@ -116,7 +117,7 @@ body { background: #ffffff; color: black; }</style>
     painter.drawLine(0, 0, width()/2, height());
 
     // One line with anti-aliasing
-    painter.setRenderHints(QPainter::Antialiasing);
+    painter.setRenderHint(QPainter::Antialiasing);
     painter.drawLine(width()/2, 0, width()/2, height());</pre>
 <p>This produces the following output:</p>
 <p align="center"><img src="images/antialiased.png" /></p><p>Anti-aliasing is supported when drawing to a <a href="qimage.html">QImage</a> and on all systems, except on X11 when XRender is not present.</p>
@@ -180,6 +181,14 @@ body { background: #ffffff; color: black; }</style>
     // painter commands.
 
     painter.end();</pre>
+<a name="svg-rendering-support"></a>
+<h3>SVG Rendering Support</h3>
+<p><a href="http://www.w3.org/Graphics/SVG/About.html#scalable-vector-graphics">Scalable Vector Graphics</a> (SVG) is an language for describing both static and animated two-dimensional vector graphics. Qt includes support for the Tiny profiles of both SVG 1.1 and SVG 1.2, taking advantage of the improved paint system in Qt 4. SVG drawings can be rendered onto any <a href="qpaintdevice.html">QPaintDevice</a> subclass, such as <a href="qwidget.html">QWidget</a>, <a href="qimage.html">QImage</a>, and <a href="qglwidget.html">QGLWidget</a>, to take advantage of specific advantages of each device. This approach gives developers the flexibility to experiment, in order to find the best solution for each application.</p>
+<p align="center"><img src="images/svg-image.png" /></p><p>Since SVG is an XML-based format, the <a href="qtxml.html">QtXml</a> module is required to read SVG files. For this reason, classes for SVG handling are provided separately in the <a href="qtsvg.html">QtSvg</a> module.</p>
+<p>Displaying an SVG drawing in an application is as simple as displaying a bitmap image. <a href="qsvgwidget.html">QSvgWidget</a> is a display widget that can be placed in an appropriate place in a user interface, and new content can be loaded as required. For example, a predetermined file can be loaded and displayed in a widget with little effort:</p>
+<pre>&nbsp;       QSvgWidget window(&quot;:/files/spheres.svg&quot;);
+        window.show();</pre>
+<p>For applications with more specialized requirements, the <a href="qsvgrenderer.html">QSvgRenderer</a> class provides more control over the way SVG drawings are rendered and animated.</p>
 <p>
 [Previous: <a href="qt4-interview.html">The Interview Framework</a>]
 [<a href="qt4-intro.html">Home</a>]
@@ -189,6 +198,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

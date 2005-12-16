@@ -1,10 +1,36 @@
+/****************************************************************************
+**
+** Copyright (C) 2005-2005 Trolltech AS. All rights reserved.
+**
+** This file is part of the demonstration applications of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
+**
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
 #include "pathdeform.h"
 
-#include <qapplication.h>
-#include <qdebug.h>
-#include <qlayout.h>
-#include <qlineedit.h>
-#include <qevent.h>
+#include <QApplication>
+#include <QtDebug>
+#include <QMouseEvent>
+#include <QTimerEvent>
+#include <QLayout>
+#include <QLineEdit>
+#include <QPainter>
+#include <QSlider>
 
 #include <math.h>
 
@@ -17,31 +43,31 @@ PathDeformWidget::PathDeformWidget(QWidget *parent)
     m_renderer = new PathDeformRenderer(this);
     m_renderer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-    ArthurGroupBox *mainGroup = new ArthurGroupBox(this);
+    QGroupBox *mainGroup = new QGroupBox(this);
     mainGroup->setTitle("Vector Deformation");
 
-    ArthurGroupBox *radiusGroup = new ArthurGroupBox(mainGroup);
+    QGroupBox *radiusGroup = new QGroupBox(mainGroup);
     radiusGroup->setAttribute(Qt::WA_ContentsPropagated);
-    radiusGroup->setTitle("Lens radius");
+    radiusGroup->setTitle("Lens Radius");
     QSlider *radiusSlider = new QSlider(Qt::Horizontal, radiusGroup);
     radiusSlider->setRange(50, 150);
     radiusSlider->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
-    ArthurGroupBox *deformGroup = new ArthurGroupBox(mainGroup);
+    QGroupBox *deformGroup = new QGroupBox(mainGroup);
     deformGroup->setAttribute(Qt::WA_ContentsPropagated);
     deformGroup->setTitle("Deformation");
     QSlider *deformSlider = new QSlider(Qt::Horizontal, deformGroup);
     deformSlider->setRange(-100, 100);
     deformSlider->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
-    ArthurGroupBox *fontSizeGroup = new ArthurGroupBox(mainGroup);
+    QGroupBox *fontSizeGroup = new QGroupBox(mainGroup);
     fontSizeGroup->setAttribute(Qt::WA_ContentsPropagated);
     fontSizeGroup->setTitle("Font Size");
     QSlider *fontSizeSlider = new QSlider(Qt::Horizontal, fontSizeGroup);
     fontSizeSlider->setRange(16, 200);
     fontSizeSlider->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
-    ArthurGroupBox *textGroup = new ArthurGroupBox(mainGroup);
+    QGroupBox *textGroup = new QGroupBox(mainGroup);
     textGroup->setAttribute(Qt::WA_ContentsPropagated);
     textGroup->setTitle("Text");
     QLineEdit *textInput = new QLineEdit(textGroup);

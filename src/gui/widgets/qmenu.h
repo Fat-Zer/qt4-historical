@@ -110,7 +110,7 @@ public:
     MenuRef macMenu(MenuRef merge=0);
 #endif
 
-signals:
+Q_SIGNALS:
     void aboutToShow();
     void triggered(QAction *action);
     void hovered(QAction *action);
@@ -132,7 +132,7 @@ protected:
     void timerEvent(QTimerEvent *);
     bool event(QEvent *);
 
-private slots:
+private Q_SLOTS:
     void internalSetSloppyAction();
     void internalDelayedPopup();
 
@@ -178,6 +178,7 @@ public:
         QIcon icon(pixmap);
         return insertAny(&icon, 0, 0, 0, 0, popup, id, index);
     }
+    QT3_SUPPORT int insertItem(QMenuItem *item, int id=-1, int index=-1);
     QT3_SUPPORT int insertSeparator(int index=-1);
     inline QT3_SUPPORT void removeItem(int id) {
         if(QAction *act = findActionForId(id))
@@ -191,10 +192,8 @@ public:
             return act->shortcut();
         return QKeySequence(); }
     inline QT3_SUPPORT void setAccel(const QKeySequence& key, int id) {
-        if(QAction *act = findActionForId(id)) {
-            qDebug("act= %p", act);
+        if(QAction *act = findActionForId(id))
             act->setShortcut(key);
-        }
     }
 #endif
     inline QT3_SUPPORT QIcon iconSet(int id) const {
@@ -229,6 +228,9 @@ public:
             act->setText(text);
         }
     }
+    inline QT3_SUPPORT void setActiveItem(int id) {
+        setActiveAction(findActionForId(id));
+    }
     inline QT3_SUPPORT bool isItemActive(int id) const {
         return findActionForId(id) == activeAction();
     }
@@ -246,8 +248,10 @@ public:
         return false;
     }
     inline QT3_SUPPORT void setItemChecked(int id, bool check) {
-        if(QAction *act = findActionForId(id))
+        if(QAction *act = findActionForId(id)) {
+            act->setCheckable(true);
             act->setChecked(check);
+        }
     }
     inline QT3_SUPPORT bool isItemVisible(int id) const {
         if(QAction *act = findActionForId(id))
@@ -278,6 +282,7 @@ public:
     inline QT3_SUPPORT int idAt(int index) const {
         return findIdForAction(actions().value(index));
     }
+    QT3_SUPPORT void setId (int index, int id);
     inline QT3_SUPPORT void activateItemAt(int index) {
         if(QAction *ret = actions().value(index))
             ret->activate(QAction::Trigger);
@@ -333,7 +338,7 @@ protected:
         return actionGeometry(reinterpret_cast<QAction *>(mi)).height();
     }
 
-signals:
+Q_SIGNALS:
     QT_MOC_COMPAT void aboutToHide();
     QT_MOC_COMPAT void activated(int itemId);
     QT_MOC_COMPAT void highlighted(int itemId);
@@ -362,4 +367,5 @@ private:
 };
 
 #endif // QT_NO_MENU
+
 #endif // QMENU_H

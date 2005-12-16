@@ -47,7 +47,6 @@ public:
     QPoint p;
     QSize s;
     int d;
-    QWidget *tlw;
     bool hiddenByUser;
 };
 
@@ -124,7 +123,7 @@ QSizeGrip::QSizeGrip(QWidget * parent, const char* name)
     : QWidget(*new QSizeGripPrivate, parent, 0)
 {
     Q_D(QSizeGrip);
-    setObjectName(name);
+    setObjectName(QString::fromAscii(name));
     d->init();
 }
 #endif
@@ -147,9 +146,8 @@ void QSizeGripPrivate::init()
                         (unsigned char *)&id, 1);
     }
 #endif
-    tlw = qt_sizegrip_topLevelWidget(q);
-    if (tlw)
-        tlw->installEventFilter(q);
+    QWidget *tlw = qt_sizegrip_topLevelWidget(q);
+    tlw->installEventFilter(q);
 }
 
 
@@ -250,11 +248,11 @@ void QSizeGrip::mouseMoveEvent(QMouseEvent * e)
         h = ms.height();
 
     if (isRightToLeft()) {
-        d->tlw->resize(w, h);
-        if (d->tlw->size() == QSize(w, h))
-            d->tlw->move(tlw->x() + (np.x() - d->p.x()), tlw->y());
+        tlw->resize(w, h);
+        if (tlw->size() == QSize(w, h))
+            tlw->move(tlw->x() + (np.x() - d->p.x()), tlw->y());
     } else {
-        d->tlw->resize(w, h);
+        tlw->resize(w, h);
     }
 #ifdef Q_WS_WIN
     MSG msg;
@@ -263,7 +261,7 @@ void QSizeGrip::mouseMoveEvent(QMouseEvent * e)
 #endif
     QApplication::syncX();
 
-    if (isRightToLeft() && d->tlw->size() == QSize(w,h)) {
+    if (isRightToLeft() && tlw->size() == QSize(w,h)) {
         d->s.rwidth() = tlw->size().width();
         d->p.rx() = np.x();
     }
@@ -282,8 +280,9 @@ void QSizeGrip::setVisible(bool visible)
 bool QSizeGrip::eventFilter(QObject *o, QEvent *e)
 {
     Q_D(QSizeGrip);
-    if (!d->hiddenByUser && e->type() == QEvent::WindowStateChange && o == d->tlw) {
-        QWidget::setVisible((d->tlw->windowState() &
+    QWidget *tlw = qt_sizegrip_topLevelWidget(this);
+    if (!d->hiddenByUser && e->type() == QEvent::WindowStateChange && o == tlw) {
+        QWidget::setVisible((tlw->windowState() &
                              (Qt::WindowFullScreen
 #ifndef Q_WS_MAC
                               | Qt::WindowMaximized

@@ -35,18 +35,18 @@
 // We mean it.
 //
 
-#include "qglobal.h"
-#include "qstring.h"
-#include "qnamespace.h"
-#include "qtextlayout.h"
-#include "qtextformat_p.h"
-#include "qfont_p.h"
-#include <qvector.h>
-#include <qpaintengine.h>
-#include "qtextobject.h"
-#include "qtextoption.h"
-#include "qtextdocument_p.h"
-#include "qset.h"
+#include "QtCore/qglobal.h"
+#include "QtCore/qstring.h"
+#include "QtCore/qnamespace.h"
+#include "QtGui/qtextlayout.h"
+#include "private/qtextformat_p.h"
+#include "private/qfont_p.h"
+#include "QtCore/qvector.h"
+#include "QtGui/qpaintengine.h"
+#include "QtGui/qtextobject.h"
+#include "QtGui/qtextoption.h"
+#include "private/qtextdocument_p.h"
+#include "QtCore/qset.h"
 
 #include <stdlib.h>
 #ifndef Q_OS_TEMP
@@ -62,12 +62,137 @@ class QPainter;
 
 class QAbstractTextDocumentLayout;
 
+struct QFixed {
+public:
+    QFixed() : val(0) {}
+    QFixed(int i) : val(i<<6) {}
+    QFixed(long i) : val(i<<6) {}
+    QFixed &operator=(int i) { val = (i<<6); return *this; }
+    QFixed &operator=(long i) { val = (i<<6); return *this; }
+
+    static QFixed fromReal(qreal r) { QFixed f; f.val = (int)(r*qreal(64)); return f; }
+    static QFixed fromFixed(int fixed) { QFixed f; f.val = fixed; return f; }
+
+    inline int value() const { return val; }
+    inline void setValue(int value) { val = value; }
+
+    inline int toInt() const { return (((val)+32) & -64)>>6; }
+    inline qreal toReal() const { return ((qreal)val)/(qreal)64; }
+
+    inline int truncate() const { return val>>6; }
+    inline QFixed round() const { QFixed f; f.val = ((val)+32) & -64; return f; }
+    inline QFixed floor() const { QFixed f; f.val = (val) & -64; return f; }
+    inline QFixed ceil() const { QFixed f; f.val = (val+63) & -64; return f; }
+
+    inline QFixed operator+(int i) const { QFixed f; f.val = (val + (i<<6)); return f; }
+    inline QFixed operator+(uint i) const { QFixed f; f.val = (val + (i<<6)); return f; }
+    inline QFixed operator+(const QFixed &other) const { QFixed f; f.val = (val + other.val); return f; }
+    inline QFixed &operator+=(int i) { val += (i<<6); return *this; }
+    inline QFixed &operator+=(uint i) { val += (i<<6); return *this; }
+    inline QFixed &operator+=(const QFixed &other) { val += other.val; return *this; }
+    inline QFixed operator-(int i) const { QFixed f; f.val = (val - (i<<6)); return f; }
+    inline QFixed operator-(uint i) const { QFixed f; f.val = (val - (i<<6)); return f; }
+    inline QFixed operator-(const QFixed &other) const { QFixed f; f.val = (val - other.val); return f; }
+    inline QFixed &operator-=(int i) { val -= (i<<6); return *this; }
+    inline QFixed &operator-=(uint i) { val -= (i<<6); return *this; }
+    inline QFixed &operator-=(const QFixed &other) { val -= other.val; return *this; }
+    inline QFixed operator-() const { QFixed f; f.val = -val; return f; }
+
+    inline bool operator==(const QFixed &other) const { return val == other.val; }
+    inline bool operator!=(const QFixed &other) const { return val != other.val; }
+    inline bool operator<(const QFixed &other) const { return val < other.val; }
+    inline bool operator>(const QFixed &other) const { return val > other.val; }
+    inline bool operator<=(const QFixed &other) const { return val <= other.val; }
+    inline bool operator>=(const QFixed &other) const { return val >= other.val; }
+    inline bool operator!() const { return !val; }
+
+    inline QFixed &operator/=(int x) { val /= x; return *this; }
+    inline QFixed &operator/=(const QFixed &o) {
+        if (o.val == 0) {
+            val = 0x7FFFFFFFL;
+        } else {
+            bool neg = false;
+            qint64 a = val;
+            qint64 b = o.val;
+            if (a < 0) { a = -a; neg = true; }
+            if (b < 0) { b = -b; neg = !neg; }
+
+            int res = (int)(((a << 6) + (b >> 1)) / b);
+
+            val = (neg ? -res : res);
+        }
+        return *this;
+    }
+    inline QFixed operator/(int d) const { QFixed f; f.val = val/d; return f; }
+    inline QFixed operator/(QFixed b) const { QFixed f = *this; return (f /= b); }
+    inline QFixed &operator*=(int i) { val *= i; return *this; }
+    inline QFixed &operator*=(uint i) { val *= i; return *this; }
+    inline QFixed &operator*=(const QFixed &o) {
+        bool neg = false;
+        qint64 a = val;
+        qint64 b = o.val;
+        if (a < 0) { a = -a; neg = true; }
+        if (b < 0) { b = -b; neg = !neg; }
+
+        int res = (int)((a * b + 0x20L) >> 6);
+        val = neg ? -res : res;
+        return *this;
+    }
+    inline QFixed operator*(int i) const { QFixed f = *this; return (f *= i); }
+    inline QFixed operator*(uint i) const { QFixed f = *this; return (f *= i); }
+    inline QFixed operator*(const QFixed &o) const { QFixed f = *this; return (f *= o); }
+
+private:
+    QFixed(qreal i) : val((int)(i*qreal(64))) {}
+    QFixed &operator=(qreal i) { val = (int)(i*qreal(64)); return *this; }
+    inline QFixed operator+(qreal i) const { QFixed f; f.val = (val + (int)(i*qreal(64))); return f; }
+    inline QFixed &operator+=(qreal i) { val += (int)(i*64); return *this; }
+    inline QFixed operator-(qreal i) const { QFixed f; f.val = (val - (int)(i*qreal(64))); return f; }
+    inline QFixed &operator-=(qreal i) { val -= (int)(i*64); return *this; }
+    inline QFixed &operator/=(qreal r) { val = (int)(val/r); return *this; }
+    inline QFixed operator/(qreal d) const { QFixed f; f.val = (int)(val/d); return f; }
+    inline QFixed &operator*=(qreal d) { val = (int) (val*d); return *this; }
+    inline QFixed operator*(qreal d) const { QFixed f = *this; return (f *= d); }
+    int val;
+};
+Q_DECLARE_TYPEINFO(QFixed, Q_PRIMITIVE_TYPE);
+
+inline int qRound(const QFixed &f) { return f.toInt(); }
+
+inline QFixed operator*(int i, const QFixed &d) { return d*i; }
+inline QFixed operator+(int i, const QFixed &d) { return d+i; }
+inline QFixed operator-(int i, const QFixed &d) { return d-i; }
+inline QFixed operator*(uint i, const QFixed &d) { return d*i; }
+inline QFixed operator+(uint i, const QFixed &d) { return d+i; }
+inline QFixed operator-(uint i, const QFixed &d) { return d-i; }
+// inline QFixed operator*(qreal d, const QFixed &d2) { return d2*d; }
+
+inline bool operator==(const QFixed &f, int i) { return f.value() == (i<<6); }
+inline bool operator==(int i, const QFixed &f) { return f.value() == (i<<6); }
+inline bool operator!=(const QFixed &f, int i) { return f.value() != (i<<6); }
+inline bool operator!=(int i, const QFixed &f) { return f.value() != (i<<6); }
+inline bool operator<=(const QFixed &f, int i) { return f.value() <= (i<<6); }
+inline bool operator<=(int i, const QFixed &f) { return (i<<6) <= f.value(); }
+inline bool operator>=(const QFixed &f, int i) { return f.value() >= (i<<6); }
+inline bool operator>=(int i, const QFixed &f) { return (i<<6) >= f.value(); }
+inline bool operator<(const QFixed &f, int i) { return f.value() < (i<<6); }
+inline bool operator<(int i, const QFixed &f) { return (i<<6) < f.value(); }
+inline bool operator>(const QFixed &f, int i) { return f.value() > (i<<6); }
+inline bool operator>(int i, const QFixed &f) { return (i<<6) > f.value(); }
+
+struct QFixedPoint {
+    QFixed x;
+    QFixed y;
+    QPointF toPointF() const { return QPointF(x.toReal(), y.toReal()); }
+};
+
+
 class QTextItemInt : public QTextItem
 {
 public:
-    qreal descent;
-    qreal ascent;
-    qreal width;
+    QFixed descent;
+    QFixed ascent;
+    QFixed width;
 
     RenderFlags flags;
     int num_chars;
@@ -88,10 +213,8 @@ public:
 struct glyph_metrics_t
 {
     inline glyph_metrics_t()
-        : x(100000), y(100000),
-          width(0), height(0), xoff(0), yoff(0)
-        {}
-    inline glyph_metrics_t(qreal _x, qreal _y, qreal _width, qreal _height, qreal _xoff, qreal _yoff)
+        : x(100000),  y(100000) {}
+    inline glyph_metrics_t(QFixed _x, QFixed _y, QFixed _width, QFixed _height, QFixed _xoff, QFixed _yoff)
         : x(_x),
           y(_y),
           width(_width),
@@ -99,12 +222,12 @@ struct glyph_metrics_t
           xoff(_xoff),
           yoff(_yoff)
         {}
-    qreal x;
-    qreal y;
-    qreal width;
-    qreal height;
-    qreal xoff;
-    qreal yoff;
+    QFixed x;
+    QFixed y;
+    QFixed width;
+    QFixed height;
+    QFixed xoff;
+    QFixed yoff;
 };
 Q_DECLARE_TYPEINFO(glyph_metrics_t, Q_PRIMITIVE_TYPE);
 
@@ -170,7 +293,7 @@ struct QGlyphLayout
     inline QGlyphLayout()
         : glyph(0), justificationType(0), nKashidas(0), space_18d6(0)
         {}
-
+    
     // highest value means highest priority for justification. Justification is done by first inserting kashidas
     // starting with the highest priority positions, then stretching spaces, afterwards extending inter char
     // spacing, and last spacing between arabic words.
@@ -199,8 +322,8 @@ struct QGlyphLayout
         unsigned short combiningClass  :8;
     };
     Attributes attributes;
-    QPointF advance;
-    QPointF offset;
+    QFixedPoint advance;
+    QFixedPoint offset;
 
     enum JustificationType {
         JustifyNone,
@@ -213,14 +336,11 @@ struct QGlyphLayout
 };
 Q_DECLARE_TYPEINFO(QGlyphLayout, Q_PRIMITIVE_TYPE);
 
-// also this is compatible to uniscribe. Do not change.
 struct QCharAttributes {
     uchar softBreak      :1;     // Potential linebreak point _before_ this character
     uchar whiteSpace     :1;     // A unicode whitespace character, except NBSP, ZWNBSP
     uchar charStop       :1;     // Valid cursor position (for left/right arrow)
-    uchar wordStop       :1;     // Valid cursor position (for ctrl + left/right arrow)
-    uchar invalid        :1;
-    uchar reserved       :3;
+    uchar category       :5;
 };
 Q_DECLARE_TYPEINFO(QCharAttributes, Q_PRIMITIVE_TYPE);
 
@@ -229,8 +349,7 @@ struct QScriptItem
     inline QScriptItem() : position(0), isSpace(false), isTab(false),
                            isObject(false),
                            num_glyphs(0), descent(-1), ascent(-1), width(-1),
-                           glyph_data_offset(0)
-        { }
+                           glyph_data_offset(0) {}
 
     int position;
     QScriptAnalysis analysis;
@@ -238,11 +357,11 @@ struct QScriptItem
     unsigned short isTab    : 1;
     unsigned short isObject : 1;
     int num_glyphs;
-    qreal descent;
-    qreal ascent;
-    qreal width;
+    QFixed descent;
+    QFixed ascent;
+    QFixed width;
     int glyph_data_offset;
-    qreal height() const { return ascent + descent; }
+    QFixed height() const { return ascent + descent; }
 };
 
 
@@ -253,23 +372,32 @@ typedef QVector<QScriptItem> QScriptItemArray;
 struct QScriptLine
 {
     QScriptLine()
-        : descent(0), ascent(0), x(0), y(0), width(0), textWidth(0), from(0), length(0),
+        : from(0), length(0),
         justified(0), gridfitted(0) {}
-    qreal descent;
-    qreal ascent;
-    qreal x;
-    qreal y;
-    qreal width;
-    qreal textWidth;
+    QFixed descent;
+    QFixed ascent;
+    QFixed x;
+    QFixed y;
+    QFixed width;
+    QFixed textWidth;
     int from;
     signed int length : 30;
     mutable uint justified : 1;
     mutable uint gridfitted : 1;
-    qreal height() const { return ascent + descent + 1.; }
+    QFixed height() const { return ascent + descent + 1; }
     void setDefaultHeight(QTextEngine *eng);
-    QScriptLine &operator+=(const QScriptLine &other);
+    void operator+=(const QScriptLine &other);
 };
 Q_DECLARE_TYPEINFO(QScriptLine, Q_PRIMITIVE_TYPE);
+
+
+inline void QScriptLine::operator+=(const QScriptLine &other)
+{
+    descent = qMax(descent, other.descent);
+    ascent = qMax(ascent, other.ascent);
+    textWidth += other.textWidth;
+    length += other.length;
+}
 
 typedef QVector<QScriptLine> QScriptLineArray;
 
@@ -278,6 +406,27 @@ class QTextFormatCollection;
 
 class Q_GUI_EXPORT QTextEngine {
 public:
+    struct LayoutData {
+        LayoutData(const QString &str, void **stack_memory, int mem_size);
+        LayoutData();
+        ~LayoutData();
+        mutable QScriptItemArray items;
+        int allocated;
+        int available_glyphs;
+        void **memory;
+        unsigned short *logClustersPtr;
+        QGlyphLayout *glyphPtr;
+        int num_glyphs;
+        mutable int used;
+        uint hasBidi : 1;
+        uint inLayout : 1;
+        uint memory_on_stack : 1;
+        bool haveCharAttributes;
+        QString string;
+        void reallocate(int totalGlyphs);
+    };
+
+    QTextEngine(LayoutData *data);
     QTextEngine();
     QTextEngine(const QString &str, const QFont &f);
     ~QTextEngine();
@@ -306,7 +455,7 @@ public:
 
     void justify(const QScriptLine &si);
 
-    qreal width(int charFrom, int numChars) const;
+    QFixed width(int charFrom, int numChars) const;
     glyph_metrics_t boundingBox(int from,  int len) const;
 
     int length(int item) const {
@@ -328,18 +477,14 @@ public:
     QFont font(const QScriptItem &si) const;
     inline QFont font() const { return fnt; }
 
-    unsigned short *logClustersPtr;
-    QGlyphLayout *glyphPtr;
-
     inline unsigned short *logClusters(const QScriptItem *si) const
-        { return logClustersPtr+si->position; }
+        { return layoutData->logClustersPtr+si->position; }
     inline QGlyphLayout *glyphs(const QScriptItem *si) const
-        { return glyphPtr + si->glyph_data_offset; }
+        { return layoutData->glyphPtr + si->glyph_data_offset; }
 
-    void reallocate(int totalGlyphs);
     inline void ensureSpace(int nGlyphs) const {
         if (layoutData->num_glyphs - layoutData->used < nGlyphs)
-            const_cast<QTextEngine *>(this)->reallocate((((layoutData->used + nGlyphs)*3/2 + 15) >> 4) << 4);
+            layoutData->reallocate((((layoutData->used + nGlyphs)*3/2 + 15) >> 4) << 4);
     }
 
     void freeMemory();
@@ -354,7 +499,7 @@ public:
     }
     int formatIndex(const QScriptItem *si) const;
 
-    qreal nextTab(const QScriptItem *si, qreal x);
+    QFixed nextTab(const QScriptItem *si, QFixed x);
 
     mutable QScriptLineArray lines;
 
@@ -364,37 +509,30 @@ public:
 
     QTextOption option;
 
-    qreal minWidth;
-    qreal maxWidth;
+    QFixed minWidth;
+    QFixed maxWidth;
     QPointF position;
     uint ignoreBidi : 1;
     uint cacheGlyphs : 1;
+    uint stackEngine : 1;
 
     int *underlinePositions;
 
-    struct LayoutData {
-        LayoutData();
-        ~LayoutData();
-        mutable QScriptItemArray items;
-        int allocated;
-        void **memory;
-        int num_glyphs;
-        mutable int used;
-        uint hasBidi : 1;
-        uint inLayout : 1;
-        bool haveCharAttributes;
-        QString string;
-    };
     mutable LayoutData *layoutData;
+
+    inline bool hasFormats() const { return (block.docHandle() || specialData); }
 
     struct SpecialData {
         int preeditPosition;
         QString preeditText;
         QList<QTextLayout::FormatRange> addFormats;
+        QVector<int> addFormatIndices;
+        QVector<int> resolvedFormatIndices;
     };
     SpecialData *specialData;
 
     bool atWordSeparator(int position) const;
+    void indexAdditionalFormats();
 
 private:
     void setBoundary(int strPos) const;
@@ -402,6 +540,20 @@ private:
     void shapeText(int item) const;
     void splitItem(int item, int pos) const;
 
+    void resolveAdditionalFormats() const;
 };
 
+class QStackTextEngine : public QTextEngine {
+public:
+    enum { MemSize = 256*40/sizeof(void *) };
+    QStackTextEngine(const QString &string, const QFont &f);
+    LayoutData _layoutData;
+    void *_memory[MemSize];
+};
+
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(QTextEngine::ShaperFlags)
+
+
+    
 #endif // QTEXTENGINE_P_H

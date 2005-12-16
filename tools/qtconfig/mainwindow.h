@@ -26,7 +26,6 @@
 
 #include "mainwindowbase.h"
 
-
 class MainWindow : public MainWindowBase
 {
     Q_OBJECT
@@ -83,6 +82,5 @@ private:
     QStringList fontpaths;
     bool modified;
 };
-
 
 #endif // MAINWINDOW_H

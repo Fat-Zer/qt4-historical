@@ -57,6 +57,8 @@
 #include <private/qcrashhandler_p.h>
 #include <private/qcolor_p.h>
 #include <private/qcursor_p.h>
+#include "qstyle.h"
+#include "qmetaobject.h"
 
 #include "qeventdispatcher_x11_p.h"
 #include <private/qpaintengine_x11_p.h>
@@ -76,6 +78,8 @@
 #include <locale.h>
 
 #include "qwidget_p.h"
+
+#include <private/qbackingstore_p.h>
 
 //#define X_NOT_BROKEN
 #ifdef X_NOT_BROKEN
@@ -182,6 +186,7 @@ static const char * x11_atomnames = {
 
     "_NET_WM_NAME\0"
     "_NET_WM_ICON_NAME\0"
+    "_NET_WM_ICON\0"
 
     "_NET_WM_PID\0"
 
@@ -207,6 +212,9 @@ static const char * x11_atomnames = {
     "_NET_WM_WINDOW_TYPE_UTILITY\0"
 
     "_KDE_NET_WM_FRAME_STRUT\0"
+
+    "_NET_STARTUP_INFO\0"
+    "_NET_STARTUP_INFO_BEGIN\0"
 
     // Property formats
     "COMPOUND_TEXT\0"
@@ -313,9 +321,9 @@ bool qt_reuse_double_buffer = true;
 
 Q_GUI_EXPORT int qt_xfocusout_grab_counter = 0;
 
-#if !defined (QT_NO_TABLET_SUPPORT)
-Q_GLOBAL_STATIC(TabletDeviceDataList, tablet_devices)
-TabletDeviceDataList *qt_tablet_devices()
+#if !defined (QT_NO_TABLET)
+Q_GLOBAL_STATIC(QTabletDeviceDataList, tablet_devices)
+QTabletDeviceDataList *qt_tablet_devices()
 {
     return tablet_devices();
 }
@@ -341,7 +349,7 @@ extern bool     qt_check_clipboard_sentinel(); //def in qclipboard_x11.cpp
 extern bool        qt_check_selection_sentinel(); //def in qclipboard_x11.cpp
 
 static void        qt_save_rootinfo();
-bool        qt_try_modal(QWidget *, XEvent *);
+Q_GUI_EXPORT bool qt_try_modal(QWidget *, XEvent *);
 
 QWidget *qt_button_down = 0; // last widget to be pressed with the mouse
 static QWidget *qt_popup_down = 0;  // popup that contains the pressed widget
@@ -367,11 +375,10 @@ public:
     bool translateScrollDoneEvent(const XEvent *);
     bool translateWheelEvent(int global_x, int global_y, int delta, Qt::MouseButtons buttons,
                              Qt::KeyboardModifiers modifiers, Qt::Orientation orient);
-#if !defined (QT_NO_TABLET_SUPPORT)
-    bool translateXinputEvent(const XEvent*, const TabletDeviceData *tablet);
+#if !defined (QT_NO_TABLET)
+    bool translateXinputEvent(const XEvent*, const QTabletDeviceData *tablet);
 #endif
     bool translatePropertyEvent(const XEvent *);
-    void removePendingPaintEvents();
 };
 
 
@@ -567,11 +574,10 @@ bool QApplicationPrivate::x11_apply_settings()
                          QColor(strlist[i]));
     }
 
-
     if (groupCount == QPalette::NColorGroups)
         QApplicationPrivate::setSystemPalette(pal);
 
-    if (!qt_app_has_font) {
+    if (!qt_app_has_font && !appFont) {
         QFont font(QApplication::font());
         QString str = settings.value(QLatin1String("font")).toString();
         if (!str.isEmpty()) {
@@ -697,7 +703,8 @@ bool QApplicationPrivate::x11_apply_settings()
     if (inputMethods.size() > 2 && inputMethods.contains(QLatin1String("imsw-multi"))) {
         X11->default_im = QLatin1String("imsw-multi");
     } else {
-        X11->default_im = settings.value("DefaultInputMethod", QLatin1String("xim")).toString();
+        X11->default_im = settings.value(QLatin1String("DefaultInputMethod"),
+                                         QLatin1String("xim")).toString();
     }
 
     settings.endGroup(); // Qt
@@ -750,7 +757,7 @@ static void qt_set_input_encoding()
 // set font, foreground and background from x11 resources. The
 // arguments may override the resource settings.
 static void qt_set_x11_resources(const char* font = 0, const char* fg = 0,
-                                  const char* bg = 0, const char* button = 0)
+                                 const char* bg = 0, const char* button = 0)
 {
 
     QString resFont, resFG, resBG, resEF, sysFont;
@@ -763,92 +770,118 @@ static void qt_set_x11_resources(const char* font = 0, const char* fg = 0,
     QApplication::setEffectEnabled(Qt::UI_FadeTooltip, false);
     QApplication::setEffectEnabled(Qt::UI_AnimateToolBox, false);
 
-    if (QApplication::desktopSettingsAware() && !QApplicationPrivate::x11_apply_settings()) {
-        int format;
-        ulong  nitems, after = 1;
-        QString res;
-        long offset = 0;
-        Atom type = XNone;
+    bool paletteAlreadySet = false;
+    if (QApplication::desktopSettingsAware()) {
+        // first, read from settings
+        QApplicationPrivate::x11_apply_settings();
 
-        while (after > 0) {
-            uchar *data;
-            XGetWindowProperty(X11->display, QX11Info::appRootWindow(0),
-                                ATOM(RESOURCE_MANAGER),
-                                offset, 8192, False, AnyPropertyType,
-                                &type, &format, &nitems, &after,
-                                &data);
-            res += (char*)data;
-            offset += 2048; // offset is in 32bit quantities... 8192/4 == 2048
-            if (data)
-                XFree((char *)data);
-        }
+        // the call to QApplication::style() below creates the system
+        // palette, which breaks the logic after the RESOURCE_MANAGER
+        // loop... so I have to save this value to be able to use it later
+        paletteAlreadySet = (QApplicationPrivate::sys_pal != 0);
 
-        QString key, value;
-        int l = 0, r;
-        QString apn = appName;
-        QString apc = appClass;
-        int apnl = apn.length();
-        int apcl = apc.length();
-        int resl = res.length();
+        QString style = QApplication::style()->metaObject()->className();
+        if (style == QLatin1String("QWindowsStyle")
+            || style == QLatin1String("QMotifStyle")
+            || style == QLatin1String("QCDEStyle")) {
+            // ### Only plain styles currently work fine with RESOURCE_MANAGER
+            // provided palette entries. For now, we apply this code to only
+            // our own plain styles, until we can get complex styles to work
+            // properly. We might also introduce a style hint for this.
 
-        while (l < resl) {
-            r = res.indexOf('\n', l);
-            if (r < 0)
-                r = resl;
-            while (::isSpace(res[l]))
-                l++;
-            bool mine = false;
-            if (res[l] == '*' &&
-                 (res[l+1] == 'f' || res[l+1] == 'b' || res[l+1] == 'g' ||
-                  res[l+1] == 'F' || res[l+1] == 'B' || res[l+1] == 'G' ||
-                  res[l+1] == 's' || res[l+1] == 'S')) {
-                // OPTIMIZED, since we only want "*[fbgs].."
-                QString item = res.mid(l, r - l).simplified();
-                int i = item.indexOf(':');
-                key = item.left(i).trimmed().mid(1).toLower();
-                value = item.right(item.length() - i - 1).trimmed();
-                mine = true;
-            } else if (res[l] == appName[0] || (appClass && res[l] == appClass[0])) {
-                if (res.mid(l,apnl) == apn && (res[l+apnl] == '.' || res[l+apnl] == '*')) {
+            // second, parse the RESOURCE_MANAGER property
+            int format;
+            ulong  nitems, after = 1;
+            QString res;
+            long offset = 0;
+            Atom type = XNone;
+
+            while (after > 0) {
+                uchar *data;
+                XGetWindowProperty(X11->display, QX11Info::appRootWindow(0),
+                                   ATOM(RESOURCE_MANAGER),
+                                   offset, 8192, False, AnyPropertyType,
+                                   &type, &format, &nitems, &after,
+                                   &data);
+                if (type == XA_STRING)
+                    res += QString::fromLatin1((char*)data);
+                else
+                    res += QString::fromLocal8Bit((char*)data);
+                offset += 2048; // offset is in 32bit quantities... 8192/4 == 2048
+                if (data)
+                    XFree((char *)data);
+            }
+
+            QString key, value;
+            int l = 0, r;
+            QString apn = QString::fromLocal8Bit(appName);
+            QString apc = QString::fromLocal8Bit(appClass);
+            int apnl = apn.length();
+            int apcl = apc.length();
+            int resl = res.length();
+
+            while (l < resl) {
+                r = res.indexOf(QLatin1Char('\n'), l);
+                if (r < 0)
+                    r = resl;
+                while (::isSpace(res.at(l)))
+                    l++;
+                bool mine = false;
+                QChar sc = res.at(l + 1);
+                if (res.at(l) == QLatin1Char('*') &&
+                    (sc == QLatin1Char('f') || sc == QLatin1Char('b') || sc == QLatin1Char('g') ||
+                     sc == QLatin1Char('F') || sc == QLatin1Char('B') || sc == QLatin1Char('G') ||
+                     sc == QLatin1Char('s') || sc == QLatin1Char('S'))) {
+                    // OPTIMIZED, since we only want "*[fbgs].."
                     QString item = res.mid(l, r - l).simplified();
-                    int i = item.indexOf(':');
-                    key = item.left(i).trimmed().mid(apnl+1).toLower();
+                    int i = item.indexOf(QLatin1Char(':'));
+                    key = item.left(i).trimmed().mid(1).toLower();
                     value = item.right(item.length() - i - 1).trimmed();
                     mine = true;
-                } else if (res.mid(l,apcl) == apc && (res[l+apcl] == '.' || res[l+apcl] == '*')) {
-                    QString item = res.mid(l, r - l).simplified();
-                    int i = item.indexOf(':');
-                    key = item.left(i).trimmed().mid(apcl+1).toLower();
-                    value = item.right(item.length() - i - 1).trimmed();
-                    mine = true;
+                } else if (apnl && res.at(l) == apn.at(0) || (appClass && apcl && res.at(l) == apc.at(0))) {
+                    if (res.mid(l,apnl) == apn && (res.at(l+apnl) == QLatin1Char('.')
+                                                   || res.at(l+apnl) == QLatin1Char('*'))) {
+                        QString item = res.mid(l, r - l).simplified();
+                        int i = item.indexOf(QLatin1Char(':'));
+                        key = item.left(i).trimmed().mid(apnl+1).toLower();
+                        value = item.right(item.length() - i - 1).trimmed();
+                        mine = true;
+                    } else if (res.mid(l,apcl) == apc && (res.at(l+apcl) == QLatin1Char('.')
+                                                          || res.at(l+apcl) == QLatin1Char('*'))) {
+                        QString item = res.mid(l, r - l).simplified();
+                        int i = item.indexOf(QLatin1Char(':'));
+                        key = item.left(i).trimmed().mid(apcl+1).toLower();
+                        value = item.right(item.length() - i - 1).trimmed();
+                        mine = true;
+                    }
                 }
-            }
 
-            if (mine) {
-                if (!font && key == "systemfont")
-                    sysFont = value.left(value.lastIndexOf(':'));
-                if (!font && key == "font")
-                    resFont = value;
-                else if  (!fg &&  key == "foreground")
-                    resFG = value;
-                else if (!bg && key == "background")
-                    resBG = value;
-                else if (key == "guieffects")
-                    resEF = value;
-                // NOTE: if you add more, change the [fbg] stuff above
-            }
+                if (mine) {
+                    if (!font && key == QLatin1String("systemfont"))
+                        sysFont = value.left(value.lastIndexOf(QLatin1Char(':')));
+                    if (!font && key == QLatin1String("font"))
+                        resFont = value;
+                    else if  (!paletteAlreadySet && !fg && key == QLatin1String("foreground"))
+                        resFG = value;
+                    else if (!paletteAlreadySet && !bg && key == QLatin1String("background"))
+                        resBG = value;
+                    else if (key == QLatin1String("guieffects"))
+                        resEF = value;
+                    // NOTE: if you add more, change the [fbg] stuff above
+                }
 
-            l = r + 1;
+                l = r + 1;
+            }
         }
     }
     if (!sysFont.isEmpty())
         resFont = sysFont;
     if (resFont.isEmpty())
-        resFont = font;
+        resFont = QString::fromLocal8Bit(font);
     if (resFG.isEmpty())
-        resFG = fg;
+        resFG = QString::fromLocal8Bit(fg);
     if (resBG.isEmpty())
-        resBG = bg;
+        resBG = QString::fromLocal8Bit(bg);
     if (!qt_app_has_font && !resFont.isEmpty()) { // set application font
         QFont fnt;
         fnt.setRawName(resFont);
@@ -870,8 +903,8 @@ static void qt_set_x11_resources(const char* font = 0, const char* fg = 0,
                 if (fnt.pointSize() <= 0 && fnt.pixelSize() <= 0)
                     // size is all wrong... fix it
                     fnt.setPointSize((int) ((fontinfo.pixelSize() * 72. /
-                                                (float) QX11Info::appDpiY()) +
-                                              0.5));
+                                             (float) QX11Info::appDpiY()) +
+                                            0.5));
             }
         }
 
@@ -880,7 +913,7 @@ static void qt_set_x11_resources(const char* font = 0, const char* fg = 0,
         }
     }
 
-    if (button || !resBG.isEmpty() || !resFG.isEmpty()) {// set app colors
+    if ((button || !resBG.isEmpty() || !resFG.isEmpty())) {// set app colors
         (void) QApplication::style();  // trigger creation of application style and system palettes
         QColor btn;
         QColor bg;
@@ -933,14 +966,20 @@ static void qt_set_x11_resources(const char* font = 0, const char* fg = 0,
     }
 
     if (!resEF.isEmpty()) {
-        QStringList effects = resEF.split(' ');
-        QApplication::setEffectEnabled(Qt::UI_General, effects.contains("general"));
-        QApplication::setEffectEnabled(Qt::UI_AnimateMenu, effects.contains("animatemenu"));
-        QApplication::setEffectEnabled(Qt::UI_FadeMenu, effects.contains("fademenu"));
-        QApplication::setEffectEnabled(Qt::UI_AnimateCombo, effects.contains("animatecombo"));
-        QApplication::setEffectEnabled(Qt::UI_AnimateTooltip, effects.contains("animatetooltip"));
-        QApplication::setEffectEnabled(Qt::UI_FadeTooltip, effects.contains("fadetooltip"));
-        QApplication::setEffectEnabled(Qt::UI_AnimateToolBox, effects.contains("animatetoolbox"));
+        QStringList effects = resEF.split(QLatin1Char(' '));
+        QApplication::setEffectEnabled(Qt::UI_General, effects.contains(QLatin1String("general")));
+        QApplication::setEffectEnabled(Qt::UI_AnimateMenu,
+                                       effects.contains(QLatin1String("animatemenu")));
+        QApplication::setEffectEnabled(Qt::UI_FadeMenu,
+                                       effects.contains(QLatin1String("fademenu")));
+        QApplication::setEffectEnabled(Qt::UI_AnimateCombo,
+                                       effects.contains(QLatin1String("animatecombo")));
+        QApplication::setEffectEnabled(Qt::UI_AnimateTooltip,
+                                       effects.contains(QLatin1String("animatetooltip")));
+        QApplication::setEffectEnabled(Qt::UI_FadeTooltip,
+                                       effects.contains(QLatin1String("fadetooltip")));
+        QApplication::setEffectEnabled(Qt::UI_AnimateToolBox,
+                                       effects.contains(QLatin1String("animatetoolbox")));
     }
 }
 
@@ -1103,7 +1142,7 @@ static void qt_check_focus_model()
         X11->focus_model = QX11Data::FM_Other;
 }
 
-#ifndef QT_NO_TABLET_SUPPORT
+#ifndef QT_NO_TABLET
 static bool isXInputSupported(Display *dpy)
 {
     Bool exists;
@@ -1185,6 +1224,9 @@ static void getXDefault(const char *group, const char *key, bool *val)
 void qt_init(QApplicationPrivate *priv, int,
 	     Display *display, Qt::HANDLE visual, Qt::HANDLE colormap)
 {
+    setlocale(LC_ALL, "");                // use correct char set mapping
+    setlocale(LC_NUMERIC, "C");        // make sprintf()/scanf() work
+
     X11 = new QX11Data;
     X11->display = display;
     X11->displayName = 0;
@@ -1222,7 +1264,7 @@ void qt_init(QApplicationPrivate *priv, int,
 
     X11->motifdnd_active = false;
 
-    X11->default_im = "imsw-multi";
+    X11->default_im = QLatin1String("imsw-multi");
     priv->inputContext = 0;
 
     // colormap control
@@ -1243,6 +1285,8 @@ void qt_init(QApplicationPrivate *priv, int,
     for (int i = 0; i < X11->pattern_fill_count; ++i)
         X11->pattern_fills[i].screen = -1;
 #endif
+
+    X11->startupId = 0;
 
     int argc = priv->argc;
     char **argv = priv->argv;
@@ -1325,18 +1369,18 @@ void qt_init(QApplicationPrivate *priv, int,
                 X11->color_count = qMax(0,atoi(argv[i]));
         } else if (arg == "-visual") {  // xv and netscape use this name
             if (++i < argc && !X11->visual) {
-                QString s = QString(argv[i]).toLower();
-                if (s == "staticgray")
+                QString s = QString::fromLocal8Bit(argv[i]).toLower();
+                if (s == QLatin1String("staticgray"))
                     X11->visual_class = StaticGray;
-                else if (s == "grayscale")
+                else if (s == QLatin1String("grayscale"))
                     X11->visual_class = XGrayScale;
-                else if (s == "staticcolor")
+                else if (s == QLatin1String("staticcolor"))
                     X11->visual_class = StaticColor;
-                else if (s == "pseudocolor")
+                else if (s == QLatin1String("pseudocolor"))
                     X11->visual_class = PseudoColor;
-                else if (s == "truecolor")
+                else if (s == QLatin1String("truecolor"))
                     X11->visual_class = TrueColor;
-                else if (s == "directcolor")
+                else if (s == QLatin1String("directcolor"))
                     X11->visual_class = DirectColor;
                 else
                     X11->visual_id = static_cast<int>(strtol(argv[i], 0, 0));
@@ -1344,17 +1388,17 @@ void qt_init(QApplicationPrivate *priv, int,
 #ifndef QT_NO_XIM
         } else if (arg == "-inputstyle/") {
             if (++i < argc) {
-                QString s = QString(argv[i]).toLower();
-                if (s == "onthespot")
+                QString s = QString::fromLocal8Bit(argv[i]).toLower();
+                if (s == QLatin1String("onthespot"))
                     qt_xim_preferred_style = XIMPreeditCallbacks |
                                              XIMStatusNothing;
-                else if (s == "overthespot")
+                else if (s == QLatin1String("overthespot"))
                     qt_xim_preferred_style = XIMPreeditPosition |
                                              XIMStatusNothing;
-                else if (s == "offthespot")
+                else if (s == QLatin1String("offthespot"))
                     qt_xim_preferred_style = XIMPreeditArea |
                                              XIMStatusArea;
-                else if (s == "root")
+                else if (s == QLatin1String("root"))
                     qt_xim_preferred_style = XIMPreeditNothing |
                                              XIMStatusNothing;
             }
@@ -1389,9 +1433,9 @@ void qt_init(QApplicationPrivate *priv, int,
                 if (c == '/')
                     s.clear();
                 else
-                    s += c;
+                    s += QLatin1Char(c);
             }
-            if (s == "gdb") {
+            if (s == QLatin1String("gdb")) {
                 appNoGrab = true;
                 qDebug("Qt: gdb: -nograb added to command-line options.\n"
                        "\t Use the -dograb option to enforce grabbing.");
@@ -1488,7 +1532,8 @@ void qt_init(QApplicationPrivate *priv, int,
 
         X11->has_fontconfig = false;
 #if !defined(QT_NO_FONTCONFIG)
-        X11->has_fontconfig = FcInit();
+        if (qgetenv("QT_X11_NO_FONTCONFIG").isNull())
+            X11->has_fontconfig = FcInit();
 
         int dpi = 0;
         getXDefault("Xft", FC_DPI, &dpi);
@@ -1533,12 +1578,12 @@ void qt_init(QApplicationPrivate *priv, int,
         }
         X11->fc_antialias = true;
         getXDefault("Xft", FC_ANTIALIAS, &X11->fc_antialias);
+#ifdef FC_HINT_STYLE
+        getXDefault("Xft", FC_HINT_STYLE, &X11->fc_hint_style);
+#endif
 #if 0
         // ###### these are implemented by Xft, not sure we need them
         getXDefault("Xft", FC_AUTOHINT, &X11->fc_autohint);
-#ifdef FC_HINT_STYLE
-        getXDefault("Xft", FC_HINT_STYLE, &X11->fc_autohint);
-#endif
         getXDefault("Xft", FC_HINTING, &X11->fc_autohint);
         getXDefault("Xft", FC_MINSPACE, &X11->fc_autohint);
 #endif
@@ -1609,7 +1654,7 @@ void qt_init(QApplicationPrivate *priv, int,
     }
 
     if(qt_is_gui_used) {
-        qApp->setObjectName(appName);
+        qApp->setObjectName(QString::fromLocal8Bit(appName));
 
         int screen;
         for (screen = 0; screen < X11->screenCount; ++screen) {
@@ -1622,9 +1667,6 @@ void qt_init(QApplicationPrivate *priv, int,
 #endif // QT_NO_XRANDR
         }
     }
-
-    setlocale(LC_ALL, "");                // use correct char set mapping
-    setlocale(LC_NUMERIC, "C");        // make sprintf()/scanf() work
 
     if (qt_is_gui_used) {
         qt_set_input_encoding();
@@ -1642,11 +1684,12 @@ void qt_init(QApplicationPrivate *priv, int,
                               72. / (float) QX11Info::appDpiY()) + 0.5));
 
         if (!qt_app_has_font) {
-            QFont f(X11->has_fontconfig ? "Sans Serif" : "Helvetica", ptsz);
+            QFont f(X11->has_fontconfig ? QLatin1String("Sans Serif") : QLatin1String("Helvetica"),
+                    ptsz);
             QApplication::setFont(f);
         }
 
-#if !defined (QT_NO_TABLET_SUPPORT)
+#if !defined (QT_NO_TABLET)
         if (isXInputSupported(X11->display)) {
             int ndev,
                 i,
@@ -1678,8 +1721,7 @@ void qt_init(QApplicationPrivate *priv, int,
                 gotStylus = false;
                 gotEraser = false;
 
-                QString devName = devs->name;
-                devName = devName.toLower();
+                QString devName = QString::fromLocal8Bit(devs->name).toLower();
 #if defined(Q_OS_IRIX)
                 if (devName == QLatin1String(WACOM_NAME)) {
                     deviceType = QTabletEvent::Stylus;
@@ -1704,7 +1746,7 @@ void qt_init(QApplicationPrivate *priv, int,
                         continue;
                     }
 
-                    TabletDeviceData device_data;
+                    QTabletDeviceData device_data;
                     device_data.deviceType = deviceType;
                     device_data.eventCount = 0;
                     device_data.device = dev;
@@ -1808,7 +1850,11 @@ void qt_init(QApplicationPrivate *priv, int,
             }
             XFreeDeviceList(devices);
         }
-#endif // QT_NO_TABLET_SUPPORT
+#endif // QT_NO_TABLET
+
+        X11->startupId = getenv("DESKTOP_STARTUP_ID");
+        putenv(strdup("DESKTOP_STARTUP_ID="));
+
     } else {
         // read some non-GUI settings when not using the X server...
 
@@ -1859,14 +1905,14 @@ void QApplicationPrivate::x11_initialize_style()
         if (data) XFree((char *)data);
         // kwin is there. check if KDE's styles are available,
         // otherwise use windows style
-        QApplicationPrivate::app_style = QStyleFactory::create("plastique");
+        QApplicationPrivate::app_style = QStyleFactory::create(QLatin1String("plastique"));
     }
     if (!QApplicationPrivate::app_style &&
          XGetWindowProperty(X11->display, QX11Info::appRootWindow(), ATOM(KWM_RUNNING),
                              0, 1, False, AnyPropertyType, &type, &format, &length,
                              &after, &data) == Success && length) {
         if (data) XFree((char *)data);
-        QApplicationPrivate::app_style = QStyleFactory::create("plastique");
+        QApplicationPrivate::app_style = QStyleFactory::create(QLatin1String("plastique"));
     }
     if (!QApplicationPrivate::app_style &&
          XGetWindowProperty(X11->display, QX11Info::appRootWindow(), ATOM(DTWM_IS_RUNNING),
@@ -1874,7 +1920,7 @@ void QApplicationPrivate::x11_initialize_style()
                              &after, &data) == Success && length) {
         // DTWM is running, meaning most likely CDE is running...
         if (data) XFree((char *) data);
-        QApplicationPrivate::app_style = QStyleFactory::create("cde");
+        QApplicationPrivate::app_style = QStyleFactory::create(QLatin1String("cde"));
     }
     // maybe another desktop?
     if (!QApplicationPrivate::app_style &&
@@ -1884,10 +1930,13 @@ void QApplicationPrivate::x11_initialize_style()
          length) {
         if (data) XFree((char *)data);
         // default to MotifPlus with hovering
-        QApplicationPrivate::app_style = QStyleFactory::create("plastique");
+        QApplicationPrivate::app_style = QStyleFactory::create(QLatin1String("plastique"));
     }
 }
 
+void QApplicationPrivate::initializeWidgetPaletteHash()
+{
+}
 
 /*****************************************************************************
   qt_cleanup() - cleans up when the application is finished
@@ -1915,8 +1964,8 @@ void qt_cleanup()
             XRenderFreePicture(X11->display, X11->pattern_fills[i].picture);
     }
 #endif
-#if !defined (QT_NO_TABLET_SUPPORT)
-    TabletDeviceDataList *devices = qt_tablet_devices();
+#if !defined (QT_NO_TABLET)
+    QTabletDeviceDataList *devices = qt_tablet_devices();
     for (int i = 0; i < devices->size(); ++i)
         XCloseDevice(X11->display, (XDevice*)devices->at(i).device);
 #endif
@@ -2013,9 +2062,9 @@ bool qt_wstate_iconified(WId winid)
     return iconic;
 }
 
-QString qAppName()                                // get application name
+QString QApplicationPrivate::appName() const
 {
-    return QString::fromLatin1(appName);
+    return QString::fromLocal8Bit(::appName);
 }
 
 const char *QX11Info::appClass()                                // get application class
@@ -2042,8 +2091,6 @@ bool qt_nograb()                                // application no-grab option
 
     Returns the main application widget, or 0 if there is no main
     widget.
-
-    \sa setMainWidget()
 */
 
 /*!
@@ -2235,15 +2282,11 @@ Window QX11Data::findClientWindow(Window win, Atom property, bool leaf)
 
 QWidget *QApplication::topLevelAt(const QPoint &p)
 {
-    QWidget *c = QApplicationPrivate::widgetAt_sys(p.x(), p.y());
-    return c ? c->window() : 0;
-}
-
-QWidget *QApplicationPrivate::widgetAt_sys(int x, int y)
-{
     int screen = QCursor::x11Screen();
     int unused;
 
+    int x = p.x();
+    int y = p.y();
     Window target;
     if (!XTranslateCoordinates(X11->display,
                                QX11Info::appRootWindow(screen),
@@ -2253,7 +2296,7 @@ QWidget *QApplicationPrivate::widgetAt_sys(int x, int y)
     }
     if (!target || target == QX11Info::appRootWindow(screen))
         return 0;
-    QWidget *w, *c;
+    QWidget *w;
     w = QWidget::find((WId)target);
 
     if (!w) {
@@ -2287,9 +2330,7 @@ QWidget *QApplicationPrivate::widgetAt_sys(int x, int y)
             }
         }
     }
-    if (w && (c = w->childAt(w->mapFromGlobal(QPoint(x, y)))))
-        return c;
-    return w;
+    return w ? w->window() : 0;
 }
 
 /*!
@@ -2305,7 +2346,8 @@ void QApplication::syncX()
 
 
 /*!
-    Sounds the bell, using the default volume and sound.
+    Sounds the bell, using the default volume and sound. The function
+    is \e not available in Qtopia Core.
 */
 
 void QApplication::beep()
@@ -2371,22 +2413,16 @@ int QApplication::x11ClientMessage(QWidget* w, XEvent* event, bool passive_only)
                 widget->translateCloseEvent(event);
             }
             else if (a == ATOM(WM_TAKE_FOCUS)) {
-                QWidget * amw = activeModalWidget();
                 if ((ulong) event->xclient.data.l[1] > X11->time)
                     X11->time = event->xclient.data.l[1];
-                if (amw && amw != widget) {
-                    QWidget* groupLeader = widget;
-                    while (groupLeader && !groupLeader->testAttribute(Qt::WA_GroupLeader)
-                           && groupLeader != amw)
-                        groupLeader = groupLeader->parentWidget();
-                    if (!groupLeader) {
-                        QWidget *p = amw->parentWidget();
-                        while (p && p != widget)
-                            p = p->parentWidget();
-                        if (!p || !X11->net_supported_list)
-                            amw->raise(); // help broken window managers
-                        amw->activateWindow();
-                    }
+                QWidget *amw = activeModalWidget();
+                if (amw && !QApplicationPrivate::tryModalHelper(widget, 0)) {
+                    QWidget *p = amw->parentWidget();
+                    while (p && p != widget)
+                        p = p->parentWidget();
+                    if (!p || !X11->net_supported_list)
+                        amw->raise(); // help broken window managers
+                    amw->activateWindow();
                 }
 #ifndef QT_NO_WHATSTHIS
             } else if (a == ATOM(_NET_WM_CONTEXT_HELP)) {
@@ -2597,10 +2633,10 @@ int QApplication::x11ProcessEvent(XEvent* event)
 
     if (widget->x11Event(event))                // send through widget filter
         return 1;
-#if !defined (QT_NO_TABLET_SUPPORT)
-    TabletDeviceDataList *tablets = qt_tablet_devices();
+#if !defined (QT_NO_TABLET)
+    QTabletDeviceDataList *tablets = qt_tablet_devices();
     for (int i = 0; i < tablets->size(); ++i) {
-        const TabletDeviceData &tab = tablets->at(i);
+        const QTabletDeviceData &tab = tablets->at(i);
         if (event->type == tab.xinput_motion ||
             event->type == tab.xinput_button_release ||
             event->type == tab.xinput_button_press) {
@@ -2647,11 +2683,23 @@ int QApplication::x11ProcessEvent(XEvent* event)
             qt_net_update_user_time(widget->window());
         // fall through intended
     case MotionNotify:
-#if !defined(QT_NO_TABLET_SUPPORT)
+#if !defined(QT_NO_TABLET)
         if (!qt_tabletChokeMouse) {
 #endif
+            if (widget->testAttribute(Qt::WA_TransparentForMouseEvents)) {
+                QPoint pos(event->xbutton.x, event->xbutton.y);
+                pos = widget->d_func()->mapFromWS(pos);
+                QWidget *window = widget->window();
+                pos = widget->mapTo(window, pos);
+                if (QWidget *child = window->childAt(pos)) {
+                    widget = static_cast<QETWidget *>(child);
+                    pos = child->mapFrom(window, pos);
+                    event->xbutton.x = pos.x();
+                    event->xbutton.y = pos.y();
+                }
+            }
             widget->translateMouseEvent(event);
-#if !defined(QT_NO_TABLET_SUPPORT)
+#if !defined(QT_NO_TABLET)
         } else {
             qt_tabletChokeMouse = false;
         }
@@ -2706,10 +2754,10 @@ int QApplication::x11ProcessEvent(XEvent* event)
             break;
         if (!widget->isWindow())
             break;
-        if (event->xfocus.mode == NotifyGrab)
+        if (event->xfocus.mode == NotifyGrab) {
             qt_xfocusout_grab_counter++;
-        if (event->xfocus.mode != NotifyNormal)
             break;
+        }
         if (event->xfocus.detail != NotifyAncestor &&
             event->xfocus.detail != NotifyNonlinearVirtual &&
             event->xfocus.detail != NotifyNonlinear)
@@ -2757,14 +2805,10 @@ int QApplication::x11ProcessEvent(XEvent* event)
             QWidget* event_widget = QWidget::find(ev.xcrossing.window);
             if(event_widget && event_widget->x11Event(&ev))
                 break;
-            if (ev.type == LeaveNotify && ev.xcrossing.mode == NotifyNormal){
-                enter = event_widget;
-                XPutBackEvent(X11->display, &ev);
-                break;
-            }
-            if (ev.xcrossing.mode != NotifyNormal ||
-                ev.xcrossing.detail == NotifyVirtual  ||
-                ev.xcrossing.detail == NotifyNonlinearVirtual)
+            if (ev.type == LeaveNotify
+                || ev.xcrossing.mode != NotifyNormal
+                || ev.xcrossing.detail == NotifyVirtual
+                || ev.xcrossing.detail == NotifyNonlinearVirtual)
                 continue;
             enter = event_widget;
             if (ev.xcrossing.focus &&
@@ -2788,30 +2832,51 @@ int QApplication::x11ProcessEvent(XEvent* event)
             QApplicationPrivate::dispatchEnterLeave(widget, 0);
 
         QApplicationPrivate::dispatchEnterLeave(enter, widget);
-        curWin = enter ? enter->winId() : 0;
+        if (enter) {
+            curWin = enter->winId();
+            static_cast<QETWidget *>(enter)->translateMouseEvent(&ev); //we don't get MotionNotify, emulate it
+        } else {
+            curWin = 0;
+        }
     }
         break;
 
     case UnmapNotify:                                // window hidden
-        if (widget->isWindow() && !(widget->windowType() == Qt::Popup)) {
-            widget->setAttribute(Qt::WA_Mapped, false);
-            if (widget->isVisible()) {
-                widget->d_func()->topData()->spont_unmapped = 1;
-                QHideEvent e;
+        if (widget->isWindow()) {
+            widget->d_func()->topData()->waitingForMapNotify = 0;
+
+            if (widget->windowType() != Qt::Popup) {
+                widget->setAttribute(Qt::WA_Mapped, false);
+                if (widget->isVisible()) {
+                    widget->d_func()->topData()->spont_unmapped = 1;
+                    QHideEvent e;
                 QApplication::sendSpontaneousEvent(widget, &e);
                 widget->d_func()->hideChildren(true);
+                }
+            }
+
+            if (!widget->d_func()->topData()->validWMState) {
+                int idx = X11->deferred_map.indexOf(widget);
+                if (idx != -1) {
+                    X11->deferred_map.removeAt(idx);
+                    XMapWindow(X11->display, widget->winId());
+                }
             }
         }
         break;
 
     case MapNotify:                                // window shown
-        if (widget->isWindow() && !(widget->windowType() == Qt::Popup)) {
-            widget->setAttribute(Qt::WA_Mapped);
-            if (widget->d_func()->topData()->spont_unmapped) {
-                widget->d_func()->topData()->spont_unmapped = 0;
-                widget->d_func()->showChildren(true);
-                QShowEvent e;
-                QApplication::sendSpontaneousEvent(widget, &e);
+        if (widget->isWindow()) {
+            widget->d_func()->topData()->waitingForMapNotify = 0;
+
+            if (widget->windowType() != Qt::Popup) {
+                widget->setAttribute(Qt::WA_Mapped);
+                if (widget->d_func()->topData()->spont_unmapped) {
+                    widget->d_func()->topData()->spont_unmapped = 0;
+                    widget->d_func()->showChildren(true);
+                    QShowEvent e;
+                    QApplication::sendSpontaneousEvent(widget, &e);
+                }
             }
         }
         break;
@@ -2825,22 +2890,28 @@ int QApplication::x11ProcessEvent(XEvent* event)
                                       ReparentNotify,
                                       event))
             ;        // skip old reparent events
-        if (event->xreparent.parent == QX11Info::appRootWindow()) {
-            if (widget->isWindow()) {
-                widget->d_func()->topData()->parentWinId = event->xreparent.parent;
-                int idx = X11->deferred_map.indexOf(widget);
-                if (idx != -1) {
-                    X11->deferred_map.removeAt(idx);
-                    XMapWindow(X11->display, widget->winId());
-                }
-            }
-        } else
-            // store the parent. Useful for many things, embedding for instance.
-            widget->d_func()->topData()->parentWinId = event->xreparent.parent;
         if (widget->isWindow()) {
+            QTLWExtra *topData = widget->d_func()->topData();
+
+            // store the parent. Useful for many things, embedding for instance.
+            topData->parentWinId = event->xreparent.parent;
+
             // the widget frame strut should also be invalidated
-            widget->d_func()->topData()->fleft = widget->d_func()->topData()->fright =
-             widget->d_func()->topData()->ftop = widget->d_func()->topData()->fbottom = 0;
+            topData->fleft = topData->fright = topData->ftop = topData->fbottom = 0;
+
+            // work around broken window managers... if we get a
+            // ReparentNotify before the MapNotify, we assume that
+            // we're being managed by a reparenting window
+            // manager.
+            //
+            // however, the WM_STATE property may not have been set
+            // yet, but we are going to assume that it will
+            // be... otherwise we could try to map again after getting
+            // an UnmapNotify... which could then, in turn, trigger a
+            // race in the window manager which causes the window to
+            // disappear when it really should be hidden.
+            if (topData->waitingForMapNotify && !topData->validWMState)
+                topData->validWMState = 1;
 
             if (X11->focus_model != QX11Data::FM_Unknown) {
                 // toplevel reparented...
@@ -2953,7 +3024,7 @@ int QApplication::x11ProcessEvent(XEvent* event)
     the \a event parameter.
 
     Return true if you want to stop the event from being processed.
-    Return false for normal event dispatching. THe default
+    Return false for normal event dispatching. The default
     implementation returns false.
 
     \sa x11ProcessEvent()
@@ -3233,6 +3304,9 @@ bool QETWidget::translateMouseEvent(const XEvent *event)
                 || nextEvent.type == Expose
                 || nextEvent.type == GraphicsExpose
                 || nextEvent.type == NoExpose
+                || nextEvent.type == KeymapNotify
+                || ((nextEvent.type == EnterNotify || nextEvent.type == LeaveNotify)
+                    && qt_button_down == this)
                 || (nextEvent.type == ClientMessage
                     && nextEvent.xclient.message_type == ATOM(_QT_SCROLL_DONE))) {
                 qApp->x11ProcessEvent(&nextEvent);
@@ -3272,6 +3346,8 @@ bool QETWidget::translateMouseEvent(const XEvent *event)
         modifiers = translateModifiers(xevent->xcrossing.state);
         if (qt_button_down && !buttons)
             qt_button_down = 0;
+        if (qt_button_down)
+            return true;
     } else {                                        // button press or release
         pos.rx() = event->xbutton.x;
         pos.ry() = event->xbutton.y;
@@ -3319,10 +3395,12 @@ bool QETWidget::translateMouseEvent(const XEvent *event)
                                     modifiers, (hor) ? Qt::Horizontal: Qt::Vertical);
             }
             return true;
+        case 8: button = Qt::XButton1; break;
+        case 9: button = Qt::XButton2; break;
         }
         if (event->type == ButtonPress) {        // mouse button pressed
             buttons |= button;
-#if defined(Q_OS_IRIX) && !defined(QT_NO_TABLET_SUPPORT)
+#if defined(Q_OS_IRIX) && !defined(QT_NO_TABLET)
             TabletDeviceDataList *tablets = qt_tablet_devices();
             for (int i = 0; i < tablets->size(); ++i) {
                 const TabletDeviceData &tab = tablets->at(i);
@@ -3339,7 +3417,7 @@ bool QETWidget::translateMouseEvent(const XEvent *event)
             }
 #endif
             qt_button_down = childAt(pos);        //magic for masked widgets
-            if (!qt_button_down || !qt_button_down->testAttribute(Qt::WA_MouseNoMask))
+            if (!qt_button_down)
                 qt_button_down = this;
             if (mouseActWindow == event->xbutton.window &&
                 mouseButtonPressed == button &&
@@ -3360,7 +3438,7 @@ bool QETWidget::translateMouseEvent(const XEvent *event)
             mouseGlobalYPos = globalPos.y();
         } else {                                // mouse button released
             buttons &= ~button;
-#if defined(Q_OS_IRIX) && !defined(QT_NO_TABLET_SUPPORT)
+#if defined(Q_OS_IRIX) && !defined(QT_NO_TABLET)
             TabletDeviceDataList *tablets = qt_tablet_devices();
             for (int i = 0; i < tablets->size(); ++i) {
                 const TabletDeviceData &tab = tablets->at(i);
@@ -3544,8 +3622,8 @@ bool QETWidget::translateWheelEvent(int global_x, int global_y, int delta,
 //
 // XInput Translation Event
 //
-#if !defined (QT_NO_TABLET_SUPPORT)
-bool QETWidget::translateXinputEvent(const XEvent *ev, const TabletDeviceData *tablet)
+#if !defined (QT_NO_TABLET)
+bool QETWidget::translateXinputEvent(const XEvent *ev, const QTabletDeviceData *tablet)
 {
 #if defined (Q_OS_IRIX)
     // Wacom has put defines in their wacom.h file so it would be quite wise
@@ -3650,6 +3728,9 @@ bool QETWidget::translateXinputEvent(const XEvent *ev, const TabletDeviceData *t
                 case 0x000600:
                     deviceType = QTabletEvent::Puck;
                     break;
+                case 0x080400:
+                    deviceType = QTabletEvent::RotationStylus;
+                    break;
                 }
             } else {
                 pointerType = QTabletEvent::UnknownPointer;
@@ -3661,9 +3742,11 @@ bool QETWidget::translateXinputEvent(const XEvent *ev, const TabletDeviceData *t
             xTilt = short(vs->valuators[WAC_XTILT_I]);
             yTilt = short(vs->valuators[WAC_YTILT_I]);
             pressure = vs->valuators[WAC_PRESSURE_I];
-            if (deviceType == QTabletEvent::FourDMouse) {
+            if (deviceType == QTabletEvent::FourDMouse
+                    || deviceType == QTabletEvent::RotationStylus) {
                 rotation = vs->valuators[WAC_ROTATION_I] / 64.0;
-                z = vs->valuators[WAC_ZCOORD_I];
+                if (deviceType == QTabletEvent::FourDMouse)
+                    z = vs->valuators[WAC_ZCOORD_I];
             } else if (deviceType == QTabletEvent::Airbrush) {
                 tangentialPressure = vs->valuators[WAC_TAN_PRESSURE_I]
                                         / qreal(tablet->maxTanPressure - tablet->minTanPressure);
@@ -3678,10 +3761,10 @@ bool QETWidget::translateXinputEvent(const XEvent *ev, const TabletDeviceData *t
     }
     XFreeDeviceState(s);
 #else
-    TabletDeviceDataList *tablet_list = qt_tablet_devices();
+    QTabletDeviceDataList *tablet_list = qt_tablet_devices();
     XID device_id = ev->type == tablet->xinput_motion ? motion->deviceid : button->deviceid;
     for (int i = 0; i < tablet_list->size(); ++i) {
-        const TabletDeviceData &t = tablet_list->at(i);
+        const QTabletDeviceData &t = tablet_list->at(i);
         if (device_id == static_cast<XDevice *>(t.device)->device_id) {
             deviceType = t.deviceType;
             if (deviceType == QTabletEvent::XFreeEraser) {
@@ -3813,6 +3896,7 @@ bool QETWidget::translatePropertyEvent(const XEvent *event)
             // so it is now in the withdrawn state (ICCCM 4.1.3.1) and
             // we are free to reuse this window
             d->topData()->parentWinId = 0;
+            d->topData()->validWMState = 0;
             // map the window if we were waiting for a transition to
             // withdrawn
             if (X11->deferred_map.removeAll(this)) {
@@ -3825,16 +3909,12 @@ bool QETWidget::translatePropertyEvent(const XEvent *event)
                 // doesn't seem to care
                 hide();
             }
-        } else if (d->topData()->parentWinId != QX11Info::appRootWindow(x11Info().screen())) {
+        } else {
             // the window manager has changed the WM State property...
             // we are wanting to see if we are withdrawn so that we
-            // can reuse this window... we only do this check *IF* we
-            // haven't been reparented to root - (the parentWinId !=
-            // QX11Info::x11AppRootWindow(x11Screen())) check
-            // above
-
-            e = XGetWindowProperty(X11->display, winId(), ATOM(WM_STATE), 0, 2, False, ATOM(WM_STATE),
-                                   &ret, &format, &nitems, &after, &data);
+            // can reuse this window...
+            e = XGetWindowProperty(X11->display, winId(), ATOM(WM_STATE), 0, 2, False,
+                                   ATOM(WM_STATE), &ret, &format, &nitems, &after, &data);
 
             if (e == Success && ret == ATOM(WM_STATE) && format == 32 && nitems > 0) {
                 long *state = (long *) data;
@@ -3848,6 +3928,7 @@ bool QETWidget::translatePropertyEvent(const XEvent *event)
                     // set the parent id to zero, so that show() will
                     // work again
                     d->topData()->parentWinId = 0;
+                    d->topData()->validWMState = 0;
                     // map the window if we were waiting for a
                     // transition to withdrawn
                     if (X11->deferred_map.removeAll(this)) {
@@ -3864,6 +3945,7 @@ bool QETWidget::translatePropertyEvent(const XEvent *event)
                     break;
 
                 case IconicState:
+                    d->topData()->validWMState = 1;
                     if (!isMinimized()) {
                         // window was minimized
                         this->data->window_state = this->data->window_state | Qt::WindowMinimized;
@@ -3873,6 +3955,7 @@ bool QETWidget::translatePropertyEvent(const XEvent *event)
                     break;
 
                 default:
+                    d->topData()->validWMState = 1;
                     if (isMinimized()) {
                         // window was un-minimized
                         this->data->window_state &= ~Qt::WindowMinimized;
@@ -4037,10 +4120,13 @@ static const unsigned int KeyTbl[] = {                // keyboard mapping table
     XK_Hyper_R,                Qt::Key_Hyper_R,
     XK_Help,                Qt::Key_Help,
     0x1000FF74,         Qt::Key_Backtab,     // hardcoded HP backtab
+    0x1005FF10,         Qt::Key_F11,         // hardcoded Sun F36 (labeled F11)
+    0x1005FF11,         Qt::Key_F12,         // hardcoded Sun F37 (labeled F12)
 
     // International input method support keys
 
     // International & multi-key character composition
+    XK_ISO_Level3_Shift,        Qt::Key_AltGr,
     XK_Multi_key,		Qt::Key_Multi_key,
     XK_Codeinput,		Qt::Key_Codeinput,
     XK_SingleCandidate,		Qt::Key_SingleCandidate,
@@ -4432,7 +4518,7 @@ bool QETWidget::translateKeyEventInternal(const XEvent *event, int& count, QStri
     else if (!mapper && converted.unicode() != 0x0)
         text = converted;
     else
-        text = chars;
+        text = QString::fromLatin1(chars);
 
     modifiers = translateModifiers(keystate);
 
@@ -4793,7 +4879,7 @@ bool QETWidget::translateKeyEvent(const XEvent *event, bool grab)
 
     if (text.length() == 1 && text.unicode()->unicode() == '\n') {
         code = Qt::Key_Return;
-        text = "\r";
+        text = QLatin1Char('\r');
     }
 
     // try the menukey first
@@ -4865,19 +4951,10 @@ bool translateBySips(QWidget* that, QRect& paintRect)
     return false;
 }
 
-void QETWidget::removePendingPaintEvents()
+bool qt_sendSpontaneousEvent(QObject *receiver, QEvent *event)
 {
-    XEvent xevent;
-    PaintEventInfo info;
-    info.window = winId();
-    while (XCheckIfEvent(X11->display,&xevent,isPaintOrScrollDoneEvent,
-                         (XPointer)&info) &&
-           !qt_x11EventFilter(&xevent)  &&
-           !x11Event(&xevent)) // send event through filter
-        ;
+    return QCoreApplication::sendSpontaneousEvent(receiver, event);
 }
-
-
 
 void QETWidget::translatePaintEvent(const XEvent *event)
 {
@@ -4890,11 +4967,8 @@ void QETWidget::translatePaintEvent(const XEvent *event)
     translateBySips(this, paintRect);
     paintRect = d->mapFromWS(paintRect);
 
-    QRegion paintRegion = d->invalidated_region;
-    paintRegion |= paintRect;
-    d->invalidated_region = QRegion();
     QRect clipRect = d->clipRect();
-    paintRegion &= clipRect;
+    QRegion paintRegion = paintRect;
 
     // WARNING: this is O(number_of_events * number_of_matching_events)
     while (XCheckIfEvent(X11->display,&xevent,isPaintOrScrollDoneEvent,
@@ -4909,19 +4983,16 @@ void QETWidget::translatePaintEvent(const XEvent *event)
                            xevent.xexpose.height);
             translateBySips(this, exposure);
             exposure = d->mapFromWS(exposure);
-            if (clipRect.contains(exposure)) {
-                paintRegion = paintRegion.unite(exposure);
-            } else if (!paintRegion.isEmpty()) {
-                repaint(paintRegion);
-                paintRegion = exposure;
-            }
+            paintRegion |= exposure;
         } else {
             translateScrollDoneEvent(&xevent);
         }
     }
 
-    if (!paintRegion.isEmpty())
-        repaint(paintRegion);
+    if (!paintRegion.isEmpty() && !(!testAttribute(Qt::WA_StaticContents) && testAttribute(Qt::WA_WState_ConfigPending))) {
+        extern void qt_syncBackingStore(QRegion rgn, QWidget *widget);
+        qt_syncBackingStore(paintRegion, this);
+    }
 }
 
 //
@@ -4974,7 +5045,7 @@ bool QETWidget::translateConfigEvent(const XEvent *event)
             // ConfigureNotify compression for faster opaque resizing
             XEvent otherEvent;
             while (XCheckTypedWindowEvent(X11->display, winId(), ConfigureNotify,
-                                            &otherEvent)) {
+                                          &otherEvent)) {
                 if (qt_x11EventFilter(&otherEvent))
                     continue;
 
@@ -5013,6 +5084,18 @@ bool QETWidget::translateConfigEvent(const XEvent *event)
             cr.setSize(newSize);
             data->crect = cr;
 
+            uint old_state = data->window_state;
+            if (!qt_net_supports(ATOM(_NET_WM_STATE_MAXIMIZED_VERT))
+                && !qt_net_supports(ATOM(_NET_WM_STATE_MAXIMIZED_HORZ)))
+                data->window_state &= ~Qt::WindowMaximized;
+            if (!qt_net_supports(ATOM(_NET_WM_STATE_FULLSCREEN)))
+                data->window_state &= ~Qt::WindowFullScreen;
+
+            if (old_state != data->window_state) {
+                QWindowStateChangeEvent e((Qt::WindowStates) old_state);
+                QApplication::sendEvent(this, &e);
+            }
+
             if (isVisible()) {
                 QResizeEvent e(newSize, oldSize);
                 QApplication::sendSpontaneousEvent(this, &e);
@@ -5025,16 +5108,27 @@ bool QETWidget::translateConfigEvent(const XEvent *event)
     } else {
         XEvent xevent;
         while (XCheckTypedWindowEvent(X11->display,winId(), ConfigureNotify,&xevent) &&
-                !qt_x11EventFilter(&xevent)  &&
-                !x11Event(&xevent)) // send event through filter
+               !qt_x11EventFilter(&xevent)  &&
+               !x11Event(&xevent)) // send event through filter
             ;
     }
 
     if (wasResize && !testAttribute(Qt::WA_StaticContents)) {
-        removePendingPaintEvents();
-        testAttribute(Qt::WA_WState_InPaintEvent)?update():repaint();
+        XEvent xevent;
+        PaintEventInfo info;
+        info.window = winId();
+        while (XCheckIfEvent(X11->display,&xevent,isPaintOrScrollDoneEvent,
+                             (XPointer)&info) &&
+               !qt_x11EventFilter(&xevent)  &&
+               !x11Event(&xevent)) // send event through filter
+            ;
+        if(QWidgetBackingStore::paintOnScreen(this)) {
+            repaint();
+        } else {
+            extern void qt_syncBackingStore(QRegion rgn, QWidget *widget);
+            qt_syncBackingStore(d->clipRect(), this);
+        }
     }
-
     return true;
 }
 
@@ -5216,7 +5310,7 @@ bool QApplication::isEffectEnabled(Qt::UIEffect effect)
   Session management support
  *****************************************************************************/
 
-#ifndef QT_NO_SM_SUPPORT
+#ifndef QT_NO_SESSIONMANAGER
 
 #include <X11/SM/SMlib.h>
 
@@ -5378,20 +5472,21 @@ static void sm_performSaveYourself(QSessionManagerPrivate* smd)
     // generate a new session key
     timeval tv;
     gettimeofday(&tv, 0);
-    smd->sessionKey  = QString::number(qulonglong(tv.tv_sec)) + "_" + QString::number(qulonglong(tv.tv_usec));
+    smd->sessionKey  = QString::number(qulonglong(tv.tv_sec)) + QLatin1Char('_') + QString::number(qulonglong(tv.tv_usec));
 
     // tell the session manager about our program in best POSIX style
-    sm_setProperty(SmProgram, QString(qApp->argv()[0]));
+    sm_setProperty(QString::fromLatin1(SmProgram), QString::fromLocal8Bit(qApp->argv()[0]));
     // tell the session manager about our user as well.
     struct passwd* entry = getpwuid(geteuid());
     if (entry)
-        sm_setProperty(SmUserID, QString::fromLatin1(entry->pw_name));
+        sm_setProperty(QString::fromLatin1(SmUserID), QString::fromLatin1(entry->pw_name));
 
     // generate a restart and discard command that makes sense
     QStringList restart;
-    restart  << qApp->argv()[0] << "-session" << smd->sessionId + "_" + smd->sessionKey;
+    restart  << QString::fromLocal8Bit(qApp->argv()[0]) << QLatin1String("-session")
+             << smd->sessionId + QLatin1Char('_') + smd->sessionKey;
     if (qstricmp(appName, QX11Info::appClass()) != 0)
-        restart << "-name" << qAppName();
+        restart << QLatin1String("-name") << qAppName();
     sm->setRestartCommand(restart);
     QStringList discard;
     sm->setDiscardCommand(discard);
@@ -5432,8 +5527,8 @@ static void sm_performSaveYourself(QSessionManagerPrivate* smd)
         }
 
         // set restart and discard command in session manager
-        sm_setProperty(SmRestartCommand, sm->restartCommand());
-        sm_setProperty(SmDiscardCommand, sm->discardCommand());
+        sm_setProperty(QString::fromLatin1(SmRestartCommand), sm->restartCommand());
+        sm_setProperty(QString::fromLatin1(SmDiscardCommand), sm->discardCommand());
 
         // set the restart hint
         SmPropValue prop;
@@ -5537,9 +5632,9 @@ QSessionManager::QSessionManager(QApplication * app, QString &id, QString& key)
     id = QString::fromLatin1(myId);
     ::free(myId); // it was allocated by C
 
-    QString error = cerror;
+    QString error = QString::fromLocal8Bit(cerror);
     if (!smcConnection) {
-        qWarning("Session management error: %s", error.toLatin1().data());
+        qWarning("Session management error: %s", qPrintable(error));
     }
     else {
         sm_receiver = new QSmSocketReceiver(IceConnectionNumber(SmcGetIceConnection(smcConnection)));
@@ -5702,5 +5797,4 @@ void QSessionManager::requestPhase2()
     sm_phase2 = true;
 }
 
-
-#endif // QT_NO_SM_SUPPORT
+#endif // QT_NO_SESSIONMANAGER

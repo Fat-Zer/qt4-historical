@@ -24,6 +24,13 @@
 #ifndef Q3FILEDIALOG_H
 #define Q3FILEDIALOG_H
 
+#include <QtCore/qdir.h>
+#include <QtGui/qdialog.h>
+#include <Qt3Support/q3urloperator.h>
+#include <Qt3Support/q3valuelist.h>
+
+QT_MODULE(Qt3SupportLight)
+
 class QAbstractButton;
 class QPushButton;
 class QLabel;
@@ -36,14 +43,7 @@ class Q3ListViewItem;
 class Q3ListBoxItem;
 class Q3FileDialogPrivate;
 class Q3FileDialogQFileListView;
-
-#include "QtCore/qdir.h"
-#include "QtGui/qdialog.h"
-#include "Qt3Support/q3urloperator.h"
-#include "Qt3Support/q3valuelist.h"
-#include "QtNetwork/qurlinfo.h"
-
-QT_MODULE(Qt3SupportLight)
+class QUrlInfo;
 
 #ifndef QT_NO_FILEDIALOG
 
@@ -172,7 +172,7 @@ public:
 
     void addFilter(const QString &filter);
 
-public slots:
+public Q_SLOTS:
     void done(int);
     void setDir(const QString&);
     void setUrl(const Q3UrlOperator &url);
@@ -190,14 +190,14 @@ protected:
     void addLeftWidget(QWidget *w);
     void addRightWidget(QWidget *w);
 
-signals:
+Q_SIGNALS:
     void fileHighlighted(const QString&);
     void fileSelected(const QString&);
     void filesSelected(const QStringList&);
     void dirEntered(const QString&);
     void filterSelected(const QString&);
 
-private slots:
+private Q_SLOTS:
     void detailViewSelectionChanged();
     void listBoxSelectionChanged();
     void changeMode(int);
@@ -315,6 +315,6 @@ private:
 #endif
 };
 
-#endif
+#endif // QT_NO_FILEDIALOG
 
 #endif // Q3FILEDIALOG_H

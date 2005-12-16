@@ -65,6 +65,10 @@ public:
         MergedChannels,
         ForwardedChannels
     };
+    enum ExitStatus {
+        NormalExit,
+        CrashExit
+    };
 
     explicit QProcess(QObject *parent = 0);
     virtual ~QProcess();
@@ -101,6 +105,7 @@ public:
     QByteArray readAllStandardError();
 
     int exitCode() const;
+    QProcess::ExitStatus exitStatus() const;
 
     // QIODevice
     qint64 bytesAvailable() const;
@@ -116,13 +121,16 @@ public:
     static bool startDetached(const QString &program, const QStringList &arguments);
     static bool startDetached(const QString &program);
 
-public slots:
+    static QStringList systemEnvironment();
+
+public Q_SLOTS:
     void terminate();
     void kill();
 
-signals:
+Q_SIGNALS:
     void started();
     void finished(int exitCode);
+    void finished(int exitCode, QProcess::ExitStatus exitStatus);
     void error(QProcess::ProcessError error);
     void stateChanged(QProcess::ProcessState state);
 
@@ -152,4 +160,5 @@ private:
 };
 
 #endif // QT_NO_PROCESS
+
 #endif // QPROCESS_H

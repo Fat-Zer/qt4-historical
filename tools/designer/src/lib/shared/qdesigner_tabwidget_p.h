@@ -41,7 +41,7 @@
 
 class QDesignerFormWindowInterface;
 
-class QT_SHARED_EXPORT QDesignerTabWidget : public QTabWidget
+class QDESIGNER_SHARED_EXPORT QDesignerTabWidget : public QTabWidget
 {
     Q_OBJECT
     Q_PROPERTY(QString currentTabName READ currentTabName WRITE setCurrentTabName STORED false DESIGNABLE true)
@@ -71,6 +71,9 @@ public:
     inline QAction *actionInsertPage() const
     { return m_actionInsertPage; }
 
+    inline QAction *actionInsertPageAfter() const
+    { return m_actionInsertPageAfter; }
+
     bool eventFilter(QObject *o, QEvent *e);
 
     QDesignerFormWindowInterface *formWindow() const;
@@ -78,6 +81,7 @@ public:
 private slots:
     void removeCurrentPage();
     void addPage();
+    void addPageAfter();
     void slotCurrentChanged(int index);
 
 protected:
@@ -95,6 +99,7 @@ private:
     bool mousePressed;
     QAction *m_actionDeletePage;
     QAction *m_actionInsertPage;
+    QAction *m_actionInsertPageAfter;
 };
 
 #endif // QDESIGNER_TABWIDGET_H

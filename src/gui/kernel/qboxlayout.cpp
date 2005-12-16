@@ -330,9 +330,10 @@ void QBoxLayoutPrivate::calcHfw(int w)
        can use addSpacing() to get more space at a particular spot.)
     \endlist
 
-    The margin defaults to 0. The spacing defaults to the same as the
-    margin width for a top-level layout, or to the same as the parent
-    layout. Both are parameters to the constructor.
+    The margin default is provided by the style. The default margin
+    Qt styles specify is 9 for widgets and 11 for top level windows.
+    The spacing defaults to the same as the margin width for a
+    top-level layout, or to the same as the parent layout.
 
     To remove a widget from a layout, call removeWidget(). Calling
     QWidget::hide() on a widget also effectively removes the widget
@@ -392,7 +393,7 @@ QBoxLayout::QBoxLayout(QWidget *parent, Direction dir,
     Q_D(QBoxLayout);
     d->dir = dir;
     setMargin(margin);
-    setObjectName(name);
+    setObjectName(QString::fromAscii(name));
     setSpacing(spacing<0 ? margin : spacing);
 }
 
@@ -410,7 +411,7 @@ QBoxLayout::QBoxLayout(QLayout *parentLayout, Direction dir, int spacing,
 {
     Q_D(QBoxLayout);
     d->dir = dir;
-    setObjectName(name);
+    setObjectName(QString::fromAscii(name));
     setSpacing(spacing);
 }
 
@@ -427,7 +428,7 @@ QBoxLayout::QBoxLayout(Direction dir, int spacing, const char *name)
 {
     Q_D(QBoxLayout);
     d->dir = dir;
-    setObjectName(name);
+    setObjectName(QString::fromAscii(name));
     setSpacing(spacing);
 }
 #endif // QT3_SUPPORT
@@ -557,12 +558,14 @@ QLayoutItem *QBoxLayout::itemAt(int index) const
 QLayoutItem *QBoxLayout::takeAt(int index)
 {
     Q_D(QBoxLayout);
-    if (index >= d->list.count())
+    if (index < 0 || index >= d->list.count())
         return 0;
     QBoxLayoutItem *b = d->list.takeAt(index);
     QLayoutItem *item = b->item;
     b->item = 0;
     delete b;
+
+    invalidate();
     return item;
 }
 
@@ -619,7 +622,7 @@ void QBoxLayout::setGeometry(const QRect &r)
         qGeomCalc(a, 0, n, pos, space, spacing());
 
         bool reverse = (horz(visualDir)
-                        ? ((r.right() > rect.right()) ^ (visualDir == RightToLeft))
+                        ? ((r.right() > rect.right()) != (visualDir == RightToLeft))
                         : r.bottom() > rect.bottom());
         for (int j = 0; j < n; j++) {
             int i = reverse ? n-j-1 : j;
@@ -1047,7 +1050,7 @@ QHBoxLayout::QHBoxLayout(QWidget *parent, int margin,
 {
        setMargin(margin);
        setSpacing(spacing<0 ? margin : spacing);
-       setObjectName(name);
+       setObjectName(QString::fromAscii(name));
 }
 
 /*!
@@ -1063,7 +1066,7 @@ QHBoxLayout::QHBoxLayout(QLayout *parentLayout, int spacing,
     : QBoxLayout(LeftToRight)
 {
     setSpacing(spacing);
-    setObjectName(name);
+    setObjectName(QString::fromAscii(name));
     if (parentLayout) {
         setParent(parentLayout);
         parentLayout->addItem(this);
@@ -1082,7 +1085,7 @@ QHBoxLayout::QHBoxLayout(int spacing, const char *name)
     : QBoxLayout(LeftToRight)
 {
     setSpacing(spacing);
-    setObjectName(name);
+    setObjectName(QString::fromAscii(name));
 }
 #endif
 
@@ -1165,7 +1168,7 @@ QVBoxLayout::QVBoxLayout(QWidget *parent, int margin, int spacing,
 {
     setMargin(margin);
     setSpacing(spacing<0 ? margin : spacing);
-    setObjectName(name);
+    setObjectName(QString::fromAscii(name));
 }
 
 /*!
@@ -1181,7 +1184,7 @@ QVBoxLayout::QVBoxLayout(QLayout *parentLayout, int spacing,
     : QBoxLayout(TopToBottom)
 {
     setSpacing(spacing);
-    setObjectName(name);
+    setObjectName(QString::fromAscii(name));
     if (parentLayout) {
         setParent(parentLayout);
         parentLayout->addItem(this);
@@ -1200,7 +1203,7 @@ QVBoxLayout::QVBoxLayout(int spacing, const char *name)
     : QBoxLayout(TopToBottom)
 {
     setSpacing(spacing);
-    setObjectName(name);
+    setObjectName(QString::fromAscii(name));
 }
 
 

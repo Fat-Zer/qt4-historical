@@ -23,8 +23,6 @@
 
 #include "qsql_psql.h"
 
-#include <math.h>
-
 #include <qcoreapplication.h>
 #include <qvariant.h>
 #include <qdatetime.h>
@@ -39,6 +37,7 @@
 #include <libpq-fe.h>
 
 #include <stdlib.h>
+#include <math.h>
 
 // workaround for postgres defining their OIDs in a private header file
 #define QBOOLOID 16
@@ -298,21 +297,10 @@ QVariant QPSQLResult::data(int i)
             return QVariant(QDateTime::fromString(dtval, Qt::ISODate));
     }
     case QVariant::ByteArray: {
-        int i = 0;
-        QByteArray ba(val);
-        while (i < ba.length()) {
-            if (ba.at(i) == '\\') {
-                if (QChar::fromLatin1(ba.at(i + 1)).isDigit()) {
-                    char *v = ba.data() + i + 3;
-                    ba[i] = static_cast<char>(strtol(v - 2, &v, 8));
-                    ba.remove(i + 1, 3);
-                } else {
-                    ba[i] = ba.at(i + 1);
-                    ba.remove(i + 1, 1);
-                }
-            }
-            ++i;
-        }
+        size_t len;
+        unsigned char *data = PQunescapeBytea((unsigned char*)val, &len);
+        QByteArray ba((const char*)data, len);
+        free(data);
         return QVariant(ba);
     }
     default:
@@ -484,13 +472,17 @@ bool QPSQLDriver::hasFeature(DriverFeature f) const
     case QuerySize:
     case LastInsertId:
         return true;
+    case BatchOperations:
+    case PreparedQueries:
+    case NamedPlaceholders:
+    case PositionalPlaceholders:
+        return false;
     case BLOB:
         return d->pro >= QPSQLDriver::Version71;
     case Unicode:
         return d->isUtf8;
-    default:
-        return false;
     }
+    return false;
 }
 
 /*
@@ -772,7 +764,7 @@ QSqlRecord QPSQLDriver::record(const QString& tablename) const
                    "pg_namespace where pg_namespace.nspname = '%1')").arg(schema.toLower()));
         break;
     }
-    
+
     QSqlQuery query(createResult());
     query.exec(stmt.arg(tbl.toLower()));
     if (d->pro >= QPSQLDriver::Version71) {
@@ -872,20 +864,12 @@ QString QPSQLDriver::formatValue(const QSqlField &field,
             break;
         case QVariant::ByteArray: {
             QByteArray ba(field.value().toByteArray());
-            QString res;
-            r = QLatin1String("'");
-            unsigned char uc;
-            for (int i = 0; i < ba.size(); ++i) {
-                uc = (unsigned char) ba[i];
-                if (uc > 40 && uc < 92) {
-                    r += QLatin1Char(uc);
-                } else {
-                    r += QLatin1String("\\\\");
-                    r += QString::number((unsigned char) ba[i], 8).rightJustified(3,
-                            QLatin1Char('0'), true);
-                }
-            }
-            r += QLatin1String("'");
+            size_t len;
+            unsigned char *data= PQescapeBytea((unsigned char*)ba.constData(), ba.size(), &len);
+            r += QLatin1Char('\'');
+            r += QLatin1String((const char*)data);
+            r += QLatin1Char('\'');
+            free(data);
             break;
         }
         default:
@@ -918,4 +902,3 @@ QPSQLDriver::Protocol QPSQLDriver::protocol() const
 {
     return d->pro;
 }
-

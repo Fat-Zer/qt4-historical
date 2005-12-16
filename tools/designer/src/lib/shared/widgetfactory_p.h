@@ -51,7 +51,9 @@ class QLayout;
 class QDesignerFormEditorInterface;
 class QDesignerCustomWidgetInterface;
 
-class QT_SHARED_EXPORT WidgetFactory: public QDesignerWidgetFactoryInterface
+namespace qdesigner_internal {
+
+class QDESIGNER_SHARED_EXPORT WidgetFactory: public QDesignerWidgetFactoryInterface
 {
 public:
     WidgetFactory(QDesignerFormEditorInterface *core, QObject *parent = 0);
@@ -80,5 +82,7 @@ private:
     static QPointer<QWidget> *m_lastPassiveInteractor;
     static bool m_lastWasAPassiveInteractor;
 };
+
+} // namespace qdesigner_internal
 
 #endif // WIDGETFACTORY_H

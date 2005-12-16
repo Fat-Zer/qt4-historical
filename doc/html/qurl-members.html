@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/src/corelib/io/qurl.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/corelib/io/qurl.cpp -->
 <head>
-    <title>Qt 4.0: List of All Members for QUrl</title>
+    <title>Qt 4.1: List of All Members for QUrl</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -23,9 +23,11 @@ body { background: #ffffff; color: black; }</style>
 <tr><td width="45%" valign="top"><ul>
 <li><div class="fn"/>enum <a href="qurl.html#FormattingOption-enum">FormattingOption</a></li>
 <li><div class="fn"/>flags <a href="qurl.html#FormattingOption-enum">FormattingOptions</a></li>
+<li><div class="fn"/>enum <a href="qurl.html#ParsingMode-enum">ParsingMode</a></li>
 <li><div class="fn"/><a href="qurl.html#QUrl">QUrl</a> ()</li>
 <li><div class="fn"/><a href="qurl.html#QUrl-2">QUrl</a> ( const QString &amp; )</li>
 <li><div class="fn"/><a href="qurl.html#QUrl-3">QUrl</a> ( const QUrl &amp; )</li>
+<li><div class="fn"/><a href="qurl.html#QUrl-4">QUrl</a> ( const QString &amp;, ParsingMode )</li>
 <li><div class="fn"/><a href="qurl.html#dtor.QUrl">~QUrl</a> ()</li>
 <li><div class="fn"/><a href="qurl.html#addQueryItem">addQueryItem</a> ( const QString &amp;, const QString &amp; )</li>
 <li><div class="fn"/><a href="qurl.html#allQueryItemValues">allQueryItemValues</a> ( const QString &amp; ) const : QStringList</li>
@@ -34,6 +36,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qurl.html#encodedQuery">encodedQuery</a> () const : QByteArray</li>
 <li><div class="fn"/><a href="qurl.html#fragment">fragment</a> () const : QString</li>
 <li><div class="fn"/><a href="qurl.html#fromEncoded">fromEncoded</a> ( const QByteArray &amp; ) : QUrl</li>
+<li><div class="fn"/><a href="qurl.html#fromEncoded-2">fromEncoded</a> ( const QByteArray &amp;, ParsingMode ) : QUrl</li>
 <li><div class="fn"/><a href="qurl.html#fromLocalFile">fromLocalFile</a> ( const QString &amp; ) : QUrl</li>
 <li><div class="fn"/><a href="qurl.html#fromPercentEncoding">fromPercentEncoding</a> ( const QByteArray &amp; ) : QString</li>
 <li><div class="fn"/><a href="qurl.html#fromPunycode">fromPunycode</a> ( const QByteArray &amp; ) : QString</li>
@@ -46,11 +49,12 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qurl.html#password">password</a> () const : QString</li>
 <li><div class="fn"/><a href="qurl.html#path">path</a> () const : QString</li>
 <li><div class="fn"/><a href="qurl.html#port">port</a> () const : int</li>
+<li><div class="fn"/><a href="qurl.html#port-2">port</a> ( int ) const : int</li>
 <li><div class="fn"/><a href="qurl.html#queryItemValue">queryItemValue</a> ( const QString &amp; ) const : QString</li>
 <li><div class="fn"/><a href="qurl.html#queryItems">queryItems</a> () const : QList&lt;QPair&lt;QString, QString&gt; &gt;</li>
 <li><div class="fn"/><a href="qurl.html#queryPairDelimiter">queryPairDelimiter</a> () const : char</li>
-<li><div class="fn"/><a href="qurl.html#queryValueDelimiter">queryValueDelimiter</a> () const : char</li>
 </ul></td><td valign="top"><ul>
+<li><div class="fn"/><a href="qurl.html#queryValueDelimiter">queryValueDelimiter</a> () const : char</li>
 <li><div class="fn"/><a href="qurl.html#removeAllQueryItems">removeAllQueryItems</a> ( const QString &amp; )</li>
 <li><div class="fn"/><a href="qurl.html#removeQueryItem">removeQueryItem</a> ( const QString &amp; )</li>
 <li><div class="fn"/><a href="qurl.html#resolved">resolved</a> ( const QUrl &amp; ) const : QUrl</li>
@@ -58,6 +62,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qurl.html#setAuthority">setAuthority</a> ( const QString &amp; )</li>
 <li><div class="fn"/><a href="qurl.html#setEncodedQuery">setEncodedQuery</a> ( const QByteArray &amp; )</li>
 <li><div class="fn"/><a href="qurl.html#setEncodedUrl">setEncodedUrl</a> ( const QByteArray &amp; )</li>
+<li><div class="fn"/><a href="qurl.html#setEncodedUrl-2">setEncodedUrl</a> ( const QByteArray &amp;, ParsingMode )</li>
 <li><div class="fn"/><a href="qurl.html#setFragment">setFragment</a> ( const QString &amp; )</li>
 <li><div class="fn"/><a href="qurl.html#setHost">setHost</a> ( const QString &amp; )</li>
 <li><div class="fn"/><a href="qurl.html#setPassword">setPassword</a> ( const QString &amp; )</li>
@@ -67,6 +72,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qurl.html#setQueryItems">setQueryItems</a> ( const QList&lt;QPair&lt;QString, QString&gt; &gt; &amp; )</li>
 <li><div class="fn"/><a href="qurl.html#setScheme">setScheme</a> ( const QString &amp; )</li>
 <li><div class="fn"/><a href="qurl.html#setUrl">setUrl</a> ( const QString &amp; )</li>
+<li><div class="fn"/><a href="qurl.html#setUrl-2">setUrl</a> ( const QString &amp;, ParsingMode )</li>
 <li><div class="fn"/><a href="qurl.html#setUserInfo">setUserInfo</a> ( const QString &amp; )</li>
 <li><div class="fn"/><a href="qurl.html#setUserName">setUserName</a> ( const QString &amp; )</li>
 <li><div class="fn"/><a href="qurl.html#toEncoded">toEncoded</a> ( FormattingOptions ) const : QByteArray</li>
@@ -78,6 +84,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qurl.html#userName">userName</a> () const : QString</li>
 <li><div class="fn"/><a href="qurl.html#operator-not-eq">operator!=</a> ( const QUrl &amp; ) const : bool</li>
 <li><div class="fn"/><a href="qurl.html#operator-eq">operator=</a> ( const QUrl &amp; ) : QUrl &amp;</li>
+<li><div class="fn"/><a href="qurl.html#operator-eq-2">operator=</a> ( const QString &amp; ) : QUrl &amp;</li>
 <li><div class="fn"/><a href="qurl.html#operator-eq-eq">operator==</a> ( const QUrl &amp; ) const : bool</li>
 </ul>
 </td></tr>
@@ -86,6 +93,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

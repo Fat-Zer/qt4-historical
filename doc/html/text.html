@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/doc/src/groups.qdoc -->
+<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/doc/src/groups.qdoc -->
 <head>
-    <title>Qt 4.0: Text Related Classes</title>
+    <title>Qt 4.1: Text Related Classes</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -31,8 +31,11 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qstring.html">QString</a></b></td><td>Unicode character string</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qstringlist.html">QStringList</a></b></td><td>List of strings</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qstringmatcher.html">QStringMatcher</a></b></td><td>Holds a sequence of characters that can be quickly matched in a Unicode string</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qsyntaxhighlighter.html">QSyntaxHighlighter</a></b></td><td>Allows you to define syntax highlighting rules, and in addition you can use the class to query a document's current formatting or user data</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qtextblock.html">QTextBlock</a></b></td><td>Container for text fragments in a QTextDocument</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qtextblockformat.html">QTextBlockFormat</a></b></td><td>Formatting information for blocks of text in a QTextDocument</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qtextblockgroup.html">QTextBlockGroup</a></b></td><td>Container for text blocks within a QTextDocument</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qtextblockuserdata.html">QTextBlockUserData</a></b></td><td>Used to associate custom data with blocks of text</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qtextbrowser.html">QTextBrowser</a></b></td><td>Rich text browser with hypertext navigation</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qtextcharformat.html">QTextCharFormat</a></b></td><td>Formatting information for characters in a QTextDocument</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qtextcursor.html">QTextCursor</a></b></td><td>Offers an API to access and modify QTextDocuments</td></tr>
@@ -40,6 +43,7 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qtextdocumentfragment.html">QTextDocumentFragment</a></b></td><td>Represents a piece of formatted text from a QTextDocument</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qtextedit.html">QTextEdit</a></b></td><td>Widget that is used to edit and display both plain and rich text</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qtextformat.html">QTextFormat</a></b></td><td>Formatting information for a QTextDocument</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qtextfragment.html">QTextFragment</a></b></td><td>Holds a piece of text in a QTextDocument with a single QTextCharFormat</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qtextframe.html">QTextFrame</a></b></td><td>Represents a frame in a QTextDocument</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qtextframeformat.html">QTextFrameFormat</a></b></td><td>Formatting information for frames in a QTextDocument</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qtextistream.html">QTextIStream</a></b></td><td>Convenience class for input streams</td></tr>
@@ -52,15 +56,17 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qtextlistformat.html">QTextListFormat</a></b></td><td>Formatting information for lists in a QTextDocument</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qtextostream.html">QTextOStream</a></b></td><td>Convenience class for output streams</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qtextobject.html">QTextObject</a></b></td><td>Base class for different kinds of objects that can group parts of a QTextDocument together</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qtextoption.html">QTextOption</a></b></td><td>Description of general rich text properties</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qtextstream.html">QTextStream</a></b></td><td>Convenient interface for reading and writing text</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qtexttable.html">QTextTable</a></b></td><td>Represents a table in a QTextDocument</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qtexttablecell.html">QTextTableCell</a></b></td><td>Represents the properties of a cell in a QTextTable</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qtexttableformat.html">QTextTableFormat</a></b></td><td>Formatting information for tables in a QTextDocument</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><b><a href="qtextframe-iterator.html">QTextFrame::iterator</a></b></td></tr>
 </table></p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

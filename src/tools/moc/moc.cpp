@@ -79,7 +79,12 @@ static QByteArray normalizeTypeInternal(const char *t, const char *e, bool fixSc
         if (strncmp("int", t+9, 3) == 0) {
             t += 9+3;
             result += "uint";
-        } else if (strncmp("long", t+9, 4) == 0) {
+        } else if (strncmp("long", t+9, 4) == 0
+                   // preserve '[unsigned] long long'
+                   && (strlen(t + 9 + 4) < 5
+                       || strcmp(t + 9 + 4, " long") != 0
+                      )
+                  ) {
             t += 9+4;
             result += "ulong";
         }
@@ -278,7 +283,13 @@ bool Moc::parseClassHead(ClassDef *def)
             else
                 test(PUBLIC);
             test(VIRTUAL);
-            def->superclassList += qMakePair(parseType(), access);
+            const QByteArray type = parseType().name;
+            // ignore the 'class Foo : BAR(Baz)' case
+            if (test(LPAREN)) {
+                until(RPAREN);
+            } else {
+                def->superclassList += qMakePair(type, access);
+            }
         } while (test(COMMA));
     }
     next(LBRACE);
@@ -289,9 +300,9 @@ bool Moc::parseClassHead(ClassDef *def)
     return true;
 }
 
-QByteArray Moc::parseType()
+Type Moc::parseType()
 {
-    QByteArray s;
+    Type type;
     bool hasSignedOrUnsigned = false;
     for (;;) {
         switch (next()) {
@@ -301,8 +312,10 @@ QByteArray Moc::parseType()
                 // fall through
             case CONST:
             case VOLATILE:
-                s += lexem();
-                s += ' ';
+                type.name += lexem();
+                type.name += ' ';
+                if (lookup(0) == VOLATILE)
+                    type.isVolatile = true;
                 continue;
             default:
                 prev();
@@ -323,11 +336,18 @@ QByteArray Moc::parseType()
         case SHORT:
         case INT:
         case LONG:
+            // preserve '[unsigned] long long'
+            if (test(LONG)) {
+                type.name += lexem();
+                type.name += ' ';
+                prev();
+                continue;
+            }
         case FLOAT:
         case DOUBLE:
         case VOID:
         case BOOL:
-            s += lexem();
+            type.name += lexem();
             break;
         default:
             prev();
@@ -336,22 +356,26 @@ QByteArray Moc::parseType()
         if (test(LANGLE)) {
             QByteArray templ = lexemUntil(RANGLE);
             for (int i = 0; i < templ.size(); ++i) {
-                s += templ.at(i);
+                type.name += templ.at(i);
                 if (templ.at(i) == '>' && i < templ.size()-1 && templ.at(i+1) == '>')
-                    s += ' ';
+                    type.name += ' ';
             }
         }
         if (test(SCOPE))
-            s += lexem();
+            type.name += lexem();
         else
             break;
     }
     while (test(CONST) || test(VOLATILE) || test(SIGNED) || test(UNSIGNED)
            || test(STAR) || test(AND)) {
-        s += ' ';
-        s += lexem();
+        type.name += ' ';
+        type.name += lexem();
+        if (lookup(0) == AND)
+            type.referenceType = Type::Reference;
+        else if (lookup(0) == STAR)
+            type.referenceType = Type::Pointer;
     }
-    return s;
+    return type;
 }
 
 bool Moc::parseEnum(EnumDef *def)
@@ -377,7 +401,7 @@ void Moc::parseFunctionArguments(FunctionDef *def)
     while (hasNext()) {
         ArgumentDef  arg;
         arg.type = parseType();
-        if (arg.type == "void")
+        if (arg.type.name == "void")
             break;
         if (test(IDENTIFIER))
             arg.name = lexem();
@@ -387,7 +411,7 @@ void Moc::parseFunctionArguments(FunctionDef *def)
             arg.rightType += ' ';
             arg.rightType += lexem();
         }
-        arg.normalizedType = normalizeType(arg.type + ' ' + arg.rightType);
+        arg.normalizedType = normalizeType(arg.type.name + ' ' + arg.rightType);
         if (test(EQ))
             arg.isDefault = true;
         def->arguments += arg;
@@ -403,42 +427,60 @@ void Moc::parseFunction(FunctionDef *def, bool inMacro)
         ;
     bool templateFunction = (lookup() == TEMPLATE);
     def->type = parseType();
-    if (def->type.isEmpty()) {
+    if (def->type.name.isEmpty()) {
         if (templateFunction)
             error("Template function as signal or slot");
         else
             error();
-}
+    }
     if (test(LPAREN)) {
-        def->name = def->type;
-        def->type = "int";
+        def->name = def->type.name;
+        def->type = Type("int");
     } else {
-        def->name = parseType();
-        while (!def->name.isEmpty() && lookup() != LPAREN) {
-            if (def->type == "QT_MOC_COMPAT" || def->type == "QT3_SUPPORT")
+        Type tempType = parseType();;
+        while (!tempType.name.isEmpty() && lookup() != LPAREN) {
+            if (def->type.name == "QT_MOC_COMPAT" || def->type.name == "QT3_SUPPORT")
                 def->isCompat = true;
-            else if (def->type == "Q_INVOKABLE")
+            else if (def->type.name == "Q_INVOKABLE")
                 def->isInvokable = true;
-            else if (def->type == "Q_SCRIPTABLE")
+            else if (def->type.name == "Q_SCRIPTABLE")
                 def->isInvokable = def->isScriptable = true;
+            else if (def->type.name == "Q_SIGNAL")
+                error();
+            else if (def->type.name == "Q_SLOT")
+                error();
             else {
                 if (!def->tag.isEmpty())
                     def->tag += ' ';
-                def->tag += def->type;
+                def->tag += def->type.name;
             }
-            def->type = def->name;
-            def->name = parseType();
+            def->type = tempType;
+            tempType = parseType();
         }
         next(LPAREN, "Not a signal or slot declaration");
+        def->name = tempType.name;
     }
 
-    def->normalizedType = normalizeType(def->type);
+    // we don't support references as return types, it's too dangerous
+    if (def->type.referenceType == Type::Reference)
+        def->type = Type("void");
+
+    def->normalizedType = normalizeType(def->type.name);
 
     if (!test(RPAREN)) {
         parseFunctionArguments(def);
         next(RPAREN);
     }
+
+    // support optional macros with compiler specific options
+    while (test(IDENTIFIER))
+        ;
+
     def->isConst = test(CONST);
+
+    while (test(IDENTIFIER))
+        ;
+
     if (inMacro) {
         next(RPAREN);
     } else {
@@ -457,33 +499,42 @@ void Moc::parseFunction(FunctionDef *def, bool inMacro)
 bool Moc::parseMaybeFunction(FunctionDef *def)
 {
     def->type = parseType();
-    if (def->type.isEmpty())
+    if (def->type.name.isEmpty())
         return false;
     if (test(LPAREN)) {
-        def->name = def->type;
-        def->type = "int";
+        def->name = def->type.name;
+        def->type = Type("int");
     } else {
-        def->name = parseType();
-        while (!def->name.isEmpty() && lookup() != LPAREN) {
-            if (def->type == "QT_MOC_COMPAT" || def->type == "QT3_SUPPORT")
+        Type tempType = parseType();;
+        while (!tempType.name.isEmpty() && lookup() != LPAREN) {
+            if (def->type.name == "QT_MOC_COMPAT" || def->type.name == "QT3_SUPPORT")
                 def->isCompat = true;
-            else if (def->type == "Q_INVOKABLE")
+            else if (def->type.name == "Q_INVOKABLE")
                 def->isInvokable = true;
-            else if (def->type == "Q_SCRIPTABLE")
+            else if (def->type.name == "Q_SCRIPTABLE")
                 def->isInvokable = def->isScriptable = true;
+            else if (def->type.name == "Q_SIGNAL")
+                def->isSignal = true;
+            else if (def->type.name == "Q_SLOT")
+                def->isSlot = true;
             else {
                 if (!def->tag.isEmpty())
                     def->tag += ' ';
-                def->tag += def->type;
+                def->tag += def->type.name;
             }
-            def->type = def->name;
-            def->name = parseType();
+            def->type = tempType;
+            tempType = parseType();
         }
         if (!test(LPAREN))
             return false;
+        def->name = tempType.name;
     }
 
-    def->normalizedType = normalizeType(def->type);
+    // we don't support references as return types, it's too dangerous
+    if (def->type.referenceType == Type::Reference)
+        def->type = Type("void");
+
+    def->normalizedType = normalizeType(def->type.name);
 
     if (!test(RPAREN)) {
         parseFunctionArguments(def);
@@ -503,39 +554,52 @@ void Moc::parse()
     bool templateClass = false;
     while (hasNext()) {
         Token t = next();
-        if (t == NAMESPACE) {
-            int rewind = index;
-            if (test(IDENTIFIER)) {
-                if (test(EQ)) {
-                    // namespace Foo = Bar::Baz;
-                    until(SEMIC);
-                } else if (!test(SEMIC)) {
-                    NamespaceDef def;
-                    def.name = lexem();
-                    next(LBRACE);
-                    def.begin = index - 1;
-                    until(RBRACE);
-                    def.end = index;
-                    index = def.begin + 1;
-                    namespaceList += def;
-                    index = rewind;
+        switch (t) {
+            case NAMESPACE: {
+                int rewind = index;
+                if (test(IDENTIFIER)) {
+                    if (test(EQ)) {
+                        // namespace Foo = Bar::Baz;
+                        until(SEMIC);
+                    } else if (!test(SEMIC)) {
+                        NamespaceDef def;
+                        def.name = lexem();
+                        next(LBRACE);
+                        def.begin = index - 1;
+                        until(RBRACE);
+                        def.end = index;
+                        index = def.begin + 1;
+                        namespaceList += def;
+                        index = rewind;
+                    }
                 }
+                break;
             }
-        } else if (t == SEMIC || t == RBRACE) {
-            templateClass = false;
-        } else if (t == TEMPLATE) {
-            templateClass = true;
-        } else if (t == MOC_INCLUDE_BEGIN) {
-            next(STRING_LITERAL);
-            currentFilenames.push(symbol().unquotedLexem());
-        } else if (t == MOC_INCLUDE_END) {
-            currentFilenames.pop();
-        } else if (t == Q_DECLARE_INTERFACE_TOKEN) {
-            parseDeclareInterface();
-        } else if (t == USING && test(NAMESPACE)) {
-            while (test(SCOPE) || test(IDENTIFIER))
-                ;
-            next(SEMIC);
+            case SEMIC:
+            case RBRACE:
+                templateClass = false;
+                break;
+            case TEMPLATE:
+                templateClass = true;
+                break;
+            case MOC_INCLUDE_BEGIN:
+                next(STRING_LITERAL);
+                currentFilenames.push(symbol().unquotedLexem());
+                break;
+            case MOC_INCLUDE_END:
+                currentFilenames.pop();
+                break;
+            case Q_DECLARE_INTERFACE_TOKEN:
+                parseDeclareInterface();
+                break;
+            case USING:
+                if (test(NAMESPACE)) {
+                    while (test(SCOPE) || test(IDENTIFIER))
+                        ;
+                    next(SEMIC);
+                }
+                break;
+            default: break;
         }
         if (t != CLASS || currentFilenames.size() > 1)
             continue;
@@ -631,7 +695,21 @@ void Moc::parse()
                     if (parseMaybeFunction(&funcDef)) {
                         if (access == FunctionDef::Public)
                             def.publicList += funcDef;
-                        if (funcDef.isInvokable) {
+                        if (funcDef.isSlot) {
+                            def.slotList += funcDef;
+                            while (funcDef.arguments.size() > 0 && funcDef.arguments.last().isDefault) {
+                                funcDef.wasCloned = true;
+                                funcDef.arguments.removeLast();
+                                def.slotList += funcDef;
+                            }
+                        } else if (funcDef.isSignal) {
+                            def.signalList += funcDef;
+                            while (funcDef.arguments.size() > 0 && funcDef.arguments.last().isDefault) {
+                                funcDef.wasCloned = true;
+                                funcDef.arguments.removeLast();
+                                def.signalList += funcDef;
+                            }
+                        } else if (funcDef.isInvokable) {
                             def.methodList += funcDef;
                             while (funcDef.arguments.size() > 0 && funcDef.arguments.last().isDefault) {
                                 funcDef.wasCloned = true;
@@ -728,6 +806,9 @@ void Moc::parseSlots(ClassDef *def, FunctionDef::Access access)
             return;
         case SEMIC:
             continue;
+        case FRIEND:
+            until(SEMIC);
+            continue;
         default:
             prev();
         }
@@ -758,6 +839,9 @@ void Moc::parseSignals(ClassDef *def)
             return;
         case SEMIC:
             continue;
+        case FRIEND:
+            until(SEMIC);
+            continue;
         default:
             prev();
         }
@@ -766,8 +850,6 @@ void Moc::parseSignals(ClassDef *def)
         parseFunction(&funcDef);
         if (funcDef.isVirtual)
             error("Signals cannot be declared virtual");
-        if (funcDef.isConst)
-            error("Signals cannot have const qualifier");
         if (funcDef.inlineCode)
             error("Not a signal declaration");
         def->signalList += funcDef;
@@ -784,10 +866,11 @@ void Moc::parseProperty(ClassDef *def)
 {
     next(LPAREN);
     PropertyDef propDef;
-    QByteArray type = parseType();
+    QByteArray type = parseType().name;
     if (type.isEmpty())
         error();
     propDef.designable = propDef.scriptable = propDef.stored = "true";
+    propDef.user = "false";
     /*
       The Q_PROPERTY construct cannot contain any commas, since
       commas separate macro arguments. We therefore expect users
@@ -849,6 +932,9 @@ void Moc::parseProperty(ClassDef *def)
             propDef.editable = v + v2;
             break;
         case 'N': if (l != "NOTIFY") error(2);
+            break;
+        case 'U': if (l != "USER") error(2);
+            propDef.user = v + v2;
             break;
         default:
             error(2);
@@ -986,4 +1072,3 @@ void Moc::parseSlotInPrivate(ClassDef *def, FunctionDef::Access access)
         def->slotList += funcDef;
     }
 }
-

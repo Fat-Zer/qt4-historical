@@ -64,6 +64,7 @@ void qGeomCalc(QVector<QLayoutStruct> &chain, int start, int count,
     bool wannaGrow = false; // anyone who really wants to grow?
     //    bool canShrink = false; // anyone who could be persuaded to shrink?
 
+    bool allEmptyNonstretch = true;
     int i;
     for (i = start; i < start + count; i++) {
         chain[i].done = false;
@@ -74,6 +75,7 @@ void qGeomCalc(QVector<QLayoutStruct> &chain, int start, int count,
         if (!chain[i].empty)
             spacerCount++;
         wannaGrow = wannaGrow || chain[i].expansive || chain[i].stretch > 0;
+        allEmptyNonstretch = allEmptyNonstretch && !wannaGrow && chain[i].empty;
     }
 
     int extraspace = 0;
@@ -176,11 +178,13 @@ void qGeomCalc(QVector<QLayoutStruct> &chain, int start, int count,
         // first give to the fixed ones, and handle non-expansiveness
         for (i = start; i < start + count; i++) {
             if (!chain[i].done
-                 && (chain[i].maximumSize <= chain[i].smartSizeHint()
-                     || (wannaGrow && !chain[i].expansive && chain[i].stretch == 0))) {
+                && (chain[i].maximumSize <= chain[i].smartSizeHint()
+                    || (wannaGrow && !chain[i].expansive && chain[i].stretch == 0)
+                    || (!allEmptyNonstretch && chain[i].empty &&
+                        !chain[i].expansive && chain[i].stretch == 0))) {
                 chain[i].size = chain[i].smartSizeHint();
                 chain[i].done = true;
-                space_left -= chain[i].smartSizeHint();
+                space_left -= chain[i].size;
                 sumStretch -= chain[i].stretch;
                 n--;
             }
@@ -295,8 +299,6 @@ Q_GUI_EXPORT QSize qSmartMinSize(const QWidgetItem *i)
         s.setWidth(min.width());
     if (min.height() > 0)
         s.setHeight(min.height());
-    else if (i->hasHeightForWidth() && s.width() > 0)
-        s = s.expandedTo(QSize(0, i->heightForWidth(s.width())));
 
     return s.expandedTo(QSize(0,0));
 }

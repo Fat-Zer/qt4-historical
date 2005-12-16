@@ -21,11 +21,12 @@
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 **
 ****************************************************************************/
+
 #include "codemodel.h"
 
 #include <QList>
 #include <QByteArray>
-#include <qdebug.h>
+#include <QtDebug>
 
 namespace CodeModel {
 
@@ -66,4 +67,3 @@ void Scope::addNameUse(NameUse *nameUse)
 }
 
 } //namepsace CodeModel
-

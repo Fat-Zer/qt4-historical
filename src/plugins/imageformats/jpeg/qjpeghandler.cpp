@@ -190,13 +190,13 @@ static bool read_jpeg_image(QIODevice *device, QImage *outImage, const QByteArra
     struct my_jpeg_source_mgr *iod_src = new my_jpeg_source_mgr(device);
     struct my_error_mgr jerr;
     memset(&jerr, 0, sizeof(jerr));
+    jerr.error_exit = my_error_exit;
 
     jpeg_create_decompress(&cinfo);
 
     cinfo.src = iod_src;
 
     cinfo.err = jpeg_std_error(&jerr);
-    jerr.error_exit = my_error_exit;
 
     if (!setjmp(jerr.setjmp_buffer)) {
 #if defined(Q_OS_UNIXWARE)
@@ -582,7 +582,11 @@ QJpegHandler::QJpegHandler()
 
 bool QJpegHandler::canRead() const
 {
-    return canRead(device());
+    if (canRead(device())) {
+        setFormat("jpeg");
+        return true;
+    }
+    return false;
 }
 
 bool QJpegHandler::canRead(QIODevice *device)
@@ -592,32 +596,13 @@ bool QJpegHandler::canRead(QIODevice *device)
         return false;
     }
 
-    qint64 oldPos = device->pos();
-
-    char head[2];
-    qint64 readBytes = device->read(head, sizeof(head));
-    if (readBytes != sizeof(head)) {
-        if (device->isSequential()) {
-            while (readBytes > 0)
-                device->ungetChar(head[readBytes-- - 1]);
-        } else {
-            device->seek(oldPos);
-        }
-        return false;
-    }
-
-    if (device->isSequential()) {
-        while (readBytes > 0)
-            device->ungetChar(head[readBytes-- - 1]);
-    } else {
-        device->seek(oldPos);
-    }
-
-    return qstrncmp(head, "\377\330", 2) == 0;
+    return device->peek(2) == "\xFF\xD8";
 }
 
 bool QJpegHandler::read(QImage *image)
 {
+    if (!canRead())
+        return false;
     return read_jpeg_image(device(), image, parameters);
 }
 
@@ -642,7 +627,7 @@ QVariant QJpegHandler::option(ImageOption option) const
 
 void QJpegHandler::setOption(ImageOption option, const QVariant &value)
 {
-    if (option == Name)
+    if (option == Quality)
         quality = value.toInt();
 //    else if (option == Parameters)
 //        parameters = value.toByteArray();

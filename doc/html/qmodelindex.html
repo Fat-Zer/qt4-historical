@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/src/corelib/kernel/qabstractitemmodel.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/corelib/kernel/qabstractitemmodel.cpp -->
 <head>
-    <title>Qt 4.0: QModelIndex Class Reference</title>
+    <title>Qt 4.1: QModelIndex Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -30,6 +30,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="qmodelindex.html#dtor.QModelIndex">~QModelIndex</a></b> ()</li>
 <li><div class="fn"/>QModelIndex <b><a href="qmodelindex.html#child">child</a></b> ( int <i>row</i>, int <i>column</i> ) const</li>
 <li><div class="fn"/>int <b><a href="qmodelindex.html#column">column</a></b> () const</li>
+<li><div class="fn"/>QVariant <b><a href="qmodelindex.html#data">data</a></b> ( int <i>role</i> = Qt::DisplayRole ) const</li>
 <li><div class="fn"/>qint64 <b><a href="qmodelindex.html#internalId">internalId</a></b> () const</li>
 <li><div class="fn"/>void * <b><a href="qmodelindex.html#internalPointer">internalPointer</a></b> () const</li>
 <li><div class="fn"/>bool <b><a href="qmodelindex.html#isValid">isValid</a></b> () const</li>
@@ -38,6 +39,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>int <b><a href="qmodelindex.html#row">row</a></b> () const</li>
 <li><div class="fn"/>QModelIndex <b><a href="qmodelindex.html#sibling">sibling</a></b> ( int <i>row</i>, int <i>column</i> ) const</li>
 <li><div class="fn"/>bool <b><a href="qmodelindex.html#operator-not-eq">operator!=</a></b> ( const QModelIndex &amp; <i>other</i> ) const</li>
+<li><div class="fn"/>bool <b><a href="qmodelindex.html#operator-lt">operator&lt;</a></b> ( const QModelIndex &amp; <i>other</i> ) const</li>
 <li><div class="fn"/>bool <b><a href="qmodelindex.html#operator-eq-eq">operator==</a></b> ( const QModelIndex &amp; <i>other</i> ) const</li>
 </ul>
 <a name="related-non-members"></a>
@@ -50,7 +52,7 @@ body { background: #ffffff; color: black; }</style>
 <h2>Detailed Description</h2>
 <p>The QModelIndex class is used to locate data in a data model.</p>
 <p>This class is used as an index into item models derived from <a href="qabstractitemmodel.html">QAbstractItemModel</a>. The index is used by item views, delegates, and selection models to locate an item in the model.</p>
-<p>New QModelIndex objects are created by the model using the <a href="qabstractitemmodel.html#createIndex">QAbstractItemModel::createIndex</a>() function.</p>
+<p>New QModelIndex objects are created by the model using the <a href="qabstractitemmodel.html#createIndex">QAbstractItemModel::createIndex</a>() function. An <i>invalid</i> model index can be constructed with the QModelIndex constructor. Invalid indexes are often used as parent indexes when referring to top-level items in a model.</p>
 <p>Model indexes refer to items in models, and contain all the information required to specify their locations in those models. Each index is located in a given row and column, and may have a parent index; use <a href="qmodelindex.html#row">row</a>(), <a href="qmodelindex.html#column">column</a>(), and <a href="qmodelindex.html#parent">parent</a>() to obtain this information. Each top-level item in a model is represented by a model index that does not have a parent index - in this case, <a href="qmodelindex.html#parent">parent</a>() will return an invalid model index, equivalent to an index constructed with the zero argument form of the <a href="qmodelindex.html#QModelIndex">QModelIndex</a>() constructor.</p>
 <p>To obtain a model index that refers to an existing item in a model, call <a href="qabstractitemmodel.html#index">QAbstractItemModel::index</a>() with the required row and column values, and the model index of the parent. When referring to top-level items in a model, supply <a href="qmodelindex.html#QModelIndex">QModelIndex</a>() as the parent index.</p>
 <p>The <a href="qmodelindex.html#model">model</a>() function returns the model that the index references as a <a href="qabstractitemmodel.html">QAbstractItemModel</a>. The <a href="qmodelindex.html#child">child</a>() function is used to examine the items held beneath the index in the model. The <a href="qmodelindex.html#sibling">sibling</a>() function allows you to traverse items in the model on the same level as the index.</p>
@@ -70,12 +72,17 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qmodelindex.html#parent">parent</a>() and <a href="qmodelindex.html#sibling">sibling</a>().</p>
 <h3 class="fn"><a name="column"></a>int QModelIndex::column () const</h3>
 <p>Returns the column this model index refers to.</p>
+<h3 class="fn"><a name="data"></a><a href="qvariant.html">QVariant</a> QModelIndex::data ( int <i>role</i> = Qt::DisplayRole ) const</h3>
+<p>Returns the data for the given <i>role</i> for the item referred to by the index.</p>
 <h3 class="fn"><a name="internalId"></a><a href="qtglobal.html#qint64-typedef">qint64</a> QModelIndex::internalId () const</h3>
 <p>Returns a <tt>qint64</tt> used by the model to associate the index with the internal data structure.</p>
+<p>See also <a href="qabstractitemmodel.html#createIndex">QAbstractItemModel::createIndex</a>().</p>
 <h3 class="fn"><a name="internalPointer"></a>void * QModelIndex::internalPointer () const</h3>
 <p>Returns a <tt>void</tt> <tt>*</tt> pointer used by the model to associate the index with the internal data structure.</p>
+<p>See also <a href="qabstractitemmodel.html#createIndex">QAbstractItemModel::createIndex</a>().</p>
 <h3 class="fn"><a name="isValid"></a>bool QModelIndex::isValid () const</h3>
-<p>Returns true if this model index is valid; otherwise returns false.</p>
+<p>Returns true if this model index is valid; otherwise returns false. A valid index belongs to a model, and has non-negative row and column numbers.</p>
+<p>See also <a href="qmodelindex.html#model">model</a>(), <a href="qmodelindex.html#row">row</a>(), and <a href="qmodelindex.html#column">column</a>().</p>
 <h3 class="fn"><a name="model"></a>const <a href="qabstractitemmodel.html">QAbstractItemModel</a> * QModelIndex::model () const</h3>
 <p>Returns a pointer to the model containing the item that this index refers to.</p>
 <h3 class="fn"><a name="parent"></a>QModelIndex QModelIndex::parent () const</h3>
@@ -88,6 +95,9 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qmodelindex.html#parent">parent</a>() and <a href="qmodelindex.html#child">child</a>().</p>
 <h3 class="fn"><a name="operator-not-eq"></a>bool QModelIndex::operator!= ( const QModelIndex &amp; <i>other</i> ) const</h3>
 <p>Returns true if this model index does not refer to the same location as the <i>other</i> model index; otherwise returns false.</p>
+<h3 class="fn"><a name="operator-lt"></a>bool QModelIndex::operator&lt; ( const QModelIndex &amp; <i>other</i> ) const</h3>
+<p>Returns true if this model index is smaller than the <i>other</i> model index; otherwise returns false.</p>
+<p>This function was introduced in Qt 4.1.</p>
 <h3 class="fn"><a name="operator-eq-eq"></a>bool QModelIndex::operator== ( const QModelIndex &amp; <i>other</i> ) const</h3>
 <p>Returns true if this model index refers to the same location as the <i>other</i> model index; otherwise returns false.</p>
 <hr />
@@ -98,6 +108,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

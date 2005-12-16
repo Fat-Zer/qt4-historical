@@ -24,9 +24,9 @@
 #ifndef Q3MAINWINDOW_H
 #define Q3MAINWINDOW_H
 
-#include "QtGui/qwidget.h"
-#include "Qt3Support/q3toolbar.h"
-#include "QtCore/qtextstream.h"
+#include <QtGui/qwidget.h>
+#include <Qt3Support/q3toolbar.h>
+#include <QtCore/qtextstream.h>
 
 QT_MODULE(Qt3SupportLight)
 
@@ -128,7 +128,7 @@ public:
     enum DockWindows { OnlyToolBars, NoToolBars, AllDockWindows };
     virtual Q3PopupMenu *createDockWindowMenu(DockWindows dockWindows = AllDockWindows) const;
 
-public slots:
+public Q_SLOTS:
     virtual void setRightJustification(bool);
     virtual void setUsesBigPixmaps(bool);
     virtual void setUsesTextLabel(bool);
@@ -142,7 +142,7 @@ public slots:
     // compatibility stuff
     void setToolBarsMovable(bool);
 
-signals:
+Q_SIGNALS:
     void pixmapSizeChanged(bool);
     void usesTextLabelChanged(bool);
     void dockWindowPositionChanged(Q3DockWindow *);
@@ -152,16 +152,17 @@ signals:
     void toolBarPositionChanged(Q3ToolBar *);
 #endif
 
-protected slots:
+protected Q_SLOTS:
     virtual void setUpLayout();
     virtual bool showDockMenu(const QPoint &globalPos);
+    void menuAboutToShow();
 
 protected:
     void paintEvent(QPaintEvent *);
     void childEvent(QChildEvent *);
     bool event(QEvent *);
 
-private slots:
+private Q_SLOTS:
     void slotPlaceChanged();
     void doLineUp() { lineUpDockWindows(true); }
 

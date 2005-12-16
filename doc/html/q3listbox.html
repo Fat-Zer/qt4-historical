@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/src/qt3support/itemviews/q3listbox.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/qt3support/itemviews/q3listbox.cpp -->
 <head>
-    <title>Qt 4.0: Q3ListBox Class Reference</title>
+    <title>Qt 4.1: Q3ListBox Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -57,7 +57,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>10 properties inherited from <a href="q3scrollview.html#properties">Q3ScrollView</a></li>
 <li><div class="fn"/>2 properties inherited from <a href="q3frame.html#properties">Q3Frame</a></li>
 <li><div class="fn"/>6 properties inherited from <a href="qframe.html#properties">QFrame</a></li>
-<li><div class="fn"/>52 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
+<li><div class="fn"/>54 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
 <li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
 </ul>
 <a name="public-functions"></a>
@@ -152,7 +152,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>46 public functions inherited from <a href="q3scrollview.html#public-functions">Q3ScrollView</a></li>
 <li><div class="fn"/>4 public functions inherited from <a href="q3frame.html#public-functions">Q3Frame</a></li>
 <li><div class="fn"/>13 public functions inherited from <a href="qframe.html#public-functions">QFrame</a></li>
-<li><div class="fn"/>184 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -264,7 +264,7 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>Q3ListBox::FitToHeight</tt></td><td align="center" valign="top"><tt>FitToWidth</tt></td><td valign="top">There are as many rows as will fit on-screen.</td></tr>
 <tr><td valign="top"><tt>Q3ListBox::Variable</tt></td><td align="center" valign="top">&nbsp;</td><td valign="top">There are as many rows as are required by the column mode. (Or as many columns as required by the row mode.)</td></tr>
 </table>
-<p>Example: When you call setRowMode(FitToHeight), <a href="q3listbox.html#columnMode-prop">columnMode</a>() automatically becomes Variable to accommodate the row mode you've set.</p>
+<p>Example: When you call setRowMode(FitToHeight), <a href="q3listbox.html#columnMode-prop">columnMode</a>() automatically becomes <tt>Variable</tt> to accommodate the row mode you've set.</p>
 <h3 class="fn"><a name="SelectionMode-enum"></a>enum Q3ListBox::SelectionMode</h3>
 <p>This enumerated type is used by <a href="q3listbox.html">Q3ListBox</a> to indicate how it reacts to selection by the user.</p>
 <table border="1" cellpadding="2" cellspacing="1" width="100%">
@@ -274,7 +274,7 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>Q3ListBox::Extended</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">When the user selects an item the selection is cleared and the new item selected. However, if the user presses the Ctrl key when clicking on an item, the clicked item gets toggled and all other items are left untouched. And if the user presses the Shift key while clicking on an item, all items between the current item and the clicked item get selected or unselected, depending on the state of the clicked item. Also, multiple items can be selected by dragging the mouse while the left mouse button is kept pressed.</td></tr>
 <tr><td valign="top"><tt>Q3ListBox::NoSelection</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">Items cannot be selected.</td></tr>
 </table>
-<p>In other words, Single is a real single-selection list box, Multi is a real multi-selection list box, Extended is a list box in which users can select multiple items but usually want to select either just one or a range of contiguous items, and NoSelection is for a list box where the user can look but not touch.</p>
+<p>In other words, <tt>Single</tt> is a real single-selection list box, <tt>Multi</tt> is a real multi-selection list box, <tt>Extended</tt> is a list box in which users can select multiple items but usually want to select either just one or a range of contiguous items, and <tt>NoSelection</tt> is for a list box where the user can look but not touch.</p>
 <h3 class="fn"><a name="StringComparisonMode-enum"></a>enum Q3ListBox::StringComparisonMode</h3>
 <p>This enum type is used to set the string comparison mode when searching for an item. We'll refer to the string being searched as the 'target' string.</p>
 <table border="1" cellpadding="2" cellspacing="1" width="100%">
@@ -566,7 +566,8 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns a pointer to the item at position <i>index</i>, or 0 if <i>index</i> is out of bounds.</p>
 <p>See also <a href="q3listbox.html#index">index</a>().</p>
 <h3 class="fn"><a name="itemAt"></a><a href="q3listboxitem.html">Q3ListBoxItem</a> * Q3ListBox::itemAt ( const <a href="qpoint.html">QPoint</a> &amp; <i>p</i> ) const</h3>
-<p>Returns the item at point <i>p</i>, which is in on-screen coordinates, or a 0 if there is no item at <i>p</i>.</p>
+<p>Returns the item at point <i>p</i>, specified in viewport coordinates, or a 0 if there is no item at <i>p</i>.</p>
+<p>Use <a href="q3scrollview.html#contentsToViewport">contentsToViewport</a>() to convert between widget coordinates and viewport coordinates.</p>
 <h3 class="fn"><a name="itemHeight"></a>int Q3ListBox::itemHeight ( int <i>index</i> = 0 ) const</h3>
 <p>Returns the height in pixels of the item with index <i>index</i>. <i>index</i> defaults to 0.</p>
 <p>If <i>index</i> is too large, this function returns 0.</p>
@@ -718,6 +719,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

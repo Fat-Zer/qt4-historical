@@ -35,12 +35,12 @@
 // We mean it.
 //
 
-#include <private/qwidget_p.h>
-#include <qbasictimer.h>
-#include <qdatetime.h>
-#include <qmenubar.h>
-#include <qstyleoption.h>
-#include <qmap.h>
+#include "QtGui/qmenubar.h"
+#include "QtGui/qstyleoption.h"
+#include "QtCore/qdatetime.h"
+#include "QtCore/qmap.h"
+#include "QtCore/qbasictimer.h"
+#include "private/qwidget_p.h"
 
 #ifndef QT_NO_MENU
 
@@ -118,7 +118,11 @@ public:
     bool mouseEventTaken(QMouseEvent *);
 
     //used to walk up the popup list
-    QPointer<QWidget> causedPopup;
+    struct QMenuCaused {
+        QPointer<QWidget> widget;
+        QPointer<QAction> action;
+    };
+    QMenuCaused causedPopup;
     void hideUpToMenuBar();
 
     //index mappings
@@ -179,4 +183,5 @@ public:
 };
 
 #endif // QT_NO_MENU
+
 #endif // QMENU_P_H

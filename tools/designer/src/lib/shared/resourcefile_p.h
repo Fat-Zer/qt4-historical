@@ -42,7 +42,9 @@
 
 #include "shared_global_p.h"
 
-class QT_SHARED_EXPORT ResourceFile
+namespace qdesigner_internal {
+
+class QDESIGNER_SHARED_EXPORT ResourceFile
 {
 public:
     ResourceFile(const QString &file_name = QString());
@@ -62,6 +64,7 @@ public:
     QString prefix(int idx) const;
     int fileCount(int prefix_idx) const;
     QString file(int prefix_idx, int file_idx) const;
+    QString alias(int prefix_idx, int file_idx) const;
 
     void addFile(int prefix_idx, const QString &file);
     void addPrefix(const QString &prefix);
@@ -83,15 +86,25 @@ public:
 
     bool isEmpty() const;
 
-private:
+    struct File {
+        File(const QString &_name = QString(), const QString &_alias = QString())
+            : name(_name), alias(_alias) {}
+        bool operator < (const File &other) const { return name < other.name; }
+        bool operator == (const File &other) const { return name == other.name; }
+        bool operator != (const File &other) const { return name != other.name; }
+        QString name;
+        QString alias;
+    };
+    typedef QList<File> FileList;
     struct Prefix {
         Prefix(const QString &_name = QString(),
-                const QStringList &_file_list = QStringList())
+                const FileList &_file_list = FileList())
             : name(_name), file_list(_file_list) {}
         QString name;
-        QStringList file_list;
+        FileList file_list;
     };
     typedef QList<Prefix> PrefixList;
+private:
     PrefixList m_prefix_list;
     QString m_file_name;
     QString m_error_message;
@@ -99,7 +112,7 @@ private:
     int matchPrefix(const QString &path) const;
 };
 
-class QT_SHARED_EXPORT ResourceModel : public QAbstractItemModel
+class QDESIGNER_SHARED_EXPORT ResourceModel : public QAbstractItemModel
 {
     Q_OBJECT
 
@@ -124,6 +137,7 @@ public:
     virtual void changePrefix(const QModelIndex &idx, const QString &prefix);
     virtual QModelIndex deleteItem(const QModelIndex &idx);
     QModelIndex getIndex(const QString &prefix, const QString &file);
+    QModelIndex getIndex(const QString &prefixed_file);
     QModelIndex prefixIndex(const QModelIndex &sel_idx) const;
 
     QString absolutePath(const QString &path) const
@@ -147,5 +161,7 @@ private:
     ResourceFile m_resource_file;
     bool m_dirty;
 };
+
+} // namespace qdesigner_internal
 
 #endif // RESOURCEFILE_H

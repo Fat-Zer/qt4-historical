@@ -846,6 +846,7 @@ qint64 Q3SocketDevice::writeData( const char *data, qint64 len )
 		done = false;
 		break;
 	    case EPIPE:
+            case ECONNRESET:
 		// connection closed
 		close();
 		r = 0;

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/gui/styles/qstyleoption.cpp -->
+<head>
+    <title>Qt 4.1: QStyleOptionTabBarBase Class Reference</title>
+    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
+a:link { color: #004faf; text-decoration: none }
+a:visited { color: #672967; text-decoration: none }
+td.postheader { font-family: sans-serif }
+tr.address { font-family: sans-serif }
+body { background: #ffffff; color: black; }</style>
+</head>
+<body>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QStyleOptionTabBarBase Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
+<p>The QStyleOptionTabBarBase class is used to describe the the base of a tabbar. That is the part that the tabbar usually overlaps with. <a href="#details">More...</a></p>
+<pre>#include &lt;QStyleOptionTabBarBase&gt;</pre><p>Inherits <a href="qstyleoption.html">QStyleOption</a>.</p>
+<ul>
+<li><a href="qstyleoptiontabbarbase-members.html">List of all members, including inherited members</a></li>
+</ul>
+<a name="public-functions"></a>
+<h3>Public Functions</h3>
+<ul>
+<li><div class="fn"/><b><a href="qstyleoptiontabbarbase.html#QStyleOptionTabBarBase">QStyleOptionTabBarBase</a></b> ()</li>
+<li><div class="fn"/><b><a href="qstyleoptiontabbarbase.html#QStyleOptionTabBarBase-2">QStyleOptionTabBarBase</a></b> ( const QStyleOptionTabBarBase &amp; <i>other</i> )</li>
+</ul>
+<ul>
+<li><div class="fn"/>2 public functions inherited from <a href="qstyleoption.html#public-functions">QStyleOption</a></li>
+</ul>
+<a name="public-variables"></a>
+<h3>Public Variables</h3>
+<ul>
+<li><div class="fn"/>QRect <b><a href="qstyleoptiontabbarbase.html#selectedTabRect-var">selectedTabRect</a></b></li>
+<li><div class="fn"/>QTabBar::Shape <b><a href="qstyleoptiontabbarbase.html#shape-var">shape</a></b></li>
+<li><div class="fn"/>QRect <b><a href="qstyleoptiontabbarbase.html#tabBarRect-var">tabBarRect</a></b></li>
+</ul>
+<ul>
+<li><div class="fn"/>7 public variables inherited from <a href="qstyleoption.html#public-variables">QStyleOption</a></li>
+</ul>
+<a name="static-public-members"></a>
+<h3>Static Public Members</h3>
+<ul>
+<li><div class="fn"/>const int <b><a href="qstyleoptiontabbarbase.html#Type-var">Type</a></b></li>
+<li><div class="fn"/>const int <b><a href="qstyleoptiontabbarbase.html#Version-var">Version</a></b></li>
+</ul>
+<ul>
+<li><div class="fn"/>2 static public members inherited from <a href="qstyleoption.html#static-public-members">QStyleOption</a></li>
+</ul>
+<a name="details"></a>
+<hr />
+<h2>Detailed Description</h2>
+<p>The QStyleOptionTabBarBase class is used to describe the the base of a tabbar. That is the part that the tabbar usually overlaps with.</p>
+<p>This is drawn by a standalone <a href="qtabbar.html">QTabBar</a> (one that isn't part of a <a href="qtabwidget.html">QTabWidget</a>).</p>
+<p>See also <a href="qtabbar.html#drawBase-prop">QTabBar::drawBase</a>().</p>
+<hr />
+<h2>Member Function Documentation</h2>
+<h3 class="fn"><a name="QStyleOptionTabBarBase"></a>QStyleOptionTabBarBase::QStyleOptionTabBarBase ()</h3>
+<p>Construct a <a href="qstyleoptiontabbarbase.html">QStyleOptionTabBarBase</a>. The members are given default values.</p>
+<h3 class="fn"><a name="QStyleOptionTabBarBase-2"></a>QStyleOptionTabBarBase::QStyleOptionTabBarBase ( const QStyleOptionTabBarBase &amp; <i>other</i> )</h3>
+<p>Constructs a copy of <i>other</i>.</p>
+<hr />
+<h2>Member Variable Documentation</h2>
+<h3 class="fn"><a name="Type-var"></a>const int QStyleOptionTabBarBase::Type</h3>
+<p>Equals <a href="qstyleoption.html#OptionType-enum">SO_TabBarBase</a>.</p>
+<h3 class="fn"><a name="Version-var"></a>const int QStyleOptionTabBarBase::Version</h3>
+<p>Equals 1.</p>
+<h3 class="fn"><a name="selectedTabRect-var"></a><a href="qrect.html">QRect</a> QStyleOptionTabBarBase::selectedTabRect</h3>
+<p>The rectangle containing the selected tab</p>
+<p>This is within the bounds of the <a href="qstyleoptiontabbarbase.html#tabBarRect-var">tabBarRect</a>.</p>
+<h3 class="fn"><a name="shape-var"></a><a href="qtabbar.html#Shape-enum">QTabBar::Shape</a> QStyleOptionTabBarBase::shape</h3>
+<p>The shape of the tabbar.</p>
+<h3 class="fn"><a name="tabBarRect-var"></a><a href="qrect.html">QRect</a> QStyleOptionTabBarBase::tabBarRect</h3>
+<p>The rectangle containing all the tabs.</p>
+<p /><address><hr /><div align="center">
+<table width="100%" cellspacing="0" border="0"><tr class="address">
+<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+</tr></table></div></address></body>
+</html>

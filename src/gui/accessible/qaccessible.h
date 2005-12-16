@@ -24,26 +24,21 @@
 #ifndef QACCESSIBLE_H
 #define QACCESSIBLE_H
 
-#include "QtCore/qglobal.h"
-
-#ifndef QT_NO_ACCESSIBILITY
-
-#include "QtGui/qevent.h"
-#include "QtCore/qobject.h"
-#include "QtCore/qrect.h"
-#include "QtCore/qvector.h"
-#include "QtCore/qvariant.h"
+#include <QtCore/qglobal.h>
+#include <QtGui/qevent.h>
+#include <QtCore/qobject.h>
+#include <QtCore/qrect.h>
+#include <QtCore/qvector.h>
+#include <QtCore/qvariant.h>
 
 QT_MODULE(Gui)
+
+#ifndef QT_NO_ACCESSIBILITY
 
 class QAccessibleInterface;
 
 class Q_GUI_EXPORT QAccessible
 {
-private:
-#ifdef Q_WS_MAC
-    static OSStatus globalEventProcessor(EventHandlerCallRef, EventRef, void *);
-#endif
 public:
     enum Event {
         SoundPlayed          = 0x0001,

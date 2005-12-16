@@ -21,10 +21,6 @@
 **
 ****************************************************************************/
 
-#ifndef QT_CLEAN_NAMESPACE
-#define QT_CLEAN_NAMESPACE
-#endif
-
 #include "qsound.h"
 
 #ifndef QT_NO_SOUND
@@ -34,8 +30,7 @@
 #include "qapplication.h"
 #include "qsound_p.h"
 
-
-#ifdef QT_NAS_SUPPORT
+#ifndef QT_NO_NAS
 
 #include <audio/audiolib.h>
 #include <audio/soundlib.h>
@@ -100,8 +95,9 @@ private:
 };
 
 QAuServerNAS::QAuServerNAS(QObject* parent) :
-    QAuServer(parent,"Network Audio System")
+    QAuServer(parent)
 {
+    setObjectName(QLatin1String("Network Audio System"));
     nas = AuOpenServer(NULL, 0, NULL, 0, NULL, NULL);
     if (nas) {
         AuSetCloseDownMode(nas, AuCloseDownDestroy, NULL);
@@ -261,7 +257,7 @@ QAuServerNull::QAuServerNull(QObject* parent)
 
 QAuServer* qt_new_audio_server()
 {
-#ifdef QT_NAS_SUPPORT
+#ifndef QT_NO_NAS
     QAuServer* s = new QAuServerNAS(qApp);
     if (s->okay())
         return s;

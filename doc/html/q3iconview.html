@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/src/qt3support/itemviews/q3iconview.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/qt3support/itemviews/q3iconview.cpp -->
 <head>
-    <title>Qt 4.0: Q3IconView Class Reference</title>
+    <title>Qt 4.1: Q3IconView Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -64,7 +64,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>10 properties inherited from <a href="q3scrollview.html#properties">Q3ScrollView</a></li>
 <li><div class="fn"/>2 properties inherited from <a href="q3frame.html#properties">Q3Frame</a></li>
 <li><div class="fn"/>6 properties inherited from <a href="qframe.html#properties">QFrame</a></li>
-<li><div class="fn"/>52 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
+<li><div class="fn"/>54 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
 <li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
 </ul>
 <a name="public-functions"></a>
@@ -130,7 +130,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>46 public functions inherited from <a href="q3scrollview.html#public-functions">Q3ScrollView</a></li>
 <li><div class="fn"/>4 public functions inherited from <a href="q3frame.html#public-functions">Q3Frame</a></li>
 <li><div class="fn"/>13 public functions inherited from <a href="qframe.html#public-functions">QFrame</a></li>
-<li><div class="fn"/>184 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -297,7 +297,7 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>Q3IconView::Extended</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">When the user selects an item the selection is cleared and the new item selected. However, if the user presses the Ctrl key when clicking on an item, the clicked item gets toggled and all other items are left untouched. If the user presses the Shift key while clicking on an item, all items between the current item and the clicked item get selected or unselected, depending on the state of the clicked item. Also, multiple items can be selected by dragging the mouse while the left mouse button stays pressed.</td></tr>
 <tr><td valign="top"><tt>Q3IconView::NoSelection</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">Items cannot be selected.</td></tr>
 </table>
-<p>To summarize: Single is a real single-selection icon view; Multi a real multi-selection icon view; Extended is an icon view in which users can select multiple items but usually want to select either just one or a range of contiguous items; and NoSelection mode is for an icon view where the user can look but not touch.</p>
+<p>To summarize: <tt>Single</tt> is a real single-selection icon view; <tt>Multi</tt> a real multi-selection icon view; <tt>Extended</tt> is an icon view in which users can select multiple items but usually want to select either just one or a range of contiguous items; and <tt>NoSelection</tt> mode is for an icon view where the user can look but not touch.</p>
 <h3 class="fn"><a name="StringComparisonMode-enum"></a>enum Q3IconView::StringComparisonMode</h3>
 <p>This enum type is used to set the string comparison mode when searching for an item. We'll refer to the string being searched as the 'target' string.</p>
 <table border="1" cellpadding="2" cellspacing="1" width="100%">
@@ -308,8 +308,8 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>Q3IconView::EndsWith</tt></td><td align="center" valign="top"><tt>0x00004</tt></td><td valign="top">The target string ends with the search string.</td></tr>
 <tr><td valign="top"><tt>Q3IconView::Contains</tt></td><td align="center" valign="top"><tt>0x00008</tt></td><td valign="top">The target string contains the search string.</td></tr>
 </table>
-<p>If you OR these flags together (excluding CaseSensitive), the search criteria be applied in the following order: ExactMatch, BeginsWith, EndsWith, Contains.</p>
-<p>Matching is case-insensitive unless CaseSensitive is set. CaseSensitive can be OR-ed with any combination of the other flags.</p>
+<p>If you OR these flags together (excluding <tt>CaseSensitive</tt>), the search criteria be applied in the following order: <tt>ExactMatch</tt>, <tt>BeginsWith</tt>, <tt>EndsWith</tt>, <tt>Contains</tt>.</p>
+<p>Matching is case-insensitive unless <tt>CaseSensitive</tt> is set. <tt>CaseSensitive</tt> can be OR-ed with any combination of the other flags.</p>
 <p>See also <a href="q3iconview.html#ComparisonFlags-typedef">ComparisonFlags</a>.</p>
 <hr />
 <h2>Property Documentation</h2>
@@ -630,6 +630,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

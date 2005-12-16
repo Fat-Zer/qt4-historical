@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/src/gui/itemviews/qlistview.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/gui/itemviews/qlistview.cpp -->
 <head>
-    <title>Qt 4.0: List of All Members for QListView</title>
+    <title>Qt 4.1: List of All Members for QListView</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -22,6 +22,7 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
 <tr><td width="45%" valign="top"><ul>
 <li><div class="fn"/>enum <a href="qabstractitemview.html#CursorAction-enum">CursorAction</a></li>
+<li><div class="fn"/>enum <a href="qabstractitemview.html#DropIndicatorPosition-enum">DropIndicatorPosition</a></li>
 <li><div class="fn"/>enum <a href="qabstractitemview.html#EditTrigger-enum">EditTrigger</a></li>
 <li><div class="fn"/>flags <a href="qabstractitemview.html#EditTrigger-enum">EditTriggers</a></li>
 <li><div class="fn"/>enum <a href="qlistview.html#Flow-enum">Flow</a></li>
@@ -52,6 +53,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qwidget.html#addActions">addActions</a> ( QList&lt;QAction *&gt; )</li>
 <li><div class="fn"/><a href="qwidget.html#adjustSize">adjustSize</a> ()</li>
 <li><div class="fn"/><a href="qabstractitemview.html#alternatingRowColors-prop">alternatingRowColors</a> () const : bool</li>
+<li><div class="fn"/><a href="qwidget.html#autoFillBackground-prop">autoFillBackground</a> () const : bool</li>
 <li><div class="fn"/><a href="qwidget.html#backgroundRole">backgroundRole</a> () const : QPalette::ColorRole</li>
 <li><div class="fn"/><a href="qwidget.html#baseSize-prop">baseSize</a> () const : QSize</li>
 <li><div class="fn"/><a href="qobject.html#blockSignals">blockSignals</a> ( bool ) : bool</li>
@@ -84,7 +86,6 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qwidget.html#cursor-prop">cursor</a> () const : QCursor</li>
 <li><div class="fn"/><a href="qwidget.html#customContextMenuRequested">customContextMenuRequested</a> ( const QPoint &amp; )</li>
 <li><div class="fn"/><a href="qobject.html#customEvent">customEvent</a> ( QEvent * )</li>
-<li><div class="fn"/><a href="qobject.html#d_ptr-var">d_ptr</a> : QObjectData *</li>
 <li><div class="fn"/><a href="qabstractitemview.html#dataChanged">dataChanged</a> ( const QModelIndex &amp;, const QModelIndex &amp; )</li>
 <li><div class="fn"/><a href="qobject.html#deleteLater">deleteLater</a> ()</li>
 <li><div class="fn"/><a href="qpaintdevice.html#depth">depth</a> () const : int</li>
@@ -101,6 +102,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qabstractitemview.html#dragLeaveEvent">dragLeaveEvent</a> ( QDragLeaveEvent * )</li>
 <li><div class="fn"/><a href="qabstractitemview.html#dragMoveEvent">dragMoveEvent</a> ( QDragMoveEvent * )</li>
 <li><div class="fn"/><a href="qabstractitemview.html#dropEvent">dropEvent</a> ( QDropEvent * )</li>
+<li><div class="fn"/><a href="qabstractitemview.html#dropIndicatorPosition">dropIndicatorPosition</a> () const : DropIndicatorPosition</li>
 <li><div class="fn"/><a href="qobject.html#dumpObjectInfo">dumpObjectInfo</a> ()</li>
 <li><div class="fn"/><a href="qobject.html#dumpObjectTree">dumpObjectTree</a> ()</li>
 <li><div class="fn"/><a href="qabstractitemview.html#edit">edit</a> ( const QModelIndex &amp; )</li>
@@ -110,7 +112,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qwidget.html#ensurePolished">ensurePolished</a> () const</li>
 <li><div class="fn"/><a href="qwidget.html#enterEvent">enterEvent</a> ( QEvent * )</li>
 <li><div class="fn"/><a href="qabstractitemview.html#entered">entered</a> ( const QModelIndex &amp; )</li>
-<li><div class="fn"/><a href="qabstractscrollarea.html#event">event</a> ( QEvent * ) : bool</li>
+<li><div class="fn"/><a href="qlistview.html#event">event</a> ( QEvent * ) : bool</li>
 <li><div class="fn"/><a href="qobject.html#eventFilter">eventFilter</a> ( QObject *, QEvent * ) : bool</li>
 <li><div class="fn"/><a href="qabstractitemview.html#executeDelayedItemsLayout">executeDelayedItemsLayout</a> ()</li>
 <li><div class="fn"/><a href="qwidget.html#find">find</a> ( WId ) : QWidget *</li>
@@ -159,6 +161,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qabstractitemview.html#horizontalStepsPerItem">horizontalStepsPerItem</a> () const : int</li>
 <li><div class="fn"/><a href="qabstractitemview.html#iconSize-prop">iconSize</a> () const : QSize</li>
 <li><div class="fn"/><a href="qabstractitemview.html#indexAt">indexAt</a> ( const QPoint &amp; ) const : QModelIndex</li>
+<li><div class="fn"/><a href="qabstractitemview.html#indexWidget">indexWidget</a> ( const QModelIndex &amp; ) const : QWidget *</li>
 <li><div class="fn"/><a href="qobject.html#inherits">inherits</a> ( const char * ) const : bool</li>
 <li><div class="fn"/><a href="qwidget.html#inputContext">inputContext</a> () : QInputContext *</li>
 <li><div class="fn"/><a href="qwidget.html#inputMethodEvent">inputMethodEvent</a> ( QInputMethodEvent * )</li>
@@ -237,15 +240,14 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qwidget.html#overrideWindowFlags">overrideWindowFlags</a> ( Qt::WindowFlags )</li>
 <li><div class="fn"/><a href="qwidget.html#paintEngine">paintEngine</a> () const : QPaintEngine *</li>
 <li><div class="fn"/><a href="qabstractscrollarea.html#paintEvent">paintEvent</a> ( QPaintEvent * )</li>
-<li><div class="fn"/><a href="qpaintdevice.html#painters-var">painters</a> : ushort</li>
 <li><div class="fn"/><a href="qpaintdevice.html#paintingActive">paintingActive</a> () const : bool</li>
 <li><div class="fn"/><a href="qwidget.html#palette-prop">palette</a> () const : const QPalette &amp;</li>
-</ul></td><td valign="top"><ul>
 <li><div class="fn"/><a href="qobject.html#parent">parent</a> () const : QObject *</li>
 <li><div class="fn"/><a href="qwidget.html#parentWidget">parentWidget</a> () const : QWidget *</li>
 <li><div class="fn"/><a href="qwidget.html#pos-prop">pos</a> () const : QPoint</li>
 <li><div class="fn"/><a href="qabstractitemview.html#pressed">pressed</a> ( const QModelIndex &amp; )</li>
 <li><div class="fn"/><a href="qobject.html#property">property</a> ( const char * ) const : QVariant</li>
+</ul></td><td valign="top"><ul>
 <li><div class="fn"/><a href="qwidget.html#qwsEvent">qwsEvent</a> ( QWSEvent * ) : bool</li>
 <li><div class="fn"/><a href="qwidget.html#raise">raise</a> ()</li>
 <li><div class="fn"/><a href="qobject.html#receivers">receivers</a> ( const char * ) const : int</li>
@@ -276,6 +278,8 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qabstractscrollarea.html#scrollContentsBy">scrollContentsBy</a> ( int, int )</li>
 <li><div class="fn"/><a href="qabstractitemview.html#scrollDirtyRegion">scrollDirtyRegion</a> ( int, int )</li>
 <li><div class="fn"/><a href="qabstractitemview.html#scrollTo">scrollTo</a> ( const QModelIndex &amp;, ScrollHint )</li>
+<li><div class="fn"/><a href="qabstractitemview.html#scrollToBottom">scrollToBottom</a> ()</li>
+<li><div class="fn"/><a href="qabstractitemview.html#scrollToTop">scrollToTop</a> ()</li>
 <li><div class="fn"/><a href="qabstractitemview.html#selectAll">selectAll</a> ()</li>
 <li><div class="fn"/><a href="qabstractitemview.html#selectedIndexes">selectedIndexes</a> () const : QModelIndexList</li>
 <li><div class="fn"/><a href="qabstractitemview.html#selectionBehavior-prop">selectionBehavior</a> () const : QAbstractItemView::SelectionBehavior</li>
@@ -289,6 +293,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qwidget.html#accessibleName-prop">setAccessibleName</a> ( const QString &amp; )</li>
 <li><div class="fn"/><a href="qabstractitemview.html#alternatingRowColors-prop">setAlternatingRowColors</a> ( bool )</li>
 <li><div class="fn"/><a href="qwidget.html#setAttribute">setAttribute</a> ( Qt::WidgetAttribute, bool )</li>
+<li><div class="fn"/><a href="qwidget.html#autoFillBackground-prop">setAutoFillBackground</a> ( bool )</li>
 <li><div class="fn"/><a href="qabstractitemview.html#autoScroll-prop">setAutoScroll</a> ( bool )</li>
 <li><div class="fn"/><a href="qwidget.html#setBackgroundRole">setBackgroundRole</a> ( QPalette::ColorRole )</li>
 <li><div class="fn"/><a href="qwidget.html#baseSize-prop">setBaseSize</a> ( const QSize &amp; )</li>
@@ -297,6 +302,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qwidget.html#contextMenuPolicy-prop">setContextMenuPolicy</a> ( Qt::ContextMenuPolicy )</li>
 <li><div class="fn"/><a href="qabstractitemview.html#setCurrentIndex">setCurrentIndex</a> ( const QModelIndex &amp; )</li>
 <li><div class="fn"/><a href="qwidget.html#cursor-prop">setCursor</a> ( const QCursor &amp; )</li>
+<li><div class="fn"/><a href="qabstractitemview.html#setDirtyRegion">setDirtyRegion</a> ( const QRegion &amp; )</li>
 <li><div class="fn"/><a href="qwidget.html#setDisabled">setDisabled</a> ( bool )</li>
 <li><div class="fn"/><a href="qabstractitemview.html#dragEnabled-prop">setDragEnabled</a> ( bool )</li>
 <li><div class="fn"/><a href="qabstractitemview.html#showDropIndicator-prop">setDropIndicatorShown</a> ( bool )</li>
@@ -324,6 +330,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qabstractscrollarea.html#horizontalScrollBarPolicy-prop">setHorizontalScrollBarPolicy</a> ( Qt::ScrollBarPolicy )</li>
 <li><div class="fn"/><a href="qabstractitemview.html#setHorizontalStepsPerItem">setHorizontalStepsPerItem</a> ( int )</li>
 <li><div class="fn"/><a href="qabstractitemview.html#iconSize-prop">setIconSize</a> ( const QSize &amp; )</li>
+<li><div class="fn"/><a href="qabstractitemview.html#setIndexWidget">setIndexWidget</a> ( const QModelIndex &amp;, QWidget * )</li>
 <li><div class="fn"/><a href="qwidget.html#setInputContext">setInputContext</a> ( QInputContext * )</li>
 <li><div class="fn"/><a href="qabstractitemview.html#setItemDelegate">setItemDelegate</a> ( QAbstractItemDelegate * )</li>
 <li><div class="fn"/><a href="qwidget.html#setLayout">setLayout</a> ( QLayout * )</li>
@@ -349,6 +356,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qwidget.html#palette-prop">setPalette</a> ( const QPalette &amp; )</li>
 <li><div class="fn"/><a href="qwidget.html#setParent">setParent</a> ( QWidget * )</li>
 <li><div class="fn"/><a href="qwidget.html#setParent-2">setParent</a> ( QWidget *, Qt::WFlags )</li>
+<li><div class="fn"/><a href="qlistview.html#setPositionForIndex">setPositionForIndex</a> ( const QPoint &amp;, const QModelIndex &amp; )</li>
 <li><div class="fn"/><a href="qobject.html#setProperty">setProperty</a> ( const char *, const QVariant &amp; ) : bool</li>
 <li><div class="fn"/><a href="qlistview.html#resizeMode-prop">setResizeMode</a> ( ResizeMode )</li>
 <li><div class="fn"/><a href="qabstractitemview.html#setRootIndex">setRootIndex</a> ( const QModelIndex &amp; )</li>
@@ -370,6 +378,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qwidget.html#setTabOrder">setTabOrder</a> ( QWidget *, QWidget * )</li>
 <li><div class="fn"/><a href="qabstractitemview.html#textElideMode-prop">setTextElideMode</a> ( Qt::TextElideMode )</li>
 <li><div class="fn"/><a href="qwidget.html#toolTip-prop">setToolTip</a> ( const QString &amp; )</li>
+<li><div class="fn"/><a href="qlistview.html#uniformItemSizes-prop">setUniformItemSizes</a> ( bool )</li>
 <li><div class="fn"/><a href="qwidget.html#updatesEnabled-prop">setUpdatesEnabled</a> ( bool )</li>
 <li><div class="fn"/><a href="qabstractscrollarea.html#verticalScrollBarPolicy-prop">setVerticalScrollBarPolicy</a> ( Qt::ScrollBarPolicy )</li>
 <li><div class="fn"/><a href="qabstractitemview.html#setVerticalStepsPerItem">setVerticalStepsPerItem</a> ( int )</li>
@@ -380,6 +389,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qwidget.html#windowFlags-prop">setWindowFlags</a> ( Qt::WindowFlags )</li>
 <li><div class="fn"/><a href="qwidget.html#windowIcon-prop">setWindowIcon</a> ( const QIcon &amp; )</li>
 <li><div class="fn"/><a href="qwidget.html#windowIconText-prop">setWindowIconText</a> ( const QString &amp; )</li>
+<li><div class="fn"/><a href="qwidget.html#windowModality-prop">setWindowModality</a> ( Qt::WindowModality )</li>
 <li><div class="fn"/><a href="qwidget.html#windowModified-prop">setWindowModified</a> ( bool )</li>
 <li><div class="fn"/><a href="qwidget.html#windowOpacity-prop">setWindowOpacity</a> ( qreal )</li>
 <li><div class="fn"/><a href="qwidget.html#setWindowRole">setWindowRole</a> ( const QString &amp; )</li>
@@ -406,7 +416,6 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qabstractitemview.html#startDrag">startDrag</a> ( Qt::DropActions )</li>
 <li><div class="fn"/><a href="qobject.html#startTimer">startTimer</a> ( int ) : int</li>
 <li><div class="fn"/><a href="qabstractitemview.html#state">state</a> () const : State</li>
-<li><div class="fn"/><a href="qobject.html#staticQtMetaObject-var">staticQtMetaObject</a> : const QMetaObject</li>
 <li><div class="fn"/><a href="qwidget.html#statusTip-prop">statusTip</a> () const : QString</li>
 <li><div class="fn"/><a href="qwidget.html#style">style</a> () const : QStyle *</li>
 <li><div class="fn"/><a href="qabstractitemview.html#tabKeyNavigation-prop">tabKeyNavigation</a> () const : bool</li>
@@ -419,6 +428,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qobject.html#tr">tr</a> ( const char *, const char * ) : QString</li>
 <li><div class="fn"/><a href="qobject.html#trUtf8">trUtf8</a> ( const char *, const char * ) : QString</li>
 <li><div class="fn"/><a href="qwidget.html#underMouse">underMouse</a> () const : bool</li>
+<li><div class="fn"/><a href="qlistview.html#uniformItemSizes-prop">uniformItemSizes</a> () const : bool</li>
 <li><div class="fn"/><a href="qwidget.html#cursor-prop">unsetCursor</a> ()</li>
 <li><div class="fn"/><a href="qwidget.html#layoutDirection-prop">unsetLayoutDirection</a> ()</li>
 <li><div class="fn"/><a href="qwidget.html#update">update</a> ()</li>
@@ -450,6 +460,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qwidget.html#windowFlags-prop">windowFlags</a> () const : Qt::WindowFlags</li>
 <li><div class="fn"/><a href="qwidget.html#windowIcon-prop">windowIcon</a> () const : QIcon</li>
 <li><div class="fn"/><a href="qwidget.html#windowIconText-prop">windowIconText</a> () const : QString</li>
+<li><div class="fn"/><a href="qwidget.html#windowModality-prop">windowModality</a> () const : Qt::WindowModality</li>
 <li><div class="fn"/><a href="qwidget.html#windowOpacity-prop">windowOpacity</a> () const : qreal</li>
 <li><div class="fn"/><a href="qwidget.html#windowRole">windowRole</a> () const : QString</li>
 <li><div class="fn"/><a href="qwidget.html#windowState">windowState</a> () const : Qt::WindowStates</li>
@@ -467,6 +478,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

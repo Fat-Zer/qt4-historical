@@ -33,6 +33,7 @@ QT_MODULE(Gui)
 class QAbstractPrintDialogPrivate;
 class QPrinter;
 
+// ### Qt 5: remove this class
 class Q_GUI_EXPORT QAbstractPrintDialog : public QDialog
 {
     Q_DECLARE_PRIVATE(QAbstractPrintDialog)
@@ -82,6 +83,8 @@ protected:
 private:
     Q_DISABLE_COPY(QAbstractPrintDialog)
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(QAbstractPrintDialog::PrintDialogOptions)
 
 #endif // QT_NO_PRINTDIALOG
 

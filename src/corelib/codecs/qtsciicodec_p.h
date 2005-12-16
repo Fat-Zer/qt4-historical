@@ -64,7 +64,7 @@
 // We mean it.
 //
 
-#include "qtextcodec.h"
+#include "QtCore/qtextcodec.h"
 
 #ifndef QT_NO_CODECS
 
@@ -79,6 +79,6 @@ public:
     QByteArray convertFromUnicode(const QChar *, int, ConverterState *) const;
 };
 
-#endif
+#endif // QT_NO_CODECS
 
 #endif // QTSCIICODEC_P_H

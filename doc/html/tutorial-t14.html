@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/doc/src/examples/tutorial.qdoc -->
+<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/doc/src/examples/tutorial.qdoc -->
 <head>
-    <title>Qt 4.0: Qt Tutorial 14 - Facing the Wall</title>
+    <title>Qt 4.1: Qt Tutorial 14 - Facing the Wall</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -34,7 +34,7 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="tutorial-t14-lcdrange-h.html">tutorial/t14/lcdrange.h</a></li>
 <li><a href="tutorial-t14-main-cpp.html">tutorial/t14/main.cpp</a></li>
 </ul>
-<p align="center"><img src="images/t14.png" alt="Screenshot of tutorial fourteen" /></p><p>This is the final example: a complete game.</p>
+<p align="center"><img src="images/t14.png" alt="Screenshot of Chapter 14" /></p><p>This is the final example: a complete game.</p>
 <p>We add keyboard accelerators and introduce mouse events to <tt>CannonField</tt>. We put a frame around the <tt>CannonField</tt> and add a barrier (wall) to make the game more challenging.</p>
 <a name="line-by-line-walkthrough"></a>
 <h2>Line by Line Walkthrough</h2>
@@ -127,7 +127,7 @@ body { background: #ffffff; color: black; }</style>
 <h3><a href="tutorial-t14-gameboard-cpp.html">t14/gameboard.cpp</a></h3>
 <pre>&nbsp;       QFrame *cannonBox = new QFrame;
         cannonBox-&gt;setFrameStyle(QFrame::WinPanel | QFrame::Sunken);</pre>
-<p>We create and set up a <a href="qframe.html">QFrame</a>, and set its frame style.</p>
+<p>We create and set up a <a href="qframe.html">QFrame</a>, and set its frame style. This results in a 3D frame around the <tt>CannonField</tt>.</p>
 <pre>&nbsp;       (void) new QShortcut(Qt::Key_Enter, this, SLOT(fire()));
         (void) new QShortcut(Qt::Key_Return, this, SLOT(fire()));
         (void) new QShortcut(Qt::CTRL + Qt::Key_Q, this, SLOT(close()));</pre>
@@ -163,6 +163,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

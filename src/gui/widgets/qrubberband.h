@@ -54,11 +54,13 @@ public:
     inline void resize(const QSize &s)
     { resize(s.width(), s.height()); }
 
-
 protected:
-
+    bool event(QEvent *e);
     void paintEvent(QPaintEvent *);
     void changeEvent(QEvent *);
+    void showEvent(QShowEvent *);
+    void resizeEvent(QResizeEvent *);
+    void moveEvent(QMoveEvent *);
 
 private:
     Q_DECLARE_PRIVATE(QRubberBand)
@@ -67,9 +69,8 @@ private:
 inline void QRubberBand::setGeometry(int ax, int ay, int aw, int ah)
 { setGeometry(QRect(ax, ay, aw, ah)); }
 inline void QRubberBand::move(int ax, int ay)
-{ setGeometry(ax + geometry().x() - QWidget::x(),
-              ay - geometry().y() - QWidget::y(),
-              width(), height()); }
+{ setGeometry(ax, ay, width(), height()); }
 
 #endif // QT_NO_RUBBERBAND
+
 #endif // QRUBBERBAND_H

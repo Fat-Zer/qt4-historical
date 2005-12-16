@@ -100,11 +100,11 @@ public:
     QSize iconSize() const;
     Qt::ToolButtonStyle toolButtonStyle() const;
 
-public slots:
+public Q_SLOTS:
     void setIconSize(const QSize &iconSize);
     void setToolButtonStyle(Qt::ToolButtonStyle toolButtonStyle);
 
-signals:
+Q_SIGNALS:
     void actionTriggered(QAction *action);
     void movableChanged(bool movable);
     void allowedAreasChanged(Qt::ToolBarAreas allowedAreas);
@@ -143,4 +143,5 @@ inline QAction *QToolBar::actionAt(int ax, int ay) const
 { return actionAt(QPoint(ax, ay)); }
 
 #endif // QT_NO_TOOLBAR
+
 #endif // QTOOLBAR_H

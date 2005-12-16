@@ -35,8 +35,7 @@
 // We mean it.
 //
 
-#include <qlayoutitem.h> //for QLAYOUTSIZE_MAX
-
+#include "QtGui/qlayoutitem.h"
 
 template <typename T> class QVector;
 
@@ -99,6 +98,5 @@ static inline void qMaxExpCalc(int & max, bool &exp,
     }
     exp = exp || boxexp;
 }
-
 
 #endif // QLAYOUTENGINE_P_H

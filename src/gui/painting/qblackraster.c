@@ -24,6 +24,7 @@
 /* #define Q_RASTER_DEBUG */
 
 #include <qglobal.h>
+#include <stdlib.h>
 
 typedef int QT_FT_Error;
 typedef int QT_FT_Int;
@@ -78,7 +79,7 @@ static QT_FT_Long QT_FT_MulDiv(QT_FT_Long  a, QT_FT_Long  b, QT_FT_Long  c)
 
 #define MAX(x, y) (x > y ? x : y)
 #define MIN(x, y) (x < y ? x : y)
-#define MAX_SPANS 32
+#define MAX_SPANS 256
 
 /*************************************************************************/
 /*                                                                       */
@@ -356,59 +357,26 @@ typedef struct  TBand_
     ( ( sizeof ( TProfile ) + ( sizeof ( TProfile ) % sizeof ( Alignment ) ) ) / sizeof ( Long ) )
 
 
-#ifdef TT_STATIC_RASTER
-
-
-#define RAS_ARGS       /* void */
-#define RAS_ARG        /* void */
-
-#define RAS_VARS       /* void */
-#define RAS_VAR        /* void */
-
-#define QT_FT_UNUSED_RASTER  do ; while ( 0 )
-
-
-#else /* TT_STATIC_RASTER */
-
-
-#define RAS_ARGS       TRaster_Instance*  raster,
-#define RAS_ARG        TRaster_Instance*  raster
-
-#define RAS_VARS       raster,
-#define RAS_VAR        raster
-
-#define QT_FT_UNUSED_RASTER  QT_FT_UNUSED( raster )
-
-
-#endif /* TT_STATIC_RASTER */
-
-
 typedef struct TRaster_Instance_  TRaster_Instance;
 
 
-/* prototypes used for sweep function dispatch */
-typedef void
-Function_Sweep_Init( RAS_ARGS Short*  min,
-                     Short*  max );
-
-typedef void
-Function_Sweep_Span( RAS_ARGS Short       y,
-                     QT_FT_F26Dot6  x1,
-                     QT_FT_F26Dot6  x2,
-                     PProfile    left,
-                     PProfile    right );
-
-typedef void
-Function_Sweep_Step( RAS_ARG );
-
+#ifdef HIGH_REPCISION
+#define precision_bits 10
+#define precision_step 128
+#else
+#define precision_bits 6
+#define precision_step 32
+#endif
+#define precision (1 << precision_bits)
+#define precision_shift (precision_bits - Pixel_Bits)
 
 /* NOTE: These operations are only valid on 2's complement processors */
 
-#define FLOOR( x )    ( (x) & -ras.precision )
-#define CEILING( x )  ( ( (x) + ras.precision - 1 ) & -ras.precision )
-#define TRUNC( x )    ( (signed long)(x) >> ras.precision_bits )
-#define FRAC( x )     ( (x) & ( ras.precision - 1 ) )
-#define SCALED( x )   ( ( (x) << ras.scale_shift ) )
+#define FLOOR( x )    ( (x) & -precision )
+#define CEILING( x )  ( ( (x) + precision - 1 ) & -precision )
+#define TRUNC( x )    ( (signed long)(x) >> precision_bits )
+#define FRAC( x )     ( (x) & ( precision - 1 ) )
+#define SCALED( x )   ( ( (x) << precision_shift ) )
 
 /* Note that I have moved the location of some fields in the */
 /* structure to ensure that the most used variables are used */
@@ -417,17 +385,6 @@ Function_Sweep_Step( RAS_ARG );
 
 struct  TRaster_Instance_
 {
-    Int       precision_bits;       /* precision related variables         */
-    Int       precision;
-    Int       precision_half;
-    Long      precision_mask;
-    Int       precision_shift;
-    Int       precision_step;
-    Int       precision_jitter;
-
-    Int       scale_shift;          /* == precision_shift   for bitmaps    */
-                                    /* == precision_shift+1 for pixmaps    */
-
     PLong     buff;                 /* The profiles buffer                 */
     PLong     sizeBuff;             /* Render pool size                    */
     PLong     maxBuff;              /* Profiles buffer size                */
@@ -438,10 +395,6 @@ struct  TRaster_Instance_
     Int       numTurns;             /* number of Y-turns in outline        */
 
     TPoint*   arc;                  /* current Bezier arc pointer          */
-
-    UShort    bWidth;               /* target bitmap width                 */
-    PByte     bTarget;              /* target bitmap buffer                */
-    PByte     gTarget;              /* target pixmap buffer                */
 
     Long      lastX, lastY, minY, maxY;
     Short     minX_dev, maxX_dev;   /* vertical bounds in device coords    */
@@ -459,35 +412,10 @@ struct  TRaster_Instance_
 
     QT_FT_Outline  outline;
 
-    Long      traceOfs;             /* current offset in target bitmap     */
-    Long      traceG;               /* current offset in target pixmap     */
-
-    Short     traceIncr;            /* sweep's increment in target bitmap  */
-
-    Short     gray_min_x;           /* current min x during gray rendering */
-    Short     gray_max_x;           /* current max x during gray rendering */
-
-    /* dispatch variables */
-
-    Function_Sweep_Init*  Proc_Sweep_Init;
-    Function_Sweep_Span*  Proc_Sweep_Span;
-    Function_Sweep_Step*  Proc_Sweep_Step;
-
     TPoint    arcs[3 * MaxBezier + 1]; /* The Bezier stack                 */
 
     TBand     band_stack[16];       /* band stack used for sub-banding     */
     Int       band_top;             /* band stack top                      */
-
-    void*     memory;
-
-#if 0
-    PByte       flags;              /* current flags table                 */
-    PUShort     outs;               /* current outlines table              */
-    QT_FT_Vector*  coords;
-
-    UShort      nPoints;            /* number of points in current glyph   */
-    Short       nContours;          /* number of contours in current glyph */
-#endif
 
     QT_FT_SpanFunc black_spans;
     void *      user_data;
@@ -496,16 +424,7 @@ struct  TRaster_Instance_
 };
 
 
-#ifdef QT_FT_CONFIG_OPTION_STATIC_RASTER
-
-static TRaster_Instance  cur_ras;
-#define ras  cur_ras
-
-#else
-
 #define ras  (*raster)
-
-#endif /* QT_FT_CONFIG_OPTION_STATIC_RASTER */
 
 
 /*************************************************************************/
@@ -515,44 +434,6 @@ static TRaster_Instance  cur_ras;
 /**                                                                     **/
 /*************************************************************************/
 /*************************************************************************/
-
-
-/*************************************************************************/
-/*                                                                       */
-/* <Function>                                                            */
-/*    Set_High_Precision                                                 */
-/*                                                                       */
-/* <Description>                                                         */
-/*    Sets precision variables according to param flag.                  */
-/*                                                                       */
-/* <Input>                                                               */
-/*    High :: Set to True for high precision (typically for ppem < 18),  */
-/*            false otherwise.                                           */
-/*                                                                       */
-static void
-Set_High_Precision( RAS_ARGS Int  High )
-{
-    if ( High )
-    {
-        ras.precision_bits   = 10;
-        ras.precision_step   = 128;
-        ras.precision_jitter = 24;
-    }
-    else
-    {
-        ras.precision_bits   = 6;
-        ras.precision_step   = 32;
-        ras.precision_jitter = 2;
-    }
-
-    QT_FT_TRACE6( "Set_High_Precision(%s)\n", High ? "true" : "false" );
-
-    ras.precision       = 1 << ras.precision_bits;
-    ras.precision_half  = ras.precision / 2;
-    ras.precision_shift = ras.precision_bits - Pixel_Bits;
-    ras.precision_mask  = -ras.precision;
-}
-
 
 /*************************************************************************/
 /*                                                                       */
@@ -570,7 +451,7 @@ Set_High_Precision( RAS_ARGS Int  High )
 /*   profile.                                                            */
 /*                                                                       */
 static Bool
-New_Profile( RAS_ARGS TStates  aState )
+New_Profile( TRaster_Instance*  raster, TStates  aState )
 {
     if ( !ras.fProfile )
     {
@@ -630,10 +511,9 @@ New_Profile( RAS_ARGS TStates  aState )
 /*    SUCCESS on success.  FAILURE in case of overflow or incoherency.   */
 /*                                                                       */
 static Bool
-End_Profile( RAS_ARG )
+End_Profile( TRaster_Instance*  raster )
 {
     Long      h;
-    PProfile  oldProfile;
 
     h = (Long)( ras.top - ras.cProfile->offset );
 
@@ -649,7 +529,6 @@ End_Profile( RAS_ARG )
         QT_FT_TRACE6( "Ending profile %lx, start = %ld, height = %ld top=%p\n\n",
                    (long)ras.cProfile, ras.cProfile->start, h,ras.top );
 
-        oldProfile           = ras.cProfile;
         ras.cProfile->height = (long)h;
         ras.cProfile         = (PProfile)ras.top;
 
@@ -687,7 +566,7 @@ End_Profile( RAS_ARG )
 /*    SUCCESS on success.  FAILURE in case of overflow.                  */
 /*                                                                       */
 static Bool
-Insert_Y_Turn( RAS_ARGS Int  y )
+Insert_Y_Turn( TRaster_Instance*  raster, Int  y )
 {
     PLong  y_turns;
     Int    y2, n;
@@ -738,7 +617,7 @@ Insert_Y_Turn( RAS_ARGS Int  y )
 /*    SUCCESS on success.  FAILURE in case of overflow.                  */
 /*                                                                       */
 static Bool
-Finalize_Profile_Table( RAS_ARG )
+Finalize_Profile_Table( TRaster_Instance*  raster )
 {
     Int       bottom, top;
     UShort    n;
@@ -772,8 +651,8 @@ Finalize_Profile_Table( RAS_ARG )
                 top    = (Int)( p->start + p->height - 1 );
             }
 
-            if ( Insert_Y_Turn( RAS_VARS bottom )   ||
-                 Insert_Y_Turn( RAS_VARS top + 1 )  )
+            if ( Insert_Y_Turn( raster, bottom )   ||
+                 Insert_Y_Turn( raster, top + 1 )  )
                 return FAILURE;
 
             p = p->link;
@@ -893,7 +772,7 @@ Split_Cubic( TPoint*  base )
 /*    SUCCESS on success, FAILURE on render pool overflow.               */
 /*                                                                       */
 static Bool
-Line_Up( RAS_ARGS Long  x1,
+Line_Up( TRaster_Instance*  raster, Long  x1,
          Long  y1,
          Long  x2,
          Long  y2,
@@ -944,10 +823,10 @@ Line_Up( RAS_ARGS Long  x1,
 
     if ( f1 > 0 )
     {
-        x1 += FMulDiv( Dx, ras.precision - f1, Dy );
+        x1 += FMulDiv( Dx, precision - f1, Dy );
     } else if (ras.cProfile->flow == Flow_Down && !clipped ) {
         e1++;
-        x1 += FMulDiv( Dx, ras.precision, Dy);
+        x1 += FMulDiv( Dx, precision, Dy);
     }
 
     if ( ras.fresh )
@@ -966,14 +845,14 @@ Line_Up( RAS_ARGS Long  x1,
 
     if ( Dx > 0 )
     {
-        Ix = ( ras.precision * Dx ) / Dy;
-        Rx = ( ras.precision * Dx ) % Dy;
+        Ix = (Long) ((precision * ((qint64)Dx)) / Dy);
+        Rx = (Long) ((precision * ((qint64)Dx)) % Dy);
         Dx = 1;
     }
     else
     {
-        Ix = -( ( ras.precision * -Dx ) / Dy );
-        Rx =    ( ras.precision * -Dx ) % Dy;
+        Ix = (Long) -(precision * ((qint64)-Dx) / Dy);
+        Rx = (Long)  (precision * ((qint64)-Dx) % Dy);
         Dx = -1;
     }
 
@@ -1031,7 +910,7 @@ Line_Up( RAS_ARGS Long  x1,
 /*    SUCCESS on success, FAILURE on render pool overflow.               */
 /*                                                                       */
 static Bool
-Line_Down( RAS_ARGS Long  x1,
+Line_Down( TRaster_Instance*  raster, Long  x1,
            Long  y1,
            Long  x2,
            Long  y2,
@@ -1043,7 +922,7 @@ Line_Down( RAS_ARGS Long  x1,
 
     fresh  = ras.fresh;
 
-    result = Line_Up( RAS_VARS x1, -y1, x2, -y2, -maxy, -miny );
+    result = Line_Up( raster, x1, -y1, x2, -y2, -maxy, -miny );
 
     if ( fresh && !ras.fresh )
         ras.cProfile->start = -ras.cProfile->start;
@@ -1078,7 +957,7 @@ typedef void  (*TSplitter)( TPoint*  base );
 /*    SUCCESS on success, FAILURE on render pool overflow.               */
 /*                                                                       */
 static Bool
-Bezier_Up( RAS_ARGS Int        degree,
+Bezier_Up( TRaster_Instance*  raster, Int        degree,
            TSplitter  splitter,
            Long       miny,
            Long       maxy )
@@ -1104,7 +983,7 @@ Bezier_Up( RAS_ARGS Int        degree,
     } else {
         e2 = FLOOR( y2 );
         if (FRAC(y2) == 0  && ras.cProfile->flow == Flow_Up)
-            e2 -= ras.precision;
+            e2 -= precision;
     }
 
     if ( y1 < miny ) {
@@ -1112,7 +991,7 @@ Bezier_Up( RAS_ARGS Int        degree,
     } else {
         e  = CEILING(y1);
         if (FRAC(y1) == 0 && ras.cProfile->flow == Flow_Down)
-            e += ras.precision;
+            e += precision;
     }
 
     if ( ras.fresh )
@@ -1146,7 +1025,7 @@ Bezier_Up( RAS_ARGS Int        degree,
         if ( y2 > e )
         {
             y1 = arc[degree].y;
-            if ( y2 - y1 >= ras.precision_step )
+            if ( y2 - y1 >= precision_step )
             {
                 splitter( arc );
                 arc += degree;
@@ -1159,7 +1038,7 @@ Bezier_Up( RAS_ARGS Int        degree,
                           (arc[degree].x + FMulDiv( arc[0].x-arc[degree].x,
                                                     e - y1, y2 - y1 ))/64., e/64.);
                 arc -= degree;
-                e   += ras.precision;
+                e   += precision;
             }
         }
         else
@@ -1169,7 +1048,7 @@ Bezier_Up( RAS_ARGS Int        degree,
                 *top++     = arc[0].x;
                 QT_FT_TRACE6("  x=%f y=%f\n", arc[0].x/64., e/64.);
 
-                e += ras.precision;
+                e += precision;
             }
             arc -= degree;
         }
@@ -1205,7 +1084,7 @@ Fin:
 /*    SUCCESS on success, FAILURE on render pool overflow.               */
 /*                                                                       */
 static Bool
-Bezier_Down( RAS_ARGS Int        degree,
+Bezier_Down( TRaster_Instance*  raster, Int        degree,
              TSplitter  splitter,
              Long       miny,
              Long       maxy )
@@ -1222,7 +1101,7 @@ Bezier_Down( RAS_ARGS Int        degree,
 
     fresh = ras.fresh;
 
-    result = Bezier_Up( RAS_VARS degree, splitter, -maxy, -miny );
+    result = Bezier_Up( raster, degree, splitter, -maxy, -miny );
 
     if ( fresh && !ras.fresh )
         ras.cProfile->start = -ras.cProfile->start;
@@ -1252,7 +1131,7 @@ Bezier_Down( RAS_ARGS Int        degree,
 /*   profile.                                                            */
 /*                                                                       */
 static Bool
-Line_To( RAS_ARGS Long  x,
+Line_To( TRaster_Instance*  raster, Long  x,
          Long  y )
 {
     /* First, detect a change of direction */
@@ -1263,13 +1142,13 @@ Line_To( RAS_ARGS Long  x,
     case Unknown_State:
         if ( y > ras.lastY )
         {
-            if ( New_Profile( RAS_VARS Ascending_State ) )
+            if ( New_Profile( raster, Ascending_State ) )
                 return FAILURE;
         }
         else
         {
             if ( y < ras.lastY )
-                if ( New_Profile( RAS_VARS Descending_State ) )
+                if ( New_Profile( raster, Descending_State ) )
                     return FAILURE;
         }
         break;
@@ -1277,8 +1156,8 @@ Line_To( RAS_ARGS Long  x,
     case Ascending_State:
         if ( y < ras.lastY )
         {
-            if ( End_Profile( RAS_VAR )                   ||
-                 New_Profile( RAS_VARS Descending_State ) )
+            if ( End_Profile( raster )                   ||
+                 New_Profile( raster, Descending_State ) )
                 return FAILURE;
         }
         break;
@@ -1286,8 +1165,8 @@ Line_To( RAS_ARGS Long  x,
     case Descending_State:
         if ( y > ras.lastY )
         {
-            if ( End_Profile( RAS_VAR )                  ||
-                 New_Profile( RAS_VARS Ascending_State ) )
+            if ( End_Profile( raster )                  ||
+                 New_Profile( raster, Ascending_State ) )
                 return FAILURE;
         }
         break;
@@ -1301,13 +1180,13 @@ Line_To( RAS_ARGS Long  x,
     switch ( ras.state )
     {
     case Ascending_State:
-        if ( Line_Up( RAS_VARS ras.lastX, ras.lastY,
+        if ( Line_Up( raster, ras.lastX, ras.lastY,
                       x, y, ras.minY, ras.maxY ) )
             return FAILURE;
         break;
 
     case Descending_State:
-        if ( Line_Down( RAS_VARS ras.lastX, ras.lastY,
+        if ( Line_Down( raster, ras.lastX, ras.lastY,
                         x, y, ras.minY, ras.maxY ) )
             return FAILURE;
         break;
@@ -1347,7 +1226,7 @@ Line_To( RAS_ARGS Long  x,
 /*   profile.                                                            */
 /*                                                                       */
 static Bool
-Conic_To( RAS_ARGS Long  cx,
+Conic_To( TRaster_Instance*  raster, Long  cx,
           Long  cy,
           Long  x,
           Long  y )
@@ -1403,22 +1282,22 @@ Conic_To( RAS_ARGS Long  cx,
             {
                 /* finalize current profile if any */
                 if ( ras.state != Unknown_State   &&
-                     End_Profile( RAS_VAR ) )
+                     End_Profile( raster ) )
                     goto Fail;
 
                 /* create a new profile */
-                if ( New_Profile( RAS_VARS state_bez ) )
+                if ( New_Profile( raster, state_bez ) )
                     goto Fail;
             }
 
             /* now call the appropriate routine */
             if ( state_bez == Ascending_State )
             {
-                if ( Bezier_Up( RAS_VARS 2, Split_Conic, ras.minY, ras.maxY ) )
+                if ( Bezier_Up( raster, 2, Split_Conic, ras.minY, ras.maxY ) )
                     goto Fail;
             }
             else
-                if ( Bezier_Down( RAS_VARS 2, Split_Conic, ras.minY, ras.maxY ) )
+                if ( Bezier_Down( raster, 2, Split_Conic, ras.minY, ras.maxY ) )
                     goto Fail;
         }
 
@@ -1462,7 +1341,7 @@ Fail:
 /*   profile.                                                            */
 /*                                                                       */
 static Bool
-Cubic_To( RAS_ARGS Long  cx1,
+Cubic_To( TRaster_Instance*  raster, Long  cx1,
           Long  cy1,
           Long  cx2,
           Long  cy2,
@@ -1533,21 +1412,21 @@ Cubic_To( RAS_ARGS Long  cx1,
             if ( ras.state != state_bez )
             {
                 if ( ras.state != Unknown_State   &&
-                     End_Profile( RAS_VAR ) )
+                     End_Profile( raster ) )
                     goto Fail;
 
-                if ( New_Profile( RAS_VARS state_bez ) )
+                if ( New_Profile( raster, state_bez ) )
                     goto Fail;
             }
 
             /* compute intersections */
             if ( state_bez == Ascending_State )
             {
-                if ( Bezier_Up( RAS_VARS 3, Split_Cubic, ras.minY, ras.maxY ) )
+                if ( Bezier_Up( raster, 3, Split_Cubic, ras.minY, ras.maxY ) )
                     goto Fail;
             }
             else
-                if ( Bezier_Down( RAS_VARS 3, Split_Cubic, ras.minY, ras.maxY ) )
+                if ( Bezier_Down( raster, 3, Split_Cubic, ras.minY, ras.maxY ) )
                     goto Fail;
         }
 
@@ -1596,7 +1475,7 @@ Fail:
 /*    SUCCESS on success, FAILURE on error.                              */
 /*                                                                       */
 static Bool
-Decompose_Curve( RAS_ARGS UShort  first,
+Decompose_Curve( TRaster_Instance*  raster, UShort  first,
                  UShort  last,
                  int     flipped )
 {
@@ -1682,7 +1561,7 @@ Decompose_Curve( RAS_ARGS UShort  first,
             if ( flipped )
                 SWAP_( x, y );
 
-            if ( Line_To( RAS_VARS x, y ) )
+            if ( Line_To( raster, x, y ) )
                 goto Fail;
             continue;
         }
@@ -1713,7 +1592,7 @@ Decompose_Curve( RAS_ARGS UShort  first,
 
                 if ( tag == QT_FT_CURVE_TAG_ON )
                 {
-                    if ( Conic_To( RAS_VARS v_control.x, v_control.y, x, y ) )
+                    if ( Conic_To( raster, v_control.x, v_control.y, x, y ) )
                         goto Fail;
                     continue;
                 }
@@ -1724,7 +1603,7 @@ Decompose_Curve( RAS_ARGS UShort  first,
                 v_middle.x = ( v_control.x + x ) / 2;
                 v_middle.y = ( v_control.y + y ) / 2;
 
-                if ( Conic_To( RAS_VARS v_control.x, v_control.y,
+                if ( Conic_To( raster, v_control.x, v_control.y,
                                v_middle.x,  v_middle.y ) )
                     goto Fail;
 
@@ -1734,7 +1613,7 @@ Decompose_Curve( RAS_ARGS UShort  first,
                 goto Do_Conic;
             }
 
-            if ( Conic_To( RAS_VARS v_control.x, v_control.y,
+            if ( Conic_To( raster, v_control.x, v_control.y,
                            v_start.x,   v_start.y ) )
                 goto Fail;
 
@@ -1768,12 +1647,12 @@ Decompose_Curve( RAS_ARGS UShort  first,
 
             if ( point <= limit )
             {
-                if ( Cubic_To( RAS_VARS x1, y1, x2, y2, x3, y3 ) )
+                if ( Cubic_To( raster, x1, y1, x2, y2, x3, y3 ) )
                     goto Fail;
                 continue;
             }
 
-            if ( Cubic_To( RAS_VARS x1, y1, x2, y2, v_start.x, v_start.y ) )
+            if ( Cubic_To( raster, x1, y1, x2, y2, v_start.x, v_start.y ) )
                 goto Fail;
             goto Close;
         }
@@ -1781,7 +1660,7 @@ Decompose_Curve( RAS_ARGS UShort  first,
     }
 
     /* close the contour with a line segment */
-    if ( Line_To( RAS_VARS v_start.x, v_start.y ) )
+    if ( Line_To( raster, v_start.x, v_start.y ) )
         goto Fail;
 
 Close:
@@ -1812,7 +1691,7 @@ Fail:
 /*    rendering.                                                         */
 /*                                                                       */
 static Bool
-Convert_Glyph( RAS_ARGS int  flipped )
+Convert_Glyph( TRaster_Instance*  raster, int  flipped )
 {
     int       i;
     unsigned  start;
@@ -1838,7 +1717,7 @@ Convert_Glyph( RAS_ARGS int  flipped )
         ras.state    = Unknown_State;
         ras.gProfile = NULL;
 
-        if ( Decompose_Curve( RAS_VARS (unsigned short)start,
+        if ( Decompose_Curve( raster, (unsigned short)start,
                               ras.outline.contours[i],
                               flipped ) )
             return FAILURE;
@@ -1849,12 +1728,12 @@ Convert_Glyph( RAS_ARGS int  flipped )
         /* to be drawn.                                                   */
 
         lastProfile = ras.cProfile;
-        if ( End_Profile( RAS_VAR ) )
+        if ( End_Profile( raster ) )
             return FAILURE;
 
     }
 
-    if ( Finalize_Profile_Table( RAS_VAR ) )
+    if ( Finalize_Profile_Table( raster ) )
         return FAILURE;
 
     return (Bool)( ras.top < ras.maxBuff ? SUCCESS : FAILURE );
@@ -2004,33 +1883,6 @@ Sort( PProfileList  list )
     }
 }
 
-
-/*************************************************************************/
-/*                                                                       */
-/*  Vertical Sweep Procedure Set                                         */
-/*                                                                       */
-/*  These four routines are used during the vertical black/white sweep   */
-/*  phase by the generic Draw_Sweep() function.                          */
-/*                                                                       */
-/*************************************************************************/
-
-static void
-Vertical_Sweep_Init( RAS_ARGS Short*  min,
-                     Short*  max )
-{
-    QT_FT_UNUSED( min );
-    QT_FT_UNUSED( max );
-    QT_FT_UNUSED( raster );
-}
-
-
-static void
-Vertical_Sweep_Step( RAS_ARG )
-{
-    ras.traceOfs += ras.traceIncr;
-}
-
-
 /*************************************************************************/
 /*                                                                       */
 /*  Generic Sweep Drawing routine                                        */
@@ -2038,7 +1890,7 @@ Vertical_Sweep_Step( RAS_ARG )
 /*************************************************************************/
 
 static Bool
-Draw_Sweep( RAS_ARG )
+Draw_Sweep( TRaster_Instance*  raster )
 {
     Short         y, y_change, y_height;
 
@@ -2056,7 +1908,7 @@ Draw_Sweep( RAS_ARG )
     TProfileList profile_list;
 
     QT_FT_Span spans[MAX_SPANS];
-    Int span_count;
+    Int span_count = 0;
 
     /* Init empty linked lists */
 
@@ -2095,10 +1947,6 @@ Draw_Sweep( RAS_ARG )
         ras.error = Raster_Err_Invalid;
         return FAILURE;
     }
-
-    /* Now inits the sweep */
-
-    ras.Proc_Sweep_Init( RAS_VARS &min_Y, &max_Y );
 
     /* Then compute the distance of each profile from min_Y */
 
@@ -2148,7 +1996,6 @@ Draw_Sweep( RAS_ARG )
 
         while ( y < y_change )
         {
-            span_count = 0;
 
 #ifdef Q_RASTER_DEBUG
             Q = profile_list;
@@ -2190,7 +2037,7 @@ Draw_Sweep( RAS_ARG )
                     x2 = xs;
                 }
 
-                if ( x2 - x1 <= ras.precision ) {
+                if ( x2 - x1 <= precision ) {
                     e1 = FLOOR( x1 );
                     e2 = CEILING( x2 );
                 }
@@ -2198,22 +2045,25 @@ Draw_Sweep( RAS_ARG )
                 ix1 = MAX(TRUNC(CEILING(x1)), ras.minX_dev);
                 ix2 = MIN(TRUNC(FLOOR(x2-1)) + 1, ras.maxX_dev);
                 if (ix2 > ix1) {
-                    spans[span_count].x = (short) ix1;
-                    spans[span_count].len = (short) (ix2 - ix1);
-                    spans[span_count].coverage = 255;
-                    ++span_count;
+                    if (span_count && spans[span_count-1].y == y
+                        && spans[span_count-1].x + spans[span_count-1].len == ix1) {
+                        /* merge spans */
+                        spans[span_count-1].len = (short) (ix2 - spans[span_count-1].x);
+                    } else {
+                        spans[span_count].x = (short) ix1;
+                        spans[span_count].len = (short) (ix2 - ix1);
+                        spans[span_count].y = y;
+                        spans[span_count].coverage = 255;
+                        ++span_count;
 
-                    if (span_count == MAX_SPANS) {
-                        ras.black_spans(y, span_count, spans, ras.user_data);
-                        span_count = 0;
+                        if (span_count == MAX_SPANS) {
+                            ras.black_spans(span_count, spans, ras.user_data);
+                            span_count = 0;
+                        }
                     }
                 }
                 P_Left = P_Right->link;
             }
-            ras.Proc_Sweep_Step( RAS_VAR );
-
-            if (span_count > 0)
-                ras.black_spans(y, span_count, spans, ras.user_data);
 
             y++;
 
@@ -2234,12 +2084,8 @@ Draw_Sweep( RAS_ARG )
 
     }
 
-    /* for gray-scaling, flushes the bitmap scanline cache */
-    while ( y <= max_Y )
-    {
-        ras.Proc_Sweep_Step( RAS_VAR );
-        y++;
-    }
+    if (span_count > 0)
+        ras.black_spans(span_count, spans, ras.user_data);
 
     return SUCCESS;
 }
@@ -2260,21 +2106,21 @@ Draw_Sweep( RAS_ARG )
 /*    Renderer error code.                                               */
 /*                                                                       */
 static int
-Render_Single_Pass( RAS_ARGS Bool  flipped )
+Render_Single_Pass( TRaster_Instance*  raster, Bool  flipped )
 {
     Short  i, j, k;
 
 
     while ( ras.band_top >= 0 )
     {
-        ras.maxY = (Long)ras.band_stack[ras.band_top].y_max * ras.precision;
-        ras.minY = (Long)ras.band_stack[ras.band_top].y_min * ras.precision;
+        ras.maxY = (Long)ras.band_stack[ras.band_top].y_max * precision;
+        ras.minY = (Long)ras.band_stack[ras.band_top].y_min * precision;
 
         ras.top = ras.buff;
 
         ras.error = Raster_Err_None;
 
-        if ( Convert_Glyph( RAS_VARS flipped ) )
+        if ( Convert_Glyph( raster, flipped ) )
         {
             if ( ras.error != Raster_Err_Overflow )
                 return FAILURE;
@@ -2284,7 +2130,7 @@ Render_Single_Pass( RAS_ARGS Bool  flipped )
             /* sub-banding */
 
 #ifdef DEBUG_RASTER
-            ClearBand( RAS_VARS TRUNC( ras.minY ), TRUNC( ras.maxY ) );
+            ClearBand( raster, TRUNC( ras.minY ), TRUNC( ras.maxY ) );
 #endif
 
             i = ras.band_stack[ras.band_top].y_min;
@@ -2300,17 +2146,17 @@ Render_Single_Pass( RAS_ARGS Bool  flipped )
                 return ras.error;
             }
 
-            ras.band_stack[ras.band_top + 1].y_min = k;
-            ras.band_stack[ras.band_top + 1].y_max = j;
+            ras.band_stack[ras.band_top].y_min = k;
 
-            ras.band_stack[ras.band_top].y_max = (Short)( k - 1 );
+            ras.band_stack[ras.band_top+1].y_min = i;
+            ras.band_stack[ras.band_top+1].y_max = (Short)( k - 1 );
 
             ras.band_top++;
         }
         else
         {
             if ( ras.fProfile )
-                if ( Draw_Sweep( RAS_VAR ) )
+                if ( Draw_Sweep( raster ) )
                     return ras.error;
             ras.band_top--;
         }
@@ -2332,40 +2178,22 @@ Render_Single_Pass( RAS_ARGS Bool  flipped )
 /*    FreeType error code.  0 means success.                             */
 /*                                                                       */
 QT_FT_LOCAL_DEF( QT_FT_Error )
-    Render_Glyph( RAS_ARG )
+    Render_Glyph( TRaster_Instance*  raster )
 {
     QT_FT_Error  error;
 
     QT_FT_TRACE6("Render_Glyph:\n");
 
-    Set_High_Precision( RAS_VARS FALSE );
-    ras.scale_shift    = ras.precision_shift;
-
-    /* Vertical Sweep */
-    ras.Proc_Sweep_Init = Vertical_Sweep_Init;
-    ras.Proc_Sweep_Step = Vertical_Sweep_Step;
-
     ras.band_top            = 0;
     ras.band_stack[0].y_min = (short) (ras.clip_box.yMin);
     ras.band_stack[0].y_max = (short) (ras.clip_box.yMax - ras.clip_box.yMin - 1);
-    ras.bWidth = (unsigned short) (ras.clip_box.xMax - ras.clip_box.xMin - 1);
 
-    if ( ( error = Render_Single_Pass( RAS_VARS 0 ) ) != 0 )
+    if ( ( error = Render_Single_Pass( raster, 0 ) ) != 0 )
         return error;
 
     QT_FT_TRACE6("End Render_Glyph:\n\n");
 
     return Raster_Err_Ok;
-}
-
-
-
-QT_FT_LOCAL_DEF( QT_FT_Error )
-    Render_Gray_Glyph( RAS_ARG )
-{
-    QT_FT_UNUSED_RASTER;
-
-    return Raster_Err_Cannot_Render_Glyph;
 }
 
 
@@ -2378,11 +2206,13 @@ static int
 qt_ft_black_new( void*      memory,
               QT_FT_Raster  *araster )
 {
-    static TRaster_Instance the_raster;
-    QT_FT_UNUSED( memory );
+    if (memory)
+        fprintf(stderr, "qt_ft_black_new(), memory ignored");
 
-    *araster = (QT_FT_Raster) &the_raster;
-    QT_FT_MEM_ZERO( &the_raster, sizeof ( the_raster ) );
+    memory = malloc(sizeof(TRaster_Instance));
+    QT_FT_MEM_ZERO(memory, sizeof(TRaster_Instance));
+
+    *araster = (QT_FT_Raster) memory;
 
     return 0;
 }
@@ -2391,9 +2221,7 @@ qt_ft_black_new( void*      memory,
 static void
 qt_ft_black_done( QT_FT_Raster  raster )
 {
-    QT_FT_UNUSED( raster );
-    /* nothing */
-/*     raster->init = 0; */
+    free(raster);
 }
 
 
@@ -2459,9 +2287,7 @@ qt_ft_black_render( TRaster_Instance*  raster,
 
     ras.odd_even = (outline->flags & QT_FT_OUTLINE_EVEN_ODD_FILL);
 
-    return ( ( params->flags & QT_FT_RASTER_FLAG_AA )
-             ? Render_Gray_Glyph( raster )
-             : Render_Glyph( raster ) );
+    return Render_Glyph( raster );
 }
 
 

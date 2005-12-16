@@ -68,20 +68,18 @@ static QRegionPrivate qrp;
 QRegion::QRegionData QRegion::shared_empty = {Q_ATOMIC_INIT(1), &qrp};
 #endif
 
-static bool isEmpty(QRegionPrivate *preg)
+static inline bool isEmpty(const QRegionPrivate *preg)
 {
     return !preg || preg->numRects == 0;
 }
 
-typedef void (*OverlapFunc)(register QRegionPrivate &dest, register QRect *r1, QRect *r1End,
-                            register QRect *r2, QRect *r2End, register int y1, register int y2);
-typedef void (*NonOverlapFunc)(register QRegionPrivate &dest, register QRect *r, QRect *rEnd,
+typedef void (*OverlapFunc)(register QRegionPrivate &dest, register const QRect *r1, const QRect *r1End,
+                            register const QRect *r2, const QRect *r2End, register int y1, register int y2);
+typedef void (*NonOverlapFunc)(register QRegionPrivate &dest, register const QRect *r, const QRect *rEnd,
                                register int y1, register int y2);
 
-static void UnionRegion(QRegionPrivate *reg1, QRegionPrivate *reg2, QRegionPrivate &dest);
-static void IntersectRegion(QRegionPrivate *reg1, QRegionPrivate *reg2,
-                            register QRegionPrivate &dest);
-static void miRegionOp(register QRegionPrivate &dest, QRegionPrivate *reg1, QRegionPrivate *reg2,
+static void UnionRegion(const QRegionPrivate *reg1, const QRegionPrivate *reg2, QRegionPrivate &dest);
+static void miRegionOp(register QRegionPrivate &dest, const QRegionPrivate *reg1, const QRegionPrivate *reg2,
                        OverlapFunc overlapFunc, NonOverlapFunc nonOverlap1Func,
                        NonOverlapFunc nonOverlap2Func);
 
@@ -275,13 +273,13 @@ SOFTWARE.
  */
 /* $XFree86: xc/lib/X11/Region.c,v 1.1.1.2.2.2 1998/10/04 15:22:50 hohndel Exp $ */
 
-static void UnionRectWithRegion(register const QRect *rect, QRegionPrivate *source,
+static void UnionRectWithRegion(register const QRect *rect, const QRegionPrivate *source,
                                 QRegionPrivate &dest)
 {
-    QRegionPrivate region;
-
     if (!rect->width() || !rect->height())
         return;
+
+    QRegionPrivate region;
     region.rects.resize(1);
     region.numRects = 1;
     region.rects[0] = *rect;
@@ -381,8 +379,8 @@ static void OffsetRegion(register QRegionPrivate &region, register int x, regist
  *
  *-----------------------------------------------------------------------
  */
-static void miIntersectO(register QRegionPrivate &dest, register QRect *r1, QRect *r1End,
-                         register QRect *r2, QRect *r2End, int y1, int y2)
+static void miIntersectO(register QRegionPrivate &dest, register const QRect *r1, const QRect *r1End,
+                         register const QRect *r2, const QRect *r2End, int y1, int y2)
 {
     register int x1;
     register int x2;
@@ -425,24 +423,6 @@ static void miIntersectO(register QRegionPrivate &dest, register QRect *r1, QRec
     }
 }
 
-static void IntersectRegion(QRegionPrivate *reg1, QRegionPrivate *reg2,
-                            register QRegionPrivate &dest)
-{
-    if (isEmpty(reg1) || isEmpty(reg2) || !EXTENTCHECK(&reg1->extents, &reg2->extents))
-        dest.numRects = 0;
-    else
-        miRegionOp(dest, reg1, reg2, miIntersectO, 0, 0);
-
-    /*
-     * Can't alter dest's extents before we call miRegionOp because
-     * it might be one of the source regions and miRegionOp depends
-     * on the extents of those regions being the same. Besides, this
-     * way there's no checking against rectangles that will be nuked
-     * due to coalescing, so we have to examine fewer rectangles.
-     */
-    miSetExtents(dest);
-}
-
 /*======================================================================
  *          Generic Region Operator
  *====================================================================*/
@@ -472,10 +452,11 @@ static int miCoalesce(register QRegionPrivate &dest, int prevStart, int curStart
     int curNumRects;    /* Number of rectangles in current band */
     int prevNumRects;   /* Number of rectangles in previous band */
     int bandY1;         /* Y1 coordinate for current band */
+    QRect *rData = dest.rects.data();
 
-    pRegEnd = dest.rects.data() + dest.numRects;
+    pRegEnd = rData + dest.numRects;
 
-    pPrevBox = dest.rects.data() + prevStart;
+    pPrevBox = rData + prevStart;
     prevNumRects = curStart - prevStart;
 
     /*
@@ -483,7 +464,7 @@ static int miCoalesce(register QRegionPrivate &dest, int prevStart, int curStart
      * this because multiple bands could have been added in miRegionOp
      * at the end when one region has been exhausted.
      */
-    pCurBox = dest.rects.data() + curStart;
+    pCurBox = rData + curStart;
     bandY1 = pCurBox->top();
     for (curNumRects = 0; pCurBox != pRegEnd && pCurBox->top() == bandY1; ++curNumRects) {
         ++pCurBox;
@@ -499,8 +480,8 @@ static int miCoalesce(register QRegionPrivate &dest, int prevStart, int curStart
         --pRegEnd;
         while ((pRegEnd - 1)->top() == pRegEnd->top())
             --pRegEnd;
-        curStart = pRegEnd - dest.rects.data();
-        pRegEnd = dest.rects.data() + dest.numRects;
+        curStart = pRegEnd - rData;
+        pRegEnd = rData + dest.numRects;
     }
 
     if (curNumRects == prevNumRects && curNumRects != 0) {
@@ -590,20 +571,20 @@ static int miCoalesce(register QRegionPrivate &dest, int prevStart, int curStart
  *
  *-----------------------------------------------------------------------
  */
-static void miRegionOp(register QRegionPrivate &dest, QRegionPrivate *reg1, QRegionPrivate *reg2,
+static void miRegionOp(register QRegionPrivate &dest, const QRegionPrivate *reg1, const QRegionPrivate *reg2,
                        OverlapFunc overlapFunc, NonOverlapFunc nonOverlap1Func,
                        NonOverlapFunc nonOverlap2Func)
 {
-    register QRect *r1;         // Pointer into first region
-    register QRect *r2;         // Pointer into 2d region
-    QRect *r1End;               // End of 1st region
-    QRect *r2End;               // End of 2d region
+    register const QRect *r1;         // Pointer into first region
+    register const QRect *r2;         // Pointer into 2d region
+    const QRect *r1End;               // End of 1st region
+    const QRect *r2End;               // End of 2d region
     register int ybot;          // Bottom of intersection
     register int ytop;          // Top of intersection
     int prevBand;               // Index of start of previous band in dest
     int curBand;                // Index of start of current band in dest
-    register QRect *r1BandEnd;  // End of current band in r1
-    register QRect *r2BandEnd;  // End of current band in r2
+    register const QRect *r1BandEnd;  // End of current band in r1
+    register const QRect *r2BandEnd;  // End of current band in r2
     int top;                    // Top of non-overlapping band
     int bot;                    // Bottom of non-overlapping band
 
@@ -796,7 +777,7 @@ static void miRegionOp(register QRegionPrivate &dest, QRegionPrivate *reg1, QReg
  *-----------------------------------------------------------------------
  */
 
-static void miUnionNonO(register QRegionPrivate &dest, register QRect *r, QRect *rEnd,
+static void miUnionNonO(register QRegionPrivate &dest, register const QRect *r, const QRect *rEnd,
                         register int y1, register int y2)
 {
     register QRect *pNextRect;
@@ -832,8 +813,8 @@ static void miUnionNonO(register QRegionPrivate &dest, register QRect *r, QRect 
  *-----------------------------------------------------------------------
  */
 
-static void miUnionO(register QRegionPrivate &dest, register QRect *r1, QRect *r1End,
-                     register QRect *r2, QRect *r2End, register int y1, register int y2)
+static void miUnionO(register QRegionPrivate &dest, register const QRect *r1, const QRect *r1End,
+                     register const QRect *r2, const QRect *r2End, register int y1, register int y2)
 {
     register QRect *pNextRect;
 
@@ -876,7 +857,7 @@ static void miUnionO(register QRegionPrivate &dest, register QRect *r1, QRect *r
     }
 }
 
-static void UnionRegion(QRegionPrivate *reg1, QRegionPrivate *reg2, QRegionPrivate &dest)
+static void UnionRegion(const QRegionPrivate *reg1, const QRegionPrivate *reg2, QRegionPrivate &dest)
 {
     /*
       Region 1 is empty or is equal to region 2.
@@ -944,8 +925,8 @@ static void UnionRegion(QRegionPrivate *reg1, QRegionPrivate *reg2, QRegionPriva
  *-----------------------------------------------------------------------
  */
 
-static void miSubtractNonO1(register QRegionPrivate &dest, register QRect *r,
-                            QRect *rEnd, register int y1, register int y2)
+static void miSubtractNonO1(register QRegionPrivate &dest, register const QRect *r,
+                            const QRect *rEnd, register int y1, register int y2)
 {
     register QRect *pNextRect;
 
@@ -978,8 +959,8 @@ static void miSubtractNonO1(register QRegionPrivate &dest, register QRect *r,
  *-----------------------------------------------------------------------
  */
 
-static void miSubtractO(register QRegionPrivate &dest, register QRect *r1, QRect *r1End,
-                        register QRect *r2, QRect *r2End, register int y1, register int y2)
+static void miSubtractO(register QRegionPrivate &dest, register const QRect *r1, const QRect *r1End,
+                        register const QRect *r2, const QRect *r2End, register int y1, register int y2)
 {
     register QRect *pNextRect;
     register int x1;
@@ -2460,8 +2441,21 @@ QRegion QRegion::unite(const QRegion &r) const
 QRegion QRegion::intersect(const QRegion &r) const
 {
     QRegion result;
+    if (::isEmpty(d->qt_rgn) || ::isEmpty(r.d->qt_rgn)
+        || !EXTENTCHECK(&d->qt_rgn->extents, &r.d->qt_rgn->extents))
+        return result;
+
     result.detach();
-    IntersectRegion(d->qt_rgn, r.d->qt_rgn, *result.d->qt_rgn);
+    miRegionOp(*result.d->qt_rgn, d->qt_rgn, r.d->qt_rgn, miIntersectO, 0, 0);
+
+    /*
+     * Can't alter dest's extents before we call miRegionOp because
+     * it might be one of the source regions and miRegionOp depends
+     * on the extents of those regions being the same. Besides, this
+     * way there's no checking against rectangles that will be nuked
+     * due to coalescing, so we have to examine fewer rectangles.
+     */
+    miSetExtents(*result.d->qt_rgn);
     return result;
 }
 

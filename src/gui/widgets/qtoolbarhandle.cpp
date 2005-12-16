@@ -44,8 +44,9 @@ static QStyleOption getStyleOption(const QToolBarHandle *tbh)
 }
 
 QToolBarHandle::QToolBarHandle(QToolBar *parent)
-    : QWidget(parent), orient(parent->orientation()), state(0)
+    : QWidget(parent), state(0)
 {
+    setOrientation(parent->orientation());
 #ifndef QT_NO_CURSOR
     setCursor(Qt::SizeAllCursor);
 #endif
@@ -92,7 +93,22 @@ void QToolBarHandle::mousePressEvent(QMouseEvent *event)
     if (event->button() != Qt::LeftButton)
         return;
 
-    Q_ASSERT(parentWidget());
+    QToolBar *toolBar = qobject_cast<QToolBar *>(parentWidget());
+    Q_ASSERT_X(toolBar != 0, "QToolBar", "internal error");
+    QMainWindow *mainWindow = qobject_cast<QMainWindow *>(toolBar->parentWidget());
+    Q_ASSERT_X(mainWindow != 0, "QMainWindow", "internal error");
+    QMainWindowLayout *layout = qobject_cast<QMainWindowLayout *>(mainWindow->layout());
+    Q_ASSERT_X(layout != 0, "QMainWindow", "internal error");
+
+    // cannot drag if the toolbar has not been added to the mainwindow
+    QLayoutItem *item;
+    bool found = false;
+    int index = 0;
+    while (!found && (item = layout->itemAt(index++)) != 0)
+        found = item->widget() == toolBar;
+    if (!found)
+        return;
+
     Q_ASSERT(!state);
     state = new DragState;
     state->offset = mapTo(parentWidget(), event->pos());

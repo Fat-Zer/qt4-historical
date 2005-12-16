@@ -7,6 +7,7 @@ SUBDIRS       = dialogs \
                 mainwindows \
                 network \
                 painting \
+                qtestlib \
                 richtext \
                 sql \
                 threads \
@@ -14,9 +15,8 @@ SUBDIRS       = dialogs \
                 tutorial \
                 widgets \
                 xml
-!contains(QT_EDITION, Console):SUBDIRS += designer
+!contains(QT_EDITION, Console):!cross_compile:SUBDIRS += designer
 contains(QT_CONFIG, opengl): SUBDIRS += opengl
-#!cross_compiler:SUBDIRS: += designer
 win32:!contains(QT_EDITION, OpenSource|Console):SUBDIRS += activeqt
 
 # install

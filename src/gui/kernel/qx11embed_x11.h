@@ -21,8 +21,8 @@
 **
 ****************************************************************************/
 
-#ifndef QX11EMBED_H
-#define QX11EMBED_H
+#ifndef QX11EMBED_X11_H
+#define QX11EMBED_X11_H
 
 #include <QtGui/qwidget.h>
 
@@ -46,7 +46,7 @@ public:
     };
     Error error() const;
 
-signals:
+Q_SIGNALS:
     void embedded();
     void containerClosed();
     void error(QX11EmbedWidget::Error error);
@@ -84,7 +84,7 @@ public:
     };
     Error error() const;
 
-signals:
+Q_SIGNALS:
     void clientIsEmbedded();
     void clientClosed();
     void error(QX11EmbedContainer::Error);
@@ -103,4 +103,4 @@ private:
     Q_DISABLE_COPY(QX11EmbedContainer)
 };
 
-#endif
+#endif // QX11EMBED_X11_H

@@ -21,8 +21,8 @@
 **
 ****************************************************************************/
 
-#ifndef __PROJECT_H__
-#define __PROJECT_H__
+#ifndef PROJECT_H
+#define PROJECT_H
 
 #include <qstringlist.h>
 #include <qtextstream.h>
@@ -152,4 +152,4 @@ inline QString QMakeProject::first(const QString &v)
 inline QMap<QString, QStringList> &QMakeProject::variables()
 { return vars; }
 
-#endif /* __PROJECT_H__ */
+#endif // PROJECT_H

@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/src/sql/kernel/qsqldriverplugin.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/sql/kernel/qsqldriverplugin.cpp -->
 <head>
-    <title>Qt 4.0: QSqlDriverPlugin Class Reference</title>
+    <title>Qt 4.1: QSqlDriverPlugin Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -47,28 +47,26 @@ body { background: #ffffff; color: black; }</style>
 <h2>Detailed Description</h2>
 <p>The QSqlDriverPlugin class provides an abstract base for custom <a href="qsqldriver.html">QSqlDriver</a> plugins.</p>
 <p>The SQL driver plugin is a simple plugin interface that makes it easy to create your own SQL driver plugins that can be loaded dynamically by Qt.</p>
-<p>Writing a SQL plugin is achieved by subclassing this base class, reimplementing the pure virtual functions <a href="qsqldriverplugin.html#keys">keys</a>() and <a href="qsqldriverplugin.html#create">create</a>(), and exporting the class with the <a href="qpluginloader.html#Q_EXPORT_PLUGIN">Q_EXPORT_PLUGIN</a>() macro. See the SQL plugins that come with Qt for example implementations (in the <tt>plugins/src/sqldrivers</tt> subdirectory of the source distribution).</p>
+<p>Writing a SQL plugin is achieved by subclassing this base class, reimplementing the pure virtual functions <a href="qsqldriverplugin.html#keys">keys</a>() and <a href="qsqldriverplugin.html#create">create</a>(), and exporting the class with the <a href="qpluginloader-obsolete.html#Q_EXPORT_PLUGIN">Q_EXPORT_PLUGIN</a>() macro. See the SQL plugins that come with Qt for example implementations (in the <tt>plugins/src/sqldrivers</tt> subdirectory of the source distribution).</p>
 <p>See also <a href="plugins-howto.html">How to Create Qt Plugins</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QSqlDriverPlugin"></a>QSqlDriverPlugin::QSqlDriverPlugin ( <a href="qobject.html">QObject</a> * <i>parent</i> = 0 )</h3>
-<p>Constructs a SQL driver plugin and sets the parent to <i>parent</i>. This is invoked automatically by the <a href="qpluginloader.html#Q_EXPORT_PLUGIN">Q_EXPORT_PLUGIN</a>() macro.</p>
+<p>Constructs a SQL driver plugin and sets the parent to <i>parent</i>. This is invoked automatically by the <a href="qpluginloader-obsolete.html#Q_EXPORT_PLUGIN">Q_EXPORT_PLUGIN</a>() macro.</p>
 <h3 class="fn"><a name="dtor.QSqlDriverPlugin"></a>QSqlDriverPlugin::~QSqlDriverPlugin ()</h3>
 <p>Destroys the SQL driver plugin.</p>
 <p>You never have to call this explicitly. Qt destroys a plugin automatically when it is no longer used.</p>
 <h3 class="fn"><a name="create"></a><a href="qsqldriver.html">QSqlDriver</a> * QSqlDriverPlugin::create ( const <a href="qstring.html">QString</a> &amp; <i>key</i> )&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Creates and returns a <a href="qsqldriver.html">QSqlDriver</a> object for the driver called <i>key</i>. The driver key is usually the class name of the required driver.</p>
-<p>Reimplemented from <a href="qsqldriverfactoryinterface.html#create">QSqlDriverFactoryInterface</a>.</p>
 <p>See also <a href="qsqldriverplugin.html#keys">keys</a>().</p>
 <h3 class="fn"><a name="keys"></a><a href="qstringlist.html">QStringList</a> QSqlDriverPlugin::keys () const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Returns the list of drivers (keys) this plugin supports.</p>
 <p>These keys are usually the class names of the custom drivers that are implemented in the plugin.</p>
-<p>Reimplemented from <a href="qfactoryinterface.html#keys">QFactoryInterface</a>.</p>
 <p>See also <a href="qsqldriverplugin.html#create">create</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

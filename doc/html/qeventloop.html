@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/src/corelib/kernel/qeventloop.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/corelib/kernel/qeventloop.cpp -->
 <head>
-    <title>Qt 4.0: QEventLoop Class Reference</title>
+    <title>Qt 4.1: QEventLoop Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -63,7 +63,7 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Detailed Description</h2>
 <p>The QEventLoop class provides a means of entering and leaving an event loop.</p>
-<p>At any time, you can create a QEventLoop object and call <a href="qeventloop.html#exec">exec</a>() on it to start a local event loop. From withing the event loop, calling <a href="qeventloop.html#exit">exit</a>() will force <a href="qeventloop.html#exec">exec</a>() to return.</p>
+<p>At any time, you can create a QEventLoop object and call <a href="qeventloop.html#exec">exec</a>() on it to start a local event loop. From within the event loop, calling <a href="qeventloop.html#exit">exit</a>() will force <a href="qeventloop.html#exec">exec</a>() to return.</p>
 <p>See also <a href="qabstracteventdispatcher.html">QAbstractEventDispatcher</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
@@ -72,8 +72,8 @@ body { background: #ffffff; color: black; }</style>
 <table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QEventLoop::AllEvents</tt></td><td align="center" valign="top"><tt>0x00</tt></td><td valign="top">All events are processed</td></tr>
-<tr><td valign="top"><tt>QEventLoop::ExcludeUserInputEvents</tt></td><td align="center" valign="top"><tt>0x01</tt></td><td valign="top">Do not process user input events, such as ButtonPress and KeyPress.</td></tr>
-<tr><td valign="top"><tt>QEventLoop::ExcludeSocketNotifiers</tt></td><td align="center" valign="top"><tt>0x02</tt></td><td valign="top">Do not process socket notifier events.</td></tr>
+<tr><td valign="top"><tt>QEventLoop::ExcludeUserInputEvents</tt></td><td align="center" valign="top"><tt>0x01</tt></td><td valign="top">Do not process user input events, such as ButtonPress and KeyPress. Note that the events are not discarded; they will be delivered the next time <a href="qeventloop.html#processEvents">processEvents</a>() is called without the ExcludeUserInputEvents flag.</td></tr>
+<tr><td valign="top"><tt>QEventLoop::ExcludeSocketNotifiers</tt></td><td align="center" valign="top"><tt>0x02</tt></td><td valign="top">Do not process socket notifier events. Note that the events are not discarded; they will be delivered the next time <a href="qeventloop.html#processEvents">processEvents</a>() is called without the ExcludeSocketNotifiers flag.</td></tr>
 <tr><td valign="top"><tt>QEventLoop::WaitForMoreEvents</tt></td><td align="center" valign="top"><tt>0x04</tt></td><td valign="top">Wait for events if no pending events are available.</td></tr>
 </table>
 <p>The ProcessEventsFlags type is a typedef for <a href="qflags.html">QFlags</a>&lt;ProcessEventsFlag&gt;. It stores an OR combination of ProcessEventsFlag values.</p>
@@ -121,6 +121,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

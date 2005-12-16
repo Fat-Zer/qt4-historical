@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/src/corelib/global/qglobal.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/corelib/global/qglobal.cpp -->
 <head>
-    <title>Qt 4.0: &lt;QtGlobal&gt; - Global Qt Declarations</title>
+    <title>Qt 4.1: &lt;QtGlobal&gt; - Global Qt Declarations</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -22,6 +22,8 @@ body { background: #ffffff; color: black; }</style>
 <a name="Typesx"></a>
 <h3>Types</h3>
 <ul>
+<li><div class="fn"/>typedef <b><a href="qtglobal.html#QtMsgHandler-typedef">QtMsgHandler</a></b></li>
+<li><div class="fn"/>enum <b><a href="qtglobal.html#QtMsgType-enum">QtMsgType</a></b> { QtDebugMsg, QtWarningMsg, QtCriticalMsg, QtFatalMsg, QtSystemMsg }</li>
 <li><div class="fn"/>typedef <b><a href="qtglobal.html#qint8-typedef">qint8</a></b></li>
 <li><div class="fn"/>typedef <b><a href="qtglobal.html#qint16-typedef">qint16</a></b></li>
 <li><div class="fn"/>typedef <b><a href="qtglobal.html#qint32-typedef">qint32</a></b></li>
@@ -46,12 +48,12 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>void <b><a href="qtglobal.html#qCritical">qCritical</a></b> ( const char * <i>msg</i>, ... )</li>
 <li><div class="fn"/>void <b><a href="qtglobal.html#qDebug">qDebug</a></b> ( const char * <i>msg</i>, ... )</li>
 <li><div class="fn"/>void <b><a href="qtglobal.html#qFatal">qFatal</a></b> ( const char * <i>msg</i>, ... )</li>
-<li><div class="fn"/>QtMsgHandler <b><a href="qtglobal.html#qInstallMsgHandler">qInstallMsgHandler</a></b> ( QtMsgHandler <i>h</i> )</li>
+<li><div class="fn"/>QtMsgHandler <b><a href="qtglobal.html#qInstallMsgHandler">qInstallMsgHandler</a></b> ( QtMsgHandler <i>handler</i> )</li>
 <li><div class="fn"/>int <b><a href="qtglobal.html#qMacVersion">qMacVersion</a></b> ()</li>
 <li><div class="fn"/>const T &amp; <b><a href="qtglobal.html#qMax">qMax</a></b> ( const T &amp; <i>value1</i>, const T &amp; <i>value2</i> )</li>
 <li><div class="fn"/>const T &amp; <b><a href="qtglobal.html#qMin">qMin</a></b> ( const T &amp; <i>value1</i>, const T &amp; <i>value2</i> )</li>
-<li><div class="fn"/>qint64 <b><a href="qtglobal.html#qRound64">qRound64</a></b> ( double <i>value</i> )</li>
-<li><div class="fn"/>int <b><a href="qtglobal.html#qRound">qRound</a></b> ( double <i>value</i> )</li>
+<li><div class="fn"/>qint64 <b><a href="qtglobal.html#qRound64">qRound64</a></b> ( qreal <i>value</i> )</li>
+<li><div class="fn"/>int <b><a href="qtglobal.html#qRound">qRound</a></b> ( qreal <i>value</i> )</li>
 <li><div class="fn"/>const char * <b><a href="qtglobal.html#qVersion">qVersion</a></b> ()</li>
 <li><div class="fn"/>void <b><a href="qtglobal.html#qWarning">qWarning</a></b> ( const char * <i>msg</i>, ... )</li>
 </ul>
@@ -85,7 +87,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="qtglobal.html#Q_CC_SYM">Q_CC_SYM</a></b></li>
 <li><div class="fn"/><b><a href="qtglobal.html#Q_CC_USLC">Q_CC_USLC</a></b></li>
 <li><div class="fn"/><b><a href="qtglobal.html#Q_CC_WAT">Q_CC_WAT</a></b></li>
-<li><div class="fn"/>void <b><a href="qtglobal.html#Q_CHECK_PTR">Q_CHECK_PTR</a></b> ( void * <i>p</i> )</li>
+<li><div class="fn"/>void <b><a href="qtglobal.html#Q_CHECK_PTR">Q_CHECK_PTR</a></b> ( void * <i>pointer</i> )</li>
 <li><div class="fn"/><b><a href="qtglobal.html#Q_FOREACH">Q_FOREACH</a></b> (  <i>variable</i>,  <i>container</i> )</li>
 <li><div class="fn"/>qint64 <b><a href="qtglobal.html#Q_INT64_C">Q_INT64_C</a></b> (  <i>literal</i> )</li>
 <li><div class="fn"/><b><a href="qtglobal.html#Q_OS_X11">Q_OS_X11</a></b></li>
@@ -120,8 +122,8 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="qtglobal.html#Q_OS_UNIX">Q_OS_UNIX</a></b></li>
 <li><div class="fn"/><b><a href="qtglobal.html#Q_OS_UNIXWARE">Q_OS_UNIXWARE</a></b></li>
 <li><div class="fn"/><b><a href="qtglobal.html#Q_OS_WIN32">Q_OS_WIN32</a></b></li>
-<li><div class="fn"/><b><a href="qtglobal.html#Q_OS_WIN32-2">Q_OS_WIN32</a></b></li>
 <li><div class="fn"/>quint64 <b><a href="qtglobal.html#Q_UINT64_C">Q_UINT64_C</a></b> (  <i>literal</i> )</li>
+<li><div class="fn"/><b><a href="qtglobal.html#Q_UNUSED">Q_UNUSED</a></b> (  <i>name</i> )</li>
 <li><div class="fn"/><b><a href="qtglobal.html#foreach">foreach</a></b> (  <i>variable</i>,  <i>container</i> )</li>
 <li><div class="fn"/>const char * <b><a href="qtglobal.html#qPrintable">qPrintable</a></b> ( const QString &amp; <i>str</i> )</li>
 </ul>
@@ -129,9 +131,53 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Detailed Description</h2>
 <p>The &lt;QtGlobal&gt; header file provides basic declarations and is included by all other Qt headers.</p>
-<p>See also <a href="qtalgorithms.html">&lt;QtAlgorithms&gt;</a>.</p>
+<p>The declarations include <a href="#types">types</a>, <a href="#functions">functions</a> and <a href="#macros">macros</a>.</p>
+<p>The type definitions are partly convenience definitions for basic types (some of which guarantee certain bit-sizes on all platforms supported by Qt), partly types related to Qt message handling. The functions are related to generating messages, Qt version handling and comparing and adjusting object values. And finally, some of the declared macros enable programmers to add compiler or platform specific code to their applications, while others are convenience macros for larger operations.</p>
+<a name="types"></a>
+<h3>Types</h3>
+<p>The header file declares several type definitions that guarantee a specified bit-size on all platforms supported by Qt for various basic types, for example <a href="qtglobal.html#qint8-typedef">qint8</a> which is a signed char guaranteed to be 8-bit on all platforms supported by Qt. The header file also declares the <a href="qtglobal.html#qlonglong-typedef">qlonglong</a> type definition for <tt>long long int</tt> (<tt>unsigned</tt> __int64 on Windows).</p>
+<p>Several convenience type definitions are declared: <a href="qtglobal.html#qreal-typedef">qreal</a> for <tt>double</tt>, <a href="qtglobal.html#uchar-typedef">uchar</a> for <tt>unsigned</tt> char, <a href="qtglobal.html#uint-typedef">uint</a> for <tt>unsigned</tt> int, <a href="qtglobal.html#ulong-typedef">ulong</a> for <tt>unsigned</tt> long and <a href="qtglobal.html#ushort-typedef">ushort</a> for <tt>unsigned</tt> short.</p>
+<p>Finally, the <a href="qtglobal.html#QtMsgType-enum">QtMsgType</a> definition identifies the various messages that can be generated and sent to a Qt message handler; <a href="qtglobal.html#QtMsgHandler-typedef">QtMsgHandler</a> is a type definition for a pointer to a function with the signature <tt>void myMsgHandler(QtMsgType, const char *)</tt>.</p>
+<a name="functions"></a>
+<h3>Functions</h3>
+<p>The &lt;QtGlobal&gt; header file contains several functions comparing and adjusting an object's value. These functions take a template type as argument: You can retrieve the absolute value of an object using the <a href="qtglobal.html#qAbs">qAbs</a>() function, and you can bound a given object's value by given minimum and maximum values using the <a href="qtglobal.html#qBound">qBound</a>() function. You can retrieve the minimum and maximum of two given objects using <a href="qtglobal.html#qMin">qMin</a>() and <a href="qtglobal.html#qMax">qMax</a>() respectively. All these functions return a corresponding template type; the template types can be replaced by any other type. For example:</p>
+<pre>&nbsp;   int myValue = 10;
+    int minValue = 2;
+    int maxValue = 6;
+
+    int boundedValue = qBound(minValue, myValue, maxValue);
+    // boundedValue == 6</pre>
+<p>&lt;QtGlobal&gt; also contains functions that generate messages from the given string argument: <a href="qtglobal.html#qCritical">qCritical</a>(), <a href="qtglobal.html#qDebug">qDebug</a>(), <a href="qtglobal.html#qFatal">qFatal</a>() and <a href="qtglobal.html#qWarning">qWarning</a>(). These functions call the message handler with the given message. For example:</p>
+<pre>&nbsp;   if (!driver()-&gt;isOpen() || driver()-&gt;isOpenError()) {
+        qWarning(&quot;QSqlQuery::exec: database not open&quot;);
+        return false;
+    }</pre>
+<p>The remaining functions are <a href="qtglobal.html#qRound">qRound</a>() and <a href="qtglobal.html#qRound64">qRound64</a>(), which both accept a <a href="qtglobal.html#qreal-typedef">qreal</a> value as their argument returning the value rounded up to the nearest integer and 64-bit integer respectively, the <a href="qtglobal.html#qInstallMsgHandler">qInstallMsgHandler</a>() function which installs the given <a href="qtglobal.html#QtMsgHandler-typedef">QtMsgHandler</a>, and the <a href="qtglobal.html#qVersion">qVersion</a>() function which returns the version number of Qt at run-time as a string.</p>
+<a name="macros"></a>
+<h3>Macros</h3>
+<p>The &lt;QtGlobal&gt; header file provides a range of macros (Q_CC_*) that are defined if the application is compiled using the specified platforms. For example, the <a href="qtglobal.html#Q_CC_SUN">Q_CC_SUN</a> macro is defined if the application is compiled using Forte Developer, or Sun Studio C++. The header file also declares a range of macros (Q_OS_*) that are defined for the specified platforms. For example, <a href="qtglobal.html#Q_OS_X11">Q_OS_X11</a> which is defined for the X Window System.</p>
+<p>The purpose of these macros is to enable programmers to add compiler or platform specific code to their application.</p>
+<p>The remaining macros are convenience macros for larger operations: The <a href="qtglobal.html#QT_TRANSLATE_NOOP">QT_TRANSLATE_NOOP</a>() and <a href="qtglobal.html#QT_TR_NOOP">QT_TR_NOOP</a>() macros provide the possibility of marking text for dynamic translation, i.e. translation without changing the stored source text. The <a href="qtglobal.html#Q_ASSERT">Q_ASSERT</a>() and <a href="qtglobal.html#Q_ASSERT_X">Q_ASSERT_X</a>() enables warning messages of various level of refinement. The <a href="qtglobal.html#Q_FOREACH">Q_FOREACH</a>() and <a href="qtglobal.html#foreach">foreach</a>() macros implement Qt's foreach loop.</p>
+<p>The <a href="qtglobal.html#Q_INT64_C">Q_INT64_C</a>() and <a href="qtglobal.html#Q_UINT64_C">Q_UINT64_C</a>() macros wrap signed and unsigned 64-bit integers in a platform-independent way. The <a href="qtglobal.html#Q_CHECK_PTR">Q_CHECK_PTR</a>() macro prints a warning containing the source code's file name and line number, saying that the program ran out of memory, if the pointer is 0. The <a href="qtglobal.html#qPrintable">qPrintable</a>() macro represent an easy way of printing text.</p>
+<p>Finally, the <a href="qtglobal.html#QT_POINTER_SIZE">QT_POINTER_SIZE</a> macro expands to the size of a pointer in bytes, and the <a href="qtglobal.html#QT_VERSION">QT_VERSION</a> and <a href="qtglobal.html#QT_VERSION_STR">QT_VERSION_STR</a> macros expand to a numeric value or a string, respectively, specifying Qt's version number, i.e the version the application is compiled against.</p>
+<p>See also <a href="qtalgorithms.html">&lt;QtAlgorithms&gt;</a> and <a href="qsysinfo.html">QSysInfo</a>.</p>
 <hr />
 <h2>Type Documentation</h2>
+<h3 class="fn"><a name="QtMsgHandler-typedef"></a>typedef QtMsgHandler</h3>
+<p>This is a typedef for a pointer to a function with the following signature:</p>
+<pre>&nbsp;   void myMsgHandler(QtMsgType, const char *);</pre>
+<p>See also <a href="qtglobal.html#QtMsgType-enum">QtMsgType</a> and <a href="qtglobal.html#qInstallMsgHandler">qInstallMsgHandler</a>().</p>
+<h3 class="fn"><a name="QtMsgType-enum"></a>enum QtMsgType</h3>
+<p>This enum describes the messages that can be sent to a message handler (<a href="qtglobal.html#QtMsgHandler-typedef">QtMsgHandler</a>). You can use the enum to identify and associate the various message types with the appropiate actions.</p>
+<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
+<tr><td valign="top"><tt>QtDebugMsg</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">A message generated by the <a href="qtglobal.html#qDebug">qDebug</a>() function.</td></tr>
+<tr><td valign="top"><tt>QtWarningMsg</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">A message generated by the <a href="qtglobal.html#qWarning">qWarning</a>() function.</td></tr>
+<tr><td valign="top"><tt>QtCriticalMsg</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">A message generated by the <a href="qtglobal.html#qCritical">qCritical</a>() function.</td></tr>
+<tr><td valign="top"><tt>QtFatalMsg</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">A message generated by the <a href="qtglobal.html#qFatal">qFatal</a>() function.</td></tr>
+<tr><td valign="top"><tt>QtSystemMsg</tt></td><td align="center" valign="top"><tt>QtCriticalMsg</tt></td><td valign="top">&nbsp;</td></tr>
+</table>
+<p>See also <a href="qtglobal.html#QtMsgHandler-typedef">QtMsgHandler</a> and <a href="qtglobal.html#qInstallMsgHandler">qInstallMsgHandler</a>().</p>
 <h3 class="fn"><a name="qint8-typedef"></a>typedef qint8</h3>
 <p>Typedef for <tt>signed char</tt>. This type is guaranteed to be 8-bit on all platforms supported by Qt.</p>
 <h3 class="fn"><a name="qint16-typedef"></a>typedef qint16</h3>
@@ -140,12 +186,12 @@ body { background: #ffffff; color: black; }</style>
 <p>Typedef for <tt>signed int</tt>. This type is guaranteed to be 32-bit on all platforms supported by Qt.</p>
 <h3 class="fn"><a name="qint64-typedef"></a>typedef qint64</h3>
 <p>Typedef for <tt>long long int</tt> (<tt>__int64</tt> on Windows). This type is guaranteed to be 64-bit on all platforms supported by Qt.</p>
-<p>Literals of that type can be created using the <a href="qtglobal.html#Q_INT64_C">Q_INT64_C</a>() macro:</p>
+<p>Literals of this type can be created using the <a href="qtglobal.html#Q_INT64_C">Q_INT64_C</a>() macro:</p>
 <pre>&nbsp;   qint64 value = Q_INT64_C(932838457459459);</pre>
-<p>See also <a href="qtglobal.html#Q_INT64_C">Q_INT64_C</a>() and <a href="qtglobal.html#quint64-typedef">quint64</a>.</p>
+<p>See also <a href="qtglobal.html#Q_INT64_C">Q_INT64_C</a>(), <a href="qtglobal.html#quint64-typedef">quint64</a>, and <a href="qtglobal.html#qlonglong-typedef">qlonglong</a>.</p>
 <h3 class="fn"><a name="qlonglong-typedef"></a>typedef qlonglong</h3>
 <p>Typedef for <tt>long long int</tt> (<tt>__int64</tt> on Windows). This is the same as <a href="qtglobal.html#qint64-typedef">qint64</a>.</p>
-<p>See also <a href="qtglobal.html#Q_INT64_C">Q_INT64_C</a>() and <a href="qtglobal.html#qulonglong-typedef">qulonglong</a>.</p>
+<p>See also <a href="qtglobal.html#qulonglong-typedef">qulonglong</a> and <a href="qtglobal.html#qint64-typedef">qint64</a>.</p>
 <h3 class="fn"><a name="qreal-typedef"></a>typedef qreal</h3>
 <p>Typedef for <tt>double</tt>.</p>
 <h3 class="fn"><a name="quint8-typedef"></a>typedef quint8</h3>
@@ -156,12 +202,12 @@ body { background: #ffffff; color: black; }</style>
 <p>Typedef for <tt>unsigned int</tt>. This type is guaranteed to be 32-bit on all platforms supported by Qt.</p>
 <h3 class="fn"><a name="quint64-typedef"></a>typedef quint64</h3>
 <p>Typedef for <tt>unsigned long long int</tt> (<tt>unsigned __int64</tt> on Windows). This type is guaranteed to be 64-bit on all platforms supported by Qt.</p>
-<p>Literals of that type can be created using the <a href="qtglobal.html#Q_UINT64_C">Q_UINT64_C</a>() macro:</p>
+<p>Literals of this type can be created using the <a href="qtglobal.html#Q_UINT64_C">Q_UINT64_C</a>() macro:</p>
 <pre>&nbsp;   quint64 value = Q_UINT64_C(932838457459459);</pre>
-<p>See also <a href="qtglobal.html#Q_UINT64_C">Q_UINT64_C</a>() and <a href="qtglobal.html#qint64-typedef">qint64</a>.</p>
+<p>See also <a href="qtglobal.html#Q_UINT64_C">Q_UINT64_C</a>(), <a href="qtglobal.html#qint64-typedef">qint64</a>, and <a href="qtglobal.html#qulonglong-typedef">qulonglong</a>.</p>
 <h3 class="fn"><a name="qulonglong-typedef"></a>typedef qulonglong</h3>
 <p>Typedef for <tt>unsigned long long int</tt> (<tt>unsigned __int64</tt> on Windows). This is the same as <a href="qtglobal.html#quint64-typedef">quint64</a>.</p>
-<p>See also <a href="qtglobal.html#Q_UINT64_C">Q_UINT64_C</a>() and <a href="qtglobal.html#qlonglong-typedef">qlonglong</a>.</p>
+<p>See also <a href="qtglobal.html#quint64-typedef">quint64</a> and <a href="qtglobal.html#qlonglong-typedef">qlonglong</a>.</p>
 <h3 class="fn"><a name="uchar-typedef"></a>typedef uchar</h3>
 <p>Convenience typedef for <tt>unsigned char</tt>.</p>
 <h3 class="fn"><a name="uint-typedef"></a>typedef uint</h3>
@@ -173,9 +219,20 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Function Documentation</h2>
 <h3 class="fn"><a name="qAbs"></a>T qAbs ( const T &amp; <i>value</i> )</h3>
-<p>Returns the absolute value of <i>value</i>.</p>
+<p>Returns the absolute value of <i>value</i>. For example:</p>
+<pre>&nbsp;   int absoluteValue;
+    int myValue = -4;
+
+    absoluteValue = qAbs(myValue);
+    // absoluteValue == 4</pre>
 <h3 class="fn"><a name="qBound"></a>const T &amp; qBound ( const T &amp; <i>min</i>, const T &amp; <i>value</i>, const T &amp; <i>max</i> )</h3>
-<p>Returns <i>value</i> bounded by <i>min</i> and <i>max</i>. This is equivalent to qMax(<i>min</i>, qMin(<i>value</i>, <i>max</i>)).</p>
+<p>Returns <i>value</i> bounded by <i>min</i> and <i>max</i>. This is equivalent to qMax(<i>min</i>, qMin(<i>value</i>, <i>max</i>)). For example:</p>
+<pre>&nbsp;   int myValue = 10;
+    int minValue = 2;
+    int maxValue = 6;
+
+    int boundedValue = qBound(minValue, myValue, maxValue);
+    // boundedValue == 6</pre>
 <p>See also <a href="qtglobal.html#qMin">qMin</a>() and <a href="qtglobal.html#qMax">qMax</a>().</p>
 <h3 class="fn"><a name="qCritical"></a>void qCritical ( const char * <i>msg</i>, ... )</h3>
 <p>Calls the message handler with the critical message <i>msg</i>. If no message handler has been installed, the message is printed to stderr. Under Windows, the message is sent to the debugger.</p>
@@ -215,9 +272,9 @@ body { background: #ffffff; color: black; }</style>
 <p><b>Warning:</b> The internal buffer is limited to 8192 bytes, including the '\0'-terminator.</p>
 <p><b>Warning:</b> Passing (const char *)0 as argument to qFatal might lead to crashes on certain platforms due to the platforms printf implementation.</p>
 <p>See also <a href="qtglobal.html#qDebug">qDebug</a>(), <a href="qtglobal.html#qCritical">qCritical</a>(), <a href="qtglobal.html#qWarning">qWarning</a>(), <a href="qtglobal.html#qInstallMsgHandler">qInstallMsgHandler</a>(), and <a href="debug.html">Debugging Techniques</a>.</p>
-<h3 class="fn"><a name="qInstallMsgHandler"></a>QtMsgHandler qInstallMsgHandler ( QtMsgHandler <i>h</i> )</h3>
-<p>Installs a Qt message handler <i>h</i>. Returns a pointer to the message handler previously defined.</p>
-<p>The message handler is a function that prints out debug messages, warnings and fatal error messages. The Qt library (debug version) contains hundreds of warning messages that are printed when internal errors (usually invalid function arguments) occur. If you implement your own message handler, you get total control of these messages.</p>
+<h3 class="fn"><a name="qInstallMsgHandler"></a><a href="qtglobal.html#QtMsgHandler-typedef">QtMsgHandler</a> qInstallMsgHandler ( <a href="qtglobal.html#QtMsgHandler-typedef">QtMsgHandler</a> <i>handler</i> )</h3>
+<p>Installs a Qt message <i>handler</i> whis has been defined previously. Returns a pointer to the message <i>handler</i>.</p>
+<p>The message handler is a function that prints out debug messages, warnings, critical and fatal error messages. The Qt library (debug version) contains hundreds of warning messages that are printed when internal errors (usually invalid function arguments) occur. If you implement your own message handler, you get total control of these messages.</p>
 <p>The default message handler prints the message to the standard output under X11 or to the debugger under Windows. If it is a fatal message, the application aborts immediately.</p>
 <p>Only one message handler can be defined, since this is usually done on an application-wide basis to control debug output.</p>
 <p>To restore the message handler, call <tt>qInstallMsgHandler(0)</tt>.</p>
@@ -251,22 +308,40 @@ body { background: #ffffff; color: black; }</style>
         ...
         return app.exec();
     }</pre>
-<p>See also <a href="qtglobal.html#qDebug">qDebug</a>(), <a href="qtglobal.html#qWarning">qWarning</a>(), <a href="qtglobal.html#qFatal">qFatal</a>(), and <a href="debug.html">Debugging Techniques</a>.</p>
+<p>See also <a href="qtglobal.html#qDebug">qDebug</a>(), <a href="qtglobal.html#qWarning">qWarning</a>(), <a href="qtglobal.html#qCritical">qCritical</a>(), <a href="qtglobal.html#qFatal">qFatal</a>(), <a href="qtglobal.html#QtMsgType-enum">QtMsgType</a>, and <a href="debug.html">Debugging Techniques</a>.</p>
 <h3 class="fn"><a name="qMacVersion"></a>int qMacVersion ()</h3>
 <p>Use <a href="qsysinfo.html#MacintoshVersion-var">QSysInfo::MacintoshVersion</a> instead.</p>
 <p>See also <a href="qsysinfo.html">QSysInfo</a>.</p>
 <h3 class="fn"><a name="qMax"></a>const T &amp; qMax ( const T &amp; <i>value1</i>, const T &amp; <i>value2</i> )</h3>
-<p>Returns the maximum of <i>value1</i> and <i>value2</i>.</p>
+<p>Returns the maximum of <i>value1</i> and <i>value2</i>. For example:</p>
+<pre>&nbsp;   int myValue = 6;
+    int yourValue = 4;
+
+    int maxValue = qMax(myValue, yourValue);
+    // maxValue == myValue</pre>
 <p>See also <a href="qtglobal.html#qMin">qMin</a>() and <a href="qtglobal.html#qBound">qBound</a>().</p>
 <h3 class="fn"><a name="qMin"></a>const T &amp; qMin ( const T &amp; <i>value1</i>, const T &amp; <i>value2</i> )</h3>
-<p>Returns the minimum of <i>value1</i> and <i>value2</i>.</p>
+<p>Returns the minimum of <i>value1</i> and <i>value2</i>. For example:</p>
+<pre>&nbsp;   int myValue = 6;
+    int yourValue = 4;
+
+    int minValue = qMin(myValue, yourValue);
+    // minValue == yourValue</pre>
 <p>See also <a href="qtglobal.html#qMax">qMax</a>() and <a href="qtglobal.html#qBound">qBound</a>().</p>
-<h3 class="fn"><a name="qRound64"></a><a href="qtglobal.html#qint64-typedef">qint64</a> qRound64 ( double <i>value</i> )</h3>
-<p>Rounds <i>value</i> up to the nearest 64-bit integer.</p>
-<h3 class="fn"><a name="qRound"></a>int qRound ( double <i>value</i> )</h3>
-<p>Rounds <i>value</i> up to the nearest integer.</p>
+<h3 class="fn"><a name="qRound64"></a><a href="qtglobal.html#qint64-typedef">qint64</a> qRound64 ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>value</i> )</h3>
+<p>Rounds <i>value</i> up to the nearest 64-bit integer. For example:</p>
+<pre>&nbsp;   qreal value = 42949672960,7;
+
+    int roundedValue = qRound(value);
+    \\ roundedValue = 42949672961</pre>
+<h3 class="fn"><a name="qRound"></a>int qRound ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>value</i> )</h3>
+<p>Rounds <i>value</i> up to the nearest integer. For example:</p>
+<pre>&nbsp;   qreal value = 2.3;
+
+    int roundedValue = qRound(value);
+    \\ roundedValue = 3</pre>
 <h3 class="fn"><a name="qVersion"></a>const char * qVersion ()</h3>
-<p>Returns the version number of the Qt runtime as a string (for example, &quot;4.1.2&quot;). This may be a different version than the version against which the application was compiled.</p>
+<p>Returns the version number of Qt at run-time as a string (for example, &quot;4.1.2&quot;). This may be a different version than the version the application was compiled against.</p>
 <p>See also <a href="qtglobal.html#QT_VERSION_STR">QT_VERSION_STR</a>.</p>
 <h3 class="fn"><a name="qWarning"></a>void qWarning ( const char * <i>msg</i>, ... )</h3>
 <p>Calls the message handler with the warning message <i>msg</i>. If no message handler has been installed, the message is printed to stderr. Under Windows, the message is sent to the debugger. This function does nothing if <tt>QT_NO_WARNING_OUTPUT</tt> was defined during compilation; it exits if the environment variable <tt>QT_FATAL_WARNINGS</tt> is defined.</p>
@@ -285,8 +360,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="QT_POINTER_SIZE"></a>QT_POINTER_SIZE</h3>
 <p>Expands to the size of a pointer in bytes (4 or 8). This is equivalent to <tt>sizeof(void *)</tt> but can be used in a preprocessor directive.</p>
 <h3 class="fn"><a name="QT_TRANSLATE_NOOP"></a>const char * QT_TRANSLATE_NOOP ( const char * <i>context</i>, const char * <i>sourceText</i> )</h3>
-<p>Marks the string literal <i>sourceText</i> for translation in the given <i>context</i>. Expands to <i>sourceText</i>.</p>
-<p>Example:</p>
+<p>Marks the string literal <i>sourceText</i> for dynamic translation in the given <i>context</i>, i.e the stored <i>sourceText</i> will not be altered. The <i>context</i> is typically a class. For example:</p>
 <pre>&nbsp;   static const char *greeting_strings[] = {
         QT_TRANSLATE_NOOP(&quot;FriendlyConversation&quot;, &quot;Hello&quot;),
         QT_TRANSLATE_NOOP(&quot;FriendlyConversation&quot;, &quot;Goodbye&quot;)
@@ -302,10 +376,10 @@ body { background: #ffffff; color: black; }</style>
         return qApp-&gt;translate(&quot;FriendlyConversation&quot;,
                                greeting_strings[type]);
     }</pre>
+<p>The macro expands to <i>sourceText</i>.</p>
 <p>See also <a href="qtglobal.html#QT_TR_NOOP">QT_TR_NOOP</a>() and <a href="i18n.html">Internationalization with Qt</a>.</p>
 <h3 class="fn"><a name="QT_TR_NOOP"></a>const char * QT_TR_NOOP ( const char * <i>sourceText</i> )</h3>
-<p>Marks the string literal <i>sourceText</i> for translation in the current context. Expands to <i>sourceText</i>.</p>
-<p>Example:</p>
+<p>Marks the string literal <i>sourceText</i> for dynamic translation in the current context (class), i.e the stored <i>sourceText</i> will not be altered. For example:</p>
 <pre>&nbsp;   QString FriendlyConversation::greeting(int type)
     {
         static const char *greeting_strings[] = {
@@ -314,6 +388,7 @@ body { background: #ffffff; color: black; }</style>
         };
         return tr(greeting_strings[type]);
     }</pre>
+<p>The macro expands to <i>sourceText</i>.</p>
 <p>See also <a href="qtglobal.html#QT_TRANSLATE_NOOP">QT_TRANSLATE_NOOP</a>() and <a href="i18n.html">Internationalization with Qt</a>.</p>
 <h3 class="fn"><a name="QT_VERSION"></a>QT_VERSION</h3>
 <p>This macro expands a numeric value of the form 0xMMNNPP (MM = major, NN = minor, PP = patch) that specifies Qt's version number. For example, if you compile your application against Qt 4.1.2, the QT_VERSION macro will expand to 0x040102.</p>
@@ -361,47 +436,47 @@ body { background: #ffffff; color: black; }</style>
 <pre>&nbsp;   ASSERT failure in divide: &quot;division by zero&quot;, file div.cpp, line 7</pre>
 <p>See also <a href="qtglobal.html#Q_ASSERT">Q_ASSERT</a>(), <a href="qtglobal.html#qFatal">qFatal</a>(), and <a href="debug.html">Debugging Techniques</a>.</p>
 <h3 class="fn"><a name="Q_CC_BOR"></a>Q_CC_BOR</h3>
-<p>Defined if the the application is compiled using Borland/Turbo C++.</p>
+<p>Defined if the application is compiled using Borland/Turbo C++.</p>
 <h3 class="fn"><a name="Q_CC_CDS"></a>Q_CC_CDS</h3>
-<p>Defined if the the application is compiled using Reliant C++.</p>
+<p>Defined if the application is compiled using Reliant C++.</p>
 <h3 class="fn"><a name="Q_CC_COMEAU"></a>Q_CC_COMEAU</h3>
-<p>Defined if the the application is compiled using Comeau C++.</p>
+<p>Defined if the application is compiled using Comeau C++.</p>
 <h3 class="fn"><a name="Q_CC_DEC"></a>Q_CC_DEC</h3>
-<p>Defined if the the application is compiled using DEC C++.</p>
+<p>Defined if the application is compiled using DEC C++.</p>
 <h3 class="fn"><a name="Q_CC_EDG"></a>Q_CC_EDG</h3>
-<p>Defined if the the application is compiled using Edison Design Group C++.</p>
+<p>Defined if the application is compiled using Edison Design Group C++.</p>
 <h3 class="fn"><a name="Q_CC_GHS"></a>Q_CC_GHS</h3>
-<p>Defined if the the application is compiled using Green Hills Optimizing C++ Compilers.</p>
+<p>Defined if the application is compiled using Green Hills Optimizing C++ Compilers.</p>
 <h3 class="fn"><a name="Q_CC_GNU"></a>Q_CC_GNU</h3>
-<p>Defined if the the application is compiled using GNU C++.</p>
+<p>Defined if the application is compiled using GNU C++.</p>
 <h3 class="fn"><a name="Q_CC_HIGHC"></a>Q_CC_HIGHC</h3>
-<p>Defined if the the application is compiled using MetaWare High C/C++.</p>
+<p>Defined if the application is compiled using MetaWare High C/C++.</p>
 <h3 class="fn"><a name="Q_CC_HPACC"></a>Q_CC_HPACC</h3>
-<p>Defined if the the application is compiled using HP aC++.</p>
+<p>Defined if the application is compiled using HP aC++.</p>
 <h3 class="fn"><a name="Q_CC_INTEL"></a>Q_CC_INTEL</h3>
-<p>Defined if the the application is compiled using Intel C++ for Linux, Intel C++ for Windows.</p>
+<p>Defined if the application is compiled using Intel C++ for Linux, Intel C++ for Windows.</p>
 <h3 class="fn"><a name="Q_CC_KAI"></a>Q_CC_KAI</h3>
-<p>Defined if the the application is compiled using KAI C++.</p>
+<p>Defined if the application is compiled using KAI C++.</p>
 <h3 class="fn"><a name="Q_CC_MIPS"></a>Q_CC_MIPS</h3>
-<p>Defined if the the application is compiled using MIPSpro C++.</p>
+<p>Defined if the application is compiled using MIPSpro C++.</p>
 <h3 class="fn"><a name="Q_CC_MSVC"></a>Q_CC_MSVC</h3>
-<p>Defined if the the application is compiled using Microsoft Visual C/C++, Intel C++ for Windows.</p>
+<p>Defined if the application is compiled using Microsoft Visual C/C++, Intel C++ for Windows.</p>
 <h3 class="fn"><a name="Q_CC_MWERKS"></a>Q_CC_MWERKS</h3>
-<p>Defined if the the application is compiled using Metrowerks CodeWarrior.</p>
+<p>Defined if the application is compiled using Metrowerks CodeWarrior.</p>
 <h3 class="fn"><a name="Q_CC_OC"></a>Q_CC_OC</h3>
-<p>Defined if the the application is compiled using CenterLine C++.</p>
+<p>Defined if the application is compiled using CenterLine C++.</p>
 <h3 class="fn"><a name="Q_CC_PGI"></a>Q_CC_PGI</h3>
-<p>Defined if the the application is compiled using Portland Group C++.</p>
+<p>Defined if the application is compiled using Portland Group C++.</p>
 <h3 class="fn"><a name="Q_CC_SUN"></a>Q_CC_SUN</h3>
-<p>Defined if the the application is compiled using Forte Developer, or Sun Studio C++.</p>
+<p>Defined if the application is compiled using Forte Developer, or Sun Studio C++.</p>
 <h3 class="fn"><a name="Q_CC_SYM"></a>Q_CC_SYM</h3>
-<p>Defined if the the application is compiled using Digital Mars C/C++ (used to be Symantec C++).</p>
+<p>Defined if the application is compiled using Digital Mars C/C++ (used to be Symantec C++).</p>
 <h3 class="fn"><a name="Q_CC_USLC"></a>Q_CC_USLC</h3>
-<p>Defined if the the application is compiled using SCO OUDK and UDK.</p>
+<p>Defined if the application is compiled using SCO OUDK and UDK.</p>
 <h3 class="fn"><a name="Q_CC_WAT"></a>Q_CC_WAT</h3>
-<p>Defined if the the application is compiled using Watcom C++.</p>
-<h3 class="fn"><a name="Q_CHECK_PTR"></a>void Q_CHECK_PTR ( void * <i>p</i> )</h3>
-<p>If <i>p</i> is 0, prints a warning message containing the source code file name and line number, saying that the program ran out of memory.</p>
+<p>Defined if the application is compiled using Watcom C++.</p>
+<h3 class="fn"><a name="Q_CHECK_PTR"></a>void Q_CHECK_PTR ( void * <i>pointer</i> )</h3>
+<p>If <i>pointer</i> is 0, prints a warning message containing the source code's file name and line number, saying that the program ran out of memory.</p>
 <p>Q_CHECK_PTR does nothing if <tt>QT_NO_DEBUG</tt> was defined during compilation.</p>
 <p>Example:</p>
 <pre>&nbsp;   int *a;
@@ -412,7 +487,8 @@ body { background: #ffffff; color: black; }</style>
     Q_CHECK_PTR(a);</pre>
 <p>See also <a href="qtglobal.html#qWarning">qWarning</a>() and <a href="debug.html">Debugging Techniques</a>.</p>
 <h3 class="fn"><a name="Q_FOREACH"></a>Q_FOREACH (  <i>variable</i>,  <i>container</i> )</h3>
-<p>Same as foreach(<i>variable</i>, <i>container</i>).</p>
+<p>Same as <a href="qtglobal.html#foreach">foreach</a>() which is used to implement Qt's foreach loop. The <i>variable</i> parameter is a variable name or variable definition; the <i>container</i> parameter is a Qt container whose value type corresponds to the type of the variable.</p>
+<p>See also <a href="qtglobal.html#foreach">foreach</a>().</p>
 <h3 class="fn"><a name="Q_INT64_C"></a><a href="qtglobal.html#qint64-typedef">qint64</a> Q_INT64_C (  <i>literal</i> )</h3>
 <p>Wraps the signed 64-bit integer <i>literal</i> in a platform-independent way. For example:</p>
 <pre>&nbsp;   qint64 value = Q_INT64_C(932838457459459);</pre>
@@ -466,7 +542,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="Q_OS_QNX"></a>Q_OS_QNX</h3>
 <p>Defined on QNX.</p>
 <h3 class="fn"><a name="Q_OS_QWS"></a>Q_OS_QWS</h3>
-<p>Defined for Qt/Embedded.</p>
+<p>Defined for Qtopia Core.</p>
 <h3 class="fn"><a name="Q_OS_RELIANT"></a>Q_OS_RELIANT</h3>
 <p>Defined on Reliant UNIX.</p>
 <h3 class="fn"><a name="Q_OS_SCO"></a>Q_OS_SCO</h3>
@@ -480,16 +556,15 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="Q_OS_UNIXWARE"></a>Q_OS_UNIXWARE</h3>
 <p>Defined on UnixWare 7, Open UNIX 8.</p>
 <h3 class="fn"><a name="Q_OS_WIN32"></a>Q_OS_WIN32</h3>
-<p>Defined on Win32 (Windows 95/98/ME and Windows NT/2000/XP).</p>
-<h3 class="fn"><a name="Q_OS_WIN32-2"></a>Q_OS_WIN32</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
-<p>Defined for 32-bit Windows.</p>
+<p>Defined on Win32 (Windows 98/ME and Windows NT/2000/XP).</p>
 <h3 class="fn"><a name="Q_UINT64_C"></a><a href="qtglobal.html#quint64-typedef">quint64</a> Q_UINT64_C (  <i>literal</i> )</h3>
 <p>Wraps the unsigned 64-bit integer <i>literal</i> in a platform-independent way. For example:</p>
 <pre>&nbsp;   quint64 value = Q_UINT64_C(932838457459459);</pre>
 <p>See also <a href="qtglobal.html#quint64-typedef">quint64</a> and <a href="qtglobal.html#Q_INT64_C">Q_INT64_C</a>().</p>
+<h3 class="fn"><a name="Q_UNUSED"></a>Q_UNUSED (  <i>name</i> )</h3>
+<p>Indicates to the compiler that the parameter with the specified <i>name</i> is not used in the body of a function. This can be used to suppress compiler warnings while allowing functions to be defined with meaningful parameter names in their signatures.</p>
 <h3 class="fn"><a name="foreach"></a>foreach (  <i>variable</i>,  <i>container</i> )</h3>
-<p>This macro is used to implement Qt's <tt>foreach</tt> loop. <i>variable</i> is a variable name or variable definition; <i>container</i> is a Qt container whose value type corresponds to the type of the variable. See <a href="containers.html#the-foreach-keyword">The foreach Keyword</a> for details.</p>
+<p>This macro is used to implement Qt's <tt>foreach</tt> loop. The <i>variable</i> parameter is a variable name or variable definition; the <i>container</i> parameter is a Qt container whose value type corresponds to the type of the variable. See <a href="containers.html#the-foreach-keyword">The foreach Keyword</a> for details.</p>
 <p>If you're worried about namespace pollution, you can disable this macro by adding the following line to your <tt>.pro</tt> file:</p>
 <pre>&nbsp;   CONFIG += no_keywords</pre>
 <p>See also <a href="qtglobal.html#Q_FOREACH">Q_FOREACH</a>().</p>
@@ -502,6 +577,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

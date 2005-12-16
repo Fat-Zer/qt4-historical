@@ -24,7 +24,7 @@
 #ifndef QTABBAR_H
 #define QTABBAR_H
 
-#include "QtGui/qwidget.h"
+#include <QtGui/qwidget.h>
 
 QT_MODULE(Gui)
 
@@ -39,9 +39,10 @@ class Q_GUI_EXPORT QTabBar: public QWidget
 
     Q_ENUMS(Shape)
     Q_PROPERTY(Shape shape READ shape WRITE setShape)
-    Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex)
+    Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentChanged)
     Q_PROPERTY(int count READ count)
     Q_PROPERTY(bool drawBase READ drawBase WRITE setDrawBase)
+    Q_PROPERTY(QSize iconSize READ iconSize WRITE setIconSize)
 
 public:
     explicit QTabBar(QWidget* parent=0);
@@ -72,11 +73,21 @@ public:
     QString tabText(int index) const;
     void setTabText(int index, const QString &text);
 
+    QColor tabTextColor(int index) const;
+    void setTabTextColor(int index, const QColor &color);
+    
     QIcon tabIcon(int index) const;
     void setTabIcon(int index, const QIcon &icon);
 
+#ifndef QT_NO_TOOLTIP
     void setTabToolTip(int index, const QString &tip);
     QString tabToolTip(int index) const;
+#endif
+
+#ifndef QT_NO_WHATSTHIS
+    void setTabWhatsThis(int index, const QString &text);
+    QString tabWhatsThis(int index) const;
+#endif
 
     void setTabData(int index, const QVariant &data);
     QVariant tabData(int index) const;
@@ -92,10 +103,13 @@ public:
     void setDrawBase(bool drawTheBase);
     bool drawBase() const;
 
-public slots:
+    QSize iconSize() const;
+    void setIconSize(const QSize &size);
+
+public Q_SLOTS:
     void setCurrentIndex(int index);
 
-signals:
+Q_SIGNALS:
     void currentChanged(int index);
 
 protected:
@@ -115,9 +129,9 @@ protected:
     void changeEvent(QEvent *);
 
 #ifdef QT3_SUPPORT
-public slots:
+public Q_SLOTS:
     QT_MOC_COMPAT void setCurrentTab(int index) { setCurrentIndex(index); }
-signals:
+Q_SIGNALS:
     QT_MOC_COMPAT void selected(int);
 #endif
 
@@ -128,4 +142,5 @@ private:
 };
 
 #endif // QT_NO_TABBAR
+
 #endif // QTABBAR_H

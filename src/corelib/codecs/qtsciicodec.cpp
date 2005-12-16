@@ -25,58 +25,6 @@
 // and is included in Qt with the author's permission, and the grateful
 // thanks of the Trolltech team.
 
-/*! \class QTsciiCodec
-    \reentrant
-    \internal
-
-  \brief The QTsciiCodec class provides conversion to and from the Tamil TSCII encoding.
-
-  TSCII, formally the Tamil Standard Code Information Interchange
-  specification, is a commonly used charset for Tamils. The
-  official page for the standard is at
-  \link http://www.tamil.net/tscii/ http://www.tamil.net/tscii/\endlink
-
-  This codec uses the mapping table found at
-  \link http://www.geocities.com/Athens/5180/tsciiset.html
-  http://www.geocities.com/Athens/5180/tsciiset.html\endlink.
-  Tamil uses composed Unicode which might cause some
-  problems if you are using Unicode fonts instead of TSCII fonts.
-
-  Most of the code here  was written by Hans Petter Bieker
-  and is included in Qt with the author's permission and the
-  grateful thanks of the Trolltech team.
-  Here is the copyright statement for the code as it was at the
-  point of contribution. Trolltech's subsequent modifications
-  are covered by the usual copyright for Qt.
-
-  \legalese
-  \code
-
-  Copyright (c) 2000 Hans Petter Bieker.  All rights reserved.
-
-  Redistribution and use in source and binary forms, with or without
-  modification, are permitted provided that the following conditions
-  are met:
-  1. Redistributions of source code must retain the above copyright
-     notice, this list of conditions and the following disclaimer.
-  2. Redistributions in binary form must reproduce the above copyright
-     notice, this list of conditions and the following disclaimer in the
-     documentation and/or other materials provided with the distribution.
-
-  THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
-  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-  ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
-  FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-  DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
-  OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-  HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-  LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
-  OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-  SUCH DAMAGE.
-  \endcode
-*/
-
 #include "qtsciicodec_p.h"
 #include "qlist.h"
 
@@ -86,6 +34,11 @@ static unsigned char qt_UnicodeToTSCII(ushort u1, ushort u2, ushort u3);
 static unsigned int qt_TSCIIToUnicode(unsigned int code, uint *s);
 
 #define IsTSCIIChar(c)        (((c) >= 0x80) && ((c) <= 0xfd))
+
+/*! \class QTsciiCodec
+    \reentrant
+    \internal
+*/
 
 /*!
     Destroys the text codec object.
@@ -522,5 +475,5 @@ static unsigned int qt_TSCIIToUnicode(uint code, uint *s)
     return len;
 }
 
-#endif
+#endif // QT_NO_CODECS
 

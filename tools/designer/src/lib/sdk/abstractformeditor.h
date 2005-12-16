@@ -35,16 +35,16 @@ class QDesignerFormWindowManagerInterface;
 class QDesignerWidgetDataBaseInterface;
 class QDesignerMetaDataBaseInterface;
 class QDesignerWidgetFactoryInterface;
-class AbstractDnDManager;
 class QDesignerObjectInspectorInterface;
 class QDesignerIconCacheInterface;
-class PluginManager;
+class QDesignerActionEditorInterface;
+class QDesignerPluginManager;
 
 class QWidget;
 
 class QExtensionManager;
 
-class QT_SDK_EXPORT QDesignerFormEditorInterface: public QObject
+class QDESIGNER_SDK_EXPORT QDesignerFormEditorInterface: public QObject
 {
     Q_OBJECT
 public:
@@ -62,14 +62,16 @@ public:
     QDesignerMetaDataBaseInterface *metaDataBase() const;
     QDesignerWidgetFactoryInterface *widgetFactory() const;
     QDesignerIconCacheInterface *iconCache() const;
-    PluginManager *pluginManager() const;
+    QDesignerActionEditorInterface *actionEditor() const;
+    QDesignerPluginManager *pluginManager() const;
     QString resourceLocation() const;
 
     void setTopLevel(QWidget *topLevel);
     void setWidgetBox(QDesignerWidgetBoxInterface *widgetBox);
     void setPropertyEditor(QDesignerPropertyEditorInterface *propertyEditor);
     void setObjectInspector(QDesignerObjectInspectorInterface *objectInspector);
-    void setPluginManager(PluginManager *pluginManager);
+    void setPluginManager(QDesignerPluginManager *pluginManager);
+    void setActionEditor(QDesignerActionEditorInterface *actionEditor);
 
 protected:
     void setFormManager(QDesignerFormWindowManagerInterface *formWindowManager);
@@ -90,7 +92,8 @@ private:
     QPointer<QDesignerWidgetFactoryInterface> m_widgetFactory;
     QPointer<QDesignerObjectInspectorInterface> m_objectInspector;
     QPointer<QDesignerIconCacheInterface> m_iconCache;
-    PluginManager *m_pluginManager;
+    QPointer<QDesignerActionEditorInterface> m_actionEditor;
+    QDesignerPluginManager *m_pluginManager;
 
 private:
     QDesignerFormEditorInterface(const QDesignerFormEditorInterface &other);

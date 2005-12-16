@@ -32,8 +32,8 @@
 // We mean it.
 //
 
-#ifndef QDESIGNER_PROMOTED_WIDGET_h
-#define QDESIGNER_PROMOTED_WIDGET_H
+#ifndef QDESIGNER_PROMOTEDWIDGET_H
+#define QDESIGNER_PROMOTEDWIDGET_H
 
 #include <QtCore/QVariant>
 
@@ -44,10 +44,13 @@
 #include <QtDesigner/QtDesigner>
 #include <QtDesigner/QExtensionFactory>
 
-class QDesignerPromotedWidget;
 class QExtensionManager;
 
-class QT_SHARED_EXPORT PromotedWidgetPropertySheet: public QObject, public QDesignerPropertySheetExtension
+namespace qdesigner_internal {
+
+class QDesignerPromotedWidget;
+
+class QDESIGNER_SHARED_EXPORT PromotedWidgetPropertySheet: public QObject, public QDesignerPropertySheetExtension
 {
     Q_OBJECT
     Q_INTERFACES(QDesignerPropertySheetExtension)
@@ -82,7 +85,7 @@ private:
     QDesignerPropertySheetExtension *m_sheet;
 };
 
-class QT_SHARED_EXPORT PromotedWidgetPropertySheetFactory: public QExtensionFactory
+class QDESIGNER_SHARED_EXPORT PromotedWidgetPropertySheetFactory: public QExtensionFactory
 {
     Q_OBJECT
     Q_INTERFACES(QAbstractExtensionFactory)
@@ -93,7 +96,7 @@ protected:
     virtual QObject *createExtension(QObject *object, const QString &iid, QObject *parent) const;
 };
 
-class QT_SHARED_EXPORT QDesignerPromotedWidget : public QWidget
+class QDESIGNER_SHARED_EXPORT QDesignerPromotedWidget : public QWidget
 {
     Q_OBJECT
 public:
@@ -115,4 +118,6 @@ private:
     QWidget *m_child;
 };
 
-#endif // QDESIGNER_PROMOTED_WIDGET_H
+} // namespace qdesigner_internal
+
+#endif // QDESIGNER_PROMOTEDWIDGET_H

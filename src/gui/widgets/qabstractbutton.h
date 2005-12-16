@@ -24,9 +24,9 @@
 #ifndef QABSTRACTBUTTON_H
 #define QABSTRACTBUTTON_H
 
-#include "QtGui/qicon.h"
-#include "QtGui/qkeysequence.h"
-#include "QtGui/qwidget.h"
+#include <QtGui/qicon.h>
+#include <QtGui/qkeysequence.h>
+#include <QtGui/qwidget.h>
 
 QT_MODULE(Gui)
 
@@ -40,9 +40,11 @@ class Q_GUI_EXPORT QAbstractButton : public QWidget
     Q_PROPERTY(QString text READ text WRITE setText)
     Q_PROPERTY(QIcon icon READ icon WRITE setIcon)
     Q_PROPERTY(QSize iconSize READ iconSize WRITE setIconSize)
+#ifndef QT_NO_SHORTCUT
     Q_PROPERTY(QKeySequence shortcut READ shortcut WRITE setShortcut)
+#endif
     Q_PROPERTY(bool checkable READ isCheckable WRITE setCheckable)
-    Q_PROPERTY(bool checked READ isChecked WRITE setChecked NOTIFY toggled)
+    Q_PROPERTY(bool checked READ isChecked WRITE setChecked NOTIFY toggled USER true)
     Q_PROPERTY(bool autoRepeat READ autoRepeat WRITE setAutoRepeat)
     Q_PROPERTY(bool autoExclusive READ autoExclusive WRITE setAutoExclusive)
     Q_PROPERTY(bool down READ isDown WRITE setDown DESIGNABLE false)
@@ -59,8 +61,10 @@ public:
 
     QSize iconSize() const;
 
+#ifndef QT_NO_SHORTCUT
     void setShortcut(const QKeySequence &key);
     QKeySequence shortcut() const;
+#endif
 
     void setCheckable(bool);
     bool isCheckable() const;
@@ -79,15 +83,15 @@ public:
 #ifndef QT_NO_BUTTONGROUP
     QButtonGroup *group() const;
 #endif
-    
-public slots:
+
+public Q_SLOTS:
     void setIconSize(const QSize &size);
     void animateClick(int msec = 100);
     void click();
     void toggle();
     void setChecked(bool);
 
-signals:
+Q_SIGNALS:
     void pressed();
     void released();
     void clicked(bool checked = false);
@@ -123,7 +127,7 @@ public:
     inline QT3_SUPPORT void setAccel(const QKeySequence &key) { setShortcut(key); }
     inline QT3_SUPPORT QKeySequence accel() const { return shortcut(); }
 
-public slots:
+public Q_SLOTS:
     inline QT_MOC_COMPAT void setOn(bool b) { setChecked(b); }
 #endif
 

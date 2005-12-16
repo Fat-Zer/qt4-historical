@@ -35,9 +35,11 @@
 // We mean it.
 //
 
-#include "qobject.h"
-#include "qpoint.h"
+#include "QtCore/qobject.h"
+#include "QtCore/qpoint.h"
+
 #ifndef QT_NO_RESIZEHANDLER
+
 class QMouseEvent;
 class QKeyEvent;
 
@@ -70,7 +72,7 @@ public:
     void doResize();
     void doMove();
 
-signals:
+Q_SIGNALS:
     void activate();
 
 protected:

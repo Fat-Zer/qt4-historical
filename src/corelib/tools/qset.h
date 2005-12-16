@@ -24,7 +24,7 @@
 #ifndef QSET_H
 #define QSET_H
 
-#include "QtCore/qhash.h"
+#include <QtCore/qhash.h>
 
 QT_MODULE(Core)
 
@@ -71,8 +71,8 @@ public:
         typedef std::bidirectional_iterator_tag iterator_category;
         typedef ptrdiff_t difference_type;
         typedef T value_type;
-        typedef T *pointer;
-        typedef T &reference;
+        typedef const T *pointer;
+        typedef const T &reference;
 
         inline const_iterator() {}
         inline const_iterator(typename Hash::const_iterator o) : i(o) {}
@@ -121,7 +121,7 @@ public:
     inline QSet<T> &operator+=(const QSet<T> &other) { unite(other); return *this; }
     inline QSet<T> &operator+=(const T &value) { insert(value); return *this; }
     inline QSet<T> &operator-=(const QSet<T> &other) { subtract(other); return *this; }
-    inline QSet<T> &operator-=(const T &value) { subtract(value); return *this; }
+    inline QSet<T> &operator-=(const T &value) { remove(value); return *this; }
     inline QSet<T> operator|(const QSet<T> &other)
         { QSet<T> result = *this; result |= other; return result; }
     inline QSet<T> operator&(const QSet<T> &other)
@@ -219,4 +219,4 @@ QList<T> QList<T>::fromSet(const QSet<T> &set)
 
 Q_DECLARE_SEQUENTIAL_ITERATOR(Set)
 
-#endif
+#endif // QSET_H

@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/src/gui/styles/qstyleoption.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/gui/styles/qstyleoption.cpp -->
 <head>
-    <title>Qt 4.0: QStyleOptionFrame Class Reference</title>
+    <title>Qt 4.1: QStyleOptionFrame Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -20,6 +20,7 @@ body { background: #ffffff; color: black; }</style>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QStyleOptionFrame Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QStyleOptionFrame class is used to describe the parameters for drawing a frame. <a href="#details">More...</a></p>
 <pre>#include &lt;QStyleOptionFrame&gt;</pre><p>Inherits <a href="qstyleoption.html">QStyleOption</a>.</p>
+<p>Inherited by <a href="qstyleoptionframev2.html">QStyleOptionFrameV2</a>.</p>
 <ul>
 <li><a href="qstyleoptionframe-members.html">List of all members, including inherited members</a></li>
 </ul>
@@ -54,7 +55,12 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Detailed Description</h2>
 <p>The QStyleOptionFrame class is used to describe the parameters for drawing a frame.</p>
-<p>QStyleOptionFrame is used for drawing several built-in Qt widget, including <a href="qframe.html">QFrame</a>, <a href="qgroupbox.html">QGroupBox</a>, <a href="qlineedit.html">QLineEdit</a>, and <a href="qmenu.html">QMenu</a>.</p>
+<p>QStyleOptionFrame is used for drawing several built-in Qt widget, including <a href="qframe.html">QFrame</a>, <a href="qgroupbox.html">QGroupBox</a>, <a href="qlineedit.html">QLineEdit</a>, and <a href="qmenu.html">QMenu</a>. Note that to describe the parameters necessary for drawing a frame in Qt 4.1 or above, you must use the <a href="qstyleoptionframev2.html">QStyleOptionFrameV2</a> subclass.</p>
+<p>An instance of the QStyleOptionFrame class has <a href="qstyleoption.html#type-varx">type</a> <a href="qstyleoption.html#OptionType-enum">SO_Frame</a> and <a href="qstyleoption.html#version-varx">version</a> 1.</p>
+<p>The type is used internally by <a href="qstyleoption.html">QStyleOption</a>, its subclasses, and <a href="qstyleoption.html#qstyleoption_cast">qstyleoption_cast</a>() to determine the type of style option. In general you do not need to worry about this unless you want to create your own <a href="qstyleoption.html">QStyleOption</a> subclass and your own styles. The version is used by <a href="qstyleoption.html">QStyleOption</a> subclasses to implement extensions without breaking compatibility. If you use <a href="qstyleoption.html#qstyleoption_cast">qstyleoption_cast</a>(), you normally don't need to check it.</p>
+<p>If you create your own <a href="qstyle.html">QStyle</a> subclass, you should handle both QStyleOptionFrame and <a href="qstyleoptionframev2.html">QStyleOptionFrameV2</a>.</p>
+<p>For an example demonstrating how style options can be used, see the <a href="widgets-styles.html">Styles</a> example.</p>
+<p>See also <a href="qstyleoptionframev2.html">QStyleOptionFrameV2</a> and <a href="qstyleoption.html">QStyleOption</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QStyleOptionFrame"></a>QStyleOptionFrame::QStyleOptionFrame ()</h3>
@@ -65,16 +71,20 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Variable Documentation</h2>
 <h3 class="fn"><a name="Type-var"></a>const int QStyleOptionFrame::Type</h3>
 <p>Equals <a href="qstyleoption.html#OptionType-enum">SO_Frame</a>.</p>
+<p>The type is used internally by <a href="qstyleoption.html">QStyleOption</a>, its subclasses, and <a href="qstyleoption.html#qstyleoption_cast">qstyleoption_cast</a>() to determine the type of style option. In general you do not need to worry about this unless you want to create your own <a href="qstyleoption.html">QStyleOption</a> subclass and your own styles.</p>
 <h3 class="fn"><a name="Version-var"></a>const int QStyleOptionFrame::Version</h3>
 <p>Equals 1.</p>
+<p>The version is used by <a href="qstyleoption.html">QStyleOption</a> subclasses to implement extensions without breaking compatibility. If you use <a href="qstyleoption.html#qstyleoption_cast">qstyleoption_cast</a>(), you normally don't need to check it.</p>
 <h3 class="fn"><a name="lineWidth-var"></a>int QStyleOptionFrame::lineWidth</h3>
-<p>This variable holds the line width for drawing the panel.</p>
+<p>This variable holds the line width for drawing the frame.</p>
+<p>See also <a href="qframe.html#lineWidth-prop">QFrame::lineWidth</a>.</p>
 <h3 class="fn"><a name="midLineWidth-var"></a>int QStyleOptionFrame::midLineWidth</h3>
-<p>This variable holds the mid-line width for drawing the panel. This is usually used in drawing sunken or raised frames.</p>
+<p>This variable holds the mid-line width for drawing the frame. This is usually used in drawing sunken or raised frames.</p>
+<p>See also <a href="qframe.html#midLineWidth-prop">QFrame::midLineWidth</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

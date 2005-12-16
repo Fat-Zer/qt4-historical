@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/src/corelib/kernel/qcoreapplication.cpp -->
+<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/corelib/kernel/qcoreapplication.cpp -->
 <head>
-    <title>Qt 4.0: QCoreApplication Class Reference</title>
+    <title>Qt 4.1: QCoreApplication Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -23,6 +23,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Inherited by <a href="qapplication.html">QApplication</a>.</p>
 <ul>
 <li><a href="qcoreapplication-members.html">List of all members, including inherited members</a></li>
+<li><a href="qcoreapplication-obsolete.html">Obsolete members</a></li>
 <li><a href="qcoreapplication-qt3.html">Qt 3 support members</a></li>
 </ul>
 <a name="public-types"></a>
@@ -66,7 +67,6 @@ body { background: #ffffff; color: black; }</style>
 <h3>Signals</h3>
 <ul>
 <li><div class="fn"/>void <b><a href="qcoreapplication.html#aboutToQuit">aboutToQuit</a></b> ()</li>
-<li><div class="fn"/>void <b><a href="qcoreapplication.html#unixSignal">unixSignal</a></b> ( int <i>number</i> )</li>
 </ul>
 <ul>
 <li><div class="fn"/>1 signal inherited from <a href="qobject.html#signals">QObject</a></li>
@@ -78,14 +78,13 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>QString <b><a href="qcoreapplication.html#applicationDirPath">applicationDirPath</a></b> ()</li>
 <li><div class="fn"/>QString <b><a href="qcoreapplication.html#applicationFilePath">applicationFilePath</a></b> ()</li>
 <li><div class="fn"/>QString <b><a href="qcoreapplication.html#applicationName-prop">applicationName</a></b> ()</li>
-<li><div class="fn"/>int <b><a href="qcoreapplication.html#argc">argc</a></b> ()</li>
-<li><div class="fn"/>char ** <b><a href="qcoreapplication.html#argv">argv</a></b> ()</li>
+<li><div class="fn"/>QStringList <b><a href="qcoreapplication.html#arguments">arguments</a></b> ()</li>
 <li><div class="fn"/>bool <b><a href="qcoreapplication.html#closingDown">closingDown</a></b> ()</li>
 <li><div class="fn"/>int <b><a href="qcoreapplication.html#exec">exec</a></b> ()</li>
 <li><div class="fn"/>void <b><a href="qcoreapplication.html#exit">exit</a></b> ( int <i>returnCode</i> = 0 )</li>
 <li><div class="fn"/>void <b><a href="qcoreapplication.html#flush">flush</a></b> ()</li>
 <li><div class="fn"/>bool <b><a href="qcoreapplication.html#hasPendingEvents">hasPendingEvents</a></b> ()</li>
-<li><div class="fn"/>void <b><a href="qcoreapplication.html#installTranslator">installTranslator</a></b> ( QTranslator * <i>mf</i> )</li>
+<li><div class="fn"/>void <b><a href="qcoreapplication.html#installTranslator">installTranslator</a></b> ( QTranslator * <i>messageFile</i> )</li>
 <li><div class="fn"/>QCoreApplication * <b><a href="qcoreapplication.html#instance">instance</a></b> ()</li>
 <li><div class="fn"/>QStringList <b><a href="qcoreapplication.html#libraryPaths">libraryPaths</a></b> ()</li>
 <li><div class="fn"/>QString <b><a href="qcoreapplication.html#organizationDomain-prop">organizationDomain</a></b> ()</li>
@@ -95,7 +94,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>void <b><a href="qcoreapplication.html#processEvents-2">processEvents</a></b> ( QEventLoop::ProcessEventsFlags <i>flags</i>, int <i>maxtime</i> )</li>
 <li><div class="fn"/>void <b><a href="qcoreapplication.html#removeLibraryPath">removeLibraryPath</a></b> ( const QString &amp; <i>path</i> )</li>
 <li><div class="fn"/>void <b><a href="qcoreapplication.html#removePostedEvents">removePostedEvents</a></b> ( QObject * <i>receiver</i> )</li>
-<li><div class="fn"/>void <b><a href="qcoreapplication.html#removeTranslator">removeTranslator</a></b> ( QTranslator * <i>mf</i> )</li>
+<li><div class="fn"/>void <b><a href="qcoreapplication.html#removeTranslator">removeTranslator</a></b> ( QTranslator * <i>messageFile</i> )</li>
 <li><div class="fn"/>bool <b><a href="qcoreapplication.html#sendEvent">sendEvent</a></b> ( QObject * <i>receiver</i>, QEvent * <i>event</i> )</li>
 <li><div class="fn"/>void <b><a href="qcoreapplication.html#sendPostedEvents">sendPostedEvents</a></b> ( QObject * <i>receiver</i>, int <i>event_type</i> )</li>
 <li><div class="fn"/>void <b><a href="qcoreapplication.html#sendPostedEvents-2">sendPostedEvents</a></b> ()</li>
@@ -114,6 +113,11 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/>void <b><a href="qcoreapplication.html#qAddPostRoutine">qAddPostRoutine</a></b> ( QtCleanUpFunction <i>ptr</i> )</li>
 </ul>
+<a name="macros"></a>
+<h3>Macros</h3>
+<ul>
+<li><div class="fn"/><b><a href="qcoreapplication.html#Q_DECLARE_TR_FUNCTIONS">Q_DECLARE_TR_FUNCTIONS</a></b> (  <i>context</i> )</li>
+</ul>
 <h3>Additional Inherited Members</h3>
 <ul>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
@@ -124,7 +128,7 @@ body { background: #ffffff; color: black; }</style>
 <p>The QCoreApplication class provides an event loop for console Qt applications.</p>
 <p>This class is used by non-GUI applications to provide their event loop. For non-GUI application that uses Qt, there should be exactly one QCoreApplication object. For GUI applications, see <a href="qapplication.html">QApplication</a>.</p>
 <p>QCoreApplication contains the main event loop, where all events from the operating system (e.g., timer and network events) and other sources are processed and dispatched. It also handles the application's initialization and finalization, as well as system-wide and application-wide settings.</p>
-<p>The command line arguments which QCoreApplication's constructor should be called with are accessible using <a href="qcoreapplication.html#argc">argc</a>() and <a href="qcoreapplication.html#argv">argv</a>(). The event loop is started with a call to <a href="qcoreapplication.html#exec">exec</a>(). Long running operations can call <a href="qcoreapplication.html#processEvents">processEvents</a>() to keep the application responsive.</p>
+<p>The command line arguments which QCoreApplication's constructor should be called with are accessible using <a href="qcoreapplication-obsolete.html#argc">argc</a>() and <a href="qcoreapplication-obsolete.html#argv">argv</a>(). The event loop is started with a call to <a href="qcoreapplication.html#exec">exec</a>(). Long running operations can call <a href="qcoreapplication.html#processEvents">processEvents</a>() to keep the application responsive.</p>
 <p>Some Qt classes (e.g., <a href="qstring.html">QString</a>) can be used without a QCoreApplication object. However, in general, we recommend that you create a QCoreApplication or a <a href="qapplication.html">QApplication</a> object in your <tt>main()</tt> function as early as possible.</p>
 <p>An application has an <a href="qcoreapplication.html#applicationDirPath">applicationDirPath</a>() and an <a href="qcoreapplication.html#applicationFilePath">applicationFilePath</a>(). Translation files can be added or removed using <a href="qcoreapplication.html#installTranslator">installTranslator</a>() and <a href="qcoreapplication.html#removeTranslator">removeTranslator</a>(). Application strings can be translated using <a href="qcoreapplication.html#translate">translate</a>(). The <a href="qobject.html#tr">QObject::tr</a>() and <a href="qobject.html#trUtf8">QObject::trUtf8</a>() functions are implemented in terms of <a href="qcoreapplication.html#translate">translate</a>().</p>
 <p>The class provides a <a href="qcoreapplication.html#quit">quit</a>() slot and an <a href="qcoreapplication.html#aboutToQuit">aboutToQuit</a>() signal.</p>
@@ -179,7 +183,7 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QCoreApplication"></a>QCoreApplication::QCoreApplication ( int &amp; <i>argc</i>, char ** <i>argv</i> )</h3>
 <p>Constructs a Qt kernel application. Kernel applications are applications without a graphical user interface. These type of applications are used at the console or as server processes.</p>
-<p>The <i>argc</i> and <i>argv</i> arguments are available from <a href="qcoreapplication.html#argc">argc</a>() and <a href="qcoreapplication.html#argv">argv</a>().</p>
+<p>The <i>argc</i> and <i>argv</i> arguments are available from <a href="qcoreapplication-obsolete.html#argc">argc</a>() and <a href="qcoreapplication-obsolete.html#argv">argv</a>().</p>
 <h3 class="fn"><a name="dtor.QCoreApplication"></a>QCoreApplication::~QCoreApplication ()</h3>
 <p>Destroys the <a href="qcoreapplication.html">QCoreApplication</a> object.</p>
 <h3 class="fn"><a name="aboutToQuit"></a>void QCoreApplication::aboutToQuit ()&nbsp;&nbsp;<tt> [signal]</tt></h3>
@@ -192,25 +196,22 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qcoreapplication.html#removeLibraryPath">removeLibraryPath</a>(), <a href="qcoreapplication.html#libraryPaths">libraryPaths</a>(), and <a href="qcoreapplication.html#setLibraryPaths">setLibraryPaths</a>().</p>
 <h3 class="fn"><a name="applicationDirPath"></a><a href="qstring.html">QString</a> QCoreApplication::applicationDirPath ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns the directory that contains the application executable.</p>
-<p>For example, if you have installed Qt in the <tt>C:\Trolltech\Qt</tt> directory, and you run the <tt>launcher</tt> example, this function will return &quot;C:/Trolltech/Qt/examples/tools/launcher&quot;.</p>
+<p>For example, if you have installed Qt in the <tt>C:\Trolltech\Qt</tt> directory, and you run the <tt>regexp</tt> example, this function will return &quot;C:/Trolltech/Qt/examples/tools/regexp&quot;.</p>
 <p>On Mac OS X this will point to the directory actually containing the executable, which may be inside of an application bundle (if the application is bundled).</p>
 <p><b>Warning:</b> On Unix, this function assumes that argv[0] contains the file name of the executable (which it normally does). It also assumes that the current directory hasn't been changed by the application.</p>
 <p>See also <a href="qcoreapplication.html#applicationFilePath">applicationFilePath</a>().</p>
 <h3 class="fn"><a name="applicationFilePath"></a><a href="qstring.html">QString</a> QCoreApplication::applicationFilePath ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns the file path of the application executable.</p>
-<p>For example, if you have installed Qt in the <tt>/usr/local/qt</tt> directory, and you run the <tt>launcher</tt> example, this function will return &quot;/usr/local/qt/examples/tools/launcher&quot;.</p>
+<p>For example, if you have installed Qt in the <tt>/usr/local/qt</tt> directory, and you run the <tt>regexp</tt> example, this function will return &quot;/usr/local/qt/examples/tools/regexp/regexp&quot;.</p>
 <p><b>Warning:</b> On Unix, this function assumes that argv[0] contains the file name of the executable (which it normally does). It also assumes that the current directory hasn't been changed by the application.</p>
 <p>See also <a href="qcoreapplication.html#applicationDirPath">applicationDirPath</a>().</p>
-<h3 class="fn"><a name="argc"></a>int QCoreApplication::argc ()&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Returns the number of command line arguments.</p>
-<p>The documentation for <a href="qcoreapplication.html#argv">argv</a>() describes how to process command line arguments.</p>
-<p>See also <a href="qcoreapplication.html#argv">argv</a>().</p>
-<h3 class="fn"><a name="argv"></a>char ** QCoreApplication::argv ()&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Returns the command-line argument array.</p>
-<p>argv()[0] is the program name, argv()[1] is the first argument, and argv()[<a href="qcoreapplication.html#argc">argc</a>() - 1] is the last argument.</p>
-<p>A <a href="qcoreapplication.html">QCoreApplication</a> object is constructed by passing <i>argc</i> and <i>argv</i> from the <tt>main()</tt> function. Some of the arguments may be recognized as Qt options and removed from the argument vector. For example, the X11 version of <a href="qapplication.html">QApplication</a> knows about <tt>-display</tt>, <tt>-font</tt>, and a few more options.</p>
-<p><a href="qcoreapplication.html#instance">QCoreApplication::instance</a>() points to the <a href="qcoreapplication.html">QCoreApplication</a> object, and through which you can access <a href="qcoreapplication.html#argc">argc</a>() and argv() in functions other than main().</p>
-<p>See also <a href="qcoreapplication.html#argc">argc</a>().</p>
+<h3 class="fn"><a name="arguments"></a><a href="qstringlist.html">QStringList</a> QCoreApplication::arguments ()&nbsp;&nbsp;<tt> [static]</tt></h3>
+<p>Returns the list of command-line arguments.</p>
+<p>arguments().at(0) is the program name, arguments().at(1) is the first argument, and arguments().last() is the last argument.</p>
+<p>Calling this function is slow - you should store the result in a variable when parsing the command line.</p>
+<p><b>Warning:</b> On Unix, this list is built from the argc and argv parameters passed to the constructor in the main() function. The string-data in argv is interpreted using <a href="qstring.html#fromLocal8Bit">QString::fromLocal8Bit</a>(); hence it is not possible to pass i.e. Japanese command line arguments on a system that runs in a latin1 locale. Most modern Unix systems do not have this limitation, as they are Unicode based.</p>
+<p>On NT-based Windows, this limitation does not apply either.</p>
+<p>This function was introduced in Qt 4.1.</p>
 <h3 class="fn"><a name="closingDown"></a>bool QCoreApplication::closingDown ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns true if the application objects are being destroyed; otherwise returns false.</p>
 <p>See also <a href="qcoreapplication.html#startingUp">startingUp</a>().</p>
@@ -235,8 +236,8 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="hasPendingEvents"></a>bool QCoreApplication::hasPendingEvents ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>This function returns true if there are pending events; otherwise returns false. Pending events can be either from the window system or posted events using <a href="qcoreapplication.html#postEvent">postEvent</a>().</p>
 <p>See also <a href="qabstracteventdispatcher.html#hasPendingEvents">QAbstractEventDispatcher::hasPendingEvents</a>().</p>
-<h3 class="fn"><a name="installTranslator"></a>void QCoreApplication::installTranslator ( <a href="qtranslator.html">QTranslator</a> * <i>mf</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Adds the message file <i>mf</i> to the list of message files to be used for translations.</p>
+<h3 class="fn"><a name="installTranslator"></a>void QCoreApplication::installTranslator ( <a href="qtranslator.html">QTranslator</a> * <i>messageFile</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
+<p>Adds the message file <i>messageFile</i> to the list of message files to be used for translations.</p>
 <p>Multiple message files can be installed. Translations are searched for in the last installed message file, then the one from last, and so on, back to the first installed message file. The search stops as soon as a matching translation is found.</p>
 <p>See also <a href="qcoreapplication.html#removeTranslator">removeTranslator</a>(), <a href="qcoreapplication.html#translate">translate</a>(), and <a href="qtranslator.html#load">QTranslator::load</a>().</p>
 <h3 class="fn"><a name="instance"></a>QCoreApplication * QCoreApplication::instance ()&nbsp;&nbsp;<tt> [static]</tt></h3>
@@ -252,11 +253,11 @@ body { background: #ffffff; color: black; }</style>
 <p>For certain types of events (e.g. mouse and key events), the event will be propagated to the receiver's parent and so on up to the top-level object if the receiver is not interested in the event (i.e., it returns false).</p>
 <p>There are five different ways that events can be processed; reimplementing this virtual function is just one of them. All five approaches are listed below:</p>
 <ol type="1">
+<li>Reimplementing paintEvent(), mousePressEvent() and so on. This is the commonest, easiest and least powerful way.</li>
 <li>Reimplementing this function. This is very powerful, providing complete control; but only one subclass can be active at a time.</li>
 <li>Installing an event filter on <a href="qcoreapplication.html#instance">QCoreApplication::instance</a>(). Such an event filter is able to process all events for all widgets, so it's just as powerful as reimplementing notify(); furthermore, it's possible to have more than one application-global event filter. Global event filters even see mouse events for <a href="qwidget.html#enabled-prop">disabled widgets</a>.</li>
 <li>Reimplementing <a href="qobject.html#event">QObject::event</a>() (as <a href="qwidget.html">QWidget</a> does). If you do this you get Tab key presses, and you get to see the events before any widget-specific event filters.</li>
 <li>Installing an event filter on the object. Such an event filter gets all the events except Tab and Shift-Tab key presses.</li>
-<li>Reimplementing paintEvent(), mousePressEvent() and so on. This is the commonest, easiest and least powerful way.</li>
 </ol>
 <p>See also <a href="qobject.html#event">QObject::event</a>() and <a href="qobject.html#installEventFilter">installEventFilter</a>().</p>
 <h3 class="fn"><a name="postEvent"></a>void QCoreApplication::postEvent ( <a href="qobject.html">QObject</a> * <i>receiver</i>, <a href="qevent.html">QEvent</a> * <i>event</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
@@ -264,11 +265,11 @@ body { background: #ffffff; color: black; }</style>
 <p>The event must be allocated on the heap since the post event queue will take ownership of the event and delete it once it has been posted. It is <i>not safe</i> to modify or delete the event after it has been posted.</p>
 <p>When control returns to the main event loop, all events that are stored in the queue will be sent using the <a href="qcoreapplication.html#notify">notify</a>() function.</p>
 <p><b>Note:</b> This function is <a href="threads.html#thread-safe">thread-safe</a>.</p>
-<p>See also <a href="qcoreapplication.html#sendEvent">sendEvent</a>() and <a href="qcoreapplication.html#notify">notify</a>().</p>
+<p>See also <a href="qcoreapplication.html#sendEvent">sendEvent</a>(), <a href="qcoreapplication.html#notify">notify</a>(), and sendPostedEvent().</p>
 <h3 class="fn"><a name="processEvents"></a>void QCoreApplication::processEvents ( <a href="qeventloop.html#ProcessEventsFlag-enum">QEventLoop::ProcessEventsFlags</a> <i>flags</i> = QEventLoop::AllEvents )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Processes all pending events according to the specified <i>flags</i> until there are no more events to process.</p>
 <p>You can call this function occasionally when your program is busy performing a long operation (e.g. copying a file).</p>
-<p>See also <a href="qcoreapplication.html#exec">exec</a>(), <a href="qtimer.html">QTimer</a>, and <a href="qeventloop.html#processEvents">QEventLoop::processEvents</a>().</p>
+<p>See also <a href="qcoreapplication.html#exec">exec</a>(), <a href="qtimer.html">QTimer</a>, <a href="qeventloop.html#processEvents">QEventLoop::processEvents</a>(), <a href="qcoreapplication.html#flush">flush</a>(), and <a href="qcoreapplication.html#sendPostedEvents">sendPostedEvents</a>().</p>
 <h3 class="fn"><a name="processEvents-2"></a>void QCoreApplication::processEvents ( <a href="qeventloop.html#ProcessEventsFlag-enum">QEventLoop::ProcessEventsFlags</a> <i>flags</i>, int <i>maxtime</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Processes pending events for <i>maxtime</i> milliseconds or until there are no more events to process, whichever is shorter.</p>
@@ -288,8 +289,8 @@ body { background: #ffffff; color: black; }</style>
 <p>Removes all events posted using <a href="qcoreapplication.html#postEvent">postEvent</a>() for <i>receiver</i>.</p>
 <p>The events are <i>not</i> dispatched, instead they are removed from the queue. You should never need to call this function. If you do call it, be aware that killing events may cause <i>receiver</i> to break one or more invariants.</p>
 <p><b>Note:</b> This function is <a href="threads.html#thread-safe">thread-safe</a>.</p>
-<h3 class="fn"><a name="removeTranslator"></a>void QCoreApplication::removeTranslator ( <a href="qtranslator.html">QTranslator</a> * <i>mf</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Removes the message file <i>mf</i> from the list of message files used by this application. (It does not delete the message file from the file system.)</p>
+<h3 class="fn"><a name="removeTranslator"></a>void QCoreApplication::removeTranslator ( <a href="qtranslator.html">QTranslator</a> * <i>messageFile</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
+<p>Removes the message file <i>messageFile</i> from the list of message files used by this application. (It does not delete the message file from the file system.)</p>
 <p>See also <a href="qcoreapplication.html#installTranslator">installTranslator</a>(), <a href="qcoreapplication.html#translate">translate</a>(), and <a href="qobject.html#tr">QObject::tr</a>().</p>
 <h3 class="fn"><a name="sendEvent"></a>bool QCoreApplication::sendEvent ( <a href="qobject.html">QObject</a> * <i>receiver</i>, <a href="qevent.html">QEvent</a> * <i>event</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Sends event <i>event</i> directly to receiver <i>receiver</i>, using the <a href="qcoreapplication.html#notify">notify</a>() function. Returns the value that was returned from the event handler.</p>
@@ -301,6 +302,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Immediately dispatches all events which have been previously queued with <a href="qcoreapplication.html#postEvent">QCoreApplication::postEvent</a>() and which are for the object <i>receiver</i> and have the event type <i>event_type</i>.</p>
 <p>Note that events from the window system are <i>not</i> dispatched by this function, but by <a href="qcoreapplication.html#processEvents">processEvents</a>().</p>
 <p>If <i>receiver</i> is null, the events of <i>event_type</i> are sent for all objects. If <i>event_type</i> is 0, all the events are sent for <i>receiver</i>.</p>
+<p>See also <a href="qcoreapplication.html#flush">flush</a>() and <a href="qcoreapplication.html#postEvent">postEvent</a>().</p>
 <h3 class="fn"><a name="sendPostedEvents-2"></a>void QCoreApplication::sendPostedEvents ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
 <p>Dispatches all posted events, i.e. empties the event queue.</p>
@@ -327,8 +329,6 @@ body { background: #ffffff; color: black; }</style>
 <p><b>Warning:</b> This method is reentrant only if all translators are installed <i>before</i> calling this method. Installing or removing translators while performing translations is not supported. Doing so will most likely result in crashes or other undesirable behavior.</p>
 <p><b>Note:</b> This function is <a href="threads.html#reentrant">reentrant</a>.</p>
 <p>See also <a href="qobject.html#tr">QObject::tr</a>(), <a href="qcoreapplication.html#installTranslator">installTranslator</a>(), and <a href="qtextcodec.html#codecForTr">QTextCodec::codecForTr</a>().</p>
-<h3 class="fn"><a name="unixSignal"></a>void QCoreApplication::unixSignal ( int <i>number</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This signal is emitted whenever a Unix signal is received by the application. The Unix signal received is specified by its <i>number</i>.</p>
 <h3 class="fn"><a name="winEventFilter"></a>bool QCoreApplication::winEventFilter ( MSG * <i>msg</i>, long * <i>result</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>The message procedure calls this function for every message received. Reimplement this function if you want to process window messages <i>msg</i> that are not processed by Qt. If you don't want the event to be processed by Qt, then return true and set <i>result</i> to the value that the window procedure should return. Otherwise return false.</p>
 <hr />
@@ -350,7 +350,7 @@ body { background: #ffffff; color: black; }</style>
         qAddPostRoutine(cleanup_ptr);   // delete later
     }</pre>
 <p>Note that for an application- or module-wide cleanup, qAddPostRoutine() is often not suitable. For example, if the program is split into dynamically loaded modules, the relevant module may be unloaded long before the <a href="qapplication.html">QApplication</a> destructor is called.</p>
-<p>For modules and libraries, using a reference-counted initialization manager or Qt's parent-child deletion mechanism may be better. Here is an example of a private class which uses the parent-child mechanism to call a cleanup function at the right time:</p>
+<p>For modules and libraries, using a reference-counted initialization manager or Qt's parent-child deletion mechanism may be better. Here is an example of a private class that uses the parent-child mechanism to call a cleanup function at the right time:</p>
 <pre>&nbsp;   class MyPrivateInitStuff : public QObject
     {
     public:
@@ -375,11 +375,31 @@ body { background: #ffffff; color: black; }</style>
 
         MyPrivateInitStuff *p;
     };</pre>
-<p>By selecting the right parent object, this can often be made to clean up the module's data at the exactly the right moment.</p>
+<p>By selecting the right parent object, this can often be made to clean up the module's data at the right moment.</p>
+<hr />
+<h2>Macro Documentation</h2>
+<h3 class="fn"><a name="Q_DECLARE_TR_FUNCTIONS"></a>Q_DECLARE_TR_FUNCTIONS (  <i>context</i> )</h3>
+<p>The Q_DECLARE_TR_FUNCTIONS() macro declares and implements two translation functions, <tt>tr()</tt> and <tt>trUtf8()</tt>, with these signatures:</p>
+<pre>&nbsp;   static inline QString tr(const char *sourceText,
+                             const char *comment = 0);
+    static inline QString trUtf8(const char *sourceText,
+                                 const char *comment = 0);</pre>
+<p>This macro is useful if you want to use <a href="qobject.html#tr">QObject::tr</a>() or <a href="qobject.html#trUtf8">QObject::trUtf8</a>() in classes that don't inherit from <a href="qobject.html">QObject</a>.</p>
+<p>Q_DECLARE_TR_FUNCTIONS() must appear at the very top of the class definition (before the first <tt>public:</tt> or <tt>protected:</tt>). For example:</p>
+<pre>&nbsp;   class MyMfcView : public CView
+    {
+        Q_DECLARE_TR_FUNCTIONS(MyMfcView)
+
+    public:
+        MyMfcView();
+        ...
+    };</pre>
+<p>The <i>context</i> parameter is normally the class name.</p>
+<p>See also <a href="qobject.html#Q_OBJECT">Q_OBJECT</a>, <a href="qobject.html#tr">QObject::tr</a>(), and <a href="qobject.html#trUtf8">QObject::trUtf8</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

@@ -43,7 +43,7 @@
 class QAction;
 class QToolButton;
 
-class QT_SHARED_EXPORT QDesignerStackedWidget : public QStackedWidget
+class QDESIGNER_SHARED_EXPORT QDesignerStackedWidget : public QStackedWidget
 {
     Q_OBJECT
     Q_PROPERTY(QString currentPageName READ currentPageName WRITE setCurrentPageName STORED false DESIGNABLE true)
@@ -62,6 +62,12 @@ public:
     inline QAction *actionInsertPage() const
     { return m_actionInsertPage; }
 
+    inline QAction *actionInsertPageAfter() const
+    { return m_actionInsertPageAfter; }
+
+    inline QAction *actionChangePageOrder() const
+    { return m_actionChangePageOrder; }
+
     QString currentPageName() const;
     void setCurrentPageName(const QString &pageName);
 
@@ -79,6 +85,9 @@ private slots:
     void nextPage();
     void removeCurrentPage();
     void addPage();
+    void addPageAfter();
+    void changeOrder();
+    void slotCurrentChanged(int index);
 
 private:
     QToolButton *prev, *next;
@@ -86,6 +95,8 @@ private:
     QAction *m_actionNextPage;
     QAction *m_actionDeletePage;
     QAction *m_actionInsertPage;
+    QAction *m_actionInsertPageAfter;
+    QAction *m_actionChangePageOrder;
 };
 
 #endif // QDESIGNER_STACKEDBOX_H

@@ -24,7 +24,7 @@
 #ifndef Q3BUTTON_H
 #define Q3BUTTON_H
 
-#include "QtGui/qabstractbutton.h"
+#include <QtGui/qabstractbutton.h>
 
 QT_MODULE(Qt3SupportLight)
 
@@ -42,4 +42,4 @@ protected:
 
 };
 
-#endif
+#endif // Q3BUTTON_H

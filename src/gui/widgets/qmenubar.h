@@ -65,6 +65,7 @@ public:
     void clear();
 
     QAction *activeAction() const;
+    void setActiveAction(QAction *action);
 
     void setDefaultUp(bool);
     bool isDefaultUp() const;
@@ -83,7 +84,7 @@ public:
     MenuRef macMenu();
 #endif
 
-signals:
+Q_SIGNALS:
     void triggered(QAction *action);
     void hovered(QAction *action);
 
@@ -252,7 +253,7 @@ public:
     QT3_SUPPORT void setAutoGeometry(bool);
     QT3_SUPPORT bool autoGeometry() const;
 
-signals:
+Q_SIGNALS:
     QT_MOC_COMPAT void activated(int itemId);
     QT_MOC_COMPAT void highlighted(int itemId);
 
@@ -292,4 +293,5 @@ private:
 };
 
 #endif // QT_NO_MENUBAR
+
 #endif // QMENUBAR_H

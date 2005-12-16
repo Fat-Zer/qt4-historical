@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/doc/src/appicon.qdoc -->
+<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/doc/src/appicon.qdoc -->
 <head>
-    <title>Qt 4.0: Setting the Application Icon</title>
+    <title>Qt 4.1: Setting the Application Icon</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -42,13 +42,14 @@ body { background: #ffffff; color: black; }</style>
 <p>To ensure that the correct icon appears, both when the application is being launched, and in the Finder, it is necessary to employ a platform-dependent technique.</p>
 <p>Although many programs can create icon files (<tt>.icns</tt>), the recommended approach is to use the <i>Icon Composer</i> program supplied by Apple (in the <tt>Developer/Application</tt> folder). <i>Icon Composer</i> allows you to import several different sized icons (for use in different contexts) as well as the masks that go with them. Save the set of icons to a file in your project directory.</p>
 <p>If you are using qmake to generate your make files, you only need to add a single line to your <tt>.pro</tt> project file. For example, if the name of your icon file is <tt>myapp.icns</tt>, and your project file is <tt>myapp.pro</tt>, add this line to <tt>myapp.pro</tt>:</p>
-<pre>&nbsp;   RC_FILE = myapp.icns</pre>
+<pre>&nbsp;   ICON = myapp.icns</pre>
 <p>This will ensure that <tt>qmake</tt> puts your icons in the proper place and creates an <tt>Info.plist</tt> entry for the icon.</p>
 <p>If you do not use <tt>qmake</tt>, you must do the following manually:</p>
 <ol type="1">
 <li>Create an <tt>Info.plist</tt> file for your application (using the <tt>PropertyListEditor</tt>, found in <tt>Developer/Applications</tt>).</li>
 <li>Associate your <tt>.icns</tt> record with the <tt>CFBundleIconFile</tt> record in the <tt>Info.plist</tt> file (again, using the <tt>PropertyListEditor</tt>).</li>
-<li>Copy both the icns and your <tt>Info.plist</tt> into your application bundle <tt>Resource</tt> directory.</li>
+<li>Copy the <tt>Info.plist</tt> file into your application bundle's <tt>Contents</tt> directory.</li>
+<li>Copy the <tt>.icns</tt> file into your application bundle's <tt>Contents/Resources</tt> directory.</li>
 </ol>
 <a name="setting-the-application-icon-on-common-linux-desktops"></a>
 <h2>Setting the Application Icon on Common Linux Desktops</h2>
@@ -75,6 +76,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

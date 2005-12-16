@@ -28,9 +28,10 @@
 #include "mainwindow.h"
 #include "config.h"
 #include "tabbedbrowser.h"
+#include "private/qunicodetables_p.h"
 
-#include <QtGui/QtGui>
-#include <QtCore/qdebug.h>
+#include <QtGui>
+#include <QtDebug>
 
 #include <stdlib.h>
 #include <limits.h>
@@ -115,9 +116,9 @@ public:
     QStringList links(int index) const { return contents.values(stringList().at(index)); }
     void addLink(const QString &description, const QString &link) { contents.insert(description, link); }
 
-    void publish() { filter(QString()); }
+    void publish() { filter(QString(), QString()); }
 
-    QModelIndex filter(const QString &s);
+    QModelIndex filter(const QString &s, const QString &real);
 
     virtual Qt::ItemFlags flags(const QModelIndex &index) const
     { return QStringListModel::flags(index) & ~Qt::ItemIsEditable; }
@@ -126,42 +127,78 @@ private:
     QMultiMap<QString, QString> contents;
 };
 
-QModelIndex IndexListModel::filter(const QString &s)
+bool caseInsensitiveLessThan(const QString &as, const QString &bs)
 {
-    QMapIterator<QString, QString> it(contents);
-    QStringList lst;
-    QString lastKey;
+    const QChar *a = as.unicode();
+    const QChar *b = bs.unicode();    
+    if (a == 0)
+        return true;
+    if (b == 0)
+        return false;
+    if (a == b)
+        return false;
+    int l=qMin(as.length(),bs.length());
+    while (l-- && QUnicodeTables::lower((*a).unicode()) == QUnicodeTables::lower((*b).unicode()))
+        a++,b++;
+    if (l==-1)
+        return (as.length() < bs.length());
+    return QUnicodeTables::lower((*a).unicode()) < QUnicodeTables::lower((*b).unicode());
+}
+
+/**
+ * \a real is kinda a hack for the smart search, need a way to match a regexp to an item
+ * How would you say the best match for Q.*Wiget is QWidget?
+ */
+QModelIndex IndexListModel::filter(const QString &s, const QString &real)
+{
+    QStringList list;
 
     int goodMatch = -1;
     int perfectMatch = -1;
     if (s.isEmpty())
         perfectMatch = 0;
 
-    while (it.hasNext()) {
-        it.next();
-
+    const QRegExp regExp(s);
+    QMultiMap<QString, QString>::iterator it = contents.begin();
+    QString lastKey;
+    for (; it != contents.end(); ++it) {
         if (it.key() == lastKey)
             continue;
-
         lastKey = it.key();
-
-        if (lastKey.contains(s, Qt::CaseInsensitive))
-            lst.append(lastKey);
-
-        if (perfectMatch == -1 && lastKey.startsWith(s, Qt::CaseInsensitive)) {
-            if (goodMatch == -1)
-                goodMatch = lst.count() - 1;
-            if (s.length() == lastKey.length())
-                perfectMatch = lst.count() - 1;
+        const QString key = it.key();
+        if (key.contains(regExp) || key.contains(s, Qt::CaseInsensitive)) {
+            list.append(key);
+            //qDebug() << regExp << regExp.indexIn(s) << s << key << regExp.matchedLength();
+            if (perfectMatch == -1 && (key.startsWith(real, Qt::CaseInsensitive))) {
+                if (goodMatch == -1)
+                    goodMatch = list.count() - 1;
+                if (s.length() == key.length())
+                    perfectMatch = list.count() - 1;
+            }  else if (perfectMatch > -1 && s == key) {
+                perfectMatch = list.count() - 1;
+            }
         }
     }
-    setStringList(lst);
 
     int bestMatch = perfectMatch;
     if (bestMatch == -1)
         bestMatch = goodMatch;
 
-    return index(qMax(0, bestMatch), 0, QModelIndex());
+    bestMatch = qMax(0, bestMatch);
+    
+    // sort the new list
+    QString match;
+    if (bestMatch >= 0 && list.count() > bestMatch)
+        match = list[bestMatch];
+    qSort(list.begin(), list.end(), caseInsensitiveLessThan);
+    setStringList(list);
+    for (int i = 0; i < list.size(); ++i) {
+        if (list.at(i) == match){
+            bestMatch = i;
+            break;
+        }
+    }
+    return index(bestMatch, 0, QModelIndex());
 }
 
 HelpNavigationListItem::HelpNavigationListItem(QListWidget *ls, const QString &txt)
@@ -186,6 +223,9 @@ HelpDialog::HelpDialog(QWidget *parent, MainWindow *h)
 
     indexModel = new IndexListModel(this);
     ui.listIndex->setModel(indexModel);
+    ui.listIndex->setLayoutMode(QListView::Batched);
+    ui.listBookmarks->setItemHidden(ui.listBookmarks->headerItem(), true);
+    ui.listContents->setItemHidden(ui.listContents->headerItem(), true);
 }
 
 void HelpDialog::initialize()
@@ -209,9 +249,7 @@ void HelpDialog::initialize()
 
     cacheFilesPath = QDir::homePath() + QLatin1String("/.assistant"); //### Find a better location for the dbs
 
-    ui.editIndex->installEventFilter(this);
-    ui.listBookmarks->setItemHidden(ui.listBookmarks->headerItem(), true);
-    ui.listContents->setItemHidden(ui.listContents->headerItem(), true);
+    ui.editIndex->installEventFilter(this);    
 
     ui.framePrepare->hide();
     connect(qApp, SIGNAL(lastWindowClosed()), SLOT(lastWinClosed()));
@@ -623,14 +661,31 @@ void HelpDialog::showIndexTopic()
             emit showLink(link);
     }
 
-    indexModel->publish();
     ui.listIndex->setCurrentIndex(indexModel->index(indexModel->stringList().indexOf(description)));
     ui.listIndex->scrollTo(ui.listIndex->currentIndex(), QAbstractItemView::PositionAtTop);
 }
 
-void HelpDialog::searchInIndex(const QString &s)
+void HelpDialog::searchInIndex(const QString &searchString)
 {
-    ui.listIndex->setCurrentIndex(indexModel->filter(s));
+    QRegExp atoz("[A-Z]");
+    int matches = searchString.count(atoz);
+    if (matches > 0 && !searchString.contains(".*"))
+    {
+        int start = 0;
+        QString newSearch;
+        for (; matches > 0; --matches) {
+            int match = searchString.indexOf(atoz, start+1);
+            if (match <= start)
+                continue;
+            newSearch += searchString.mid(start, match-start);
+            newSearch += ".*";
+            start = match;
+        }
+        newSearch += searchString.mid(start);
+        ui.listIndex->setCurrentIndex(indexModel->filter(newSearch, searchString));
+    }
+    else
+        ui.listIndex->setCurrentIndex(indexModel->filter(searchString, searchString));
 }
 
 QString HelpDialog::titleOfLink(const QString &link)

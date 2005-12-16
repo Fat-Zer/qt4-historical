@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.0.1-harald-1124181193663/qt-x11-opensource-src-4.0.1/doc/src/designer-manual.qdoc -->
+<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/doc/src/designer-manual.qdoc -->
 <head>
-    <title>Qt 4.0: Using a Component in Your Application</title>
+    <title>Qt 4.1: Using a Component in Your Application</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
 a:link { color: #004faf; text-decoration: none }
 a:visited { color: #672967; text-decoration: none }
@@ -34,7 +34,7 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="#a-dialog-with-auto-connect">A Dialog With Auto-Connect</a></li>
 </ul>
 </ul>
-<p>With Qt's integrated build tools, <a href="qmake-manual.html">qmake</a> and <a href="uic.html">uic</a>, the code for user interface components created with <i>Qt Designer</i> is automatically generated when the rest of of your application is built. Forms can be included and used directly from your application or, and you can use them to extend subclasses of standard widgets.</p>
+<p>With Qt's integrated build tools, <a href="qmake-manual.html">qmake</a> and <a href="uic.html#uic">uic</a>, the code for user interface components created with <i>Qt Designer</i> is automatically generated when the rest of of your application is built. Forms can be included and used directly from your application or, and you can use them to extend subclasses of standard widgets.</p>
 <p>There are three approaches to using a form in your application: the direct approach, single inheritance subclassing, and multiple inheritance subclassing. In the direct approach, you simply construct a widget to use as a placeholder for the component, and set up the user interface inside it. In the single inheritance approach, you subclass the form's base class (<a href="qwidget.html">QWidget</a> or <a href="qdialog.html">QDialog</a>, for example), and include a private instance of the form's user interface object. In the multiple inheritance approach, you subclass from both the form's base class and the form's user interface object. This allows the widgets defined in the form to be used directly from within the scope of the subclass.</p>
 <a name="thedirectapproach"></a><a name="the-direct-approach"></a>
 <h2>The Direct Approach</h2>
@@ -76,7 +76,7 @@ body { background: #ffffff; color: black; }</style>
     private:
         Ui::ImageDialog ui;
     };</pre>
-<p>The important features of the class are the private <tt>ui</tt> object which provides the code for setting up and managing the user interface, and two private slots for handling mouse clicks on the push buttons in the dialog.</p>
+<p>The important features of the class are the private <tt>ui</tt> object which provides the code for setting up and managing the user interface.</p>
 <p>The constructor for the subclass constructs and configures all the widgets and layouts for the dialog just by calling the <tt>ui</tt> object's setupUi() function. Once this has been done, it is possible to modify the user interface and create items for the combobox:</p>
 <pre>&nbsp;   ImageDialog::ImageDialog(QWidget *parent)
         : QDialog(parent)
@@ -143,7 +143,7 @@ body { background: #ffffff; color: black; }</style>
     private slots:
         void checkValues();
     };</pre>
-<p>The checkValues() slot will be used to validate the values provided by the user.</p>
+<p>The <tt>checkValues()</tt> slot will be used to validate the values provided by the user.</p>
 <p>In the dialog's constructor we set up the widgets as before, and connect the <b>Cancel</b> button's clicked() signal to the dialog's reject() slot. We also disable the <a href="qpushbutton.html#autoDefault-prop">autoDefault</a> property in both buttons to ensure that the dialog does not interfere with the way that the line edit handles return key events:</p>
 <pre>&nbsp;   ImageDialog::ImageDialog(QWidget *parent)
         : QDialog(parent)
@@ -189,6 +189,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.0.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
 </tr></table></div></address></body>
 </html>

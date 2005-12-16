@@ -1,24 +1,47 @@
 /****************************************************************************
-** $Id: .emacs,v 1.3 1998/02/20 15:06:53 agulbra Exp $
 **
-** Definition of something or other
+** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
 **
-** Created : 979899
+** This file is part of the QtGui module of the Qt Toolkit.
 **
-** Copyright (C) 1997 by Troll Tech AS.  All rights reserved.
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
+**
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 **
 ****************************************************************************/
 
 #ifndef QWSMANAGER_P_H
 #define QWSMANAGER_P_H
 
-#include <qregion.h>
-#include <qdecoration_qws.h>
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists for the convenience
+// of the QLibrary class.  This header file may change from
+// version to version without notice, or even be removed.
+//
+// We mean it.
+//
+
+#include "QtGui/qregion.h"
+#include "QtGui/qdecoration_qws.h"
+
+#ifndef QT_NO_QWS_MANAGER
 
 class QWidget;
 class QMenu;
-
-#ifndef QT_NO_QWS_MANAGER
 
 class QWSManagerPrivate : public QObjectPrivate
 {
@@ -63,5 +86,6 @@ public:
     { return cached_region.regionType; }
 };
 
-#endif
-#endif
+#endif // QT_NO_QWS_MANAGER
+
+#endif // QWSMANAGER_P_H

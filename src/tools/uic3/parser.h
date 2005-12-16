@@ -24,7 +24,7 @@
 #ifndef PARSER_H
 #define PARSER_H
 
-#include <qstring.h>
+#include <QString>
 
 class Parser
 {
@@ -32,4 +32,4 @@ public:
     static QString cleanArgs( const QString &func );
 };
 
-#endif
+#endif // PARSER_H
