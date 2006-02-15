@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/corelib/kernel/qcoreapplication.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/src/corelib/kernel/qcoreapplication.cpp -->
 <head>
     <title>Qt 4.1: QCoreApplication Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -138,11 +138,11 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="Encoding-enum"></a>enum QCoreApplication::Encoding</h3>
 <p>This enum type defines the 8-bit encoding of character string arguments to <a href="qcoreapplication.html#translate">translate</a>():</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QCoreApplication::DefaultCodec</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The encoding specified by <a href="qtextcodec.html#codecForTr">QTextCodec::codecForTr</a>() (Latin1 if none has been set)</td></tr>
 <tr><td valign="top"><tt>QCoreApplication::UnicodeUTF8</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">UTF-8</td></tr>
-</table>
+</table></p>
 <p>See also <a href="qobject.html#tr">QObject::tr</a>(), <a href="qobject.html#trUtf8">QObject::trUtf8</a>(), and <a href="qstring.html#fromUtf8">QString::fromUtf8</a>().</p>
 <h3 class="fn"><a name="EventFilter-typedef"></a>typedef QCoreApplication::EventFilter</h3>
 <p>A function with the following signature that can be used as an event filter:</p>
@@ -183,7 +183,7 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QCoreApplication"></a>QCoreApplication::QCoreApplication ( int &amp; <i>argc</i>, char ** <i>argv</i> )</h3>
 <p>Constructs a Qt kernel application. Kernel applications are applications without a graphical user interface. These type of applications are used at the console or as server processes.</p>
-<p>The <i>argc</i> and <i>argv</i> arguments are available from <a href="qcoreapplication-obsolete.html#argc">argc</a>() and <a href="qcoreapplication-obsolete.html#argv">argv</a>().</p>
+<p>The <i>argc</i> and <i>argv</i> arguments are processed by the application, and made available in a more convenient form by the <a href="qcoreapplication.html#arguments">arguments</a>() function.</p>
 <h3 class="fn"><a name="dtor.QCoreApplication"></a>QCoreApplication::~QCoreApplication ()</h3>
 <p>Destroys the <a href="qcoreapplication.html">QCoreApplication</a> object.</p>
 <h3 class="fn"><a name="aboutToQuit"></a>void QCoreApplication::aboutToQuit ()&nbsp;&nbsp;<tt> [signal]</tt></h3>
@@ -271,7 +271,7 @@ body { background: #ffffff; color: black; }</style>
 <p>You can call this function occasionally when your program is busy performing a long operation (e.g. copying a file).</p>
 <p>See also <a href="qcoreapplication.html#exec">exec</a>(), <a href="qtimer.html">QTimer</a>, <a href="qeventloop.html#processEvents">QEventLoop::processEvents</a>(), <a href="qcoreapplication.html#flush">flush</a>(), and <a href="qcoreapplication.html#sendPostedEvents">sendPostedEvents</a>().</p>
 <h3 class="fn"><a name="processEvents-2"></a>void QCoreApplication::processEvents ( <a href="qeventloop.html#ProcessEventsFlag-enum">QEventLoop::ProcessEventsFlags</a> <i>flags</i>, int <i>maxtime</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Processes pending events for <i>maxtime</i> milliseconds or until there are no more events to process, whichever is shorter.</p>
 <p>You can call this function occasionally when you program is busy doing a long operation (e.g. copying a file).</p>
 <p>See also <a href="qcoreapplication.html#exec">exec</a>(), <a href="qtimer.html">QTimer</a>, and <a href="qeventloop.html#processEvents">QEventLoop::processEvents</a>().</p>
@@ -304,7 +304,7 @@ body { background: #ffffff; color: black; }</style>
 <p>If <i>receiver</i> is null, the events of <i>event_type</i> are sent for all objects. If <i>event_type</i> is 0, all the events are sent for <i>receiver</i>.</p>
 <p>See also <a href="qcoreapplication.html#flush">flush</a>() and <a href="qcoreapplication.html#postEvent">postEvent</a>().</p>
 <h3 class="fn"><a name="sendPostedEvents-2"></a>void QCoreApplication::sendPostedEvents ()&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Dispatches all posted events, i.e. empties the event queue.</p>
 <h3 class="fn"><a name="setEventFilter"></a><a href="qcoreapplication.html#EventFilter-typedef">EventFilter</a> QCoreApplication::setEventFilter ( <a href="qcoreapplication.html#EventFilter-typedef">EventFilter</a> <i>filter</i> )</h3>
 <p>Sets the event filter <i>filter</i>. Returns a pointer to the filter function previously defined.</p>
@@ -398,8 +398,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qobject.html#Q_OBJECT">Q_OBJECT</a>, <a href="qobject.html#tr">QObject::tr</a>(), and <a href="qobject.html#trUtf8">QObject::trUtf8</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

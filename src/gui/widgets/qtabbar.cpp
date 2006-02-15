@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -25,13 +25,10 @@
 #include "qbitmap.h"
 #include "qcursor.h"
 #include "qevent.h"
-#include "qicon.h"
 #include "qpainter.h"
 #include "qstyle.h"
 #include "qstyleoption.h"
-#include "qtabbar.h"
 #include "qtabwidget.h"
-#include "qtoolbutton.h"
 #include "qtooltip.h"
 #include "qwhatsthis.h"
 #include "qstylepainter.h"
@@ -41,68 +38,9 @@
 #endif
 
 #include "qdebug.h"
-#include "private/qwidget_p.h"
+#include "private/qtabbar_p.h"
 
 #ifndef QT_NO_TABBAR
-
-class QTabBarPrivate  : public QWidgetPrivate
-{
-    Q_DECLARE_PUBLIC(QTabBar)
-public:
-    QTabBarPrivate()
-        :currentIndex(-1), pressedIndex(-1),
-         shape(QTabBar::RoundedNorth),
-         layoutDirty(false), drawBase(true), scrollOffset(0){}
-
-    int currentIndex;
-    int pressedIndex;
-    QTabBar::Shape shape;
-    bool layoutDirty;
-    bool drawBase;
-    int scrollOffset;
-
-    struct Tab {
-        inline Tab():enabled(true), shortcutId(0){}
-        inline Tab(const QIcon &ico, const QString &txt):enabled(true), shortcutId(0), text(txt), icon(ico){}
-        bool enabled;
-        int shortcutId;
-        QString text;
-#ifndef QT_NO_TOOLTIP
-        QString toolTip;
-#endif
-#ifndef QT_NO_WHATSTHIS
-        QString whatsThis;
-#endif
-        QIcon icon;
-        QRect rect;
-        QColor textColor;
-        QVariant data;
-    };
-    QList<Tab> tabList;
-
-    void init();
-    int extraWidth() const;
-
-    Tab *at(int index);
-    const Tab *at(int index) const;
-
-    int indexAtPos(const QPoint &p) const;
-
-    inline bool validIndex(int index) const { return index >= 0 && index < tabList.count(); }
-
-    QToolButton* rightB; // right or bottom
-    QToolButton* leftB; // left or top
-    void scrollTabs(); // private slot
-    QRect hoverRect;
-
-    void refresh();
-    void layoutTabs();
-
-    void makeVisible(int index);
-    QStyleOptionTabV2 getStyleOption(int tab) const;
-    QSize iconSize;
-};
-
 
 QStyleOptionTabV2 QTabBarPrivate::getStyleOption(int tab) const
 {
@@ -230,8 +168,8 @@ QStyleOptionTabV2 QTabBarPrivate::getStyleOption(int tab) const
     For subclasses, you might also need the tabRect() functions which
     returns the visual geometry of a single tab.
 
-    \inlineimage qtabbar-m.png Screenshot in Motif style
-    \inlineimage qtabbar-w.png Screenshot in Windows style
+    \image plastique-tabbar.png A tab bar shown in the Plastique widget style.
+    \image plastique-tabbar.png A truncated tab bar shown in the Plastique widget style.
 */
 
 /*!
@@ -486,6 +424,7 @@ void QTabBarPrivate::refresh()
         layoutDirty = true;
     } else {
         layoutTabs();
+        makeVisible(currentIndex);
         q->update();
         q->updateGeometry();
     }
@@ -539,7 +478,7 @@ void QTabBar::setShape(Shape shape)
 
 /*!
     \property QTabBar::drawBase
-    \brief defines whether or not tabbar should draw it's base.
+    \brief defines whether or not tabbar should draw its base.
 
     If true then QTabBar draws a base in relation to the styles overlab.
     Otherwise only the tabs are drawn.
@@ -633,6 +572,8 @@ void QTabBar::removeTab(int index)
             } else {
                 setCurrentIndex(d->validIndex(index) ? index : 0);
             }
+        } else if (index < d->currentIndex) {
+            --d->currentIndex;
         }
         d->refresh();
         tabRemoved(index);
@@ -661,6 +602,9 @@ void QTabBar::setTabEnabled(int index, bool enabled)
     Q_D(QTabBar);
     if (QTabBarPrivate::Tab *tab = d->at(index)) {
         tab->enabled = enabled;
+#ifndef QT_NO_SHORTCUT
+        setShortcutEnabled(tab->shortcutId, enabled);
+#endif
         update();
         if (!enabled && index == d->currentIndex)
             setCurrentIndex(d->validIndex(index+1)?index+1:0);
@@ -693,6 +637,7 @@ void QTabBar::setTabText(int index, const QString &text)
 #ifndef QT_NO_SHORTCUT
         releaseShortcut(tab->shortcutId);
         tab->shortcutId = grabShortcut(QKeySequence::mnemonic(text));
+        setShortcutEnabled(tab->shortcutId, tab->enabled);
 #endif
         d->refresh();
     }
@@ -1136,6 +1081,9 @@ void QTabBar::paintEvent(QPaintEvent *)
     QStyleOptionTab selectedTab;
     for (int i = 0; i < d->tabList.count(); ++i) {
         QStyleOptionTabV2 tab = d->getStyleOption(i);
+        if (!(tab.state & QStyle::State_Enabled)) {
+            tab.palette.setCurrentColorGroup(QPalette::Disabled);
+        }
         // If this tab is partially obscured, make a note of it so that we can pass the information
         // along when we draw the tear.
         if ((!verticalTabs && (!rtl && tab.rect.left() < 0) || (rtl && tab.rect.right() > width()))

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -101,7 +101,7 @@ struct QProcessInfo {
     QProcess *process;
     int deathPipe;
     int exitResult;
-    int pid;
+    pid_t pid;
     int serialNumber;
 };
 
@@ -114,8 +114,10 @@ public:
 
     void run();
     void catchDeadChildren();
-    void add(int pid, QProcess *process);
+    void add(pid_t pid, QProcess *process);
     void remove(QProcess *process);
+    void lock();
+    void unlock();
 
 private:
     QMutex mutex;
@@ -231,10 +233,8 @@ static int qt_qprocess_nextId()
     return id;
 }
 
-void QProcessManager::add(int pid, QProcess *process)
+void QProcessManager::add(pid_t pid, QProcess *process)
 {
-    QMutexLocker locker(&mutex);
-
 #if defined (QPROCESS_DEBUG)
     qDebug() << "QProcessManager::add() adding pid" << pid << "process" << process;
 #endif
@@ -266,6 +266,16 @@ void QProcessManager::remove(QProcess *process)
     
     children.remove(serial);
     delete info;
+}
+
+void QProcessManager::lock()
+{
+    mutex.lock();
+}
+
+void QProcessManager::unlock()
+{
+    mutex.unlock();
 }
 
 static void qt_create_pipe(int *pipe)
@@ -356,28 +366,16 @@ void QProcessPrivate::startProcess()
     processState = QProcess::Starting;
     emit q->stateChanged(processState);
 
-    // Create a pipe to stall the child process until its pid has been
-    // registered by QProcessManager.
-    int waitForParentPipe[2] = {-1, -1};
-    qt_create_pipe(waitForParentPipe);
-
     QByteArray encodedProg = QFile::encodeName(program);
-
-    if ((pid = (Q_PID) fork()) == 0) {
-        char c;
-        read(waitForParentPipe[0], &c, 1);
-        close(waitForParentPipe[0]);
-        close(waitForParentPipe[1]);
-
+    processManager()->lock();
+    pid_t childPid = fork();
+    if (childPid == 0) {
         execChild(encodedProg);
         ::_exit(-1);
     }
-
-    processManager()->add(pid, q);
-    write(waitForParentPipe[1], "", 1);
-
-    ::close(waitForParentPipe[1]);
-    ::close(waitForParentPipe[0]);
+    processManager()->add(childPid, q);
+    pid = Q_PID(childPid);
+    processManager()->unlock();
 
     // parent
     ::close(childStartedPipe[1]);
@@ -614,7 +612,7 @@ void QProcessPrivate::terminateProcess()
     qDebug("QProcessPrivate::killProcess()");
 #endif
     if (pid)
-        ::kill(pid, SIGTERM);
+        ::kill(pid_t(pid), SIGTERM);
 }
 
 void QProcessPrivate::killProcess()
@@ -623,7 +621,7 @@ void QProcessPrivate::killProcess()
     qDebug("QProcessPrivate::killProcess()");
 #endif
     if (pid)
-        ::kill(pid, SIGKILL);
+        ::kill(pid_t(pid), SIGKILL);
 }
 
 static int qt_native_select(fd_set *fdread, fd_set *fdwrite, int timeout)
@@ -917,7 +915,7 @@ bool QProcessPrivate::waitForDeadChild()
     
     // check if our process is dead
     int exitStatus;
-    pid_t waitResult = waitpid(pid, &exitStatus, WNOHANG);
+    pid_t waitResult = waitpid(pid_t(pid), &exitStatus, WNOHANG);
     if (waitResult > 0) {
         processManager()->remove(q);
         crashed = !WIFEXITED(exitStatus);
@@ -971,11 +969,11 @@ bool QProcessPrivate::startDetached(const QString &program, const QStringList &a
                 ::execv(argv[0], argv);
             }
 
-            ::exit(1);
+            ::_exit(1);
         }
 
         ::chdir("/");
-        ::exit(1);
+        ::_exit(1);
     }
     int result;
     return (waitpid(childPid, &result, 0) && WIFEXITED(result));

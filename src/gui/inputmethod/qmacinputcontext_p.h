@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -57,9 +57,12 @@ public:
     static OSStatus globalEventProcessor(EventHandlerCallRef, EventRef, void *);
     static void initialize();
     static void cleanup();
+protected:
+    void mouseHandler(int pos, QMouseEvent *);
 private:
     bool composing;
     TSMDocumentID id;
+    QString currentText;
 };
 
 #endif // QMACINPUTCONTEXT_P_H

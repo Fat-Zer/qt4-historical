@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/gui/widgets/qmainwindow.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/src/gui/widgets/qmainwindow.cpp -->
 <head>
     <title>Qt 4.1: QMainWindow Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -71,7 +71,7 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
-<li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <a name="signals"></a>
 <h3>Signals</h3>
@@ -91,6 +91,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>4 static public members inherited from <a href="qobject.html#static-public-members">QObject</a></li>
 <li><div class="fn"/>39 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
+<li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -170,16 +171,16 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="addDockWidget"></a>void QMainWindow::addDockWidget ( <a href="qt.html#DockWidgetArea-enum">Qt::DockWidgetArea</a> <i>area</i>, <a href="qdockwidget.html">QDockWidget</a> * <i>dockwidget</i> )</h3>
 <p>Adds the given <i>dockwidget</i> to the specified <i>area</i>.</p>
 <h3 class="fn"><a name="addDockWidget-2"></a>void QMainWindow::addDockWidget ( <a href="qt.html#DockWidgetArea-enum">Qt::DockWidgetArea</a> <i>area</i>, <a href="qdockwidget.html">QDockWidget</a> * <i>dockwidget</i>, <a href="qt.html#Orientation-enum">Qt::Orientation</a> <i>orientation</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Adds <i>dockwidget</i> into the given <i>area</i> in the direction specified by the <i>orientation</i>.</p>
 <h3 class="fn"><a name="addToolBar"></a>void QMainWindow::addToolBar ( <a href="qt.html#ToolBarArea-enum">Qt::ToolBarArea</a> <i>area</i>, <a href="qtoolbar.html">QToolBar</a> * <i>toolbar</i> )</h3>
 <p>Adds the <i>toolbar</i> into the specified <i>area</i> in this main window. The <i>toolbar</i> is placed at the end of the current tool bar block (i.e. line). If the main window already manages <i>toolbar</i> then it will only move the toolbar to <i>area</i>.</p>
 <p>See also <a href="qmainwindow.html#insertToolBar">insertToolBar</a>(), <a href="qmainwindow.html#addToolBarBreak">addToolBarBreak</a>(), and <a href="qmainwindow.html#insertToolBarBreak">insertToolBarBreak</a>().</p>
 <h3 class="fn"><a name="addToolBar-2"></a>void QMainWindow::addToolBar ( <a href="qtoolbar.html">QToolBar</a> * <i>toolbar</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Equivalent of calling addToolBar(<a href="qt.html#ToolBarArea-enum">Qt::TopToolBarArea</a>, <i>toolbar</i>)</p>
 <h3 class="fn"><a name="addToolBar-3"></a><a href="qtoolbar.html">QToolBar</a> * QMainWindow::addToolBar ( const <a href="qstring.html">QString</a> &amp; <i>title</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Creates a <a href="qtoolbar.html">QToolBar</a> object, setting its window title to <i>title</i>, and inserts it into the top toolbar area.</p>
 <p>See also <a href="qwidget.html#windowTitle-prop">setWindowTitle</a>().</p>
 <h3 class="fn"><a name="addToolBarBreak"></a>void QMainWindow::addToolBarBreak ( <a href="qt.html#ToolBarArea-enum">Qt::ToolBarArea</a> <i>area</i> = Qt::TopToolBarArea )</h3>
@@ -251,8 +252,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qmainwindow.html#toolButtonStyle-prop">setToolButtonStyle</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

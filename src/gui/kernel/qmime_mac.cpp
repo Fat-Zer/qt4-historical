@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -407,17 +407,27 @@ bool QMacMimeAnyMime::canConvert(const QString &mime, int flav)
     return false;
 }
 
-QVariant QMacMimeAnyMime::convertToMime(const QString &, QList<QByteArray> data, int)
+QVariant QMacMimeAnyMime::convertToMime(const QString &mime, QList<QByteArray> data, int)
 {
     if(data.count() > 1)
         qWarning("QMacMimeAnyMime: cannot handle multiple member data");
-    return data.first();
+    QVariant ret;
+    if (mime == "text/plain") {
+        ret = QString::fromUtf8(data.first());
+    } else {
+        ret = data.first();
+    }
+    return ret;
 }
 
-QList<QByteArray> QMacMimeAnyMime::convertFromMime(const QString &, QVariant data, int)
+QList<QByteArray> QMacMimeAnyMime::convertFromMime(const QString &mime, QVariant data, int)
 {
     QList<QByteArray> ret;
-    ret.append(data.toByteArray());
+    if (mime == "text/plain") {
+        ret.append(data.toString().toUtf8());
+    } else {
+        ret.append(data.toByteArray());
+    }
     return ret;
 }
 
@@ -454,8 +464,8 @@ int QMacMimeText::flavor(int index)
 int QMacMimeText::flavorFor(const QString &mime)
 {
     if(mime == QLatin1String("text/plain"))
-        return kScrapFlavorTypeText;
-    int i = mime.indexOf("charset=");
+        return kScrapFlavorTypeUnicode;
+    int i = mime.indexOf(QLatin1String("charset="));
     if(i >= 0) {
         QString cs(mime.mid(i+8));
         i = cs.indexOf(";");
@@ -473,9 +483,9 @@ int QMacMimeText::flavorFor(const QString &mime)
 QString QMacMimeText::mimeFor(int flav)
 {
     if(flav == kScrapFlavorTypeText)
-        return QString("text/plain");
+        return QLatin1String("text/plain");
     else if(flav == kScrapFlavorTypeUnicode)
-        return QString("text/plain;charset=ISO-10646-UCS-2");
+        return QLatin1String("text/plain;charset=ISO-10646-UCS-2");
     return QString();
 }
 
@@ -484,12 +494,29 @@ bool QMacMimeText::canConvert(const QString &mime, int flav)
     return flav && flavorFor(mime) == flav;
 }
 
-QVariant QMacMimeText::convertToMime(const QString &, QList<QByteArray> data, int)
+QVariant QMacMimeText::convertToMime(const QString &mimetype, QList<QByteArray> data, int flavor)
 {
     if(data.count() > 1)
         qWarning("QMacMimeText: cannot handle multiple member data");
     const QByteArray &firstData = data.first();
-    return QVariant(QString::fromUtf8(firstData, firstData.size()));
+    // I can only handle two types (system and unicode) so deal with them that way
+    QVariant ret;
+    switch (flavor) {
+    case kScrapFlavorTypeText: {
+        QCFString str(CFStringCreateWithBytes(kCFAllocatorDefault,
+                                             reinterpret_cast<const UInt8 *>(firstData.constData()),
+                                             firstData.size(), CFStringGetSystemEncoding(), false));
+        ret = QString(str);
+        break; }
+    case kScrapFlavorTypeUnicode:
+        ret = QString::fromUtf16(reinterpret_cast<const ushort *>(firstData.constData()),
+                                 firstData.size() / sizeof(ushort));
+        break;
+    default:
+        qWarning("QMime::convertToMime: unhandled mimetype: %s", qPrintable(mimetype));
+        break;
+    }
+    return ret;
 }
 
 QList<QByteArray> QMacMimeText::convertFromMime(const QString &, QVariant data, int flavor)

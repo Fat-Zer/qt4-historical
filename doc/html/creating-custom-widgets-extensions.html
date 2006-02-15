@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/doc/src/designer-manual.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/doc/src/designer-manual.qdoc -->
 <head>
     <title>Qt 4.1: Creating Custom Widget Extensions</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -37,21 +37,21 @@ body { background: #ffffff; color: black; }</style>
 <h2>Extension Types</h2>
 <p>There are four available types of extensions in <i>Qt Designer</i>. You can use all the extensions following the same pattern, only replacing the respective extension base class.</p>
 <p><a href="qdesignertaskmenuextension.html">QDesignerTaskMenuExtension</a> is useful for custom widgets while <a href="qdesignercontainerextension.html">QDesignerContainerExtension</a> is necessary when implementing a custom multi-page container.</p>
-<table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#f0f0f0"><td><img src="images/designer-manual-taskmenuextension.png" /></td><td><b><a href="qdesignertaskmenuextension.html">QDesignerTaskMenuExtension</a></b><p><a href="qdesignertaskmenuextension.html">QDesignerTaskMenuExtension</a> provides an extension that allows you to add custom menu entries to <i>Qt Designer</i>'s task menu.</p>
 <p>See also the <a href="designer-taskmenuextension.html">Task Menu Extension</a> example.</p>
 </td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><img src="images/designer-manual-containerextension.png" /></td><td><b><a href="qdesignercontainerextension.html">QDesignerContainerExtension</a></b><p><a href="qdesignercontainerextension.html">QDesignerContainerExtension</a> provides an extension that allows you to add (and delete) pages to a multi-page container plugin in <i>Qt Designer</i>.</p>
 <p>See also the <a href="designer-containerextension.html">Container Extension</a> example.</p>
 </td></tr>
-</table>
+</table></p>
 <p>The usage of <a href="qdesignermembersheetextension.html">QDesignerMemberSheetExtension</a> and <a href="qdesignerpropertysheetextension.html">QDesignerPropertySheetExtension</a> is more rare, but the classes enables you to manipulate the appearance of class members within <i>Qt Designer</i>'s workspace.</p>
-<table width="100 %" align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table width="100 %" align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#f0f0f0"><td><img src="images/designer-manual-membersheetextension.png" /></td><td><b><a href="qdesignermembersheetextension.html">QDesignerMemberSheetExtension</a></b><p>The <a href="qdesignermembersheetextension.html">QDesignerMemberSheetExtension</a> class allows you to manipulate a widget's member functions displayed when connecting signals and slots.</p>
 </td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><img src="images/designer-manual-propertysheetextension.png" /></td><td><b><a href="qdesignerpropertysheetextension.html">QDesignerPropertySheetExtension</a></b><p>The <a href="qdesignerpropertysheetextension.html">QDesignerPropertySheetExtension</a> class allows you to manipulate a widget's properties displayed in <i>Qt Designer</i>'s property editor.</p>
 </td></tr>
-</table>
+</table></p>
 <p><i>Qt Designer</i> uses the <a href="qdesignerpropertysheetextension.html">QDesignerPropertySheetExtension</a> and the <a href="qdesignermembersheetextension.html">QDesignerMemberSheetExtension</a> classes to feed its property and signal and slot editors. Whenever a widget is selected in its workspace, <i>Qt Designer</i> will query for the widget's property sheet extension, and whenever a connection between two widgets is requested, <i>Qt Designer</i> will query for the widgets' member sheet extensions.</p>
 <p><b>Warning:</b> All widgets have default property and member sheets. But if you implement custom property sheet or member sheet extensions, these extensions will override the default sheets.</p>
 <a name="creating-an-extension"></a>
@@ -128,8 +128,8 @@ body { background: #ffffff; color: black; }</style>
 </p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

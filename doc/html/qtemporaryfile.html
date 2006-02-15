@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/corelib/io/qtemporaryfile.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/src/corelib/io/qtemporaryfile.cpp -->
 <head>
     <title>Qt 4.1: QTemporaryFile Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -67,13 +67,20 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Detailed Description</h2>
 <p>The QTemporaryFile class is an I/O device that operates on temporary files.</p>
-<p>QTemporaryFile is an I/O device that will get its input/output from the local disk. The filename for the temporary file will be guaranteed to be unique once the file is opened and will subsequently be removed upon destruction of the QTemporaryFile object.</p>
+<p>QTemporaryFile is used to create unique temporary files safely. The file itself is created by calling <a href="qtemporaryfile.html#open">open</a>(). The name of the temporary file is guaranteed to be unique (i.e., you are guaranteed to not overwrite an existing file), and the file will subsequently be removed upon destruction of the QTemporaryFile object. This is an important technique that avoids data corruption for applications that store data in temporary files. The file name is either auto-generated, or created based on a template, which is passed to QTemporaryFile's constructor.</p>
+<p>Example:</p>
+<pre>&nbsp;   QTemporaryFile *file = new QTemporaryFile;
+    if (file-&gt;open(QFile::ReadWrite)) {
+        // file-&gt;fileName() now contains the unique file name
+    }
+    delete file; // also removes the temporary file</pre>
+<p>Reopening a QTemporaryFile after calling <a href="qiodevice.html#close">close</a>() is safe. For as long as the QTemporaryFile object itself is not destroyed, the unique temporary file will exist and be kept open internally by QTemporaryFile.</p>
 <p>A temporary file will have some static part of the name and some part that is calculated to be unique. The default filename qt_temp will be placed into the temporary path as returned by <a href="qdir.html#tempPath">QDir::tempPath</a>().</p>
 <p>See also <a href="qdir.html#tempPath">QDir::tempPath</a>() and <a href="qfile.html">QFile</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QTemporaryFile"></a>QTemporaryFile::QTemporaryFile ()</h3>
-<p>Constructs a <a href="qtemporaryfile.html">QTemporaryFile</a> with no name.</p>
+<p>Constructs a <a href="qtemporaryfile.html">QTemporaryFile</a> in <a href="qdir.html#tempPath">QDir::tempPath</a>(), using the file template &quot;qt_temp.XXXXXX&quot;.</p>
 <p>See also <a href="qtemporaryfile.html#setFileTemplate">setFileTemplate</a>().</p>
 <h3 class="fn"><a name="QTemporaryFile-2"></a>QTemporaryFile::QTemporaryFile ( const <a href="qstring.html">QString</a> &amp; <i>templateName</i> )</h3>
 <p>Constructs a <a href="qtemporaryfile.html">QTemporaryFile</a> with a template filename of <i>templateName</i>. Upon opening the temporary file this will be used to create a unique filename. If the <i>templateName</i> does end in XXXXXX it will automatically be appended and used as the dynamic portion of the filename.</p>
@@ -94,7 +101,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="createLocalFile"></a>QTemporaryFile * QTemporaryFile::createLocalFile ( <a href="qfile.html">QFile</a> &amp; <i>file</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Creates and returns a local temporary file whose contents are a copy of the contents of the given <i>file</i>.</p>
 <h3 class="fn"><a name="createLocalFile-2"></a>QTemporaryFile * QTemporaryFile::createLocalFile ( const <a href="qstring.html">QString</a> &amp; <i>fileName</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Works on the given <i>fileName</i> rather than an existing <a href="qfile.html">QFile</a> object.</p>
 <h3 class="fn"><a name="fileName"></a><a href="qstring.html">QString</a> QTemporaryFile::fileName () const</h3>
 <p>Returns the complete unique filename backing the <a href="qtemporaryfile.html">QTemporaryFile</a> object. This string is null before the <a href="qtemporaryfile.html">QTemporaryFile</a> is opened, afterwards it will contain the <a href="qtemporaryfile.html#fileTemplate">fileTemplate</a>() plus additional characters to make it unique.</p>
@@ -114,8 +121,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qtemporaryfile.html#fileTemplate">fileTemplate</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

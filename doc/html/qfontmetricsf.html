@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/gui/text/qfontmetrics.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/src/gui/text/qfontmetrics.cpp -->
 <head>
     <title>Qt 4.1: QFontMetricsF Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -27,8 +27,7 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/><b><a href="qfontmetricsf.html#QFontMetricsF">QFontMetricsF</a></b> ( const QFont &amp; <i>font</i> )</li>
 <li><div class="fn"/><b><a href="qfontmetricsf.html#QFontMetricsF-2">QFontMetricsF</a></b> ( const QFont &amp; <i>font</i>, QPaintDevice * <i>paintdevice</i> )</li>
-<li><div class="fn"/><b><a href="qfontmetricsf.html#QFontMetricsF-3">QFontMetricsF</a></b> ( const QFontMetrics &amp; <i>fontMetrics</i> )</li>
-<li><div class="fn"/><b><a href="qfontmetricsf.html#QFontMetricsF-4">QFontMetricsF</a></b> ( const QFontMetricsF &amp; <i>fm</i> )</li>
+<li><div class="fn"/><b><a href="qfontmetricsf.html#QFontMetricsF-3">QFontMetricsF</a></b> ( const QFontMetricsF &amp; <i>fm</i> )</li>
 <li><div class="fn"/><b><a href="qfontmetricsf.html#dtor.QFontMetricsF">~QFontMetricsF</a></b> ()</li>
 <li><div class="fn"/>qreal <b><a href="qfontmetricsf.html#ascent">ascent</a></b> () const</li>
 <li><div class="fn"/>QRectF <b><a href="qfontmetricsf.html#boundingRect">boundingRect</a></b> ( const QString &amp; <i>text</i> ) const</li>
@@ -55,7 +54,6 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>bool <b><a href="qfontmetricsf.html#operator-not-eq">operator!=</a></b> ( const QFontMetricsF &amp; <i>other</i> )</li>
 <li><div class="fn"/>bool <b><a href="qfontmetricsf.html#operator-not-eq-2">operator!=</a></b> ( const QFontMetricsF &amp; <i>other</i> ) const</li>
 <li><div class="fn"/>QFontMetricsF &amp; <b><a href="qfontmetricsf.html#operator-eq">operator=</a></b> ( const QFontMetricsF &amp; <i>fm</i> )</li>
-<li><div class="fn"/>QFontMetricsF &amp; <b><a href="qfontmetricsf.html#operator-eq-2">operator=</a></b> ( const QFontMetrics &amp; <i>fontMetrics</i> )</li>
 <li><div class="fn"/>bool <b><a href="qfontmetricsf.html#operator-eq-eq">operator==</a></b> ( const QFontMetricsF &amp; <i>other</i> )</li>
 <li><div class="fn"/>bool <b><a href="qfontmetricsf.html#operator-eq-eq-2">operator==</a></b> ( const QFontMetricsF &amp; <i>other</i> ) const</li>
 </ul>
@@ -92,9 +90,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Constructs a font metrics object for <i>font</i> and <i>paintdevice</i>.</p>
 <p>The font metrics will be compatible with the paintdevice passed. If the <i>paintdevice</i> is 0, the metrics will be screen-compatible, ie. the metrics you get if you use the font for drawing text on a <a href="qwidget.html">widgets</a> or <a href="qpixmap.html">pixmaps</a>, not on a <a href="qpicture.html">QPicture</a> or <a href="qprinter.html">QPrinter</a>.</p>
 <p>The font metrics object holds the information for the font that is passed in the constructor at the time it is created, and is not updated if the font's attributes are changed later.</p>
-<h3 class="fn"><a name="QFontMetricsF-3"></a>QFontMetricsF::QFontMetricsF ( const <a href="qfontmetrics.html">QFontMetrics</a> &amp; <i>fontMetrics</i> )</h3>
-<p>Constructs a font metrics object with floating point precision from the given <i>fontMetrics</i> object.</p>
-<h3 class="fn"><a name="QFontMetricsF-4"></a>QFontMetricsF::QFontMetricsF ( const QFontMetricsF &amp; <i>fm</i> )</h3>
+<h3 class="fn"><a name="QFontMetricsF-3"></a>QFontMetricsF::QFontMetricsF ( const QFontMetricsF &amp; <i>fm</i> )</h3>
 <p>Constructs a copy of <i>fm</i>.</p>
 <h3 class="fn"><a name="dtor.QFontMetricsF"></a>QFontMetricsF::~QFontMetricsF ()</h3>
 <p>Destroys the font metrics object and frees all allocated resources.</p>
@@ -109,13 +105,13 @@ body { background: #ffffff; color: black; }</style>
 <p>Due to the different actual character heights, the height of the bounding rectangle of e.g. &quot;Yes&quot; and &quot;yes&quot; may be different.</p>
 <p>See also <a href="qfontmetricsf.html#width">width</a>() and <a href="qpainter.html#boundingRect">QPainter::boundingRect</a>().</p>
 <h3 class="fn"><a name="boundingRect-2"></a><a href="qrectf.html">QRectF</a> QFontMetricsF::boundingRect ( <a href="qchar.html">QChar</a> <i>ch</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns the bounding rectangle of the character <i>ch</i> relative to the left-most point on the base line.</p>
 <p>Note that the bounding rectangle may extend to the left of (0, 0), e.g. for italicized fonts, and that the text output may cover <i>all</i> pixels in the bounding rectangle.</p>
 <p>Note that the rectangle usually extends both above and below the base line.</p>
 <p>See also <a href="qfontmetricsf.html#width">width</a>().</p>
 <h3 class="fn"><a name="boundingRect-3"></a><a href="qrectf.html">QRectF</a> QFontMetricsF::boundingRect ( const <a href="qrectf.html">QRectF</a> &amp; <i>rect</i>, int <i>flags</i>, const <a href="qstring.html">QString</a> &amp; <i>text</i>, int <i>tabstops</i> = 0, int * <i>tabarray</i> = 0 ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns the bounding rectangle of the characters in the given <i>text</i>. This is the set of pixels the text would cover if drawn when constrained to the bounding rectangle specified by <i>rect</i>.</p>
 <p>The <i>flags</i> argument is the bitwise OR of the following flags:</p>
 <ul>
@@ -220,7 +216,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Note that this value is <i>not</i> equal to the width returned by <a href="qfontmetricsf.html#boundingRect">boundingRect</a>().width() because <a href="qfontmetricsf.html#boundingRect">boundingRect</a>() returns a rectangle describing the pixels this string will cover whereas width() returns the distance to where the next string should be drawn.</p>
 <p>See also <a href="qfontmetricsf.html#boundingRect">boundingRect</a>().</p>
 <h3 class="fn"><a name="width-2"></a><a href="qtglobal.html#qreal-typedef">qreal</a> QFontMetricsF::width ( <a href="qchar.html">QChar</a> <i>ch</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p align="center"><img src="images/bearings.png" alt="Bearings" /></p><p>Returns the logical width of character <i>ch</i> in pixels. This is a distance appropriate for drawing a subsequent character after <i>ch</i>.</p>
 <p>Some of the metrics are described in the image to the right. The central dark rectangles cover the logical <a href="qfontmetricsf.html#width">width</a>() of each character. The outer pale rectangles cover the <a href="qfontmetricsf.html#leftBearing">leftBearing</a>() and <a href="qfontmetricsf.html#rightBearing">rightBearing</a>() of each character. Notice that the bearings of &quot;f&quot; in this particular font are both negative, while the bearings of &quot;o&quot; are both positive.</p>
 <p><b>Warning:</b> This function will produce incorrect results for Arabic characters or non-spacing marks in the middle of a string, as the glyph shaping and positioning of marks that happens when processing strings cannot be taken into account. Use charWidth() instead if you aren't looking for the width of isolated characters.</p>
@@ -231,21 +227,22 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns true if the font metrics are not equal to the <i>other</i> font metrics; otherwise returns false.</p>
 <p>See also <a href="qfontmetricsf.html#operator-eq-eq">operator==</a>().</p>
 <h3 class="fn"><a name="operator-not-eq-2"></a>bool QFontMetricsF::operator!= ( const QFontMetricsF &amp; <i>other</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p>Returns true if the font metrics are not equal to the <i>other</i> font metrics; otherwise returns false.</p>
+<p>See also <a href="qfontmetricsf.html#operator-eq-eq">operator==</a>().</p>
 <h3 class="fn"><a name="operator-eq"></a>QFontMetricsF &amp; QFontMetricsF::operator= ( const QFontMetricsF &amp; <i>fm</i> )</h3>
 <p>Assigns the font metrics <i>fm</i> to this font metrics object.</p>
-<h3 class="fn"><a name="operator-eq-2"></a>QFontMetricsF &amp; QFontMetricsF::operator= ( const <a href="qfontmetrics.html">QFontMetrics</a> &amp; <i>fontMetrics</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
-<p>Assigns <i>fontMetrics</i> to this font metrics object.</p>
 <h3 class="fn"><a name="operator-eq-eq"></a>bool QFontMetricsF::operator== ( const QFontMetricsF &amp; <i>other</i> )</h3>
+<p>Returns true if the font metrics are equal to the <i>other</i> font metrics; otherwise returns false.</p>
+<p>Two font metrics are considered equal if they were constructed from the same <a href="qfont.html">QFont</a> and the paint devices they were constructed for are considered to be compatible.</p>
 <h3 class="fn"><a name="operator-eq-eq-2"></a>bool QFontMetricsF::operator== ( const QFontMetricsF &amp; <i>other</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns true if the font metrics are equal to the <i>other</i> font metrics; otherwise returns false.</p>
 <p>Two font metrics are considered equal if they were constructed from the same <a href="qfont.html">QFont</a> and the paint devices they were constructed for are considered to be compatible.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

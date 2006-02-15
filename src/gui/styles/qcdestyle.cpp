@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -142,10 +142,13 @@ void QCDEStyle::drawControl(ControlElement element, const QStyleOption *opt, QPa
         QCommonStyle::drawControl(element, opt, p, widget);
         break; }
     case CE_RubberBand: {
+        p->save();
+        p->setClipping(false);
         QPainterPath path;
         path.addRect(opt->rect);
         path.addRect(opt->rect.adjusted(2, 2, -2, -2));
         p->fillPath(path, opt->palette.dark());
+        p->restore();
         break; }
     default:
         QMotifStyle::drawControl(element, opt, p, widget);
@@ -172,7 +175,7 @@ void QCDEStyle::drawPrimitive(PrimitiveElement pe, const QStyleOption *opt, QPai
         if (on) {
             QRect r = opt->rect;
             QPolygon a(7 * 2);
-            int i, xx, yy;           
+            int i, xx, yy;
             xx = r.x() + 3;
             yy = r.y() + 5;
             if (opt->rect.width() <= 9) {

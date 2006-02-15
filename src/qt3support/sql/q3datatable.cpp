@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt3Support module of the Qt Toolkit.
 **
@@ -1628,7 +1628,7 @@ void Q3DataTable::loadNextPage()
     SelectionMode m = selectionMode();
     clearSelection();
     setSelectionMode( NoSelection );
-    setNumRows( endIdx );
+    setNumRows( endIdx ? endIdx + 1 : 0 );
     sqlCursor()->seek( currentRow() );
     setSelectionMode( m );
 }

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2004-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 2004-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the example classes of the Qt Toolkit.
 **
@@ -29,6 +29,7 @@ WigglyWidget::WigglyWidget(QWidget *parent)
     : QWidget(parent)
 {
     setBackgroundRole(QPalette::Midlight);
+    setAutoFillBackground(true);
 
     QFont newFont = font();
     newFont.setPointSize(newFont.pointSize() + 20);

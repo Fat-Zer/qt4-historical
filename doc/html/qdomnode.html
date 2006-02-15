@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/xml/qdom.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/src/xml/qdom.cpp -->
 <head>
     <title>Qt 4.1: QDomNode Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -104,7 +104,7 @@ body { background: #ffffff; color: black; }</style>
 <a name="related-non-members"></a>
 <h3>Related Non-Members</h3>
 <ul>
-<li><div class="fn"/>QTextStream &amp; <b><a href="qdomnode.html#operator-lt-lt-103">operator&lt;&lt;</a></b> ( QTextStream &amp; <i>str</i>, const QDomNode &amp; <i>node</i> )</li>
+<li><div class="fn"/>QTextStream &amp; <b><a href="qdomnode.html#operator-lt-lt-107">operator&lt;&lt;</a></b> ( QTextStream &amp; <i>str</i>, const QDomNode &amp; <i>node</i> )</li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -140,7 +140,7 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="NodeType-enum"></a>enum QDomNode::NodeType</h3>
 <p>This enum defines the type of the node:</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QDomNode::ElementNode</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">&nbsp;</td></tr>
 <tr><td valign="top"><tt>QDomNode::AttributeNode</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">&nbsp;</td></tr>
@@ -156,7 +156,7 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QDomNode::NotationNode</tt></td><td align="center" valign="top"><tt>12</tt></td><td valign="top">&nbsp;</td></tr>
 <tr><td valign="top"><tt>QDomNode::BaseNode</tt></td><td align="center" valign="top"><tt>21</tt></td><td valign="top">A <a href="qdomnode.html">QDomNode</a> object, i.e. not a <a href="qdomnode.html">QDomNode</a> subclass.</td></tr>
 <tr><td valign="top"><tt>QDomNode::CharacterDataNode</tt></td><td align="center" valign="top"><tt>22</tt></td><td valign="top">&nbsp;</td></tr>
-</table>
+</table></p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QDomNode"></a>QDomNode::QDomNode ()</h3>
@@ -314,7 +314,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="nodeName"></a><a href="qstring.html">QString</a> QDomNode::nodeName () const</h3>
 <p>Returns the name of the node.</p>
 <p>The meaning of the name depends on the subclass:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Name</th><th>Meaning</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qdomattr.html">QDomAttr</a></td><td>The name of the attribute</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qdomcdatasection.html">QDomCDATASection</a></td><td>The string &quot;#cdata-section&quot;</td></tr>
@@ -328,7 +328,7 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qdomnotation.html">QDomNotation</a></td><td>The name of the notation</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qdomprocessinginstruction.html">QDomProcessingInstruction</a></td><td>The target of the processing instruction</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qdomtext.html">QDomText</a></td><td>The string &quot;#text&quot;</td></tr>
-</table>
+</table></p>
 <p>See also <a href="qdomnode.html#nodeValue">nodeValue</a>().</p>
 <h3 class="fn"><a name="nodeType"></a><a href="qdomnode.html#NodeType-enum">NodeType</a> QDomNode::nodeType () const</h3>
 <p>Returns the type of the node.</p>
@@ -336,14 +336,14 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="nodeValue"></a><a href="qstring.html">QString</a> QDomNode::nodeValue () const</h3>
 <p>Returns the value of the node.</p>
 <p>The meaning of the value depends on the subclass:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Name</th><th>Meaning</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qdomattr.html">QDomAttr</a></td><td>The attribute value</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qdomcdatasection.html">QDomCDATASection</a></td><td>The content of the CDATA section</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qdomcomment.html">QDomComment</a></td><td>The comment</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qdomprocessinginstruction.html">QDomProcessingInstruction</a></td><td>The data of the processing intruction</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qdomtext.html">QDomText</a></td><td>The text</td></tr>
-</table>
+</table></p>
 <p>All the other subclasses do not have a node value and will return an empty string.</p>
 <p>See also <a href="qdomnode.html#setNodeValue">setNodeValue</a>() and <a href="qdomnode.html#nodeName">nodeName</a>().</p>
 <h3 class="fn"><a name="normalize"></a>void QDomNode::normalize ()</h3>
@@ -437,13 +437,13 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns true if <i>n</i> and this DOM node are equal; otherwise returns false.</p>
 <hr />
 <h2>Related Non-Members</h2>
-<h3 class="fn"><a name="operator-lt-lt-103"></a><a href="qtextstream.html">QTextStream</a> &amp; operator&lt;&lt; ( <a href="qtextstream.html">QTextStream</a> &amp; <i>str</i>, const QDomNode &amp; <i>node</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<h3 class="fn"><a name="operator-lt-lt-107"></a><a href="qtextstream.html">QTextStream</a> &amp; operator&lt;&lt; ( <a href="qtextstream.html">QTextStream</a> &amp; <i>str</i>, const QDomNode &amp; <i>node</i> )</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes the XML representation of the node <i>node</i> and all its children to the stream <i>str</i>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

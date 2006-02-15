@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -137,10 +137,12 @@ public:
 
 protected:
     QDirModel(QDirModelPrivate &, QObject *parent = 0);
+    friend class QFileDialogPrivate;
 
 private:
     Q_DECLARE_PRIVATE(QDirModel)
     Q_DISABLE_COPY(QDirModel)
+    Q_PRIVATE_SLOT(d_func(), void refresh())
 };
 
 #endif // QT_NO_DIRMODEL

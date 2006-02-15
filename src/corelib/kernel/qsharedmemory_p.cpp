@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -40,6 +40,12 @@ QSharedMemory::~QSharedMemory()
     detach();
 }
 
+/*
+  man page says:
+    On  Linux,  it is possible to attach a shared memory segment even if it
+    is already marked to be deleted.  However, POSIX.1-2001 does not  spec-
+    ify this behaviour and many other implementations do not support it.
+*/
 
 bool QSharedMemory::create(int size)
 {
@@ -49,8 +55,8 @@ bool QSharedMemory::create(int size)
 
     if (shmId == -1) {
 #ifdef QT_SHM_DEBUG
-        perror("QWSBackingStore::create allocating shared memory");
-        qWarning("Error allocating shared memory of size %d", datasize);
+        perror("QSharedMemory::create allocating shared memory");
+        qWarning("Error allocating shared memory of size %d", size);
 #endif
         return false;
     }
@@ -58,8 +64,8 @@ bool QSharedMemory::create(int size)
     shmctl(shmId, IPC_RMID, 0);
     if (shmBase == (void*)-1) {
 #ifdef QT_SHM_DEBUG
-        perror("QWSBackingStore::create attaching to shared memory");
-        qWarning("Error attaching to shared memory");
+        perror("QSharedMemory::create attaching to shared memory");
+        qWarning("Error attaching to shared memory id %d", shmId);
 #endif
         shmBase = 0;
         return false;
@@ -77,9 +83,9 @@ bool QSharedMemory::attach(int id)
     shmBase = shmat(id,0,0);
     if (shmBase == (void*)-1) {
 #ifdef QT_SHM_DEBUG
-        perror("QWSBackingStore::attach attaching to shared memory");
+        perror("QSharedMemory::attach attaching to shared memory");
         qWarning("Error attaching to shared memory 0x%x of size %d",
-                 id, s.width() * s.height());
+                 id, size());
 #endif
         shmBase = 0;
         return false;

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the tools applications of the Qt Toolkit.
 **
@@ -196,8 +196,6 @@ void QVFb::popupMenu()
 
 void QVFb::init( int display_id, int pw, int ph, int d, int r, const QString& skin_name )
 {
-    setCaption( QString("Virtual framebuffer %1x%2 %3bpp Display :%4 Rotate %5")
-		    .arg(pw).arg(ph).arg(d).arg(display_id).arg(r) );
     delete view;
     view = 0;
     delete scroller;
@@ -274,6 +272,10 @@ void QVFb::init( int display_id, int pw, int ph, int d, int r, const QString& sk
     newSize += QSize(20, 35);
 
     resize(newSize);
+
+    setCaption(QString("Virtual framebuffer %1x%2 %3bpp Display :%4 Rotate %5")
+               .arg(view->displayWidth()).arg(view->displayHeight())
+               .arg(d).arg(display_id).arg(r));
 }
 
 void QVFb::enableCursor( bool e )
@@ -283,7 +285,7 @@ void QVFb::enableCursor( bool e )
     } else {
 	view->setCursor( e ? Qt::ArrowCursor : Qt::BlankCursor );
     }
-    viewMenu->setItemChecked( cursorId, e );
+    cursorAction->setChecked( e );
 }
 
 void QVFb::createMenu(QMenuBar *menu)
@@ -318,7 +320,9 @@ QMenu* QVFb::createViewMenu()
 {
     viewMenu = new QMenu( this );
     viewMenu->setCheckable( true );
-    cursorId = viewMenu->insertItem( "Show &Cursor", this, SLOT(toggleCursor()) );
+    cursorAction = viewMenu->addAction( "Show &Cursor", this,
+                                        SLOT(toggleCursor()) );
+    cursorAction->setCheckable(true);
     if ( view )
 	enableCursor(true);
     viewMenu->insertItem( "&Refresh Rate...", this, SLOT(changeRate()) );
@@ -411,7 +415,7 @@ void QVFb::toggleAnimation()
 
 void QVFb::toggleCursor()
 {
-    enableCursor( !viewMenu->isItemChecked( cursorId ) );
+    enableCursor(cursorAction->isChecked());
 }
 
 void QVFb::changeRate()

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -44,6 +44,10 @@
 
 typedef void (*_qt_pixmap_cleanup_hook)(int);
 Q_GUI_EXPORT _qt_pixmap_cleanup_hook qt_pixmap_cleanup_hook = 0;
+Q_GUI_EXPORT qint64 qt_pixmap_id(const QPixmap &pixmap)
+{
+    return (((qint64) pixmap.data->image.serialNumber()) << 32) | ((qint64) pixmap.data->detach_no);
+}
 
 QPixmap::QPixmap()
     : QPaintDevice()
@@ -273,8 +277,10 @@ QBitmap QPixmap::mask() const
 void QPixmap::setMask(const QBitmap &mask)
 {
     if (mask.size().isEmpty()) {
-        detach();
-        data->image = data->image.convertToFormat(QImage::Format_RGB32);
+        if (depth() != 1) {
+            detach();
+            data->image = data->image.convertToFormat(QImage::Format_RGB32);
+        }
 
     } else if (mask.size() != size()) {
         qWarning("QPixmap::setMask() mask size differs from pixmap size");
@@ -500,6 +506,7 @@ bool QPixmap::isDetached() const
 
 void QPixmap::detach()
 {
+    ++data->detach_no;
     if (data->count != 1)
         *this = copy();
 }
@@ -560,6 +567,7 @@ void QPixmap::init(int w, int h, Type type)
     }
     data = new QPixmapData;
     data->type = type;
+    data->detach_no = 0;
     if (type == PixmapType) {
         data->image = QImage(w, h, QImage::Format_RGB32);
     } else {

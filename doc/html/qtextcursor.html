@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/gui/text/qtextcursor.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/src/gui/text/qtextcursor.cpp -->
 <head>
     <title>Qt 4.1: QTextCursor Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -78,7 +78,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>void <b><a href="qtextcursor.html#mergeBlockCharFormat">mergeBlockCharFormat</a></b> ( const QTextCharFormat &amp; <i>modifier</i> )</li>
 <li><div class="fn"/>void <b><a href="qtextcursor.html#mergeBlockFormat">mergeBlockFormat</a></b> ( const QTextBlockFormat &amp; <i>modifier</i> )</li>
 <li><div class="fn"/>void <b><a href="qtextcursor.html#mergeCharFormat">mergeCharFormat</a></b> ( const QTextCharFormat &amp; <i>modifier</i> )</li>
-<li><div class="fn"/>bool <b><a href="qtextcursor.html#movePosition">movePosition</a></b> ( MoveOperation <i>op</i>, MoveMode <i>mode</i> = MoveAnchor, int <i>n</i> = 1 )</li>
+<li><div class="fn"/>bool <b><a href="qtextcursor.html#movePosition">movePosition</a></b> ( MoveOperation <i>operation</i>, MoveMode <i>mode</i> = MoveAnchor, int <i>n</i> = 1 )</li>
 <li><div class="fn"/>int <b><a href="qtextcursor.html#position">position</a></b> () const</li>
 <li><div class="fn"/>void <b><a href="qtextcursor.html#removeSelectedText">removeSelectedText</a></b> ()</li>
 <li><div class="fn"/>void <b><a href="qtextcursor.html#select">select</a></b> ( SelectionType <i>selection</i> )</li>
@@ -125,14 +125,14 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="MoveMode-enum"></a>enum QTextCursor::MoveMode</h3>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QTextCursor::MoveAnchor</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">Moves the anchor to the same position as the cursor itself.</td></tr>
 <tr><td valign="top"><tt>QTextCursor::KeepAnchor</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Keeps the anchor where it is.</td></tr>
-</table>
+</table></p>
 <p>If the <a href="qtextcursor.html#anchor">anchor</a>() is kept where it is and the <a href="qtextcursor.html#position">position</a>() is moved, the text in between will be selected.</p>
 <h3 class="fn"><a name="MoveOperation-enum"></a>enum QTextCursor::MoveOperation</h3>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QTextCursor::NoMove</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">Keep the cursor where it is</td></tr>
 <tr><td valign="top"><tt>QTextCursor::Start</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Move to the start of the document.</td></tr>
@@ -155,15 +155,15 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QTextCursor::Down</tt></td><td align="center" valign="top"><tt>12</tt></td><td valign="top">Move down one line.</td></tr>
 <tr><td valign="top"><tt>QTextCursor::Right</tt></td><td align="center" valign="top"><tt>19</tt></td><td valign="top">Move right one character.</td></tr>
 <tr><td valign="top"><tt>QTextCursor::WordRight</tt></td><td align="center" valign="top"><tt>20</tt></td><td valign="top">Move right one word.</td></tr>
-</table>
+</table></p>
 <p>See also <a href="qtextcursor.html#movePosition">movePosition</a>().</p>
 <h3 class="fn"><a name="SelectionType-enum"></a>enum QTextCursor::SelectionType</h3>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QTextCursor::WordUnderCursor</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">Selects the word under the cursor. If the cursor is not positioned within a string of selectable characters, no text is selected.</td></tr>
 <tr><td valign="top"><tt>QTextCursor::LineUnderCursor</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Selects the line of text under the cursor.</td></tr>
 <tr><td valign="top"><tt>QTextCursor::BlockUnderCursor</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">Selects the block of text under the cursor.</td></tr>
-</table>
+</table></p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QTextCursor"></a>QTextCursor::QTextCursor ()</h3>
@@ -225,7 +225,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Creates and returns a new list with the given <i>format</i>, and makes the current paragraph the cursor is in the first list item.</p>
 <p>See also <a href="qtextcursor.html#insertList">insertList</a>() and <a href="qtextcursor.html#currentList">currentList</a>().</p>
 <h3 class="fn"><a name="createList-2"></a><a href="qtextlist.html">QTextList</a> * QTextCursor::createList ( <a href="qtextlistformat.html#Style-enum">QTextListFormat::Style</a> <i>style</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Creates and returns a new list with the given <i>style</i>, making the cursor's current paragraph the first list item.</p>
 <p>The style to be used is defined by the <a href="qtextlistformat.html#Style-enum">QTextListFormat::Style</a> enum.</p>
 <p>See also <a href="qtextcursor.html#insertList">insertList</a>() and <a href="qtextcursor.html#currentList">currentList</a>().</p>
@@ -256,11 +256,11 @@ body { background: #ffffff; color: black; }</style>
 <p>Inserts a new empty block at the cursor <a href="qtextcursor.html#position">position</a>() with the current <a href="qtextcursor.html#blockFormat">blockFormat</a>() and <a href="qtextcursor.html#charFormat">charFormat</a>().</p>
 <p>See also <a href="qtextcursor.html#setBlockFormat">setBlockFormat</a>().</p>
 <h3 class="fn"><a name="insertBlock-2"></a>void QTextCursor::insertBlock ( const <a href="qtextblockformat.html">QTextBlockFormat</a> &amp; <i>format</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Inserts a new empty block at the cursor <a href="qtextcursor.html#position">position</a>() with block format <i>format</i> and the current <a href="qtextcursor.html#charFormat">charFormat</a>() as block char format.</p>
 <p>See also <a href="qtextcursor.html#setBlockFormat">setBlockFormat</a>().</p>
 <h3 class="fn"><a name="insertBlock-3"></a>void QTextCursor::insertBlock ( const <a href="qtextblockformat.html">QTextBlockFormat</a> &amp; <i>format</i>, const <a href="qtextcharformat.html">QTextCharFormat</a> &amp; <i>charFormat</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Inserts a new empty block at the cursor <a href="qtextcursor.html#position">position</a>() with block format <i>format</i> and <i>charFormat</i> as block char format.</p>
 <p>See also <a href="qtextcursor.html#setBlockFormat">setBlockFormat</a>().</p>
 <h3 class="fn"><a name="insertFragment"></a>void QTextCursor::insertFragment ( const <a href="qtextdocumentfragment.html">QTextDocumentFragment</a> &amp; <i>fragment</i> )</h3>
@@ -272,13 +272,13 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="insertImage"></a>void QTextCursor::insertImage ( const <a href="qtextimageformat.html">QTextImageFormat</a> &amp; <i>format</i> )</h3>
 <p>Inserts the image defined by <i>format</i> at the current <a href="qtextcursor.html#position">position</a>().</p>
 <h3 class="fn"><a name="insertImage-2"></a>void QTextCursor::insertImage ( const <a href="qstring.html">QString</a> &amp; <i>name</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Convenience method for inserting the image with the given <i>name</i> at the current <a href="qtextcursor.html#position">position</a>().</p>
 <h3 class="fn"><a name="insertList"></a><a href="qtextlist.html">QTextList</a> * QTextCursor::insertList ( const <a href="qtextlistformat.html">QTextListFormat</a> &amp; <i>format</i> )</h3>
 <p>Inserts a new block at the current position and makes it the first list item of a newly created list with the given <i>format</i>. Returns the created list.</p>
 <p>See also <a href="qtextcursor.html#currentList">currentList</a>(), <a href="qtextcursor.html#createList">createList</a>(), and <a href="qtextcursor.html#insertBlock">insertBlock</a>().</p>
 <h3 class="fn"><a name="insertList-2"></a><a href="qtextlist.html">QTextList</a> * QTextCursor::insertList ( <a href="qtextlistformat.html#Style-enum">QTextListFormat::Style</a> <i>style</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Inserts a new block at the current position and makes it the first list item of a newly created list with the given <i>style</i>. Returns the created list.</p>
 <p>See also <a href="qtextcursor.html#currentList">currentList</a>(), <a href="qtextcursor.html#createList">createList</a>(), and <a href="qtextcursor.html#insertBlock">insertBlock</a>().</p>
 <h3 class="fn"><a name="insertTable"></a><a href="qtexttable.html">QTextTable</a> * QTextCursor::insertTable ( int <i>rows</i>, int <i>columns</i>, const <a href="qtexttableformat.html">QTextTableFormat</a> &amp; <i>format</i> )</h3>
@@ -286,7 +286,7 @@ body { background: #ffffff; color: black; }</style>
 <p>There must be at least one row and one column in the table.</p>
 <p>See also <a href="qtextcursor.html#currentTable">currentTable</a>().</p>
 <h3 class="fn"><a name="insertTable-2"></a><a href="qtexttable.html">QTextTable</a> * QTextCursor::insertTable ( int <i>rows</i>, int <i>columns</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Creates a new table with the given number of <i>rows</i> and <i>columns</i>, inserts it at the current cursor <a href="qtextcursor.html#position">position</a>() in the document, and returns the table object. The cursor is moved to the beginning of the first cell.</p>
 <p>There must be at least one row and one column in the table.</p>
 <p>See also <a href="qtextcursor.html#currentTable">currentTable</a>().</p>
@@ -300,7 +300,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Any ASCII linefeed characters (\n) in the inserted text are transformed into unicode block separators, corresponding to <a href="qtextcursor.html#insertBlock">insertBlock</a>() calls.</p>
 <p>See also <a href="qtextcursor.html#charFormat">charFormat</a>() and <a href="qtextcursor.html#hasSelection">hasSelection</a>().</p>
 <h3 class="fn"><a name="insertText-2"></a>void QTextCursor::insertText ( const <a href="qstring.html">QString</a> &amp; <i>text</i>, const <a href="qtextcharformat.html">QTextCharFormat</a> &amp; <i>format</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Inserts <i>text</i> at the current position with the given <i>format</i>.</p>
 <h3 class="fn"><a name="isCopyOf"></a>bool QTextCursor::isCopyOf ( const QTextCursor &amp; <i>other</i> ) const</h3>
 <p>Returns true if this cursor and <i>other</i> are copies of each other, i.e. one of them was created as a copy of the other and neither has moved since. This is much stricter than equality.</p>
@@ -334,8 +334,10 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="mergeCharFormat"></a>void QTextCursor::mergeCharFormat ( const <a href="qtextcharformat.html">QTextCharFormat</a> &amp; <i>modifier</i> )</h3>
 <p>Applies all the properties set in <i>modifier</i> to all the character formats that are part of the selection. Does nothing if the cursor does not have a selection.</p>
 <p>See also <a href="qtextcursor.html#hasSelection">hasSelection</a>().</p>
-<h3 class="fn"><a name="movePosition"></a>bool QTextCursor::movePosition ( <a href="qtextcursor.html#MoveOperation-enum">MoveOperation</a> <i>op</i>, <a href="qtextcursor.html#MoveMode-enum">MoveMode</a> <i>mode</i> = MoveAnchor, int <i>n</i> = 1 )</h3>
-<p>Moves the cursor in accordance with the <tt>MoveOperation</tt> <i>op</i>, using <tt>MoveMode</tt> <i>mode</i>. The move is performed <i>n</i> (default 1) times.</p>
+<h3 class="fn"><a name="movePosition"></a>bool QTextCursor::movePosition ( <a href="qtextcursor.html#MoveOperation-enum">MoveOperation</a> <i>operation</i>, <a href="qtextcursor.html#MoveMode-enum">MoveMode</a> <i>mode</i> = MoveAnchor, int <i>n</i> = 1 )</h3>
+<p>Moves the cursor by performing the given <i>operation</i> <i>n</i> times, using the specified <i>mode</i>, and returns true if all operations were completed successfully; otherwise returns false.</p>
+<p>For example, if this function is repeatedly used to seek to the end of the next word, it will eventually fail when the end of the document is reached.</p>
+<p>By default, the move operation is performed once (<i>n</i> = 1).</p>
 <p>If <i>mode</i> is <tt>KeepAnchor</tt>, the cursor selects the text it moves over. This is the same effect that the user achieves when they hold down the Shift key and move the cursor with the cursor keys.</p>
 <h3 class="fn"><a name="position"></a>int QTextCursor::position () const</h3>
 <p>Returns the absolute position of the cursor within the document. The cursor is positioned between characters.</p>
@@ -385,8 +387,8 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns true if the <i>other</i> cursor is positioned earlier or at the same position in the document as this cursor; otherwise returns false.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

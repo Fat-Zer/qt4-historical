@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/doc/src/emb-install.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/doc/src/emb-install.qdoc -->
 <head>
     <title>Qt 4.1: Installing Qtopia Core</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -21,13 +21,12 @@ body { background: #ffffff; color: black; }</style>
 <p>This installation procedure is written for Linux. It may need to be modified for other platforms.</p>
 <ol type="1">
 <li>Unpack the archive if you have not done so already<pre>&nbsp;   cd &lt;anywhere&gt;
-    gunzip qt-embedded-commercial-VERSION.tar.gz    # uncompress the archive
-    tar xf qt-embedded-commercial-VERSION.tar       # unpack it</pre>
-<p>Replace <tt>VERSION</tt> with the Qtopia Core version number throughout.</p>
-<p>This document assumes that the archive is installed as <tt>~/qt-embedded-commercial-VERSION</tt>.</p>
+    gunzip qtopia-core-commercial-src-4.1.1.tar.gz    # uncompress the archive
+    tar xf qtopia-core-commercial-src-4.1.1.tar       # unpack it</pre>
+<p>This document assumes that the archive is installed as <tt>~/qtopia-core-commercial-src-4.1.1</tt>.</p>
 </li>
-<li>Compile the Qtopia Core library and examples.<pre>&nbsp;   cd ~/qt-embedded-commercial-VERSION
-    export QTDIR=~/qt-embedded-commercial-VERSION
+<li>Compile the Qtopia Core library and examples.<pre>&nbsp;   cd ~/qtopia-core-commercial-src-4.1.1
+    export QTDIR=~/qtopia-core-commercial-src-4.1.1
     ./configure
     make</pre>
 <p>The configuration system is designed to allow platform-specific options to be added, but in general all Linux systems which have framebuffer support can use the &quot;linux-generic-g++&quot; platform. The configuration system also supports cross-compilers: to build on Linux/x86 for the Linux/MIPSEL target, you would use:</p>
@@ -48,8 +47,8 @@ body { background: #ffffff; color: black; }</style>
 </ol>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/doc/src/examples/spinboxdelegate.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/doc/src/examples/spinboxdelegate.qdoc -->
 <head>
     <title>Qt 4.1: Spin Box Delegate Example</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -120,15 +120,15 @@ body { background: #ffffff; color: black; }</style>
             }
         }</pre>
 <p>Finally, the table view is displayed with a window title, and we start the application's event loop:</p>
-<pre>&nbsp;       tableView.setWindowTitle(&quot;Spin Box Delegate&quot;);
+<pre>&nbsp;       tableView.setWindowTitle(QObject::tr(&quot;Spin Box Delegate&quot;));
         tableView.show();
         return app.exec();
     }</pre>
 <p>Each of the cells in the table can now be edited in the usual way, but the spin box ensures that the data returned to the model is always constrained by the values allowed by the spin box delegate.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/qt3support/other/q3mimefactory.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/src/qt3support/other/q3mimefactory.cpp -->
 <head>
     <title>Qt 4.1: Q3MimeSourceFactory Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -96,7 +96,7 @@ body { background: #ffffff; color: black; }</style>
 <p>You can add further extensions or change existing ones with subsequent calls to <a href="q3mimesourcefactory.html#setExtensionType">setExtensionType</a>(). If the extension mechanism is not sufficient for your problem domain, you can inherit <a href="q3mimesourcefactory.html">Q3MimeSourceFactory</a> and reimplement this function to perform some more specialized mime-type detection. The same applies if you want to use the mime source factory to access URL referenced data over a network.</p>
 <p>See also <a href="q3mimesourcefactory.html#setData">setData</a>().</p>
 <h3 class="fn"><a name="data-2"></a>const <a href="qmimesource.html">QMimeSource</a> * Q3MimeSourceFactory::data ( const <a href="qstring.html">QString</a> &amp; <i>abs_or_rel_name</i>, const <a href="qstring.html">QString</a> &amp; <i>context</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>A convenience function. See data(const <a href="qstring.html">QString</a>&amp; abs_name). The file name is given in <i>abs_or_rel_name</i> and the path is in <i>context</i>.</p>
 <h3 class="fn"><a name="defaultFactory"></a>Q3MimeSourceFactory * Q3MimeSourceFactory::defaultFactory ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns the application-wide default mime source factory. This factory is used by rich text rendering classes such as <a href="porting4.html#qsimplerichtext">QSimpleRichText</a>, <a href="qwhatsthis.html">QWhatsThis</a> and <a href="qmessagebox.html">QMessageBox</a> to resolve named references within rich text documents. It serves also as the initial factory for the more complex render widgets, <a href="qtextedit.html">QTextEdit</a> and <a href="qtextbrowser.html">QTextBrowser</a>.</p>
@@ -122,7 +122,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Sets the list of directories that will be searched when named data is requested to those given in the string list <i>path</i>.</p>
 <p>See also <a href="q3mimesourcefactory.html#filePath">filePath</a>().</p>
 <h3 class="fn"><a name="setFilePath-2"></a>void Q3MimeSourceFactory::setFilePath ( const <a href="qstring.html">QString</a> &amp; <i>path</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Sets the list of directories that will be searched when named data is requested to those given in the string list <i>path</i>.</p>
 <p>See also <a href="q3mimesourcefactory.html#filePath">filePath</a>().</p>
 <h3 class="fn"><a name="setImage"></a>void Q3MimeSourceFactory::setImage ( const <a href="qstring.html">QString</a> &amp; <i>abs_name</i>, const <a href="qimage.html">QImage</a> &amp; <i>image</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
@@ -137,8 +137,8 @@ body { background: #ffffff; color: black; }</style>
 <p>Sets the <a href="q3mimesourcefactory.html#defaultFactory">defaultFactory</a>() to 0 and returns the previous one.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

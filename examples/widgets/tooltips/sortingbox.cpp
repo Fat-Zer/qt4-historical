@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2005-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 2005-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the example classes of the Qt Toolkit.
 **
@@ -75,6 +75,8 @@ bool SortingBox::event(QEvent *event)
         int index = itemAt(helpEvent->pos());
         if (index != -1)
             QToolTip::showText(helpEvent->globalPos(), shapeItems[index].toolTip());
+        else
+            QToolTip::showText(helpEvent->globalPos(), "");
     }
     return QWidget::event(event);
 }

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -34,7 +34,9 @@ class QPageSetupDialogPrivate;
 
 class Q_GUI_EXPORT QPageSetupDialog : public QAbstractPageSetupDialog
 {
+    // ### Qt 5: Add Q_OBJECT macro
     Q_DECLARE_PRIVATE(QPageSetupDialog)
+
 public:
     explicit QPageSetupDialog(QPrinter *printer, QWidget *parent = 0);
 

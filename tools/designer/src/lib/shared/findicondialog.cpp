@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt Designer of the Qt Toolkit.
 **
@@ -24,7 +24,7 @@
 #include "resourcefile_p.h"
 #include "findicondialog_p.h"
 #include "ui_findicondialog.h"
-#include "resourceeditor.h"
+#include "resourceeditor_p.h"
 
 #include <QtDesigner/abstractformwindow.h>
 #include <QtDesigner/abstractformeditor.h>

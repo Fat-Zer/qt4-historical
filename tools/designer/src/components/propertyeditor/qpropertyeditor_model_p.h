@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt Designer of the Qt Toolkit.
 **
@@ -41,6 +41,7 @@ public:
 
     inline QModelIndex indexOf(IProperty *property, int column = 0) const
     {
+        Q_ASSERT(property);
         if (property == m_initialInput)
             return createIndex(0, column, m_initialInput);
 

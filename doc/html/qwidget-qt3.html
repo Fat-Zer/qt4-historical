@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/gui/kernel/qwidget.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/src/gui/kernel/qwidget.cpp -->
 <head>
     <title>Qt 4.1: Qt 3 Support Members for QWidget</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -106,13 +106,13 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="BackgroundOrigin-enum"></a>enum QWidget::BackgroundOrigin</h3>
-<table border="1" cellpadding="2" cellspacing="1" width="40%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="40%">
 <tr><th width="60%">Constant</th><th width="40%">Value</th></tr>
 <tr><td valign="top"><tt>QWidget::WidgetOrigin</tt></td><td align="center" valign="top"><tt>0</tt></td></tr>
 <tr><td valign="top"><tt>QWidget::ParentOrigin</tt></td><td align="center" valign="top"><tt>1</tt></td></tr>
 <tr><td valign="top"><tt>QWidget::WindowOrigin</tt></td><td align="center" valign="top"><tt>2</tt></td></tr>
 <tr><td valign="top"><tt>QWidget::AncestorOrigin</tt></td><td align="center" valign="top"><tt>3</tt></td></tr>
-</table>
+</table></p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QWidget-3"></a>QWidget::QWidget ( QWidget * <i>parent</i>, const char * <i>name</i>, <a href="qt.html#WFlags-typedef">Qt::WFlags</a> <i>f</i> = 0 )</h3>
@@ -129,7 +129,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Use <a href="qwidget.html#windowTitle-prop">windowTitle</a>() instead.</p>
 <p>See also <a href="qwidget-qt3.html#setCaption">setCaption</a>().</p>
 <h3 class="fn"><a name="childAt-2"></a>QWidget * QWidget::childAt ( int <i>x</i>, int <i>y</i>, bool <i>includeThis</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Use the <a href="qwidget.html#childAt">childAt</a>() overload that doesn't have an <i>includeThis</i> parameter.</p>
 <p>For example, if you have code like</p>
 <pre><font color="#404040">    return widget-&gt;childAt(x, y, true);</font></pre>
@@ -140,10 +140,10 @@ body { background: #ffffff; color: black; }</style>
     if (widget-&gt;rect().contains(x, y))
         return widget;</pre>
 <h3 class="fn"><a name="childAt-3"></a>QWidget * QWidget::childAt ( const <a href="qpoint.html">QPoint</a> &amp; <i>p</i>, bool <i>includeThis</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Use the single point argument overload instead.</p>
 <h3 class="fn"><a name="close-2"></a>bool QWidget::close ( bool <i>alsoDelete</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Closes the widget.</p>
 <p>Use the no-argument overload instead.</p>
 <h3 class="fn"><a name="colorGroup"></a><a href="qcolorgroup.html">QColorGroup</a> QWidget::colorGroup () const</h3>
@@ -153,18 +153,18 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="drawText"></a>void QWidget::drawText ( const <a href="qpoint.html">QPoint</a> &amp; <i>p</i>, const <a href="qstring.html">QString</a> &amp; <i>s</i> )</h3>
 <p>Drawing may only take place in a <a href="qpaintevent.html">QPaintEvent</a>. Overload <a href="qwidget.html#paintEvent">paintEvent</a>() to do your drawing and call <a href="qwidget.html#update">update</a>() to schedule a replaint whenever necessary. See also <a href="qpainter.html">QPainter</a>.</p>
 <h3 class="fn"><a name="drawText-2"></a>void QWidget::drawText ( int <i>x</i>, int <i>y</i>, const <a href="qstring.html">QString</a> &amp; <i>s</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Drawing may only take place in a <a href="qpaintevent.html">QPaintEvent</a>. Overload <a href="qwidget.html#paintEvent">paintEvent</a>() to do your drawing and call <a href="qwidget.html#update">update</a>() to schedule a replaint whenever necessary. See also <a href="qpainter.html">QPainter</a>.</p>
 <h3 class="fn"><a name="erase"></a>void QWidget::erase ()</h3>
 <p>Drawing may only take place in a <a href="qpaintevent.html">QPaintEvent</a>. Overload <a href="qwidget.html#paintEvent">paintEvent</a>() to do your erasing and call <a href="qwidget.html#update">update</a>() to schedule a replaint whenever necessary. See also <a href="qpainter.html">QPainter</a>.</p>
 <h3 class="fn"><a name="erase-2"></a>void QWidget::erase ( int <i>x</i>, int <i>y</i>, int <i>w</i>, int <i>h</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Drawing may only take place in a <a href="qpaintevent.html">QPaintEvent</a>. Overload <a href="qwidget.html#paintEvent">paintEvent</a>() to do your erasing and call <a href="qwidget.html#update">update</a>() to schedule a replaint whenever necessary. See also <a href="qpainter.html">QPainter</a>.</p>
 <h3 class="fn"><a name="erase-3"></a>void QWidget::erase ( const <a href="qrect.html">QRect</a> &amp; <i>rect</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Drawing may only take place in a <a href="qpaintevent.html">QPaintEvent</a>. Overload <a href="qwidget.html#paintEvent">paintEvent</a>() to do your erasing and call <a href="qwidget.html#update">update</a>() to schedule a replaint whenever necessary. See also <a href="qpainter.html">QPainter</a>.</p>
 <h3 class="fn"><a name="erase-4"></a>void QWidget::erase ( const <a href="qregion.html">QRegion</a> &amp; <i>rgn</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Clear the given region, <i>rgn</i>.</p>
 <p>Drawing may only take place in a <a href="qpaintevent.html">QPaintEvent</a>. Overload <a href="qwidget.html#paintEvent">paintEvent</a>() to do your erasing and call <a href="qwidget.html#update">update</a>() to schedule a replaint whenever necessary. See also <a href="qpainter.html">QPainter</a>.</p>
 <h3 class="fn"><a name="hasMouse"></a>bool QWidget::hasMouse () const</h3>
@@ -199,28 +199,28 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="ownPalette"></a>bool QWidget::ownPalette () const</h3>
 <p>Use testAttribute(<a href="qt.html#WidgetAttribute-enum">Qt::WA_SetPalette</a>) instead.</p>
 <h3 class="fn"><a name="parentWidget-2"></a>QWidget * QWidget::parentWidget ( bool <i>sameWindow</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Use the no-argument overload instead.</p>
 <h3 class="fn"><a name="polish"></a>void QWidget::polish ()</h3>
 <p>Use <a href="qwidget.html#ensurePolished">ensurePolished</a>() instead.</p>
 <h3 class="fn"><a name="recreate"></a>void QWidget::recreate ( QWidget * <i>parent</i>, <a href="qt.html#WFlags-typedef">Qt::WFlags</a> <i>f</i>, const <a href="qpoint.html">QPoint</a> &amp; <i>p</i>, bool <i>showIt</i> = false )</h3>
 <p>Use <a href="qwidget.html#setParent">setParent</a>() to change the parent or the widget's widget flags; use <a href="qwidget.html#pos-prop">move</a>() to move the widget, and use <a href="qwidget.html#show">show</a>() to show the widget.</p>
 <h3 class="fn"><a name="repaint-2"></a>void QWidget::repaint ( bool <i>b</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>The boolean parameter <i>b</i> is ignored. Use the no-argument overload instead.</p>
 <h3 class="fn"><a name="repaint-3"></a>void QWidget::repaint ( int <i>x</i>, int <i>y</i>, int <i>w</i>, int <i>h</i>, bool <i>b</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>The boolean parameter <i>b</i> is ignored. Use the four-argument overload instead.</p>
 <h3 class="fn"><a name="repaint-4"></a>void QWidget::repaint ( const <a href="qrect.html">QRect</a> &amp; <i>r</i>, bool <i>b</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>The boolean parameter <i>b</i> is ignored. Use the single rect-argument overload instead.</p>
 <h3 class="fn"><a name="repaint-5"></a>void QWidget::repaint ( const <a href="qregion.html">QRegion</a> &amp; <i>rgn</i>, bool <i>b</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>The boolean parameter <i>b</i> is ignored. Use the single region-argument overload instead.</p>
 <h3 class="fn"><a name="reparent"></a>void QWidget::reparent ( QWidget * <i>parent</i>, <a href="qt.html#WFlags-typedef">Qt::WFlags</a> <i>f</i>, const <a href="qpoint.html">QPoint</a> &amp; <i>p</i>, bool <i>showIt</i> = false )</h3>
 <p>Use <a href="qwidget.html#setParent">setParent</a>() to change the parent or the widget's widget flags; use <a href="qwidget.html#pos-prop">move</a>() to move the widget, and use <a href="qwidget.html#show">show</a>() to show the widget.</p>
 <h3 class="fn"><a name="reparent-2"></a>void QWidget::reparent ( QWidget * <i>parent</i>, const <a href="qpoint.html">QPoint</a> &amp; <i>p</i>, bool <i>showIt</i> = false )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Use <a href="qwidget.html#setParent">setParent</a>() to change the parent; use <a href="qwidget.html#pos-prop">move</a>() to move the widget, and use <a href="qwidget.html#show">show</a>() to show the widget.</p>
 <h3 class="fn"><a name="setActiveWindow"></a>void QWidget::setActiveWindow ()</h3>
 <p>Use <a href="qwidget.html#activateWindow">activateWindow</a>() instead.</p>
@@ -266,7 +266,7 @@ body { background: #ffffff; color: black; }</style>
     palette.setBrush(widget-&gt;backgroundRole(), QBrush(pixmap));
     widget-&gt;setPalette(palette);</pre>
 <h3 class="fn"><a name="setFont-2"></a>void QWidget::setFont ( const <a href="qfont.html">QFont</a> &amp; <i>f</i>, bool <i>b</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Use the single-argument overload instead.</p>
 <h3 class="fn"><a name="setIcon"></a>void QWidget::setIcon ( const <a href="qpixmap.html">QPixmap</a> &amp; <i>i</i> )</h3>
 <p>Use <a href="qwidget.html#windowIcon-prop">setWindowIcon</a>() instead.</p>
@@ -280,7 +280,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="setKeyCompression"></a>void QWidget::setKeyCompression ( bool <i>b</i> )</h3>
 <p>Use setAttribute(<a href="qt.html#WidgetAttribute-enum">Qt::WA_KeyCompression</a>, b) instead.</p>
 <h3 class="fn"><a name="setPalette-2"></a>void QWidget::setPalette ( const <a href="qpalette.html">QPalette</a> &amp; <i>p</i>, bool <i>b</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Use the single-argument overload instead.</p>
 <h3 class="fn"><a name="setPaletteBackgroundColor"></a>void QWidget::setPaletteBackgroundColor ( const <a href="qcolor.html">QColor</a> &amp; <i>color</i> )</h3>
 <p>Use the palette directly.</p>
@@ -310,10 +310,10 @@ body { background: #ffffff; color: black; }</style>
 <p>Use setVisible(<i>shown</i>) instead.</p>
 <p>See also <a href="qwidget-qt3.html#isShown">isShown</a>().</p>
 <h3 class="fn"><a name="setSizePolicy-2"></a>void QWidget::setSizePolicy ( <a href="qsizepolicy.html#Policy-enum">QSizePolicy::Policy</a> <i>hor</i>, <a href="qsizepolicy.html#Policy-enum">QSizePolicy::Policy</a> <i>ver</i>, bool <i>hfw</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Use the <a href="qwidget.html#sizePolicy-prop">sizePolicy</a> property and <a href="qwidget.html#heightForWidth">heightForWidth</a>() function instead.</p>
 <h3 class="fn"><a name="setStyle-2"></a><a href="qstyle.html">QStyle</a> * QWidget::setStyle ( const <a href="qstring.html">QString</a> &amp; <i>style</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Sets the widget's GUI style to <i>style</i> using the <a href="qstylefactory.html">QStyleFactory</a>.</p>
 <h3 class="fn"><a name="unsetFont"></a>void QWidget::unsetFont ()</h3>
 <p>Use setFont(QFont()) instead.</p>
@@ -325,8 +325,8 @@ body { background: #ffffff; color: black; }</style>
 <p>The widget mapper is no longer part of the public API.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

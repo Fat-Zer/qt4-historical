@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/gui/embedded/qdecoration_qws.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/src/gui/embedded/qdecoration_qws.cpp -->
 <head>
     <title>Qt 4.1: QDecoration Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -59,7 +59,7 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="DecorationRegion-enum"></a>enum QDecoration::DecorationRegion</h3>
 <p>This enum describes the regions in the window decorations.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QDecoration::All</tt></td><td align="center" valign="top"><tt>0x7fffffff</tt></td><td valign="top">The entire region used by the window decoration.</td></tr>
 <tr><td valign="top"><tt>QDecoration::Top</tt></td><td align="center" valign="top"><tt>0x0000000002</tt></td><td valign="top">The top border is used to vertically resize the window.</td></tr>
@@ -81,15 +81,15 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QDecoration::Resize</tt></td><td align="center" valign="top"><tt>0x0000010000</tt></td><td valign="top">The region that the user can click to resize the window.</td></tr>
 <tr><td valign="top"><tt>QDecoration::Move</tt></td><td align="center" valign="top"><tt>0x0000008000</tt></td><td valign="top">The region that the user can click to move the window.</td></tr>
 <tr><td valign="top"><tt>QDecoration::None</tt></td><td align="center" valign="top"><tt>0x0000000000</tt></td><td valign="top">&nbsp;</td></tr>
-</table>
+</table></p>
 <h3 class="fn"><a name="DecorationState-enum"></a>enum QDecoration::DecorationState</h3>
-<table border="1" cellpadding="2" cellspacing="1" width="40%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="40%">
 <tr><th width="60%">Constant</th><th width="40%">Value</th></tr>
 <tr><td valign="top"><tt>QDecoration::Normal</tt></td><td align="center" valign="top"><tt>0x04</tt></td></tr>
 <tr><td valign="top"><tt>QDecoration::Disabled</tt></td><td align="center" valign="top"><tt>0x08</tt></td></tr>
 <tr><td valign="top"><tt>QDecoration::Hover</tt></td><td align="center" valign="top"><tt>0x01</tt></td></tr>
 <tr><td valign="top"><tt>QDecoration::Pressed</tt></td><td align="center" valign="top"><tt>0x02</tt></td></tr>
-</table>
+</table></p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QDecoration"></a>QDecoration::QDecoration ()</h3>
@@ -104,7 +104,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Override to paint the border and title decoration around <i>widget</i> using <i>painter</i>. <i>decorationRegion</i> is the number of the decoration region. <i>state</i> specifies how to render the region.</p>
 <h3 class="fn"><a name="region"></a><a href="qregion.html">QRegion</a> QDecoration::region ( const <a href="qwidget.html">QWidget</a> * <i>w</i>, const <a href="qrect.html">QRect</a> &amp; <i>rect</i>, int <i>decorationRegion</i> = All )&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <h3 class="fn"><a name="region-2"></a><a href="qregion.html">QRegion</a> QDecoration::region ( const <a href="qwidget.html">QWidget</a> * <i>widget</i>, int <i>decorationRegion</i> = All )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns the requested region <i>decorationRegion</i> which will contain <i>widget</i>.</p>
 <h3 class="fn"><a name="regionAt"></a>int QDecoration::regionAt ( const <a href="qwidget.html">QWidget</a> * <i>widget</i>, const <a href="qpoint.html">QPoint</a> &amp; <i>point</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns the first region within <i>widget</i> which contains <i>point</i>. If none of the regions contain the point, returns <a href="qdecoration.html#DecorationRegion-enum">None</a>.</p>
@@ -120,8 +120,8 @@ body { background: #ffffff; color: black; }</style>
 <p>Initiates resize mode for the top level widget specified by <i>widget</i> that is handled by QWSManager.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

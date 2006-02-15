@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/doc/src/assistant-manual.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/doc/src/assistant-manual.qdoc -->
 <head>
     <title>Qt 4.1: Qt Assistant Manual</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -76,8 +76,7 @@ body { background: #ffffff; color: black; }</style>
 <p><i>Qt Assistant</i> can be customized by creating profiles, a collection of documentation. Profiles can be created for your own use, or for an application you will distribute. With profiles, you can select which documentation you want the end user of your application to be able to view.</p>
 <a name="qt-assistant-in-more-detail"></a>
 <h2>Qt Assistant in More Detail</h2>
-<p align="center"><img src="images/assistant-assistant.png" /></p><p>Qt Assistant</p>
-<a name="the-sidebar"></a>
+<p align="center"><img src="images/assistant-assistant.png" /></p><a name="the-sidebar"></a>
 <h3>The Sidebar</h3>
 <p align="center"><img src="images/assistant-sidebar.png" /></p><p>The sidebar provides four ways of navigating documentation:</p>
 <ol type="1">
@@ -154,10 +153,8 @@ body { background: #ffffff; color: black; }</style>
 <p>This dialog is used to find text in the current page. Enter the text you want to find in the Find line edit. If you check the 'Whole words only' checkbox, the search will only consider whole words, i.e. if you search for 'spin' with this checkbox checked it will not match 'spinbox', but will match 'spin'. If you check the 'Case sensitive' check box then, for example, 'spin' will match 'spin' but not 'Spin'. You can search Forward or Backward from your current position in the page by clicking one of the Direction radio buttons. Click the <b>Find</b> button to search (or search again), and click the <b>Close</b> button to finish.</p>
 <a name="the-settings-dialog"></a>
 <h4>The Settings Dialog</h4>
-<p>The Settings dialog is used to set your preferences for <i>Qt Assistant</i>. The dialog has four tabs: General Settings, Web Settings, PDF Settings, and Profiles. <i>Qt Assistant</i> will remember your settings between sessions, including window sizes and positions, and which pages you have open. Each of the tabs is discussed as follows:</p>
+<p>The Settings dialog is used to set your preferences for <i>Qt Assistant</i>. The dialog has two tabs: The <b>Web</b> settings tab allows you to customize the way external content is displayed, and the <b>PDF</b> settings tab provides a similar facility for PDF files. <i>Qt Assistant</i> will remember your settings between sessions, including window sizes and positions, and which pages you have open. Each of the tabs is discussed as follows:</p>
 <ul>
-<li>General Settings<p align="center"><img src="images/assistant-general.png" /></p><p>To change the base font used throughout <i>Qt Assistant</i>, select a font type from the Font combobox. To choose a new fixed-width font, for example, to show code snippets, choose a font type from the 'Fixed font' combobox. To change the color of hypertext links, click the 'Link color' color button. Uncheck the 'Underline links' checkbox if you don't want underlined links.</p>
-</li>
 <li>Web Settings<p align="center"><img src="images/assistant-web.png" /></p><p>Some pages contain links to external web pages. In order to display these links, you must specify a web browser. Type the name of your browser's executable in the Web Browser Application line edit. Alternatively, click the <b>(ellipsis)</b> button to invoke the <b>Set Web Browser</b> dialog and navigate until you find the web browser you want to use. Click <b>Save</b> to accept the selection.</p>
 <p>To change <i>Qt Assistant</i>'s default home page, enter the file name in the Home Page line edit. Alternatively, click the <b>(ellipsis)</b> button to invoke the <b>Set Homepage</b> dialog. Navigate until you find the home page file you want to use and then click <b>Save</b> to accept the selection.</p>
 </li>
@@ -193,7 +190,7 @@ body { background: #ffffff; color: black; }</style>
 <p>An example of a content file that uses all the available tags and attributes is shown below:</p>
 <pre>&nbsp;   &lt;assistantconfig version=&quot;3.2.0&quot;&gt;
         &lt;DCF ref=&quot;demo.html&quot; icon=&quot;handbook.png&quot; imagedir=&quot;../img/&quot;
-             title=&quot;Development Demo Handbook&quot;&gt;
+                title=&quot;Development Demo Handbook&quot;&gt;
             &lt;section ref=&quot;./chap1/chap1.html&quot; title=&quot;Chapter1&quot;&gt;
                 &lt;section ref=&quot;./chap1/section1.html&quot; title=&quot;Section1&quot;&gt;
                     &lt;keyword ref=&quot;./chap1/section1.html#foo&quot;&gt;foo&lt;/keyword&gt;
@@ -232,40 +229,51 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <p>To define a profile, one needs to specify a <i>Qt Assistant</i> Document Profile, usually abbreviated <tt>.adp</tt>. The profile is an extension of the Documentation Content File described above. We add a <tt>profile</tt> tag containing <tt>property</tt> tags to the format.</p>
 <p>An example of a document profile file is shown below:</p>
-<p><tt>helpdemo.adp</tt></p>
-<pre>&nbsp;   &lt;assistantconfig version=&quot;3.2.0&quot;&gt;
+<pre>&nbsp;   &lt;!DOCTYPE DCF&gt;
+    &lt;assistantconfig version=&quot;3.2.0&quot;&gt;
 
-        &lt;profile&gt;
-            &lt;property name=&quot;name&quot;&gt;HelpExample&lt;/property&gt;
-            &lt;property name=&quot;title&quot;&gt;Help Example&lt;/property&gt;
-            &lt;property name=&quot;applicationicon&quot;&gt;logo.png&lt;/property&gt;
-            &lt;property name=&quot;startpage&quot;&gt;index.html&lt;/property&gt;
-            &lt;property name=&quot;aboutmenutext&quot;&gt;About Help&lt;/property&gt;
-            &lt;property name=&quot;abouturl&quot;&gt;../about.txt&lt;/property&gt;
-            &lt;property name=&quot;assistantdocs&quot;&gt;../../../doc/html&lt;/property&gt;
-        &lt;/profile&gt;
+    &lt;profile&gt;
+      &lt;property name=&quot;name&quot;&gt;simpletextviewer&lt;/property&gt;
+      &lt;property name=&quot;title&quot;&gt;Simple Text Viewer&lt;/property&gt;
+      &lt;property name=&quot;applicationicon&quot;&gt;images/handbook.png&lt;/property&gt;
+      &lt;property name=&quot;startpage&quot;&gt;index.html&lt;/property&gt;
+      &lt;property name=&quot;aboutmenutext&quot;&gt;About Simple Text Viewer&lt;/property&gt;
+      &lt;property name=&quot;abouturl&quot;&gt;about.txt&lt;/property&gt;
+      &lt;property name=&quot;assistantdocs&quot;&gt;.&lt;/property&gt;
+    &lt;/profile&gt;
 
-        &lt;DCF ref=&quot;index.html&quot; icon=&quot;handbook.png&quot; title=&quot;Help example&quot;&gt;
-            &lt;section ref=&quot;./manual.html&quot; title=&quot;How to use this Example&quot;&gt;
-                &lt;keyword ref=&quot;./manual.html#installdocs&quot;&gt;Install Docs&lt;/keyword&gt;
-                &lt;keyword ref=&quot;./manual.html#onlydoc&quot;&gt;Example Profile&lt;/keyword&gt;
-                &lt;keyword ref=&quot;./manual.html#hide&quot;&gt;Hide Sidebar&lt;/keyword&gt;
-                &lt;keyword ref=&quot;./manual.html#openqabutton&quot;&gt;Open&lt;/keyword&gt;
-                &lt;keyword ref=&quot;./manual.html#closeqabutton&quot;&gt;Close&lt;/keyword&gt;
-                &lt;keyword ref=&quot;./manual.html#display&quot;&gt;Display&lt;/keyword&gt;
-            &lt;/section&gt;
-       &lt;/DCF&gt;
+    &lt;DCF ref=&quot;index.html&quot; icon=&quot;images/handbook.png&quot; title=&quot;Simple Text Viewer&quot;&gt;
+      &lt;section ref=&quot;./findfile.html&quot; title=&quot;Find File&quot;&gt;
+        &lt;keyword ref=&quot;./index.html&quot;&gt;Display&lt;/keyword&gt;
+        &lt;keyword ref=&quot;./index.html&quot;&gt;Rich text&lt;/keyword&gt;
+        &lt;keyword ref=&quot;./index.html&quot;&gt;Plain text&lt;/keyword&gt;
+        &lt;keyword ref=&quot;./findfile.html&quot;&gt;Find&lt;/keyword&gt;
+        &lt;keyword ref=&quot;./findfile.html&quot;&gt;File menu&lt;/keyword&gt;
+        &lt;keyword ref=&quot;./filedialog.html&quot;&gt;File name&lt;/keyword&gt;
+        &lt;keyword ref=&quot;./filedialog.html&quot;&gt;File dialog&lt;/keyword&gt;
+        &lt;keyword ref=&quot;./wildcardmatching.html&quot;&gt;File globbing&lt;/keyword&gt;
+        &lt;keyword ref=&quot;./wildcardmatching.html&quot;&gt;Wildcard matching&lt;/keyword&gt;
+        &lt;keyword ref=&quot;./wildcardmatching.html&quot;&gt;Wildcard syntax&lt;/keyword&gt;
+        &lt;keyword ref=&quot;./browse.html&quot;&gt;Browse&lt;/keyword&gt;
+        &lt;keyword ref=&quot;./browse.html&quot;&gt;Directory&lt;/keyword&gt;
+        &lt;keyword ref=&quot;./openfile.html&quot;&gt;Open&lt;/keyword&gt;
+        &lt;keyword ref=&quot;./openfile.html&quot;&gt;Select&lt;/keyword&gt;
 
+        &lt;section ref=&quot;./filedialog.html&quot; title=&quot;File Dialog&quot; /&gt;
+        &lt;section ref=&quot;./wildcardmatching.html&quot; title=&quot;Wildcard Matching&quot; /&gt;
+        &lt;section ref=&quot;./browse.html&quot; title=&quot;Browse&quot; /&gt;
+      &lt;/section&gt;
+      &lt;section ref=&quot;./openfile.html&quot; title=&quot;Open File&quot; /&gt;
+    &lt;/DCF&gt;
     &lt;/assistantconfig&gt;</pre>
 <a name="using-profiles"></a>
 <h4>Using Profiles</h4>
-<p>To use a profile, run <i>Qt Assistant</i> with the option <tt>-profile filename</tt>. This will load the profile specified in the file and will customize <i>Qt Assistant</i> accordingly. For example, to run <i>Qt Assistant</i> with the example file above, <tt>helpdemo.adp</tt>, we would run the command as follows:</p>
-<pre>&nbsp;   &gt; assistant -profile helpdemo.adp</pre>
-<p>See the HelpDemo example in the Qt distribution for a demonstration on how to use <i>Qt Assistant</i> with profiles for your own applications.</p>
+<p>To use a profile, run <i>Qt Assistant</i> with the option <tt>-profile filename</tt>. This will load the profile specified in the file and will customize <i>Qt Assistant</i> accordingly. For example, to run <i>Qt Assistant</i> with the example file above, <tt>simpletextviewer.adp</tt>, we would run the command as follows:</p>
+<pre>&nbsp;   &gt; assistant -profile simpletextviewer.adp</pre>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

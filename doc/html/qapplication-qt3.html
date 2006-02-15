@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/gui/kernel/qapplication.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/src/gui/kernel/qapplication.cpp -->
 <head>
     <title>Qt 4.1: Qt 3 Support Members for QApplication</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -78,7 +78,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Use <a href="qapplication.html#setColorSpec">setColorSpec</a>() instead, and pass a <a href="qapplication.html#ColorSpec-enum">ColorSpec</a> value instead.</p>
 <p>See also <a href="qapplication-qt3.html#colorMode">colorMode</a>().</p>
 <h3 class="fn"><a name="setFont-2"></a>void QApplication::setFont ( const <a href="qfont.html">QFont</a> &amp; <i>font</i>, bool <i>b</i>, const char * <i>className</i> = 0 )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Use the two-argument overload instead.</p>
 <h3 class="fn"><a name="setGlobalMouseTracking"></a>void QApplication::setGlobalMouseTracking ( bool <i>dummy</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>This function does nothing in Qt 4. The <i>dummy</i> parameter is ignored.</p>
@@ -90,10 +90,10 @@ body { background: #ffffff; color: black; }</style>
 <p>For X11, this function also resizes and moves the main widget according to the <i>-geometry</i> command-line option, so you should set the default geometry (using <a href="qwidget.html#geometry-prop">QWidget::setGeometry</a>()) before calling setMainWidget().</p>
 <p>See also <a href="qapplication-qt3.html#mainWidget">mainWidget</a>(), <a href="qapplication.html#exec">exec</a>(), and <a href="qcoreapplication.html#quit">quit</a>().</p>
 <h3 class="fn"><a name="setOverrideCursor-2"></a>void QApplication::setOverrideCursor ( const <a href="qcursor.html">QCursor</a> &amp; <i>cursor</i>, bool <i>replace</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Use changeOverrideCursor(<i>cursor</i>) (if <i>replace</i> is true) or setOverrideCursor(<i>cursor</i>) (if <i>replace</i> is false).</p>
 <h3 class="fn"><a name="setPalette-2"></a>void QApplication::setPalette ( const <a href="qpalette.html">QPalette</a> &amp; <i>pal</i>, bool <i>b</i>, const char * <i>className</i> = 0 )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Use the two-argument overload instead.</p>
 <h3 class="fn"><a name="setReverseLayout"></a>void QApplication::setReverseLayout ( bool <i>reverse</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Use <a href="qapplication.html#layoutDirection-prop">setLayoutDirection</a>() instead.</p>
@@ -108,13 +108,13 @@ body { background: #ffffff; color: black; }</style>
     qApp-&gt;setPalette(palette);</pre>
 <p>See also <a href="qapplication-qt3.html#winStyleHighlightColor">winStyleHighlightColor</a>().</p>
 <h3 class="fn"><a name="widgetAt-2"></a><a href="qwidget.html">QWidget</a> * QApplication::widgetAt ( int <i>x</i>, int <i>y</i>, bool <i>child</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Use the two-argument <a href="qapplication.html#widgetAt">widgetAt</a>() overload to get the child widget. To get the top-level widget do this:</p>
 <pre>&nbsp;   QWidget *widget = qApp-&gt;widgetAt(x, y);
     if (widget)
         widget = widget-&gt;window();</pre>
 <h3 class="fn"><a name="widgetAt-3"></a><a href="qwidget.html">QWidget</a> * QApplication::widgetAt ( const <a href="qpoint.html">QPoint</a> &amp; <i>point</i>, bool <i>child</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Use the single-argument <a href="qapplication.html#widgetAt">widgetAt</a>() overload to get the child widget. To get the top-level widget do this:</p>
 <pre>&nbsp;   QWidget *widget = qApp-&gt;widgetAt(point);
     if (widget)
@@ -132,8 +132,8 @@ body { background: #ffffff; color: black; }</style>
 <p>Use <a href="qapplication.html#ColorSpec-enum">NormalColor</a> instead.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

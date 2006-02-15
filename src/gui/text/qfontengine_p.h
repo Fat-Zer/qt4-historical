@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -75,19 +75,10 @@ public:
         TestFontEngine = 0x1000
     };
 
-    enum FECap {
-        NoTransformations = 0x00,
-        Scale = 0x01,
-        Rotate = 0x02,
-        RotScale = 0x03,
-        Shear = 0x04,
-        FullTransformations = 0x0f
-    };
-    Q_DECLARE_FLAGS(FECaps, FECap)
-
     inline QFontEngine() {
         ref = 0;
         cache_count = 0;
+        fsType = 0;
 #if defined(Q_WS_WIN)
         script_cache = 0;
         cmap = 0;
@@ -95,14 +86,40 @@ public:
     }
     virtual ~QFontEngine();
 
-    virtual FECaps capabilites() const = 0;
+    // all of these are in unscaled metrics if the engine supports uncsaled metrics,
+    // otherwise in design metrics
+    struct Properties {
+        QByteArray postscriptName;
+        QByteArray copyright;
+        QRectF boundingBox;
+        QFixed emSquare;
+        QFixed ascent;
+        QFixed descent;
+        QFixed leading;
+        QFixed italicAngle;
+        QFixed capHeight;
+        QFixed lineWidth;
+    };
+    virtual Properties properties() const;
+    virtual void getUnscaledGlyph(glyph_t glyph, QPainterPath *path, glyph_metrics_t *metrics);
+    virtual QByteArray getSfntTable(uint /*tag*/) const { return QByteArray(); }
+    
+    struct FaceId {
+        FaceId() : index(0), encoding(0) {}
+        QByteArray filename;
+        int index;
+        int encoding;
+    };
+    virtual FaceId faceId() const { return FaceId(); }
+    enum SynthesizedFlags {
+        SynthesizedItalic = 0x1,
+        SynthesizedBold = 0x2,
+        SynthesizedStretch = 0x4
+    };
+    virtual int synthesized() const { return 0; }
 
     /* returns 0 as glyph index for non existant glyphs */
     virtual bool stringToCMap(const QChar *str, int len, QGlyphLayout *glyphs, int *nglyphs, QTextEngine::ShaperFlags flags) const = 0;
-
-#if defined(Q_WS_X11)
-    virtual int cmap() const { return -1; }
-#endif
 
     virtual QOpenType *openType() const { return 0; }
     virtual void recalcAdvances(int , QGlyphLayout *, QTextEngine::ShaperFlags) const {}
@@ -144,6 +161,7 @@ public:
     QFontDef fontDef;
     uint cache_cost; // amount of mem used in kb by the font
     int cache_count;
+    uint fsType;
 
 #ifdef Q_WS_WIN
     int getGlyphIndexes(const QChar *ch, int numChars, QGlyphLayout *glyphs, bool mirrored) const;
@@ -172,12 +190,24 @@ public:
     QVector<KernPair> kerning_pairs;
     QFixed designToDevice;
     int unitsPerEm;
+    FaceId _faceId;
+    mutable int synthesized_flags;
+    mutable QFixed lineWidth;
 #elif defined(Q_WS_MAC)
     uint kerning : 1;
 #endif // Q_WS_WIN
 };
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(QFontEngine::FECaps)
+inline bool operator ==(const QFontEngine::FaceId &f1, const QFontEngine::FaceId &f2)
+{
+    return (f1.index == f2.index) && (f1.encoding == f2.encoding) && (f1.filename == f2.filename);
+}
+
+inline uint qHash(const QFontEngine::FaceId &f)
+{
+    return qHash((f.index << 16) + f.encoding) + qHash(f.filename);
+}
+
 
 class QGlyph;
 
@@ -194,8 +224,12 @@ public:
    ~QFontEngineFT();
     FT_Face handle() const;
 
-    FECaps capabilites() const;
-
+    QFontEngine::FaceId faceId() const { return face_id; }
+    QFontEngine::Properties properties() const;
+    void getUnscaledGlyph(glyph_t glyph, QPainterPath *path, glyph_metrics_t *metrics);
+    QByteArray getSfntTable(uint tag) const;
+    int synthesized() const;
+    
     QOpenType *openType() const;
     void recalcAdvances(int len, QGlyphLayout *glyphs, QTextEngine::ShaperFlags flags) const;
 
@@ -234,6 +268,7 @@ public:
     enum { cmapCacheSize = 0x200 };
     mutable glyph_t cmapCache[cmapCacheSize];
 
+    FaceId face_id;
     friend class QFontDatabase;
     static FT_Library ft_library;
 };
@@ -249,7 +284,6 @@ public:
     QFontEngineQPF(const QFontDef&, const QString &fn);
    ~QFontEngineQPF();
 
-    FECaps capabilites() const;
     bool stringToCMap(const QChar *str, int len, QGlyphLayout *glyphs, int *nglyphs, QTextEngine::ShaperFlags flags) const;
 
     void draw(QPaintEngine *p, qreal x, qreal y, const QTextItemInt &si);
@@ -285,8 +319,6 @@ class QFontEngineBox : public QFontEngine
 public:
     QFontEngineBox(int size);
     ~QFontEngineBox();
-
-    FECaps capabilites() const;
 
     bool stringToCMap(const QChar *str, int len, QGlyphLayout *glyphs, int *nglyphs, QTextEngine::ShaperFlags flags) const;
 
@@ -326,6 +358,7 @@ private:
 #include "QtCore/qcache.h"
 
 struct QATSUStyle;
+struct QATSUGlyphInfo;
 class QFontEngineMac : public QFontEngine
 {
     mutable ATSUTextLayout mTextLayout;
@@ -333,6 +366,7 @@ class QFontEngineMac : public QFontEngine
     enum { widthCacheSize = 0x500 };
     mutable int widthCache[widthCacheSize];
     QATSUStyle *getFontStyle() const;
+    mutable QCache<QString, QATSUGlyphInfo> glyphCache;
 
 public:
     ATSFontFamilyRef familyref;
@@ -363,8 +397,6 @@ public:
 
     void calculateCost();
 
-    FECaps capabilites() const { return FullTransformations; }
-
     enum { WIDTH=0x01, DRAW=0x02, EXISTS=0x04, ADVANCES=0x08 };
     int doTextTask(const QChar *s, int pos, int use_len, int len, uchar task, QFixed x =-1, QFixed y=-1,
                    QPaintEngine *p=0, void **data=0) const;
@@ -378,8 +410,6 @@ class Q_GUI_EXPORT QFontEngineMulti : public QFontEngine
 public:
     explicit QFontEngineMulti(int engineCount);
     ~QFontEngineMulti();
-
-    FECaps capabilites() const;
 
     bool stringToCMap(const QChar *str, int len, QGlyphLayout *glyphs, int *nglyphs,
                       QTextEngine::ShaperFlags flags) const;

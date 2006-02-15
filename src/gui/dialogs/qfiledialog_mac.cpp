@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -90,7 +90,7 @@ static QList<qt_mac_filter_name*> qt_mac_make_filters_list(const QString &filter
 #endif
     QString f(filter);
     if (f.isEmpty())
-        f = QObject::tr("All Files (*)");
+        f = QFileDialog::tr("All Files (*)");
     if (f.isEmpty())
         return QList<qt_mac_filter_name*>();
 /*
@@ -262,10 +262,15 @@ QStringList qt_mac_get_open_file_names(const QFileDialogArgs &args, QString *pwd
 
             QRect r = QApplication::desktop()->screenGeometry(
                 QApplication::desktop()->screenNumber(parent));
+            const int border = 10;
             if (options.location.h + w > r.right())
-                options.location.h -= (options.location.h + w) - r.right() + 10;
+                options.location.h -= (options.location.h + w) - r.right() + border;
             if (options.location.v + h > r.bottom())
-                options.location.v -= (options.location.v + h) - r.bottom() + 10;
+                options.location.v -= (options.location.v + h) - r.bottom() + border;
+            if(options.location.h < r.left())
+                options.location.h = r.left() + border;
+            if(options.location.v < r.top())
+                options.location.v = r.top() + border;
         }
 #if 0
     } else if (QWidget *p = qApp->mainWidget()) {
@@ -321,7 +326,7 @@ QStringList qt_mac_get_open_file_names(const QFileDialogArgs &args, QString *pwd
         QWidget modal_widg(parent, Qt::Sheet);
         QApplicationPrivate::enterModal(&modal_widg);
         while (g_nav_blocking)
-            qApp->processEvents();
+            qApp->processEvents(QEventLoop::WaitForMoreEvents);
         QApplicationPrivate::leaveModal(&modal_widg);
     }
 
@@ -443,7 +448,7 @@ QString qt_mac_get_save_file_name(const QFileDialogArgs &args, QString *pwd,
         QWidget modal_widg(parent, Qt::Sheet);
         QApplicationPrivate::enterModal(&modal_widg);
         while (g_nav_blocking)
-            qApp->processEvents();
+            qApp->processEvents(QEventLoop::WaitForMoreEvents);
         QApplicationPrivate::leaveModal(&modal_widg);
     }
 

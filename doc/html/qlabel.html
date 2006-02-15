@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/gui/widgets/qlabel.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/src/gui/widgets/qlabel.cpp -->
 <head>
     <title>Qt 4.1: QLabel Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -26,7 +26,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <a name="properties"></a>
 <h3>Properties</h3>
-<table width="100%" border="0" cellpadding="0" cellspacing="0">
+<p><table width="100%" border="0" cellpadding="0" cellspacing="0">
 <tr><td width="45%" valign="top"><ul>
 <li><div class="fn"/><b><a href="qlabel.html#alignment-prop">alignment</a></b> : Qt::Alignment</li>
 <li><div class="fn"/><b><a href="qlabel.html#indent-prop">indent</a></b> : int</li>
@@ -39,7 +39,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="qlabel.html#wordWrap-prop">wordWrap</a></b> : bool</li>
 </ul>
 </td></tr>
-</table>
+</table></p>
 <ul>
 <li><div class="fn"/>6 properties inherited from <a href="qframe.html#properties">QFrame</a></li>
 <li><div class="fn"/>54 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
@@ -74,7 +74,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>13 public functions inherited from <a href="qframe.html#public-functions">QFrame</a></li>
 <li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
-<li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <a name="public-slots"></a>
 <h3>Public Slots</h3>
@@ -100,6 +100,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>4 static public members inherited from <a href="qobject.html#static-public-members">QObject</a></li>
 <li><div class="fn"/>39 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
+<li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -107,7 +108,7 @@ body { background: #ffffff; color: black; }</style>
 <p>The QLabel widget provides a text or image display.</p>
 <p>QLabel is used for displaying text or an image. No user interaction functionality is provided. The visual appearance of the label can be configured in various ways, and it can be used for specifying a focus mnemonic key for another widget.</p>
 <p>A QLabel can contain any of the following content types:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Content</th><th>Setting</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>Plain text</td><td>Pass a <a href="qstring.html">QString</a> to <a href="qlabel.html#text-prop">setText</a>().</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>Rich text</td><td>Pass a <a href="qstring.html">QString</a> that contains rich text to <a href="qlabel.html#text-prop">setText</a>().</td></tr>
@@ -115,7 +116,7 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#e0e0e0"><td>A movie</td><td>Pass a <a href="qmovie.html">QMovie</a> to <a href="qlabel.html#setMovie">setMovie</a>().</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>A number</td><td>Pass an <i>int</i> or a <i>double</i> to <a href="qlabel.html#setNum">setNum</a>(), which converts the number to plain text.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>Nothing</td><td>The same as an empty plain text. This is the default. Set by <a href="qlabel.html#clear">clear</a>().</td></tr>
-</table>
+</table></p>
 <p>When the content is changed using any of these functions, any previous content is cleared.</p>
 <p>The look of a QLabel can be tuned in several ways. All the settings of <a href="qframe.html">QFrame</a> are available for specifying a widget frame. The positioning of the content within the QLabel widget area can be tuned with <a href="qlabel.html#alignment-prop">setAlignment</a>() and <a href="qlabel.html#indent-prop">setIndent</a>(). Text content can also wrap lines along word bounderies with <a href="qlabel.html#wordWrap-prop">setWordWrap</a>(). For example, this code sets up a sunken panel with a two-line text in the bottom right corner (both lines being flush with the right side of the label):</p>
 <pre>&nbsp;   QLabel *label = new QLabel(this);
@@ -127,11 +128,11 @@ body { background: #ffffff; color: black; }</style>
     QLabel* phoneLabel = new QLabel(&quot;&amp;Phone:&quot;, this);
     phoneLabel-&gt;setBuddy(phoneEdit);</pre>
 <p>In this example, keyboard focus is transferred to the label's buddy (the <a href="qlineedit.html">QLineEdit</a>) when the user presses Alt+P. If the buddy was a button (inheriting from <a href="qabstractbutton.html">QAbstractButton</a>), triggering the mnemonic would emulate a button click.</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#f0f0f0"><td><img src="images/macintosh-label.png" alt="Screenshot of a Macintosh style label" /></td><td>A Macintosh style label</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><img src="images/plastique-label.png" alt="Screenshot of a Plastique style label" /></td><td>A Plastique style label</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><img src="images/windowsxp-label.png" alt="Screenshot of a Windows XP style label" /></td><td>A Windows XP style label</td></tr>
-</table>
+</table></p>
 <p>See also <a href="qlineedit.html">QLineEdit</a>, <a href="qtextedit.html">QTextEdit</a>, <a href="qpixmap.html">QPixmap</a>, <a href="qmovie.html">QMovie</a>, and <a href="guibooks.html#fowler">GUI Design Handbook: Label</a>.</p>
 <hr />
 <h2>Property Documentation</h2>
@@ -183,11 +184,11 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <h3 class="fn"><a name="text-prop"></a>text : <a href="qstring.html">QString</a></h3>
 <p>This property holds the label's text.</p>
-<p>If no text has been set this will return an empty string. Setting the text clears any previous content, unless they are the same.</p>
-<p>The text will be interpreted either as a plain text or as a rich text, depending on the text format setting; see <a href="qlabel.html#textFormat-prop">setTextFormat</a>(). The default setting is <a href="qt.html#TextFormat-enum">Qt::AutoText</a>, i.e. <a href="qlabel.html">QLabel</a> will try to auto-detect the format of the text set.</p>
+<p>If no text has been set this will return an empty string. Setting the text clears any previous content.</p>
+<p>The text will be interpreted either as plain text or as rich text, depending on the text format setting; see <a href="qlabel.html#textFormat-prop">setTextFormat</a>(). The default setting is <a href="qt.html#TextFormat-enum">Qt::AutoText</a>; i.e. <a href="qlabel.html">QLabel</a> will try to auto-detect the format of the text set.</p>
 <p>If the text is interpreted as a plain text and a buddy has been set, the buddy mnemonic key is updated from the new text.</p>
 <p>The label resizes itself if auto-resizing is enabled.</p>
-<p>Note that Qlabel is well-suited to display small rich text documents, i.e. those small documents that get their document specific settings (font, text color, link color) from the label's palette and font properties. For large documents, use <a href="qtextedit.html">QTextEdit</a> in read-only mode instead. <a href="qtextedit.html">QTextEdit</a> will flicker less on resize and can also provide a scrollbar when necessary.</p>
+<p>Note that <a href="qlabel.html">QLabel</a> is well-suited to display small rich text documents, such as small documents that get their document specific settings (font, text color, link color) from the label's palette and font properties. For large documents, use <a href="qtextedit.html">QTextEdit</a> in read-only mode instead. <a href="qtextedit.html">QTextEdit</a> can also provide a scrollbar when necessary.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>QString text () const</b></li>
@@ -261,7 +262,7 @@ body { background: #ffffff; color: black; }</style>
 <p>The label resizes itself if auto-resizing is enabled.</p>
 <p>See also <a href="qlabel.html#text-prop">setText</a>(), <a href="qstring.html#setNum">QString::setNum</a>(), and <a href="qlabel.html#setBuddy">setBuddy</a>().</p>
 <h3 class="fn"><a name="setNum-2"></a>void QLabel::setNum ( double <i>num</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Sets the label contents to plain text containing the textual representation of double <i>num</i>. Any previous content is cleared. Does nothing if the double's string representation is the same as the current contents of the label.</p>
 <p>The buddy shortcut, if any, is disabled.</p>
 <p>The label resizes itself if auto-resizing is enabled.</p>
@@ -272,8 +273,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qlabel.html#picture">picture</a>() and <a href="qlabel.html#setBuddy">setBuddy</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

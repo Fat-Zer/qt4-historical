@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -82,7 +82,8 @@ public:
     enum { // sentinel values used to validate state data
         VersionMarker = 0xff,
         ToolBarStateMarker = 0xfe,
-        DockWidgetStateMarker = 0xfd
+        DockWidgetStateMarker = 0xfd,
+        ToolBarStateMarkerEx = 0xfc
     };
     void saveState(QDataStream &stream) const;
     bool restoreState(QDataStream &stream);
@@ -108,7 +109,7 @@ public:
 
     QInternal::RelayoutType relayout_type;
     void relayout(QInternal::RelayoutType type = QInternal::RelayoutNormal);
-
+    void updateToolbarsInArea(Qt::ToolBarArea area);
     void saveLayoutInfo();
     void resetLayoutInfo();
     void discardLayoutInfo();
@@ -125,7 +126,7 @@ public:
 
 #ifndef QT_NO_TOOLBAR
     int locateToolBar(QToolBar *toolbar, const QPoint &mouse) const;
-    void dropToolBar(QToolBar *toolbar, const QPoint &mouse, const QPoint &offset);
+    bool dropToolBar(QToolBar *toolbar, const QPoint &mouse, const QPoint &offset);
 
     void removeToolBarInfo(QToolBar *toolbar);
 #endif
@@ -165,7 +166,6 @@ public:
     */
     static int nextVisible(int index, const ToolBarLineInfo &lineInfo);
     static int prevVisible(int index, const ToolBarLineInfo &lineInfo);
-
     QList<ToolBarLineInfo> tb_layout_info, *save_tb_layout_info;
 #endif
 };

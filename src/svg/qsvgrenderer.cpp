@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtSVG module of the Qt Toolkit.
 **
@@ -240,7 +240,7 @@ bool QSvgRenderer::load(const QString &filename)
 {
     Q_D(QSvgRenderer);
     d->render = QSvgTinyDocument::load(filename);
-    if (d->render->animated() && d->fps > 0) {
+    if (d->render && d->render->animated() && d->fps > 0) {
         if (!d->timer)
             d->timer = new QTimer(this);
         else
@@ -262,7 +262,7 @@ bool QSvgRenderer::load(const QByteArray &contents)
 {
     Q_D(QSvgRenderer);
     d->render = QSvgTinyDocument::load(contents);
-    if (d->render->animated() && d->fps > 0) {
+    if (d->render && d->render->animated() && d->fps > 0) {
         if (!d->timer)
             d->timer = new QTimer(this);
         else

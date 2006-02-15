@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -48,12 +48,13 @@ class QLineEditPrivate : public QWidgetPrivate
 public:
 
     QLineEditPrivate()
-        : cursor(0), cursorTimer(0), frame(1),
-          cursorVisible(0), separator(0), readOnly(0),
+        : cursor(0), preeditCursor(0), cursorTimer(0), frame(1),
+          cursorVisible(0), hideCursor(false), separator(0), readOnly(0),
           dragEnabled(0), contextMenuEnabled(1), alignment(Qt::AlignLeading),
           echoMode(0), textDirty(0), selDirty(0), validInput(1),
           ascent(0), maxLength(32767), hscroll(0), lastCursorPos(-1), maskData(0),
-          modifiedState(0), undoState(0), selstart(0), selend(0), userInput(false)
+          modifiedState(0), undoState(0), selstart(0), selend(0), userInput(false),
+          emitingEditingFinished(false)
         {}
     ~QLineEditPrivate()
     {
@@ -64,11 +65,13 @@ public:
 
     QString text;
     int cursor;
+    int preeditCursor;
     int cursorTimer; // -1 for non blinking cursor.
     QPoint tripleClick;
     QBasicTimer tripleClickTimer;
     uint frame : 1;
     uint cursorVisible : 1;
+    uint hideCursor : 1; // used to hide the cursor inside preedit areas
     uint separator : 1;
     uint readOnly : 1;
     uint dragEnabled : 1;
@@ -87,7 +90,7 @@ public:
 #ifndef QT_NO_MENU
     QAction *actions[NCountActs];
 #endif
-    
+
     inline void emitCursorPositionChanged();
     bool sendMouseEventToInputContext(QMouseEvent *e);
 
@@ -184,6 +187,7 @@ public:
     void clipboardChanged();
     void deleteSelected();
     bool userInput;
+    bool emitingEditingFinished;
 
 #ifdef QT_KEYPAD_NAVIGATION
     QBasicTimer deleteAllTimer; // keypad navigation

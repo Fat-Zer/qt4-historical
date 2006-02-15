@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/doc/src/qmake-manual.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/doc/src/qmake-manual.qdoc -->
 <head>
     <title>Qt 4.1: qmake Project Files</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -55,7 +55,7 @@ body { background: #ffffff; color: black; }</style>
     CONFIG += qt</pre>
 <p>The <tt>CONFIG</tt> variable is another special variable that <tt>qmake</tt> uses when generating a Makefile. It is discussed in the section on <a href="#generalconfiguration">general configuration</a> later in this chapter. In the above line, <tt>qt</tt> is added to the list of existing values contained in <tt>CONFIG</tt>.</p>
 <p>The following table lists the variables that <tt>qmake</tt> recognizes, and describes what they should contain.</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Variable</th><th>Contents</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>CONFIG</td><td>General project configuration options.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>DESTDIR</td><td>The directory in which the executable or binary file will be placed.</td></tr>
@@ -65,7 +65,7 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#e0e0e0"><td>RESOURCES</td><td>A list of resource (.rc) files to be included in the final project. See the <a href="resources.html">The Qt Resource System</a> for more information about these files.</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>SOURCES</td><td>A list of source code files to be used when building the project.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>TEMPLATE</td><td>The template to use for the project. This determines whether the output of the build process will be an application, a library, or a plugin.</td></tr>
-</table>
+</table></p>
 <p>The contents of a variable can be read by prepending the variable name with <tt>$$</tt>. This can be used to assign the contents of one variable to another:</p>
 <pre>&nbsp;   TEMP_SOURCES = $$SOURCES</pre>
 <p>The <tt>$$</tt> operator is used extensively with built-in functions that operate on strings and lists of values. These are described in the chapter on <a href="qmake-advanced-usage.html">qmake Advanced Usage</a>.</p>
@@ -99,14 +99,14 @@ body { background: #ffffff; color: black; }</style>
 <h2>Project Templates</h2>
 <p>The <tt>TEMPLATE</tt> variable is used to define the type of project that will be built. If this is not declared in the project file, <tt>qmake</tt> assumes that an application should be built, and will generate an appropriate Makefile (or equivalent file) for the purpose.</p>
 <p>The types of project available are listed in the following table with information about the files that <tt>qmake</tt> will generate for each of them:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Template</th><th>Description of <tt>qmake</tt> output</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>app (default)</td><td>Creates a Makefile to build an application.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>lib</td><td>Creates a Makefile to build a library.</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>subdirs</td><td>Creates a Makefile that will go into the specified directories and run <tt>qmake</tt> on any project files found.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>vcapp</td><td>Creates a Visual Studio Project file to build an application.</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>vclib</td><td>Creates a Visual Studio Project file to build a library.</td></tr>
-</table>
+</table></p>
 <p>See the <a href="qmake-tutorial.html">qmake Tutorial</a> for advice on writing project files for projects that use the <tt>app</tt> and <tt>lib</tt> templates.</p>
 <p>When the <tt>subdirs</tt> template is used, <tt>qmake</tt> generates a Makefile to examine each specified subdirectory, process any project file it finds there, and run the platform's <tt>make</tt> tool on the newly-created Makefile.</p>
 <p>The only system variable that is recognised for this template is the <tt>SUBDIRS</tt> variable. This variable contains a list of all the subdirectories that contain project files to be processed. It is essential that the project file in each subdirectory has the same name as the subdirectory, so that <tt>qmake</tt> can find it. For example, if the subdirectory is called <tt>myapp</tt> then the project file in that directory should be called <tt>myapp.pro</tt>.</p>
@@ -114,13 +114,13 @@ body { background: #ffffff; color: black; }</style>
 <h2>General Configuration</h2>
 <p>The <tt>CONFIG</tt> variable specifies the options and features that the compiler should use and the libraries that should be linked against. Anything can be added to the <tt>CONFIG</tt> variable, but the options covered below are recognized by <tt>qmake</tt> internally.</p>
 <p>The following options control the compiler flags that are used to build the project:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Option</th><th>Description</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>release</td><td>The project is to be built in release mode. This is ignored if <tt>debug</tt> is also specified.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>debug</td><td>The project is to be built in debug mode.</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>warn_on</td><td>The compiler should output as many warnings as possible. This is ignored if <tt>warn_off</tt> is specified.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>warn_off</td><td>The compiler should output as few warnings as possible.</td></tr>
-</table>
+</table></p>
 <p>Note that each of the options specified in the <tt>CONFIG</tt> variable can also be used as a condition in scopes. This enables different configurations to be defined for <tt>release</tt> and <tt>debug</tt> builds, and is described in more detail in the <a href="qmake-advanced-usage.html#scopes">Scopes</a> section of the Advanced Usage chapter of this manual.</p>
 <p>You can test for the presence of certain configuration options by using the built-in <a href="qmake-function-reference.html#config-config">CONFIG()</a> function. For example, the following lines show the function as the condition in a scope to test whether only the <tt>debug</tt> option is in use:</p>
 <pre>&nbsp;   CONFIG(debug, debug|release) {
@@ -129,12 +129,12 @@ body { background: #ffffff; color: black; }</style>
         message(Building in release mode. Ignoring debug if it is available.)
     }</pre>
 <p>The following options define the type of project to be built. Note that some of these options only take effect when used on the relevant platform. On other platforms, they have no effect.</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Option</th><th>Description</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>qt</td><td>The project is a Qt application and should link against the Qt library. You can use the <tt>QT</tt> variable to control any additional Qt modules that are required by your application.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>thread</td><td>The project is a multi-threaded application.</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>x11</td><td>The project is an X11 application or library.</td></tr>
-</table>
+</table></p>
 <p>When using <a href="qmake-variable-reference.html#template">application or library project templates</a>, more specialized configuration options can be used to fine tune the build process. These are explained in details in the <a href="qmake-common-projects.html">Common Projects</a> chapter of this manual.</p>
 <p>For example, if your application uses the Qt library and you want to build it as a multi-threaded application in <tt>debug</tt> mode, your project file will contain the following line:</p>
 <pre>&nbsp;   CONFIG += qt thread debug</pre>
@@ -149,7 +149,7 @@ body { background: #ffffff; color: black; }</style>
 <p>If you want to build a project <i>without</i> the GUI module, you need to exclude it with the &quot;-=&quot; operator. By default, <tt>QT</tt> contains both <tt>core</tt> and <tt>gui</tt>, so the following line will result in a minimal Qt project being built:</p>
 <pre>&nbsp;   QT -= gui # Only the core module is used.</pre>
 <p>The table below shows the options that can be used with the <tt>QT</tt> variable and the features that are associated with each of them:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Option</th><th>Features</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>core (included by default)</td><td><a href="qtcore.html">QtCore</a> module</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>gui (included by default)</td><td><a href="qtgui.html">QtGui</a> module</td></tr>
@@ -159,7 +159,7 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#e0e0e0"><td>svg</td><td><a href="qtsvg.html">QtSvg</a> module</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>xml</td><td><a href="qtxml.html">QtXml</a> module</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>qt3support</td><td><a href="qt3support.html">Qt3Support</a> module</td></tr>
-</table>
+</table></p>
 <a name="configuration-features"></a>
 <h2>Configuration Features</h2>
 <p><tt>qmake</tt> can be set up with extra configuration features that are specified in feature (.prf) files. These extra features often provide support for custom tools that are used during the build process. To add a feature to the build process, append the feature name (the stem of the feature filename) to the <tt>CONFIG</tt> variable.</p>
@@ -174,8 +174,8 @@ body { background: #ffffff; color: black; }</style>
 </p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

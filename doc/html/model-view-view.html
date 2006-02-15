@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/doc/src/model-view-programming.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/doc/src/model-view-programming.qdoc -->
 <head>
     <title>Qt 4.1: View Classes</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -53,14 +53,15 @@ body { background: #ffffff; color: black; }</style>
     {
         QApplication app(argc, argv);
 
-        QStringList numbers;
-        numbers &lt;&lt; &quot;One&quot; &lt;&lt; &quot;Two&quot; &lt;&lt; &quot;Three&quot; &lt;&lt; &quot;Four&quot; &lt;&lt; &quot;Five&quot;;
+    // Unindented for quoting purposes:
+    QStringList numbers;
+    numbers &lt;&lt; &quot;One&quot; &lt;&lt; &quot;Two&quot; &lt;&lt; &quot;Three&quot; &lt;&lt; &quot;Four&quot; &lt;&lt; &quot;Five&quot;;
 
-        QAbstractItemModel *model = new StringListModel(numbers);</pre>
+    QAbstractItemModel *model = new StringListModel(numbers);</pre>
 <p>Note that the <tt>StringListModel</tt> is declared as a <a href="qabstractitemmodel.html">QAbstractItemModel</a>. This allows us to use the abstract interface to the model, and ensures that the code will still work even if we replace the string list model with a different model in the future.</p>
 <p>The list view provided by <a href="qlistview.html">QListView</a> is sufficient for presenting the items in the string list model. We construct the view, and set up the model using the following lines of code:</p>
-<pre>&nbsp;       QListView *view = new QListView;
-        view-&gt;setModel(model);</pre>
+<pre>&nbsp;   QListView *view = new QListView;
+    view-&gt;setModel(model);</pre>
 <p>The view is shown in the normal way:</p>
 <pre>&nbsp;       view-&gt;show();
         return app.exec();
@@ -94,8 +95,8 @@ body { background: #ffffff; color: black; }</style>
 </p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

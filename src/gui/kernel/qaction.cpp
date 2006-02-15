@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -135,7 +135,7 @@ void QActionPrivate::setShortcutEnabled(bool enable, QShortcutMap &map)
     use as menu items.
 
     A QAction may contain an icon, menu text, a shortcut, status text,
-    "What's This?" text, and a tool tip. Most of these can be set in
+    "What's This?" text, and a tooltip. Most of these can be set in
     the constructor. They can also be set independently with
     setIcon(), setText(), setIconText(), setShortcut(),
     setStatusTip(), setWhatsThis(), and setToolTip(). For menu items,
@@ -195,7 +195,7 @@ QAction::QAction(QObject* parent)
     Option..." becomes "Menu Option") as descriptive text for
     toolbuttons. You can override this by setting a specific
     description with setText(). The same text will be used for
-    tool tips unless you specify a different test using
+    tooltips unless you specify a different test using
     setToolTip().
 
 */
@@ -218,7 +218,7 @@ QAction::QAction(const QString &text, QObject* parent)
     Option..." becomes "Menu Option") as descriptive text for
     toolbuttons. You can override this by setting a specific
     description with setText(). The same text will be used for
-    tool tips unless you specify a different test using
+    tooltips unless you specify a different test using
     setToolTip().
 */
 QAction::QAction(const QIcon &icon, const QString &text, QObject* parent)
@@ -545,7 +545,7 @@ QString QAction::text() const
 
     If QMainWindow::usesTextLabel is true, the text appears as a label
     in the relevant tool button. It also serves as the default text in
-    menus and tool tips if these have not been specifically defined
+    menus and tooltips if these have not been specifically defined
     with setText() or setToolTip(). If the icon text is not explicitly
     set in the by using setIconText(), the action's normal text will
     be used as icon text. There is no default icon text.
@@ -574,12 +574,10 @@ QString QAction::iconText() const
 
 /*!
     \property QAction::toolTip
-    \brief the action's tool tip
+    \brief the action's tooltip
 
-    This text is used for the tool tip. If no status tip has been set
-    the tool tip will be used for the status tip.
-
-    If no tool tip is specified the action's text is used.
+    This text is used for the tooltip. If no tooltip is specified,
+    the action's text is used.
 
     \sa setStatusTip() setShortcut()
 */
@@ -608,10 +606,8 @@ QString QAction::toolTip() const
     \property QAction::statusTip
     \brief the action's status tip
 
-    The statusTip is displayed on all status bars provided by the
+    The status tip is displayed on all status bars provided by the
     action's top-level parent widget.
-
-    There is no default statusTip text.
 
     \sa setToolTip() showStatusText()
 */

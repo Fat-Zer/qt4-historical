@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/doc/src/examples/basiclayouts.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/doc/src/examples/basiclayouts.qdoc -->
 <head>
     <title>Qt 4.1: Basic Layouts Example</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -84,9 +84,9 @@ body { background: #ffffff; color: black; }</style>
 <p>The <a href="qboxlayout.html">QBoxLayout</a> class takes in general the space it gets (from its parent layout or from the parent widget), divides it up into a series of boxes, and makes each managed widget fill one box. If the <a href="qboxlayout.html">QBoxLayout</a>'s orientation is <a href="qt.html#Orientation-enum">Qt::Horizontal</a> the boxes are placed in a row. If the orientation is <a href="qt.html#Orientation-enum">Qt::Vertical</a>, the boxes are placed in a column. The corresponding convenience classes are <a href="qhboxlayout.html">QHBoxLayout</a> and <a href="qvboxlayout.html">QVBoxLayout</a>, respectively.</p>
 <pre>&nbsp;       buttonLayout-&gt;addStretch(1);</pre>
 <p>In addition to adding the two buttons to the layout, we also add a stretchable space to the layout using the <a href="qboxlayout.html#addStretch">QBoxLayout::addStretch</a>() function. The layout will display its widgets and its stretchable spaces according to their <a href="qwidget.html#sizePolicy-prop">size policy</a>, <a href="qboxlayout.html#addWidget">strech factors</a> and <a href="qwidget.html#sizeHint-prop">size hints</a>. Since we add the stretch before we add the widgets, the buttons will be located in the application's right corner.</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#f0f0f0"><td><img src="images/basiclayouts_double_stretch.png" alt="Double stretch" /></td><td><img src="images/basiclayouts_no_stretch.png" alt="No stretch" /></td></tr>
-</table>
+</table></p>
 <p>If we also added another stretch after adding the buttons, the buttons would be centered as shown in the left screenshot above. The right screenshot shows how the buttons would appear if we didn't add any stretchable space at all: The buttons would then stretch to fill the avaliable space.</p>
 <pre>&nbsp;       buttonLayout-&gt;addWidget(okButton);
         buttonLayout-&gt;addWidget(cancelButton);</pre>
@@ -154,8 +154,8 @@ body { background: #ffffff; color: black; }</style>
 <p>Columns and rows behave identically; there is an equivalent stretch factor for rows, as well as a <a href="qgridlayout.html#setRowStretch">QGridLayout::setRowStretch</a>() function.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

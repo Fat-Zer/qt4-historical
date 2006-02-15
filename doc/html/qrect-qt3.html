@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/corelib/tools/qrect.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/src/corelib/tools/qrect.cpp -->
 <head>
     <title>Qt 4.1: Qt 3 Support Members for QRect</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -22,8 +22,8 @@ body { background: #ffffff; color: black; }</style>
 <p><ul><li><a href="qrect.html">QRect class reference</a></li></ul></p>
 <h3>Public Functions</h3>
 <ul>
-<li><div class="fn"/>void <b><a href="qrect-qt3.html#addCoords">addCoords</a></b> ( int <i>xp1</i>, int <i>yp1</i>, int <i>xp2</i>, int <i>yp2</i> )</li>
-<li><div class="fn"/>void <b><a href="qrect-qt3.html#coords">coords</a></b> ( int * <i>xp1</i>, int * <i>yp1</i>, int * <i>xp2</i>, int * <i>yp2</i> ) const</li>
+<li><div class="fn"/>void <b><a href="qrect-qt3.html#addCoords">addCoords</a></b> ( int <i>dx1</i>, int <i>dy1</i>, int <i>dx2</i>, int <i>dy2</i> )</li>
+<li><div class="fn"/>void <b><a href="qrect-qt3.html#coords">coords</a></b> ( int * <i>x1</i>, int * <i>y1</i>, int * <i>x2</i>, int * <i>y2</i> ) const</li>
 <li><div class="fn"/>void <b><a href="qrect-qt3.html#moveBy">moveBy</a></b> ( int <i>dx</i>, int <i>dy</i> )</li>
 <li><div class="fn"/>void <b><a href="qrect-qt3.html#moveBy-2">moveBy</a></b> ( const QPoint &amp; <i>p</i> )</li>
 <li><div class="fn"/>QRect <b><a href="qrect-qt3.html#normalize">normalize</a></b> () const</li>
@@ -31,45 +31,46 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>int &amp; <b><a href="qrect-qt3.html#rLeft">rLeft</a></b> ()</li>
 <li><div class="fn"/>int &amp; <b><a href="qrect-qt3.html#rRight">rRight</a></b> ()</li>
 <li><div class="fn"/>int &amp; <b><a href="qrect-qt3.html#rTop">rTop</a></b> ()</li>
-<li><div class="fn"/>void <b><a href="qrect-qt3.html#rect">rect</a></b> ( int * <i>x</i>, int * <i>y</i>, int * <i>w</i>, int * <i>h</i> ) const</li>
+<li><div class="fn"/>void <b><a href="qrect-qt3.html#rect">rect</a></b> ( int * <i>x</i>, int * <i>y</i>, int * <i>width</i>, int * <i>height</i> ) const</li>
 </ul>
 <hr />
 <h2>Member Function Documentation</h2>
-<h3 class="fn"><a name="addCoords"></a>void QRect::addCoords ( int <i>xp1</i>, int <i>yp1</i>, int <i>xp2</i>, int <i>yp2</i> )</h3>
-<p>Adds <i>xp1</i>, <i>yp1</i>, <i>xp2</i> and <i>yp2</i> respectively to the existing coordinates of the rectangle.</p>
-<p>See also <a href="qrect.html#adjust">adjust</a>().</p>
-<h3 class="fn"><a name="coords"></a>void QRect::coords ( int * <i>xp1</i>, int * <i>yp1</i>, int * <i>xp2</i>, int * <i>yp2</i> ) const</h3>
-<p>Use <a href="qrect.html#getCoords">getCoords</a>() instead.</p>
+<h3 class="fn"><a name="addCoords"></a>void QRect::addCoords ( int <i>dx1</i>, int <i>dy1</i>, int <i>dx2</i>, int <i>dy2</i> )</h3>
+<p>Adds <i>dx1</i>, <i>dy1</i>, <i>dx2</i> and <i>dy2</i> to the existing coordinates of the rectangle respectively.</p>
+<p>Use the <a href="qrect.html#adjust">adjust</a>() function instead.</p>
+<h3 class="fn"><a name="coords"></a>void QRect::coords ( int * <i>x1</i>, int * <i>y1</i>, int * <i>x2</i>, int * <i>y2</i> ) const</h3>
+<p>Extracts the position of the rectangle's top-left corner to *<i>x1</i> and *<i>y1</i>, and the position of the bottom-right corner to *<i>x2</i> and *<i>y2</i>.</p>
+<p>Use the <a href="qrect.html#getCoords">getCoords</a>() function instead.</p>
 <p>See also <a href="qrect.html#setCoords">setCoords</a>().</p>
 <h3 class="fn"><a name="moveBy"></a>void QRect::moveBy ( int <i>dx</i>, int <i>dy</i> )</h3>
-<p>Use <a href="qrect.html#translate">translate</a>() instead.</p>
+<p>Moves the rectangle <i>dx</i> along the x axis and <i>dy</i> along the y axis, relative to the current position.</p>
+<p>Use the <a href="qrect.html#translate">translate</a>() function instead.</p>
 <h3 class="fn"><a name="moveBy-2"></a>void QRect::moveBy ( const <a href="qpoint.html">QPoint</a> &amp; <i>p</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
-<p>Use <a href="qrect.html#translate">translate</a>() instead.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p>Use the <a href="qrect.html#translate">translate</a>() function instead.</p>
 <h3 class="fn"><a name="normalize"></a>QRect QRect::normalize () const</h3>
-<p>Use <a href="qrect.html#normalized">QRect::normalized</a>() instead</p>
 <p>Returns a normalized rectangle, i.e. a rectangle that has a non-negative width and height.</p>
-<p>It swaps left and right if <a href="qrect.html#left">left</a>() &gt; <a href="qrect.html#right">right</a>(), and swaps top and bottom if <a href="qrect.html#top">top</a>() &gt; <a href="qrect.html#bottom">bottom</a>().</p>
-<p>See also <a href="qrect.html#isValid">isValid</a>().</p>
+<p>Use the <a href="qrect.html#normalized">normalized</a>() function instead</p>
 <h3 class="fn"><a name="rBottom"></a>int &amp; QRect::rBottom ()</h3>
 <p>Returns a reference to the bottom coordinate of the rectangle.</p>
-<p>See also <a href="qrect-qt3.html#rLeft">rLeft</a>(), <a href="qrect-qt3.html#rTop">rTop</a>(), and <a href="qrect-qt3.html#rRight">rRight</a>().</p>
+<p>Use the <a href="qrect.html#bottom">bottom</a>() function instead.</p>
 <h3 class="fn"><a name="rLeft"></a>int &amp; QRect::rLeft ()</h3>
 <p>Returns a reference to the left coordinate of the rectangle.</p>
-<p>See also <a href="qrect-qt3.html#rTop">rTop</a>(), <a href="qrect-qt3.html#rRight">rRight</a>(), and <a href="qrect-qt3.html#rBottom">rBottom</a>().</p>
+<p>Use the <a href="qrect.html#left">left</a>() function instead.</p>
 <h3 class="fn"><a name="rRight"></a>int &amp; QRect::rRight ()</h3>
 <p>Returns a reference to the right coordinate of the rectangle.</p>
-<p>See also <a href="qrect-qt3.html#rLeft">rLeft</a>(), <a href="qrect-qt3.html#rTop">rTop</a>(), and <a href="qrect-qt3.html#rBottom">rBottom</a>().</p>
+<p>Use the <a href="qrect.html#right">right</a>() function instead.</p>
 <h3 class="fn"><a name="rTop"></a>int &amp; QRect::rTop ()</h3>
 <p>Returns a reference to the top coordinate of the rectangle.</p>
-<p>See also <a href="qrect-qt3.html#rLeft">rLeft</a>(), <a href="qrect-qt3.html#rRight">rRight</a>(), and <a href="qrect-qt3.html#rBottom">rBottom</a>().</p>
-<h3 class="fn"><a name="rect"></a>void QRect::rect ( int * <i>x</i>, int * <i>y</i>, int * <i>w</i>, int * <i>h</i> ) const</h3>
-<p>Use <a href="qrect.html#getRect">getRect</a>() instead.</p>
+<p>Use the <a href="qrect.html#top">top</a>() function instead.</p>
+<h3 class="fn"><a name="rect"></a>void QRect::rect ( int * <i>x</i>, int * <i>y</i>, int * <i>width</i>, int * <i>height</i> ) const</h3>
+<p>Extracts the position of the rectangle's top-left corner to *<i>x</i> and *<i>y</i>, and its dimensions to *<i>width</i> and * <i>height</i>.</p>
+<p>Use the <a href="qrect.html#getRect">getRect</a>() function instead.</p>
 <p>See also <a href="qrect.html#setRect">setRect</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

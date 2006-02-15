@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -86,7 +86,7 @@ QIODevicePrivate::~QIODevicePrivate()
     QIODevice provides both a common implementation and an abstract
     interface for devices that support reading and writing of blocks
     of data, such as QFile, QBuffer and QTcpSocket. QIODevice is
-    abstract and can not be instantiated, but is it common to use the
+    abstract and can not be instantiated, but it is common to use the
     interface it defines to provide device-independent I/O features.
     For example, Qt's XML classes operate on a QIODevice pointer,
     allowing them to be used with various devices (such as files and

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/doc/src/threads.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/doc/src/threads.qdoc -->
 <head>
     <title>Qt 4.1: Thread Support in Qt</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -138,6 +138,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Each thread can have its own event loop. The initial thread starts its event loops using <a href="qcoreapplication.html#exec">QCoreApplication::exec</a>(); other threads can start an event loop using <a href="qthread.html#exec">QThread::exec</a>(). Like <a href="qcoreapplication.html">QCoreApplication</a>, <a href="qthread.html">QThread</a> provides an <a href="qthread.html#exit">exit</a>(int) function and a <a href="qthread.html#quit">quit()</a> slot.</p>
 <p>An event loop in a thread makes it possible for the thread to use certain non-GUI Qt classes that require the presence of an event loop (such as <a href="qtimer.html">QTimer</a>, <a href="qtcpsocket.html">QTcpSocket</a>, and <a href="qprocess.html">QProcess</a>). It also makes it possible to connect signals from any threads to slots of a specific thread. This is explained in more detail in the <a href="#signals-and-slots-across-threads">Signals and Slots Across Threads</a> section below.</p>
 <p align="center"><img src="images/threadsandobjects.png" alt="Threads, objects, and event loops" /></p><p>A <a href="qobject.html">QObject</a> instance is said to <i>live</i> in the thread in which it is created. Events to that object are dispatched by that thread's event loop. The thread in which a <a href="qobject.html">QObject</a> lives is available using <a href="qobject.html#thread">QObject::thread</a>().</p>
+<p>Note that for QObjects that are created before <a href="qapplication.html">QApplication</a>, <a href="qobject.html#thread">QObject::thread</a>() returns zero. This means that the main thread will only handle posted events for these objects; other event processing is not done at all for objects with no thread. Use the <a href="qobject.html#moveToThread">QObject::moveToThread</a>() function to change the thread affinity for an object and its children (the object cannot be moved if it has a parent).</p>
 <p>Calling <tt>delete</tt> on a <a href="qobject.html">QObject</a> from another thread than the thread where it is created (or accessing the object in other ways) is unsafe unless you can guarantee that the object isn't processing events at the same moment. Use <a href="qobject.html#deleteLater">QObject::deleteLater</a>() instead; it will post a <a href="qevent.html#Type-enum">DeferredDelete</a> event, which the event loop of the object's thread will eventually pick up.</p>
 <p>If no event loop is running, events won't be delivered to the object. For example, if you create a <a href="qtimer.html">QTimer</a> object in a thread but never call <a href="qthread.html#exec">exec()</a>, the <a href="qtimer.html">QTimer</a> will never emit its <a href="qtimer.html#timeout">timeout()</a> signal. Calling <a href="qobject.html#deleteLater">deleteLater()</a> won't work either. (These restrictions apply to the main thread as well.)</p>
 <p>You can manually post events to any object in any thread at any time using the thread-safe function <a href="qcoreapplication.html#postEvent">QCoreApplication::postEvent</a>(). The events will automatically be dispatched by the event loop of the thread where the object was created.</p>
@@ -152,7 +153,7 @@ body { background: #ffffff; color: black; }</style>
 <h3>Signals and Slots Across Threads</h3>
 <p>Qt supports two types of signal-slot connections:</p>
 <ul>
-<li>With <a href="qt.html#ConnectionType-enum">direct connections</a>, the slot gets called immediately when the signal is emitted. The slot is executed in the thread that emitted the signal (which is not necessarliy the thread where the receiver object lives).</li>
+<li>With <a href="qt.html#ConnectionType-enum">direct connections</a>, the slot gets called immediately when the signal is emitted. The slot is executed in the thread that emitted the signal (which is not necessarily the thread where the receiver object lives).</li>
 <li>With <a href="qt.html#ConnectionType-enum">queued connections</a>, the slot is invoked when control returns to the event loop of the thread to which the object belongs. The slot is executed in the thread where the receiver object lives.</li>
 </ul>
 <p>By default, <a href="qobject.html#connect">QObject::connect</a>() establishes a direct connection if the sender and the receiver live in the same thread, and a queued connection if they live in different threads. This can be modified by passing an additional argument to <a href="qobject.html#connect">connect()</a>. Be aware that using direct connections when the sender and receiver don't live in the same thread is unsafe if an event loop is running in the receiver's thread, for the same reason that calling any function on an object living in another thread is unsafe.</p>
@@ -179,8 +180,8 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

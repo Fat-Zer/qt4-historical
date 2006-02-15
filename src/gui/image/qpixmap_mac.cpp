@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -176,7 +176,9 @@ QPixmap QPixmap::fromImage(const QImage &img, Qt::ImageConversionFlags flags)
         case QImage::Format_ARGB32:
         case QImage::Format_ARGB32_Premultiplied:
             for(int x=0;x<w;++x) {
-                if(sfmt == QImage::Format_ARGB32_Premultiplied)
+                if(sfmt == QImage::Format_RGB32)
+                    *(drow+x) = 0xFF000000 | (*(((quint32*)srow) + x) & 0x00FFFFFF);
+                else if(sfmt == QImage::Format_ARGB32_Premultiplied)
                     *(drow+x) = *(((quint32*)srow) + x);
                 else
                     *(drow+x) = PREMUL(*(((quint32*)srow) + x));
@@ -337,6 +339,7 @@ void QPixmap::setMask(const QBitmap &newmask)
 
 void QPixmap::detach()
 {
+    ++data->detach_no;
     if (data->count != 1) {
         *this = copy();
         data->qd_alpha = 0; //leave it behind
@@ -599,6 +602,7 @@ void QPixmap::init(int w, int h, Type type)
     data->count = 1;
     data->uninit = true;
     data->ser_no = ++qt_pixmap_serial;
+    data->detach_no = 0;
     data->type = type;
 
     bool make_null = w == 0 || h == 0;                // create null pixmap

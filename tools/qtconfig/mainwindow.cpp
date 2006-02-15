@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the tools applications of the Qt Toolkit.
 **
@@ -884,7 +884,7 @@ void MainWindow::helpAbout()
     QMessageBox box(this);
     box.setText(tr("<h3>%1</h3>"
                    "<br/>Version %2"
-#if defined(QT_OPENSOURCE)
+#if QT_EDITION == QT_EDITION_OPENSOURCE
                    " Open Source Edition</center><p>"
                    "This version of Qt Configuration is part of the Qt Open Source Edition, for use "
                    "in the development of Open Source applications. "
@@ -898,7 +898,7 @@ void MainWindow::helpAbout()
                    "Qt Commercial License Agreement. For details, see the file LICENSE "
                    "that came with this software distribution."
 #endif
-                   "<br/><br/>Copyright 2000-2005 Trolltech AS. All rights reserved."
+                   "<br/><br/>Copyright 2000-2006 Trolltech AS. All rights reserved."
                    "<br/><br/>The program is provided AS IS with NO WARRANTY OF ANY KIND,"
                    " INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A"
                    " PARTICULAR PURPOSE.<br/> ")

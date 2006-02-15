@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2004-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 2004-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the example classes of the Qt Toolkit.
 **
@@ -20,13 +20,6 @@
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 **
 ****************************************************************************/
-
-/*
-  mainwindow.cpp
-
-  A minimal subclass of QTableView with slots to allow the selection model
-  to be monitored.
-*/
 
 #include <QtGui>
 

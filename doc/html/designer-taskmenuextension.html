@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/doc/src/examples/taskmenuextension.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/doc/src/examples/taskmenuextension.qdoc -->
 <head>
     <title>Qt 4.1: Task Menu Extension Example</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -53,16 +53,14 @@ body { background: #ffffff; color: black; }</style>
 <a name="the-project-file-taskmenuextension-pro"></a>
 <h2>The Project File: taskmenuextension.pro</h2>
 <pre>&nbsp;   TEMPLATE = lib
-    CONFIG  += designer plugin
-    DESTDIR  = $$QT_BUILD_TREE/plugins/designer</pre>
-<p>The <tt>TEMPLATE</tt> variable's value makes <tt>qmake</tt> create the custom widget as a library. Later, we will ensure that the widget will be recognized as a plugin by Qt by using the <a href="qpluginloader-obsolete.html#Q_EXPORT_PLUGIN">Q_EXPORT_PLUGIN</a>() macro to export the relevant widget information.</p>
+    CONFIG  += designer plugin debug_and_release</pre>
+<p>The <tt>TEMPLATE</tt> variable's value makes <tt>qmake</tt> create the custom widget as a library. Later, we will ensure that the widget will be recognized as a plugin by Qt by using the <a href="qpluginloader.html#Q_EXPORT_PLUGIN2">Q_EXPORT_PLUGIN2</a>() macro to export the relevant widget information.</p>
 <p>The <tt>CONFIG</tt> variable contains two values, <tt>designer</tt> and <tt>plugin</tt>:</p>
 <ul>
 <li><tt>designer</tt>: Since custom widgets plugins rely on components supplied with <i>Qt Designer</i>, this value ensures that our plugin link against <i>Qt Designer</i>'s library (<tt>libQtDesigner.so</tt>).</li>
 <li><tt>plugin</tt>: We also need to ensure that <tt>qmake</tt> considers the custom widget a <i>plugin</i> library.</li>
 </ul>
-<p>When Qt is configured to build in both debug and release modes, <i>Qt Designer</i> will be built in release mode. When this occurs, it is necessary to ensure that plugins are also built in release mode. For that reason you might have to add a <tt>release</tt> value to your <tt>CONFIG</tt> variable. Otherwise, if a plugin is built in a mode that is incompatible with <i>Qt Designer</i>, it won't be loaded and installed. For more information about plugins, see the <a href="plugins-howto.html">How to Create Qt Plugins</a> documentation.</p>
-<p>The <tt>DESTDIR</tt> variable's value makes <tt>qmake</tt> install the plugin alongside the other <i>Qt Designer</i> widget plugins which is useful for testing purposes.</p>
+<p>When Qt is configured to build in both debug and release modes, <i>Qt Designer</i> will be built in release mode. When this occurs, it is necessary to ensure that plugins are also built in release mode. For that reason we add the <tt>debug_and_release</tt> value to the <tt>CONFIG</tt> variable. Otherwise, if a plugin is built in a mode that is incompatible with <i>Qt Designer</i>, it won't be loaded and installed. For more information about plugins, see the <a href="plugins-howto.html">How to Create Qt Plugins</a> documentation.</p>
 <pre>&nbsp;   HEADERS += tictactoe.h \
                tictactoedialog.h \
                tictactoeplugin.h \
@@ -72,6 +70,11 @@ body { background: #ffffff; color: black; }</style>
                tictactoeplugin.cpp \
                tictactoetaskmenu.cpp</pre>
 <p>The header and source files for the widget are declared in the usual way, and in addition we provide an implementation of the plugin interface so that <i>Qt Designer</i> can use the custom widget. In this particular example we also provide implementations of the task menu extension and the extension factory as well as a dialog implementation.</p>
+<p>It is important to ensure that the plugin is installed in a location that is searched by <i>Qt Designer</i>. We do this by specifying a target path for the project and adding it to the list of items to install:</p>
+<pre>&nbsp;   target.path = $$[QT_INSTALL_PLUGINS]/designer
+    INSTALLS += target</pre>
+<p>The task menu extension is created as a library, and will be installed alongside the other <i>Qt Designer</i> plugins when the project is installed (using <tt>make install</tt> or an equivalent installation procedure).</p>
+<p>Note that if you want the plugins to appear in a Visual Studio integration, you must copy the library into the plugin directory in the install path of the integration (for an example, see C:/program files/trolltech as/visual studio integration/plugins).</p>
 <a name="tictactoeplugin-class-definition"></a>
 <h2>TicTacToePlugin Class Definition</h2>
 <p>The <tt>TicTacToePlugin</tt> class exposes <tt>the</tt> TicTacToe class to <i>Qt Designer</i>. Its definition is equivalent to the <a href="designer-customwidgetplugin.html">Custom Widget Plugin</a> example's plugin class which is explained in detail. The only part of the class definition that is specific to this particular custom widget is the class name:</p>
@@ -186,7 +189,7 @@ body { background: #ffffff; color: black; }</style>
 <p>The <tt>TicTacToeTaskMenuFactory</tt> class is a subclass of <a href="qextensionfactory.html">QExtensionFactory</a>. When the user request a task menu by clicking the right mouse button over a widget with the specified task menu extension, <i>Qt Designer</i>'s extension manager will run through all its registered factories invoking the first one that is able to create a task menu extension for the selected widget. This factory will in turn create a <tt>TicTacToeTaskMenu</tt> object (the extension).</p>
 <p>We omit to reimplement the <a href="qdesignercustomwidgetinterface.html#domXml">QDesignerCustomWidgetInterface::domXml</a>() function (which include default settings for the widget in the standard XML format used by Qt Designer), since noe default values are necessary. We also omit to reimplement the <a href="qdesignercustomwidgetinterface.html#codeTemplate">QDesignerCustomWidgetInterface::codeTemplate</a>() function which normally provide a sample code template for the custom widget.</p>
 <pre>&nbsp;   Q_EXPORT_PLUGIN2(taskmenuextension, TicTacToePlugin)</pre>
-<p>Finally, we use the <a href="qpluginloader-obsolete.html#Q_EXPORT_PLUGIN">Q_EXPORT_PLUGIN</a>() macro to export the TicTacToePlugin class for use with Qt's plugin handling classes: This macro ensures that <i>Qt Designer</i> can access and construct the custom widget. Without this macro, there is no way for <i>Qt Designer</i> to use the widget.</p>
+<p>Finally, we use the <a href="qpluginloader.html#Q_EXPORT_PLUGIN2">Q_EXPORT_PLUGIN2</a>() macro to export the TicTacToePlugin class for use with Qt's plugin handling classes: This macro ensures that <i>Qt Designer</i> can access and construct the custom widget. Without this macro, there is no way for <i>Qt Designer</i> to use the widget.</p>
 <a name="tictactoetaskmenufactory-class-definition"></a>
 <h2>TicTacToeTaskMenuFactory Class Definition</h2>
 <p>The <tt>TicTacToeTaskMenuFactory</tt> class inherits <a href="qextensionfactory.html">QExtensionFactory</a> which provides a standard extension factory for <i>Qt Designer</i>.</p>
@@ -390,8 +393,8 @@ body { background: #ffffff; color: black; }</style>
 <p>We need to declare the <tt>TicTacToe</tt> widget's state as a property to make it visible to <i>Qt Designer</i>; allowing <i>Qt Designer</i> to manage it in the same way it manages the properties the <tt>TicTacToe</tt> widget inherits from <a href="qwidget.html">QWidget</a> and <a href="qobject.html">QObject</a>, for example featuring the property editor.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

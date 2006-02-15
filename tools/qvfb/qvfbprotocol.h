@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the tools applications of the Qt Toolkit.
 **
@@ -27,32 +27,39 @@
 #include <QVector>
 #include <QColor>
 class QVFbKeyProtocol;
-class QVFbPointerProtocol;
+class QVFbMouseProtocol;
 class QVFbViewProtocol : public QObject
 {
     Q_OBJECT
 public:
-    QVFbViewProtocol(int display_id, QObject *parent = 0)
-        : QObject(parent), mDisplayId(display_id) {}
+    QVFbViewProtocol(int display_id, QObject *parent = 0);
 
-    virtual ~QVFbViewProtocol() {}
+    virtual ~QVFbViewProtocol();
 
     int id() const { return mDisplayId; }
-    virtual QSize size() const = 0;
+
+    void sendKeyboardData(int unicode, int keycode,
+            int modifiers, bool press, bool repeat);
+    void sendMouseData(const QPoint &pos, int buttons, int wheel);
+
+    virtual int width() const = 0;
+    virtual int height() const = 0;
     virtual int depth() const = 0;
+    virtual int linestep() const = 0;
+    virtual int  numcols() const = 0;
+    virtual QRgb *clut() const = 0;
+    virtual unsigned char *data() const = 0;
 
-    virtual QImage image(const QRect & = QRect()) const = 0;
-
-    /* for paletted depths */
-    virtual QVector<QColor> colorTable() const = 0;
-    virtual void setColorTable(QVector<QColor> &table) const = 0;
-
-    virtual QVFbKeyProtocol *keyHandler() const = 0;
-    virtual QVFbPointerProtocol *mouseHandler() const = 0;
+    virtual void setRate(int) {}
+public slots:
+    virtual void flushChanges();
 
 signals:
     void displayDataChanged(const QRect &);
-    void displayModeChanged(const QSize &size, int depth);
+
+protected:
+    virtual QVFbKeyProtocol *keyHandler() const = 0;
+    virtual QVFbMouseProtocol *mouseHandler() const = 0;
 
 private:
     int mDisplayId;
@@ -73,15 +80,15 @@ private:
     int mDisplayId;
 };
 
-class QVFbPointerProtocol
+class QVFbMouseProtocol
 {
 public:
-    QVFbPointerProtocol(int display_id) : mDisplayId(display_id) {}
-    virtual ~QVFbPointerProtocol() {}
+    QVFbMouseProtocol(int display_id) : mDisplayId(display_id) {}
+    virtual ~QVFbMouseProtocol() {}
 
     int id() const { return mDisplayId; }
 
-    virtual void sendPointerData(QPoint &pos, int buttons, int wheel) = 0;
+    virtual void sendMouseData(const QPoint &pos, int buttons, int wheel) = 0;
 
 private:
     int mDisplayId;
@@ -99,25 +106,42 @@ public:
     void sendKeyboardData(int unicode, int keycode,
             int modifiers, bool press, bool repeat);
 
+    QString pipeName() const { return fileName; }
 private:
     int fd;
     QString fileName;
 };
 
-class QVFbPointerPipeProtocol : public QVFbPointerProtocol
+class QVFbMousePipe: public QVFbMouseProtocol
 {
 public:
-    QVFbPointerPipeProtocol(int display_id, bool sendWheelEvents);
-    ~QVFbPointerPipeProtocol();
+    QVFbMousePipe(int display_id);
+    ~QVFbMousePipe();
 
-    void sendPointerData(QPoint &pos, int buttons, int wheel);
+    void sendMouseData(const QPoint &pos, int buttons, int wheel);
 
-    bool wheelEventsSupported() const { return mSupportWheelEvents; }
-
-private:
+    QString pipeName() const { return fileName; }
+protected:
     int fd;
     QString fileName;
-    bool mSupportWheelEvents;
 };
 
+class QTimer;
+class QVFbMouseLinuxTP : public QObject, public QVFbMousePipe
+{
+    Q_OBJECT
+public:
+    QVFbMouseLinuxTP(int display_id);
+    ~QVFbMouseLinuxTP();
+
+    void sendMouseData(const QPoint &pos, int buttons, int wheel);
+
+protected slots:
+    void repeatLastPress();
+
+protected:
+    void writeToPipe(const QPoint &pos, ushort pressure);
+    QPoint lastPos;
+    QTimer *repeater;
+};
 #endif

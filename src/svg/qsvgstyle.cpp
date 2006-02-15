@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtSVG module of the Qt Toolkit.
 **
@@ -681,4 +681,14 @@ void QSvgAnimateColor::revert(QPainter *p)
 QSvgStyleProperty::Type QSvgAnimateColor::type() const
 {
     return ANIMATE_COLOR;
+}
+
+QString QSvgFontStyle::textAnchor() const
+{
+    return m_textAnchor;
+}
+
+void QSvgFontStyle::setTextAnchor(const QString &anchor)
+{
+    m_textAnchor = anchor;
 }

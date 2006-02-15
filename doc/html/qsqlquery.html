@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/sql/kernel/qsqlquery.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/src/sql/kernel/qsqlquery.cpp -->
 <head>
     <title>Qt 4.1: QSqlQuery Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -166,13 +166,13 @@ body { background: #ffffff; color: black; }</style>
 <p>Set the placeholder <i>placeholder</i> to be bound to value <i>val</i> in the prepared statement. Note that the placeholder mark (e.g <tt>:</tt>) must be included when specifying the placeholder name. If <i>paramType</i> is <a href="qsql.html#ParamTypeFlag-enum">QSql::Out</a> or <a href="qsql.html#ParamTypeFlag-enum">QSql::InOut</a>, the placeholder will be overwritten with data from the database after the <a href="qsqlquery.html#exec">exec</a>() call.</p>
 <p>See also <a href="qsqlquery.html#addBindValue">addBindValue</a>(), <a href="qsqlquery.html#prepare">prepare</a>(), <a href="qsqlquery.html#exec">exec</a>(), <a href="qsqlquery.html#boundValue">boundValue</a>(), and <a href="qsqlquery.html#boundValues">boundValues</a>().</p>
 <h3 class="fn"><a name="bindValue-2"></a>void QSqlQuery::bindValue ( int <i>pos</i>, const <a href="qvariant.html">QVariant</a> &amp; <i>val</i>, <a href="qsql.html#ParamTypeFlag-enum">QSql::ParamType</a> <i>paramType</i> = QSql::In )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Set the placeholder in position <i>pos</i> to be bound to value <i>val</i> in the prepared statement. Field numbering starts at 0. If <i>paramType</i> is <a href="qsql.html#ParamTypeFlag-enum">QSql::Out</a> or <a href="qsql.html#ParamTypeFlag-enum">QSql::InOut</a>, the placeholder will be overwritten with data from the database after the <a href="qsqlquery.html#exec">exec</a>() call.</p>
 <h3 class="fn"><a name="boundValue"></a><a href="qvariant.html">QVariant</a> QSqlQuery::boundValue ( const <a href="qstring.html">QString</a> &amp; <i>placeholder</i> ) const</h3>
 <p>Returns the value for the <i>placeholder</i>.</p>
 <p>See also <a href="qsqlquery.html#boundValues">boundValues</a>(), <a href="qsqlquery.html#bindValue">bindValue</a>(), and <a href="qsqlquery.html#addBindValue">addBindValue</a>().</p>
 <h3 class="fn"><a name="boundValue-2"></a><a href="qvariant.html">QVariant</a> QSqlQuery::boundValue ( int <i>pos</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns the value for the placeholder at position <i>pos</i>.</p>
 <h3 class="fn"><a name="boundValues"></a><a href="qmap.html">QMap</a>&lt;<a href="qstring.html">QString</a>, <a href="qvariant.html">QVariant</a>&gt; QSqlQuery::boundValues () const</h3>
 <p>Returns a map of the bound values.</p>
@@ -206,7 +206,7 @@ body { background: #ffffff; color: black; }</style>
         query.exec();</pre>
 <p>See also <a href="qsqlquery.html#isActive">isActive</a>(), <a href="qsqlquery.html#isValid">isValid</a>(), <a href="qsqlquery.html#next">next</a>(), <a href="qsqlquery.html#previous">previous</a>(), <a href="qsqlquery.html#first">first</a>(), <a href="qsqlquery.html#last">last</a>(), and <a href="qsqlquery.html#seek">seek</a>().</p>
 <h3 class="fn"><a name="exec-2"></a>bool QSqlQuery::exec ()</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Executes a previously prepared SQL query. Returns true if the query executed successfully; otherwise returns false.</p>
 <p>See also <a href="qsqlquery.html#prepare">prepare</a>(), <a href="qsqlquery.html#bindValue">bindValue</a>(), <a href="qsqlquery.html#addBindValue">addBindValue</a>(), <a href="qsqlquery.html#boundValue">boundValue</a>(), and <a href="qsqlquery.html#boundValues">boundValues</a>().</p>
 <h3 class="fn"><a name="executedQuery"></a><a href="qstring.html">QString</a> QSqlQuery::executedQuery () const</h3>
@@ -315,8 +315,8 @@ body { background: #ffffff; color: black; }</style>
 <p>Assigns <i>other</i> to this object.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

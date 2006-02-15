@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt Designer of the Qt Toolkit.
 **
@@ -229,7 +229,7 @@ protected:
     virtual QMenu *createPopupMenu(QWidget *w);
     virtual void resizeEvent(QResizeEvent *e);
 
-    void insertWidget(QWidget *w, const QRect &rect, QWidget *target);
+    void insertWidget(QWidget *w, const QRect &rect, QWidget *target, bool already_in_form = false);
 
 private slots:
     void selectionChangedTimerDone();

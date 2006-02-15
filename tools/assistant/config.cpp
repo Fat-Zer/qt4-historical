@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt Assistant of the Qt Toolkit.
 **
@@ -121,6 +121,8 @@ void Config::load()
                       settings.value( key + QLatin1String("GeometryY"), QApplication::desktop()->availableGeometry().y() ).toInt(),
                       settings.value( key + QLatin1String("GeometryWidth"), 800 ).toInt(),
                       settings.value( key + QLatin1String("GeometryHeight"), 600 ).toInt() );
+        if (!geom.intersects(QApplication::desktop()->geometry()))
+            geom.moveTopLeft(QApplication::desktop()->availableGeometry().topLeft());
         maximized = settings.value( key + QLatin1String("GeometryMaximized"), false ).toBool();
     }
     mainWinState = settings.value(key + QLatin1String("MainWindowState")).toByteArray();

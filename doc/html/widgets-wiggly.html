@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/doc/src/examples/wiggly.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/doc/src/examples/wiggly.qdoc -->
 <head>
     <title>Qt 4.1: Wiggly Example</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -95,6 +95,7 @@ body { background: #ffffff; color: black; }</style>
         : QWidget(parent)
     {
         setBackgroundRole(QPalette::Midlight);
+        setAutoFillBackground(true);
 
         QFont newFont = font();
         newFont.setPointSize(newFont.pointSize() + 20);
@@ -142,8 +143,8 @@ body { background: #ffffff; color: black; }</style>
 <p>The <a href="qwidget.html#update">QWidget::update</a>() slot does not cause an immediate repaint; instead the slot schedules a paint event for processing when Qt returns to the main event loop. The paint events are then handled by <tt>WigglyWidget</tt>'s <tt>paintEvent()</tt> function.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

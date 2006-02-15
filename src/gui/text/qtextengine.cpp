@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -1106,10 +1106,59 @@ QFont QTextEngine::font(const QScriptItem &si) const
     return font;
 }
 
-QFontEngine *QTextEngine::fontEngine(const QScriptItem &si) const
+QFontEngine *QTextEngine::fontEngine(const QScriptItem &si, QFixed *ascent, QFixed *descent) const
 {
-    QFont font = this->font(si);
-    return font.d->engineForScript(si.analysis.script);
+    QFontEngine *engine;
+    QFontEngine *scaledEngine = 0;
+    int script = si.analysis.script;
+#if defined(Q_WS_WIN)
+    if (hasUsp10) {
+        const SCRIPT_PROPERTIES *script_prop = script_properties[si.analysis.script];
+        script = scriptForWinLanguage(script_prop->langid);
+    }
+#endif
+    
+    if (!hasFormats()) {
+        engine = fnt.d->engineForScript(script);
+#if defined(Q_WS_WIN)
+        if (engine->type() == QFontEngine::Box)
+            engine = fnt.d->engineForScript(QUnicodeTables::Common);
+#endif
+    } else {
+        QTextCharFormat f = format(&si);
+        QFont font = f.font();
+
+        if (block.docHandle()) {
+            // Make sure we get the right dpi on printers
+            QPaintDevice *pdev = block.docHandle()->layout()->paintDevice();
+            if (pdev)
+                font = QFont(font, pdev);
+        } else {
+            font = font.resolve(fnt);
+        }
+        engine = font.d->engineForScript(script);
+#if defined(Q_WS_WIN)
+        if (engine->type() == QFontEngine::Box)
+            engine = font.d->engineForScript(QUnicodeTables::Common);
+#endif
+        if (f.verticalAlignment() != QTextCharFormat::AlignNormal) {
+            font.setPointSize((font.pointSize() * 2) / 3);
+            scaledEngine = font.d->engineForScript(script);
+#if defined(Q_WS_WIN)
+            if (scaledEngine->type() == QFontEngine::Box)
+                scaledEngine = font.d->engineForScript(QUnicodeTables::Common);
+#endif
+        }
+    }
+
+    if (ascent) {
+        *ascent = engine->ascent();
+        *descent = engine->descent();
+    }
+    
+    if (scaledEngine)
+        return scaledEngine;
+    return engine;
 }
 
 struct QJustificationPoint {
@@ -1451,7 +1500,7 @@ int QTextEngine::formatIndex(const QScriptItem *si) const
     int pos = si->position;
     if (specialData && si->position >= specialData->preeditPosition) {
         if (si->position < specialData->preeditPosition + specialData->preeditText.length())
-            pos = specialData->preeditPosition;
+            pos = qMax(specialData->preeditPosition - 1, 0);
         else
             pos -= specialData->preeditText.length();
     }

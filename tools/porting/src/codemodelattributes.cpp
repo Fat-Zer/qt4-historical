@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2004-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 2004-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the qt3to4 porting application of the Qt Toolkit.
 **
@@ -89,6 +89,25 @@ void CodeModelAttributes::parseMember(CodeModel::Member *member)
         createNameTypeAttribute(member);
     }
     CodeModelWalker::parseMember(member);
+}
+    
+void CodeModelAttributes::parseFunctionMember(CodeModel::FunctionMember *member)
+{
+    CodeModel::ArgumentCollection arguments = member->arguments();
+    CodeModel::ArgumentCollection::ConstIterator it = arguments.constBegin();
+    TokenRef ref = member->nameToken();
+    TokenAttributes *attributes = ref.tokenContainer().tokenAttributes();
+    
+    if (areAttributesEnabled(attributes)) {
+        while (it != arguments.constEnd()) {
+            const int containerIndex = (*it)->nameToken().containerIndex();
+            const QByteArray name = (*it)->name();
+            attributes->addAttribute(containerIndex, "declaration", name);
+            attributes->addAttribute(containerIndex, "nameType", "variable");
+            ++it;
+        }
+    }
+    CodeModelWalker::parseFunctionMember(member);
 }
 
 /*

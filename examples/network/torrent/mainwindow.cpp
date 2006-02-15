@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2004-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 2004-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the example classes of the Qt Toolkit.
 **
@@ -21,12 +21,12 @@
 **
 ****************************************************************************/
 
+#include <QtGui>
+
 #include "addtorrentdialog.h"
 #include "mainwindow.h"
 #include "ratecontroller.h"
 #include "torrentclient.h"
-
-#include <QtGui>
 
 // TorrentView extends QTreeWidget to allow drag and drop.
 class TorrentView : public QTreeWidget
@@ -169,6 +169,10 @@ MainWindow::MainWindow(QWidget *parent)
             this, SLOT(pauseTorrent()));
     connect(removeTorrentAction, SIGNAL(triggered()),
             this, SLOT(removeTorrent()));
+    connect(upActionTool, SIGNAL(triggered(bool)),
+            this, SLOT(moveTorrentUp()));
+    connect(downActionTool, SIGNAL(triggered(bool)),
+            this, SLOT(moveTorrentDown()));
 
     // Load settings and start
     setWindowTitle(tr("Torrent Client"));
@@ -278,8 +282,8 @@ void MainWindow::removeTorrent()
     client->stop();
 
     // Remove the row from the view.
-    jobs.removeAt(row);
     delete torrentView->takeTopLevelItem(row);
+    jobs.removeAt(row);
     setActionsEnabled();
 
     saveChanges = true;
@@ -610,7 +614,7 @@ void MainWindow::about()
 
     QDialog about(this);
     about.setModal(true);
-    about.setWindowTitle("About Torrent Client");
+    about.setWindowTitle(tr("About Torrent Client"));
     about.setLayout(mainLayout);
 
     connect(quitButton, SIGNAL(clicked()), &about, SLOT(close()));

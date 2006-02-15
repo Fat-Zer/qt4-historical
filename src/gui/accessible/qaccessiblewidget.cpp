@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -34,13 +34,13 @@
 
 #include <math.h>
 
-static QWidgetList childWidgets(const QWidget *widget)
+static QList<QWidget*> childWidgets(const QWidget *widget)
 {
-    QObjectList list = widget->children();
-    QWidgetList widgets;
+    QList<QObject*> list = widget->children();
+    QList<QWidget*> widgets;
     for (int i = 0; i < list.size(); ++i) {
         QWidget *w = qobject_cast<QWidget *>(list.at(i));
-        if (w)
+        if (w && !w->isWindow())
             widgets.append(w);
     }
     return widgets;
@@ -852,10 +852,10 @@ QAccessible::State QAccessibleWidget::state(int child) const
     if (child)
         return Normal;
 
-    int state = Normal;
+    QAccessible::State state = Normal;
 
     QWidget *w = widget();
-    if (w->testAttribute(Qt::WA_WState_Hidden))
+    if (w->testAttribute(Qt::WA_WState_Visible) == false)
         state |= Invisible;
     if (w->focusPolicy() != Qt::NoFocus && w->isActiveWindow())
         state |= Focusable;
@@ -870,7 +870,7 @@ QAccessible::State QAccessibleWidget::state(int child) const
             state |= Sizeable;
     }
 
-    return (State)state;
+    return state;
 }
 
 #endif //QT_NO_ACCESSIBILITY

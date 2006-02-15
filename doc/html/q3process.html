@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/qt3support/other/q3process.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/src/qt3support/other/q3process.cpp -->
 <head>
     <title>Qt 4.1: Q3Process Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -116,13 +116,13 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="Communication-enum"></a>enum Q3Process::Communication</h3>
 <p>This enum type defines the communication channels connected to the process.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Q3Process::Stdin</tt></td><td align="center" valign="top"><tt>0x01</tt></td><td valign="top">Data can be written to the process's standard input.</td></tr>
 <tr><td valign="top"><tt>Q3Process::Stdout</tt></td><td align="center" valign="top"><tt>0x02</tt></td><td valign="top">Data can be read from the process's standard output.</td></tr>
 <tr><td valign="top"><tt>Q3Process::Stderr</tt></td><td align="center" valign="top"><tt>0x04</tt></td><td valign="top">Data can be read from the process's standard error.</td></tr>
 <tr><td valign="top"><tt>Q3Process::DupStderr</tt></td><td align="center" valign="top"><tt>0x08</tt></td><td valign="top">Both the process's standard error output <i>and</i> its standard output are written to its standard output. (Like Unix's dup2().) This means that nothing is sent to the standard error output. This is especially useful if your application requires that the output on standard output and on standard error must be read in the same order that they are produced. This is a flag, so to activate it you must pass <tt>Stdout|Stderr|DupStderr</tt>, or <tt>Stdin|Stdout|Stderr|DupStderr</tt> if you want to provide input, to the <a href="q3process.html#setCommunication">setCommunication</a>() call.</td></tr>
-</table>
+</table></p>
 <p>See also <a href="q3process.html#setCommunication">setCommunication</a>() and <a href="q3process.html#communication">communication</a>().</p>
 <hr />
 <h2>Member Function Documentation</h2>
@@ -197,7 +197,7 @@ body { background: #ffffff; color: black; }</style>
 <p>The object emits the signal <a href="q3process.html#launchFinished">launchFinished</a>() when this function call is finished. If the start was successful, this signal is emitted after all the data has been written to standard input. If the start failed, then this signal is emitted immediately.</p>
 <p>See also <a href="q3process.html#start">start</a>() and <a href="q3process.html#launchFinished">launchFinished</a>().</p>
 <h3 class="fn"><a name="launch-2"></a>bool Q3Process::launch ( const <a href="qstring.html">QString</a> &amp; <i>buf</i>, <a href="qstringlist.html">QStringList</a> * <i>env</i> = 0 )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>The data <i>buf</i> is written to standard input with <a href="q3process.html#writeToStdin">writeToStdin</a>() using the <a href="qstring-qt3.html#local8Bit">QString::local8Bit</a>() representation of the strings.</p>
 <h3 class="fn"><a name="launchFinished"></a>void Q3Process::launchFinished ()&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when the process was started with <a href="q3process.html#launch">launch</a>(). If the start was successful, this signal is emitted after all the data has been written to standard input. If the start failed, then this signal is emitted immediately.</p>
@@ -271,15 +271,15 @@ body { background: #ffffff; color: black; }</style>
 <p>This function returns immediately; the <a href="q3process.html">Q3Process</a> class might write the data at a later point (you must enter the event loop for this to occur). When all the data is written to the process, the signal <a href="q3process.html#wroteToStdin">wroteToStdin</a>() is emitted. This does not mean that the process actually read the data, since this class only detects when it was able to write the data to the operating system.</p>
 <p>See also <a href="q3process.html#wroteToStdin">wroteToStdin</a>(), <a href="q3process.html#closeStdin">closeStdin</a>(), <a href="q3process.html#readStdout">readStdout</a>(), and <a href="q3process.html#readStderr">readStderr</a>().</p>
 <h3 class="fn"><a name="writeToStdin-2"></a>void Q3Process::writeToStdin ( const <a href="qstring.html">QString</a> &amp; <i>buf</i> )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>The string <i>buf</i> is handled as text using the <a href="qstring-qt3.html#local8Bit">QString::local8Bit</a>() representation.</p>
 <h3 class="fn"><a name="wroteToStdin"></a>void Q3Process::wroteToStdin ()&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted if the data sent to standard input (via <a href="q3process.html#writeToStdin">writeToStdin</a>()) was actually written to the process. This does not imply that the process really read the data, since this class only detects when it was able to write the data to the operating system. But it is now safe to close standard input without losing pending data.</p>
 <p>See also <a href="q3process.html#writeToStdin">writeToStdin</a>() and <a href="q3process.html#closeStdin">closeStdin</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

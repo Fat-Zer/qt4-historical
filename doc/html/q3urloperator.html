@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/qt3support/network/q3urloperator.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/src/qt3support/network/q3urloperator.cpp -->
 <head>
     <title>Qt 4.1: Q3UrlOperator Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -97,7 +97,7 @@ body { background: #ffffff; color: black; }</style>
 <h2>Detailed Description</h2>
 <p>The Q3UrlOperator class provides common operations on URLs.</p>
 <p>This class operates on hierarchical structures (such as filesystems) using URLs. Its API facilitates all the common operations:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Operation</th><th>Function</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>List files</td><td><a href="q3urloperator.html#listChildren">listChildren</a>()</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>Make a directory</td><td><a href="q3urloperator.html#mkdir">mkdir</a>()</td></tr>
@@ -106,7 +106,7 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#f0f0f0"><td>Get a file</td><td><a href="q3urloperator.html#get">get</a>()</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>Put a file</td><td><a href="q3urloperator.html#put">put</a>()</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>Copy a file</td><td><a href="q3urloperator.html#copy">copy</a>()</td></tr>
-</table>
+</table></p>
 <p>You can obtain additional information about the URL with <a href="q3urloperator.html#isDir">isDir</a>() and <a href="q3urloperator.html#info">info</a>(). If a directory is to be traversed using <a href="q3urloperator.html#listChildren">listChildren</a>(), a name filter can be set with <a href="q3urloperator.html#setNameFilter">setNameFilter</a>().</p>
 <p>A Q3UrlOperator can be used like this, for example to download a file (and assuming that the FTP protocol is registered):</p>
 <pre>&nbsp;   Q3UrlOperator *op = new Q3UrlOperator();
@@ -145,7 +145,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Because a move or copy operation consists of multiple operations (<a href="q3urloperator.html#get">get</a>(), <a href="q3urloperator.html#put">put</a>() and maybe <a href="q3urloperator.html#remove">remove</a>()), this function doesn't return a single <a href="q3networkoperation.html">Q3NetworkOperation</a>, but rather a list of them. They are in the order: <a href="q3urloperator.html#get">get</a>(), <a href="q3urloperator.html#put">put</a>() and (if applicable) <a href="q3urloperator.html#remove">remove</a>().</p>
 <p>See also <a href="q3urloperator.html#get">get</a>() and <a href="q3urloperator.html#put">put</a>().</p>
 <h3 class="fn"><a name="copy-2"></a>void Q3UrlOperator::copy ( const <a href="qstringlist.html">QStringList</a> &amp; <i>files</i>, const <a href="qstring.html">QString</a> &amp; <i>dest</i>, bool <i>move</i> = false )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Copies the <i>files</i> to the directory <i>dest</i>. If <i>move</i> is true the files are moved, not copied. <i>dest</i> must point to a directory.</p>
 <p>This function calls <a href="q3urloperator.html#copy">copy</a>() for each entry in <i>files</i> in turn. You don't get a result from this function; each time a new copy begins, <a href="q3urloperator.html#startedNextCopy">startedNextCopy</a>() is emitted, with a list of Q3NetworkOperations that describe the new copy operation.</p>
 <h3 class="fn"><a name="createdDirectory"></a>void Q3UrlOperator::createdDirectory ( const <a href="qurlinfo.html">QUrlInfo</a> &amp; <i>i</i>, <a href="q3networkoperation.html">Q3NetworkOperation</a> * <i>op</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
@@ -240,7 +240,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="operator-eq"></a>Q3UrlOperator &amp; Q3UrlOperator::operator= ( const Q3UrlOperator &amp; <i>url</i> )</h3>
 <p>Assigns <i>url</i> to this object.</p>
 <h3 class="fn"><a name="operator-eq-2"></a>Q3UrlOperator &amp; Q3UrlOperator::operator= ( const <a href="qstring.html">QString</a> &amp; <i>url</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Assigns <i>url</i> to this object.</p>
 <hr />
 <h2>Related Non-Members</h2>
@@ -248,8 +248,8 @@ body { background: #ffffff; color: black; }</style>
 <p>This function registers the network protocols for FTP and HTTP. You must call this function before you use <a href="porting4.html#qurloperator">QUrlOperator</a> for these protocols.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

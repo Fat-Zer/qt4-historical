@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2005-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 2005-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the demonstration applications of the Qt Toolkit.
 **
@@ -210,11 +210,11 @@ void XFormView::drawPixmapType(QPainter *painter)
     painter->translate(center);
     painter->rotate(m_rotation);
     painter->scale(m_scale, m_scale);
-    painter->shear(m_shear, m_shear);
+    painter->shear(0, m_shear);
     painter->translate(-center);
 
     painter->drawPixmap(QPointF(0, 0), pixmap);
-    painter->setPen(QPen(QColor(255, 0, 0, alpha), 1, Qt::DotLine, Qt::FlatCap, Qt::BevelJoin));
+    painter->setPen(QPen(QColor(255, 0, 0, alpha), 0.25, Qt::SolidLine, Qt::FlatCap, Qt::BevelJoin));
     painter->setBrush(Qt::NoBrush);
     painter->drawRect(QRectF(0, 0, pixmap.width(), pixmap.height()).adjusted(-2, -2, 2, 2));
 }
@@ -235,11 +235,11 @@ void XFormView::drawTextType(QPainter *painter)
     painter->translate(center);
     painter->rotate(m_rotation);
     painter->scale(m_scale, m_scale);
-    painter->shear(m_shear, m_shear);
+    painter->shear(0, m_shear);
     painter->translate(-center);
 
     painter->drawText(0, 0, textEditor->text());
-    painter->setPen(QPen(QColor(255, 0, 0, alpha), 1, Qt::DotLine, Qt::FlatCap, Qt::BevelJoin));
+    painter->setPen(QPen(QColor(255, 0, 0, alpha), 0.25, Qt::SolidLine, Qt::FlatCap, Qt::BevelJoin));
     painter->setBrush(Qt::NoBrush);
     painter->drawRect(br.adjusted(-1, -1, 1, 1));
 }
@@ -257,7 +257,7 @@ void XFormView::drawVectorType(QPainter *painter)
     painter->translate(center.x(), center.y());
     painter->rotate(m_rotation);
     painter->scale(m_scale, m_scale);
-    painter->shear(m_shear, m_shear);
+    painter->shear(0, m_shear);
     painter->translate(-center.x(), -center.y());
 
     painter->setPen(Qt::NoPen);
@@ -696,7 +696,7 @@ void XFormView::drawVectorType(QPainter *painter)
     path.closeSubpath();
     painter->drawPath(path);
 
-    painter->setPen(QPen(QColor(255, 0, 0, alpha), 1, Qt::DotLine, Qt::FlatCap, Qt::BevelJoin));
+    painter->setPen(QPen(QColor(255, 0, 0, alpha), 0.25, Qt::SolidLine, Qt::FlatCap, Qt::BevelJoin));
     painter->setBrush(Qt::NoBrush);
     painter->drawRect(br.adjusted(-1, -1, 1, 1));
 }

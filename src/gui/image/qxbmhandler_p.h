@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -42,6 +42,7 @@
 class Q_GUI_EXPORT QXbmHandler : public QImageIOHandler
 {
 public:
+    QXbmHandler();
     bool canRead() const;
     bool read(QImage *image);
     bool write(const QImage &image);
@@ -55,6 +56,15 @@ public:
     bool supportsOption(ImageOption option) const;
 
 private:
+    bool readHeader();
+    enum State {
+        Ready,
+        ReadHeader,
+        Error
+    };
+    State state;
+    int width;
+    int height;
     QString fileName;
 };
 

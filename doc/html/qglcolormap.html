@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/opengl/qglcolormap.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/src/opengl/qglcolormap.cpp -->
 <head>
     <title>Qt 4.1: QGLColormap Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -28,7 +28,6 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="qglcolormap.html#QGLColormap">QGLColormap</a></b> ()</li>
 <li><div class="fn"/><b><a href="qglcolormap.html#QGLColormap-2">QGLColormap</a></b> ( const QGLColormap &amp; <i>map</i> )</li>
 <li><div class="fn"/><b><a href="qglcolormap.html#dtor.QGLColormap">~QGLColormap</a></b> ()</li>
-<li><div class="fn"/>void <b><a href="qglcolormap.html#detach">detach</a></b> ()</li>
 <li><div class="fn"/>QColor <b><a href="qglcolormap.html#entryColor">entryColor</a></b> ( int <i>idx</i> ) const</li>
 <li><div class="fn"/>QRgb <b><a href="qglcolormap.html#entryRgb">entryRgb</a></b> ( int <i>idx</i> ) const</li>
 <li><div class="fn"/>int <b><a href="qglcolormap.html#find">find</a></b> ( QRgb <i>color</i> ) const</li>
@@ -77,24 +76,22 @@ body { background: #ffffff; color: black; }</style>
 <p>Construct a shallow copy of <i>map</i>.</p>
 <h3 class="fn"><a name="dtor.QGLColormap"></a>QGLColormap::~QGLColormap ()</h3>
 <p>Dereferences the <a href="qglcolormap.html">QGLColormap</a> and deletes it if this was the last reference to it.</p>
-<h3 class="fn"><a name="detach"></a>void QGLColormap::detach ()</h3>
-<p>Detaches this <a href="qglcolormap.html">QGLColormap</a> from the shared block.</p>
 <h3 class="fn"><a name="entryColor"></a><a href="qcolor.html">QColor</a> QGLColormap::entryColor ( int <i>idx</i> ) const</h3>
-<p>Returns the QRgb value in the colorcell with index <i>idx</i>.</p>
-<h3 class="fn"><a name="entryRgb"></a>QRgb QGLColormap::entryRgb ( int <i>idx</i> ) const</h3>
-<p>Returns the QRgb value in the colorcell with index <i>idx</i>.</p>
-<h3 class="fn"><a name="find"></a>int QGLColormap::find ( QRgb <i>color</i> ) const</h3>
+<p>Returns the <a href="qcolor.html#QRgb-typedef">QRgb</a> value in the colorcell with index <i>idx</i>.</p>
+<h3 class="fn"><a name="entryRgb"></a><a href="qcolor.html#QRgb-typedef">QRgb</a> QGLColormap::entryRgb ( int <i>idx</i> ) const</h3>
+<p>Returns the <a href="qcolor.html#QRgb-typedef">QRgb</a> value in the colorcell with index <i>idx</i>.</p>
+<h3 class="fn"><a name="find"></a>int QGLColormap::find ( <a href="qcolor.html#QRgb-typedef">QRgb</a> <i>color</i> ) const</h3>
 <p>Returns the index of the color <i>color</i>. If <i>color</i> is not in the map, -1 is returned.</p>
-<h3 class="fn"><a name="findNearest"></a>int QGLColormap::findNearest ( QRgb <i>color</i> ) const</h3>
+<h3 class="fn"><a name="findNearest"></a>int QGLColormap::findNearest ( <a href="qcolor.html#QRgb-typedef">QRgb</a> <i>color</i> ) const</h3>
 <p>Returns the index of the color that is the closest match to color <i>color</i>.</p>
 <h3 class="fn"><a name="isEmpty"></a>bool QGLColormap::isEmpty () const</h3>
 <p>Returns true if the colormap is empty; otherwise returns false. A colormap with no color values set is considered to be empty.</p>
-<h3 class="fn"><a name="setEntries"></a>void QGLColormap::setEntries ( int <i>count</i>, const QRgb * <i>colors</i>, int <i>base</i> = 0 )</h3>
+<h3 class="fn"><a name="setEntries"></a>void QGLColormap::setEntries ( int <i>count</i>, const <a href="qcolor.html#QRgb-typedef">QRgb</a> * <i>colors</i>, int <i>base</i> = 0 )</h3>
 <p>Set an array of cells in this colormap. <i>count</i> is the number of colors that should be set, <i>colors</i> is the array of colors, and <i>base</i> is the starting index.</p>
-<h3 class="fn"><a name="setEntry"></a>void QGLColormap::setEntry ( int <i>idx</i>, QRgb <i>color</i> )</h3>
+<h3 class="fn"><a name="setEntry"></a>void QGLColormap::setEntry ( int <i>idx</i>, <a href="qcolor.html#QRgb-typedef">QRgb</a> <i>color</i> )</h3>
 <p>Set cell at index <i>idx</i> in the colormap to color <i>color</i>.</p>
 <h3 class="fn"><a name="setEntry-2"></a>void QGLColormap::setEntry ( int <i>idx</i>, const <a href="qcolor.html">QColor</a> &amp; <i>color</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Set the cell with index <i>idx</i> in the colormap to color <i>color</i>.</p>
 <h3 class="fn"><a name="size"></a>int QGLColormap::size () const</h3>
 <p>Returns the number of colorcells in the colormap.</p>
@@ -102,8 +99,8 @@ body { background: #ffffff; color: black; }</style>
 <p>Assign a shallow copy of <i>map</i> to this <a href="qglcolormap.html">QGLColormap</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

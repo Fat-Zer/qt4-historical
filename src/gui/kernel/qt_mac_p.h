@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -38,11 +38,7 @@
 #include "QtCore/qglobal.h"
 #include "private/qcore_mac_p.h"
 
-#if !defined(QMAC_NO_COREGRAPHICS)
-#  if (MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_3)
-#     define QMAC_NO_COREGRAPHICS
-#  endif
-#endif
+//#define QMAC_NO_COREGRAPHICS
 
 #include "QtGui/qpainter.h"
 #include "QtGui/qwidget.h"
@@ -73,7 +69,7 @@ enum {
     kEventQtRequestWindowChange = 20
 };
 
-class QMacBlockingFunction //implemented in qeventloop_mac.cpp
+class QMacBlockingFunction //implemented in qeventdispatcher_mac.cpp
 {
 private:
     class Object;

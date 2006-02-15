@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -58,6 +58,7 @@ public:
         LocalDiskFlag  = 0x0200000,
         ExistsFlag     = 0x0400000,
         RootFlag       = 0x0800000,
+        // Qt 4.2: Refresh   = 0x1000000,
 
         //masks
         PermsMask  = 0x0000FFFF,

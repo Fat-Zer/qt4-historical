@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -25,6 +25,9 @@
 #define QSORTFILTERPROXYMODEL_H
 
 #include <QtGui/qabstractproxymodel.h>
+
+#ifndef QT_NO_SORTFILTERPROXYMODEL
+
 #include <QtCore/qregexp.h>
 
 QT_MODULE(Gui)
@@ -54,7 +57,7 @@ public:
 
     QItemSelection mapSelectionToSource(const QItemSelection &proxySelection) const;
     QItemSelection mapSelectionFromSource(const QItemSelection &sourceSelection) const;
-    
+
     QRegExp filterRegExp() const;
     void setFilterRegExp(const QRegExp &regExp);
 
@@ -81,7 +84,7 @@ public:
 #else
     using QObject::parent;
 #endif
-    
+
     QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
     QModelIndex parent(const QModelIndex &child) const;
 
@@ -94,7 +97,7 @@ public:
 
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;
     bool setHeaderData(int section, Qt::Orientation orientation, const QVariant &value, int role);
-    
+
     QMimeData *mimeData(const QModelIndexList &indexes) const;
     bool dropMimeData(const QMimeData *data, Qt::DropAction action,
                       int row, int column, const QModelIndex &parent);
@@ -121,8 +124,10 @@ private:
 
     Q_PRIVATE_SLOT(d_func(), void sourceDataChanged(const QModelIndex &source_top_left, const QModelIndex &source_bottom_right))
     Q_PRIVATE_SLOT(d_func(), void sourceHeaderDataChanged(Qt::Orientation orientation, int start, int end))
+    Q_PRIVATE_SLOT(d_func(), void sourceLayoutAboutToBeChanged(const QModelIndex &source_parent))
     Q_PRIVATE_SLOT(d_func(), void sourceLayoutChanged())
-    Q_PRIVATE_SLOT(d_func(), void clear())
+    Q_PRIVATE_SLOT(d_func(), void sourceReset())
 };
 
+#endif // QT_NO_SORTFILTERPROXYMODEL
 #endif // QSORTFILTERPROXYMODEL_H

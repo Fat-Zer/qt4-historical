@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2004-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 2004-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the example classes of the Qt Toolkit.
 **
@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    tableView.setWindowTitle("Spin Box Delegate");
+    tableView.setWindowTitle(QObject::tr("Spin Box Delegate"));
     tableView.show();
     return app.exec();
 }

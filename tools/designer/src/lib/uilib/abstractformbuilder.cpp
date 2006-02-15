@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt Designer of the Qt Toolkit.
 **
@@ -491,31 +491,49 @@ bool QAbstractFormBuilder::addItem(DomWidget *ui_widget, QWidget *widget, QWidge
         label = toString(plabel->elementString());
     }
 
-    // apply the toolbar's attributes
-    if (QToolBar *toolBar = qobject_cast<QToolBar*>(widget)) {
-        if (QMainWindow *mw = qobject_cast<QMainWindow*>(parentWidget)) {
+    if (QMainWindow *mw = qobject_cast<QMainWindow*>(parentWidget)) {
+
+        // the menubar
+        if (QMenuBar *menuBar = qobject_cast<QMenuBar*>(widget)) {
+            mw->setMenuBar(menuBar);
+            return true;
+        }
+
+        // apply the toolbar's attributes
+        else if (QToolBar *toolBar = qobject_cast<QToolBar*>(widget)) {
             if (DomProperty *attr = attributes.value(QLatin1String("toolBarArea"))) {
                 Qt::ToolBarArea area = static_cast<Qt::ToolBarArea>(attr->elementNumber());
                 mw->addToolBar(area, toolBar);
             } else {
                 mw->addToolBar(toolBar);
             }
+            return true;
         }
-    }
 
-    // apply the dockwidget's attributes
-    else if (QDockWidget *dockWidget = qobject_cast<QDockWidget*>(widget)) {
-        if (QMainWindow *mw = qobject_cast<QMainWindow*>(parentWidget)) {
+        // statusBar
+        else if (QStatusBar *statusBar = qobject_cast<QStatusBar*>(widget)) {
+            mw->setStatusBar(statusBar);
+            return true;
+        }
+
+        // apply the dockwidget's attributes
+        else if (QDockWidget *dockWidget = qobject_cast<QDockWidget*>(widget)) {
             if (DomProperty *attr = attributes.value(QLatin1String("dockWidgetArea"))) {
                 Qt::DockWidgetArea area = static_cast<Qt::DockWidgetArea>(attr->elementNumber());
                 mw->addDockWidget(area, dockWidget);
             } else {
                 mw->addDockWidget(Qt::LeftDockWidgetArea, dockWidget);
             }
+            return true;
+        }
+
+        else if (! mw->centralWidget()) {
+            mw->setCentralWidget(widget);
+            return true;
         }
     }
 
-    if (QTabWidget *tabWidget = qobject_cast<QTabWidget*>(parentWidget)) {
+    else if (QTabWidget *tabWidget = qobject_cast<QTabWidget*>(parentWidget)) {
         widget->setParent(0);
 
         int tabIndex = tabWidget->count();
@@ -530,7 +548,9 @@ bool QAbstractFormBuilder::addItem(DomWidget *ui_widget, QWidget *widget, QWidge
         }
 
         return true;
-    } else if (QToolBox *toolBox = qobject_cast<QToolBox*>(parentWidget)) {
+    }
+
+    else if (QToolBox *toolBox = qobject_cast<QToolBox*>(parentWidget)) {
         int tabIndex = toolBox->count();
         toolBox->addItem(widget, label);
 
@@ -545,11 +565,18 @@ bool QAbstractFormBuilder::addItem(DomWidget *ui_widget, QWidget *widget, QWidge
         return true;
     }
 
-    if (QStackedWidget *stackedWidget = qobject_cast<QStackedWidget*>(parentWidget)) {
+    else if (QStackedWidget *stackedWidget = qobject_cast<QStackedWidget*>(parentWidget)) {
         stackedWidget->addWidget(widget);
         return true;
-    } else if (QSplitter *splitter = qobject_cast<QSplitter*>(parentWidget)) {
+    }
+
+    else if (QSplitter *splitter = qobject_cast<QSplitter*>(parentWidget)) {
         splitter->addWidget(widget);
+        return true;
+    }
+
+    else if (QDockWidget *dockWidget = qobject_cast<QDockWidget*>(parentWidget)) {
+        dockWidget->setWidget(widget);
         return true;
     }
 
@@ -897,7 +924,14 @@ QVariant QAbstractFormBuilder::toVariant(const QMetaObject *meta, DomProperty *p
         QByteArray pname = p->attributeName().toUtf8();
         int index = meta->indexOfProperty(pname);
         if (index == -1) {
-            qWarning() << "property" << pname << "is not supported";
+            // ### special-casing for Line (QFrame) -- fix for 4.2
+            if (!qstrcmp(meta->className(), "QFrame")
+                && (pname == QLatin1String("orientation"))) {
+                v = (p->elementEnum() == QLatin1String("Qt::Horizontal"))
+                    ? QFrame::HLine : QFrame::VLine;
+            } else {
+                qWarning() << "property" << pname << "is not supported";
+            }
             break;
         }
 
@@ -1346,7 +1380,7 @@ DomProperty *QAbstractFormBuilder::createProperty(QObject *obj, const QString &p
         case QVariant::KeySequence: {
             DomString *s = new DomString();
 #ifndef Q_WS_MAC
-            s->setText(qvariant_cast<QKeySequence>(v));
+            s->setText(qvariant_cast<QKeySequence>(v).toString(QKeySequence::PortableText));
 #else
             s->setText(platformNeutralKeySequence(qvariant_cast<QKeySequence>(v)));
 #endif
@@ -1412,6 +1446,9 @@ DomProperty *QAbstractFormBuilder::createProperty(QObject *obj, const QString &p
                 icon_path = workingDirectory().relativeFilePath(icon_path);
             else
                 qrc_path = workingDirectory().relativeFilePath(qrc_path);
+
+			icon_path = icon_path.replace(QLatin1Char('\\'), QLatin1Char('/'));
+			qrc_path = qrc_path.replace(QLatin1Char('\\'), QLatin1Char('/'));
 
             r->setText(icon_path);
             if (!qrc_path.isEmpty())

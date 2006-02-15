@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtOpenGL module of the Qt Toolkit.
 **
@@ -58,8 +58,8 @@
     \sa {opengl/pbuffers}{Pbuffers Example}
 */
 
-#include <qglpbuffer.h>
-#include <private/qglpbuffer_p.h>
+#include <qglpixelbuffer.h>
+#include <private/qglpixelbuffer_p.h>
 #include <private/qpaintengine_opengl_p.h>
 #include <qimage.h>
 

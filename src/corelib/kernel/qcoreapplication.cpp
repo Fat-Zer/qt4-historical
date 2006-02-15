@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -389,8 +389,9 @@ void QCoreApplication::flush()
     applications without a graphical user interface. These type of
     applications are used at the console or as server processes.
 
-    The \a argc and \a argv arguments are available from argc() and
-    argv().
+    The \a argc and \a argv arguments are processed by the application,
+    and made available in a more convenient form by the arguments()
+    function.
 */
 QCoreApplication::QCoreApplication(int &argc, char **argv)
     : QObject(*new QCoreApplicationPrivate(argc, argv))
@@ -659,6 +660,7 @@ int QCoreApplication::exec()
     QEventLoop eventLoop;
     self->d_func()->in_exec = true;
     int returnCode = eventLoop.exec();
+    data->quitNow = false;
     if (self) {
         self->d_func()->in_exec = false;
         emit self->aboutToQuit();
@@ -1568,6 +1570,8 @@ QString QCoreApplication::applicationName()
 
 #ifndef QT_NO_LIBRARY
 
+Q_GLOBAL_STATIC_WITH_ARGS(QMutex, libraryPathMutex, (QMutex::Recursive))
+
 /*!
     Returns a list of paths that the application will search when
     dynamically loading libraries.
@@ -1594,6 +1598,8 @@ QStringList QCoreApplication::libraryPaths()
 {
     if (!self)
         return QStringList();
+
+    QMutexLocker locker(libraryPathMutex());
     if (!self->d_func()->app_libpaths) {
         QStringList *app_libpaths = self->d_func()->app_libpaths = new QStringList;
         QString installPathPlugins =  QLibraryInfo::location(QLibraryInfo::PluginsPath);

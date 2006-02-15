@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/doc/src/examples/simpletreemodel.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/doc/src/examples/simpletreemodel.qdoc -->
 <head>
     <title>Qt 4.1: Simple Tree Model Example</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -33,12 +33,12 @@ body { background: #ffffff; color: black; }</style>
 <a name="design-and-concepts"></a>
 <h2>Design and Concepts</h2>
 <p>The data structure that we use to represent the structure of the data takes the form of a tree built from <tt>TreeItem</tt> objects. Each <tt>TreeItem</tt> represents an item in a tree view, and contains several columns of data.</p>
-<a name="simpletreemodelstructure"></a><table align="center" cellpadding="2" cellspacing="1" border="0">
+<a name="simpletreemodelstructure"></a><p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#f0f0f0"><td><img src="images/treemodel-structure.png" /></td><td><b>Simple Tree Model Structure</b><p>The data is stored internally in the model using <tt>TreeItem</tt> objects that are linked together in a pointer-based tree structure. Generally, each <tt>TreeItem</tt> has a parent item, and can have a number of child items. However, the root item in the tree structure has no parent item; this item is never referenced outside the model.</p>
 <p>Each <tt>TreeItem</tt> contains information about its place in the tree structure; it can return its parent item and its row number. Having this information readily available makes implementing the model easier.</p>
 <p>Since each item in a tree view usually contains several columns of data (a title and a summary in this example), it is natural to store this information in each item. For simplicity, we will use a list of <a href="qvariant.html">QVariant</a> objects to store the data for each column in the item.</p>
 </td></tr>
-</table>
+</table></p>
 <p>The use of a pointer-based tree structure means that, when passing a model index to a view, we can use record the address of the corresponding item in the index (see <a href="qabstractitemmodel.html#createIndex">QAbstractItemModel::createIndex</a>()) and retrieve it later with <a href="qmodelindex.html#internalPointer">QModelIndex::internalPointer</a>(). This makes writing the model easier and ensures that all model indexes that refer to the same item have the same internal data pointer.</p>
 <p>With the appropriate data structure in place, we can create a tree model with a minimal amount of extra code to supply model indexes and data to other components.</p>
 <a name="treeitem-class-definition"></a>
@@ -279,8 +279,8 @@ body { background: #ffffff; color: black; }</style>
 <p>To ensure that the model works correctly, it is only necessary to create instances of <tt>TreeItem</tt> with the correct data and parent item.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

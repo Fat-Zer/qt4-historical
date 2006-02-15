@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/doc/src/qt-conf.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/doc/src/qt-conf.qdoc -->
 <head>
     <title>Qt 4.1: Using qt.conf</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -29,7 +29,7 @@ body { background: #ffffff; color: black; }</style>
 <li>in the directory containing the application executable, i.e. <a href="qcoreapplication.html#applicationDirPath">QCoreApplication::applicationDirPath</a>() + <a href="qdir.html#separator">QDir::separator</a>() + &quot;qt.conf&quot;</li>
 </ol>
 <p>The <tt>qt.conf</tt> file is an INI text file, as described in the <a href="qsettings.html#Format-enum">QSettings</a> documentation. The file should have a <tt>Paths</tt> group which contains the entries that correspond to each value of the <a href="qlibraryinfo.html#LibraryLocation-enum">QLibraryInfo::LibraryLocation</a> enum. See the <a href="qlibraryinfo.html">QLibraryInfo</a> documentation for details on the meaning of the various locations.</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Entry</th><th>Default Value</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>Prefix</td><td><a href="qcoreapplication.html#applicationDirPath">QCoreApplication::applicationDirPath</a>()</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>Documentation</td><td><tt>doc</tt></td></tr>
@@ -42,7 +42,7 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#f0f0f0"><td>Settings</td><td><tt>.</tt></td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>Examples</td><td><tt>.</tt></td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>Demos</td><td><tt>.</tt></td></tr>
-</table>
+</table></p>
 <p>Absolute paths are used as specified in the <tt>qt.conf</tt> file. All paths are relative to the <tt>Prefix</tt>. On Windows and X11, the <tt>Prefix</tt> is relative to the directory containing the application executable (<a href="qcoreapplication.html#applicationDirPath">QCoreApplication::applicationDirPath</a>()). On Mac OS X, the <tt>Prefix</tt> is relative to the <tt>Contents</tt> in the application bundle. For example, <tt>application.app/Contents/plugins/</tt> is the default location for loading Qt plugins.</p>
 <p>For example, a <tt>qt.conf</tt> file could contain the following:</p>
 <pre>&nbsp;   [Paths]
@@ -65,8 +65,8 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

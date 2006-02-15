@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the tools applications of the Qt Toolkit.
 **
@@ -32,7 +32,7 @@
 #include <QtTest/qtestassert.h>
 #include <QtTest/qtest_global.h>
 #include <QtTest/qtestsystem.h>
-#include <QtTest/private/qtestspontaneevent_p.h>
+#include <QtTest/qtestspontaneevent.h>
 
 #include <QtCore/qpointer.h>
 #include <QtGui/qapplication.h>

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/opengl/qglpixelbuffer.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/src/opengl/qglpixelbuffer.cpp -->
 <head>
     <title>Qt 4.1: QGLPixelBuffer Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -46,12 +46,16 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>void <b><a href="qglpixelbuffer.html#updateDynamicTexture">updateDynamicTexture</a></b> ( GLuint <i>texture_id</i> ) const</li>
 </ul>
 <ul>
-<li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <a name="static-public-members"></a>
 <h3>Static Public Members</h3>
 <ul>
 <li><div class="fn"/>bool <b><a href="qglpixelbuffer.html#hasOpenGLPbuffers">hasOpenGLPbuffers</a></b> ()</li>
+</ul>
+<h3>Additional Inherited Members</h3>
+<ul>
+<li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -80,12 +84,12 @@ body { background: #ffffff; color: black; }</style>
 <p>Equivalent to calling <a href="qglcontext.html#bindTexture">QGLContext::bindTexture</a>().</p>
 <p>See also <a href="qglpixelbuffer.html#deleteTexture">deleteTexture</a>().</p>
 <h3 class="fn"><a name="bindTexture-2"></a>GLuint QGLPixelBuffer::bindTexture ( const <a href="qpixmap.html">QPixmap</a> &amp; <i>pixmap</i>, GLenum <i>target</i> = GL_TEXTURE_2D )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Generates and binds a 2D GL texture based on <i>pixmap</i>.</p>
 <p>Equivalent to calling <a href="qglcontext.html#bindTexture">QGLContext::bindTexture</a>().</p>
 <p>See also <a href="qglpixelbuffer.html#deleteTexture">deleteTexture</a>().</p>
 <h3 class="fn"><a name="bindTexture-3"></a>GLuint QGLPixelBuffer::bindTexture ( const <a href="qstring.html">QString</a> &amp; <i>fileName</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads the DirectDrawSurface (DDS) compressed file <i>fileName</i> and generates a 2D GL texture from it.</p>
 <p>Equivalent to calling <a href="qglcontext.html#bindTexture">QGLContext::bindTexture</a>().</p>
 <p>See also <a href="qglpixelbuffer.html#deleteTexture">deleteTexture</a>().</p>
@@ -144,8 +148,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qglpixelbuffer.html#generateDynamicTexture">generateDynamicTexture</a>() and <a href="qglpixelbuffer.html#bindToDynamicTexture">bindToDynamicTexture</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

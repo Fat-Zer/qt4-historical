@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -19,19 +19,9 @@
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 **
-****************************************************************************//****************************************************************************
-**
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
-**
-** This file is part of the $MODULE$ of the Qt Toolkit.
-**
-** $LICENSE$
-**
-** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
-** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
-**
 ****************************************************************************/
 
+#include <qvarlengtharray.h>
 #include <qwidget.h>
 #include <private/qmacinputcontext_p.h>
 #include "qtextformat.h"
@@ -42,7 +32,6 @@ extern bool qt_sendSpontaneousEvent(QObject*, QEvent*);
 static QTextFormat qt_mac_compose_format()
 {
     QTextCharFormat ret;
-    ret.setFontItalic(true);
     ret.setFontUnderline(true);
     return ret;
 }
@@ -62,6 +51,18 @@ QMacInputContext::~QMacInputContext()
 QString QMacInputContext::language()
 {
     return QString();
+}
+
+void QMacInputContext::mouseHandler(int pos, QMouseEvent *e)
+{
+    if(e->type() != QEvent::MouseButtonPress)
+        return;
+
+    if (!composing)
+        return;
+    if (pos < 0 || pos > currentText.length())
+        reset();
+    // ##### handle mouse position
 }
 
 void QMacInputContext::reset()
@@ -168,10 +169,19 @@ QMacInputContext::globalEventProcessor(EventHandlerCallRef, EventRef event, void
             if(fixed_length == -1 || fixed_length == (long)unilen) {
                 QInputMethodEvent e;
                 e.setCommitString(text);
+                context->currentText = QString();
                 qt_sendSpontaneousEvent(context->focusWidget(), &e);
                 handled_event = true;
                 context->reset();
             } else {
+                UInt32 rngSize = 0;
+                OSStatus err = GetEventParameter(event, kEventParamTextInputSendHiliteRng, typeTextRangeArray, 0,
+                                                 0, &rngSize, 0);
+                QVarLengthArray<TextRangeArray> highlight(rngSize);
+                if (noErr == err) {
+                    err = GetEventParameter(event, kEventParamTextInputSendHiliteRng, typeTextRangeArray, 0,
+                                            rngSize, &rngSize, highlight.data());
+                }
                 context->composing = true;
                 if(fixed_length > 0) {
                     const int qFixedLength = fixed_length / sizeof(UniChar);
@@ -180,13 +190,52 @@ QMacInputContext::globalEventProcessor(EventHandlerCallRef, EventRef event, void
                                                           qFixedLength, text.length()-qFixedLength,
                                                           qt_mac_compose_format());
                     QInputMethodEvent e(text, attrs);
+                    context->currentText = text;
                     e.setCommitString(text.left(qFixedLength), 0, qFixedLength);
                     qt_sendSpontaneousEvent(widget, &e);
                     handled_event = true;
                 } else {
+                    /* Apple's enums that they have removed from Tiger :(
+                    enum {
+                        kCaretPosition = 1,
+                        kRawText = 2,
+                        kSelectedRawText = 3,
+                        kConvertedText = 4,
+                        kSelectedConvertedText = 5,
+                        kBlockFillText = 6,
+                        kOutlineText = 7,
+                        kSelectedText = 8
+                    };
+                    */
+#ifndef kConvertedText
+#define kConvertedText 4
+#endif
+#ifndef kCaretPosition
+#define kCaretPosition 1
+#endif
                     QList<QInputMethodEvent::Attribute> attrs;
-                    attrs << QInputMethodEvent::Attribute(QInputMethodEvent::TextFormat,
-                                                          0, text.length(), qt_mac_compose_format());
+                    if (!highlight.isEmpty()) {
+                        TextRangeArray *data = highlight.data();
+                        for (int i = 0; i < data->fNumOfRanges; ++i) {
+                            int start = data->fRange[i].fStart / sizeof(UniChar);
+                            int len = (data->fRange[i].fEnd - data->fRange[i].fStart) / sizeof(UniChar);
+                            if (data->fRange[i].fHiliteStyle == kCaretPosition) {
+                                attrs << QInputMethodEvent::Attribute(QInputMethodEvent::Cursor, start, 0, QVariant());
+                                continue;
+                            }
+                            QTextCharFormat format;
+                            format.setFontUnderline(true);
+                            if (data->fRange[i].fHiliteStyle == kConvertedText)
+                                format.setUnderlineColor(Qt::gray);
+                            else
+                                format.setUnderlineColor(Qt::black);
+                            attrs << QInputMethodEvent::Attribute(QInputMethodEvent::TextFormat, start, len, format);
+                        }
+                    } else {
+                        attrs << QInputMethodEvent::Attribute(QInputMethodEvent::TextFormat,
+                                0, text.length(), qt_mac_compose_format());
+                    }
+                    context->currentText = text;
                     QInputMethodEvent e(text, attrs);
                     qt_sendSpontaneousEvent(widget, &e);
                     handled_event = true;

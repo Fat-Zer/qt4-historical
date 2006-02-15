@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -86,6 +86,22 @@ void *qMetaTypeConstructHelper(const T *t)
     return new T(*static_cast<const T*>(t));
 }
 
+template <typename T>
+int qRegisterMetaType(const char *typeName
+#ifndef qdoc
+    , T * /* dummy */ = 0
+#endif
+)
+{
+    typedef void*(*ConstructPtr)(const T*);
+    ConstructPtr cptr = qMetaTypeConstructHelper<T>;
+    typedef void(*DeletePtr)(T*);
+    DeletePtr dptr = qMetaTypeDeleteHelper<T>;
+
+    return QMetaType::registerType(typeName, reinterpret_cast<QMetaType::Destructor>(dptr),
+                                   reinterpret_cast<QMetaType::Constructor>(cptr));
+}
+
 #ifndef QT_NO_DATASTREAM
 template <typename T>
 void qMetaTypeSaveHelper(QDataStream &stream, const T *t)
@@ -100,29 +116,22 @@ void qMetaTypeLoadHelper(QDataStream &stream, T *t)
 }
 
 template <typename T>
-void qRegisterMetaTypeStreamOperators(const char *typeName, T * = 0)
+void qRegisterMetaTypeStreamOperators(const char *typeName
+#ifndef qdoc
+    , T * /* dummy */ = 0
+#endif
+)
 {
     typedef void(*SavePtr)(QDataStream &, const T *);
     typedef void(*LoadPtr)(QDataStream &, T *);
     SavePtr sptr = qMetaTypeSaveHelper<T>;
     LoadPtr lptr = qMetaTypeLoadHelper<T>;
 
+    qRegisterMetaType<T>(typeName);
     QMetaType::registerStreamOperators(typeName, reinterpret_cast<QMetaType::SaveOperator>(sptr),
                                        reinterpret_cast<QMetaType::LoadOperator>(lptr));
 }
 #endif
-
-template <typename T>
-int qRegisterMetaType(const char *typeName, T * = 0)
-{
-    typedef void*(*ConstructPtr)(const T*);
-    ConstructPtr cptr = qMetaTypeConstructHelper<T>;
-    typedef void(*DeletePtr)(T*);
-    DeletePtr dptr = qMetaTypeDeleteHelper<T>;
-
-    return QMetaType::registerType(typeName, reinterpret_cast<QMetaType::Destructor>(dptr),
-                                   reinterpret_cast<QMetaType::Constructor>(cptr));
-}
 
 template <typename T>
 struct QMetaTypeId
@@ -131,7 +140,11 @@ struct QMetaTypeId
 };
 
 template <typename T>
-inline int qMetaTypeId(T * = 0)
+inline int qMetaTypeId(
+#ifndef qdoc
+    T * /* dummy */ = 0
+#endif
+)
 {
     return QMetaTypeId<T>::qt_metatype_id();
 }

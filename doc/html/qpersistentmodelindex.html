@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/corelib/kernel/qabstractitemmodel.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/src/corelib/kernel/qabstractitemmodel.cpp -->
 <head>
     <title>Qt 4.1: QPersistentModelIndex Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -80,22 +80,22 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="operator-not-eq"></a>bool QPersistentModelIndex::operator!= ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>other</i> ) const</h3>
 <p>Returns true if this persistent model index does not refer to the same location as the <i>other</i> model index; otherwise returns false.</p>
 <h3 class="fn"><a name="operator-lt"></a>bool QPersistentModelIndex::operator&lt; ( const QPersistentModelIndex &amp; <i>other</i> ) const</h3>
-<p>Returns true if this persistent model index is smaller than the <i>other</i> persistent model index; otherwise returns false.</p>
+<p>Returns true if this persistent model index is smaller than the <i>other</i> persistent model index; otherwise returns false. Note that all values in the persistent model index are used when comparing with another persistent model index.</p>
 <p>This function was introduced in Qt 4.1.</p>
 <h3 class="fn"><a name="operator-eq"></a>QPersistentModelIndex &amp; QPersistentModelIndex::operator= ( const QPersistentModelIndex &amp; <i>other</i> )</h3>
 <p>Sets the persistent model index to refer to the same item in a model as the <i>other</i> persistent model index.</p>
 <h3 class="fn"><a name="operator-eq-2"></a>QPersistentModelIndex &amp; QPersistentModelIndex::operator= ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>other</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Sets the persistent model index to refer to the same item in a model as the <i>other</i> model index.</p>
 <h3 class="fn"><a name="operator-eq-eq"></a>bool QPersistentModelIndex::operator== ( const QPersistentModelIndex &amp; <i>other</i> ) const</h3>
-<p>Returns true if this persistent model index is equal to the <i>other</i> persistent model index, otherwist returns false.</p>
+<p>Returns true if this persistent model index is equal to the <i>other</i> persistent model index, otherwist returns false. Note that all values in the persistent model index are used when comparing with another persistent model index.</p>
 <h3 class="fn"><a name="operator-eq-eq-2"></a>bool QPersistentModelIndex::operator== ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>other</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
-<p>Returns true if this persistent model index refers to the same location as the <i>other</i> model index; otherwise returns false.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p>Returns true if this persistent model index refers to the same location as the <i>other</i> model index; otherwise returns false. Note that all values in the persistent model index are used when comparing with another model index.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

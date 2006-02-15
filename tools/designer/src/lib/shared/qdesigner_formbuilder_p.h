@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt Designer of the Qt Toolkit.
 **
@@ -64,6 +64,7 @@ protected:
 
     virtual DomWidget *createDom(QWidget *widget, DomWidget *ui_parentWidget, bool recursive = true);
     virtual QWidget *create(DomWidget *ui_widget, QWidget *parentWidget);
+    virtual QLayout *create(DomLayout *ui_layout, QLayout *layout, QWidget *parentWidget);
 
     virtual QWidget *createWidget(const QString &widgetName, QWidget *parentWidget, const QString &name);
     virtual bool addItem(DomWidget *ui_widget, QWidget *widget, QWidget *parentWidget);

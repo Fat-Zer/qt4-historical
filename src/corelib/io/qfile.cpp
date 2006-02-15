@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -488,7 +488,9 @@ QFile::setDecodingFunction(DecoderFn f)
 bool
 QFile::exists() const
 {
-    return (fileEngine()->fileFlags(QAbstractFileEngine::FlagsMask) & QAbstractFileEngine::ExistsFlag);
+    // 0x1000000 = QAbstractFileEngine::Refresh, forcing an update
+    return (fileEngine()->fileFlags(QAbstractFileEngine::FlagsMask
+                                    | QAbstractFileEngine::FileFlag(0x1000000)) & QAbstractFileEngine::ExistsFlag);
 }
 
 /*!
@@ -505,12 +507,12 @@ QFile::exists(const QString &fileName)
 /*!
     \overload
 
-    Returns the name a symlink (or shortcut on Windows) points to, or
-    a an empty string if the object isn't a symbolic link.
+    Returns the absolute path of the file or directory a symlink (or shortcut
+    on Windows) points to, or a an empty string if the object isn't a symbolic
+    link.
 
     This name may not represent an existing file; it is only a string.
-    QFile::exists() returns true if the symlink points to an
-    existing file.
+    QFile::exists() returns true if the symlink points to an existing file.
 
     \sa fileName() setFileName()
 */
@@ -522,13 +524,12 @@ QFile::readLink() const
 }
 
 /*!
-    Returns the filename referred to by the symlink (or shortcut on Windows)
-    specified by \a fileName, or returns an empty string if the \a fileName
-    does not correspond to a symbolic link.
+    Returns the absolute path of the file or directory referred to by the
+    symlink (or shortcut on Windows) specified by \a fileName, or returns an
+    empty string if the \a fileName does not correspond to a symbolic link.
 
     This name may not represent an existing file; it is only a string.
-    QFile::exists() returns true if the symlink points to an
-    existing file.
+    QFile::exists() returns true if the symlink points to an existing file.
 */
 
 QString
@@ -585,11 +586,9 @@ QFile::remove(const QString &fileName)
     Renames the file currently specified by fileName() to \a newName.
     Returns true if successful; otherwise returns false.
 
-    On most file systems, rename() fails only if \a oldName does not
-    exist, if \a newName and the file are not on the same
-    partition or if a file with the new name already exists.
-    However, there are also other reasons why rename() can fail.
-
+    If a file with the name \a newName already exists, rename() returns false
+    (i.e., QFile will not overwrite it).
+    
     The file is closed before it is renamed.
 
     \sa setFileName()
@@ -603,8 +602,12 @@ QFile::rename(const QString &newName)
         qWarning("QFile::rename: Empty or null file name");
         return false;
     }
-    if (QFile(newName).exists())
+    if (QFile(newName).exists()) {
+        // ### Race condition. If a file is moved in after this, it /will/ be
+        // overwritten. On Unix, the proper solution is to use hardlinks:
+        // return ::link(old, new) && ::remove(old);
         return false;
+    }
     close();
     if(error() == QFile::NoError) {
         if(fileEngine()->rename(newName)) {
@@ -644,12 +647,8 @@ QFile::rename(const QString &newName)
     Renames the file \a oldName to \a newName. Returns true if
     successful; otherwise returns false.
 
-    On most file systems, rename() fails only if \a oldName does not
-    exist, if \a newName and \a oldName are not on the same
-    partition or if a file with the new name already exists.
-    However, there are also other reasons why rename() can
-    fail. For example, on at least one file system rename() fails if
-    \a newName points to an open file.
+    If a file with the name \a newName already exists, rename() returns false
+    (i.e., QFile will not overwrite it).
 
     \sa rename()
 */
@@ -661,8 +660,8 @@ QFile::rename(const QString &oldName, const QString &newName)
 }
 
 /*!
-    Creates a link from the file currently specified by fileName() to
-    \a newName. What a link is depends on the underlying filesystem
+    Creates a link named \a linkName that points to the file currently specified by fileName(). 
+    What a link is depends on the underlying filesystem
     (be it a shortcut on Windows or a symbolic link on Unix). Returns
     true if successful; otherwise returns false.
 
@@ -670,14 +669,14 @@ QFile::rename(const QString &oldName, const QString &newName)
 */
 
 bool
-QFile::link(const QString &newName)
+QFile::link(const QString &linkName)
 {
     Q_D(QFile);
     if (d->fileName.isEmpty()) {
         qWarning("QFile::link: Empty or null file name");
         return false;
     }
-    QFileInfo fi(newName);
+    QFileInfo fi(linkName);
     if(fileEngine()->link(fi.absoluteFilePath())) {
         unsetError();
         return true;
@@ -689,7 +688,7 @@ QFile::link(const QString &newName)
 /*!
     \overload
 
-    Creates a link from \a oldName to \a newName. What a link is
+    Creates a link named \a linkName that points to the file \a fileName. What a link is
     depends on the underlying filesystem (be it a shortcut on Windows
     or a symbolic link on Unix). Returns true if successful; otherwise
     returns false.
@@ -698,14 +697,17 @@ QFile::link(const QString &newName)
 */
 
 bool
-QFile::link(const QString &oldName, const QString &newName)
+QFile::link(const QString &fileName, const QString &linkName)
 {
-    return QFile(oldName).link(newName);
+    return QFile(fileName).link(linkName);
 }
 
 /*!
     Copies the file currently specified by fileName() to \a newName.
     Returns true if successful; otherwise returns false.
+
+    If a file with the name \a newName already exists, copy() returns false
+    (i.e., QFile will not overwrite it).
 
     The file is closed before it is copied.
 
@@ -771,6 +773,9 @@ QFile::copy(const QString &newName)
 
     Copies the file \a fileName to \a newName. Returns true if successful;
     otherwise returns false.
+
+    If a file with the name \a newName already exists, copy() returns false
+    (i.e., QFile will not overwrite it).
 
     \sa rename()
 */
@@ -979,7 +984,7 @@ bool
 QFile::resize(qint64 sz)
 {
     Q_D(QFile);
-    if (fileEngine()->pos() > sz)
+    if (isOpen() && fileEngine()->pos() > sz)
         fileEngine()->seek(sz);
     if(fileEngine()->setSize(sz)) {
         unsetError();

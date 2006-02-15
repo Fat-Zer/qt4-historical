@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt3Support module of the Qt Toolkit.
 **
@@ -50,7 +50,7 @@ class Q3ListBoxPrivate
 public:
     Q3ListBoxPrivate(Q3ListBox *lb):
         head(0), last(0), cache(0), cacheIndex(-1), current(0),
-        highlighted(0), columnPos(1), rowPos(1), rowPosCache(0),
+        highlighted(0), tmpCurrent(0), columnPos(1), rowPos(1), rowPosCache(0),
         columnPosOne(0), rowMode(Q3ListBox::FixedNumber),
         columnMode(Q3ListBox::FixedNumber), numRows(1), numColumns(1),
         currentRow(0), currentColumn(0),
@@ -802,6 +802,7 @@ Q3ListBox::Q3ListBox(QWidget *parent, const char *name, Qt::WFlags f)
     viewport()->setBackgroundRole(QPalette::Base);
     viewport()->setFocusProxy(this);
     viewport()->setFocusPolicy(Qt::WheelFocus);
+    setFocusPolicy(Qt::WheelFocus);
 }
 
 

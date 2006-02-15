@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/gui/itemviews/qtreewidget.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/src/gui/itemviews/qtreewidget.cpp -->
 <head>
     <title>Qt 4.1: QTreeWidgetItem Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -89,7 +89,7 @@ body { background: #ffffff; color: black; }</style>
 <a name="related-non-members"></a>
 <h3>Related Non-Members</h3>
 <ul>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qtreewidgetitem.html#operator-lt-lt-66">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>out</i>, const QTreeWidgetItem &amp; <i>item</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qtreewidgetitem.html#operator-lt-lt-68">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>out</i>, const QTreeWidgetItem &amp; <i>item</i> )</li>
 <li><div class="fn"/>QDataStream &amp; <b><a href="qtreewidgetitem.html#operator-gt-gt-42">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>in</i>, QTreeWidgetItem &amp; <i>item</i> )</li>
 </ul>
 <a name="details"></a>
@@ -178,7 +178,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qtreewidgetitem.html#setFont">setFont</a>().</p>
 <h3 class="fn"><a name="icon"></a><a href="qicon.html">QIcon</a> QTreeWidgetItem::icon ( int <i>column</i> ) const</h3>
 <p>Returns the icon that is displayed in the specified <i>column</i>.</p>
-<p>See also <a href="qtreewidgetitem.html#setIcon">setIcon</a>().</p>
+<p>See also <a href="qtreewidgetitem.html#setIcon">setIcon</a>() and <a href="qabstractitemview.html#iconSize-prop">iconSize</a>.</p>
 <h3 class="fn"><a name="indexOfChild"></a>int QTreeWidgetItem::indexOfChild ( QTreeWidgetItem * <i>child</i> ) const</h3>
 <p>Returns the index of the given <i>child</i> in the item's list of children.</p>
 <h3 class="fn"><a name="insertChild"></a>void QTreeWidgetItem::insertChild ( int <i>index</i>, QTreeWidgetItem * <i>child</i> )</h3>
@@ -209,7 +209,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qtreewidgetitem.html#font">font</a>(), <a href="qtreewidgetitem.html#setText">setText</a>(), and <a href="qtreewidgetitem.html#setTextColor">setTextColor</a>().</p>
 <h3 class="fn"><a name="setIcon"></a>void QTreeWidgetItem::setIcon ( int <i>column</i>, const <a href="qicon.html">QIcon</a> &amp; <i>icon</i> )</h3>
 <p>Sets the icon to be displayed in the given <i>column</i> to <i>icon</i>.</p>
-<p>See also <a href="qtreewidgetitem.html#icon">icon</a>() and <a href="qtreewidgetitem.html#setText">setText</a>().</p>
+<p>See also <a href="qtreewidgetitem.html#icon">icon</a>(), <a href="qtreewidgetitem.html#setText">setText</a>(), and <a href="qabstractitemview.html#iconSize-prop">iconSize</a>.</p>
 <h3 class="fn"><a name="setSizeHint"></a>void QTreeWidgetItem::setSizeHint ( int <i>column</i>, const <a href="qsize.html">QSize</a> &amp; <i>size</i> )</h3>
 <p>Sets the size hint for the tree item in the given <i>column</i> to be <i>size</i>. If no size hint is set, the item delegate will compute the size hint based on the item data.</p>
 <p>This function was introduced in Qt 4.1.</p>
@@ -282,20 +282,20 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qtreewidgetitem.html#Type-var">Type</a> and <a href="qtreewidgetitem.html#type">type</a>().</p>
 <hr />
 <h2>Related Non-Members</h2>
-<h3 class="fn"><a name="operator-lt-lt-66"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>out</i>, const QTreeWidgetItem &amp; <i>item</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<h3 class="fn"><a name="operator-lt-lt-68"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>out</i>, const QTreeWidgetItem &amp; <i>item</i> )</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes the tree widget item <i>item</i> to stream <i>out</i>.</p>
 <p>This operator uses <a href="qtreewidgetitem.html#write">QTreeWidgetItem::write</a>().</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream Operators</a>.</p>
 <h3 class="fn"><a name="operator-gt-gt-42"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>in</i>, QTreeWidgetItem &amp; <i>item</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads a tree widget item from stream <i>in</i> into <i>item</i>.</p>
 <p>This operator uses <a href="qtreewidgetitem.html#read">QTreeWidgetItem::read</a>().</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream Operators</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

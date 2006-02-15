@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/doc/src/examples/icons.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/doc/src/examples/icons.qdoc -->
 <head>
     <title>Qt 4.1: Icons Example</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -48,12 +48,12 @@ body { background: #ffffff; color: black; }</style>
 <a name="qicon-overview"></a>
 <h2>QIcon Overview</h2>
 <p>The <a href="qicon.html">QIcon</a> class provides scalable icons in different modes and states. An icon's state and mode are depending on the intended use of the icon. There are currently three defined modes:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Mode</th><th>Description</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qicon.html#Mode-enum">QIcon::Normal</a></td><td>Display the pixmap when the user is not interacting with the icon, but the functionality represented by the icon is available.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qicon.html#Mode-enum">QIcon::Disabled</a></td><td>Display the pixmap when the functionality represented by the icon is not available.</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qicon.html#Mode-enum">QIcon::Active</a></td><td>Display the pixmap when the functionality represented by the icon is available and the user is interacting with the icon, for example, moving the mouse over it or clicking it.</td></tr>
-</table>
+</table></p>
 <p><a href="qicon.html">QIcon</a>'s states are <a href="qicon.html#State-enum">QIcon::On</a> and <a href="qicon.html#State-enum">QIcon::Off</a>, which will display the pixmap when the widget is in the respective state. The most common usage of <a href="qicon.html">QIcon</a>'s states are when displaying checkable tool buttons or menu entries. When a tool button or menu entry is checked, the <a href="qicon.html">QIcon</a>'s state is On, otherwise it's Off. You can, for example, use the <a href="qicon.html">QIcon</a>'s states to display differing pixmaps depending on whether the tool button or menu entry is checked or not.</p>
 <p>A <a href="qicon.html">QIcon</a> can generate smaller, larger, active, and disabled pixmaps from the set of pixmaps it is given. Such pixmaps are used by Qt widgets to show an icon representing a particular action.</p>
 <a name="overview-of-the-icons-application"></a>
@@ -68,7 +68,7 @@ body { background: #ffffff; color: black; }</style>
 <p>When Qt renders the icon's pixmaps it searches through the set of available pixmaps following a particular algorithm. The algorithm is documented in <a href="qicon.html">QIcon</a>, but we will describe some particular cases below.</p>
 <p align="center"><img src="images/icons_find_mess.png" alt="Screenshot of the Find Files" /></p><p>In the screenshot above we have played around with the images' modes and states. We changed the <tt>find_normal.png</tt> image's state to on, and the <tt>find_disabled.png</tt> image's mode to active.</p>
 <p>When rendering the icon's pixmaps, the mentioned search algorithm is essential: To render the Normal/Off pixmap, Qt will first see if there is a pixmap set for this combination of icon state and mode. If there isn't, Qt will look for other combinations according to the table below.</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th colspan="2">Requested Pixmap</th><th colspan="6">Preferred Alternatives (mode/state)</th></tr>
 <tr valign="top" bgcolor="#a2c511"><th>Mode</th><th>State</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>Normal</td><td>Off</td><td>N/Off</td><td><b>A/Off</b></td><td>N/On</td><td>A/On</td><td>D/Off</td><td>D/On</td></tr>
@@ -77,20 +77,20 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#e0e0e0"><td>Active</td><td>On</td><td>A/On</td><td><b>N/On</b></td><td>A/Off</td><td>N/Off</td><td>D/On</td><td>D/Off</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>Disabled</td><td>Off</td><td>D/Off</td><td>gray(N/Off)</td><td><b>gray(A/Off)</b></td><td>D/On</td><td>gray(N/On)</td><td>gray(A/On)</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>Disabled</td><td>On</td><td>D/On</td><td><b>gray(N/On)</b></td><td>gray(A/On)</td><td>D/Off</td><td>gray(N/Off)</td><td>gray(A/Off)</td></tr>
-</table>
+</table></p>
 <p>The alternatives used in the screenshot above are marked with a bold font. For example, the <tt>find_disabled</tt> image is now Active/Off, and is the preferred alternative for the Normal/Off pixmap. The algorithm is similar for all the normal and active mode pixmaps, but differ when it comes to the disabled mode.</p>
 <p>When rendering the Disabled/Off pixmap, Qt will first see if any of the available pixmaps are set for this combination of icon state and mode. If no one is, it will look for pixmaps set for Normal/Off, and as long as it needs to it will look for a suitable pixmap following the line of search described in the table above. As before: If the preferred alternative is a pixmap that is set for another icon mode, <a href="qicon.html">QIcon</a> will generate a disabled pixmap, i.e. give the generated pixmap a gray color scale.</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#f0f0f0"><td><img src="images/icons_monkey.png" alt="Screenshot of the Monkey Files" /></td><td><img src="images/icons_monkey_mess.png" alt="Screenshot of the Monkey Files" /></td></tr>
-</table>
+</table></p>
 <p>In the next screenshots we have loaded the set of monkey images. This set of images show in particular <a href="qicon.html">QIcon</a>'s on and off states.</p>
 <p>When rendering the generated pixmaps, Qt gives priority to the state. However, it will never use a disabled pixmap to render a normal or active pixmap, unless it has no other choice. The effect is illustrated in the right screenshot above.</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#f0f0f0"><td></td><td><img src="images/icons_qtopia_8x8.png" alt="Screenshot of the Qtopia Files" /></td><td><img src="images/icons_qtopia_16x16.png" alt="Screenshot of the Qtopia Files" /></td><td><img src="images/icons_qtopia_17x17.png" alt="Screenshot of the Qtopia Files" /></td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td></td><td>8 x 8</td><td><b>16 x 16</b></td><td>17 x 17</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><img src="images/icons_qtopia_32x32.png" alt="Screenshot of the Qtopia Files" /></td><td><img src="images/icons_qtopia_33x33.png" alt="Screenshot of the Qtopia Files" /></td><td><img src="images/icons_qtopia_48x48.png" alt="Screenshot of the Qtopia Files" /></td><td><img src="images/icons_qtopia_64x64.png" alt="Screenshot of the Qtopia Files" /></td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><b>32 x 32</b></td><td>33 x 33</td><td><b>48 x 48</b></td><td>64 x 64</td></tr>
-</table>
+</table></p>
 <p>The screenshots above show how <a href="qicon.html">QIcon</a> behaves when we ask it for pixmaps of various sizes. Here we have played around with the sizes using a set of Qtopia images which only differ in size (<tt>qtopia_16x16.png</tt>, <tt>qtopia_32x32.png</tt>, <tt>qtopia_48x48.png</tt>).</p>
 <p><a href="qicon.html">QIcon</a> can always generate a smaller pixmap from the set of pixmaps it is given, but it never scales them up, because this rarely looks good. This is why we get the 48 x 48 pixmap when we request a 64 x 64 pixmap.</p>
 <p>In summary, for sizes up to 16 x 16, <a href="qicon.html">QIcon</a> uses <tt>qtopia_16x16.png</tt> and scales it down if necessary. Similarly, for sizes between 17 x 17 and 32 x 32, it uses <tt>qtopia_32x32.png</tt>, and for sizes above 32 x 32, it uses <tt>qtopia_48x48.png</tt>.</p>
@@ -752,8 +752,8 @@ body { background: #ffffff; color: black; }</style>
 <p>The <tt>emitCommitData()</tt> slot simply emit the <a href="qabstractitemdelegate.html#commitData">QAbstractItemDelegate::commitData</a>() signal for the editor that triggered the slot. This signal must be emitted when the editor widget has completed editing the data, and wants to write it back into the model.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

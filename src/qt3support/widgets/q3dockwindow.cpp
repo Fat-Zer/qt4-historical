@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt3Support module of the Qt Toolkit.
 **
@@ -69,6 +69,7 @@ protected:
     void mouseMoveEvent(QMouseEvent *);
     void mousePressEvent(QMouseEvent *);
     void mouseReleaseEvent(QMouseEvent *);
+    bool event(QEvent *event);
 
 private:
     void startLineDraw();
@@ -81,12 +82,13 @@ private:
     QRubberBand *rubberBand;
     QPoint lastPos, firstPos;
     Q3DockWindow *dockWindow;
-
+    bool mouseOver;
 };
 
 Q3DockWindowResizeHandle::Q3DockWindowResizeHandle(Qt::Orientation o, QWidget *parent,
                                                   Q3DockWindow *w, const char *)
-    : QWidget(parent, "qt_dockwidget_internal"), mousePressed(false), rubberBand(0), dockWindow(w)
+    : QWidget(parent, "qt_dockwidget_internal"), mousePressed(false), rubberBand(0), dockWindow(w),
+      mouseOver(false)
 {
     setOrientation(o);
 }
@@ -230,15 +232,32 @@ void Q3DockWindowResizeHandle::mouseReleaseEvent(QMouseEvent *e)
     mousePressed = false;
 }
 
+bool Q3DockWindowResizeHandle::event(QEvent *event)
+{
+    switch (event->type()) {
+    case QEvent::HoverEnter:
+        if (!mouseOver) {
+            mouseOver = true;
+            update();
+        }
+        break;
+    case QEvent::HoverLeave:
+        if (mouseOver) {
+            mouseOver = false;
+            update();
+        }
+        break;
+    default:
+        break;
+    }
+    return QWidget::event(event);
+}
+
 void Q3DockWindowResizeHandle::paintEvent(QPaintEvent *)
 {
     QPainter p(this);
-    QStyleOption opt(0, QStyleOption::SO_Default);
-    opt.rect = rect();
-    opt.palette = palette();
-    opt.state = QStyle::State_None;
-    if (isEnabled())
-        opt.state |= QStyle::State_Enabled;
+    QStyleOption opt(0);
+    opt.init(this);
     if (orientation() == Qt::Horizontal)
         opt.state |= QStyle::State_Horizontal;
     style()->drawPrimitive(QStyle::PE_IndicatorDockWidgetResizeHandle, &opt, &p, this);
@@ -249,6 +268,7 @@ void Q3DockWindowResizeHandle::startLineDraw()
     if (rubberBand)
         endLineDraw();
     rubberBand = new QRubberBand(QRubberBand::Line);
+    rubberBand->setGeometry(-1, -1, 1, 1);
     rubberBand->show();
 }
 
@@ -297,7 +317,6 @@ public:
     QSize minimumSizeHint() const;
     QSize minimumSize() const { return minimumSizeHint(); }
     QSize sizeHint() const { return minimumSize(); }
-    QSizePolicy sizePolicy() const;
     void setOpaqueMoving(bool b) { opaque = b; }
 
     QString windowTitle() const { return dockWindow->windowTitle(); }
@@ -376,7 +395,7 @@ Q3DockWindowHandle::Q3DockWindowHandle(Q3DockWindow *dw)
 
 void Q3DockWindowHandle::paintEvent(QPaintEvent *e)
 {
-    if ((!dockWindow->dockArea || mousePressed) && !opaque)
+    if (!dockWindow->dockArea && !opaque)
         return;
     QPainter p(this);
     QStyleOptionQ3DockWindow opt;
@@ -462,6 +481,8 @@ void Q3DockWindowHandle::mouseReleaseEvent(QMouseEvent *e)
     }
     if (opaque)
         dockWindow->titleBar->mousePressed = false;
+    if (dockWindow->parentWidget())
+        QApplication::postEvent(dockWindow->parentWidget(), new QEvent(QEvent::LayoutHint));
 }
 
 void Q3DockWindowHandle::minimize()
@@ -536,13 +557,6 @@ QSize Q3DockWindowHandle::minimumSizeHint() const
     return QSize(0, wh);
 }
 
-QSizePolicy Q3DockWindowHandle::sizePolicy() const
-{
-    if (dockWindow->orientation() != Qt::Horizontal)
-        return QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
-    return QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
-}
-
 void Q3DockWindowHandle::mouseDoubleClickEvent(QMouseEvent *e)
 {
     e->ignore();
@@ -552,6 +566,8 @@ void Q3DockWindowHandle::mouseDoubleClickEvent(QMouseEvent *e)
     timer->stop();
     emit doubleClicked();
     hadDblClick = true;
+    if (dockWindow->parentWidget())
+        QApplication::postEvent(dockWindow->parentWidget(), new QEvent(QEvent::LayoutHint));
 }
 
 Q3DockWindowTitleBar::Q3DockWindowTitleBar(Q3DockWindow *dw)
@@ -675,6 +691,8 @@ void Q3DockWindowTitleBar::mouseReleaseEvent(QMouseEvent *e)
         dockWindow->horHandle->mousePressed = false;
         dockWindow->verHandle->mousePressed = false;
     }
+    if (dockWindow->parentWidget())
+        QApplication::postEvent(dockWindow->parentWidget(), new QEvent(QEvent::LayoutHint));
 }
 
 void Q3DockWindowTitleBar::resizeEvent(QResizeEvent *e)
@@ -696,6 +714,8 @@ void Q3DockWindowTitleBar::mouseDoubleClickEvent(QMouseEvent *)
 {
     emit doubleClicked();
     hadDblClick = true;
+    if (dockWindow->parentWidget())
+        QApplication::postEvent(dockWindow->parentWidget(), new QEvent(QEvent::LayoutHint));
 }
 
 /*!
@@ -975,13 +995,17 @@ void Q3DockWindow::init()
     dockWindowData = 0;
     lastPos = QPoint(-1, -1);
     lastSize = QSize(-1, -1);
+    stretchable[Qt::Horizontal] = false;
+    stretchable[Qt::Vertical] = false;
 
     widgetResizeHandler = new QWidgetResizeHandler(this);
     widgetResizeHandler->setMovingEnabled(false);
 
     titleBar      = new Q3DockWindowTitleBar(this);
     verHandle     = new Q3DockWindowHandle(this);
+    verHandle->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred));
     horHandle     = new Q3DockWindowHandle(this);
+    horHandle->setSizePolicy(QSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed));
 
     vHandleLeft   = new Q3DockWindowResizeHandle(Qt::Vertical, this, this, "vert. handle");
     vHandleRight  = new Q3DockWindowResizeHandle(Qt::Vertical, this, this, "vert. handle");
@@ -992,8 +1016,11 @@ void Q3DockWindow::init()
     hbox          = new QVBoxLayout();
     vbox          = new QHBoxLayout();
     childBox          = new QBoxLayout(QBoxLayout::LeftToRight);
+    vbox->addSpacing(2);
     vbox->addWidget(verHandle);
-    vbox->addLayout(childBox);
+    vbox->addStretch(0);
+    vbox->addLayout(childBox, 1);
+    vbox->addStretch(0);
 
     hbox->setResizeMode(QLayout::FreeResize);
     hbox->setMargin(isResizeEnabled() || curPlace == OutsideDock ? 2 : 0);
@@ -1052,8 +1079,6 @@ void Q3DockWindow::init()
     }
 
     updateGui();
-    stretchable[Qt::Horizontal] = false;
-    stretchable[Qt::Vertical] = false;
 
     connect(titleBar, SIGNAL(doubleClicked()), this, SLOT(dock()));
     connect(verHandle, SIGNAL(doubleClicked()), this, SLOT(undock()));
@@ -1232,7 +1257,7 @@ void Q3DockWindow::updateGui()
         setLineWidth(2);
         widgetResizeHandler->setActive(isResizeEnabled());
     } else {
-        hbox->setMargin(isResizeEnabled() ? 0 : 2);
+        hbox->setMargin(0);
         titleBar->hide();
         if (orientation() == Qt::Horizontal) {
             horHandle->hide();
@@ -1307,9 +1332,6 @@ void Q3DockWindow::updateGui()
             setLineWidth(1);
         else
             setLineWidth(0);
-        hbox->setMargin(lineWidth());
-#else
-        hbox->setMargin(2);
 #endif
         widgetResizeHandler->setActive(false);
     }
@@ -1504,7 +1526,6 @@ void Q3DockWindow::drawContents(QPainter *p)
 void Q3DockWindow::setResizeEnabled(bool b)
 {
     resizeEnabled = b;
-    hbox->setMargin(b ? 0 : 2);
     updateGui();
 }
 

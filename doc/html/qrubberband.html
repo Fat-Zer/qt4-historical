@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/gui/widgets/qrubberband.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/src/gui/widgets/qrubberband.cpp -->
 <head>
     <title>Qt 4.1: QRubberBand Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -37,14 +37,14 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>void <b><a href="qrubberband.html#move-2">move</a></b> ( const QPoint &amp; <i>p</i> )</li>
 <li><div class="fn"/>void <b><a href="qrubberband.html#resize">resize</a></b> ( int <i>width</i>, int <i>height</i> )</li>
 <li><div class="fn"/>void <b><a href="qrubberband.html#resize-2">resize</a></b> ( const QSize &amp; <i>size</i> )</li>
-<li><div class="fn"/>void <b><a href="qrubberband.html#setGeometry">setGeometry</a></b> ( const QRect &amp; <i>geom</i> )</li>
-<li><div class="fn"/>void <b><a href="qrubberband.html#setGeometry-2">setGeometry</a></b> ( int <i>x</i>, int <i>y</i>, int <i>w</i>, int <i>h</i> )</li>
+<li><div class="fn"/>void <b><a href="qrubberband.html#setGeometry">setGeometry</a></b> ( const QRect &amp; <i>rect</i> )</li>
+<li><div class="fn"/>void <b><a href="qrubberband.html#setGeometry-2">setGeometry</a></b> ( int <i>x</i>, int <i>y</i>, int <i>width</i>, int <i>height</i> )</li>
 <li><div class="fn"/>Shape <b><a href="qrubberband.html#shape">shape</a></b> () const</li>
 </ul>
 <ul>
 <li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
-<li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <h3>Additional Inherited Members</h3>
 <ul>
@@ -58,6 +58,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>4 static public members inherited from <a href="qobject.html#static-public-members">QObject</a></li>
 <li><div class="fn"/>39 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
+<li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -91,11 +92,11 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="Shape-enum"></a>enum QRubberBand::Shape</h3>
 <p>This enum specifies what shape a <a href="qrubberband.html">QRubberBand</a> should have. This is a drawing hint that is passed down to the style system, and can be interpreted by each <a href="qstyle.html">QStyle</a>.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QRubberBand::Line</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">A <a href="qrubberband.html">QRubberBand</a> can represent a vertical or horizontal line. Geometry is still given in <a href="qwidget.html#rect-prop">rect</a>() and the line will fill the given geometry on most styles.</td></tr>
 <tr><td valign="top"><tt>QRubberBand::Rectangle</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">A <a href="qrubberband.html">QRubberBand</a> can represent a rectangle. Some styles will interpret this as a filled (often semi-transparent) rectangle, or a rectangular outline.</td></tr>
-</table>
+</table></p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QRubberBand"></a>QRubberBand::QRubberBand ( <a href="qrubberband.html#Shape-enum">Shape</a> <i>s</i>, <a href="qwidget.html">QWidget</a> * <i>p</i> = 0 )</h3>
@@ -107,27 +108,28 @@ body { background: #ffffff; color: black; }</style>
 <p>Moves the rubberband to point (<i>x</i>, <i>y</i>).</p>
 <p>See also <a href="qrubberband.html#resize">resize</a>().</p>
 <h3 class="fn"><a name="move-2"></a>void QRubberBand::move ( const <a href="qpoint.html">QPoint</a> &amp; <i>p</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Moves the rubberband to point <i>p</i>.</p>
 <p>See also <a href="qrubberband.html#resize">resize</a>().</p>
 <h3 class="fn"><a name="resize"></a>void QRubberBand::resize ( int <i>width</i>, int <i>height</i> )</h3>
 <p>Resizes the rubberband so that its width is <i>width</i>, and its height is <i>height</i>.</p>
 <p>See also <a href="qrubberband.html#move">move</a>().</p>
 <h3 class="fn"><a name="resize-2"></a>void QRubberBand::resize ( const <a href="qsize.html">QSize</a> &amp; <i>size</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Resizes the rubberband so that its new size is <i>size</i>.</p>
 <p>See also <a href="qrubberband.html#move">move</a>().</p>
-<h3 class="fn"><a name="setGeometry"></a>void QRubberBand::setGeometry ( const <a href="qrect.html">QRect</a> &amp; <i>geom</i> )</h3>
-<p>Same as <a href="qwidget.html#geometry-prop">QWidget::setGeometry</a>().</p>
-<h3 class="fn"><a name="setGeometry-2"></a>void QRubberBand::setGeometry ( int <i>x</i>, int <i>y</i>, int <i>w</i>, int <i>h</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
-<p>Same as <a href="qwidget.html#geometry-prop">QWidget::setGeometry</a>().</p>
+<h3 class="fn"><a name="setGeometry"></a>void QRubberBand::setGeometry ( const <a href="qrect.html">QRect</a> &amp; <i>rect</i> )</h3>
+<p>Sets the geometry of the rubber band to <i>rect</i>, specified in the coordinate system of its parent widget.</p>
+<p>See also <a href="qwidget.html#geometry-prop">QWidget::geometry</a>.</p>
+<h3 class="fn"><a name="setGeometry-2"></a>void QRubberBand::setGeometry ( int <i>x</i>, int <i>y</i>, int <i>width</i>, int <i>height</i> )</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p>Sets the geometry of the rubberband to the rectangle whose top-left corner lies at the point (<i>x</i>, <i>y</i>), and with dimensions specified by <i>width</i> and <i>height</i>. The geometry is specified in the parent widget's coordinate system.</p>
 <h3 class="fn"><a name="shape"></a><a href="qrubberband.html#Shape-enum">Shape</a> QRubberBand::shape () const</h3>
 <p>Returns the shape of this rubber band. The shape can only be set upon construction.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

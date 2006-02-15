@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt Assistant of the Qt Toolkit.
 **
@@ -57,47 +57,83 @@ static QAssistantClientPrivate *data( const QAssistantClient *client, bool creat
     \inmodule QtAssistant
     \ingroup helpsystem
 
-    Using Qt Assistant is simple: create a QAssistantClient instance,
-    then call showPage() as often as necessary to show your help
-    pages. When you call showPage(), Qt Assistant will be launched if
-    it isn't already running.
+    In order to make Qt Assistant act as a customized help tool for
+    your application, you must provide your application with a
+    QAssistantClient object in addition to a \l
+    {assistant-manual.html#profiles}{Qt Assistant Document Profile}
+    (\c .adp file) and the associated documentation.
 
-    The QAssistantClient instance can open (openAssistant()) or close
-    (closeAssistant()) Qt Assistant whenever required. If Qt Assistant
-    is open, isOpen() returns true.
+    Note that the QAssistantClient class is not included in the Qt
+    library. To use it you must add the following line to your pro
+    file:
+
+    \code
+        CONFIG += assistant
+    \endcode
+
+    A QAssistantClient instance can open or close Qt Assistant
+    whenever it is required.
+
+    Once you have created a QAssistantClient instance, specifying the
+    path to the Qt Assistant executable, using Qt Assistant is
+    simple: You can either call the openAssistant() slot to show the
+    defined start page of the documentation, or you can call the
+    showPage() slot to show a particular help page. When you call
+    openAssistant() and showPage(), Qt Assistant will be launched if
+    it isn't already running. When Qt Assistant is running, the
+    isOpen() function returns true.
+
+    When calling showPage() the Qt Assistant instance will also be
+    brought to the foreground if its hidden. The showPage() slot can
+    be called multiple times, while calling openAssistant() several
+    times without closing the application in between, will have no
+    effect.
+
+    You can close Qt Assistant at any time using the closeAssistant()
+    slot. When you call openAssistant(), or you call showPage()
+    without a previous call to openAssistant(), the assistantOpened()
+    signal is emitted. Similarly when closeAssistant() is called,
+    assistantClosed() is emitted. In either case, if an error occurs,
+    error() is emitted.
 
     One QAssistantClient instance interacts with one Qt Assistant
     instance, so every time you call openAssistant(), showPage() or
     closeAssistant() they are applied to the particular Qt Assistant
     instance associated with the QAssistantClient.
 
-    When you call openAssistant() the assistantOpened() signal is
-    emitted. Similarly when closeAssistant() is called,
-    assistantClosed() is emitted. In either case, if an error occurs,
-    error() is emitted.
+    Qt Assistant's documentation set can be altered using the command
+    line arguments that are passed to the application when it is
+    launched. When started without any options, Qt Assistant displays
+    a default set of documentation. When Qt is installed, the default
+    documentation set in Qt Assistant contains the Qt reference
+    documentation as well as the tools that come with Qt, such as \QD
+    and \c qmake.
 
-    This class is not included in the Qt library itself. To use it you
-    must link against \c libqassistantclient.a (Unix) or \c
-    qassistantclient.lib (Windows), which is built into \c INSTALL/lib
-    if you built the Qt tools (\c INSTALL is the directory where Qt is
-    installed). If you use qmake, then you can simply add the following
-    line to your pro file:
+    Use the setArguments() function to specify the command line
+    arguments. You can add or remove documentation from Qt Assistant
+    by adding and removing the relevant content files: The command
+    line arguments are \c {-addContentFile file.dcf} and \c
+    {-removeContentFile file.dcf} respectively. You can make Qt
+    Assistant run customized documentation sets that are separate from
+    the Qt documentation, by specifying a profile: \c {-profile
+    myapplication.adp}. The profile format can also be used to alter
+    several of Qt Assistant's properties such as its title and
+    startpage.
 
-    \code
-        CONFIG += assistant
-    \endcode
+    The Documentation Content File (\c .dcf) and Qt Assistant
+    Documentation Profile (\c .adp) formats are documented in the \l
+    {assistant-manual.html}{Qt Assistant Manual}.
 
-    See also \l{Qt Assistant Manual#Modifying The Default Documentation Set}{Modifying The Default Documentation Set}.
-    \omit
-    \sa \link assistant-manual.html#modifying-the-default-documentation-set \endlink
-    \endomit
+    \sa {Qt Assistant Manual}
 */
 
 /*!
     \fn void QAssistantClient::assistantOpened()
 
-    This signal is emitted when Qt Assistant is open and the
+    This signal is emitted when Qt Assistant is opened and the
     client-server communication is set up.
+
+    \sa openAssistant(), showPage()
 */
 
 /*!
@@ -107,6 +143,8 @@ static QAssistantClientPrivate *data( const QAssistantClient *client, bool creat
     closed. This happens when the user exits Qt Assistant, if an
     error in the server or client occurs, or if closeAssistant() is
     called.
+
+    \sa closeAssistant()
 */
 
 /*!
@@ -147,7 +185,7 @@ QAssistantClient::QAssistantClient( const QString &path, QObject *parent )
     connect( socket, SIGNAL(disconnected()),
             SLOT(socketConnectionClosed()) );
     connect( socket, SIGNAL(error(QAbstractSocket::SocketError)),
-             SLOT(socketError(QAbstractSocket::SocketError)) );
+             SLOT(socketError()) );
     opened = false;
     proc = new QProcess( this );
     port = 0;
@@ -180,12 +218,18 @@ QAssistantClient::~QAssistantClient()
 }
 
 /*!
-    This function opens Qt Assistant, and sets up the client-server
-    communiction between the application and Qt Assistant. If it is
-    already open, this function does nothing. If an error occurs,
-    error() is emitted.
+    Opens Qt Assistant, i.e. sets up the client-server communication
+    between the application and Qt Assistant, and shows the start page
+    specified by the current \l {assistant-manual.html#profiles}{Qt
+    Assistant Document Profile}. If there is no specfied profile, and
+    Qt is installed, the default start page is the Qt Reference
+    Documentation's index page.
 
-    \sa assistantOpened()
+    If the connection is already established, this function does
+    nothing. Use the showPage() function to show another page. If an
+    error occurs, the error() signal is emitted.
+
+    \sa showPage(), assistantOpened()
 */
 void QAssistantClient::openAssistant()
 {
@@ -243,29 +287,31 @@ void QAssistantClient::readPort()
 }
 
 /*!
-    Use this function to close Qt Assistant.
+    Closes the Qt Assistant instance.
 
-    \sa assistantClosed()
+    \sa openAssistant(), assistantClosed()
 */
 void QAssistantClient::closeAssistant()
 {
     if ( !opened )
         return;
     proc->terminate();
+    if (!proc->waitForFinished(2000)) {
+        // If the process hasn't died after 2 seconds,
+        // we kill it, causing it to exit immediately.
+        proc->kill();
+    }
 }
 
 /*!
-    Call this function to make Qt Assistant show a particular \a page.
-    The \a page is a filename (e.g. \c myhelpfile.html).
-    See \l{Qt Assistant Manual#Modifying the Default Documentation Set}
-    for further information.
+    Brings Qt Assistant to the forground showing the given \a page.
+    The \a page parameter is a filename (e.g. \c myhelpfile.html).
 
-    If Qt Assistant hasn't been \link openAssistant() opened\endlink
-    yet, this function will do nothing. You can use isOpen() to
-    determine whether Qt Assistant is up and running, or you can
-    connect to the asssistantOpened() signal.
+    If Qt Assistant hasn't been opened yet, this function will call
+    the openAssistant() slot with the specified page as the start
+    page.
 
-    \sa isOpen(), assistantOpened()
+    \sa openAssistant()
 */
 void QAssistantClient::showPage( const QString &page )
 {
@@ -303,8 +349,9 @@ void QAssistantClient::socketConnectionClosed()
     emit assistantClosed();
 }
 
-void QAssistantClient::socketError(QAbstractSocket::SocketError err)
+void QAssistantClient::socketError()
 {
+    QAbstractSocket::SocketError err = socket->error();
     if (err == QTcpSocket::ConnectionRefusedError)
         emit error( tr( "Could not connect to Assistant: Connection refused" ) );
     else if (err == QTcpSocket::HostNotFoundError)
@@ -324,8 +371,18 @@ void QAssistantClient::readStdError()
 /*!
     \fn void QAssistantClient::setArguments(const QStringList &arguments)
 
-    Sets the command line \a arguments used when Qt Assistant is
-    started.
+    Sets the command line \a arguments that are passed to Qt Assistant
+    when it is launched.
+
+    The command line arguments can be used to alter Qt Assistant's
+    documentation set. When started without any options, Qt Assistant
+    displays a default set of documentation. When Qt is installed, the
+    default documentation set in Qt Assistant contains the Qt
+    reference documentation as well as the tools that come with Qt,
+    such as Qt Designer and qmake.
+
+    \sa {assistant-manual.html#customizing-qt-assistant}{Customizing
+    Qt Assistant}
 */
 void QAssistantClient::setArguments( const QStringList &args )
 {

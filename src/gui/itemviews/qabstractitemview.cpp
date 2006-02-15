@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -47,6 +47,8 @@ QAbstractItemViewPrivate::QAbstractItemViewPrivate()
         selectionModel(0),
         selectionMode(QAbstractItemView::ExtendedSelection),
         selectionBehavior(QAbstractItemView::SelectItems),
+        pressedModifiers(Qt::NoModifier),
+        pressedPosition(QPoint(-1, -1)),
         state(QAbstractItemView::NoState),
         editTriggers(QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed),
         tabKeyNavigation(false),
@@ -428,9 +430,8 @@ QAbstractItemView::~QAbstractItemView()
 
 /*!
   Sets the \a model for the view to present.
-  \omit
+
   This function will also create and set a new selection model.
-  \endomit
 */
 void QAbstractItemView::setModel(QAbstractItemModel *model)
 {
@@ -451,6 +452,13 @@ void QAbstractItemView::setModel(QAbstractItemModel *model)
     d->model = model;
 
     if (d->model) {
+        // These asserts do basic sanity checking of the model
+        
+        // A model should return the same index, including its internal id/pointer.
+        Q_ASSERT(model->index(0,0) == model->index(0,0));
+        // The parent of a top level index should be invalid.
+        Q_ASSERT(model->index(0,0).parent() == QModelIndex());
+
         connect(d->model, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
                 this, SLOT(dataChanged(QModelIndex,QModelIndex)));
         connect(d->model, SIGNAL(rowsInserted(QModelIndex,int,int)),
@@ -599,9 +607,14 @@ QAbstractItemView::SelectionBehavior QAbstractItemView::selectionBehavior() cons
 }
 
 /*!
-    Sets the current item to be the itm at \a index.
+    Sets the current item to be the item at \a index.
+    Depending on the current selection mode, the item may also be selected.
 
-    \sa currentIndex()
+    To set an item as the current item without selecting it, call
+
+    \c{selectionModel()->setCurrentIndex(index, QItemSelectionModel::NoUpdate);}
+
+    \sa currentIndex(), setSelectionMode(), selectionMode()
 */
 void QAbstractItemView::setCurrentIndex(const QModelIndex &index)
 {
@@ -626,12 +639,9 @@ QModelIndex QAbstractItemView::currentIndex() const
 void QAbstractItemView::reset()
 {
     Q_D(QAbstractItemView);
-    QMap<QPersistentModelIndex, QWidget*>::iterator it = d->editors.begin();
-    for (; it != d->editors.end(); ++it) {
-        QWidget *editor = it.value();
-        editor->hide();
-        d->releaseEditor(editor);
-    }
+    QMap<QPersistentModelIndex, QPointer<QWidget> >::const_iterator it = d->editors.begin();
+    for (; it != d->editors.end(); ++it)
+        d->releaseEditor(it.value());
     d->editors.clear();
     d->persistent.clear();
     setState(NoState);
@@ -870,9 +880,9 @@ bool QAbstractItemView::event(QEvent *event)
 /*!
     \fn bool QAbstractItemView::viewportEvent(QEvent *event)
 
-    This function is used to handle tool tips, status tips, and What's
-    This? mode, if the given \a event is a QEvent::ToolTip, a
-    QEvent::WhatsThis, or a QEvent::StatusTip. It passes all other
+    This function is used to handle tool tips, and What's
+    This? mode, if the given \a event is a QEvent::ToolTip,or a
+    QEvent::WhatsThis. It passes all other
     events on to its base class viewportEvent() handler.
 */
 bool QAbstractItemView::viewportEvent(QEvent *event)
@@ -960,14 +970,17 @@ void QAbstractItemView::mousePressEvent(QMouseEvent *event)
     d->pressedIndex = index;
     d->pressedModifiers = event->modifiers();
     QItemSelectionModel::SelectionFlags command = selectionCommand(index, event);
-    if (index.isValid())
-        selectionModel()->setCurrentIndex(index, QItemSelectionModel::NoUpdate);
-    QPoint offset(horizontalOffset(), verticalOffset());
+    QPoint offset = d->offset();
     if ((command & QItemSelectionModel::Current) == 0)
         d->pressedPosition = pos + offset;
-
+    
+    if (d->pressedPosition == QPoint(-1, -1))
+        d->pressedPosition = visualRect(selectionModel()->currentIndex()).center() + offset;
     QRect rect(d->pressedPosition - offset, pos);
     setSelection(rect.normalized(), command);
+    
+    if (index.isValid())
+        selectionModel()->setCurrentIndex(index, QItemSelectionModel::NoUpdate);
 
     // signal handlers may change the model
     if (index.isValid()) {
@@ -994,7 +1007,7 @@ void QAbstractItemView::mouseMoveEvent(QMouseEvent *event)
         return;
 #ifndef QT_NO_DRAGANDDROP
     if (state() == DraggingState) {
-        topLeft = d->pressedPosition - QPoint(horizontalOffset(), verticalOffset());
+        topLeft = d->pressedPosition - d->offset();
         if ((topLeft - bottomRight).manhattanLength() > QApplication::startDragDistance()) {
             startDrag(model()->supportedDropActions());
             setState(NoState); // the startDrag will return when the dnd operation is done
@@ -1005,7 +1018,7 @@ void QAbstractItemView::mouseMoveEvent(QMouseEvent *event)
 #endif // QT_NO_DRAGANDDROP
 
     if (d->selectionMode != SingleSelection)
-        topLeft = d->pressedPosition - QPoint(horizontalOffset(), verticalOffset());
+        topLeft = d->pressedPosition - d->offset();
     else
         topLeft = bottomRight;
 
@@ -1021,16 +1034,18 @@ void QAbstractItemView::mouseMoveEvent(QMouseEvent *event)
             emit entered(index);
 #ifndef QT_NO_STATUSTIP
             QString statustip = model()->data(index, Qt::StatusTipRole).toString();
-            if (!statustip.isEmpty()){
+            if (parent() && !statustip.isEmpty()) {
                 QStatusTipEvent tip(statustip);
                 QApplication::sendEvent(parent(), &tip);
             }
 #endif
         } else {
 #ifndef QT_NO_STATUSTIP
-            QString emptyString;
-            QStatusTipEvent tip(emptyString);
-            QApplication::sendEvent(parent(), &tip);
+            if (parent()) {
+                QString emptyString;
+                QStatusTipEvent tip(emptyString);
+                QApplication::sendEvent(parent(), &tip);
+            }
 #endif
             emit viewportEntered();
         }
@@ -1049,7 +1064,7 @@ void QAbstractItemView::mouseMoveEvent(QMouseEvent *event)
     }
 #endif
 
-    if (d->selectionAllowed(index) && selectionModel()) {
+    if ((event->buttons() & Qt::LeftButton) && d->selectionAllowed(index) && selectionModel()) {
         setState(DragSelectingState);
         QItemSelectionModel::SelectionFlags command = selectionCommand(index, event);
 
@@ -1072,6 +1087,9 @@ void QAbstractItemView::mouseMoveEvent(QMouseEvent *event)
 */
 void QAbstractItemView::mouseReleaseEvent(QMouseEvent *event)
 {
+    Q_D(QAbstractItemView);
+    d->pressedPosition = QPoint(-1, -1);
+
     QPoint pos = event->pos();
     QModelIndex index = indexAt(pos);
 
@@ -1082,13 +1100,13 @@ void QAbstractItemView::mouseReleaseEvent(QMouseEvent *event)
 
     if (selectionModel())
         selectionModel()->select(index, selectionCommand(index, event));
-
+    
     if (index == d_func()->pressedIndex && index.isValid()) {
         // signal handlers may change the model
         QPersistentModelIndex persistent = index;
+        emit clicked(persistent);
         if (edit(persistent, NoEditTriggers, event)) // send event to delegate
             return;
-        emit clicked(persistent);
         if (style()->styleHint(QStyle::SH_ItemView_ActivateItemOnSingleClick))
             emit activated(persistent);
     }
@@ -1233,7 +1251,6 @@ void QAbstractItemView::dropEvent(QDropEvent *event)
                 index = index.parent();
                 break;
             case OnItem:
-                break;
             case OnViewport:
                 break;
             }
@@ -1295,7 +1312,7 @@ void QAbstractItemView::keyPressEvent(QKeyEvent *event)
         return;
 
 #ifdef QT_KEYPAD_NAVIGATION
-    switch( event->key() ) {
+    switch(event->key()) {
     case Qt::Key_Select:
         if (QApplication::keypadNavigationEnabled()) {
             if (!hasEditFocus()) {
@@ -1357,13 +1374,13 @@ void QAbstractItemView::keyPressEvent(QKeyEvent *event)
         QItemSelectionModel::SelectionFlags command = selectionCommand(newCurrent, event);
         if (command & QItemSelectionModel::Current) {
             selectionModel()->setCurrentIndex(newCurrent, QItemSelectionModel::NoUpdate);
-            QPoint offset(horizontalOffset(), verticalOffset());
-            QRect rect(d->pressedPosition - offset, visualRect(newCurrent).center());
+            if (d->pressedPosition == QPoint(-1, -1))
+                d->pressedPosition = visualRect(current).center();
+            QRect rect(d->pressedPosition - d->offset(), visualRect(newCurrent).center());
             setSelection(rect.normalized(), command);
         } else {
             selectionModel()->setCurrentIndex(newCurrent, command);
-            QPoint offset(horizontalOffset(), verticalOffset());
-            d->pressedPosition = visualRect(newCurrent).center() + offset;
+            d->pressedPosition = visualRect(newCurrent).center() + d->offset();
         }
         return;
     }
@@ -1393,6 +1410,7 @@ void QAbstractItemView::keyPressEvent(QKeyEvent *event)
         selectionModel()->select(currentIndex(), selectionCommand(currentIndex(), event));
         break;
 #ifdef Q_WS_MAC
+    case Qt::Key_Enter:
     case Qt::Key_Return:
         if (!edit(currentIndex(), EditKeyPressed, event))
             event->ignore();
@@ -1406,6 +1424,7 @@ void QAbstractItemView::keyPressEvent(QKeyEvent *event)
         if (!edit(currentIndex(), EditKeyPressed, event))
             event->ignore();
         break;
+    case Qt::Key_Enter:
     case Qt::Key_Return:
     case Qt::Key_Select:
         emit activated(currentIndex());
@@ -1528,7 +1547,7 @@ bool QAbstractItemView::edit(const QModelIndex &index, EditTrigger trigger, QEve
 */
 void QAbstractItemView::updateEditorData()
 {
-    QMap<QPersistentModelIndex, QWidget*>::iterator it = d_func()->editors.begin();
+    QMap<QPersistentModelIndex, QPointer<QWidget> >::iterator it = d_func()->editors.begin();
     for (; it != d_func()->editors.end(); ++it)
         if (it.value() && it.key().isValid())
             itemDelegate()->setEditorData(it.value(), it.key());
@@ -1541,18 +1560,17 @@ void QAbstractItemView::updateEditorGeometries()
 {
     Q_D(QAbstractItemView);
     QStyleOptionViewItem option = viewOptions();
-    QMap<QPersistentModelIndex, QWidget*> editors = d->editors;
-    QMap<QPersistentModelIndex, QWidget*>::iterator it = editors.begin();
+    const QMap<QPersistentModelIndex, QPointer<QWidget> > editors = d->editors;
+    QMap<QPersistentModelIndex, QPointer<QWidget> >::const_iterator it = editors.begin();
     while (it != editors.end()) {
-        Q_ASSERT(it.value());
-        option.rect = visualRect(it.key());
-        if (option.rect.isValid())
-            it.value()->show();
-        else
-            it.value()->hide();
-        if (it.key().isValid()) {
-            if (option.rect.isValid())
+        if (it.key().isValid() && it.value()) {
+            option.rect = visualRect(it.key());
+            if (option.rect.isValid()) {
+                it.value()->show();
                 itemDelegate()->updateEditorGeometry(it.value(), option, it.key());
+            } else {
+                it.value()->hide();
+            }
         } else {
             d->releaseEditor(it.value());
             d->editors.remove(it.key());
@@ -1615,9 +1633,10 @@ void QAbstractItemView::horizontalScrollbarAction(int)
 
 void QAbstractItemView::closeEditor(QWidget *editor, QAbstractItemDelegate::EndEditHint hint)
 {
-    // close the editor
     Q_D(QAbstractItemView);
-    if (editor && !d->persistent.contains(editor)) { // if the editor is not persistent, remove it
+
+    // Close the editor
+    if (editor && !d->persistent.contains(editor)) {
         setState(NoState);
         QModelIndex index = d->editors.key(editor);
         d->editors.remove(index);
@@ -1684,6 +1703,9 @@ void QAbstractItemView::editorDestroyed(QObject *editor)
     This is the number of steps used by the horizontal scrollbar to
     represent the width of an item.
 
+    Note that if the view has a horizontal header, the item steps
+    will be ignored and the header section size will be used instead.
+
     \sa horizontalStepsPerItem() setVerticalStepsPerItem()
 */
 void QAbstractItemView::setHorizontalStepsPerItem(int steps)
@@ -1707,6 +1729,9 @@ int QAbstractItemView::horizontalStepsPerItem() const
 
     This is the number of steps used by the vertical scrollbar to
     represent the height of an item.
+
+    Note that if the view has a vertical header, the item steps
+    will be ignored and the header section size will be used instead.
 
     \sa verticalStepsPerItem() setHorizontalStepsPerItem()
 */
@@ -1771,7 +1796,8 @@ void QAbstractItemView::keyboardSearch(const QString &search)
     if (!match.isEmpty() && match.at(0).isValid()) {
         selectionModel()->setCurrentIndex(match.at(0),
             (d->selectionMode == SingleSelection
-             ? QItemSelectionModel::SelectionFlags(QItemSelectionModel::ClearAndSelect | d->selectionBehaviorFlags())
+             ? QItemSelectionModel::SelectionFlags(QItemSelectionModel::ClearAndSelect
+                                                   | d->selectionBehaviorFlags())
              : QItemSelectionModel::SelectionFlags(QItemSelectionModel::NoUpdate)));
     }
 }
@@ -1790,9 +1816,16 @@ QSize QAbstractItemView::sizeHintForIndex(const QModelIndex &index) const
 /*!
     Returns the height size hint for the specified \a row or -1 if
     there is no model.
+
+    This function is used in views with a vertical header to find the size hint for
+    a header section based on the contents of the given \a row.
+
+    \sa sizeHintForColumn()
 */
 int QAbstractItemView::sizeHintForRow(int row) const
 {
+    Q_D(const QAbstractItemView);
+        
     Q_ASSERT(row >= 0);
     if(!model() || row >= model()->rowCount())
         return -1;
@@ -1805,6 +1838,8 @@ int QAbstractItemView::sizeHintForRow(int row) const
     QModelIndex index;
     for (int c = 0; c < colCount; ++c) {
         index = model()->index(row, c, rootIndex());
+        if (QWidget *editor = d->editors.value(index))
+            height = qMax(height, editor->size().height());
         height = qMax(height, delegate->sizeHint(option, index).height());
     }
     return height;
@@ -1812,9 +1847,16 @@ int QAbstractItemView::sizeHintForRow(int row) const
 
 /*!
     Returns the width size hint for the specified \a column or -1 if there is no model.
+
+    This function is used in views with a horizontal header to find the size hint for
+    a header section based on the contents of the given \a column.
+
+    \sa sizeHintForRow()
 */
 int QAbstractItemView::sizeHintForColumn(int column) const
 {
+    Q_D(const QAbstractItemView);
+
     Q_ASSERT(column >= 0);
     if(!model() || column >= model()->columnCount())
         return -1;
@@ -1827,6 +1869,8 @@ int QAbstractItemView::sizeHintForColumn(int column) const
     QModelIndex index;
     for (int r = 0; r < rows; ++r) {
         index = model()->index(r, column, rootIndex());
+        if (QWidget *editor = d->editors.value(index))
+            width = qMax(width, editor->sizeHint().width());
         width = qMax(width, delegate->sizeHint(option, index).width());
     }
     return width;
@@ -1868,6 +1912,12 @@ void QAbstractItemView::closePersistentEditor(const QModelIndex &index)
     \since 4.1
 
     Sets the given \a widget on the item at the given \a index.
+
+    This function should only be used to display static content within the visible
+    area corresponding to an item of data. If you want to display custom dynamic
+    content or implement a custom editor widget, subclass QItemDelegate instead.
+
+    \sa {Delegate Classes}
 */
 void QAbstractItemView::setIndexWidget(const QModelIndex &index, QWidget *widget)
 {
@@ -1888,6 +1938,7 @@ void QAbstractItemView::setIndexWidget(const QModelIndex &index, QWidget *widget
 */
 QWidget* QAbstractItemView::indexWidget(const QModelIndex &index) const
 {
+    Q_ASSERT(index.isValid());
     return d_func()->editors.value(index);
 }
 
@@ -1968,12 +2019,16 @@ void QAbstractItemView::rowsAboutToBeRemoved(const QModelIndex &parent, int star
 {
     Q_D(QAbstractItemView);
 
+    setState(CollapsingState);
+
     // Ensure one selected item in single selection mode.
     QModelIndex current = currentIndex();
     if (selectionMode() == SingleSelection && current.isValid() &&
-        current.row() >= start && current.row() <= end)
+        current.row() >= start && current.row() <= end &&
+        current.parent() == parent)
     {
-        if (model()->rowCount(parent) < end - start + 1) { // no more children
+        int totalToRemove = end - start + 1;
+        if (model()->rowCount(parent) <= totalToRemove) { // no more children
             if (parent.isValid())
                 setCurrentIndex(parent);
         } else {
@@ -1983,7 +2038,7 @@ void QAbstractItemView::rowsAboutToBeRemoved(const QModelIndex &parent, int star
     }
 
     // Remove all affected editors; this is more efficient than waiting for updateGeometries() to clean out editors for invalid indexes
-    QMap<QPersistentModelIndex, QWidget*>::iterator it = d->editors.begin();
+    QMap<QPersistentModelIndex, QPointer<QWidget> >::iterator it = d->editors.begin();
     while (it != d->editors.end()) {
         QModelIndex index = it.key();
         if (index.row() <= start && index.row() >= end && model()->parent(index) == parent) {
@@ -1998,6 +2053,18 @@ void QAbstractItemView::rowsAboutToBeRemoved(const QModelIndex &parent, int star
 /*!
     \internal
 
+    This slot is called when rows have been removed. The deleted
+    rows are those under the given \a parent from \a start to \a end
+    inclusive.
+*/
+void QAbstractItemViewPrivate::rowsRemoved(const QModelIndex &, int, int)
+{
+    state = QAbstractItemView::NoState;
+}
+
+/*!
+    \internal
+
     This slot is called when columns are about to be removed. The deleted
     columns are those under the given \a parent from \a start to \a end
     inclusive.
@@ -2005,6 +2072,8 @@ void QAbstractItemView::rowsAboutToBeRemoved(const QModelIndex &parent, int star
 void QAbstractItemViewPrivate::columnsAboutToBeRemoved(const QModelIndex &parent, int start, int end)
 {
     Q_Q(QAbstractItemView);
+
+    state = QAbstractItemView::CollapsingState;
 
     // Ensure one selected item in single selection mode.
     QModelIndex current = q->currentIndex();
@@ -2020,6 +2089,30 @@ void QAbstractItemViewPrivate::columnsAboutToBeRemoved(const QModelIndex &parent
                                               current));
         }
     }
+
+    // Remove all affected editors; this is more efficient than waiting for updateGeometries() to clean out editors for invalid indexes
+    QMap<QPersistentModelIndex, QPointer<QWidget> >::iterator it = editors.begin();
+    while (it != editors.end()) {
+        QModelIndex index = it.key();
+        if (index.column() <= start && index.column() >= end && model->parent(index) == parent) {
+            releaseEditor(it.value());
+            it = editors.erase(it);
+        } else {
+            ++it;
+        }
+    }
+}
+
+/*!
+    \internal
+
+    This slot is called when columns have been removed. The deleted
+    rows are those under the given \a parent from \a start to \a end
+    inclusive.
+*/
+void QAbstractItemViewPrivate::columnsRemoved(const QModelIndex &, int, int)
+{
+    state = QAbstractItemView::NoState;
 }
 
 /*!
@@ -2052,7 +2145,10 @@ void QAbstractItemView::currentChanged(const QModelIndex &current, const QModelI
         QWidget *editor = d->editors.value(buddy);
         if (editor) {
             commitData(editor);
-            closeEditor(editor, QAbstractItemDelegate::NoHint);
+            if (current.row() != previous.row())
+                closeEditor(editor, QAbstractItemDelegate::SubmitModelCache);
+            else
+                closeEditor(editor, QAbstractItemDelegate::NoHint);
         }
         d->setDirtyRegion(visualRect(previous));
         d->updateDirtyRegion();
@@ -2492,6 +2588,7 @@ QWidget *QAbstractItemViewPrivate::editor(const QModelIndex &index,
     if (!w) {
         w = q->itemDelegate()->createEditor(viewport, options, index);
         if (w) {
+            w->installEventFilter(q->itemDelegate());
             QObject::connect(w, SIGNAL(destroyed(QObject*)), q, SLOT(editorDestroyed(QObject*)));
             q->itemDelegate()->setEditorData(w, index);
             q->itemDelegate()->updateEditorGeometry(w, options, index);

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -99,7 +99,7 @@ static void qRadioButtonInit(QRadioButton *button)
 */
 
 QRadioButton::QRadioButton(QWidget *parent)
-        : QAbstractButton(*new QRadioButtonPrivate, parent)
+    : QAbstractButton(*new QRadioButtonPrivate, parent)
 {
     qRadioButtonInit(this);
 }
@@ -111,7 +111,7 @@ QRadioButton::QRadioButton(QWidget *parent)
 */
 
 QRadioButton::QRadioButton(const QString &text, QWidget *parent)
-        : QAbstractButton(*new QRadioButtonPrivate, parent)
+    : QAbstractButton(*new QRadioButtonPrivate, parent)
 {
     qRadioButtonInit(this);
     setText(text);
@@ -202,7 +202,7 @@ bool QRadioButton::event(QEvent *e)
     argument and then use setObjectName() instead.
 */
 QRadioButton::QRadioButton(QWidget *parent, const char* name)
-    :QAbstractButton(parent)
+    : QAbstractButton(*new QRadioButtonPrivate, parent)
 {
     setObjectName(QString::fromAscii(name));
     qRadioButtonInit(this);
@@ -213,7 +213,7 @@ QRadioButton::QRadioButton(QWidget *parent, const char* name)
     argument and then use setObjectName() instead.
 */
 QRadioButton::QRadioButton(const QString &text, QWidget *parent, const char* name)
-    :QAbstractButton(parent)
+    : QAbstractButton(*new QRadioButtonPrivate, parent)
 {
     setObjectName(QString::fromAscii(name));
     qRadioButtonInit(this);

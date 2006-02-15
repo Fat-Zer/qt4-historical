@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/corelib/kernel/qobject.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/src/corelib/kernel/qobject.cpp -->
 <head>
     <title>Qt 4.1: QObject Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -120,7 +120,8 @@ body { background: #ffffff; color: black; }</style>
 <p>QObjects organize themselves in object trees. When you create a QObject with another object as parent, the object will automatically add itself to the parent's <a href="qobject.html#children">children</a>() list. The parent takes ownership of the object i.e. it will automatically delete its children in its destructor. You can look for an object by name and optionally type using <a href="qobject.html#findChild">findChild</a>() or <a href="qobject.html#findChildren">findChildren</a>().</p>
 <p>Every object has an <a href="qobject.html#objectName-prop">objectName</a>() and its class name can be found via the corresponding <a href="qobject.html#metaObject">metaObject</a>() (see <a href="qmetaobject.html#className">QMetaObject::className</a>()). You can determine whether the object's class inherits another class in the QObject inheritance hierarchy by using the <a href="qobject.html#inherits">inherits</a>() function.</p>
 <p>When an object is deleted, it emits a <a href="qobject.html#destroyed">destroyed</a>() signal. You can catch this signal to avoid dangling references to QObjects. The <a href="qpointer.html">QPointer</a> class provides an elegant way to use this feature.</p>
-<p>QObjects can receive events through <a href="qobject.html#event">event</a>() and filter the events of other objects. See <a href="qobject.html#installEventFilter">installEventFilter</a>() and <a href="qobject.html#eventFilter">eventFilter</a>() for details. A convenience handler, <a href="qobject.html#childEvent">childEvent</a>(), can be reimplemented to catch child events. Events are delivered in the thread in which the object was created; see <a href="threads.html">Thread Support in Qt</a> and <a href="qobject.html#thread">thread</a>() for details.</p>
+<p>QObjects can receive events through <a href="qobject.html#event">event</a>() and filter the events of other objects. See <a href="qobject.html#installEventFilter">installEventFilter</a>() and <a href="qobject.html#eventFilter">eventFilter</a>() for details. A convenience handler, <a href="qobject.html#childEvent">childEvent</a>(), can be reimplemented to catch child events.</p>
+<p>Events are delivered in the thread in which the object was created; see <a href="threads.html">Thread Support in Qt</a> and <a href="qobject.html#thread">thread</a>() for details. Note that for QObjects that are created before <a href="qapplication.html">QApplication</a>, <a href="qobject.html#thread">thread</a>() returns zero. This means that the main thread will only handle posted events for these objects; other event processing is not done at all for objects with no thread. Use the <a href="qobject.html#moveToThread">moveToThread</a>() function to change the thread affinity for an object and its children (the object cannot be moved if it has a parent).</p>
 <p>Last but not least, QObject provides the basic timer support in Qt; see <a href="qtimer.html">QTimer</a> for high-level support for timers.</p>
 <p>Notice that the <a href="qobject.html#Q_OBJECT">Q_OBJECT</a> macro is mandatory for any object that implements signals, slots or properties. You also need to run the <a href="moc.html#moc">Meta Object Compiler</a> on the source file. We strongly recommend the use of this macro in all subclasses of QObject regardless of whether or not they actually use signals, slots and properties, since failure to do so may lead certain functions to exhibit strange behavior.</p>
 <p>All Qt widgets inherit QObject. The convenience function <a href="qobject.html#isWidgetType">isWidgetType</a>() returns whether an object is actually a widget. It is much faster than <a href="qobject.html#qobject_cast">qobject_cast</a>&lt;<a href="qwidget.html">QWidget</a>&gt;(<i>obj</i>) or <i>obj</i>-&gt;<a href="qobject.html#inherits">inherits</a>(&quot;<a href="qwidget.html">QWidget</a>&quot;).</p>
@@ -210,7 +211,7 @@ body { background: #ffffff; color: black; }</style>
 <p><b>Note:</b> This function is <a href="threads.html#thread-safe">thread-safe</a>.</p>
 <p>See also <a href="qobject.html#disconnect">disconnect</a>() and <a href="qobject.html#sender">sender</a>().</p>
 <h3 class="fn"><a name="connect-2"></a>bool QObject::connect ( const QObject * <i>sender</i>, const char * <i>signal</i>, const char * <i>method</i>, <a href="qt.html#ConnectionType-enum">Qt::ConnectionType</a> <i>type</i> = Qt::AutoCompatConnection ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Connects <i>signal</i> from the <i>sender</i> object to this object's <i>method</i>.</p>
 <p>Equivalent to connect(<i>sender</i>, <i>signal</i>, <tt>this</tt>, <i>method</i>, <i>type</i>).</p>
 <p><b>Note:</b> This function is <a href="threads.html#thread-safe">thread-safe</a>.</p>
@@ -262,12 +263,12 @@ body { background: #ffffff; color: black; }</style>
 <p><b>Note:</b> This function is <a href="threads.html#thread-safe">thread-safe</a>.</p>
 <p>See also <a href="qobject.html#connect">connect</a>().</p>
 <h3 class="fn"><a name="disconnect-2"></a>bool QObject::disconnect ( const char * <i>signal</i> = 0, const QObject * <i>receiver</i> = 0, const char * <i>method</i> = 0 )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Disconnects <i>signal</i> from <i>method</i> of <i>receiver</i>.</p>
 <p>A signal-slot connection is removed when either of the objects involved are destroyed.</p>
 <p><b>Note:</b> This function is <a href="threads.html#thread-safe">thread-safe</a>.</p>
 <h3 class="fn"><a name="disconnect-3"></a>bool QObject::disconnect ( const QObject * <i>receiver</i>, const char * <i>method</i> = 0 )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Disconnects all signals in this object from <i>receiver</i>'s <i>method</i>.</p>
 <p>A signal-slot connection is removed when either of the objects involved are destroyed.</p>
 <h3 class="fn"><a name="disconnectNotify"></a>void QObject::disconnectNotify ( const char * <i>signal</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
@@ -347,7 +348,7 @@ body { background: #ffffff; color: black; }</style>
 <p><b>Warning:</b> This function is not available with MSVC 6. Use qFindChildren() instead if you need to support that version of the compiler.</p>
 <p>See also <a href="qobject.html#findChild">findChild</a>() and qFindChildren().</p>
 <h3 class="fn"><a name="findChildren-2"></a><a href="qlist.html">QList</a>&lt;T&gt; QObject::findChildren ( const <a href="qregexp.html">QRegExp</a> &amp; <i>regExp</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns the children of this object that can be casted to type T and that have names matching the regular expression <i>regExp</i>, or an empty list if there are no such objects. The search is performed recursively.</p>
 <p><b>Warning:</b> This function is not available with MSVC 6. Use qFindChildren() instead if you need to support that version of the compiler.</p>
 <h3 class="fn"><a name="inherits"></a>bool QObject::inherits ( const char * <i>className</i> ) const</h3>
@@ -450,7 +451,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Makes the object a child of <i>parent</i>.</p>
 <p>See also <a href="qobject.html#parent">parent</a>() and <a href="qwidget.html#setParent">QWidget::setParent</a>().</p>
 <h3 class="fn"><a name="setProperty"></a>bool QObject::setProperty ( const char * <i>name</i>, const <a href="qvariant.html">QVariant</a> &amp; <i>value</i> )</h3>
-<p>Sets the value of the obj1ect's <i>name</i> property to <i>value</i>.</p>
+<p>Sets the value of the object's <i>name</i> property to <i>value</i>.</p>
 <p>Returns true if the operation was successful; otherwise returns false.</p>
 <p>Information about all available properties is provided through the <a href="qobject.html#metaObject">metaObject</a>().</p>
 <p>See also <a href="qobject.html#property">property</a>() and <a href="qobject.html#metaObject">metaObject</a>().</p>
@@ -512,15 +513,15 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="QObjectList-typedef"></a>typedef QObjectList</h3>
 <p>Synonym for <a href="qlist.html">QList</a>&lt;<a href="qobject.html">QObject</a>&gt;.</p>
 <h3 class="fn"><a name="qFindChild-3"></a>T qFindChild ( const QObject * <i>obj</i>, const <a href="qstring.html">QString</a> &amp; <i>name</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>This function is equivalent to <i>obj</i>-&gt;<a href="qobject.html#findChild">findChild</a>&lt;T&gt;(<i>name</i>). It is provided as a work-around for MSVC 6, which doesn't support member template functions.</p>
 <p>See also <a href="qobject.html#findChild">QObject::findChild</a>().</p>
 <h3 class="fn"><a name="qFindChildren-4"></a><a href="qlist.html">QList</a>&lt;T&gt; qFindChildren ( const QObject * <i>obj</i>, const <a href="qstring.html">QString</a> &amp; <i>name</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>This function is equivalent to <i>obj</i>-&gt;<a href="qobject.html#findChildren">findChildren</a>&lt;T&gt;(<i>name</i>). It is provided as a work-around for MSVC 6, which doesn't support member template functions.</p>
 <p>See also <a href="qobject.html#findChildren">QObject::findChildren</a>().</p>
 <h3 class="fn"><a name="qFindChildren-7"></a><a href="qlist.html">QList</a>&lt;T&gt; qFindChildren ( const QObject * <i>obj</i>, const <a href="qregexp.html">QRegExp</a> &amp; <i>regExp</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>This function is equivalent to <i>obj</i>-&gt;<a href="qobject.html#findChildren">findChildren</a>&lt;T&gt;(<i>regExp</i>). It is provided as a work-around for MSVC 6, which doesn't support member template functions.</p>
 <h3 class="fn"><a name="qobject_cast"></a>T qobject_cast ( QObject * <i>object</i> )</h3>
 <p>Returns the given <i>object</i> cast to type T if the object is of type T (or of a subclass); otherwise returns 0.</p>
@@ -577,7 +578,7 @@ body { background: #ffffff; color: black; }</style>
         ...
     };</pre>
 <p>See the <a href="tools-plugandpaintplugins-basictools.html">Plug &amp; Paint Basic Tools</a> example for details.</p>
-<p>See also <a href="qpluginloader.html#Q_DECLARE_INTERFACE">Q_DECLARE_INTERFACE</a>(), <a href="qpluginloader-obsolete.html#Q_EXPORT_PLUGIN">Q_EXPORT_PLUGIN</a>(), and <a href="plugins-howto.html">How to Create Qt Plugins</a>.</p>
+<p>See also <a href="qpluginloader.html#Q_DECLARE_INTERFACE">Q_DECLARE_INTERFACE</a>(), <a href="qpluginloader.html#Q_EXPORT_PLUGIN2">Q_EXPORT_PLUGIN2</a>(), and <a href="plugins-howto.html">How to Create Qt Plugins</a>.</p>
 <h3 class="fn"><a name="Q_OBJECT"></a>Q_OBJECT</h3>
 <p>The Q_OBJECT macro must appear in the private section of a class definition that declares its own signals and slots or that uses other services provided by Qt's meta-object system.</p>
 <p>For example:</p>
@@ -616,8 +617,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="properties.html">Qt's Property System</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

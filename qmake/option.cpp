@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the qmake application of the Qt Toolkit.
 **
@@ -22,6 +22,7 @@
 ****************************************************************************/
 
 #include "option.h"
+#include "cachekeys.h"
 #include <qdir.h>
 #include <qregexp.h>
 #include <qhash.h>
@@ -513,39 +514,14 @@ bool Option::postProcessProject(QMakeProject *project)
     return true;
 }
 
-struct FixStringCacheKey
-{
-    mutable uint hash;
-    QString string, pwd;
-    uchar flags;
-    FixStringCacheKey(const QString &s, uchar f)
-    {
-        hash = 0;
-        pwd = qmake_getpwd();
-        string = s;
-        flags = f;
-    }
-    bool operator==(const FixStringCacheKey &f) const
-    {
-        return (hashCode() == f.hashCode() &&
-                f.flags == flags &&
-                f.string == string &&
-                f.pwd == pwd);
-    }
-    inline uint hashCode() const {
-        if(!hash)
-            hash = qHash(string) | qHash(flags) /*| qHash(pwd)*/;
-        return hash;
-    }
-};
-uint qHash(const FixStringCacheKey &f) { return f.hashCode(); }
-
 QString
 Option::fixString(QString string, uchar flags)
 {
     static QHash<FixStringCacheKey, QString> *cache = 0;
-    if(!cache)
+    if(!cache) {
         cache = new QHash<FixStringCacheKey, QString>;
+        qmakeAddCacheClear(qmakeDeleteCacheClear_QHashFixStringCacheKeyQString, (void**)&cache);
+    }
     FixStringCacheKey cacheKey(string, flags);
     if(cache->contains(cacheKey))
         return cache->value(cacheKey);
@@ -595,6 +571,7 @@ const char *qmake_version()
     if(ret)
         return ret;
     ret = (char *)malloc(15);
+    qmakeAddCacheClear(qmakeFreeCacheClear, (void**)&ret);
 #if defined(_MSC_VER) && _MSC_VER >= 1400
     sprintf_s(ret, 15, "%d.%02d%c", QMAKE_VERSION_MAJOR, QMAKE_VERSION_MINOR, 'a' + QMAKE_VERSION_PATCH);
 #else
@@ -709,4 +686,30 @@ QString QLibraryInfo::location(QLibraryInfo::LibraryLocation loc)
         }
     }
     return ret;
+}
+
+class QMakeCacheClearItem {
+private:
+    qmakeCacheClearFunc func;
+    void **data;
+public:
+    QMakeCacheClearItem(qmakeCacheClearFunc f, void **d) : func(f), data(d) { }
+    ~QMakeCacheClearItem() {
+        (*func)(*data);
+        *data = 0;
+    }
+};
+static QList<QMakeCacheClearItem*> cache_items;
+
+void
+qmakeClearCaches()
+{
+    qDeleteAll(cache_items);
+    cache_items.clear();
+}
+
+void
+qmakeAddCacheClear(qmakeCacheClearFunc func, void **data)
+{
+    cache_items.append(new QMakeCacheClearItem(func, data));
 }

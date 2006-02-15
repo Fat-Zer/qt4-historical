@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -465,6 +465,9 @@ bool QLibrary::isLibrary(const QString &fileName)
     bool valid = (suffix == "sl");
 #elif defined(Q_OS_UNIX)
     bool valid = (suffix == "so");
+#elif defined(Q_OS_AIX)
+	bool valid = (suffix == "a"
+			|| suffix == "so");
 #else
     bool valid = false;
 #endif

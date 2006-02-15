@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt Linguist of the Qt Toolkit.
 **
@@ -786,7 +786,7 @@ void TrWindow::about()
     AboutDialog about(this);
     about.versionLabel->setText(tr(
                     "Version %1"
-#if defined(QT_OPENSOURCE)
+#if QT_EDITION == QT_EDITION_OPENSOURCE
                     " Open Source Edition"
 #endif
                     ).arg(QT_VERSION_STR));
@@ -794,7 +794,7 @@ void TrWindow::about()
     about.infoText->setText(tr(
                     "<br/>Qt Linguist is a tool for adding translations to Qt "
                     "applications.<br/><br/>"
-#if defined(QT_OPENSOURCE)
+#if QT_EDITION == QT_EDITION_OPENSOURCE
                     "This version of Qt Linguist is part of the Qt Open Source Edition, for use "
                     "in the development of Open Source applications. "
                     "Qt is a comprehensive C++ framework for cross-platform application "
@@ -807,7 +807,7 @@ void TrWindow::about()
                     "Qt Commercial License Agreement. For details, see the file LICENSE "
                     "that came with this software distribution.<br/>"
 #endif
-                    "<br/>Copyright 2000-2005 Trolltech AS. All rights reserved."
+                    "<br/>Copyright 2000-2006 Trolltech AS. All rights reserved."
                     "<br/><br/>The program is provided AS IS with NO WARRANTY OF ANY KIND,"
                     " INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A"
                     " PARTICULAR PURPOSE.<br/> "));
@@ -1783,19 +1783,17 @@ void TrWindow::readConfig()
 
     QRect r( pos(), size() );
     recentFiles = config.value(keybase + "RecentlyOpenedFiles").toStringList();
-    if ( !config.value(keybase + "Geometry/MainwindowMaximized", false).toBool()) {
-        r.setX(config.value(keybase + "Geometry/MainwindowX", r.x()).toInt());
-        r.setY(config.value(keybase + "Geometry/MainwindowY", r.y()).toInt());
-        r.setWidth(config.value(keybase + "Geometry/MainwindowWidth", r.width()).toInt());
-        r.setHeight(config.value(keybase + "Geometry/MainwindowHeight", r.height()).toInt());
+    r.setX(config.value(keybase + "Geometry/MainwindowX", r.x()).toInt());
+    r.setY(config.value(keybase + "Geometry/MainwindowY", r.y()).toInt());
+    r.setWidth(config.value(keybase + "Geometry/MainwindowWidth", r.width()).toInt());
+    r.setHeight(config.value(keybase + "Geometry/MainwindowHeight", r.height()).toInt());
+    if (!r.intersects(QApplication::desktop()->geometry()))
+        r.moveTopLeft(QApplication::desktop()->availableGeometry().topLeft());
 
-        QRect desk = QApplication::desktop()->geometry();
-        QRect inter = desk.intersect(r);
-        resize( r.size() );
-        if ( inter.width() * inter.height() > ( r.width() * r.height() / 20 ) ) {
-            move( r.topLeft() );
-        }
-    }
+    if (r.isValid()) {
+        resize(r.size());
+        move(r.topLeft());
+    } 
 
     QDockWidget *dw;
     dw = static_cast<QDockWidget *>(tv->parent());
@@ -1832,10 +1830,10 @@ void TrWindow::writeConfig()
 
     config.setValue(keybase + "RecentlyOpenedFiles", recentFiles);
     config.setValue(keybase + "Geometry/MainwindowMaximized", isMaximized());
-    config.setValue(keybase + "Geometry/MainwindowX", x());
-    config.setValue(keybase + "Geometry/MainwindowY", y());
-    config.setValue(keybase + "Geometry/MainwindowWidth", width());
-    config.setValue(keybase + "Geometry/MainwindowHeight", height());
+    config.setValue(keybase + "Geometry/MainwindowX", normalGeometry().x());
+    config.setValue(keybase + "Geometry/MainwindowY", normalGeometry().y());
+    config.setValue(keybase + "Geometry/MainwindowWidth", normalGeometry().width());
+    config.setValue(keybase + "Geometry/MainwindowHeight", normalGeometry().height());
 
     QDockWidget * dw = static_cast<QDockWidget *>(tv->parent());
     config.setValue(keybase + "Geometry/ContextwindowInDock", dockWidgetArea(dw));

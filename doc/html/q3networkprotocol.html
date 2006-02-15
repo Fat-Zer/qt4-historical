@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/qt3support/network/q3networkprotocol.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/src/qt3support/network/q3networkprotocol.cpp -->
 <head>
     <title>Qt 4.1: Q3NetworkProtocol Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -108,15 +108,15 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="ConnectionState-enum"></a>enum Q3NetworkProtocol::ConnectionState</h3>
 <p>When the connection state of a network protocol changes it emits the signal <a href="q3networkprotocol.html#connectionStateChanged">connectionStateChanged</a>(). The first argument is one of the following values:</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Q3NetworkProtocol::ConHostFound</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">Host has been found.</td></tr>
 <tr><td valign="top"><tt>Q3NetworkProtocol::ConConnected</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Connection to the host has been established.</td></tr>
 <tr><td valign="top"><tt>Q3NetworkProtocol::ConClosed</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">Connection has been closed.</td></tr>
-</table>
+</table></p>
 <h3 class="fn"><a name="Error-enum"></a>enum Q3NetworkProtocol::Error</h3>
 <p>When an operation fails (finishes unsuccessfully), the <a href="q3networkoperation.html">Q3NetworkOperation</a> of the operation returns an error code which has one of the following values:</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Q3NetworkProtocol::NoError</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">No error occurred.</td></tr>
 <tr><td valign="top"><tt>Q3NetworkProtocol::ErrValid</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The URL you are operating on is not valid.</td></tr>
@@ -133,11 +133,11 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>Q3NetworkProtocol::ErrPut</tt></td><td align="center" valign="top">&nbsp;</td><td valign="top">An error occurred while putting (uploading) data.</td></tr>
 <tr><td valign="top"><tt>Q3NetworkProtocol::ErrFileNotExisting</tt></td><td align="center" valign="top">&nbsp;</td><td valign="top">A file which is needed by the operation doesn't exist.</td></tr>
 <tr><td valign="top"><tt>Q3NetworkProtocol::ErrPermissionDenied</tt></td><td align="center" valign="top">&nbsp;</td><td valign="top">Permission for doing the operation has been denied.</td></tr>
-</table>
+</table></p>
 <p>You should also use these error codes when implementing custom network protocols. If this is not possible, you can define your own error codes by using integer values that don't conflict with any of these values.</p>
 <h3 class="fn"><a name="Operation-enum"></a>enum Q3NetworkProtocol::Operation</h3>
 <p>This enum lists the possible operations that a network protocol can support. <a href="q3networkprotocol.html#supportedOperations">supportedOperations</a>() returns an int of these that is OR'd together. Also, the type() of a <a href="q3networkoperation.html">Q3NetworkOperation</a> is always one of these values.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Q3NetworkProtocol::OpListChildren</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">List the children of a URL, e.g. of a directory.</td></tr>
 <tr><td valign="top"><tt>Q3NetworkProtocol::OpMkDir</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">Create a directory.</td></tr>
@@ -145,17 +145,17 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>Q3NetworkProtocol::OpRename</tt></td><td align="center" valign="top"><tt>8</tt></td><td valign="top">Rename a child (e.g. a file).</td></tr>
 <tr><td valign="top"><tt>Q3NetworkProtocol::OpGet</tt></td><td align="center" valign="top"><tt>32</tt></td><td valign="top">Get data from a location.</td></tr>
 <tr><td valign="top"><tt>Q3NetworkProtocol::OpPut</tt></td><td align="center" valign="top"><tt>64</tt></td><td valign="top">Put data to a location.</td></tr>
-</table>
+</table></p>
 <h3 class="fn"><a name="State-enum"></a>enum Q3NetworkProtocol::State</h3>
 <p>This enum contains the state that a <a href="q3networkoperation.html">Q3NetworkOperation</a> can have.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Q3NetworkProtocol::StWaiting</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The operation is in the <a href="q3networkprotocol.html">Q3NetworkProtocol</a>'s queue waiting to be prcessed.</td></tr>
 <tr><td valign="top"><tt>Q3NetworkProtocol::StInProgress</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The operation is being processed.</td></tr>
 <tr><td valign="top"><tt>Q3NetworkProtocol::StDone</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">The operation has been processed succesfully.</td></tr>
 <tr><td valign="top"><tt>Q3NetworkProtocol::StFailed</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">The operation has been processed but an error occurred.</td></tr>
 <tr><td valign="top"><tt>Q3NetworkProtocol::StStopped</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">The operation has been processed but has been stopped before it finished, and is waiting to be processed.</td></tr>
-</table>
+</table></p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="Q3NetworkProtocol"></a>Q3NetworkProtocol::Q3NetworkProtocol ()</h3>
@@ -252,8 +252,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="q3networkprotocol.html#setUrl">setUrl</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

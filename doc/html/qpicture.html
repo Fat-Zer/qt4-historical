@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/gui/image/qpicture.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/src/gui/image/qpicture.cpp -->
 <head>
     <title>Qt 4.1: QPicture Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -45,7 +45,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>QPicture &amp; <b><a href="qpicture.html#operator-eq">operator=</a></b> ( const QPicture &amp; <i>p</i> )</li>
 </ul>
 <ul>
-<li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <a name="static-public-members"></a>
 <h3>Static Public Members</h3>
@@ -61,10 +61,13 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/>virtual int <b><a href="qpicture.html#metric">metric</a></b> ( PaintDeviceMetric <i>m</i> ) const</li>
 </ul>
+<ul>
+<li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
+</ul>
 <a name="related-non-members"></a>
 <h3>Related Non-Members</h3>
 <ul>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qpicture.html#operator-lt-lt-62">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>s</i>, const QPicture &amp; <i>r</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qpicture.html#operator-lt-lt-63">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>s</i>, const QPicture &amp; <i>r</i> )</li>
 <li><div class="fn"/>QDataStream &amp; <b><a href="qpicture.html#operator-gt-gt-38">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>s</i>, QPicture &amp; <i>r</i> )</li>
 </ul>
 <a name="details"></a>
@@ -72,9 +75,16 @@ body { background: #ffffff; color: black; }</style>
 <h2>Detailed Description</h2>
 <p>The QPicture class is a paint device that records and replays <a href="qpainter.html">QPainter</a> commands.</p>
 <p>A picture serializes painter commands to an IO device in a platform-independent format. They are sometimes referred to as meta-files.</p>
-<p>Qt pictures use a proprietary binary format. Unlike native picture (meta-file) formats on many window systems, Qt pictures have no limitations regarding their contents. Everything that can be painted on a widget or pixmap (e.g., fonts, pixmaps, regions, transformed graphics, etc.) can also be stored in a picture. QPicture is an <a href="shclass.html">implicitly shared</a> class.</p>
+<p>Qt pictures use a proprietary binary format. Unlike native picture (meta-file) formats on many window systems, Qt pictures have no limitations regarding their contents. Everything that can be painted on a widget or pixmap (e.g., fonts, pixmaps, regions, transformed graphics, etc.) can also be stored in a picture.</p>
+<p>QPicture is resolution independent, i.e. a QPicture can be displayed on different devices (for example svg, pdf, ps, printer and screen) looking the same. This is, for instance, needed for WYSIWYG print preview. QPicture always runs in 72 dpi, and scales the painter to match differences in resolution depending on the window system.</p>
+<p>QPicture is an <a href="shclass.html">implicitly shared</a> class.</p>
 <p>Example of how to record a picture:</p>
-<p>printuntil save</p>
+<pre>&nbsp;           QPicture picture;
+            QPainter painter;
+            painter.begin(&amp;picture);           // paint in picture
+            painter.drawEllipse(10,20, 80,70); // draw an ellipse
+            painter.end();                     // painting done
+            picture.save(&quot;drawing.pic&quot;);       // save picture</pre>
 <p>Example of how to replay a picture:</p>
 <pre>&nbsp;           QPicture picture;
             picture.load(&quot;drawing.pic&quot;);           // load picture
@@ -118,12 +128,13 @@ body { background: #ffffff; color: black; }</style>
 <p>By default, the file will be interpreted as being in the native <a href="qpicture.html">QPicture</a> format. Specifying the <i>format</i> string is optional and is only needed for importing picture data stored in a different format.</p>
 <p>See also <a href="qpicture.html#save">save</a>().</p>
 <h3 class="fn"><a name="load-2"></a>bool QPicture::load ( <a href="qiodevice.html">QIODevice</a> * <i>dev</i>, const char * <i>format</i> = 0 )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p><i>dev</i> is the device to use for loading.</p>
-<h3 class="fn"><a name="metric"></a>int QPicture::metric ( PaintDeviceMetric <i>m</i> ) const&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
-<p>Internal implementation of the virtual QPaintDevice::metric() function.</p>
+<h3 class="fn"><a name="metric"></a>int QPicture::metric ( <a href="qpaintdevice.html#PaintDeviceMetric-enum">PaintDeviceMetric</a> <i>m</i> ) const&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
+<p>Internal implementation of the virtual <a href="qpaintdevice.html#metric">QPaintDevice::metric</a>() function.</p>
 <p>A picture has the following hard-coded values: dpi=72, numcolors=16777216 and depth=24.</p>
 <p><i>m</i> is the metric to get.</p>
+<p>Reimplemented from <a href="qpaintdevice.html#metric">QPaintDevice</a>.</p>
 <h3 class="fn"><a name="outputFormatList"></a><a href="qstringlist.html">QStringList</a> QPicture::outputFormatList ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns a list of picture formats that are supported for picture output.</p>
 <p>Note that if you want to iterate over the list, you should iterate over a copy, e.g.</p>
@@ -146,7 +157,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Specifying the file <i>format</i> string is optional. By default the data will be saved in the native <a href="qpicture.html">QPicture</a> file format.</p>
 <p>See also <a href="qpicture.html#load">load</a>().</p>
 <h3 class="fn"><a name="save-2"></a>bool QPicture::save ( <a href="qiodevice.html">QIODevice</a> * <i>dev</i>, const char * <i>format</i> = 0 )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p><i>dev</i> is the device to use for saving.</p>
 <h3 class="fn"><a name="setBoundingRect"></a>void QPicture::setBoundingRect ( const <a href="qrect.html">QRect</a> &amp; <i>r</i> )</h3>
 <p>Sets the picture's bounding rectangle to <i>r</i>. The automatically calculated value is overridden.</p>
@@ -161,16 +172,16 @@ body { background: #ffffff; color: black; }</style>
 <p>Assigns picture <i>p</i> to this picture and returns a reference to this picture.</p>
 <hr />
 <h2>Related Non-Members</h2>
-<h3 class="fn"><a name="operator-lt-lt-62"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>s</i>, const QPicture &amp; <i>r</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<h3 class="fn"><a name="operator-lt-lt-63"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>s</i>, const QPicture &amp; <i>r</i> )</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes picture <i>r</i> to the stream <i>s</i> and returns a reference to the stream.</p>
 <h3 class="fn"><a name="operator-gt-gt-38"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>s</i>, QPicture &amp; <i>r</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads a picture from the stream <i>s</i> into picture <i>r</i> and returns a reference to the stream.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

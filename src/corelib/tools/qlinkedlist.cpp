@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -113,7 +113,7 @@ QLinkedListData QLinkedListData::shared_null = {
     Constructs an empty list.
 */
 
-/*! \fn QLinkedList::QLinkedList(const QLinkedList &other)
+/*! \fn QLinkedList::QLinkedList(const QLinkedList<T> &other)
 
     Constructs a copy of \a other.
 
@@ -131,13 +131,13 @@ QLinkedListData QLinkedListData::shared_null = {
     iterators over this list, become invalid.
 */
 
-/*! \fn QLinkedList &QLinkedList::operator=(const QLinkedList &other)
+/*! \fn QLinkedList<T> &QLinkedList::operator=(const QLinkedList<T> &other)
 
     Assigns \a other to this list and returns a reference to this
     list.
 */
 
-/*! \fn bool QLinkedList::operator==(const QLinkedList &other) const
+/*! \fn bool QLinkedList::operator==(const QLinkedList<T> &other) const
 
     Returns true if \a other is equal to this list; otherwise returns
     false.
@@ -151,7 +151,7 @@ QLinkedListData QLinkedListData::shared_null = {
     \sa operator!=()
 */
 
-/*! \fn bool QLinkedList::operator!=(const QLinkedList &other) const
+/*! \fn bool QLinkedList::operator!=(const QLinkedList<T> &other) const
 
     Returns true if \a other is not equal to this list; otherwise
     returns false.
@@ -509,7 +509,7 @@ QLinkedListData QLinkedListData::shared_null = {
     to isEmpty().
 */
 
-/*! \fn QLinkedList &QLinkedList::operator+=(const QLinkedList &other)
+/*! \fn QLinkedList<T> &QLinkedList::operator+=(const QLinkedList<T> &other)
 
     Appends the items of the \a other list to this list and returns a
     reference to this list.
@@ -524,7 +524,7 @@ QLinkedListData QLinkedListData::shared_null = {
     Appends \a value to the list.
 */
 
-/*! \fn QLinkedList QLinkedList::operator+(const QLinkedList &other) const
+/*! \fn QLinkedList<T> QLinkedList::operator+(const QLinkedList<T> &other) const
 
     Returns a list that contains all the items in this list followed
     by all the items in the \a other list.
@@ -532,7 +532,7 @@ QLinkedListData QLinkedListData::shared_null = {
     \sa operator+=()
 */
 
-/*! \fn QLinkedList &QLinkedList::operator<<(const QLinkedList &other)
+/*! \fn QLinkedList<T> &QLinkedList::operator<<(const QLinkedList<T> &other)
 
     Appends the items of the \a other list to this list and returns a
     reference to this list.
@@ -540,7 +540,7 @@ QLinkedListData QLinkedListData::shared_null = {
     \sa operator+=(), append()
 */
 
-/*! \fn QLinkedList &QLinkedList::operator<<(const T &value)
+/*! \fn QLinkedList<T> &QLinkedList::operator<<(const T &value)
 
     \overload
 

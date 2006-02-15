@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/qt3support/itemviews/q3table.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/src/qt3support/itemviews/q3table.cpp -->
 <head>
     <title>Qt 4.1: Q3TableItem Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -98,22 +98,22 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="EditType-enum"></a>enum Q3TableItem::EditType</h3>
 <a name="wheneditable"></a><p>This enum is used to define whether a cell is editable or read-only (in conjunction with other settings), and how the cell should be displayed.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Q3TableItem::Always</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">The cell always <i>looks</i> editable.</td></tr>
-</table>
+</table></p>
 <p>Using this EditType ensures that the editor created with <a href="q3tableitem.html#createEditor">createEditor</a>() (by default a <a href="qlineedit.html">QLineEdit</a>) is always visible. This has implications for the alignment of the content: the default editor aligns everything (even numbers) to the left whilst numerical values in the cell are by default aligned to the right.</p>
 <p>If a cell with the edit type <tt>Always</tt> looks misaligned you could reimplement <a href="q3tableitem.html#createEditor">createEditor</a>() for these items.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Q3TableItem::WhenCurrent</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">The cell <i>looks</i> editable only when it has keyboard focus (see <a href="q3table.html#setCurrentCell">Q3Table::setCurrentCell</a>()).</td></tr>
 <tr><td valign="top"><tt>Q3TableItem::OnTyping</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The cell <i>looks</i> editable only when the user types in it or double-clicks it. It resembles the <tt>WhenCurrent</tt> functionality but is, perhaps, nicer.</td></tr>
-</table>
+</table></p>
 <p>The <tt>OnTyping</tt> edit type is the default when <a href="q3tableitem.html">Q3TableItem</a> objects are created by the convenience functions <a href="q3table.html#setText">Q3Table::setText</a>() and <a href="q3table.html#setPixmap">Q3Table::setPixmap</a>().</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Q3TableItem::Never</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The cell is not editable.</td></tr>
-</table>
+</table></p>
 <p>The cell is actually editable only if <a href="q3table.html#isRowReadOnly">Q3Table::isRowReadOnly</a>() is false for its row, <a href="q3table.html#isColumnReadOnly">Q3Table::isColumnReadOnly</a>() is false for its column, and <a href="q3table.html#readOnly-prop">Q3Table::isReadOnly</a>() is false.</p>
 <p>Q3ComboTableItems have an isEditable() property. This property is used to indicate whether the user may enter their own text or are restricted to choosing one of the choices in the list. Q3ComboTableItems may be interacted with only if they are editable in accordance with their EditType as described above.</p>
 <hr />
@@ -240,8 +240,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="q3tableitem.html#setWordWrap">setWordWrap</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

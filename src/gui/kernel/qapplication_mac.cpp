@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -104,7 +104,6 @@ static struct {
     int last_modifiers, last_button;
     EventTime last_time;
 } qt_mac_dblclick = { false, 0, 0, 0, -2 };
-static bool qt_mac_use_qt_scroller_lines = false;
 
 // tablet structure
 static QTabletEvent::PointerType currPointerType = QTabletEvent::UnknownPointer;
@@ -634,7 +633,9 @@ void qt_event_activate_timer_callbk(EventLoopTimerRef r, void *)
     qt_event_remove_activate();
     if(r == otc && !request_activate_pending.widget.isNull()) {
         const QWidget *tlw = request_activate_pending.widget->window();
-        if(tlw->isVisible() && !(tlw->windowType() == Qt::Desktop) && !(tlw->windowType() == Qt::Popup) && !(tlw->windowType() == Qt::Tool)) {
+        Qt::WindowType wt = tlw->windowType();
+        if(tlw->isVisible()
+               && ((wt != Qt::Desktop && wt != Qt::Popup && wt != Qt::Tool) || tlw->isModal())) {
             CreateEvent(0, kEventClassQt, kEventQtRequestActivate, GetCurrentEventTime(),
                         kEventAttributeUserEvent, &request_activate_pending.event);
             PostEventToQueue(GetMainEventQueue(), request_activate_pending.event, kEventPriorityHigh);
@@ -789,7 +790,7 @@ static EventTypeSpec app_events[] = {
     { kEventClassWindow, kEventWindowDeactivated },
     { kEventClassWindow, kEventWindowShown },
     { kEventClassWindow, kEventWindowHidden },
-    { kEventClassWindow, kEventWindowBoundsChanged },
+    { kEventClassWindow, kEventWindowBoundsChanging },
     { kEventClassWindow, kEventWindowExpanded },
 
     { kEventClassMouse, kEventMouseWheelMoved },
@@ -802,7 +803,6 @@ static EventTypeSpec app_events[] = {
 
     { kEventClassApplication, kEventAppActivated },
     { kEventClassApplication, kEventAppDeactivated },
-    { kEventClassApplication, kEventAppAvailableWindowBoundsChanged },
 
     { kEventClassKeyboard, kEventRawKeyModifiersChanged },
     { kEventClassKeyboard, kEventRawKeyRepeat },
@@ -1058,7 +1058,7 @@ static QWidget *qt_mac_recursive_widgetAt(QWidget *widget, int x, int y)
                          wx2=wx+kid->width(), wy2=wy+kid->height();
 		if(x >= wx && y >= wy && x < wx2 && y < wy2) {
                     const QRegion mask = kid->mask();
-		    if(!mask.isNull() && !mask.contains(QPoint(x-wx, y-wy)))
+		    if(!mask.isEmpty() && !mask.contains(QPoint(x-wx, y-wy)))
 			continue;
 		    return qt_mac_recursive_widgetAt(kid, x-wx, y-wy);
 		}
@@ -2199,6 +2199,10 @@ QApplicationPrivate::globalEventProcessor(EventHandlerCallRef er, EventRef event
         break;
     }
     case kEventClassKeyboard: {
+        if (qApp->inputContext() && qApp->inputContext()->isComposing()) {
+            handled_event = false;
+            break;
+        }
         // unfortunatly modifiers changed event looks quite different, so I have a separate
         // code path
         if(ekind == kEventRawKeyModifiersChanged) {
@@ -2395,7 +2399,7 @@ QApplicationPrivate::globalEventProcessor(EventHandlerCallRef er, EventRef event
             widget->setWindowState((widget->windowState() & ~Qt::WindowMinimized) | Qt::WindowActive);
             QShowEvent qse;
             QApplication::sendSpontaneousEvent(widget, &qse);
-        } else if(ekind == kEventWindowBoundsChanged) {
+        } else if(ekind == kEventWindowBoundsChanging) {
             //implicitly removes the maximized bit
             if((widget->windowState() & Qt::WindowMaximized) &&
                IsWindowInStandardState((WindowPtr)widget->handle(), 0, 0))
@@ -2504,18 +2508,6 @@ QApplicationPrivate::globalEventProcessor(EventHandlerCallRef er, EventRef event
                 QApplication::sendSpontaneousEvent(app, &ev);
             }
             app->setActiveWindow(0);
-        } else if (ekind == kEventAppAvailableWindowBoundsChanged) {
-            UInt32 reason;
-            GetEventParameter(event, kEventParamReason, typeUInt32, 0, sizeof(reason), 0, &reason);
-            if (reason == kAvailBoundsChangedForDisplay) {
-                // The size of the display has changed, recreate the desktop widget (or bad things happen)
-                extern QDesktopWidget *qt_desktopWidget; // qapplication.cpp
-                delete qt_desktopWidget;
-                qt_desktopWidget = 0;
-                app->desktop();
-                // ### It might be nice to pass this along to the developer so
-                // that they can handle it too...
-            }
         } else {
             handled_event = false;
         }
@@ -2774,19 +2766,11 @@ int QApplication::keyboardInputInterval()
 
 void QApplication::setWheelScrollLines(int n)
 {
-    qt_mac_use_qt_scroller_lines = true;
     QApplicationPrivate::wheel_scroll_lines = n;
 }
 
 int QApplication::wheelScrollLines()
 {
-    if(!qt_mac_use_qt_scroller_lines) {
-        /* First worked as of 10.3.3 */
-        QSettings appleSettings(QLatin1String("apple.com"));
-        double scroll = appleSettings.value(QLatin1String("com/apple/scrollwheel/scaling"),
-                                           (QApplicationPrivate::wheel_scroll_lines)).toDouble();
-        return scroll ? int(scroll) : 1;
-    }
     return QApplicationPrivate::wheel_scroll_lines;
 }
 

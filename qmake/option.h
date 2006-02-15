@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the qmake application of the Qt Toolkit.
 **
@@ -161,6 +161,7 @@ private:
 
 inline QString fixEnvVariables(const QString &x) { return Option::fixString(x, Option::FixEnvVars); }
 inline QStringList splitPathList(const QString paths) { return paths.split(Option::dirlist_sep); }
+
 
 // this is a stripped down version of the one found in QtCore
 class QLibraryInfo

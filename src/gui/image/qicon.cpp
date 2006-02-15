@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -388,8 +388,7 @@ QIcon::QIcon(const QIcon &other)
 
 /*!
     Constructs an icon from the file with the given \a fileName. The
-    file will be loaded on demand. If the file does not exist or is of
-    an unknown format, the icon becomes a null icon.
+    file will be loaded on demand.
 
     If \a fileName contains a relative path (e.g. the filename only)
     the relevant file must be found relative to the runtime working
@@ -545,7 +544,10 @@ void QIcon::paint(QPainter *painter, const QRect &rect, Qt::Alignment alignment,
 /*!
     Returns true if the icon is empty; otherwise returns false.
 
-    A null icon is an icon that was created using the default constructor.
+    An icon is empty if it has neither a pixmap nor a filename.
+
+    Note: Even a non-null icon might not be able to create valid
+    pixmaps, eg. if the file does not exist or cannot be read.
 */
 bool QIcon::isNull() const
 {

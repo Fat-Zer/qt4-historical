@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -29,7 +29,7 @@
 
 QT_MODULE(Core)
 
-struct QFactoryInterface
+struct Q_CORE_EXPORT QFactoryInterface
 {
     virtual ~QFactoryInterface() {}
     virtual QStringList keys() const = 0;

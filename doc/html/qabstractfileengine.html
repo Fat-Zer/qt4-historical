@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/corelib/io/qabstractfileengine.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/src/corelib/io/qabstractfileengine.cpp -->
 <head>
     <title>Qt 4.1: QAbstractFileEngine Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -92,7 +92,7 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="flags"><a name="FileFlag-enum"></a>enum QAbstractFileEngine::FileFlag<br />flags QAbstractFileEngine::FileFlags</h3>
 <p>The permissions and types of a file, suitable for OR'ing together.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QAbstractFileEngine::ReadOwnerPerm</tt></td><td align="center" valign="top"><tt>0x4000</tt></td><td valign="top">The owner of the file has permission to read it.</td></tr>
 <tr><td valign="top"><tt>QAbstractFileEngine::WriteOwnerPerm</tt></td><td align="center" valign="top"><tt>0x2000</tt></td><td valign="top">The owner of the file has permission to write to it.</td></tr>
@@ -113,12 +113,12 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QAbstractFileEngine::ExistsFlag</tt></td><td align="center" valign="top"><tt>0x0400000</tt></td><td valign="top">The file actually exists in the file system.</td></tr>
 <tr><td valign="top"><tt>QAbstractFileEngine::RootFlag</tt></td><td align="center" valign="top"><tt>0x0800000</tt></td><td valign="top">The file or the file pointed to is the root of the filesystem.</td></tr>
 <tr><td valign="top"><tt>QAbstractFileEngine::LocalDiskFlag</tt></td><td align="center" valign="top"><tt>0x0200000</tt></td><td valign="top">The file resides on the local disk and can be passed to standard file functions.</td></tr>
-</table>
+</table></p>
 <p>The FileFlags type is a typedef for <a href="qflags.html">QFlags</a>&lt;FileFlag&gt;. It stores an OR combination of FileFlag values.</p>
 <p>See also <a href="qabstractfileengine.html#fileFlags">fileFlags</a>() and <a href="qabstractfileengine.html#setFileName">setFileName</a>().</p>
 <h3 class="fn"><a name="FileName-enum"></a>enum QAbstractFileEngine::FileName</h3>
 <p>These values are used to request a file name in a particular format.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QAbstractFileEngine::DefaultName</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The same filename that was passed to the <a href="qabstractfileengine.html">QAbstractFileEngine</a>.</td></tr>
 <tr><td valign="top"><tt>QAbstractFileEngine::BaseName</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The name of the file excluding the path.</td></tr>
@@ -128,23 +128,23 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QAbstractFileEngine::LinkName</tt></td><td align="center" valign="top"><tt>5</tt></td><td valign="top">The full file name of the file that this file is a link to. (This will be empty if this file is not a link.)</td></tr>
 <tr><td valign="top"><tt>QAbstractFileEngine::CanonicalName</tt></td><td align="center" valign="top"><tt>6</tt></td><td valign="top">Often very similar to LinkName. Will return the true path to the file.</td></tr>
 <tr><td valign="top"><tt>QAbstractFileEngine::CanonicalPathName</tt></td><td align="center" valign="top"><tt>7</tt></td><td valign="top">Same as CanonicalName, excluding the base name.</td></tr>
-</table>
+</table></p>
 <p>See also <a href="qabstractfileengine.html#fileName">fileName</a>() and <a href="qabstractfileengine.html#setFileName">setFileName</a>().</p>
 <h3 class="fn"><a name="FileOwner-enum"></a>enum QAbstractFileEngine::FileOwner</h3>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QAbstractFileEngine::OwnerUser</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The user who owns the file.</td></tr>
 <tr><td valign="top"><tt>QAbstractFileEngine::OwnerGroup</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The group who owns the file.</td></tr>
-</table>
+</table></p>
 <p>See also <a href="qabstractfileengine.html#owner">owner</a>(), <a href="qabstractfileengine.html#ownerId">ownerId</a>(), and <a href="qabstractfileengine.html#setFileName">setFileName</a>().</p>
 <h3 class="fn"><a name="FileTime-enum"></a>enum QAbstractFileEngine::FileTime</h3>
 <p>These are used by the <a href="qabstractfileengine.html#fileTime">fileTime</a>() function.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QAbstractFileEngine::CreationTime</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">When the file was created.</td></tr>
 <tr><td valign="top"><tt>QAbstractFileEngine::ModificationTime</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">When the file was most recently modified.</td></tr>
 <tr><td valign="top"><tt>QAbstractFileEngine::AccessTime</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">When the file was most recently accessed (e.g. read or written to).</td></tr>
-</table>
+</table></p>
 <p>See also <a href="qabstractfileengine.html#setFileName">setFileName</a>().</p>
 <hr />
 <h2>Member Function Documentation</h2>
@@ -263,8 +263,8 @@ body { background: #ffffff; color: black; }</style>
 <p>Writes <i>len</i> bytes from <i>data</i> to the file. Returns the number of characters written on success; otherwise returns -1.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

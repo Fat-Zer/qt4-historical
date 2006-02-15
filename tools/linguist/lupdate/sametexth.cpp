@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt Linguist of the Qt Toolkit.
 **
@@ -35,9 +35,11 @@ typedef QList<MetaTranslatorMessage> TML;
   For example, if "Enabled:" is consistendly translated as "Eingeschaltet:" no
   matter the context or the comment, "Eingeschaltet:" is added as the
   translation of any untranslated "Enabled:" text and is marked Unfinished.
+
+  Returns the number of additional messages that this heuristic translated.
 */
 
-void applySameTextHeuristic( MetaTranslator *tor, bool verbose )
+int applySameTextHeuristic( MetaTranslator *tor )
 {
     TMM translated;
     TMM avoid;
@@ -81,7 +83,5 @@ void applySameTextHeuristic( MetaTranslator *tor, bool verbose )
             inserted++;
         }
     }
-    if ( verbose && inserted != 0 )
-        fprintf( stderr, " same-text heuristic provided %d translation%s\n",
-                 inserted, inserted == 1 ? "" : "s" );
+    return inserted;
 }

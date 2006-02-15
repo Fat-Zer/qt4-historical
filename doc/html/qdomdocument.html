@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/xml/qdom.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/src/xml/qdom.cpp -->
 <head>
     <title>Qt 4.1: QDomDocument Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -182,7 +182,7 @@ body { background: #ffffff; color: black; }</style>
 <p>This function returns the imported node that belongs to this document. The returned node has no parent. It is not possible to import <a href="qdomdocument.html">QDomDocument</a> and <a href="qdomdocumenttype.html">QDomDocumentType</a> nodes. In those cases this function returns a <a href="qdomnode.html#isNull">null node</a>.</p>
 <p>If <i>deep</i> is true, this function imports not only the node <i>importedNode</i> but its whole subtree; if it is false, only the <i>importedNode</i> is imported. The argument <i>deep</i> has no effect on <a href="qdomattr.html">QDomAttr</a> and <a href="qdomentityreference.html">QDomEntityReference</a> nodes, since the descendents of <a href="qdomattr.html">QDomAttr</a> nodes are always imported and those of <a href="qdomentityreference.html">QDomEntityReference</a> nodes are never imported.</p>
 <p>The behavior of this function is slightly different depending on the node types:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Node Type</th><th>Behavior</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qdomattr.html">QDomAttr</a></td><td>The owner element is set to 0 and the specified flag is set to true in the generated attribute. The whole subtree of <i>importedNode</i> is always imported for attribute nodes: <i>deep</i> has no effect.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qdomdocument.html">QDomDocument</a></td><td>Document nodes cannot be imported.</td></tr>
@@ -196,7 +196,7 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qdomtext.html">QDomText</a></td><td>The text is copied to the new node.</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qdomcdatasection.html">QDomCDATASection</a></td><td>The text is copied to the new node.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qdomcomment.html">QDomComment</a></td><td>The text is copied to the new node.</td></tr>
-</table>
+</table></p>
 <p><a href="qdomnode.html#insertAfter">QDomNode::insertAfter</a>() <a href="qdomnode.html#replaceChild">QDomNode::replaceChild</a>() <a href="qdomnode.html#removeChild">QDomNode::removeChild</a>() <a href="qdomnode.html#appendChild">QDomNode::appendChild</a>()</p>
 <p>See also <a href="qdomelement.html#setAttribute">QDomElement::setAttribute</a>() and <a href="qdomnode.html#insertBefore">QDomNode::insertBefore</a>().</p>
 <h3 class="fn"><a name="nodeType"></a><a href="qdomnode.html#NodeType-enum">QDomNode::NodeType</a> QDomDocument::nodeType () const</h3>
@@ -210,25 +210,25 @@ body { background: #ffffff; color: black; }</style>
 <p><a href="qdomnode.html#prefix">QDomNode::prefix</a>() <a href="qstring.html#isNull">QString::isNull</a>() <a href="qstring.html#isEmpty">QString::isEmpty</a>()</p>
 <p>See also <a href="qdomnode.html#namespaceURI">QDomNode::namespaceURI</a>() and <a href="qdomnode.html#localName">QDomNode::localName</a>().</p>
 <h3 class="fn"><a name="setContent-2"></a>bool QDomDocument::setContent ( const <a href="qstring.html">QString</a> &amp; <i>text</i>, bool <i>namespaceProcessing</i>, <a href="qstring.html">QString</a> * <i>errorMsg</i> = 0, int * <i>errorLine</i> = 0, int * <i>errorColumn</i> = 0 )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>This function reads the XML document from the string <i>text</i>. Since <i>text</i> is already a Unicode string, no encoding detection is done.</p>
 <h3 class="fn"><a name="setContent-3"></a>bool QDomDocument::setContent ( <a href="qiodevice.html">QIODevice</a> * <i>dev</i>, bool <i>namespaceProcessing</i>, <a href="qstring.html">QString</a> * <i>errorMsg</i> = 0, int * <i>errorLine</i> = 0, int * <i>errorColumn</i> = 0 )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>This function reads the XML document from the IO device <i>dev</i>.</p>
 <h3 class="fn"><a name="setContent-4"></a>bool QDomDocument::setContent ( const <a href="qstring.html">QString</a> &amp; <i>text</i>, <a href="qstring.html">QString</a> * <i>errorMsg</i> = 0, int * <i>errorLine</i> = 0, int * <i>errorColumn</i> = 0 )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>This function reads the XML document from the string <i>text</i>. Since <i>text</i> is already a Unicode string, no encoding detection is performed.</p>
 <p>No namespace processing is performed either.</p>
 <h3 class="fn"><a name="setContent-5"></a>bool QDomDocument::setContent ( const <a href="qbytearray.html">QByteArray</a> &amp; <i>buffer</i>, <a href="qstring.html">QString</a> * <i>errorMsg</i> = 0, int * <i>errorLine</i> = 0, int * <i>errorColumn</i> = 0 )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>This function reads the XML document from the byte array <i>buffer</i>.</p>
 <p>No namespace processing is performed.</p>
 <h3 class="fn"><a name="setContent-6"></a>bool QDomDocument::setContent ( <a href="qiodevice.html">QIODevice</a> * <i>dev</i>, <a href="qstring.html">QString</a> * <i>errorMsg</i> = 0, int * <i>errorLine</i> = 0, int * <i>errorColumn</i> = 0 )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>This function reads the XML document from the IO device <i>dev</i>.</p>
 <p>No namespace processing is performed.</p>
 <h3 class="fn"><a name="setContent-7"></a>bool QDomDocument::setContent ( <a href="qxmlinputsource.html">QXmlInputSource</a> * <i>source</i>, <a href="qxmlreader.html">QXmlReader</a> * <i>reader</i>, <a href="qstring.html">QString</a> * <i>errorMsg</i> = 0, int * <i>errorLine</i> = 0, int * <i>errorColumn</i> = 0 )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>This function reads the XML document from the <a href="qxmlinputsource.html">QXmlInputSource</a> <i>source</i> and parses it with the <a href="qxmlreader.html">QXmlReader</a> <i>reader</i>.</p>
 <p>This function doesn't change the features of the <i>reader</i>. If you want to use certain features for parsing you can use this function to set up the reader appropriately.</p>
 <p>See also <a href="qxmlsimplereader.html">QXmlSimpleReader</a>.</p>
@@ -244,8 +244,8 @@ body { background: #ffffff; color: black; }</style>
 <p>The data of the copy is shared (shallow copy): modifying one node will also change the other. If you want to make a deep copy, use <a href="qdomnode.html#cloneNode">cloneNode</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/corelib/kernel/qvariant.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/src/corelib/kernel/qvariant.cpp -->
 <head>
     <title>Qt 4.1: QVariant Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -176,7 +176,7 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="Type-enum"></a>enum QVariant::Type</h3>
 <p>This enum type defines the types of variable that a <a href="qvariant.html">QVariant</a> can contain.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QVariant::Invalid</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">no type</td></tr>
 <tr><td valign="top"><tt>QVariant::BitArray</tt></td><td align="center" valign="top"><tt>13</tt></td><td valign="top">a <a href="qbitarray.html">QBitArray</a></td></tr>
@@ -224,7 +224,7 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QVariant::ULongLong</tt></td><td align="center" valign="top"><tt>5</tt></td><td valign="top">a <a href="qtglobal.html#qulonglong-typedef">qulonglong</a></td></tr>
 <tr><td valign="top"><tt>QVariant::Url</tt></td><td align="center" valign="top"><tt>17</tt></td><td valign="top">a <a href="qurl.html">QUrl</a></td></tr>
 <tr><td valign="top"><tt>QVariant::UserType</tt></td><td align="center" valign="top"><tt>127</tt></td><td valign="top">Base value for user-defined types.</td></tr>
-</table>
+</table></p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QVariant"></a>QVariant::QVariant ()</h3>
@@ -253,8 +253,9 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="QVariant-11"></a>QVariant::QVariant ( double <i>val</i> )</h3>
 <p>Constructs a new variant with a floating point value, <i>val</i>.</p>
 <h3 class="fn"><a name="QVariant-12"></a>QVariant::QVariant ( const char * <i>val</i> )</h3>
-<p>Constructs a new variant with a C-string value of <i>val</i> if <i>val</i> is non-null. The variant creates a deep copy of <i>val</i>.</p>
-<p>If <i>val</i> is null, the resulting variant has type Invalid.</p>
+<p>Constructs a new variant with a string value of <i>val</i>. The variant creates a deep copy of <i>val</i>, using the encoding set by <a href="qtextcodec.html#setCodecForCStrings">QTextCodec::setCodecForCStrings</a>().</p>
+<p>You can disable this operator by defining <tt>QT_NO_CAST_FROM_ASCII</tt> when you compile your applications.</p>
+<p>See also <a href="qtextcodec.html#setCodecForCStrings">QTextCodec::setCodecForCStrings</a>().</p>
 <h3 class="fn"><a name="QVariant-13"></a>QVariant::QVariant ( const <a href="qbytearray.html">QByteArray</a> &amp; <i>val</i> )</h3>
 <p>Constructs a new variant with a bytearray value, <i>val</i>.</p>
 <h3 class="fn"><a name="QVariant-14"></a>QVariant::QVariant ( const <a href="qbitarray.html">QBitArray</a> &amp; <i>val</i> )</h3>
@@ -305,7 +306,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="canConvert"></a>bool QVariant::canConvert ( <a href="qvariant.html#Type-enum">Type</a> <i>t</i> ) const</h3>
 <p>Returns true if the variant's type can be cast to the requested type, <i>t</i>. Such casting is done automatically when calling the <a href="qvariant.html#toInt">toInt</a>(), <a href="qvariant.html#toBool">toBool</a>(), ... methods.</p>
 <p>The following casts are done automatically:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Type</th><th>Automatically Cast To</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qvariant.html#Type-enum">Bool</a></td><td><a href="qvariant.html#Type-enum">Double</a>, <a href="qvariant.html#Type-enum">Int</a>, <a href="qvariant.html#Type-enum">UInt</a>, <a href="qvariant.html#Type-enum">LongLong</a>, <a href="qvariant.html#Type-enum">ULongLong</a></td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qvariant.html#Type-enum">Color</a></td><td><a href="qvariant.html#Type-enum">String</a></td></tr>
@@ -321,9 +322,9 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qvariant.html#Type-enum">Time</a></td><td><a href="qvariant.html#Type-enum">String</a></td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qvariant.html#Type-enum">UInt</a></td><td><a href="qvariant.html#Type-enum">String</a>, <a href="qvariant.html#Type-enum">Double</a>, <a href="qvariant.html#Type-enum">Bool</a>, <a href="qvariant.html#Type-enum">Int</a></td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qvariant.html#Type-enum">KeySequence</a></td><td><a href="qvariant.html#Type-enum">String</a>, <a href="qvariant.html#Type-enum">Int</a></td></tr>
-</table>
+</table></p>
 <h3 class="fn"><a name="canConvert-2"></a>bool QVariant::canConvert () const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns true if the variant can be converted to the template type <tt>T</tt>, otherwise false.</p>
 <p>Example:</p>
 <pre>&nbsp;   QVariant v = 42;
@@ -516,15 +517,15 @@ body { background: #ffffff; color: black; }</style>
 <p>This function is equivalent to <a href="qvariant.html#qVariantValue">qVariantValue</a>().</p>
 <p>See also <a href="qvariant.html#qVariantValue">qVariantValue</a>() and <a href="qvariant.html#value">QVariant::value</a>().</p>
 <h3 class="fn"><a name="operator-not-eq-9"></a>bool operator!= ( const QVariant &amp; <i>v1</i>, const QVariant &amp; <i>v2</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns false if <i>v1</i> and <i>v2</i> are equal; otherwise returns true.</p>
 <h3 class="fn"><a name="operator-eq-eq-9"></a>bool operator== ( const QVariant &amp; <i>v1</i>, const QVariant &amp; <i>v2</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns true if <i>v1</i> and <i>v2</i> are equal; otherwise returns false.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

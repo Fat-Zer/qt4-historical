@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -31,7 +31,7 @@
 /*!
     \class QProxyModel
     \obsolete
-    \brief The QProxyModel class provides support for filtering and sorting data
+    \brief The QProxyModel class provides support for processing data
     passed between another model and a view.
 
     \ingroup model-view
@@ -381,7 +381,8 @@ void QProxyModel::revert()
 QModelIndex QProxyModel::setProxyModel(const QModelIndex &source_index) const
 {
     QModelIndex proxy_index = source_index;
-    reinterpret_cast<QProxyModelPrivate::QProxyModelIndex*>(&proxy_index)->m = this;
+    if (proxy_index.isValid())
+        reinterpret_cast<QProxyModelPrivate::QProxyModelIndex*>(&proxy_index)->m = this;
     return proxy_index;
 }
 

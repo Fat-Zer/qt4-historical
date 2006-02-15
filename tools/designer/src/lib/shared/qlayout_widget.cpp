@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt Designer of the Qt Toolkit.
 **
@@ -902,8 +902,7 @@ int QLayoutWidget::layoutMargin() const
     if (layout())
         return layout()->margin() - 1;
 
-    qWarning("unknown margin!");
-    return 0 - 1;
+    return -1;
 }
 
 void QLayoutWidget::setLayoutMargin(int layoutMargin)
@@ -921,7 +920,6 @@ int QLayoutWidget::layoutSpacing() const
     if (layout())
         return layout()->spacing();
 
-    qWarning("unknown spacing!");
     return 0;
 }
 

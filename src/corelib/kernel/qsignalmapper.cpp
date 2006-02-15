@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -294,6 +294,17 @@ void QSignalMapper::map(QObject *sender)
     This signal is emitted when map() is signalled from an object that
     has a widget mapping set. The object's mapped widget is passed in
     \a widget.
+
+    \sa setMapping()
+*/
+
+/*!
+    \fn void QSignalMapper::mapped(QObject *object)
+    \overload
+
+    This signal is emitted when map() is signalled from an object that
+    has an object mapping set. The object provided by the map is passed in
+    \a object.
 
     \sa setMapping()
 */

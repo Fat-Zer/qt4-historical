@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtNetwork module of the Qt Toolkit.
 **
@@ -42,7 +42,7 @@
 
 class QSocks5SocketEnginePrivate;
 
-class QSocks5SocketEngine : public QAbstractSocketEngine
+class Q_INTERNAL_EXPORT QSocks5SocketEngine : public QAbstractSocketEngine
 {
     Q_OBJECT
 public:
@@ -243,7 +243,7 @@ public:
     void emitWriteNotification();
 };
 
-class QSocks5SocketEngineHandler : public QSocketEngineHandler
+class Q_INTERNAL_EXPORT QSocks5SocketEngineHandler : public QSocketEngineHandler
 {
 public:
     virtual QAbstractSocketEngine *createSocketEngine(const QHostAddress &address, QAbstractSocket::SocketType socketType, QObject *parent);

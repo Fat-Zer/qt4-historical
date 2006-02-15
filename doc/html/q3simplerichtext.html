@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/qt3support/text/q3simplerichtext.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/src/qt3support/text/q3simplerichtext.cpp -->
 <head>
     <title>Qt 4.1: Q3SimpleRichText Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -78,7 +78,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Draws the formatted text with painter <i>p</i>, at position (<i>x</i>, <i>y</i>), clipped to <i>clipRect</i>. The clipping rectangle is given in the rich text object's coordinates translated by (<i>x</i>, <i>y</i>). Passing an null rectangle results in no clipping. Colors from the color group <i>cg</i> are used as needed, and if not 0, *<i>paper</i> is used as the background brush.</p>
 <p>Note that the display code is highly optimized to reduce flicker, so passing a brush for <i>paper</i> is preferable to simply clearing the area to be painted and then calling this without a brush.</p>
 <h3 class="fn"><a name="draw-2"></a>void Q3SimpleRichText::draw ( <a href="qpainter.html">QPainter</a> * <i>p</i>, int <i>x</i>, int <i>y</i>, const <a href="qregion.html">QRegion</a> &amp; <i>clipRegion</i>, const <a href="qcolorgroup.html">QColorGroup</a> &amp; <i>cg</i>, const <a href="qbrush.html">QBrush</a> * <i>paper</i> = 0 ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Use the version with clipRect instead of this <i>clipRegion</i> version, since this region version has problems with larger documents on some platforms (on X11 regions internally are represented with 16-bit coordinates).</p>
 <h3 class="fn"><a name="height"></a>int Q3SimpleRichText::height () const</h3>
 <p>Returns the height of the rich text object in pixels.</p>
@@ -92,7 +92,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Passing a painter is useful when you intend drawing on devices other than the screen, for example a <a href="qprinter.html">QPrinter</a>.</p>
 <p>See also <a href="q3simplerichtext.html#width">width</a>(), <a href="q3simplerichtext.html#height">height</a>(), and <a href="q3simplerichtext.html#adjustSize">adjustSize</a>().</p>
 <h3 class="fn"><a name="setWidth-2"></a>void Q3SimpleRichText::setWidth ( int <i>w</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Sets the width of the rich text object to <i>w</i> pixels.</p>
 <p>See also <a href="q3simplerichtext.html#height">height</a>() and <a href="q3simplerichtext.html#adjustSize">adjustSize</a>().</p>
 <h3 class="fn"><a name="width"></a>int Q3SimpleRichText::width () const</h3>
@@ -104,8 +104,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="q3simplerichtext.html#width">width</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

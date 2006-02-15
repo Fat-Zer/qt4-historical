@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/doc/src/qalgorithms.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/doc/src/qalgorithms.qdoc -->
 <head>
     <title>Qt 4.1: &lt;QtAlgorithms&gt; - Generic Algorithms</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -114,7 +114,7 @@ body { background: #ffffff; color: black; }</style>
 <a name="random-access-iterators"></a>
 <h4>Random Access Iterators</h4>
 <p>The last category, <i>random access iterators</i>, is the most powerful type of iterator. It supports all the requirements of a bidirectional iterator, and supports the following operations:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#f0f0f0"><td><tt>i += n</tt></td><td>advances iterator <tt>i</tt> by <tt>n</tt> positions</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><tt>i -= n</tt></td><td>moves iterator <tt>i</tt> back by <tt>n</tt> positions</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><tt>i + n</tt> or <tt>n + i</tt></td><td>returns the iterator for the item <tt>n</tt> positions ahead of iterator <tt>i</tt></td></tr>
@@ -122,7 +122,7 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#f0f0f0"><td><tt>i - j</tt></td><td>returns the number of items between iterators <tt>i</tt> and <tt>j</tt></td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><tt>i[n]</tt></td><td>same as <tt>*(i + n)</tt></td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><tt>i &lt; j</tt></td><td>returns true if iterator <tt>j</tt> comes after iterator <tt>i</tt></td></tr>
-</table>
+</table></p>
 <p><a href="qlist.html">QList</a>, <a href="qlinkedlist.html">QLinkedList</a>, and <a href="qvector.html">QVector</a>'s non-const iterator types are random access iterators.</p>
 <p>See also <a href="containers.html#container-classes">container classes</a> and <a href="qtglobal.html">&lt;QtGlobal&gt;</a>.</p>
 <hr />
@@ -194,7 +194,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Notice that qDeleteAll() doesn't remove the items from the container; it merely calls <tt>delete</tt> on them. In the example above, we call clear() on the container to remove the items.</p>
 <p>See also <a href="qtalgorithms.html#forward-iterators">forward iterators</a>.</p>
 <h3 class="fn"><a name="qDeleteAll-2"></a>void qDeleteAll ( const Container &amp; <i>c</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>This is the same as qDeleteAll(<i>c</i>.begin(), <i>c</i>.end()).</p>
 <h3 class="fn"><a name="qEqual"></a>bool qEqual ( InputIterator1 <i>begin1</i>, InputIterator1 <i>end1</i>, InputIterator2 <i>begin2</i> )</h3>
 <p>Compares the items in the range [<i>begin1</i>, <i>end1</i>) with the items in the range [<i>begin2</i>, ...). Returns true if all the items compare equal; otherwise returns false.</p>
@@ -283,7 +283,7 @@ body { background: #ffffff; color: black; }</style>
 <p>If of two items neither is less than the other, the items are taken to be equal. It is then undefined which one of the two items will appear before the other after the sort.</p>
 <p>See also <a href="qtalgorithms.html#qStableSort">qStableSort</a>() and <a href="qtalgorithms.html#bidirectional-iterators">bidirectional iterators</a>.</p>
 <h3 class="fn"><a name="qSort-2"></a>void qSort ( BiIterator <i>begin</i>, BiIterator <i>end</i>, LessThan <i>lessThan</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Uses the <i>lessThan</i> function instead of <tt>operator&lt;()</tt> to compare the items.</p>
 <p>For example, here's how to sort the strings in a <a href="qstringlist.html">QStringList</a> in case-insensitive alphabetical order:</p>
 <pre>&nbsp;   bool caseInsensitiveLessThan(const QString &amp;s1, const QString &amp;s2)
@@ -315,7 +315,7 @@ body { background: #ffffff; color: black; }</style>
     list = map.values();</pre>
 <p>See also <a href="qmap.html">QMap</a>.</p>
 <h3 class="fn"><a name="qSort-3"></a>void qSort ( Container &amp; <i>container</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>This is the same as qSort(<i>container</i>.begin(), <i>container</i>.end());</p>
 <h3 class="fn"><a name="qStableSort"></a>void qStableSort ( BiIterator <i>begin</i>, BiIterator <i>end</i> )</h3>
 <p>Sorts the items in range [<i>begin</i>, <i>end</i>) in ascending order using the heap sort algorithm.</p>
@@ -329,7 +329,7 @@ body { background: #ffffff; color: black; }</style>
 <p>If of two items neither is less than the other, the items are taken to be equal. The item that appeared before the other in the original container will still appear first after the sort. This property is often useful when sorting user-visible data.</p>
 <p>See also <a href="qtalgorithms.html#qSort">qSort</a>() and <a href="qtalgorithms.html#bidirectional-iterators">bidirectional iterators</a>.</p>
 <h3 class="fn"><a name="qStableSort-2"></a>void qStableSort ( BiIterator <i>begin</i>, BiIterator <i>end</i>, LessThan <i>lessThan</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Uses the <i>lessThan</i> function instead of <tt>operator&lt;()</tt> to compare the items.</p>
 <p>For example, here's how to sort the strings in a <a href="qstringlist.html">QStringList</a> in case-insensitive alphabetical order:</p>
 <pre>&nbsp;   bool caseInsensitiveLessThan(const QString &amp;s1, const QString &amp;s2)
@@ -351,7 +351,7 @@ body { background: #ffffff; color: black; }</style>
     // list: [ 68, 33, 12, 12, 6 ]</pre>
 <p>If of two items neither is &quot;less than&quot; the other, the items are taken to be equal. The item that appeared before the other in the original container will still appear first after the sort. This property is often useful when sorting user-visible data.</p>
 <h3 class="fn"><a name="qStableSort-3"></a>void qStableSort ( Container &amp; <i>container</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>This is the same as qStableSort(<i>container</i>.begin(), <i>container</i>.end());</p>
 <h3 class="fn"><a name="qSwap"></a>void qSwap ( T &amp; <i>var1</i>, T &amp; <i>var2</i> )</h3>
 <p>Exchanges the values of variables <i>var1</i> and <i>var2</i>.</p>
@@ -393,8 +393,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qtalgorithms.html#qLowerBound">qLowerBound</a>() and <a href="qtalgorithms.html#qBinaryFind">qBinaryFind</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

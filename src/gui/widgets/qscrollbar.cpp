@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -165,8 +165,8 @@
     user interaction with the scroll bar controls. This is useful if you have
     many different widgets that use a common range of values.
 
-    \inlineimage qscrbar-m.png Screenshot in Motif style
-    \inlineimage qscrbar-w.png Screenshot in Windows style
+    \image macintosh-horizontalscrollbar.png A scroll bar shown in the Macintosh widget style.
+    \image windowsxp-horizontalscrollbar.png A scroll bar shown in the WindowsXP widget style.
 
     Most GUI styles use the pageStep() value to calculate the size of the
     slider.
@@ -375,6 +375,7 @@ void QScrollBarPrivate::init()
         sp.transpose();
     q->setSizePolicy(sp);
     q->setAttribute(Qt::WA_WState_OwnSizePolicy, false);
+    q->setAttribute(Qt::WA_OpaquePaintEvent);
 }
 
 /*! \reimp */

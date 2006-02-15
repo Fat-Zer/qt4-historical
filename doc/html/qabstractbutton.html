@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/gui/widgets/qabstractbutton.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/src/gui/widgets/qabstractbutton.cpp -->
 <head>
     <title>Qt 4.1: QAbstractButton Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -27,7 +27,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <a name="properties"></a>
 <h3>Properties</h3>
-<table width="100%" border="0" cellpadding="0" cellspacing="0">
+<p><table width="100%" border="0" cellpadding="0" cellspacing="0">
 <tr><td width="45%" valign="top"><ul>
 <li><div class="fn"/><b><a href="qabstractbutton.html#autoExclusive-prop">autoExclusive</a></b> : bool</li>
 <li><div class="fn"/><b><a href="qabstractbutton.html#autoRepeat-prop">autoRepeat</a></b> : bool</li>
@@ -41,7 +41,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="qabstractbutton.html#text-prop">text</a></b> : QString</li>
 </ul>
 </td></tr>
-</table>
+</table></p>
 <ul>
 <li><div class="fn"/>54 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
 <li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
@@ -72,7 +72,7 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
-<li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <a name="public-slots"></a>
 <h3>Public Slots</h3>
@@ -109,6 +109,7 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/>39 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
+<li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
 </ul>
 <h3>Additional Inherited Members</h3>
 <ul>
@@ -272,11 +273,21 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="toggled"></a>void QAbstractButton::toggled ( bool <i>checked</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted whenever a checkable button changes its state. <i>checked</i> is true if the button is checked, or false if the button is unchecked.</p>
 <p>This may be the result of a user action, <a href="qabstractbutton.html#click">click</a>() slot activation, or because <a href="qabstractbutton.html#checked-prop">setChecked</a>() was called.</p>
+<p>The states of buttons in exclusive button groups are updated before this signal is emitted. This means that slots can act on either the &quot;off&quot; signal or the &quot;on&quot; signal emitted by the buttons in the group whose states have changed.</p>
+<p>For example, a slot that reacts to signals emitted by newly checked buttons but which ignores signals from buttons that have been unchecked can be implemented using the following pattern:</p>
+<pre>&nbsp;   void MyWidget::reactToToggle(bool checked)
+    {
+       if (checked) {
+          // Examine the new button states.
+          ...
+       }
+    }</pre>
+<p>Button groups can be created using the <a href="qbuttongroup.html">QButtonGroup</a> class, and updates to the button states monitored with the <a href="qbuttongroup.html#buttonClicked">QButtonGroup::buttonClicked</a>() signal.</p>
 <p>See also <a href="qabstractbutton.html#checked-prop">checked</a> and <a href="qabstractbutton.html#clicked">clicked</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/gui/accessible/qaccessibleplugin.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/src/gui/accessible/qaccessibleplugin.cpp -->
 <head>
     <title>Qt 4.1: QAccessiblePlugin Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -47,12 +47,12 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Detailed Description</h2>
 <p>The QAccessiblePlugin class provides an abstract base for accessibility plugins.</p>
-<p>Writing an accessibility plugin is achieved by subclassing this base class, reimplementing the pure virtual functions <a href="qaccessibleplugin.html#keys">keys</a>() and <a href="qaccessibleplugin.html#create">create</a>(), and exporting the class with the <a href="qpluginloader-obsolete.html#Q_EXPORT_PLUGIN">Q_EXPORT_PLUGIN</a>() macro.</p>
+<p>Writing an accessibility plugin is achieved by subclassing this base class, reimplementing the pure virtual functions <a href="qaccessibleplugin.html#keys">keys</a>() and <a href="qaccessibleplugin.html#create">create</a>(), and exporting the class with the <a href="qpluginloader.html#Q_EXPORT_PLUGIN2">Q_EXPORT_PLUGIN2</a>() macro.</p>
 <p>See also <a href="qaccessiblebridgeplugin.html">QAccessibleBridgePlugin</a> and <a href="plugins-howto.html">How to Create Qt Plugins</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QAccessiblePlugin"></a>QAccessiblePlugin::QAccessiblePlugin ( <a href="qobject.html">QObject</a> * <i>parent</i> = 0 )</h3>
-<p>Constructs an accessibility plugin with the given <i>parent</i>. This is invoked automatically by the <a href="qpluginloader-obsolete.html#Q_EXPORT_PLUGIN">Q_EXPORT_PLUGIN</a>() macro.</p>
+<p>Constructs an accessibility plugin with the given <i>parent</i>. This is invoked automatically by the <a href="qpluginloader.html#Q_EXPORT_PLUGIN2">Q_EXPORT_PLUGIN2</a>() macro.</p>
 <h3 class="fn"><a name="dtor.QAccessiblePlugin"></a>QAccessiblePlugin::~QAccessiblePlugin ()</h3>
 <p>Destroys the accessibility plugin.</p>
 <p>You never have to call this explicitly. Qt destroys a plugin automatically when it is no longer used.</p>
@@ -65,8 +65,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qaccessibleplugin.html#create">create</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

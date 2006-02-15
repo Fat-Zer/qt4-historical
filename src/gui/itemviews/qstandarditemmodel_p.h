@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -75,7 +75,7 @@ public:
     QStdModelRow *p;
     QVector<QStdModelItem*> items;
     int childrenColumns;
-    QVector<QStdModelRow*> childrenRows;
+    mutable QVector<QStdModelRow*> childrenRows;
 };
 
 class QStandardItemModelPrivate : public QAbstractItemModelPrivate
@@ -90,7 +90,7 @@ public:
     QStdModelRow *containedRow(const QModelIndex &index, bool createIfMissing) const;
     void clear();
 
-    QVector<QStdModelRow*> topLevelRows;
+    mutable QVector<QStdModelRow*> topLevelRows;
     QVector<QStdModelItem*> horizontalHeader, verticalHeader;
     int topLevelColumns;
 };

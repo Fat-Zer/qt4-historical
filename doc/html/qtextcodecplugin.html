@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/corelib/codecs/qtextcodecplugin.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/src/corelib/codecs/qtextcodecplugin.cpp -->
 <head>
     <title>Qt 4.1: QTextCodecPlugin Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -51,12 +51,12 @@ body { background: #ffffff; color: black; }</style>
 <h2>Detailed Description</h2>
 <p>The QTextCodecPlugin class provides an abstract base for custom <a href="qtextcodec.html">QTextCodec</a> plugins.</p>
 <p>The text codec plugin is a simple plugin interface that makes it easy to create custom text codecs that can be loaded dynamically into applications.</p>
-<p>Writing a text codec plugin is achieved by subclassing this base class, reimplementing the pure virtual functions <a href="qtextcodecplugin.html#names">names</a>(), <a href="qtextcodecplugin.html#aliases">aliases</a>(), <a href="qtextcodecplugin.html#createForName">createForName</a>(), <a href="qtextcodecplugin.html#mibEnums">mibEnums</a>() and <a href="qtextcodecplugin.html#createForMib">createForMib</a>(), and exporting the class with the <a href="qpluginloader-obsolete.html#Q_EXPORT_PLUGIN">Q_EXPORT_PLUGIN</a>() macro. See <a href="plugins-howto.html">How to Create Qt Plugins</a> for details.</p>
+<p>Writing a text codec plugin is achieved by subclassing this base class, reimplementing the pure virtual functions <a href="qtextcodecplugin.html#names">names</a>(), <a href="qtextcodecplugin.html#aliases">aliases</a>(), <a href="qtextcodecplugin.html#createForName">createForName</a>(), <a href="qtextcodecplugin.html#mibEnums">mibEnums</a>() and <a href="qtextcodecplugin.html#createForMib">createForMib</a>(), and exporting the class with the <a href="qpluginloader.html#Q_EXPORT_PLUGIN2">Q_EXPORT_PLUGIN2</a>() macro. See <a href="plugins-howto.html">How to Create Qt Plugins</a> for details.</p>
 <p>See the <a href="http://www.iana.org/assignments/character-sets">IANA character-sets encoding file</a> for more information on mime names and mib enums.</p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QTextCodecPlugin"></a>QTextCodecPlugin::QTextCodecPlugin ( <a href="qobject.html">QObject</a> * <i>parent</i> = 0 )</h3>
-<p>Constructs a text codec plugin with the given <i>parent</i>. This is invoked automatically by the <a href="qpluginloader-obsolete.html#Q_EXPORT_PLUGIN">Q_EXPORT_PLUGIN</a>() macro.</p>
+<p>Constructs a text codec plugin with the given <i>parent</i>. This is invoked automatically by the <a href="qpluginloader.html#Q_EXPORT_PLUGIN2">Q_EXPORT_PLUGIN2</a>() macro.</p>
 <h3 class="fn"><a name="dtor.QTextCodecPlugin"></a>QTextCodecPlugin::~QTextCodecPlugin ()</h3>
 <p>Destroys the text codec plugin.</p>
 <p>You never have to call this explicitly. Qt destroys a plugin automatically when it is no longer used.</p>
@@ -77,8 +77,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qtextcodecplugin.html#createForName">createForName</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

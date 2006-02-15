@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/gui/accessible/qaccessible.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/src/gui/accessible/qaccessible.cpp -->
 <head>
     <title>Qt 4.1: QAccessibleInterface Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -78,7 +78,7 @@ body { background: #ffffff; color: black; }</style>
 <a name="objects-and-children"></a>
 <h4>Objects and children</h4>
 <p>A QAccessibleInterface provides information about the accessible object, and can also provide information for the children of that object if those children don't provide a QAccessibleInterface implementation themselves. This is practical if the object has many similar children (e.g. items in a list view), or if the children are an integral part of the object itself, for example, the different sections in a scrollbar.</p>
-<p>If an accessible object provides information about it's children through one QAccessibleInterface, the children are referenced using indexes. The index is 1-based for the children, i.e. 0 refers to the object itself, 1 to the first child, 2 to the second child, and so on.</p>
+<p>If an accessible object provides information about its children through one QAccessibleInterface, the children are referenced using indexes. The index is 1-based for the children, i.e. 0 refers to the object itself, 1 to the first child, 2 to the second child, and so on.</p>
 <p>All functions in QAccessibleInterface that take a child index relate to the object itself if the index is 0, or to the child specified. If a child provides its own interface implementation (which can be retrieved through navigation) asking the parent for information about that child will usually not succeed.</p>
 <p>See also <a href="qaccessible.html">QAccessible</a>.</p>
 <hr />
@@ -94,7 +94,7 @@ body { background: #ffffff; color: black; }</style>
 <p>All visual objects provide this information.</p>
 <p>See also <a href="qaccessibleinterface.html#rect">rect</a>().</p>
 <h3 class="fn"><a name="childCount"></a>int QAccessibleInterface::childCount () const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
-<p>Returns the number of children that belong to this object. A child can provide accessibility information on it's own (e.g. a child widget), or be a sub-element of this accessible object.</p>
+<p>Returns the number of children that belong to this object. A child can provide accessibility information on its own (e.g. a child widget), or be a sub-element of this accessible object.</p>
 <p>All objects provide this information.</p>
 <p>See also <a href="qaccessibleinterface.html#indexOfChild">indexOfChild</a>().</p>
 <h3 class="fn"><a name="doAction"></a>bool QAccessibleInterface::doAction ( int <i>action</i>, int <i>child</i>, const <a href="qvariant.html#QVariantList-typedef">QVariantList</a> &amp; <i>params</i> = QVariantList() )&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
@@ -168,8 +168,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qaccessibleinterface.html#actionText">actionText</a>() and <a href="qaccessibleinterface.html#doAction">doAction</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

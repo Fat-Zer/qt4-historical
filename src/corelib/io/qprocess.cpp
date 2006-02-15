@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -948,8 +948,10 @@ QProcess::ProcessState QProcess::state() const
 
     \code
         QProcess process;
-        process.setEnvironment(QProcess::systemEnvironment()
-                               << "TMPDIR=C:\\MyApp\\temp");
+        QStringList env = QProcess::systemEnvironment();
+        env << "TMPDIR=C:\\MyApp\\temp"; // Add an environment variable
+        env.replaceInStrings(QRegExp("^PATH=(.*)", false), "PATH=\\1;C:\\Bin"); // Add Bin to PATH
+        process.setEnvironment(env);
         process.start("myapp");
     \endcode
 
@@ -1331,6 +1333,16 @@ static QStringList parseCombinedArgString(const QString &program)
     \code
         QProcess process;
         process.start("dir \"My Documents\"");
+    \endcode
+
+    Note that, on Windows, quotes need to be both escaped and quoted.
+    For example, the above code would be specified in the following
+    way to ensure that \c{"My Documents"} is used as the argument to
+    the \c dir executable:
+
+    \code
+        QProcess process;
+        process.start("dir \"\"\"My Documents\"\"\"");
     \endcode
 
     The OpenMode is set to \a mode.

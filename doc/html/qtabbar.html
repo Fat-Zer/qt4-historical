@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/gui/widgets/qtabbar.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/src/gui/widgets/qtabbar.cpp -->
 <head>
     <title>Qt 4.1: QTabBar Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -31,7 +31,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <a name="properties"></a>
 <h3>Properties</h3>
-<table width="100%" border="0" cellpadding="0" cellspacing="0">
+<p><table width="100%" border="0" cellpadding="0" cellspacing="0">
 <tr><td width="45%" valign="top"><ul>
 <li><div class="fn"/><b><a href="qtabbar.html#count-prop">count</a></b> : const int</li>
 <li><div class="fn"/><b><a href="qtabbar.html#currentIndex-prop">currentIndex</a></b> : int</li>
@@ -41,7 +41,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="qtabbar.html#shape-prop">shape</a></b> : Shape</li>
 </ul>
 </td></tr>
-</table>
+</table></p>
 <ul>
 <li><div class="fn"/>54 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
 <li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
@@ -83,7 +83,7 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
-<li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <a name="public-slots"></a>
 <h3>Public Slots</h3>
@@ -114,6 +114,7 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/>39 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
+<li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
 </ul>
 <h3>Additional Inherited Members</h3>
 <ul>
@@ -140,12 +141,11 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="qwidget.html#paintEvent">paintEvent</a>() paints all tabs.</li>
 </ul>
 <p>For subclasses, you might also need the <a href="qtabbar.html#tabRect">tabRect</a>() functions which returns the visual geometry of a single tab.</p>
-<p><img src="images/qtabbar-m.png" alt="Screenshot in Motif style" /> <img src="images/qtabbar-w.png" alt="Screenshot in Windows style" /></p>
-<hr />
+<p align="center"><img src="images/plastique-tabbar.png" alt="A tab bar shown in the Plastique widget style." /></p><p align="center"><img src="images/plastique-tabbar.png" alt="A truncated tab bar shown in the Plastique widget style." /></p><hr />
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="Shape-enum"></a>enum QTabBar::Shape</h3>
 <p>This enum type lists the built-in shapes supported by <a href="qtabbar.html">QTabBar</a>. Treat these as hints as some styles may not render some of the shapes. However, position should be honored.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QTabBar::RoundedNorth</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The normal rounded look above the pages</td></tr>
 <tr><td valign="top"><tt>QTabBar::RoundedSouth</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The normal rounded look below the pages</td></tr>
@@ -155,7 +155,7 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QTabBar::TriangularSouth</tt></td><td align="center" valign="top"><tt>5</tt></td><td valign="top">Triangular tabs similar to those used in the Excel spreadsheet, for example</td></tr>
 <tr><td valign="top"><tt>QTabBar::TriangularWest</tt></td><td align="center" valign="top"><tt>6</tt></td><td valign="top">Triangular tabs on the left of the pages.</td></tr>
 <tr><td valign="top"><tt>QTabBar::TriangularEast</tt></td><td align="center" valign="top"><tt>7</tt></td><td valign="top">Triangular tabs on the right of the pages.</td></tr>
-</table>
+</table></p>
 <hr />
 <h2>Property Documentation</h2>
 <h3 class="fn"><a name="count-prop"></a>count : const int</h3>
@@ -172,7 +172,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b>void setCurrentIndex ( int <i>index</i> )</b></li>
 </ul>
 <h3 class="fn"><a name="drawBase-prop"></a>drawBase : bool</h3>
-<p>This property holds defines whether or not tabbar should draw it's base.</p>
+<p>This property holds defines whether or not tabbar should draw its base.</p>
 <p>If true then <a href="qtabbar.html">QTabBar</a> draws a base in relation to the styles overlab. Otherwise only the tabs are drawn.</p>
 <p>Access functions:</p>
 <ul>
@@ -207,14 +207,14 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="addTab"></a>int QTabBar::addTab ( const <a href="qstring.html">QString</a> &amp; <i>text</i> )</h3>
 <p>Adds a new tab with text <i>text</i>. Returns the new tab's index.</p>
 <h3 class="fn"><a name="addTab-2"></a>int QTabBar::addTab ( const <a href="qicon.html">QIcon</a> &amp; <i>icon</i>, const <a href="qstring.html">QString</a> &amp; <i>text</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Adds a new tab with icon <i>icon</i> and text <i>text</i>. Returns the new tab's index.</p>
 <h3 class="fn"><a name="currentChanged"></a>void QTabBar::currentChanged ( int <i>index</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when the tab bar's current tab changes. The new current has the given <i>index</i>.</p>
 <h3 class="fn"><a name="insertTab"></a>int QTabBar::insertTab ( int <i>index</i>, const <a href="qstring.html">QString</a> &amp; <i>text</i> )</h3>
 <p>Inserts a new tab with text <i>text</i> at position <i>index</i>. If <i>index</i> is out of range, the new tab is appened. Returns the new tab's index.</p>
 <h3 class="fn"><a name="insertTab-2"></a>int QTabBar::insertTab ( int <i>index</i>, const <a href="qicon.html">QIcon</a> &amp; <i>icon</i>, const <a href="qstring.html">QString</a> &amp; <i>text</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Inserts a new tab with icon <i>icon</i> and text <i>text</i> at position <i>index</i>. If <i>index</i> is out of range, the new tab is appended. Returns the new tab's index.</p>
 <h3 class="fn"><a name="isTabEnabled"></a>bool QTabBar::isTabEnabled ( int <i>index</i> ) const</h3>
 <p>Returns true if the tab at position <i>index</i> is enabled; otherwise returns false.</p>
@@ -277,8 +277,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qtabbar.html#setTabWhatsThis">setTabWhatsThis</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

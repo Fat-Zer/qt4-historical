@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt Designer of the Qt Toolkit.
 **
@@ -227,7 +227,10 @@ void RichTextEditor::setFontPointSize(double d)
 
 void RichTextEditor::setText(const QString &text)
 {
-    setHtml(text);
+    if (Qt::mightBeRichText(text))
+        setHtml(text);
+    else
+        setPlainText(text);
 }
 
 void RichTextEditor::setDefaultFont(const QFont &font)

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/doc/src/examples/styles.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/doc/src/examples/styles.qdoc -->
 <head>
     <title>Qt 4.1: Styles Example</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -84,12 +84,12 @@ body { background: #ffffff; color: black; }</style>
         painter.end();</pre>
 <p>The <tt>polish()</tt> function is reimplemented from <a href="qstyle.html">QStyle</a>. It takes a <a href="qpalette.html">QPalette</a> as a reference and adapts the palette to fit the style. Most styles don't need to reimplement that function. The Norwegian Wood style reimplements it to set a &quot;wooden&quot; palette.</p>
 <p>We start by defining a few <a href="qcolor.html">QColor</a>s that we'll need. Then we load two PNG images. The <tt>:</tt> prefix in the file path indicates that the PNG files are <a href="resources.html">embedded resources</a>.</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#f0f0f0"><td><img src="images//woodbackground.png" /></td><td><b>woodbackground.png</b><p>This texture is used as the background of most widgets. The wood pattern is horizontal.</p>
 </td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><img src="images//woodbutton.png" /></td><td><b>woodbutton.png</b><p>This texture is used for filling push buttons and comboboxes. The wood pattern is vertical and more reddish than the texture used for the background.</p>
 </td></tr>
-</table>
+</table></p>
 <p>The <tt>midImage</tt> variable is initialized to be the same as <tt>buttonImage</tt>, but then we use a <a href="qpainter.html">QPainter</a> and fill it with a 25% opaque black color (a black with an <a href="qcolor.html#alpha">alpha channel</a> of 63). The result is a somewhat darker image than <tt>buttonImage</tt>. This image will be used for filling buttons that the user is holding down.</p>
 <pre>&nbsp;       palette = QPalette(brown);
 
@@ -488,8 +488,8 @@ body { background: #ffffff; color: black; }</style>
 <p>In <tt>createProgressBar()</tt>, we create a <a href="qprogressbar.html">QProgressBar</a> at the bottom of the <tt>WidgetGallery</tt> and connect its <a href="qtimer.html#timeout">timeout()</a> signal to the <tt>advanceProgressBar()</tt> slot.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

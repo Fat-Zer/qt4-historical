@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/doc/src/qaxserver.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/doc/src/qaxserver.qdoc -->
 <head>
     <title>Qt 4.1: QAxServer Module</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -13,7 +13,6 @@ tr.address { font-family: sans-serif }
 body { background: #ffffff; color: black; }</style>
     <link rel="prev" href="qaxcontainer.html" />
     <link rel="contents" href="modules.html" />
-    <link rel="next" href="qtdesigner.html" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
@@ -23,7 +22,6 @@ body { background: #ffffff; color: black; }</style>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><p>
 [Previous: <a href="qaxcontainer.html">QAxContainer Module</a>]
 [<a href="modules.html">Qt's Modules</a>]
-[Next: <a href="qtdesigner.html">QtDesigner Module</a>]
 </p>
 <h1 align="center">QAxServer Module<br /><small></small></h1>
 <p>The QAxServer module is a Windows-only static library that you can use to turn a standard Qt binary into a COM server. <a href="#details">More...</a></p>
@@ -132,7 +130,7 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li>All controls exposed can be created with nothing but a <a href="qapplication.html">QApplication</a> instance being present</li>
 <li>The initial linking of the server includes a temporary type library resource</li>
-<li>All dependencies required to run the server are in the system path (or in the path used by the calling environment; note that Visual Studio has it's own set of environment variables listed in the Tools|Options|Directories dialog).</li>
+<li>All dependencies required to run the server are in the system path (or in the path used by the calling environment; note that Visual Studio has its own set of environment variables listed in the Tools|Options|Directories dialog).</li>
 </ul>
 <p>If those requirements are not met one ore more of the following errors are likely to occur:</p>
 <a name="the-server-executable-crashes"></a>
@@ -187,7 +185,7 @@ body { background: #ffffff; color: black; }</style>
 <a name="data-types"></a>
 <h4>Data Types</h4>
 <p>The Qt data types that are supported for properties are:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Qt data type</th><th>COM property</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>bool</td><td>VARIANT_BOOL</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qstring.html">QString</a></td><td>BSTR</td></tr>
@@ -210,9 +208,9 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qrect.html">QRect</a></td><td>User defined type</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qsize.html">QSize</a></td><td>User defined type</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qpoint.html">QPoint</a></td><td>User defined type</td></tr>
-</table>
+</table></p>
 <p>The Qt data types that are supported for parameters in signals and slots are:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Qt data type</th><th>COM parameter</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>bool</td><td>[in] VARIANT_BOOL</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>bool&amp;</td><td>[in, out] VARIANT_BOOL*</td></tr>
@@ -235,8 +233,8 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qfont.html">QFont</a>&amp;</td><td>[in, out] IFontDisp**</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qpixmap.html">QPixmap</a>, const <a href="qpixmap.html">QPixmap</a>&amp;</td><td>[in] IPictureDisp*</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qpixmap.html">QPixmap</a>&amp;</td><td>[in, out] IPictureDisp**</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>QValueList&lt;<a href="qvariant.html">QVariant</a>&gt;, const QValueList&lt;<a href="qvariant.html">QVariant</a>&gt;&amp;</td><td>[in] SAFEARRAY(VARIANT)</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>QValueList&lt;<a href="qvariant.html">QVariant</a>&gt;&amp;</td><td>[in, out] SAFEARRAY(VARIANT)*</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qlist.html">QList</a>&lt;<a href="qvariant.html">QVariant</a>&gt;, const <a href="qlist.html">QList</a>&lt;<a href="qvariant.html">QVariant</a>&gt;&amp;</td><td>[in] SAFEARRAY(VARIANT)</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qlist.html">QList</a>&lt;<a href="qvariant.html">QVariant</a>&gt;&amp;</td><td>[in, out] SAFEARRAY(VARIANT)*</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qstringlist.html">QStringList</a>, const <a href="qstringlist.html">QStringList</a>&amp;</td><td>[in] SAFEARRAY(BSTR)</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qstringlist.html">QStringList</a>&amp;</td><td>[in, out] SAFEARRAY(BSTR)*</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qbytearray.html">QByteArray</a>, const <a href="qbytearray.html">QByteArray</a>&amp;</td><td>[in] SAFEARRAY(BYTE)</td></tr>
@@ -246,7 +244,7 @@ body { background: #ffffff; color: black; }</style>
 --></td><td>[in, out] struct <a href="qrect.html">QRect</a> (user defined)</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qsize.html">QSize</a>&amp;</td><td>[in, out] struct <a href="qsize.html">QSize</a> (user defined)</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qpoint.html">QPoint</a>&amp;</td><td>[in, out] struct <a href="qpoint.html">QPoint</a> (user defined)</td></tr>
-</table>
+</table></p>
 <p>Also supported are exported enums and flags (see <a href="qobject.html#Q_ENUMS">Q_ENUMS</a>() and <a href="qobject.html#Q_FLAGS">Q_FLAGS</a>()). The in-parameter types are also supported as return values.</p>
 <p>Properties and signals/slots that have parameters using any other data types are ignored by the <a href="activeqt.html#activeqt">ActiveQt</a> framework.</p>
 <a name="sub-objects"></a>
@@ -291,13 +289,13 @@ body { background: #ffffff; color: black; }</style>
 <p>This is however not necessary as <a href="activeqt.html#activeqt">ActiveQt</a> provides a default implementation of a main function. The default implemenation calls <a href="qaxfactory.html#startServer">QAxFactory::startServer</a>(), creates a <a href="qapplication.html">QApplication</a> instance and calls exec().</p>
 <p>To build the ActiveX server executable run <tt>qmake</tt> to generate the makefile, and use your compiler's make tool as for any other Qt application. The make process will also register the controls in the system registry by calling the resulting executable with the <tt>-regserver</tt> command line option.</p>
 <p>If the ActiveX server is an executable, the following command line options are supported:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Option</th><th>Result</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><tt>-regserver</tt></td><td>Registers the server in the system registry</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><tt>-unregserver</tt></td><td>Unregisters the server from the system registry</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><tt>-activex</tt></td><td>Starts the application as an ActiveX server</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><tt>-dumpidl &lt;file&gt; -version x.y</tt></td><td>Writes the server's IDL to the specified file. The type library will have version x.y</td></tr>
-</table>
+</table></p>
 <p>In-process servers can be registered using the <tt>regsvr32</tt> tool available on all Windows systems.</p>
 <a name="typical-compile-time-problems"></a>
 <h4>Typical Compile-Time Problems</h4>
@@ -405,7 +403,7 @@ body { background: #ffffff; color: black; }</style>
 <a name="class-information-and-tuning"></a>
 <h3>Class Information and Tuning</h3>
 <p>To provide attributes for each COM class, use the Q_CLASSINFO macro, which is part of Qt's meta object system.</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Key</th><th>Meaning of value</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>Version</td><td>The version of the class (1.0 is default)</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>Description</td><td>A string describing the class.</td></tr>
@@ -420,8 +418,9 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#f0f0f0"><td>Insertable</td><td>If the value is &quot;yes&quot; the class is registered to be &quot;Insertable&quot; and will be listed in OLE 2 containers (ie. Microsoft Office). This attribute is not be set by default.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>Aggregatable</td><td>If the value is &quot;no&quot; the class does not support aggregation. By default aggregation is supported.</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>Creatable</td><td>If the value is &quot;no&quot; the class cannot be created by the client, and is only available through the API of another class (ie. the class is a sub-type).</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>RegisterObject</td><td>If the value is &quot;yes&quot; objects of this class are registered with OLE and accessible from the running object table (ie. clients can connect to an already running instance of this class). This attribute is only supported in out-of-process servers.</td><td>MIME</td><td>The object can handle data and files of the format specified in the value. The value has the format mime:extension:description. Multiple formats are separated by a semicolon.</td></tr>
-</table>
+<tr valign="top" bgcolor="#e0e0e0"><td>RegisterObject</td><td>If the value is &quot;yes&quot; objects of this class are registered with OLE and accessible from the running object table (ie. clients can connect to an already running instance of this class). This attribute is only supported in out-of-process servers.</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>MIME</td><td>The object can handle data and files of the format specified in the value. The value has the format mime:extension:description. Multiple formats are separated by a semicolon.</td></tr>
+</table></p>
 <p>Note that both keys and values are case sensitive.</p>
 <p>The following declares version 2.0 of a class that exposes only its own API, and is available in the &quot;Insert Objects&quot; dialog of Microsoft Office applications.</p>
 <pre>&nbsp;   class MyActiveX : public QWidget
@@ -506,12 +505,11 @@ body { background: #ffffff; color: black; }</style>
 <p>
 [Previous: <a href="qaxcontainer.html">QAxContainer Module</a>]
 [<a href="modules.html">Qt's Modules</a>]
-[Next: <a href="qtdesigner.html">QtDesigner Module</a>]
 </p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

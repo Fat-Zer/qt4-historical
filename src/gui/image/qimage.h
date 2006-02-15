@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -258,9 +258,17 @@ protected:
     virtual int metric(PaintDeviceMetric metric) const;
 
 private:
+#if defined(Q_WS_QWS) && !defined(QT3_SUPPORT)
+public:
+    enum Endian { BigEndian, LittleEndian, IgnoreEndian };
+private:
+    QImage(uchar *data, int w, int h, int depth, int pbl, const QRgb *colortable, int numColors, Endian bitOrder);
+#endif
+
     QImageData *d;
 
     friend class QPixmap;
+    friend Q_GUI_EXPORT qint64 qt_image_id(const QImage &image);
 };
 
 Q_DECLARE_SHARED(QImage)

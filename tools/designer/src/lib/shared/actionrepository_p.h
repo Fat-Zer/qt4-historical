@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt Designer of the Qt Toolkit.
 **
@@ -71,8 +71,7 @@ public:
 
     QList<QAction*> items;
 
-    virtual bool hasFormat(const QString &mimeType) const
-    { return mimeType == QLatin1String("action-repository/actions"); }
+    virtual QStringList formats() const { return QStringList() << "action-repository/actions"; }
 };
 
 } // namespace qdesigner_internal

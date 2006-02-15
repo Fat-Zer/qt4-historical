@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -526,11 +526,14 @@ void QEventDispatcherMac::flush()
         for(int i = 0; i < tlws.size(); i++) {
             QWidget *tlw = tlws.at(i);
             if(tlw->isVisible()) {
-#if defined(QMAC_NO_COREGRAPHICS) || 1
-                QDFlushPortBuffer(GetWindowPort(qt_mac_window_for(tlw)), NULL);
-#else
-                HIWindowFlush(qt_mac_window_for(tlw));
+#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3
+                if (QSysInfo::MacintoshVersion >= QSysInfo::MV_10_3) {
+                    HIWindowFlush(qt_mac_window_for(tlw));
+                } else
 #endif
+                {
+                    QDFlushPortBuffer(GetWindowPort(qt_mac_window_for(tlw)), 0);
+                }
             }
         }
     }

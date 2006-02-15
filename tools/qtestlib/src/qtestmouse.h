@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the tools applications of the Qt Toolkit.
 **
@@ -32,7 +32,7 @@
 #include <QtTest/qtest_global.h>
 #include <QtTest/qtestassert.h>
 #include <QtTest/qtestsystem.h>
-#include <QtTest/private/qtestspontaneevent_p.h>
+#include <QtTest/qtestspontaneevent.h>
 
 #include <QtCore/qpoint.h>
 #include <QtCore/qstring.h>
@@ -73,13 +73,13 @@ namespace QTest
         switch (action)
         {
             case MousePress:
-                me = QMouseEvent(QEvent::MouseButtonPress, pos, button, button, stateKey);
+                me = QMouseEvent(QEvent::MouseButtonPress, pos, widget->mapToGlobal(pos), button, button, stateKey);
                 break;
             case MouseRelease:
-                me = QMouseEvent(QEvent::MouseButtonRelease, pos, button, 0, stateKey);
+                me = QMouseEvent(QEvent::MouseButtonRelease, pos, widget->mapToGlobal(pos), button, 0, stateKey);
                 break;
             case MouseDClick:
-                me = QMouseEvent(QEvent::MouseButtonDblClick, pos, button, button, stateKey);
+                me = QMouseEvent(QEvent::MouseButtonDblClick, pos, widget->mapToGlobal(pos), button, button, stateKey);
                 break;
             case MouseMove:
                 QCursor::setPos(widget->mapToGlobal(pos));

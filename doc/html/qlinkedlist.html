@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/corelib/tools/qlinkedlist.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/src/corelib/tools/qlinkedlist.cpp -->
 <head>
     <title>Qt 4.1: QLinkedList Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -43,7 +43,7 @@ body { background: #ffffff; color: black; }</style>
 <h3>Public Functions</h3>
 <ul>
 <li><div class="fn"/><b><a href="qlinkedlist.html#QLinkedList">QLinkedList</a></b> ()</li>
-<li><div class="fn"/><b><a href="qlinkedlist.html#QLinkedList-2">QLinkedList</a></b> ( const QLinkedList &amp; <i>other</i> )</li>
+<li><div class="fn"/><b><a href="qlinkedlist.html#QLinkedList-2">QLinkedList</a></b> ( const QLinkedList&lt;T&gt; &amp; <i>other</i> )</li>
 <li><div class="fn"/><b><a href="qlinkedlist.html#dtor.QLinkedList">~QLinkedList</a></b> ()</li>
 <li><div class="fn"/>void <b><a href="qlinkedlist.html#append">append</a></b> ( const T &amp; <i>value</i> )</li>
 <li><div class="fn"/>T &amp; <b><a href="qlinkedlist.html#back">back</a></b> ()</li>
@@ -81,14 +81,14 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>T <b><a href="qlinkedlist.html#takeFirst">takeFirst</a></b> ()</li>
 <li><div class="fn"/>T <b><a href="qlinkedlist.html#takeLast">takeLast</a></b> ()</li>
 <li><div class="fn"/>std::list&lt;T&gt; <b><a href="qlinkedlist.html#toStdList">toStdList</a></b> () const</li>
-<li><div class="fn"/>bool <b><a href="qlinkedlist.html#operator-not-eq">operator!=</a></b> ( const QLinkedList &amp; <i>other</i> ) const</li>
-<li><div class="fn"/>QLinkedList <b><a href="qlinkedlist.html#operator-2b">operator+</a></b> ( const QLinkedList &amp; <i>other</i> ) const</li>
-<li><div class="fn"/>QLinkedList &amp; <b><a href="qlinkedlist.html#operator-2b-eq">operator+=</a></b> ( const QLinkedList &amp; <i>other</i> )</li>
-<li><div class="fn"/>QLinkedList &amp; <b><a href="qlinkedlist.html#operator-2b-eq-2">operator+=</a></b> ( const T &amp; <i>value</i> )</li>
-<li><div class="fn"/>QLinkedList &amp; <b><a href="qlinkedlist.html#operator-lt-lt">operator&lt;&lt;</a></b> ( const QLinkedList &amp; <i>other</i> )</li>
-<li><div class="fn"/>QLinkedList &amp; <b><a href="qlinkedlist.html#operator-lt-lt-2">operator&lt;&lt;</a></b> ( const T &amp; <i>value</i> )</li>
-<li><div class="fn"/>QLinkedList&lt;T&gt; &amp; <b><a href="qlinkedlist.html#operator-eq">operator=</a></b> ( const QLinkedList &amp; <i>other</i> )</li>
-<li><div class="fn"/>bool <b><a href="qlinkedlist.html#operator-eq-eq">operator==</a></b> ( const QLinkedList &amp; <i>other</i> ) const</li>
+<li><div class="fn"/>bool <b><a href="qlinkedlist.html#operator-not-eq">operator!=</a></b> ( const QLinkedList&lt;T&gt; &amp; <i>other</i> ) const</li>
+<li><div class="fn"/>QLinkedList&lt;T&gt; <b><a href="qlinkedlist.html#operator-2b">operator+</a></b> ( const QLinkedList&lt;T&gt; &amp; <i>other</i> ) const</li>
+<li><div class="fn"/>QLinkedList&lt;T&gt; &amp; <b><a href="qlinkedlist.html#operator-2b-eq">operator+=</a></b> ( const QLinkedList&lt;T&gt; &amp; <i>other</i> )</li>
+<li><div class="fn"/>QLinkedList&lt;T&gt; &amp; <b><a href="qlinkedlist.html#operator-2b-eq-2">operator+=</a></b> ( const T &amp; <i>value</i> )</li>
+<li><div class="fn"/>QLinkedList&lt;T&gt; &amp; <b><a href="qlinkedlist.html#operator-lt-lt">operator&lt;&lt;</a></b> ( const QLinkedList&lt;T&gt; &amp; <i>other</i> )</li>
+<li><div class="fn"/>QLinkedList&lt;T&gt; &amp; <b><a href="qlinkedlist.html#operator-lt-lt-2">operator&lt;&lt;</a></b> ( const T &amp; <i>value</i> )</li>
+<li><div class="fn"/>QLinkedList&lt;T&gt; &amp; <b><a href="qlinkedlist.html#operator-eq">operator=</a></b> ( const QLinkedList&lt;T&gt; &amp; <i>other</i> )</li>
+<li><div class="fn"/>bool <b><a href="qlinkedlist.html#operator-eq-eq">operator==</a></b> ( const QLinkedList&lt;T&gt; &amp; <i>other</i> ) const</li>
 </ul>
 <a name="static-public-members"></a>
 <h3>Static Public Members</h3>
@@ -150,7 +150,7 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QLinkedList"></a>QLinkedList::QLinkedList ()</h3>
 <p>Constructs an empty list.</p>
-<h3 class="fn"><a name="QLinkedList-2"></a>QLinkedList::QLinkedList ( const QLinkedList &amp; <i>other</i> )</h3>
+<h3 class="fn"><a name="QLinkedList-2"></a>QLinkedList::QLinkedList ( const QLinkedList&lt;T&gt; &amp; <i>other</i> )</h3>
 <p>Constructs a copy of <i>other</i>.</p>
 <p>This operation occurs in <a href="containers.html#constant-time">constant time</a>, because <a href="qlinkedlist.html">QLinkedList</a> is <a href="shclass.html#implicitly-shared">implicitly shared</a>. This makes returning a <a href="qlinkedlist.html">QLinkedList</a> from a function very fast. If a shared instance is modified, it will be copied (copy-on-write), and this takes <a href="containers.html#linear-time">linear time</a>.</p>
 <p>See also <a href="qlinkedlist.html#operator-eq">operator=</a>().</p>
@@ -169,12 +169,12 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="back"></a>T &amp; QLinkedList::back ()</h3>
 <p>This function is provided for STL compatibility. It is equivalent to <a href="qlinkedlist.html#last">last</a>().</p>
 <h3 class="fn"><a name="back-2"></a>const T &amp; QLinkedList::back () const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <h3 class="fn"><a name="begin"></a><a href="qlinkedlist-iterator.html">iterator</a> QLinkedList::begin ()</h3>
 <p>Returns an <a href="containers.html#stl-style-iterators">STL-style iterator</a> pointing to the first item in the list.</p>
 <p>See also <a href="qlinkedlist.html#constBegin">constBegin</a>() and <a href="qlinkedlist.html#end">end</a>().</p>
 <h3 class="fn"><a name="begin-2"></a><a href="qlinkedlist-const-iterator.html">const_iterator</a> QLinkedList::begin () const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <h3 class="fn"><a name="clear"></a>void QLinkedList::clear ()</h3>
 <p>Removes all the items in the list.</p>
 <p>See also <a href="qlinkedlist.html#removeAll">removeAll</a>().</p>
@@ -193,7 +193,7 @@ body { background: #ffffff; color: black; }</style>
 <p>This function requires the value type to have an implementation of <tt>operator==()</tt>.</p>
 <p>See also <a href="qlinkedlist.html#contains">contains</a>().</p>
 <h3 class="fn"><a name="count-2"></a>int QLinkedList::count () const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Same as <a href="qlinkedlist.html#size">size</a>().</p>
 <h3 class="fn"><a name="empty"></a>bool QLinkedList::empty () const</h3>
 <p>This function is provided for STL compatibility. It is equivalent to <a href="qlinkedlist.html#isEmpty">isEmpty</a>().</p>
@@ -201,18 +201,18 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns an <a href="containers.html#stl-style-iterators">STL-style iterator</a> pointing to the imaginary item after the last item in the list.</p>
 <p>See also <a href="qlinkedlist.html#begin">begin</a>() and <a href="qlinkedlist.html#constEnd">constEnd</a>().</p>
 <h3 class="fn"><a name="end-2"></a><a href="qlinkedlist-const-iterator.html">const_iterator</a> QLinkedList::end () const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <h3 class="fn"><a name="erase"></a><a href="qlinkedlist-iterator.html">iterator</a> QLinkedList::erase ( <a href="qlinkedlist-iterator.html">iterator</a> <i>pos</i> )</h3>
 <p>Removes the item pointed to by the iterator <i>pos</i> from the list, and returns an iterator to the next item in the list (which may be <a href="qlinkedlist.html#end">end</a>()).</p>
 <p>See also <a href="qlinkedlist.html#insert">insert</a>().</p>
 <h3 class="fn"><a name="erase-2"></a><a href="qlinkedlist-iterator.html">iterator</a> QLinkedList::erase ( <a href="qlinkedlist-iterator.html">iterator</a> <i>begin</i>, <a href="qlinkedlist-iterator.html">iterator</a> <i>end</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Removes all the items from <i>begin</i> up to (but not including) <i>end</i>.</p>
 <h3 class="fn"><a name="first"></a>T &amp; QLinkedList::first ()</h3>
 <p>Returns a reference to the first item in the list. This function assumes that the list isn't empty.</p>
 <p>See also <a href="qlinkedlist.html#last">last</a>() and <a href="qlinkedlist.html#isEmpty">isEmpty</a>().</p>
 <h3 class="fn"><a name="first-2"></a>const T &amp; QLinkedList::first () const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <h3 class="fn"><a name="fromStdList"></a>QLinkedList&lt;T&gt; QLinkedList::fromStdList ( const std::list&lt;T&gt; &amp; <i>list</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns a <a href="qlinkedlist.html">QLinkedList</a> object with the data contained in <i>list</i>. The order of the elements in the <a href="qlinkedlist.html">QLinkedList</a> is the same as in <i>list</i>.</p>
 <p>Example:</p>
@@ -227,7 +227,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="front"></a>T &amp; QLinkedList::front ()</h3>
 <p>This function is provided for STL compatibility. It is equivalent to <a href="qlinkedlist.html#first">first</a>().</p>
 <h3 class="fn"><a name="front-2"></a>const T &amp; QLinkedList::front () const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <h3 class="fn"><a name="insert"></a><a href="qlinkedlist-iterator.html">iterator</a> QLinkedList::insert ( <a href="qlinkedlist-iterator.html">iterator</a> <i>before</i>, const T &amp; <i>value</i> )</h3>
 <p>Inserts <i>value</i> in front of the item pointed to by the iterator <i>before</i>. Returns an iterator pointing at the inserted item.</p>
 <p>See also <a href="qlinkedlist.html#erase">erase</a>().</p>
@@ -238,7 +238,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns a reference to the last item in the list. This function assumes that the list isn't empty.</p>
 <p>See also <a href="qlinkedlist.html#first">first</a>() and <a href="qlinkedlist.html#isEmpty">isEmpty</a>().</p>
 <h3 class="fn"><a name="last-2"></a>const T &amp; QLinkedList::last () const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <h3 class="fn"><a name="pop_back"></a>void QLinkedList::pop_back ()</h3>
 <p>This function is provided for STL compatibility. It is equivalent to <a href="qlinkedlist.html#removeLast">removeLast</a>().</p>
 <h3 class="fn"><a name="pop_front"></a>void QLinkedList::pop_front ()</h3>
@@ -292,29 +292,29 @@ body { background: #ffffff; color: black; }</style>
     std::list&lt;double&gt; stdlist = list.toStdList();</pre>
 <p>This function was introduced in Qt 4.1.</p>
 <p>See also <a href="qlinkedlist.html#fromStdList">fromStdList</a>().</p>
-<h3 class="fn"><a name="operator-not-eq"></a>bool QLinkedList::operator!= ( const QLinkedList &amp; <i>other</i> ) const</h3>
+<h3 class="fn"><a name="operator-not-eq"></a>bool QLinkedList::operator!= ( const QLinkedList&lt;T&gt; &amp; <i>other</i> ) const</h3>
 <p>Returns true if <i>other</i> is not equal to this list; otherwise returns false.</p>
 <p>Two lists are considered equal if they contain the same values in the same order.</p>
 <p>This function requires the value type to implement <tt>operator==()</tt>.</p>
 <p>See also <a href="qlinkedlist.html#operator-eq-eq">operator==</a>().</p>
-<h3 class="fn"><a name="operator-2b"></a>QLinkedList QLinkedList::operator+ ( const QLinkedList &amp; <i>other</i> ) const</h3>
+<h3 class="fn"><a name="operator-2b"></a>QLinkedList&lt;T&gt; QLinkedList::operator+ ( const QLinkedList&lt;T&gt; &amp; <i>other</i> ) const</h3>
 <p>Returns a list that contains all the items in this list followed by all the items in the <i>other</i> list.</p>
 <p>See also <a href="qlinkedlist.html#operator-2b-eq">operator+=</a>().</p>
-<h3 class="fn"><a name="operator-2b-eq"></a>QLinkedList &amp; QLinkedList::operator+= ( const QLinkedList &amp; <i>other</i> )</h3>
+<h3 class="fn"><a name="operator-2b-eq"></a>QLinkedList&lt;T&gt; &amp; QLinkedList::operator+= ( const QLinkedList&lt;T&gt; &amp; <i>other</i> )</h3>
 <p>Appends the items of the <i>other</i> list to this list and returns a reference to this list.</p>
 <p>See also <a href="qlinkedlist.html#operator-2b">operator+</a>() and <a href="qlinkedlist.html#append">append</a>().</p>
-<h3 class="fn"><a name="operator-2b-eq-2"></a>QLinkedList &amp; QLinkedList::operator+= ( const T &amp; <i>value</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<h3 class="fn"><a name="operator-2b-eq-2"></a>QLinkedList&lt;T&gt; &amp; QLinkedList::operator+= ( const T &amp; <i>value</i> )</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Appends <i>value</i> to the list.</p>
-<h3 class="fn"><a name="operator-lt-lt"></a>QLinkedList &amp; QLinkedList::operator&lt;&lt; ( const QLinkedList &amp; <i>other</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt"></a>QLinkedList&lt;T&gt; &amp; QLinkedList::operator&lt;&lt; ( const QLinkedList&lt;T&gt; &amp; <i>other</i> )</h3>
 <p>Appends the items of the <i>other</i> list to this list and returns a reference to this list.</p>
 <p>See also <a href="qlinkedlist.html#operator-2b-eq">operator+=</a>() and <a href="qlinkedlist.html#append">append</a>().</p>
-<h3 class="fn"><a name="operator-lt-lt-2"></a>QLinkedList &amp; QLinkedList::operator&lt;&lt; ( const T &amp; <i>value</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<h3 class="fn"><a name="operator-lt-lt-2"></a>QLinkedList&lt;T&gt; &amp; QLinkedList::operator&lt;&lt; ( const T &amp; <i>value</i> )</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Appends <i>value</i> to the list.</p>
-<h3 class="fn"><a name="operator-eq"></a>QLinkedList&lt;T&gt; &amp; QLinkedList::operator= ( const QLinkedList &amp; <i>other</i> )</h3>
+<h3 class="fn"><a name="operator-eq"></a>QLinkedList&lt;T&gt; &amp; QLinkedList::operator= ( const QLinkedList&lt;T&gt; &amp; <i>other</i> )</h3>
 <p>Assigns <i>other</i> to this list and returns a reference to this list.</p>
-<h3 class="fn"><a name="operator-eq-eq"></a>bool QLinkedList::operator== ( const QLinkedList &amp; <i>other</i> ) const</h3>
+<h3 class="fn"><a name="operator-eq-eq"></a>bool QLinkedList::operator== ( const QLinkedList&lt;T&gt; &amp; <i>other</i> ) const</h3>
 <p>Returns true if <i>other</i> is equal to this list; otherwise returns false.</p>
 <p>Two lists are considered equal if they contain the same values in the same order.</p>
 <p>This function requires the value type to implement <tt>operator==()</tt>.</p>
@@ -322,19 +322,19 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Related Non-Members</h2>
 <h3 class="fn"><a name="operator-lt-lt-7"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>out</i>, const QLinkedList&lt;T&gt; &amp; <i>list</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes the linked list <i>list</i> to stream <i>out</i>.</p>
 <p>This function requires the value type to implement <tt>operator&lt;&lt;()</tt>.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
 <h3 class="fn"><a name="operator-gt-gt-7"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>in</i>, QLinkedList&lt;T&gt; &amp; <i>list</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads a linked list from stream <i>in</i> into <i>list</i>.</p>
 <p>This function requires the value type to implement <tt>operator&gt;&gt;()</tt>.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

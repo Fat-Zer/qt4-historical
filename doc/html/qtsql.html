@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/doc/src/qtsql.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/doc/src/qtsql.qdoc -->
 <head>
     <title>Qt 4.1: QtSql Module</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -54,12 +54,12 @@ body { background: #ffffff; color: black; }</style>
 <h2>Detailed Description</h2>
 <p>The QtSql module helps you provide seamless database integration to your Qt applications.</p>
 <p>The SQL classes are divided into three layers:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Layer</th><th>Description</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b>Driver Layer</b></td><td>This comprises the classes <a href="qsqldriver.html">QSqlDriver</a>, <a href="qsqldrivercreator.html">QSqlDriverCreator</a>&lt;T&gt;, <a href="qsqldrivercreatorbase.html">QSqlDriverCreatorBase</a>, <a href="qsqldriverplugin.html">QSqlDriverPlugin</a>, and <a href="qsqlresult.html">QSqlResult</a>. This layer provides the low-level bridge between the specific databases and the SQL API layer. See <a href="sql-driver.html">SQL Database Drivers</a> for more information.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><b>SQL API Layer</b></td><td>These classes provide access to databases. Connections are made using the <a href="qsqldatabase.html">QSqlDatabase</a> class. Database interaction is achieved by using the <a href="qsqlquery.html">QSqlQuery</a> class. In addition to <a href="qsqldatabase.html">QSqlDatabase</a> and <a href="qsqlquery.html">QSqlQuery</a>, the SQL API layer is supported by <a href="qsqlerror.html">QSqlError</a>, <a href="qsqlfield.html">QSqlField</a>, <a href="qsqlindex.html">QSqlIndex</a>, and <a href="qsqlrecord.html">QSqlRecord</a>.</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b>User Interface Layer</b></td><td>These classes link the data from a database to data-aware widgets. They include <a href="qsqlquerymodel.html">QSqlQueryModel</a>, <a href="qsqltablemodel.html">QSqlTableModel</a>, and <a href="qsqlrelationaltablemodel.html">QSqlRelationalTableModel</a>. These classes are designed to work with Qt's model/view framework.</td></tr>
-</table>
+</table></p>
 <p>To include the definitions of the module's classes, use the following directive:</p>
 <pre>&nbsp;   #include &lt;QtSql&gt;</pre>
 <p>To link against the module, add this line to your <a href="qmake-manual.html#qmake">qmake</a> <tt>.pro</tt> file:</p>
@@ -187,11 +187,11 @@ body { background: #ffffff; color: black; }</style>
 <a name="using-the-sql-model-classes"></a>
 <h3>Using the SQL Model Classes</h3>
 <p>In addition to <a href="qsqlquery.html">QSqlQuery</a>, Qt offers three higher-level classes for accessing databases. These classes are <a href="qsqlquerymodel.html">QSqlQueryModel</a>, <a href="qsqltablemodel.html">QSqlTableModel</a>, and <a href="qsqlrelationaltablemodel.html">QSqlRelationalTableModel</a>.</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qsqlquerymodel.html">QSqlQueryModel</a></td><td>A read-only model based on an arbitrary SQL query.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qsqltablemodel.html">QSqlTableModel</a></td><td>A read-write model that works on a single table.</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qsqlrelationaltablemodel.html">QSqlRelationalTableModel</a></td><td>A <a href="qsqltablemodel.html">QSqlTableModel</a> subclass with foreign key support.</td></tr>
-</table>
+</table></p>
 <p>These classes derive from <a href="qabstracttablemodel.html">QAbstractTableModel</a> (which in turn inherits from <a href="qabstractitemmodel.html">QAbstractItemModel</a>) and make it easy to present data from a database in an item view class such as <a href="qlistview.html">QListView</a> and <a href="qtableview.html">QTableView</a>. This is explained in detail in the <a href="#presenting-data-in-a-table-view">Presenting Data in a Table View</a> section.</p>
 <p>Another advantage of using these classes is that it can make your code easier to adapt to other data sources. For example, if you use <a href="qsqltablemodel.html">QSqlTableModel</a> and later decide to use XML files to store data instead of a database, it is essentially just a matter of replacing one data model with another.</p>
 <a name="the-sql-query-model"></a>
@@ -256,9 +256,9 @@ body { background: #ffffff; color: black; }</style>
 <a name="the-sql-relational-table-model"></a>
 <h4>The SQL Relational Table Model</h4>
 <p><a href="qsqlrelationaltablemodel.html">QSqlRelationalTableModel</a> extends <a href="qsqltablemodel.html">QSqlTableModel</a> to provide support for foreign keys. A foreign key is a 1-to-1 mapping between a field in one table and the primary key field of another table. For example, if a <tt>book</tt> table has a field called <tt>authorid</tt> that refers to the author table's <tt>id</tt> field, we say that <tt>authorid</tt> is a foreign key.</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#f0f0f0"><td><img src="images/noforeignkeys.png" /></td><td><img src="images/foreignkeys.png" /></td></tr>
-</table>
+</table></p>
 <p>The screenshot on the left shows a plain <a href="qsqltablemodel.html">QSqlTableModel</a> in a <a href="qtableview.html">QTableView</a>. Foreign keys (<tt>city</tt> and <tt>country</tt>) aren't resolved to human-readable values. The screenshot on the right shows a <a href="qsqlrelationaltablemodel.html">QSqlRelationalTableModel</a>, with foreign keys resolved into human-readable text strings.</p>
 <p>The following code snippet shows how the <a href="qsqlrelationaltablemodel.html">QSqlRelationalTableModel</a> was set up:</p>
 <pre>&nbsp;       model-&gt;setTable(&quot;employee&quot;);
@@ -333,8 +333,8 @@ body { background: #ffffff; color: black; }</style>
 </p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

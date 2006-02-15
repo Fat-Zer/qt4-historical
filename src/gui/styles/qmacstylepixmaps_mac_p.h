@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -1420,3 +1420,20 @@ static const char * const qt_mac_tab_press_right[]={
 "X2o3Y4",
 "5.67Cj",
 "89Jqmm"};
+
+static const char * const qt_mac_toolbar_ext[]={
+    "14 9 4 1",
+    "# c #858585",
+    "b c #d9d9d9",
+    ". c #dbdbdb",
+    "a c None",
+    ".###..###.aaaa",
+    "a.###..###.aaa",
+    "aab###bb###baa",
+    "aaab###bb###ba",
+    "aaaa.###..###.",
+    "aaa.###..###.a",
+    "aab###bb###baa",
+    "ab###bb###baaa",
+    ".###..###.aaaa"};
+

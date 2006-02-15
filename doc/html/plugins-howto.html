@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/doc/src/plugins-howto.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/doc/src/plugins-howto.qdoc -->
 <head>
     <title>Qt 4.1: How to Create Qt Plugins</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -36,22 +36,22 @@ body { background: #ffffff; color: black; }</style>
 <h2>The Higher-Level API: Writing Qt Extensions</h2>
 <p>Writing a plugin that extends Qt itself is achieved by subclassing the appropriate plugin base clase, implementing a few functions, and adding a macro.</p>
 <p>There are several plugin base classes. Derived plugins are stored by default in the standard plugin directory.</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Base Class</th><th>Default Path</th><th>Key Case Sensitivity</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qaccessiblebridgeplugin.html">QAccessibleBridgePlugin</a></td><td><tt>plugins/accessiblebridge</tt></td><td>Case Sensitive</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qaccessibleplugin.html">QAccessiblePlugin</a></td><td><tt>plugins/accessible</tt></td><td>Case Sensitive</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qdecorationplugin.html">QDecorationPlugin</a></td><td><tt>plugins/decorations</tt></td><td>Case Sensitive</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>QGfxDriverPlugin</td><td><tt>plugins/gfxdrivers</tt></td><td>Case Sensitive</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qiconengineplugin.html">QIconEnginePlugin</a></td><td><tt>plugins/iconengines</tt></td><td>Case Insensitive</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qimageioplugin.html">QImageIOPlugin</a></td><td><tt>plugins/imageformats</tt></td><td>Case Sensitive</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qinputcontextplugin.html">QInputContextPlugin</a></td><td><tt>plugins/inputmethods</tt></td><td>Case Sensitive</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qkbddriverplugin.html">QKbdDriverPlugin</a></td><td><tt>plugins/kbddrivers</tt></td><td>Case Sensitive</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qmousedriverplugin.html">QMouseDriverPlugin</a></td><td><tt>plugins/mousedrivers</tt></td><td>Case Sensitive</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qpictureformatplugin.html">QPictureFormatPlugin</a></td><td><tt>plugins/pictureformats</tt></td><td>Case Sensitive</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qiconengineplugin.html">QIconEnginePlugin</a></td><td><tt>plugins/iconengines</tt></td><td>Case Insensitive</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qimageioplugin.html">QImageIOPlugin</a></td><td><tt>plugins/imageformats</tt></td><td>Case Sensitive</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qinputcontextplugin.html">QInputContextPlugin</a></td><td><tt>plugins/inputmethods</tt></td><td>Case Sensitive</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qkbddriverplugin.html">QKbdDriverPlugin</a></td><td><tt>plugins/kbddrivers</tt></td><td>Case Sensitive</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qmousedriverplugin.html">QMouseDriverPlugin</a></td><td><tt>plugins/mousedrivers</tt></td><td>Case Sensitive</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qpictureformatplugin.html">QPictureFormatPlugin</a></td><td><tt>plugins/pictureformats</tt></td><td>Case Sensitive</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qscreendriverplugin.html">QScreenDriverPlugin</a></td><td><tt>plugins/gfxdrivers</tt></td><td>Case Sensitive</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qsqldriverplugin.html">QSqlDriverPlugin</a></td><td><tt>plugins/sqldrivers</tt></td><td>Case Sensitive</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qstyleplugin.html">QStylePlugin</a></td><td><tt>plugins/styles</tt></td><td>Case Insensitive</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qtextcodecplugin.html">QTextCodecPlugin</a></td><td><tt>plugins/codecs</tt></td><td>Case Sensitive</td></tr>
-</table>
+</table></p>
 <p>But where is the <tt>plugins</tt> directory? When the application is run, Qt will first treat the application's executable directory as the <tt>pluginsbase</tt>. For example if the application is in <tt>C:\Program Files\MyApp</tt> and has a style plugin, Qt will look in <tt>C:\Program Files\MyApp\styles</tt>. (See <a href="qcoreapplication.html#applicationDirPath">QCoreApplication::applicationDirPath</a>() for how to find out where the application's executable is.) Qt will also look in the directory specified by QLibraryInfo::location(<a href="qlibraryinfo.html#LibraryLocation-enum">QLibraryInfo::PluginsPath</a>), which typically is located in <tt>QTDIR/plugins</tt> (where <tt>QTDIR</tt> is the directory where Qt is installed). If you want Qt to look in additional places you can add as many paths as you need with calls to <a href="qcoreapplication.html#addLibraryPath">QCoreApplication::addLibraryPath</a>(). And if you want to set your own path or paths you can use <a href="qcoreapplication.html#setLibraryPaths">QCoreApplication::setLibraryPaths</a>(). You can also use a <tt>qt.conf</tt> file to override the hard-coded paths that are compiled into the Qt library. For more information, see the <a href="qt-conf.html">Using qt.conf</a> documentation.</p>
 <p>Suppose that you have a new style class called <tt>MyStyle</tt> that you want to make available as a plugin. The required code is straightforward:</p>
 <pre>&nbsp;   class MyStylePlugin : public QStylePlugin
@@ -68,7 +68,7 @@ body { background: #ffffff; color: black; }</style>
         }
     };
 
-    Q_EXPORT_PLUGIN(MyStylePlugin)</pre>
+    Q_EXPORT_PLUGIN2(MyStylePlugin)</pre>
 <p>(Note that <a href="qstyleplugin.html">QStylePlugin</a> is case-insensitive, and the lower-case version of the key is used; most other plugins are case sensitive.)</p>
 <p>For database drivers, image formats, text codecs, and most other plugin types, no explicit object creation is required. Qt will find and create them as required. Styles are an exception, since you might want to set a style explicitly in code. To apply a style, use code like this:</p>
 <pre>&nbsp;   QApplication::setStyle(QStyleFactory::create(&quot;MyStyle&quot;));</pre>
@@ -90,7 +90,7 @@ body { background: #ffffff; color: black; }</style>
 <ol type="1">
 <li>Declare a plugin class that inherits from <a href="qobject.html">QObject</a> and from the interfaces that the plugin wants to provide.</li>
 <li>Use the <a href="qobject.html#Q_INTERFACES">Q_INTERFACES</a>() macro to tell Qt's <a href="metaobjects.html">meta-object system</a> about the interfaces.</li>
-<li>Export the plugin using the <a href="qpluginloader-obsolete.html#Q_EXPORT_PLUGIN">Q_EXPORT_PLUGIN</a>() macro.</li>
+<li>Export the plugin using the <a href="qpluginloader.html#Q_EXPORT_PLUGIN2">Q_EXPORT_PLUGIN2</a>() macro.</li>
 <li>Build the plugin using an suitable <tt>.pro</tt> file.</li>
 </ol>
 <p>For example, here's the definition of an interface class:</p>
@@ -153,8 +153,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qpluginloader.html">QPluginLoader</a> and <a href="qlibrary.html">QLibrary</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

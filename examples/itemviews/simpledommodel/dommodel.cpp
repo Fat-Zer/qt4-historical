@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2005-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 2005-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the example classes of the Qt Toolkit.
 **
@@ -20,12 +20,6 @@
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 **
 ****************************************************************************/
-
-/*
-    model.cpp
-
-    Provides a DOM model for use in various examples.
-*/
 
 #include <QtGui>
 #include <QtXml>

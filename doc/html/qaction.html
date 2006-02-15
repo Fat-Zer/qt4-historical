@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/gui/kernel/qaction.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/src/gui/kernel/qaction.cpp -->
 <head>
     <title>Qt 4.1: QAction Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -32,7 +32,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <a name="properties"></a>
 <h3>Properties</h3>
-<table width="100%" border="0" cellpadding="0" cellspacing="0">
+<p><table width="100%" border="0" cellpadding="0" cellspacing="0">
 <tr><td width="45%" valign="top"><ul>
 <li><div class="fn"/><b><a href="qaction.html#checkable-prop">checkable</a></b> : bool</li>
 <li><div class="fn"/><b><a href="qaction.html#checked-prop">checked</a></b> : bool</li>
@@ -50,7 +50,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="qaction.html#whatsThis-prop">whatsThis</a></b> : QString</li>
 </ul>
 </td></tr>
-</table>
+</table></p>
 <ul>
 <li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
 </ul>
@@ -136,7 +136,7 @@ body { background: #ffffff; color: black; }</style>
 <p>In applications many common commands can be invoked via menus, toolbar buttons, and keyboard shortcuts. Since the user expects each command to be performed in the same way, regardless of the user interface used, it is useful to represent each command as an <i>action</i>.</p>
 <p>Actions can be added to menus and toolbars, and will automatically keep them in sync. For example, in a word processor, if the user presses a Bold toolbar button, the Bold menu item will automatically be checked.</p>
 <p>Actions can be created as independent objects, but they may also be created during the construction of menus; the <a href="qmenu.html">QMenu</a> class contains convenience functions for creating actions suitable for use as menu items.</p>
-<p>A QAction may contain an icon, menu text, a shortcut, status text, &quot;What's This?&quot; text, and a tool tip. Most of these can be set in the constructor. They can also be set independently with <a href="qaction.html#icon-prop">setIcon</a>(), <a href="qaction.html#text-prop">setText</a>(), <a href="qaction.html#iconText-prop">setIconText</a>(), <a href="qaction.html#shortcut-prop">setShortcut</a>(), <a href="qaction.html#statusTip-prop">setStatusTip</a>(), <a href="qaction.html#whatsThis-prop">setWhatsThis</a>(), and <a href="qaction.html#toolTip-prop">setToolTip</a>(). For menu items, it is possible to set an individual font with <a href="qaction.html#font-prop">setFont</a>().</p>
+<p>A QAction may contain an icon, menu text, a shortcut, status text, &quot;What's This?&quot; text, and a tooltip. Most of these can be set in the constructor. They can also be set independently with <a href="qaction.html#icon-prop">setIcon</a>(), <a href="qaction.html#text-prop">setText</a>(), <a href="qaction.html#iconText-prop">setIconText</a>(), <a href="qaction.html#shortcut-prop">setShortcut</a>(), <a href="qaction.html#statusTip-prop">setStatusTip</a>(), <a href="qaction.html#whatsThis-prop">setWhatsThis</a>(), and <a href="qaction.html#toolTip-prop">setToolTip</a>(). For menu items, it is possible to set an individual font with <a href="qaction.html#font-prop">setFont</a>().</p>
 <p>Actions are added to widgets using <a href="qwidget.html#addAction">QWidget::addAction</a>().</p>
 <p>Once a QAction has been created it should be added to the relevant menu and toolbar, then connected to the slot which will perform the action. For example:</p>
 <pre>&nbsp;       openAct = new QAction(QIcon(&quot;:/images/open.png&quot;), tr(&quot;&amp;Open...&quot;), this);
@@ -151,11 +151,11 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="ActionEvent-enum"></a>enum QAction::ActionEvent</h3>
 <p>This enum type is used when calling <a href="qaction.html#activate">QAction::activate</a>()</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QAction::Trigger</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">this will cause the <a href="qaction.html#triggered">QAction::triggered</a>() signal to be emitted.</td></tr>
 <tr><td valign="top"><tt>QAction::Hover</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">this will cause the <a href="qaction.html#hovered">QAction::hovered</a>() signal to be emitted.</td></tr>
-</table>
+</table></p>
 <hr />
 <h2>Property Documentation</h2>
 <h3 class="fn"><a name="checkable-prop"></a>checkable : bool</h3>
@@ -206,7 +206,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <h3 class="fn"><a name="iconText-prop"></a>iconText : <a href="qstring.html">QString</a></h3>
 <p>This property holds the action's descriptive icon text.</p>
-<p>If QMainWindow::usesTextLabel is true, the text appears as a label in the relevant tool button. It also serves as the default text in menus and tool tips if these have not been specifically defined with <a href="qaction.html#text-prop">setText</a>() or <a href="qaction.html#toolTip-prop">setToolTip</a>(). If the icon text is not explicitly set in the by using setIconText(), the action's normal text will be used as icon text. There is no default icon text.</p>
+<p>If QMainWindow::usesTextLabel is true, the text appears as a label in the relevant tool button. It also serves as the default text in menus and tooltips if these have not been specifically defined with <a href="qaction.html#text-prop">setText</a>() or <a href="qaction.html#toolTip-prop">setToolTip</a>(). If the icon text is not explicitly set in the by using setIconText(), the action's normal text will be used as icon text. There is no default icon text.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>QString iconText () const</b></li>
@@ -231,8 +231,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <h3 class="fn"><a name="statusTip-prop"></a>statusTip : <a href="qstring.html">QString</a></h3>
 <p>This property holds the action's status tip.</p>
-<p>The statusTip is displayed on all status bars provided by the action's top-level parent widget.</p>
-<p>There is no default statusTip text.</p>
+<p>The status tip is displayed on all status bars provided by the action's top-level parent widget.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>QString statusTip () const</b></li>
@@ -249,9 +248,8 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <p>See also <a href="qaction.html#iconText-prop">iconText</a>.</p>
 <h3 class="fn"><a name="toolTip-prop"></a>toolTip : <a href="qstring.html">QString</a></h3>
-<p>This property holds the action's tool tip.</p>
-<p>This text is used for the tool tip. If no status tip has been set the tool tip will be used for the status tip.</p>
-<p>If no tool tip is specified the action's text is used.</p>
+<p>This property holds the action's tooltip.</p>
+<p>This text is used for the tooltip. If no tooltip is specified, the action's text is used.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>QString toolTip () const</b></li>
@@ -282,10 +280,10 @@ body { background: #ffffff; color: black; }</style>
 <p>Constructs an action with <i>parent</i>. If <i>parent</i> is an action group the action will be automatically inserted into the group.</p>
 <h3 class="fn"><a name="QAction-2"></a>QAction::QAction ( const <a href="qstring.html">QString</a> &amp; <i>text</i>, <a href="qobject.html">QObject</a> * <i>parent</i> )</h3>
 <p>Constructs an action with some <i>text</i> and <i>parent</i>. If <i>parent</i> is an action group the action will be automatically inserted into the group.</p>
-<p>The action uses a stripped version of <i>text</i> (e.g. &quot;&amp;Menu Option...&quot; becomes &quot;Menu Option&quot;) as descriptive text for toolbuttons. You can override this by setting a specific description with <a href="qaction.html#text-prop">setText</a>(). The same text will be used for tool tips unless you specify a different test using <a href="qaction.html#toolTip-prop">setToolTip</a>().</p>
+<p>The action uses a stripped version of <i>text</i> (e.g. &quot;&amp;Menu Option...&quot; becomes &quot;Menu Option&quot;) as descriptive text for toolbuttons. You can override this by setting a specific description with <a href="qaction.html#text-prop">setText</a>(). The same text will be used for tooltips unless you specify a different test using <a href="qaction.html#toolTip-prop">setToolTip</a>().</p>
 <h3 class="fn"><a name="QAction-3"></a>QAction::QAction ( const <a href="qicon.html">QIcon</a> &amp; <i>icon</i>, const <a href="qstring.html">QString</a> &amp; <i>text</i>, <a href="qobject.html">QObject</a> * <i>parent</i> )</h3>
 <p>Constructs an action with an <i>icon</i> and some <i>text</i> and <i>parent</i>. If <i>parent</i> is an action group the action will be automatically inserted into the group.</p>
-<p>The action uses a stripped version of <i>text</i> (e.g. &quot;&amp;Menu Option...&quot; becomes &quot;Menu Option&quot;) as descriptive text for toolbuttons. You can override this by setting a specific description with <a href="qaction.html#text-prop">setText</a>(). The same text will be used for tool tips unless you specify a different test using <a href="qaction.html#toolTip-prop">setToolTip</a>().</p>
+<p>The action uses a stripped version of <i>text</i> (e.g. &quot;&amp;Menu Option...&quot; becomes &quot;Menu Option&quot;) as descriptive text for toolbuttons. You can override this by setting a specific description with <a href="qaction.html#text-prop">setText</a>(). The same text will be used for tooltips unless you specify a different test using <a href="qaction.html#toolTip-prop">setToolTip</a>().</p>
 <h3 class="fn"><a name="dtor.QAction"></a>QAction::~QAction ()</h3>
 <p>Destroys the object and frees allocated resources.</p>
 <h3 class="fn"><a name="actionGroup"></a><a href="qactiongroup.html">QActionGroup</a> * QAction::actionGroup () const</h3>
@@ -346,8 +344,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qaction.html#activate">QAction::activate</a>(), <a href="qaction.html#toggled">QAction::toggled</a>(), and <a href="qaction.html#checked-prop">checked</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

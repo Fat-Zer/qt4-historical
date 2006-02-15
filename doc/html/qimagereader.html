@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/gui/image/qimagereader.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/src/gui/image/qimagereader.cpp -->
 <head>
     <title>Qt 4.1: QImageReader Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -88,14 +88,14 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="ImageReaderError-enum"></a>enum QImageReader::ImageReaderError</h3>
 <p>This enum describes the different types of errors that can occur when reading images with <a href="qimagereader.html">QImageReader</a>.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QImageReader::FileNotFoundError</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top"><a href="qimagereader.html">QImageReader</a> was used with a file name, but not file was found with that name. This can also happen if the file name contained no extension, and the file with the correct extension is not supported by Qt.</td></tr>
 <tr><td valign="top"><tt>QImageReader::DeviceError</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top"><a href="qimagereader.html">QImageReader</a> encountered a device error when reading the image. You can consult your particular device for more details on what went wrong.</td></tr>
 <tr><td valign="top"><tt>QImageReader::UnsupportedFormatError</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">Qt does not support the requested image format.</td></tr>
 <tr><td valign="top"><tt>QImageReader::InvalidDataError</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">The image data was invalid, and <a href="qimagereader.html">QImageReader</a> was unable to read an image from it. The can happen if the image file is damaged.</td></tr>
 <tr><td valign="top"><tt>QImageReader::UnknownError</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">An unknown error occurred. If you get this value after calling <a href="qimagereader.html#read">read</a>(), it is most likely caused by a bug in <a href="qimagereader.html">QImageReader</a>.</td></tr>
-</table>
+</table></p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QImageReader"></a>QImageReader::QImageReader ()</h3>
@@ -147,7 +147,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="imageFormat"></a><a href="qbytearray.html">QByteArray</a> QImageReader::imageFormat ( const <a href="qstring.html">QString</a> &amp; <i>fileName</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>If supported, this function returns the image format of the file <i>fileName</i>. Otherwise, an empty string is returned.</p>
 <h3 class="fn"><a name="imageFormat-2"></a><a href="qbytearray.html">QByteArray</a> QImageReader::imageFormat ( <a href="qiodevice.html">QIODevice</a> * <i>device</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>If supported, this function returns the image format of the device <i>device</i>. Otherwise, an empty string is returned.</p>
 <h3 class="fn"><a name="jumpToImage"></a>bool QImageReader::jumpToImage ( int <i>imageNumber</i> )</h3>
 <p>For image formats that support animation, this function skips to the image whose sequence number is <i>imageNumber</i>. The next call to <a href="qimagereader.html#read">read</a>() will attempt to read this image.</p>
@@ -204,7 +204,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="supportedImageFormats"></a><a href="qlist.html">QList</a>&lt;<a href="qbytearray.html">QByteArray</a>&gt; QImageReader::supportedImageFormats ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns the list of image formats supported by <a href="qimagereader.html">QImageReader</a>.</p>
 <p>By default, Qt can read the following formats:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Format</th><th>Description</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>BMP</td><td>Windows Bitmap</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>GIF</td><td>Graphic Interchange Format (optional)</td></tr>
@@ -217,7 +217,7 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#f0f0f0"><td>PPM</td><td>Portable Pixmap</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>XBM</td><td>X11 Bitmap</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>XPM</td><td>X11 Pixmap</td></tr>
-</table>
+</table></p>
 <p>To configure Qt with GIF support, pass <tt>-qt-gif</tt> to the <tt>configure</tt> script or check the appropriate option in the graphical installer.</p>
 <p>See also <a href="qimagereader.html#setFormat">setFormat</a>(), <a href="qimagewriter.html#supportedImageFormats">QImageWriter::supportedImageFormats</a>(), and <a href="qimageioplugin.html">QImageIOPlugin</a>.</p>
 <h3 class="fn"><a name="supportsAnimation"></a>bool QImageReader::supportsAnimation () const</h3>
@@ -236,8 +236,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qimagereader.html#text">text</a>(), <a href="qimagewriter.html#setText">QImageWriter::setText</a>(), and <a href="qimage.html#textKeys">QImage::textKeys</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/gui/widgets/qscrollbar.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/src/gui/widgets/qscrollbar.cpp -->
 <head>
     <title>Qt 4.1: QScrollBar Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -35,7 +35,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>22 public functions inherited from <a href="qabstractslider.html#public-functions">QAbstractSlider</a></li>
 <li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
-<li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <h3>Additional Inherited Members</h3>
 <ul>
@@ -53,6 +53,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>3 protected functions inherited from <a href="qabstractslider.html#protected-functions">QAbstractSlider</a></li>
 <li><div class="fn"/>39 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
+<li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -60,22 +61,22 @@ body { background: #ffffff; color: black; }</style>
 <p>The QScrollBar widget provides a vertical or horizontal scroll bar.</p>
 <p>A scroll bar is a control that enables the user to access parts of a document that is larger than the widget used to display it. It provides a visual indication of the user's current position within the document and the amount of the document that is visible. Scroll bars are usually equipped with other controls that enable more accurate navigation. Qt displays scroll bars in a way that is appropriate for each platform.</p>
 <p>If you need to provide a scrolling view onto another widget, it may be more convenient to use the <a href="qscrollarea.html">QScrollArea</a> class because this provides a viewport widget and scroll bars. QScrollBar is useful if you need to implement similar functionality for specialized widgets using <a href="qabstractscrollarea.html">QAbstractScrollArea</a>; for example, if you decide to subclass <a href="qabstractitemview.html">QAbstractItemView</a>. For most other situations where a slider control is used to obtain a value within a given range, the <a href="qslider.html">QSlider</a> class may be more appropriate for your needs.</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#f0f0f0"><td><p align="center"><img src="images/qscrollbar-picture.png" /></p></td><td>Scroll bars typically include four separate controls: a slider, scroll arrows, and a page control.<ul>
 <li>a. The slider provides a way to quickly go to any part of the document, but does not support accurate navigation within large documents.</li>
 <li>b. The scroll arrows are push buttons which can be used to accurately navigate to a particular place in a document. For a vertical scroll bar connected to a text editor, these typically move the current position one &quot;line&quot; up or down, and adjust the position of the slider by a small amount. In editors and list boxes a &quot;line&quot; might mean one line of text; in an image viewer it might mean 20 pixels.</li>
 <li>c. The page control is the area over which the slider is dragged (the scroll bar's background). Clicking here moves the scroll bar towards the click by one &quot;page&quot;. This value is usually the same as the length of the slider.</li>
 </ul>
 </td></tr>
-</table>
+</table></p>
 <p>Each scroll bar has a value that indicates how far the slider is from the start of the scroll bar; this is obtained with <a href="qabstractslider.html#value-prop">value</a>() and set with <a href="qabstractslider.html#value-prop">setValue</a>(). This value always lies within the range of values defined for the scroll bar, from <a href="qabstractslider.html#minimum-prop">minimum()</a> to <a href="qabstractslider.html#minimum-prop">maximum()</a> inclusive. The range of acceptable values can be set with <a href="qabstractslider.html#minimum-prop">setMinimum</a>() and <a href="qabstractslider.html#maximum-prop">setMaximum</a>(). At the minimum value, the top edge of the slider (for a vertical scroll bar) or left edge (for a horizontal scroll bar) will be at the top (or left) end of the scroll bar. At the maximum value, the bottom (or right) edge of the slider will be at the bottom (or right) end of the scroll bar.</p>
 <p>The length of the slider is usually related to the value of the page step, and typically represents the proportion of the document area shown in a scrolling view. The page step is the amount that the value changes by when the user presses the <b>Page Up</b> and <b>Page Down</b> keys, and is set with <a href="qabstractslider.html#pageStep-prop">setPageStep</a>(). Smaller changes to the value defined by the line step are made using the cursor keys, and this quantity is set with <a href="qabstractslider-qt3.html#setLineStep">setLineStep</a>().</p>
 <p>Note that the range of values used is independent of the actual size of the scroll bar widget. You do not need to take this into account when you choose values for the range and the page step.</p>
 <p>The range of values specified for the scroll bar are often determined differently to those for a <a href="qslider.html">QSlider</a> because the length of the slider needs to be taken into account. If we have a document with 100 lines, and we can only show 20 lines in a widget, we may wish to construct a scroll bar with a page step of 20, a minimum value of 0, and a maximum value of 80. This would give us a scroll bar with five &quot;pages&quot;.</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#f0f0f0"><td><img src="images/qscrollbar-values.png" /></td><td>The relationship between a document length, the range of values used in a scroll bar, and the page step is simple in many common situations. The scroll bar's range of values is determined by subtracting a chosen page step from some value representing the length of the document. In such cases, the following equation is useful:<p><i>document length</i> = <a href="qabstractslider.html#maximum-prop">maximum</a>() - <a href="qabstractslider.html#minimum-prop">minimum</a>() + <a href="qabstractslider.html#pageStep-prop">pageStep</a>().</p>
 </td></tr>
-</table>
+</table></p>
 <p>QScrollBar only provides integer ranges. Note that although QScrollBar handles very large numbers, scroll bars on current screens cannot usefully represent ranges above about 100,000 pixels. Beyond that, it becomes difficult for the user to control the slider using either the keyboard or the mouse, and the scroll arrows will have limited use.</p>
 <p>ScrollBar inherits a comprehensive set of signals from <a href="qabstractslider.html">QAbstractSlider</a>:</p>
 <ul>
@@ -96,7 +97,7 @@ body { background: #ffffff; color: black; }</style>
 <li>End moves to the end (maximum).</li>
 </ul>
 <p>The slider itself can be controlled by using the <a href="qabstractslider.html#triggerAction">triggerAction()</a> function to simulate user interaction with the scroll bar controls. This is useful if you have many different widgets that use a common range of values.</p>
-<p><img src="images/qscrbar-m.png" alt="Screenshot in Motif style" /> <img src="images/qscrbar-w.png" alt="Screenshot in Windows style" /> Most GUI styles use the <a href="qabstractslider.html#pageStep-prop">pageStep</a>() value to calculate the size of the slider.</p>
+<p align="center"><img src="images/macintosh-horizontalscrollbar.png" alt="A scroll bar shown in the Macintosh widget style." /></p><p align="center"><img src="images/windowsxp-horizontalscrollbar.png" alt="A scroll bar shown in the WindowsXP widget style." /></p><p>Most GUI styles use the <a href="qabstractslider.html#pageStep-prop">pageStep</a>() value to calculate the size of the slider.</p>
 <p>See also <a href="qscrollarea.html">QScrollArea</a>, <a href="qslider.html">QSlider</a>, <a href="qdial.html">QDial</a>, <a href="qspinbox.html">QSpinBox</a>, and <a href="guibooks.html#fowler">GUI Design Handbook: Scroll Bar</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
@@ -112,8 +113,8 @@ body { background: #ffffff; color: black; }</style>
 <p>Destroys the scroll bar.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

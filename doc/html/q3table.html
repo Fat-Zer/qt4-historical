@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/qt3support/itemviews/q3table.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/src/qt3support/itemviews/q3table.cpp -->
 <head>
     <title>Qt 4.1: Q3Table Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -34,7 +34,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <a name="properties"></a>
 <h3>Properties</h3>
-<table width="100%" border="0" cellpadding="0" cellspacing="0">
+<p><table width="100%" border="0" cellpadding="0" cellspacing="0">
 <tr><td width="45%" valign="top"><ul>
 <li><div class="fn"/><b><a href="q3table.html#columnMovingEnabled-prop">columnMovingEnabled</a></b> : bool</li>
 <li><div class="fn"/><b><a href="q3table.html#focusStyle-prop">focusStyle</a></b> : FocusStyle</li>
@@ -49,7 +49,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="q3table.html#sorting-prop">sorting</a></b> : bool</li>
 </ul>
 </td></tr>
-</table>
+</table></p>
 <ul>
 <li><div class="fn"/>10 properties inherited from <a href="q3scrollview.html#properties">Q3ScrollView</a></li>
 <li><div class="fn"/>2 properties inherited from <a href="q3frame.html#properties">Q3Frame</a></li>
@@ -131,7 +131,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>13 public functions inherited from <a href="qframe.html#public-functions">QFrame</a></li>
 <li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
-<li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <a name="public-slots"></a>
 <h3>Public Slots</h3>
@@ -230,6 +230,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>5 protected functions inherited from <a href="q3frame.html#protected-functions">Q3Frame</a></li>
 <li><div class="fn"/>39 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
+<li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
 </ul>
 <a name="protected-slots"></a>
 <h3>Protected Slots</h3>
@@ -298,28 +299,28 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="EditMode-enum"></a>enum Q3Table::EditMode</h3>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Q3Table::NotEditing</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">No cell is currently being edited.</td></tr>
 <tr><td valign="top"><tt>Q3Table::Editing</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">A cell is currently being edited. The editor was initialised with the cell's contents.</td></tr>
 <tr><td valign="top"><tt>Q3Table::Replacing</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">A cell is currently being edited. The editor was not initialised with the cell's contents.</td></tr>
-</table>
+</table></p>
 <h3 class="fn"><a name="FocusStyle-enum"></a>enum Q3Table::FocusStyle</h3>
 <p>Specifies how the current cell (focus cell) is drawn.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Q3Table::FollowStyle</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The current cell is drawn according to the current style and the cell's background is also drawn selected, if the current cell is within a selection</td></tr>
 <tr><td valign="top"><tt>Q3Table::SpreadSheet</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The current cell is drawn as in a spreadsheet. This means, it is signified by a black rectangle around the cell, and the background of the current cell is always drawn with the widget's base color - even when selected.</td></tr>
-</table>
+</table></p>
 <h3 class="fn"><a name="SelectionMode-enum"></a>enum Q3Table::SelectionMode</h3>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Q3Table::NoSelection</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">No cell can be selected by the user.</td></tr>
 <tr><td valign="top"><tt>Q3Table::Single</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The user may only select a single range of cells.</td></tr>
 <tr><td valign="top"><tt>Q3Table::Multi</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The user may select multiple ranges of cells.</td></tr>
 <tr><td valign="top"><tt>Q3Table::SingleRow</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">The user may select one row at once.</td></tr>
 <tr><td valign="top"><tt>Q3Table::MultiRow</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">The user may select multiple rows.</td></tr>
-</table>
+</table></p>
 <hr />
 <h2>Property Documentation</h2>
 <h3 class="fn"><a name="columnMovingEnabled-prop"></a>columnMovingEnabled : bool</h3>
@@ -623,7 +624,7 @@ body { background: #ffffff; color: black; }</style>
     //... your drawing code
     p-&gt;setClipping(false);</pre>
 <h3 class="fn"><a name="paintCell-2"></a>void Q3Table::paintCell ( <a href="qpainter.html">QPainter</a> * <i>p</i>, int <i>row</i>, int <i>col</i>, const <a href="qrect.html">QRect</a> &amp; <i>cr</i>, bool <i>selected</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Use the other <a href="q3table.html#paintCell">paintCell</a>() function. This function is only included for backwards compatibilty.</p>
 <h3 class="fn"><a name="paintEmptyArea"></a>void Q3Table::paintEmptyArea ( <a href="qpainter.html">QPainter</a> * <i>p</i>, int <i>cx</i>, int <i>cy</i>, int <i>cw</i>, int <i>ch</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>This function fills the <i>cw</i> pixels wide and <i>ch</i> pixels high rectangle starting at position <i>cx</i>, <i>cy</i> with the background color using the painter <i>p</i>.</p>
@@ -655,7 +656,7 @@ body { background: #ffffff; color: black; }</style>
 <p>If the table has a selection, <i>s</i>, this selection is removed from the table.</p>
 <p>See also <a href="q3table.html#addSelection">addSelection</a>() and <a href="q3table.html#numSelections-prop">numSelections</a>().</p>
 <h3 class="fn"><a name="removeSelection-2"></a>void Q3Table::removeSelection ( int <i>num</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Removes selection number <i>num</i> from the table.</p>
 <p>See also <a href="q3table.html#numSelections-prop">numSelections</a>(), <a href="q3table.html#addSelection">addSelection</a>(), and <a href="q3table.html#clearSelection">clearSelection</a>().</p>
 <h3 class="fn"><a name="repaintSelections"></a>void Q3Table::repaintSelections ()</h3>
@@ -812,8 +813,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="q3table.html#horizontalHeader">horizontalHeader</a>(), <a href="q3table.html#setLeftMargin">setLeftMargin</a>(), and <a href="q3header.html">Q3Header</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

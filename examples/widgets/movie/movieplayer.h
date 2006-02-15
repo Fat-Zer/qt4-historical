@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2005-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 2005-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the example classes of the Qt Toolkit.
 **
@@ -30,7 +30,9 @@ class QCheckBox;
 class QGridLayout;
 class QHBoxLayout;
 class QLabel;
+class QMovie;
 class QSlider;
+class QSpinBox;
 class QToolButton;
 class QVBoxLayout;
 
@@ -41,33 +43,33 @@ class MoviePlayer : public QWidget
 public:
     MoviePlayer(QWidget *parent = 0);
 
-public slots:
-    void browse();
-    void start();
-    void stop();
+private slots:
+    void open();
     void goToFrame(int frame);
-    void scaleMovie();
+    void fitToWindow();
+    void updateButtons();
+    void updateFrameSlider();
 
 private:
-    QLabel *movieScreen;
-    QString currentMovieDirectory;
-
+    void createControls();
     void createButtons();
-    void createCheckBox();
-    void createSliders();
 
-    QToolButton *browseButton;
+    QString currentMovieDirectory;
+    QLabel *movieLabel;
+    QMovie *movie;
+    QToolButton *openButton;
     QToolButton *playButton;
-    QToolButton *quitButton;
+    QToolButton *pauseButton;
     QToolButton *stopButton;
-    QCheckBox *scaleMovieCheckbox;
+    QToolButton *quitButton;
+    QCheckBox *fitCheckBox;
     QSlider *frameSlider;
-    QSlider *speedSlider;
+    QSpinBox *speedSpinBox;
     QLabel *frameLabel;
     QLabel *speedLabel;
 
+    QGridLayout *controlsLayout;
     QHBoxLayout *buttonsLayout;
-    QGridLayout *slidersLayout;
     QVBoxLayout *mainLayout;
 };
 

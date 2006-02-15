@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt Designer of the Qt Toolkit.
 **
@@ -99,7 +99,7 @@ bool QPropertyEditorModel::setData(const QModelIndex &index, const QVariant &val
                 emit propertyChanged(nonfake);
             }
         }
-
+        
         return true;
     }
 
@@ -161,6 +161,7 @@ QString QPropertyEditorModel::columnText(int col) const
 
 void QPropertyEditorModel::refreshHelper(IProperty *property)
 {
+    Q_ASSERT(property);
     QModelIndex index0 = indexOf(property, 0);
     QModelIndex index1 = indexOf(property, 1);
     emit dataChanged(index0, index1);
@@ -168,7 +169,7 @@ void QPropertyEditorModel::refreshHelper(IProperty *property)
 
 void QPropertyEditorModel::refresh(IProperty *property)
 {
-    refreshHelper(property);
+    Q_ASSERT(property);
 
     // Refresh everyone up to the root
 
@@ -218,8 +219,11 @@ QVariant QPropertyEditorModel::headerData(int section, Qt::Orientation orientati
 
 Qt::ItemFlags QPropertyEditorModel::flags(const QModelIndex &index) const
 {
+    Q_ASSERT(index.isValid());
+
     Qt::ItemFlags foo = QAbstractItemModel::flags(index);
     if (isEditable(index))
         foo |= Qt::ItemIsEditable;
     return foo;
 }
+

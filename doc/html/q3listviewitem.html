@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/qt3support/itemviews/q3listview.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/src/qt3support/itemviews/q3listview.cpp -->
 <head>
     <title>Qt 4.1: Q3ListViewItem Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -133,13 +133,13 @@ body { background: #ffffff; color: black; }</style>
     }</pre>
 <p>Note that the order of the children will change when the sorting order changes and is undefined if the items are not visible. You can, however, call <a href="q3listviewitem.html#enforceSortOrder">enforceSortOrder</a>() at any time; <a href="q3listview.html">Q3ListView</a> will always call it before it needs to show an item.</p>
 <p>Many programs will need to reimplement Q3ListViewItem. The most commonly reimplemented functions are:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Function</th><th>Description</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="q3listviewitem.html#text">text</a>()</td><td>Returns the text in a column. Many subclasses will compute this on the fly.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="q3listviewitem.html#key">key</a>()</td><td>Used for sorting. The default <a href="q3listviewitem.html#key">key</a>() simply calls <a href="q3listviewitem.html#text">text</a>(), but judicious use of <a href="q3listviewitem.html#key">key</a>() can give you fine control over sorting; for example, <a href="qfiledialog.html">QFileDialog</a> reimplements <a href="q3listviewitem.html#key">key</a>() to sort by date.</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="q3listviewitem.html#setup">setup</a>()</td><td>Called before showing the item and whenever the list view's font changes, for example.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="q3listviewitem.html#activate">activate</a>()</td><td>Called whenever the user clicks on the item or presses Space when the item is the current item.</td></tr>
-</table>
+</table></p>
 <p>Some subclasses call setExpandable(true) even when they have no children, and populate themselves when <a href="q3listviewitem.html#setup">setup</a>() or setOpen(true) is called. The <tt>dirview/dirview.cpp</tt> example program uses this technique to start up quickly: The files and subdirectories in a directory aren't inserted into the tree until they're actually needed.</p>
 <p align="center"><img src="images/qlistviewitems.png" alt="List View Items" /></p><p>See also <a href="q3checklistitem.html">Q3CheckListItem</a> and <a href="q3listview.html">Q3ListView</a>.</p>
 <hr />
@@ -394,8 +394,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="q3listviewitem.html#width">width</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

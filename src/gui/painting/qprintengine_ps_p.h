@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -38,13 +38,13 @@
 
 #ifndef QT_NO_PRINTER
 
-#include "QtGui/qpaintengine.h"
-#include "QtGui/qprintengine.h"
+#include "private/qpdf_p.h"
+#include "qplatformdefs.h"
 
 class QPrinter;
 class QPSPrintEnginePrivate;
 
-class Q_GUI_EXPORT QPSPrintEngine : public QPaintEngine, public QPrintEngine
+class QPSPrintEngine : public QPdfBaseEngine
 {
     Q_DECLARE_PRIVATE(QPSPrintEngine)
 public:
@@ -56,36 +56,14 @@ public:
     virtual bool begin(QPaintDevice *pdev);
     virtual bool end();
 
-    void updateState(const QPaintEngineState &state);
-
-    void updatePen(const QPen &pen);
-    void updateBrush(const QBrush &brush, const QPointF &pt);
-    void updateFont(const QFont &font);
-    void updateBackground(Qt::BGMode bgmode, const QBrush &bgBrush);
-    void updateMatrix(const QMatrix &matrix);
-    void updateClipRegion(const QRegion &region, Qt::ClipOperation op);
-
-    virtual void drawLine(const QLineF &line);
-    virtual void drawLines(const QLineF *lines, int lineCount);
-#ifdef Q_NO_USING_KEYWORD
-    inline  void drawLines(const QLine *lines, int lineCount) { QPaintEngine::drawLines(lines, lineCount); }
-    inline  void drawEllipse(const QRect &r) { QPaintEngine::drawEllipse(r); }
-#else
-    using QPaintEngine::drawLines;
-    using QPaintEngine::drawEllipse;
-#endif
-    virtual void drawRect(const QRectF &r);
-    virtual void drawPoint(const QPointF &p);
-    virtual void drawEllipse(const QRectF &r);
-    virtual void drawPolygon(const QPoint *points, int pointCount, PolygonDrawMode mode);
-    virtual void drawPolygon(const QPointF *points, int pointCount, PolygonDrawMode mode);
+    void setBrush();
 
     virtual void drawImage(const QRectF &r, const QImage &img, const QRectF &sr, Qt::ImageConversionFlags);
     virtual void drawPixmap(const QRectF &r, const QPixmap &pm, const QRectF &sr);
-    virtual void drawTextItem(const QPointF &p, const QTextItem &textItem);
     virtual void drawTiledPixmap(const QRectF &r, const QPixmap &pixmap, const QPointF &s);
-    virtual void drawPath(const QPainterPath &);
 
+    virtual void drawImageInternal(const QRectF &r, QImage img, bool bitmap);
+    
     virtual QPaintEngine::Type type() const { return QPaintEngine::PostScript; }
 
     // Printer stuff...
@@ -102,9 +80,56 @@ public:
     virtual Qt::HANDLE handle() const { return 0; };
 
 private:
-    QByteArray color(const QColor &c) const;
-
     Q_DISABLE_COPY(QPSPrintEngine)
+};
+
+
+class QPSPrintEnginePrivate : public QPdfBaseEnginePrivate {
+public:
+    QPSPrintEnginePrivate(QPrinter::PrinterMode m);
+    ~QPSPrintEnginePrivate();
+
+    void emitHeader(bool finished);
+    void emitPages();
+    void drawImage(qreal x, qreal y, qreal w, qreal h, const QImage &img, const QImage &mask);
+    void flushPage(bool last = false);
+    QRect paperRect() const;
+    QRect pageRect() const;
+
+    int         pageCount;
+    bool        epsf;
+    QByteArray     fontsUsed;
+
+    // the device the output is in the end streamed to.
+    QIODevice *outDevice;
+    int fd;
+
+    // stores the descriptions of the n first pages.
+    QByteArray buffer;
+
+    bool firstPage;
+
+    QRect boundingBox;
+
+    bool        collate;
+    int         copies;
+    QString printerName;
+    QString outputFileName;
+    QString selectionOption;
+    QString printProgram;
+    QString title;
+    QString creator;
+    QPrinter::Orientation orientation;
+    QPrinter::PageSize pageSize;
+    QPrinter::PageOrder pageOrder;
+    int resolution;
+    QPrinter::ColorMode colorMode;
+    bool fullPage;
+    QPrinter::PaperSource paperSource;
+    QPrinter::PrinterState printerState;
+    bool embedFonts;
+
+    pid_t pid;
 };
 
 #endif // QT_NO_PRINTER

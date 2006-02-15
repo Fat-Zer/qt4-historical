@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/doc/src/examples/scribble.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/doc/src/examples/scribble.qdoc -->
 <head>
     <title>Qt 4.1: Scribble Example</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -214,7 +214,7 @@ body { background: #ffffff; color: black; }</style>
         painter.drawImage(QPoint(0, 0), *image);
         *image = newImage;
     }</pre>
-<p><a href="qimage.html">QImage</a> has no nice API for resizing an image. There's a <a href="qimage-qt3.html#copy">QImage::copy</a>() function that could do the trick, but when used to expand an image, it fills the new areas with black, whereas we want white.</p>
+<p><a href="qimage.html">QImage</a> has no nice API for resizing an image. There's a <a href="qimage.html#copy">QImage::copy</a>() function that could do the trick, but when used to expand an image, it fills the new areas with black, whereas we want white.</p>
 <p>So the trick is to create a brand new <a href="qimage.html">QImage</a> with the right size, to fill it with white, and to draw the old image onto it using <a href="qpainter.html">QPainter</a>. The new image is given the <a href="qimage.html#Format-enum">QImage::Format_RGB32</a> format, which means that each pixel is stored as 0xffRRGGBB (where RR, GG, and BB are the red, green and blue color channels, ff is the hexadecimal value 255).</p>
 <a name="mainwindow-class-definition"></a>
 <h2>MainWindow Class Definition</h2>
@@ -442,8 +442,8 @@ body { background: #ffffff; color: black; }</style>
 <p>In <tt>saveFile()</tt>, we pop up a file dialog with a file name suggestion. The static <a href="qfiledialog.html#getSaveFileName">QFileDialog::getSaveFileName</a>() function returns a file name selected by the user. The file does not have to exist.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

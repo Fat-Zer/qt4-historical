@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtNetwork module of the Qt Toolkit.
 **
@@ -40,7 +40,7 @@
 
 class QNativeSocketEnginePrivate;
 
-class QNativeSocketEngine : public QAbstractSocketEngine 
+class Q_INTERNAL_EXPORT QNativeSocketEngine : public QAbstractSocketEngine
 {
     Q_OBJECT
 public:
@@ -80,7 +80,7 @@ public:
 
     int option(SocketOption option) const;
     bool setOption(SocketOption option, int value);
-    
+
     bool waitForRead(int msecs = 30000, bool *timedOut = 0) const;
     bool waitForWrite(int msecs = 30000, bool *timedOut = 0) const;
     bool waitForReadOrWrite(bool *readyToRead, bool *readyToWrite,
@@ -97,6 +97,9 @@ public:
 private:
     Q_DECLARE_PRIVATE(QNativeSocketEngine)
     Q_DISABLE_COPY(QNativeSocketEngine)
+#ifdef Q_OS_WIN
+    Q_PRIVATE_SLOT(d_func(), void systemReadNotification())
+#endif
 };
 
 #ifdef Q_OS_WIN
@@ -127,26 +130,26 @@ public:
 #endif
 
     enum ErrorString {
-        NonBlockingInitFailedErrorString, 
+        NonBlockingInitFailedErrorString,
         BroadcastingInitFailedErrorString,
-        NoIpV6ErrorString, 
+        NoIpV6ErrorString,
         RemoteHostClosedErrorString,
         TimeOutErrorString,
         ResourceErrorString,
         OperationUnsupportedErrorString,
-        ProtocolUnsupportedErrorString, 
-        InvalidSocketErrorString, 
-        UnreachableErrorString, 
-        AccessErrorString, 
-        ConnectionTimeOutErrorString, 
-        ConnectionRefusedErrorString, 
-        AddressInuseErrorString, 
-        AddressNotAvailableErrorString, 
-        AddressProtectedErrorString, 
-        DatagramTooLargeErrorString, 
+        ProtocolUnsupportedErrorString,
+        InvalidSocketErrorString,
+        UnreachableErrorString,
+        AccessErrorString,
+        ConnectionTimeOutErrorString,
+        ConnectionRefusedErrorString,
+        AddressInuseErrorString,
+        AddressNotAvailableErrorString,
+        AddressProtectedErrorString,
+        DatagramTooLargeErrorString,
         SendDatagramErrorString,
         ReceiveDatagramErrorString,
-        WriteErrorString, 
+        WriteErrorString,
         ReadErrorString,
         PortInuseErrorString
     };
@@ -180,6 +183,10 @@ public:
     void nativeClose();
 
     bool fetchConnectionParameters();
+
+#ifdef Q_OS_WIN
+    void systemReadNotification();
+#endif
 };
 
 #endif // QNATIVESOCKETENGINE_P_H

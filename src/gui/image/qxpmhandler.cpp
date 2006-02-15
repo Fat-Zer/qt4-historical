@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -738,15 +738,8 @@ static int rgb_cmp(const void *d1, const void *d2)
 }
 #endif
 
-static bool qt_get_named_xpm_rgb(const char *name, QRgb *rgb)
+static bool qt_get_named_xpm_rgb(const char *name_no_space, QRgb *rgb)
 {
-    int len = int(strlen(name)) + 1;
-    char *name_no_space = (char *)malloc(len);
-    for(int o = 0, i = 0; i < len; i++) {
-	if(name[i] != '\t' && name[i] != ' ')
-	    name_no_space[o++] = name[i];
-    }
-
     XPMRGBData x;
     x.name = name_no_space;
     // Funtion bsearch() is supposed to be
@@ -754,7 +747,6 @@ static bool qt_get_named_xpm_rgb(const char *name, QRgb *rgb)
     // So why (char*)? Are there broken bsearch() declarations out there?
     XPMRGBData *r = (XPMRGBData *)bsearch((char *)&x, (char *)xpmRgbTbl, xpmRgbTblSize,
                                           sizeof(XPMRGBData), rgb_cmp);
-    free(name_no_space);
     if (r) {
 	*rgb = r->value;
 	return true;
@@ -825,61 +817,64 @@ static bool read_xpm_string(QByteArray &buf, QIODevice *d, const char * const *s
     return true;
 }
 
+// Tests if the given prefix can be the start of an XPM color specification
 
-//
-// INTERNAL
-//
-// Reads an .xpm from either the QImageIO or from the QString *.
-// One of the two HAS to be 0, the other one is used.
-//
+static bool is_xpm_color_spec_prefix(const QByteArray& prefix)
+{
+    return prefix == "c" ||
+           prefix == "g" ||
+           prefix == "g4" ||
+           prefix == "m" ||
+           prefix == "s";
+}
 
-bool qt_read_xpm_image_or_array(QIODevice *device, const char * const * source, QImage &image)
+// Reads XPM header.
+
+static bool read_xpm_header(
+    QIODevice *device, const char * const * source, int& index, QByteArray &state,
+    int *cpp, int *ncols, int *w, int *h)
 {
     QByteArray buf(200, 0);
-    QByteArray state;
-
-    int i, cpp, ncols, w, h, index = 0;
-
-    if (device) {
-        // "/* XPM */"
-        int readBytes;
-        if ((readBytes = device->readLine(buf.data(), buf.size())) < 0)
-            return false;
-
-        if (buf.indexOf("/* XPM") != 0) {
-            while (readBytes > 0) {
-                device->ungetChar(buf.at(readBytes - 1));
-                --readBytes;
-            }
-            return false;
-        }// bad magic
-    }
 
     if (!read_xpm_string(buf, device, source, index, state))
         return false;
 
 #if defined(_MSC_VER) && _MSC_VER >= 1400
-	if (sscanf_s(buf, "%d %d %d %d", &w, &h, &ncols, &cpp) < 4)
+	if (sscanf_s(buf, "%d %d %d %d", w, h, ncols, cpp) < 4)
 #else
-    if (sscanf(buf, "%d %d %d %d", &w, &h, &ncols, &cpp) < 4)
+    if (sscanf(buf, "%d %d %d %d", w, h, ncols, cpp) < 4)
 #endif
         return false;                                        // < 4 numbers parsed
+
+    return true;
+}
+
+// Reads XPM body (color information & pixels).
+
+static bool read_xpm_body(
+    QIODevice *device, const char * const * source, int& index, QByteArray& state,
+    int cpp, int ncols, int w, int h, QImage& image)
+{
+    QByteArray buf(200, 0);
+    int i;
 
     if (cpp > 15)
         return false;
 
-    QImage::Format format = QImage::Format_Indexed8;
-    if (ncols > 256)
-        format = QImage::Format_ARGB32;
-    image = QImage(w, h, format);
-    if (ncols <= 256)
+    // For > 256 colors, we delay creation of the image until
+    // after we have read the color specifications, so that we can
+    // create it in correct format (Format_RGB32 vs Format_ARGB32,
+    // depending on absence or presence of "c none", respectively)
+    if (ncols <= 256) {
+        image = QImage(w, h, QImage::Format_Indexed8);
         image.setNumColors(ncols);
-
-    if (image.isNull())
-        return false;
+        if (image.isNull())
+            return false;
+    }
 
     QMap<quint64, int> colorMap;
     int currentColor;
+    bool hasTransparency = false;
 
     for(currentColor=0; currentColor < ncols; ++currentColor) {
         if (!read_xpm_string(buf, device, source, index, state)) {
@@ -888,28 +883,32 @@ bool qt_read_xpm_image_or_array(QIODevice *device, const char * const * source, 
         }
         QByteArray index;
         index = buf.left(cpp);
-        buf = buf.mid(cpp).simplified().toLower();
-        buf.prepend(" ");
-        i = buf.indexOf(" c ");
+        buf = buf.mid(cpp).simplified().trimmed().toLower();
+        QList<QByteArray> tokens = buf.split(' ');
+        i = tokens.indexOf("c");
         if (i < 0)
-            i = buf.indexOf(" g ");
+            i = tokens.indexOf("g");
         if (i < 0)
-            i = buf.indexOf(" g4 ");
+            i = tokens.indexOf("g4");
         if (i < 0)
-            i = buf.indexOf(" m ");
+            i = tokens.indexOf("m");
         if (i < 0) {
             qWarning("QImage: XPM color specification is missing: %s", buf.constData());
             return false;        // no c/g/g4/m specification at all
         }
-        buf = buf.mid(i+3);
-        // Strip any other colorspec
-        int end = buf.indexOf(' ', 4);
-        if (end >= 0)
-            buf.truncate(end);
-        buf = buf.trimmed();
+        QByteArray color;
+        while ((++i < tokens.size()) && !is_xpm_color_spec_prefix(tokens.at(i))) {
+            color.append(tokens.at(i));
+        }
+        if (color.isEmpty()) {
+            qWarning("QImage: XPM color value is missing from specification: %s", buf.constData());
+            return false;        // no color value
+        }
+        buf = color;
         if (buf == "none") {
+            hasTransparency = true;
             int transparentColor = currentColor;
-            if (image.depth() == 8) {
+            if (ncols <= 256) {
                 image.setColor(transparentColor, 0);
                 colorMap.insert(xpmHash((const char *)index.constData()), transparentColor);
             } else {
@@ -925,13 +924,22 @@ bool qt_read_xpm_image_or_array(QIODevice *device, const char * const * source, 
             } else {
                 qt_get_named_xpm_rgb(buf, &c_rgb);
             }
-            if (image.depth() == 8) {
+            if (ncols <= 256) {
                 image.setColor(currentColor, 0xff000000 | c_rgb);
                 colorMap.insert(xpmHash((const char *)index.constData()), currentColor);
             } else {
                 colorMap.insert(xpmHash((const char *)index.constData()), 0xff000000 | c_rgb);
             }
         }
+    }
+
+    if (ncols > 256) {
+        // Now we can create 32-bit image of appropriate format
+        QImage::Format format = hasTransparency ?
+                                QImage::Format_ARGB32 : QImage::Format_RGB32;
+        image = QImage(w, h, format);
+        if (image.isNull())
+            return false;
     }
 
     // Read pixels
@@ -978,6 +986,41 @@ bool qt_read_xpm_image_or_array(QIODevice *device, const char * const * source, 
     return true;
 }
 
+//
+// INTERNAL
+//
+// Reads an .xpm from either the QImageIO or from the QString *.
+// One of the two HAS to be 0, the other one is used.
+//
+
+bool qt_read_xpm_image_or_array(QIODevice *device, const char * const * source, QImage &image)
+{
+    QByteArray buf(200, 0);
+    QByteArray state;
+
+    int cpp, ncols, w, h, index = 0;
+
+    if (device) {
+        // "/* XPM */"
+        int readBytes;
+        if ((readBytes = device->readLine(buf.data(), buf.size())) < 0)
+            return false;
+
+        if (buf.indexOf("/* XPM") != 0) {
+            while (readBytes > 0) {
+                device->ungetChar(buf.at(readBytes - 1));
+                --readBytes;
+            }
+            return false;
+        }// bad magic
+    }
+
+    if (!read_xpm_header(device, source, index, state, &cpp, &ncols, &w, &h))
+        return false;
+
+    return read_xpm_body(device, source, index, state, cpp, ncols, w, h, image);
+}
+
 static const char* xpm_color_name(int cpp, int index)
 {
     static char returnable[5];
@@ -1011,8 +1054,11 @@ static const char* xpm_color_name(int cpp, int index)
 
 
 // write XPM image data
-static void write_xpm_image(const QImage &sourceImage, QIODevice *device, const QString &fileName)
+static bool write_xpm_image(const QImage &sourceImage, QIODevice *device, const QString &fileName)
 {
+    if (!device->isWritable())
+        return false;
+
     QImage image;
     if (sourceImage.depth() != 32)
         image = sourceImage.convertToFormat(QImage::Format_RGB32);
@@ -1091,15 +1137,49 @@ static void write_xpm_image(const QImage &sourceImage, QIODevice *device, const 
         s << "," << endl << "\"" << line << "\"";
     }
     s << "};" << endl;
+    return (s.status() == QTextStream::Ok);
+}
+
+QXpmHandler::QXpmHandler()
+    : state(Ready), index(0)
+{
+}
+
+bool QXpmHandler::readHeader()
+{
+    state = Error;
+    if (!read_xpm_header(device(), 0, index, buffer, &cpp, &ncols, &width, &height))
+        return false;
+    state = ReadHeader;
+    return true;
+}
+
+bool QXpmHandler::readImage(QImage *image)
+{
+    if (state == Error)
+        return false;
+    
+    if (state == Ready && !readHeader()) {
+        state = Error;
+        return false;
+    }
+
+    if (!read_xpm_body(device(), 0, index, buffer, cpp, ncols, width, height, *image)) {
+        state = Error;
+        return false;
+    }
+
+    state = Ready;
+    return true;
 }
 
 bool QXpmHandler::canRead() const
 {
-    if (canRead(device())) {
+    if (state == Ready && canRead(device())) {
         setFormat("xpm");
         return true;
     }
-    return false;
+    return state != Error;
 }
 
 bool QXpmHandler::canRead(QIODevice *device)
@@ -1118,23 +1198,34 @@ bool QXpmHandler::canRead(QIODevice *device)
 
 bool QXpmHandler::read(QImage *image)
 {
-    return qt_read_xpm_image_or_array(device(), 0, *image);
+    if (!canRead())
+        return false;
+    return readImage(image);
 }
 
 bool QXpmHandler::write(const QImage &image)
 {
-    write_xpm_image(image, device(), fileName);
-    return !image.isNull();
+    return write_xpm_image(image, device(), fileName);
 }
 
 bool QXpmHandler::supportsOption(ImageOption option) const
 {
-    return option == Name;
+    return option == Name
+        || option == Size;
 }
 
 QVariant QXpmHandler::option(ImageOption option) const
 {
-    return option == Name ? fileName : QString();
+    if (option == Name) {
+        return fileName;
+    } else if (option == Size) {
+        if (state == Error)
+            return QVariant();
+        if (state == Ready && !const_cast<QXpmHandler*>(this)->readHeader())
+            return QVariant();
+        return QSize(width, height);
+    }
+    return QVariant();
 }
 
 void QXpmHandler::setOption(ImageOption option, const QVariant &value)

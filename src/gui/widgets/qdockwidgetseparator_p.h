@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -35,6 +35,7 @@
 // We mean it.
 //
 
+#include "QtCore/qpointer.h"
 #include "QtGui/qwidget.h"
 
 #ifndef QT_NO_DOCKWIDGET
@@ -62,7 +63,7 @@ public:
 
     struct DragState {
 	QPoint origin, last;
-	QWidget *prevFocus;
+	QPointer<QWidget> prevFocus;
     } *state;
 
     bool hover;

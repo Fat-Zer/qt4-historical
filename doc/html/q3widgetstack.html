@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/qt3support/widgets/q3widgetstack.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/src/qt3support/widgets/q3widgetstack.cpp -->
 <head>
     <title>Qt 4.1: Q3WidgetStack Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -40,7 +40,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>13 public functions inherited from <a href="qframe.html#public-functions">QFrame</a></li>
 <li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
-<li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <a name="public-slots"></a>
 <h3>Public Slots</h3>
@@ -71,6 +71,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>5 protected functions inherited from <a href="q3frame.html#protected-functions">Q3Frame</a></li>
 <li><div class="fn"/>39 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
+<li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
 </ul>
 <h3>Additional Inherited Members</h3>
 <ul>
@@ -103,13 +104,14 @@ body { background: #ffffff; color: black; }</style>
 <p>This signal is emitted just before a managed widget is shown if that managed widget has an ID != -1. The <i>id</i> parameter is the numeric ID of the widget.</p>
 <p>If you call <a href="q3widgetstack.html#visibleWidget">visibleWidget</a>() in a slot connected to aboutToShow(), the widget it returns is the one that is currently visible, not the one that is about to be shown.</p>
 <h3 class="fn"><a name="aboutToShow-2"></a>void Q3WidgetStack::aboutToShow ( <a href="qwidget.html">QWidget</a> * <i>widget</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>This signal is emitted just before a managed widget is shown. The argument is a pointer to the <i>widget</i>.</p>
 <p>If you call <a href="q3widgetstack.html#visibleWidget">visibleWidget</a>() in a slot connected to <a href="q3widgetstack.html#aboutToShow">aboutToShow</a>(), the widget returned is the one that is currently visible, not the one that is about to be shown.</p>
 <h3 class="fn"><a name="addWidget"></a>int Q3WidgetStack::addWidget ( <a href="qwidget.html">QWidget</a> * <i>w</i>, int <i>id</i> = -1 )</h3>
 <p>Adds widget <i>w</i> to this stack of widgets, with ID <i>id</i>.</p>
 <p>If you pass an id &gt;= 0 this ID is used. If you pass an <i>id</i> of -1 (the default), the widgets will be numbered automatically. If you pass -2 a unique negative integer will be generated. No widget has an ID of -1. Returns the ID or -1 on failure (e.g. <i>w</i> is 0).</p>
 <p>If you pass an id that is already used, then a unique negative integer will be generated to prevent two widgets having the same id.</p>
+<p>If <i>w</i> already exists in the stack the widget will be removed first.</p>
 <p>If <i>w</i> is not a child of this <a href="q3widgetstack.html">Q3WidgetStack</a> moves it using <a href="qwidget-qt3.html#reparent">reparent</a>().</p>
 <h3 class="fn"><a name="id"></a>int Q3WidgetStack::id ( <a href="qwidget.html">QWidget</a> * <i>widget</i> ) const</h3>
 <p>Returns the ID of the <i>widget</i>. Returns -1 if <i>widget</i> is 0 or is not being managed by this widget stack.</p>
@@ -118,7 +120,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Raises the widget with ID <i>id</i> to the top of the widget stack.</p>
 <p>See also <a href="q3widgetstack.html#visibleWidget">visibleWidget</a>().</p>
 <h3 class="fn"><a name="raiseWidget-2"></a>void Q3WidgetStack::raiseWidget ( <a href="qwidget.html">QWidget</a> * <i>w</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Raises widget <i>w</i> to the top of the widget stack.</p>
 <h3 class="fn"><a name="removeWidget"></a>void Q3WidgetStack::removeWidget ( <a href="qwidget.html">QWidget</a> * <i>w</i> )</h3>
 <p>Removes widget <i>w</i> from this stack of widgets. Does not delete <i>w</i>. If <i>w</i> is the currently visible widget, no other widget is substituted.</p>
@@ -133,8 +135,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="q3widgetstack.html#id">id</a>() and <a href="q3widgetstack.html#addWidget">addWidget</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

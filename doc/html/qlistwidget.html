@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/gui/itemviews/qlistwidget.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/src/gui/itemviews/qlistwidget.cpp -->
 <head>
     <title>Qt 4.1: QListWidget Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -79,7 +79,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>13 public functions inherited from <a href="qframe.html#public-functions">QFrame</a></li>
 <li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
-<li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <a name="public-slots"></a>
 <h3>Public Slots</h3>
@@ -129,6 +129,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>17 protected functions inherited from <a href="qabstractscrollarea.html#protected-functions">QAbstractScrollArea</a></li>
 <li><div class="fn"/>39 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
+<li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
 </ul>
 <h3>Additional Inherited Members</h3>
 <ul>
@@ -167,6 +168,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <h3 class="fn"><a name="currentRow-prop"></a>currentRow : int</h3>
 <p>This property holds the row of the current item.</p>
+<p>Depending on the current selection mode, the row may also be selected.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>int currentRow () const</b></li>
@@ -181,7 +183,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="addItem"></a>void QListWidget::addItem ( const <a href="qstring.html">QString</a> &amp; <i>label</i> )</h3>
 <p>Inserts an item with the text <i>label</i> at the end of the list widget.</p>
 <h3 class="fn"><a name="addItem-2"></a>void QListWidget::addItem ( <a href="qlistwidgetitem.html">QListWidgetItem</a> * <i>item</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Inserts the <i>item</i> at the the end of the list widget.</p>
 <p>See also <a href="qlistwidget.html#insertItem">insertItem</a>().</p>
 <h3 class="fn"><a name="addItems"></a>void QListWidget::addItems ( const <a href="qstringlist.html">QStringList</a> &amp; <i>labels</i> )</h3>
@@ -215,7 +217,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Inserts the <i>item</i> at the position in the list given by <i>row</i>.</p>
 <p>See also <a href="qlistwidget.html#addItem">addItem</a>().</p>
 <h3 class="fn"><a name="insertItem-2"></a>void QListWidget::insertItem ( int <i>row</i>, const <a href="qstring.html">QString</a> &amp; <i>label</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Inserts an item with the text <i>label</i> in the list widget at the position given by <i>row</i>.</p>
 <p>See also <a href="qlistwidget.html#addItem">addItem</a>().</p>
 <h3 class="fn"><a name="insertItems"></a>void QListWidget::insertItems ( int <i>row</i>, const <a href="qstringlist.html">QStringList</a> &amp; <i>labels</i> )</h3>
@@ -233,7 +235,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="itemAt"></a><a href="qlistwidgetitem.html">QListWidgetItem</a> * QListWidget::itemAt ( const <a href="qpoint.html">QPoint</a> &amp; <i>p</i> ) const</h3>
 <p>Returns a pointer to the item at the coordinates <i>p</i>.</p>
 <h3 class="fn"><a name="itemAt-2"></a><a href="qlistwidgetitem.html">QListWidgetItem</a> * QListWidget::itemAt ( int <i>x</i>, int <i>y</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns a pointer to the item at the coordinates (<i>x</i>, <i>y</i>).</p>
 <h3 class="fn"><a name="itemChanged"></a>void QListWidget::itemChanged ( <a href="qlistwidgetitem.html">QListWidgetItem</a> * <i>item</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted whenever the data of <i>item</i> has changed.</p>
@@ -249,7 +251,7 @@ body { background: #ffffff; color: black; }</style>
 <p>This signal is emitted when an item has been pressed (mouse click and release).</p>
 <h3 class="fn"><a name="itemSelectionChanged"></a>void QListWidget::itemSelectionChanged ()&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted whenever the selection changes.</p>
-<p>See also <a href="qlistwidget.html#selectedItems">selectedItems</a>() and <a href="qlistwidget.html#isItemSelected">isItemSelected</a>().</p>
+<p>See also <a href="qlistwidget.html#selectedItems">selectedItems</a>(), <a href="qlistwidget.html#isItemSelected">isItemSelected</a>(), and <a href="qlistwidget.html#currentItemChanged">currentItemChanged</a>().</p>
 <h3 class="fn"><a name="itemWidget"></a><a href="qwidget.html">QWidget</a> * QListWidget::itemWidget ( <a href="qlistwidgetitem.html">QListWidgetItem</a> * <i>item</i> ) const</h3>
 <p>Returns the widget displayed in the given <i>item</i>.</p>
 <p>This function was introduced in Qt 4.1.</p>
@@ -274,6 +276,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns a list of all selected items in the list widget.</p>
 <h3 class="fn"><a name="setCurrentItem"></a>void QListWidget::setCurrentItem ( <a href="qlistwidgetitem.html">QListWidgetItem</a> * <i>item</i> )</h3>
 <p>Sets the current item to <i>item</i>.</p>
+<p>Depending on the current selection mode, the item may also be selected.</p>
 <p>See also <a href="qlistwidget.html#currentItem">currentItem</a>().</p>
 <h3 class="fn"><a name="setItemHidden"></a>void QListWidget::setItemHidden ( const <a href="qlistwidgetitem.html">QListWidgetItem</a> * <i>item</i>, bool <i>hide</i> )</h3>
 <p>If <i>hide</i> is true, the <i>item</i> will be hidden; otherwise it will be shown.</p>
@@ -283,8 +286,9 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qlistwidget.html#isItemSelected">isItemSelected</a>().</p>
 <h3 class="fn"><a name="setItemWidget"></a>void QListWidget::setItemWidget ( <a href="qlistwidgetitem.html">QListWidgetItem</a> * <i>item</i>, <a href="qwidget.html">QWidget</a> * <i>widget</i> )</h3>
 <p>Sets the <i>widget</i> to be displayed in the give <i>item</i>.</p>
+<p>This function should only be used to display static content in the place of a list widget item. If you want to display custom dynamic content or implement a custom editor widget, use <a href="qlistview.html">QListView</a> and subclass <a href="qitemdelegate.html">QItemDelegate</a> instead.</p>
 <p>This function was introduced in Qt 4.1.</p>
-<p>See also <a href="qlistwidget.html#itemWidget">itemWidget</a>().</p>
+<p>See also <a href="qlistwidget.html#itemWidget">itemWidget</a>() and <a href="model-view-delegate.html">Delegate Classes</a>.</p>
 <h3 class="fn"><a name="sortItems"></a>void QListWidget::sortItems ( <a href="qt.html#SortOrder-enum">Qt::SortOrder</a> <i>order</i> = Qt::AscendingOrder )</h3>
 <p>Sorts all the items in the list widget according to the specified <i>order</i>.</p>
 <h3 class="fn"><a name="supportedDropActions"></a><a href="qt.html#DropAction-enum">Qt::DropActions</a> QListWidget::supportedDropActions () const&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
@@ -298,8 +302,8 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the rectangle on the viewport occupied by the item at <i>item</i>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

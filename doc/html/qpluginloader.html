@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/corelib/plugin/qpluginloader.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/src/corelib/plugin/qpluginloader.cpp -->
 <head>
     <title>Qt 4.1: QPluginLoader Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -62,7 +62,7 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/><b><a href="qpluginloader.html#Q_DECLARE_INTERFACE">Q_DECLARE_INTERFACE</a></b> (  <i>ClassName</i>,  <i>Identifier</i> )</li>
 <li><div class="fn"/><b><a href="qpluginloader.html#Q_EXPORT_PLUGIN2">Q_EXPORT_PLUGIN2</a></b> (  <i>PluginName</i>,  <i>ClassName</i> )</li>
-<li><div class="fn"/><b><a href="qpluginloader.html#Q_IMPORT_PLUGIN">Q_IMPORT_PLUGIN</a></b> (  <i>ClassName</i> )</li>
+<li><div class="fn"/><b><a href="qpluginloader.html#Q_IMPORT_PLUGIN">Q_IMPORT_PLUGIN</a></b> (  <i>PluginName</i> )</li>
 </ul>
 <h3>Additional Inherited Members</h3>
 <ul>
@@ -125,6 +125,7 @@ body { background: #ffffff; color: black; }</style>
 <p>THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
 <p>See also <a href="qpluginloader.html#unload">unload</a>().</p>
 <h3 class="fn"><a name="staticInstances"></a><a href="qobject.html#QObjectList-typedef">QObjectList</a> QPluginLoader::staticInstances ()&nbsp;&nbsp;<tt> [static]</tt></h3>
+<p>Returns a list of static plugin instances held by the plugin loader.</p>
 <h3 class="fn"><a name="unload"></a>bool QPluginLoader::unload ()</h3>
 <p>Unloads the plugin and returns true if the plugin could be unloaded; otherwise returns false.</p>
 <p>This happens automatically on application termination, so you shouldn't normally need to call this function.</p>
@@ -143,7 +144,7 @@ body { background: #ffffff; color: black; }</style>
         struct MyInterface { ... };
     }
     Q_DECLARE_INTERFACE(Foo::MyInterface, &quot;org.examples.MyInterface&quot;)</pre>
-<p>See also <a href="qobject.html#Q_INTERFACES">Q_INTERFACES</a>(), <a href="qpluginloader-obsolete.html#Q_EXPORT_PLUGIN">Q_EXPORT_PLUGIN</a>(), and <a href="plugins-howto.html">How to Create Qt Plugins</a>.</p>
+<p>See also <a href="qobject.html#Q_INTERFACES">Q_INTERFACES</a>(), <a href="qpluginloader.html#Q_EXPORT_PLUGIN2">Q_EXPORT_PLUGIN2</a>(), and <a href="plugins-howto.html">How to Create Qt Plugins</a>.</p>
 <h3 class="fn"><a name="Q_EXPORT_PLUGIN2"></a>Q_EXPORT_PLUGIN2 (  <i>PluginName</i>,  <i>ClassName</i> )</h3>
 <p>This macro exports the plugin class <i>ClassName</i> with the name <i>PluginName</i>. There should be exactly one occurrence of this macro in a Qt plugin's source code (in an implementation file).</p>
 <p>Example:</p>
@@ -151,27 +152,28 @@ body { background: #ffffff; color: black; }</style>
 <p>See the <a href="tools-plugandpaint.html">Plug &amp; Paint</a> example for details.</p>
 <p>This function was introduced in Qt 4.1.</p>
 <p>See also <a href="qpluginloader.html#Q_DECLARE_INTERFACE">Q_DECLARE_INTERFACE</a>() and <a href="plugins-howto.html">How to Create Qt Plugins</a>.</p>
-<h3 class="fn"><a name="Q_IMPORT_PLUGIN"></a>Q_IMPORT_PLUGIN (  <i>ClassName</i> )</h3>
-<p>This macro imports the plugin class <i>ClassName</i>. Inserting this macro into your application's source code will allow you to make use of a static plugin.</p>
+<h3 class="fn"><a name="Q_IMPORT_PLUGIN"></a>Q_IMPORT_PLUGIN (  <i>PluginName</i> )</h3>
+<p>This macro imports the plugin named <i>PluginName</i>. Inserting this macro into your application's source code will allow you to make use of a static plugin.</p>
 <p>Example:</p>
-<pre>&nbsp;   Q_IMPORT_PLUGIN(QJpegPlugin)</pre>
-<p>Static plugins must also be included by the linker when your application is built. With qmake, you can use QTPLUGIN to add the required plugins to your build.</p>
-<p>Example:</p>
-<pre>&nbsp;   TEMPLATE = app
-    QTPLUGIN += jpeg gif mng # image formats
-    QTPLUGIN += cn tw        # codecs</pre>
+<pre>&nbsp;   Q_IMPORT_PLUGIN(qjpegplugin)</pre>
+<p>Static plugins must also be included by the linker when your application is built. With qmake, you can use <tt>QTPLUGIN</tt> to add the required plugins to your build. For example:</p>
+<pre>&nbsp;   TEMPLATE      = app
+    QTPLUGIN     += qjpeg qgif qmng    # image formats
+    QTPLUGIN     += cn tw           # codecs</pre>
 <p>Depending on your build, Qt provides the following static plugins:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" bgcolor="#a2c511"><th>Plugin class</th><th>Type</th><th>Description</th><th>QTPLUGIN entry</th></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>QJpegPlugin</td><td>Image format</td><td>The JPEG image format</td><td>jpeg</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>QGifPlugin</td><td>Image format</td><td>The GIF image format</td><td>gif</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>QMngPlugin</td><td>Image format</td><td>The MNG image format</td><td>mng</td></tr>
-</table>
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
+<tr valign="top" bgcolor="#a2c511"><th>Plugin name</th><th>Type</th><th>Description</th><th>QTPLUGIN entry</th></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><tt>qjpeg</tt></td><td>Image format</td><td>The JPEG image format</td><td>qjpeg</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><tt>qgif</tt></td><td>Image format</td><td>The GIF image format</td><td>qgif</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><tt>qmng</tt></td><td>Image format</td><td>The MNG image format</td><td>qmng</td></tr>
+</table></p>
+<p>You should also ensure that the linker will use the correct linker path by adding the following line to your application's project file:</p>
+<pre>&nbsp;   QMAKE_LFLAGS += -L$$[QT_INSTALL_PLUGINS]/imageformats</pre>
 <p>See also <a href="plugins-howto.html">How to Create Qt Plugins</a> and <a href="qmake-using.html">Using qmake</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

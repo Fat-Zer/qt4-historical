@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -62,7 +62,8 @@ public:
           lastSelectionState(false), ignoreAutomaticScrollbarAdjustement(false), textFormat(Qt::AutoText),
           preferRichText(false),
           overwriteMode(false),
-          acceptRichText(true)
+          acceptRichText(true),
+          preeditCursor(0), hideCursor(false)
     {}
 
     bool cursorMoveKeyEvent(QKeyEvent *e);
@@ -96,7 +97,7 @@ public:
     { viewport->update(selectionRect()); }
 
     inline QPoint mapToContents(const QPoint &point) const
-    { return QPoint(point.x() + hbar->value(), point.y() + vbar->value()); }
+    { return QPoint(point.x() + horizontalOffset(), point.y() + verticalOffset()); }
 
     void selectionChanged();
 
@@ -125,6 +126,15 @@ public:
 
     void deleteSelected();
 
+    void undo();
+    void redo();
+    void setCursorAfterUndoRedo(int undoPosition, int charsAdded, int charsRemoved);
+    
+    inline int horizontalOffset() const
+    { return q_func()->isRightToLeft() ? (hbar->maximum() - hbar->value()) : hbar->value(); }
+    inline int verticalOffset() const
+    { return vbar->value(); }
+    
     QRect rectForPosition(int position) const;
     QRect selectionRect() const;
 
@@ -179,6 +189,9 @@ public:
 
     bool overwriteMode;
     bool acceptRichText;
+
+    int preeditCursor;
+    bool hideCursor; // used to hide the cursor in the preedit area
 };
 #endif // QT_NO_TEXTEDIT
 
@@ -190,7 +203,7 @@ public:
     QUnicodeControlCharacterMenu(QWidget *editWidget, QWidget *parent);
 
 private Q_SLOTS:
-    void actionTriggered();
+    void menuActionTriggered();
 
 private:
     QWidget *editWidget;

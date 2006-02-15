@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt3Support module of the Qt Toolkit.
 **
@@ -3706,12 +3706,13 @@ public:
     {
 	QRect pixelbounds = pa.boundingRect();
 	int cs = canvas->chunkSize();
-	bounds.setLeft(pixelbounds.left()/cs);
-	bounds.setRight(pixelbounds.right()/cs);
-	bounds.setTop(pixelbounds.top()/cs);
-	bounds.setBottom(pixelbounds.bottom()/cs);
-	bitmap = QImage(bounds.width(),bounds.height(),1,2,QImage::LittleEndian);
-	pnt = 0;
+    QRect canvasbounds = pixelbounds.intersect(canvas->rect());
+    bounds.setLeft(canvasbounds.left()/cs);
+    bounds.setRight(canvasbounds.right()/cs);
+    bounds.setTop(canvasbounds.top()/cs);
+    bounds.setBottom(canvasbounds.bottom()/cs);
+    bitmap = QImage(bounds.width(), bounds.height(), 1, 2, QImage::LittleEndian);
+    pnt = 0;
 	bitmap.fill(0);
 #ifdef QCANVAS_POLYGONS_DEBUG
 	dbg_start();
@@ -3760,10 +3761,15 @@ public:
 	int cs = canvas->chunkSize();
 	for (int j=0; j<n; j++) {
 	    int y = pt[j].y()/cs-bounds.y();
+        if (y >= bitmap.height() || y < 0) continue;
 	    uchar* l = bitmap.scanLine(y);
 	    int x = pt[j].x();
 	    int x1 = x/cs-bounds.x();
+        if (x1 > bounds.width()) continue;
+        x1  = QMAX(0,x1);
 	    int x2 = (x+w[j])/cs-bounds.x();
+        if (x2 < 0) continue;
+        x2 = QMIN(bounds.width(), x2);
 	    int x1q = x1/8;
 	    int x1r = x1%8;
 	    int x2q = x2/8;
@@ -4864,7 +4870,7 @@ void Q3CanvasText::removeFromChunks()
     Q3Canvas::at(). You should use values greater than 1000 to allow
     for extensions to this class.
 
-    Overuse of this functionality can damage it's extensibility. For
+    Overuse of this functionality can damage its extensibility. For
     example, once you have identified a base class of a Q3CanvasItem
     found by Q3Canvas::at(), cast it to that type and call meaningful
     methods rather than acting upon the object based on its rtti

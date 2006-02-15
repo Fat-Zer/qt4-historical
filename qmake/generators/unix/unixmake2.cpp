@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the qmake application of the Qt Toolkit.
 **
@@ -102,8 +102,8 @@ UnixMakefileGenerator::writeMakeParts(QTextStream &t)
     t << "DEFINES       = "
       << varGlue("PRL_EXPORT_DEFINES","-D"," -D"," ")
       << varGlue("DEFINES","-D"," -D","") << endl;
-    t << "CFLAGS        = " << var("QMAKE_CFLAGS") << " $(DEFINES)" << endl;
-    t << "CXXFLAGS      = " << var("QMAKE_CXXFLAGS") << " $(DEFINES)" << endl;
+    t << "CFLAGS        = " << var("QMAKE_CFLAGS") << " " << var("QMAKE_FRAMEWORKDIR_FLAGS") << " $(DEFINES)" << endl;
+    t << "CXXFLAGS      = " << var("QMAKE_CXXFLAGS") << " " << var("QMAKE_FRAMEWORKDIR_FLAGS") << " $(DEFINES)" << endl;
     t << "LEXFLAGS      = " << var("QMAKE_LEXFLAGS") << endl;
     t << "YACCFLAGS     = " << var("QMAKE_YACCFLAGS") << endl;
     t << "INCPATH       = " << "-I" << specdir();
@@ -118,7 +118,8 @@ UnixMakefileGenerator::writeMakeParts(QTextStream &t)
     if(!project->isActiveConfig("staticlib")) {
         t << "LINK          = " << var("QMAKE_LINK") << endl;
         t << "LFLAGS        = " << var("QMAKE_LFLAGS") << endl;
-        t << "LIBS          = " << "$(SUBLIBS) " << var("QMAKE_LIBDIR_FLAGS") << " " << var("QMAKE_LIBS") << endl;
+        t << "LIBS          = " << "$(SUBLIBS) " << var("QMAKE_FRAMEWORKDIR_FLAGS") << " "
+          << var("QMAKE_LIBDIR_FLAGS") << " " << var("QMAKE_LIBS") << endl;
     }
 
     t << "AR            = " << var("QMAKE_AR") << endl;
@@ -479,10 +480,10 @@ UnixMakefileGenerator::writeMakeParts(QTextStream &t)
               << "-$(MOVE) $(TARGET) $(DESTDIR)$(TARGETD)" << "\n\t"
               << mkdir_p_asstring("`dirname $(DESTDIR)$(TARGET0)`") << "\n\t"
               << varGlue("QMAKE_LN_SHLIB","-"," "," Versions/" +
-                         project->first("VER_MAJ") + ".0" +
+                         project->first("QMAKE_FRAMEWORK_VERSION") +
                          "/$(TARGET) $(DESTDIR)$(TARGET0)") << "\n\t"
               << "-$(DEL_FILE) " << destdir << "Versions/Current" << "\n\t"
-              << varGlue("QMAKE_LN_SHLIB","-"," ", " " + project->first("VER_MAJ") + ".0" +
+              << varGlue("QMAKE_LN_SHLIB","-"," ", " " + project->first("QMAKE_FRAMEWORK_VERSION") +
                          " " + destdir + "Versions/Current") << "\n\t";
             if(!project->isEmpty("QMAKE_POST_LINK"))
                 t << "\n\t" << var("QMAKE_POST_LINK");
@@ -610,7 +611,7 @@ UnixMakefileGenerator::writeMakeParts(QTextStream &t)
 
     if(!project->first("QMAKE_PKGINFO").isEmpty()) {
         QString pkginfo = project->first("QMAKE_PKGINFO");
-        QString destdir = project->first("DESTDIR") + project->first("QMAKE_BUNDLE_NAME");
+        QString destdir = project->first("DESTDIR") + project->first("QMAKE_BUNDLE_NAME") + "/Contents";
         t << pkginfo << ": " << "\n\t";
         if(!destdir.isEmpty())
             t << mkdir_p_asstring(destdir) << "\n\t";
@@ -645,7 +646,6 @@ UnixMakefileGenerator::writeMakeParts(QTextStream &t)
                   << "@$(COPY_FILE) " << icon << " " << dir << endl;
             }
         } else {
-
             t << "@$(DEL_FILE) " << info_plist_out << "\n\t"
               << "@sed "
               << "-e \"s,@LIBRARY@," << var("QMAKE_ORIG_TARGET") << ",g\" "
@@ -664,7 +664,7 @@ UnixMakefileGenerator::writeMakeParts(QTextStream &t)
                 QString path = bundle_dir;
                 if(!project->isEmpty(bundle_data[i] + ".version")) {
                     QString version = project->first(bundle_data[i] + ".version") + "/" +
-                                      project->first("VER_MAJ") + ".0/";
+                                      project->first("QMAKE_FRAMEWORK_VERSION") + "/";
                     t << Option::fixPathToLocalOS(path + project->first(bundle_data[i] + ".path")) << ": " << "\n\t"
                       << mkdir_p_asstring(path) << "\n\t"
                       << "@$(SYMLINK) " << version << project->first(bundle_data[i] + ".path") << " " << path << endl;
@@ -870,6 +870,8 @@ void UnixMakefileGenerator::init2()
     project->variables()["VER_MAJ"].append(l[0]);
     project->variables()["VER_MIN"].append(l[1]);
     project->variables()["VER_PAT"].append(l[2]);
+    if(project->isEmpty("QMAKE_FRAMEWORK_VERSION"))
+        project->variables()["QMAKE_FRAMEWORK_VERSION"].append(project->variables()["VER_MAJ"].first());
 
     if (!project->variables()["QMAKE_APP_FLAG"].isEmpty()) {
         if(!project->isEmpty("QMAKE_BUNDLE_NAME"))
@@ -955,8 +957,8 @@ void UnixMakefileGenerator::init2()
                                                    "/" + project->first("TARGET"));
             project->variables()["TARGET_x.y"].append(project->first("QMAKE_BUNDLE_NAME") +
                                                       "/Versions/" +
-                                                      project->first("VER_MAJ") + ".0/" +
-                                                      project->first("TARGET"));
+                                                      project->first("QMAKE_FRAMEWORK_VERSION") +
+                                                      "/" + project->first("TARGET"));
         } else {
             project->variables()["TARGET_"].append("lib" + project->first("TARGET") + "." +
                                                    project->first("QMAKE_EXTENSION_SHLIB"));
@@ -1082,7 +1084,7 @@ void UnixMakefileGenerator::init2()
                         alldeps += Option::fixPathToLocalOS(path + Option::dir_sep +
                                                             project->first(bundle_data[i] + ".path"));
                         path += project->first(bundle_data[i] + ".version") + "/" +
-                                project->first("VER_MAJ") + ".0/";
+                                project->first("QMAKE_FRAMEWORK_VERSION") + "/";
                     }
                     path += project->first(bundle_data[i] + ".path");
                     path = Option::fixPathToLocalOS(path);
@@ -1126,7 +1128,6 @@ UnixMakefileGenerator::writeLibtoolFile()
 
     QTextStream t(&ft);
     t << "# " << lname << " - a libtool library file\n";
-    time_t now = time(NULL);
     t << "# Generated by qmake/libtool (" << qmake_version() << ") (Qt "
       << QT_VERSION_STR << ") on: " << QDateTime::currentDateTime().toString();
 	t << "\n";

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -55,8 +55,6 @@ class Q_CORE_EXPORT QAbstractItemModelPrivate : public QObjectPrivate
     Q_DECLARE_PUBLIC(QAbstractItemModel)
 
 public:
-    ~QAbstractItemModelPrivate();
-
     void removePersistentIndexData(QPersistentModelIndexData *data);
     void invalidate(int position);
     void rowsAboutToBeInserted(const QModelIndex &parent, int first, int last);
@@ -68,6 +66,23 @@ public:
     void columnsAboutToBeRemoved(const QModelIndex &parent, int first, int last);
     void columnsRemoved(const QModelIndex &parent, int first, int last);
     void reset();
+
+    inline QModelIndex createIndex(int row, int column, void *data = 0) const {
+        return q_func()->createIndex(row, column, data);
+    }
+    
+    inline QModelIndex createIndex(int row, int column, int id) const {
+        return q_func()->createIndex(row, column, id);
+    }
+
+    inline void invalidatePersistentIndexes() {
+        QList<QPersistentModelIndexData*>::iterator it = persistent.indexes.begin();
+        for (; it != persistent.indexes.end(); ++it) {
+            Q_ASSERT((*it));
+            (*it)->index = QModelIndex();
+            (*it)->model = 0;
+        }
+    }
 
     struct Change {
         Change() : first(-1), last(-1) {}

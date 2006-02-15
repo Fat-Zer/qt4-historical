@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/qt3support/itemviews/q3listbox.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/src/qt3support/itemviews/q3listbox.cpp -->
 <head>
     <title>Qt 4.1: Q3ListBox Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -34,7 +34,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <a name="properties"></a>
 <h3>Properties</h3>
-<table width="100%" border="0" cellpadding="0" cellspacing="0">
+<p><table width="100%" border="0" cellpadding="0" cellspacing="0">
 <tr><td width="45%" valign="top"><ul>
 <li><div class="fn"/><b><a href="q3listbox.html#columnMode-prop">columnMode</a></b> : LayoutMode</li>
 <li><div class="fn"/><b><a href="q3listbox.html#count-prop">count</a></b> : const uint</li>
@@ -52,7 +52,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="q3listbox.html#variableWidth-prop">variableWidth</a></b> : bool</li>
 </ul>
 </td></tr>
-</table>
+</table></p>
 <ul>
 <li><div class="fn"/>10 properties inherited from <a href="q3scrollview.html#properties">Q3ScrollView</a></li>
 <li><div class="fn"/>2 properties inherited from <a href="q3frame.html#properties">Q3Frame</a></li>
@@ -154,7 +154,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>13 public functions inherited from <a href="qframe.html#public-functions">QFrame</a></li>
 <li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
-<li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <a name="public-slots"></a>
 <h3>Public Slots</h3>
@@ -220,6 +220,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>5 protected functions inherited from <a href="q3frame.html#protected-functions">Q3Frame</a></li>
 <li><div class="fn"/>39 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
+<li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
 </ul>
 <h3>Additional Inherited Members</h3>
 <ul>
@@ -257,34 +258,34 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="q3listbox.html#StringComparisonMode-enum">StringComparisonMode</a>.</p>
 <h3 class="fn"><a name="LayoutMode-enum"></a>enum Q3ListBox::LayoutMode</h3>
 <p>This enum type is used to specify how <a href="q3listbox.html">Q3ListBox</a> lays out its rows and columns.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Q3ListBox::FixedNumber</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">There is a fixed number of rows (or columns).</td></tr>
 <tr><td valign="top"><tt>Q3ListBox::FitToWidth</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">There are as many columns as will fit on-screen.</td></tr>
 <tr><td valign="top"><tt>Q3ListBox::FitToHeight</tt></td><td align="center" valign="top"><tt>FitToWidth</tt></td><td valign="top">There are as many rows as will fit on-screen.</td></tr>
 <tr><td valign="top"><tt>Q3ListBox::Variable</tt></td><td align="center" valign="top">&nbsp;</td><td valign="top">There are as many rows as are required by the column mode. (Or as many columns as required by the row mode.)</td></tr>
-</table>
+</table></p>
 <p>Example: When you call setRowMode(FitToHeight), <a href="q3listbox.html#columnMode-prop">columnMode</a>() automatically becomes <tt>Variable</tt> to accommodate the row mode you've set.</p>
 <h3 class="fn"><a name="SelectionMode-enum"></a>enum Q3ListBox::SelectionMode</h3>
 <p>This enumerated type is used by <a href="q3listbox.html">Q3ListBox</a> to indicate how it reacts to selection by the user.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Q3ListBox::Single</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">When the user selects an item, any already-selected item becomes unselected and the user cannot unselect the selected item. This means that the user can never clear the selection, even though the selection may be cleared by the application programmer using <a href="q3listbox.html#clearSelection">Q3ListBox::clearSelection</a>().</td></tr>
 <tr><td valign="top"><tt>Q3ListBox::Multi</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">When the user selects an item the selection status of that item is toggled and the other items are left alone.</td></tr>
 <tr><td valign="top"><tt>Q3ListBox::Extended</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">When the user selects an item the selection is cleared and the new item selected. However, if the user presses the Ctrl key when clicking on an item, the clicked item gets toggled and all other items are left untouched. And if the user presses the Shift key while clicking on an item, all items between the current item and the clicked item get selected or unselected, depending on the state of the clicked item. Also, multiple items can be selected by dragging the mouse while the left mouse button is kept pressed.</td></tr>
 <tr><td valign="top"><tt>Q3ListBox::NoSelection</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">Items cannot be selected.</td></tr>
-</table>
+</table></p>
 <p>In other words, <tt>Single</tt> is a real single-selection list box, <tt>Multi</tt> is a real multi-selection list box, <tt>Extended</tt> is a list box in which users can select multiple items but usually want to select either just one or a range of contiguous items, and <tt>NoSelection</tt> is for a list box where the user can look but not touch.</p>
 <h3 class="fn"><a name="StringComparisonMode-enum"></a>enum Q3ListBox::StringComparisonMode</h3>
 <p>This enum type is used to set the string comparison mode when searching for an item. We'll refer to the string being searched as the 'target' string.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Q3ListBox::CaseSensitive</tt></td><td align="center" valign="top"><tt>0x00001</tt></td><td valign="top">The strings must match case sensitively.</td></tr>
 <tr><td valign="top"><tt>Q3ListBox::ExactMatch</tt></td><td align="center" valign="top"><tt>0x00010</tt></td><td valign="top">The target and search strings must match exactly.</td></tr>
 <tr><td valign="top"><tt>Q3ListBox::BeginsWith</tt></td><td align="center" valign="top"><tt>0x00002</tt></td><td valign="top">The target string begins with the search string.</td></tr>
 <tr><td valign="top"><tt>Q3ListBox::EndsWith</tt></td><td align="center" valign="top"><tt>0x00004</tt></td><td valign="top">The target string ends with the search string.</td></tr>
 <tr><td valign="top"><tt>Q3ListBox::Contains</tt></td><td align="center" valign="top"><tt>0x00008</tt></td><td valign="top">The target string contains the search string.</td></tr>
-</table>
+</table></p>
 <p>If you OR these flags together (excluding <tt>CaseSensitive</tt>), the search criteria be applied in the following order: <tt>ExactMatch</tt>, <tt>BeginsWith</tt>, <tt>EndsWith</tt>, <tt>Contains</tt>.</p>
 <p>Matching is case-insensitive unless <tt>CaseSensitive</tt> is set. <tt>CaseSensitive</tt> can be OR-ed with any combination of the other flags.</p>
 <p>See also <a href="q3listbox.html#ComparisonFlags-typedef">ComparisonFlags</a>.</p>
@@ -429,12 +430,12 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="cellHeight"></a>int Q3ListBox::cellHeight ( int <i>i</i> ) const</h3>
 <p>Use itemHeight(<i>i</i>) instead.</p>
 <h3 class="fn"><a name="cellHeight-2"></a>int Q3ListBox::cellHeight () const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Use <a href="q3listbox.html#itemHeight">itemHeight</a>() instead.</p>
 <h3 class="fn"><a name="cellWidth"></a>int Q3ListBox::cellWidth () const</h3>
 <p>Use <a href="q3listbox.html#maxItemWidth">maxItemWidth</a>() instead.</p>
 <h3 class="fn"><a name="cellWidth-2"></a>int Q3ListBox::cellWidth ( int <i>i</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Use maxItemWidth(<i>i</i>) instead.</p>
 <h3 class="fn"><a name="centerCurrentItem"></a>void Q3ListBox::centerCurrentItem ()</h3>
 <p>If there is a current item, the list box is scrolled so that this item is displayed centered.</p>
@@ -444,17 +445,17 @@ body { background: #ffffff; color: black; }</style>
 <p>The item that has been changed will become selected.</p>
 <p>See also <a href="q3listbox.html#insertItem">insertItem</a>() and <a href="q3listbox.html#removeItem">removeItem</a>().</p>
 <h3 class="fn"><a name="changeItem-2"></a>void Q3ListBox::changeItem ( const <a href="qstring.html">QString</a> &amp; <i>text</i>, int <i>index</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Replaces the item at position <i>index</i> with a new list box text item with text <i>text</i>.</p>
 <p>The operation is ignored if <i>index</i> is out of range.</p>
 <p>See also <a href="q3listbox.html#insertItem">insertItem</a>() and <a href="q3listbox.html#removeItem">removeItem</a>().</p>
 <h3 class="fn"><a name="changeItem-3"></a>void Q3ListBox::changeItem ( const <a href="qpixmap.html">QPixmap</a> &amp; <i>pixmap</i>, int <i>index</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Replaces the item at position <i>index</i> with a new list box pixmap item with pixmap <i>pixmap</i>.</p>
 <p>The operation is ignored if <i>index</i> is out of range.</p>
 <p>See also <a href="q3listbox.html#insertItem">insertItem</a>() and <a href="q3listbox.html#removeItem">removeItem</a>().</p>
 <h3 class="fn"><a name="changeItem-4"></a>void Q3ListBox::changeItem ( const <a href="qpixmap.html">QPixmap</a> &amp; <i>pixmap</i>, const <a href="qstring.html">QString</a> &amp; <i>text</i>, int <i>index</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Replaces the item at position <i>index</i> with a new list box pixmap item with pixmap <i>pixmap</i> and text <i>text</i>.</p>
 <p>The operation is ignored if <i>index</i> is out of range.</p>
 <p>See also <a href="q3listbox.html#insertItem">insertItem</a>() and <a href="q3listbox.html#removeItem">removeItem</a>().</p>
@@ -468,7 +469,7 @@ body { background: #ffffff; color: black; }</style>
 <p>This signal is emitted when the user clicks any mouse button. If <i>item</i> is not 0, the cursor is on <i>item</i>. If <i>item</i> is 0, the mouse cursor isn't on any item.</p>
 <p>Note that you must not delete any <a href="q3listboxitem.html">Q3ListBoxItem</a> objects in slots connected to this signal.</p>
 <h3 class="fn"><a name="clicked-2"></a>void Q3ListBox::clicked ( <a href="q3listboxitem.html">Q3ListBoxItem</a> * <i>item</i>, const <a href="qpoint.html">QPoint</a> &amp; <i>pnt</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>This signal is emitted when the user clicks any mouse button. If <i>item</i> is not 0, the cursor is on <i>item</i>. If <i>item</i> is 0, the mouse cursor isn't on any item.</p>
 <p><i>pnt</i> is the position of the mouse cursor in the global coordinate system (<a href="qmouseevent.html#globalPos">QMouseEvent::globalPos</a>()). (If the click's press and release differs by a pixel or two, <i>pnt</i> is the position at release time.)</p>
 <p>Note that you must not delete any <a href="q3listboxitem.html">Q3ListBoxItem</a> objects in slots connected to this signal.</p>
@@ -490,7 +491,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="findItem"></a><a href="q3listboxitem.html">Q3ListBoxItem</a> * Q3ListBox::findItem ( const <a href="qstring.html">QString</a> &amp; <i>text</i>, <a href="q3listbox.html#ComparisonFlags-typedef">ComparisonFlags</a> <i>compare</i> = BeginsWith ) const</h3>
 <p>Finds the first list box item that has the text <i>text</i> and returns it, or returns 0 of no such item could be found. If <tt>ComparisonFlags</tt> are specified in <i>compare</i> then these flags are used, otherwise the default is a case-insensitive, &quot;begins with&quot; search.</p>
 <h3 class="fn"><a name="findItem-2"></a>int Q3ListBox::findItem ( int <i>yPos</i> ) const&nbsp;&nbsp;<tt> [protected]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Use index(itemAt(<i>yPos</i>)) instead.</p>
 <h3 class="fn"><a name="firstItem"></a><a href="q3listboxitem.html">Q3ListBoxItem</a> * Q3ListBox::firstItem () const</h3>
 <p>Returns the first item in this list box. If the list box is empty, returns 0.</p>
@@ -498,11 +499,11 @@ body { background: #ffffff; color: black; }</style>
 <p>This signal is emitted when the user makes a new item the current item. <i>index</i> is the index of the new current item.</p>
 <p>See also <a href="q3listbox.html#currentChanged">currentChanged</a>(), <a href="q3listbox.html#selected">selected</a>(), <a href="q3listbox.html#currentItem-prop">currentItem</a>(), and <a href="q3listbox.html#selectionChanged">selectionChanged</a>().</p>
 <h3 class="fn"><a name="highlighted-2"></a>void Q3ListBox::highlighted ( <a href="q3listboxitem.html">Q3ListBoxItem</a> * <i>item</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>This signal is emitted when the user makes a new <i>item</i> the current <i>item</i>.</p>
 <p>See also <a href="q3listbox.html#currentChanged">currentChanged</a>(), <a href="q3listbox.html#selected">selected</a>(), <a href="q3listbox.html#currentItem-prop">currentItem</a>(), and <a href="q3listbox.html#selectionChanged">selectionChanged</a>().</p>
 <h3 class="fn"><a name="highlighted-3"></a>void Q3ListBox::highlighted ( const <a href="qstring.html">QString</a> &amp; <i>text</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>This signal is emitted when the user makes a new item the current item and the item is (or has) as string. The argument is the new current item's <i>text</i>.</p>
 <p>See also <a href="q3listbox.html#currentChanged">currentChanged</a>(), <a href="q3listbox.html#selected">selected</a>(), <a href="q3listbox.html#currentItem-prop">currentItem</a>(), and <a href="q3listbox.html#selectionChanged">selectionChanged</a>().</p>
 <h3 class="fn"><a name="inSort"></a>int Q3ListBox::inSort ( const <a href="q3listboxitem.html">Q3ListBoxItem</a> * <i>lbi</i> )</h3>
@@ -511,7 +512,7 @@ body { background: #ffffff; color: black; }</style>
 <p>All items must be inserted with inSort() to maintain the sorting order. inSort() treats any pixmap (or user-defined type) as lexicographically less than any string.</p>
 <p>See also <a href="q3listbox.html#insertItem">insertItem</a>() and <a href="q3listbox.html#sort">sort</a>().</p>
 <h3 class="fn"><a name="inSort-2"></a>int Q3ListBox::inSort ( const <a href="qstring.html">QString</a> &amp; <i>text</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Using this method is quite inefficient. We suggest to use <a href="q3listbox.html#insertItem">insertItem</a>() for inserting and <a href="q3listbox.html#sort">sort</a>() afterwards.</p>
 <p>Inserts a new item of <i>text</i> at its sorted position in the list box and returns the position.</p>
 <p>All items must be inserted with <a href="q3listbox.html#inSort">inSort</a>() to maintain the sorting order. <a href="q3listbox.html#inSort">inSort</a>() treats any pixmap (or user-defined type) as lexicographically less than any string.</p>
@@ -524,21 +525,21 @@ body { background: #ffffff; color: black; }</style>
 <p>If <i>index</i> is negative or larger than the number of items in the list box, <i>lbi</i> is inserted at the end of the list.</p>
 <p>See also <a href="q3listbox.html#insertStrList">insertStrList</a>().</p>
 <h3 class="fn"><a name="insertItem-2"></a>void Q3ListBox::insertItem ( const <a href="q3listboxitem.html">Q3ListBoxItem</a> * <i>lbi</i>, const <a href="q3listboxitem.html">Q3ListBoxItem</a> * <i>after</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Inserts the item <i>lbi</i> into the list after the item <i>after</i>, or at the beginning if <i>after</i> is 0.</p>
 <p>See also <a href="q3listbox.html#insertStrList">insertStrList</a>().</p>
 <h3 class="fn"><a name="insertItem-3"></a>void Q3ListBox::insertItem ( const <a href="qstring.html">QString</a> &amp; <i>text</i>, int <i>index</i> = -1 )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Inserts a new list box text item with the text <i>text</i> into the list at position <i>index</i>.</p>
 <p>If <i>index</i> is negative, <i>text</i> is inserted at the end of the list.</p>
 <p>See also <a href="q3listbox.html#insertStrList">insertStrList</a>().</p>
 <h3 class="fn"><a name="insertItem-4"></a>void Q3ListBox::insertItem ( const <a href="qpixmap.html">QPixmap</a> &amp; <i>pixmap</i>, int <i>index</i> = -1 )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Inserts a new list box pixmap item with the pixmap <i>pixmap</i> into the list at position <i>index</i>.</p>
 <p>If <i>index</i> is negative, <i>pixmap</i> is inserted at the end of the list.</p>
 <p>See also <a href="q3listbox.html#insertStrList">insertStrList</a>().</p>
 <h3 class="fn"><a name="insertItem-5"></a>void Q3ListBox::insertItem ( const <a href="qpixmap.html">QPixmap</a> &amp; <i>pixmap</i>, const <a href="qstring.html">QString</a> &amp; <i>text</i>, int <i>index</i> = -1 )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Inserts a new list box pixmap item with the pixmap <i>pixmap</i> and the text <i>text</i> into the list at position <i>index</i>.</p>
 <p>If <i>index</i> is negative, <i>pixmap</i> is inserted at the end of the list.</p>
 <p>See also <a href="q3listbox.html#insertStrList">insertStrList</a>().</p>
@@ -560,7 +561,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="isSelected"></a>bool Q3ListBox::isSelected ( int <i>i</i> ) const</h3>
 <p>Returns true if item <i>i</i> is selected; otherwise returns false.</p>
 <h3 class="fn"><a name="isSelected-2"></a>bool Q3ListBox::isSelected ( const <a href="q3listboxitem.html">Q3ListBoxItem</a> * <i>i</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns true if item <i>i</i> is selected; otherwise returns false.</p>
 <h3 class="fn"><a name="item"></a><a href="q3listboxitem.html">Q3ListBoxItem</a> * Q3ListBox::item ( int <i>index</i> ) const</h3>
 <p>Returns a pointer to the item at position <i>index</i>, or 0 if <i>index</i> is out of bounds.</p>
@@ -576,7 +577,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="itemVisible"></a>bool Q3ListBox::itemVisible ( int <i>index</i> )</h3>
 <p>Returns true if the item at position <i>index</i> is at least partly visible; otherwise returns false.</p>
 <h3 class="fn"><a name="itemVisible-2"></a>bool Q3ListBox::itemVisible ( const <a href="q3listboxitem.html">Q3ListBoxItem</a> * <i>item</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns true if <i>item</i> is at least partly visible; otherwise returns false.</p>
 <h3 class="fn"><a name="maxItemWidth"></a>long Q3ListBox::maxItemWidth () const</h3>
 <p>Returns the width of the widest item in the list box.</p>
@@ -604,7 +605,7 @@ body { background: #ffffff; color: black; }</style>
 <p>This signal is emitted when the user presses any mouse button. If <i>item</i> is not 0, the cursor is on <i>item</i>. If <i>item</i> is 0, the mouse cursor isn't on any item.</p>
 <p>Note that you must not delete any <a href="q3listboxitem.html">Q3ListBoxItem</a> objects in slots connected to this signal.</p>
 <h3 class="fn"><a name="pressed-2"></a>void Q3ListBox::pressed ( <a href="q3listboxitem.html">Q3ListBoxItem</a> * <i>item</i>, const <a href="qpoint.html">QPoint</a> &amp; <i>pnt</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>This signal is emitted when the user presses any mouse button. If <i>item</i> is not 0, the cursor is on <i>item</i>. If <i>item</i> is 0, the mouse cursor isn't on any item.</p>
 <p><i>pnt</i> is the position of the mouse cursor in the global coordinate system (<a href="qmouseevent.html#globalPos">QMouseEvent::globalPos</a>()).</p>
 <p>Note that you must not delete any <a href="q3listboxitem.html">Q3ListBoxItem</a> objects in slots connected to this signal.</p>
@@ -628,11 +629,11 @@ body { background: #ffffff; color: black; }</style>
 <p>This signal is emitted when the user double-clicks on an item or presses Enter on the current item. <i>index</i> is the index of the selected item.</p>
 <p>See also <a href="q3listbox.html#setSelected">setSelected</a>(), <a href="q3listbox.html#currentChanged">currentChanged</a>(), <a href="q3listbox.html#highlighted">highlighted</a>(), and <a href="q3listbox.html#selectionChanged">selectionChanged</a>().</p>
 <h3 class="fn"><a name="selected-2"></a>void Q3ListBox::selected ( <a href="q3listboxitem.html">Q3ListBoxItem</a> * <i>item</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>This signal is emitted when the user double-clicks on an <i>item</i> or presses Enter on the current <i>item</i>.</p>
 <p>See also <a href="q3listbox.html#currentChanged">currentChanged</a>(), <a href="q3listbox.html#highlighted">highlighted</a>(), and <a href="q3listbox.html#selectionChanged">selectionChanged</a>().</p>
 <h3 class="fn"><a name="selected-3"></a>void Q3ListBox::selected ( const <a href="qstring.html">QString</a> &amp; <i>text</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>This signal is emitted when the user double-clicks on an item or presses Enter on the current item, and the item is (or has) a string. The argument is the <i>text</i> of the selected item.</p>
 <p>See also <a href="q3listbox.html#currentChanged">currentChanged</a>(), <a href="q3listbox.html#highlighted">highlighted</a>(), and <a href="q3listbox.html#selectionChanged">selectionChanged</a>().</p>
 <h3 class="fn"><a name="selectedItem"></a><a href="q3listboxitem.html">Q3ListBoxItem</a> * Q3ListBox::selectedItem () const</h3>
@@ -643,7 +644,7 @@ body { background: #ffffff; color: black; }</style>
 <p>This signal is emitted when the selection set of a list box changes. This signal is emitted in each selection mode. If the user selects five items by drag-selecting, <a href="q3listbox.html">Q3ListBox</a> tries to emit just one selectionChanged() signal so the signal can be connected to computationally expensive slots.</p>
 <p>See also <a href="q3listbox.html#selected">selected</a>() and <a href="q3listbox.html#currentItem-prop">currentItem</a>().</p>
 <h3 class="fn"><a name="selectionChanged-2"></a>void Q3ListBox::selectionChanged ( <a href="q3listboxitem.html">Q3ListBoxItem</a> * <i>item</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>This signal is emitted when the selection in a <a href="q3listbox.html#SelectionMode-enum">Single</a> selection list box changes. <i>item</i> is the newly selected list box item.</p>
 <p>See also <a href="q3listbox.html#selected">selected</a>() and <a href="q3listbox.html#currentItem-prop">currentItem</a>().</p>
 <h3 class="fn"><a name="setAutoBottomScrollBar"></a>void Q3ListBox::setAutoBottomScrollBar ( bool <i>enable</i> )</h3>
@@ -682,7 +683,7 @@ body { background: #ffffff; color: black; }</style>
 <p>If the list box is a <tt>Single</tt> selection list box, <i>select</i> is false, setSelected() calls <a href="q3listbox.html#clearSelection">clearSelection</a>().</p>
 <p>See also <a href="q3listbox.html#selected">selected</a>(), <a href="q3listbox.html#multiSelection-prop">setMultiSelection</a>(), <a href="q3listbox.html#currentItem-prop">setCurrentItem</a>(), <a href="q3listbox.html#clearSelection">clearSelection</a>(), and <a href="q3listbox.html#currentItem-prop">currentItem</a>().</p>
 <h3 class="fn"><a name="setSelected-2"></a>void Q3ListBox::setSelected ( int <i>index</i>, bool <i>select</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>If <i>select</i> is true the item at position <i>index</i> is selected; otherwise the item is deselected.</p>
 <h3 class="fn"><a name="setSmoothScrolling"></a>void Q3ListBox::setSmoothScrolling ( bool <i>b</i> )</h3>
 <p>Does nothing. Qt always scrolls smoothly. The <i>b</i> parameter is ignored.</p>
@@ -713,12 +714,12 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="updateItem"></a>void Q3ListBox::updateItem ( int <i>index</i> )&nbsp;&nbsp;<tt> [protected]</tt></h3>
 <p>Repaints the item at position <i>index</i> in the list.</p>
 <h3 class="fn"><a name="updateItem-2"></a>void Q3ListBox::updateItem ( <a href="q3listboxitem.html">Q3ListBoxItem</a> * <i>i</i> )&nbsp;&nbsp;<tt> [protected]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Repaints the <a href="q3listboxitem.html">Q3ListBoxItem</a> <i>i</i>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

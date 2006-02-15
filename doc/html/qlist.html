@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/corelib/tools/qlistdata.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/src/corelib/tools/qlistdata.cpp -->
 <head>
     <title>Qt 4.1: QList Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -43,7 +43,7 @@ body { background: #ffffff; color: black; }</style>
 <h3>Public Functions</h3>
 <ul>
 <li><div class="fn"/><b><a href="qlist.html#QList">QList</a></b> ()</li>
-<li><div class="fn"/><b><a href="qlist.html#QList-2">QList</a></b> ( const QList &amp; <i>other</i> )</li>
+<li><div class="fn"/><b><a href="qlist.html#QList-2">QList</a></b> ( const QList&lt;T&gt; &amp; <i>other</i> )</li>
 <li><div class="fn"/><b><a href="qlist.html#dtor.QList">~QList</a></b> ()</li>
 <li><div class="fn"/>void <b><a href="qlist.html#append">append</a></b> ( const T &amp; <i>value</i> )</li>
 <li><div class="fn"/>const T &amp; <b><a href="qlist.html#at">at</a></b> ( int <i>i</i> ) const</li>
@@ -95,14 +95,14 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>QVector&lt;T&gt; <b><a href="qlist.html#toVector">toVector</a></b> () const</li>
 <li><div class="fn"/>T <b><a href="qlist.html#value">value</a></b> ( int <i>i</i> ) const</li>
 <li><div class="fn"/>T <b><a href="qlist.html#value-2">value</a></b> ( int <i>i</i>, const T &amp; <i>defaultValue</i> ) const</li>
-<li><div class="fn"/>bool <b><a href="qlist.html#operator-not-eq">operator!=</a></b> ( const QList &amp; <i>other</i> ) const</li>
-<li><div class="fn"/>QList <b><a href="qlist.html#operator-2b">operator+</a></b> ( const QList &amp; <i>other</i> ) const</li>
-<li><div class="fn"/>QList &amp; <b><a href="qlist.html#operator-2b-eq">operator+=</a></b> ( const QList &amp; <i>other</i> )</li>
-<li><div class="fn"/>QList &amp; <b><a href="qlist.html#operator-2b-eq-2">operator+=</a></b> ( const T &amp; <i>value</i> )</li>
-<li><div class="fn"/>QList &amp; <b><a href="qlist.html#operator-lt-lt">operator&lt;&lt;</a></b> ( const QList &amp; <i>other</i> )</li>
-<li><div class="fn"/>QList &amp; <b><a href="qlist.html#operator-lt-lt-2">operator&lt;&lt;</a></b> ( const T &amp; <i>value</i> )</li>
-<li><div class="fn"/>QList &amp; <b><a href="qlist.html#operator-eq">operator=</a></b> ( const QList &amp; <i>other</i> )</li>
-<li><div class="fn"/>bool <b><a href="qlist.html#operator-eq-eq">operator==</a></b> ( const QList &amp; <i>other</i> ) const</li>
+<li><div class="fn"/>bool <b><a href="qlist.html#operator-not-eq">operator!=</a></b> ( const QList&lt;T&gt; &amp; <i>other</i> ) const</li>
+<li><div class="fn"/>QList&lt;T&gt; <b><a href="qlist.html#operator-2b">operator+</a></b> ( const QList&lt;T&gt; &amp; <i>other</i> ) const</li>
+<li><div class="fn"/>QList&lt;T&gt; &amp; <b><a href="qlist.html#operator-2b-eq">operator+=</a></b> ( const QList&lt;T&gt; &amp; <i>other</i> )</li>
+<li><div class="fn"/>QList&lt;T&gt; &amp; <b><a href="qlist.html#operator-2b-eq-2">operator+=</a></b> ( const T &amp; <i>value</i> )</li>
+<li><div class="fn"/>QList&lt;T&gt; &amp; <b><a href="qlist.html#operator-lt-lt">operator&lt;&lt;</a></b> ( const QList&lt;T&gt; &amp; <i>other</i> )</li>
+<li><div class="fn"/>QList&lt;T&gt; &amp; <b><a href="qlist.html#operator-lt-lt-2">operator&lt;&lt;</a></b> ( const T &amp; <i>value</i> )</li>
+<li><div class="fn"/>QList&lt;T&gt; &amp; <b><a href="qlist.html#operator-eq">operator=</a></b> ( const QList&lt;T&gt; &amp; <i>other</i> )</li>
+<li><div class="fn"/>bool <b><a href="qlist.html#operator-eq-eq">operator==</a></b> ( const QList&lt;T&gt; &amp; <i>other</i> ) const</li>
 <li><div class="fn"/>T &amp; <b><a href="qlist.html#operator-5b-5d">operator[]</a></b> ( int <i>i</i> )</li>
 <li><div class="fn"/>const T &amp; <b><a href="qlist.html#operator-5b-5d-2">operator[]</a></b> ( int <i>i</i> ) const</li>
 </ul>
@@ -186,7 +186,7 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QList"></a>QList::QList ()</h3>
 <p>Constructs an empty list.</p>
-<h3 class="fn"><a name="QList-2"></a>QList::QList ( const QList &amp; <i>other</i> )</h3>
+<h3 class="fn"><a name="QList-2"></a>QList::QList ( const QList&lt;T&gt; &amp; <i>other</i> )</h3>
 <p>Constructs a copy of <i>other</i>.</p>
 <p>This operation takes <a href="containers.html#constant-time">constant time</a>, because <a href="qlist.html">QList</a> is <a href="shclass.html#implicitly-shared">implicitly shared</a>. This makes returning a <a href="qlist.html">QList</a> from a function very fast. If a shared instance is modified, it will be copied (copy-on-write), and that takes <a href="containers.html#linear-time">linear time</a>.</p>
 <p>See also <a href="qlist.html#operator-eq">operator=</a>().</p>
@@ -211,12 +211,12 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="back"></a>T &amp; QList::back ()</h3>
 <p>This function is provided for STL compatibility. It is equivalent to <a href="qlist.html#last">last</a>().</p>
 <h3 class="fn"><a name="back-2"></a>const T &amp; QList::back () const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <h3 class="fn"><a name="begin"></a><a href="qlist-iterator.html">iterator</a> QList::begin ()</h3>
 <p>Returns an <a href="containers.html#stl-style-iterators">STL-style iterator</a> pointing to the first item in the list.</p>
 <p>See also <a href="qlist.html#constBegin">constBegin</a>() and <a href="qlist.html#end">end</a>().</p>
 <h3 class="fn"><a name="begin-2"></a><a href="qlist-const-iterator.html">const_iterator</a> QList::begin () const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <h3 class="fn"><a name="clear"></a>void QList::clear ()</h3>
 <p>Removes all items from the list.</p>
 <p>See also <a href="qlist.html#removeAll">removeAll</a>().</p>
@@ -235,7 +235,7 @@ body { background: #ffffff; color: black; }</style>
 <p>This function requires the value type to have an implementation of <tt>operator==()</tt>.</p>
 <p>See also <a href="qlist.html#contains">contains</a>() and <a href="qlist.html#indexOf">indexOf</a>().</p>
 <h3 class="fn"><a name="count-2"></a>int QList::count () const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns the number of items in the list. This is effectively the same as <a href="qlist.html#size">size</a>().</p>
 <h3 class="fn"><a name="empty"></a>bool QList::empty () const</h3>
 <p>This function is provided for STL compatibility. It is equivalent to <a href="qlist.html#isEmpty">isEmpty</a>().</p>
@@ -243,18 +243,18 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns an <a href="containers.html#stl-style-iterators">STL-style iterator</a> pointing to the imaginary item after the last item in the list.</p>
 <p>See also <a href="qlist.html#begin">begin</a>() and <a href="qlist.html#constEnd">constEnd</a>().</p>
 <h3 class="fn"><a name="end-2"></a><a href="qlist-const-iterator.html">const_iterator</a> QList::end () const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <h3 class="fn"><a name="erase"></a><a href="qlist-iterator.html">iterator</a> QList::erase ( <a href="qlist-iterator.html">iterator</a> <i>pos</i> )</h3>
 <p>Removes the item associated with the iterator <i>pos</i> from the list, and returns an iterator to the next item in the list (which may be <a href="qlist.html#end">end</a>()).</p>
 <p>See also <a href="qlist.html#insert">insert</a>() and <a href="qlist.html#removeAt">removeAt</a>().</p>
 <h3 class="fn"><a name="erase-2"></a><a href="qlist-iterator.html">iterator</a> QList::erase ( <a href="qlist-iterator.html">iterator</a> <i>begin</i>, <a href="qlist-iterator.html">iterator</a> <i>end</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Removes all the items from <i>begin</i> up to (but not including) <i>end</i>. Returns an iterator to the same item that <i>end</i> referred to before the call.</p>
 <h3 class="fn"><a name="first"></a>T &amp; QList::first ()</h3>
 <p>Returns a reference to the first item in the list. This function assumes that the list isn't empty.</p>
 <p>See also <a href="qlist.html#last">last</a>() and <a href="qlist.html#isEmpty">isEmpty</a>().</p>
 <h3 class="fn"><a name="first-2"></a>const T &amp; QList::first () const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <h3 class="fn"><a name="fromSet"></a>QList&lt;T&gt; QList::fromSet ( const <a href="qset.html">QSet</a>&lt;T&gt; &amp; <i>set</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns a <a href="qlist.html">QList</a> object with the data contained in <i>set</i>. The order of the elements in the <a href="qlist.html">QList</a> is undefined.</p>
 <p>Example:</p>
@@ -286,7 +286,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="front"></a>T &amp; QList::front ()</h3>
 <p>This function is provided for STL compatibility. It is equivalent to <a href="qlist.html#first">first</a>().</p>
 <h3 class="fn"><a name="front-2"></a>const T &amp; QList::front () const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <h3 class="fn"><a name="indexOf"></a>int QList::indexOf ( const T &amp; <i>value</i>, int <i>from</i> = 0 ) const</h3>
 <p>Returns the index position of the first occurrence of <i>value</i> in the list, searching forward from index position <i>from</i>. Returns -1 if no item matched.</p>
 <p>Example:</p>
@@ -307,7 +307,7 @@ body { background: #ffffff; color: black; }</style>
     // list: [&quot;alpha&quot;, &quot;beta&quot;, &quot;gamma&quot;, &quot;delta&quot;]</pre>
 <p>See also <a href="qlist.html#append">append</a>(), <a href="qlist.html#prepend">prepend</a>(), <a href="qlist.html#replace">replace</a>(), and <a href="qlist.html#removeAt">removeAt</a>().</p>
 <h3 class="fn"><a name="insert-2"></a><a href="qlist-iterator.html">iterator</a> QList::insert ( <a href="qlist-iterator.html">iterator</a> <i>before</i>, const T &amp; <i>value</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Inserts <i>value</i> in front of the item pointed to by the iterator <i>before</i>. Returns an iterator pointing at the inserted item.</p>
 <h3 class="fn"><a name="isEmpty"></a>bool QList::isEmpty () const</h3>
 <p>Returns true if the list contains no items; otherwise returns false.</p>
@@ -316,7 +316,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns a reference to the last item in the list. This function assumes that the list isn't empty.</p>
 <p>See also <a href="qlist.html#first">first</a>() and <a href="qlist.html#isEmpty">isEmpty</a>().</p>
 <h3 class="fn"><a name="last-2"></a>const T &amp; QList::last () const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <h3 class="fn"><a name="lastIndexOf"></a>int QList::lastIndexOf ( const T &amp; <i>value</i>, int <i>from</i> = -1 ) const</h3>
 <p>Returns the index position of the last occurrence of <i>value</i> in the list, searching backward from index position <i>from</i>. If <i>from</i> is -1 (the default), the search starts at the last item. Returns -1 if no item matched.</p>
 <p>Example:</p>
@@ -443,32 +443,32 @@ body { background: #ffffff; color: black; }</style>
 <p>If the index <i>i</i> is out of bounds, the function returns a <a href="containers.html#default-constructed-values">default-constructed value</a>. If you are certain that the index is going to be within bounds, you can use <a href="qlist.html#at">at</a>() instead, which is slightly faster.</p>
 <p>See also <a href="qlist.html#at">at</a>() and <a href="qlist.html#operator-5b-5d">operator[]</a>().</p>
 <h3 class="fn"><a name="value-2"></a>T QList::value ( int <i>i</i>, const T &amp; <i>defaultValue</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>If the index <i>i</i> is out of bounds, the function returns <i>defaultValue</i>.</p>
-<h3 class="fn"><a name="operator-not-eq"></a>bool QList::operator!= ( const QList &amp; <i>other</i> ) const</h3>
+<h3 class="fn"><a name="operator-not-eq"></a>bool QList::operator!= ( const QList&lt;T&gt; &amp; <i>other</i> ) const</h3>
 <p>Returns true if <i>other</i> is not equal to this list; otherwise returns false.</p>
 <p>Two lists are considered equal if they contain the same values in the same order.</p>
 <p>This function requires the value type to have an implementation of <tt>operator==()</tt>.</p>
 <p>See also <a href="qlist.html#operator-eq-eq">operator==</a>().</p>
-<h3 class="fn"><a name="operator-2b"></a>QList QList::operator+ ( const QList &amp; <i>other</i> ) const</h3>
+<h3 class="fn"><a name="operator-2b"></a>QList&lt;T&gt; QList::operator+ ( const QList&lt;T&gt; &amp; <i>other</i> ) const</h3>
 <p>Returns a list that contains all the items in this list followed by all the items in the <i>other</i> list.</p>
 <p>See also <a href="qlist.html#operator-2b-eq">operator+=</a>().</p>
-<h3 class="fn"><a name="operator-2b-eq"></a>QList &amp; QList::operator+= ( const QList &amp; <i>other</i> )</h3>
+<h3 class="fn"><a name="operator-2b-eq"></a>QList&lt;T&gt; &amp; QList::operator+= ( const QList&lt;T&gt; &amp; <i>other</i> )</h3>
 <p>Appends the items of the <i>other</i> list to this list and returns a reference to this list.</p>
 <p>See also <a href="qlist.html#operator-2b">operator+</a>() and <a href="qlist.html#append">append</a>().</p>
-<h3 class="fn"><a name="operator-2b-eq-2"></a>QList &amp; QList::operator+= ( const T &amp; <i>value</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<h3 class="fn"><a name="operator-2b-eq-2"></a>QList&lt;T&gt; &amp; QList::operator+= ( const T &amp; <i>value</i> )</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Appends <i>value</i> to the list.</p>
 <p>See also <a href="qlist.html#append">append</a>() and <a href="qlist.html#operator-lt-lt">operator&lt;&lt;</a>().</p>
-<h3 class="fn"><a name="operator-lt-lt"></a>QList &amp; QList::operator&lt;&lt; ( const QList &amp; <i>other</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt"></a>QList&lt;T&gt; &amp; QList::operator&lt;&lt; ( const QList&lt;T&gt; &amp; <i>other</i> )</h3>
 <p>Appends the items of the <i>other</i> list to this list and returns a reference to this list.</p>
 <p>See also <a href="qlist.html#operator-2b-eq">operator+=</a>() and <a href="qlist.html#append">append</a>().</p>
-<h3 class="fn"><a name="operator-lt-lt-2"></a>QList &amp; QList::operator&lt;&lt; ( const T &amp; <i>value</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<h3 class="fn"><a name="operator-lt-lt-2"></a>QList&lt;T&gt; &amp; QList::operator&lt;&lt; ( const T &amp; <i>value</i> )</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Appends <i>value</i> to the list.</p>
-<h3 class="fn"><a name="operator-eq"></a>QList &amp; QList::operator= ( const QList &amp; <i>other</i> )</h3>
+<h3 class="fn"><a name="operator-eq"></a>QList&lt;T&gt; &amp; QList::operator= ( const QList&lt;T&gt; &amp; <i>other</i> )</h3>
 <p>Assigns <i>other</i> to this list and returns a reference to this list.</p>
-<h3 class="fn"><a name="operator-eq-eq"></a>bool QList::operator== ( const QList &amp; <i>other</i> ) const</h3>
+<h3 class="fn"><a name="operator-eq-eq"></a>bool QList::operator== ( const QList&lt;T&gt; &amp; <i>other</i> ) const</h3>
 <p>Returns true if <i>other</i> is equal to this list; otherwise returns false.</p>
 <p>Two lists are considered equal if they contain the same values in the same order.</p>
 <p>This function requires the value type to have an implementation of <tt>operator==()</tt>.</p>
@@ -479,24 +479,24 @@ body { background: #ffffff; color: black; }</style>
 <p>This function is very fast (<a href="containers.html#constant-time">constant time</a>).</p>
 <p>See also <a href="qlist.html#at">at</a>() and <a href="qlist.html#value">value</a>().</p>
 <h3 class="fn"><a name="operator-5b-5d-2"></a>const T &amp; QList::operator[] ( int <i>i</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Same as <a href="qlist.html#at">at</a>().</p>
 <hr />
 <h2>Related Non-Members</h2>
 <h3 class="fn"><a name="operator-lt-lt-6"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>out</i>, const QList&lt;T&gt; &amp; <i>list</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes the list <i>list</i> to stream <i>out</i>.</p>
 <p>This function requires the value type to implement <tt>operator&lt;&lt;()</tt>.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
 <h3 class="fn"><a name="operator-gt-gt-6"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>in</i>, QList&lt;T&gt; &amp; <i>list</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads a list from stream <i>in</i> into <i>list</i>.</p>
 <p>This function requires the value type to implement <tt>operator&gt;&gt;()</tt>.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

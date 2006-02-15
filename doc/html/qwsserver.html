@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/gui/embedded/qwindowsystem_qws.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/src/gui/embedded/qwindowsystem_qws.cpp -->
 <head>
     <title>Qt 4.1: QWSServer Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -114,14 +114,14 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="ServerFlags-enum"></a>enum QWSServer::ServerFlags</h3>
 <p>This enum is used to pass various options to the window system server.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QWSServer::DisableKeyboard</tt></td><td align="center" valign="top"><tt>0x01</tt></td><td valign="top">Ignore all keyboard input.</td></tr>
 <tr><td valign="top"><tt>QWSServer::DisableMouse</tt></td><td align="center" valign="top"><tt>0x02</tt></td><td valign="top">Ignore all mouse input.</td></tr>
-</table>
+</table></p>
 <h3 class="fn"><a name="WindowEvent-enum"></a>enum QWSServer::WindowEvent</h3>
 <p>This specifies what sort of event has occurred to a top-level window:</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QWSServer::Create</tt></td><td align="center" valign="top"><tt>0x0001</tt></td><td valign="top">A new window has been created (<a href="qwidget.html">QWidget</a> constructor).</td></tr>
 <tr><td valign="top"><tt>QWSServer::Destroy</tt></td><td align="center" valign="top"><tt>0x0002</tt></td><td valign="top">The window has been closed and deleted (<a href="qwidget.html">QWidget</a> destructor).</td></tr>
@@ -132,7 +132,7 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QWSServer::Geometry</tt></td><td align="center" valign="top"><tt>0x0040</tt></td><td valign="top">The window has changed size or position.</td></tr>
 <tr><td valign="top"><tt>QWSServer::Active</tt></td><td align="center" valign="top"><tt>0x0080</tt></td><td valign="top">The window has become the active window (has keyboard focus).</td></tr>
 <tr><td valign="top"><tt>QWSServer::Name</tt></td><td align="center" valign="top"><tt>0x0100</tt></td><td valign="top">The window has been named.</td></tr>
-</table>
+</table></p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QWSServer"></a>QWSServer::QWSServer ( int <i>flags</i> = 0, <a href="qobject.html">QObject</a> * <i>parent</i> = 0 )</h3>
@@ -175,7 +175,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="refresh"></a>void QWSServer::refresh ()</h3>
 <p>Refreshes the entire display.</p>
 <h3 class="fn"><a name="refresh-2"></a>void QWSServer::refresh ( <a href="qregion.html">QRegion</a> &amp; <i>r</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Refreshes the region <i>r</i>.</p>
 <h3 class="fn"><a name="removeKeyboardFilter"></a>void QWSServer::removeKeyboardFilter ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Removes and deletes the most-recently added filter. The caller is responsible for matching each addition with a corresponding removal.</p>
@@ -224,8 +224,8 @@ body { background: #ffffff; color: black; }</style>
 <p>This signal is emitted whenever something happens to a top-level window (e.g. it's created or destroyed). <i>w</i> is the window to which the event of type <i>e</i> has occurred.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

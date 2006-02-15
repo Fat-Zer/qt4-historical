@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -938,7 +938,7 @@ bool QTextBrowser::focusNextPrevChild(bool next)
     Q_D(QTextBrowser);
 
     if (!d->readOnly)
-        return false;
+        return QTextEdit::focusNextPrevChild(next);
 
     int anchorStart, anchorEnd;
     if (d->findNextPrevAnchor(next, anchorStart, anchorEnd)) {
@@ -956,7 +956,7 @@ bool QTextBrowser::focusNextPrevChild(bool next)
         return true;
     } else {
         d->viewport->update();
-        return false;
+        return QTextEdit::focusNextPrevChild(next);
     }
 }
 

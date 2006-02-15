@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/activeqt/container/qaxscript.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/src/activeqt/container/qaxscript.cpp -->
 <head>
     <title>Qt 4.1: QAxScript Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -76,11 +76,11 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="FunctionFlags-enum"></a>enum QAxScript::FunctionFlags</h3>
 <p>This FunctionFlags enum describes formatting for function introspection.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QAxScript::FunctionNames</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">Only function names are returned.</td></tr>
 <tr><td valign="top"><tt>QAxScript::FunctionSignatures</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Returns the functions with signatures.</td></tr>
-</table>
+</table></p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QAxScript"></a>QAxScript::QAxScript ( const <a href="qstring.html">QString</a> &amp; <i>name</i>, <a href="qaxscriptmanager.html">QAxScriptManager</a> * <i>manager</i> )</h3>
@@ -92,7 +92,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Calls <i>function</i>, passing the parameters <i>var1</i>, <i>var1</i>, <i>var2</i>, <i>var3</i>, <i>var4</i>, <i>var5</i>, <i>var6</i>, <i>var7</i> and <i>var8</i> as arguments and returns the value returned by the function, or an invalid <a href="qvariant.html">QVariant</a> if the function does not return a value or when the function call failed.</p>
 <p>See <a href="qaxscriptmanager.html#call">QAxScriptManager::call</a>() for more information about how to call script functions.</p>
 <h3 class="fn"><a name="call-2"></a><a href="qvariant.html">QVariant</a> QAxScript::call ( const <a href="qstring.html">QString</a> &amp; <i>function</i>, <a href="qlist.html">QList</a>&lt;<a href="qvariant.html">QVariant</a>&gt; &amp; <i>arguments</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Calls <i>function</i> passing <i>arguments</i> as parameters, and returns the result. Returns when the script's execution has finished.</p>
 <p>See <a href="qaxscriptmanager.html#call">QAxScriptManager::call</a>() for more information about how to call script functions.</p>
 <h3 class="fn"><a name="entered"></a>void QAxScript::entered ()&nbsp;&nbsp;<tt> [signal]</tt></h3>
@@ -103,10 +103,10 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="finished"></a>void QAxScript::finished ()&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when a script engine has finished executing code.</p>
 <h3 class="fn"><a name="finished-2"></a>void QAxScript::finished ( const <a href="qvariant.html">QVariant</a> &amp; <i>result</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p><i>result</i> contains the script's result. This will be an invalid <a href="qvariant.html">QVariant</a> if the script has no return value.</p>
 <h3 class="fn"><a name="finished-3"></a>void QAxScript::finished ( int <i>code</i>, const <a href="qstring.html">QString</a> &amp; <i>source</i>, const <a href="qstring.html">QString</a> &amp; <i>description</i>, const <a href="qstring.html">QString</a> &amp; <i>help</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p><i>code</i>, <i>source</i>, <i>description</i> and <i>help</i> contain exception information when the script terminated.</p>
 <h3 class="fn"><a name="functions"></a><a href="qstringlist.html">QStringList</a> QAxScript::functions ( <a href="qaxscript.html#FunctionFlags-enum">FunctionFlags</a> <i>flags</i> = FunctionNames ) const</h3>
 <p>Returns a list of all the functions in this script if the respective script engine supports introspection; otherwise returns an empty list. The functions are either provided with full prototypes or only as names, depending on the value of <i>flags</i>.</p>
@@ -127,8 +127,8 @@ body { background: #ffffff; color: black; }</style>
 <p>This signal is emitted when a script engine changes state. <i>state</i> can be any value in the QAxScriptEngineState enumeration.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

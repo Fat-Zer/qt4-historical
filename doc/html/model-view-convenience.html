@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/doc/src/model-view-programming.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/doc/src/model-view-programming.qdoc -->
 <head>
     <title>Qt 4.1: Item View Convenience Classes</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -120,12 +120,12 @@ body { background: #ffffff; color: black; }</style>
 <a name="selections"></a>
 <h3>Selections</h3>
 <p>The way items are selected is controlled by the widget's selection mode (<a href="qabstractitemview.html#SelectionMode-enum">QAbstractItemView::SelectionMode</a>). This property controls whether the user can select one or many items and, in many-item selections, whether the selection must be a continuous range of items. The selection mode works in the same way for all of the above widgets.</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#f0f0f0"><td><p align="center"><img src="images/selection-single.png" /></p></td><td><b>Single item selections:</b> Where the user needs to choose a single item from a widget, the default <tt>SingleSelection</tt> mode is most suitable. In this mode, the current item and the selected item are the same.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><p align="center"><img src="images/selection-multi.png" /></p></td><td><b>Multi-item selections:</b> In this mode, the user can toggle the selection state of any item in the widget without changing the existing selection, much like the way non-exclusive checkboxes can be toggled independently.</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><p align="center"><img src="images/selection-extended.png" /></p></td><td><b>Extended selections:</b> Widgets that often require many adjacent items to be selected, such as those found in spreadsheets, require the <tt>ExtendedSelection</tt> mode. In this mode, continuous ranges of items in the widget can be selected with both the mouse and the keyboard. Complex selections, involving many items that are not adjacent to other selected items in the widget, can also be created if modifier keys are used.<p>If the user selects an item without using a modifier key, the existing selection is cleared.</p>
 </td></tr>
-</table>
+</table></p>
 <p>The selected items in a widget are read using the <tt>selectedItems()</tt> function, providing a list of relevant items that can be iterated over. For example, we can find the sum of all the numeric values within a list of selected items with the following code:</p>
 <pre>&nbsp;       QList&lt;QTableWidgetItem *&gt; selected = tableWidget-&gt;selectedItems();
         QTableWidgetItem *item;
@@ -162,8 +162,8 @@ body { background: #ffffff; color: black; }</style>
 </p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

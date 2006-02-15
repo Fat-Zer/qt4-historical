@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the qmake application of the Qt Toolkit.
 **
@@ -33,14 +33,15 @@ class MakefileGenerator;
 class MetaMakefileGenerator
 {
 protected:
-    MetaMakefileGenerator(QMakeProject *p) : project(p) { }
+    MetaMakefileGenerator(QMakeProject *p, bool op=true) : project(p), own_project(op) { }
     QMakeProject *project;
+    bool own_project;
 
 public:
 
     virtual ~MetaMakefileGenerator();
 
-    static MetaMakefileGenerator *createMetaGenerator(QMakeProject *);
+    static MetaMakefileGenerator *createMetaGenerator(QMakeProject *proj, bool op=true);
     static MakefileGenerator *createMakefileGenerator(QMakeProject *proj, bool noIO = false);
 
     inline QMakeProject *projectFile() const { return project; }

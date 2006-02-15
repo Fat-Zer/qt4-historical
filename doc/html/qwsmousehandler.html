@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134579690266/qt-mac-opensource-src-4.1.0/src/gui/embedded/qmouse_qws.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140006068279/qt-mac-opensource-src-4.1.1/src/gui/embedded/qmouse_qws.cpp -->
 <head>
     <title>Qt 4.1: QWSMouseHandler Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -19,7 +19,8 @@ body { background: #ffffff; color: black; }</style>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QWSMouseHandler Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QWSMouseHandler class is a mouse driver for Qtopia Core. <a href="#details">More...</a></p>
-<pre>#include &lt;QWSMouseHandler&gt;</pre><ul>
+<pre>#include &lt;QWSMouseHandler&gt;</pre><p>Inherited by <a href="qwscalibratedmousehandler.html">QWSCalibratedMouseHandler</a>.</p>
+<ul>
 <li><a href="qwsmousehandler-members.html">List of all members, including inherited members</a></li>
 </ul>
 <a name="public-functions"></a>
@@ -29,8 +30,8 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>virtual <b><a href="qwsmousehandler.html#dtor.QWSMouseHandler">~QWSMouseHandler</a></b> ()</li>
 <li><div class="fn"/>virtual void <b><a href="qwsmousehandler.html#calibrate">calibrate</a></b> ( const QWSPointerCalibrationData * <i>data</i> )</li>
 <li><div class="fn"/>virtual void <b><a href="qwsmousehandler.html#clearCalibration">clearCalibration</a></b> ()</li>
-<li><div class="fn"/>void <b><a href="qwsmousehandler.html#limitToScreen">limitToScreen</a></b> ( QPoint &amp; <i>pt</i> )</li>
-<li><div class="fn"/>void <b><a href="qwsmousehandler.html#mouseChanged">mouseChanged</a></b> ( const QPoint &amp; <i>pos</i>, int <i>bstate</i>, int <i>wheel</i> = 0 )</li>
+<li><div class="fn"/>void <b><a href="qwsmousehandler.html#limitToScreen">limitToScreen</a></b> ( QPoint &amp; <i>position</i> )</li>
+<li><div class="fn"/>void <b><a href="qwsmousehandler.html#mouseChanged">mouseChanged</a></b> ( const QPoint &amp; <i>position</i>, int <i>state</i>, int <i>wheel</i> = 0 )</li>
 <li><div class="fn"/>const QPoint &amp; <b><a href="qwsmousehandler.html#pos">pos</a></b> () const</li>
 <li><div class="fn"/>virtual void <b><a href="qwsmousehandler.html#resume">resume</a></b> () = 0</li>
 <li><div class="fn"/>virtual void <b><a href="qwsmousehandler.html#suspend">suspend</a></b> () = 0</li>
@@ -41,24 +42,28 @@ body { background: #ffffff; color: black; }</style>
 <p>The QWSMouseHandler class is a mouse driver for Qtopia Core.</p>
 <p>The mouse driver handles events from system devices and generates mouse events.</p>
 <p>A QWSMouseHandler will usually open some system device in its constructor, create a <a href="qsocketnotifier.html">QSocketNotifier</a> on that opened device and when it receives data, it will call <a href="qwsmousehandler.html#mouseChanged">mouseChanged</a>() to send the event to Qtopia Core for relaying to clients.</p>
+<p>If you are creating a handler for a device that needs calibration or noise reduction, such as a touchscreen, you could probably make use the subclass <a href="qwscalibratedmousehandler.html">QWSCalibratedMouseHandler</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QWSMouseHandler"></a>QWSMouseHandler::QWSMouseHandler ( const <a href="qstring.html">QString</a> &amp; <i>driver</i> = QString(), const <a href="qstring.html">QString</a> &amp; <i>device</i> = QString() )</h3>
-<p>Constructs a mouse handler. This becomes the primary mouse handler.</p>
-<p>Note that once created, mouse handlers are controlled by the system and should not be deleted.</p>
-<p>The <i>driver</i> and <i>device</i> arguments are not used by this base class.</p>
+<p>Constructs a mouse handler which becomes the primary mouse handler.</p>
+<p>Note that once created, mouse handlers are controlled by the system and should not be deleted. The <i>driver</i> and <i>device</i> arguments are passed by the QWS_MOUSE_PROTO environment variable.</p>
+<p>See also <a href="emb-running.html">Running Qtopia Core Applications</a>.</p>
 <h3 class="fn"><a name="dtor.QWSMouseHandler"></a>QWSMouseHandler::~QWSMouseHandler ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>Destroys the mouse handler. You should not call this directly.</p>
-<h3 class="fn"><a name="calibrate"></a>void QWSMouseHandler::calibrate ( const QWSPointerCalibrationData * <i>data</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>This method is reimplemented in the calibrated mouse handler to set calibration information passed in <i>data</i>, for example, from the Qtopia calibration screen. This version does nothing.</p>
+<p>Destroys the mouse handler.</p>
+<p>This function should only be called from within Qtopia Core when the application terminates; do not call this function directly.</p>
+<h3 class="fn"><a name="calibrate"></a>void QWSMouseHandler::calibrate ( const <a href="qwspointercalibrationdata.html">QWSPointerCalibrationData</a> * <i>data</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
+<p>This method is reimplemented in <a href="qwscalibratedmousehandler.html">QWSCalibratedMouseHandler</a> to set calibration information passed in <i>data</i>, for example, from the Qtopia calibration screen. This version does nothing.</p>
 <h3 class="fn"><a name="clearCalibration"></a>void QWSMouseHandler::clearCalibration ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>This method is reimplemented in the calibrated mouse handler to clear calibration information. This version does nothing.</p>
-<h3 class="fn"><a name="limitToScreen"></a>void QWSMouseHandler::limitToScreen ( <a href="qpoint.html">QPoint</a> &amp; <i>pt</i> )</h3>
-<p>Ensures that the given point, <i>pt</i> is within the screen's boundaries, changing <i>pt</i> if necessary.</p>
-<h3 class="fn"><a name="mouseChanged"></a>void QWSMouseHandler::mouseChanged ( const <a href="qpoint.html">QPoint</a> &amp; <i>pos</i>, int <i>bstate</i>, int <i>wheel</i> = 0 )</h3>
-<p>When a mouse event occurs this function is called with the mouse's position in <i>pos</i>, the state of its buttons in <i>bstate</i>, and the wheel motion in <i>wheel</i>.</p>
+<p>This method is reimplemented in <a href="qwscalibratedmousehandler.html">QWSCalibratedMouseHandler</a> to clear calibration information. This version does nothing.</p>
+<h3 class="fn"><a name="limitToScreen"></a>void QWSMouseHandler::limitToScreen ( <a href="qpoint.html">QPoint</a> &amp; <i>position</i> )</h3>
+<p>Ensures that the given <i>position</i> is within the screen's boundaries, changing the <i>position</i> if necessary.</p>
+<h3 class="fn"><a name="mouseChanged"></a>void QWSMouseHandler::mouseChanged ( const <a href="qpoint.html">QPoint</a> &amp; <i>position</i>, int <i>state</i>, int <i>wheel</i> = 0 )</h3>
+<p>Notifies the system of a new mouse event.</p>
+<p>This function updates the current mouse position and sends the event to the <a href="qwsserver.html">QWSServer</a> for delivery to the correct widget. A subclass must call this function whenever it wants to deliver a new mouse event.</p>
+<p>The given <i>position</i> is the global position of the mouse cursor. The <i>state</i> parameter is a bitmask of <a href="qt.html#MouseButton-enum">Qt::MouseButtons</a> indicating which mouse buttons are pressed. The <i>wheel</i> parameter is the delta value of the mouse wheel as returned by <a href="qwheelevent.html#delta">QWheelEvent::delta</a>().</p>
 <h3 class="fn"><a name="pos"></a>const <a href="qpoint.html">QPoint</a> &amp; QWSMouseHandler::pos () const</h3>
-<p>Returns the mouse position.</p>
+<p>Returns the current mouse position.</p>
 <h3 class="fn"><a name="resume"></a>void QWSMouseHandler::resume ()&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Must be implemented in subclasses to resume handling mouse events.</p>
 <p>See also <a href="qwsmousehandler.html#suspend">suspend</a>().</p>
@@ -67,8 +72,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qwsmousehandler.html#resume">resume</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>
