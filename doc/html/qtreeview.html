@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/gui/itemviews/qtreeview.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/gui/itemviews/qtreeview.cpp -->
 <head>
     <title>Qt 4.1: QTreeView Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -75,7 +75,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>13 public functions inherited from <a href="qframe.html#public-functions">QFrame</a></li>
 <li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
-<li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <a name="public-slots"></a>
 <h3>Public Slots</h3>
@@ -111,7 +111,6 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>virtual void <b><a href="qtreeview.html#drawRow">drawRow</a></b> ( QPainter * <i>painter</i>, const QStyleOptionViewItem &amp; <i>option</i>, const QModelIndex &amp; <i>index</i> ) const</li>
 <li><div class="fn"/>virtual int <b><a href="qtreeview.html#horizontalOffset">horizontalOffset</a></b> () const</li>
 <li><div class="fn"/>int <b><a href="qtreeview.html#indexRowSizeHint">indexRowSizeHint</a></b> ( const QModelIndex &amp; <i>index</i> ) const</li>
-<li><div class="fn"/>virtual void <b><a href="qtreeview.html#mouseReleaseEvent">mouseReleaseEvent</a></b> ( QMouseEvent * <i>event</i> )</li>
 <li><div class="fn"/>virtual QModelIndex <b><a href="qtreeview.html#moveCursor">moveCursor</a></b> ( CursorAction <i>cursorAction</i>, Qt::KeyboardModifiers <i>modifiers</i> )</li>
 <li><div class="fn"/>virtual void <b><a href="qtreeview.html#rowsAboutToBeRemoved">rowsAboutToBeRemoved</a></b> ( const QModelIndex &amp; <i>parent</i>, int <i>start</i>, int <i>end</i> )</li>
 <li><div class="fn"/>virtual void <b><a href="qtreeview.html#rowsInserted">rowsInserted</a></b> ( const QModelIndex &amp; <i>parent</i>, int <i>start</i>, int <i>end</i> )</li>
@@ -126,6 +125,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>17 protected functions inherited from <a href="qabstractscrollarea.html#protected-functions">QAbstractScrollArea</a></li>
 <li><div class="fn"/>39 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
+<li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
 </ul>
 <a name="protected-slots"></a>
 <h3>Protected Slots</h3>
@@ -158,13 +158,13 @@ body { background: #ffffff; color: black; }</style>
 <p>The model/view architecture ensures that the contents of the tree view are updated as the model changes.</p>
 <p>Items that have children can be in an expanded (children are visible) or collapsed (children are hidden) state. When this state changes a <a href="qtreeview.html#collapsed">collapsed</a>() or <a href="qtreeview.html#expanded">expanded</a>() signal is emitted with the model index of the relevant item.</p>
 <p>The amount of indentation used to indicate levels of hierarchy is controlled by the <a href="qtreeview.html#indentation-prop">indentation</a> property.</p>
-<p>Headers in a tree view are constructed using the <a href="qheaderview.html">QHeaderView</a> class.</p>
+<p>Headers in a tree view are constructed using the <a href="qheaderview.html">QHeaderView</a> class and can be hidden using <a href="qtreeview.html#header">header</a>()-&gt;<a href="qwidget.html#hide">hide</a>();</p>
 <p>See also <a href="qlistview.html">QListView</a>, <a href="qtreewidget.html">QTreeWidget</a>, <a href="model-view-programming.html">Model/View Programming</a>, <a href="qabstractitemmodel.html">QAbstractItemModel</a>, and <a href="qabstractitemview.html">QAbstractItemView</a>.</p>
 <hr />
 <h2>Property Documentation</h2>
 <h3 class="fn"><a name="indentation-prop"></a>indentation : int</h3>
 <p>This property holds indentation of the items in the tree view.</p>
-<p>This property holds the indentation of the items for each level in the tree view.</p>
+<p>This property holds the indentation measured in pixels of the items for each level in the tree view. For top-level items, the indentation specifies the horizontal distance from the viewport edge to the items in the first column; for child items, it specifies their indentation from their parent items.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>int indentation () const</b></li>
@@ -237,8 +237,10 @@ body { background: #ffffff; color: black; }</style>
 <p>Hides the <i>column</i> given.</p>
 <p>See also <a href="qtreeview.html#showColumn">showColumn</a>().</p>
 <h3 class="fn"><a name="horizontalOffset"></a>int QTreeView::horizontalOffset () const&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
-<p>Returns the horizontal offset.</p>
+<p>Returns the horizontal offset of the items in the treeview.</p>
+<p>Note that the ttree view uses the horizontal header section positions to determine the positions of columns in the view.</p>
 <p>Reimplemented from <a href="qabstractitemview.html#horizontalOffset">QAbstractItemView</a>.</p>
+<p>See also <a href="qtreeview.html#verticalOffset">verticalOffset</a>().</p>
 <h3 class="fn"><a name="indexAbove"></a><a href="qmodelindex.html">QModelIndex</a> QTreeView::indexAbove ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>index</i> ) const</h3>
 <p>Returns the model index of the item above <i>index</i>.</p>
 <h3 class="fn"><a name="indexBelow"></a><a href="qmodelindex.html">QModelIndex</a> QTreeView::indexBelow ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>index</i> ) const</h3>
@@ -254,7 +256,6 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="isRowHidden"></a>bool QTreeView::isRowHidden ( int <i>row</i>, const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>parent</i> ) const</h3>
 <p>Returns true if the item in the given <i>row</i> of the <i>parent</i> is hidden; otherwise returns false.</p>
 <p>See also <a href="qtreeview.html#setRowHidden">setRowHidden</a>().</p>
-<h3 class="fn"><a name="mouseReleaseEvent"></a>void QTreeView::mouseReleaseEvent ( <a href="qmouseevent.html">QMouseEvent</a> * <i>event</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <h3 class="fn"><a name="moveCursor"></a><a href="qmodelindex.html">QModelIndex</a> QTreeView::moveCursor ( <a href="qabstractitemview.html#CursorAction-enum">CursorAction</a> <i>cursorAction</i>, <a href="qt.html#KeyboardModifier-enum">Qt::KeyboardModifiers</a> <i>modifiers</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>Move the cursor in the way described by <i>cursorAction</i>, using the information provided by the button <i>modifiers</i>.</p>
 <p>Reimplemented from <a href="qabstractitemview.html#moveCursor">QAbstractItemView</a>.</p>
@@ -285,7 +286,8 @@ body { background: #ffffff; color: black; }</style>
 <p>Sets the item referred to by <i>index</i> to either collapse or expanded, depending on the value of <i>expanded</i>.</p>
 <p>See also <a href="qtreeview.html#expanded">expanded</a>().</p>
 <h3 class="fn"><a name="setHeader"></a>void QTreeView::setHeader ( <a href="qheaderview.html">QHeaderView</a> * <i>header</i> )</h3>
-<p>Sets the <i>header</i> for the tree view.</p>
+<p>Sets the header for the tree view, to the given <i>header</i>.</p>
+<p>The view takes ownership over the given <i>header</i> and deletes it when a new header is set.</p>
 <p>See also <a href="qtreeview.html#header">header</a>().</p>
 <h3 class="fn"><a name="setRowHidden"></a>void QTreeView::setRowHidden ( int <i>row</i>, const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>parent</i>, bool <i>hide</i> )</h3>
 <p>If <i>hide</i> is true the <i>row</i> with the given <i>parent</i> is hidden, otherwise the <i>row</i> is shown.</p>
@@ -308,6 +310,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="verticalOffset"></a>int QTreeView::verticalOffset () const&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>Returns the vertical offset of the items in the tree view.</p>
 <p>Reimplemented from <a href="qabstractitemview.html#verticalOffset">QAbstractItemView</a>.</p>
+<p>See also <a href="qtreeview.html#horizontalOffset">horizontalOffset</a>().</p>
 <h3 class="fn"><a name="visualRect"></a><a href="qrect.html">QRect</a> QTreeView::visualRect ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>index</i> ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns the rectangle on the viewport occupied by the item at <i>index</i>. If the index is not visible or explicitly hidden, the returned rectangle is invalid.</p>
 <p>Reimplemented from <a href="qabstractitemview.html#visualRect">QAbstractItemView</a>.</p>
@@ -316,8 +319,8 @@ body { background: #ffffff; color: black; }</style>
 <p>Reimplemented from <a href="qabstractitemview.html#visualRegionForSelection">QAbstractItemView</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

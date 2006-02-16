@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/doc/src/deployment.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/doc/src/deployment.qdoc -->
 <head>
     <title>Qt 4.1: Deploying an Application on Qt/Windows</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -91,20 +91,20 @@ body { background: #ffffff; color: black; }</style>
 <pre>&nbsp;   plugins\pnp_basictools.dll
     plugins\pnp_extrafilters.dll</pre>
 <p>An archive distributing all the Qt <tt>DLL</tt>s and application specific plugins required to run the <a href="tools-plugandpaint.html">Plug &amp; Paint</a> application, would have to include the following files:</p>
-<table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Component</th><th colspan="2" rowspan=" 1">File Name</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>The executable</td><td colspan="2" rowspan=" 1"><tt>plugandpaint.exe</tt></td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>The Basic Tools plugin</td><td colspan="2" rowspan=" 1"><tt>plugins\pnp_basictools.dll</tt></td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>The ExtraFilters plugin</td><td colspan="2" rowspan=" 1"><tt>plugins\pnp_extrafilters.dll</tt></td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>The Qt Core module</td><td colspan="2" rowspan=" 1"><tt>qtcore4.dll</tt></td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>The Qt GUI module</td><td colspan="2" rowspan=" 1"><tt>qtgui4.dll</tt></td></tr>
-</table>
+</table></p>
 <p>In addition, the archive must contain the following compiler specific libraries depending on your version of Visual Studio:</p>
-<table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th></th><th>VC++ 6.0</th><th>VC++ 7.1 (2003)</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>The C run-time</td><td><tt>msvcrt.dll</tt></td><td><tt>msvcr71.dll</tt></td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>The C++ run-time</td><td><tt>msvcp60.dll</tt></td><td><tt>msvcp71.dll</tt></td></tr>
-</table>
+</table></p>
 <p>To verify that the application now can be successfully deployed, you can extract this archive on a machine without Qt and without any compiler installed, and try to run it.</p>
 <p>An alternative to putting the plugins in the plugins subdirectory is to add a custom search path when you start your application using <a href="qcoreapplication.html#addLibraryPath">QApplication::addLibraryPath</a>() or <a href="qcoreapplication.html#setLibraryPaths">QApplication::setLibraryPaths</a>().</p>
 <pre>&nbsp;   qApp-&gt;addLibraryPath(&quot;C:\some\other\path&quot;);</pre>
@@ -118,7 +118,7 @@ body { background: #ffffff; color: black; }</style>
 <pre>&nbsp;   depends &lt;application executable&gt;</pre>
 <p>This will provide a list of the libraries that your application depends on and other information.</p>
 <p align="center"><img src="images/deployment-windows-depends.png" /></p><p>When looking at the release build of the Plug &amp; Paint executable (<tt>plugandpaint.exe</tt>) with the <tt>depends</tt> tool, the tool lists the following immediate dependencies to non-system libraries:</p>
-<table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Qt</th><th>VC++ 6.0</th><th>VC++ 7.1 (2003)</th><th>MinGW</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><ul>
 <li>QTCORE4.DLL - The <a href="qtcore.html">QtCore</a> runtime</li>
@@ -136,7 +136,7 @@ body { background: #ffffff; color: black; }</style>
 <li>MINGWM10.DLL - The MinGW run-time</li>
 </ul>
 </td></tr>
-</table>
+</table></p>
 <p>When looking at the plugin <tt>DLL</tt>s the exact same dependencies are listed.</p>
 <a name="qt-plugins"></a>
 <h3>Qt Plugins</h3>
@@ -152,8 +152,8 @@ body { background: #ffffff; color: black; }</style>
 </p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

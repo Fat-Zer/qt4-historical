@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -143,19 +143,30 @@ bool QFSFileEngine::rmdir(const QString &name, bool recurseParentDirectories) co
 QStringList QFSFileEngine::entryList(QDir::Filters filters, const QStringList &filterNames) const
 {
     Q_D(const QFSFileEngine);
-    const bool doDirs     = (filters & (QDir::Dirs | QDir::AllDirs)) != 0;
-    const bool doFiles    = (filters & QDir::Files) != 0;
-    const bool doSymLinks = (filters & QDir::NoSymLinks) == 0;
-    const bool doReadable = (filters & QDir::Readable) != 0;
-    const bool doWritable = (filters & QDir::Writable) != 0;
-    const bool doExecable = (filters & QDir::Executable) != 0;
-    const bool doHidden   = (filters & QDir::Hidden) != 0;
-    const bool doSystem   = (filters & QDir::System) != 0;
-
     QStringList ret;
     DIR *dir = opendir(QFile::encodeName(d->file));
     if(!dir)
         return ret; // cannot read the directory
+
+    const bool filterPermissions = ((filters & QDir::PermissionMask) && (filters & QDir::PermissionMask) != QDir::PermissionMask);
+    const bool skipDirs     = !(filters & (QDir::Dirs | QDir::AllDirs));
+    const bool skipFiles    = !(filters & QDir::Files);
+    const bool skipSymlinks = (filters & QDir::NoSymLinks);
+    const bool doReadable   = !filterPermissions || (filters & QDir::Readable);
+    const bool doWritable   = !filterPermissions || (filters & QDir::Writable);
+    const bool doExecutable = !filterPermissions || (filters & QDir::Executable);
+    const bool includeHidden = (filters & QDir::Hidden);
+    const bool includeSystem = (filters & QDir::System);
+
+#ifndef QT_NO_REGEXP
+    // Prepare name filters
+    QList<QRegExp> regexps;
+    for (int i = 0; i < filterNames.size(); ++i) {
+        regexps << QRegExp(filterNames.at(i),
+                           (filters & QDir::CaseSensitive) ? Qt::CaseSensitive : Qt::CaseInsensitive,
+                           QRegExp::Wildcard);
+    }
+#endif
 
     QFileInfo fi;
     dirent   *file;
@@ -171,40 +182,57 @@ QStringList QFSFileEngine::entryList(QDir::Filters filters, const QStringList &f
     {
         QString fn = QFile::decodeName(QByteArray(file->d_name));
         fi.setFile(d->file + QLatin1Char('/') + fn);
+
 #ifndef QT_NO_REGEXP
         if(!((filters & QDir::AllDirs) && fi.isDir())) {
             bool matched = false;
-            for(QStringList::ConstIterator sit = filterNames.begin(); sit != filterNames.end(); ++sit) {
-                QRegExp rx(*sit,
-                           (filters & QDir::CaseSensitive) ? Qt::CaseSensitive : Qt::CaseInsensitive,
-                           QRegExp::Wildcard);
-                if(rx.exactMatch(fn))
+            for (int i = 0; i < regexps.size(); ++i) {
+                if (regexps.at(i).exactMatch(fn)) {
                     matched = true;
+                    break;
+                }
             }
-            if(!matched)
+            if (!matched)
                 continue;
         }
 #else
         Q_UNUSED(filterNames);
 #endif
-        if  ((doDirs && fi.isDir()) || (doFiles && fi.isFile()) ||
-              (doSystem && (!fi.isFile() && !fi.isDir())) ||
-              (doSymLinks && fi.isSymLink())) {
-            if((filters & QDir::PermissionMask) != 0)
-                if((doReadable && !fi.isReadable()) ||
-                     (doWritable && !fi.isWritable()) ||
-                     (doExecable && !fi.isExecutable()))
-                    continue;
-            if (!doSymLinks && fi.isSymLink() || !doFiles && fi.isFile() || !doDirs && fi.isDir())
+        if ((filters & QDir::NoDotAndDotDot) && ((fn == QLatin1String(".") || fn == QLatin1String(".."))))
+            continue;
+        bool isHidden = (fn.at(0) == QLatin1Char('.') && fn.length() > 1 && fn != QLatin1String(".."));
+        if (!includeHidden && isHidden)
+            continue;
+
+        bool alwaysShow = (filters & QDir::TypeMask) == 0
+                          && ((isHidden && includeHidden)
+                              || (includeSystem && ((fi.exists() && !fi.isFile() && !fi.isDir() && !fi.isSymLink())
+                                                    || (!fi.exists() && fi.isSymLink()))));
+
+        // Skip files and directories
+        if ((filters & QDir::AllDirs) == 0 && skipDirs && fi.isDir()) {
+            if (!alwaysShow)
                 continue;
-            if (filters & QDir::NoDotAndDotDot && (fn == QLatin1String(".") || fn == QLatin1String("..")))
-                continue;
-            if(!doHidden && fn.at(0) == QLatin1Char('.') && fn.length() > 1 && fn != QLatin1String(".."))
-                continue;
-            ret.append(fn);
         }
+        if ((skipFiles && (fi.isFile() || !fi.exists()))
+            || (skipSymlinks && fi.isSymLink())) {
+            if (!alwaysShow)
+                continue;
+        }
+        if (filterPermissions
+            && !((doReadable && fi.isReadable())
+                 || (doWritable && fi.isWritable())
+                 || (doExecutable && fi.isExecutable()))) {
+            continue;
+        }
+        if (!includeSystem && ((fi.exists() && !fi.isFile() && !fi.isDir() && !fi.isSymLink())
+                               || (!fi.exists() && fi.isSymLink()))) {
+            continue;
+        }
+
+        ret.append(fn);
     }
-    if(closedir(dir) != 0) {
+    if (closedir(dir) != 0) {
         qWarning("QDir::readDirEntries: Cannot close the directory: %s", d->file.toLocal8Bit().data());
     }
     return ret;
@@ -274,32 +302,41 @@ bool QFSFileEnginePrivate::doStat() const
 {
     if (tried_stat == 0) {
         QFSFileEnginePrivate *that = const_cast<QFSFileEnginePrivate*>(this);
-	that->tried_stat = 1;
-	that->could_stat = 1;
         if (fd != -1) {
-            that->could_stat = !QT_FSTAT(fd, &st);
+            that->could_stat = (QT_FSTAT(fd, &st) == 0);
         } else {
-            const QByteArray file = QFile::encodeName(this->file);
-            if (QT_LSTAT(file, &st) == 0)
-                that->isSymLink = S_ISLNK(st.st_mode);
-            else
-                that->isSymLink = false;
-            that->could_stat = !QT_STAT(file, &st);
+            that->could_stat = (QT_STAT(QFile::encodeName(file), &st) == 0);
         }
+	that->tried_stat = 1;
     }
-    return could_stat || isSymLink;
+    return could_stat;
+}
+
+bool QFSFileEnginePrivate::isSymlink() const
+{
+    if (need_lstat) {
+        QFSFileEnginePrivate *that = const_cast<QFSFileEnginePrivate *>(this);
+        that->need_lstat = false;
+        that->is_link = (QT_LSTAT(QFile::encodeName(file), &st) == 0) ? S_ISLNK(st.st_mode) : false;
+    }
+    return is_link;
 }
 
 QAbstractFileEngine::FileFlags QFSFileEngine::fileFlags(QAbstractFileEngine::FileFlags type) const
 {
     Q_D(const QFSFileEngine);
     // Force a stat, so that we're guaranteed to get up-to-date results
-    d->tried_stat = 0;
+    if (type & QAbstractFileEngine::FileFlag(0x1000000)) { // QDir::Refresh
+        d->tried_stat = 0;
+        d->need_lstat = 1;
+    }
 
     QAbstractFileEngine::FileFlags ret = 0;
-    if(!d->doStat())
+    bool exists = d->doStat();
+    if (!exists && !d->isSymlink())
         return ret;
-    if(type & PermsMask) {
+
+    if (exists && (type & PermsMask)) {
         if(d->st.st_mode & S_IRUSR)
             ret |= ReadOwnerPerm;
         if(d->st.st_mode & S_IWUSR)
@@ -341,7 +378,7 @@ QAbstractFileEngine::FileFlags QFSFileEngine::fileFlags(QAbstractFileEngine::Fil
         if(!foundAlias)
 #endif
         {
-            if(d->isSymLink)//(d->st.st_mode & S_IFMT) == S_IFLNK)
+            if ((type & LinkType) && d->isSymlink())
                 ret |= LinkType;
             if((d->st.st_mode & S_IFMT) == S_IFREG)
                 ret |= FileType;
@@ -350,13 +387,106 @@ QAbstractFileEngine::FileFlags QFSFileEngine::fileFlags(QAbstractFileEngine::Fil
         }
     }
     if(type & FlagsMask) {
-        ret |= QAbstractFileEngine::FileFlags(ExistsFlag | LocalDiskFlag);
+        ret |= LocalDiskFlag;
+        if (exists)
+            ret |= ExistsFlag;
         if(fileName(BaseName)[0] == QLatin1Char('.'))
             ret |= HiddenFlag;
         if(d->file == QLatin1String("/"))
             ret |= RootFlag;
     }
     return ret;
+}
+
+/*
+    From http://www.ietf.org/rfc/rfc3986.txt, 5.2.4: Remove dot segments
+
+    Removes unnecessary ../ and ./ from the path. Used for normalizing
+    the URL.
+*/
+QString qt_removeDotsFromPath(const QString &dottedPath)
+{
+    // The input buffer is initialized with the now-appended path
+    // components and the output buffer is initialized to the empty
+    // string.
+    QString origPath = dottedPath;
+    QString path;
+    path.reserve(origPath.length());
+
+    const QLatin1String Dot(".");
+    const QLatin1Char Slash('/');
+    const QLatin1String DotDot("..");
+    const QLatin1String DotSlash("./");
+    const QLatin1String SlashDot("/.");
+    const QLatin1String DotDotSlash("../");
+    const QLatin1String SlashDotSlash("/./");
+    const QLatin1String SlashDotDotSlash("/../");
+    const QLatin1String SlashDotDot("/..");
+
+    // While the input buffer is not empty, loop:
+    while (!origPath.isEmpty()) {
+
+        // If the input buffer begins with a prefix of "../" or "./",
+        // then remove that prefix from the input buffer;
+        if (origPath.startsWith(DotSlash)) {
+            origPath.remove(0, 2);
+        } else if (origPath.startsWith(DotDotSlash)) {
+            origPath.remove(0, 3);
+        } else {
+            // otherwise, if the input buffer begins with a prefix of
+            // "/./" or "/.", where "." is a complete path segment,
+            // then replace that prefix with "/" in the input buffer;
+            if (origPath.startsWith(SlashDotSlash)) {
+                origPath.remove(0, 2);
+            } else if (origPath == SlashDot) {
+                origPath = Slash;
+            } else {
+                // otherwise, if the input buffer begins with a prefix
+                // of "/../" or "/..", where ".." is a complete path
+                // segment, then replace that prefix with "/" in the
+                // input buffer and remove the last //segment and its
+                // preceding "/" (if any) from the output buffer;
+                if (origPath.startsWith(SlashDotDotSlash)) {
+                    origPath.remove(0, 3);
+                    if (path.contains(Slash))
+                        path.truncate(path.lastIndexOf(Slash));
+                } else if (origPath == SlashDotDot) {
+                    origPath = Slash;
+                    if (path.contains(Slash))
+                        path.truncate(path.lastIndexOf(Slash));
+                } else {
+                    // otherwise, if the input buffer consists only of
+                    // "." or "..", then remove that from the input
+                    // buffer;
+                    if (origPath == Dot || origPath == DotDot) {
+                        origPath.clear();
+                    } else {
+                        // otherwise move the first path segment in
+                        // the input buffer to the end of the output
+                        // buffer, including the initial "/" character
+                        // (if any) and any subsequent characters up
+                        // to, but not including, the next "/"
+                        // character or the end of the input buffer.
+                        int index = origPath.indexOf(Slash);
+                        if (index == 0) {
+                            path += Slash;
+                            origPath.remove(0, 1);
+                            index = origPath.indexOf(Slash);
+                        }
+                        if (index != -1) {
+                            path += origPath.left(index);
+                            origPath.remove(0, index);
+                        } else {
+                            path += origPath;
+                            origPath.clear();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return path;
 }
 
 QString QFSFileEngine::fileName(FileName file) const
@@ -425,7 +555,7 @@ QString QFSFileEngine::fileName(FileName file) const
             return fileName(AbsolutePathName);
         return fileName(AbsoluteName);
     } else if(file == LinkName) {
-        if(d->doStat() && d->isSymLink) {
+        if (d->isSymlink()) {
             char s[PATH_MAX+1];
             int len = readlink(QFile::encodeName(d->file), s, PATH_MAX);
             if(len > 0) {
@@ -439,6 +569,18 @@ QString QFSFileEngine::fileName(FileName file) const
                 }
                 s[len] = '\0';
                 ret += QFile::decodeName(QByteArray(s));
+
+                extern QString qt_removeDotsFromPath(const QString &dottedPath);
+                if (!ret.startsWith(QLatin1Char('/'))) {
+                    if (d->file.startsWith(QLatin1Char('/'))) {
+                        ret.prepend(d->file.left(d->file.lastIndexOf('/')) + QLatin1Char('/'));
+                    } else {
+                        ret.prepend(QDir::currentPath() + QLatin1Char('/'));
+                    }
+                }
+                ret = qt_removeDotsFromPath(ret);
+                if (ret.endsWith(QLatin1Char('/')))
+                    ret.chop(1);
                 return ret;
             }
         }

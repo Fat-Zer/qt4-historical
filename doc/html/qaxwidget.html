@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/activeqt/container/qaxwidget.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/activeqt/container/qaxwidget.cpp -->
 <head>
     <title>Qt 4.1: QAxWidget Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -37,7 +37,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>19 public functions inherited from <a href="qaxbase.html#public-functions">QAxBase</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
-<li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <a name="protected-functions"></a>
 <h3>Protected Functions</h3>
@@ -49,6 +49,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>39 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
 <li><div class="fn"/>5 protected functions inherited from <a href="qaxbase.html#protected-functions">QAxBase</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
+<li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
 </ul>
 <h3>Additional Inherited Members</h3>
 <ul>
@@ -99,15 +100,15 @@ body { background: #ffffff; color: black; }</style>
 <p>If the function returns true the key event is passed on to the ActiveX control, which then either processes the event or passes the event on to Qt.</p>
 <p>If the function returns false the processing of the key event is ignored by <a href="activeqt.html#activeqt">ActiveQt</a>, ie. the ActiveX control might handle it or not.</p>
 <p>The default implementation returns true for the following cases:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>WM_SYSKEYDOWN</th><th>WM_SYSKEYUP</th><th>WM_KEYDOWN</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>All keycodes</td><td>VK_MENU</td><td>VK_TAB, VK_DELETE and all non-arrow-keys in combination with VK_SHIFT, VK_CONTROL or VK_MENU</td></tr>
-</table>
+</table></p>
 <p>This table is the result of experimenting with popular ActiveX controls, ie. Internet Explorer and Microsoft Office applications, but for some controls it might require modification.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

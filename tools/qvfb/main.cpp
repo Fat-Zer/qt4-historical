@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the tools applications of the Qt Toolkit.
 **
@@ -42,6 +42,7 @@ void usage( const char *app )
 	    "[-nocursor] [-qwsdisplay :id] [-skin skindirectory]\n"
 	    "Supported depths: 1, 4, 8, 32\n", app );
 }
+int qvfb_protocol = 0;
 
 int main( int argc, char *argv[] )
 {
@@ -70,6 +71,8 @@ int main( int argc, char *argv[] )
 	    depth = atoi( argv[++i] );
 	} else if ( arg == "-nocursor" ) {
 	    cursor = false;
+	} else if ( arg == "-mmap" ) {
+	    qvfb_protocol = 1;
 	} else if ( arg == "-zoom" ) {
 	    zoom = atof( argv[++i] );
 	} else if ( arg == "-qwsdisplay" ) {

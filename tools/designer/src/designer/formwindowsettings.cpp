@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt Designer of the Qt Toolkit.
 **
@@ -34,7 +34,7 @@ FormWindowSettings::FormWindowSettings(QDesignerFormWindowInterface *parent)
     formWindow()->layoutDefault(&defaultMargin, &defaultSpacing);
 
     QStyle *style = formWindow()->style();
-    ui.defaultMarginSpinBox->setValue(style->pixelMetric(QStyle::PM_DefaultTopLevelMargin, 0));
+    ui.defaultMarginSpinBox->setValue(style->pixelMetric(QStyle::PM_DefaultChildMargin, 0));
     ui.defaultSpacingSpinBox->setValue(style->pixelMetric(QStyle::PM_DefaultLayoutSpacing, 0));
 
     if (defaultMargin != INT_MIN || defaultMargin != INT_MIN) {

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/qt3support/text/q3stylesheet.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/qt3support/text/q3stylesheet.cpp -->
 <head>
     <title>Qt 4.1: Q3StyleSheet Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -63,7 +63,7 @@ body { background: #ffffff; color: black; }</style>
 <p>By creating <a href="q3stylesheetitem.html">Q3StyleSheetItem</a> objects for a style sheet you build a definition of a set of tags. This definition will be used by the internal rich text rendering system to parse and display text documents to which the style sheet applies. Rich text is normally visualized in a <a href="qtextedit.html">QTextEdit</a> or a <a href="qtextbrowser.html">QTextBrowser</a>. However, <a href="qlabel.html">QLabel</a>, <a href="qwhatsthis.html">QWhatsThis</a> and <a href="qmessagebox.html">QMessageBox</a> also support it, and other classes are likely to follow. With <a href="porting4.html#qsimplerichtext">QSimpleRichText</a> it is possible to use the rich text renderer for custom widgets as well.</p>
 <p>The default Q3StyleSheet object has the following style bindings, sorted by structuring bindings, anchors, character style bindings (i.e. inline styles), special elements such as horizontal lines or images, and other tags. In addition, rich text supports simple HTML tables.</p>
 <p>The structuring tags are</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Structuring tags</th><th>Notes</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><tt>&lt;qt&gt;</tt>...<tt>&lt;/qt&gt;</tt></td><td>A Qt rich text document. It understands the following attributes:<ul>
 <li><tt>title</tt> -- The caption of the document. This attribute is easily accessible with <a href="qtextedit.html#documentTitle-prop">QTextEdit::documentTitle</a>().</li>
@@ -84,18 +84,18 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#f0f0f0"><td><tt>&lt;ol&gt;...&lt;/ol&gt;</tt></td><td>An ordered list. You can also pass a type argument to define the enumeration label style. The default is <tt>type=&quot;1&quot;</tt>; other types are <tt>&quot;a&quot;</tt> and <tt>&quot;A&quot;</tt>.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><tt>&lt;li&gt;...&lt;/li&gt;</tt></td><td>A list item. This tag can be used only within the context of <tt>&lt;ol&gt;</tt> or <tt>&lt;ul&gt;</tt>.</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><tt>&lt;pre&gt;...&lt;/pre&gt;</tt></td><td>For larger chunks of code. Whitespaces in the contents are preserved. For small bits of code use the inline-style <tt>code</tt>.</td></tr>
-</table>
+</table></p>
 <p>Anchors and links are done with a single tag:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Anchor tags</th><th>Notes</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><tt>&lt;a&gt;...&lt;/a&gt;</tt></td><td>An anchor or link.<ul>
 <li>A link is created by using an <tt>href</tt> attribute, for example &lt;br&gt;<tt>&lt;a href=&quot;target.qml&quot;&gt;Link Text&lt;/a&gt;</tt>. Links to targets within a document are achieved in the same way as for HTML, e.g. &lt;br&gt;<tt>&lt;a href=&quot;target.qml#subtitle&quot;&gt;Link Text&lt;/a&gt;</tt>.</li>
 <li>A target is created by using a <tt>name</tt> attribute, for example &lt;br&gt;<tt>&lt;a name=&quot;subtitle&quot;&gt;&lt;h2&gt;Sub Title&lt;/h2&gt;&lt;/a&gt;</tt>.</li>
 </ul>
 </td></tr>
-</table>
+</table></p>
 <p>The default character style bindings are</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Style tags</th><th>Notes</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><tt>&lt;em&gt;...&lt;/em&gt;</tt></td><td>Emphasized. By default this is the same as <tt>&lt;i&gt;...&lt;/i&gt;</tt> (italic).</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><tt>&lt;strong&gt;...&lt;/strong&gt;</tt></td><td>Strong. By default this is the same as <tt>&lt;b&gt;...&lt;/b&gt;</tt> (bold).</td></tr>
@@ -115,18 +115,18 @@ body { background: #ffffff; color: black; }</style>
 <li><tt>face</tt> -- The family of the font, for example <tt>face=times</tt>.</li>
 </ul>
 </td></tr>
-</table>
+</table></p>
 <p>Special elements are:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Special tags</th><th>Notes</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><tt>&lt;img&gt;</tt></td><td>An image. The image name for the mime source factory is given in the source attribute, for example <tt>&lt;img src=&quot;qt.xpm&quot;&gt;</tt> The image tag also understands the attributes <tt>width</tt> and <tt>height</tt> that determine the size of the image. If the pixmap does not fit the specified size it will be scaled automatically (by using <a href="qimage-qt3.html#smoothScale">QImage::smoothScale</a>()).<p>The <tt>align</tt> attribute determines where the image is placed. By default, an image is placed inline just like a normal character. Specify <tt>left</tt> or <tt>right</tt> to place the image at the respective side.</p>
 </td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><tt>&lt;hr&gt;</tt></td><td>A horizontal line.</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><tt>&lt;br&gt;</tt></td><td>A line break.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><tt>&lt;nobr&gt;...&lt;/nobr&gt;</tt></td><td>No break. Prevents word wrap.</td></tr>
-</table>
+</table></p>
 <p>In addition, rich text supports simple HTML tables. A table consists of one or more rows each of which contains one or more cells. Cells are either data cells or header cells, depending on their content. Cells which span rows and columns are supported.</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Table tags</th><th>Notes</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><tt>&lt;table&gt;...&lt;/table&gt;</tt></td><td>A table. Tables support the following attributes:<ul>
 <li><tt>bgcolor</tt> -- The background color.</li>
@@ -150,7 +150,7 @@ body { background: #ffffff; color: black; }</style>
 <li><tt>valign</tt> -- <a href="qt.html#Orientation-enum">Qt::Vertical</a> alignment; possible values are <tt>top</tt>, <tt>middle</tt>, and <tt>bottom</tt>. The default is <tt>middle</tt>.</li>
 </ul>
 </td></tr>
-</table>
+</table></p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="Q3StyleSheet"></a>Q3StyleSheet::Q3StyleSheet ( <a href="qobject.html">QObject</a> * <i>parent</i> = 0, const char * <i>name</i> = 0 )</h3>
@@ -175,7 +175,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="item"></a><a href="q3stylesheetitem.html">Q3StyleSheetItem</a> * Q3StyleSheet::item ( const <a href="qstring.html">QString</a> &amp; <i>name</i> )</h3>
 <p>Returns the style called <i>name</i> or 0 if there is no such style.</p>
 <h3 class="fn"><a name="item-2"></a>const <a href="q3stylesheetitem.html">Q3StyleSheetItem</a> * Q3StyleSheet::item ( const <a href="qstring.html">QString</a> &amp; <i>name</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns the style called <i>name</i> or 0 if there is no such style (const version)</p>
 <h3 class="fn"><a name="mightBeRichText"></a>bool Q3StyleSheet::mightBeRichText ( const <a href="qstring.html">QString</a> &amp; <i>text</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns true if the string <i>text</i> is likely to be rich text; otherwise returns false.</p>
@@ -190,8 +190,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="q3stylesheet.html#defaultSheet">defaultSheet</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

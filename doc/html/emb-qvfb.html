@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/doc/src/emb-qvfb.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/doc/src/emb-qvfb.qdoc -->
 <head>
     <title>Qt 4.1: Qtopia Core Virtual Framebuffer</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -32,14 +32,14 @@ body { background: #ffffff; color: black; }</style>
 <li>Qtopia Core will autodetect <tt>qvfb</tt>, so you can omit the <tt>-display</tt> command line parameter if you know that <tt>qvfb</tt> is running, and that the Qtopia Core library supports <tt>qvfb</tt>. (If this is not the case, Qtopia Core will write to the real framebuffer, and your X11 display will be corrupted.)</li>
 </ol>
 <p><tt>qvfb</tt> supports the following command line options:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Option</th><th>Meaning</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><tt>-width</tt> <i>width</i></td><td>the width of the virtual framebuffer (default: 240).</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><tt>-height</tt> <i>height</i></td><td>the height of the virtual framebuffer (default: 320).</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><tt>-depth</tt> <i>depth</i></td><td>the depth of the virtual framebuffer (1, 8 or 32; default: 8).</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><tt>-nocursor</tt></td><td>do not display the X11 cursor in the framebuffer window.</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><tt>-qwsdisplay</tt> <i>:id</i></td><td>the Qtopia Core display ID to provide (default: :0).</td></tr>
-</table>
+</table></p>
 <a name="virtual-framebuffer-design"></a>
 <h2>Virtual Framebuffer Design</h2>
 <p>The virtual framebuffer emulates a framebuffer using a shared memory region (the virtual frame buffer) and a utility to display the framebuffer in a window (<tt>qvfb</tt>). The regions of the display that have changed are updated periodically, so you will see discrete snapshots of the framebuffer rather than each individual drawing operation. For this reason drawing problems such as flickering may not be apparent until the program is run using a real framebuffer.</p>
@@ -48,8 +48,8 @@ body { background: #ffffff; color: black; }</style>
 <p><b>Warning:</b> The virtual framebuffer is a development tool only. No security issues have been considered in the virtual framebuffer design. It should be avoided in a production environment; do not configure production libraries with <tt>-qvfb</tt>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

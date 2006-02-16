@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the tools applications of the Qt Toolkit.
 **
@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
 
     int arg = 1;
     while (arg < argc) {
-        QString opt = QString::fromUtf8(argv[arg]);
+        QString opt = QString::fromLocal8Bit(argv[arg]);
         if (opt == QLatin1String("-h") || opt == QLatin1String("-help")) {
             showHelp(argv[0]);
             return 0;
@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
 
     QString inputFile;
     if (fileName)
-        inputFile = QString::fromUtf8(fileName);
+        inputFile = QString::fromLocal8Bit(fileName);
     else
         driver.option().headerProtection = false;
 

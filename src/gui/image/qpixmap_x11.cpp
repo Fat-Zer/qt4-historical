@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -286,6 +286,7 @@ void QPixmap::init(int w, int h, Type type)
     data->count  = 1;
     data->uninit = true;
     data->ser_no = ++qt_pixmap_serial;
+    data->detach_no = 0;
     data->picture = 0;
     data->x11_mask = 0;
     data->mask_picture = 0;
@@ -366,31 +367,29 @@ QPixmapData::~QPixmapData()
 
 
 /*!
-    This is a special-purpose function that detaches the pixmap from
-    shared pixmap data.
+    Detaches the pixmap from shared pixmap data.
 
     A pixmap is automatically detached by Qt whenever its contents are
-    about to change. This is done in all QPixmap member functions that
-    modify the pixmap (fill(), convertFromImage(), load(),
-    etc.), and in QPainter::begin() on a pixmap.
+    about to change. This is done in almost all QPixmap member
+    functions that modify the pixmap (fill(), convertFromImage(),
+    load(), etc.), and in QPainter::begin() on a pixmap.
 
-    It is possible to modify a pixmap without letting Qt know. You can
-    first obtain the system-dependent handle() and then call
-    system-specific functions (for instance, BitBlt under Windows)
-    that modify the pixmap contents. In such cases, you can call
-    detach() to cut the pixmap loose from other pixmaps that share
-    data with this one.
+    There are two exceptions in which detach() must be called
+    explicitly, that is when calling the handle() or the
+    x11PictureHandle() function (only available on X11). Otherwise,
+    any modifications done using system calls, will be performed on
+    the shared data.
 
-    detach() returns immediately if there is just a single reference
-    or if the pixmap has not been initialized yet.
+    The detach() function returns immediately if there is just a
+    single reference or if the pixmap has not been initialized yet.
 */
 
 void QPixmap::detach()
 {
-    if (data->count != 1) {
+    ++data->detach_no;
+    if (data->count != 1)
         *this = copy();
-        data->ser_no = ++qt_pixmap_serial;
-    }
+
     data->uninit = false;
 
     // reset the cache data
@@ -402,9 +401,9 @@ void QPixmap::detach()
 
 
 /*!
-    Returns the default pixmap depth.
+    Returns the default pixmap depth used by the application.
 
-    \sa depth()
+    \sa depth(), {QPixmap#Pixmap Information}{Pixmap Information}
 */
 
 int QPixmap::defaultDepth()
@@ -413,7 +412,9 @@ int QPixmap::defaultDepth()
 }
 
 /*!
-    Fills the pixmap with the color \a fillColor.
+    Fills the pixmap with the given  \a fillColor.
+
+    \sa {QPixmap#Pixmap Transformations}{Pixmap Transformations}
 */
 
 void QPixmap::fill(const QColor &fillColor)
@@ -452,10 +453,12 @@ void QPixmap::fill(const QColor &fillColor)
 }
 
 /*!
-    Returns the alpha channel of the pixmap. If the pixmap doesn't have an
-    alpha channel a null pixmap is returned.
+    Returns the alpha channel of the pixmap. If the pixmap doesn't
+    have an alpha channel (i.e. the alpha channel's value equals
+    0xff), a null pixmap is returned.
 
-    \sa hasAlphaChannel() setAlphaChannel()
+    \sa setAlphaChannel(), {QPixmap#Pixmap Information}{Pixmap
+    Information}
 */
 QPixmap QPixmap::alphaChannel() const
 {
@@ -466,8 +469,14 @@ QPixmap QPixmap::alphaChannel() const
 }
 
 /*!
-    Sets the alpha channel of this pixmap to \a alpha. If the pixmap
-    already contains an alpha channel, it is merged with \a alpha.
+    \fn void QPixmap::setAlphaChannel(const QPixmap &alphaChannel)
+
+    Sets the alpha channel of this pixmap to the given \a alphaChannel
+    by converting the \a alphaChannel into 32 bit and using the
+    intensity of the RGB pixel values.
+
+    \sa alphaChannel(), {QPixmap#Pixmap Transformations}{Pixmap
+    Transformations}
  */
 void QPixmap::setAlphaChannel(const QPixmap &alpha)
 {
@@ -489,7 +498,7 @@ void QPixmap::setAlphaChannel(const QPixmap &alpha)
 
     Returns the mask, or a null bitmap if no mask has been set.
 
-    \sa setMask(), QBitmap, hasAlpha()
+    \sa setMask(), {QPixmap#Pixmap Information}{Pixmap Information}
 */
 QBitmap QPixmap::mask() const
 {
@@ -525,9 +534,10 @@ QBitmap QPixmap::mask() const
     \printuntil setMask
     Now, alpha and alphacopy are visually different.
 
-    Setting a \link isNull() null\endlink mask resets the mask.
+    Setting a null mask resets the mask.
 
-    \sa mask(), createHeuristicMask(), QBitmap
+    \sa mask(), {QPixmap#Pixmap Transformations}{Pixmap
+    Transformations}, QBitmap
 */
 void QPixmap::setMask(const QBitmap &newmask)
 {
@@ -655,7 +665,8 @@ int QPixmap::metric(PaintDeviceMetric m) const
 }
 
 /*!
-    Converts the pixmap to a QImage. Returns a null image if it fails.
+    Converts the pixmap to a QImage. Returns a null image if the
+    conversion fails.
 
     If the pixmap has 1-bit depth, the returned image will also be 1
     bit deep. If the pixmap has 2- to 8-bit depth, the returned image
@@ -665,7 +676,7 @@ int QPixmap::metric(PaintDeviceMetric m) const
     Note that for the moment, alpha masks on monochrome images are
     ignored.
 
-    \sa convertFromImage()
+    \sa convertFromImage(), {QImage#Image Formats}{Image Formats}
 */
 
 QImage QPixmap::toImage() const
@@ -949,19 +960,17 @@ QImage QPixmap::toImage() const
 /*!
     \fn QPixmap QPixmap::fromImage(const QImage &image, Qt::ImageConversionFlags flags)
 
-    Converts the given \a image to a pixmap using the specified \a flags to control
-    the conversion process.
+    Converts the given \a image to a pixmap using the specified \a
+    flags to control the conversion.  The \a flags argument is a
+    bitwise-OR of the \l{Qt::ImageConversionFlags}. Passing 0 for \a
+    flags sets all the default options.
 
-    The \a flags argument is a bitwise-OR of the
-    \l{Qt::ImageConversionFlags}. Passing 0 for \a flags sets all the
-    default options.
+    In case of monochrome and 8-bit images, the image is first
+    converted to a 32-bit pixmap and then filled with the colors in
+    the color table. If this is too expensive an operation, you can
+    use QBitmap::fromImage() instead.
 
-    If the image is a monochrome image, it is converted to a 32-bit pixmap and
-    then filled with the colors in the color table. If this is too expensive an
-    operation, you can use QBitmap::fromImage() instead.
-
-    \sa toImage(), isQBitmap(), QImage::convertDepth(),
-    defaultDepth(), QImage::hasAlphaBuffer()
+    \sa toImage(), {QPixmap#Pixmap Conversion}{Pixmap Conversion}
 */
 
 QPixmap QPixmap::fromImage(const QImage &img, Qt::ImageConversionFlags flags)
@@ -1661,35 +1670,38 @@ QPixmap QPixmap::fromImage(const QImage &img, Qt::ImageConversionFlags flags)
 
 
 /*!
-    Grabs the contents of the window \a window and makes a pixmap out
-    of it. Returns the pixmap.
+    \fn QPixmap QPixmap::grabWindow(WId window, int x, int y, int
+    width, int height)
+
+    Creates and returns a pixmap constructed by grabbing the contents
+    of the given \a window restricted by QRect(\a x, \a y, \a width,
+    \a height).
 
     The arguments (\a{x}, \a{y}) specify the offset in the window,
-    whereas (\a{w}, \a{h}) specify the width and height of the area to
-    be copied.
+    whereas (\a{width}, \a{height}) specify the area to be copied.  If
+    \a width is negative, the function copies everything to the right
+    border of the window. If \a height is negative, the function
+    copies everything to the bottom of the window.
 
-    If \a w is negative, the function copies everything to the right
-    border of the window. If \a h is negative, the function copies
-    everything to the bottom of the window.
+    The window system identifier (\c WId) can be retrieved using the
+    QWidget::WId() function. The rationale for using a window
+    identifier and not a QWidget, is to enable grabbing of windows
+    that are not part of the application, window system frames, and so
+    on.
 
-    Note that grabWindow() grabs pixels from the screen, not from the
-    window. If there is another window partially or entirely over the
-    one you grab, you get pixels from the overlying window, too.
+    The grabWindow() function grabs pixels from the screen, not from
+    the window, i.e. if there is another window partially or entirely
+    over the one you grab, you get pixels from the overlying window,
+    too. The mouse cursor is generally not grabbed.
 
-    Note also that the mouse cursor is generally not grabbed.
+    Note on X11that if the given \a window doesn't have the same depth
+    as the root window, and another window partially or entirely
+    obscures the one you grab, you will \e not get pixels from the
+    overlying window.  The contents of the obscured areas in the
+    pixmap will be undefined and uninitialized.
 
-    The reason we use a window identifier and not a QWidget is to
-    enable grabbing of windows that are not part of the application,
-    window system frames, and so on.
-
-    \warning Grabbing an area outside the screen is not safe in
-    general. This depends on the underlying window system.
-
-    \warning X11 only: If \a window is not the same depth as the root
-    window and another window partially or entirely obscures the one
-    you grab, you will \e not get pixels from the overlying window.
-    The contests of the obscured areas in the pixmap are undefined and
-    uninitialized.
+    \warning In general, grabbing an area outside the screen is not
+    safe. This depends on the underlying window system.
 
     \sa grabWidget()
 */
@@ -1765,21 +1777,22 @@ QPixmap QPixmap::grabWindow(WId window, int x, int y, int w, int h)
 }
 
 /*!
-    Returns a copy of the pixmap that is transformed using \a matrix.
-    The original pixmap is not changed.
+    Returns a copy of the pixmap that is transformed using the given
+    transformation \a matrix and transformation \a mode. The original
+    pixmap is not changed.
 
     The transformation \a matrix is internally adjusted to compensate
-    for unwanted translation, i.e. transformed() returns the smallest image
-    that contains all the transformed points of the original image.
-
-    \a mode specifies whether the transformation should be smooth or
-    not.
+    for unwanted translation; i.e. the pixmap produced is the smallest
+    pixmap that contains all the transformed points of the original
+    pixmap. Use the trueMatrix() function to retrieve the actual
+    matrix used for transforming the pixmap.
 
     This function is slow because it involves transformation to a
     QImage, non-trivial computations and a transformation back to a
     QPixmap.
 
-    \sa trueMatrix(), QMatrix, QPainter::setWorldMatrix() QImage::transformed()
+    \sa trueMatrix(), {QPixmap#Pixmap Transformations}{Pixmap
+    Transformations}
 */
 
 QPixmap QPixmap::transformed(const QMatrix &matrix, Qt::TransformationMode mode) const
@@ -2020,9 +2033,10 @@ void QPixmap::x11SetScreen(int screen)
 }
 
 /*!
-    Returns true if this pixmap has an alpha channel or a mask.
+    Returns true if this pixmap has an alpha channel, \e or has a
+    mask, otherwise returns false.
 
-    \sa hasAlphaChannel(), mask()
+    \sa hasAlphaChannel(), alphaChannel(), mask()
 */
 bool QPixmap::hasAlpha() const
 {
@@ -2030,10 +2044,10 @@ bool QPixmap::hasAlpha() const
 }
 
 /*!
-    Returns true if the pixmap has an alpha channel; otherwise it
-    returns false.
+    Returns true if the pixmap has a format that respects the alpha
+    channel, otherwise returns false.
 
-    \sa hasAlpha() mask()
+    \sa alphaChannel(), hasAlpha()
 */
 bool QPixmap::hasAlphaChannel() const
 {
@@ -2045,6 +2059,8 @@ bool QPixmap::hasAlphaChannel() const
     the widget.
 
     \warning This function is only available on X11.
+
+    \sa {QPixmap#Pixmap Information}{Pixmap Information}
 */
 const QX11Info &QPixmap::x11Info() const
 {
@@ -2060,10 +2076,16 @@ QPaintEngine *QPixmap::paintEngine() const
 
 /*!
     Returns the X11 Picture handle of the pixmap for XRender
-    support. Use of this function is not portable. This function will
-    return 0 if XRender support is not compiled into Qt, if the
-    XRender extension is not supported on the X11 display, or if the
-    handle could not be created.
+    support.
+
+    This function will return 0 if XRender support is not compiled
+    into Qt, if the XRender extension is not supported on the X11
+    display, or if the handle could not be created. Use of this
+    function is not portable.
+
+    \warning This function is only available on X11.
+
+    \sa {QPixmap#Pixmap Information}{Pixmap Information}
 */
 
 Qt::HANDLE QPixmap::x11PictureHandle() const
@@ -2175,7 +2197,8 @@ void QPixmapData::convertToARGB32()
     XFreePixmap(X11->display, hd);
     if (x11_mask) {
         XFreePixmap(X11->display, x11_mask);
-        XRenderFreePicture(X11->display, mask_picture);
+        if (mask_picture)
+            XRenderFreePicture(X11->display, mask_picture);
         x11_mask = 0;
         mask_picture = 0;
     }

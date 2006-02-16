@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtSql module of the Qt Toolkit.
 **
@@ -473,7 +473,7 @@ static QSqlField qMakeFieldInfo(const QODBCPrivate* p, int i )
     QSqlField f(qColName, type);
     f.setSqlType(colType);
     f.setLength(colSize == 0 ? -1 : int(colSize));
-    f.setPrecision(colScale == 0 ? -1 : int(colSize));
+    f.setPrecision(colScale == 0 ? -1 : int(colScale));
     if (nullable == SQL_NO_NULLS)
         f.setRequired(true);
     else if (nullable == SQL_NULLABLE)
@@ -1030,7 +1030,7 @@ bool QODBCResult::exec()
     QList<QByteArray> tmpStorage; // holds temporary buffers
     QVarLengthArray<QSQLLEN, 32> indicators(boundValues().count());
 
-    memset(indicators.data(), 0, indicators.size());
+    memset(indicators.data(), 0, indicators.size() * sizeof(QSQLLEN));
     setActive(false);
     setAt(QSql::BeforeFirstRow);
     d->rInf.clear();

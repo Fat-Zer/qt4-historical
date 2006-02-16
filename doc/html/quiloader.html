@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/tools/designer/src/uitools/quiloader.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/tools/designer/src/uitools/quiloader.cpp -->
 <head>
     <title>Qt 4.1: QUiLoader Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -35,7 +35,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>virtual QActionGroup * <b><a href="quiloader.html#createActionGroup">createActionGroup</a></b> ( QObject * <i>parent</i> = 0, const QString &amp; <i>name</i> = QString() )</li>
 <li><div class="fn"/>virtual QLayout * <b><a href="quiloader.html#createLayout">createLayout</a></b> ( const QString &amp; <i>className</i>, QObject * <i>parent</i> = 0, const QString &amp; <i>name</i> = QString() )</li>
 <li><div class="fn"/>virtual QWidget * <b><a href="quiloader.html#createWidget">createWidget</a></b> ( const QString &amp; <i>className</i>, QWidget * <i>parent</i> = 0, const QString &amp; <i>name</i> = QString() )</li>
-<li><div class="fn"/>QWidget * <b><a href="quiloader.html#load">load</a></b> ( QIODevice * <i>device</i>, QWidget * <i>parent</i> = 0 )</li>
+<li><div class="fn"/>QWidget * <b><a href="quiloader.html#load">load</a></b> ( QIODevice * <i>device</i>, QWidget * <i>parentWidget</i> = 0 )</li>
 <li><div class="fn"/>QStringList <b><a href="quiloader.html#pluginPaths">pluginPaths</a></b> () const</li>
 </ul>
 <ul>
@@ -121,16 +121,16 @@ body { background: #ffffff; color: black; }</style>
 <p>Creates a new widget with the given <i>parent</i> and <i>name</i> using the class specified by <i>className</i>. You can use this function to create any of the widgets returned by the <a href="quiloader.html#availableWidgets">availableWidgets</a>() function.</p>
 <p>The function is also used internally by the <a href="quiloader.html">QUiLoader</a> class whenever it has to create a widget. For that reason, you can subclass the <a href="quiloader.html">QUiLoader</a> class and reimplement this function to intervene the process of constructing an user interface or widget.</p>
 <p>See also <a href="quiloader.html#availableWidgets">availableWidgets</a>() and <a href="quiloader.html#load">load</a>().</p>
-<h3 class="fn"><a name="load"></a><a href="qwidget.html">QWidget</a> * QUiLoader::load ( <a href="qiodevice.html">QIODevice</a> * <i>device</i>, <a href="qwidget.html">QWidget</a> * <i>parent</i> = 0 )</h3>
-<p>Loads a form from the given <i>device</i> and creates a new widget with the given <i>parent</i> to hold its contents.</p>
+<h3 class="fn"><a name="load"></a><a href="qwidget.html">QWidget</a> * QUiLoader::load ( <a href="qiodevice.html">QIODevice</a> * <i>device</i>, <a href="qwidget.html">QWidget</a> * <i>parentWidget</i> = 0 )</h3>
+<p>Loads a form from the given <i>device</i> and creates a new widget with the given <i>parentWidget</i> to hold its contents.</p>
 <p>See also <a href="quiloader.html#createWidget">createWidget</a>().</p>
 <h3 class="fn"><a name="pluginPaths"></a><a href="qstringlist.html">QStringList</a> QUiLoader::pluginPaths () const</h3>
 <p>Returns a list naming the paths the loader searches when locating custom widget plugins.</p>
 <p>See also <a href="quiloader.html#addPluginPath">addPluginPath</a>() and <a href="quiloader.html#clearPluginPaths">clearPluginPaths</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

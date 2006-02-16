@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -873,9 +873,6 @@ QSplitterLayoutStruct *QSplitterPrivate::insertWidget(int index, QWidget *w)
     When you hide() a child its space will be distributed among the
     other children. It will be reinstated when you show() it again.
 
-    \inlineimage qsplitter-m.png Screenshot in Motif style
-    \inlineimage qsplitter-w.png Screenshot in Windows style
-
     \sa QSplitterHandle, QHBoxLayout, QVBoxLayout, QTabWidget
 */
 
@@ -1209,8 +1206,10 @@ void QSplitter::setRubberBand(int pos)
     QRect r = contentsRect();
     const int rBord = 3; // customizable?
     int hw = handleWidth();
-    if (!d->rubberBand)
+    if (!d->rubberBand) {
+        QBoolBlocker block(d->blockChildAdd);
         d->rubberBand = new QRubberBand(QRubberBand::Line, this);
+    }
     if (d->orient == Qt::Horizontal)
         d->rubberBand->setGeometry(QRect(QPoint(pos + hw / 2 - rBord, r.y()),
                                          QSize(2 * rBord, r.height())));

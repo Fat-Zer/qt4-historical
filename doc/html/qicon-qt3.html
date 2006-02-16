@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/gui/image/qicon.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/gui/image/qicon.cpp -->
 <head>
     <title>Qt 4.1: Qt 3 Support Members for QIcon</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -41,24 +41,24 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="Size-enum"></a>enum QIcon::Size</h3>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QIcon::Small</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">Use QStyle::pixelMetric(<a href="qstyle.html#PixelMetric-enum">QStyle::PM_SmallIconSize</a>) instead.</td></tr>
 <tr><td valign="top"><tt>QIcon::Large</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Use QStyle::pixelMetric(<a href="qstyle.html#PixelMetric-enum">QStyle::PM_LargeIconSize</a>) instead.</td></tr>
 <tr><td valign="top"><tt>QIcon::Automatic</tt></td><td align="center" valign="top"><tt>Small</tt></td><td valign="top">N/A.</td></tr>
-</table>
+</table></p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="pixmap-2"></a><a href="qpixmap.html">QPixmap</a> QIcon::pixmap ( <a href="qicon-qt3.html#Size-enum">Size</a> <i>size</i>, <a href="qicon.html#Mode-enum">Mode</a> <i>mode</i>, <a href="qicon.html#State-enum">State</a> <i>state</i> = Off ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Use pixmap(<a href="qsize.html">QSize</a>(...), <i>mode</i>, <i>state</i>), where the first argument is an appropriate <a href="qsize.html">QSize</a> instead of a <a href="qicon-qt3.html#Size-enum">Size</a> value.</p>
 <p>See also <a href="qicon-qt3.html#pixmapSize">pixmapSize</a>().</p>
 <h3 class="fn"><a name="pixmap-3"></a><a href="qpixmap.html">QPixmap</a> QIcon::pixmap ( <a href="qicon-qt3.html#Size-enum">Size</a> <i>size</i>, bool <i>enabled</i>, <a href="qicon.html#State-enum">State</a> <i>state</i> = Off ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Use pixmap(<a href="qsize.html">QSize</a>(...), mode, <i>state</i>), where the first argument is an appropriate <a href="qsize.html">QSize</a> instead of a <a href="qicon-qt3.html#Size-enum">Size</a> value, and the second argument is <a href="qicon.html#Mode-enum">QIcon::Normal</a> or <a href="qicon.html#Mode-enum">QIcon::Disabled</a>, depending on the value of <i>enabled</i>.</p>
 <p>See also <a href="qicon-qt3.html#pixmapSize">pixmapSize</a>().</p>
 <h3 class="fn"><a name="pixmap-4"></a><a href="qpixmap.html">QPixmap</a> QIcon::pixmap () const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Use one of the other <a href="qicon.html#pixmap">pixmap</a>() overloads.</p>
 <h3 class="fn"><a name="pixmapSize"></a><a href="qsize.html">QSize</a> QIcon::pixmapSize ( <a href="qicon-qt3.html#Size-enum">Size</a> <i>which</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Use <a href="qstyle.html#pixelMetric">QStyle::pixelMetric</a>() with <a href="qstyle.html#PixelMetric-enum">QStyle::PM_SmallIconSize</a> or <a href="qstyle.html#PixelMetric-enum">QStyle::PM_LargeIconSize</a> as the first argument, depending on <i>which</i>.</p>
@@ -69,15 +69,15 @@ body { background: #ffffff; color: black; }</style>
 <p>Use addPixmap(<i>pixmap</i>, <i>mode</i>, <i>state</i>) instead. The <i>size</i> parameter is ignored.</p>
 <p>See also <a href="qicon.html#pixmap">pixmap</a>().</p>
 <h3 class="fn"><a name="setPixmap-2"></a>void QIcon::setPixmap ( const <a href="qstring.html">QString</a> &amp; <i>fileName</i>, <a href="qicon-qt3.html#Size-enum">Size</a> <i>size</i>, <a href="qicon.html#Mode-enum">Mode</a> <i>mode</i> = Normal, <a href="qicon.html#State-enum">State</a> <i>state</i> = Off )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Use addFile(<i>fileName</i>, <i>mode</i>, <i>state</i>) instead. The <i>size</i> parameter is ignored.</p>
 <h3 class="fn"><a name="setPixmapSize"></a>void QIcon::setPixmapSize ( <a href="qicon-qt3.html#Size-enum">Size</a> <i>which</i>, const <a href="qsize.html">QSize</a> &amp; <i>size</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>The <a href="qicon.html#pixmap">pixmap</a>() function now takes a <a href="qsize.html">QSize</a> instead of a <a href="qicon-qt3.html#Size-enum">QIcon::Size</a>, so there is no need for this function in new code.</p>
 <p>See also <a href="qicon-qt3.html#pixmapSize">pixmapSize</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -54,7 +54,7 @@
     QStyleOption subclass to paint a push button:
 
     \code
-        void MyPushButton::paintEvent()
+        void MyPushButton::paintEvent(QPaintEvent *)
         {
             QStyleOptionButton option;
             option.initFrom(this);
@@ -2485,6 +2485,10 @@ QStyleOptionComboBox::QStyleOptionComboBox(int version)
 /*!
     \variable QStyleOptionComboBox::popupRect
     \brief The popup rectangle for the combobox.
+
+    This variable is currently unused, you can safely ignore it,
+
+    \sa SC_ComboBoxListBoxPopup
 */
 
 /*!

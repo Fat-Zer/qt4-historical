@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2005-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 2005-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt Designer of the Qt Toolkit.
 **
@@ -148,12 +148,12 @@ VersionDialog::VersionDialog(QWidget *parent)
     QLabel *lbl = new QLabel(this);
     lbl->setText(tr("<h3>%1</h3>"
                     "<br/><br/>Version %2"
-#if defined(QT_OPENSOURCE)
+#if QT_EDITION == QT_EDITION_OPENSOURCE
                     " Open Source Edition"
 #endif
                     "<br/>Qt Designer is a graphical user interface designer "
                     "for Qt applications.<br/><br/>"
-#if defined(QT_OPENSOURCE)
+#if QT_EDITION == QT_EDITION_OPENSOURCE
                     "This version of Qt Designer is part of the Qt Open Source Edition, for use "
                     "in the development of Open Source applications. "
                     "Qt is a comprehensive C++ framework for cross-platform application "
@@ -166,7 +166,7 @@ VersionDialog::VersionDialog(QWidget *parent)
                     "Qt Commercial License Agreement. For details, see the file LICENSE "
                     "that came with this software distribution.<br/>"
 #endif
-                    "<br/>Copyright 2000-2005 Trolltech AS. All rights reserved."
+                    "<br/>Copyright 2000-2006 Trolltech AS. All rights reserved."
                     "<br/><br/>The program is provided AS IS with NO WARRANTY OF ANY KIND,"
                     " INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A"
                     " PARTICULAR PURPOSE.<br/> ").arg(tr("Qt Designer"))

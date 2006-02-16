@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the tools applications of the Qt Toolkit.
 **
@@ -82,7 +82,7 @@ static QByteArray normalizeTypeInternal(const char *t, const char *e, bool fixSc
         } else if (strncmp("long", t+9, 4) == 0
                    // preserve '[unsigned] long long'
                    && (strlen(t + 9 + 4) < 5
-                       || strcmp(t + 9 + 4, " long") != 0
+                       || strncmp(t + 9 + 4, " long", 5) != 0
                       )
                   ) {
             t += 9+4;
@@ -304,6 +304,7 @@ Type Moc::parseType()
 {
     Type type;
     bool hasSignedOrUnsigned = false;
+    bool isVoid = false;
     for (;;) {
         switch (next()) {
             case SIGNED:
@@ -348,6 +349,7 @@ Type Moc::parseType()
         case VOID:
         case BOOL:
             type.name += lexem();
+            isVoid |= (lookup(0) == VOID);
             break;
         default:
             prev();
@@ -361,10 +363,12 @@ Type Moc::parseType()
                     type.name += ' ';
             }
         }
-        if (test(SCOPE))
+        if (test(SCOPE)) {
             type.name += lexem();
-        else
+            type.isScoped = true;
+        } else {
             break;
+        }
     }
     while (test(CONST) || test(VOLATILE) || test(SIGNED) || test(UNSIGNED)
            || test(STAR) || test(AND)) {
@@ -374,6 +378,10 @@ Type Moc::parseType()
             type.referenceType = Type::Reference;
         else if (lookup(0) == STAR)
             type.referenceType = Type::Pointer;
+    }
+    // transform stupid things like 'const void' or 'void const' into 'void'
+    if (isVoid && type.referenceType == Type::NoReference) {
+        type.name = "void";
     }
     return type;
 }
@@ -405,13 +413,15 @@ void Moc::parseFunctionArguments(FunctionDef *def)
             break;
         if (test(IDENTIFIER))
             arg.name = lexem();
-        if (test(LBRACK))
+        while (test(LBRACK)) {
             arg.rightType += lexemUntil(RBRACK);
+        }
         if (test(CONST) || test(VOLATILE)) {
             arg.rightType += ' ';
             arg.rightType += lexem();
         }
         arg.normalizedType = normalizeType(arg.type.name + ' ' + arg.rightType);
+        arg.typeNameForCast = normalizeType(noRef(arg.type.name) + "(*)" + arg.rightType);
         if (test(EQ))
             arg.isDefault = true;
         def->arguments += arg;
@@ -420,7 +430,8 @@ void Moc::parseFunctionArguments(FunctionDef *def)
     }
 }
 
-void Moc::parseFunction(FunctionDef *def, bool inMacro)
+// returns false if the function should be ignored
+bool Moc::parseFunction(FunctionDef *def, bool inMacro)
 {
     def->isVirtual = test(VIRTUAL);
     while (test(INLINE) || test(STATIC))
@@ -433,8 +444,10 @@ void Moc::parseFunction(FunctionDef *def, bool inMacro)
         else
             error();
     }
+    bool scopedFunctionName = false;
     if (test(LPAREN)) {
         def->name = def->type.name;
+        scopedFunctionName = def->type.isScoped;
         def->type = Type("int");
     } else {
         Type tempType = parseType();;
@@ -459,8 +472,9 @@ void Moc::parseFunction(FunctionDef *def, bool inMacro)
         }
         next(LPAREN, "Not a signal or slot declaration");
         def->name = tempType.name;
+        scopedFunctionName = tempType.isScoped;
     }
-
+    
     // we don't support references as return types, it's too dangerous
     if (def->type.referenceType == Type::Reference)
         def->type = Type("void");
@@ -493,6 +507,15 @@ void Moc::parseFunction(FunctionDef *def, bool inMacro)
         else
             error();
     }
+
+    if (scopedFunctionName) {
+        QByteArray msg("Function declaration ");
+        msg += def->name;
+        msg += " contains extra qualification. Ignoring as signal or slot.";
+        warning(msg.constData());
+        return false;
+    }
+    return true;
 }
 
 // like parseFunction, but never aborts with an error
@@ -501,8 +524,10 @@ bool Moc::parseMaybeFunction(FunctionDef *def)
     def->type = parseType();
     if (def->type.name.isEmpty())
         return false;
+    bool scopedFunctionName = false;    
     if (test(LPAREN)) {
         def->name = def->type.name;
+        scopedFunctionName = def->type.isScoped;
         def->type = Type("int");
     } else {
         Type tempType = parseType();;
@@ -528,6 +553,7 @@ bool Moc::parseMaybeFunction(FunctionDef *def)
         if (!test(LPAREN))
             return false;
         def->name = tempType.name;
+        scopedFunctionName = tempType.isScoped;
     }
 
     // we don't support references as return types, it's too dangerous
@@ -542,6 +568,14 @@ bool Moc::parseMaybeFunction(FunctionDef *def)
             return false;
     }
     def->isConst = test(CONST);
+    if (scopedFunctionName
+        && (def->isSignal || def->isSlot || def->isInvokable)) {
+        QByteArray msg("parsemaybe: Function declaration ");
+        msg += def->name;
+        msg += " contains extra qualification. Ignoring as signal or slot.";
+        warning(msg.constData());
+        return false;
+    }
     return true;
 }
 
@@ -809,13 +843,16 @@ void Moc::parseSlots(ClassDef *def, FunctionDef::Access access)
         case FRIEND:
             until(SEMIC);
             continue;
+        case USING:
+            error("'using' directive not supported in 'slots' section");
         default:
             prev();
         }
 
         FunctionDef funcDef;
         funcDef.access = access;
-        parseFunction(&funcDef);
+        if (!parseFunction(&funcDef))
+            continue;
         def->slotList += funcDef;
         while (funcDef.arguments.size() > 0 && funcDef.arguments.last().isDefault) {
             funcDef.wasCloned = true;
@@ -842,6 +879,8 @@ void Moc::parseSignals(ClassDef *def)
         case FRIEND:
             until(SEMIC);
             continue;
+        case USING:
+            error("'using' directive not supported in 'signals' section");
         default:
             prev();
         }
@@ -990,8 +1029,17 @@ void Moc::parseClassInfo(ClassDef *def)
     next(STRING_LITERAL);
     infoDef.name = symbol().unquotedLexem();
     next(COMMA);
-    next(STRING_LITERAL);
-    infoDef.value = symbol().unquotedLexem();
+    if (test(STRING_LITERAL)) {
+        infoDef.value = symbol().unquotedLexem();
+    } else {
+        // support Q_CLASSINFO("help", QT_TR_NOOP("blah"))
+        next(IDENTIFIER);
+        next(LPAREN);
+        next(STRING_LITERAL);
+        infoDef.value = symbol().unquotedLexem();
+        next(RPAREN);
+    }
+    next(RPAREN);
     def->classInfoList += infoDef;
 }
 

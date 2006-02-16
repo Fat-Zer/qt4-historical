@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/qt3support/other/q3dragobject.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/qt3support/other/q3dragobject.cpp -->
 <head>
     <title>Qt 4.1: Q3DragObject Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -83,14 +83,14 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="DragMode-enum"></a>enum Q3DragObject::DragMode</h3>
 <p>This enum describes the possible drag modes.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Q3DragObject::DragDefault</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The mode is determined heuristically.</td></tr>
 <tr><td valign="top"><tt>Q3DragObject::DragCopy</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The data is copied.</td></tr>
 <tr><td valign="top"><tt>Q3DragObject::DragMove</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">The data is moved.</td></tr>
 <tr><td valign="top"><tt>Q3DragObject::DragLink</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">The data is linked.</td></tr>
-<tr><td valign="top"><tt>Q3DragObject::DragCopyOrMove</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">The user chooses the mode by using a control key to switch from the default.</td></tr>
-</table>
+<tr><td valign="top"><tt>Q3DragObject::DragCopyOrMove</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">The user chooses the mode by using the <b>Shift</b> key to switch from the default copy mode to move mode.</td></tr>
+</table></p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="Q3DragObject"></a>Q3DragObject::Q3DragObject ( <a href="qwidget.html">QWidget</a> * <i>dragSource</i> = 0, const char * <i>name</i> = 0 )</h3>
@@ -104,7 +104,7 @@ body { background: #ffffff; color: black; }</style>
 <p>If the drag contains <i>references</i> to information (e.g. file names in a <a href="q3uridrag.html">Q3UriDrag</a> are references) then the return value should always be ignored, as the target is expected to directly manipulate the content referred to by the drag object. On X11 the return value should always be correct anyway, but on Windows this is not necessarily the case; e.g. the file manager starts a background process to move files, so the source <i>must not</i> delete the files!</p>
 <p>Note that on Windows the drag operation will start a blocking modal event loop that will not dispatch any QTimers.</p>
 <h3 class="fn"><a name="drag-2"></a>bool Q3DragObject::drag ( <a href="q3dragobject.html#DragMode-enum">DragMode</a> <i>mode</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Starts a drag operation using the contents of this object.</p>
 <p>At this point, the object becomes owned by Qt, not the application. You should not delete the drag object or anything it references. The actual transfer of data to the target application will be done during future event processing - after that time the drag object will be deleted.</p>
 <p>Returns true if the dragged data was dragged as a <i>move</i>, indicating that the caller should remove the original source of the data (the drag object must continue to have a copy); otherwise returns false.</p>
@@ -130,7 +130,7 @@ body { background: #ffffff; color: black; }</style>
 <p><b>Warning:</b> We have seen problems with drag cursors on different graphics hardware and driver software on Windows. Setting the graphics acceleration in the display settings down one tick solved the problems in all cases.</p>
 <p>See also <a href="q3dragobject.html#pixmap">pixmap</a>().</p>
 <h3 class="fn"><a name="setPixmap-2"></a>void Q3DragObject::setPixmap ( <a href="qpixmap.html">QPixmap</a> <i>pm</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Uses a hotspot that positions the pixmap below and to the right of the mouse pointer. This allows the user to clearly see the point on the window where they are dragging the data.</p>
 <h3 class="fn"><a name="source"></a><a href="qwidget.html">QWidget</a> * Q3DragObject::source ()</h3>
 <p>Returns a pointer to the widget where this object originated (the drag source).</p>
@@ -139,8 +139,8 @@ body { background: #ffffff; color: black; }</style>
 <p>This can be useful for detecting the case where drag and drop is to and from the same widget.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

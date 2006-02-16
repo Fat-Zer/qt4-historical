@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -578,6 +578,10 @@ void QMapData::dump()
     order. Keys that occur multiple times in the map (because items
     were inserted with insertMulti(), or unite() was used), also
     occur multiple times in the list.
+
+    To obtain a list of unique keys, where each key from the map only
+    occurs once, use an intermediate QSet object to filter out
+    duplicates.
 
     The order is guaranteed to be the same as that used by values().
 

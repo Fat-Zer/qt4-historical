@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/gui/painting/qbrush.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/gui/painting/qbrush.cpp -->
 <head>
     <title>Qt 4.1: QRadialGradient Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -39,25 +39,37 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Detailed Description</h2>
 <p>The QRadialGradient class is used in combination with <a href="qbrush.html">QBrush</a> to specify a radial gradient brush.</p>
-<p>See also <a href="qbrush.html">QBrush</a>.</p>
+<p>Radial gradients interpolate colors between a focal point and end points on a circle surrounding it. Outside the end points the gradient is either padded, reflected or repeated depending on the currently set <a href="qgradient.html#Spread-enum">spread</a> method:</p>
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
+<tr valign="top" bgcolor="#f0f0f0"><td><img src="images/qradialgradient-pad.png" /></td><td><img src="images/qradialgradient-reflect.png" /></td><td><img src="images/qradialgradient-repeat.png" /></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qgradient.html#Spread-enum">PadSpread</a> (default)</td><td><a href="qgradient.html#Spread-enum">ReflectSpread</a></td><td><a href="qgradient.html#Spread-enum">RepeatSpread</a></td></tr>
+</table></p>
+<p>The colors in a gradient is defined using stop points of the <a href="qgradient.html#QGradientStop-typedef">QGradientStop</a> type, i.e. a position and a color. Use the <a href="qgradient.html#setColorAt">QGradient::setColorAt</a>() or the <a href="qgradient.html#setStops">QGradient::setStops</a>() function to define the stop points. It is the gradient's complete set of stop points that describes how the gradient area should be filled. If no stop points have been specified, a gradient of black at 0 to white at 1 is used.</p>
+<p>In addition to the functions inherited from <a href="qgradient.html">QGradient</a>, the QRadialGradient class provides the <a href="qradialgradient.html#center">center</a>(), <a href="qradialgradient.html#focalPoint">focalPoint</a>() and <a href="qradialgradient.html#radius">radius</a>() functions returning the gradient's center, focal point and radius respectively.</p>
+<p>See also <a href="qlineargradient.html">QLinearGradient</a>, <a href="qconicalgradient.html">QConicalGradient</a>, and <a href="demos-gradients.html">The Gradients Demo</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QRadialGradient"></a>QRadialGradient::QRadialGradient ( const <a href="qpointf.html">QPointF</a> &amp; <i>center</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>radius</i>, const <a href="qpointf.html">QPointF</a> &amp; <i>focalPoint</i> = QPointF() )</h3>
-<p>Constructs a radial gradient centered at <i>center</i> with radius <i>radius</i>. The <i>focalPoint</i> can be used to define the focal point of the gradient inside the circle.</p>
-<p>The default focalPoint is the circle center.</p>
+<p>Constructs a radial gradient with the given <i>center</i>, <i>radius</i> and <i>focalPoint</i>.</p>
+<p>The default focalPoint is the circle center. If the <i>focalPoint</i> is outside the circle defined by the given <i>center</i> and <i>radius</i>, it is clamped to the circle's boundary.</p>
+<p>See also <a href="qgradient.html#setColorAt">QGradient::setColorAt</a>() and <a href="qgradient.html#setStops">QGradient::setStops</a>().</p>
 <h3 class="fn"><a name="QRadialGradient-2"></a>QRadialGradient::QRadialGradient ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>cx</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>cy</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>radius</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>fx</i> = 0, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>fy</i> = 0 )</h3>
-<p>Constructs a radial gradient centered at <i>cx</i>, <i>cy</i> with radius <i>radius</i>. The focal point <i>fx</i>, <i>fy</i> can be used to define the focal point of the gradient inside the circle.</p>
-<p>The default focalPoint is the circle center.</p>
+<p>Constructs a radial gradient with the given center (<i>cx</i>, <i>cy</i>), <i>radius</i> and focal point (<i>fx</i>, <i>fy</i>).</p>
+<p>The default focal point is the circle center. If the focal point is outside the circle defined by the given center and <i>radius</i>, it is clamped to the circle's boundary.</p>
+<p>See also <a href="qgradient.html#setColorAt">QGradient::setColorAt</a>() and <a href="qgradient.html#setStops">QGradient::setStops</a>().</p>
 <h3 class="fn"><a name="center"></a><a href="qpointf.html">QPointF</a> QRadialGradient::center () const</h3>
 <p>Returns the center of this radial gradient in logical coordinates.</p>
+<p>See also <a href="qgradient.html#stops">QGradient::stops</a>().</p>
 <h3 class="fn"><a name="focalPoint"></a><a href="qpointf.html">QPointF</a> QRadialGradient::focalPoint () const</h3>
 <p>Returns the focal point of this radial gradient in logical coordinates.</p>
+<p>See also <a href="qgradient.html#stops">QGradient::stops</a>().</p>
 <h3 class="fn"><a name="radius"></a><a href="qtglobal.html#qreal-typedef">qreal</a> QRadialGradient::radius () const</h3>
 <p>Returns the radius of the radial gradient in logical coordinates.</p>
+<p>See also <a href="qgradient.html#stops">QGradient::stops</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

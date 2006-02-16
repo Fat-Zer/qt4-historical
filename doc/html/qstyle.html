@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/gui/styles/qstyle.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/gui/styles/qstyle.cpp -->
 <head>
     <title>Qt 4.1: QStyle Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -242,7 +242,7 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="ComplexControl-enum"></a>enum QStyle::ComplexControl</h3>
 <p>This enum represents a ComplexControl. ComplexControls have different behavior depending upon where the user clicks on them or which keys are pressed.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QStyle::CC_SpinBox</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">A spinbox, like <a href="qspinbox.html">QSpinBox</a></td></tr>
 <tr><td valign="top"><tt>QStyle::CC_ComboBox</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">A combobox, like <a href="qcombobox.html">QComboBox</a></td></tr>
@@ -254,11 +254,11 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QStyle::CC_GroupBox</tt></td><td align="center" valign="top"><tt>8</tt></td><td valign="top">A group box, like <a href="qgroupbox.html">QGroupBox</a></td></tr>
 <tr><td valign="top"><tt>QStyle::CC_Dial</tt></td><td align="center" valign="top"><tt>7</tt></td><td valign="top">A dial, like <a href="qdial.html">QDial</a></td></tr>
 <tr><td valign="top"><tt>QStyle::CC_CustomBase</tt></td><td align="center" valign="top"><tt>0xf0000000</tt></td><td valign="top">Base value for custom ControlElements. Custom values must be greater than this value.</td></tr>
-</table>
+</table></p>
 <p>See also <a href="qstyle.html#SubControl-enum">SubControl</a> and <a href="qstyle.html#drawComplexControl">drawComplexControl</a>().</p>
 <h3 class="fn"><a name="ContentsType-enum"></a>enum QStyle::ContentsType</h3>
 <p>This enum represents a ContentsType. It is used to calculate sizes for the contents of various widgets.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QStyle::CT_CheckBox</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">A check box, like <a href="qcheckbox.html">QCheckBox</a></td></tr>
 <tr><td valign="top"><tt>QStyle::CT_ComboBox</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">A combo box, like <a href="qcombobox.html">QComboBox</a></td></tr>
@@ -284,11 +284,11 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QStyle::CT_ToolButton</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">A tool button, like <a href="qtoolbutton.html">QToolButton</a></td></tr>
 <tr><td valign="top"><tt>QStyle::CT_GroupBox</tt></td><td align="center" valign="top"><tt>22</tt></td><td valign="top">A group box, like <a href="qgroupbox.html">QGroupBox</a></td></tr>
 <tr><td valign="top"><tt>QStyle::CT_CustomBase</tt></td><td align="center" valign="top"><tt>0xf0000000</tt></td><td valign="top">Base value for custom ControlElements. Custom values must be greater than this value.</td></tr>
-</table>
+</table></p>
 <p>See also <a href="qstyle.html#sizeFromContents">sizeFromContents</a>().</p>
 <h3 class="fn"><a name="ControlElement-enum"></a>enum QStyle::ControlElement</h3>
 <p>This enum represents a ControlElement. A ControlElement is part of a widget that performs some action or displays information to the user.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QStyle::CE_PushButton</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">A <a href="qpushbutton.html">QPushButton</a>, draws CE_PushButtonBevel, CE_PushButtonLabel and <a href="qstyle.html#PrimitiveElement-enum">PE_FrameFocusRect</a></td></tr>
 <tr><td valign="top"><tt>QStyle::CE_PushButtonBevel</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The bevel and default indicator of a <a href="qpushbutton.html">QPushButton</a>.</td></tr>
@@ -333,11 +333,11 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QStyle::CE_CustomBase</tt></td><td align="center" valign="top"><tt>0xf0000000</tt></td><td valign="top">Base value for custom ControlElements; custom values must be greater than this value</td></tr>
 <tr><td valign="top"><tt>QStyle::CE_ComboBoxLabel</tt></td><td align="center" valign="top"><tt>40</tt></td><td valign="top">The label of a non-editable <a href="qcombobox.html">QComboBox</a></td></tr>
 <tr><td valign="top"><tt>QStyle::CE_ToolBar</tt></td><td align="center" valign="top"><tt>41</tt></td><td valign="top">A toolbar like <a href="qtoolbar.html">QToolBar</a></td></tr>
-</table>
+</table></p>
 <p>See also <a href="qstyle.html#drawControl">drawControl</a>().</p>
 <h3 class="fn"><a name="PixelMetric-enum"></a>enum QStyle::PixelMetric</h3>
 <p>This enum represents a PixelMetric. A PixelMetric is a style dependent size represented as a single pixel value.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QStyle::PM_ButtonMargin</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">Amount of whitespace between push button labels and the frame</td></tr>
 <tr><td valign="top"><tt>QStyle::PM_ButtonDefaultIndicator</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Width of the default-button indicator frame</td></tr>
@@ -417,11 +417,11 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QStyle::PM_TabBarIconSize</tt></td><td align="center" valign="top"><tt>73</tt></td><td valign="top">The default icon size for a tab bar.</td></tr>
 <tr><td valign="top"><tt>QStyle::PM_SizeGripSize</tt></td><td align="center" valign="top"><tt>74</tt></td><td valign="top">The size of a size grip</td></tr>
 <tr><td valign="top"><tt>QStyle::PM_CustomBase</tt></td><td align="center" valign="top"><tt>0xf0000000</tt></td><td valign="top">Base value for custom ControlElements Custom values must be greater than this value</td></tr>
-</table>
+</table></p>
 <p>See also <a href="qstyle.html#pixelMetric">pixelMetric</a>().</p>
 <h3 class="fn"><a name="PrimitiveElement-enum"></a>enum QStyle::PrimitiveElement</h3>
 <p>This enum represents a style's PrimitiveElements. A PrimitiveElement is a common GUI element, such as a checkbox indicator or button bevel.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QStyle::PE_PanelButtonCommand</tt></td><td align="center" valign="top"><tt>18</tt></td><td valign="top">Button used to initiate an action, for example, a <a href="qpushbutton.html">QPushButton</a>.</td></tr>
 <tr><td valign="top"><tt>QStyle::PE_FrameDefaultButton</tt></td><td align="center" valign="top"><tt>6</tt></td><td valign="top">This frame around a default button, e.g. in a dialog.</td></tr>
@@ -469,11 +469,11 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QStyle::PE_FrameTabBarBase</tt></td><td align="center" valign="top"><tt>17</tt></td><td valign="top">The frame that is drawn for a tabbar, ususally drawn for a tabbar that isn't part of a tab widget</td></tr>
 <tr><td valign="top"><tt>QStyle::PE_IndicatorTabTear</tt></td><td align="center" valign="top"><tt>44</tt></td><td valign="top">An indicator that a tab is partially scrolled out of the visible tab bar when there are many tabs.</td></tr>
 <tr><td valign="top"><tt>QStyle::PE_CustomBase</tt></td><td align="center" valign="top"><tt>0xf000000</tt></td><td valign="top">Base value for custom PrimitiveElements. All values above this are reserved for custom use. Custom values must be greater than this value.</td></tr>
-</table>
+</table></p>
 <p>See also <a href="qstyle.html#drawPrimitive">drawPrimitive</a>().</p>
 <h3 class="fn"><a name="StandardPixmap-enum"></a>enum QStyle::StandardPixmap</h3>
 <p>This enum represents a StandardPixmap. A StandardPixmap is a pixmap that can follow some existing GUI style or guideline.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QStyle::SP_TitleBarMinButton</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Minimize button on title bars (e.g., in <a href="qworkspace.html">QWorkspace</a>)</td></tr>
 <tr><td valign="top"><tt>QStyle::SP_TitleBarMenuButton</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">Menu button on a title bar</td></tr>
@@ -513,11 +513,11 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QStyle::SP_ToolBarHorizontalExtensionButton</tt></td><td align="center" valign="top"><tt>26</tt></td><td valign="top">Extension button for horizontal toolbars</td></tr>
 <tr><td valign="top"><tt>QStyle::SP_ToolBarVerticalExtensionButton</tt></td><td align="center" valign="top"><tt>27</tt></td><td valign="top">Extension button for vertical toolbars</td></tr>
 <tr><td valign="top"><tt>QStyle::SP_CustomBase</tt></td><td align="center" valign="top"><tt>0xf0000000</tt></td><td valign="top">Base value for custom ControlElements; custom values must be greater than this value</td></tr>
-</table>
+</table></p>
 <p>See also <a href="qstyle.html#standardPixmap">standardPixmap</a>().</p>
 <h3 class="flags"><a name="StateFlag-enum"></a>enum QStyle::StateFlag<br />flags QStyle::State</h3>
 <p>This enum represents flags for drawing PrimitiveElements. Not all primitives use all of these flags. Note that these flags may mean different things to different primitives.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="40%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="40%">
 <tr><th width="60%">Constant</th><th width="40%">Value</th></tr>
 <tr><td valign="top"><tt>QStyle::State_Active</tt></td><td align="center" valign="top"><tt>0x00010000</tt></td></tr>
 <tr><td valign="top"><tt>QStyle::State_AutoRaise</tt></td><td align="center" valign="top"><tt>0x00001000</tt></td></tr>
@@ -545,12 +545,12 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QStyle::State_UpArrow</tt></td><td align="center" valign="top"><tt>0x00004000</tt></td></tr>
 <tr><td valign="top"><tt>QStyle::State_KeyboardFocusChange</tt></td><td align="center" valign="top"><tt>0x00800000</tt></td></tr>
 <tr><td valign="top"><tt>QStyle::State_ReadOnly</tt></td><td align="center" valign="top"><tt>0x02000000</tt></td></tr>
-</table>
+</table></p>
 <p>The State type is a typedef for <a href="qflags.html">QFlags</a>&lt;StateFlag&gt;. It stores an OR combination of StateFlag values.</p>
 <p>See also <a href="qstyle.html#drawPrimitive">drawPrimitive</a>().</p>
 <h3 class="fn"><a name="StyleHint-enum"></a>enum QStyle::StyleHint</h3>
 <p>This enum represents a StyleHint. A StyleHint is a general look and/or feel hint.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QStyle::SH_EtchDisabledText</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">Disabled text is &quot;etched&quot; as it is on Windows.</td></tr>
 <tr><td valign="top"><tt>QStyle::SH_DitherDisabledText</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">&nbsp;</td></tr>
@@ -619,11 +619,11 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QStyle::SH_ItemView_EllipsisLocation</tt></td><td align="center" valign="top"><tt>60</tt></td><td valign="top">The location where ellipses should be added for item text that is too long to fit in an view item.</td></tr>
 <tr><td valign="top"><tt>QStyle::SH_ItemView_ShowDecorationSelected</tt></td><td align="center" valign="top"><tt>61</tt></td><td valign="top">When an item in an item view is selected, also highlight the branch or other decoration.</td></tr>
 <tr><td valign="top"><tt>QStyle::SH_ItemView_ActivateItemOnSingleClick</tt></td><td align="center" valign="top"><tt>62</tt></td><td valign="top">Emit the activated signal when the user single clicks on an item in an item in an item view. Otherwise the signal is emitted when the user double clicks on an item.</td></tr>
-</table>
+</table></p>
 <p>See also <a href="qstyle.html#styleHint">styleHint</a>().</p>
 <h3 class="flags"><a name="SubControl-enum"></a>enum QStyle::SubControl<br />flags QStyle::SubControls</h3>
 <p>This enum represents a SubControl within a <a href="qstyle.html#ComplexControl-enum">ComplexControl</a>.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QStyle::SC_None</tt></td><td align="center" valign="top"><tt>0x00000000</tt></td><td valign="top">Special value that matches no other SubControl.</td></tr>
 <tr><td valign="top"><tt>QStyle::SC_ScrollBarAddLine</tt></td><td align="center" valign="top"><tt>0x00000001</tt></td><td valign="top">Scroll bar add line (i.e., down/right arrow); see also <a href="qscrollbar.html">QScrollBar</a></td></tr>
@@ -666,12 +666,12 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QStyle::SC_GroupBoxCheckBox</tt></td><td align="center" valign="top"><tt>0x00000001</tt></td><td valign="top">The optional check box of a group box</td></tr>
 <tr><td valign="top"><tt>QStyle::SC_GroupBoxContents</tt></td><td align="center" valign="top"><tt>0x00000004</tt></td><td valign="top">The group box contents</td></tr>
 <tr><td valign="top"><tt>QStyle::SC_All</tt></td><td align="center" valign="top"><tt>0xffffffff</tt></td><td valign="top">Special value that matches all SubControls</td></tr>
-</table>
+</table></p>
 <p>The SubControls type is a typedef for <a href="qflags.html">QFlags</a>&lt;SubControl&gt;. It stores an OR combination of SubControl values.</p>
 <p>See also <a href="qstyle.html#ComplexControl-enum">ComplexControl</a>.</p>
 <h3 class="fn"><a name="SubElement-enum"></a>enum QStyle::SubElement</h3>
 <p>This enum represents a sub-area of a widget. Style implementations use these areas to draw the different parts of a widget.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QStyle::SE_PushButtonContents</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">Area containing the label (icon with text or pixmap)</td></tr>
 <tr><td valign="top"><tt>QStyle::SE_PushButtonFocusRect</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Area for the focus rect (usually larger than the contents rect)</td></tr>
@@ -710,7 +710,7 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QStyle::SE_TabBarTearIndicator</tt></td><td align="center" valign="top"><tt>34</tt></td><td valign="top">Area for the tear indicator on a tab bar with scroll arrows.</td></tr>
 <tr><td valign="top"><tt>QStyle::SE_TreeViewDisclosureItem</tt></td><td align="center" valign="top"><tt>35</tt></td><td valign="top">Area for the actual disclosure item in a tree branch.</td></tr>
 <tr><td valign="top"><tt>QStyle::SE_CustomBase</tt></td><td align="center" valign="top"><tt>0xf0000000</tt></td><td valign="top">Base value for custom ControlElements Custom values must be greater than this value</td></tr>
-</table>
+</table></p>
 <p>See also <a href="qstyle.html#subElementRect">subElementRect</a>().</p>
 <hr />
 <h2>Member Function Documentation</h2>
@@ -725,7 +725,7 @@ body { background: #ffffff; color: black; }</style>
 <p>The <i>widget</i> argument is optional and may contain a widget to aid in drawing <i>control</i>.</p>
 <p>The <i>option</i> parameter is a pointer to a <a href="qstyleoptioncomplex.html">QStyleOptionComplex</a> structure that can be cast to the correct structure. Note that the <tt>rect</tt> member of <i>option</i> must be in logical coordinates. Reimplementations of this function should use <a href="qstyle.html#visualRect">visualRect</a>() to change the logical coordinates into screen coordinates before calling <a href="qstyle.html#drawPrimitive">drawPrimitive</a>() or <a href="qstyle.html#drawControl">drawControl</a>().</p>
 <p>Here is a table listing the elements and what they can be cast to, along with an explaination of the flags.</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th><a href="qstyle.html#ComplexControl-enum">ComplexControl</a></th><th>Option Cast</th><th>Style Flag</th><th>Remark</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td rowspan="2"><a href="qstyle.html#ComplexControl-enum">CC_SpinBox</a></td><td rowspan="2"><a href="qstyleoptionspinbox.html">QStyleOptionSpinBox</a></td><td><a href="qstyle.html#StateFlag-enum">State_Enabled</a></td><td>Set if the spin box is enabled</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qstyle.html#StateFlag-enum">State_HasFocus</a></td><td>Set if the spin box has input focus</td></tr>
@@ -745,13 +745,13 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qstyle.html#StateFlag-enum">State_Raised</a></td><td>Set if the button is not down, not on, and doesn't contain the mouse when auto-raise is enabled</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qstyle.html#ComplexControl-enum">CC_TitleBar</a></td><td><a href="qstyleoptiontitlebar.html">QStyleOptionTitleBar</a></td><td><a href="qstyle.html#StateFlag-enum">State_Enabled</a></td><td>Set if the title bar is enabled</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qstyle.html#ComplexControl-enum">CC_Q3ListView</a></td><td><a href="qstyleoptionq3listview.html">QStyleOptionQ3ListView</a></td><td><a href="qstyle.html#StateFlag-enum">State_Enabled</a></td><td>Set if the list view is enabled</td></tr>
-</table>
+</table></p>
 <p>See also <a href="qstyle.html#ComplexControl-enum">ComplexControl</a>, <a href="qstyle.html#SubControl-enum">SubControl</a>, and <a href="qstyleoptioncomplex.html">QStyleOptionComplex</a>.</p>
 <h3 class="fn"><a name="drawControl"></a>void QStyle::drawControl ( <a href="qstyle.html#ControlElement-enum">ControlElement</a> <i>element</i>, const <a href="qstyleoption.html">QStyleOption</a> * <i>option</i>, <a href="qpainter.html">QPainter</a> * <i>painter</i>, const <a href="qwidget.html">QWidget</a> * <i>widget</i> = 0 ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Draws the <a href="qstyle.html#ControlElement-enum">ControlElement</a> <i>element</i> with <i>painter</i> with the style options specified by <i>option</i>.</p>
 <p>The <i>widget</i> argument is optional and may contain a widget that may aid in drawing the control.</p>
 <p>What follows is a table of the elements and the <a href="qstyleoption.html">QStyleOption</a> structure the <i>option</i> parameter can cast to. The flags stored in the <a href="qstyleoption.html">QStyleOption</a> state variable are also listed. If a <a href="qstyle.html#ControlElement-enum">ControlElement</a> is not listed here, it uses a plain <a href="qstyleoption.html">QStyleOption</a>.</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th><a href="qstyle.html#ControlElement-enum">ControlElement</a></th><th>Option Cast</th><th>Style Flag</th><th>Remark</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td rowspan="4"><a href="qstyle.html#ControlElement-enum">CE_MenuItem</a>, <a href="qstyle.html#ControlElement-enum">CE_MenuBarItem</a></td><td rowspan="4"><a href="qstyleoptionmenuitem.html">QStyleOptionMenuItem</a></td><td><a href="qstyle.html#StateFlag-enum">State_Selected</a></td><td>The menu item is currently selected item</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qstyle.html#StateFlag-enum">State_Enabled</a></td><td>The item is enabled</td></tr>
@@ -782,7 +782,7 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#f0f0f0"><td rowspan="3"><a href="qstyle.html#ControlElement-enum">CE_HeaderSection</a></td><td rowspan="3"><a href="qstyleoptionheader.html">QStyleOptionHeader</a></td><td><a href="qstyle.html#StateFlag-enum">State_Sunken</a></td><td>Indicates that the section is pressed.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qstyle.html#StateFlag-enum">State_UpArrow</a></td><td>Indicates that the sort indicator should be pointing up.</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qstyle.html#StateFlag-enum">State_DownArrow</a></td><td>Indicates that the sort indicator should be pointing down.</td></tr>
-</table>
+</table></p>
 <p>See also <a href="qstyle.html#ControlElement-enum">ControlElement</a>, <a href="qstyle.html#StateFlag-enum">State</a>, and <a href="qstyleoption.html">QStyleOption</a>.</p>
 <h3 class="fn"><a name="drawItemPixmap"></a>void QStyle::drawItemPixmap ( <a href="qpainter.html">QPainter</a> * <i>painter</i>, const <a href="qrect.html">QRect</a> &amp; <i>rect</i>, int <i>alignment</i>, const <a href="qpixmap.html">QPixmap</a> &amp; <i>pixmap</i> ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Draws the <i>pixmap</i> in rectangle <i>rect</i> with alignment <i>alignment</i> using <i>painter</i>.</p>
@@ -796,7 +796,7 @@ body { background: #ffffff; color: black; }</style>
 <p>The <i>widget</i> argument is optional and may contain a widget that may aid in drawing the primitive.</p>
 <p>What follows is a table of the elements and the <a href="qstyleoption.html">QStyleOption</a> structure the <i>option</i> parameter can be cast to. The flags stored in the <a href="qstyleoption.html">QStyleOption</a> state variable are also listed. If a <a href="qstyle.html#PrimitiveElement-enum">PrimitiveElement</a> is not listed here, it uses a plain <a href="qstyleoption.html">QStyleOption</a>.</p>
 <p>The <a href="qstyleoption.html">QStyleOption</a> is the the following for the following types of PrimitiveElements.</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th><a href="qstyle.html#PrimitiveElement-enum">PrimitiveElement</a></th><th>Option Cast</th><th>Style Flag</th><th>Remark</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qstyle.html#PrimitiveElement-enum">PE_FrameFocusRect</a></td><td><a href="qstyleoptionfocusrect.html">QStyleOptionFocusRect</a></td><td><a href="qstyle.html#StateFlag-enum">State_FocusAtBorder</a></td><td>Whether the focus is is at the border or inside the widget.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td rowspan="2"><a href="qstyle.html#PrimitiveElement-enum">PE_IndicatorCheckBox</a></td><td rowspan="2"><a href="qstyleoptionbutton.html">QStyleOptionButton</a></td><td><a href="qstyle.html#StateFlag-enum">State_NoChange</a></td><td>Indicates a &quot;tri-state&quot; checkbox.</td></tr>
@@ -812,7 +812,7 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qstyle.html#PrimitiveElement-enum">PE_IndicatorToolBarHandle</a></td><td><a href="qstyleoption.html">QStyleOption</a></td><td><a href="qstyle.html#StateFlag-enum">State_Horizontal</a></td><td>Indicates that the window handle is horizontal instead of vertical.</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qstyle.html#PrimitiveElement-enum">PE_Q3DockWindowSeparator</a></td><td><a href="qstyleoption.html">QStyleOption</a></td><td><a href="qstyle.html#StateFlag-enum">State_Horizontal</a></td><td>Indicates that the separator is horizontal instead of vertical.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qstyle.html#PrimitiveElement-enum">PE_IndicatorSpinPlus</a>, <a href="qstyle.html#PrimitiveElement-enum">PE_IndicatorSpinMinus</a>, <a href="qstyle.html#PrimitiveElement-enum">PE_IndicatorSpinUp</a>, <a href="qstyle.html#PrimitiveElement-enum">PE_IndicatorSpinDown</a>,</td><td><a href="qstyleoptionspinbox.html">QStyleOptionSpinBox</a></td><td><a href="qstyle.html#StateFlag-enum">State_Sunken</a></td><td>Indicates that the button is pressed.</td></tr>
-</table>
+</table></p>
 <p>See also <a href="qstyle.html#PrimitiveElement-enum">PrimitiveElement</a>, <a href="qstyle.html#StateFlag-enum">State</a>, and <a href="qstyleoption.html">QStyleOption</a>.</p>
 <h3 class="fn"><a name="generatedIconPixmap"></a><a href="qpixmap.html">QPixmap</a> QStyle::generatedIconPixmap ( <a href="qicon.html#Mode-enum">QIcon::Mode</a> <i>iconMode</i>, const <a href="qpixmap.html">QPixmap</a> &amp; <i>pixmap</i>, const <a href="qstyleoption.html">QStyleOption</a> * <i>option</i> ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Returns a pixmap styled to conform to <i>iconMode</i> description out of <i>pixmap</i>, and taking into account the palette specified by <i>option</i>.</p>
@@ -832,7 +832,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qt.html#AlignmentFlag-enum">Qt::Alignment</a>.</p>
 <h3 class="fn"><a name="pixelMetric"></a>int QStyle::pixelMetric ( <a href="qstyle.html#PixelMetric-enum">PixelMetric</a> <i>metric</i>, const <a href="qstyleoption.html">QStyleOption</a> * <i>option</i> = 0, const <a href="qwidget.html">QWidget</a> * <i>widget</i> = 0 ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Returns the pixel metric for the given <i>metric</i>. The <i>option</i> and <i>widget</i> can be used for calculating the metric. The <i>option</i> can be cast to the appropriate type based on the value of <i>metric</i>. Note that <i>option</i> may be zero even for PixelMetrics that can make use of <i>option</i>. See the table below for the appropriate <i>option</i> casts:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th><a href="qstyle.html#PixelMetric-enum">PixelMetric</a></th><th>Option Cast</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qstyle.html#PixelMetric-enum">PM_SliderControlThickness</a></td><td><a href="qstyleoptionslider.html">QStyleOptionSlider</a></td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qstyle.html#PixelMetric-enum">PM_SliderLength</a></td><td><a href="qstyleoptionslider.html">QStyleOptionSlider</a></td></tr>
@@ -844,7 +844,7 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qstyle.html#PixelMetric-enum">PM_TabBarTabVSpace</a></td><td><a href="qstyleoptiontab.html">QStyleOptionTab</a></td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qstyle.html#PixelMetric-enum">PM_TabBarBaseHeight</a></td><td><a href="qstyleoptiontab.html">QStyleOptionTab</a></td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qstyle.html#PixelMetric-enum">PM_TabBarBaseOverlap</a></td><td><a href="qstyleoptiontab.html">QStyleOptionTab</a></td></tr>
-</table>
+</table></p>
 <p>In general, the <i>widget</i> argument is not used.</p>
 <h3 class="fn"><a name="polish"></a>void QStyle::polish ( <a href="qwidget.html">QWidget</a> * <i>widget</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Initializes the appearance of <i>widget</i>.</p>
@@ -853,17 +853,17 @@ body { background: #ffffff; color: black; }</style>
 <p>The <a href="qobject.html#inherits">QWidget::inherits</a>() function may provide enough information to allow class-specific customizations. But be careful not to hard-code things too much because new <a href="qstyle.html">QStyle</a> subclasses are expected to work reasonably with all current and <i>future</i> widgets.</p>
 <p>See also <a href="qstyle.html#unpolish">unpolish</a>().</p>
 <h3 class="fn"><a name="polish-2"></a>void QStyle::polish ( <a href="qapplication.html">QApplication</a> * <i>app</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Late initialization of the <a href="qapplication.html">QApplication</a> object <i>app</i>.</p>
 <p>See also <a href="qstyle.html#unpolish">unpolish</a>().</p>
 <h3 class="fn"><a name="polish-3"></a>void QStyle::polish ( <a href="qpalette.html">QPalette</a> &amp; <i>pal</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>The style may have certain requirements for color palettes. In this function it has the chance to change the palette <i>pal</i> according to these requirements.</p>
 <p>See also <a href="qpalette.html">QPalette</a> and <a href="qapplication.html#setPalette">QApplication::setPalette</a>().</p>
 <h3 class="fn"><a name="sizeFromContents"></a><a href="qsize.html">QSize</a> QStyle::sizeFromContents ( <a href="qstyle.html#ContentsType-enum">ContentsType</a> <i>type</i>, const <a href="qstyleoption.html">QStyleOption</a> * <i>option</i>, const <a href="qsize.html">QSize</a> &amp; <i>contentsSize</i>, const <a href="qwidget.html">QWidget</a> * <i>widget</i> = 0 ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Returns the size of styled object described in <i>option</i> based on the contents size <i>contentsSize</i>.</p>
 <p>The <i>option</i> argument is a pointer to a <a href="qstyleoption.html">QStyleOption</a> or one of its subclasses. The <i>option</i> can be cast to the appropriate type based on the value of <i>type</i>. The widget <i>widget</i> is optional argument and can contain extra information used for calculating the size. See the table below for the appropriate <i>option</i> usage:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th><a href="qstyle.html#ContentsType-enum">ContentsType</a></th><th>Option Cast</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qstyle.html#ContentsType-enum">CT_PushButton</a></td><td><a href="qstyleoptionbutton.html">QStyleOptionButton</a></td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qstyle.html#ContentsType-enum">CT_CheckBox</a></td><td><a href="qstyleoptionbutton.html">QStyleOptionButton</a></td></tr>
@@ -874,7 +874,7 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qstyle.html#ContentsType-enum">CT_Q3DockWindow</a></td><td><a href="qstyleoptionq3dockwindow.html">QStyleOptionQ3DockWindow</a></td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qstyle.html#ContentsType-enum">CT_ProgressBar</a></td><td><a href="qstyleoptionprogressbar.html">QStyleOptionProgressBar</a></td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qstyle.html#ContentsType-enum">CT_MenuItem</a></td><td><a href="qstyleoptionmenuitem.html">QStyleOptionMenuItem</a></td></tr>
-</table>
+</table></p>
 <p>See also <a href="qstyle.html#ContentsType-enum">ContentsType</a> and <a href="qstyleoption.html">QStyleOption</a>.</p>
 <h3 class="fn"><a name="sliderPositionFromValue"></a>int QStyle::sliderPositionFromValue ( int <i>min</i>, int <i>max</i>, int <i>logicalValue</i>, int <i>span</i>, bool <i>upsideDown</i> = false )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Converts <i>logicalValue</i> to a pixel position. <i>min</i> maps to 0, <i>max</i> maps to <i>span</i> and other values are distributed evenly in-between.</p>
@@ -919,7 +919,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the sub-area <i>element</i> as described in <i>option</i> in logical coordinates.</p>
 <p>The <i>widget</i> argument is optional and may contain a widget that may aid determining the subRect.</p>
 <p>The <a href="qstyleoption.html">QStyleOption</a> can be cast to the appropriate type based on the value of <i>element</i>. See the table below for the appropriate <i>option</i> casts:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th><a href="qstyle.html#SubElement-enum">SubElement</a></th><th>Option Cast</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qstyle.html#SubElement-enum">SE_PushButtonContents</a></td><td><a href="qstyleoptionbutton.html">QStyleOptionButton</a></td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qstyle.html#SubElement-enum">SE_PushButtonFocusRect</a></td><td><a href="qstyleoptionbutton.html">QStyleOptionButton</a></td></tr>
@@ -934,14 +934,14 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qstyle.html#SubElement-enum">SE_ProgressBarGroove</a></td><td><a href="qstyleoptionprogressbar.html">QStyleOptionProgressBar</a></td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qstyle.html#SubElement-enum">SE_ProgressBarContents</a></td><td><a href="qstyleoptionprogressbar.html">QStyleOptionProgressBar</a></td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qstyle.html#SubElement-enum">SE_ProgressBarLabel</a></td><td><a href="qstyleoptionprogressbar.html">QStyleOptionProgressBar</a></td></tr>
-</table>
+</table></p>
 <p>See also <a href="qstyle.html#SubElement-enum">SubElement</a> and <a href="qstyleoption.html">QStyleOption</a>.</p>
 <h3 class="fn"><a name="unpolish"></a>void QStyle::unpolish ( <a href="qwidget.html">QWidget</a> * <i>widget</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Undoes the initialization of widget <i>widget</i>'s appearance.</p>
 <p>This function is the counterpart to polish. It is called for every polished widget when the style is dynamically changed. The former style has to unpolish its settings before the new style can polish them again.</p>
 <p>See also <a href="qstyle.html#polish">polish</a>().</p>
 <h3 class="fn"><a name="unpolish-2"></a>void QStyle::unpolish ( <a href="qapplication.html">QApplication</a> * <i>app</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Undoes the polish of application <i>app</i>.</p>
 <p>See also <a href="qstyle.html#polish">polish</a>().</p>
 <h3 class="fn"><a name="visualAlignment"></a><a href="qt.html#AlignmentFlag-enum">Qt::Alignment</a> QStyle::visualAlignment ( <a href="qt.html#LayoutDirection-enum">Qt::LayoutDirection</a> <i>direction</i>, <a href="qt.html#AlignmentFlag-enum">Qt::Alignment</a> <i>alignment</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
@@ -957,8 +957,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qwidget.html#layoutDirection-prop">QWidget::layoutDirection</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

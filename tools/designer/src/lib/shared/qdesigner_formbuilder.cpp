@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt Designer of the Qt Toolkit.
 **
@@ -23,6 +23,7 @@
 
 #include "qdesigner_formbuilder_p.h"
 #include "qdesigner_widget_p.h"
+#include "qdesigner_promotedwidget_p.h"
 
 // sdk
 #include <QtDesigner/extrainfo.h>
@@ -43,6 +44,7 @@
 #include <QtGui/QMenu>
 #include <QtGui/QToolBar>
 #include <QtGui/QMenuBar>
+#include <QtGui/QMainWindow>
 
 #include <QtCore/QBuffer>
 #include <QtCore/qdebug.h>
@@ -85,14 +87,12 @@ QWidget *QDesignerFormBuilder::createWidget(const QString &widgetName, QWidget *
 
 bool QDesignerFormBuilder::addItem(DomWidget *ui_widget, QWidget *widget, QWidget *parentWidget)
 {
-    if (QFormBuilder::addItem(ui_widget, widget, parentWidget)) {
-        return true;
-    } else if (QDesignerContainerExtension *container = qt_extension<QDesignerContainerExtension*>(m_core->extensionManager(), parentWidget)) {
-        container->addWidget(widget);
-        return true;
+    if (! QFormBuilder::addItem(ui_widget, widget, parentWidget) || qobject_cast<QMainWindow*> (parentWidget)) {
+        if (QDesignerContainerExtension *container = qt_extension<QDesignerContainerExtension*>(m_core->extensionManager(), parentWidget))
+            container->addWidget(widget);
     }
 
-    return false;
+    return true;
 }
 
 bool QDesignerFormBuilder::addItem(DomLayoutItem *ui_item, QLayoutItem *item, QLayout *layout)
@@ -142,6 +142,8 @@ DomWidget *QDesignerFormBuilder::createDom(QWidget *widget, DomWidget *ui_parent
 
 QWidget *QDesignerFormBuilder::create(DomWidget *ui_widget, QWidget *parentWidget)
 {
+    if (QDesignerPromotedWidget *promoted = qobject_cast<QDesignerPromotedWidget*>(parentWidget))
+        parentWidget = promoted->child();
     QWidget *widget = QFormBuilder::create(ui_widget, parentWidget);
 
     if (QDesignerExtraInfoExtension *extra = qt_extension<QDesignerExtraInfoExtension*>(m_core->extensionManager(), widget)) {
@@ -151,5 +153,11 @@ QWidget *QDesignerFormBuilder::create(DomWidget *ui_widget, QWidget *parentWidge
     return widget;
 }
 
+QLayout *QDesignerFormBuilder::create(DomLayout *ui_layout, QLayout *layout, QWidget *parentWidget)
+{
+    if (QDesignerPromotedWidget *promoted = qobject_cast<QDesignerPromotedWidget*>(parentWidget))
+        parentWidget = promoted->child();
+    return QFormBuilder::create(ui_layout, layout, parentWidget);
+}
 
 } // namespace qdesigner_internal

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the tools applications of the Qt Toolkit.
 **
@@ -321,7 +321,6 @@ void WriteInitialization::acceptLayout(DomLayout *node)
     QHash<QString, DomProperty*> properties = propertyMap(node->elementProperty());
 
     bool isGroupBox = false;
-    bool isMainWindow = false;
 
     if (m_widgetChain.top()) {
         QString parentWidget = m_widgetChain.top()->attributeClass();
@@ -358,11 +357,8 @@ void WriteInitialization::acceptLayout(DomLayout *node)
                 if (!m_marginFunction.isEmpty() && margin == m_defaultMargin)
                     value = m_marginFunction + QLatin1String("()");
 
-                output << option.indent << parent << "->layout()->setMargin(" << margin << ");\n";
+                output << option.indent << parent << "->layout()->setMargin(" << value << ");\n";
             }
-
-        } else if (uic->isMainWindow(parentWidget)) {
-            isMainWindow = true;
         }
     }
 
@@ -413,7 +409,7 @@ void WriteInitialization::acceptLayout(DomLayout *node)
             if (!m_marginFunction.isEmpty() && margin == m_defaultMargin)
                 value = m_marginFunction + QLatin1String("()");
 
-            output << option.indent << varName << "->setMargin(" << margin << ");\n";
+            output << option.indent << varName << "->setMargin(" << value << ");\n";
         }
     }
 
@@ -698,18 +694,24 @@ void WriteInitialization::writeProperties(const QString &varName,
             DomFont *f = p->elementFont();
             QString fontName = driver->unique(QLatin1String("font"));
             output << option.indent << "QFont " << fontName << ";\n";
-            output << option.indent << fontName << ".setFamily(QString::fromUtf8(" << fixString(f->elementFamily())
-                << "));\n";
-            output << option.indent << fontName << ".setPointSize(" << f->elementPointSize()
-                << ");\n";
+            if (!f->elementFamily().isEmpty()) {
+                output << option.indent << fontName << ".setFamily(QString::fromUtf8(" << fixString(f->elementFamily())
+                    << "));\n";
+            }
+            if (f->elementPointSize() > 0) {
+                output << option.indent << fontName << ".setPointSize(" << f->elementPointSize()
+                    << ");\n";
+            }
             output << option.indent << fontName << ".setBold("
                 << (f->elementBold() ? "true" : "false") << ");\n";
             output << option.indent << fontName << ".setItalic("
                 <<  (f->elementItalic() ? "true" : "false") << ");\n";
             output << option.indent << fontName << ".setUnderline("
                 << (f->elementUnderline() ? "true" : "false") << ");\n";
-            output << option.indent << fontName << ".setWeight("
-                << f->elementWeight() << ");" << endl;
+            if (f->elementWeight() > 0) {
+                output << option.indent << fontName << ".setWeight("
+                    << f->elementWeight() << ");" << endl;
+            }
             output << option.indent << fontName << ".setStrikeOut("
                 << (f->elementStrikeOut() ? "true" : "false") << ");\n";
             propertyValue = fontName;
@@ -1126,7 +1128,6 @@ void WriteInitialization::initializeQ3Table(DomWidget *w)
 
     // columns
     QList<DomColumn*> columns = w->elementColumn();
-    output << option.indent << varName << "->setNumCols(" << columns.size() << ");\n";
 
     for (int i=0; i<columns.size(); ++i) {
         DomColumn *column = columns.at(i);
@@ -1144,8 +1145,6 @@ void WriteInitialization::initializeQ3Table(DomWidget *w)
 
     // rows
     QList<DomRow*> rows = w->elementRow();
-    refreshOut << option.indent << varName << "->setNumRows(" << rows.size() << ");\n";
-
     for (int i=0; i<rows.size(); ++i) {
         DomRow *row = rows.at(i);
 
@@ -1205,6 +1204,8 @@ void WriteInitialization::initializeComboBox(DomWidget *w)
 
     if (items.isEmpty())
         return;
+
+    refreshOut << option.indent << varName << "->clear();\n";
 
     for (int i=0; i<items.size(); ++i) {
         DomItem *item = items.at(i);
@@ -1296,8 +1297,11 @@ void WriteInitialization::initializeTableWidget(DomWidget *w)
     QString varName = driver->findOrInsertWidget(w);
     QString className = w->attributeClass();
 
+    refreshOut << option.indent << varName << "->clear();\n";
     // columns
     QList<DomColumn *> columns = w->elementColumn();
+    refreshOut << option.indent << varName << "->setColumnCount("
+                << columns.size() << ");\n";
     for (int i = 0; i < columns.size(); ++i) {
         DomColumn *column = columns.at(i);
 
@@ -1324,6 +1328,8 @@ void WriteInitialization::initializeTableWidget(DomWidget *w)
 
     // rows
     QList<DomRow *> rows = w->elementRow();
+    refreshOut << option.indent << varName << "->setRowCount("
+                << rows.size() << ");\n";
     for (int i = 0; i < rows.size(); ++i) {
         DomRow *row = rows.at(i);
 

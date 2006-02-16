@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/corelib/tools/qvector.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/corelib/tools/qvector.cpp -->
 <head>
     <title>Qt 4.1: QVector Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -38,7 +38,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="qvector.html#QVector">QVector</a></b> ()</li>
 <li><div class="fn"/><b><a href="qvector.html#QVector-2">QVector</a></b> ( int <i>size</i> )</li>
 <li><div class="fn"/><b><a href="qvector.html#QVector-3">QVector</a></b> ( int <i>size</i>, const T &amp; <i>value</i> )</li>
-<li><div class="fn"/><b><a href="qvector.html#QVector-4">QVector</a></b> ( const QVector &amp; <i>other</i> )</li>
+<li><div class="fn"/><b><a href="qvector.html#QVector-4">QVector</a></b> ( const QVector&lt;T&gt; &amp; <i>other</i> )</li>
 <li><div class="fn"/><b><a href="qvector.html#dtor.QVector">~QVector</a></b> ()</li>
 <li><div class="fn"/>void <b><a href="qvector.html#append">append</a></b> ( const T &amp; <i>value</i> )</li>
 <li><div class="fn"/>const T &amp; <b><a href="qvector.html#at">at</a></b> ( int <i>i</i> ) const</li>
@@ -61,7 +61,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>const_iterator <b><a href="qvector.html#end-2">end</a></b> () const</li>
 <li><div class="fn"/>iterator <b><a href="qvector.html#erase">erase</a></b> ( iterator <i>pos</i> )</li>
 <li><div class="fn"/>iterator <b><a href="qvector.html#erase-2">erase</a></b> ( iterator <i>begin</i>, iterator <i>end</i> )</li>
-<li><div class="fn"/>QVector &amp; <b><a href="qvector.html#fill">fill</a></b> ( const T &amp; <i>value</i>, int <i>size</i> = -1 )</li>
+<li><div class="fn"/>QVector&lt;T&gt; &amp; <b><a href="qvector.html#fill">fill</a></b> ( const T &amp; <i>value</i>, int <i>size</i> = -1 )</li>
 <li><div class="fn"/>T &amp; <b><a href="qvector.html#first">first</a></b> ()</li>
 <li><div class="fn"/>const T &amp; <b><a href="qvector.html#first-2">first</a></b> () const</li>
 <li><div class="fn"/>T &amp; <b><a href="qvector.html#front">front</a></b> ()</li>
@@ -92,14 +92,14 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>std::vector&lt;T&gt; <b><a href="qvector.html#toStdVector">toStdVector</a></b> () const</li>
 <li><div class="fn"/>T <b><a href="qvector.html#value">value</a></b> ( int <i>i</i> ) const</li>
 <li><div class="fn"/>T <b><a href="qvector.html#value-2">value</a></b> ( int <i>i</i>, const T &amp; <i>defaultValue</i> ) const</li>
-<li><div class="fn"/>bool <b><a href="qvector.html#operator-not-eq">operator!=</a></b> ( const QVector &amp; <i>other</i> ) const</li>
-<li><div class="fn"/>QVector <b><a href="qvector.html#operator-2b">operator+</a></b> ( const QVector &amp; <i>other</i> ) const</li>
-<li><div class="fn"/>QVector &amp; <b><a href="qvector.html#operator-2b-eq">operator+=</a></b> ( const QVector &amp; <i>other</i> )</li>
-<li><div class="fn"/>QVector &amp; <b><a href="qvector.html#operator-2b-eq-2">operator+=</a></b> ( const T &amp; <i>value</i> )</li>
-<li><div class="fn"/>QVector &amp; <b><a href="qvector.html#operator-lt-lt">operator&lt;&lt;</a></b> ( const T &amp; <i>value</i> )</li>
-<li><div class="fn"/>QVector &amp; <b><a href="qvector.html#operator-lt-lt-2">operator&lt;&lt;</a></b> ( const QVector &amp; <i>other</i> )</li>
-<li><div class="fn"/>QVector &amp; <b><a href="qvector.html#operator-eq">operator=</a></b> ( const QVector &amp; <i>other</i> )</li>
-<li><div class="fn"/>bool <b><a href="qvector.html#operator-eq-eq">operator==</a></b> ( const QVector &amp; <i>other</i> ) const</li>
+<li><div class="fn"/>bool <b><a href="qvector.html#operator-not-eq">operator!=</a></b> ( const QVector&lt;T&gt; &amp; <i>other</i> ) const</li>
+<li><div class="fn"/>QVector&lt;T&gt; <b><a href="qvector.html#operator-2b">operator+</a></b> ( const QVector&lt;T&gt; &amp; <i>other</i> ) const</li>
+<li><div class="fn"/>QVector&lt;T&gt; &amp; <b><a href="qvector.html#operator-2b-eq">operator+=</a></b> ( const QVector&lt;T&gt; &amp; <i>other</i> )</li>
+<li><div class="fn"/>QVector&lt;T&gt; &amp; <b><a href="qvector.html#operator-2b-eq-2">operator+=</a></b> ( const T &amp; <i>value</i> )</li>
+<li><div class="fn"/>QVector&lt;T&gt; &amp; <b><a href="qvector.html#operator-lt-lt">operator&lt;&lt;</a></b> ( const T &amp; <i>value</i> )</li>
+<li><div class="fn"/>QVector&lt;T&gt; &amp; <b><a href="qvector.html#operator-lt-lt-2">operator&lt;&lt;</a></b> ( const QVector&lt;T&gt; &amp; <i>other</i> )</li>
+<li><div class="fn"/>QVector&lt;T&gt; &amp; <b><a href="qvector.html#operator-eq">operator=</a></b> ( const QVector&lt;T&gt; &amp; <i>other</i> )</li>
+<li><div class="fn"/>bool <b><a href="qvector.html#operator-eq-eq">operator==</a></b> ( const QVector&lt;T&gt; &amp; <i>other</i> ) const</li>
 <li><div class="fn"/>T &amp; <b><a href="qvector.html#operator-5b-5d">operator[]</a></b> ( int <i>i</i> )</li>
 <li><div class="fn"/>const T &amp; <b><a href="qvector.html#operator-5b-5d-2">operator[]</a></b> ( int <i>i</i> ) const</li>
 </ul>
@@ -184,7 +184,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="QVector-3"></a>QVector::QVector ( int <i>size</i>, const T &amp; <i>value</i> )</h3>
 <p>Constructs a vector with an initial size of <i>size</i> elements. Each element is initialized with <i>value</i>.</p>
 <p>See also <a href="qvector.html#resize">resize</a>() and <a href="qvector.html#fill">fill</a>().</p>
-<h3 class="fn"><a name="QVector-4"></a>QVector::QVector ( const QVector &amp; <i>other</i> )</h3>
+<h3 class="fn"><a name="QVector-4"></a>QVector::QVector ( const QVector&lt;T&gt; &amp; <i>other</i> )</h3>
 <p>Constructs a copy of <i>other</i>.</p>
 <p>This operation takes <a href="containers.html#constant-time">constant time</a>, because <a href="qvector.html">QVector</a> is <a href="shclass.html#implicitly-shared">implicitly shared</a>. This makes returning a <a href="qvector.html">QVector</a> from a function very fast. If a shared instance is modified, it will be copied (copy-on-write), and that takes <a href="containers.html#linear-time">linear time</a>.</p>
 <p>See also <a href="qvector.html#operator-eq">operator=</a>().</p>
@@ -208,12 +208,12 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="back"></a>reference QVector::back ()</h3>
 <p>This function is provided for STL compatibility. It is equivalent to <a href="qvector.html#last">last</a>().</p>
 <h3 class="fn"><a name="back-2"></a>const_reference QVector::back () const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <h3 class="fn"><a name="begin"></a><a href="qvector.html#iterator-typedefx">iterator</a> QVector::begin ()</h3>
 <p>Returns an <a href="containers.html#stl-style-iterators">STL-style iterator</a> pointing to the first item in the vector.</p>
 <p>See also <a href="qvector.html#constBegin">constBegin</a>() and <a href="qvector.html#end">end</a>().</p>
 <h3 class="fn"><a name="begin-2"></a><a href="qvector.html#const_iterator-typedef">const_iterator</a> QVector::begin () const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <h3 class="fn"><a name="capacity"></a>int QVector::capacity () const</h3>
 <p>Returns the maximum number of items that can be stored in the vector without forcing a reallocation.</p>
 <p>The sole purpose of this function is to provide a means of fine tuning <a href="qvector.html">QVector</a>'s memory usage. In general, you will rarely ever need to call this function. If you want to know how many items are in the vector, call <a href="qvector.html#size">size</a>().</p>
@@ -240,7 +240,7 @@ body { background: #ffffff; color: black; }</style>
 <p>This function requires the value type to have an implementation of <tt>operator==()</tt>.</p>
 <p>See also <a href="qvector.html#contains">contains</a>() and <a href="qvector.html#indexOf">indexOf</a>().</p>
 <h3 class="fn"><a name="count-2"></a>int QVector::count () const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Same as <a href="qvector.html#size">size</a>().</p>
 <h3 class="fn"><a name="data"></a>T * QVector::data ()</h3>
 <p>Returns a pointer to the data stored in the vector. The pointer can be used to access and modify the items in the vector.</p>
@@ -253,21 +253,21 @@ body { background: #ffffff; color: black; }</style>
 <p>This function is mostly useful to pass a vector to a function that accepts a plain C++ array.</p>
 <p>See also <a href="qvector.html#constData">constData</a>() and <a href="qvector.html#operator-5b-5d">operator[]</a>().</p>
 <h3 class="fn"><a name="data-2"></a>const T * QVector::data () const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <h3 class="fn"><a name="empty"></a>bool QVector::empty () const</h3>
 <p>This function is provided for STL compatibility. It is equivalent to <a href="qvector.html#isEmpty">isEmpty</a>().</p>
 <h3 class="fn"><a name="end"></a><a href="qvector.html#iterator-typedefx">iterator</a> QVector::end ()</h3>
 <p>Returns an <a href="containers.html#stl-style-iterators">STL-style iterator</a> pointing to the imaginary item after the last item in the vector.</p>
 <p>See also <a href="qvector.html#begin">begin</a>() and <a href="qvector.html#constEnd">constEnd</a>().</p>
 <h3 class="fn"><a name="end-2"></a><a href="qvector.html#const_iterator-typedef">const_iterator</a> QVector::end () const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <h3 class="fn"><a name="erase"></a><a href="qvector.html#iterator-typedefx">iterator</a> QVector::erase ( <a href="qvector.html#iterator-typedefx">iterator</a> <i>pos</i> )</h3>
 <p>Removes the item pointed to by the iterator <i>pos</i> from the vector, and returns an iterator to the next item in the vector (which may be <a href="qvector.html#end">end</a>()).</p>
 <p>See also <a href="qvector.html#insert">insert</a>() and <a href="qvector.html#remove">remove</a>().</p>
 <h3 class="fn"><a name="erase-2"></a><a href="qvector.html#iterator-typedefx">iterator</a> QVector::erase ( <a href="qvector.html#iterator-typedefx">iterator</a> <i>begin</i>, <a href="qvector.html#iterator-typedefx">iterator</a> <i>end</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Removes all the items from <i>begin</i> up to (but not including) <i>end</i>. Returns an iterator to the same item that <i>end</i> referred to before the call.</p>
-<h3 class="fn"><a name="fill"></a>QVector &amp; QVector::fill ( const T &amp; <i>value</i>, int <i>size</i> = -1 )</h3>
+<h3 class="fn"><a name="fill"></a>QVector&lt;T&gt; &amp; QVector::fill ( const T &amp; <i>value</i>, int <i>size</i> = -1 )</h3>
 <p>Assigns <i>value</i> to all items in the vector. If <i>size</i> is different from -1 (the default), the vector is resized to size <i>size</i> beforehand.</p>
 <p>Example:</p>
 <pre>&nbsp;   QVector&lt;QString&gt; vector(3);
@@ -281,7 +281,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns a reference to the first item in the vector. This function assumes that the vector isn't empty.</p>
 <p>See also <a href="qvector.html#last">last</a>() and <a href="qvector.html#isEmpty">isEmpty</a>().</p>
 <h3 class="fn"><a name="first-2"></a>const T &amp; QVector::first () const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <h3 class="fn"><a name="fromList"></a>QVector&lt;T&gt; QVector::fromList ( const <a href="qlist.html">QList</a>&lt;T&gt; &amp; <i>list</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns a <a href="qvector.html">QVector</a> object with the data contained in <i>list</i>.</p>
 <p>Example:</p>
@@ -304,7 +304,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="front"></a>T &amp; QVector::front ()</h3>
 <p>This function is provided for STL compatibility. It is equivalent to <a href="qvector.html#first">first</a>().</p>
 <h3 class="fn"><a name="front-2"></a>const_reference QVector::front () const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <h3 class="fn"><a name="indexOf"></a>int QVector::indexOf ( const T &amp; <i>value</i>, int <i>from</i> = 0 ) const</h3>
 <p>Returns the index position of the first occurrence of <i>value</i> in the vector, searching forward from index position <i>from</i>. Returns -1 if no item matched.</p>
 <p>Example:</p>
@@ -326,10 +326,10 @@ body { background: #ffffff; color: black; }</style>
 <p>For large vectors, this operation can be slow (<a href="containers.html#linear-time">linear time</a>), because it requires moving all the items at indexes <i>i</i> and above by one position further in memory. If you want a container class that provides a fast insert() function, use <a href="qlinkedlist.html">QLinkedList</a> instead.</p>
 <p>See also <a href="qvector.html#append">append</a>(), <a href="qvector.html#prepend">prepend</a>(), and <a href="qvector.html#remove">remove</a>().</p>
 <h3 class="fn"><a name="insert-2"></a><a href="qvector.html#iterator-typedefx">iterator</a> QVector::insert ( <a href="qvector.html#iterator-typedefx">iterator</a> <i>before</i>, int <i>count</i>, const T &amp; <i>value</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Inserts <i>count</i> copies of <i>value</i> in front of the item pointed to by the iterator <i>before</i>. Returns an iterator pointing at the first of the inserted items.</p>
 <h3 class="fn"><a name="insert-3"></a>void QVector::insert ( int <i>i</i>, int <i>count</i>, const T &amp; <i>value</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Inserts <i>count</i> copies of <i>value</i> at index position <i>i</i> in the vector.</p>
 <p>Example:</p>
 <pre>&nbsp;   QVector&lt;double&gt; vector;
@@ -337,7 +337,7 @@ body { background: #ffffff; color: black; }</style>
     vector.insert(1, 3, 9.9);
     // vector: [2.718, 9.9, 9.9, 9.9, 1.442, 0.4342]</pre>
 <h3 class="fn"><a name="insert-4"></a><a href="qvector.html#iterator-typedefx">iterator</a> QVector::insert ( <a href="qvector.html#iterator-typedefx">iterator</a> <i>before</i>, const T &amp; <i>value</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Inserts <i>value</i> in front of the item pointed to by the iterator <i>before</i>. Returns an iterator pointing at the inserted item.</p>
 <h3 class="fn"><a name="isEmpty"></a>bool QVector::isEmpty () const</h3>
 <p>Returns true if the vector has size 0; otherwise returns false.</p>
@@ -346,7 +346,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns a reference to the last item in the vector. This function assumes that the vector isn't empty.</p>
 <p>See also <a href="qvector.html#first">first</a>() and <a href="qvector.html#isEmpty">isEmpty</a>().</p>
 <h3 class="fn"><a name="last-2"></a>const T &amp; QVector::last () const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <h3 class="fn"><a name="lastIndexOf"></a>int QVector::lastIndexOf ( const T &amp; <i>value</i>, int <i>from</i> = -1 ) const</h3>
 <p>Returns the index position of the last occurrence of the value <i>value</i> in the vector, searching backward from index position <i>from</i>. If <i>from</i> is -1 (the default), the search starts at the last item. Returns -1 if no item matched.</p>
 <p>Example:</p>
@@ -383,7 +383,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Removes the element at index position <i>i</i>.</p>
 <p>See also <a href="qvector.html#insert">insert</a>(), <a href="qvector.html#replace">replace</a>(), and <a href="qvector.html#fill">fill</a>().</p>
 <h3 class="fn"><a name="remove-2"></a>void QVector::remove ( int <i>i</i>, int <i>count</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Removes <i>count</i> elements from the middle of the vector, starting at index position <i>i</i>.</p>
 <p>See also <a href="qvector.html#insert">insert</a>(), <a href="qvector.html#replace">replace</a>(), and <a href="qvector.html#fill">fill</a>().</p>
 <h3 class="fn"><a name="replace"></a>void QVector::replace ( int <i>i</i>, const T &amp; <i>value</i> )</h3>
@@ -425,32 +425,32 @@ body { background: #ffffff; color: black; }</style>
 <p>If the index <i>i</i> is out of bounds, the function returns a <a href="containers.html#default-constructed-values">default-constructed value</a>. If you are certain that <i>i</i> is within bounds, you can use <a href="qvector.html#at">at</a>() instead, which is slightly faster.</p>
 <p>See also <a href="qvector.html#at">at</a>() and <a href="qvector.html#operator-5b-5d">operator[]</a>().</p>
 <h3 class="fn"><a name="value-2"></a>T QVector::value ( int <i>i</i>, const T &amp; <i>defaultValue</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>If the index <i>i</i> is out of bounds, the function returns <i>defaultValue</i>.</p>
-<h3 class="fn"><a name="operator-not-eq"></a>bool QVector::operator!= ( const QVector &amp; <i>other</i> ) const</h3>
+<h3 class="fn"><a name="operator-not-eq"></a>bool QVector::operator!= ( const QVector&lt;T&gt; &amp; <i>other</i> ) const</h3>
 <p>Returns true if <i>other</i> is not equal to this vector; otherwise returns false.</p>
 <p>Two vectors are considered equal if they contain the same values in the same order.</p>
 <p>This function requires the value type to have an implementation of <tt>operator==()</tt>.</p>
 <p>See also <a href="qvector.html#operator-eq-eq">operator==</a>().</p>
-<h3 class="fn"><a name="operator-2b"></a>QVector QVector::operator+ ( const QVector &amp; <i>other</i> ) const</h3>
+<h3 class="fn"><a name="operator-2b"></a>QVector&lt;T&gt; QVector::operator+ ( const QVector&lt;T&gt; &amp; <i>other</i> ) const</h3>
 <p>Returns a vector that contains all the items in this vector followed by all the items in the <i>other</i> vector.</p>
 <p>See also <a href="qvector.html#operator-2b-eq">operator+=</a>().</p>
-<h3 class="fn"><a name="operator-2b-eq"></a>QVector &amp; QVector::operator+= ( const QVector &amp; <i>other</i> )</h3>
+<h3 class="fn"><a name="operator-2b-eq"></a>QVector&lt;T&gt; &amp; QVector::operator+= ( const QVector&lt;T&gt; &amp; <i>other</i> )</h3>
 <p>Appends the items of the <i>other</i> vector to this vector and returns a reference to this vector.</p>
 <p>See also <a href="qvector.html#operator-2b">operator+</a>() and <a href="qvector.html#append">append</a>().</p>
-<h3 class="fn"><a name="operator-2b-eq-2"></a>QVector &amp; QVector::operator+= ( const T &amp; <i>value</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<h3 class="fn"><a name="operator-2b-eq-2"></a>QVector&lt;T&gt; &amp; QVector::operator+= ( const T &amp; <i>value</i> )</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Appends <i>value</i> to the vector.</p>
 <p>See also <a href="qvector.html#append">append</a>() and <a href="qvector.html#operator-lt-lt">operator&lt;&lt;</a>().</p>
-<h3 class="fn"><a name="operator-lt-lt"></a>QVector &amp; QVector::operator&lt;&lt; ( const T &amp; <i>value</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt"></a>QVector&lt;T&gt; &amp; QVector::operator&lt;&lt; ( const T &amp; <i>value</i> )</h3>
 <p>Appends <i>value</i> to the vector and returns a reference to this vector.</p>
 <p>See also <a href="qvector.html#append">append</a>() and <a href="qvector.html#operator-2b-eq">operator+=</a>().</p>
-<h3 class="fn"><a name="operator-lt-lt-2"></a>QVector &amp; QVector::operator&lt;&lt; ( const QVector &amp; <i>other</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<h3 class="fn"><a name="operator-lt-lt-2"></a>QVector&lt;T&gt; &amp; QVector::operator&lt;&lt; ( const QVector&lt;T&gt; &amp; <i>other</i> )</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Appends <i>other</i> to the vector and returns a reference to the vector.</p>
-<h3 class="fn"><a name="operator-eq"></a>QVector &amp; QVector::operator= ( const QVector &amp; <i>other</i> )</h3>
+<h3 class="fn"><a name="operator-eq"></a>QVector&lt;T&gt; &amp; QVector::operator= ( const QVector&lt;T&gt; &amp; <i>other</i> )</h3>
 <p>Assigns <i>other</i> to this vector and returns a reference to this vector.</p>
-<h3 class="fn"><a name="operator-eq-eq"></a>bool QVector::operator== ( const QVector &amp; <i>other</i> ) const</h3>
+<h3 class="fn"><a name="operator-eq-eq"></a>bool QVector::operator== ( const QVector&lt;T&gt; &amp; <i>other</i> ) const</h3>
 <p>Returns true if <i>other</i> is equal to this vector; otherwise returns false.</p>
 <p>Two vectors are considered equal if they contain the same values in the same order.</p>
 <p>This function requires the value type to have an implementation of <tt>operator==()</tt>.</p>
@@ -460,24 +460,24 @@ body { background: #ffffff; color: black; }</style>
 <p><i>i</i> must be a valid index position in the vector (i.e., 0 &lt;= <i>i</i> &lt; <a href="qvector.html#size">size</a>()).</p>
 <p>See also <a href="qvector.html#at">at</a>() and <a href="qvector.html#value">value</a>().</p>
 <h3 class="fn"><a name="operator-5b-5d-2"></a>const T &amp; QVector::operator[] ( int <i>i</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Same as at(<i>i</i>).</p>
 <hr />
 <h2>Related Non-Members</h2>
 <h3 class="fn"><a name="operator-lt-lt-8"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>out</i>, const QVector&lt;T&gt; &amp; <i>vector</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes the vector <i>vector</i> to stream <i>out</i>.</p>
 <p>This function requires the value type to implement <tt>operator&lt;&lt;()</tt>.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
 <h3 class="fn"><a name="operator-gt-gt-8"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>in</i>, QVector&lt;T&gt; &amp; <i>vector</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads a vector from stream <i>in</i> into <i>vector</i>.</p>
 <p>This function requires the value type to implement <tt>operator&gt;&gt;()</tt>.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

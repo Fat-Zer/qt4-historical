@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -38,6 +38,7 @@
 #include "private/qdialog_p.h"
 #include "QtGui/qitemselectionmodel.h"
 #include "QtGui/qabstractitemview.h"
+#include "QtGui/qheaderview.h"
 #include "QtGui/qlistview.h"
 #include "QtGui/qtreeview.h"
 #include "QtGui/qtoolbutton.h"
@@ -81,6 +82,7 @@ public:
     void sortBySize();
     void sortByDate();
     void setUnsorted();
+    void sortByColumn(int column);
     void currentChanged(const QModelIndex &index);
 
     // setup
@@ -125,9 +127,8 @@ public:
         { return (listModeButton->isDown() ? QFileDialog::List : QFileDialog::Detail); }
 
     // static stuff
-    static QString encodeFileName(const QString &filename);
-    static QString workingDirectory(const QString &path, bool encode = true);
-    static QString initialSelection(const QString &path, bool encode = true);
+    static QString workingDirectory(const QString &path);
+    static QString initialSelection(const QString &path);
 
     // data
     QDirModel *model;
@@ -140,7 +141,7 @@ public:
     bool confirmOverwrite;
     QString defaultSuffix;
 
-    QList<QPersistentModelIndex> history;
+    QStringList history;
 
     QComboBox *lookInCombo;
     QFileDialogLineEdit *fileNameEdit;
@@ -209,7 +210,10 @@ class QFileDialogTreeView : public QTreeView
 public:
     QFileDialogTreeView(QFileDialogPrivate *d_pointer)
         : QTreeView(qobject_cast<QWidget*>(d_pointer->q_ptr)), d_ptr(d_pointer)
-    {}
+    {
+        // we want to handle this our selves in QFileDialog
+        disconnect(header(), SIGNAL(sectionClicked(int)), this, SLOT(sortByColumn(int)));
+    }
 protected:
     void keyPressEvent(QKeyEvent *e)
     {

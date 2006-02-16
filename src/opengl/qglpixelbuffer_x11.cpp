@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtOpenGL module of the Qt Toolkit.
 **
@@ -30,8 +30,8 @@
 #include <GL/glx.h>
 #include <qimage.h>
 
-#include "qglpbuffer.h"
-#include "qglpbuffer_p.h"
+#include "qglpixelbuffer.h"
+#include "qglpixelbuffer_p.h"
 
 #ifndef GLX_VERSION_1_3
 #define GLX_RGBA_BIT            0x00000002
@@ -198,9 +198,6 @@ QGLPixelBuffer::QGLPixelBuffer(const QSize &size, const QGLFormat &f, QGLWidget 
             qWarning("QGLPixelBuffer: Unable to create a pbuffer/context - giving up.");
         }
 
-        // cleanup
-        for (int i = 0; i < num_configs; ++i)
-            XFree(reinterpret_cast<void *>(configs[i]));
         XFree(configs);
         d->qctx = new QGLContext(f);
     } else {

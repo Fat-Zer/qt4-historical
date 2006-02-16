@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/gui/widgets/qmenu.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/gui/widgets/qmenu.cpp -->
 <head>
     <title>Qt 4.1: QMenu Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -42,6 +42,8 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="qmenu.html#QMenu">QMenu</a></b> ( QWidget * <i>parent</i> = 0 )</li>
 <li><div class="fn"/><b><a href="qmenu.html#QMenu-2">QMenu</a></b> ( const QString &amp; <i>title</i>, QWidget * <i>parent</i> = 0 )</li>
 <li><div class="fn"/><b><a href="qmenu.html#dtor.QMenu">~QMenu</a></b> ()</li>
+<li><div class="fn"/>QAction * <b><a href="qmenu.html#actionAt">actionAt</a></b> ( const QPoint &amp; <i>pt</i> ) const</li>
+<li><div class="fn"/>QRect <b><a href="qmenu.html#actionGeometry">actionGeometry</a></b> ( QAction * <i>act</i> ) const</li>
 <li><div class="fn"/>QAction * <b><a href="qmenu.html#activeAction">activeAction</a></b> () const</li>
 <li><div class="fn"/>QAction * <b><a href="qmenu.html#addAction">addAction</a></b> ( const QString &amp; <i>text</i> )</li>
 <li><div class="fn"/>QAction * <b><a href="qmenu.html#addAction-2">addAction</a></b> ( const QIcon &amp; <i>icon</i>, const QString &amp; <i>text</i> )</li>
@@ -73,7 +75,7 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
-<li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <a name="signals"></a>
 <h3>Signals</h3>
@@ -95,12 +97,20 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>4 static public members inherited from <a href="qwidget.html#static-public-members">QWidget</a></li>
 <li><div class="fn"/>4 static public members inherited from <a href="qobject.html#static-public-members">QObject</a></li>
 </ul>
+<a name="protected-functions"></a>
+<h3>Protected Functions</h3>
+<ul>
+<li><div class="fn"/>int <b><a href="qmenu.html#columnCount">columnCount</a></b> () const</li>
+</ul>
+<ul>
+<li><div class="fn"/>39 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
+<li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
+<li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
+</ul>
 <h3>Additional Inherited Members</h3>
 <ul>
 <li><div class="fn"/>17 public slots inherited from <a href="qwidget.html#public-slots">QWidget</a></li>
 <li><div class="fn"/>1 public slot inherited from <a href="qobject.html#public-slots">QObject</a></li>
-<li><div class="fn"/>39 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
-<li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -109,7 +119,7 @@ body { background: #ffffff; color: black; }</style>
 <p>A menu widget is a selection menu. It can be either a pull-down menu in a menu bar or a standalone context menu. Pull-down menus are shown by the menu bar when the user clicks on the respective item or presses the specified shortcut key. Use <a href="qmenubar.html#addMenu">QMenuBar::addMenu</a>() to insert a menu into a menu bar. Context menus are usually invoked by some special keyboard key or by right-clicking. They can be executed either asynchronously with <a href="qmenu.html#popup">popup</a>() or synchronously with <a href="qmenu.html#exec">exec</a>(). Menus can also be invoked in response to button presses; these are just like context menus except for how they are invoked.</p>
 <p>A menu consists of a list of action items. Actions are added with <a href="qmenu.html#addAction">addAction</a>(). An action is represented vertically and rendered by <a href="qstyle.html">QStyle</a>. In addition, actions can have a text label, an optional icon drawn on the very left side, and shortcut key sequence such as &quot;Ctrl+X&quot;.</p>
 <p>There are three kinds of action items: separators, actions that show a submenu, and actions that perform an action. Separators are inserted with <a href="qmenu.html#addSeparator">addSeparator</a>(). For submenus use <a href="qmenu.html#addMenu">addMenu</a>(). All other items are considered action items.</p>
-<p>When inserting action items you usually specify a receiver and a slot. The receiver will be notifed whenever the item is <a href="qmenu.html#triggered">triggered</a>(). In addition, QMenu provides two signals, <a href="qmenu-qt3.html#activated">activated</a>() and <a href="qmenu-qt3.html#highlighted">highlighted</a>(), which signal the <a href="qaction.html">QAction</a> that was triggered from the menu.</p>
+<p>When inserting action items you usually specify a receiver and a slot. The receiver will be notifed whenever the item is <a href="qaction.html#triggered">triggered()</a>. In addition, QMenu provides two signals, <a href="qmenu-qt3.html#activated">activated</a>() and <a href="qmenu-qt3.html#highlighted">highlighted</a>(), which signal the <a href="qaction.html">QAction</a> that was triggered from the menu.</p>
 <p>You clear a menu with <a href="qmenu.html#clear">clear</a>() and remove individual action items with <a href="qwidget.html#removeAction">removeAction</a>().</p>
 <p>A QMenu can also provide a tear-off menu. A tear-off menu is a top-level window that contains a copy of the menu. This makes it possible for the user to &quot;tear off&quot; frequently used menus and position them in a convenient place on the screen. If you want this functionality for a particular menu, insert a tear-off handle with <a href="qmenu.html#tearOffEnabled-prop">setTearOffEnabled</a>(). When using tear-off menus, bear in mind that the concept isn't typically used on Microsoft Windows so some users may not be familiar with it. Consider using a <a href="qtoolbar.html">QToolBar</a> instead.</p>
 <p>See the <a href="mainwindows-menus.html">Menus Example</a> for an example of how to use <a href="qmenubar.html">QMenuBar</a> and QMenu in your application.</p>
@@ -154,6 +164,10 @@ body { background: #ffffff; color: black; }</style>
 <p>Destroys the menu.</p>
 <h3 class="fn"><a name="aboutToShow"></a>void QMenu::aboutToShow ()&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted just before the menu is shown to the user.</p>
+<h3 class="fn"><a name="actionAt"></a><a href="qaction.html">QAction</a> * QMenu::actionAt ( const <a href="qpoint.html">QPoint</a> &amp; <i>pt</i> ) const</h3>
+<p>Returns the item at <i>pt</i>; returns 0 if there is no item there.</p>
+<h3 class="fn"><a name="actionGeometry"></a><a href="qrect.html">QRect</a> QMenu::actionGeometry ( <a href="qaction.html">QAction</a> * <i>act</i> ) const</h3>
+<p>Returns the geometry of action <i>act</i>.</p>
 <h3 class="fn"><a name="activeAction"></a><a href="qaction.html">QAction</a> * QMenu::activeAction () const</h3>
 <p>Returns the currently highlighted action, or 0 if no action is currently highlighted.</p>
 <p>See also <a href="qmenu.html#setActiveAction">setActiveAction</a>().</p>
@@ -161,26 +175,26 @@ body { background: #ffffff; color: black; }</style>
 <p>This convenience function creates a new action with <i>text</i>. The function adds the newly created action to the menu's list of actions, and returns it.</p>
 <p>See also <a href="qwidget.html#addAction">QWidget::addAction</a>().</p>
 <h3 class="fn"><a name="addAction-2"></a><a href="qaction.html">QAction</a> * QMenu::addAction ( const <a href="qicon.html">QIcon</a> &amp; <i>icon</i>, const <a href="qstring.html">QString</a> &amp; <i>text</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>This convenience function creates a new action with an <i>icon</i> and some <i>text</i>. The function adds the newly created action to the menu's list of actions, and returns it.</p>
 <p>See also <a href="qwidget.html#addAction">QWidget::addAction</a>().</p>
 <h3 class="fn"><a name="addAction-3"></a><a href="qaction.html">QAction</a> * QMenu::addAction ( const <a href="qstring.html">QString</a> &amp; <i>text</i>, const <a href="qobject.html">QObject</a> * <i>receiver</i>, const char * <i>member</i>, const <a href="qkeysequence.html">QKeySequence</a> &amp; <i>shortcut</i> = 0 )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
-<p>This convenience function creates a new action with the text <i>text</i> and an optional shortcut <i>shortcut</i>. The action's <a href="qmenu.html#triggered">triggered</a>() signal is connected to the <i>receiver</i>'s <i>member</i> slot. The function adds the newly created action to the menu's list of actions and returns it.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p>This convenience function creates a new action with the text <i>text</i> and an optional shortcut <i>shortcut</i>. The action's <a href="qaction.html#triggered">triggered()</a> signal is connected to the <i>receiver</i>'s <i>member</i> slot. The function adds the newly created action to the menu's list of actions and returns it.</p>
 <p>See also <a href="qwidget.html#addAction">QWidget::addAction</a>().</p>
 <h3 class="fn"><a name="addAction-4"></a><a href="qaction.html">QAction</a> * QMenu::addAction ( const <a href="qicon.html">QIcon</a> &amp; <i>icon</i>, const <a href="qstring.html">QString</a> &amp; <i>text</i>, const <a href="qobject.html">QObject</a> * <i>receiver</i>, const char * <i>member</i>, const <a href="qkeysequence.html">QKeySequence</a> &amp; <i>shortcut</i> = 0 )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
-<p>This convenience function creates a new action with an <i>icon</i> and some <i>text</i> and an optional shortcut <i>shortcut</i>. The action's <a href="qmenu.html#triggered">triggered</a>() signal is connected to the <i>member</i> slot of the <i>receiver</i> object. The function adds the newly created action to the menu's list of actions, and returns it.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p>This convenience function creates a new action with an <i>icon</i> and some <i>text</i> and an optional shortcut <i>shortcut</i>. The action's <a href="qaction.html#triggered">triggered()</a> signal is connected to the <i>member</i> slot of the <i>receiver</i> object. The function adds the newly created action to the menu's list of actions, and returns it.</p>
 <p>See also <a href="qwidget.html#addAction">QWidget::addAction</a>().</p>
 <h3 class="fn"><a name="addMenu"></a><a href="qaction.html">QAction</a> * QMenu::addMenu ( QMenu * <i>menu</i> )</h3>
 <p>This convenience function adds <i>menu</i> as a submenu to this menu. It returns the menus <a href="qmenu.html#menuAction">menuAction</a>().</p>
 <p>See also <a href="qwidget.html#addAction">QWidget::addAction</a>() and <a href="qmenu.html#menuAction">QMenu::menuAction</a>().</p>
 <h3 class="fn"><a name="addMenu-2"></a>QMenu * QMenu::addMenu ( const <a href="qstring.html">QString</a> &amp; <i>title</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Appends a new <a href="qmenu.html">QMenu</a> with <i>title</i> to the menu. The menu takes ownership of the menu. Returns the new menu.</p>
 <p>See also <a href="qwidget.html#addAction">QWidget::addAction</a>() and <a href="qmenu.html#menuAction">QMenu::menuAction</a>().</p>
 <h3 class="fn"><a name="addMenu-3"></a>QMenu * QMenu::addMenu ( const <a href="qicon.html">QIcon</a> &amp; <i>icon</i>, const <a href="qstring.html">QString</a> &amp; <i>title</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Appends a new <a href="qmenu.html">QMenu</a> with <i>icon</i> and <i>title</i> to the menu. The menu takes ownership of the menu. Returns the new menu.</p>
 <p>See also <a href="qwidget.html#addAction">QWidget::addAction</a>() and <a href="qmenu.html#menuAction">QMenu::menuAction</a>().</p>
 <h3 class="fn"><a name="addSeparator"></a><a href="qaction.html">QAction</a> * QMenu::addSeparator ()</h3>
@@ -189,6 +203,9 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="clear"></a>void QMenu::clear ()</h3>
 <p>Removes all the menu's actions. Actions owned by the menu and not shown in any other widget are deleted.</p>
 <p>See also <a href="qwidget.html#removeAction">removeAction</a>().</p>
+<h3 class="fn"><a name="columnCount"></a>int QMenu::columnCount () const&nbsp;&nbsp;<tt> [protected]</tt></h3>
+<p>If a menu does not fit on the screen it lays itself out so that it does fit. It is style dependent what layout means (for example, on Windows it will use multiple columns).</p>
+<p>This functions returns the number of columns necessary.</p>
 <h3 class="fn"><a name="defaultAction"></a><a href="qaction.html">QAction</a> * QMenu::defaultAction () const</h3>
 <p>Returns the current default action.</p>
 <p>See also <a href="qmenu.html#setDefaultAction">setDefaultAction</a>().</p>
@@ -203,7 +220,7 @@ body { background: #ffffff; color: black; }</style>
 <p>or in reaction to a <a href="qmouseevent.html">QMouseEvent</a> *e:</p>
 <pre>&nbsp;   exec(e-&gt;globalPos());</pre>
 <h3 class="fn"><a name="exec-2"></a><a href="qaction.html">QAction</a> * QMenu::exec ( const <a href="qpoint.html">QPoint</a> &amp; <i>p</i>, <a href="qaction.html">QAction</a> * <i>action</i> = 0 )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Executes this menu synchronously.</p>
 <p>Pops up the menu so that the action <i>action</i> will be at the specified <i>global</i> position <i>p</i>. To translate a widget's local coordinates into global coordinates, use <a href="qwidget.html#mapToGlobal">QWidget::mapToGlobal</a>().</p>
 <p>This returns the triggered <a href="qaction.html">QAction</a> in either the popup menu or one of its submenus, or 0 if no item was triggered (normally because the user pressed Esc).</p>
@@ -217,7 +234,7 @@ body { background: #ffffff; color: black; }</style>
 <p>When positioning a menu with <a href="qmenu.html#exec">exec</a>() or <a href="qmenu.html#popup">popup</a>(), bear in mind that you cannot rely on the menu's current <a href="qwidget.html#size-prop">size</a>(). For performance reasons, the menu adapts its size only when necessary. So in many cases, the size before and after the show is different. Instead, use <a href="qwidget.html#sizeHint-prop">sizeHint</a>() which calculates the proper size depending on the menu's current contents.</p>
 <p>See also <a href="qmenu.html#popup">popup</a>() and <a href="qwidget.html#mapToGlobal">QWidget::mapToGlobal</a>().</p>
 <h3 class="fn"><a name="exec-3"></a><a href="qaction.html">QAction</a> * QMenu::exec ( <a href="qlist.html">QList</a>&lt;<a href="qaction.html">QAction</a> *&gt; <i>actions</i>, const <a href="qpoint.html">QPoint</a> &amp; <i>pos</i>, <a href="qaction.html">QAction</a> * <i>at</i> = 0 )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Executes this menu synchronously.</p>
 <p>The menu's actions are specified by the list of <i>actions</i>. The menu will pop up so that the specified action, <i>at</i>, appears at global position <i>pos</i>. If <i>at</i> is not specified then the menu appears at position <i>pos</i>.</p>
 <p>The function returns the triggered <a href="qaction.html">QAction</a> in either the popup menu or one of its submenus, or 0 if no item was triggered (normally because the user pressed Esc).</p>
@@ -258,12 +275,12 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qmenu.html#defaultAction">defaultAction</a>().</p>
 <h3 class="fn"><a name="triggered"></a>void QMenu::triggered ( <a href="qaction.html">QAction</a> * <i>action</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when a menu action is triggered; <i>action</i> is the action that caused the signal to be emitted.</p>
-<p>Normally, you connect each menu action's triggered() signal to its own custom slot, but sometimes you will want to connect several actions to a single slot, for example, when you have a group of closely related actions, such as &quot;left justify&quot;, &quot;center&quot;, &quot;right justify&quot;.</p>
+<p>Normally, you connect each menu action's <a href="qaction.html#triggered">triggered()</a> signal to its own custom slot, but sometimes you will want to connect several actions to a single slot, for example, when you have a group of closely related actions, such as &quot;left justify&quot;, &quot;center&quot;, &quot;right justify&quot;.</p>
 <p>See also <a href="qmenu.html#hovered">hovered</a>() and <a href="qaction.html#triggered">QAction::triggered</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

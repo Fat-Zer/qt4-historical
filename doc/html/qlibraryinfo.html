@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/corelib/global/qlibraryinfo.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/corelib/global/qlibraryinfo.cpp -->
 <head>
     <title>Qt 4.1: QLibraryInfo Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -40,19 +40,19 @@ body { background: #ffffff; color: black; }</style>
 <h2>Detailed Description</h2>
 <p>The QLibraryInfo class provides information about the Qt library.</p>
 <p>Many pieces of information are established when Qt is configured. Installation paths, license information, and even a unique build key. This class provides an abstraction for accessing this information.</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Function</th><th>Return value</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qlibraryinfo.html#buildKey">buildKey</a>()</td><td>A string that identifies the Qt version and the configuration. This key is used to ensure that <a href="plugins.html">plugins</a> link against the same version of Qt as the application.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qlibraryinfo.html#location">location</a>()</td><td>The path to a certain Qt component (e.g., documentation, header files).</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qlibraryinfo.html#licensee">licensee</a>(), <a href="qlibraryinfo.html#licensedProducts">licensedProducts</a>()</td><td>Licensing information.</td></tr>
-</table>
+</table></p>
 <p>You can also use a <tt>qt.conf</tt> file to override the hard-coded paths that are compiled into the Qt library. For more information, see the <a href="qt-conf.html">Using qt.conf</a> documentation.</p>
 <p>See also <a href="qsysinfo.html">QSysInfo</a> and <a href="qt-conf.html">Using qt.conf</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="LibraryLocation-enum"></a>enum QLibraryInfo::LibraryLocation</h3>
 <a name="library-location"></a><p>This enum type is used to specify a specific location specifier:</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QLibraryInfo::PrefixPath</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The default prefix for all paths.</td></tr>
 <tr><td valign="top"><tt>QLibraryInfo::DocumentationPath</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The location for documentation upon install.</td></tr>
@@ -65,7 +65,7 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QLibraryInfo::SettingsPath</tt></td><td align="center" valign="top"><tt>8</tt></td><td valign="top">The location for Qt settings.</td></tr>
 <tr><td valign="top"><tt>QLibraryInfo::ExamplesPath</tt></td><td align="center" valign="top"><tt>10</tt></td><td valign="top">The location for examples upon install.</td></tr>
 <tr><td valign="top"><tt>QLibraryInfo::DemosPath</tt></td><td align="center" valign="top"><tt>9</tt></td><td valign="top">The location for demos upon install.</td></tr>
-</table>
+</table></p>
 <p>See also <a href="qlibraryinfo.html#location">location</a>().</p>
 <hr />
 <h2>Member Function Documentation</h2>
@@ -82,8 +82,8 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the location specified by <i>loc</i>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

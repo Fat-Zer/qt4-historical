@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt3Support module of the Qt Toolkit.
 **
@@ -1599,6 +1599,7 @@ void Q3MainWindow::setUsesTextLabel(bool enable)
     QObjectList l = queryList("QLayout");
     for (int i = 0; i < l.size(); ++i)
             static_cast<QLayout *>(l.at(i))->activate();
+    triggerLayout(false);
 }
 
 

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/doc/src/emb-charinput.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/doc/src/emb-charinput.qdoc -->
 <head>
     <title>Qt 4.1: Character Input in Qtopia Core</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -19,13 +19,13 @@ body { background: #ffffff; color: black; }</style>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Character Input in Qtopia Core<br /><small></small></h1>
 <p>Internally in the client/server protocol, each key press and key release is sent as a <tt>QWSKeyEvent</tt>. A QWSKeyEvent contains the following fields:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#f0f0f0"><td><tt>unicode</tt></td><td>Unicode value</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><tt>keycode</tt></td><td>Qt keycode value as defined in <tt>qnamespace.h</tt></td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><tt>modifier</tt></td><td>A bitfield consisting of some of <a href="qt-qt3.html#ButtonState_enum-enum">Qt::ShiftButton</a>, <a href="qt-qt3.html#ButtonState_enum-enum">Qt::ControlButton</a>, and <a href="qt-qt3.html#ButtonState_enum-enum">Qt::AltButton</a>.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><tt>is_press</tt></td><td>true if this is a key press, false if it is a key release.</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><tt>is_auto_repeat</tt></td><td>true if this event is caused by auto repeat.</td></tr>
-</table>
+</table></p>
 <p>When the server receives a key event it is sent to each client process which is responsible for processing the key event and sending it to the right window, if any. Key events may come from several different sources.</p>
 <a name="keyboard-drivers"></a>
 <h2>Keyboard Drivers</h2>
@@ -45,8 +45,8 @@ body { background: #ffffff; color: black; }</style>
 <p>The <a href="http://www.trolltech.com/products/qtopia/">Qtopia</a> environment contains various input widgets such as Handwriting Recognition and Virtual Keyboard.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

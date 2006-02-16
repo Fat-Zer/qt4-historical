@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -291,18 +291,26 @@ void QRubberBand::moveEvent(QMoveEvent *)
 */
 
 /*!
-    \fn void QRubberBand::setGeometry(int x, int y, int w, int h)
+    \fn void QRubberBand::setGeometry(const QRect &rect)
 
-    Same as QWidget::setGeometry().
-*/
+    Sets the geometry of the rubber band to \a rect, specified in the coordinate system
+    of its parent widget.
 
-/*!
-    Same as QWidget::setGeometry().
+    \sa QWidget::geometry
 */
 void QRubberBand::setGeometry(const QRect &geom)
 {
     QWidget::setGeometry(geom);
 }
+
+/*!
+    \fn void QRubberBand::setGeometry(int x, int y, int width, int height)
+    \overload
+
+    Sets the geometry of the rubberband to the rectangle whose top-left corner lies at
+    the point (\a x, \a y), and with dimensions specified by \a width and \a height.
+    The geometry is specified in the parent widget's coordinate system.
+*/
 
 /*! \reimp */
 bool QRubberBand::event(QEvent *e)

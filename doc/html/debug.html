@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/doc/src/debug.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/doc/src/debug.qdoc -->
 <head>
     <title>Qt 4.1: Debugging Techniques</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -22,12 +22,12 @@ body { background: #ffffff; color: black; }</style>
 <a name="command-line-options-recognized-by-qt"></a>
 <h2>Command-Line Options Recognized by Qt</h2>
 <p>When you run a Qt application, you can specify several command-line options that can help with debugging. These are recognized by <a href="qapplication.html">QApplication</a>.</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Option</th><th>Description</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><tt>-nograb</tt></td><td>The application should never grab <a href="qwidget.html#grabMouse">the mouse</a> or <a href="qwidget.html#grabKeyboard">the keyboard</a>. This option is set by default when the program is running in the <tt>gdb</tt> debugger under Linux.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><tt>-dograb</tt></td><td>Ignore any implicit or explicit <tt>-nograb</tt>. <tt>-dograb</tt> wins over <tt>-nograb</tt> even when <tt>-nograb</tt> is last on the command line.</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><tt>-sync</tt></td><td>Runs the application in X synchronous mode. Synchronous mode forces the X server to perform each X client request immediately and not use buffer optimization. It makes the program easier to debug and often much slower. The <tt>-sync</tt> option is only valid for the X11 version of Qt.</td></tr>
-</table>
+</table></p>
 <a name="warning-and-debugging-messages"></a>
 <h2>Warning and Debugging Messages</h2>
 <p>Qt includes four global functions for writing out warning and debug text. You can use them for the following purposes:</p>
@@ -75,8 +75,8 @@ body { background: #ffffff; color: black; }</style>
 <p>There is one bug that is so common that it deserves mention here: If you include the <a href="qobject.html#Q_OBJECT">Q_OBJECT</a> macro in a class declaration and run <a href="moc.html">the meta-object compiler</a> (<tt>moc</tt>), but forget to link the <tt>moc</tt>-generated object code into your executable, you will get very confusing error messages. Any link error complaining about a lack of <tt>vtbl</tt>, <tt>_vtbl</tt>, <tt>__vtbl</tt> or similar is likely to be a result of this problem.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2005-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 2005-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the example classes of the Qt Toolkit.
 **
@@ -32,6 +32,7 @@ DropSiteWidget::DropSiteWidget(QWidget *parent)
     setMinimumSize(200, 200);
     setFrameStyle(QFrame::Sunken | QFrame::StyledPanel);
     setAcceptDrops(true);
+    setAutoFillBackground(true);
     setBackgroundRole(QPalette::Dark);
 
     setText(tr("<drop content>"));

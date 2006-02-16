@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -108,7 +108,7 @@ void QPrinterPrivate::createDefaultEngines()
   default is false, so that by default you should be able to paint
   on (0,0). If true the origin of the coordinate system will be in
   the top left corner of the paper and most probably the printer
-  will not be able to paint something there due to it's physical
+  will not be able to paint something there due to its physical
   margins.
   \i setNumCopies() tells QPrinter how many copies of the document
   it should print.
@@ -1302,6 +1302,8 @@ int QPrinter::fromPage() const
 {
 #if defined(QT3_SUPPORT) && !defined(QT_NO_PRINTDIALOG)
     Q_D(const QPrinter);
+    if (d->outputFormat == QPrinter::PdfFormat)
+        return 0;
     if (!d->printDialog)
         const_cast<QPrinter*>(this)->d_func()->printDialog = new QPrintDialog(const_cast<QPrinter*>(this));
     return const_cast<QPrinter*>(this)->d_func()->printDialog->fromPage();
@@ -1328,6 +1330,8 @@ int QPrinter::toPage() const
 {
 #if defined(QT3_SUPPORT) && !defined(QT_NO_PRINTDIALOG)
     Q_D(const QPrinter);
+    if (d->outputFormat == QPrinter::PdfFormat)
+        return 0;
     if (!d->printDialog)
         const_cast<QPrinter*>(this)->d_func()->printDialog = new QPrintDialog(const_cast<QPrinter*>(this));
     return const_cast<QPrinter*>(this)->d_func()->printDialog->toPage();
@@ -1357,6 +1361,8 @@ void QPrinter::setFromTo(int from, int to)
 {
 #if defined(QT3_SUPPORT) && !defined(QT_NO_PRINTDIALOG)
     Q_D(QPrinter);
+    if (d->outputFormat == QPrinter::PdfFormat)
+        return;
     if (!d->printDialog)
         const_cast<QPrinter*>(this)->d_func()->printDialog = new QPrintDialog(const_cast<QPrinter*>(this));
     d->printDialog->setFromTo(from, to);

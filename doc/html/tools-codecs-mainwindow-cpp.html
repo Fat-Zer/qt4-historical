@@ -19,7 +19,7 @@ body { background: #ffffff; color: black; }</style>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">mainwindow.cpp Example File<br /><sup><sup>tools/codecs/mainwindow.cpp</sup></sup></h1>
 <pre>&nbsp;   /****************************************************************************
     **
-    ** Copyright (C) 2004-2005 Trolltech AS. All rights reserved.
+    ** Copyright (C) 2004-2006 Trolltech AS. All rights reserved.
     **
     ** This file is part of the documentation of the Qt Toolkit.
     **
@@ -68,7 +68,7 @@ body { background: #ffffff; color: black; }</style>
         QString fileName = QFileDialog::getOpenFileName(this);
         if (!fileName.isEmpty()) {
             QFile file(fileName);
-            if (!file.open(QFile::ReadOnly)) {
+            if (!file.open(QFile::ReadOnly | QFile::Text)) {
                 QMessageBox::warning(this, tr(&quot;Codecs&quot;),
                                      tr(&quot;Cannot read file %1:\n%2&quot;)
                                      .arg(fileName)
@@ -89,7 +89,7 @@ body { background: #ffffff; color: black; }</style>
         QString fileName = QFileDialog::getSaveFileName(this);
         if (!fileName.isEmpty()) {
             QFile file(fileName);
-            if (!file.open(QFile::WriteOnly)) {
+            if (!file.open(QFile::WriteOnly | QFile::Text)) {
                 QMessageBox::warning(this, tr(&quot;Codecs&quot;),
                                      tr(&quot;Cannot write file %1:\n%2&quot;)
                                      .arg(fileName)
@@ -204,8 +204,8 @@ body { background: #ffffff; color: black; }</style>
     }</pre>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -51,11 +51,10 @@ bool QEventDispatcherX11::processEvents(QEventLoop::ProcessEventsFlags flags)
 {
     Q_D(QEventDispatcherX11);
 
-    int nevents = 0;
-
     QApplication::sendPostedEvents();
 
-    // Two loops so that posted events accumulate
+    ulong marker = XNextRequest(X11->display);
+    int nevents = 0;
     do {
         while (!d->interrupt) {
             XEvent event;
@@ -111,9 +110,13 @@ bool QEventDispatcherX11::processEvents(QEventLoop::ProcessEventsFlags flags)
             nevents++;
             if (qApp->x11ProcessEvent(&event) == 1)
                 return true;
+
+            if (event.xany.serial >= marker)
+                goto out;
         }
     } while (!d->interrupt && XEventsQueued(X11->display, QueuedAfterFlush));
 
+ out:
     if (!d->interrupt) {
         const uint exclude_all =
             QEventLoop::ExcludeSocketNotifiers | QEventLoop::X11ExcludeTimers | QEventLoop::WaitForMoreEvents;

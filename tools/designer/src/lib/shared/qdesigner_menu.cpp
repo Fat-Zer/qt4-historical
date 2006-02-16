@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt Designer of the Qt Toolkit.
 **
@@ -158,7 +158,7 @@ void QDesignerMenu::startDrag(const QPoint &pos)
     }
 }
 
-bool QDesignerMenu::handleKeyPressEvent(QWidget */*widget*/, QKeyEvent *e)
+bool QDesignerMenu::handleKeyPressEvent(QWidget * /*widget*/, QKeyEvent *e)
 {
     m_showSubMenuTimer->stop();
 
@@ -305,7 +305,7 @@ bool QDesignerMenu::handleMouseDoubleClickEvent(QWidget *, QMouseEvent *event)
     return true;
 }
 
-bool QDesignerMenu::handleMousePressEvent(QWidget */*widget*/, QMouseEvent *event)
+bool QDesignerMenu::handleMousePressEvent(QWidget * /*widget*/, QMouseEvent *event)
 {
     if (!rect().contains(event->pos())) {
         if (QMenuBar *mb = qobject_cast<QMenuBar*>(QApplication::widgetAt(event->globalPos()))) {

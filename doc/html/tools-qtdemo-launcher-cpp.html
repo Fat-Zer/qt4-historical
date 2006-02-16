@@ -19,7 +19,7 @@ body { background: #ffffff; color: black; }</style>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">launcher.cpp Example File<br /><sup><sup>tools/qtdemo/launcher.cpp</sup></sup></h1>
 <pre>&nbsp;   /****************************************************************************
     **
-    ** Copyright (C) 2005-2005 Trolltech AS. All rights reserved.
+    ** Copyright (C) 2005-2006 Trolltech AS. All rights reserved.
     **
     ** This file is part of the documentation of the Qt Toolkit.
     **
@@ -181,15 +181,15 @@ body { background: #ffffff; color: black; }</style>
         return true;
     }
 
-    void Launcher::findDescriptionAndImages(const QString &amp;exampleName,
+    void Launcher::findDescriptionAndImages(const QString &amp;uniqueName,
                                             const QString &amp;docName)
     {
         if (documentationDir.exists(docName)) {
-            documentPaths[exampleName] = \
+            exampleDetails[uniqueName][&quot;document path&quot;] = \
                 documentationDir.absoluteFilePath(docName);
 
             QDomDocument exampleDoc;
-            QFile exampleFile(documentPaths[exampleName]);
+            QFile exampleFile(exampleDetails[uniqueName][&quot;document path&quot;]);
             exampleDoc.setContent(&amp;exampleFile);
 
             QDomNodeList paragraphs = exampleDoc.elementsByTagName(&quot;p&quot;);
@@ -200,9 +200,10 @@ body { background: #ffffff; color: black; }</style>
                 description = readExampleDescription(descriptionNode);
 
                 if (description.indexOf(QRegExp(QString(
-                    &quot;((The|This) )?(%1 )?.*(example|demo)&quot;).arg(exampleName),
+                    &quot;((The|This) )?(%1 )?.*(example|demo)&quot;).arg(
+                        exampleDetails[uniqueName][&quot;name&quot;]),
                     Qt::CaseInsensitive)) != -1) {
-                    exampleDescriptions[exampleName] = description;
+                    exampleDetails[uniqueName][&quot;description&quot;] = description;
                     break;
                 }
             }
@@ -218,7 +219,7 @@ body { background: #ffffff; color: black; }</style>
             }
 
             if (imageFiles.size() &gt; 0)
-                imagePaths[exampleName] = imageFiles;
+                imagePaths[uniqueName] = imageFiles;
         }
     }
 
@@ -262,9 +263,12 @@ body { background: #ffffff; color: black; }</style>
                     QString exampleName = element.attribute(&quot;name&quot;);
                     QString exampleFileName = element.attribute(&quot;filename&quot;);
                     QString exampleDirName = element.attribute(&quot;dirname&quot;);
-                    QString exampleColor = element.attribute(&quot;color&quot;, &quot;#f0f0f0&quot;);
 
                     examples[categoryName].append(exampleName);
+
+                    QString uniqueName = categoryName+&quot;-&quot;+exampleName;
+                    exampleOptions[uniqueName] = QMap&lt;QString,QString&gt;();
+                    exampleDetails[uniqueName] = QMap&lt;QString,QString&gt;();
 
                     QString docName;
                     if (!categoryDocName.isEmpty())
@@ -272,8 +276,11 @@ body { background: #ffffff; color: black; }</style>
                     else
                         docName = categoryDirName+&quot;-&quot;+exampleFileName+&quot;.html&quot;;
 
-                    exampleColors[categoryName+&quot;-&quot;+exampleName] = exampleColor;
-                    findDescriptionAndImages(categoryName+&quot;-&quot;+exampleName, docName);
+                    exampleDetails[uniqueName][&quot;name&quot;] = exampleName;
+                    findDescriptionAndImages(uniqueName, docName);
+
+                    exampleOptions[uniqueName][&quot;changedirectory&quot;] = element.attribute(&quot;changedirectory&quot;, &quot;true&quot;);
+                    exampleOptions[uniqueName][&quot;color&quot;] = element.attribute(&quot;color&quot;, &quot;#f0f0f0&quot;);
 
                     if (!exampleDirName.isEmpty() &amp;&amp; !exampleDir.cd(exampleDirName))
                         continue;
@@ -283,8 +290,10 @@ body { background: #ffffff; color: black; }</style>
 
                     if (exampleDir.cd(exampleFileName)) {
                         QString examplePath = findExecutable(exampleDir);
-                        if (!examplePath.isNull())
-                            examplePaths[categoryName+&quot;-&quot;+exampleName] = QPair&lt;QString,QString&gt;(exampleDir.absolutePath(), examplePath);
+                        if (!examplePath.isNull()) {
+                            exampleDetails[uniqueName][&quot;absolute path&quot;] = exampleDir.absolutePath();
+                            exampleDetails[uniqueName][&quot;path&quot;] = examplePath;
+                        }
                     }
                 }
 
@@ -399,9 +408,9 @@ body { background: #ffffff; color: black; }</style>
         return description;
     }
 
-    void Launcher::launchExample(const QString &amp;example)
+    void Launcher::launchExample(const QString &amp;uniqueName)
     {
-        if (runningExamples.contains(example))
+        if (runningExamples.contains(uniqueName))
             return;
 
         QProcess *process = new QProcess(this);
@@ -415,10 +424,13 @@ body { background: #ffffff; color: black; }</style>
         process-&gt;setEnvironment(QStringList(newpath));
     #endif
 
-        runningExamples.append(example);
-        runningProcesses[process] = example;
-        process-&gt;setWorkingDirectory(examplePaths[example].first);
-        process-&gt;start(examplePaths[example].second);
+        runningExamples.append(uniqueName);
+        runningProcesses[process] = uniqueName;
+
+        if (exampleOptions[uniqueName][&quot;changedirectory&quot;] == &quot;true&quot;)
+            process-&gt;setWorkingDirectory(exampleDetails[uniqueName][&quot;absolute path&quot;]);
+
+        process-&gt;start(exampleDetails[uniqueName][&quot;path&quot;]);
 
         if (process-&gt;state() == QProcess::Starting)
             slideshowTimer-&gt;stop();
@@ -755,16 +767,17 @@ body { background: #ffffff; color: black; }</style>
 
         foreach (QString example, examples[currentCategory]) {
 
+            QString uniqueName = currentCategory+&quot;-&quot;+example;
             QPainterPath path;
             path.addRect(-2*extra, -extra, maxWidth + 4*extra, textHeight + 2*extra);
 
             DisplayShape *background = new PanelShape(path,
-                QBrush(exampleColors[currentCategory+&quot;-&quot;+example]),
+                QBrush(QColor(exampleOptions[uniqueName][&quot;color&quot;])),
                 QBrush(QColor(&quot;#e0e0ff&quot;)),
                 Qt::NoPen, startPosition,
                 QSizeF(maxWidth + 4*extra, textHeight + 2*extra));
 
-            background-&gt;setMetaData(&quot;example&quot;, example);
+            background-&gt;setMetaData(&quot;example&quot;, uniqueName);
             background-&gt;setInteractive(true);
             background-&gt;setTarget(QPointF(2*horizontalMargin,
                                           background-&gt;position().y()));
@@ -807,24 +820,25 @@ body { background: #ffffff; color: black; }</style>
                                width()-4*horizontalMargin, textHeight));
     }
 
-    void Launcher::showExampleDocumentation(const QString &amp;example)
+    void Launcher::showExampleDocumentation(const QString &amp;uniqueName)
     {
         disconnect(display, SIGNAL(displayEmpty()), this, 0);
-        currentExample = example;
+        currentExample = uniqueName;
 
-        assistant-&gt;showPage(documentPaths[example]);
+        assistant-&gt;showPage(exampleDetails[uniqueName][&quot;document path&quot;]);
     }
 
-    void Launcher::showExampleSummary(const QString &amp;example)
+    void Launcher::showExampleSummary(const QString &amp;uniqueName)
     {
         newPage();
         fadeShapes();
-        currentExample = currentCategory+&quot;-&quot;+example;
+        currentExample = uniqueName;
 
         qreal horizontalMargin = 0.025*width();
         qreal verticalMargin = 0.025*height();
 
-        DisplayShape *newTitle = addTitle(example, verticalMargin);
+        DisplayShape *newTitle = addTitle(exampleDetails[currentExample][&quot;name&quot;],
+                                          verticalMargin);
         DisplayShape *titleBackground = addTitleBackground(newTitle);
 
         qreal topMargin = 2*verticalMargin + titleBackground-&gt;rect().bottom();
@@ -838,9 +852,9 @@ body { background: #ffffff; color: black; }</style>
         qreal leftMargin = 3*horizontalMargin;
         qreal rightMargin = width() - 3*horizontalMargin;
 
-        if (exampleDescriptions.contains(currentExample)) {
+        if (exampleDetails[currentExample].contains(&quot;description&quot;)) {
             DocumentShape *description = new DocumentShape(
-                exampleDescriptions[currentExample], documentFont,
+                exampleDetails[currentExample][&quot;description&quot;], documentFont,
                 QPointF(leftMargin, topMargin),
                 QSizeF(rightMargin-leftMargin, space), 0);
 
@@ -917,7 +931,7 @@ body { background: #ffffff; color: black; }</style>
             leftMargin = buttonBackground-&gt;rect().right();
         }
 
-        if (examplePaths.contains(currentExample)) {
+        if (exampleDetails[currentExample].contains(&quot;absolute path&quot;)) {
 
             DisplayShape *launchCaption = new TitleShape(tr(&quot;Launch&quot;),
                 font(), QPen(Qt::white), QPointF(0.0, 0.0), maxSize,
@@ -962,7 +976,7 @@ body { background: #ffffff; color: black; }</style>
             rightMargin = background-&gt;rect().left();
         }
 
-        if (documentPaths.contains(currentExample)) {
+        if (exampleDetails[currentExample].contains(&quot;document path&quot;)) {
 
             DisplayShape *documentCaption = new TitleShape(tr(&quot;Show Documentation&quot;),
                 font(), QPen(Qt::white), QPointF(0.0, 0.0), maxSize,
@@ -1079,8 +1093,8 @@ body { background: #ffffff; color: black; }</style>
     }</pre>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

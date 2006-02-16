@@ -19,7 +19,7 @@ body { background: #ffffff; color: black; }</style>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">displaywidget.cpp Example File<br /><sup><sup>tools/qtdemo/displaywidget.cpp</sup></sup></h1>
 <pre>&nbsp;   /****************************************************************************
     **
-    ** Copyright (C) 2005-2005 Trolltech AS. All rights reserved.
+    ** Copyright (C) 2005-2006 Trolltech AS. All rights reserved.
     **
     ** This file is part of the documentation of the Qt Toolkit.
     **
@@ -42,12 +42,23 @@ body { background: #ffffff; color: black; }</style>
 
     #include &lt;QtGui&gt;
 
+    #if defined(Q_WS_X11)
+    #include &lt;QTime&gt;
+    #include &lt;private/qt_x11_p.h&gt;
+    #endif
+
     #include &quot;displayshape.h&quot;
     #include &quot;displaywidget.h&quot;
 
     DisplayWidget::DisplayWidget(QWidget *parent)
         : QWidget(parent)
     {
+    #if defined(Q_WS_X11)
+        frameTime = 0;
+        avgRate = 0;
+        numFrames = 0;
+        testDrawSpeed = true;
+    #endif
         empty = true;
         emptying = false;
 
@@ -133,12 +144,45 @@ body { background: #ffffff; color: black; }</style>
 
     void DisplayWidget::paintEvent(QPaintEvent *event)
     {
+    #if defined(Q_WS_X11)
+        QTime renderTime;
+        if (testDrawSpeed)
+            renderTime.restart();
+    #endif
+
         QPainter painter;
         painter.begin(this);
         painter.fillRect(event-&gt;rect(), Qt::white);
-        foreach (DisplayShape *shape, shapes)
-            shape-&gt;paint(&amp;painter);
+        foreach (DisplayShape *shape, shapes) {
+            if (shape-&gt;rect().intersects(event-&gt;rect()))
+                shape-&gt;paint(&amp;painter);
+        }
         painter.end();
+
+    #if defined(Q_WS_X11)
+        if (testDrawSpeed) {
+            numFrames++;
+            frameTime += renderTime.elapsed();
+            avgRate = frameTime/numFrames;
+            if (numFrames &gt; 20) {
+                if (avgRate &gt; 20 &amp;&amp; X11-&gt;use_xrender) {
+                    timer.stop();
+                    int result = QMessageBox::question(this,
+                                                       QObject::tr(&quot;Disable XRender?&quot;),
+                                                       QObject::tr(&quot;Your XRender implementation does not appear to be accelerated.\n&quot;
+                                                                   &quot;This may cause this demo to run very slowly.\n&quot;
+                                                                   &quot;Do you wish to turn XRender support off in this demo to improve\n&quot;
+                                                                   &quot;the frame rate?&quot;),
+                                                       QMessageBox::Yes, QMessageBox::No, QMessageBox::NoButton);
+
+                    if (result == QMessageBox::Yes)
+                        X11-&gt;use_xrender = false;
+                    enableUpdates();
+                }
+                testDrawSpeed = false;
+            }
+        }
+    #endif
     }
 
     void DisplayWidget::reset()
@@ -220,8 +264,8 @@ body { background: #ffffff; color: black; }</style>
     }</pre>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

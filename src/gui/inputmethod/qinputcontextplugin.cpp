@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -54,7 +54,7 @@
     To create an input context plugin you subclass this base class,
     reimplement the pure virtual functions keys(), create(),
     languages(), displayName(), and description(), and export the
-    class with the Q_EXPORT_PLUGIN() macro.
+    class with the Q_EXPORT_PLUGIN2() macro.
 
     \sa QInputContext, {How to Create Qt Plugins}
 */
@@ -124,7 +124,7 @@
 
 /*!
     Constructs a input context plugin with the given \a parent. This
-    is invoked automatically by the Q_EXPORT_PLUGIN() macro.
+    is invoked automatically by the Q_EXPORT_PLUGIN2() macro.
 */
 QInputContextPlugin::QInputContextPlugin(QObject *parent)
     :QObject(parent)

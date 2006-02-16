@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -139,7 +139,7 @@ extern "C" {
 
 	XIMPreeditDrawCallbackStruct *drawstruct = (XIMPreeditDrawCallbackStruct *) call_data;
 	XIMText *text = (XIMText *) drawstruct->text;
-	int cursor = drawstruct->caret, sellen = 0;
+	int cursor = drawstruct->caret, sellen = 0, selstart = 0;
 
 	if (!drawstruct->caret && !drawstruct->chg_first && !drawstruct->chg_length && !text) {
 	    if(data->text.isEmpty()) {
@@ -202,7 +202,7 @@ extern "C" {
                     else break;
                 } else {
                     if (data->selectedChars.testBit(x)) {
-                        cursor = x;
+                        selstart = x;
                         started = true;
                         sellen = 1;
                     }
@@ -227,21 +227,20 @@ extern "C" {
 	    }
 	}
 
-        if (!sellen)
-            cursor = data->text.length();
         XIM_DEBUG("sending compose: '%s', cursor=%d, sellen=%d",
                   data->text.toUtf8().constData(), cursor, sellen);
         QList<QInputMethodEvent::Attribute> attrs;
-        if (cursor > 0)
-            attrs << QInputMethodEvent::Attribute(QInputMethodEvent::TextFormat, 0, cursor,
-                               qic->standardFormat(QInputContext::PreeditFormat));
+        if (selstart > 0)
+            attrs << QInputMethodEvent::Attribute(QInputMethodEvent::TextFormat, 0, selstart,
+                                                  qic->standardFormat(QInputContext::PreeditFormat));
         if (sellen)
-            attrs << QInputMethodEvent::Attribute(QInputMethodEvent::TextFormat, cursor, sellen,
-                               qic->standardFormat(QInputContext::SelectionFormat));
-        if (cursor + sellen < data->text.length())
+            attrs << QInputMethodEvent::Attribute(QInputMethodEvent::TextFormat, selstart, sellen,
+                                                  qic->standardFormat(QInputContext::SelectionFormat));
+        if (selstart + sellen < data->text.length())
             attrs << QInputMethodEvent::Attribute(QInputMethodEvent::TextFormat,
-                                     cursor + sellen, data->text.length() - cursor - sellen,
-                                     qic->standardFormat(QInputContext::PreeditFormat));
+                                                  selstart + sellen, data->text.length() - selstart - sellen,
+                                                  qic->standardFormat(QInputContext::PreeditFormat));
+        attrs << QInputMethodEvent::Attribute(QInputMethodEvent::Cursor, cursor, sellen ? 0 : 1, QVariant());
         QInputMethodEvent e(data->text, attrs);
 	qic->sendEvent(e);
 
@@ -336,7 +335,7 @@ QXIMInputContext::QXIMInputContext()
 #ifndef QT_NO_DEBUG
         qWarning("Qt: Locale not supported on X server")
 #endif
-            ;    
+            ;
 #ifdef USE_X11R6_XIM
     else if (XSetLocaleModifiers (ximServerName.constData()) == 0)
         qWarning("Qt: Cannot set locale modifiers: %s", ximServerName.constData());
@@ -522,8 +521,11 @@ void QXIMInputContext::widgetDestroyed(QWidget *w)
     delete data;
 }
 
-void QXIMInputContext::mouseHandler(int pos, QMouseEvent *)
+void QXIMInputContext::mouseHandler(int pos, QMouseEvent *e)
 {
+    if(e->type() != QEvent::MouseButtonPress)
+        return;
+
     XIM_DEBUG("QXIMInputContext::mouseHandler pos=%d", pos);
     ICData *data = ximData.value(focusWidget());
     if (!data)

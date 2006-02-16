@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/corelib/kernel/qeventloop.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/corelib/kernel/qeventloop.cpp -->
 <head>
     <title>Qt 4.1: QEventLoop Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -26,7 +26,7 @@ body { background: #ffffff; color: black; }</style>
 <a name="public-types"></a>
 <h3>Public Types</h3>
 <ul>
-<li><div class="fn"/>enum <b><a href="qeventloop.html#ProcessEventsFlag-enum">ProcessEventsFlag</a></b> { AllEvents, ExcludeUserInputEvents, ExcludeSocketNotifiers, WaitForMoreEvents }</li>
+<li><div class="fn"/>enum <b><a href="qeventloop.html#ProcessEventsFlag-enum">ProcessEventsFlag</a></b> { AllEvents, ExcludeUserInputEvents, ExcludeSocketNotifiers, WaitForMoreEvents, DeferredDeletion, X11ExcludeTimers }</li>
 <li><div class="fn"/>flags <b><a href="qeventloop.html#ProcessEventsFlag-enum">ProcessEventsFlags</a></b></li>
 </ul>
 <a name="public-functions"></a>
@@ -69,13 +69,15 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="flags"><a name="ProcessEventsFlag-enum"></a>enum QEventLoop::ProcessEventsFlag<br />flags QEventLoop::ProcessEventsFlags</h3>
 <p>This enum controls the types of events processed by the <a href="qeventloop.html#processEvents">processEvents</a>() functions.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QEventLoop::AllEvents</tt></td><td align="center" valign="top"><tt>0x00</tt></td><td valign="top">All events are processed</td></tr>
 <tr><td valign="top"><tt>QEventLoop::ExcludeUserInputEvents</tt></td><td align="center" valign="top"><tt>0x01</tt></td><td valign="top">Do not process user input events, such as ButtonPress and KeyPress. Note that the events are not discarded; they will be delivered the next time <a href="qeventloop.html#processEvents">processEvents</a>() is called without the ExcludeUserInputEvents flag.</td></tr>
 <tr><td valign="top"><tt>QEventLoop::ExcludeSocketNotifiers</tt></td><td align="center" valign="top"><tt>0x02</tt></td><td valign="top">Do not process socket notifier events. Note that the events are not discarded; they will be delivered the next time <a href="qeventloop.html#processEvents">processEvents</a>() is called without the ExcludeSocketNotifiers flag.</td></tr>
 <tr><td valign="top"><tt>QEventLoop::WaitForMoreEvents</tt></td><td align="center" valign="top"><tt>0x04</tt></td><td valign="top">Wait for events if no pending events are available.</td></tr>
-</table>
+<tr><td valign="top"><tt>QEventLoop::DeferredDeletion</tt></td><td align="center" valign="top"><tt>0x10</tt></td><td valign="top">Allow objects to be queued for deletion at a later time.</td></tr>
+<tr><td valign="top"><tt>QEventLoop::X11ExcludeTimers</tt></td><td align="center" valign="top"><tt>0x08</tt></td><td valign="top">&nbsp;</td></tr>
+</table></p>
 <p>The ProcessEventsFlags type is a typedef for <a href="qflags.html">QFlags</a>&lt;ProcessEventsFlag&gt;. It stores an OR combination of ProcessEventsFlag values.</p>
 <p>See also <a href="qeventloop.html#processEvents">processEvents</a>().</p>
 <hr />
@@ -105,7 +107,7 @@ body { background: #ffffff; color: black; }</style>
 <p>This function is especially useful if you have a long running operation and want to show its progress without allowing user input, i.e. by using the <a href="qeventloop.html#ProcessEventsFlag-enum">ExcludeUserInputEvents</a> flag.</p>
 <p>This function is simply a wrapper for <a href="qabstracteventdispatcher.html#processEvents">QAbstractEventDispatcher::processEvents</a>(). See the documentation for that function for details.</p>
 <h3 class="fn"><a name="processEvents-2"></a>void QEventLoop::processEvents ( <a href="qeventloop.html#ProcessEventsFlag-enum">ProcessEventsFlags</a> <i>flags</i>, int <i>maxTime</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Process pending events that match <i>flags</i> for a maximum of <i>maxTime</i> milliseconds, or until there are no more events to process, whichever is shorter.</p>
 <p>This function is especially useful if you have a long running operation and want to show its progress without allowing user input, i.e. by using the <a href="qeventloop.html#ProcessEventsFlag-enum">ExcludeUserInputEvents</a> flag.</p>
 <p>Note: This function does not process events continuously; it returns after all available events are processed.</p>
@@ -119,8 +121,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qabstracteventdispatcher.html#wakeUp">QAbstractEventDispatcher::wakeUp</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

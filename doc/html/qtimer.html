@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/corelib/kernel/qtimer.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/corelib/kernel/qtimer.cpp -->
 <head>
     <title>Qt 4.1: QTimer Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -143,14 +143,14 @@ body { background: #ffffff; color: black; }</style>
         ...
         return app.exec();
     }</pre>
-<p>This sample program automatically terminates after 10 minutes (600000 milliseconds).</p>
+<p>This sample program automatically terminates after 10 minutes (600,000 milliseconds).</p>
 <p>The <i>receiver</i> is the receiving object and the <i>member</i> is the slot. The time interval is <i>msec</i> milliseconds.</p>
 <p><b>Note:</b> This function is <a href="threads.html#reentrant">reentrant</a>.</p>
 <p>See also <a href="qtimer.html#singleShot-prop">setSingleShot</a>() and <a href="qtimer.html#start">start</a>().</p>
 <h3 class="fn"><a name="start"></a>void QTimer::start ( int <i>msec</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Starts or restarts the timer with a timeout interval of <i>msec</i> milliseconds.</p>
 <h3 class="fn"><a name="start-2"></a>void QTimer::start ()&nbsp;&nbsp;<tt> [slot]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Starts or restarts the timer with the timeout specified in <a href="qtimer.html#interval-prop">interval</a>.</p>
 <p>If <a href="qtimer.html#singleShot-prop">singleShot</a> is true, the timer will be activated only once.</p>
 <h3 class="fn"><a name="stop"></a>void QTimer::stop ()&nbsp;&nbsp;<tt> [slot]</tt></h3>
@@ -163,8 +163,8 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the ID of the timer if the timer is running; otherwise returns -1.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -79,7 +79,7 @@ public:
     void drawRects(const QRect *rects, int rectCount);
     inline void drawRects(const QRectF *rects, int rectCount) { QPaintEngine::drawRects(rects, rectCount); }
 
-    inline void drawPoints(const QPoint *points, int pointCount) { QPaintEngine::drawPoints(points, pointCount); }
+    void drawPoints(const QPoint *points, int pointCount);
     void drawPoints(const QPointF *points, int pointCount);
 
     void drawEllipse(const QRect &r);
@@ -102,7 +102,6 @@ public:
 protected:
     QX11PaintEngine(QX11PaintEnginePrivate &dptr);
 
-    void drawMulti(const QPointF &p, const QTextItemInt &si);
     void drawBox(const QPointF &p, const QTextItemInt &si);
     void drawXLFD(const QPointF &p, const QTextItemInt &si);
 #ifndef QT_NO_FONTCONFIG
@@ -171,6 +170,7 @@ public:
     Qt::HANDLE picture;
     Qt::HANDLE current_brush;
     QPixmap bitmap_texture;
+    int composition_mode;
 #else
     Qt::HANDLE picture;
 #endif

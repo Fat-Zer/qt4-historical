@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -324,7 +324,7 @@ int QX11Info::appScreen()
 */
 Qt::HANDLE QX11Info::appColormap(int screen)
 {
-    return X11->screens[screen == -1 ? X11->defaultScreen : screen].colormap;
+    return X11 ? X11->screens[screen == -1 ? X11->defaultScreen : screen].colormap : 0;
 }
 
 /*!
@@ -336,7 +336,7 @@ Qt::HANDLE QX11Info::appColormap(int screen)
 
 void *QX11Info::appVisual(int screen)
 {
-    return X11->screens[screen == -1 ? X11->defaultScreen : screen].visual;
+    return X11 ? X11->screens[screen == -1 ? X11->defaultScreen : screen].visual : 0;
 }
 
 /*!
@@ -346,7 +346,7 @@ void *QX11Info::appVisual(int screen)
 */
 Qt::HANDLE QX11Info::appRootWindow(int screen)
 {
-    return RootWindow(X11->display, screen == -1 ? X11->defaultScreen : screen);
+    return X11 ? RootWindow(X11->display, screen == -1 ? X11->defaultScreen : screen) : 0;
 }
 
 /*!
@@ -358,7 +358,8 @@ Qt::HANDLE QX11Info::appRootWindow(int screen)
 
 int QX11Info::appDepth(int screen)
 {
-    return X11->screens[screen == -1 ? X11->defaultScreen : screen].depth; }
+    return X11 ? X11->screens[screen == -1 ? X11->defaultScreen : screen].depth : 32;
+}
 
 /*!
     Returns the number of cells used by the application on the given \a screen.
@@ -367,21 +368,21 @@ int QX11Info::appDepth(int screen)
 */
 
 int QX11Info::appCells(int screen)
-{ return X11->screens[screen == -1 ? X11->defaultScreen : screen].cells; }
+{ return X11 ? X11->screens[screen == -1 ? X11->defaultScreen : screen].cells : 0; }
 
 /*!
     Returns true if the application has a default color map on the given
     \a screen; otherwise returns false.
 */
 bool QX11Info::appDefaultColormap(int screen)
-{ return X11->screens[screen == -1 ? X11->defaultScreen : screen].defaultColormap; }
+{ return X11 ? X11->screens[screen == -1 ? X11->defaultScreen : screen].defaultColormap : true; }
 
 /*!
     Returns true if the application has a default visual on the given \a screen;
     otherwise returns false.
 */
 bool QX11Info::appDefaultVisual(int screen)
-{ return X11->screens[screen == -1 ? X11->defaultScreen : screen].defaultVisual; }
+{ return X11 ? X11->screens[screen == -1 ? X11->defaultScreen : screen].defaultVisual : true; }
 
 /*!
     Returns the number of the screen currently in use.

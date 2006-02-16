@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/qt3support/dialogs/q3filedialog.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/qt3support/dialogs/q3filedialog.cpp -->
 <head>
     <title>Qt 4.1: Q3FileDialog Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -33,7 +33,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <a name="properties"></a>
 <h3>Properties</h3>
-<table width="100%" border="0" cellpadding="0" cellspacing="0">
+<p><table width="100%" border="0" cellpadding="0" cellspacing="0">
 <tr><td width="45%" valign="top"><ul>
 <li><div class="fn"/><b><a href="q3filedialog.html#contentsPreview-prop">contentsPreview</a></b> : bool</li>
 <li><div class="fn"/><b><a href="q3filedialog.html#dirPath-prop">dirPath</a></b> : const QString</li>
@@ -48,7 +48,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="q3filedialog.html#viewMode-prop">viewMode</a></b> : ViewMode</li>
 </ul>
 </td></tr>
-</table>
+</table></p>
 <ul>
 <li><div class="fn"/>2 properties inherited from <a href="qdialog.html#properties">QDialog</a></li>
 <li><div class="fn"/>54 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
@@ -93,7 +93,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>9 public functions inherited from <a href="qdialog.html#public-functions">QDialog</a></li>
 <li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
-<li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <a name="public-slots"></a>
 <h3>Public Slots</h3>
@@ -149,6 +149,7 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/>39 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
+<li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -215,31 +216,31 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="Mode-enum"></a>enum Q3FileDialog::Mode</h3>
 <p>This enum is used to indicate what the user may select in the file dialog, i.e. what the dialog will return if the user clicks OK.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Q3FileDialog::AnyFile</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The name of a file, whether it exists or not.</td></tr>
 <tr><td valign="top"><tt>Q3FileDialog::ExistingFile</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The name of a single existing file.</td></tr>
 <tr><td valign="top"><tt>Q3FileDialog::Directory</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">The name of a directory. Both files and directories are displayed.</td></tr>
 <tr><td valign="top"><tt>Q3FileDialog::DirectoryOnly</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">The name of a directory. The file dialog will only display directories.</td></tr>
 <tr><td valign="top"><tt>Q3FileDialog::ExistingFiles</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">The names of zero or more existing files.</td></tr>
-</table>
+</table></p>
 <p>See <a href="q3filedialog.html#mode-prop">setMode</a>().</p>
 <h3 class="fn"><a name="PreviewMode-enum"></a>enum Q3FileDialog::PreviewMode</h3>
 <p>This enum describes the preview mode of the file dialog.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Q3FileDialog::NoPreview</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">No preview is shown at all.</td></tr>
 <tr><td valign="top"><tt>Q3FileDialog::Contents</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Show a preview of the contents of the current file using the contents preview widget.</td></tr>
 <tr><td valign="top"><tt>Q3FileDialog::Info</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">Show information about the current file using the info preview widget.</td></tr>
-</table>
+</table></p>
 <p>See <a href="q3filedialog.html#previewMode-prop">setPreviewMode</a>(), <a href="q3filedialog.html#setContentsPreview">setContentsPreview</a>() and <a href="q3filedialog.html#setInfoPreview">setInfoPreview</a>().</p>
 <h3 class="fn"><a name="ViewMode-enum"></a>enum Q3FileDialog::ViewMode</h3>
 <p>This enum describes the view mode of the file dialog, i.e. what information about each file will be displayed.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Q3FileDialog::List</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Display file and directory names with icons.</td></tr>
 <tr><td valign="top"><tt>Q3FileDialog::Detail</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">Display file and directory names with icons plus additional information, such as file size and modification date.</td></tr>
-</table>
+</table></p>
 <p>See <a href="q3filedialog.html#viewMode-prop">setViewMode</a>().</p>
 <hr />
 <h2>Property Documentation</h2>
@@ -502,7 +503,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Sets the file dialog's working directory to <i>dir</i>.</p>
 <p>See also <a href="q3filedialog.html#dir">dir</a>().</p>
 <h3 class="fn"><a name="setDir-2"></a>void Q3FileDialog::setDir ( const <a href="qstring.html">QString</a> &amp; <i>pathstr</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Sets the file dialog's working directory to <i>pathstr</i>.</p>
 <p>See also <a href="q3filedialog.html#dir">dir</a>().</p>
 <h3 class="fn"><a name="setFilter"></a>void Q3FileDialog::setFilter ( const <a href="qstring.html">QString</a> &amp; <i>newFilter</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
@@ -522,10 +523,10 @@ body { background: #ffffff; color: black; }</style>
     fd-&gt;setFilters(types);
     fd-&gt;show();</pre>
 <h3 class="fn"><a name="setFilters-2"></a>void Q3FileDialog::setFilters ( const char ** <i>types</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p><i>types</i> must be a null-terminated list of strings.</p>
 <h3 class="fn"><a name="setFilters-3"></a>void Q3FileDialog::setFilters ( const <a href="qstringlist.html">QStringList</a> &amp; <i>types</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p><i>types</i> is a list of filter strings.</p>
 <h3 class="fn"><a name="setIconProvider"></a>void Q3FileDialog::setIconProvider ( <a href="q3fileiconprovider.html">Q3FileIconProvider</a> * <i>provider</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Sets the <a href="q3fileiconprovider.html">Q3FileIconProvider</a> used by the file dialog to <i>provider</i>.</p>
@@ -567,7 +568,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Sets the current filter selected in the file dialog to the first one that contains the text <i>mask</i>.</p>
 <p>See also <a href="q3filedialog.html#selectedFilter-prop">selectedFilter</a>().</p>
 <h3 class="fn"><a name="setSelectedFilter-2"></a>void Q3FileDialog::setSelectedFilter ( int <i>n</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Sets the current filter selected in the file dialog to the <i>n</i>-th filter in the filter list.</p>
 <p>See also <a href="q3filedialog.html#filterSelected">filterSelected</a>(), <a href="q3filedialog.html#selectedFilter-prop">selectedFilter</a>(), <a href="q3filedialog.html#selectedFiles-prop">selectedFiles</a>(), and <a href="q3filedialog.html#selectedFile-prop">selectedFile</a>().</p>
 <h3 class="fn"><a name="setSelection"></a>void Q3FileDialog::setSelection ( const <a href="qstring.html">QString</a> &amp; <i>filename</i> )</h3>
@@ -580,8 +581,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="q3filedialog.html#setUrl">setUrl</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

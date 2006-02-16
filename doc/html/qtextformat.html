@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/gui/text/qtextformat.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/gui/text/qtextformat.cpp -->
 <head>
     <title>Qt 4.1: QTextFormat Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -27,7 +27,7 @@ body { background: #ffffff; color: black; }</style>
 <h3>Public Types</h3>
 <ul>
 <li><div class="fn"/>enum <b><a href="qtextformat.html#FormatType-enum">FormatType</a></b> { InvalidFormat, BlockFormat, CharFormat, ListFormat, ..., UserFormat }</li>
-<li><div class="fn"/>enum <b><a href="qtextformat.html#ObjectTypes-enum">ObjectTypes</a></b> { NoObject, ImageObject, TableObject }</li>
+<li><div class="fn"/>enum <b><a href="qtextformat.html#ObjectTypes-enum">ObjectTypes</a></b> { NoObject, ImageObject, TableObject, UserObject }</li>
 <li><div class="fn"/>enum <b><a href="qtextformat.html#Property-enum">Property</a></b> { ObjectIndex, CssFloat, LayoutDirection, OutlinePen, ..., UserProperty }</li>
 </ul>
 <a name="public-functions"></a>
@@ -97,7 +97,7 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="FormatType-enum"></a>enum QTextFormat::FormatType</h3>
-<table border="1" cellpadding="2" cellspacing="1" width="40%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="40%">
 <tr><th width="60%">Constant</th><th width="40%">Value</th></tr>
 <tr><td valign="top"><tt>QTextFormat::InvalidFormat</tt></td><td align="center" valign="top"><tt>-1</tt></td></tr>
 <tr><td valign="top"><tt>QTextFormat::BlockFormat</tt></td><td align="center" valign="top"><tt>1</tt></td></tr>
@@ -106,30 +106,31 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QTextFormat::TableFormat</tt></td><td align="center" valign="top"><tt>4</tt></td></tr>
 <tr><td valign="top"><tt>QTextFormat::FrameFormat</tt></td><td align="center" valign="top"><tt>5</tt></td></tr>
 <tr><td valign="top"><tt>QTextFormat::UserFormat</tt></td><td align="center" valign="top"><tt>100</tt></td></tr>
-</table>
+</table></p>
 <h3 class="fn"><a name="ObjectTypes-enum"></a>enum QTextFormat::ObjectTypes</h3>
-<table border="1" cellpadding="2" cellspacing="1" width="40%">
-<tr><th width="60%">Constant</th><th width="40%">Value</th></tr>
-<tr><td valign="top"><tt>QTextFormat::NoObject</tt></td><td align="center" valign="top"><tt>0</tt></td></tr>
-<tr><td valign="top"><tt>QTextFormat::ImageObject</tt></td><td align="center" valign="top"><tt>1</tt></td></tr>
-<tr><td valign="top"><tt>QTextFormat::TableObject</tt></td><td align="center" valign="top"><tt>2</tt></td></tr>
-</table>
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
+<tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
+<tr><td valign="top"><tt>QTextFormat::NoObject</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>QTextFormat::ImageObject</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>QTextFormat::TableObject</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>QTextFormat::UserObject</tt></td><td align="center" valign="top"><tt>0x1000</tt></td><td valign="top">The first object that can be used for application-specific purposes.</td></tr>
+</table></p>
 <h3 class="fn"><a name="Property-enum"></a>enum QTextFormat::Property</h3>
-<table border="1" cellpadding="2" cellspacing="1" width="40%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="40%">
 <tr><th width="60%">Constant</th><th width="40%">Value</th></tr>
 <tr><td valign="top"><tt>QTextFormat::ObjectIndex</tt></td><td align="center" valign="top"><tt>0x0</tt></td></tr>
-</table>
+</table></p>
 <p>Paragraph and character properties</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QTextFormat::CssFloat</tt></td><td align="center" valign="top"><tt>0x0800</tt></td><td valign="top">&nbsp;</td></tr>
 <tr><td valign="top"><tt>QTextFormat::LayoutDirection</tt></td><td align="center" valign="top"><tt>0x0801</tt></td><td valign="top">The layout direction of the text in the document (<a href="qt.html#LayoutDirection-enum">Qt::LayoutDirection</a>).</td></tr>
 <tr><td valign="top"><tt>QTextFormat::OutlinePen</tt></td><td align="center" valign="top"><tt>0x810</tt></td><td valign="top">&nbsp;</td></tr>
 <tr><td valign="top"><tt>QTextFormat::ForegroundBrush</tt></td><td align="center" valign="top"><tt>0x821</tt></td><td valign="top">&nbsp;</td></tr>
 <tr><td valign="top"><tt>QTextFormat::BackgroundBrush</tt></td><td align="center" valign="top"><tt>0x820</tt></td><td valign="top">&nbsp;</td></tr>
-</table>
+</table></p>
 <p>Paragraph properties</p>
-<table border="1" cellpadding="2" cellspacing="1" width="40%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="40%">
 <tr><th width="60%">Constant</th><th width="40%">Value</th></tr>
 <tr><td valign="top"><tt>QTextFormat::BlockAlignment</tt></td><td align="center" valign="top"><tt>0x1010</tt></td></tr>
 <tr><td valign="top"><tt>QTextFormat::BlockTopMargin</tt></td><td align="center" valign="top"><tt>0x1030</tt></td></tr>
@@ -140,34 +141,36 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QTextFormat::BlockIndent</tt></td><td align="center" valign="top"><tt>0x1040</tt></td></tr>
 <tr><td valign="top"><tt>QTextFormat::BlockNonBreakableLines</tt></td><td align="center" valign="top"><tt>0x1050</tt></td></tr>
 <tr><td valign="top"><tt>QTextFormat::BlockTrailingHorizontalRulerWidth</tt></td><td align="center" valign="top"><tt>0x1060</tt></td></tr>
-</table>
+</table></p>
 <p>Character properties</p>
-<table border="1" cellpadding="2" cellspacing="1" width="40%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="40%">
 <tr><th width="60%">Constant</th><th width="40%">Value</th></tr>
 <tr><td valign="top"><tt>QTextFormat::FontFamily</tt></td><td align="center" valign="top"><tt>0x2000</tt></td></tr>
 <tr><td valign="top"><tt>QTextFormat::FontPointSize</tt></td><td align="center" valign="top"><tt>0x2001</tt></td></tr>
-<tr><td valign="top"><tt>QTextFormat::FontSizeAdjustment</tt></td><td align="center" valign="top"><tt>0x2002</tt></td></tr>
+<tr><td valign="top"><tt>QTextFormat::FontSizeIncrement</tt></td><td align="center" valign="top"><tt>FontSizeAdjustment</tt></td></tr>
 <tr><td valign="top"><tt>QTextFormat::FontWeight</tt></td><td align="center" valign="top"><tt>0x2003</tt></td></tr>
 <tr><td valign="top"><tt>QTextFormat::FontItalic</tt></td><td align="center" valign="top"><tt>0x2004</tt></td></tr>
 <tr><td valign="top"><tt>QTextFormat::FontUnderline</tt></td><td align="center" valign="top"><tt>0x2005</tt></td></tr>
 <tr><td valign="top"><tt>QTextFormat::FontOverline</tt></td><td align="center" valign="top"><tt>0x2006</tt></td></tr>
 <tr><td valign="top"><tt>QTextFormat::FontStrikeOut</tt></td><td align="center" valign="top"><tt>0x2007</tt></td></tr>
 <tr><td valign="top"><tt>QTextFormat::FontFixedPitch</tt></td><td align="center" valign="top"><tt>0x2008</tt></td></tr>
+<tr><td valign="top"><tt>QTextFormat::FontPixelSize</tt></td><td align="center" valign="top"><tt>0x2009</tt></td></tr>
 <tr><td valign="top"><tt>QTextFormat::TextUnderlineColor</tt></td><td align="center" valign="top"><tt>0x2010</tt></td></tr>
 <tr><td valign="top"><tt>QTextFormat::TextVerticalAlignment</tt></td><td align="center" valign="top"><tt>0x2021</tt></td></tr>
+<tr><td valign="top"><tt>QTextFormat::TextOutline</tt></td><td align="center" valign="top"><tt>0x2022</tt></td></tr>
 <tr><td valign="top"><tt>QTextFormat::IsAnchor</tt></td><td align="center" valign="top"><tt>0x2030</tt></td></tr>
 <tr><td valign="top"><tt>QTextFormat::AnchorHref</tt></td><td align="center" valign="top"><tt>0x2031</tt></td></tr>
 <tr><td valign="top"><tt>QTextFormat::AnchorName</tt></td><td align="center" valign="top"><tt>0x2032</tt></td></tr>
 <tr><td valign="top"><tt>QTextFormat::ObjectType</tt></td><td align="center" valign="top"><tt>0x2f00</tt></td></tr>
-</table>
+</table></p>
 <p>List properties</p>
-<table border="1" cellpadding="2" cellspacing="1" width="40%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="40%">
 <tr><th width="60%">Constant</th><th width="40%">Value</th></tr>
 <tr><td valign="top"><tt>QTextFormat::ListStyle</tt></td><td align="center" valign="top"><tt>0x3000</tt></td></tr>
 <tr><td valign="top"><tt>QTextFormat::ListIndent</tt></td><td align="center" valign="top"><tt>0x3001</tt></td></tr>
-</table>
+</table></p>
 <p>Table and frame properties</p>
-<table border="1" cellpadding="2" cellspacing="1" width="40%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="40%">
 <tr><th width="60%">Constant</th><th width="40%">Value</th></tr>
 <tr><td valign="top"><tt>QTextFormat::TableColumns</tt></td><td align="center" valign="top"><tt>0x4100</tt></td></tr>
 <tr><td valign="top"><tt>QTextFormat::FrameBorder</tt></td><td align="center" valign="top"><tt>0x4000</tt></td></tr>
@@ -178,21 +181,21 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QTextFormat::TableColumnWidthConstraints</tt></td><td align="center" valign="top"><tt>0x4101</tt></td></tr>
 <tr><td valign="top"><tt>QTextFormat::TableCellSpacing</tt></td><td align="center" valign="top"><tt>0x4102</tt></td></tr>
 <tr><td valign="top"><tt>QTextFormat::TableCellPadding</tt></td><td align="center" valign="top"><tt>0x4103</tt></td></tr>
-</table>
+</table></p>
 <p>Table cell properties</p>
-<table border="1" cellpadding="2" cellspacing="1" width="40%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="40%">
 <tr><th width="60%">Constant</th><th width="40%">Value</th></tr>
 <tr><td valign="top"><tt>QTextFormat::TableCellRowSpan</tt></td><td align="center" valign="top"><tt>0x4810</tt></td></tr>
 <tr><td valign="top"><tt>QTextFormat::TableCellColumnSpan</tt></td><td align="center" valign="top"><tt>0x4811</tt></td></tr>
-</table>
+</table></p>
 <p>Image properties</p>
-<table border="1" cellpadding="2" cellspacing="1" width="40%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="40%">
 <tr><th width="60%">Constant</th><th width="40%">Value</th></tr>
 <tr><td valign="top"><tt>QTextFormat::ImageName</tt></td><td align="center" valign="top"><tt>0x5000</tt></td></tr>
 <tr><td valign="top"><tt>QTextFormat::ImageWidth</tt></td><td align="center" valign="top"><tt>0x5010</tt></td></tr>
 <tr><td valign="top"><tt>QTextFormat::ImageHeight</tt></td><td align="center" valign="top"><tt>0x5011</tt></td></tr>
 <tr><td valign="top"><tt>QTextFormat::UserProperty</tt></td><td align="center" valign="top"><tt>0x100000</tt></td></tr>
-</table>
+</table></p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QTextFormat"></a>QTextFormat::QTextFormat ()</h3>
@@ -295,7 +298,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Sets the property specified by the <i>propertyId</i> to the given <i>value</i>.</p>
 <p>See also <a href="qtextformat.html#property">property</a>().</p>
 <h3 class="fn"><a name="setProperty-2"></a>void QTextFormat::setProperty ( int <i>propertyId</i>, const <a href="qvector.html">QVector</a>&lt;<a href="qtextlength.html">QTextLength</a>&gt; &amp; <i>value</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Sets the value of the property given by <i>propertyId</i> to <i>value</i>.</p>
 <p>See also <a href="qtextformat.html#lengthVectorProperty">lengthVectorProperty</a>() and <a href="qtextformat.html#Property-enum">Property</a>.</p>
 <h3 class="fn"><a name="stringProperty"></a><a href="qstring.html">QString</a> QTextFormat::stringProperty ( int <i>propertyId</i> ) const</h3>
@@ -326,8 +329,8 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns true if this text format is the same as the <i>other</i> text format.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -211,11 +211,15 @@ QAbstractSliderPrivate::~QAbstractSliderPrivate()
 void QAbstractSlider::setRange(int min, int max)
 {
     Q_D(QAbstractSlider);
+    int oldMin = d->minimum;
+    int oldMax = d->maximum;
     d->minimum = min;
     d->maximum = qMax(min, max);
-    sliderChange(SliderRangeChange);
-    emit rangeChanged(d->minimum, d->maximum);
-    setValue(d->value); // re-bound
+    if (oldMin != d->minimum || oldMax != d->maximum) {
+        sliderChange(SliderRangeChange);
+        emit rangeChanged(d->minimum, d->maximum);
+        setValue(d->value); // re-bound
+    }
 }
 
 

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/doc/src/qset.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/doc/src/qset.qdoc -->
 <head>
     <title>Qt 4.1: QSet Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -203,10 +203,10 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="toList"></a><a href="qlist.html">QList</a>&lt;T&gt; QSet::toList () const</h3>
 <p>Returns a <a href="qlist.html">QList</a> object with the data contained in this <a href="qset.html">QSet</a>. The order of the elements in the <a href="qlist.html">QList</a> is undefined.</p>
 <p>Example:</p>
-<pre>&nbsp;   QSet&lt;double&gt; set;
+<pre>&nbsp;   QSet&lt;QString&gt; set;
     set &lt;&lt; &quot;red&quot; &lt;&lt; &quot;green&quot; &lt;&lt; &quot;blue&quot; &lt;&lt; ... &lt;&lt; &quot;black&quot;;
 
-    QList&lt;double&gt; list = set.toList();
+    QList&lt;QString&gt; list = set.toList();
     qSort(list);</pre>
 <p>See also <a href="qset.html#fromList">fromList</a>(), <a href="qlist.html#fromSet">QList::fromSet</a>(), and <a href="qtalgorithms.html#qSort">qSort</a>().</p>
 <h3 class="fn"><a name="unite"></a>QSet&lt;T&gt; &amp; QSet::unite ( const QSet&lt;T&gt; &amp; <i>other</i> )</h3>
@@ -228,7 +228,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Syntactic sugar for intersect(<i>other</i>).</p>
 <p>See also <a href="qset.html#operator-and">operator&amp;</a>(), <a href="qset.html#operator-7c-eq">operator|=</a>(), and <a href="qset.html#operator--eq">operator-=</a>().</p>
 <h3 class="fn"><a name="operator-and-eq-2"></a>QSet&lt;T&gt; &amp; QSet::operator&amp;= ( const T &amp; <i>value</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Syntactic sugar for intersect(<i>other</i>), with <i>other</i> being a set that only contains <i>value</i>.</p>
 <h3 class="fn"><a name="operator-2b"></a>QSet&lt;T&gt; QSet::operator+ ( const QSet&lt;T&gt; &amp; <i>other</i> )</h3>
 <p>Returns the union of this set and <i>other</i>.</p>
@@ -237,7 +237,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Syntactic sugar for unite(<i>other</i>).</p>
 <p>See also <a href="qset.html#operator-7c">operator|</a>(), <a href="qset.html#operator-and-eq">operator&amp;=</a>(), and <a href="qset.html#operator--eq">operator-=</a>().</p>
 <h3 class="fn"><a name="operator-2b-eq-2"></a>QSet&lt;T&gt; &amp; QSet::operator+= ( const T &amp; <i>value</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Inserts a new item <i>value</i> and returns a reference to this set. If <i>value</i> already exists in the set, the set is left unchanged.</p>
 <p>See also <a href="qset.html#insert">insert</a>().</p>
 <h3 class="fn"><a name="operator-"></a>QSet&lt;T&gt; QSet::operator- ( const QSet&lt;T&gt; &amp; <i>other</i> )</h3>
@@ -247,7 +247,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Syntactic sugar for subtract(<i>other</i>).</p>
 <p>See also <a href="qset.html#operator-">operator-</a>(), <a href="qset.html#operator-7c-eq">operator|=</a>(), and <a href="qset.html#operator-and-eq">operator&amp;=</a>().</p>
 <h3 class="fn"><a name="operator--eq-2"></a>QSet&lt;T&gt; &amp; QSet::operator-= ( const T &amp; <i>value</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Removes any occurrence of item <i>value</i> from the set and returns a reference to this set. If <i>value</i> didn't exist in the set, the set is left unchanged.</p>
 <p>See also <a href="qset.html#remove">remove</a>().</p>
 <h3 class="fn"><a name="operator-lt-lt"></a>QSet&lt;T&gt; &amp; QSet::operator&lt;&lt; ( const T &amp; <i>value</i> )</h3>
@@ -267,25 +267,25 @@ body { background: #ffffff; color: black; }</style>
 <p>Syntactic sugar for unite(<i>other</i>).</p>
 <p>See also <a href="qset.html#operator-7c">operator|</a>(), <a href="qset.html#operator-and-eq">operator&amp;=</a>(), and <a href="qset.html#operator--eq">operator-=</a>().</p>
 <h3 class="fn"><a name="operator-7c-eq-2"></a>QSet&lt;T&gt; &amp; QSet::operator|= ( const T &amp; <i>value</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Inserts a new item <i>value</i> and returns a reference to this set. If <i>value</i> already exists in the set, the set is left unchanged.</p>
 <p>See also <a href="qset.html#insert">insert</a>().</p>
 <hr />
 <h2>Related Non-Members</h2>
 <h3 class="fn"><a name="operator-lt-lt-9"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>out</i>, const QSet&lt;T&gt; &amp; <i>set</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes the set <i>set</i> to stream <i>out</i>.</p>
 <p>This function requires the value type to implement <tt>operator&lt;&lt;()</tt>.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
 <h3 class="fn"><a name="operator-gt-gt-9"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>in</i>, QSet&lt;T&gt; &amp; <i>set</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads a set from stream <i>in</i> into <i>set</i>.</p>
 <p>This function requires the value type to implement <tt>operator&gt;&gt;()</tt>.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

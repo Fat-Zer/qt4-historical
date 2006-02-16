@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/qt3support/widgets/q3dockwindow.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/qt3support/widgets/q3dockwindow.cpp -->
 <head>
     <title>Qt 4.1: Q3DockWindow Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -33,7 +33,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <a name="properties"></a>
 <h3>Properties</h3>
-<table width="100%" border="0" cellpadding="0" cellspacing="0">
+<p><table width="100%" border="0" cellpadding="0" cellspacing="0">
 <tr><td width="45%" valign="top"><ul>
 <li><div class="fn"/><b><a href="q3dockwindow.html#closeMode-prop">closeMode</a></b> : int</li>
 <li><div class="fn"/><b><a href="q3dockwindow.html#horizontallyStretchable-prop">horizontallyStretchable</a></b> : bool</li>
@@ -48,7 +48,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="q3dockwindow.html#verticallyStretchable-prop">verticallyStretchable</a></b> : bool</li>
 </ul>
 </td></tr>
-</table>
+</table></p>
 <ul>
 <li><div class="fn"/>2 properties inherited from <a href="q3frame.html#properties">Q3Frame</a></li>
 <li><div class="fn"/>6 properties inherited from <a href="qframe.html#properties">QFrame</a></li>
@@ -99,7 +99,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>13 public functions inherited from <a href="qframe.html#public-functions">QFrame</a></li>
 <li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
-<li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <a name="public-slots"></a>
 <h3>Public Slots</h3>
@@ -132,6 +132,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>5 protected functions inherited from <a href="q3frame.html#protected-functions">Q3Frame</a></li>
 <li><div class="fn"/>39 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
+<li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -155,20 +156,20 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="CloseMode-enum"></a>enum Q3DockWindow::CloseMode</h3>
 <p>This enum type specifies when (if ever) a dock window has a close button.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Q3DockWindow::Never</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The dock window never has a close button and cannot be closed by the user.</td></tr>
 <tr><td valign="top"><tt>Q3DockWindow::Docked</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The dock window has a close button only when docked.</td></tr>
 <tr><td valign="top"><tt>Q3DockWindow::Undocked</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">The dock window has a close button only when floating.</td></tr>
 <tr><td valign="top"><tt>Q3DockWindow::Always</tt></td><td align="center" valign="top"><tt>Docked | Undocked</tt></td><td valign="top">The dock window always has a close button.</td></tr>
-</table>
+</table></p>
 <h3 class="fn"><a name="Place-enum"></a>enum Q3DockWindow::Place</h3>
 <p>This enum specifies the possible locations for a <a href="q3dockwindow.html">Q3DockWindow</a>:</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Q3DockWindow::InDock</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">Inside a <a href="q3dockarea.html">Q3DockArea</a>.</td></tr>
 <tr><td valign="top"><tt>Q3DockWindow::OutsideDock</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Floating as a top level window on the desktop.</td></tr>
-</table>
+</table></p>
 <hr />
 <h2>Property Documentation</h2>
 <h3 class="fn"><a name="closeMode-prop"></a>closeMode : int</h3>
@@ -322,7 +323,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Undocks the specified <i>widget</i> from its current dock area if it is docked; otherwise does nothing.</p>
 <p>See also <a href="q3dockwindow.html#dock">dock</a>(), <a href="q3dockarea.html#moveDockWindow">Q3DockArea::moveDockWindow</a>(), <a href="q3dockarea.html#removeDockWindow">Q3DockArea::removeDockWindow</a>(), <a href="q3mainwindow.html#moveDockWindow">Q3MainWindow::moveDockWindow</a>(), and <a href="q3mainwindow.html#removeDockWindow">Q3MainWindow::removeDockWindow</a>().</p>
 <h3 class="fn"><a name="undock-2"></a>void Q3DockWindow::undock ()&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Undocks the <a href="q3dockwindow.html">Q3DockWindow</a> from its current dock area if it is docked; otherwise does nothing.</p>
 <p>See also <a href="q3dockwindow.html#dock">dock</a>(), <a href="q3dockarea.html#moveDockWindow">Q3DockArea::moveDockWindow</a>(), <a href="q3dockarea.html#removeDockWindow">Q3DockArea::removeDockWindow</a>(), <a href="q3mainwindow.html#moveDockWindow">Q3MainWindow::moveDockWindow</a>(), and <a href="q3mainwindow.html#removeDockWindow">Q3MainWindow::removeDockWindow</a>().</p>
 <h3 class="fn"><a name="visibilityChanged"></a>void Q3DockWindow::visibilityChanged ( bool <i>visible</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
@@ -335,8 +336,8 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the dock window's title.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

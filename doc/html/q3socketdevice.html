@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/qt3support/network/q3socketdevice.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/qt3support/network/q3socketdevice.cpp -->
 <head>
     <title>Qt 4.1: Q3SocketDevice Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -106,7 +106,7 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="Error-enum"></a>enum Q3SocketDevice::Error</h3>
 <p>This enum type describes the error states of <a href="q3socketdevice.html">Q3SocketDevice</a>.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Q3SocketDevice::NoError</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">No error has occurred.</td></tr>
 <tr><td valign="top"><tt>Q3SocketDevice::AlreadyBound</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The device is already bound, according to <a href="q3socketdevice.html#bind">bind</a>().</td></tr>
@@ -116,31 +116,31 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>Q3SocketDevice::Impossible</tt></td><td align="center" valign="top">&nbsp;</td><td valign="top">An attempt was made to do something which makes no sense. For example:<pre>&nbsp;   ::close( sd-&gt;socket() );
     sd-&gt;writeBlock( someData, 42 );</pre>
 </td></tr>
-</table>
+</table></p>
 <p>The libc ::close() closes the socket, but <a href="q3socketdevice.html">Q3SocketDevice</a> is not aware of this. So when you call <a href="q3socketdevice.html#writeBlock">writeBlock</a>(), the impossible happens.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Q3SocketDevice::NoFiles</tt></td><td align="center" valign="top">&nbsp;</td><td valign="top">The operating system will not let <a href="q3socketdevice.html">Q3SocketDevice</a> open another file.</td></tr>
 <tr><td valign="top"><tt>Q3SocketDevice::ConnectionRefused</tt></td><td align="center" valign="top">&nbsp;</td><td valign="top">A connection attempt was rejected by the peer.</td></tr>
 <tr><td valign="top"><tt>Q3SocketDevice::NetworkFailure</tt></td><td align="center" valign="top">&nbsp;</td><td valign="top">There is a network failure.</td></tr>
 <tr><td valign="top"><tt>Q3SocketDevice::UnknownError</tt></td><td align="center" valign="top">&nbsp;</td><td valign="top">The operating system did something unexpected.</td></tr>
-</table>
+</table></p>
 <h3 class="fn"><a name="Protocol-enum"></a>enum Q3SocketDevice::Protocol</h3>
 <p>This enum type describes the protocol family of the socket. Possible values are:</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Q3SocketDevice::IPv4</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The socket is an IPv4 socket.</td></tr>
 <tr><td valign="top"><tt>Q3SocketDevice::IPv6</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The socket is an IPv6 socket.</td></tr>
 <tr><td valign="top"><tt>Q3SocketDevice::Unknown</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">The protocol family of the socket is not known. This can happen if you use <a href="q3socketdevice.html">Q3SocketDevice</a> with an already existing socket; it tries to determine the protocol family, but this can fail if the protocol family is not known to <a href="q3socketdevice.html">Q3SocketDevice</a>.</td></tr>
-</table>
+</table></p>
 <p>See also <a href="q3socketdevice.html#protocol">protocol</a>() and <a href="q3socketdevice.html#setSocket">setSocket</a>().</p>
 <h3 class="fn"><a name="Type-enum"></a>enum Q3SocketDevice::Type</h3>
 <p>This enum type describes the type of the socket:</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Q3SocketDevice::Stream</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">a stream socket (TCP, usually)</td></tr>
 <tr><td valign="top"><tt>Q3SocketDevice::Datagram</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">a datagram socket (UDP, usually)</td></tr>
-</table>
+</table></p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="Q3SocketDevice"></a>Q3SocketDevice::Q3SocketDevice ( <a href="q3socketdevice.html#Type-enum">Type</a> <i>type</i> = Stream )</h3>
@@ -170,7 +170,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="at"></a><a href="qiodevice-qt3.html#Offset-typedef">Offset</a> Q3SocketDevice::at () const</h3>
 <p>The read/write index is meaningless for a socket, therefore this function returns 0.</p>
 <h3 class="fn"><a name="at-2"></a>bool Q3SocketDevice::at ( <a href="qiodevice-qt3.html#Offset-typedef">Offset</a> <i>offset</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>The read/write index is meaningless for a socket, therefore this function does nothing and returns true.</p>
 <p>The <i>offset</i> parameter is ignored.</p>
 <h3 class="fn"><a name="bind"></a>bool Q3SocketDevice::bind ( const <a href="qhostaddress.html">QHostAddress</a> &amp; <i>address</i>, <a href="qtglobal-qt3.html#Q_UINT16-typedef">Q_UINT16</a> <i>port</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
@@ -270,7 +270,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Writes <i>len</i> bytes to the socket from <i>data</i> and returns the number of bytes written. Returns -1 if an error occurred.</p>
 <p>This is used for <a href="q3socketdevice.html#Type-enum">Q3SocketDevice::Stream</a> sockets.</p>
 <h3 class="fn"><a name="writeBlock-2"></a><a href="qtglobal-qt3.html#Q_LONG-typedef">Q_LONG</a> Q3SocketDevice::writeBlock ( const char * <i>data</i>, <a href="qtglobal-qt3.html#Q_ULONG-typedef">Q_ULONG</a> <i>len</i>, const <a href="qhostaddress.html">QHostAddress</a> &amp; <i>host</i>, <a href="qtglobal-qt3.html#Q_UINT16-typedef">Q_UINT16</a> <i>port</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes <i>len</i> bytes to the socket from <i>data</i> and returns the number of bytes written. Returns -1 if an error occurred.</p>
 <p>This is used for <a href="q3socketdevice.html#Type-enum">Q3SocketDevice::Datagram</a> sockets. You must specify the <i>host</i> and <i>port</i> of the destination of the data.</p>
 <h3 class="fn"><a name="writeData"></a><a href="qtglobal.html#qint64-typedef">qint64</a> Q3SocketDevice::writeData ( const char * <i>data</i>, <a href="qtglobal.html#qint64-typedef">qint64</a> <i>len</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
@@ -279,8 +279,8 @@ body { background: #ffffff; color: black; }</style>
 <p>Reimplemented from <a href="qiodevice.html#writeData">QIODevice</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

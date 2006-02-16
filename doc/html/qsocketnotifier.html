@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/corelib/kernel/qsocketnotifier.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/corelib/kernel/qsocketnotifier.cpp -->
 <head>
     <title>Qt 4.1: QSocketNotifier Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -77,18 +77,18 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="qsocketnotifier.html#Type-enum">QSocketNotifier::Write</a> - Data can be written.</li>
 <li><a href="qsocketnotifier.html#Type-enum">QSocketNotifier::Exception</a> - An exception has occurred. We recommend against using this.</li>
 </ol>
-<p>If you need to monitor both reads and writes for the same file descriptor, you must create two socket notifiers.</p>
+<p><b>Note:</b> If you need to monitor both reads and writes for the same file descriptor, you must create two socket notifiers. It is not possible to install two socket notifiers of the same type (<a href="qsocketnotifier.html#Type-enum">Read</a>, <a href="qsocketnotifier.html#Type-enum">Write</a>, <a href="qsocketnotifier.html#Type-enum">Exception</a>) on the same socket.</p>
 <p>See also <a href="qfile.html">QFile</a>, <a href="qprocess.html">QProcess</a>, <a href="qtcpsocket.html">QTcpSocket</a>, and <a href="qudpsocket.html">QUdpSocket</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="Type-enum"></a>enum QSocketNotifier::Type</h3>
 <p>The socket notifier can be used to inform the application of the following types of event:</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QSocketNotifier::Read</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">There is incoming data.</td></tr>
 <tr><td valign="top"><tt>QSocketNotifier::Write</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Data can be written.</td></tr>
 <tr><td valign="top"><tt>QSocketNotifier::Exception</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">An exception has occurred.</td></tr>
-</table>
+</table></p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QSocketNotifier"></a>QSocketNotifier::QSocketNotifier ( int <i>socket</i>, <a href="qsocketnotifier.html#Type-enum">Type</a> <i>type</i>, <a href="qobject.html">QObject</a> * <i>parent</i> = 0 )</h3>
@@ -123,8 +123,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qsocketnotifier.html#socket">socket</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

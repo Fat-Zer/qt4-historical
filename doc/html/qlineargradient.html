@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/gui/painting/qbrush.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/gui/painting/qbrush.cpp -->
 <head>
     <title>Qt 4.1: QLinearGradient Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -27,7 +27,7 @@ body { background: #ffffff; color: black; }</style>
 <h3>Public Functions</h3>
 <ul>
 <li><div class="fn"/><b><a href="qlineargradient.html#QLinearGradient">QLinearGradient</a></b> ( const QPointF &amp; <i>start</i>, const QPointF &amp; <i>finalStop</i> )</li>
-<li><div class="fn"/><b><a href="qlineargradient.html#QLinearGradient-2">QLinearGradient</a></b> ( qreal <i>xStart</i>, qreal <i>yStart</i>, qreal <i>xFinalStop</i>, qreal <i>yFinalStop</i> )</li>
+<li><div class="fn"/><b><a href="qlineargradient.html#QLinearGradient-2">QLinearGradient</a></b> ( qreal <i>x1</i>, qreal <i>y1</i>, qreal <i>x2</i>, qreal <i>y2</i> )</li>
 <li><div class="fn"/>QPointF <b><a href="qlineargradient.html#finalStop">finalStop</a></b> () const</li>
 <li><div class="fn"/>QPointF <b><a href="qlineargradient.html#start">start</a></b> () const</li>
 </ul>
@@ -38,21 +38,32 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Detailed Description</h2>
 <p>The QLinearGradient class is used in combination with <a href="qbrush.html">QBrush</a> to specify a linear gradient brush.</p>
-<p>See also <a href="qbrush.html">QBrush</a>.</p>
+<p>Linear gradients interpolate colors between start and end points. Outside these points the gradient is either padded, reflected or repeated depending on the currently set <a href="qgradient.html#Spread-enum">spread</a> method:</p>
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
+<tr valign="top" bgcolor="#f0f0f0"><td><img src="images/qlineargradient-pad.png" /></td><td><img src="images/qlineargradient-reflect.png" /></td><td><img src="images/qlineargradient-repeat.png" /></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qgradient.html#Spread-enum">PadSpread</a> (default)</td><td><a href="qgradient.html#Spread-enum">ReflectSpread</a></td><td><a href="qgradient.html#Spread-enum">RepeatSpread</a></td></tr>
+</table></p>
+<p>The colors in a gradient is defined using stop points of the <a href="qgradient.html#QGradientStop-typedef">QGradientStop</a> type, i.e. a position and a color. Use the <a href="qgradient.html#setColorAt">QGradient::setColorAt</a>() or the <a href="qgradient.html#setStops">QGradient::setStops</a>() function to define the stop points. It is the gradient's complete set of stop points that describes how the gradient area should be filled. If no stop points have been specified, a gradient of black at 0 to white at 1 is used.</p>
+<p>In addition to the functions inherited from <a href="qgradient.html">QGradient</a>, the QLinearGradient class provides the <a href="qlineargradient.html#finalStop">finalStop</a>() function which returns the final stop point of the gradient, and the <a href="qlineargradient.html#start">start</a>() function returning the start point of the gradient.</p>
+<p>See also <a href="qradialgradient.html">QRadialGradient</a>, <a href="qconicalgradient.html">QConicalGradient</a>, and <a href="demos-gradients.html">The Gradients Demo</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QLinearGradient"></a>QLinearGradient::QLinearGradient ( const <a href="qpointf.html">QPointF</a> &amp; <i>start</i>, const <a href="qpointf.html">QPointF</a> &amp; <i>finalStop</i> )</h3>
-<p>Constructs a linear gradient with interpolation area between <i>start</i> and <i>finalStop</i>. The positions <i>start</i> and <i>finalStop</i> are specified using logical coordinates.</p>
-<h3 class="fn"><a name="QLinearGradient-2"></a>QLinearGradient::QLinearGradient ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>xStart</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>yStart</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>xFinalStop</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>yFinalStop</i> )</h3>
-<p>Constructs a linear gradient with interpolation area between <i>xStart</i>, <i>yStart</i> and <i>xFinalStop</i>, <i>yFinalStop</i>. The positions are specified using logical coordinates.</p>
+<p>Constructs a linear gradient with interpolation area between the given <i>start</i> point and <i>finalStop</i>.</p>
+<p>See also <a href="qgradient.html#setColorAt">QGradient::setColorAt</a>() and <a href="qgradient.html#setStops">QGradient::setStops</a>().</p>
+<h3 class="fn"><a name="QLinearGradient-2"></a>QLinearGradient::QLinearGradient ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>x1</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>y1</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>x2</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>y2</i> )</h3>
+<p>Constructs a linear gradient with interpolation area between (<i>x1</i>, <i>y1</i>) and (<i>x2</i>, <i>y2</i>).</p>
+<p>See also <a href="qgradient.html#setColorAt">QGradient::setColorAt</a>() and <a href="qgradient.html#setStops">QGradient::setStops</a>().</p>
 <h3 class="fn"><a name="finalStop"></a><a href="qpointf.html">QPointF</a> QLinearGradient::finalStop () const</h3>
 <p>Returns the final stop point of this linear gradient in logical coordinates.</p>
+<p>See also <a href="qgradient.html#stops">QGradient::stops</a>().</p>
 <h3 class="fn"><a name="start"></a><a href="qpointf.html">QPointF</a> QLinearGradient::start () const</h3>
 <p>Returns the start point of this linear gradient in logical coordinates.</p>
+<p>See also <a href="qgradient.html#stops">QGradient::stops</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

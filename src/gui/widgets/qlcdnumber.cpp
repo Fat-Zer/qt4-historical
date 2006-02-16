@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -87,8 +87,8 @@ public:
     http://www.nvg.ntnu.no/sinclair/computers/zxspectrum/zxspectrum.htm
     Sinclair Spectrum\endlink.
 
-    \inlineimage qlcdnum-m.png Screenshot in Motif style
-    \inlineimage qlcdnum-w.png Screenshot in Windows style
+    \inlineimage motif-lcdnumber.png An LCD number widget in the Motif widget style.
+    \inlineimage windows-lcdnumber.png An LCD number widget in the Windows widget style.
 
     \sa QLabel, QFrame
 */

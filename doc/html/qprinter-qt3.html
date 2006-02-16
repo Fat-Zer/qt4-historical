@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/gui/painting/qprinter.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/gui/painting/qprinter.cpp -->
 <head>
     <title>Qt 4.1: Qt 3 Support Members for QPrinter</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -49,12 +49,12 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="PrinterOption-enum"></a>enum QPrinter::PrinterOption</h3>
 <p>Use <a href="qabstractprintdialog.html#PrintDialogOption-enum">QAbstractPrintDialog::PrintDialogOption</a> instead.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="40%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="40%">
 <tr><th width="60%">Constant</th><th width="40%">Value</th></tr>
 <tr><td valign="top"><tt>QPrinter::PrintToFile</tt></td><td align="center" valign="top"><tt>0</tt></td></tr>
 <tr><td valign="top"><tt>QPrinter::PrintSelection</tt></td><td align="center" valign="top"><tt>1</tt></td></tr>
 <tr><td valign="top"><tt>QPrinter::PrintPageRange</tt></td><td align="center" valign="top"><tt>2</tt></td></tr>
-</table>
+</table></p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="aborted"></a>bool QPrinter::aborted ()</h3>
@@ -76,7 +76,7 @@ body { background: #ffffff; color: black; }</style>
 <pre>    int rightMargin = printer-&gt;paperRect().right() - printer-&gt;pageRect().right();
     int bottomMargin = printer-&gt;paperRect().bottom() - printer-&gt;pageRect().bottom();</pre>
 <h3 class="fn"><a name="margins-2"></a><a href="qsize.html">QSize</a> QPrinter::margins () const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns a <a href="qsize.html">QSize</a> containing the left margin and the top margin.</p>
 <p>This function has been superseded by <a href="qprinter.html#paperRect">paperRect</a>() and <a href="qprinter.html#pageRect">pageRect</a>(). Use <a href="qprinter.html#paperRect">paperRect</a>().<a href="qtextstream.html#left">left</a>() - <a href="qprinter.html#pageRect">pageRect</a>().<a href="qtextstream.html#left">left</a>() for the left margin, and <a href="qprinter.html#paperRect">paperRect</a>().top() - <a href="qprinter.html#pageRect">pageRect</a>().top() for the top margin.</p>
 <p>For example, if you have code like</p>
@@ -120,8 +120,8 @@ body { background: #ffffff; color: black; }</style>
         ...</pre>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

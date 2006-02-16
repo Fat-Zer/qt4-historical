@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/corelib/global/qglobal.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/corelib/global/qglobal.cpp -->
 <head>
     <title>Qt 4.1: &lt;QtGlobal&gt; - Global Qt Declarations</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -88,9 +88,9 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="qtglobal.html#Q_CC_USLC">Q_CC_USLC</a></b></li>
 <li><div class="fn"/><b><a href="qtglobal.html#Q_CC_WAT">Q_CC_WAT</a></b></li>
 <li><div class="fn"/>void <b><a href="qtglobal.html#Q_CHECK_PTR">Q_CHECK_PTR</a></b> ( void * <i>pointer</i> )</li>
+<li><div class="fn"/><b><a href="qtglobal.html#Q_DECLARE_TYPEINFO">Q_DECLARE_TYPEINFO</a></b> (  <i>Type</i>,  <i>Flags</i> )</li>
 <li><div class="fn"/><b><a href="qtglobal.html#Q_FOREACH">Q_FOREACH</a></b> (  <i>variable</i>,  <i>container</i> )</li>
 <li><div class="fn"/>qint64 <b><a href="qtglobal.html#Q_INT64_C">Q_INT64_C</a></b> (  <i>literal</i> )</li>
-<li><div class="fn"/><b><a href="qtglobal.html#Q_OS_X11">Q_OS_X11</a></b></li>
 <li><div class="fn"/><b><a href="qtglobal.html#Q_OS_AIX">Q_OS_AIX</a></b></li>
 <li><div class="fn"/><b><a href="qtglobal.html#Q_OS_BSD4">Q_OS_BSD4</a></b></li>
 <li><div class="fn"/><b><a href="qtglobal.html#Q_OS_BSDI">Q_OS_BSDI</a></b></li>
@@ -104,8 +104,6 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="qtglobal.html#Q_OS_IRIX">Q_OS_IRIX</a></b></li>
 <li><div class="fn"/><b><a href="qtglobal.html#Q_OS_LINUX">Q_OS_LINUX</a></b></li>
 <li><div class="fn"/><b><a href="qtglobal.html#Q_OS_LYNX">Q_OS_LYNX</a></b></li>
-<li><div class="fn"/><b><a href="qtglobal.html#Q_OS_MAC9">Q_OS_MAC9</a></b></li>
-<li><div class="fn"/><b><a href="qtglobal.html#Q_OS_MACX">Q_OS_MACX</a></b></li>
 <li><div class="fn"/><b><a href="qtglobal.html#Q_OS_MSDOS">Q_OS_MSDOS</a></b></li>
 <li><div class="fn"/><b><a href="qtglobal.html#Q_OS_NETBSD">Q_OS_NETBSD</a></b></li>
 <li><div class="fn"/><b><a href="qtglobal.html#Q_OS_OS2">Q_OS_OS2</a></b></li>
@@ -114,7 +112,6 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="qtglobal.html#Q_OS_OSF">Q_OS_OSF</a></b></li>
 <li><div class="fn"/><b><a href="qtglobal.html#Q_OS_QNX6">Q_OS_QNX6</a></b></li>
 <li><div class="fn"/><b><a href="qtglobal.html#Q_OS_QNX">Q_OS_QNX</a></b></li>
-<li><div class="fn"/><b><a href="qtglobal.html#Q_OS_QWS">Q_OS_QWS</a></b></li>
 <li><div class="fn"/><b><a href="qtglobal.html#Q_OS_RELIANT">Q_OS_RELIANT</a></b></li>
 <li><div class="fn"/><b><a href="qtglobal.html#Q_OS_SCO">Q_OS_SCO</a></b></li>
 <li><div class="fn"/><b><a href="qtglobal.html#Q_OS_SOLARIS">Q_OS_SOLARIS</a></b></li>
@@ -124,6 +121,10 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="qtglobal.html#Q_OS_WIN32">Q_OS_WIN32</a></b></li>
 <li><div class="fn"/>quint64 <b><a href="qtglobal.html#Q_UINT64_C">Q_UINT64_C</a></b> (  <i>literal</i> )</li>
 <li><div class="fn"/><b><a href="qtglobal.html#Q_UNUSED">Q_UNUSED</a></b> (  <i>name</i> )</li>
+<li><div class="fn"/><b><a href="qtglobal.html#Q_WS_X11">Q_WS_X11</a></b></li>
+<li><div class="fn"/><b><a href="qtglobal.html#Q_WS_MAC">Q_WS_MAC</a></b></li>
+<li><div class="fn"/><b><a href="qtglobal.html#Q_WS_QWS">Q_WS_QWS</a></b></li>
+<li><div class="fn"/><b><a href="qtglobal.html#Q_WS_WIN">Q_WS_WIN</a></b></li>
 <li><div class="fn"/><b><a href="qtglobal.html#foreach">foreach</a></b> (  <i>variable</i>,  <i>container</i> )</li>
 <li><div class="fn"/>const char * <b><a href="qtglobal.html#qPrintable">qPrintable</a></b> ( const QString &amp; <i>str</i> )</li>
 </ul>
@@ -155,7 +156,7 @@ body { background: #ffffff; color: black; }</style>
 <p>The remaining functions are <a href="qtglobal.html#qRound">qRound</a>() and <a href="qtglobal.html#qRound64">qRound64</a>(), which both accept a <a href="qtglobal.html#qreal-typedef">qreal</a> value as their argument returning the value rounded up to the nearest integer and 64-bit integer respectively, the <a href="qtglobal.html#qInstallMsgHandler">qInstallMsgHandler</a>() function which installs the given <a href="qtglobal.html#QtMsgHandler-typedef">QtMsgHandler</a>, and the <a href="qtglobal.html#qVersion">qVersion</a>() function which returns the version number of Qt at run-time as a string.</p>
 <a name="macros"></a>
 <h3>Macros</h3>
-<p>The &lt;QtGlobal&gt; header file provides a range of macros (Q_CC_*) that are defined if the application is compiled using the specified platforms. For example, the <a href="qtglobal.html#Q_CC_SUN">Q_CC_SUN</a> macro is defined if the application is compiled using Forte Developer, or Sun Studio C++. The header file also declares a range of macros (Q_OS_*) that are defined for the specified platforms. For example, <a href="qtglobal.html#Q_OS_X11">Q_OS_X11</a> which is defined for the X Window System.</p>
+<p>The &lt;QtGlobal&gt; header file provides a range of macros (Q_CC_*) that are defined if the application is compiled using the specified platforms. For example, the <a href="qtglobal.html#Q_CC_SUN">Q_CC_SUN</a> macro is defined if the application is compiled using Forte Developer, or Sun Studio C++. The header file also declares a range of macros (Q_OS_*) that are defined for the specified platforms. For example, Q_OS_X11 which is defined for the X Window System.</p>
 <p>The purpose of these macros is to enable programmers to add compiler or platform specific code to their application.</p>
 <p>The remaining macros are convenience macros for larger operations: The <a href="qtglobal.html#QT_TRANSLATE_NOOP">QT_TRANSLATE_NOOP</a>() and <a href="qtglobal.html#QT_TR_NOOP">QT_TR_NOOP</a>() macros provide the possibility of marking text for dynamic translation, i.e. translation without changing the stored source text. The <a href="qtglobal.html#Q_ASSERT">Q_ASSERT</a>() and <a href="qtglobal.html#Q_ASSERT_X">Q_ASSERT_X</a>() enables warning messages of various level of refinement. The <a href="qtglobal.html#Q_FOREACH">Q_FOREACH</a>() and <a href="qtglobal.html#foreach">foreach</a>() macros implement Qt's foreach loop.</p>
 <p>The <a href="qtglobal.html#Q_INT64_C">Q_INT64_C</a>() and <a href="qtglobal.html#Q_UINT64_C">Q_UINT64_C</a>() macros wrap signed and unsigned 64-bit integers in a platform-independent way. The <a href="qtglobal.html#Q_CHECK_PTR">Q_CHECK_PTR</a>() macro prints a warning containing the source code's file name and line number, saying that the program ran out of memory, if the pointer is 0. The <a href="qtglobal.html#qPrintable">qPrintable</a>() macro represent an easy way of printing text.</p>
@@ -169,14 +170,14 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qtglobal.html#QtMsgType-enum">QtMsgType</a> and <a href="qtglobal.html#qInstallMsgHandler">qInstallMsgHandler</a>().</p>
 <h3 class="fn"><a name="QtMsgType-enum"></a>enum QtMsgType</h3>
 <p>This enum describes the messages that can be sent to a message handler (<a href="qtglobal.html#QtMsgHandler-typedef">QtMsgHandler</a>). You can use the enum to identify and associate the various message types with the appropiate actions.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QtDebugMsg</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">A message generated by the <a href="qtglobal.html#qDebug">qDebug</a>() function.</td></tr>
 <tr><td valign="top"><tt>QtWarningMsg</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">A message generated by the <a href="qtglobal.html#qWarning">qWarning</a>() function.</td></tr>
 <tr><td valign="top"><tt>QtCriticalMsg</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">A message generated by the <a href="qtglobal.html#qCritical">qCritical</a>() function.</td></tr>
 <tr><td valign="top"><tt>QtFatalMsg</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">A message generated by the <a href="qtglobal.html#qFatal">qFatal</a>() function.</td></tr>
 <tr><td valign="top"><tt>QtSystemMsg</tt></td><td align="center" valign="top"><tt>QtCriticalMsg</tt></td><td valign="top">&nbsp;</td></tr>
-</table>
+</table></p>
 <p>See also <a href="qtglobal.html#QtMsgHandler-typedef">QtMsgHandler</a> and <a href="qtglobal.html#qInstallMsgHandler">qInstallMsgHandler</a>().</p>
 <h3 class="fn"><a name="qint8-typedef"></a>typedef qint8</h3>
 <p>Typedef for <tt>signed char</tt>. This type is guaranteed to be 8-bit on all platforms supported by Qt.</p>
@@ -329,17 +330,23 @@ body { background: #ffffff; color: black; }</style>
     // minValue == yourValue</pre>
 <p>See also <a href="qtglobal.html#qMax">qMax</a>() and <a href="qtglobal.html#qBound">qBound</a>().</p>
 <h3 class="fn"><a name="qRound64"></a><a href="qtglobal.html#qint64-typedef">qint64</a> qRound64 ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>value</i> )</h3>
-<p>Rounds <i>value</i> up to the nearest 64-bit integer. For example:</p>
-<pre>&nbsp;   qreal value = 42949672960,7;
+<p>Rounds <i>value</i> to the nearest 64-bit integer. For example:</p>
+<pre>&nbsp;   qreal valueA = 42949672960.3;
+    qreal valueB = 42949672960.7;
 
-    int roundedValue = qRound(value);
-    \\ roundedValue = 42949672961</pre>
+    int roundedValueA = qRound(valueA);
+    \\ roundedValueA = 42949672960
+    int roundedValueB = qRound(valueB);
+    \\ roundedValueB = 42949672961</pre>
 <h3 class="fn"><a name="qRound"></a>int qRound ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>value</i> )</h3>
-<p>Rounds <i>value</i> up to the nearest integer. For example:</p>
-<pre>&nbsp;   qreal value = 2.3;
+<p>Rounds <i>value</i> to the nearest integer. For example:</p>
+<pre>&nbsp;   qreal valueA = 2.3;
+    qreal valueB = 2.7;
 
-    int roundedValue = qRound(value);
-    \\ roundedValue = 3</pre>
+    int roundedValueA = qRound(valueA);
+    \\ roundedValueA = 2
+    int roundedValueB = qRound(valueB);
+    \\ roundedValueB = 3</pre>
 <h3 class="fn"><a name="qVersion"></a>const char * qVersion ()</h3>
 <p>Returns the version number of Qt at run-time as a string (for example, &quot;4.1.2&quot;). This may be a different version than the version the application was compiled against.</p>
 <p>See also <a href="qtglobal.html#QT_VERSION_STR">QT_VERSION_STR</a>.</p>
@@ -486,6 +493,40 @@ body { background: #ffffff; color: black; }</style>
     a = new (nothrow) int[80];      // Right
     Q_CHECK_PTR(a);</pre>
 <p>See also <a href="qtglobal.html#qWarning">qWarning</a>() and <a href="debug.html">Debugging Techniques</a>.</p>
+<h3 class="fn"><a name="Q_DECLARE_TYPEINFO"></a>Q_DECLARE_TYPEINFO (  <i>Type</i>,  <i>Flags</i> )</h3>
+<p>You can use this macro to specify information about a custom type <i>Type</i>. With accurate type information, Qt's <a href="containers.html">generic containers</a> can choose appropriate storage methods and algorithms.</p>
+<p><i>Flags</i> can be one of the following:</p>
+<ul>
+<li><tt>Q_PRIMITIVE_TYPE</tt> specifies that <i>Type</i> is a POD (plain old data) type with no constructor or destructor.</li>
+<li><tt>Q_MOVABLE_TYPE</tt> specifies that <i>Type</i> has a constructor and/or a destructor but can be moved in memory using <tt>memcpy()</tt>.</li>
+<li><tt>Q_COMPLEX_TYPE</tt> (the default) specifies that <i>Type</i> has constructors and/or a destructor and that it may not be moved in memory.</li>
+</ul>
+<p>Example of a &quot;primitive&quot; type:</p>
+<pre>&nbsp;   struct Point2D
+    {
+        int x;
+        int y;
+    };
+
+    Q_DECLARE_TYPEINFO(Point2D, Q_PRIMITIVE_TYPE);</pre>
+<p>Example of a movable type:</p>
+<pre>&nbsp;   class Point2D
+    {
+    public:
+        Point2D() { data = new int[2]; }
+        Point2D(const Point2D &amp;other) { ... }
+        ~Point2D() { delete[] data; }
+
+        Point2D &amp;operator=(const Point2D &amp;other) { ... }
+
+        int x() const { return data[0]; }
+        int y() const { return data[1]; }
+
+    private:
+        int *data;
+    };
+
+    Q_DECLARE_TYPEINFO(Point2D, Q_MOVABLE_TYPE);</pre>
 <h3 class="fn"><a name="Q_FOREACH"></a>Q_FOREACH (  <i>variable</i>,  <i>container</i> )</h3>
 <p>Same as <a href="qtglobal.html#foreach">foreach</a>() which is used to implement Qt's foreach loop. The <i>variable</i> parameter is a variable name or variable definition; the <i>container</i> parameter is a Qt container whose value type corresponds to the type of the variable.</p>
 <p>See also <a href="qtglobal.html#foreach">foreach</a>().</p>
@@ -493,8 +534,6 @@ body { background: #ffffff; color: black; }</style>
 <p>Wraps the signed 64-bit integer <i>literal</i> in a platform-independent way. For example:</p>
 <pre>&nbsp;   qint64 value = Q_INT64_C(932838457459459);</pre>
 <p>See also <a href="qtglobal.html#qint64-typedef">qint64</a> and <a href="qtglobal.html#Q_UINT64_C">Q_UINT64_C</a>().</p>
-<h3 class="fn"><a name="Q_OS_X11"></a>Q_OS_X11</h3>
-<p>Defined for the X Window System.</p>
 <h3 class="fn"><a name="Q_OS_AIX"></a>Q_OS_AIX</h3>
 <p>Defined on AIX.</p>
 <h3 class="fn"><a name="Q_OS_BSD4"></a>Q_OS_BSD4</h3>
@@ -521,10 +560,6 @@ body { background: #ffffff; color: black; }</style>
 <p>Defined on Linux.</p>
 <h3 class="fn"><a name="Q_OS_LYNX"></a>Q_OS_LYNX</h3>
 <p>Defined on LynxOS.</p>
-<h3 class="fn"><a name="Q_OS_MAC9"></a>Q_OS_MAC9</h3>
-<p>Defined for Mac OS 9.</p>
-<h3 class="fn"><a name="Q_OS_MACX"></a>Q_OS_MACX</h3>
-<p>Defined for Mac OS X.</p>
 <h3 class="fn"><a name="Q_OS_MSDOS"></a>Q_OS_MSDOS</h3>
 <p>Defined on MS-DOS and Windows.</p>
 <h3 class="fn"><a name="Q_OS_NETBSD"></a>Q_OS_NETBSD</h3>
@@ -541,8 +576,6 @@ body { background: #ffffff; color: black; }</style>
 <p>Defined on QNX RTP 6.1.</p>
 <h3 class="fn"><a name="Q_OS_QNX"></a>Q_OS_QNX</h3>
 <p>Defined on QNX.</p>
-<h3 class="fn"><a name="Q_OS_QWS"></a>Q_OS_QWS</h3>
-<p>Defined for Qtopia Core.</p>
 <h3 class="fn"><a name="Q_OS_RELIANT"></a>Q_OS_RELIANT</h3>
 <p>Defined on Reliant UNIX.</p>
 <h3 class="fn"><a name="Q_OS_SCO"></a>Q_OS_SCO</h3>
@@ -563,20 +596,32 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qtglobal.html#quint64-typedef">quint64</a> and <a href="qtglobal.html#Q_INT64_C">Q_INT64_C</a>().</p>
 <h3 class="fn"><a name="Q_UNUSED"></a>Q_UNUSED (  <i>name</i> )</h3>
 <p>Indicates to the compiler that the parameter with the specified <i>name</i> is not used in the body of a function. This can be used to suppress compiler warnings while allowing functions to be defined with meaningful parameter names in their signatures.</p>
+<h3 class="fn"><a name="Q_WS_X11"></a>Q_WS_X11</h3>
+<p>Defined on X11.</p>
+<p>See also <a href="qtglobal.html#Q_WS_MAC">Q_WS_MAC</a>, <a href="qtglobal.html#Q_WS_WIN">Q_WS_WIN</a>, and <a href="qtglobal.html#Q_WS_QWS">Q_WS_QWS</a>.</p>
+<h3 class="fn"><a name="Q_WS_MAC"></a>Q_WS_MAC</h3>
+<p>Defined on Mac OS X.</p>
+<p>See also <a href="qtglobal.html#Q_WS_WIN">Q_WS_WIN</a>, <a href="qtglobal.html#Q_WS_X11">Q_WS_X11</a>, and <a href="qtglobal.html#Q_WS_QWS">Q_WS_QWS</a>.</p>
+<h3 class="fn"><a name="Q_WS_QWS"></a>Q_WS_QWS</h3>
+<p>Defined on Qtopia Core.</p>
+<p>See also <a href="qtglobal.html#Q_WS_MAC">Q_WS_MAC</a>, <a href="qtglobal.html#Q_WS_WIN">Q_WS_WIN</a>, and <a href="qtglobal.html#Q_WS_X11">Q_WS_X11</a>.</p>
+<h3 class="fn"><a name="Q_WS_WIN"></a>Q_WS_WIN</h3>
+<p>Defined on Windows.</p>
+<p>See also <a href="qtglobal.html#Q_WS_MAC">Q_WS_MAC</a>, <a href="qtglobal.html#Q_WS_X11">Q_WS_X11</a>, and <a href="qtglobal.html#Q_WS_QWS">Q_WS_QWS</a>.</p>
 <h3 class="fn"><a name="foreach"></a>foreach (  <i>variable</i>,  <i>container</i> )</h3>
 <p>This macro is used to implement Qt's <tt>foreach</tt> loop. The <i>variable</i> parameter is a variable name or variable definition; the <i>container</i> parameter is a Qt container whose value type corresponds to the type of the variable. See <a href="containers.html#the-foreach-keyword">The foreach Keyword</a> for details.</p>
 <p>If you're worried about namespace pollution, you can disable this macro by adding the following line to your <tt>.pro</tt> file:</p>
 <pre>&nbsp;   CONFIG += no_keywords</pre>
 <p>See also <a href="qtglobal.html#Q_FOREACH">Q_FOREACH</a>().</p>
 <h3 class="fn"><a name="qPrintable"></a>const char * qPrintable ( const <a href="qstring.html">QString</a> &amp; <i>str</i> )</h3>
-<p>Returns <i>str</i> as a <tt>const char *</tt>. This is equivalent to <i>str</i>.toAscii().constData().</p>
+<p>Returns <i>str</i> as a <tt>const char *</tt>. This is equivalent to <i>str</i>.toLocal8bit().constData().</p>
 <p>Example:</p>
 <pre>&nbsp;   qWarning(&quot;%s: %s&quot;, qPrintable(key), qPrintable(value));</pre>
 <p>See also <a href="qtglobal.html#qDebug">qDebug</a>(), <a href="qtglobal.html#qWarning">qWarning</a>(), <a href="qtglobal.html#qCritical">qCritical</a>(), and <a href="qtglobal.html#qFatal">qFatal</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

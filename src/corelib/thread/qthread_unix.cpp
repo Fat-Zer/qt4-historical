@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -219,6 +219,8 @@ void QThread::usleep(unsigned long usecs)
 }
 
 /*!
+    \fn void QThread::start(Priority priority)
+
     Begins execution of the thread by calling run(), which should be
     reimplemented in a QThread subclass to contain your code. The
     operating system will schedule the thread according to the \a

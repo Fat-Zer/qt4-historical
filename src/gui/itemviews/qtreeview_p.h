@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -46,7 +46,7 @@ struct QTreeViewItem
     uint expanded : 1;
     uint total : 30; // total number of children visible (+ hidden children)
     uint level : 16; // indentation
-    uint height : 16; // row height
+    int height : 16; // row height
 };
 
 class QTreeViewPrivate: public QAbstractItemViewPrivate
@@ -56,14 +56,16 @@ public:
 
     QTreeViewPrivate()
         : QAbstractItemViewPrivate(),
-          header(0), indent(20), itemHeight(-1),
-          uniformRowHeights(false), rootDecoration(true), itemsExpandable(true), reexpand(-1) { }
+          header(0), indent(20), lastViewedItem(0), itemHeight(-1), 
+          uniformRowHeights(false), rootDecoration(true),
+          itemsExpandable(true),
+          columnResizeTimerID(0)  {}
 
     ~QTreeViewPrivate() {}
     void initialize();
 
-    void expand(int item, bool emitSignal = true);
-    void collapse(int item, bool emitSignal = true);
+    void expand(int item, bool emitSignal);
+    void collapse(int item, bool emitSignal);
     void layout(int item);
 
     int pageUp(int item) const;
@@ -75,12 +77,23 @@ public:
         { return (++item >= viewItems.count() ? viewItems.count() - 1 : item); }
 
     inline int height(int item) const {
-        if (uniformRowHeights) return itemHeight;
-        if (viewItems.at(item).height == 0 && viewItems.at(item).index.isValid())
-            viewItems[item].height = q_func()->indexRowSizeHint(viewItems.at(item).index);
-        return viewItems.at(item).height;
+        if (uniformRowHeights)
+            return itemHeight;
+        const QModelIndex index = viewItems.at(item).index;
+        int height = viewItems.at(item).height;
+        if (height <= 0 && index.isValid()) {
+            height = q_func()->indexRowSizeHint(index);
+            viewItems[item].height = height;
+        }
+        if (!index.isValid() || height < 0)
+            return 0;
+        return height;
     }
 
+    inline void invalidateHeightCache(int item) const {
+        viewItems[item].height = 0;
+    }
+        
     int indentation(int item) const;
     int coordinate(int item) const;
     int item(int coordinate) const;
@@ -93,7 +106,7 @@ public:
     int columnAt(int x) const;
 
     void relayout(const QModelIndex &parent);
-    void reexpandChildren(const QModelIndex &parent, bool emitSignal = true);
+    void reexpandChildren(const QModelIndex &parent);
 
     void updateVerticalScrollbar();
     void updateHorizontalScrollbar();
@@ -106,6 +119,7 @@ public:
     int indent;
 
     mutable QVector<QTreeViewItem> viewItems;
+    mutable int lastViewedItem;
     int itemHeight; // this is just a number; contentsHeight() / numItems
     bool uniformRowHeights; // used when all rows have the same height
     bool rootDecoration;
@@ -118,13 +132,17 @@ public:
 
     // used when expanding and closing items
     QVector<QPersistentModelIndex> expandedIndexes;
-    int reexpand;
+    QStack<bool> expandParent;
 
     // used when hiding and showing items
     QVector<QPersistentModelIndex> hiddenIndexes;
 
     // used for hidden items
     int hiddenItemsCount;
+
+    // used for updating resized columns
+    int columnResizeTimerID;
+    QList<int> columnsToUpdate;
 };
 
 #endif // QT_NO_TREEVIEW

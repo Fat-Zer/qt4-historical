@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/gui/itemviews/qstringlistmodel.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/gui/itemviews/qstringlistmodel.cpp -->
 <head>
     <title>Qt 4.1: QStringListModel Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -61,6 +61,11 @@ body { background: #ffffff; color: black; }</style>
 <p>The model provides all the standard functions of an editable model, representing the data in the string list as a model with one column and a number of rows equal to the number of items in the list.</p>
 <p>Model indexes corresponding to items are obtained with the <a href="qabstractlistmodel.html#index">index()</a> function, and item flags are obtained with <a href="qstringlistmodel.html#flags">flags</a>(). Item data is read with the <a href="qstringlistmodel.html#data">data</a>() function and written with <a href="qstringlistmodel.html#setData">setData</a>(). The number of rows (and number of items in the string list) can be found with the <a href="qstringlistmodel.html#rowCount">rowCount</a>() function.</p>
 <p>The model can be constructed with an existing string list, or strings can be set later with the <a href="qstringlistmodel.html#setStringList">setStringList</a>() convenience function. Strings can also be inserted in the usual way with the <a href="qstringlistmodel.html#insertRows">insertRows</a>() function, and removed with <a href="qstringlistmodel.html#removeRows">removeRows</a>(). The contents of the string list can be retrieved with the <a href="qstringlistmodel.html#stringList">stringList</a>() convenience function.</p>
+<p>An example usage of QStringListModel:</p>
+<pre>&nbsp;   QStringListModel *model = new QStringListModel();
+    QStringList list;
+    list &lt;&lt; &quot;a&quot; &lt;&lt; &quot;b&quot; &lt;&lt; &quot;c&quot;;
+    model-&gt;setStringList(list);</pre>
 <p>See also <a href="qabstractlistmodel.html">QAbstractListModel</a>, <a href="qabstractitemmodel.html">QAbstractItemModel</a>, and <a href="model-view-programming.html">Model/View Programming</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
@@ -89,7 +94,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qabstractitemmodel.html#removeRows">QAbstractItemModel::removeRows</a>().</p>
 <h3 class="fn"><a name="rowCount"></a>int QStringListModel::rowCount ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>parent</i> = QModelIndex() ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns the number of rows in the model. This value corresponds to the number of items in the model's internal string list.</p>
-<p>The optional <i>parent</i> argument is used in most models to specify the parent of the rows to be counted. In this model, the parent is ignored.</p>
+<p>The optional <i>parent</i> argument is used in most models to specify the parent of the rows to be counted. Because this is a list if a valid parent is specified the result will always be 0.</p>
 <p>Reimplemented from <a href="qabstractitemmodel.html#rowCount">QAbstractItemModel</a>.</p>
 <p>See also <a href="qstringlistmodel.html#insertRows">insertRows</a>(), <a href="qstringlistmodel.html#removeRows">removeRows</a>(), and <a href="qabstractitemmodel.html#rowCount">QAbstractItemModel::rowCount</a>().</p>
 <h3 class="fn"><a name="setData"></a>bool QStringListModel::setData ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>index</i>, const <a href="qvariant.html">QVariant</a> &amp; <i>value</i>, int <i>role</i> = Qt::EditRole )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
@@ -105,8 +110,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qstringlistmodel.html#setStringList">setStringList</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

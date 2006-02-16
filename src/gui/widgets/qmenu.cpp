@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -66,7 +66,7 @@ public:
 
         setParent(p, Qt::Window | Qt::Tool);
 	setAttribute(Qt::WA_DeleteOnClose, true);
-        p->setWindowTitle(p->windowTitle());
+        setWindowTitle(p->windowTitle());
         setEnabled(p->isEnabled());
         QObject::connect(this, SIGNAL(activated(int)), p, SIGNAL(activated(int)));
         QObject::connect(this, SIGNAL(highlighted(int)), p, SIGNAL(highlighted(int)));
@@ -311,7 +311,7 @@ void QMenuPrivate::setCurrentAction(QAction *action, int popup, bool activateFir
 {
     Q_Q(QMenu);
     tearoffHighlighted = 0;
-    if (action == currentAction)
+    if (action == currentAction && !(action && action->menu() && action->menu() != activeMenu))
         return;
     if (currentAction)
         q->update(actionRect(currentAction));
@@ -749,10 +749,11 @@ QStyleOptionMenuItem QMenuPrivate::getStyleOption(const QAction *action) const
 
     opt.font = action->font();
 
-    if (currentAction && currentAction == action)
-        opt.state |= QStyle::State_Selected;
-    if (mouseDown && currentAction && currentAction == action)
-        opt.state |= QStyle::State_Sunken;
+    if (currentAction && currentAction == action && !currentAction->isSeparator()) {
+        opt.state |= QStyle::State_Selected
+                     | (mouseDown ? QStyle::State_Sunken : QStyle::State_None);
+    }
+
     opt.menuHasCheckableItems = hasCheckableItems;
     if (!action->isCheckable()) {
         opt.checkType = QStyleOptionMenuItem::NotCheckable;
@@ -818,9 +819,9 @@ QStyleOptionMenuItem QMenuPrivate::getStyleOption(const QAction *action) const
 
     When inserting action items you usually specify a receiver and a
     slot. The receiver will be notifed whenever the item is
-    triggered(). In addition, QMenu provides two signals, activated()
-    and highlighted(), which signal the QAction that was triggered
-    from the menu.
+    \l{QAction::triggered()}{triggered()}. In addition, QMenu provides
+    two signals, activated() and highlighted(), which signal the
+    QAction that was triggered from the menu.
 
     You clear a menu with clear() and remove individual action items
     with removeAction().
@@ -859,7 +860,6 @@ QMenu::QMenu(QWidget *parent)
 #ifndef QT_NO_WHATSTHIS
     setAttribute(Qt::WA_CustomWhatsThis);
 #endif
-    setFocusPolicy(Qt::StrongFocus);
     setMouseTracking(style()->styleHint(QStyle::SH_Menu_MouseTracking, 0, this));
     if (style()->styleHint(QStyle::SH_Menu_Scrollable, 0, this)) {
         d->scroll = new QMenuPrivate::QMenuScroller;
@@ -885,7 +885,6 @@ QMenu::QMenu(const QString &title, QWidget *parent)
 #ifndef QT_NO_WHATSTHIS
     setAttribute(Qt::WA_CustomWhatsThis);
 #endif
-    setFocusPolicy(Qt::StrongFocus);
     setMouseTracking(style()->styleHint(QStyle::SH_Menu_MouseTracking));
     if (style()->styleHint(QStyle::SH_Menu_Scrollable, 0, this)) {
         d->scroll = new QMenuPrivate::QMenuScroller;
@@ -944,9 +943,9 @@ QAction *QMenu::addAction(const QIcon &icon, const QString &text)
 
     This convenience function creates a new action with the text \a
     text and an optional shortcut \a shortcut. The action's
-    triggered() signal is connected to the \a receiver's \a member
-    slot. The function adds the newly created action to the menu's
-    list of actions and returns it.
+    \l{QAction::triggered()}{triggered()} signal is connected to the
+    \a receiver's \a member slot. The function adds the newly created
+    action to the menu's list of actions and returns it.
 
     \sa QWidget::addAction()
 */
@@ -966,9 +965,9 @@ QAction *QMenu::addAction(const QString &text, const QObject *receiver, const ch
 
     This convenience function creates a new action with an \a icon and
     some \a text and an optional shortcut \a shortcut. The action's
-    triggered() signal is connected to the \a member slot of the \a
-    receiver object. The function adds the newly created action to the
-    menu's list of actions, and returns it.
+    \l{QAction::triggered()}{triggered()} signal is connected to the
+    \a member slot of the \a receiver object. The function adds the
+    newly created action to the menu's list of actions, and returns it.
 
     \sa QWidget::addAction()
 */
@@ -1185,8 +1184,6 @@ void QMenu::clear()
 }
 
 /*!
-  \internal
-
   If a menu does not fit on the screen it lays itself out so that it
   does fit. It is style dependent what layout means (for example, on
   Windows it will use multiple columns).
@@ -1199,8 +1196,6 @@ int QMenu::columnCount() const
 }
 
 /*!
-  \internal
-
   Returns the item at \a pt; returns 0 if there is no item there.
 */
 QAction *QMenu::actionAt(const QPoint &pt) const
@@ -1211,8 +1206,6 @@ QAction *QMenu::actionAt(const QPoint &pt) const
 }
 
 /*!
-  \internal
-
   Returns the geometry of action \a act.
 */
 QRect QMenu::actionGeometry(QAction *act) const
@@ -1330,18 +1323,18 @@ void QMenu::popup(const QPoint &p, QAction *atAction)
             pos.setX(pos.x()-size.width());
         if (pos.x()+size.width() > screen.right())
             pos.setX(mouse.x()-size.width());
-        if (pos.y()+size.height() > screen.bottom() - (desktopFrame * 2))
-            pos.setY(mouse.y()-size.height());
+        if (pos.y() + size.height() > screen.bottom() - desktopFrame)
+            pos.setY(mouse.y() - (size.height() + desktopFrame));
         if (pos.x() < screen.left())
             pos.setX(mouse.x());
         if (pos.y() < screen.top() + desktopFrame)
             pos.setY(screen.top() + desktopFrame);
     }
-    if (d->scroll && pos.y()+size.height() > screen.height()-(desktopFrame*2)) {
+    if (d->scroll && pos.y()+size.height() > screen.bottom() - desktopFrame) {
         d->scroll->scrollFlags |= uint(QMenuPrivate::QMenuScroller::ScrollDown);
         size.setHeight(screen.bottom()-desktopFrame-pos.y());
     } else {
-        if(pos.y()+size.height() > screen.height())
+        if(pos.y()+size.height() > screen.bottom())
             pos.setY(desktopFrame+screen.top()+(screen.height()-desktopFrame-size.height()));
         else if(pos.y() < screen.top())
             pos.setY(screen.top());
@@ -1671,6 +1664,8 @@ void QMenu::mousePressEvent(QMouseEvent *e)
          if (d->noReplayFor
              && QRect(d->noReplayFor->mapToGlobal(QPoint()), d->noReplayFor->size()).contains(e->globalPos()))
              setAttribute(Qt::WA_NoMouseReplay);
+         if (d->eventLoop) // synchronous operation
+             d->syncAction = 0;
         d->hideUpToMenuBar();
         return;
     }
@@ -1695,8 +1690,8 @@ void QMenu::mouseReleaseEvent(QMouseEvent *e)
     for(QWidget *caused = this; caused;) {
         if (QMenu *m = qobject_cast<QMenu*>(caused)) {
             caused = m->d_func()->causedPopup.widget;
-            if (m->d_func()->eventLoop && (!action || action->isEnabled())) // synchronous operation
-                m->d_func()->syncAction = action;
+            if (m->d_func()->eventLoop) // synchronous operation
+                m->d_func()->syncAction = d->currentAction;
         } else {
             break;
         }
@@ -2256,7 +2251,8 @@ void QMenu::internalDelayedPopup()
     This signal is emitted when a menu action is triggered; \a action
     is the action that caused the signal to be emitted.
 
-    Normally, you connect each menu action's triggered() signal to its
+    Normally, you connect each menu action's
+    \l{QAction::triggered()}{triggered()} signal to its
     own custom slot, but sometimes you will want to connect several
     actions to a single slot, for example, when you have a group of
     closely related actions, such as "left justify", "center", "right
@@ -2307,6 +2303,9 @@ int QMenu::insertAny(const QIcon *icon, const QString *text, const QObject *rece
     return findIdForAction(act);
 }
 
+/*!
+    Use insertAction() or one of the addAction() overloads instead.
+*/
 int QMenu::insertItem(QMenuItem *item, int id, int index)
 {
     if (index == -1 || index >= actions().count())
@@ -2385,6 +2384,9 @@ int QMenu::itemParameter(int id) const
     return id;
 }
 
+/*!
+    Use actions instead.
+*/
 void QMenu::setId(int index, int id)
 {
     if(QAction *act = actions().value(index))
@@ -2699,6 +2701,12 @@ int QMenu::findIdForAction(QAction *act) const
     \fn bool QMenu::isCheckable() const
 
     Not necessary anymore. Always returns true.
+*/
+
+/*!
+    \fn void QMenu::setActiveItem(int id)
+
+    Use setActiveAction() instead.
 */
 
 // for private slots

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/gui/widgets/qtextedit.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/gui/widgets/qtextedit.cpp -->
 <head>
     <title>Qt 4.1: Qt 3 Support Members for QTextEdit</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -41,6 +41,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>void <b><a href="qtextedit-qt3.html#moveCursor">moveCursor</a></b> ( CursorAction <i>action</i>, QTextCursor::MoveMode <i>mode</i> = QTextCursor::MoveAnchor )</li>
 <li><div class="fn"/>void <b><a href="qtextedit-qt3.html#moveCursor-2">moveCursor</a></b> ( CursorAction <i>action</i>, bool <i>select</i> )</li>
 <li><div class="fn"/>int <b><a href="qtextedit-qt3.html#pointSize">pointSize</a></b> () const</li>
+<li><div class="fn"/>void <b><a href="qtextedit-qt3.html#redo">redo</a></b> () const</li>
 <li><div class="fn"/>QString <b><a href="qtextedit-qt3.html#selectedText">selectedText</a></b> () const</li>
 <li><div class="fn"/>void <b><a href="qtextedit-qt3.html#setBold">setBold</a></b> ( bool <i>b</i> )</li>
 <li><div class="fn"/>void <b><a href="qtextedit-qt3.html#setFamily">setFamily</a></b> ( const QString &amp; <i>family</i> )</li>
@@ -53,6 +54,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>QString <b><a href="qtextedit-qt3.html#text">text</a></b> () const</li>
 <li><div class="fn"/>Qt::TextFormat <b><a href="qtextedit-qt3.html#textFormat">textFormat</a></b> () const</li>
 <li><div class="fn"/>bool <b><a href="qtextedit-qt3.html#underline">underline</a></b> () const</li>
+<li><div class="fn"/>void <b><a href="qtextedit-qt3.html#undo">undo</a></b> () const</li>
 </ul>
 <ul>
 <li><div class="fn"/>60 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
@@ -61,10 +63,8 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <h3>Public Slots</h3>
 <ul>
-<li><div class="fn"/>void <b><a href="qtextedit-qt3.html#redo">redo</a></b> () const</li>
 <li><div class="fn"/>void <b><a href="qtextedit-qt3.html#setColor">setColor</a></b> ( const QColor &amp; <i>color</i> )</li>
 <li><div class="fn"/>void <b><a href="qtextedit-qt3.html#setModified">setModified</a></b> ( bool <i>m</i> = true )</li>
-<li><div class="fn"/>void <b><a href="qtextedit-qt3.html#undo">undo</a></b> () const</li>
 </ul>
 <ul>
 <li><div class="fn"/>1 public slot inherited from <a href="qwidget.html#public-slots">QWidget</a></li>
@@ -77,7 +77,7 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="KeyboardAction-enum"></a>enum QTextEdit::KeyboardAction</h3>
-<table border="1" cellpadding="2" cellspacing="1" width="40%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="40%">
 <tr><th width="60%">Constant</th><th width="40%">Value</th></tr>
 <tr><td valign="top"><tt>QTextEdit::ActionBackspace</tt></td><td align="center" valign="top"><tt>0</tt></td></tr>
 <tr><td valign="top"><tt>QTextEdit::ActionDelete</tt></td><td align="center" valign="top"><tt>1</tt></td></tr>
@@ -85,7 +85,7 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QTextEdit::ActionKill</tt></td><td align="center" valign="top"><tt>3</tt></td></tr>
 <tr><td valign="top"><tt>QTextEdit::ActionWordBackspace</tt></td><td align="center" valign="top"><tt>4</tt></td></tr>
 <tr><td valign="top"><tt>QTextEdit::ActionWordDelete</tt></td><td align="center" valign="top"><tt>5</tt></td></tr>
-</table>
+</table></p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QTextEdit-4"></a>QTextEdit::QTextEdit ( <a href="qwidget.html">QWidget</a> * <i>parent</i>, const char * <i>name</i> )</h3>
@@ -108,7 +108,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Use <a href="qtextedit.html#fontFamily">fontFamily</a>() instead.</p>
 <p>See also <a href="qtextedit-qt3.html#setFamily">setFamily</a>().</p>
 <h3 class="fn"><a name="find-2"></a>bool QTextEdit::find ( const <a href="qstring.html">QString</a> &amp; <i>exp</i>, bool <i>cs</i>, bool <i>wo</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Use the <a href="qtextedit.html#find">find</a>() overload that takes a <a href="qtextdocument.html#FindFlag-enum">QTextDocument::FindFlags</a> argument.</p>
 <h3 class="fn"><a name="hasSelectedText"></a>bool QTextEdit::hasSelectedText () const</h3>
 <p>Use <a href="qtextedit.html#textCursor">textCursor</a>().hasSelection() instead.</p>
@@ -126,11 +126,12 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="moveCursor"></a>void QTextEdit::moveCursor ( <a href="qtextedit.html#CursorAction-enum">CursorAction</a> <i>action</i>, <a href="qtextcursor.html#MoveMode-enum">QTextCursor::MoveMode</a> <i>mode</i> = QTextCursor::MoveAnchor )</h3>
 <p>Use the QTextCursor() class instead.</p>
 <h3 class="fn"><a name="moveCursor-2"></a>void QTextEdit::moveCursor ( <a href="qtextedit.html#CursorAction-enum">CursorAction</a> <i>action</i>, bool <i>select</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p>Use the QTextCursor() class instead.</p>
 <h3 class="fn"><a name="pointSize"></a>int QTextEdit::pointSize () const</h3>
 <p>Use int(<a href="qtextedit.html#fontPointSize">fontPointSize</a>()+0.5) instead.</p>
 <p>See also <a href="qtextedit-qt3.html#setPointSize">setPointSize</a>().</p>
-<h3 class="fn"><a name="redo"></a>void QTextEdit::redo () const&nbsp;&nbsp;<tt> [slot]</tt></h3>
+<h3 class="fn"><a name="redo"></a>void QTextEdit::redo () const</h3>
 <p>Redoes the last operation.</p>
 <p>If there is no operation to redo, i.e. there is no redo step in the undo/redo history, nothing happens.</p>
 <p>See also <a href="qtextedit-qt3.html#undo">undo</a>().</p>
@@ -175,14 +176,14 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="underline"></a>bool QTextEdit::underline () const</h3>
 <p>Use <a href="qtextedit.html#fontUnderline">fontUnderline</a>() instead.</p>
 <p>See also <a href="qtextedit-qt3.html#setUnderline">setUnderline</a>().</p>
-<h3 class="fn"><a name="undo"></a>void QTextEdit::undo () const&nbsp;&nbsp;<tt> [slot]</tt></h3>
+<h3 class="fn"><a name="undo"></a>void QTextEdit::undo () const</h3>
 <p>Undoes the last operation.</p>
 <p>If there is no operation to undo, i.e. there is no undo step in the undo/redo history, nothing happens.</p>
 <p>See also <a href="qtextedit-qt3.html#redo">redo</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

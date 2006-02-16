@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -614,10 +614,22 @@ void QSettingsPrivate::iniChopTrailingSpaces(QString *str)
 
 void QSettingsPrivate::iniEscapedStringList(const QStringList &strs, QByteArray &result)
 {
-    for (int i = 0; i < strs.size(); ++i) {
-        if (i != 0)
-            result += ", ";
-        iniEscapedString(strs.at(i), result);
+    if (strs.isEmpty()) {
+        /*
+            We need to distinguish between empty lists and one-item
+            lists that contain an empty string. Ideally, we'd have a
+            @EmptyList() symbol but that would break compatibility
+            with Qt 4.0. @Invalid() stands for QVariant(), and
+            QVariant().toStringList() returns an empty QStringList,
+            so we're in good shape.
+        */
+        result += "@Invalid()";
+    } else {
+        for (int i = 0; i < strs.size(); ++i) {
+            if (i != 0)
+                result += ", ";
+            iniEscapedString(strs.at(i), result);
+        }
     }
 }
 
@@ -1744,7 +1756,7 @@ bool QConfFileSettingsPrivate::writeIniFile(QIODevice &device, const InternalSet
     Because QVariant is part of the \l QtCore library, it cannot provide
     conversion functions to data types such as QColor, QImage, and
     QPixmap, which are part of \l QtGui. In other words, there is no
-    \c QVariant::toColor() function.
+    \c toColor(), \c toImage(), or \c toPixmap() functions in QVariant.
 
     Instead, you can use the QVariant::value() or the qVariantValue()
     template function. For example:
@@ -1763,6 +1775,9 @@ bool QConfFileSettingsPrivate::writeIniFile(QIODevice &device, const InternalSet
         QColor color = palette().background().color();
         settings.setValue("DataPump/bgcolor", color);
     \endcode
+
+    Custom types registered using qRegisterMetaType() and
+    qRegisterMetaTypeStreamOperators() can be stored using QSettings.
 
     \section1 Key Syntax
 
@@ -3049,6 +3064,7 @@ void QSettings::setPath(Format format, Scope scope, const QString &path)
 
 /*!
     \since 4.1
+    \threadsafe
 
     Registers a custom storage format. On success, returns a special
     Format value that can then be passed to the QSettings constuctor.

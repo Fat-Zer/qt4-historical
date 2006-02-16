@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/corelib/io/qfileinfo.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/corelib/io/qfileinfo.cpp -->
 <head>
     <title>Qt 4.1: QFileInfo Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -252,7 +252,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="permissions"></a><a href="qfile.html#Permission-enum">QFile::Permissions</a> QFileInfo::permissions () const</h3>
 <p>Returns the complete OR-ed together combination of <a href="qfile.html#Permission-enum">QFile::Permissions</a> for the file.</p>
 <h3 class="fn"><a name="readLink"></a><a href="qstring.html">QString</a> QFileInfo::readLink () const</h3>
-<p>Returns the name a symlink (or shortcut on Windows) points to, or a an empty string if the object isn't a symbolic link.</p>
+<p>Returns the absolute path to the file or directory a symlink (or shortcut on Windows) points to, or a an empty string if the object isn't a symbolic link.</p>
 <p>This name may not represent an existing file; it is only a string. <a href="qfileinfo.html#exists">QFileInfo::exists</a>() returns true if the symlink points to an existing file.</p>
 <p>See also <a href="qfileinfo.html#exists">exists</a>(), <a href="qfileinfo.html#isSymLink">isSymLink</a>(), <a href="qfileinfo.html#isDir">isDir</a>(), and <a href="qfileinfo.html#isFile">isFile</a>().</p>
 <h3 class="fn"><a name="refresh"></a>void QFileInfo::refresh ()</h3>
@@ -279,12 +279,12 @@ body { background: #ffffff; color: black; }</style>
     // while relFile points to &quot;/tmp/local/bin&quot;</pre>
 <p>See also <a href="qfileinfo.html#isFile">isFile</a>(), <a href="qfileinfo.html#isRelative">isRelative</a>(), <a href="qdir.html#setCurrent">QDir::setCurrent</a>(), and <a href="qdir.html#isRelativePath">QDir::isRelativePath</a>().</p>
 <h3 class="fn"><a name="setFile-2"></a>void QFileInfo::setFile ( const <a href="qfile.html">QFile</a> &amp; <i>file</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Sets the file that the <a href="qfileinfo.html">QFileInfo</a> provides information about to <i>file</i>.</p>
 <p>If <i>file</i> includes a relative path, the <a href="qfileinfo.html">QFileInfo</a> will also have a relative path.</p>
 <p>See also <a href="qfileinfo.html#isRelative">isRelative</a>().</p>
 <h3 class="fn"><a name="setFile-3"></a>void QFileInfo::setFile ( const <a href="qdir.html">QDir</a> &amp; <i>dir</i>, const <a href="qstring.html">QString</a> &amp; <i>file</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Sets the file that the <a href="qfileinfo.html">QFileInfo</a> provides information about to <i>file</i> in directory <i>dir</i>.</p>
 <p>If <i>file</i> includes a relative path, the <a href="qfileinfo.html">QFileInfo</a> will also have a relative path.</p>
 <p>See also <a href="qfileinfo.html#isRelative">isRelative</a>().</p>
@@ -301,19 +301,24 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns true if the <a href="qfileinfo.html">QFileInfo</a> refers to a different file to the one specified by <i>fileinfo</i>; otherwise returns false.</p>
 <p>See also <a href="qfileinfo.html#operator-eq-eq">operator==</a>().</p>
 <h3 class="fn"><a name="operator-not-eq-2"></a>bool QFileInfo::operator!= ( const QFileInfo &amp; <i>fileinfo</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p>Returns true if the <a href="qfileinfo.html">QFileInfo</a> refers to a different file to the one specified by <i>fileinfo</i>; otherwise returns false.</p>
+<p>See also <a href="qfileinfo.html#operator-eq-eq">operator==</a>().</p>
 <h3 class="fn"><a name="operator-eq"></a>QFileInfo &amp; QFileInfo::operator= ( const QFileInfo &amp; <i>fileinfo</i> )</h3>
 <p>Makes a copy of the given <i>fileinfo</i> and assigns it to this <a href="qfileinfo.html">QFileInfo</a>.</p>
 <h3 class="fn"><a name="operator-eq-eq"></a>bool QFileInfo::operator== ( const QFileInfo &amp; <i>fileinfo</i> )</h3>
+<p>Returns true if the <a href="qfileinfo.html">QFileInfo</a> refers to a file in the same location as the other <i>fileinfo</i>; otherwise returns false.</p>
+<p><b>Warning:</b> This will not compare two different symbolic links pointing to the same file.</p>
+<p>See also <a href="qfileinfo.html#operator-not-eq">operator!=</a>().</p>
 <h3 class="fn"><a name="operator-eq-eq-2"></a>bool QFileInfo::operator== ( const QFileInfo &amp; <i>fileinfo</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns true if the <a href="qfileinfo.html">QFileInfo</a> refers to a file in the same location as the other <i>fileinfo</i>; otherwise returns false.</p>
 <p><b>Warning:</b> This will not compare two different symbolic links pointing to the same file.</p>
 <p>See also <a href="qfileinfo.html#operator-not-eq">operator!=</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

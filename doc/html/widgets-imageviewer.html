@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/doc/src/examples/imageviewer.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/doc/src/examples/imageviewer.qdoc -->
 <head>
     <title>Qt 4.1: ImageViewer Example</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -175,9 +175,9 @@ body { background: #ffffff; color: black; }</style>
     }</pre>
 <p>We implement the zooming slots using the private <tt>scaleImage()</tt> function. We set the scaling factors to 1.25 and 0.8, respectively. These factor values ensure that a <b>Zoom In</b> action and a <b>Zoom Out</b> action will cancel each other (since 1.25 * 0.8 == 1), and in that way the normal image size can be restored using the zooming features.</p>
 <p>The screenshots below show an image in its normal size, and the same image after zooming in:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#f0f0f0"><td><img src="images/imageviewer-original_size.png" /></td><td><img src="images/imageviewer-zoom_in_1.png" /></td><td><img src="images/imageviewer-zoom_in_2.png" /></td></tr>
-</table>
+</table></p>
 <pre>&nbsp;   void ImageViewer::normalSize()
     {
         imageLabel-&gt;adjustSize();
@@ -196,9 +196,9 @@ body { background: #ffffff; color: black; }</style>
 <p>The <tt>fitToWindow()</tt> slot is called each time the user toggled the <b>Fit to Window</b> option. If the slot is called to turn on the option, we tell the scroll area to resize its child widget with the <a href="qscrollarea.html#widgetResizable-prop">QScrollArea::setWidgetResizable</a>() function. Then we disable the <b>Zoom In</b>, <b>Zoom Out</b> and <b>Normal Size</b> menu entries using the private <tt>updateActions()</tt> function.</p>
 <p>If the <a href="qscrollarea.html#widgetResizable-prop">QScrollArea::widgetResizable</a> property is set to <tt>false</tt> (the default), the scroll area honors the size of its child widget. If this property is set to <tt>true</tt>, the scroll area will automatically resize the widget in order to avoid scroll bars where they can be avoided, or to take advantage of extra space. But the scroll area will honor the minimum size hint of its child widget independent of the widget resizable property. So in this example we set <tt>imageLabel</tt>'s size policy to <a href="qsizepolicy.html#Policy-enum">ignored</a> in the constructor, to avoid that scroll bars appear when the scroll area becomes smaller than the label's minimum size hint.</p>
 <p>The screenshots below shows an image in its normal size, and the same image with the <b>Fit to window</b> option turned on. Enlarging the window will stretch the image further, as shown in the third screenshot.</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#f0f0f0"><td><img src="images/imageviewer-original_size.png" /></td><td><img src="images/imageviewer-fit_to_window_1.png" /></td><td><img src="images/imageviewer-fit_to_window_2.png" /></td></tr>
-</table>
+</table></p>
 <p>If the slot is called to turn off the option, the {QScrollArea::setWidgetResizable} property is set to <tt>false</tt>. We also restore the image pixmap to its normal size by adjusting the label's size to its content. And in the end we update the view menu entries.</p>
 <pre>&nbsp;   void ImageViewer::about()
     {
@@ -317,8 +317,8 @@ body { background: #ffffff; color: black; }</style>
 <p>but this would make the top-left corner the focal point, not the center. Therefore we need to take into account the scroll bar handle's size (the <a href="qabstractslider.html#pageStep-prop">page step</a>).</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

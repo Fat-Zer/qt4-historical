@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -28,6 +28,8 @@
 
 QT_MODULE(Gui)
 
+#ifndef QT_NO_PROXYMODEL
+
 class QAbstractProxyModelPrivate;
 class QItemSelection;
 
@@ -53,10 +55,11 @@ public:
 
 protected:
     QAbstractProxyModel(QAbstractProxyModelPrivate &, QObject *parent);
-    
+
 private:
     Q_DECLARE_PRIVATE(QAbstractProxyModel)
     Q_DISABLE_COPY(QAbstractProxyModel)
 };
 
+#endif // QT_NO_PROXYMODEL
 #endif // QABSTRACTPROXYMODEL_H

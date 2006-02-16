@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -35,7 +35,7 @@ class QVarLengthArray
 public:
     inline explicit QVarLengthArray(int size = 0);
 
-    inline QVarLengthArray(const QVarLengthArray &other)
+    inline QVarLengthArray(const QVarLengthArray<T, Prealloc> &other)
         : a(Prealloc), s(0), ptr(reinterpret_cast<T *>(array))
     {
         append(other.constData(), other.size());
@@ -50,7 +50,7 @@ public:
         if (ptr != reinterpret_cast<T *>(array))
             qFree(ptr);
     }
-    inline QVarLengthArray &operator=(const QVarLengthArray &other)
+    inline QVarLengthArray<T, Prealloc> &operator=(const QVarLengthArray<T, Prealloc> &other)
     {
         if (this != &other) {
             clear();

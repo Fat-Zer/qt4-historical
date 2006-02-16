@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/gui/kernel/qapplication.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/gui/kernel/qapplication.cpp -->
 <head>
     <title>Qt 4.1: QApplication Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -32,7 +32,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <a name="properties"></a>
 <h3>Properties</h3>
-<table width="100%" border="0" cellpadding="0" cellspacing="0">
+<p><table width="100%" border="0" cellpadding="0" cellspacing="0">
 <tr><td width="45%" valign="top"><ul>
 <li><div class="fn"/><b><a href="qapplication.html#cursorFlashTime-prop">cursorFlashTime</a></b> : int</li>
 <li><div class="fn"/><b><a href="qapplication.html#doubleClickInterval-prop">doubleClickInterval</a></b> : int</li>
@@ -47,7 +47,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="qapplication.html#windowIcon-prop">windowIcon</a></b> : QIcon</li>
 </ul>
 </td></tr>
-</table>
+</table></p>
 <ul>
 <li><div class="fn"/>3 properties inherited from <a href="qcoreapplication.html#properties">QCoreApplication</a></li>
 <li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
@@ -202,7 +202,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <p>Since the QApplication object does so much initialization, it <i>must</i> be created before any other objects related to the user interface are created.</p>
 <p>Since it also deals with common command line arguments, it is usually a good idea to create it <i>before</i> any interpretation or modification of <tt>argv</tt> is done in the application itself.</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th colspan="2">Groups of functions</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>System settings</td><td><a href="qapplication.html#desktopSettingsAware">desktopSettingsAware</a>(), <a href="qapplication.html#setDesktopSettingsAware">setDesktopSettingsAware</a>(), <a href="qapplication.html#cursorFlashTime-prop">cursorFlashTime</a>(), <a href="qapplication.html#cursorFlashTime-prop">setCursorFlashTime</a>(), <a href="qapplication.html#doubleClickInterval-prop">doubleClickInterval</a>(), <a href="qapplication.html#doubleClickInterval-prop">setDoubleClickInterval</a>(), <a href="qapplication.html#keyboardInputInterval-prop">setKeyboardInputInterval</a>(), <a href="qapplication.html#wheelScrollLines-prop">wheelScrollLines</a>(), <a href="qapplication.html#wheelScrollLines-prop">setWheelScrollLines</a>(), <a href="qapplication.html#palette">palette</a>(), <a href="qapplication.html#setPalette">setPalette</a>(), <a href="qapplication.html#font">font</a>(), <a href="qapplication.html#setFont">setFont</a>(), <a href="qapplication.html#fontMetrics">fontMetrics</a>().</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>Event handling</td><td><a href="qapplication.html#exec">exec</a>(), <a href="qcoreapplication.html#processEvents">processEvents</a>(), <a href="qcoreapplication.html#exit">exit</a>(), <a href="qcoreapplication.html#quit">quit</a>(). <a href="qcoreapplication.html#sendEvent">sendEvent</a>(), <a href="qcoreapplication.html#postEvent">postEvent</a>(), <a href="qcoreapplication.html#sendPostedEvents">sendPostedEvents</a>(), <a href="qcoreapplication.html#removePostedEvents">removePostedEvents</a>(), <a href="qcoreapplication.html#hasPendingEvents">hasPendingEvents</a>(), <a href="qcoreapplication.html#notify">notify</a>(), <a href="qapplication.html#macEventFilter">macEventFilter</a>(), <a href="qapplication.html#qwsEventFilter">qwsEventFilter</a>(), <a href="qapplication.html#x11EventFilter">x11EventFilter</a>(), <a href="qapplication.html#x11ProcessEvent">x11ProcessEvent</a>(), <a href="qcoreapplication.html#winEventFilter">winEventFilter</a>().</td></tr>
@@ -214,25 +214,25 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#e0e0e0"><td>X Window System synchronization</td><td><a href="qapplication-qt3.html#flushX">flushX</a>(), <a href="qapplication.html#syncX">syncX</a>().</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>Session management</td><td><a href="qapplication.html#isSessionRestored">isSessionRestored</a>(), <a href="qapplication.html#sessionId">sessionId</a>(), <a href="qapplication.html#commitData">commitData</a>(), <a href="qapplication.html#saveState">saveState</a>().</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>Miscellaneous</td><td><a href="qapplication.html#closeAllWindows">closeAllWindows</a>(), <a href="qcoreapplication.html#startingUp">startingUp</a>(), <a href="qcoreapplication.html#closingDown">closingDown</a>(), <a href="qapplication.html#type">type</a>().</td></tr>
-</table>
+</table></p>
 <p>See also <a href="qcoreapplication.html">QCoreApplication</a>, <a href="qabstracteventdispatcher.html">QAbstractEventDispatcher</a>, <a href="qeventloop.html">QEventLoop</a>, and <a href="qsettings.html">QSettings</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="ColorSpec-enum"></a>enum QApplication::ColorSpec</h3>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QApplication::NormalColor</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">the default color allocation policy</td></tr>
 <tr><td valign="top"><tt>QApplication::CustomColor</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">the same as NormalColor for X11; allocates colors to a palette on demand under Windows</td></tr>
 <tr><td valign="top"><tt>QApplication::ManyColor</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">the right choice for applications that use thousands of colors</td></tr>
-</table>
+</table></p>
 <p>See <a href="qapplication.html#setColorSpec">setColorSpec</a>() for full details.</p>
 <h3 class="fn"><a name="Type-enum"></a>enum QApplication::Type</h3>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QApplication::Tty</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">a console application</td></tr>
 <tr><td valign="top"><tt>QApplication::GuiClient</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">a GUI client application</td></tr>
 <tr><td valign="top"><tt>QApplication::GuiServer</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">a GUI server application (for Qtopia Core)</td></tr>
-</table>
+</table></p>
 <hr />
 <h2>Property Documentation</h2>
 <h3 class="fn"><a name="cursorFlashTime-prop"></a>cursorFlashTime : int</h3>
@@ -539,11 +539,11 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the application palette.</p>
 <p>See also <a href="qapplication.html#setPalette">setPalette</a>() and <a href="qwidget.html#palette-prop">QWidget::palette</a>().</p>
 <h3 class="fn"><a name="palette-2"></a><a href="qpalette.html">QPalette</a> QApplication::palette ( const <a href="qwidget.html">QWidget</a> * <i>widget</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>If a <i>widget</i> is passed, the default palette for the widget's class is returned. This may or may not be the application palette. In most cases there isn't a special palette for certain types of widgets, but one notable exception is the popup menu under Windows, if the user has defined a special background color for menus in the display settings.</p>
 <p>See also <a href="qapplication.html#setPalette">setPalette</a>() and <a href="qwidget.html#palette-prop">QWidget::palette</a>().</p>
 <h3 class="fn"><a name="palette-3"></a><a href="qpalette.html">QPalette</a> QApplication::palette ( const char * <i>className</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns the palette for widgets of the given <i>className</i>.</p>
 <p>See also <a href="qapplication.html#setPalette">setPalette</a>() and <a href="qwidget.html#palette-prop">QWidget::palette</a>().</p>
 <h3 class="fn"><a name="qwsDecoration"></a><a href="qdecoration.html">QDecoration</a> &amp; QApplication::qwsDecoration ()&nbsp;&nbsp;<tt> [static]</tt></h3>
@@ -555,7 +555,7 @@ body { background: #ffffff; color: black; }</style>
 <p>This virtual function is only implemented under Qtopia Core.</p>
 <p>If you create an application that inherits <a href="qapplication.html">QApplication</a> and reimplement this function, you get direct access to all QWS (Q Window System) events that the are received from the QWS master process. The events are passed in the <i>event</i> parameter.</p>
 <p>Return true if you want to stop the event from being processed. Return false for normal event dispatching. The default implementation returns false.</p>
-<h3 class="fn"><a name="qwsSetCustomColors"></a>void QApplication::qwsSetCustomColors ( QRgb * <i>colorTable</i>, int <i>start</i>, int <i>numColors</i> )</h3>
+<h3 class="fn"><a name="qwsSetCustomColors"></a>void QApplication::qwsSetCustomColors ( <a href="qcolor.html#QRgb-typedef">QRgb</a> * <i>colorTable</i>, int <i>start</i>, int <i>numColors</i> )</h3>
 <p>Set Qtopia Core custom color table.</p>
 <p>Qtopia Core on 8-bpp displays allocates a standard 216 color cube. The remaining 40 colors may be used by setting a custom color table in the QWS master process before any clients connect.</p>
 <p><i>colorTable</i> is an array of up to 40 custom colors. <i>start</i> is the starting index (0-39) and <i>numColors</i> is the number of colors to be set (1-40).</p>
@@ -565,7 +565,7 @@ body { background: #ffffff; color: black; }</style>
 <p>This method is non-portable. It is only available in Qtopia Core.</p>
 <p>See also <a href="qdecoration.html">QDecoration</a>.</p>
 <h3 class="fn"><a name="qwsSetDecoration-2"></a><a href="qdecoration.html">QDecoration</a> * QApplication::qwsSetDecoration ( const <a href="qstring.html">QString</a> &amp; <i>decoration</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Requests a <a href="qdecoration.html">QDecoration</a> object for <i>decoration</i> from the <a href="qdecorationfactory.html">QDecorationFactory</a>.</p>
 <p>The string must be one of the <a href="qstylefactory.html#keys">QStyleFactory::keys</a>().</p>
 <p>A later call to the <a href="qapplication.html">QApplication</a> constructor will override the requested style when a &quot;-style&quot; option is passed in as a commandline parameter.</p>
@@ -666,7 +666,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Note that setting the style before a palette has been set (i.e. before creating <a href="qapplication.html">QApplication</a>) will cause the application to use <a href="qstyle.html#standardPalette">QStyle::standardPalette</a>() for the palette.</p>
 <p>See also <a href="qapplication.html#style">style</a>(), <a href="qstyle.html">QStyle</a>, <a href="qapplication.html#setPalette">setPalette</a>(), and <a href="qapplication.html#desktopSettingsAware">desktopSettingsAware</a>().</p>
 <h3 class="fn"><a name="setStyle-2"></a><a href="qstyle.html">QStyle</a> * QApplication::setStyle ( const <a href="qstring.html">QString</a> &amp; <i>style</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Requests a <a href="qstyle.html">QStyle</a> object for <i>style</i> from the <a href="qstylefactory.html">QStyleFactory</a>.</p>
 <p>The string must be one of the <a href="qstylefactory.html#keys">QStyleFactory::keys</a>(), typically one of &quot;windows&quot;, &quot;motif&quot;, &quot;cde&quot;, &quot;plastique&quot;, &quot;windowsxp&quot;, or &quot;macintosh&quot;.</p>
 <p>Returns 0 if an unknown <i>style</i> is passed, otherwise the <a href="qstyle.html">QStyle</a> object returned is set as the application's GUI style.</p>
@@ -679,7 +679,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="topLevelAt"></a><a href="qwidget.html">QWidget</a> * QApplication::topLevelAt ( const <a href="qpoint.html">QPoint</a> &amp; <i>point</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns the top-level widget at the given <i>point</i>; returns 0 if there is no such widget.</p>
 <h3 class="fn"><a name="topLevelAt-2"></a><a href="qwidget.html">QWidget</a> * QApplication::topLevelAt ( int <i>x</i>, int <i>y</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns the top-level widget at the point (<i>x</i>, <i>y</i>); returns 0 if there is no such widget.</p>
 <h3 class="fn"><a name="topLevelWidgets"></a>QWidgetList QApplication::topLevelWidgets ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns a list of the top-level widgets (windows) in the application.</p>
@@ -700,7 +700,7 @@ body { background: #ffffff; color: black; }</style>
 <p>This function can be slow.</p>
 <p>See also <a href="qcursor.html#pos">QCursor::pos</a>(), <a href="qwidget.html#grabMouse">QWidget::grabMouse</a>(), and <a href="qwidget.html#grabKeyboard">QWidget::grabKeyboard</a>().</p>
 <h3 class="fn"><a name="widgetAt-4"></a><a href="qwidget.html">QWidget</a> * QApplication::widgetAt ( int <i>x</i>, int <i>y</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns the widget at global screen position (<i>x</i>, <i>y</i>), or 0 if there is no Qt widget there.</p>
 <h3 class="fn"><a name="x11EventFilter"></a>bool QApplication::x11EventFilter ( XEvent * <i>event</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p><b>Warning:</b> This virtual function is only implemented under X11.</p>
@@ -719,8 +719,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qcoreapplication.html#instance">QCoreApplication::instance</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt3Support module of the Qt Toolkit.
 **
@@ -1684,6 +1684,7 @@ bool Q3ActionGroup::addTo(QWidget *w)
                 Q3PopupMenu *menu = new Q3PopupMenu(btn, "qt_actiongroup_menu");
                 btn->setPopupDelay(0);
                 btn->setPopup(menu);
+                btn->setPopupMode(QToolButton::MenuButtonPopup);
 
                 while (it != d->actions.end()) {
                     (*it)->addTo(menu);
@@ -2039,7 +2040,7 @@ void Q3ActionGroup::childEvent(QChildEvent *e)
 /*!
     \fn void Q3ActionGroup::activated(Q3Action* action)
 
-    This signal is emitted from groups when one of it's actions gets
+    This signal is emitted from groups when one of its actions gets
     activated.
 
     The argument is the \a action which was activated.

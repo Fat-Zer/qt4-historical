@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtSVG module of the Qt Toolkit.
 **
@@ -249,8 +249,10 @@ void QSvgText::draw(QPainter *p)
             if (m_textAlignment == Qt::AlignHCenter) {
                 px = m_coord.x() - w / 2;
             }
-            else if (m_textAlignment == Qt::AlignRight)
+            else if (m_textAlignment == Qt::AlignRight) {
                 px = m_coord.x() - w;
+            }
+            initial = false;
         }
     }
     tl.endLayout();

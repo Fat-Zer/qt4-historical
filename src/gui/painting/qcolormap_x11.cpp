@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -636,3 +636,12 @@ const QVector<QColor> QColormap::colormap() const
     Returns an handle to the HPALETTE used by this colormap.  If no
     HPALETTE is being used, this function returns zero.
 */
+
+
+/*! \internal
+    \fn QColormap &QColormap::operator=(const QColormap &colormap)
+
+    Assigns the given \a colormap to \e this color map and returns
+    a reference to \e this color map.
+*/
+

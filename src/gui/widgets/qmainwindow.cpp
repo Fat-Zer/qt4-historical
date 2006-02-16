@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -718,12 +718,14 @@ QByteArray QMainWindow::saveState(int version) const
 */
 bool QMainWindow::restoreState(const QByteArray &state, int version)
 {
+    if (state.isEmpty())
+        return false;
     QByteArray sd = state;
     QDataStream stream(&sd, QIODevice::ReadOnly);
     int marker, v;
     stream >> marker;
     stream >> v;
-    if (marker != QMainWindowLayout::VersionMarker || v != version)
+    if (stream.status() != QDataStream::Ok || marker != QMainWindowLayout::VersionMarker || v != version)
         return false;
     bool restored = d_func()->layout->restoreState(stream);
     if (isVisible())

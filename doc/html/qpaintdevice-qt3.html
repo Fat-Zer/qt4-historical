@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/gui/painting/qpaintdevice_x11.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/gui/painting/qpaintdevice_x11.cpp -->
 <head>
     <title>Qt 4.1: Qt 3 Support Members for QPaintDevice</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -64,18 +64,18 @@ body { background: #ffffff; color: black; }</style>
 <pre>    unsigned long colormap = qApp-&gt;x11Info(screen).colormap();</pre>
 <p>See also <a href="qwidget.html#x11Info">QWidget::x11Info</a>() and <a href="qpixmap.html#x11Info">QPixmap::x11Info</a>().</p>
 <h3 class="fn"><a name="x11AppDefaultColormap"></a>bool QPaintDevice::x11AppDefaultColormap ( int <i>screen</i> = -1 )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Use QX11Info::isDefaultColormap() instead.</p>
+<p>Use <a href="qx11info.html#defaultColormap">QX11Info::defaultColormap</a>() instead.</p>
 <p>For example, if you have code like</p>
 <pre><font color="#404040">    bool isDefault = QPaintDevice::x11AppDefaultColormap(screen);</font></pre>
 <p>you can rewrite it as</p>
-<pre>    bool isDefault = qApp-&gt;x11Info(screen).isDefaultColormap();</pre>
+<pre>    bool isDefault = qApp-&gt;x11Info(screen).defaultColormap();</pre>
 <p>See also <a href="qwidget.html#x11Info">QWidget::x11Info</a>() and <a href="qpixmap.html#x11Info">QPixmap::x11Info</a>().</p>
 <h3 class="fn"><a name="x11AppDefaultVisual"></a>bool QPaintDevice::x11AppDefaultVisual ( int <i>screen</i> = -1 )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Use QX11Info::isDefaultVisual() instead.</p>
+<p>Use <a href="qx11info.html#defaultVisual">QX11Info::defaultVisual</a>() instead.</p>
 <p>For example, if you have code like</p>
 <pre><font color="#404040">    bool isDefault = QPaintDevice::x11AppDefaultVisual(screen);</font></pre>
 <p>you can rewrite it as</p>
-<pre>    bool isDefault = qApp-&gt;x11Info(screen).isDefaultVisual();</pre>
+<pre>    bool isDefault = qApp-&gt;x11Info(screen).defaultVisual();</pre>
 <p>See also <a href="qwidget.html#x11Info">QWidget::x11Info</a>() and <a href="qpixmap.html#x11Info">QPixmap::x11Info</a>().</p>
 <h3 class="fn"><a name="x11AppDepth"></a>int QPaintDevice::x11AppDepth ( int <i>screen</i> = -1 )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Use <a href="qx11info.html#depth">QX11Info::depth</a>() instead.</p>
@@ -92,21 +92,25 @@ body { background: #ffffff; color: black; }</style>
 <pre>    Display *display = qApp-&gt;x11Info().display();</pre>
 <p>See also <a href="qwidget.html#x11Info">QWidget::x11Info</a>() and <a href="qpixmap.html#x11Info">QPixmap::x11Info</a>().</p>
 <h3 class="fn"><a name="x11AppDpiX"></a>int QPaintDevice::x11AppDpiX ( int <i>screen</i> = -1 )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Use QX11Info::dpiX() instead.</p>
+<p>Use <a href="qx11info.html#appDpiX">QX11Info::appDpiX</a>() instead.</p>
 <p>For example, if you have code like</p>
 <pre><font color="#404040">    bool isDefault = QPaintDevice::x11AppDpiX(screen);</font></pre>
 <p>you can rewrite it as</p>
-<pre>    bool isDefault = qApp-&gt;x11Info(screen).dpiX();</pre>
+<pre>    bool isDefault = qApp-&gt;x11Info(screen).appDpiX();</pre>
 <p>See also <a href="qwidget.html#x11Info">QWidget::x11Info</a>() and <a href="qpixmap.html#x11Info">QPixmap::x11Info</a>().</p>
 <h3 class="fn"><a name="x11AppDpiY"></a>int QPaintDevice::x11AppDpiY ( int <i>screen</i> = -1 )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Returns the vertical DPI of the X11 display (X11 only) for screen <i>screen</i>. Using this function is not portable. Using this function is not portable.</p>
-<p>See also <a href="qpaintdevice-qt3.html#x11AppDpiX">x11AppDpiX</a>(), <a href="qpaintdevice-qt3.html#x11SetAppDpiY">x11SetAppDpiY</a>(), and <a href="qpaintdevice.html#logicalDpiY">logicalDpiY</a>().</p>
+<p>Use <a href="qx11info.html#appDpiY">QX11Info::appDpiY</a>() instead.</p>
+<p>For example, if you have code like</p>
+<pre><font color="#404040">    bool isDefault = QPaintDevice::x11AppDpiY(screen);</font></pre>
+<p>you can rewrite it as</p>
+<pre>    bool isDefault = qApp-&gt;x11Info(screen).appDpiY();</pre>
+<p>See also <a href="qwidget.html#x11Info">QWidget::x11Info</a>() and <a href="qpixmap.html#x11Info">QPixmap::x11Info</a>().</p>
 <h3 class="fn"><a name="x11AppRootWindow"></a><a href="qt.html#HANDLE-typedef">Qt::HANDLE</a> QPaintDevice::x11AppRootWindow ( int <i>screen</i> = -1 )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Use QX11Info::rootWindow() instead.</p>
+<p>Use <a href="qx11info.html#appRootWindow">QX11Info::appRootWindow</a>() instead.</p>
 <p>For example, if you have code like</p>
 <pre><font color="#404040">    unsigned long window = QPaintDevice::x11AppRootWindow(screen);</font></pre>
 <p>you can rewrite it as</p>
-<pre>    unsigned long window = qApp-&gt;x11Info(screen).rootWindow();</pre>
+<pre>    unsigned long window = qApp-&gt;x11Info(screen).appRootWindow();</pre>
 <p>See also <a href="qwidget.html#x11Info">QWidget::x11Info</a>() and <a href="qpixmap.html#x11Info">QPixmap::x11Info</a>().</p>
 <h3 class="fn"><a name="x11AppScreen"></a>int QPaintDevice::x11AppScreen ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Use <a href="qx11info.html#screen">QX11Info::screen</a>() instead.</p>
@@ -137,18 +141,18 @@ body { background: #ffffff; color: black; }</style>
 <pre>    unsigned long screen = widget-&gt;x11Info().colormap();</pre>
 <p>See also <a href="qwidget.html#x11Info">QWidget::x11Info</a>() and <a href="qpixmap.html#x11Info">QPixmap::x11Info</a>().</p>
 <h3 class="fn"><a name="x11DefaultColormap"></a>bool QPaintDevice::x11DefaultColormap () const</h3>
-<p>Use QX11Info::isDefaultColormap() instead.</p>
+<p>Use <a href="qx11info.html#defaultColormap">QX11Info::defaultColormap</a>() instead.</p>
 <p>For example, if you have code like</p>
 <pre><font color="#404040">    bool isDefault = widget-&gt;x11DefaultColormap();</font></pre>
 <p>you can rewrite it as</p>
-<pre>    bool isDefault = widget-&gt;x11Info().isDefaultColormap();</pre>
+<pre>    bool isDefault = widget-&gt;x11Info().defaultColormap();</pre>
 <p>See also <a href="qwidget.html#x11Info">QWidget::x11Info</a>() and <a href="qpixmap.html#x11Info">QPixmap::x11Info</a>().</p>
 <h3 class="fn"><a name="x11DefaultVisual"></a>bool QPaintDevice::x11DefaultVisual () const</h3>
-<p>Use QX11Info::isDefaultVisual() instead.</p>
+<p>Use <a href="qx11info.html#defaultVisual">QX11Info::defaultVisual</a>() instead.</p>
 <p>For example, if you have code like</p>
 <pre><font color="#404040">    bool isDefault = widget-&gt;x11DefaultVisual();</font></pre>
 <p>you can rewrite it as</p>
-<pre>    bool isDefault = widget-&gt;x11Info().isDefaultVisual();</pre>
+<pre>    bool isDefault = widget-&gt;x11Info().defaultVisual();</pre>
 <p>See also <a href="qwidget.html#x11Info">QWidget::x11Info</a>() and <a href="qpixmap.html#x11Info">QPixmap::x11Info</a>().</p>
 <h3 class="fn"><a name="x11Depth"></a>int QPaintDevice::x11Depth () const</h3>
 <p>Use <a href="qx11info.html#depth">QX11Info::depth</a>() instead.</p>
@@ -172,9 +176,9 @@ body { background: #ffffff; color: black; }</style>
 <pre>    int screen = widget-&gt;x11Info().screen();</pre>
 <p>See also <a href="qwidget.html#x11Info">QWidget::x11Info</a>() and <a href="qpixmap.html#x11Info">QPixmap::x11Info</a>().</p>
 <h3 class="fn"><a name="x11SetAppDpiX"></a>void QPaintDevice::x11SetAppDpiX ( int <i>dpi</i>, int <i>screen</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Use QX11Info::setDpiX() instead.</p>
+<p>Use <a href="qx11info.html#setAppDpiX">QX11Info::setAppDpiX</a>() instead.</p>
 <h3 class="fn"><a name="x11SetAppDpiY"></a>void QPaintDevice::x11SetAppDpiY ( int <i>dpi</i>, int <i>screen</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Use QX11Info::setDpiY() instead.</p>
+<p>Use <a href="qx11info.html#setAppDpiY">QX11Info::setAppDpiY</a>() instead.</p>
 <h3 class="fn"><a name="x11Visual"></a>void * QPaintDevice::x11Visual () const</h3>
 <p>Use <a href="qx11info.html#visual">QX11Info::visual</a>() instead.</p>
 <p>For example, if you have code like</p>
@@ -184,8 +188,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qwidget.html#x11Info">QWidget::x11Info</a>() and <a href="qpixmap.html#x11Info">QPixmap::x11Info</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

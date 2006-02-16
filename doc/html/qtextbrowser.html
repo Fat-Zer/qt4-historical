@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/gui/widgets/qtextbrowser.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/gui/widgets/qtextbrowser.cpp -->
 <head>
     <title>Qt 4.1: QTextBrowser Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -26,7 +26,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <a name="properties"></a>
 <h3>Properties</h3>
-<table width="100%" border="0" cellpadding="0" cellspacing="0">
+<p><table width="100%" border="0" cellpadding="0" cellspacing="0">
 <tr><td width="45%" valign="top"><ul>
 <li><div class="fn"/><b><a href="qtextbrowser.html#modified-prop">modified</a></b> : const bool</li>
 <li><div class="fn"/><b><a href="qtextbrowser.html#readOnly-prop">readOnly</a></b> : const bool</li>
@@ -36,7 +36,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="qtextbrowser.html#undoRedoEnabled-prop">undoRedoEnabled</a></b> : const bool</li>
 </ul>
 </td></tr>
-</table>
+</table></p>
 <ul>
 <li><div class="fn"/>12 properties inherited from <a href="qtextedit.html#properties">QTextEdit</a></li>
 <li><div class="fn"/>2 properties inherited from <a href="qabstractscrollarea.html#properties">QAbstractScrollArea</a></li>
@@ -59,7 +59,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>13 public functions inherited from <a href="qframe.html#public-functions">QFrame</a></li>
 <li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
-<li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <a name="public-slots"></a>
 <h3>Public Slots</h3>
@@ -100,6 +100,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>17 protected functions inherited from <a href="qabstractscrollarea.html#protected-functions">QAbstractScrollArea</a></li>
 <li><div class="fn"/>39 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
+<li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
 </ul>
 <h3>Additional Inherited Members</h3>
 <ul>
@@ -162,28 +163,28 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="highlighted"></a>void QTextBrowser::highlighted ( const <a href="qurl.html">QUrl</a> &amp; <i>link</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when the user has selected but not activated an anchor in the document. The URL referred to by the anchor is passed in <i>link</i>.</p>
 <h3 class="fn"><a name="highlighted-2"></a>void QTextBrowser::highlighted ( const <a href="qstring.html">QString</a> &amp; <i>link</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Convenience signal that allows connecting to a slot that takes just a <a href="qstring.html">QString</a>, like for example <a href="qstatusbar.html">QStatusBar</a>'s message().</p>
 <h3 class="fn"><a name="home"></a>void QTextBrowser::home ()&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Changes the document displayed to be the first document the browser displayed.</p>
 <h3 class="fn"><a name="keyPressEvent"></a>void QTextBrowser::keyPressEvent ( <a href="qkeyevent.html">QKeyEvent</a> * <i>ev</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>The event <i>ev</i> is used to provide the following keyboard shortcuts:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Keypress</th><th>Action</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>Alt+Left Arrow</td><td><a href="qtextbrowser.html#backward">backward</a>()</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>Alt+Right Arrow</td><td><a href="qtextbrowser.html#forward">forward</a>()</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>Alt+Up Arrow</td><td><a href="qtextbrowser.html#home">home</a>()</td></tr>
-</table>
+</table></p>
 <p>Reimplemented from <a href="qwidget.html#keyPressEvent">QWidget</a>.</p>
 <h3 class="fn"><a name="loadResource"></a><a href="qvariant.html">QVariant</a> QTextBrowser::loadResource ( int <i>type</i>, const <a href="qurl.html">QUrl</a> &amp; <i>name</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>This function is called when the document is loaded. The <i>type</i> indicates the type of resource to be loaded. For each image in the document, this function is called once.</p>
 <p>The default implementation ignores <i>type</i> and tries to locate the resources by interpreting <i>name</i> as a file name. If it is not an absolute path it tries to find the file in the paths of the <a href="qtextbrowser.html#searchPaths-prop">searchPaths</a> property and in the same directory as the current source. On success, the result is a <a href="qvariant.html">QVariant</a> that stores a <a href="qbytearray.html">QByteArray</a> with the contents of the file.</p>
 <p>If you reimplement this function, you can return other <a href="qvariant.html">QVariant</a> types. The table below shows which variant types are supported depending on the resource type:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>ResourceType</th><th><a href="qvariant.html#Type-enum">QVariant::Type</a></th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qtextdocument.html#ResourceType-enum">QTextDocument::HtmlResource</a></td><td><a href="qstring.html">QString</a> or <a href="qbytearray.html">QByteArray</a></td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qtextdocument.html#ResourceType-enum">QTextDocument::ImageResource</a></td><td><a href="qimage.html">QImage</a>, <a href="qpixmap.html">QPixmap</a> or <a href="qbytearray.html">QByteArray</a></td></tr>
-</table>
+</table></p>
 <p>Reimplemented from <a href="qtextedit.html#loadResource">QTextEdit</a>.</p>
 <h3 class="fn"><a name="reload"></a>void QTextBrowser::reload ()&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Reloads the current set source.</p>
@@ -192,8 +193,8 @@ body { background: #ffffff; color: black; }</style>
 <p>Source changes happen both programmatically when calling <a href="qtextbrowser.html#source-prop">setSource</a>(), <a href="qtextbrowser.html#forward">forward</a>(), backword() or <a href="qtextbrowser.html#home">home</a>() or when the user clicks on links or presses the equivalent key sequences.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt Designer of the Qt Toolkit.
 **
@@ -116,6 +116,9 @@ QDesignerPropertySheet::QDesignerPropertySheet(QObject *object, QObject *parent)
 
     if (qobject_cast<QDialog*>(object)) {
         createFakeProperty(QLatin1String("modal"));
+    }
+    if (qobject_cast<QDockWidget*>(object)) {
+        createFakeProperty(QLatin1String("floating"));
     }
 }
 

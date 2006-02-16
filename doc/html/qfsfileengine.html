@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/corelib/io/qfsfileengine.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/corelib/io/qfsfileengine.cpp -->
 <head>
     <title>Qt 4.1: QFSFileEngine Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -72,7 +72,8 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="dtor.QFSFileEngine"></a>QFSFileEngine::~QFSFileEngine ()</h3>
 <p>Destructs the <a href="qfsfileengine.html">QFSFileEngine</a>.</p>
 <h3 class="fn"><a name="currentPath"></a><a href="qstring.html">QString</a> QFSFileEngine::currentPath ( const <a href="qstring.html">QString</a> &amp; <i>fileName</i> = QString() )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Returns the current path of the file engine.</p>
+<p>Returns the canonicalized form of the current path used by the file engine for the drive specified by <i>fileName</i>.</p>
+<p>On Windows, each drive has its own current directory, so a different path is returned for file names that include different drive names (e.g. A: or C:).</p>
 <p>See also <a href="qfsfileengine.html#setCurrentPath">setCurrentPath</a>().</p>
 <h3 class="fn"><a name="drives"></a>QFileInfoList QFSFileEngine::drives ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns the list of drives in the file system as a list of <a href="qfileinfo.html">QFileInfo</a> objects. On unix and Mac OS X, only the root path is returned. On Windows, this function returns all drives (A:, C:, D:, etc.).</p>
@@ -82,10 +83,10 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the home path of the current user.</p>
 <p>See also <a href="qfsfileengine.html#rootPath">rootPath</a>().</p>
 <h3 class="fn"><a name="open-2"></a>bool QFSFileEngine::open ( <a href="qiodevice.html#OpenModeFlag-enum">QIODevice::OpenMode</a> <i>flags</i>, FILE * <i>fh</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Opens the file handle <i>fh</i> using the open mode <i>flags</i>.</p>
 <h3 class="fn"><a name="open-3"></a>bool QFSFileEngine::open ( <a href="qiodevice.html#OpenModeFlag-enum">QIODevice::OpenMode</a> <i>flags</i>, int <i>fd</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Opens the file descriptor <i>fd</i> to the file engine, using the open mode <i>flags</i>.</p>
 <h3 class="fn"><a name="ownerId"></a><a href="qtglobal.html#uint-typedef">uint</a> QFSFileEngine::ownerId ( <a href="qabstractfileengine.html#FileOwner-enum">QAbstractFileEngine::FileOwner</a> ) const</h3>
 <h3 class="fn"><a name="rootPath"></a><a href="qstring.html">QString</a> QFSFileEngine::rootPath ()&nbsp;&nbsp;<tt> [static]</tt></h3>
@@ -98,8 +99,8 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the temporary path (i.e., a path in which it is safe to store temporary files).</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

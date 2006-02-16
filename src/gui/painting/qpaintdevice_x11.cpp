@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -37,26 +37,87 @@
     \ingroup multimedia
 
     A paint device is an abstraction of a two-dimensional space that
-    can be drawn using a QPainter. The drawing capabilities are
-    implemented by the subclasses QWidget, QPixmap, QPicture, QImage, and
-    QPrinter.
+    can be drawn using a QPainter.  Its default coordinate system has
+    its origin located at the top-left position. X increases to the
+    right and Y increases downwards. The unit is one pixel.
 
-    The default coordinate system of a paint device has its origin
-    located at the top-left position. X increases to the right and Y
-    increases downward. The unit is one pixel. There are several ways
-    to set up a user-defined coordinate system using the painter, for
-    example, using QPainter::setMatrix().
+    The drawing capabilities of QPaintDevice are currently implemented
+    by the QWidget, QPixmap, QPicture, QImage, and QPrinter
+    subclasses.
+
+    To implement support for a new backend, you must derive from
+    QPaintDevice and reimplement the virtual paintEngine() function to
+    tell QPainter which paint engine should be used to draw on this
+    particular device. Note that you also must create a corresponding
+    paint engine to be able to draw on the device, i.e derive from
+    QPaintEngine and reimplement its virtual functions.
 
     \warning Qt requires that a QApplication object exists before
     any paint devices can be created. Paint devices access window
     system resources, and these resources are not initialized before
     an application object is created.
+
+    The QPaintDevice class provides several functions returning the
+    various device metrics: The depth() function returns its bit depth
+    (number of bit planes). The height() function returns its height
+    in default coordinate system units (e.g. pixels for QPixmap and
+    QWidget) while heightMM() returns the height of the device in
+    millimeters. Similiarily, the width() and widthMM() functions
+    return the width of the device in default coordinate system units
+    and in millimeters, respectively. Alternatively, the protected
+    metric() function can be used to retrieve the metric information
+    by specifying the desired PaintDeviceMetric as argument.
+
+    The logicalDpiX() and logicalDpiY() functions return the
+    horizontal and vertical resolution of the device in dots per
+    inch. The physicalDpiX() and physicalDpiY() functions also return
+    the resolution of the device in dots per inch, but note that if
+    the logical and vertical resolution differ, the corresponding
+    QPaintEngine must handle the mapping. Finally, the numColors()
+    function returns the number of different colors available for the
+    paint device.
+
+    \sa QPaintEngine, QPainter, {The Coordinate System}
 */
 
 /*!
     \enum QPaintDevice::PaintDeviceMetric
 
-    \internal
+    Describes the various metrics of a paint device.
+
+    \value PdmWidth The width of the paint device in default
+    coordinate system units (e.g. pixels for QPixmap and QWidget). See
+    also width().
+
+    \value PdmHeight The height of the paint device in default
+    coordinate system units (e.g. pixels for QPixmap and QWidget). See
+    also height().
+
+    \value PdmWidthMM The width of the paint device in millimeters. See
+    also widthMM().
+
+    \value PdmHeightMM  The height of the paint device in millimeters. See
+    also heightMM().
+
+    \value PdmNumColors The number of different colors available for
+    the paint device. See also numColors().
+
+    \value PdmDepth The bit depth (number of bit planes) of the paint
+    device. See also depth().
+
+    \value PdmDpiX The horizontal resolution of the device in dots per
+    inch. See also logicalDpiX().
+
+    \value PdmDpiY  The vertical resolution of the device in dots per inch. See
+    also logicalDpiY().
+
+    \value PdmPhysicalDpiX The horizontal resolution of the device in
+    dots per inch. See also physicalDpiX().
+
+    \value PdmPhysicalDpiY The vertical resolution of the device in
+    dots per inch. See also physicalDpiY().
+
+    \sa metric()
 */
 
 /*!
@@ -142,10 +203,11 @@ const Q_GUI_EXPORT QX11Info *qt_x11Info(const QPaintDevice *pd)
 }
 
 /*!
-    \internal
+    \fn int QPaintDevice::metric(PaintDeviceMetric metric) const
 
-    Internal virtual function that returns paint device metrics.
+    Returns the metric information for  the given paint device \a metric.
 
+    \sa PaintDeviceMetric
 */
 
 int QPaintDevice::metric(PaintDeviceMetric) const
@@ -270,12 +332,12 @@ Qt::HANDLE QPaintDevice::x11Colormap() const
 }
 
 /*!
-    Use QX11Info::isDefaultColormap() instead.
+    Use QX11Info::defaultColormap() instead.
 
     \oldcode
         bool isDefault = widget->x11DefaultColormap();
     \newcode
-        bool isDefault = widget->x11Info().isDefaultColormap();
+        bool isDefault = widget->x11Info().defaultColormap();
     \endcode
 
     \sa QWidget::x11Info(), QPixmap::x11Info()
@@ -289,12 +351,12 @@ bool QPaintDevice::x11DefaultColormap() const
 }
 
 /*!
-    Use QX11Info::isDefaultVisual() instead.
+    Use QX11Info::defaultVisual() instead.
 
     \oldcode
         bool isDefault = widget->x11DefaultVisual();
     \newcode
-        bool isDefault = widget->x11Info().isDefaultVisual();
+        bool isDefault = widget->x11Info().defaultVisual();
     \endcode
 
     \sa QWidget::x11Info(), QPixmap::x11Info()
@@ -392,12 +454,12 @@ int QPaintDevice::x11AppCells(int screen)
 { return QX11Info::appCells(screen); }
 
 /*!
-    Use QX11Info::rootWindow() instead.
+    Use QX11Info::appRootWindow() instead.
 
     \oldcode
         unsigned long window = QPaintDevice::x11AppRootWindow(screen);
     \newcode
-        unsigned long window = qApp->x11Info(screen).rootWindow();
+        unsigned long window = qApp->x11Info(screen).appRootWindow();
     \endcode
 
     \sa QWidget::x11Info(), QPixmap::x11Info()
@@ -406,12 +468,12 @@ Qt::HANDLE QPaintDevice::x11AppRootWindow(int screen)
 { return QX11Info::appRootWindow(screen); }
 
 /*!
-    Use QX11Info::isDefaultColormap() instead.
+    Use QX11Info::defaultColormap() instead.
 
     \oldcode
         bool isDefault = QPaintDevice::x11AppDefaultColormap(screen);
     \newcode
-        bool isDefault = qApp->x11Info(screen).isDefaultColormap();
+        bool isDefault = qApp->x11Info(screen).defaultColormap();
     \endcode
 
     \sa QWidget::x11Info(), QPixmap::x11Info()
@@ -420,12 +482,12 @@ bool QPaintDevice::x11AppDefaultColormap(int screen)
 { return QX11Info::appDefaultColormap(screen); }
 
 /*!
-    Use QX11Info::isDefaultVisual() instead.
+    Use QX11Info::defaultVisual() instead.
 
     \oldcode
         bool isDefault = QPaintDevice::x11AppDefaultVisual(screen);
     \newcode
-        bool isDefault = qApp->x11Info(screen).isDefaultVisual();
+        bool isDefault = qApp->x11Info(screen).defaultVisual();
     \endcode
 
     \sa QWidget::x11Info(), QPixmap::x11Info()
@@ -434,7 +496,7 @@ bool QPaintDevice::x11AppDefaultVisual(int screen)
 { return QX11Info::appDefaultVisual(screen); }
 
 /*!
-    Use QX11Info::setDpiX() instead.
+    Use QX11Info::setAppDpiX() instead.
 */
 void QPaintDevice::x11SetAppDpiX(int dpi, int screen)
 {
@@ -442,7 +504,7 @@ void QPaintDevice::x11SetAppDpiX(int dpi, int screen)
 }
 
 /*!
-    Use QX11Info::setDpiY() instead.
+    Use QX11Info::setAppDpiY() instead.
 */
 void QPaintDevice::x11SetAppDpiY(int dpi, int screen)
 {
@@ -451,12 +513,12 @@ void QPaintDevice::x11SetAppDpiY(int dpi, int screen)
 
 
 /*!
-    Use QX11Info::dpiX() instead.
+    Use QX11Info::appDpiX() instead.
 
     \oldcode
         bool isDefault = QPaintDevice::x11AppDpiX(screen);
     \newcode
-        bool isDefault = qApp->x11Info(screen).dpiX();
+        bool isDefault = qApp->x11Info(screen).appDpiX();
     \endcode
 
     \sa QWidget::x11Info(), QPixmap::x11Info()
@@ -467,11 +529,15 @@ int QPaintDevice::x11AppDpiX(int screen)
 }
 
 /*!
-    Returns the vertical DPI of the X11 display (X11 only) for screen
-    \a screen.  Using this function is not portable.
-    Using this function is not portable.
+    Use QX11Info::appDpiY() instead.
 
-    \sa x11AppDpiX(), x11SetAppDpiY(), logicalDpiY()
+    \oldcode
+        bool isDefault = QPaintDevice::x11AppDpiY(screen);
+    \newcode
+        bool isDefault = qApp->x11Info(screen).appDpiY();
+    \endcode
+
+    \sa QWidget::x11Info(), QPixmap::x11Info()
 */
 int QPaintDevice::x11AppDpiY(int screen)
 {
@@ -485,6 +551,8 @@ int QPaintDevice::x11AppDpiY(int screen)
 
     Returns the width of the paint device in default coordinate system
     units (e.g. pixels for QPixmap and QWidget).
+
+    \sa widthMM()
 */
 
 /*!
@@ -492,18 +560,24 @@ int QPaintDevice::x11AppDpiY(int screen)
 
     Returns the height of the paint device in default coordinate
     system units (e.g. pixels for QPixmap and QWidget).
+
+    \sa heightMM()
 */
 
 /*!
     \fn int QPaintDevice::widthMM() const
 
     Returns the width of the paint device in millimeters.
+
+    \sa width()
 */
 
 /*!
     \fn int QPaintDevice::heightMM() const
 
     Returns the height of the paint device in millimeters.
+
+    \sa height()
 */
 
 /*!
@@ -528,6 +602,11 @@ int QPaintDevice::x11AppDpiY(int screen)
     which is used when computing font sizes. For X11, this is usually
     the same as could be computed from widthMM(), but it varies on
     Windows.
+
+    Note that if the logicalDpiX() doesn't equal the physicalDpiX(),
+    the corresponding QPaintEngine must handle the resolution mapping.
+
+    \sa logicalDpiY(), physicalDpiX()
 */
 
 /*!
@@ -537,14 +616,32 @@ int QPaintDevice::x11AppDpiY(int screen)
     which is used when computing font sizes. For X11, this is usually
     the same as could be computed from heightMM(), but it varies on
     Windows.
+
+    Note that if the logicalDpiY() doesn't equal the physicalDpiY(),
+    the corresponding QPaintEngine must handle the resolution mapping.
+
+    \sa  logicalDpiX(), physicalDpiY()
 */
 
 /*!
     \fn int QPaintDevice::physicalDpiX() const
-    \internal
+
+    Returns the horizontal resolution of the device in dots per inch.
+
+    Note that if the physicalDpiX() doesn't equal the logicalDpiX(),
+    the corresponding QPaintEngine must handle the resolution mapping.
+
+    \sa  physicalDpiY(),  logicalDpiX()
 */
+
 /*!
     \fn int QPaintDevice::physicalDpiY() const
-    \internal
+
+    Returns the horizontal resolution of the device in dots per inch.
+
+    Note that if the physicalDpiY() doesn't equal the logicalDpiY(),
+    the corresponding QPaintEngine must handle the resolution mapping.
+
+    \sa  physicalDpiX(),  logicalDpiY()
 */
 

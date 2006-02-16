@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/doc/src/examples/activeqt/opengl.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/doc/src/examples/activeqt/opengl.qdoc -->
 <head>
     <title>Qt 4.1: OpenGL Example (ActiveQt)</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -29,9 +29,38 @@ body { background: #ffffff; color: black; }</style>
 <p>The OpenGL example demonstrates the use of the default factory and <a href="qaxfactory.html#isServer">QAxFactory::isServer</a>(), and the implementation of an additional COM interface using <a href="qaxbindable.html">QAxBindable</a> and <a href="qaxaggregated.html">QAxAggregated</a>. The server executable can run both as an ActiveX server and as a stand-alone application.</p>
 <p>The ActiveX control in this example uses the QGlWidget class in Qt to render an OpenGL scene in an ActiveX. The control exposes a few methods to change the scene.</p>
 <p>The application uses the default factory as provided by the QAXFACTORY_DEFAULT macro to expose the <tt>GLBox</tt> widget as an ActiveX control.</p>
-<pre></pre>
+<pre>&nbsp;   #include &lt;QAxFactory&gt;
+
+    QAXFACTORY_DEFAULT( GLBox,
+                        &quot;{5fd9c22e-ed45-43fa-ba13-1530bb6b03e0}&quot;,
+                        &quot;{33b051af-bb25-47cf-a390-5cfd2987d26a}&quot;,
+                        &quot;{8c996c29-eafa-46ac-a6f9-901951e765b5}&quot;,
+                        &quot;{2c3c183a-eeda-41a4-896e-3d9c12c3577d}&quot;,
+                        &quot;{83e16271-6480-45d5-aaf1-3f40b7661ae4}&quot;
+                      )</pre>
 <p>The implementation of <tt>main</tt> initializes the <a href="qapplication.html">QApplication</a> object, and uses <tt>QAxFactory::isServer()</tt> to determine whether or not it is appropriate to create and show the application interface.</p>
-<pre></pre>
+<pre>&nbsp;   /*
+      The main program is here.
+    */
+
+    int main( int argc, char **argv )
+    {
+        QApplication::setColorSpec( QApplication::CustomColor );
+        QApplication a(argc,argv);
+
+        if ( !QGLFormat::hasOpenGL() ) {
+            qWarning( &quot;This system has no OpenGL support. Exiting.&quot; );
+            return -1;
+        }
+
+        if ( !QAxFactory::isServer() ) {
+            GLObjectWindow w;
+            w.resize( 400, 350 );
+            w.show();
+            return a.exec();
+        }
+        return a.exec();
+    }</pre>
 <p>The <tt>GLBox</tt> class inherits from both the <a href="qglwidget.html">QGLWidget</a> class to be able to render OpenGL, and from <a href="qaxbindable.html">QAxBindable</a>.</p>
 <pre>&nbsp;   #include &lt;QAxBindable&gt;
 
@@ -119,8 +148,8 @@ body { background: #ffffff; color: black; }</style>
     &lt;/form&gt;</pre>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

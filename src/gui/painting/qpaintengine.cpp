@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -29,8 +29,9 @@
 #include "qapplication.h"
 #include <qdebug.h>
 #include <private/qtextengine_p.h>
-
 #include <qvarlengtharray.h>
+
+#include <math.h>
 
 qreal QTextItem::descent() const
 {
@@ -370,8 +371,7 @@ void QPaintEngine::drawPoints(const QPoint *points, int pointCount)
 void QPaintEngine::drawEllipse(const QRectF &rect)
 {
     QPainterPath path;
-    path.moveTo(rect.x() + rect.width(), rect.y() + rect.height()/2);
-    path.arcTo(rect, 0, 360);
+    path.addEllipse(rect);
     if (hasFeature(PainterPaths)) {
         drawPath(path);
     } else {
@@ -487,9 +487,15 @@ void QPaintEngine::drawTiledPixmap(const QRectF &rect, const QPixmap &pixmap, co
 void QPaintEngine::drawImage(const QRectF &r, const QImage &image, const QRectF &sr,
                              Qt::ImageConversionFlags flags)
 {
-    QImage im = image.depth() == 1 ? image.convertToFormat(QImage::Format_RGB32) : image;
+    QRectF baseSize(0, 0, image.width(), image.height());
+    QImage im = image;
+    if (baseSize != sr)
+        im = im.copy((int)floor(sr.x()), (int)floor(sr.y()),
+                     (int)ceil(sr.width()), (int)ceil(sr.height()));
+    if (im.depth() == 1)
+        im = im.convertToFormat(QImage::Format_RGB32);
     QPixmap pm = QPixmap::fromImage(im, flags);
-    drawPixmap(r, pm, sr);
+    drawPixmap(r, pm, QRectF(QPointF(0, 0), pm.size()));
 }
 
 /*!
@@ -610,7 +616,9 @@ void QPaintEngine::drawTextItem(const QPointF &p, const QTextItem &textItem)
     const QTextItemInt &ti = static_cast<const QTextItemInt &>(textItem);
 
     QPainterPath path;
+    QPainterPath effects;
     path.setFillRule(Qt::WindingFill);
+    effects.setFillRule(Qt::WindingFill);
     if (ti.num_glyphs)
         ti.fontEngine->addOutlineToPath(p.x(), p.y(), ti.glyphs, ti.num_glyphs, &path, ti.flags);
     if (ti.flags) {
@@ -618,23 +626,24 @@ void QPaintEngine::drawTextItem(const QPointF &p, const QTextItem &textItem)
         const qreal lw = fe->lineThickness().toReal();
         if (ti.flags & QTextItem::Underline) {
             qreal pos = fe->underlinePosition().toReal();
-            path.addRect(p.x(), p.y() + pos, ti.width.toReal(), lw);
+            effects.addRect(p.x(), p.y() + pos, ti.width.toReal(), lw);
         }
         if (ti.flags & QTextItem::Overline) {
             qreal pos = fe->ascent().toReal() + 1;
-            path.addRect(p.x(), p.y() - pos, ti.width.toReal(), lw);
+            effects.addRect(p.x(), p.y() - pos, ti.width.toReal(), lw);
         }
         if (ti.flags & QTextItem::StrikeOut) {
             qreal pos = fe->ascent().toReal() / 3;
-            path.addRect(p.x(), p.y() - pos, ti.width.toReal(), lw);
+            effects.addRect(p.x(), p.y() - pos, ti.width.toReal(), lw);
         }
     }
     if (!path.isEmpty()) {
         painter()->save();
-        painter()->setRenderHint(QPainter::Antialiasing, true);
+        painter()->setRenderHint(QPainter::Antialiasing, bool(painter()->renderHints() & QPainter::TextAntialiasing));
         painter()->setBrush(state->pen().brush());
         painter()->setPen(Qt::NoPen);
         painter()->drawPath(path);
+        painter()->drawPath(effects);
         painter()->restore();
     }
 }

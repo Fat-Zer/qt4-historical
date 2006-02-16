@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/opengl/qgl.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/opengl/qgl.cpp -->
 <head>
     <title>Qt 4.1: QGLWidget Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -59,7 +59,7 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
-<li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <a name="public-slots"></a>
 <h3>Public Slots</h3>
@@ -100,6 +100,7 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/>39 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
+<li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
 </ul>
 <h3>Additional Inherited Members</h3>
 <ul>
@@ -213,11 +214,11 @@ body { background: #ffffff; color: black; }</style>
 <p>Calls QGLContext:::bindTexture(<i>image</i>, <i>target</i>, <i>format</i>) on the currently set context.</p>
 <p>See also <a href="qglwidget.html#deleteTexture">deleteTexture</a>().</p>
 <h3 class="fn"><a name="bindTexture-2"></a>GLuint QGLWidget::bindTexture ( const <a href="qpixmap.html">QPixmap</a> &amp; <i>pixmap</i>, GLenum <i>target</i> = GL_TEXTURE_2D, GLint <i>format</i> = GL_RGBA8 )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Calls QGLContext:::bindTexture(<i>pixmap</i>, <i>target</i>, <i>format</i>) on the currently set context.</p>
 <p>See also <a href="qglwidget.html#deleteTexture">deleteTexture</a>().</p>
 <h3 class="fn"><a name="bindTexture-3"></a>GLuint QGLWidget::bindTexture ( const <a href="qstring.html">QString</a> &amp; <i>fileName</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Calls QGLContext::bindTexture(<i>fileName</i>) on the currently set context.</p>
 <p>See also <a href="qglwidget.html#deleteTexture">deleteTexture</a>().</p>
 <h3 class="fn"><a name="colormap"></a>const <a href="qglcolormap.html">QGLColormap</a> &amp; QGLWidget::colormap () const</h3>
@@ -284,26 +285,23 @@ body { background: #ffffff; color: black; }</style>
 <p>This virtual function is used in the same manner as <a href="qglwidget.html#paintGL">paintGL</a>() except that it operates on the widget's overlay context instead of the widget's main context. This means that paintOverlayGL() is called whenever the widget's overlay needs to be painted. Reimplement it in a subclass.</p>
 <p>There is no need to call <a href="qglwidget.html#makeOverlayCurrent">makeOverlayCurrent</a>() because this has already been done when this function is called.</p>
 <h3 class="fn"><a name="qglClearColor"></a>void QGLWidget::qglClearColor ( const <a href="qcolor.html">QColor</a> &amp; <i>c</i> ) const</h3>
-<p>Convenience function for specifying the clearing color to OpenGL. Calls glClearColor (in RGBA mode) or glClearIndex (in color-index mode) with the color <i>c</i>. Applies to the current GL context.</p>
+<p>Convenience function for specifying the clearing color to OpenGL. Calls glClearColor (in RGBA mode) or glClearIndex (in color-index mode) with the color <i>c</i>. Applies to this widgets GL context.</p>
 <p>See also <a href="qglwidget.html#qglColor">qglColor</a>(), <a href="qglcontext.html#currentContext">QGLContext::currentContext</a>(), and <a href="qcolor.html">QColor</a>.</p>
 <h3 class="fn"><a name="qglColor"></a>void QGLWidget::qglColor ( const <a href="qcolor.html">QColor</a> &amp; <i>c</i> ) const</h3>
-<p>Convenience function for specifying a drawing color to OpenGL. Calls glColor4 (in RGBA mode) or glIndex (in color-index mode) with the color <i>c</i>. Applies to the current GL context.</p>
+<p>Convenience function for specifying a drawing color to OpenGL. Calls glColor4 (in RGBA mode) or glIndex (in color-index mode) with the color <i>c</i>. Applies to this widgets GL context.</p>
 <p>See also <a href="qglwidget.html#qglClearColor">qglClearColor</a>(), <a href="qglcontext.html#currentContext">QGLContext::currentContext</a>(), and <a href="qcolor.html">QColor</a>.</p>
 <h3 class="fn"><a name="renderPixmap"></a><a href="qpixmap.html">QPixmap</a> QGLWidget::renderPixmap ( int <i>w</i> = 0, int <i>h</i> = 0, bool <i>useContext</i> = false )</h3>
 <p>Renders the current scene on a pixmap and returns the pixmap.</p>
 <p>You can use this method on both visible and invisible QGLWidgets.</p>
 <p>This method will create a pixmap and a temporary <a href="qglcontext.html">QGLContext</a> to render on the pixmap. It will then call <a href="qglwidget.html#initializeGL">initializeGL</a>(), <a href="qglwidget.html#resizeGL">resizeGL</a>(), and <a href="qglwidget.html#paintGL">paintGL</a>() on this context. Finally, the widget's original GL context is restored.</p>
 <p>The size of the pixmap will be <i>w</i> pixels wide and <i>h</i> pixels high unless one of these parameters is 0 (the default), in which case the pixmap will have the same size as the widget.</p>
-<p>If <i>useContext</i> is true, this method will try to be more efficient by using the existing GL context to render the pixmap. The default is false. Only use true if you understand the risks.</p>
+<p>If <i>useContext</i> is true, this method will try to be more efficient by using the existing GL context to render the pixmap. The default is false. Only use true if you understand the risks. Note that under Windows a temporary context has to be created and usage of the <i>useContext</i> parameter is not supported.</p>
 <p>Overlays are not rendered onto the pixmap.</p>
 <p>If the GL rendering context and the desktop have different bit depths, the result will most likely look surprising.</p>
 <p>Note that the creation of display lists, modifications of the view frustum etc. should be done from within <a href="qglwidget.html#initializeGL">initializeGL</a>(). If this is not done, the temporary <a href="qglcontext.html">QGLContext</a> will not be initialized properly, and the rendered pixmap may be incomplete/corrupted.</p>
 <h3 class="fn"><a name="renderText"></a>void QGLWidget::renderText ( int <i>x</i>, int <i>y</i>, const <a href="qstring.html">QString</a> &amp; <i>str</i>, const <a href="qfont.html">QFont</a> &amp; <i>fnt</i> = QFont(), int <i>listBase</i> = 2000 )</h3>
-<p>Renders the string <i>str</i> into the GL context of this widget.</p>
-<p><i>x</i> and <i>y</i> are specified in window coordinates, with the origin in the upper left-hand corner of the window. If <i>fnt</i> is not specified, the currently set application font will be used to render the string. To change the color of the rendered text you can use the glColor() call (or the <a href="qglwidget.html#qglColor">qglColor</a>() convenience function), just before the renderText() call. Note that if you have GL_LIGHTING enabled, the string will not appear in the color you want. You should therefore switch lighting off before using renderText().</p>
-<p><i>listBase</i> specifies the index of the first display list that is generated by this function. The default value is 2000. 256 display lists will be generated, one for each of the first 256 characters in the font that is used to render the string. If several fonts are used in the same widget, the display lists for these fonts will follow the last generated list. You would normally not have to change this value unless you are using lists in the same range. The lists are deleted when the widget is destroyed.</p>
 <h3 class="fn"><a name="renderText-2"></a>void QGLWidget::renderText ( double <i>x</i>, double <i>y</i>, double <i>z</i>, const <a href="qstring.html">QString</a> &amp; <i>str</i>, const <a href="qfont.html">QFont</a> &amp; <i>fnt</i> = QFont(), int <i>listBase</i> = 2000 )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p><i>x</i>, <i>y</i> and <i>z</i> are specified in scene or object coordinates relative to the currently set projection and model matrices. This can be useful if you want to annotate models with text labels and have the labels move with the model as it is rotated etc.</p>
 <h3 class="fn"><a name="resizeEvent"></a>void QGLWidget::resizeEvent ( <a href="qresizeevent.html">QResizeEvent</a> * <i>event</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>Handles resize events that are passed in the <i>event</i> parameter. Calls the virtual function <a href="qglwidget.html#resizeGL">resizeGL</a>().</p>
@@ -335,8 +333,8 @@ body { background: #ffffff; color: black; }</style>
 <p>The widget's rendering context will become the current context and <a href="qglwidget.html#initializeGL">initializeGL</a>() will be called if it hasn't already been called.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

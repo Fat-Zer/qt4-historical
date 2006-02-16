@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the qt3to4 porting application of the Qt Toolkit.
 **
@@ -362,7 +362,7 @@ QByteArray defaultDefines =
 Rpp::DefineMap *defaultMacros(PreprocessorCache &cache)
 {
     DefineMap *defineMap = new DefineMap();
-    //write out defualt macros to a temp file
+    //write out default macros to a temp file
     QTemporaryFile tempfile;
     tempfile.open();
     tempfile.write(defaultDefines);

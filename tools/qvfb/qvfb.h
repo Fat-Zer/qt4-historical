@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the tools applications of the Qt Toolkit.
 **
@@ -32,6 +32,7 @@ class QVFbRateDialog;
 class QPopupMenu;
 class QMenuData;
 class Q3FileDialog;
+class QAction;
 class Config;
 class Skin;
 class QVFb;
@@ -104,7 +105,7 @@ private:
     QVFbView *view;
     QVFbRateDialog *rateDlg;
     QMenu *viewMenu;
-    int cursorId;
+    QAction *cursorAction;
     Config* config;
     QStringList skinnames;
     QStringList skinfiles;

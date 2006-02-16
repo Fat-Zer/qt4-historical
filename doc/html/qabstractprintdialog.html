@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/gui/dialogs/qabstractprintdialog.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/gui/dialogs/qabstractprintdialog.cpp -->
 <head>
     <title>Qt 4.1: QAbstractPrintDialog Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -54,7 +54,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>9 public functions inherited from <a href="qdialog.html#public-functions">QDialog</a></li>
 <li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
-<li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <h3>Additional Inherited Members</h3>
 <ul>
@@ -71,6 +71,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>4 static public members inherited from <a href="qobject.html#static-public-members">QObject</a></li>
 <li><div class="fn"/>39 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
+<li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -80,23 +81,23 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="flags"><a name="PrintDialogOption-enum"></a>enum QAbstractPrintDialog::PrintDialogOption<br />flags QAbstractPrintDialog::PrintDialogOptions</h3>
 <p>Used to specify which parts of the print dialog should be enabled.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QAbstractPrintDialog::None</tt></td><td align="center" valign="top"><tt>0x0000</tt></td><td valign="top">None of the options are enabled.</td></tr>
 <tr><td valign="top"><tt>QAbstractPrintDialog::PrintToFile</tt></td><td align="center" valign="top"><tt>0x0001</tt></td><td valign="top">The print to file option is enabled.</td></tr>
 <tr><td valign="top"><tt>QAbstractPrintDialog::PrintSelection</tt></td><td align="center" valign="top"><tt>0x0002</tt></td><td valign="top">The print selection option is enalbed.</td></tr>
 <tr><td valign="top"><tt>QAbstractPrintDialog::PrintPageRange</tt></td><td align="center" valign="top"><tt>0x0004</tt></td><td valign="top">The page range selection option is enabled.</td></tr>
 <tr><td valign="top"><tt>QAbstractPrintDialog::PrintCollateCopies</tt></td><td align="center" valign="top"><tt>0x0010</tt></td><td valign="top">&nbsp;</td></tr>
-</table>
+</table></p>
 <p>The PrintDialogOptions type is a typedef for <a href="qflags.html">QFlags</a>&lt;PrintDialogOption&gt;. It stores an OR combination of PrintDialogOption values.</p>
 <h3 class="fn"><a name="PrintRange-enum"></a>enum QAbstractPrintDialog::PrintRange</h3>
 <p>Used to specify the print range selection option.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QAbstractPrintDialog::AllPages</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">All pages should be printed.</td></tr>
 <tr><td valign="top"><tt>QAbstractPrintDialog::Selection</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Only the selection should be printed.</td></tr>
 <tr><td valign="top"><tt>QAbstractPrintDialog::PageRange</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">The specified page range should be printed.</td></tr>
-</table>
+</table></p>
 <p>See also <a href="qprinter.html#PrintRange-enum">QPrinter::PrintRange</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
@@ -136,8 +137,8 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the last page to be printed.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/corelib/kernel/qabstractitemmodel.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/corelib/kernel/qabstractitemmodel.cpp -->
 <head>
     <title>Qt 4.1: QAbstractItemModel Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -137,8 +137,8 @@ body { background: #ffffff; color: black; }</style>
 <p>If the model is sortable, it can be sorted with <a href="qabstractitemmodel.html#sort">sort</a>().</p>
 <a name="subclassing"></a>
 <h3>Subclassing</h3>
-<p>When subclassing QAbstractItemModel, at the very least you must implement <a href="qabstractitemmodel.html#index">index</a>(), <a href="qabstractitemmodel.html#parent">parent</a>(), <a href="qabstractitemmodel.html#rowCount">rowCount</a>(), <a href="qabstractitemmodel.html#columnCount">columnCount</a>(), and <a href="qabstractitemmodel.html#data">data</a>(). To enable editing in your model, you must also implement <a href="qabstractitemmodel.html#setData">setData</a>(), and reimplement <a href="qabstractitemmodel.html#flags">flags</a>() to ensure that <tt>ItemIsEditable</tt> is returned.</p>
-<p>You can also reimplement <a href="qabstractitemmodel.html#headerData">headerData</a>() and <a href="qabstractitemmodel.html#setHeaderData">setHeaderData</a>() to control the way the headers for your model are presented.</p>
+<p>When subclassing QAbstractItemModel, at the very least you must implement <a href="qabstractitemmodel.html#index">index</a>(), <a href="qabstractitemmodel.html#parent">parent</a>(), <a href="qabstractitemmodel.html#rowCount">rowCount</a>(), <a href="qabstractitemmodel.html#columnCount">columnCount</a>(), and <a href="qabstractitemmodel.html#data">data</a>(). To enable editing in your model, you must also implement <a href="qabstractitemmodel.html#setData">setData</a>(), and reimplement <a href="qabstractitemmodel.html#flags">flags</a>() to ensure that <tt>ItemIsEditable</tt> is returned. You can also reimplement <a href="qabstractitemmodel.html#headerData">headerData</a>() and <a href="qabstractitemmodel.html#setHeaderData">setHeaderData</a>() to control the way the headers for your model are presented.</p>
+<p>Note that the <a href="qabstractitemmodel.html#dataChanged">dataChanged</a>() and <a href="qabstractitemmodel.html#headerDataChanged">headerDataChanged</a>() signals must be emitted explicitly when reimplementing the <a href="qabstractitemmodel.html#setData">setData</a>() and <a href="qabstractitemmodel.html#setHeaderData">setHeaderData</a>() functions, respectively.</p>
 <p>Custom models need to create model indexes for other components to use. To do this, call <a href="qabstractitemmodel.html#createIndex">createIndex</a>() with suitable row and column numbers for the item, and supply a unique identifier for the item, either as a pointer or as an integer value. Custom models typically use these unique identifiers in other reimplemented functions to retrieve item data and access information about the item's parents and children. See the <a href="itemviews-simpletreemodel.html">Simple Tree Model</a> example for more information about unique identifiers.</p>
 <p>It is not necessary to support every role defined in <a href="qt.html#ItemDataRole-enum">Qt::ItemDataRole</a>. Depending on the type of data contained within a model, it may only be useful to implement the <a href="qabstractitemmodel.html#data">data</a>() function to return valid information for some of the more common roles. Most models provide at least a textual representation of item data for the <a href="qt.html#ItemDataRole-enum">Qt::DisplayRole</a>, and well-behaved models should also provide valid information for the <a href="qt.html#ItemDataRole-enum">Qt::ToolTipRole</a> and <a href="qt.html#ItemDataRole-enum">Qt::WhatsThisRole</a>. Supporting these roles enables models to be used with standard Qt views. However, for some models that handle highly-specialized data, it may be appropriate to provide data only for user-defined roles.</p>
 <p>Models that provide interfaces to resizable data structures can provide implementations of <a href="qabstractitemmodel.html#insertRows">insertRows</a>(), <a href="qabstractitemmodel.html#removeRows">removeRows</a>(), <a href="qabstractitemmodel.html#insertColumns">insertColumns</a>(), and <a href="qabstractitemmodel.html#removeColumns">removeColumns</a>(). When implementing these functions, it is important to notify any connected views about changes to the model's dimensions both <i>before</i> and <i>after</i> they occur:</p>
@@ -208,17 +208,18 @@ body { background: #ffffff; color: black; }</style>
 <p>Creates a model index for the given <i>row</i> and <i>column</i> with the internal pointer <i>ptr</i>.</p>
 <p>This function provides a consistent interface that model subclasses must use to create model indexes.</p>
 <h3 class="fn"><a name="createIndex-2"></a><a href="qmodelindex.html">QModelIndex</a> QAbstractItemModel::createIndex ( int <i>row</i>, int <i>column</i>, int <i>id</i> ) const&nbsp;&nbsp;<tt> [protected]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Creates a model index for the given <i>row</i> and <i>column</i> with the internal identifier <i>id</i>.</p>
 <p>This function provides a consistent interface that model subclasses must use to create model indexes.</p>
 <h3 class="fn"><a name="data"></a><a href="qvariant.html">QVariant</a> QAbstractItemModel::data ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>index</i>, int <i>role</i> = Qt::DisplayRole ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Returns the data stored under the given <i>role</i> for the item referred to by the <i>index</i>.</p>
 <p>See also <a href="qt.html#ItemDataRole-enum">Qt::ItemDataRole</a>, <a href="qabstractitemmodel.html#setData">setData</a>(), and <a href="qabstractitemmodel.html#headerData">headerData</a>().</p>
 <h3 class="fn"><a name="dataChanged"></a>void QAbstractItemModel::dataChanged ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>topLeft</i>, const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>bottomRight</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This signal is emitted whenever the data in an existing item changes. The affected items are those between <i>topLeft</i> and <i>bottomRight</i> inclusive.</p>
+<p>This signal is emitted whenever the data in an existing item changes. The affected items are those between <i>topLeft</i> and <i>bottomRight</i> inclusive (of the same parent).</p>
+<p>Note that this signal must be emitted explicitly when reimplementing the <a href="qabstractitemmodel.html#setData">setData</a>() function.</p>
 <p>See also <a href="qabstractitemmodel.html#headerDataChanged">headerDataChanged</a>(), <a href="qabstractitemmodel.html#setData">setData</a>(), and <a href="qabstractitemmodel.html#layoutChanged">layoutChanged</a>().</p>
 <h3 class="fn"><a name="dropMimeData"></a>bool QAbstractItemModel::dropMimeData ( const <a href="qmimedata.html">QMimeData</a> * <i>data</i>, <a href="qt.html#DropAction-enum">Qt::DropAction</a> <i>action</i>, int <i>row</i>, int <i>column</i>, const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>parent</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>Handles the <i>data</i> supplied by a drag and drop operation that ended with the given <i>action</i> over the row in the model specified by the <i>row</i>, <i>column</i>, and the <i>parent</i> index.</p>
+<p>Handles the <i>data</i> supplied by a drag and drop operation that ended with the given <i>action</i>. Note that the coordinates given by row, column and parent are the coordinates where the data should be inserted, so it is the responsibility of the view to transform the drop coordinates to the correct model coordinates. (For instance, a drop action on an item in a <a href="qtreeview.html">QTreeView</a> can result in one of these actions: insert a child of the item or insert a sibling of the item)</p>
 <p>See also <a href="qabstractitemmodel.html#supportedDropActions">supportedDropActions</a>().</p>
 <h3 class="fn"><a name="endInsertColumns"></a>void QAbstractItemModel::endInsertColumns ()&nbsp;&nbsp;<tt> [protected]</tt></h3>
 <p>Ends a column insertion operation.</p>
@@ -252,9 +253,10 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns true if the model returns a valid <a href="qmodelindex.html">QModelIndex</a> for <i>row</i> and <i>column</i> with <i>parent</i>, otherwise returns false.</p>
 <h3 class="fn"><a name="headerData"></a><a href="qvariant.html">QVariant</a> QAbstractItemModel::headerData ( int <i>section</i>, <a href="qt.html#Orientation-enum">Qt::Orientation</a> <i>orientation</i>, int <i>role</i> = Qt::DisplayRole ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns the data for the given <i>role</i> and <i>section</i> in the header with the specified <i>orientation</i>.</p>
-<p>See also <a href="qt.html#ItemDataRole-enum">Qt::ItemDataRole</a> and <a href="qabstractitemmodel.html#setHeaderData">setHeaderData</a>().</p>
+<p>See also <a href="qt.html#ItemDataRole-enum">Qt::ItemDataRole</a>, <a href="qabstractitemmodel.html#setHeaderData">setHeaderData</a>(), and <a href="qheaderview.html">QHeaderView</a>.</p>
 <h3 class="fn"><a name="headerDataChanged"></a>void QAbstractItemModel::headerDataChanged ( <a href="qt.html#Orientation-enum">Qt::Orientation</a> <i>orientation</i>, int <i>first</i>, int <i>last</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted whenever a header is changed. The <i>orientation</i> indicates whether the horizontal or vertical header has changed. The sections in the header from the <i>first</i> to the <i>last</i> need to be updated.</p>
+<p>Note that this signal must be emitted explicitly when reimplementing the <a href="qabstractitemmodel.html#setHeaderData">setHeaderData</a>() function.</p>
 <p>See also <a href="qabstractitemmodel.html#headerData">headerData</a>(), <a href="qabstractitemmodel.html#setHeaderData">setHeaderData</a>(), and <a href="qabstractitemmodel.html#dataChanged">dataChanged</a>().</p>
 <h3 class="fn"><a name="index"></a><a href="qmodelindex.html">QModelIndex</a> QAbstractItemModel::index ( int <i>row</i>, int <i>column</i>, const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>parent</i> = QModelIndex() ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Returns the index of the item in the model specified by the given <i>row</i>, <i>column</i> and <i>parent</i> index.</p>
@@ -282,7 +284,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qabstractitemmodel.html#setItemData">setItemData</a>(), <a href="qt.html#ItemDataRole-enum">Qt::ItemDataRole</a>, and <a href="qabstractitemmodel.html#data">data</a>().</p>
 <h3 class="fn"><a name="layoutChanged"></a>void QAbstractItemModel::layoutChanged ()&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted whenever the layout of items exposed by the model changes; for example, when the model is sorted. When this signal is received by a view, it should update the layout of items to reflect this change.</p>
-<p>When subclassing <a href="qabstractitemmodel.html">QAbstractItemModel</a> or <a href="qproxymodel.html">QProxyModel</a>, ensure that you emit this signal if you change the order of items or alter the structure of the data you expose to views.</p>
+<p>When subclassing <a href="qabstractitemmodel.html">QAbstractItemModel</a> or <a href="qabstractproxymodel.html">QAbstractProxyModel</a>, ensure that you emit this signal if you change the order of items or alter the structure of the data you expose to views.</p>
 <p>See also <a href="qabstractitemmodel.html#dataChanged">dataChanged</a>(), <a href="qabstractitemmodel.html#headerDataChanged">headerDataChanged</a>(), and <a href="qabstractitemmodel.html#reset">reset</a>().</p>
 <h3 class="fn"><a name="match"></a><a href="qmodelindex.html#QModelIndexList-typedef">QModelIndexList</a> QAbstractItemModel::match ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>start</i>, int <i>role</i>, const <a href="qvariant.html">QVariant</a> &amp; <i>value</i>, int <i>hits</i> = 1, <a href="qt.html#MatchFlag-enum">Qt::MatchFlags</a> <i>flags</i> = Qt::MatchFlags( Qt::MatchStartsWith | Qt::MatchWrap ) ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns a list of indexes for the items where the data stored under the given <i>role</i> matches the specified <i>value</i>. The way the search is performed is defined by the <i>flags</i> given. The list that is returned may be empty.</p>
@@ -338,22 +340,26 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qabstractitemmodel.html#removeRows">removeRows</a>().</p>
 <h3 class="fn"><a name="setData"></a>bool QAbstractItemModel::setData ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>index</i>, const <a href="qvariant.html">QVariant</a> &amp; <i>value</i>, int <i>role</i> = Qt::EditRole )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Sets the <i>role</i> data for the item at <i>index</i> to <i>value</i>. Returns true if successful; otherwise returns false.</p>
-<p>The base class implementation returns false. This function and <a href="qabstractitemmodel.html#data">data</a>() must be reimplemented for editable models.</p>
+<p>The <a href="qabstractitemmodel.html#dataChanged">dataChanged</a>() signal should be emitted if the data was successfully set.</p>
+<p>The base class implementation returns false. This function and <a href="qabstractitemmodel.html#data">data</a>() must be reimplemented for editable models. Note that the <a href="qabstractitemmodel.html#dataChanged">dataChanged</a>() signal must be emitted explicitly when reimplementing this function.</p>
 <p>See also <a href="qt.html#ItemDataRole-enum">Qt::ItemDataRole</a>, <a href="qabstractitemmodel.html#data">data</a>(), and <a href="qabstractitemmodel.html#itemData">itemData</a>().</p>
 <h3 class="fn"><a name="setHeaderData"></a>bool QAbstractItemModel::setHeaderData ( int <i>section</i>, <a href="qt.html#Orientation-enum">Qt::Orientation</a> <i>orientation</i>, const <a href="qvariant.html">QVariant</a> &amp; <i>value</i>, int <i>role</i> = Qt::EditRole )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Sets the <i>role</i> for the header <i>section</i> to <i>value</i>. The <i>orientation</i> gives the orientation of the header.</p>
+<p>Note that the <a href="qabstractitemmodel.html#headerDataChanged">headerDataChanged</a>() signal must be emitted explicitly when reimplementing this function.</p>
 <p>See also <a href="qabstractitemmodel.html#headerData">headerData</a>().</p>
 <h3 class="fn"><a name="setItemData"></a>bool QAbstractItemModel::setItemData ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>index</i>, const <a href="qmap.html">QMap</a>&lt;int, <a href="qvariant.html">QVariant</a>&gt; &amp; <i>roles</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>For every <a href="qt.html#ItemDataRole-enum">Qt::ItemDataRole</a> in <i>roles</i>, sets the role data for the item at <i>index</i> to the associated value in <i>roles</i>. Returns true if successful; otherwise returns false.</p>
 <p>See also <a href="qabstractitemmodel.html#setData">setData</a>(), <a href="qabstractitemmodel.html#data">data</a>(), and <a href="qabstractitemmodel.html#itemData">itemData</a>().</p>
 <h3 class="fn"><a name="sibling"></a><a href="qmodelindex.html">QModelIndex</a> QAbstractItemModel::sibling ( int <i>row</i>, int <i>column</i>, const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>index</i> ) const</h3>
-<p>Returns the sibling at <i>row</i> and <i>column</i> for the item at <i>index</i> or an invalid <a href="qmodelindex.html">QModelIndex</a> if there is no sibling.</p>
-<p><i>row</i>, <i>column</i>, and <i>index</i>.</p>
+<p>Returns the sibling at <i>row</i> and <i>column</i> for the item at <i>index</i>, or an invalid <a href="qmodelindex.html">QModelIndex</a> if there is no sibling at that location.</p>
+<p>sibling() is just a convenience function that finds the item's parent, and uses it to retrieve the index of the child item in the specified <i>row</i> and <i>column</i>.</p>
+<p>See also <a href="qabstractitemmodel.html#index">index</a>(), <a href="qmodelindex.html#row">QModelIndex::row</a>(), and <a href="qmodelindex.html#column">QModelIndex::column</a>().</p>
 <h3 class="fn"><a name="sort"></a>void QAbstractItemModel::sort ( int <i>column</i>, <a href="qt.html#SortOrder-enum">Qt::SortOrder</a> <i>order</i> = Qt::AscendingOrder )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Sorts the model by <i>column</i> in the given <i>order</i>.</p>
 <p>The base class implementation does nothing.</p>
 <h3 class="fn"><a name="span"></a><a href="qsize.html">QSize</a> QAbstractItemModel::span ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>index</i> ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns the row and column span of the item represented by <i>index</i>.</p>
+<p>Note: span is not used currently, but will be in the future.</p>
 <h3 class="fn"><a name="submit"></a>bool QAbstractItemModel::submit ()&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Called to let the model know that it should submit whatever it has cached to the permanent storage. Typically used for row editing.</p>
 <p>Returns false on error, otherwise true.</p>
@@ -363,8 +369,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qt.html#DropAction-enum">Qt::DropActions</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

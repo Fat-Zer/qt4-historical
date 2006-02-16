@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/doc/src/examples/sliders.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/doc/src/examples/sliders.qdoc -->
 <head>
     <title>Qt 4.1: Sliders Example</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -107,12 +107,12 @@ body { background: #ffffff; color: black; }</style>
         invertedKeyBindings = new QCheckBox(tr(&quot;Inverted key bindings&quot;));</pre>
 <p>In the private <tt>createControls()</tt> function, we let a <a href="qgroupbox.html">QGroupBox</a> (<tt>controlsGroup</tt>) display the control widgets. A group box can provide a frame, a title and a keyboard shortcut, and displays various other widgets inside itself. The group of control widgets is composed by two checkboxes, three spin boxes (with labels) and one combobox.</p>
 <p>After creating the labels, we create the two checkboxes. Checkboxes are typically used to represent features in an application that can be enabled or disabled. When <tt>invertedAppearance</tt> is enabled, the slider values are inverted. The table below shows the appearance for the different slider-like widgets:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th></th><th colspan="2"><a href="qslider.html">QSlider</a></th><th colspan="2"><a href="qscrollbar.html">QScrollBar</a></th><th colspan="2"><a href="qdial.html">QDial</a></th></tr>
 <tr valign="top" bgcolor="#a2c511"><th></th><th>Normal</th><th>Inverted</th><th>Normal</th><th>Inverted</th><th>Normal</th><th>Inverted</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#Orientation-enum">Qt::Horizontal</a></td><td>Left to right</td><td>Right to left</td><td>Left to right</td><td>Right to left</td><td>Clockwise</td><td>Counterclockwise</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#Orientation-enum">Qt::Vertical</a></td><td>Bottom to top</td><td>Top to bottom</td><td>Top to bottom</td><td>Bottom to top</td><td>Clockwise</td><td>Counterclockwise</td></tr>
-</table>
+</table></p>
 <p>It is common to invert the appearance of a vertical <a href="qslider.html">QSlider</a>. A vertical slider that controls volume, for example, will typically go from bottom to top (the non-inverted appearance), whereas a vertical slider that controls the position of an object on screen might go from top to bottom, because screen coordinates go from top to bottom.</p>
 <p>When the <tt>invertedKeyBindings</tt> option is enabled (corresponding to the <a href="qabstractslider.html#invertedControls-prop">QAbstractSlider::invertedControls</a> property), the slider's wheel and key events are inverted. The normal key bindings mean that scrolling the mouse wheel &quot;up&quot; or using keys like page up will increase the slider's current value towards its maximum. Inverted, the same wheel and key events will move the value toward the slider's minimum. This can be useful if the <i>appearance</i> of a slider is inverted: Some users might expect the keys to still work the same way on the value, whereas others might expect <b>PageUp</b> to mean &quot;up&quot; on the screen.</p>
 <p>Note that for horizontal and vertical scroll bars, the key bindings are inverted by default: <b>PageDown</b> increases the current value, and <b>PageUp</b> decreases it.</p>
@@ -266,8 +266,8 @@ body { background: #ffffff; color: black; }</style>
 <p>The <tt>invertAppearance()</tt> and <tt>invertKeyBindings()</tt> slots control the child widgets' <a href="qabstractslider.html#invertedAppearance-prop">invertedAppearance</a> and <a href="qabstractslider.html#invertedControls-prop">invertedControls</a> properties.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

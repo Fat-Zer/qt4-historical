@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/gui/kernel/qevent.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/gui/kernel/qevent.cpp -->
 <head>
     <title>Qt 4.1: QWheelEvent Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -70,8 +70,20 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="buttons"></a><a href="qt.html#MouseButton-enum">Qt::MouseButtons</a> QWheelEvent::buttons () const</h3>
 <p>Returns the mouse state when the event occurred.</p>
 <h3 class="fn"><a name="delta"></a>int QWheelEvent::delta () const</h3>
-<p>Returns the distance that the wheel is rotated, given in multiples or divisions of <tt>WHEEL_DELTA</tt>. A positive value indicates that the wheel was rotated forwards away from the user; a negative value indicates that the wheel was rotated backwards toward the user.</p>
-<p>The <tt>WHEEL_DELTA</tt> constant was defined to be 120 by the wheel mouse vendors to allow finer-resolution wheels to be built in the future, such as a freely rotating wheel with no notches. The expectation is that such a device would send more messages per rotation, but with a smaller value in each message.</p>
+<p>Returns the distance that the wheel is rotated, in eights of a degree. A positive value indicates that the wheel was rotated forwards away from the user; a negative value indicates that the wheel was rotated backwards toward the user.</p>
+<p>Most mouse types work in steps of 15 degrees, in which case the delta value is a multiple of 120 (== 15 * 8).</p>
+<p>Example:</p>
+<pre>&nbsp;   void MyWidget::wheelEvent(QWheelEvent *event)
+    {
+        int numDegrees = event-&gt;delta() / 8;
+        int numSteps = numDegrees / 15;
+
+        if (event-&gt;orientation() == Qt::Horizontal) {
+            scrollHorizontally(numSteps);
+        } else {
+            scrollVertically(numSteps);
+        }
+    }</pre>
 <h3 class="fn"><a name="globalPos"></a>const <a href="qpoint.html">QPoint</a> &amp; QWheelEvent::globalPos () const</h3>
 <p>Returns the global position of the mouse pointer <i>at the time of the event</i>. This is important on asynchronous window systems such as X11; whenever you move your widgets around in response to mouse events, globalPos() can differ a lot from the current cursor position returned by <a href="qcursor.html#pos">QCursor::pos</a>().</p>
 <p>See also <a href="qwheelevent.html#globalX">globalX</a>() and <a href="qwheelevent.html#globalY">globalY</a>().</p>
@@ -95,8 +107,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qwheelevent.html#x">x</a>() and <a href="qwheelevent.html#pos">pos</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

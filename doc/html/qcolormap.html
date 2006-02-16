@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/gui/painting/qcolormap_x11.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/gui/painting/qcolormap_x11.cpp -->
 <head>
     <title>Qt 4.1: QColormap Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -38,7 +38,6 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>Mode <b><a href="qcolormap.html#mode">mode</a></b> () const</li>
 <li><div class="fn"/>uint <b><a href="qcolormap.html#pixel">pixel</a></b> ( const QColor &amp; <i>color</i> ) const</li>
 <li><div class="fn"/>int <b><a href="qcolormap.html#size">size</a></b> () const</li>
-<li><div class="fn"/>QColormap &amp; <b><a href="qcolormap.html#operator-eq">operator=</a></b> ( const QColormap &amp; <i>colormap</i> )</li>
 </ul>
 <a name="static-public-members"></a>
 <h3>Static Public Members</h3>
@@ -54,12 +53,12 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="Mode-enum"></a>enum QColormap::Mode</h3>
 <p>This enum describes how <a href="qcolormap.html">QColormap</a> maps device independent RGB values to device dependent pixel values.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QColormap::Direct</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">Pixel values are derived directly from the RGB values, also known as &quot;True Color.&quot;</td></tr>
 <tr><td valign="top"><tt>QColormap::Indexed</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Pixel values represent indexes into a vector of available colors, i.e. <a href="qcolormap.html">QColormap</a> uses the index of the color that most closely matches an RGB value.</td></tr>
 <tr><td valign="top"><tt>QColormap::Gray</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">Similar to <tt>Indexed</tt>, pixel values represent a vector of available gray tones. <a href="qcolormap.html">QColormap</a> uses the index of the gray tone that most closely matches the computed gray tone of an RGB value.</td></tr>
-</table>
+</table></p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QColormap"></a>QColormap::QColormap ( const QColormap &amp; <i>colormap</i> )</h3>
@@ -89,11 +88,10 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="size"></a>int QColormap::size () const</h3>
 <p>Returns the size of the colormap for <tt>Indexed</tt> and <tt>Gray</tt> modes; Returns -1 for <tt>Direct</tt> mode.</p>
 <p>See also <a href="qcolormap.html#colormap">colormap</a>().</p>
-<h3 class="fn"><a name="operator-eq"></a>QColormap &amp; QColormap::operator= ( const QColormap &amp; <i>colormap</i> )</h3>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

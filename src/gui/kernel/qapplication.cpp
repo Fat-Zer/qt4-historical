@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -1632,6 +1632,15 @@ void QApplicationPrivate::setFocusWidget(QWidget *focus, Qt::FocusReason reason)
             && qt_in_tab_key_event)
             focus->window()->setAttribute(Qt::WA_KeyboardFocusChange);
         QWidget *prev = focus_widget;
+
+        if (prev && reason != Qt::PopupFocusReason && reason != Qt::MenuBarFocusReason) {
+            QInputContext *qic = prev->inputContext();
+            if(qic) {
+                qic->reset();
+                qic->setFocusWidget(0);
+            }
+        }
+
         focus_widget = focus;
 
         if (reason != Qt::NoFocusReason) {
@@ -1645,10 +1654,14 @@ void QApplicationPrivate::setFocusWidget(QWidget *focus, Qt::FocusReason reason)
                 }
 #endif
                 QFocusEvent out(QEvent::FocusOut, reason);
+                QStyle *style = prev->style();
                 QApplication::sendEvent(prev, &out);
-                QApplication::sendEvent(prev->style(), &out);
+                QApplication::sendEvent(style, &out);
             }
             if(focus && QApplicationPrivate::focus_widget == focus) {
+                QInputContext *qic = focus->inputContext();
+                if ( qic ) 
+	            qic->setFocusWidget( focus_widget );
                 QFocusEvent in(QEvent::FocusIn, reason);
                 QApplication::sendEvent(focus, &in);
                 QApplication::sendEvent(focus->style(), &in);
@@ -1879,51 +1892,56 @@ void QApplication::setActiveWindow(QWidget* act)
     if (QApplicationPrivate::active_window == window)
         return;
 
-    // first the activation/deactivation events
-    QEvent ae(QEvent::ActivationChange);
+    QWidgetList toBeActivated;
+    QWidgetList toBeDeactivated;
+
     if (QApplicationPrivate::active_window) {
-        QWidgetList deacts;
         if (style()->styleHint(QStyle::SH_Widget_ShareActivation, 0, QApplicationPrivate::active_window)) {
             QWidgetList list = topLevelWidgets();
             for (int i = 0; i < list.size(); ++i) {
                 QWidget *w = list.at(i);
                 if (w->isVisible() && w->isActiveWindow())
-                    deacts.append(w);
+                    toBeDeactivated.append(w);
             }
-        } else
-            deacts.append(QApplicationPrivate::active_window);
-        QApplicationPrivate::active_window = 0;
-        QEvent e(QEvent::WindowDeactivate);
-        for(int i = 0; i < deacts.size(); ++i) {
-            QWidget *w = deacts.at(i);
-            sendSpontaneousEvent(w, &e);
-            sendSpontaneousEvent(w, &ae);
+        } else {
+            toBeDeactivated.append(QApplicationPrivate::active_window);
         }
     }
 
     QApplicationPrivate::active_window = window;
+
     if (QApplicationPrivate::active_window) {
-        QEvent e(QEvent::WindowActivate);
-        QWidgetList acts;
         if (style()->styleHint(QStyle::SH_Widget_ShareActivation, 0, QApplicationPrivate::active_window)) {
             QWidgetList list = topLevelWidgets();
             for (int i = 0; i < list.size(); ++i) {
                 QWidget *w = list.at(i);
                 if (w->isVisible() && w->isActiveWindow())
-                    acts.append(w);
+                    toBeActivated.append(w);
             }
-        } else
-            acts.append(QApplicationPrivate::active_window);
-        for (int i = 0; i < acts.size(); ++i) {
-            QWidget *w = acts.at(i);
-            sendSpontaneousEvent(w, &e);
-            sendSpontaneousEvent(w, &ae);
+        } else {
+            toBeActivated.append(QApplicationPrivate::active_window);
         }
+
+    }
+
+    // first the activation/deactivation events
+    QEvent activationChange(QEvent::ActivationChange);
+    QEvent windowActivate(QEvent::WindowActivate);
+    QEvent windowDeactivate(QEvent::WindowDeactivate);
+    for (int i = 0; i < toBeActivated.size(); ++i) {
+        QWidget *w = toBeActivated.at(i);
+        sendSpontaneousEvent(w, &windowActivate);
+        sendSpontaneousEvent(w, &activationChange);
+    }
+
+    for(int i = 0; i < toBeDeactivated.size(); ++i) {
+        QWidget *w = toBeDeactivated.at(i);
+        sendSpontaneousEvent(w, &windowDeactivate);
+        sendSpontaneousEvent(w, &activationChange);
     }
 
     // then focus events
     if (!QApplicationPrivate::active_window && QApplicationPrivate::focus_widget) {
-	focusWidget()->d_func()->unfocusInputContext();
         QApplicationPrivate::setFocusWidget(0, Qt::ActiveWindowFocusReason);
     } else if (QApplicationPrivate::active_window) {
         QWidget *w = QApplicationPrivate::active_window->focusWidget();
@@ -2180,8 +2198,8 @@ bool QApplicationPrivate::tryModalHelper(QWidget *widget, QWidget **rettop)
     if (rettop)
         *rettop = top;
 
-    widget = widget->window();
-    if (qApp->activePopupWidget() == widget)
+    // the active popup widget always gets the input event
+    if (qApp->activePopupWidget())
         return true;
 
 #ifdef Q_WS_MAC
@@ -2190,7 +2208,7 @@ bool QApplicationPrivate::tryModalHelper(QWidget *widget, QWidget **rettop)
         *rettop = top;
 #endif
 
-    return !isBlockedByModal(widget);
+    return !isBlockedByModal(widget->window());
 }
 
 
@@ -3025,8 +3043,7 @@ bool QApplication::notify(QObject *receiver, QEvent *e)
                 if (w->isEnabled() && w->acceptDrops()) {
                     res = d->notify_helper(w, dragEvent);
                     if (res && dragEvent->isAccepted()) {
-                        if (dragEvent->dropAction() != Qt::IgnoreAction)
-                            QDragManager::self()->setCurrentTarget(w);
+                        QDragManager::self()->setCurrentTarget(w);
                         break;
                     }
                 }
@@ -3067,8 +3084,12 @@ bool QApplication::notify(QObject *receiver, QEvent *e)
                 }
             }
             res = d->notify_helper(w, e);
-            if (e->type() != QEvent::DragMove)
+            if (e->type() != QEvent::DragMove) {
                 QDragManager::self()->setCurrentTarget(0, e->type() == QEvent::Drop);
+            } else {
+                QDragMoveEvent *moveEvent = static_cast<QDragMoveEvent *>(e);
+                moveEvent->rect.setTopLeft(static_cast<QWidget *>(receiver)->mapFrom(w, moveEvent->rect.topLeft()));
+            }
         }
         break;
 #endif

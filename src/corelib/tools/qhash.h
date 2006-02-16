@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -755,16 +755,20 @@ Q_OUTOFLINE_TEMPLATE bool QHash<Key, T>::operator==(const QHash<Key, T> &other) 
     if (d == other.d)
         return true;
 
-    const_iterator it1 = begin();
-    const_iterator it2 = other.begin();
+    const_iterator it = begin();
 
-    while (it1 != end()) {
-        if (!(it1.key() == it2.key()))
-            return false;
-        if (!QTypeInfo<T>::isDummy && !(it1.value() == it2.value()))
-            return false;
-        ++it2;
-        ++it1;
+    while (it != end()) {
+        const Key &akey = it.key();
+
+        const_iterator it2 = other.find(akey);
+        do {
+            if (it2 == end() || !(it2.key() == akey))
+                return false;
+            if (!QTypeInfo<T>::isDummy && !(it.value() == it2.value()))
+                return false;
+            ++it;
+            ++it2;
+        } while (it != end() && it.key() == akey);
     }
     return true;
 }

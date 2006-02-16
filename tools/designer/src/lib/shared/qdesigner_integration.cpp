@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt Designer of the Qt Toolkit.
 **
@@ -139,9 +139,6 @@ void QDesignerIntegration::updateSelection()
     if (formWindow)
         selection = formWindow->cursor()->selectedWidget(0);
 
-    if (QDesignerObjectInspectorInterface *objectInspector = core()->objectInspector())
-        objectInspector->setFormWindow(formWindow);
-
     if (QDesignerActionEditorInterface *actionEditor = core()->actionEditor())
         actionEditor->setFormWindow(formWindow);
 
@@ -149,6 +146,9 @@ void QDesignerIntegration::updateSelection()
         propertyEditor->setObject(selection);
         propertyEditor->setEnabled(formWindow && formWindow->cursor()->selectedWidgetCount() == 1);
     }
+    if (QDesignerObjectInspectorInterface *objectInspector = core()->objectInspector())
+        objectInspector->setFormWindow(formWindow);
+
 }
 
 void QDesignerIntegration::activateWidget(QWidget *widget)

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/gui/kernel/qpalette.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/gui/kernel/qpalette.cpp -->
 <head>
     <title>Qt 4.1: QPalette Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -81,7 +81,7 @@ body { background: #ffffff; color: black; }</style>
 <a name="related-non-members"></a>
 <h3>Related Non-Members</h3>
 <ul>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qpalette.html#operator-lt-lt-72">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>s</i>, const QPalette &amp; <i>p</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qpalette.html#operator-lt-lt-75">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>s</i>, const QPalette &amp; <i>p</i> )</li>
 <li><div class="fn"/>QDataStream &amp; <b><a href="qpalette.html#operator-gt-gt-47">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>s</i>, QPalette &amp; <i>p</i> )</li>
 </ul>
 <a name="details"></a>
@@ -108,17 +108,17 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="ColorGroup-enum"></a>enum QPalette::ColorGroup</h3>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QPalette::Disabled</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">&nbsp;</td></tr>
 <tr><td valign="top"><tt>QPalette::Active</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">&nbsp;</td></tr>
 <tr><td valign="top"><tt>QPalette::Inactive</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">&nbsp;</td></tr>
 <tr><td valign="top"><tt>QPalette::Normal</tt></td><td align="center" valign="top"><tt>Active</tt></td><td valign="top">synonym for Active</td></tr>
-</table>
+</table></p>
 <h3 class="fn"><a name="ColorRole-enum"></a>enum QPalette::ColorRole</h3>
 <p>The ColorRole enum defines the different symbolic color roles used in current GUIs.</p>
 <p>The central roles are:</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QPalette::Window</tt></td><td align="center" valign="top"><tt>10</tt></td><td valign="top">A general background color.</td></tr>
 <tr><td valign="top"><tt>QPalette::Background</tt></td><td align="center" valign="top"><tt>Window</tt></td><td valign="top">This value is obsolete. Use Window instead.</td></tr>
@@ -129,29 +129,29 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QPalette::Text</tt></td><td align="center" valign="top"><tt>6</tt></td><td valign="top">The foreground color used with <tt>Base</tt>. This is usually the same as the <tt>WindowText</tt>, in which case it must provide good contrast with <tt>Window</tt> and <tt>Base</tt>.</td></tr>
 <tr><td valign="top"><tt>QPalette::Button</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The general button background color. This background can be different from <tt>Window</tt> as some styles require a different background color for buttons.</td></tr>
 <tr><td valign="top"><tt>QPalette::ButtonText</tt></td><td align="center" valign="top"><tt>8</tt></td><td valign="top">A foreground color used with the <tt>Button</tt> color.</td></tr>
-</table>
+</table></p>
 <p>There are some color roles used mostly for 3D bevel and shadow effects. All of these are normally derived from <tt>Window</tt>, and used in ways that depend on that relationship. For example, buttons depend on it to make the bevels look attractive, and Motif scroll bars depend on <tt>Mid</tt> to be slightly different from <tt>Window</tt>.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QPalette::Light</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">Lighter than <tt>Button</tt> color.</td></tr>
 <tr><td valign="top"><tt>QPalette::Midlight</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">Between <tt>Button</tt> and <tt>Light</tt>.</td></tr>
 <tr><td valign="top"><tt>QPalette::Dark</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">Darker than <tt>Button</tt>.</td></tr>
 <tr><td valign="top"><tt>QPalette::Mid</tt></td><td align="center" valign="top"><tt>5</tt></td><td valign="top">Between <tt>Button</tt> and <tt>Dark</tt>.</td></tr>
 <tr><td valign="top"><tt>QPalette::Shadow</tt></td><td align="center" valign="top"><tt>11</tt></td><td valign="top">A very dark color. By default, the shadow color is <a href="qt.html#GlobalColor-enum">Qt::black</a>.</td></tr>
-</table>
+</table></p>
 <p>Selected (marked) items have two roles:</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QPalette::Highlight</tt></td><td align="center" valign="top"><tt>12</tt></td><td valign="top">A color to indicate a selected item or the current item. By default, the highlight color is <a href="qt.html#GlobalColor-enum">Qt::darkBlue</a>.</td></tr>
 <tr><td valign="top"><tt>QPalette::HighlightedText</tt></td><td align="center" valign="top"><tt>13</tt></td><td valign="top">A text color that contrasts with <tt>Highlight</tt>. By default, the highlighted text color is <a href="qt.html#GlobalColor-enum">Qt::white</a>.</td></tr>
-</table>
+</table></p>
 <p>Finally, there is a special role for text that needs to be drawn where <tt>Text</tt> or <tt>Foreground</tt> would give poor contrast, such as on pressed push buttons. Note that text colors can be used for things other than just words; text colors are <i>usually</i> used for text, but it's quite common to use the text color roles for lines, icons, etc.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QPalette::BrightText</tt></td><td align="center" valign="top"><tt>7</tt></td><td valign="top">A text color that is very different from <tt>Foreground</tt>, and contrasts well with e.g. <tt>Dark</tt>.</td></tr>
 <tr><td valign="top"><tt>QPalette::Link</tt></td><td align="center" valign="top"><tt>14</tt></td><td valign="top">A text color used for unvisited hyperlinks. By default, the link color is <a href="qt.html#GlobalColor-enum">Qt::blue</a>.</td></tr>
 <tr><td valign="top"><tt>QPalette::LinkVisited</tt></td><td align="center" valign="top"><tt>15</tt></td><td valign="top">A text color used for already visited hyperlinks. By default, the linkvisited color is <a href="qt.html#GlobalColor-enum">Qt::magenta</a>.</td></tr>
-</table>
+</table></p>
 <p>This image shows most of the color roles in use:</p>
 <p align="center"><img src="images/palette.png" alt="Color Roles" /></p><hr />
 <h2>Member Function Documentation</h2>
@@ -185,7 +185,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the brush in color group <i>gr</i>, used for color role <i>cr</i>.</p>
 <p>See also <a href="qpalette.html#color">color</a>(), <a href="qpalette.html#setBrush">setBrush</a>(), and <a href="qpalette.html#ColorRole-enum">ColorRole</a>.</p>
 <h3 class="fn"><a name="brush-2"></a>const <a href="qbrush.html">QBrush</a> &amp; QPalette::brush ( <a href="qpalette.html#ColorRole-enum">ColorRole</a> <i>r</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns the brush that has been set for color role <i>r</i> in the current <a href="qpalette.html#ColorGroup-enum">ColorGroup</a>.</p>
 <p>See also <a href="qpalette.html#color">color</a>(), <a href="qpalette.html#setBrush">setBrush</a>(), and <a href="qpalette.html#ColorRole-enum">ColorRole</a>.</p>
 <h3 class="fn"><a name="button"></a>const <a href="qbrush.html">QBrush</a> &amp; QPalette::button () const</h3>
@@ -198,7 +198,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the color in color group <i>gr</i>, used for color role <i>r</i>.</p>
 <p>See also <a href="qpalette.html#brush">brush</a>(), <a href="qpalette.html#setColor">setColor</a>(), and <a href="qpalette.html#ColorRole-enum">ColorRole</a>.</p>
 <h3 class="fn"><a name="color-2"></a>const <a href="qcolor.html">QColor</a> &amp; QPalette::color ( <a href="qpalette.html#ColorRole-enum">ColorRole</a> <i>r</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns the color that has been set for color role <i>r</i> in the current <a href="qpalette.html#ColorGroup-enum">ColorGroup</a>.</p>
 <p>See also <a href="qpalette.html#brush">brush</a>() and <a href="qpalette.html#ColorRole-enum">ColorRole</a>.</p>
 <h3 class="fn"><a name="currentColorGroup"></a><a href="qpalette.html#ColorGroup-enum">ColorGroup</a> QPalette::currentColorGroup () const</h3>
@@ -243,14 +243,14 @@ body { background: #ffffff; color: black; }</style>
 <p>Sets the brush for color role <i>cr</i> to brush <i>brush</i> for all groups in the palette.</p>
 <p>See also <a href="qpalette.html#brush">brush</a>(), <a href="qpalette.html#setColor">setColor</a>(), and <a href="qpalette.html#ColorRole-enum">ColorRole</a>.</p>
 <h3 class="fn"><a name="setBrush-2"></a>void QPalette::setBrush ( <a href="qpalette.html#ColorGroup-enum">ColorGroup</a> <i>cg</i>, <a href="qpalette.html#ColorRole-enum">ColorRole</a> <i>cr</i>, const <a href="qbrush.html">QBrush</a> &amp; <i>b</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Sets the brush in color group <i>cg</i>, used for color role <i>cr</i>, to <i>b</i>.</p>
 <p>See also <a href="qpalette.html#brush">brush</a>(), <a href="qpalette.html#setColor">setColor</a>(), and <a href="qpalette.html#ColorRole-enum">ColorRole</a>.</p>
 <h3 class="fn"><a name="setColor"></a>void QPalette::setColor ( <a href="qpalette.html#ColorGroup-enum">ColorGroup</a> <i>gr</i>, <a href="qpalette.html#ColorRole-enum">ColorRole</a> <i>r</i>, const <a href="qcolor.html">QColor</a> &amp; <i>c</i> )</h3>
 <p>Sets the brush in color group <i>gr</i>, used for color role <i>r</i>, to the solid color <i>c</i>.</p>
 <p>See also <a href="qpalette.html#setBrush">setBrush</a>(), <a href="qpalette.html#color">color</a>(), and <a href="qpalette.html#ColorRole-enum">ColorRole</a>.</p>
 <h3 class="fn"><a name="setColor-2"></a>void QPalette::setColor ( <a href="qpalette.html#ColorRole-enum">ColorRole</a> <i>r</i>, const <a href="qcolor.html">QColor</a> &amp; <i>c</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Sets the color used for color role <i>r</i> in all color groups to a solid color <i>c</i>.</p>
 <p>See also <a href="qpalette.html#brush">brush</a>(), <a href="qpalette.html#setColor">setColor</a>(), and <a href="qpalette.html#ColorRole-enum">ColorRole</a>.</p>
 <h3 class="fn"><a name="setColorGroup"></a>void QPalette::setColorGroup ( <a href="qpalette.html#ColorGroup-enum">ColorGroup</a> <i>cg</i>, const <a href="qbrush.html">QBrush</a> &amp; <i>windowText</i>, const <a href="qbrush.html">QBrush</a> &amp; <i>button</i>, const <a href="qbrush.html">QBrush</a> &amp; <i>light</i>, const <a href="qbrush.html">QBrush</a> &amp; <i>dark</i>, const <a href="qbrush.html">QBrush</a> &amp; <i>mid</i>, const <a href="qbrush.html">QBrush</a> &amp; <i>text</i>, const <a href="qbrush.html">QBrush</a> &amp; <i>bright_text</i>, const <a href="qbrush.html">QBrush</a> &amp; <i>base</i>, const <a href="qbrush.html">QBrush</a> &amp; <i>window</i> )</h3>
@@ -282,18 +282,18 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns true (usually quickly) if this palette is equal to <i>p</i>; otherwise returns false (slowly).</p>
 <hr />
 <h2>Related Non-Members</h2>
-<h3 class="fn"><a name="operator-lt-lt-72"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>s</i>, const QPalette &amp; <i>p</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<h3 class="fn"><a name="operator-lt-lt-75"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>s</i>, const QPalette &amp; <i>p</i> )</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes the palette, <i>p</i> to the stream <i>s</i> and returns a reference to the stream.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
 <h3 class="fn"><a name="operator-gt-gt-47"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>s</i>, QPalette &amp; <i>p</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads a palette from the stream, <i>s</i> into the palette <i>p</i>, and returns a reference to the stream.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

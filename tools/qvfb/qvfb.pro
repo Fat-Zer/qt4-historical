@@ -13,7 +13,9 @@ HEADERS         = qvfb.h \
 		  qanimationwriter.h \
                   gammaview.h \
 		  skin.h \
-                  qvfbprotocol.h
+                  qvfbprotocol.h \
+                  qvfbshmem.h \
+                  qvfbmmap.h
 
 SOURCES         = qvfb.cpp \
 		  qvfbview.cpp \
@@ -21,7 +23,9 @@ SOURCES         = qvfb.cpp \
                   main.cpp \
 		  qanimationwriter.cpp \
 		  skin.cpp \
-                  qvfbprotocol.cpp
+                  qvfbprotocol.cpp \
+                  qvfbshmem.cpp \
+                  qvfbmmap.cpp
 
 contains(QT_CONFIG, system-png) {
 	LIBS += -lpng

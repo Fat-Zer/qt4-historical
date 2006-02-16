@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/gui/itemviews/qlistwidget.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/gui/itemviews/qlistwidget.cpp -->
 <head>
     <title>Qt 4.1: QListWidgetItem Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -73,7 +73,7 @@ body { background: #ffffff; color: black; }</style>
 <a name="related-non-members"></a>
 <h3>Related Non-Members</h3>
 <ul>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qlistwidgetitem.html#operator-lt-lt-64">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>out</i>, const QListWidgetItem &amp; <i>item</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qlistwidgetitem.html#operator-lt-lt-66">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>out</i>, const QListWidgetItem &amp; <i>item</i> )</li>
 <li><div class="fn"/>QDataStream &amp; <b><a href="qlistwidgetitem.html#operator-gt-gt-40">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>in</i>, QListWidgetItem &amp; <i>item</i> )</li>
 </ul>
 <a name="details"></a>
@@ -126,7 +126,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qlistwidgetitem.html#setFont">setFont</a>().</p>
 <h3 class="fn"><a name="icon"></a><a href="qicon.html">QIcon</a> QListWidgetItem::icon () const</h3>
 <p>Returns the list item's icon.</p>
-<p>See also <a href="qlistwidgetitem.html#setIcon">setIcon</a>().</p>
+<p>See also <a href="qlistwidgetitem.html#setIcon">setIcon</a>() and <a href="qabstractitemview.html#iconSize-prop">iconSize</a>.</p>
 <h3 class="fn"><a name="listWidget"></a><a href="qlistwidget.html">QListWidget</a> * QListWidgetItem::listWidget () const</h3>
 <p>Returns the list widget that contains the item.</p>
 <h3 class="fn"><a name="read"></a>void QListWidgetItem::read ( <a href="qdatastream.html">QDataStream</a> &amp; <i>in</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
@@ -149,7 +149,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qlistwidgetitem.html#font">font</a>().</p>
 <h3 class="fn"><a name="setIcon"></a>void QListWidgetItem::setIcon ( const <a href="qicon.html">QIcon</a> &amp; <i>icon</i> )</h3>
 <p>Sets the icon for the list item to the given <i>icon</i>.</p>
-<p>See also <a href="qlistwidgetitem.html#icon">icon</a>().</p>
+<p>See also <a href="qlistwidgetitem.html#icon">icon</a>(), <a href="qlistwidgetitem.html#text">text</a>(), and <a href="qabstractitemview.html#iconSize-prop">iconSize</a>.</p>
 <h3 class="fn"><a name="setSizeHint"></a>void QListWidgetItem::setSizeHint ( const <a href="qsize.html">QSize</a> &amp; <i>size</i> )</h3>
 <p>Sets the size hint for the list item to be <i>size</i>. If no size hint is set, the item delegate will compute the size hint based on the item data.</p>
 <p>This function was introduced in Qt 4.1.</p>
@@ -215,20 +215,20 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qlistwidgetitem.html#Type-var">Type</a> and <a href="qlistwidgetitem.html#type">type</a>().</p>
 <hr />
 <h2>Related Non-Members</h2>
-<h3 class="fn"><a name="operator-lt-lt-64"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>out</i>, const QListWidgetItem &amp; <i>item</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<h3 class="fn"><a name="operator-lt-lt-66"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>out</i>, const QListWidgetItem &amp; <i>item</i> )</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes the list widget item <i>item</i> to stream <i>out</i>.</p>
 <p>This operator uses <a href="qlistwidgetitem.html#write">QListWidgetItem::write</a>().</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream Operators</a>.</p>
 <h3 class="fn"><a name="operator-gt-gt-40"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>in</i>, QListWidgetItem &amp; <i>item</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads a list widget item from stream <i>in</i> into <i>item</i>.</p>
 <p>This operator uses <a href="qlistwidgetitem.html#read">QListWidgetItem::read</a>().</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream Operators</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

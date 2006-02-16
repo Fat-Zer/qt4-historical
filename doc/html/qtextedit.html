@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/gui/widgets/qtextedit.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/gui/widgets/qtextedit.cpp -->
 <head>
     <title>Qt 4.1: QTextEdit Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -35,7 +35,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <a name="properties"></a>
 <h3>Properties</h3>
-<table width="100%" border="0" cellpadding="0" cellspacing="0">
+<p><table width="100%" border="0" cellpadding="0" cellspacing="0">
 <tr><td width="45%" valign="top"><ul>
 <li><div class="fn"/><b><a href="qtextedit.html#acceptRichText-prop">acceptRichText</a></b> : bool</li>
 <li><div class="fn"/><b><a href="qtextedit.html#autoFormatting-prop">autoFormatting</a></b> : AutoFormatting</li>
@@ -52,7 +52,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="qtextedit.html#wordWrapMode-prop">wordWrapMode</a></b> : QTextOption::WrapMode</li>
 </ul>
 </td></tr>
-</table>
+</table></p>
 <ul>
 <li><div class="fn"/>2 properties inherited from <a href="qabstractscrollarea.html#properties">QAbstractScrollArea</a></li>
 <li><div class="fn"/>6 properties inherited from <a href="qframe.html#properties">QFrame</a></li>
@@ -118,7 +118,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>13 public functions inherited from <a href="qframe.html#public-functions">QFrame</a></li>
 <li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
-<li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <a name="public-slots"></a>
 <h3>Public Slots</h3>
@@ -176,6 +176,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>17 protected functions inherited from <a href="qabstractscrollarea.html#protected-functions">QAbstractScrollArea</a></li>
 <li><div class="fn"/>39 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
+<li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
 </ul>
 <h3>Additional Inherited Members</h3>
 <ul>
@@ -207,12 +208,12 @@ body { background: #ffffff; color: black; }</style>
 <p>QTextEdit can display a large HTML subset, including tables and images.</p>
 <p>The text is set or replaced using <a href="qtextedit.html#html-prop">setHtml</a>() which deletes any existing text and replaces it with the text passed in the <a href="qtextedit.html#html-prop">setHtml</a>() call. If you call <a href="qtextedit.html#html-prop">setHtml</a>() with legacy HTML, and then call <a href="qtextedit-qt3.html#text">text</a>(), the text that is returned may have different markup, but will render the same. The entire text can be deleted with <a href="qtextedit.html#clear">clear</a>().</p>
 <p>Text itself can be inserted using the <a href="qtextcursor.html">QTextCursor</a> class or using the convenience functions <a href="qtextedit.html#insertHtml">insertHtml</a>(), <a href="qtextedit.html#insertPlainText">insertPlainText</a>(), <a href="qtextedit.html#append">append</a>() or <a href="qtextedit.html#paste">paste</a>(). <a href="qtextcursor.html">QTextCursor</a> is also able to insert complex objects like tables or lists into the document, and it deals with creating selections and applying changes to selected text.</p>
-<p>By default the text edit wraps words at whitespace to fit within the text edit widget. The <a href="qtextedit.html#lineWrapMode-prop">setLineWrapMode</a>() function is used to specify the kind of line wrap you want, or <a href="qtextedit.html#LineWrapMode-enum">NoWrap</a> if you don't want any wrapping. Call <a href="qtextedit.html#lineWrapMode-prop">setLineWrapMode</a>() to set a fixed pixel width <a href="qtextedit.html#LineWrapMode-enum">FixedPixelWidth</a>, or character column (e.g. 80 column) <a href="qtextedit.html#LineWrapMode-enum">FixedColumnWidth</a> with the pixels or columns specified with <a href="qtextedit.html#lineWrapColumnOrWidth-prop">setLineWrapColumnOrWidth</a>(). If you use word wrap to the widget's width <a href="qtextedit.html#LineWrapMode-enum">WidgetWidth</a>, you can specify whether to break on whitespace or anywhere with setWrapPolicy().</p>
+<p>By default the text edit wraps words at whitespace to fit within the text edit widget. The <a href="qtextedit.html#lineWrapMode-prop">setLineWrapMode</a>() function is used to specify the kind of line wrap you want, or <a href="qtextedit.html#LineWrapMode-enum">NoWrap</a> if you don't want any wrapping. Call <a href="qtextedit.html#lineWrapMode-prop">setLineWrapMode</a>() to set a fixed pixel width <a href="qtextedit.html#LineWrapMode-enum">FixedPixelWidth</a>, or character column (e.g. 80 column) <a href="qtextedit.html#LineWrapMode-enum">FixedColumnWidth</a> with the pixels or columns specified with <a href="qtextedit.html#lineWrapColumnOrWidth-prop">setLineWrapColumnOrWidth</a>(). If you use word wrap to the widget's width <a href="qtextedit.html#LineWrapMode-enum">WidgetWidth</a>, you can specify whether to break on whitespace or anywhere with <a href="qtextedit.html#wordWrapMode-prop">setWordWrapMode</a>().</p>
 <p>The <a href="qtextedit.html#find">find</a>() function can be used to find and select a given string within the text.</p>
 <a name="read-only-key-bindings"></a>
 <h4>Read-only key bindings</h4>
 <p>When QTextEdit is used read-only the key-bindings are limited to navigation, and text may only be selected with the mouse:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Keypresses</th><th>Action</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#ArrowType-enum">Qt::UpArrow</a></td><td>Moves one line up.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#ArrowType-enum">Qt::DownArrow</a></td><td>Moves one line down.</td></tr>
@@ -222,9 +223,9 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#e0e0e0"><td>PageDown</td><td>Moves one (viewport) page down.</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>Home</td><td>Moves to the beginning of the text.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>End</td><td>Moves to the end of the text.</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>Shift+Wheel</td><td>Scrolls the page horizontally (the Wheel is the mouse wheel).</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>Alt+Wheel</td><td>Scrolls the page horizontally (the Wheel is the mouse wheel).</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>Ctrl+Wheel</td><td>Zooms the text.</td></tr>
-</table>
+</table></p>
 <p>The text edit may be able to provide some meta-information. For example, the <a href="qtextedit.html#documentTitle-prop">documentTitle</a>() function will return the text from within HTML <tt>&lt;title&gt;</tt> tags.</p>
 <a name="using-qtextedit-as-an-editor"></a>
 <h3>Using QTextEdit as an Editor</h3>
@@ -236,7 +237,7 @@ body { background: #ffffff; color: black; }</style>
 <a name="editing-key-bindings"></a>
 <h4>Editing key bindings</h4>
 <p>The list of key-bindings which are implemented for editing:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Keypresses</th><th>Action</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>Backspace</td><td>Deletes the character to the left of the cursor.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>Delete</td><td>Deletes the character to the right of the cursor.</td></tr>
@@ -271,23 +272,23 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#f0f0f0"><td>Ctrl+Home</td><td>Moves the cursor to the beginning of the text.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>End</td><td>Moves the cursor to the end of the line.</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>Ctrl+End</td><td>Moves the cursor to the end of the text.</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>Shift+Wheel</td><td>Scrolls the page horizontally (the Wheel is the mouse wheel).</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>Alt+Wheel</td><td>Scrolls the page horizontally (the Wheel is the mouse wheel).</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>Ctrl+Wheel</td><td>Zooms the text.</td></tr>
-</table>
+</table></p>
 <p>To select (mark) text hold down the Shift key whilst pressing one of the movement keystrokes, for example, <i>Shift+Right Arrow</i> will select the character to the right, and <i>Shift+Ctrl+Right Arrow</i> will select the word to the right, etc.</p>
 <p>See also <a href="qtextdocument.html">QTextDocument</a>, <a href="qtextcursor.html">QTextCursor</a>, <a href="qtextedit.html#document">document</a>(), <a href="qtextedit.html#textCursor">textCursor</a>(), <a href="qtextedit.html#setDocument">setDocument</a>(), and <a href="qtextedit.html#setTextCursor">setTextCursor</a>().</p>
 <hr />
 <h2>Member Type Documentation</h2>
 <h3 class="flags"><a name="AutoFormattingFlag-enum"></a>enum QTextEdit::AutoFormattingFlag<br />flags QTextEdit::AutoFormatting</h3>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QTextEdit::AutoNone</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">Don't do any automatic formatting.</td></tr>
 <tr><td valign="top"><tt>QTextEdit::AutoBulletList</tt></td><td align="center" valign="top"><tt>0x00000001</tt></td><td valign="top">Automatically create bullet lists (e.g. when the user enters an asterisk ('*') in the left most column, or presses Enter in an existing list item.</td></tr>
 <tr><td valign="top"><tt>QTextEdit::AutoAll</tt></td><td align="center" valign="top"><tt>0xffffffff</tt></td><td valign="top">Apply all automatic formatting. Currently only automatic bullet lists are supported.</td></tr>
-</table>
+</table></p>
 <p>The AutoFormatting type is a typedef for <a href="qflags.html">QFlags</a>&lt;AutoFormattingFlag&gt;. It stores an OR combination of AutoFormattingFlag values.</p>
 <h3 class="fn"><a name="CursorAction-enum"></a>enum QTextEdit::CursorAction</h3>
-<table border="1" cellpadding="2" cellspacing="1" width="40%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="40%">
 <tr><th width="60%">Constant</th><th width="40%">Value</th></tr>
 <tr><td valign="top"><tt>QTextEdit::MoveBackward</tt></td><td align="center" valign="top"><tt>0</tt></td></tr>
 <tr><td valign="top"><tt>QTextEdit::MoveForward</tt></td><td align="center" valign="top"><tt>1</tt></td></tr>
@@ -301,15 +302,15 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QTextEdit::MoveEnd</tt></td><td align="center" valign="top"><tt>9</tt></td></tr>
 <tr><td valign="top"><tt>QTextEdit::MovePageUp</tt></td><td align="center" valign="top"><tt>10</tt></td></tr>
 <tr><td valign="top"><tt>QTextEdit::MovePageDown</tt></td><td align="center" valign="top"><tt>11</tt></td></tr>
-</table>
+</table></p>
 <h3 class="fn"><a name="LineWrapMode-enum"></a>enum QTextEdit::LineWrapMode</h3>
-<table border="1" cellpadding="2" cellspacing="1" width="40%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="40%">
 <tr><th width="60%">Constant</th><th width="40%">Value</th></tr>
 <tr><td valign="top"><tt>QTextEdit::NoWrap</tt></td><td align="center" valign="top"><tt>0</tt></td></tr>
 <tr><td valign="top"><tt>QTextEdit::WidgetWidth</tt></td><td align="center" valign="top"><tt>1</tt></td></tr>
 <tr><td valign="top"><tt>QTextEdit::FixedPixelWidth</tt></td><td align="center" valign="top"><tt>2</tt></td></tr>
 <tr><td valign="top"><tt>QTextEdit::FixedColumnWidth</tt></td><td align="center" valign="top"><tt>3</tt></td></tr>
-</table>
+</table></p>
 <hr />
 <h2>Property Documentation</h2>
 <h3 class="fn"><a name="acceptRichText-prop"></a>acceptRichText : bool</h3>
@@ -348,6 +349,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b>QString toHtml () const</b></li>
 <li><div class="fn"/><b>void setHtml ( const QString &amp; <i>text</i> )</b></li>
 </ul>
+<p>See also <a href="richtext-html-subset.html">Supported HTML Subset</a>.</p>
 <h3 class="fn"><a name="lineWrapColumnOrWidth-prop"></a>lineWrapColumnOrWidth : int</h3>
 <p>This property holds the position (in pixels or columns depending on the wrap mode) where text will be wrapped.</p>
 <p>If the wrap mode is <a href="qtextedit.html#LineWrapMode-enum">FixedPixelWidth</a>, the value is the number of pixels from the left edge of the text edit at which text should be wrapped. If the wrap mode is <a href="qtextedit.html#LineWrapMode-enum">FixedColumnWidth</a>, the value is the column number (in character columns) from the left edge of the text edit at which text should be wrapped.</p>
@@ -477,7 +479,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="cursorRect"></a><a href="qrect.html">QRect</a> QTextEdit::cursorRect ( const <a href="qtextcursor.html">QTextCursor</a> &amp; <i>cursor</i> ) const</h3>
 <p>returns a rectangle (in viewport coordinates) that includes the <i>cursor</i>.</p>
 <h3 class="fn"><a name="cursorRect-2"></a><a href="qrect.html">QRect</a> QTextEdit::cursorRect () const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>returns a rectangle (in viewport coordinates) that includes the cursor of the text edit.</p>
 <h3 class="fn"><a name="cut"></a>void QTextEdit::cut ()&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Copies the selected text to the clipboard and deletes it from the text edit.</p>
@@ -526,6 +528,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="paste"></a>void QTextEdit::paste ()&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Pastes the text from the clipboard into the text edit at the current cursor position.</p>
 <p>If there is no text in the clipboard nothing happens.</p>
+<p>To change the behavior of this function, i.e. to modify what <a href="qtextedit.html">QTextEdit</a> can paste and how it is being pasted, reimplement the virtual <a href="qtextedit.html#canInsertFromMimeData">canInsertFromMimeData</a>() and <a href="qtextedit.html#insertFromMimeData">insertFromMimeData</a>() functions.</p>
 <p>See also <a href="qtextedit.html#cut">cut</a>() and <a href="qtextedit.html#copy">copy</a>().</p>
 <h3 class="fn"><a name="redoAvailable"></a>void QTextEdit::redoAvailable ( bool <i>available</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted whenever redo operations become available (<i>available</i> is true) or unavailable (<i>available</i> is false).</p>
@@ -598,8 +601,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qtextedit.html#zoomIn">zoomIn</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

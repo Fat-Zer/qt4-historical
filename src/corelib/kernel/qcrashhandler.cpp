@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -23,8 +23,6 @@
 
 /*************************************************************************
  *
- * Original copyright notice:
- *
  * stacktrace.c 1.2 1998/12/21
  *
  * Copyright (c) 1998 by Bjorn Reese <breese@imada.ou.dk>
@@ -42,6 +40,8 @@
 
 #include "qplatformdefs.h"
 #include "private/qcrashhandler_p.h"
+#include "qbytearray.h" // for qvsnprintf()
+
 #include <stdio.h>
 #include <signal.h>
 #include <stdlib.h>
@@ -89,15 +89,15 @@ static bool backtrace_command(FILE *outb, const char *format, ...)
     char buffer[50];
 
     /*
-     * Please note that vsprintf() is not ASync safe (ie. cannot safely
+     * Please note that vsnprintf() is not ASync safe (ie. cannot safely
      * be used from a signal handler.) If this proves to be a problem
      * then the cmd string can be built by more basic functions such as
-     * strcpy, strcat, and a homemade integer-to-ascii function.
+     * strcpy, strcat, and a home-made integer-to-ascii function.
      */
     va_list args;
     char cmd[512];
     va_start(args, format);
-    vsprintf(cmd, format, args);
+    qvsnprintf(cmd, 512, format, args);
     va_end(args);
 
     char *foo = cmd;

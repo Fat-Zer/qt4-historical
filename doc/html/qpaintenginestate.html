@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/gui/painting/qpainter.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/gui/painting/qpainter.cpp -->
 <head>
     <title>Qt 4.1: QPaintEngineState Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -49,7 +49,7 @@ body { background: #ffffff; color: black; }</style>
 <p>QPaintEngineState records which properties that have changed since the last time the paint engine was updated, as well as their current value.</p>
 <p>Which properties that have changed can at any time be retrieved using the <a href="qpaintenginestate.html#state">state</a>() function. This function returns an instance of the <a href="qpaintengine.html#DirtyFlag-enum">QPaintEngine::DirtyFlags</a> type which stores an OR combination of <a href="qpaintengine.html#DirtyFlag-enum">QPaintEngine::DirtyFlag</a> values. The <a href="qpaintengine.html#DirtyFlag-enum">QPaintEngine::DirtyFlag</a> enum defines whether a property has changed since the last update or not.</p>
 <p>If a property is marked with a dirty flag, its current value can be retrieved using the corresponding get function:</p>
-<a name="getfunction"></a><table align="center" cellpadding="2" cellspacing="1" border="0">
+<a name="getfunction"></a><p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Property Flag</th><th>Current Property Value</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qpaintengine.html#DirtyFlag-enum">QPaintEngine::DirtyBackground</a></td><td><a href="qpaintenginestate.html#backgroundBrush">backgroundBrush</a>()</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qpaintengine.html#DirtyFlag-enum">QPaintEngine::DirtyBackgroundMode</a></td><td><a href="qpaintenginestate.html#backgroundMode">backgroundMode</a>()</td></tr>
@@ -64,7 +64,7 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qpaintengine.html#DirtyFlag-enum">QPaintEngine::DirtyClipEnabled</a></td><td><a href="qpaintenginestate.html#isClipEnabled">isClipEnabled</a>()</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qpaintengine.html#DirtyFlag-enum">QPaintEngine::DirtyPen</a></td><td><a href="qpaintenginestate.html#pen">pen</a>()</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qpaintengine.html#DirtyFlag-enum">QPaintEngine::DirtyHints</a></td><td><a href="qpaintenginestate.html#renderHints">renderHints</a>()</td></tr>
-</table>
+</table></p>
 <p>The QPaintEngineState class also provide the <a href="qpaintenginestate.html#painter">painter</a>() function which returns a pointer to the painter that is currently updating the paint engine.</p>
 <p>An instance of this class, representing the current state of the active paint engine, is passed as argument to the <a href="qpaintengine.html#updateState">QPaintEngine::updateState</a>() function. The only situation in which you will have to use this class directly is when implementing your own paint engine.</p>
 <p>See also <a href="qpaintengine.html">QPaintEngine</a>.</p>
@@ -129,8 +129,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qpaintengine.html#updateState">QPaintEngine::updateState</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

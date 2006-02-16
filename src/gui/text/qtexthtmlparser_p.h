@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -103,6 +103,9 @@ enum QTextHTMLElements {
     Html_tr,
     Html_td,
     Html_th,
+    Html_thead,
+    Html_tbody,
+    Html_tfoot,
     Html_html,
 
     // misc...
@@ -117,7 +120,7 @@ struct QTextHtmlElement
 {
     const char *name;
     int id;
-    enum DisplayMode { DisplayBlock, DisplayInline, DisplayNone } displayMode;
+    enum DisplayMode { DisplayBlock, DisplayInline, DisplayTable, DisplayNone } displayMode;
 };
 
 class QTextHtmlParser;
@@ -177,7 +180,7 @@ struct QTextHtmlParserNode {
     uint hasCssBlockIndent : 1;
     uint hasCssListIndent : 1;
     uint isEmptyParagraph : 1;
-    uint isTableFrame : 1;
+    uint isTextFrame : 1;
     uint direction : 2; // 3 means unset
     uint displayMode : 3; // QTextHtmlElement::DisplayMode
     QString fontFamily;
@@ -220,7 +223,11 @@ struct QTextHtmlParserNode {
         switch (id) {
             case Html_dd: return (parentId == Html_dt || parentId == Html_dl);
             case Html_dt: return (parentId == Html_dl);
-            case Html_tr: return (parentId == Html_table);
+            case Html_tr: return (parentId == Html_table
+                                  || parentId == Html_thead
+                                  || parentId == Html_tbody
+                                  || parentId == Html_tfoot
+                                 );
             case Html_th:
             case Html_td: return (parentId == Html_tr);
             default: break;

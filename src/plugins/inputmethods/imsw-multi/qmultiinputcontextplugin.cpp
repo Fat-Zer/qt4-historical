@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the plugins of the Qt Toolkit.
 **
@@ -85,6 +85,6 @@ QString QMultiInputContextPlugin::description( const QString &key )
 
 
 Q_EXPORT_STATIC_PLUGIN(QMultiInputContextPlugin)
-Q_EXPORT_STATIC_PLUGIN2(qimsw-multi, QMultiInputContextPlugin)
+Q_EXPORT_STATIC_PLUGIN2(qimsw_multi, QMultiInputContextPlugin)
 
 #endif

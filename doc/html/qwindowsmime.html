@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/gui/kernel/qmime_win.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/gui/kernel/qmime_win.cpp -->
 <head>
     <title>Qt 4.1: QWindowsMime Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -46,7 +46,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Qt's drag-and-drop and clipboard facilities use the MIME standard. On X11, this maps trivially to the Xdnd protocol, but on Windows although some applications use MIME types to describe clipboard formats, others use arbitrary non-standardized naming conventions, or unnamed built-in formats of Windows.</p>
 <p>By instantiating subclasses of QWindowsMime that provide conversions between Windows Clipboard and MIME formats, you can convert proprietary clipboard formats to MIME formats.</p>
 <p>Qt has predefined support for the following Windows Clipboard formats:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Windows Format</th><th>Equivalent MIME type</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><tt>CF_UNICODETEXT</tt></td><td><tt>text/plain</tt></td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><tt>CF_TEXT</tt></td><td><tt>text/plain</tt></td></tr>
@@ -54,7 +54,7 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#e0e0e0"><td><tt>CF_HDROP</tt></td><td><tt>text/uri-list</tt></td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><tt>CF_INETURL</tt></td><td><tt>text/uri-list</tt></td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><tt>CF_HTML</tt></td><td><tt>text/html</tt></td></tr>
-</table>
+</table></p>
 <p>An example use of this class would be to map the Windows Metafile clipboard format (<tt>CF_METAFILEPICT</tt>) to and from the MIME type <tt>image/x-wmf</tt>. This conversion might simply be adding or removing a header, or even just passing on the data. See <a href="dnd.html">Drag and Drop</a> for more information on choosing and definition MIME types.</p>
 <p>You can check if a MIME type is convertible using <a href="qwindowsmime.html#canConvertFromMime">canConvertFromMime</a>() and can perform conversions with <a href="qwindowsmime.html#convertToMime">convertToMime</a>() and <a href="qwindowsmime.html#convertFromMime">convertFromMime</a>().</p>
 <hr />
@@ -86,8 +86,8 @@ body { background: #ffffff; color: black; }</style>
 <p>Registers the MIME type <i>mime</i>, and returns an ID number identifying the format on Windows.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

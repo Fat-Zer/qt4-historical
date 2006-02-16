@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the qmake application of the Qt Toolkit.
 **
@@ -26,13 +26,15 @@
 #include "qdir.h"
 #include "makefile.h"
 #include "project.h"
+#include "cachekeys.h"
 
 #define BUILDSMETATYPE 1
 #define SUBDIRSMETATYPE 2
 
 MetaMakefileGenerator::~MetaMakefileGenerator()
 {
-
+    if(own_project)
+        delete project;
 }
 
 class BuildsMetaMakefileGenerator : public MetaMakefileGenerator
@@ -49,7 +51,7 @@ private:
 
 public:
 
-    BuildsMetaMakefileGenerator(QMakeProject *p) : MetaMakefileGenerator(p), init_flag(false) { }
+    BuildsMetaMakefileGenerator(QMakeProject *p, bool op) : MetaMakefileGenerator(p, op), init_flag(false) { }
     virtual ~BuildsMetaMakefileGenerator() { clearBuilds(); }
 
     virtual bool init();
@@ -62,6 +64,10 @@ BuildsMetaMakefileGenerator::clearBuilds()
 {
     for(int i = 0; i < makefiles.count(); i++) {
         Build *build = makefiles[i];
+        if(QMakeProject *p = build->makefile->projectFile()) {
+            if(p != project)
+                delete p;
+        }
         delete build->makefile;
         delete build;
     }
@@ -106,7 +112,7 @@ BuildsMetaMakefileGenerator::init()
     }
     if(use_single_build) {
         Build *build = new Build;
-        build->makefile = createMakefileGenerator(project);
+        build->makefile = createMakefileGenerator(project, false);
         makefiles += build;
     }
     return true;
@@ -235,7 +241,7 @@ private:
     MakefileGenerator *processBuild(const QString &);
 
 public:
-    SubdirsMetaMakefileGenerator(QMakeProject *p) : MetaMakefileGenerator(p), init_flag(false) { }
+    SubdirsMetaMakefileGenerator(QMakeProject *p, bool op) : MetaMakefileGenerator(p, op), init_flag(false) { }
     virtual ~SubdirsMetaMakefileGenerator();
 
     virtual bool init();
@@ -285,13 +291,14 @@ SubdirsMetaMakefileGenerator::init()
                 continue;
             }
             sub->makefile = MetaMakefileGenerator::createMetaGenerator(sub_proj);
-            if(sub->makefile->type() == SUBDIRSMETATYPE) {
+            if(0 && sub->makefile->type() == SUBDIRSMETATYPE) {
                 subs.append(sub);
             } else {
                 const QString &output_name = Option::output.fileName();
                 Option::output.setFileName(sub->output_file);
                 sub->makefile->write(sub->output_dir);
                 delete sub;
+                qmakeClearCaches();
                 sub = 0;
                 Option::output.setFileName(output_name);
             }
@@ -308,7 +315,7 @@ SubdirsMetaMakefileGenerator::init()
     self->input_dir = qmake_getpwd();
     self->output_dir = Option::output_dir;
     self->output_file = Option::output.fileName();
-    self->makefile = new BuildsMetaMakefileGenerator(project);
+    self->makefile = new BuildsMetaMakefileGenerator(project, false);
     self->makefile->init();
     subs.append(self);
     return true;
@@ -377,7 +384,6 @@ MetaMakefileGenerator::createMakefileGenerator(QMakeProject *proj, bool noIO)
         return mkfile;
     }
 
-
     QString gen = proj->first("MAKEFILE_GENERATOR");
     if(gen.isEmpty()) {
         fprintf(stderr, "No generator specified in config file: %s\n",
@@ -417,16 +423,16 @@ MetaMakefileGenerator::createMakefileGenerator(QMakeProject *proj, bool noIO)
 }
 
 MetaMakefileGenerator *
-MetaMakefileGenerator::createMetaGenerator(QMakeProject *proj)
+MetaMakefileGenerator::createMetaGenerator(QMakeProject *proj, bool op)
 {
     MetaMakefileGenerator *ret = 0;
     if((Option::qmake_mode == Option::QMAKE_GENERATE_MAKEFILE ||
         Option::qmake_mode == Option::QMAKE_GENERATE_PRL)) {
         if(proj->first("TEMPLATE").endsWith("subdirs"))
-            ret = new SubdirsMetaMakefileGenerator(proj);
+            ret = new SubdirsMetaMakefileGenerator(proj, op);
     }
     if(!ret)
-        ret = new BuildsMetaMakefileGenerator(proj);
+        ret = new BuildsMetaMakefileGenerator(proj, op);
     ret->init();
     return ret;
 }

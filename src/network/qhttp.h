@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtNetwork module of the Qt Toolkit.
 **
@@ -60,7 +60,7 @@ public:
     QStringList allValues(const QString &key) const;
     void removeValue(const QString &key);
     void removeAllValues(const QString &key);
-    
+
     bool hasContentLength() const;
     uint contentLength() const;
     void setContentLength(int len);
@@ -151,8 +151,6 @@ public:
     explicit QHttp(QObject *parent = 0);
     QHttp(const QString &hostname, quint16 port = 80, QObject *parent = 0);
     virtual ~QHttp();
-
-    int supportedOperations() const;
 
     enum State {
         Unconnected,

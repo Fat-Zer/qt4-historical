@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/doc/src/qmake-manual.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/doc/src/qmake-manual.qdoc -->
 <head>
     <title>Qt 4.1: qmake Advanced Usage</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -158,7 +158,8 @@ body { background: #ffffff; color: black; }</style>
     message(Examples: $$[QT_INSTALL_EXAMPLES])
     message(Demonstrations: $$[QT_INSTALL_DEMOS])</pre>
 <p>The variables accessible with this operator are typically used to enable third party plugins and components to be integrated with Qt. For example, a <i>Qt Designer</i> plugin can be installed alongside <i>Qt Designer</i>'s built-in plugins if the following declaration is made in its project file:</p>
-<pre>&nbsp;   DESTDIR = $$[QT_INSTALL_PLUGINS]/designer</pre>
+<pre>&nbsp;   target.path = $$[QT_INSTALL_PLUGINS]/designer
+    INSTALLS += target</pre>
 <a name="variableprocessingfunctions"></a><a name="variable-processing-functions"></a>
 <h2>Variable Processing Functions</h2>
 <p><tt>qmake</tt> provides a selection of built-in functions to allow the contents of variables to be processed. These functions process the arguments supplied to them and return a value, or list of values, as a result. In order to assign a result to a variable, it is necessary to use the <tt>$$</tt> operator with this type of function in the same way used to assign contents of one variable to another:</p>
@@ -239,8 +240,8 @@ body { background: #ffffff; color: black; }</style>
 </p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

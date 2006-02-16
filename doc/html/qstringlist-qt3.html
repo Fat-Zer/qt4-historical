@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/corelib/tools/qstringlist.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/corelib/tools/qstringlist.cpp -->
 <head>
     <title>Qt 4.1: Qt 3 Support Members for QStringList</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -47,7 +47,7 @@ body { background: #ffffff; color: black; }</style>
 <p>you can rewrite it as</p>
 <pre>    QStringList::Iterator i = list.isEmpty() ? list.end() : --list.end();</pre>
 <h3 class="fn"><a name="fromLast-2"></a><a href="qlist.html#ConstIterator-typedef">ConstIterator</a> QStringList::fromLast () const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Use <a href="qlist.html#end">end</a>() instead.</p>
 <p>For example, if you have code like</p>
 <pre><font color="#404040">    QStringList::ConstIterator i = list.fromLast();</font></pre>
@@ -56,12 +56,12 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="grep"></a>QStringList QStringList::grep ( const <a href="qstring.html">QString</a> &amp; <i>str</i>, bool <i>cs</i> = true ) const</h3>
 <p>Use <a href="qlist-qt3.html#find">find</a>() instead.</p>
 <h3 class="fn"><a name="grep-2"></a>QStringList QStringList::grep ( const <a href="qregexp.html">QRegExp</a> &amp; <i>rx</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Use <a href="qlist-qt3.html#find">find</a>() instead.</p>
 <h3 class="fn"><a name="gres"></a>QStringList &amp; QStringList::gres ( const <a href="qregexp.html">QRegExp</a> &amp; <i>rx</i>, const <a href="qstring.html">QString</a> &amp; <i>after</i> )</h3>
 <p>Use <a href="qlist.html#replace">replace</a>() instead.</p>
 <h3 class="fn"><a name="gres-2"></a>QStringList &amp; QStringList::gres ( const <a href="qstring.html">QString</a> &amp; <i>before</i>, const <a href="qstring.html">QString</a> &amp; <i>after</i>, bool <i>cs</i> = true )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Use <a href="qlist.html#replace">replace</a>() instead.</p>
 <h3 class="fn"><a name="split"></a>QStringList QStringList::split ( const <a href="qregexp.html">QRegExp</a> &amp; <i>sep</i>, const <a href="qstring.html">QString</a> &amp; <i>str</i>, bool <i>allowEmptyEntries</i> = false )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Splits the string <i>str</i> into strings wherever the regular expression <i>sep</i> occurs, and returns the list of those strings.</p>
@@ -71,19 +71,19 @@ body { background: #ffffff; color: black; }</style>
 <p>If <i>sep</i> does not match anywhere in <i>str</i>, split() returns a single element list with the element containing the original string, <i>str</i>.</p>
 <p>See also <a href="qstringlist.html#join">join</a>() and <a href="qstring.html#section">QString::section</a>().</p>
 <h3 class="fn"><a name="split-2"></a>QStringList QStringList::split ( const <a href="qchar.html">QChar</a> &amp; <i>sep</i>, const <a href="qstring.html">QString</a> &amp; <i>str</i>, bool <i>allowEmptyEntries</i> = false )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>This version of the function uses a <a href="qchar.html">QChar</a> as separator.</p>
 <p>See also <a href="qstringlist.html#join">join</a>() and <a href="qstring.html#section">QString::section</a>().</p>
 <h3 class="fn"><a name="split-3"></a>QStringList QStringList::split ( const <a href="qstring.html">QString</a> &amp; <i>sep</i>, const <a href="qstring.html">QString</a> &amp; <i>str</i>, bool <i>allowEmptyEntries</i> = false )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>This version of the function uses a <a href="qstring.html">QString</a> as separator.</p>
 <p>If <i>sep</i> is an empty string, the return value is a list of one-character strings: split(<a href="qstring.html">QString</a>(&quot;&quot;), &quot;four&quot;) returns the four-item list, &quot;f&quot;, &quot;o&quot;, &quot;u&quot;, &quot;r&quot;.</p>
 <p>If <i>allowEmptyEntries</i> is true, an empty string is inserted in the list wherever the separator matches twice without intervening text.</p>
 <p>See also <a href="qstringlist.html#join">join</a>() and <a href="qstring.html#section">QString::section</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

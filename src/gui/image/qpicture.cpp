@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -52,17 +52,25 @@
     platform-independent format. They are sometimes referred to as meta-files.
 
     Qt pictures use a proprietary binary format. Unlike native picture
-    (meta-file) formats on many window systems, Qt pictures have no limitations
-    regarding their contents. Everything that can be painted on a widget or
-    pixmap (e.g., fonts, pixmaps, regions, transformed graphics, etc.)
-    can also be stored in a picture.
+    (meta-file) formats on many window systems, Qt pictures have no
+    limitations regarding their contents. Everything that can be
+    painted on a widget or pixmap (e.g., fonts, pixmaps, regions,
+    transformed graphics, etc.)  can also be stored in a picture.
+
+    QPicture is resolution independent, i.e. a QPicture can be
+    displayed on different devices (for example svg, pdf, ps, printer
+    and screen) looking the same. This is, for instance, needed for
+    WYSIWYG print preview. QPicture always runs in 72 dpi, and
+    scales the painter to match differences in resolution depending
+    on the window system.
+
     QPicture is an \link shclass.html implicitly shared\endlink class.
 
     Example of how to record a picture:
     \quotefromfile snippets/picture/picture.cpp
     \skipto RECORD
     \skipto QPicture
-    printuntil save
+    \printuntil save
 
     Example of how to replay a picture:
     \quotefromfile snippets/picture/picture.cpp

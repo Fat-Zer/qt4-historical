@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/corelib/kernel/qobject.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/corelib/kernel/qobject.cpp -->
 <head>
     <title>Qt 4.1: Qt 3 Support Members for QObject</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -49,7 +49,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="child"></a>QObject * QObject::child ( const char * <i>objName</i>, const char * <i>inheritsClass</i> = 0, bool <i>recursiveSearch</i> = true ) const</h3>
 <p>Searches the children and optionally grandchildren of this object, and returns a child that is called <i>objName</i> that inherits <i>inheritsClass</i>. If <i>inheritsClass</i> is 0 (the default), any class matches.</p>
 <p>If <i>recursiveSearch</i> is true (the default), child() performs a depth-first search of the object's children.</p>
-<p>If there is no such object, this function returns 0. If there are more than one, the first one found is retured; if you need all of them, use queryList().</p>
+<p>If there is no such object, this function returns 0. If there are more than one, the first one found is returned.</p>
 <h3 class="fn"><a name="className"></a>const char * QObject::className () const</h3>
 <p>Use <a href="qobject.html#metaObject">metaObject</a>()-&gt;className() instead.</p>
 <h3 class="fn"><a name="insertChild"></a>void QObject::insertChild ( QObject * <i>object</i> )</h3>
@@ -60,7 +60,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Use <a href="qobject.html#objectName-prop">objectName</a>() instead.</p>
 <p>See also <a href="qobject-qt3.html#setName">setName</a>().</p>
 <h3 class="fn"><a name="name-2"></a>const char * QObject::name ( const char * <i>defaultName</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Use <a href="qobject.html#objectName-prop">objectName</a>() instead.</p>
 <h3 class="fn"><a name="normalizeSignalSlot"></a><a href="qbytearray.html">QByteArray</a> QObject::normalizeSignalSlot ( const char * <i>signalSlot</i> )&nbsp;&nbsp;<tt> [static protected]</tt></h3>
 <p>Use <a href="qmetaobject.html#normalizedSignature">QMetaObject::normalizedSignature</a>() instead.</p>
@@ -71,8 +71,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qobject-qt3.html#name">name</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

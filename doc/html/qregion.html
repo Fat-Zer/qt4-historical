@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/gui/painting/qregion.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/gui/painting/qregion.cpp -->
 <head>
     <title>Qt 4.1: QRegion Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -72,7 +72,7 @@ body { background: #ffffff; color: black; }</style>
 <a name="related-non-members"></a>
 <h3>Related Non-Members</h3>
 <ul>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qregion.html#operator-lt-lt-84">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>s</i>, const QRegion &amp; <i>r</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qregion.html#operator-lt-lt-88">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>s</i>, const QRegion &amp; <i>r</i> )</li>
 <li><div class="fn"/>QDataStream &amp; <b><a href="qregion.html#operator-gt-gt-54">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>s</i>, QRegion &amp; <i>r</i> )</li>
 </ul>
 <a name="details"></a>
@@ -103,11 +103,11 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="RegionType-enum"></a>enum QRegion::RegionType</h3>
 <p>Specifies the shape of the region to be created.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QRegion::Rectangle</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">the region covers the entire rectangle.</td></tr>
 <tr><td valign="top"><tt>QRegion::Ellipse</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">the region is an ellipse inside the rectangle.</td></tr>
-</table>
+</table></p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QRegion"></a>QRegion::QRegion ()</h3>
@@ -137,7 +137,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="contains"></a>bool QRegion::contains ( const <a href="qpoint.html">QPoint</a> &amp; <i>p</i> ) const</h3>
 <p>Returns true if the region contains the point <i>p</i>; otherwise returns false.</p>
 <h3 class="fn"><a name="contains-2"></a>bool QRegion::contains ( const <a href="qrect.html">QRect</a> &amp; <i>r</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns true if the region overlaps the rectangle <i>r</i>; otherwise returns false.</p>
 <h3 class="fn"><a name="eor"></a>QRegion QRegion::eor ( const QRegion &amp; <i>r</i> ) const</h3>
 <p>Returns a region which is the exclusive or (XOR) of this region and <i>r</i>.</p>
@@ -146,9 +146,9 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns a platform-specific region handle. The <tt>Handle</tt> type is <tt>HRGN</tt> on Windows, <tt>Region</tt> on X11, and <tt>RgnHandle</tt> on Mac OS X.</p>
 <p><b>Warning:</b> This function is not portable.</p>
 <h3 class="fn"><a name="handle-2"></a>Region QRegion::handle () const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <h3 class="fn"><a name="handle-3"></a>void * QRegion::handle () const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <h3 class="fn"><a name="intersect"></a>QRegion QRegion::intersect ( const QRegion &amp; <i>r</i> ) const</h3>
 <p>Returns a region which is the intersection of this region and <i>r</i>.</p>
 <p align="center"><img src="images/rintersect.png" alt="Region Intersection" /></p><p>The figure shows the intersection of two elliptical regions.</p>
@@ -177,7 +177,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="translate"></a>void QRegion::translate ( int <i>dx</i>, int <i>dy</i> )</h3>
 <p>Translates (moves) the region <i>dx</i> along the X axis and <i>dy</i> along the Y axis.</p>
 <h3 class="fn"><a name="translate-2"></a>void QRegion::translate ( const <a href="qpoint.html">QPoint</a> &amp; <i>point</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Translates the region <i>point</i><i>.x()</i> along the x axis and <i>point</i><i>.y()</i> along the y axis, relative to the current position. Positive values move the region to the right and down.</p>
 <p>Translates to the given <i>point</i>.</p>
 <h3 class="fn"><a name="translated"></a>QRegion QRegion::translated ( int <i>dx</i>, int <i>dy</i> ) const</h3>
@@ -185,7 +185,7 @@ body { background: #ffffff; color: black; }</style>
 <p>This function was introduced in Qt 4.1.</p>
 <p>See also <a href="qregion.html#translate">translate</a>().</p>
 <h3 class="fn"><a name="translated-2"></a>QRegion QRegion::translated ( const <a href="qpoint.html">QPoint</a> &amp; <i>p</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns a copy of the regtion that is translated <i>p</i><i>.x()</i> along the x axis and <i>p</i><i>.y()</i> along the y axis, relative to the current position. Positive values move the rectangle to the right and down.</p>
 <p>This function was introduced in Qt 4.1.</p>
 <p>See also <a href="qregion.html#translate">translate</a>().</p>
@@ -232,18 +232,18 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qregion.html#unite">unite</a>().</p>
 <hr />
 <h2>Related Non-Members</h2>
-<h3 class="fn"><a name="operator-lt-lt-84"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>s</i>, const QRegion &amp; <i>r</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<h3 class="fn"><a name="operator-lt-lt-88"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>s</i>, const QRegion &amp; <i>r</i> )</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes the region <i>r</i> to the stream <i>s</i> and returns a reference to the stream.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
 <h3 class="fn"><a name="operator-gt-gt-54"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>s</i>, QRegion &amp; <i>r</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads a region from the stream <i>s</i> into <i>r</i> and returns a reference to the stream.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

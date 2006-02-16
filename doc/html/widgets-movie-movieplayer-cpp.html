@@ -19,7 +19,7 @@ body { background: #ffffff; color: black; }</style>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">movieplayer.cpp Example File<br /><sup><sup>widgets/movie/movieplayer.cpp</sup></sup></h1>
 <pre>&nbsp;   /****************************************************************************
     **
-    ** Copyright (C) 2005-2005 Trolltech AS. All rights reserved.
+    ** Copyright (C) 2005-2006 Trolltech AS. All rights reserved.
     **
     ** This file is part of the documentation of the Qt Toolkit.
     **
@@ -47,183 +47,169 @@ body { background: #ffffff; color: black; }</style>
     MoviePlayer::MoviePlayer(QWidget *parent)
         : QWidget(parent)
     {
-        movieScreen = new QLabel;
-        movieScreen-&gt;setSizePolicy(QSizePolicy::Expanding,
-                                   QSizePolicy::Expanding);
-        movieScreen-&gt;setBackgroundRole(QPalette::Base);
-        movieScreen-&gt;setText(tr(&quot;Use the Eject button to select a movie.&quot;));
-        movieScreen-&gt;setAlignment(Qt::AlignCenter);
-        movieScreen-&gt;setWordWrap(true);
+        movie = new QMovie(this);
+        movie-&gt;setCacheMode(QMovie::CacheAll);
+
+        movieLabel = new QLabel(tr(&quot;No movie loaded&quot;));
+        movieLabel-&gt;setAlignment(Qt::AlignCenter);
+        movieLabel-&gt;setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+        movieLabel-&gt;setBackgroundRole(QPalette::Dark);
+        movieLabel-&gt;setAutoFillBackground(true);
 
         currentMovieDirectory = &quot;movies&quot;;
 
-        createSliders();
-        createCheckBox();
+        createControls();
         createButtons();
 
+        connect(movie, SIGNAL(frameChanged(int)), this, SLOT(updateFrameSlider()));
+        connect(movie, SIGNAL(stateChanged(QMovie::MovieState)),
+                this, SLOT(updateButtons()));
+        connect(fitCheckBox, SIGNAL(clicked()), this, SLOT(fitToWindow()));
+        connect(frameSlider, SIGNAL(valueChanged(int)), this, SLOT(goToFrame(int)));
+        connect(speedSpinBox, SIGNAL(valueChanged(int)),
+                movie, SLOT(setSpeed(int)));
+
         mainLayout = new QVBoxLayout;
-        mainLayout-&gt;addWidget(movieScreen);
-        mainLayout-&gt;addWidget(scaleMovieCheckbox);
-        mainLayout-&gt;addLayout(slidersLayout);
+        mainLayout-&gt;addWidget(movieLabel);
+        mainLayout-&gt;addLayout(controlsLayout);
         mainLayout-&gt;addLayout(buttonsLayout);
         setLayout(mainLayout);
 
-        speedSlider-&gt;setDisabled(true);
-        scaleMovieCheckbox-&gt;setDisabled(true);
-        playButton-&gt;setDisabled(true);
-        stopButton-&gt;setDisabled(true);
+        updateFrameSlider();
+        updateButtons();
 
-        resize(400, 400);
         setWindowTitle(tr(&quot;Movie Player&quot;));
+        resize(400, 400);
     }
 
-    void MoviePlayer::browse()
+    void MoviePlayer::open()
     {
-        QString fileName;
-
-        fileName = QFileDialog::getOpenFileName(this, tr(&quot;Select a Movie&quot;),
-                                                currentMovieDirectory,
-                                                tr(&quot;Movies (*.gif *.mng)&quot;));
-
+        QString fileName = QFileDialog::getOpenFileName(this, tr(&quot;Open a Movie&quot;),
+                                   currentMovieDirectory);
         if (!fileName.isEmpty()) {
-            int index = fileName.length() - fileName.lastIndexOf(&quot;/&quot;);
-            if (!(index &lt; 0)) {
-                currentMovieDirectory = fileName;
-                currentMovieDirectory.chop(index);
-            }
+            currentMovieDirectory = QFileInfo(fileName).path();
 
-            if (movieScreen-&gt;movie() &amp;&amp;
-                        movieScreen-&gt;movie()-&gt;state() != QMovie::NotRunning)
-                movieScreen-&gt;movie()-&gt;stop();
-
-            QMovie *movie = new QMovie(fileName, QByteArray(), this);
-            movie-&gt;setCacheMode(QMovie::CacheAll);
-
-            movie-&gt;setSpeed(100);
-            speedSlider-&gt;setValue(100);
-            connect(speedSlider, SIGNAL(valueChanged(int)),
-                    movie, SLOT(setSpeed(int)));
-
-            movieScreen-&gt;setMovie(movie);
-
-            bool supportsFrames = movie-&gt;frameCount() &gt; 0;
-            if (supportsFrames){
-                frameSlider-&gt;setMaximum(movie-&gt;frameCount()-1);
-                connect(movie, SIGNAL(frameChanged(int)),
-                        frameSlider, SLOT(setValue(int)));
-            }
-            frameSlider-&gt;setVisible(supportsFrames);
-            frameLabel-&gt;setVisible(supportsFrames);
-
-            speedSlider-&gt;setDisabled(false);
-            scaleMovieCheckbox-&gt;setDisabled(false);
-            playButton-&gt;setDisabled(false);
-            stopButton-&gt;setDisabled(false);
-
-            movie-&gt;start();
-        }
-    }
-
-    void MoviePlayer::start()
-    {
-        QMovie *movie = movieScreen-&gt;movie();
-
-        if (movie-&gt;state() == QMovie::NotRunning)
-            movie-&gt;start();
-        else
-            movie-&gt;setPaused(!(movie-&gt;state() == QMovie::Paused));
-    }
-
-    void MoviePlayer::stop()
-    {
-        QMovie *movie = movieScreen-&gt;movie();
-
-        if (!(movie-&gt;state() == QMovie::NotRunning))
             movie-&gt;stop();
+            movieLabel-&gt;setMovie(movie);
+            movie-&gt;setFileName(fileName);
+            movie-&gt;start();
+
+            updateFrameSlider();
+            updateButtons();
+        }
     }
 
     void MoviePlayer::goToFrame(int frame)
     {
-        movieScreen-&gt;movie()-&gt;jumpToFrame(frame);
+        movie-&gt;jumpToFrame(frame);
     }
 
-    void MoviePlayer::scaleMovie()
+    void MoviePlayer::fitToWindow()
     {
-        movieScreen-&gt;setScaledContents(scaleMovieCheckbox-&gt;isChecked());
+        movieLabel-&gt;setScaledContents(fitCheckBox-&gt;isChecked());
     }
 
-    void MoviePlayer::createSliders()
+    void MoviePlayer::updateFrameSlider()
     {
+        bool hasFrames = (movie-&gt;currentFrameNumber() &gt;= 0);
+
+        if (hasFrames) {
+            if (movie-&gt;frameCount() &gt; 0) {
+                frameSlider-&gt;setMaximum(movie-&gt;frameCount() - 1);
+            } else {
+                if (movie-&gt;currentFrameNumber() &gt; frameSlider-&gt;maximum())
+                    frameSlider-&gt;setMaximum(movie-&gt;currentFrameNumber());
+            }
+            frameSlider-&gt;setValue(movie-&gt;currentFrameNumber());
+        } else {
+            frameSlider-&gt;setMaximum(0);
+        }
+        frameLabel-&gt;setEnabled(hasFrames);
+        frameSlider-&gt;setEnabled(hasFrames);
+    }
+
+    void MoviePlayer::updateButtons()
+    {
+        playButton-&gt;setEnabled(movie-&gt;isValid() &amp;&amp; movie-&gt;frameCount() != 1
+                               &amp;&amp; movie-&gt;state() == QMovie::NotRunning);
+        pauseButton-&gt;setEnabled(movie-&gt;state() != QMovie::NotRunning);
+        pauseButton-&gt;setChecked(movie-&gt;state() == QMovie::Paused);
+        stopButton-&gt;setEnabled(movie-&gt;state() != QMovie::NotRunning);
+    }
+
+    void MoviePlayer::createControls()
+    {
+        fitCheckBox = new QCheckBox(tr(&quot;Fit to Window&quot;));
+
+        frameLabel = new QLabel(tr(&quot;Current frame:&quot;));
+
         frameSlider = new QSlider(Qt::Horizontal);
         frameSlider-&gt;setTickPosition(QSlider::TicksBelow);
-        frameSlider-&gt;setTickInterval(1);
-        connect(frameSlider, SIGNAL(valueChanged(int)),
-                this, SLOT(goToFrame(int)));
-        frameSlider-&gt;setVisible(false);
+        frameSlider-&gt;setTickInterval(10);
 
-        frameLabel = new QLabel(tr(&quot;Jump to frame&quot;));
-        frameLabel-&gt;setVisible(false);
+        speedLabel = new QLabel(tr(&quot;Speed:&quot;));
 
-        speedSlider = new QSlider(Qt::Horizontal);
-        speedSlider-&gt;setMaximum(1000);
-        speedSlider-&gt;setTickInterval(50);
-        speedSlider-&gt;setTickPosition(QSlider::TicksBelow);
-        speedSlider-&gt;setMinimum(50);
+        speedSpinBox = new QSpinBox;
+        speedSpinBox-&gt;setRange(1, 9999);
+        speedSpinBox-&gt;setValue(100);
+        speedSpinBox-&gt;setSuffix(tr(&quot;%&quot;));
 
-        speedLabel = new QLabel(tr(&quot;Set speed&quot;));
-
-        slidersLayout = new QGridLayout;
-        slidersLayout-&gt;addWidget(frameLabel, 0, 0);
-        slidersLayout-&gt;addWidget(frameSlider, 0, 1);
-        slidersLayout-&gt;addWidget(speedLabel, 1, 0);
-        slidersLayout-&gt;addWidget(speedSlider, 1, 1);
-    }
-
-    void MoviePlayer::createCheckBox()
-    {
-        scaleMovieCheckbox = new QCheckBox(tr(&quot;Scale movie&quot;));
-        connect(scaleMovieCheckbox, SIGNAL(clicked()),
-                this, SLOT(scaleMovie()));
+        controlsLayout = new QGridLayout;
+        controlsLayout-&gt;addWidget(fitCheckBox, 0, 0, 1, 2);
+        controlsLayout-&gt;addWidget(frameLabel, 1, 0);
+        controlsLayout-&gt;addWidget(frameSlider, 1, 1, 1, 2);
+        controlsLayout-&gt;addWidget(speedLabel, 2, 0);
+        controlsLayout-&gt;addWidget(speedSpinBox, 2, 1);
     }
 
     void MoviePlayer::createButtons()
     {
-        browseButton = new QToolButton;
-        browseButton-&gt;setToolTip(tr(&quot;Eject/Open File...&quot;));
-        browseButton-&gt;setIcon(QIcon(&quot;:/icons/eject.png&quot;));
-        browseButton-&gt;setIconSize(QSize(32, 32));
-        connect(browseButton, SIGNAL(clicked()), this, SLOT(browse()));
+        QSize iconSize(36, 36);
+
+        openButton = new QToolButton;
+        openButton-&gt;setIcon(QIcon(&quot;:/images/open.png&quot;));
+        openButton-&gt;setIconSize(iconSize);
+        openButton-&gt;setToolTip(tr(&quot;Open File&quot;));
+        connect(openButton, SIGNAL(clicked()), this, SLOT(open()));
 
         playButton = new QToolButton;
-        playButton-&gt;setToolTip(tr(&quot;Play/Pause&quot;));
-        playButton-&gt;setIcon(QIcon(&quot;:/icons/play-pause.png&quot;));
-        playButton-&gt;setIconSize(QSize(49, 32));
-        connect(playButton, SIGNAL(clicked()), this, SLOT(start()));
+        playButton-&gt;setIcon(QIcon(&quot;:/images/play.png&quot;));
+        playButton-&gt;setIconSize(iconSize);
+        playButton-&gt;setToolTip(tr(&quot;Play&quot;));
+        connect(playButton, SIGNAL(clicked()), movie, SLOT(start()));
+
+        pauseButton = new QToolButton;
+        pauseButton-&gt;setCheckable(true);
+        pauseButton-&gt;setIcon(QIcon(&quot;:/images/pause.png&quot;));
+        pauseButton-&gt;setIconSize(iconSize);
+        pauseButton-&gt;setToolTip(tr(&quot;Pause&quot;));
+        connect(pauseButton, SIGNAL(clicked(bool)), movie, SLOT(setPaused(bool)));
 
         stopButton = new QToolButton;
+        stopButton-&gt;setIcon(QIcon(&quot;:/images/stop.png&quot;));
+        stopButton-&gt;setIconSize(iconSize);
         stopButton-&gt;setToolTip(tr(&quot;Stop&quot;));
-        stopButton-&gt;setIcon(QIcon(&quot;:/icons/stop.png&quot;));
-        stopButton-&gt;setIconSize(QSize(32, 32));
-        connect(stopButton, SIGNAL(clicked()), this, SLOT(stop()));
+        connect(stopButton, SIGNAL(clicked()), movie, SLOT(stop()));
 
         quitButton = new QToolButton;
+        quitButton-&gt;setIcon(QIcon(&quot;:/images/quit.png&quot;));
+        quitButton-&gt;setIconSize(iconSize);
         quitButton-&gt;setToolTip(tr(&quot;Quit&quot;));
-        quitButton-&gt;setIcon(QIcon(&quot;:/icons/quit.png&quot;));
-        quitButton-&gt;setIconSize(QSize(32, 32));
         connect(quitButton, SIGNAL(clicked()), this, SLOT(close()));
 
         buttonsLayout = new QHBoxLayout;
         buttonsLayout-&gt;addStretch();
+        buttonsLayout-&gt;addWidget(openButton);
         buttonsLayout-&gt;addWidget(playButton);
+        buttonsLayout-&gt;addWidget(pauseButton);
         buttonsLayout-&gt;addWidget(stopButton);
-        buttonsLayout-&gt;addWidget(browseButton);
         buttonsLayout-&gt;addWidget(quitButton);
         buttonsLayout-&gt;addStretch();
     }</pre>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

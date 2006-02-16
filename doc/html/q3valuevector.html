@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/doc/src/q3valuevector.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/doc/src/q3valuevector.qdoc -->
 <head>
     <title>Qt 4.1: Q3ValueVector Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -162,7 +162,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="at"></a>T &amp; Q3ValueVector::at ( int <i>i</i>, bool * <i>ok</i> = 0 )</h3>
 <p>Returns a reference to the element with index <i>i</i>. If <i>ok</i> is non-null, and the index <i>i</i> is out of range, *<i>ok</i> is set to FALSE and the returned reference is undefined. If the index <i>i</i> is within the range of the vector, and <i>ok</i> is non-null, *<i>ok</i> is set to TRUE and the returned reference is well defined.</p>
 <h3 class="fn"><a name="at-2"></a>const T &amp; Q3ValueVector::at ( int <i>i</i>, bool * <i>ok</i> = 0 ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns a const reference to the element with index <i>i</i>. If <i>ok</i> is non-null, and the index <i>i</i> is out of range, *<i>ok</i> is set to FALSE and the returned reference is undefined. If the index <i>i</i> is within the range of the vector, and <i>ok</i> is non-null, *<i>ok</i> is set to TRUE and the returned reference is well defined.</p>
 <h3 class="fn"><a name="resize"></a>void Q3ValueVector::resize ( int <i>n</i>, const T &amp; <i>val</i> = T() )</h3>
 <p>Changes the size of the vector to <i>n</i>. If <i>n</i> is greater than the current <a href="qvector.html#size">size</a>(), elements are added to the end and initialized with the value of <i>val</i>. If <i>n</i> is less than <a href="qvector.html#size">size</a>(), elements are removed from the end. If <i>n</i> is equal to <a href="qvector.html#size">size</a>() nothing happens.</p>
@@ -170,13 +170,13 @@ body { background: #ffffff; color: black; }</style>
 <p>Assigns <i>v</i> to this vector and returns a reference to this vector.</p>
 <p>All iterators of the current vector become invalidated by this operation. The cost of such an assignment is O(1) since <a href="q3valuevector.html">Q3ValueVector</a> is implicitly shared.</p>
 <h3 class="fn"><a name="operator-eq-2"></a>Q3ValueVector&lt;T&gt; &amp; Q3ValueVector::operator= ( const std::vector&lt;T&gt; &amp; <i>v</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Assigns <i>v</i> to this vector and returns a reference to this vector.</p>
 <p>All iterators of the current vector become invalidated by this operation. The cost of this assignment is O(n) since <i>v</i> is copied.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

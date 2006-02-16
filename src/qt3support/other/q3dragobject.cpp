@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt3Support module of the Qt Toolkit.
 **
@@ -307,8 +307,9 @@ void Q3DragObject::dragLink()
     \value DragCopy        The data is copied.
     \value DragMove        The data is moved.
     \value DragLink        The data is linked.
-    \value DragCopyOrMove  The user chooses the mode by using a
-                           control key to switch from the default.
+    \value DragCopyOrMove  The user chooses the mode by using the
+                           \key{Shift} key to switch from the default
+                           copy mode to move mode.
 */
 
 

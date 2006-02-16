@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt Linguist of the Qt Toolkit.
 **
@@ -285,8 +285,20 @@ MetaTranslatorMessage::MetaTranslatorMessage( const char *context,
                 i++;
             }
         }
+
+        if ( !utfeight && context != 0 ) {
+            int i = 0;
+            while ( context[i] != '\0' ) {
+                if ( (uchar) context[i] >= 0x80 ) {
+                    utfeight = true;
+                    break;
+                }
+                i++;
+            }
+        }
     }
 }
+
 
 MetaTranslatorMessage::MetaTranslatorMessage( const MetaTranslatorMessage& m )
     : TranslatorMessage( m ), utfeight( m.utfeight ), ty( m.ty )
@@ -410,13 +422,14 @@ bool MetaTranslator::save( const QString& filename ) const
               << "</comment>\n";
 
         for ( i = inv.begin(); i != inv.end(); ++i ) {
+            MetaTranslatorMessage msg = *i;
             // no need for such noise
-            if ( (*i).type() == MetaTranslatorMessage::Obsolete &&
-                 (*i).translation().isEmpty() )
+            if ( msg.type() == MetaTranslatorMessage::Obsolete && msg.translation().isEmpty() ) {
                 continue;
+            }
 
             t << "    <message";
-            if ( (*i).utf8() )
+            if ( msg.utf8() )
                 t << " encoding=\"UTF-8\"";
             t << ">\n"
               << "        <source>" << evilBytes( (*i).sourceText(),
@@ -453,49 +466,57 @@ bool MetaTranslator::release( const QString& filename, bool verbose,
     TMM::ConstIterator m;
 
     for ( m = mm.begin(); m != mm.end(); ++m ) {
-        if ( m.key().type() != MetaTranslatorMessage::Obsolete ) {
-            if ( m.key().translation().isEmpty() ) {
-                untranslated++;
-            } else {
-                if ( m.key().type() == MetaTranslatorMessage::Unfinished )
+        MetaTranslatorMessage::Type typ = m.key().type();
+        if ( typ != MetaTranslatorMessage::Obsolete ) {
+            if ( typ == MetaTranslatorMessage::Unfinished ) {
+                if ( m.key().translation().isEmpty() ) {
+                    untranslated++;
+                } else {
                     unfinished++;
-                else
-                    finished++;
+                }
+            } else {
+                finished++;
+            }
 
-                QByteArray context = m.key().context();
-                QByteArray sourceText = m.key().sourceText();
-                QByteArray comment = m.key().comment();
-                QString translation = m.key().translation();
+            QByteArray context = m.key().context();
+            QByteArray sourceText = m.key().sourceText();
+            QByteArray comment = m.key().comment();
+            QString translation = m.key().translation();
 
-                if ( !ignoreUnfinished
-                     || m.key().type() != MetaTranslatorMessage::Unfinished ) {
-                    /*
-                      Drop the comment in (context, sourceText, comment),
-                      unless the context is empty,
-                      unless (context, sourceText, "") already exists or
-                      unless we already dropped the comment of (context,
-                      sourceText, comment0).
-                    */
-                    if ( comment.isEmpty()
-                         || context.isEmpty()
-                         || contains(context, sourceText, "")
-                         || !tor.findMessage(context, sourceText, "").translation()
-                                .isNull() ) {
-                        tor.insert( m.key() );
-                    } else {
-                        tor.insert( TranslatorMessage(context, sourceText, "",
-                                                       translation) );
-                    }
+            if ( !ignoreUnfinished
+                 || typ != MetaTranslatorMessage::Unfinished ) {
+                /*
+                  Drop the comment in (context, sourceText, comment),
+                  unless the context is empty,
+                  unless (context, sourceText, "") already exists or
+                  unless we already dropped the comment of (context,
+                  sourceText, comment0).
+                */
+                if ( comment.isEmpty()
+                     || context.isEmpty()
+                     || contains(context, sourceText, "")
+                     || !tor.findMessage(context, sourceText, "").translation()
+                            .isNull() ) {
+                    tor.insert( m.key() );
+                } else {
+                    tor.insert( TranslatorMessage(context, sourceText, "",
+                                                   translation) );
                 }
             }
         }
     }
 
     bool saved = tor.save( filename, mode );
-    if ( saved && verbose )
+    if ( saved && verbose ) {
+        int generatedCount = finished + unfinished;
         fprintf( stderr,
-                 " %d finished, %d unfinished and %d untranslated messages\n",
-                 finished, unfinished, untranslated );
+            "    Generated %d translation%s (%d finished and %d unfinished)\n",
+                generatedCount, generatedCount == 1 ? "" : "s", finished, unfinished);
+        if (untranslated)
+            fprintf( stderr, "    Ignored %d untranslated source text%s\n", 
+                untranslated, untranslated == 1 ? "" : "s");
+
+    }
 
     return saved;
 }

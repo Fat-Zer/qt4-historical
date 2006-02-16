@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/xml/qdom.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/xml/qdom.cpp -->
 <head>
     <title>Qt 4.1: QDomImplementation Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -61,12 +61,12 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="InvalidDataPolicy-enum"></a>enum QDomImplementation::InvalidDataPolicy</h3>
 <p>This enum specifies what should be done when a factory function in <a href="qdomdocument.html">QDomDocument</a> is called with invalid data.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QDomImplementation::AcceptInvalidChars</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The data should be stored in the DOM object anyway. In this case the resulting XML document might not be well-formed. This is the default value and QDom's behavior in Qt &lt; 4.1.</td></tr>
 <tr><td valign="top"><tt>QDomImplementation::DropInvalidChars</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The invalid characters should be removed from the data.</td></tr>
 <tr><td valign="top"><tt>QDomImplementation::ReturnNullNode</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">The factory function should return a null node.</td></tr>
-</table>
+</table></p>
 <p>See also <a href="qdomimplementation.html#setInvalidDataPolicy">setInvalidDataPolicy</a>() and <a href="qdomimplementation.html#invalidDataPolicy">invalidDataPolicy</a>().</p>
 <hr />
 <h2>Member Function Documentation</h2>
@@ -89,10 +89,10 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="hasFeature"></a>bool QDomImplementation::hasFeature ( const <a href="qstring.html">QString</a> &amp; <i>feature</i>, const <a href="qstring.html">QString</a> &amp; <i>version</i> ) const</h3>
 <p>The function returns true if QDom implements the requested <i>version</i> of a <i>feature</i>; otherwise returns false.</p>
 <p>The currently supported features and their versions:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Feature</th><th>Version</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>XML</td><td>1.0</td></tr>
-</table>
+</table></p>
 <h3 class="fn"><a name="invalidDataPolicy"></a><a href="qdomimplementation.html#InvalidDataPolicy-enum">InvalidDataPolicy</a> QDomImplementation::invalidDataPolicy ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns the invalid data policy, which specifies what should be done when a factory function in <a href="qdomdocument.html">QDomDocument</a> is passed invalid data.</p>
 <p>This function was introduced in Qt 4.1.</p>
@@ -127,8 +127,8 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns true if <i>x</i> and this DOM implementation object were created from the same <a href="qdomdocument.html">QDomDocument</a>; otherwise returns false.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

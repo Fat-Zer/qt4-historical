@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -61,6 +61,11 @@ public:
     int animateTimer;
     QTime startTime;
     int animateStep;    
+    QColor inactiveCaptionText;
+    QColor activeCaptionColor;
+    QColor activeGradientCaptionColor;
+    QColor inactiveCaptionColor;
+    QColor inactiveGradientCaptionColor;
 };
 
 #endif // QT_NO_STYLE_WINDOWS

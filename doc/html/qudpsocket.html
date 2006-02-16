@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/network/qudpsocket.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/network/qudpsocket.cpp -->
 <head>
     <title>Qt 4.1: QUdpSocket Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -102,13 +102,13 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="flags"><a name="BindFlag-enum"></a>enum QUdpSocket::BindFlag<br />flags QUdpSocket::BindMode</h3>
 <p>This enum describes the different flags you can pass to modify the behavior of <a href="qudpsocket.html#bind">QUdpSocket::bind</a>().</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QUdpSocket::ShareAddress</tt></td><td align="center" valign="top"><tt>0x1</tt></td><td valign="top">Allow other services to bind to the same address and port. This is useful when multiple processes share the load of a single service by listening to the same address and port (e.g., a web server with several pre-forked listeners can greatly improve response time). However, because any service is allowed to rebind, this option is subject to certain security considerations. Note that by combining this option with ReuseAddressHint, you will also allow your service to rebind an existing shared address. On Unix, this is equivalent to the SO_REUSEADDR socket option. On Windows, this option is ignored.</td></tr>
 <tr><td valign="top"><tt>QUdpSocket::DontShareAddress</tt></td><td align="center" valign="top"><tt>0x2</tt></td><td valign="top">Bind the address and port exclusively, so that no other services are allowed to rebind. By passing this option to <a href="qudpsocket.html#bind">QUdpSocket::bind</a>(), you are guaranteed that on successs, your service is the only one that listens to the address and port. No services are allowed to rebind, even if they pass ReuseAddressHint. This option provides more security than ShareAddress, but on certain operating systems, it requires you to run the server with administrator privileges. On Unix and Mac OS X, not sharing is the default behavior for binding an address and port, so this option is ignored. On Windows, this option uses the SO_EXCLUSIVEADDRUSE socket option.</td></tr>
 <tr><td valign="top"><tt>QUdpSocket::ReuseAddressHint</tt></td><td align="center" valign="top"><tt>0x4</tt></td><td valign="top">Provides a hint to <a href="qudpsocket.html">QUdpSocket</a> that it should try to rebind the service even if the address and port are already bound by another socket. On Windows, this is equivalent to the SO_REUSEADDR socket option. On Unix, this option is ignored.</td></tr>
-<tr><td valign="top"><tt>QUdpSocket::DefaultForPlatform</tt></td><td align="center" valign="top"><tt>0x0</tt></td><td valign="top">The default option for the current platform. On Unix and Mac OS X, this is equivalent to (DontShareAddress + ReuseAddressHint), and on Windows, it's equivalent to ShareAddress.</td></tr>
-</table>
+<tr><td valign="top"><tt>QUdpSocket::DefaultForPlatform</tt></td><td align="center" valign="top"><tt>0x0</tt></td><td valign="top">The default option for the current platform. On Unix and Mac OS X, this is equivalent to (DontShareAddress + ReuseAddressHint), and on Windows, its equivalent to ShareAddress.</td></tr>
+</table></p>
 <p>This enum was introduced in Qt 4.1.</p>
 <p>The BindMode type is a typedef for <a href="qflags.html">QFlags</a>&lt;BindFlag&gt;. It stores an OR combination of BindFlag values.</p>
 <hr />
@@ -126,14 +126,14 @@ body { background: #ffffff; color: black; }</style>
 <p>The socket is bound using the <a href="qudpsocket.html#BindFlag-enum">DefaultForPlatform</a> <a href="qudpsocket.html#BindFlag-enum">BindMode</a>.</p>
 <p>See also <a href="qudpsocket.html#readDatagram">readDatagram</a>().</p>
 <h3 class="fn"><a name="bind-2"></a>bool QUdpSocket::bind ( const <a href="qhostaddress.html">QHostAddress</a> &amp; <i>address</i>, <a href="qtglobal.html#quint16-typedef">quint16</a> <i>port</i>, <a href="qudpsocket.html#BindFlag-enum">BindMode</a> <i>mode</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Binds to <i>address</i> on port <i>port</i>, using the <a href="qudpsocket.html#BindFlag-enum">BindMode</a> <i>mode</i>.</p>
 <p>This function was introduced in Qt 4.1.</p>
 <h3 class="fn"><a name="bind-3"></a>bool QUdpSocket::bind ( <a href="qtglobal.html#quint16-typedef">quint16</a> <i>port</i> = 0 )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Binds to <a href="qhostaddress.html">QHostAddress</a>:Any on port <i>port</i>.</p>
 <h3 class="fn"><a name="bind-4"></a>bool QUdpSocket::bind ( <a href="qtglobal.html#quint16-typedef">quint16</a> <i>port</i>, <a href="qudpsocket.html#BindFlag-enum">BindMode</a> <i>mode</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Binds to <a href="qhostaddress.html">QHostAddress</a>:Any on port <i>port</i>, using the <a href="qudpsocket.html#BindFlag-enum">BindMode</a> <i>mode</i>.</p>
 <p>This function was introduced in Qt 4.1.</p>
 <h3 class="fn"><a name="hasPendingDatagrams"></a>bool QUdpSocket::hasPendingDatagrams () const</h3>
@@ -153,12 +153,12 @@ body { background: #ffffff; color: black; }</style>
 <p>Sending datagrams larger than 512 bytes is in general disadvised, as even if they are sent successfully, they are likely to be fragmented by the IP layer before arriving at their final destination.</p>
 <p>See also <a href="qudpsocket.html#readDatagram">readDatagram</a>().</p>
 <h3 class="fn"><a name="writeDatagram-2"></a><a href="qtglobal.html#qint64-typedef">qint64</a> QUdpSocket::writeDatagram ( const <a href="qbytearray.html">QByteArray</a> &amp; <i>datagram</i>, const <a href="qhostaddress.html">QHostAddress</a> &amp; <i>host</i>, <a href="qtglobal.html#quint16-typedef">quint16</a> <i>port</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Sends the datagram <i>datagram</i> to the host address <i>host</i> and at port <i>port</i>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

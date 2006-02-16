@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/qt3support/itemviews/q3iconview.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/qt3support/itemviews/q3iconview.cpp -->
 <head>
     <title>Qt 4.1: Q3IconView Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -37,7 +37,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <a name="properties"></a>
 <h3>Properties</h3>
-<table width="100%" border="0" cellpadding="0" cellspacing="0">
+<p><table width="100%" border="0" cellpadding="0" cellspacing="0">
 <tr><td width="45%" valign="top"><ul>
 <li><div class="fn"/><b><a href="q3iconview.html#arrangement-prop">arrangement</a></b> : Arrangement</li>
 <li><div class="fn"/><b><a href="q3iconview.html#autoArrange-prop">autoArrange</a></b> : bool</li>
@@ -59,7 +59,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="q3iconview.html#wordWrapIconText-prop">wordWrapIconText</a></b> : bool</li>
 </ul>
 </td></tr>
-</table>
+</table></p>
 <ul>
 <li><div class="fn"/>10 properties inherited from <a href="q3scrollview.html#properties">Q3ScrollView</a></li>
 <li><div class="fn"/>2 properties inherited from <a href="q3frame.html#properties">Q3Frame</a></li>
@@ -132,7 +132,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>13 public functions inherited from <a href="qframe.html#public-functions">QFrame</a></li>
 <li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
-<li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <a name="public-slots"></a>
 <h3>Public Slots</h3>
@@ -190,6 +190,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>5 protected functions inherited from <a href="q3frame.html#protected-functions">Q3Frame</a></li>
 <li><div class="fn"/>39 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
+<li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
 </ul>
 <a name="protected-slots"></a>
 <h3>Protected Slots</h3>
@@ -266,48 +267,48 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="Arrangement-enum"></a>enum Q3IconView::Arrangement</h3>
 <p>This enum type determines in which direction the items flow when the view runs out of space.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Q3IconView::LeftToRight</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">Items which don't fit into the view go further down (you get a vertical scrollbar)</td></tr>
 <tr><td valign="top"><tt>Q3IconView::TopToBottom</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Items which don't fit into the view go further right (you get a horizontal scrollbar)</td></tr>
-</table>
+</table></p>
 <h3 class="fn"><a name="ComparisonFlags-typedef"></a>typedef Q3IconView::ComparisonFlags</h3>
 <p>This typedef is used in <a href="q3iconview.html">Q3IconView</a>'s API for values that are OR'd combinations of <a href="q3iconview.html#StringComparisonMode-enum">StringComparisonMode</a> values.</p>
 <p>See also <a href="q3iconview.html#StringComparisonMode-enum">StringComparisonMode</a>.</p>
 <h3 class="fn"><a name="ItemTextPos-enum"></a>enum Q3IconView::ItemTextPos</h3>
 <p>This enum type specifies the position of the item text in relation to the icon.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Q3IconView::Bottom</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The text is drawn below the icon.</td></tr>
 <tr><td valign="top"><tt>Q3IconView::Right</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The text is drawn to the right of the icon.</td></tr>
-</table>
+</table></p>
 <h3 class="fn"><a name="ResizeMode-enum"></a>enum Q3IconView::ResizeMode</h3>
 <p>This enum type is used to tell <a href="q3iconview.html">Q3IconView</a> how it should treat the positions of its icons when the widget is resized. The modes are:</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Q3IconView::Fixed</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The icons' positions are not changed.</td></tr>
 <tr><td valign="top"><tt>Q3IconView::Adjust</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The icons' positions are adjusted to be within the new geometry, if possible.</td></tr>
-</table>
+</table></p>
 <h3 class="fn"><a name="SelectionMode-enum"></a>enum Q3IconView::SelectionMode</h3>
 <p>This enumerated type is used by <a href="q3iconview.html">Q3IconView</a> to indicate how it reacts to selection by the user. It has four values:</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Q3IconView::Single</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">When the user selects an item, any already-selected item becomes unselected and the user cannot unselect the selected item. This means that the user can never clear the selection. (The application programmer can, using <a href="q3iconview.html#clearSelection">Q3IconView::clearSelection</a>().)</td></tr>
 <tr><td valign="top"><tt>Q3IconView::Multi</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">When the user selects an item, e.g. by navigating to it with the keyboard arrow keys or by clicking it, the selection status of that item is toggled and the other items are left alone.</td></tr>
 <tr><td valign="top"><tt>Q3IconView::Extended</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">When the user selects an item the selection is cleared and the new item selected. However, if the user presses the Ctrl key when clicking on an item, the clicked item gets toggled and all other items are left untouched. If the user presses the Shift key while clicking on an item, all items between the current item and the clicked item get selected or unselected, depending on the state of the clicked item. Also, multiple items can be selected by dragging the mouse while the left mouse button stays pressed.</td></tr>
 <tr><td valign="top"><tt>Q3IconView::NoSelection</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">Items cannot be selected.</td></tr>
-</table>
+</table></p>
 <p>To summarize: <tt>Single</tt> is a real single-selection icon view; <tt>Multi</tt> a real multi-selection icon view; <tt>Extended</tt> is an icon view in which users can select multiple items but usually want to select either just one or a range of contiguous items; and <tt>NoSelection</tt> mode is for an icon view where the user can look but not touch.</p>
 <h3 class="fn"><a name="StringComparisonMode-enum"></a>enum Q3IconView::StringComparisonMode</h3>
 <p>This enum type is used to set the string comparison mode when searching for an item. We'll refer to the string being searched as the 'target' string.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Q3IconView::CaseSensitive</tt></td><td align="center" valign="top"><tt>0x00001</tt></td><td valign="top">The strings must match case sensitively.</td></tr>
 <tr><td valign="top"><tt>Q3IconView::ExactMatch</tt></td><td align="center" valign="top"><tt>0x00010</tt></td><td valign="top">The target and search strings must match exactly.</td></tr>
 <tr><td valign="top"><tt>Q3IconView::BeginsWith</tt></td><td align="center" valign="top"><tt>0x00002</tt></td><td valign="top">The target string begins with the search string.</td></tr>
 <tr><td valign="top"><tt>Q3IconView::EndsWith</tt></td><td align="center" valign="top"><tt>0x00004</tt></td><td valign="top">The target string ends with the search string.</td></tr>
 <tr><td valign="top"><tt>Q3IconView::Contains</tt></td><td align="center" valign="top"><tt>0x00008</tt></td><td valign="top">The target string contains the search string.</td></tr>
-</table>
+</table></p>
 <p>If you OR these flags together (excluding <tt>CaseSensitive</tt>), the search criteria be applied in the following order: <tt>ExactMatch</tt>, <tt>BeginsWith</tt>, <tt>EndsWith</tt>, <tt>Contains</tt>.</p>
 <p>Matching is case-insensitive unless <tt>CaseSensitive</tt> is set. <tt>CaseSensitive</tt> can be OR-ed with any combination of the other flags.</p>
 <p>See also <a href="q3iconview.html#ComparisonFlags-typedef">ComparisonFlags</a>.</p>
@@ -464,7 +465,7 @@ body { background: #ffffff; color: black; }</style>
 <p>This variant uses <i>grid</i> instead of (<a href="q3iconview.html#gridX-prop">gridX</a>(), <a href="q3iconview.html#gridY-prop">gridY</a>()). If <i>grid</i> is invalid (see <a href="qsize.html#isValid">QSize::isValid</a>()), arrangeItemsInGrid() calculates a valid grid itself and uses that.</p>
 <p>If <i>update</i> is true (the default) the viewport is repainted.</p>
 <h3 class="fn"><a name="arrangeItemsInGrid-2"></a>void Q3IconView::arrangeItemsInGrid ( bool <i>update</i> = true )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Arranges all the items in the grid specified by <a href="q3iconview.html#gridX-prop">gridX</a>() and <a href="q3iconview.html#gridY-prop">gridY</a>().</p>
 <p>Even if <a href="q3iconview.html#sorting-prop">sorting</a>() is enabled, the items are not sorted by this function. If you want to sort or rearrange the items, use iconview-&gt;sort(iconview-&gt;<a href="q3iconview.html#sortDirection-prop">sortDirection</a>()).</p>
 <p>If <i>update</i> is true (the default), the viewport is repainted as well.</p>
@@ -477,7 +478,7 @@ body { background: #ffffff; color: black; }</style>
 <p>This signal is emitted when the user clicks any mouse button. If <i>item</i> is non-null, the cursor is on <i>item</i>. If <i>item</i> is null, the mouse cursor isn't on any item.</p>
 <p>See also <a href="q3iconview.html#mouseButtonClicked">mouseButtonClicked</a>(), <a href="q3iconview.html#rightButtonClicked">rightButtonClicked</a>(), and <a href="q3iconview.html#pressed">pressed</a>().</p>
 <h3 class="fn"><a name="clicked-2"></a>void Q3IconView::clicked ( <a href="q3iconviewitem.html">Q3IconViewItem</a> * <i>item</i>, const <a href="qpoint.html">QPoint</a> &amp; <i>pos</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>This signal is emitted when the user clicks any mouse button on an icon view item. <i>item</i> is a pointer to the item that has been clicked.</p>
 <p><i>pos</i> is the position of the mouse cursor in the global coordinate system (<a href="qmouseevent.html#globalPos">QMouseEvent::globalPos</a>()). (If the click's press and release differ by a pixel or two, <i>pos</i> is the position at release time.)</p>
 <p>See also <a href="q3iconview.html#mouseButtonClicked">mouseButtonClicked</a>(), <a href="q3iconview.html#rightButtonClicked">rightButtonClicked</a>(), and <a href="q3iconview.html#pressed">pressed</a>().</p>
@@ -520,7 +521,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="findItem"></a><a href="q3iconviewitem.html">Q3IconViewItem</a> * Q3IconView::findItem ( const <a href="qpoint.html">QPoint</a> &amp; <i>pos</i> ) const</h3>
 <p>Returns a pointer to the item that contains point <i>pos</i>, which is given in contents coordinates, or 0 if no item contains point <i>pos</i>.</p>
 <h3 class="fn"><a name="findItem-3"></a><a href="q3iconviewitem.html">Q3IconViewItem</a> * Q3IconView::findItem ( const <a href="qstring.html">QString</a> &amp; <i>text</i>, <a href="q3iconview.html#ComparisonFlags-typedef">ComparisonFlags</a> <i>compare</i> = BeginsWith | Qt::CaseSensitive ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns a pointer to the first item whose text begins with <i>text</i>, or 0 if no such item could be found. Use the <i>compare</i> flag to control the comparison behavior.</p>
 <h3 class="fn"><a name="findLastVisibleItem"></a><a href="q3iconviewitem.html">Q3IconViewItem</a> * Q3IconView::findLastVisibleItem ( const <a href="qrect.html">QRect</a> &amp; <i>r</i> ) const</h3>
 <p>Finds the last item whose bounding rectangle overlaps <i>r</i> and returns a pointer to that item. <i>r</i> is given in content coordinates. Returns 0 if no item overlaps <i>r</i>.</p>
@@ -544,7 +545,7 @@ body { background: #ffffff; color: black; }</style>
 <p>This signal is emitted when <i>item</i> has been renamed to <i>name</i>, usually by in-place renaming.</p>
 <p>See also <a href="q3iconviewitem.html#setRenameEnabled">Q3IconViewItem::setRenameEnabled</a>() and <a href="q3iconviewitem.html#rename">Q3IconViewItem::rename</a>().</p>
 <h3 class="fn"><a name="itemRenamed-2"></a>void Q3IconView::itemRenamed ( <a href="q3iconviewitem.html">Q3IconViewItem</a> * <i>item</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>This signal is emitted when <i>item</i> has been renamed, usually by in-place renaming.</p>
 <p>See also <a href="q3iconviewitem.html#setRenameEnabled">Q3IconViewItem::setRenameEnabled</a>() and <a href="q3iconviewitem.html#rename">Q3IconViewItem::rename</a>().</p>
 <h3 class="fn"><a name="lastItem"></a><a href="q3iconviewitem.html">Q3IconViewItem</a> * Q3IconView::lastItem () const</h3>
@@ -572,7 +573,7 @@ body { background: #ffffff; color: black; }</style>
 <p>This signal is emitted when the user presses any mouse button. If <i>item</i> is non-null, the cursor is on <i>item</i>. If <i>item</i> is null, the mouse cursor isn't on any item.</p>
 <p>See also <a href="q3iconview.html#mouseButtonPressed">mouseButtonPressed</a>(), <a href="q3iconview.html#rightButtonPressed">rightButtonPressed</a>(), and <a href="q3iconview.html#clicked">clicked</a>().</p>
 <h3 class="fn"><a name="pressed-2"></a>void Q3IconView::pressed ( <a href="q3iconviewitem.html">Q3IconViewItem</a> * <i>item</i>, const <a href="qpoint.html">QPoint</a> &amp; <i>pos</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>This signal is emitted when the user presses any mouse button. If <i>item</i> is non-null, the cursor is on <i>item</i>. If <i>item</i> is null, the mouse cursor isn't on any item.</p>
 <p><i>pos</i> is the position of the mouse cursor in the global coordinate system (<a href="qmouseevent.html#globalPos">QMouseEvent::globalPos</a>()). (If the click's press and release differ by a pixel or two, <i>pos</i> is the position at release time.)</p>
 <p>See also <a href="q3iconview.html#mouseButtonPressed">mouseButtonPressed</a>(), <a href="q3iconview.html#rightButtonPressed">rightButtonPressed</a>(), and <a href="q3iconview.html#clicked">clicked</a>().</p>
@@ -595,7 +596,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="selectionChanged"></a>void Q3IconView::selectionChanged ()&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when the selection has been changed. It's emitted in each selection mode.</p>
 <h3 class="fn"><a name="selectionChanged-2"></a>void Q3IconView::selectionChanged ( <a href="q3iconviewitem.html">Q3IconViewItem</a> * <i>item</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>This signal is emitted when the selection changes. <i>item</i> is the newly selected item. This signal is emitted only in single selection mode.</p>
 <h3 class="fn"><a name="setCurrentItem"></a>void Q3IconView::setCurrentItem ( <a href="q3iconviewitem.html">Q3IconViewItem</a> * <i>item</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Makes <i>item</i> the new current item of the icon view.</p>
@@ -628,8 +629,8 @@ body { background: #ffffff; color: black; }</style>
 <p>Takes the icon view item <i>item</i> out of the icon view and causes an update of the screen display. The item is not deleted. You should normally not need to call this function because Q3IconViewItem::~Q3IconViewItem() calls it. The normal way to delete an item is to delete it.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

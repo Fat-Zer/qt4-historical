@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -215,6 +215,12 @@
 
     This signal is emitted by the container when the client widget
     closes.
+*/
+
+/*!
+    \fn QX11EmbedWidget::Error QX11EmbedWidget::error() const
+
+    Returns the last error that occurred.
 */
 
 /*!
@@ -1539,8 +1545,6 @@ void QX11EmbedContainerPrivate::acceptClient(WId window)
     unsigned long nitems_return = 0;
     unsigned long bytes_after_return;
     unsigned char *prop_return = 0;
-    bool useXEmbedInfo = false;
-    unsigned int clientflags = 0;
     unsigned int clientversion = 0;
 
     // Add this client to our saveset, so if we crash, the client window
@@ -1560,11 +1564,8 @@ void QX11EmbedContainerPrivate::acceptClient(WId window)
 	    clientIsXEmbed = true;
 
 	    unsigned int *p = (unsigned int *)prop_return;
-	    if (nitems_return >= 2) {
+	    if (nitems_return >= 2)
 		clientversion = p[0];
-		clientflags = p[1];
-		useXEmbedInfo = true;
-	    }
 	}
 
 	XFree(prop_return);

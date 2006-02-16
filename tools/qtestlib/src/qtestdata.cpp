@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the tools applications of the Qt Toolkit.
 **
@@ -79,6 +79,7 @@ void QTestData::append(int type, const void *data)
 
 void *QTestData::data(int index) const
 {
+    QTEST_ASSERT(index >= 0);
     QTEST_ASSERT(index < d->parent->elementCount());
     return d->data[index];
 }

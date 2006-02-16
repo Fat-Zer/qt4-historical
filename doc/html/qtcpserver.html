@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/network/qtcpserver.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/network/qtcpserver.cpp -->
 <head>
     <title>Qt 4.1: QTcpServer Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -125,6 +125,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="nextPendingConnection"></a><a href="qtcpsocket.html">QTcpSocket</a> * QTcpServer::nextPendingConnection ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns the next pending connection as a connected <a href="qtcpsocket.html">QTcpSocket</a> object.</p>
 <p>The socket is created as a child of the server, which means that it is automatically deleted when the <a href="qtcpserver.html">QTcpServer</a> object is destroyed. It is still a good idea to delete the object explicitly when you are done with it, to avoid wasting memory.</p>
+<p>0 is returned if this function is called when there are no pending connections.</p>
 <p>See also <a href="qtcpserver.html#hasPendingConnections">hasPendingConnections</a>().</p>
 <h3 class="fn"><a name="proxy"></a><a href="qnetworkproxy.html">QNetworkProxy</a> QTcpServer::proxy () const</h3>
 <p>Returns the network proxy for this socket. By default <a href="qnetworkproxy.html#ProxyType-enum">QNetworkProxy::DefaultProxy</a> is used.</p>
@@ -164,8 +165,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qtcpserver.html#hasPendingConnections">hasPendingConnections</a>() and <a href="qtcpserver.html#nextPendingConnection">nextPendingConnection</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/gui/accessible/qaccessible.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/gui/accessible/qaccessible.cpp -->
 <head>
     <title>Qt 4.1: QAccessible Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -70,7 +70,7 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="Action-enum"></a>enum QAccessible::Action</h3>
 <p>This enum describes the possible types of action that can occur.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="40%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="40%">
 <tr><th width="60%">Constant</th><th width="40%">Value</th></tr>
 <tr><td valign="top"><tt>QAccessible::DefaultAction</tt></td><td align="center" valign="top"><tt>0</tt></td></tr>
 <tr><td valign="top"><tt>QAccessible::Press</tt></td><td align="center" valign="top"><tt>-1</tt></td></tr>
@@ -86,10 +86,10 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QAccessible::AddToSelection</tt></td><td align="center" valign="top"><tt>-11</tt></td></tr>
 <tr><td valign="top"><tt>QAccessible::FirstStandardAction</tt></td><td align="center" valign="top"><tt>Press</tt></td></tr>
 <tr><td valign="top"><tt>QAccessible::LastStandardAction</tt></td><td align="center" valign="top"><tt>AddToSelection</tt></td></tr>
-</table>
+</table></p>
 <h3 class="fn"><a name="Event-enum"></a>enum QAccessible::Event</h3>
 <p>This enum type defines accessible event types.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="40%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="40%">
 <tr><th width="60%">Constant</th><th width="40%">Value</th></tr>
 <tr><td valign="top"><tt>QAccessible::AcceleratorChanged</tt></td><td align="center" valign="top"><tt>0x80C0</tt></td></tr>
 <tr><td valign="top"><tt>QAccessible::Alert</tt></td><td align="center" valign="top"><tt>0x0002</tt></td></tr>
@@ -126,14 +126,14 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QAccessible::SoundPlayed</tt></td><td align="center" valign="top"><tt>0x0001</tt></td></tr>
 <tr><td valign="top"><tt>QAccessible::StateChanged</tt></td><td align="center" valign="top"><tt>0x800A</tt></td></tr>
 <tr><td valign="top"><tt>QAccessible::ValueChanged</tt></td><td align="center" valign="top"><tt>0x800E</tt></td></tr>
-</table>
+</table></p>
 <h3 class="fn"><a name="InterfaceFactory-typedef"></a>typedef QAccessible::InterfaceFactory</h3>
 <p>A function pointer type. Use a function with this prototype to install interface factories with <a href="qaccessible.html#installFactory">installFactory</a>().</p>
 <p>The function receives a <a href="qobject.html">QObject</a> pointer. If the <a href="qobject.html">QObject</a> provides a <a href="qaccessibleinterface.html">QAccessibleInterface</a>, it sets the second parameter to point to the corresponding <a href="qaccessibleinterface.html">QAccessibleInterface</a>, and returns true; otherwise returns false.</p>
 <p>Installed factories are called by queryAccessibilityInterface() until one provides an interface.</p>
 <h3 class="flags"><a name="RelationFlag-enum"></a>enum QAccessible::RelationFlag<br />flags QAccessible::Relation</h3>
 <p>This enum type defines bit flags that can be combined to indicate the relationship between two accessible objects.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QAccessible::Unrelated</tt></td><td align="center" valign="top"><tt>0x00000000</tt></td><td valign="top">The objects are unrelated.</td></tr>
 <tr><td valign="top"><tt>QAccessible::Self</tt></td><td align="center" valign="top"><tt>0x00000001</tt></td><td valign="top">The objects are the same.</td></tr>
@@ -152,13 +152,13 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QAccessible::Labelled</tt></td><td align="center" valign="top"><tt>0x00040000</tt></td><td valign="top">The first object is labelled by the second object.</td></tr>
 <tr><td valign="top"><tt>QAccessible::Controller</tt></td><td align="center" valign="top"><tt>0x00080000</tt></td><td valign="top">The first object controls the second object.</td></tr>
 <tr><td valign="top"><tt>QAccessible::Controlled</tt></td><td align="center" valign="top"><tt>0x00100000</tt></td><td valign="top">The first object is controlled by the second object.</td></tr>
-</table>
+</table></p>
 <p>Implementations of relationTo() return a combination of these flags. Some values are mutually exclusive.</p>
 <p>Implementations of navigate() can accept only one distinct value.</p>
 <p>The Relation type is a typedef for <a href="qflags.html">QFlags</a>&lt;RelationFlag&gt;. It stores an OR combination of RelationFlag values.</p>
 <h3 class="fn"><a name="Role-enum"></a>enum QAccessible::Role</h3>
 <p>This enum defines the role of an accessible object. The roles are:</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QAccessible::AlertMessage</tt></td><td align="center" valign="top"><tt>0x00000008</tt></td><td valign="top">An object that is used to alert the user.</td></tr>
 <tr><td valign="top"><tt>QAccessible::Animation</tt></td><td align="center" valign="top"><tt>0x00000036</tt></td><td valign="top">An object that displays an animation.</td></tr>
@@ -224,13 +224,13 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QAccessible::UserRole</tt></td><td align="center" valign="top"><tt>0x0000ffff</tt></td><td valign="top">The first value to be used for user defined roles.</td></tr>
 <tr><td valign="top"><tt>QAccessible::Whitespace</tt></td><td align="center" valign="top"><tt>0x0000003B</tt></td><td valign="top">Blank space between other objects.</td></tr>
 <tr><td valign="top"><tt>QAccessible::Window</tt></td><td align="center" valign="top"><tt>0x00000009</tt></td><td valign="top">A top level window.</td></tr>
-</table>
+</table></p>
 <h3 class="fn"><a name="RootObjectHandler-typedef"></a>typedef QAccessible::RootObjectHandler</h3>
 <p>A function pointer type. Use a function with this prototype to install your own root object handler.</p>
 <p>The function is called by <a href="qaccessible.html#setRootObject">setRootObject</a>().</p>
 <h3 class="flags"><a name="StateFlag-enum"></a>enum QAccessible::StateFlag<br />flags QAccessible::State</h3>
 <p>This enum type defines bit flags that can be combined to indicate the state of an accessible object. The values are:</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QAccessible::Animated</tt></td><td align="center" valign="top"><tt>0x00004000</tt></td><td valign="top">The object's appearance changes frequently.</td></tr>
 <tr><td valign="top"><tt>QAccessible::Busy</tt></td><td align="center" valign="top"><tt>0x00000800</tt></td><td valign="top">The object cannot accept input at the moment.</td></tr>
@@ -261,12 +261,12 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QAccessible::Sizeable</tt></td><td align="center" valign="top"><tt>0x00020000</tt></td><td valign="top">The object can be resized, e.g. top-level windows.</td></tr>
 <tr><td valign="top"><tt>QAccessible::Traversed</tt></td><td align="center" valign="top"><tt>0x00800000</tt></td><td valign="top">The object is linked and has been visited.</td></tr>
 <tr><td valign="top"><tt>QAccessible::Unavailable</tt></td><td align="center" valign="top"><tt>0x00000001</tt></td><td valign="top">The object is unavailable to the user, e.g. a disabled widget.</td></tr>
-</table>
+</table></p>
 <p>Implementations of <a href="qaccessibleinterface.html#state">QAccessibleInterface::state</a>() return a combination of these flags.</p>
 <p>The State type is a typedef for <a href="qflags.html">QFlags</a>&lt;StateFlag&gt;. It stores an OR combination of StateFlag values.</p>
 <h3 class="fn"><a name="Text-enum"></a>enum QAccessible::Text</h3>
 <p>This enum specifies string information that an accessible object returns.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QAccessible::Name</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The name of the object.</td></tr>
 <tr><td valign="top"><tt>QAccessible::Description</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">A short text describing the object.</td></tr>
@@ -274,7 +274,7 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QAccessible::Help</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">A longer text giving information about how to use the object.</td></tr>
 <tr><td valign="top"><tt>QAccessible::Accelerator</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">The keyboard shortcut that executes the object's default action.</td></tr>
 <tr><td valign="top"><tt>QAccessible::UserText</tt></td><td align="center" valign="top"><tt>0x0000ffff</tt></td><td valign="top">The first value to be used for user defined text.</td></tr>
-</table>
+</table></p>
 <h3 class="fn"><a name="UpdateHandler-typedef"></a>typedef QAccessible::UpdateHandler</h3>
 <p>A function pointer type. Use a function with this prototype to install your own update function.</p>
 <p>The function is called by <a href="qaccessible.html#updateAccessibility">updateAccessibility</a>().</p>
@@ -304,12 +304,12 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="updateAccessibility"></a>void QAccessible::updateAccessibility ( <a href="qobject.html">QObject</a> * <i>object</i>, int <i>child</i>, <a href="qaccessible.html#Event-enum">Event</a> <i>reason</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Notifies accessibility clients about a change in <i>object</i>'s accessibility information.</p>
 <p><i>reason</i> specifies the cause of the change, for example, <tt>ValueChange</tt> when the position of a slider has been changed. <i>child</i> is the (1-based) index of the child element that has changed. When <i>child</i> is 0, the object itself has changed.</p>
-<p>Call this function whenever the state of your accessible object or one of it's sub-elements has been changed either programmatically (e.g. by calling <a href="qlabel.html#text-prop">QLabel::setText</a>()) or by user interaction.</p>
+<p>Call this function whenever the state of your accessible object or one of its sub-elements has been changed either programmatically (e.g. by calling <a href="qlabel.html#text-prop">QLabel::setText</a>()) or by user interaction.</p>
 <p>If there are no accessibility tools listening to this event, the performance penalty for calling this function is small, but if determining the parameters of the call is expensive you can test <a href="qaccessible.html#isActive">isActive</a>() to avoid unnecessary computations.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

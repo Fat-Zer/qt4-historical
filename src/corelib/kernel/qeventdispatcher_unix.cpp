@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -151,25 +151,6 @@ int QEventDispatcherUNIXPrivate::doSelect(QEventLoop::ProcessEventsFlags flags, 
 {
     Q_Q(QEventDispatcherUNIX);
 
-    // Process timers and socket notifiers - the common UNIX stuff
-    int highest = 0;
-    FD_ZERO(&sn_vec[0].select_fds);
-    FD_ZERO(&sn_vec[1].select_fds);
-    FD_ZERO(&sn_vec[2].select_fds);
-    if (! (flags & QEventLoop::ExcludeSocketNotifiers) && (sn_highest >= 0)) {
-        // return the highest fd we can wait for input on
-        if (!sn_vec[0].list.isEmpty())
-            sn_vec[0].select_fds = sn_vec[0].enabled_fds;
-        if (!sn_vec[1].list.isEmpty())
-            sn_vec[1].select_fds = sn_vec[1].enabled_fds;
-        if (!sn_vec[2].list.isEmpty())
-            sn_vec[2].select_fds = sn_vec[2].enabled_fds;
-        highest = sn_highest;
-    }
-
-    FD_SET(thread_pipe[0], &sn_vec[0].select_fds);
-    highest = qMax(highest, thread_pipe[0]);
-
     int nsel;
     do {
         if (mainThread) {
@@ -183,6 +164,26 @@ int QEventDispatcherUNIXPrivate::doSelect(QEventLoop::ProcessEventsFlags flags, 
                 }
             }
         }
+
+        // Process timers and socket notifiers - the common UNIX stuff
+        int highest = 0;
+        FD_ZERO(&sn_vec[0].select_fds);
+        FD_ZERO(&sn_vec[1].select_fds);
+        FD_ZERO(&sn_vec[2].select_fds);
+        if (! (flags & QEventLoop::ExcludeSocketNotifiers) && (sn_highest >= 0)) {
+            // return the highest fd we can wait for input on
+            if (!sn_vec[0].list.isEmpty())
+                sn_vec[0].select_fds = sn_vec[0].enabled_fds;
+            if (!sn_vec[1].list.isEmpty())
+                sn_vec[1].select_fds = sn_vec[1].enabled_fds;
+            if (!sn_vec[2].list.isEmpty())
+                sn_vec[2].select_fds = sn_vec[2].enabled_fds;
+            highest = sn_highest;
+        }
+
+        FD_SET(thread_pipe[0], &sn_vec[0].select_fds);
+        highest = qMax(highest, thread_pipe[0]);
+
         nsel = q->select(highest + 1,
                          &sn_vec[0].select_fds,
                          &sn_vec[1].select_fds,

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the qmake application of the Qt Toolkit.
 **
@@ -302,6 +302,7 @@ void MingwMakefileGenerator::writeBuildRulesPart(QTextStream &t)
     } else {
         t << "\n\t" << "$(LINK) $(LFLAGS) -o \"$(DESTDIR_TARGET)\" " << objectsLinkLine << " " << " $(LIBS)";
     }
+    t << endl;
 }
 
 void MingwMakefileGenerator::writeRcFilePart(QTextStream &t)

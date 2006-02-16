@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt3Support module of the Qt Toolkit.
 **
@@ -964,6 +964,14 @@ Q3ListViewItem::~Q3ListViewItem()
     if (lv) {
         if (lv->d->oldFocusItem == this)
             lv->d->oldFocusItem = 0;
+        if (lv->d->focusItem == this)
+            lv->d->focusItem = 0;
+        if (lv->d->highlighted == this)
+            lv->d->highlighted = 0;
+        if (lv->d->pressedItem == this)
+            lv->d->pressedItem = 0;
+        if (lv->d->selectAnchor == this)
+            lv->d->selectAnchor = 0;
         for (int j = 0; j < lv->d->iterators.size(); ++j) {
             Q3ListViewItemIterator *i = lv->d->iterators.at(j);
             if (i->current() == this)
@@ -2700,6 +2708,7 @@ void Q3ListView::init()
 
     viewport()->setFocusProxy(this);
     viewport()->setFocusPolicy(Qt::WheelFocus);
+    setFocusPolicy(Qt::WheelFocus);
     viewport()->setBackgroundRole(QPalette::Base);
 }
 

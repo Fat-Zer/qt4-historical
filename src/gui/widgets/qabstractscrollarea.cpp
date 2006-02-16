@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -109,7 +109,7 @@ bool QAbstractScrollAreaViewport::event(QEvent *e) {
 QAbstractScrollAreaPrivate::QAbstractScrollAreaPrivate()
     :hbar(0), vbar(0), vbarpolicy(Qt::ScrollBarAsNeeded), hbarpolicy(Qt::ScrollBarAsNeeded),
      viewport(0), left(0), top(0), right(0), bottom(0),
-     xoffset(0), yoffset(0), vend(false), hend(false)
+     xoffset(0), yoffset(0)
 {
 }
 
@@ -134,6 +134,7 @@ void QAbstractScrollAreaPrivate::init()
     q->setFocusPolicy(Qt::WheelFocus);
     q->setFrameStyle(QFrame::StyledPanel | QFrame::Sunken);
     q->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    layoutChildren();
 }
 
 void QAbstractScrollAreaPrivate::layoutChildren()
@@ -469,6 +470,8 @@ bool QAbstractScrollArea::viewportEvent(QEvent *e)
     case QEvent::DragLeave:
 #endif
         return QFrame::event(e);
+    case QEvent::LayoutRequest:
+        return event(e);
 #ifndef QT_NO_WHEELEVENT
     case QEvent::Wheel:
         if (!QFrame::event(e) || !e->isAccepted()) {
@@ -488,8 +491,10 @@ bool QAbstractScrollArea::viewportEvent(QEvent *e)
 
     This event handler can be reimplemented in a subclass to receive
     resize events (passed in \a event), for the viewport() widget.
+
     When resizeEvent() is called, the viewport already has its new
-    geometry. The old size is accessible through
+    geometry: Its new size is accessible through the
+    QResizeEvent::size() function, and the old size through
     QResizeEvent::oldSize().
 
     \sa QWidget::resizeEvent()
@@ -675,9 +680,22 @@ void QAbstractScrollArea::dropEvent(QDropEvent *)
 #endif
 
 /*!
-    Scrolls the viewport's contents by \a dx, \a dy.
+    This virtual handler is called when the scroll bars are moved by
+    \a dx, \a dy, and consequently the viewport's contents should be
+    scrolled accordingly.
 
-    The default implementation simply updates the entire viewport().
+    The default implementation simply calls update() on the entire
+    viewport(), subclasses can reimplement this handler for
+    optimization purposes, or - like QScrollArea - to move a contents
+    widget. The paramters \a dx and \a dy are there for convenience,
+    so that the class knows how much should be scrolled (useful
+    e.g. when doing pixel-shifts). You may just as well ignore these
+    values and scroll directly to the position the scroll bars
+    indicate.
+
+    Calling this function in order to scroll programmatically is an
+    error, use the scroll bars instead (e.g. by calling
+    QScrollBar::setValue() directly).
 */
 void QAbstractScrollArea::scrollContentsBy(int, int)
 {
@@ -687,17 +705,6 @@ void QAbstractScrollArea::scrollContentsBy(int, int)
 void QAbstractScrollAreaPrivate::hslide(int x)
 {
     Q_Q(QAbstractScrollArea);
-
-    if (q->horizontalScrollBar()->maximum() == x) {
-        if (hend) {
-            xoffset = x;
-            return;
-        } else {
-            hend = true;
-        }
-    } else
-        hend = false;
-
     int dx = xoffset - x;
     xoffset = x;
     q->scrollContentsBy(dx, 0);
@@ -706,16 +713,6 @@ void QAbstractScrollAreaPrivate::hslide(int x)
 void QAbstractScrollAreaPrivate::vslide(int y)
 {
     Q_Q(QAbstractScrollArea);
-    if (q->verticalScrollBar()->maximum() == y) {
-        if (vend) {
-            yoffset = y;
-            return;
-        } else {
-            vend = true;
-        }
-    } else
-        vend = false;
-
     int dy = yoffset - y;
     yoffset = y;
     q->scrollContentsBy(0, dy);
@@ -723,12 +720,7 @@ void QAbstractScrollAreaPrivate::vslide(int y)
 
 void QAbstractScrollAreaPrivate::showOrHideScrollBars()
 {
-    Q_Q(QAbstractScrollArea);
     layoutChildren();
-    if (q->horizontalScrollBar()->maximum() > xoffset)
-        hend = false;
-    if (q->verticalScrollBar()->maximum() > yoffset)
-        vend = false;
 }
 
 /*!

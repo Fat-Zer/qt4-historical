@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/network/qhostaddress.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/network/qhostaddress.cpp -->
 <head>
     <title>Qt 4.1: QHostAddress Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -45,10 +45,10 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>QAbstractSocket::NetworkLayerProtocol <b><a href="qhostaddress.html#protocol">protocol</a></b> () const</li>
 <li><div class="fn"/>QString <b><a href="qhostaddress.html#scopeId">scopeId</a></b> () const</li>
 <li><div class="fn"/>void <b><a href="qhostaddress.html#setAddress">setAddress</a></b> ( quint32 <i>ip4Addr</i> )</li>
-<li><div class="fn"/>void <b><a href="qhostaddress.html#setAddress-2">setAddress</a></b> ( const sockaddr * <i>sockaddr</i> )</li>
-<li><div class="fn"/>void <b><a href="qhostaddress.html#setAddress-3">setAddress</a></b> ( quint8 * <i>ip6Addr</i> )</li>
-<li><div class="fn"/>void <b><a href="qhostaddress.html#setAddress-4">setAddress</a></b> ( const Q_IPV6ADDR &amp; <i>ip6Addr</i> )</li>
-<li><div class="fn"/>bool <b><a href="qhostaddress.html#setAddress-5">setAddress</a></b> ( const QString &amp; <i>address</i> )</li>
+<li><div class="fn"/>void <b><a href="qhostaddress.html#setAddress-2">setAddress</a></b> ( quint8 * <i>ip6Addr</i> )</li>
+<li><div class="fn"/>void <b><a href="qhostaddress.html#setAddress-3">setAddress</a></b> ( const Q_IPV6ADDR &amp; <i>ip6Addr</i> )</li>
+<li><div class="fn"/>bool <b><a href="qhostaddress.html#setAddress-4">setAddress</a></b> ( const QString &amp; <i>address</i> )</li>
+<li><div class="fn"/>void <b><a href="qhostaddress.html#setAddress-5">setAddress</a></b> ( const sockaddr * <i>sockaddr</i> )</li>
 <li><div class="fn"/>void <b><a href="qhostaddress.html#setScopeId">setScopeId</a></b> ( const QString &amp; <i>id</i> )</li>
 <li><div class="fn"/>quint32 <b><a href="qhostaddress.html#toIPv4Address">toIPv4Address</a></b> () const</li>
 <li><div class="fn"/>Q_IPV6ADDR <b><a href="qhostaddress.html#toIPv6Address">toIPv6Address</a></b> () const</li>
@@ -70,7 +70,7 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="SpecialAddress-enum"></a>enum QHostAddress::SpecialAddress</h3>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QHostAddress::Null</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The null address object. Equivalent to <a href="qhostaddress.html#QHostAddress">QHostAddress</a>().</td></tr>
 <tr><td valign="top"><tt>QHostAddress::LocalHost</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">The IPv4 localhost address. Equivalent to <a href="qhostaddress.html">QHostAddress</a>(&quot;127.0.0.1&quot;).</td></tr>
@@ -78,7 +78,7 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QHostAddress::Broadcast</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The IPv4 broadcast address. Equivalent to <a href="qhostaddress.html">QHostAddress</a>(&quot;255.255.255.255&quot;).</td></tr>
 <tr><td valign="top"><tt>QHostAddress::Any</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">The IPv4 any-address. Equivalent to <a href="qhostaddress.html">QHostAddress</a>(&quot;0.0.0.0&quot;).</td></tr>
 <tr><td valign="top"><tt>QHostAddress::AnyIPv6</tt></td><td align="center" valign="top"><tt>5</tt></td><td valign="top">The IPv6 any-address. Equivalent to <a href="qhostaddress.html">QHostAddress</a>(&quot;::&quot;).</td></tr>
-</table>
+</table></p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QHostAddress"></a>QHostAddress::QHostAddress ()</h3>
@@ -92,6 +92,8 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="QHostAddress-4"></a>QHostAddress::QHostAddress ( const Q_IPV6ADDR &amp; <i>ip6Addr</i> )</h3>
 <p>Constructs a host address object with the IPv6 address <i>ip6Addr</i>.</p>
 <h3 class="fn"><a name="QHostAddress-5"></a>QHostAddress::QHostAddress ( const sockaddr * <i>sockaddr</i> )</h3>
+<p>Constructs an IPv4 or IPv6 address using the address specified by the native structure <i>sockaddr</i>.</p>
+<p>See also <a href="qhostaddress.html#setAddress">setAddress</a>().</p>
 <h3 class="fn"><a name="QHostAddress-6"></a>QHostAddress::QHostAddress ( const <a href="qstring.html">QString</a> &amp; <i>address</i> )</h3>
 <p>Constructs an IPv4 or IPv6 address based on the string <i>address</i> (e.g., &quot;127.0.0.1&quot;).</p>
 <p>See also <a href="qhostaddress.html#setAddress">setAddress</a>().</p>
@@ -122,18 +124,19 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qhostaddress.html#setScopeId">setScopeId</a>().</p>
 <h3 class="fn"><a name="setAddress"></a>void QHostAddress::setAddress ( <a href="qtglobal.html#quint32-typedef">quint32</a> <i>ip4Addr</i> )</h3>
 <p>Set the IPv4 address specified by <i>ip4Addr</i>.</p>
-<h3 class="fn"><a name="setAddress-2"></a>void QHostAddress::setAddress ( const sockaddr * <i>sockaddr</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
-<h3 class="fn"><a name="setAddress-3"></a>void QHostAddress::setAddress ( <a href="qtglobal.html#quint8-typedef">quint8</a> * <i>ip6Addr</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<h3 class="fn"><a name="setAddress-2"></a>void QHostAddress::setAddress ( <a href="qtglobal.html#quint8-typedef">quint8</a> * <i>ip6Addr</i> )</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Set the IPv6 address specified by <i>ip6Addr</i>.</p>
 <p><i>ip6Addr</i> must be an array of 16 bytes in network byte order (high-order byte first).</p>
-<h3 class="fn"><a name="setAddress-4"></a>void QHostAddress::setAddress ( const Q_IPV6ADDR &amp; <i>ip6Addr</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<h3 class="fn"><a name="setAddress-3"></a>void QHostAddress::setAddress ( const Q_IPV6ADDR &amp; <i>ip6Addr</i> )</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Set the IPv6 address specified by <i>ip6Addr</i>.</p>
-<h3 class="fn"><a name="setAddress-5"></a>bool QHostAddress::setAddress ( const <a href="qstring.html">QString</a> &amp; <i>address</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<h3 class="fn"><a name="setAddress-4"></a>bool QHostAddress::setAddress ( const <a href="qstring.html">QString</a> &amp; <i>address</i> )</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Sets the IPv4 or IPv6 address specified by the string representation specified by <i>address</i> (e.g. &quot;127.0.0.1&quot;). Returns true and sets the address if the address was successfully parsed; otherwise returns false.</p>
+<h3 class="fn"><a name="setAddress-5"></a>void QHostAddress::setAddress ( const sockaddr * <i>sockaddr</i> )</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p>Sets the IPv4 or IPv6 address specified by the native structure <i>sockaddr</i>. Returns true and sets the address if the address was successfully parsed; otherwise returns false.</p>
 <h3 class="fn"><a name="setScopeId"></a>void QHostAddress::setScopeId ( const <a href="qstring.html">QString</a> &amp; <i>id</i> )</h3>
 <p>Sets the IPv6 scope ID of the address to <i>id</i>. If the address protocol is not IPv6, this function does nothing.</p>
 <p>This function was introduced in Qt 4.1.</p>
@@ -160,18 +163,18 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="operator-eq"></a>QHostAddress &amp; QHostAddress::operator= ( const QHostAddress &amp; <i>address</i> )</h3>
 <p>Assigns another host <i>address</i> to this object, and returns a reference to this object.</p>
 <h3 class="fn"><a name="operator-eq-2"></a>QHostAddress &amp; QHostAddress::operator= ( const <a href="qstring.html">QString</a> &amp; <i>address</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Assigns the host address <i>address</i> to this object, and returns a reference to this object.</p>
 <p>See also <a href="qhostaddress.html#setAddress">setAddress</a>().</p>
 <h3 class="fn"><a name="operator-eq-eq"></a>bool QHostAddress::operator== ( const QHostAddress &amp; <i>other</i> ) const</h3>
 <p>Returns true if this host address is the same as the <i>other</i> address given; otherwise returns false.</p>
 <h3 class="fn"><a name="operator-eq-eq-2"></a>bool QHostAddress::operator== ( <a href="qhostaddress.html#SpecialAddress-enum">SpecialAddress</a> <i>other</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns true if this host address is the same as the <i>other</i> address given; otherwise returns false.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

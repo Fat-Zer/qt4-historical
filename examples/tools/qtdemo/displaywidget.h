@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2005-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 2005-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the example classes of the Qt Toolkit.
 **
@@ -63,6 +63,13 @@ private:
     bool updatesEnabled;
     QList<DisplayShape*> shapes;
     QBasicTimer timer;
+
+#if defined(Q_WS_X11)
+    int numFrames;
+    int frameTime;
+    int avgRate;
+    bool testDrawSpeed;
+#endif
 };
 
 #endif

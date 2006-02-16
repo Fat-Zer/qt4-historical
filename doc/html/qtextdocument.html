@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/gui/text/qtextdocument.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/gui/text/qtextdocument.cpp -->
 <head>
     <title>Qt 4.1: QTextDocument Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -33,7 +33,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <a name="properties"></a>
 <h3>Properties</h3>
-<table width="100%" border="0" cellpadding="0" cellspacing="0">
+<p><table width="100%" border="0" cellpadding="0" cellspacing="0">
 <tr><td width="45%" valign="top"><ul>
 <li><div class="fn"/><b><a href="qtextdocument.html#defaultFont-prop">defaultFont</a></b> : QFont</li>
 <li><div class="fn"/><b><a href="qtextdocument.html#modified-prop">modified</a></b> : bool</li>
@@ -43,7 +43,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="qtextdocument.html#useDesignMetrics-prop">useDesignMetrics</a></b> : bool</li>
 </ul>
 </td></tr>
-</table>
+</table></p>
 <ul>
 <li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
 </ul>
@@ -144,28 +144,28 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="flags"><a name="FindFlag-enum"></a>enum QTextDocument::FindFlag<br />flags QTextDocument::FindFlags</h3>
 <p>This enum describes the options available to <a href="qtextdocument.html">QTextDocument</a>'s find function. The options can be OR-red together from the following list:</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QTextDocument::FindBackward</tt></td><td align="center" valign="top"><tt>0x00001</tt></td><td valign="top">&nbsp;</td></tr>
 <tr><td valign="top"><tt>QTextDocument::FindCaseSensitively</tt></td><td align="center" valign="top"><tt>0x00002</tt></td><td valign="top">By default find works case insensitive. Specifying this option changes the behaviour to a case sensitive find operation.</td></tr>
 <tr><td valign="top"><tt>QTextDocument::FindWholeWords</tt></td><td align="center" valign="top"><tt>0x00004</tt></td><td valign="top">Makes find match only complete words.</td></tr>
-</table>
+</table></p>
 <p>The FindFlags type is a typedef for <a href="qflags.html">QFlags</a>&lt;FindFlag&gt;. It stores an OR combination of FindFlag values.</p>
 <h3 class="fn"><a name="MetaInformation-enum"></a>enum QTextDocument::MetaInformation</h3>
 <p>This enum describes the different types of meta information that can be added to a document.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QTextDocument::DocumentTitle</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The title of the document.</td></tr>
-</table>
+</table></p>
 <p>See also <a href="qtextdocument.html#metaInformation">metaInformation</a>() and <a href="qtextdocument.html#setMetaInformation">setMetaInformation</a>().</p>
 <h3 class="fn"><a name="ResourceType-enum"></a>enum QTextDocument::ResourceType</h3>
 <p>This enum describes the types of resources that can be loaded by <a href="qtextdocument.html">QTextDocument</a>'s <a href="qtextdocument.html#loadResource">loadResource</a>() function.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QTextDocument::HtmlResource</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The resource contains HTML.</td></tr>
 <tr><td valign="top"><tt>QTextDocument::ImageResource</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">The resource contains image data.</td></tr>
 <tr><td valign="top"><tt>QTextDocument::UserResource</tt></td><td align="center" valign="top"><tt>100</tt></td><td valign="top">The first available value for user defined resource types.</td></tr>
-</table>
+</table></p>
 <p>See also <a href="qtextdocument.html#loadResource">loadResource</a>().</p>
 <hr />
 <h2>Property Documentation</h2>
@@ -249,7 +249,7 @@ body { background: #ffffff; color: black; }</style>
 <p>If the given <i>cursor</i> has a selection, the search begins after the selection; otherwise it begins at the cursor's position.</p>
 <p>By default the search is case-sensitive, and can match text anywhere in the document.</p>
 <h3 class="fn"><a name="find-2"></a><a href="qtextcursor.html">QTextCursor</a> QTextDocument::find ( const <a href="qstring.html">QString</a> &amp; <i>expr</i>, int <i>position</i> = 0, <a href="qtextdocument.html#FindFlag-enum">FindFlags</a> <i>options</i> = 0 ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Finds the next occurrence of the string, <i>expr</i>, in the document. The search starts at the given <i>position</i>, and proceeds forwards through the document unless specified otherwise in the search options. The <i>options</i> control the type of search performed.</p>
 <p>Returns a cursor with the match selected if <i>expr</i> was found; otherwise returns a null cursor.</p>
 <p>If the <i>position</i> is 0 (the default) the search begins from the beginning of the document; otherwise it begins at the specified position.</p>
@@ -272,8 +272,8 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns meta information about the document of the type specified by <i>info</i>.</p>
 <p>See also <a href="qtextdocument.html#setMetaInformation">setMetaInformation</a>().</p>
 <h3 class="fn"><a name="modificationChanged"></a>void QTextDocument::modificationChanged ( bool <i>changed</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This signal is emitted whenever the content of the document changes in a way that affects the modification state. If <i>changed</i> is true if the document has been modified; otherwise it is false.</p>
-<p>For example calling setModified(false) on a document and then inserting text causes the signal to get emitted. If you undo that operation, causing the document to return to its original unmodified state, the signal will get emitted again.</p>
+<p>This signal is emitted whenever the content of the document changes in a way that affects the modification state. If <i>changed</i> is true, the document has been modified; otherwise it is false.</p>
+<p>For example, calling setModified(false) on a document and then inserting text causes the signal to get emitted. If you undo that operation, causing the document to return to its original unmodified state, the signal will get emitted again.</p>
 <h3 class="fn"><a name="object"></a><a href="qtextobject.html">QTextObject</a> * QTextDocument::object ( int <i>objectIndex</i> ) const</h3>
 <p>Returns the text object associated with the given <i>objectIndex</i>.</p>
 <h3 class="fn"><a name="objectForFormat"></a><a href="qtextobject.html">QTextObject</a> * QTextDocument::objectForFormat ( const <a href="qtextformat.html">QTextFormat</a> &amp; <i>f</i> ) const</h3>
@@ -299,7 +299,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="setHtml"></a>void QTextDocument::setHtml ( const <a href="qstring.html">QString</a> &amp; <i>html</i> )</h3>
 <p>Replaces the entire contents of the document with the given HTML-formatted text in the <i>html</i> string.</p>
 <p>The HTML formatting is respected as much as possible; for example, &quot;&lt;b&gt;bold&lt;/b&gt; text&quot; will produce text where the first word has a font weight that gives it a bold appearance: &quot;<b>bold</b> text&quot;.</p>
-<p>See also <a href="qtextdocument.html#setPlainText">setPlainText</a>().</p>
+<p>See also <a href="qtextdocument.html#setPlainText">setPlainText</a>() and <a href="richtext-html-subset.html">Supported HTML Subset</a>.</p>
 <h3 class="fn"><a name="setMetaInformation"></a>void QTextDocument::setMetaInformation ( <a href="qtextdocument.html#MetaInformation-enum">MetaInformation</a> <i>info</i>, const <a href="qstring.html">QString</a> &amp; <i>string</i> )</h3>
 <p>Sets the document's meta information of the type specified by <i>info</i> to the given <i>string</i>.</p>
 <p>See also <a href="qtextdocument.html#metaInformation">metaInformation</a>().</p>
@@ -312,6 +312,7 @@ body { background: #ffffff; color: black; }</style>
 <pre>&nbsp;   &lt;html&gt;&lt;head&gt;&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=utf-8&quot;&gt;&lt;/head&gt;&lt;body&gt;...</pre>
 <p>If no encoding is specified then no such meta information is generated.</p>
 <p>If you later on convert the returned html string into a byte array for transmission over a network or when saving to disk you should specify the encoding you're going to use for the conversion to a byte array here.</p>
+<p>See also <a href="richtext-html-subset.html">Supported HTML Subset</a>.</p>
 <h3 class="fn"><a name="toPlainText"></a><a href="qstring.html">QString</a> QTextDocument::toPlainText () const</h3>
 <p>Returns the plain text contained in the document. If you want formatting information use a <a href="qtextcursor.html">QTextCursor</a> instead.</p>
 <p>See also <a href="qtextdocument.html#toHtml">toHtml</a>().</p>
@@ -321,8 +322,8 @@ body { background: #ffffff; color: black; }</style>
 <p>This signal is emitted whenever undo operations become available (<i>available</i> is true) or unavailable (<i>available</i> is false).</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

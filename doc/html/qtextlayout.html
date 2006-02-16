@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/gui/text/qtextlayout.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/gui/text/qtextlayout.cpp -->
 <head>
     <title>Qt 4.1: QTextLayout Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -34,7 +34,6 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="qtextlayout.html#QTextLayout">QTextLayout</a></b> ()</li>
 <li><div class="fn"/><b><a href="qtextlayout.html#QTextLayout-2">QTextLayout</a></b> ( const QString &amp; <i>text</i> )</li>
 <li><div class="fn"/><b><a href="qtextlayout.html#QTextLayout-3">QTextLayout</a></b> ( const QString &amp; <i>text</i>, const QFont &amp; <i>font</i>, QPaintDevice * <i>paintdevice</i> = 0 )</li>
-<li><div class="fn"/><b><a href="qtextlayout.html#QTextLayout-4">QTextLayout</a></b> ( const QTextBlock &amp; <i>block</i> )</li>
 <li><div class="fn"/><b><a href="qtextlayout.html#dtor.QTextLayout">~QTextLayout</a></b> ()</li>
 <li><div class="fn"/>QList&lt;FormatRange&gt; <b><a href="qtextlayout.html#additionalFormats">additionalFormats</a></b> () const</li>
 <li><div class="fn"/>void <b><a href="qtextlayout.html#beginLayout">beginLayout</a></b> ()</li>
@@ -78,14 +77,14 @@ body { background: #ffffff; color: black; }</style>
 <p>Here's some pseudo code that presents the layout phase:</p>
 <pre>&nbsp;   int leading = fontMetrics.leading();
     int height = 0;
-    int widthUsed = 0;
+    qreal widthUsed = 0;
     textLayout.beginLayout();
     while (1) {
         QTextLine line = textLayout.createLine();
         if (!line.isValid())
             break;
 
-        line.layout(lineWidth);
+        line.setLineWidth(lineWidth);
         height += leading;
         line.setPosition(QPoint(0, height));
         height += line.height();
@@ -99,11 +98,11 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="CursorMode-enum"></a>enum QTextLayout::CursorMode</h3>
-<table border="1" cellpadding="2" cellspacing="1" width="40%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="40%">
 <tr><th width="60%">Constant</th><th width="40%">Value</th></tr>
 <tr><td valign="top"><tt>QTextLayout::SkipCharacters</tt></td><td align="center" valign="top"><tt>0</tt></td></tr>
 <tr><td valign="top"><tt>QTextLayout::SkipWords</tt></td><td align="center" valign="top"><tt>1</tt></td></tr>
-</table>
+</table></p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QTextLayout"></a>QTextLayout::QTextLayout ()</h3>
@@ -114,8 +113,6 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="QTextLayout-3"></a>QTextLayout::QTextLayout ( const <a href="qstring.html">QString</a> &amp; <i>text</i>, const <a href="qfont.html">QFont</a> &amp; <i>font</i>, <a href="qpaintdevice.html">QPaintDevice</a> * <i>paintdevice</i> = 0 )</h3>
 <p>Constructs a text layout to lay out the given <i>text</i> with the specified <i>font</i>.</p>
 <p>All the metric and layout calculations will be done in terms of the paint device, <i>paintdevice</i>. If <i>paintdevice</i> is 0 the calculations will be done in screen metrics.</p>
-<h3 class="fn"><a name="QTextLayout-4"></a>QTextLayout::QTextLayout ( const <a href="qtextblock.html">QTextBlock</a> &amp; <i>block</i> )</h3>
-<p>Constructs a text layout to lay out the given <i>block</i>.</p>
 <h3 class="fn"><a name="dtor.QTextLayout"></a>QTextLayout::~QTextLayout ()</h3>
 <p>Destructs the layout.</p>
 <h3 class="fn"><a name="additionalFormats"></a><a href="qlist.html">QList</a>&lt;<a href="qtextlayout-formatrange.html">FormatRange</a>&gt; QTextLayout::additionalFormats () const</h3>
@@ -206,8 +203,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qtextlayout.html#setTextOption">setTextOption</a>() and <a href="qtextoption.html">QTextOption</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

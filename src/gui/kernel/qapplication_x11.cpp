@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -417,7 +417,7 @@ static int qt_x_errhandler(Display *dpy, XErrorEvent *err)
     XGetErrorText( dpy, err->error_code, errstr, 256 );
     char buffer[256];
     char request_str[256];
-    sprintf(buffer, "%d", err->request_code);
+    qsnprintf(buffer, 256, "%d", err->request_code);
     XGetErrorDatabaseText(dpy, "XRequest", buffer, "", request_str, 256);
     if (err->request_code < 128) {
         // X error for a normal protocol request
@@ -440,11 +440,11 @@ static int qt_x_errhandler(Display *dpy, XErrorEvent *err)
 
         char minor_str[256];
         if (extensionName) {
-            sprintf(buffer, "%s.%d", extensionName, err->minor_code);
+            qsnprintf(buffer, 256, "%s.%d", extensionName, err->minor_code);
             XGetErrorDatabaseText(dpy, "XRequest", buffer, "", minor_str, 256);
         } else {
             extensionName = "Uknown extension";
-            sprintf(minor_str, "Unknown request");
+            qsnprintf(minor_str, 256, "Unknown request");
         }
         qWarning( "X Error: %s %d\n"
                   "  Extension:    %d (%s)\n"
@@ -2832,7 +2832,7 @@ int QApplication::x11ProcessEvent(XEvent* event)
             QApplicationPrivate::dispatchEnterLeave(widget, 0);
 
         QApplicationPrivate::dispatchEnterLeave(enter, widget);
-        if (enter) {
+        if (enter && QApplicationPrivate::tryModalHelper(enter, 0)) {
             curWin = enter->winId();
             static_cast<QETWidget *>(enter)->translateMouseEvent(&ev); //we don't get MotionNotify, emulate it
         } else {
@@ -3432,8 +3432,8 @@ bool QETWidget::translateMouseEvent(const XEvent *event)
                 mouseButtonPressTime = event->xbutton.time;
             }
             mouseButtonPressed = button;        // save event params for
-            mouseXPos = pos.x();                // future double click tests
-            mouseYPos = pos.y();
+            mouseXPos = event->xbutton.x;                // future double click tests
+            mouseYPos = event->xbutton.y;
             mouseGlobalXPos = globalPos.x();
             mouseGlobalYPos = globalPos.y();
         } else {                                // mouse button released
@@ -3671,6 +3671,7 @@ bool QETWidget::translateXinputEvent(const XEvent *ev, const QTabletDeviceData *
 
             }
             motion = (reinterpret_cast<const XDeviceMotionEvent*>(&xinputMotionEvent));
+            break;
         }
         t = QEvent::TabletMove;
         global = QPoint(motion->x_root, motion->y_root);
@@ -4567,13 +4568,13 @@ bool QETWidget::translateKeyEventInternal(const XEvent *event, int& count, QStri
     //
     if (key < 128 || (key < 256 && (!qt_input_mapper || qt_input_mapper->mibEnum()==4))) {
         code = isprint((int)key) ? toupper((int)key) : 0; // upper-case key, if known
-    } else if (text.length() == 1 && text.unicode()->unicode() > 0x1f && text.unicode()->unicode() != 0x7f && !(key >= XK_dead_grave && key <= XK_dead_horn)) {
-        code = text.unicode()->toUpper().unicode();
     } else if (key >= XK_F1 && key <= XK_F35) {
         code = Qt::Key_F1 + ((int)key - XK_F1);        // function keys
     } else if (key >= XK_KP_0 && key <= XK_KP_9) {
         code = Qt::Key_0 + ((int)key - XK_KP_0);        // numeric keypad keys
         modifiers |= Qt::KeypadModifier;
+    } else if (text.length() == 1 && text.unicode()->unicode() > 0x1f && text.unicode()->unicode() != 0x7f && !(key >= XK_dead_grave && key <= XK_dead_horn)) {
+        code = text.unicode()->toUpper().unicode();
     } else {
         int i = 0;                                // any other keys
         while (KeyTbl[i]) {
@@ -5679,7 +5680,7 @@ bool QSessionManager::allowsInteraction()
 
     if (sm_interactStyle == SmInteractStyleAny) {
         sm_waitingForInteraction =  SmcInteractRequest(smcConnection, SmDialogNormal,
-                                                        sm_interactCallback, (SmPointer*) this);
+                                                        sm_interactCallback, (SmPointer*) d);
     }
     if (sm_waitingForInteraction) {
         QEventLoop eventLoop;
@@ -5708,7 +5709,7 @@ bool QSessionManager::allowsErrorInteraction()
 
     if (sm_interactStyle == SmInteractStyleAny || sm_interactStyle == SmInteractStyleErrors) {
         sm_waitingForInteraction =  SmcInteractRequest(smcConnection, SmDialogError,
-                                                        sm_interactCallback, (SmPointer*) this);
+                                                        sm_interactCallback, (SmPointer*) d);
     }
     if (sm_waitingForInteraction) {
         QEventLoop eventLoop;

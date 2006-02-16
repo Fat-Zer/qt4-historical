@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/network/qftp.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/network/qftp.cpp -->
 <head>
     <title>Qt 4.1: QFtp Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -170,7 +170,7 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="Command-enum"></a>enum QFtp::Command</h3>
 <p>This enum is used as the return value for the <a href="qftp.html#currentCommand">currentCommand</a>() function. This allows you to perform specific actions for particular commands, e.g. in a FTP client, you might want to clear the directory view when a <a href="qftp.html#list">list</a>() command is started; in this case you can simply check in the slot connected to the start() signal if the <a href="qftp.html#currentCommand">currentCommand</a>() is <tt>List</tt>.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QFtp::None</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">No command is being executed.</td></tr>
 <tr><td valign="top"><tt>QFtp::SetTransferMode</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">set the <a href="qftp.html#TransferMode-enum">transfer</a> mode.</td></tr>
@@ -187,22 +187,22 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QFtp::Rmdir</tt></td><td align="center" valign="top"><tt>12</tt></td><td valign="top"><a href="qftp.html#rmdir">rmdir</a>() is being executed.</td></tr>
 <tr><td valign="top"><tt>QFtp::Rename</tt></td><td align="center" valign="top"><tt>13</tt></td><td valign="top"><a href="qftp.html#rename">rename</a>() is being executed.</td></tr>
 <tr><td valign="top"><tt>QFtp::RawCommand</tt></td><td align="center" valign="top"><tt>14</tt></td><td valign="top"><a href="qftp.html#rawCommand">rawCommand</a>() is being executed.</td></tr>
-</table>
+</table></p>
 <p>See also <a href="qftp.html#currentCommand">currentCommand</a>().</p>
 <h3 class="fn"><a name="Error-enum"></a>enum QFtp::Error</h3>
 <p>This enum identifies the error that occurred.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QFtp::NoError</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">No error occurred.</td></tr>
 <tr><td valign="top"><tt>QFtp::HostNotFound</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">The host name lookup failed.</td></tr>
 <tr><td valign="top"><tt>QFtp::ConnectionRefused</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">The server refused the connection.</td></tr>
 <tr><td valign="top"><tt>QFtp::NotConnected</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">Tried to send a command, but there is no connection to a server.</td></tr>
 <tr><td valign="top"><tt>QFtp::UnknownError</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">An error other than those specified above occurred.</td></tr>
-</table>
+</table></p>
 <p>See also <a href="qftp.html#error">error</a>().</p>
 <h3 class="fn"><a name="State-enum"></a>enum QFtp::State</h3>
 <p>This enum defines the connection state:</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QFtp::Unconnected</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">There is no connection to the host.</td></tr>
 <tr><td valign="top"><tt>QFtp::HostLookup</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">A host name lookup is in progress.</td></tr>
@@ -210,23 +210,23 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QFtp::Connected</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">Connection to the host has been achieved.</td></tr>
 <tr><td valign="top"><tt>QFtp::LoggedIn</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">Connection and user login have been achieved.</td></tr>
 <tr><td valign="top"><tt>QFtp::Closing</tt></td><td align="center" valign="top"><tt>5</tt></td><td valign="top">The connection is closing down, but it is not yet closed. (The state will be <tt>Unconnected</tt> when the connection is closed.)</td></tr>
-</table>
+</table></p>
 <p>See also <a href="qftp.html#stateChanged">stateChanged</a>() and <a href="qftp.html#state">state</a>().</p>
 <h3 class="fn"><a name="TransferMode-enum"></a>enum QFtp::TransferMode</h3>
 <p>FTP works with two socket connections; one for commands and another for transmitting data. While the command connection is always initiated by the client, the second connection can be initiated by either the client or the server.</p>
 <p>This enum defines whether the client (Passive mode) or the server (Active mode) should set up the data connection.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QFtp::Passive</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The client connects to the server to transmit its data.</td></tr>
 <tr><td valign="top"><tt>QFtp::Active</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The server connects to the client to transmit its data.</td></tr>
-</table>
+</table></p>
 <h3 class="fn"><a name="TransferType-enum"></a>enum QFtp::TransferType</h3>
 <p>This enum identifies the data transfer type used with get and put commands.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QFtp::Binary</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The data will be transferred in Binary mode.</td></tr>
 <tr><td valign="top"><tt>QFtp::Ascii</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The data will be transferred in Ascii mode and new line characters will be converted to the local format.</td></tr>
-</table>
+</table></p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QFtp"></a>QFtp::QFtp ( <a href="qobject.html">QObject</a> * <i>parent</i> = 0 )</h3>
@@ -333,7 +333,7 @@ body { background: #ffffff; color: black; }</style>
 <p>The data is transferred as Binary or Ascii depending on the value of <i>type</i>.</p>
 <p>Make sure that the <i>dev</i> pointer is valid for the duration of the operation (it is safe to delete it when the <a href="qftp.html#commandFinished">commandFinished</a>() is emitted).</p>
 <h3 class="fn"><a name="put-2"></a>int QFtp::put ( const <a href="qbytearray.html">QByteArray</a> &amp; <i>data</i>, const <a href="qstring.html">QString</a> &amp; <i>file</i>, <a href="qftp.html#TransferType-enum">TransferType</a> <i>type</i> = Binary )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes a copy of the given <i>data</i> to the file called <i>file</i> on the server. The progress of the upload is reported by the <a href="qftp.html#dataTransferProgress">dataTransferProgress</a>() signal.</p>
 <p>The data is transferred as Binary or Ascii depending on the value of <i>type</i>.</p>
 <p>The function does not block and returns immediately. The command is scheduled, and its execution is performed asynchronously. The function returns a unique identifier which is passed by <a href="qftp.html#commandStarted">commandStarted</a>() and <a href="qftp.html#commandFinished">commandFinished</a>().</p>
@@ -390,8 +390,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qftp.html#connectToHost">connectToHost</a>(), <a href="qftp.html#close">close</a>(), <a href="qftp.html#state">state</a>(), and <a href="qftp.html#State-enum">State</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

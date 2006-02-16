@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -55,7 +55,15 @@
   also be inserted in the usual way with the insertRows() function, and
   removed with removeRows(). The contents of the string list can be
   retrieved with the stringList() convenience function.
-
+    
+    An example usage of QStringListModel:
+    \code
+        QStringListModel *model = new QStringListModel();
+        QStringList list;
+        list << "a" << "b" << "c";
+        model->setStringList(list);
+    \endcode
+    
   \sa QAbstractListModel, QAbstractItemModel, {Model/View Programming}
 */
 
@@ -83,13 +91,17 @@ QStringListModel::QStringListModel(const QStringList &strings, QObject *parent)
     number of items in the model's internal string list.
 
     The optional \a parent argument is used in most models to specify the
-    parent of the rows to be counted. In this model, the parent is ignored.
+    parent of the rows to be counted. Because this is a list if a 
+    valid parent is specified the result will always be 0.
 
     \sa insertRows(), removeRows(), QAbstractItemModel::rowCount()
 */
 
-int QStringListModel::rowCount(const QModelIndex &/*parent*/) const
+int QStringListModel::rowCount(const QModelIndex &parent) const
 {
+    if (parent.isValid())
+        return 0;
+    
     return lst.count();
 }
 
@@ -123,7 +135,7 @@ Qt::ItemFlags QStringListModel::flags(const QModelIndex &index) const
     if (index.isValid())
         return QAbstractItemModel::flags(index) | Qt::ItemIsEditable;
     else
-        return QAbstractItemModel::flags(index);
+        return QAbstractItemModel::flags(index) | Qt::ItemIsDropEnabled;
 }
 
 /*!
@@ -159,6 +171,8 @@ bool QStringListModel::setData(const QModelIndex &index, const QVariant &value, 
 bool QStringListModel::insertRows(int row, int count, const QModelIndex &parent)
 {
     Q_UNUSED(parent);
+    if (count < 1 || row < 0 || row > rowCount(parent))
+        return false;
 
     beginInsertRows(QModelIndex(), row, row + count - 1);
 
@@ -184,7 +198,9 @@ bool QStringListModel::insertRows(int row, int count, const QModelIndex &parent)
 bool QStringListModel::removeRows(int row, int count, const QModelIndex &parent)
 {
     Q_UNUSED(parent);
-
+    if (count <= 0 || row < 0 || (row + count) > rowCount(parent))
+        return false;
+    
     beginRemoveRows(QModelIndex(), row, row + count - 1);
 
     for (int r = 0; r < count; ++r)

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -87,7 +87,7 @@ inline int q_atomic_test_and_set_release_int(volatile int *ptr, int expected, in
     return ret;
 }
 
-inline int q_atomic_test_and_set_release_ptr(volatile void *ptr, void *expected, void *newval)
+inline int q_atomic_test_and_set_ptr(volatile void *ptr, void *expected, void *newval)
 {
     register void *ret;
     asm volatile("1:\n"

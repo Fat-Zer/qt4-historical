@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2004-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 2004-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the example classes of the Qt Toolkit.
 **
@@ -49,7 +49,7 @@ void MainWindow::open()
     QString fileName = QFileDialog::getOpenFileName(this);
     if (!fileName.isEmpty()) {
         QFile file(fileName);
-        if (!file.open(QFile::ReadOnly)) {
+        if (!file.open(QFile::ReadOnly | QFile::Text)) {
             QMessageBox::warning(this, tr("Codecs"),
                                  tr("Cannot read file %1:\n%2")
                                  .arg(fileName)
@@ -70,7 +70,7 @@ void MainWindow::save()
     QString fileName = QFileDialog::getSaveFileName(this);
     if (!fileName.isEmpty()) {
         QFile file(fileName);
-        if (!file.open(QFile::WriteOnly)) {
+        if (!file.open(QFile::WriteOnly | QFile::Text)) {
             QMessageBox::warning(this, tr("Codecs"),
                                  tr("Cannot write file %1:\n%2")
                                  .arg(fileName)

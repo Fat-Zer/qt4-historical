@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/corelib/io/qurl.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/corelib/io/qurl.cpp -->
 <head>
     <title>Qt 4.1: QUrl Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -103,6 +103,7 @@ body { background: #ffffff; color: black; }</style>
 <a name="related-non-members"></a>
 <h3>Related Non-Members</h3>
 <ul>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qurl.html#operator-lt-lt-20">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>out</i>, const QUrl &amp; <i>url</i> )</li>
 <li><div class="fn"/>QDataStream &amp; <b><a href="qurl.html#operator-gt-gt-13">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>in</i>, QUrl &amp; <i>url</i> )</li>
 </ul>
 <a name="details"></a>
@@ -129,7 +130,7 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="flags"><a name="FormattingOption-enum"></a>enum QUrl::FormattingOption<br />flags QUrl::FormattingOptions</h3>
 <p>The formatting options define how the URL is formatted when written out as text.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QUrl::None</tt></td><td align="center" valign="top"><tt>0x0</tt></td><td valign="top">The URL is left unchanged.</td></tr>
 <tr><td valign="top"><tt>QUrl::RemoveScheme</tt></td><td align="center" valign="top"><tt>0x1</tt></td><td valign="top">The scheme is removed from the URL.</td></tr>
@@ -141,20 +142,21 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QUrl::RemoveQuery</tt></td><td align="center" valign="top"><tt>0x40</tt></td><td valign="top">The query part of the URL (following a '?' character) is removed.</td></tr>
 <tr><td valign="top"><tt>QUrl::RemoveFragment</tt></td><td align="center" valign="top"><tt>0x80</tt></td><td valign="top">&nbsp;</td></tr>
 <tr><td valign="top"><tt>QUrl::StripTrailingSlash</tt></td><td align="center" valign="top"><tt>0x10000</tt></td><td valign="top">The trailing slash is removed if one is present.</td></tr>
-</table>
+</table></p>
 <p>The FormattingOptions type is a typedef for <a href="qflags.html">QFlags</a>&lt;FormattingOption&gt;. It stores an OR combination of FormattingOption values.</p>
 <h3 class="fn"><a name="ParsingMode-enum"></a>enum QUrl::ParsingMode</h3>
 <p>The parsing mode controls the way <a href="qurl.html">QUrl</a> parses strings.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QUrl::TolerantMode</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top"><a href="qurl.html">QUrl</a> will try to correct some common errors in URLs. This mode is useful when processing URLs entered by users.</td></tr>
 <tr><td valign="top"><tt>QUrl::StrictMode</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Only valid URLs are accepted. This mode is useful for general URL validation.</td></tr>
-</table>
+</table></p>
 <p>In TolerantMode, the parser corrects the following invalid input:</p>
 <ul>
 <li>Spaces and &quot;%20&quot;: If an encoded URL contains a space, this will be replaced with &quot;%20&quot;. If a decoded URL contains &quot;%20&quot;, this will be replaced with a single space before the URL is parsed.</li>
-<li>Single &quot;%&quot; characters: Any occurrances of a percent character &quot;%&quot; not followed by exactly two hexadecimal characters (e.g., &quot;13% coverage.html&quot;) will be replaced by &quot;%25&quot;.</li>
+<li>Single &quot;%&quot; characters: Any occurrences of a percent character &quot;%&quot; not followed by exactly two hexadecimal characters (e.g., &quot;13% coverage.html&quot;) will be replaced by &quot;%25&quot;.</li>
 <li>Non-US-ASCII characters: An encoded URL should only contain US-ASCII characters. In TolerantMode, characters outside this range are automatically percent-encoded.</li>
+<li>Any occurence of &quot;[&quot; and &quot;]&quot; following the host part of the URL is percent-encoded.</li>
 </ul>
 <hr />
 <h2>Member Function Documentation</h2>
@@ -196,7 +198,7 @@ body { background: #ffffff; color: black; }</style>
 <p>The URL is parsed using <a href="qurl.html#ParsingMode-enum">TolerantMode</a>.</p>
 <p>See also <a href="qurl.html#toEncoded">toEncoded</a>() and <a href="qurl.html#setUrl">setUrl</a>().</p>
 <h3 class="fn"><a name="fromEncoded-2"></a>QUrl QUrl::fromEncoded ( const <a href="qbytearray.html">QByteArray</a> &amp; <i>input</i>, <a href="qurl.html#ParsingMode-enum">ParsingMode</a> <i>parsingMode</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Parses the URL using <i>parsingMode</i>.</p>
 <p>See also <a href="qurl.html#toEncoded">toEncoded</a>() and <a href="qurl.html#setUrl">setUrl</a>().</p>
 <h3 class="fn"><a name="fromLocalFile"></a>QUrl QUrl::fromLocalFile ( const <a href="qstring.html">QString</a> &amp; <i>localFile</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
@@ -238,7 +240,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the port of the URL, or -1 if the port is unspecified.</p>
 <p>See also <a href="qurl.html#setPort">setPort</a>().</p>
 <h3 class="fn"><a name="port-2"></a>int QUrl::port ( int <i>defaultPort</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns the port of the URL, or <i>defaultPort</i> if the port is unspecified.</p>
 <p>Example:</p>
 <pre>&nbsp;   QFtp ftp;
@@ -288,7 +290,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Use <a href="qurl.html#isValid">isValid</a>() to determine if a valid URL was constructed.</p>
 <p>See also <a href="qurl.html#setUrl">setUrl</a>().</p>
 <h3 class="fn"><a name="setEncodedUrl-2"></a>void QUrl::setEncodedUrl ( const <a href="qbytearray.html">QByteArray</a> &amp; <i>encodedUrl</i>, <a href="qurl.html#ParsingMode-enum">ParsingMode</a> <i>parsingMode</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Constructs a URL by parsing the contents of <i>encodedUrl</i> using the given <i>parsingMode</i>.</p>
 <h3 class="fn"><a name="setFragment"></a>void QUrl::setFragment ( const <a href="qstring.html">QString</a> &amp; <i>fragment</i> )</h3>
 <p>Sets the fragment of the URL to <i>fragment</i>. The fragment is the last part of the URL, represented by a '#' followed by a string of characters. It is typically used in HTTP for referring to a certain link or point on a page:</p>
@@ -328,7 +330,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Calling <a href="qurl.html#isValid">isValid</a>() will tell whether or not a valid URL was constructed.</p>
 <p>See also <a href="qurl.html#setEncodedUrl">setEncodedUrl</a>().</p>
 <h3 class="fn"><a name="setUrl-2"></a>void QUrl::setUrl ( const <a href="qstring.html">QString</a> &amp; <i>url</i>, <a href="qurl.html#ParsingMode-enum">ParsingMode</a> <i>parsingMode</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Parses <i>url</i> using the parsing mode <i>parsingMode</i>.</p>
 <p>See also <a href="qurl.html#setEncodedUrl">setEncodedUrl</a>().</p>
 <h3 class="fn"><a name="setUserInfo"></a>void QUrl::setUserInfo ( const <a href="qstring.html">QString</a> &amp; <i>userInfo</i> )</h3>
@@ -364,21 +366,26 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="operator-not-eq"></a>bool QUrl::operator!= ( const QUrl &amp; <i>url</i> ) const</h3>
 <p>Returns true if this URL and the given <i>url</i> are not equal; otherwise returns false.</p>
 <h3 class="fn"><a name="operator-eq"></a>QUrl &amp; QUrl::operator= ( const QUrl &amp; <i>url</i> )</h3>
-<p>Assigns the data of <i>url</i> to this class.</p>
+<p>Assigns the specified <i>url</i> to this object.</p>
 <h3 class="fn"><a name="operator-eq-2"></a>QUrl &amp; QUrl::operator= ( const <a href="qstring.html">QString</a> &amp; <i>url</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p>Assigns the specified <i>url</i> to this object.</p>
 <h3 class="fn"><a name="operator-eq-eq"></a>bool QUrl::operator== ( const QUrl &amp; <i>url</i> ) const</h3>
 <p>Returns true if this URL and the given <i>url</i> are equal; otherwise returns false.</p>
 <hr />
 <h2>Related Non-Members</h2>
+<h3 class="fn"><a name="operator-lt-lt-20"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>out</i>, const QUrl &amp; <i>url</i> )</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p>Writes url <i>url</i> to the stream <i>out</i> and returns a reference to the stream.</p>
+<p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
 <h3 class="fn"><a name="operator-gt-gt-13"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>in</i>, QUrl &amp; <i>url</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads a url into <i>url</i> from the stream <i>in</i> and returns a reference to the stream.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

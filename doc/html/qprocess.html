@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/corelib/io/qprocess.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/corelib/io/qprocess.cpp -->
 <head>
     <title>Qt 4.1: QProcess Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -153,32 +153,32 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="ExitStatus-enum"></a>enum QProcess::ExitStatus</h3>
 <p>This enum describes the different exit statuses of <a href="qprocess.html">QProcess</a>.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QProcess::NormalExit</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The process exited normally.</td></tr>
 <tr><td valign="top"><tt>QProcess::CrashExit</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The process crashed.</td></tr>
-</table>
+</table></p>
 <p>See also <a href="qprocess.html#exitStatus">exitStatus</a>().</p>
 <h3 class="fn"><a name="ProcessChannel-enum"></a>enum QProcess::ProcessChannel</h3>
 <p>This enum describes the process channels used by the running process. Pass one of these values to <a href="qprocess.html#setReadChannel">setReadChannel</a>() to set the current read channel of <a href="qprocess.html">QProcess</a>.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QProcess::StandardOutput</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The standard output (stdout) of the running process.</td></tr>
 <tr><td valign="top"><tt>QProcess::StandardError</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The standard error (stderr) of the running process.</td></tr>
-</table>
+</table></p>
 <p>See also <a href="qprocess.html#setReadChannel">setReadChannel</a>().</p>
 <h3 class="fn"><a name="ProcessChannelMode-enum"></a>enum QProcess::ProcessChannelMode</h3>
 <p>This enum describes the process channel modes of <a href="qprocess.html">QProcess</a>. Pass one of these values to <a href="qprocess.html#setReadChannelMode">setReadChannelMode</a>() to set the current read channel mode.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QProcess::SeparateChannels</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top"><a href="qprocess.html">QProcess</a> manages the output of the running process, keeping standard output and standard error data in separate internal buffers. You can select the <a href="qprocess.html">QProcess</a>'s current read channel by calling <a href="qprocess.html#setReadChannel">setReadChannel</a>(). This is the default channel mode of <a href="qprocess.html">QProcess</a>.</td></tr>
 <tr><td valign="top"><tt>QProcess::MergedChannels</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top"><a href="qprocess.html">QProcess</a> merges the output of the running process into the standard output channel (<tt>stdout</tt>). The standard error channel (<tt>stderr</tt>) will not receive any data. The standard output and standard error data of the running process are interleaved.</td></tr>
 <tr><td valign="top"><tt>QProcess::ForwardedChannels</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top"><a href="qprocess.html">QProcess</a> forwards the output of the running process onto the main process. Anything the child process writes to its standard output and standard error will be written to the standard output and standard error of the main process.</td></tr>
-</table>
+</table></p>
 <p>See also <a href="qprocess.html#setReadChannelMode">setReadChannelMode</a>().</p>
 <h3 class="fn"><a name="ProcessError-enum"></a>enum QProcess::ProcessError</h3>
 <p>This enum describes the different types of errors that are reported by <a href="qprocess.html">QProcess</a>.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QProcess::FailedToStart</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The process failed to start. Either the invoked program is missing, or you may have insufficient permissions to invoke the program.</td></tr>
 <tr><td valign="top"><tt>QProcess::Crashed</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The process crashed some time after starting successfully.</td></tr>
@@ -186,16 +186,16 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QProcess::WriteError</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">An error occurred when attempting to write to the process. For example, the process may not be running, or it may have closed its input channel.</td></tr>
 <tr><td valign="top"><tt>QProcess::ReadError</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">An error occurred when attempting to read from the process. For example, the process may not be running.</td></tr>
 <tr><td valign="top"><tt>QProcess::UnknownError</tt></td><td align="center" valign="top"><tt>5</tt></td><td valign="top">An unknown error occurred. This is the default return value of <a href="qprocess.html#error">error</a>().</td></tr>
-</table>
+</table></p>
 <p>See also <a href="qprocess.html#error">error</a>().</p>
 <h3 class="fn"><a name="ProcessState-enum"></a>enum QProcess::ProcessState</h3>
 <p>This enum describes the different states of <a href="qprocess.html">QProcess</a>.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QProcess::NotRunning</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The process is not running.</td></tr>
 <tr><td valign="top"><tt>QProcess::Starting</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The process is starting, but the program has not yet been invoked.</td></tr>
 <tr><td valign="top"><tt>QProcess::Running</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">The process is running and is ready for reading and writing.</td></tr>
-</table>
+</table></p>
 <p>See also <a href="qprocess.html#state">state</a>().</p>
 <hr />
 <h2>Member Function Documentation</h2>
@@ -227,14 +227,14 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the type of error that occurred last.</p>
 <p>See also <a href="qprocess.html#state">state</a>().</p>
 <h3 class="fn"><a name="error-2"></a>void QProcess::error ( <a href="qprocess.html#ProcessError-enum">QProcess::ProcessError</a> <i>error</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>This signal is emitted when an error occurs with the process. The specified <i>error</i> describes the type of error that occurred.</p>
 <h3 class="fn"><a name="execute"></a>int QProcess::execute ( const <a href="qstring.html">QString</a> &amp; <i>program</i>, const <a href="qstringlist.html">QStringList</a> &amp; <i>arguments</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Starts the program <i>program</i> with the arguments <i>arguments</i> in a new process, waits for it to finish, and then returns the exit code of the process. Any data the new process writes to the console is forwarded to the calling process.</p>
 <p>The environment and working directory are inherited by the calling process.</p>
 <p>On Windows, arguments that contain spaces are wrapped in quotes.</p>
 <h3 class="fn"><a name="execute-2"></a>int QProcess::execute ( const <a href="qstring.html">QString</a> &amp; <i>program</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Starts the program <i>program</i> in a new process. <i>program</i> is a single string of text containing both the program name and its arguments. The arguments are separated by one or more spaces.</p>
 <h3 class="fn"><a name="exitCode"></a>int QProcess::exitCode () const</h3>
 <p>Returns the exit code of the last process that finished.</p>
@@ -272,8 +272,10 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="setEnvironment"></a>void QProcess::setEnvironment ( const <a href="qstringlist.html">QStringList</a> &amp; <i>environment</i> )</h3>
 <p>Sets the environment that <a href="qprocess.html">QProcess</a> will use when starting a process to <i>environment</i>. <i>environment</i> is a list of key=value pairs. Example:</p>
 <pre>&nbsp;   QProcess process;
-    process.setEnvironment(QProcess::systemEnvironment()
-                           &lt;&lt; &quot;TMPDIR=C:\\MyApp\\temp&quot;);
+    QStringList env = QProcess::systemEnvironment();
+    env &lt;&lt; &quot;TMPDIR=C:\\MyApp\\temp&quot;; // Add an environment variable
+    env.replaceInStrings(QRegExp(&quot;^PATH=(.*)&quot;, false), &quot;PATH=\\1;C:\\Bin&quot;); // Add Bin to PATH
+    process.setEnvironment(env);
     process.start(&quot;myapp&quot;);</pre>
 <p>See also <a href="qprocess.html#environment">environment</a>() and <a href="qprocess.html#systemEnvironment">systemEnvironment</a>().</p>
 <h3 class="fn"><a name="setProcessState"></a>void QProcess::setProcessState ( <a href="qprocess.html#ProcessState-enum">ProcessState</a> <i>state</i> )&nbsp;&nbsp;<tt> [protected]</tt></h3>
@@ -326,7 +328,7 @@ body { background: #ffffff; color: black; }</style>
 <p>On Windows, arguments that contain spaces are wrapped in quotes.</p>
 <p>See also <a href="qprocess.html#pid">pid</a>() and <a href="qprocess.html#started">started</a>().</p>
 <h3 class="fn"><a name="start-2"></a>void QProcess::start ( const <a href="qstring.html">QString</a> &amp; <i>program</i>, <a href="qiodevice.html#OpenModeFlag-enum">OpenMode</a> <i>mode</i> = ReadWrite )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Starts the program <i>program</i> in a new process. <i>program</i> is a single string of text containing both the program name and its arguments. The arguments are separated by one or more spaces. For example:</p>
 <pre>&nbsp;   QProcess process;
     process.start(&quot;del /s *.txt&quot;);
@@ -335,13 +337,16 @@ body { background: #ffffff; color: black; }</style>
 <p>The <i>program</i> string can also contain quotes, to ensure that arguments containing spaces are correctly supplied to the new process. For example:</p>
 <pre>&nbsp;   QProcess process;
     process.start(&quot;dir \&quot;My Documents\&quot;&quot;);</pre>
+<p>Note that, on Windows, quotes need to be both escaped and quoted. For example, the above code would be specified in the following way to ensure that <tt>&quot;My Documents&quot;</tt> is used as the argument to the <tt>dir</tt> executable:</p>
+<pre>&nbsp;   QProcess process;
+    process.start(&quot;dir \&quot;\&quot;\&quot;My Documents\&quot;\&quot;\&quot;&quot;);</pre>
 <p>The <a href="qiodevice.html#OpenModeFlag-enum">OpenMode</a> is set to <i>mode</i>.</p>
 <h3 class="fn"><a name="startDetached"></a>bool QProcess::startDetached ( const <a href="qstring.html">QString</a> &amp; <i>program</i>, const <a href="qstringlist.html">QStringList</a> &amp; <i>arguments</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Starts the program <i>program</i> with the arguments <i>arguments</i> in a new process, and detaches from it. Returns true on success; otherwise returns false. If the calling process exits, the detached process will continue to live.</p>
 <p>On Unix, the started process will run in its own session and act like a daemon. On Windows, it will run as a regular standalone process.</p>
 <p>On Windows, arguments that contain spaces are wrapped in quotes.</p>
 <h3 class="fn"><a name="startDetached-2"></a>bool QProcess::startDetached ( const <a href="qstring.html">QString</a> &amp; <i>program</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Starts the program <i>program</i> in a new process. <i>program</i> is a single string of text containing both the program name and its arguments. The arguments are separated by one or more spaces.</p>
 <p>The <i>program</i> string can also contain quotes, to ensure that arguments containing spaces are correctly supplied to the new process.</p>
 <h3 class="fn"><a name="started"></a>void QProcess::started ()&nbsp;&nbsp;<tt> [signal]</tt></h3>
@@ -382,8 +387,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qprocess.html#setWorkingDirectory">setWorkingDirectory</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

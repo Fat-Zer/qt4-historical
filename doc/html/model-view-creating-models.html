@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/doc/src/model-view-programming.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/doc/src/model-view-programming.qdoc -->
 <head>
     <title>Qt 4.1: Creating New Models</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -45,6 +45,7 @@ body { background: #ffffff; color: black; }</style>
 <p>The <a href="qabstractlistmodel.html">QAbstractListModel</a> and <a href="qabstracttablemodel.html">QAbstractTableModel</a> classes provide support for interfaces to simpler non-hierarchical data structures, and are easier to use as a starting point for simple list and table models.</p>
 <p>In this chapter, we create a simple read-only model to explore the basic principles of the model/view architecture. Later in this chapter, we will adapt this simple model so that items can be modified by the user.</p>
 <p>For an example of a more complex model, see the <a href="itemviews-simpletreemodel.html">Simple Tree Model</a> example.</p>
+<p>The requirements of <a href="qabstractitemmodel.html">QAbstractItemModel</a> subclasses is described in more detail in the <a href="model-view-model-subclassing.html">Model Subclassing Reference</a> document.</p>
 <a name="designing-a-model"></a>
 <h2>Designing a Model</h2>
 <p>When creating a new model for an existing data structure, it is important to consider which type of model should be used to provide an interface onto the data. If the data structure can be represented as a list or table of items, you can subclass <a href="qabstractlistmodel.html">QAbstractListModel</a> or <a href="qabstracttablemodel.html">QAbstractTableModel</a> since these classes provide suitable default implementations for many functions.</p>
@@ -179,7 +180,8 @@ body { background: #ffffff; color: black; }</style>
 <p>The <a href="qabstractitemmodel.html#beginRemoveRows">beginRemoveRows()</a> function is always called before any underlying data is removed, and specifies the first and last rows to be removed. This allows other components to access the data before it becomes unavailable. After the rows have been removed, the model emits <a href="qabstractitemmodel.html#endRemoveRows">endRemoveRows()</a> to finish the operation and let other components know that the dimensions of the model have changed.</p>
 <a name="next-steps"></a>
 <h2>Next Steps</h2>
-<p>We can display the data provided by this model using the <a href="qlistview.html">QListView</a> class to present the model's items in the form of a vertical list. For the string list model, this view also provides a default editor so that the items can be manipulated. We examine the possibilities made available by the standard view classes in the chapter on <a href="model-view-view.html">View Classes</a>.</p>
+<p>We can display the data provided by this model, or any other model, using the <a href="qlistview.html">QListView</a> class to present the model's items in the form of a vertical list. For the string list model, this view also provides a default editor so that the items can be manipulated. We examine the possibilities made available by the standard view classes in the chapter on <a href="model-view-view.html">View Classes</a>.</p>
+<p>The <a href="model-view-model-subclassing.html">Model Subclassing Reference</a> document discusses the requirements of <a href="qabstractitemmodel.html">QAbstractItemModel</a> subclasses in more detail, and provides a guide to the virtual functions that must be implemented to enable various features in different types of models.</p>
 <p>
 [Previous: <a href="model-view-model.html">Model Classes</a>]
 [<a href="model-view-programming.html">Contents</a>]
@@ -187,8 +189,8 @@ body { background: #ffffff; color: black; }</style>
 </p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

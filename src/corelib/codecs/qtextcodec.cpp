@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -832,7 +832,7 @@ QTextCodec* QTextCodec::codecForLocale()
     If the codec is registered as a character set in the
     \link http://www.iana.org/assignments/character-sets
     IANA character-sets encoding file\endlink this method should return
-    the preferred mime name for the codec if defined, otherwise it's name.
+    the preferred mime name for the codec if defined, otherwise its name.
 */
 
 /*!

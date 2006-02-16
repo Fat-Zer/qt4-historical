@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/qt3support/network/q3url.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/qt3support/network/q3url.cpp -->
 <head>
     <title>Qt 4.1: Q3Url Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -91,7 +91,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Q3Url works with the decoded path and encoded query in turn.</p>
 <p>Example:</p>
 <p>&lt;tt&gt;http://www.trolltech.com:80/cgi-bin/test%20me.pl?cmd=Hello%20you&lt;/tt&gt;</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Function</th><th>Returns</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="q3url.html#protocol">protocol</a>()</td><td>&quot;http&quot;</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="q3url.html#host">host</a>()</td><td>&quot;www.trolltech.com&quot;</td></tr>
@@ -99,16 +99,16 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="q3url.html#path">path</a>()</td><td>&quot;/cgi-bin/test&amp;nbsp;me.pl&quot;</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="q3url.html#fileName">fileName</a>()</td><td>&quot;test&amp;nbsp;me.pl&quot;</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="q3url.html#query">query</a>()</td><td>&quot;cmd=Hello%20you&quot;</td></tr>
-</table>
+</table></p>
 <p>Example:</p>
 <p>&lt;tt&gt;http://doc.trolltech.com/qdockarea.html#lines&lt;/tt&gt;</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Function</th><th>Returns</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="q3url.html#protocol">protocol</a>()</td><td>&quot;http&quot;</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="q3url.html#host">host</a>()</td><td>&quot;doc.trolltech.com&quot;</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="q3url.html#fileName">fileName</a>()</td><td>&quot;qdockarea.html&quot;</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="q3url.html#ref">ref</a>()</td><td>&quot;lines&quot;</td></tr>
-</table>
+</table></p>
 <p>The individual parts of a URL can be set with <a href="q3url.html#setProtocol">setProtocol</a>(), <a href="q3url.html#setHost">setHost</a>(), <a href="q3url.html#setPort">setPort</a>(), <a href="q3url.html#setPath">setPath</a>(), <a href="q3url.html#setFileName">setFileName</a>(), <a href="q3url.html#setRef">setRef</a>() and <a href="q3url.html#setQuery">setQuery</a>(). A URL could contain, for example, an ftp address which requires a user name and password; these can be set with <a href="q3url.html#setUser">setUser</a>() and <a href="q3url.html#setPassword">setPassword</a>().</p>
 <p>Because path is always encoded internally you must not use &quot;%00&quot; in the path, although this is okay (but not recommended) for the query.</p>
 <p>Q3Url is normally used like this:</p>
@@ -270,18 +270,18 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="operator-eq"></a>Q3Url &amp; Q3Url::operator= ( const Q3Url &amp; <i>url</i> )</h3>
 <p>Assigns the data of <i>url</i> to this class.</p>
 <h3 class="fn"><a name="operator-eq-2"></a>Q3Url &amp; Q3Url::operator= ( const <a href="qstring.html">QString</a> &amp; <i>url</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Parses <i>url</i> and assigns the resulting data to this class.</p>
 <p>If you pass a string like &quot;/home/qt&quot; the &quot;file&quot; protocol will be assumed.</p>
 <h3 class="fn"><a name="operator-eq-eq"></a>bool Q3Url::operator== ( const Q3Url &amp; <i>url</i> ) const</h3>
 <p>Compares this URL with <i>url</i> and returns true if they are equal; otherwise returns false.</p>
 <h3 class="fn"><a name="operator-eq-eq-2"></a>bool Q3Url::operator== ( const <a href="qstring.html">QString</a> &amp; <i>url</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Compares this URL with <i>url</i>. <i>url</i> is parsed first. Returns true if <i>url</i> is equal to this url; otherwise returns false.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

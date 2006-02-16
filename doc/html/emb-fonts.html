@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/doc/src/emb-fonts.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/doc/src/emb-fonts.qdoc -->
 <head>
     <title>Qt 4.1: Fonts in Qtopia Core</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -21,12 +21,12 @@ body { background: #ffffff; color: black; }</style>
 <a name="supported-formats"></a>
 <h2>Supported Formats</h2>
 <p>Qtopia Core supports four font formats:</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#f0f0f0"><td><b>TrueType (TTF)</b></td><td>The scalable font technology now standard on Microsoft Windows Mac OS X, and becoming popular on X11.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><b>Postscript Type1 (PFA/PFB)</b></td><td>Scalable fonts often used by printers, also popular on X11. These are similar in functionality to TTF fonts and are not discussed further in this document.</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><b>Bitmap Distribution Format fonts (BDF)</b></td><td>A standard format for non-scalable fonts. A large number of BDF fonts are supplied as part of standard X11 distributions -- most of these can be used with Qtopia Core. You should <i>not</i> use these in a production system: they are very slow to load and take up a <i>lot</i> of storage space. Instead, render the BDF to a QPF.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><b>Qt Prerendered Font (QPF)</b></td><td>A light-weight non-scalable font format specific to Qtopia Core.</td></tr>
-</table>
+</table></p>
 <p>Support for each of these font formats (except QPF which is always enabled) can be enabled or disabled independently by using the <a href="emb-features.html">Qtopia Core Feature Definition File</a>. There is support in Qtopia Core for writing a QPF font file from any font, so you can initially enable TTF and BDF formats, save QPF files for the fonts and sizes you need, then remove TTF and BDF support.</p>
 <p>See <a href="emb-makeqpf.html">makeqpf</a> for a tool that helps produce QPF files from the TTF and BDF, or just run your application with the <tt>-savefonts</tt> option.</p>
 <a name="memory-requirements"></a>
@@ -48,7 +48,7 @@ body { background: #ffffff; color: black; }</style>
 <blockquote><p><i>name</i> <i>file</i> <i>renderer</i> <i>italic</i> <i>weight</i> <i>size</i> <i>flags</i></p>
 </blockquote>
 <p>where</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Field</th><th>Value</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><i>name</i></td><td><tt>Helvetica</tt>, <tt>Times</tt>, etc.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><i>file</i></td><td><tt>helvR0810.bdf</tt>, <tt>verdana.ttf</tt>, etc.</td></tr>
@@ -62,15 +62,15 @@ body { background: #ffffff; color: black; }</style>
 <li><tt>a</tt>: ASCII range when saving (default is Latin1)</li>
 </ul>
 </td></tr>
-</table>
+</table></p>
 <p>The font definition file does not specify QPF fonts; these are loaded directly from the directory containing the <tt>fontdir</tt> file, and must be called <i>name</i>_<i>size</i>_<i>weight</i><i>italicflag</i>.qpf, where</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Field</th><th>Value</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><i>name</i></td><td><tt>helvetica</tt>, <tt>times</tt>, etc. (in lowercase)</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><i>size</i></td><td>point size * 10 (i.e. <tt>120</tt> for 12pt)</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><i>italicflag</i></td><td><tt>i</tt> for italic, otherwise nothing.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><i>weight</i></td><td><tt>50</tt> is normal, <tt>75</tt> is bold, etc.</td></tr>
-</table>
+</table></p>
 <p>If an application is run with the <tt>-savefonts</tt> command-line option, then whenever a font other than a QPF font is used, a corresponding QPF file is saved. This allows you to easily find the font usage of your applications and to generate QPF files so that you can eventually reduce the memory usage of your applications by disabling TTF and BDF support from Qtopia Core, or by modifying the initialization of <tt>qws_savefonts</tt> in <tt>kernel/qapplication_qws.cpp</tt> of the Qtopia Core library source code. In extreme cases of memory-saving, it is possible to save partially-rendered fonts (i.e. only the characters in &quot;Product Name&quot;) if you are certain that these are the only characters you will need from the font. See QMemoryManager::savePrerenderedFont() for this functionality.</p>
 <a name="notes"></a>
 <h2>Notes</h2>
@@ -78,8 +78,8 @@ body { background: #ffffff; color: black; }</style>
 <p>When enabled, Qtopia Core uses the powerful FreeType2 library to implement TrueType and Type1 support.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

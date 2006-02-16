@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the plugins of the Qt Toolkit.
 **
@@ -81,6 +81,7 @@ public:
     QRect rect(int child) const;
     QString text(Text t, int child) const;
     Role role(int child) const;
+    State state(int child) const;
 
     bool doAction(int action, int child, const QVariantList &params);
 
@@ -107,6 +108,7 @@ public:
     QRect rect(int child) const;
     QString text(Text t, int child) const;
     Role role(int child) const;
+    State state(int child) const;
 
     int defaultAction(int child) const;
     QString actionText(int action, Text t, int child) const;

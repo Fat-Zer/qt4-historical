@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2004-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 2004-2006 Trolltech AS. All rights reserved.
 ** Copyright (C) 2001-2004 Roberto Raggi
 **
 ** This file is part of the qt3to4 porting application of the Qt Toolkit.
@@ -280,6 +280,18 @@ void Semantic::parseDeclaration(AST *funSpec, AST *storageSpec, TypeSpecifierAST
         return;
     }
 
+    //Check if this is possibly a function call by searching for '(' and ')'
+    const QByteArray declText = textOf(decl);
+    if (declText.contains("(") && declText.contains(")")) {
+	if (decl->declarator() && decl->declarator()->subDeclarator()) {
+
+        NameAST * name = decl->declarator()->subDeclarator()->declaratorId();
+	if (name)
+            parseNameUse(name);
+	    return;	
+        } 
+    }
+
     //create VariableMember
     CodeModel::VariableMember *variableMember = CodeModel::Create<CodeModel::VariableMember>(m_storage);
     variableMember->setNameToken(tokenRefFromAST(nameAST));
@@ -511,12 +523,8 @@ void Semantic::parseFunctionDefinition(FunctionDefinitionAST *ast)
     if (!d->declaratorId())
         return;
 
-
-    // Check if function already has been declared, if not then this is also a declaration.
+    parseFunctionDeclaration(funSpec, storageSpec, typeSpec, initDeclarator);
     CodeModel::FunctionMember *method = functionLookup(currentScope.top(), d);
-    if (!method)
-        parseFunctionDeclaration(funSpec, storageSpec, typeSpec, initDeclarator);
-    method = functionLookup(currentScope.top(), d);
 
     if(!method) {
         emit error("Error in Semantic::parseFunctionDefinition: Could not find declaration for function definition");

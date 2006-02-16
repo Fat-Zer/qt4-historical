@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/gui/dialogs/qabstractprintdialog.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/gui/dialogs/qabstractprintdialog.cpp -->
 <head>
     <title>Qt 4.1: QPrintDialog Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -34,7 +34,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>9 public functions inherited from <a href="qdialog.html#public-functions">QDialog</a></li>
 <li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
-<li><div class="fn"/>10 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <h3>Additional Inherited Members</h3>
 <ul>
@@ -51,21 +51,26 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>4 static public members inherited from <a href="qobject.html#static-public-members">QObject</a></li>
 <li><div class="fn"/>39 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
+<li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
 </ul>
 <a name="details"></a>
 <hr />
 <h2>Detailed Description</h2>
 <p>The QPrintDialog class provides a dialog for specifying the printer's configuration.</p>
-<p>It encompasses both the sort of details needed for doing a simple print-out and some print configuration setup.</p>
-<p>Typical use of the QPrintDialog is to construct it on a <a href="qprinter.html">QPrinter</a> object and call <a href="qabstractprintdialog.html#exec">exec</a>() to execute it.</p>
+<p>The dialog allows users to change document-related settings, such as the paper size and orientation, type of print (color or grayscale), range of pages, and number of copies to print.</p>
+<p>Controls are also provided to enable users to choose from the printers available, including any configured network printers.</p>
+<p>Typically, QPrintDialog objects are constructed with a <a href="qprinter.html">QPrinter</a> object, and executed using the <a href="qabstractprintdialog.html#exec">exec</a>() function.</p>
 <pre>&nbsp;   QPrintDialog printDialog(printer, parent);
-    if (printDialog.exec() == QDialog::Accept) {
+    if (printDialog.exec() == QDialog::Accepted) {
         // print ...
     }</pre>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p>If the dialog is accepted by the user, the <a href="qprinter.html">QPrinter</a> object is correctly configured for printing.</p>
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#f0f0f0"><td><img src="images/qprintdialog-plastique.png" alt="Screenshot of a Plastique style printer dialog" /></td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>A printer dialog in Plastique style</td></tr>
-</table>
+</table></p>
+<p>On Windows and Mac OS X, the native print dialog is used, which means that some <a href="qwidget.html">QWidget</a> and <a href="qdialog.html">QDialog</a> properties set on the dialog won't be respected.</p>
+<p>See also QPageSizeDialog and <a href="qprinter.html">QPrinter</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QPrintDialog"></a>QPrintDialog::QPrintDialog ( <a href="qprinter.html">QPrinter</a> * <i>printer</i>, <a href="qwidget.html">QWidget</a> * <i>parent</i> = 0 )</h3>
@@ -74,8 +79,8 @@ body { background: #ffffff; color: black; }</style>
 <p>Destroys the object and frees any allocated resources. Does not delete the associated <a href="qprinter.html">QPrinter</a> object.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/gui/kernel/qgridlayout.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/gui/kernel/qgridlayout.cpp -->
 <head>
     <title>Qt 4.1: QGridLayout Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -102,14 +102,14 @@ body { background: #ffffff; color: black; }</style>
 <p>A non-zero alignment indicates that the layout should not grow to fill the available space but should be sized according to <a href="qlayoutitem.html#sizeHint">sizeHint</a>().</p>
 <p><i>layout</i> becomes a child of the grid layout.</p>
 <h3 class="fn"><a name="addLayout-2"></a>void QGridLayout::addLayout ( <a href="qlayout.html">QLayout</a> * <i>layout</i>, int <i>row</i>, int <i>column</i>, int <i>rowSpan</i>, int <i>columnSpan</i>, <a href="qt.html#AlignmentFlag-enum">Qt::Alignment</a> <i>alignment</i> = 0 )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>This version adds the layout <i>layout</i> to the cell grid, spanning multiple rows/columns. The cell will start at <i>row</i>, <i>column</i> spanning <i>rowSpan</i> rows and <i>columnSpan</i> columns.</p>
 <p>If <i>rowSpan</i> and/or <i>columnSpan</i> is -1, then the layout will extend to the bottom and/or right edge, respectively.</p>
 <h3 class="fn"><a name="addWidget"></a>void QGridLayout::addWidget ( <a href="qwidget.html">QWidget</a> * <i>widget</i>, int <i>row</i>, int <i>column</i>, <a href="qt.html#AlignmentFlag-enum">Qt::Alignment</a> <i>alignment</i> = 0 )</h3>
 <p>Adds the given <i>widget</i> to the cell grid at <i>row</i>, <i>column</i>. The top-left position is (0, 0) by default.</p>
 <p>The alignment is specified by <i>alignment</i>. The default alignment is 0, which means that the widget fills the entire cell.</p>
 <h3 class="fn"><a name="addWidget-2"></a>void QGridLayout::addWidget ( <a href="qwidget.html">QWidget</a> * <i>widget</i>, int <i>fromRow</i>, int <i>fromColumn</i>, int <i>rowSpan</i>, int <i>columnSpan</i>, <a href="qt.html#AlignmentFlag-enum">Qt::Alignment</a> <i>alignment</i> = 0 )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>This version adds the given <i>widget</i> to the cell grid, spanning multiple rows/columns. The cell will start at <i>fromRow</i>, <i>fromColumn</i> spanning <i>rowSpan</i> rows and <i>columnSpan</i> columns. The grid will have the given <i>alignment</i>.</p>
 <p>If <i>rowSpan</i> and/or <i>columnSpan</i> is -1, then the widget will extend to the bottom and/or right edge, respectively.</p>
 <h3 class="fn"><a name="cellRect"></a><a href="qrect.html">QRect</a> QGridLayout::cellRect ( int <i>row</i>, int <i>column</i> ) const</h3>
@@ -159,8 +159,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qgridlayout.html#rowStretch">rowStretch</a>(), <a href="qgridlayout.html#setRowMinimumHeight">setRowMinimumHeight</a>(), and <a href="qgridlayout.html#setColumnStretch">setColumnStretch</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -54,6 +54,12 @@
 
 #include <X11/Xutil.h>
 #include <X11/Xos.h>
+#ifdef index
+# undef index
+#endif
+#ifdef rindex
+# undef rindex
+#endif
 #include <X11/Xatom.h>
 
 //#define QT_NO_SHAPE

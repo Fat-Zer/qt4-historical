@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2004-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 2004-2006 Trolltech AS. All rights reserved.
 ** Copyright (C) 2001-2004 Roberto Raggi
 **
 ** This file is part of the qt3to4 porting application of the Qt Toolkit.
@@ -129,7 +129,7 @@ struct Item
      { return TokenEngine::TokenSection(); }
 
 protected:
-    //using the defualt constructor for an item is
+    //using the default constructor for an item is
     //only allowded for subclasses.
     Item() {};
 };

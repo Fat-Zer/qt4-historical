@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the Qt Designer of the Qt Toolkit.
 **
@@ -526,7 +526,7 @@ void FormWindowManager::slotUpdateActions()
         pasteAvailable = qApp->clipboard()->mimeData() && qApp->clipboard()->mimeData()->hasText();
 
         m_activeFormWindow->simplifySelection(&simplifiedSelection);
-        if (simplifiedSelection.isEmpty())
+        if (simplifiedSelection.isEmpty() && m_activeFormWindow->mainContainer())
             simplifiedSelection.append(m_activeFormWindow->mainContainer());
 
         foreach (QWidget *widget, simplifiedSelection) {

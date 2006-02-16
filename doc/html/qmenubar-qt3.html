@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/gui/widgets/qmenubar.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/gui/widgets/qmenubar.cpp -->
 <head>
     <title>Qt 4.1: Qt 3 Support Members for QMenuBar</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -92,11 +92,11 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="Separator-enum"></a>enum QMenuBar::Separator</h3>
-<table border="1" cellpadding="2" cellspacing="1" width="40%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="40%">
 <tr><th width="60%">Constant</th><th width="40%">Value</th></tr>
 <tr><td valign="top"><tt>QMenuBar::Never</tt></td><td align="center" valign="top"><tt>0</tt></td></tr>
 <tr><td valign="top"><tt>QMenuBar::InWindowsStyle</tt></td><td align="center" valign="top"><tt>1</tt></td></tr>
-</table>
+</table></p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QMenuBar-2"></a>QMenuBar::QMenuBar ( <a href="qwidget.html">QWidget</a> * <i>parent</i>, const char * <i>name</i> )</h3>
@@ -115,10 +115,10 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="changeItem"></a>void QMenuBar::changeItem ( int <i>id</i>, const <a href="qstring.html">QString</a> &amp; <i>text</i> )</h3>
 <p>Use setText() on the relevant <a href="qaction.html">QAction</a> instead.</p>
 <h3 class="fn"><a name="changeItem-2"></a>void QMenuBar::changeItem ( int <i>id</i>, const <a href="qpixmap.html">QPixmap</a> &amp; <i>pixmap</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Use setText() on the relevant <a href="qaction.html">QAction</a> instead.</p>
 <h3 class="fn"><a name="changeItem-3"></a>void QMenuBar::changeItem ( int <i>id</i>, const <a href="qicon.html">QIcon</a> &amp; <i>icon</i>, const <a href="qstring.html">QString</a> &amp; <i>text</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Use <a href="qwidget-qt3.html#setIcon">setIcon</a>() and setText() on the relevant <a href="qaction.html">QAction</a> instead.</p>
 <h3 class="fn"><a name="connectItem"></a>bool QMenuBar::connectItem ( int <i>id</i>, const <a href="qobject.html">QObject</a> * <i>receiver</i>, const char * <i>member</i> )</h3>
 <p>Use <a href="qobject.html#connect">connect</a>() on the relevant <a href="qaction.html">QAction</a> instead.</p>
@@ -141,28 +141,28 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="insertItem"></a>int QMenuBar::insertItem ( const <a href="qstring.html">QString</a> &amp; <i>text</i>, const <a href="qobject.html">QObject</a> * <i>receiver</i>, const char * <i>member</i>, const <a href="qkeysequence.html">QKeySequence</a> &amp; <i>shortcut</i> = 0, int <i>id</i> = -1, int <i>index</i> = -1 )</h3>
 <p>Use one of the <a href="qwidget.html#insertAction">insertAction</a>() or <a href="qmenubar.html#addAction">addAction</a>() overloads instead.</p>
 <h3 class="fn"><a name="insertItem-2"></a>int QMenuBar::insertItem ( const <a href="qicon.html">QIcon</a> &amp; <i>icon</i>, const <a href="qstring.html">QString</a> &amp; <i>text</i>, const <a href="qobject.html">QObject</a> * <i>receiver</i>, const char * <i>member</i>, const <a href="qkeysequence.html">QKeySequence</a> &amp; <i>shortcut</i> = 0, int <i>id</i> = -1, int <i>index</i> = -1 )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Use one of the <a href="qwidget.html#insertAction">insertAction</a>() or <a href="qmenubar.html#addAction">addAction</a>() overloads instead.</p>
 <h3 class="fn"><a name="insertItem-3"></a>int QMenuBar::insertItem ( const <a href="qpixmap.html">QPixmap</a> &amp; <i>pixmap</i>, const <a href="qobject.html">QObject</a> * <i>receiver</i>, const char * <i>member</i>, const <a href="qkeysequence.html">QKeySequence</a> &amp; <i>shortcut</i> = 0, int <i>id</i> = -1, int <i>index</i> = -1 )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Use one of the <a href="qwidget.html#insertAction">insertAction</a>(), <a href="qmenubar.html#addAction">addAction</a>(), <a href="qmenubar.html#insertMenu">insertMenu</a>(), or <a href="qmenubar.html#addMenu">addMenu</a>() overloads instead.</p>
 <h3 class="fn"><a name="insertItem-4"></a>int QMenuBar::insertItem ( const <a href="qstring.html">QString</a> &amp; <i>text</i>, int <i>id</i> = -1, int <i>index</i> = -1 )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Use one of the <a href="qwidget.html#insertAction">insertAction</a>() or <a href="qmenubar.html#addAction">addAction</a>() overloads instead.</p>
 <h3 class="fn"><a name="insertItem-5"></a>int QMenuBar::insertItem ( const <a href="qicon.html">QIcon</a> &amp; <i>icon</i>, const <a href="qstring.html">QString</a> &amp; <i>text</i>, int <i>id</i> = -1, int <i>index</i> = -1 )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Use one of the <a href="qwidget.html#insertAction">insertAction</a>(), <a href="qmenubar.html#addAction">addAction</a>(), <a href="qmenubar.html#insertMenu">insertMenu</a>(), or <a href="qmenubar.html#addMenu">addMenu</a>() overloads instead.</p>
 <h3 class="fn"><a name="insertItem-6"></a>int QMenuBar::insertItem ( const <a href="qstring.html">QString</a> &amp; <i>text</i>, <a href="qmenu.html">QMenu</a> * <i>popup</i>, int <i>id</i> = -1, int <i>index</i> = -1 )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Use one of the <a href="qmenubar.html#insertMenu">insertMenu</a>(), or <a href="qmenubar.html#addMenu">addMenu</a>() overloads instead.</p>
 <h3 class="fn"><a name="insertItem-7"></a>int QMenuBar::insertItem ( const <a href="qicon.html">QIcon</a> &amp; <i>icon</i>, const <a href="qstring.html">QString</a> &amp; <i>text</i>, <a href="qmenu.html">QMenu</a> * <i>popup</i>, int <i>id</i> = -1, int <i>index</i> = -1 )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Use one of the <a href="qmenubar.html#insertMenu">insertMenu</a>(), or <a href="qmenubar.html#addMenu">addMenu</a>() overloads instead.</p>
 <h3 class="fn"><a name="insertItem-8"></a>int QMenuBar::insertItem ( const <a href="qpixmap.html">QPixmap</a> &amp; <i>pixmap</i>, int <i>id</i> = -1, int <i>index</i> = -1 )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Use one of the <a href="qwidget.html#insertAction">insertAction</a>(), <a href="qmenubar.html#addAction">addAction</a>(), <a href="qmenubar.html#insertMenu">insertMenu</a>(), or <a href="qmenubar.html#addMenu">addMenu</a>() overloads instead.</p>
 <h3 class="fn"><a name="insertItem-9"></a>int QMenuBar::insertItem ( const <a href="qpixmap.html">QPixmap</a> &amp; <i>pixmap</i>, <a href="qmenu.html">QMenu</a> * <i>popup</i>, int <i>id</i> = -1, int <i>index</i> = -1 )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Use one of the <a href="qmenubar.html#insertMenu">insertMenu</a>(), or <a href="qmenubar.html#addMenu">addMenu</a>() overloads instead.</p>
 <h3 class="fn"><a name="insertSeparator"></a>int QMenuBar::insertSeparator ( int <i>index</i> = -1 )</h3>
 <p>Use <a href="qwidget.html#insertAction">insertAction</a>() instead, using a separator action. For example, to add a separator after the previously added action use code like this:</p>
@@ -225,8 +225,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qmenubar-qt3.html#setWhatsThis">setWhatsThis</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

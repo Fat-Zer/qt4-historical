@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -156,6 +156,8 @@ QComboBoxPrivateContainer::QComboBoxPrivateContainer(QAbstractItemView *itemView
     if (style()->styleHint(QStyle::SH_ComboBox_Popup, &opt, this)) {
         top = new QComboBoxPrivateScroller(QAbstractSlider::SliderSingleStepSub, this);
         bottom = new QComboBoxPrivateScroller(QAbstractSlider::SliderSingleStepAdd, this);
+        top->hide();
+        bottom->hide();
     } else {
         setFrameStyle(QFrame::StyledPanel|QFrame::Plain);
         setLineWidth(1);
@@ -188,9 +190,9 @@ void QComboBoxPrivateContainer::updateScrollers()
         return;
 
     QStyleOptionComboBox opt = comboStyleOption();
-    if (!combo->isEditable() &&
-        combo->style()->styleHint(QStyle::SH_ComboBox_Popup, &opt, combo) &&
+    if (combo->style()->styleHint(QStyle::SH_ComboBox_Popup, &opt, combo) &&
         view->verticalScrollBar()->minimum() < view->verticalScrollBar()->maximum()) {
+
         bool needTop = view->verticalScrollBar()->value()
                        > (view->verticalScrollBar()->minimum() + spacing());
         bool needBottom = view->verticalScrollBar()->value()
@@ -260,8 +262,7 @@ void QComboBoxPrivateContainer::setItemView(QAbstractItemView *itemView)
     view->viewport()->installEventFilter(this);
     QStyleOptionComboBox opt = comboStyleOption();
 #ifndef QT_NO_SCROLLBAR
-    if (style()->styleHint(QStyle::SH_ComboBox_Popup, &opt, combo)
-        && !combo->isEditable())
+    if (style()->styleHint(QStyle::SH_ComboBox_Popup, &opt, combo))
         view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 #endif
     if (style()->styleHint(QStyle::SH_ComboBox_ListMouseTracking, &opt, combo) ||
@@ -300,6 +301,9 @@ bool QComboBoxPrivateContainer::eventFilter(QObject *o, QEvent *e)
         switch (static_cast<QKeyEvent*>(e)->key()) {
         case Qt::Key_Enter:
         case Qt::Key_Return:
+#ifdef QT_KEYPAD_NAVIGATION
+        case Qt::Key_Select:
+#endif
             if (view->currentIndex().isValid()) {
                 combo->hidePopup();
                 emit itemSelected(view->currentIndex());
@@ -311,6 +315,9 @@ bool QComboBoxPrivateContainer::eventFilter(QObject *o, QEvent *e)
             // fall through
         case Qt::Key_F4:
         case Qt::Key_Escape:
+#ifdef QT_KEYPAD_NAVIGATION
+        case Qt::Key_Back:
+#endif
             combo->hidePopup();
             return true;
         default:
@@ -576,7 +583,7 @@ QComboBoxPrivateContainer* QComboBoxPrivate::viewContainer()
     container = new QComboBoxPrivateContainer(new QComboBoxListView(), q);
     container->itemView()->setModel(model);
     QStyleOptionComboBox opt = getStyleOption();
-    if (q->style()->styleHint(QStyle::SH_ComboBox_Popup, &opt, q) && !q->isEditable())
+    if (q->style()->styleHint(QStyle::SH_ComboBox_Popup, &opt, q))
         q->setItemDelegate(new QComboMenuDelegate(container->itemView(), q));
     container->setLayoutDirection(Qt::LayoutDirection(
                                     q->style()->styleHint(QStyle::SH_ComboBox_LayoutDirection,
@@ -1565,12 +1572,18 @@ QAbstractItemView *QComboBox::view() const
 /*!
   Sets the view to be used in the combobox popup to the given \a
   itemView. The combobox takes ownership of the view.
+
+  Note: If you want to use the convenience views (like QListWidget,
+  QTableWidget or QTreeWidget), make sure to call setModel() on the
+  combobox with the convenience widgets model before calling this
+  function.
 */
 void QComboBox::setView(QAbstractItemView *itemView)
 {
     Q_D(QComboBox);
     Q_ASSERT(itemView);
-    itemView->setModel(d->model);
+    if (itemView->model() != d->model)
+        itemView->setModel(d->model);
     d->viewContainer()->setItemView(itemView);
 }
 
@@ -1673,10 +1686,19 @@ void QComboBox::showPopup()
     //### do horizontally as well
     if (style()->styleHint(QStyle::SH_ComboBox_Popup, &opt, this)) {
         listRect.moveTopLeft(above);
-        listRect.moveTop(listRect.top() - view()->visualRect(view()->currentIndex()).top());
-        if (listRect.top() < screen.top())
-            listRect.moveTopLeft(below);
-        listRect.setBottom(qMin(screen.bottom(), listRect.bottom()));
+        QRect currentItemRect = view()->visualRect(view()->currentIndex());
+        if (listRect.height() < screen.height()) {
+            listRect.moveTop(listRect.top() - currentItemRect.top());
+        } else {
+            if ((listRect.top() - currentItemRect.top()) < screen.top()) {
+                listRect.setTop(screen.top());
+                int valueToScroll = itemHeight * view()->currentIndex().row() - aboveHeight + 3;
+                view()->verticalScrollBar()->setValue(valueToScroll);
+            } else {
+                listRect.moveTop(listRect.top() - currentItemRect.top());
+            }
+            listRect.setBottom(qMin(listRect.bottom(), screen.bottom()));
+        }
     } else if (listRect.height() <= belowHeight) {
         listRect.moveTopLeft(below);
     } else if (listRect.height() <= aboveHeight) {
@@ -1705,6 +1727,10 @@ void QComboBox::hidePopup()
     Q_D(QComboBox);
     if (d->container && d->container->isVisible())
         d->container->hide();
+#ifdef QT_KEYPAD_NAVIGATION
+    if (QApplication::keypadNavigationEnabled() && isEditable())
+        setEditFocus(true);
+#endif
 }
 
 /*!
@@ -1919,6 +1945,11 @@ void QComboBox::keyPressEvent(QKeyEvent *e)
         break;
     case Qt::Key_PageUp:
     case Qt::Key_Up:
+#ifdef QT_KEYPAD_NAVIGATION
+        if (QApplication::keypadNavigationEnabled())
+            e->ignore();
+        else
+#endif
         --newIndex;
         break;
     case Qt::Key_Down:
@@ -1928,6 +1959,11 @@ void QComboBox::keyPressEvent(QKeyEvent *e)
         }
         // fall through
     case Qt::Key_PageDown:
+#ifdef QT_KEYPAD_NAVIGATION
+        if (QApplication::keypadNavigationEnabled())
+            e->ignore();
+        else
+#endif
         ++newIndex;
         break;
     case Qt::Key_Home:
@@ -1955,6 +1991,28 @@ void QComboBox::keyPressEvent(QKeyEvent *e)
         if (!d->lineEdit)
             e->ignore();
         break;
+#ifdef QT_KEYPAD_NAVIGATION
+    case Qt::Key_Select:
+        if (QApplication::keypadNavigationEnabled()) {
+            if (!hasEditFocus()) {
+                showPopup();
+                return;
+            }
+        }
+        break;
+    case Qt::Key_Left:
+        if (QApplication::keypadNavigationEnabled() && !hasEditFocus())
+            --newIndex;
+        break;
+    case Qt::Key_Right:
+        if (QApplication::keypadNavigationEnabled() && !hasEditFocus())
+            ++newIndex;
+        break;
+    case Qt::Key_Back:
+        if (QApplication::keypadNavigationEnabled() && !hasEditFocus())
+            e->ignore();
+        break;
+#endif
     default:
         if (!d->lineEdit && !e->text().isEmpty()) {
             // use keyboardSearch from the listView so we do not duplicate code

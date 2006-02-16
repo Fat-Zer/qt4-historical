@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/gui/styles/qstyleoption.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/gui/styles/qstyleoption.cpp -->
 <head>
     <title>Qt 4.1: QStyleOption Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -69,7 +69,7 @@ body { background: #ffffff; color: black; }</style>
 <p>For performance reasons, there are few member functions and the access to the member variables is direct (i.e., using the <tt>.</tt> or <tt>-&gt;</tt> operator). This low-level feel makes the structures straightforward to use and emphasizes that these are simply parameters used by the style functions.</p>
 <p>The caller of a <a href="qstyle.html">QStyle</a> function usually creates QStyleOption objects on the stack. This combined with Qt's extensive use of <a href="shclass.html#implicit-sharing">implicit sharing</a> for types such as <a href="qstring.html">QString</a>, <a href="qpalette.html">QPalette</a>, and <a href="qcolor.html">QColor</a> ensures that no memory allocation needlessly takes place.</p>
 <p>The following code snippet shows how to use a specific QStyleOption subclass to paint a push button:</p>
-<pre>&nbsp;   void MyPushButton::paintEvent()
+<pre>&nbsp;   void MyPushButton::paintEvent(QPaintEvent *)
     {
         QStyleOptionButton option;
         option.initFrom(this);
@@ -105,7 +105,7 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="OptionType-enum"></a>enum QStyleOption::OptionType</h3>
 <p>This enum is used internally by <a href="qstyleoption.html">QStyleOption</a>, its subclasses, and <a href="qstyleoption.html#qstyleoption_cast">qstyleoption_cast</a>() to determine the type of style option. In general you do not need to worry about this unless you want to create your own <a href="qstyleoption.html">QStyleOption</a> subclass and your own styles.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QStyleOption::SO_Default</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top"><a href="qstyleoption.html">QStyleOption</a></td></tr>
 <tr><td valign="top"><tt>QStyleOption::SO_FocusRect</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top"><a href="qstyleoptionfocusrect.html">QStyleOptionFocusRect</a></td></tr>
@@ -134,7 +134,7 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QStyleOption::SO_ViewItem</tt></td><td align="center" valign="top"><tt>12</tt></td><td valign="top"><a href="qstyleoptionviewitem.html">QStyleOptionViewItem</a> (used in Interviews)</td></tr>
 <tr><td valign="top"><tt>QStyleOption::SO_CustomBase</tt></td><td align="center" valign="top"><tt>0xf00</tt></td><td valign="top">Reserved for custom QStyleOptions; all custom controls values must be above this value</td></tr>
 <tr><td valign="top"><tt>QStyleOption::SO_ComplexCustomBase</tt></td><td align="center" valign="top"><tt>0xf000000</tt></td><td valign="top">Reserved for custom QStyleOptions; all custom complex controls values must be above this value</td></tr>
-</table>
+</table></p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QStyleOption"></a>QStyleOption::QStyleOption ( int <i>version</i> = QStyleOption::Version, int <i>type</i> = SO_Default )</h3>
@@ -198,12 +198,12 @@ body { background: #ffffff; color: black; }</style>
     }</pre>
 <p>See also <a href="qstyleoption.html#type-varx">QStyleOption::type</a> and <a href="qstyleoption.html#version-varx">QStyleOption::version</a>.</p>
 <h3 class="fn"><a name="qstyleoption_cast-3"></a>T qstyleoption_cast ( QStyleOption * <i>option</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns a T or 0 depending on the type of <i>option</i>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

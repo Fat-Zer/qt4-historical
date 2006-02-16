@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtSVG module of the Qt Toolkit.
 **
@@ -163,6 +163,10 @@ public:
     void setPointSize(qreal size);
     qreal pointSize() const;
 
+    //### hack to avoid having a seperate style element for text-anchor
+    QString textAnchor() const;
+    void setTextAnchor(const QString &anchor);
+
     QSvgFont * svgFont() const
     {
         return m_font;
@@ -180,6 +184,8 @@ private:
     QSvgFont *m_font;
     qreal     m_pointSize;
     QSvgTinyDocument *m_doc;
+
+    QString m_textAnchor;
 
     QFont m_qfont;
     QFont m_oldFont;

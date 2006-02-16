@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/src/corelib/plugin/quuid.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/corelib/plugin/quuid.cpp -->
 <head>
     <title>Qt 4.1: QUuid Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -58,7 +58,7 @@ body { background: #ffffff; color: black; }</style>
 <a name="related-non-members"></a>
 <h3>Related Non-Members</h3>
 <ul>
-<li><div class="fn"/>QDataStream &amp; <b><a href="quuid.html#operator-lt-lt-29">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>s</i>, const QUuid &amp; <i>id</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="quuid.html#operator-lt-lt-30">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>s</i>, const QUuid &amp; <i>id</i> )</li>
 <li><div class="fn"/>QDataStream &amp; <b><a href="quuid.html#operator-gt-gt-16">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>s</i>, QUuid &amp; <i>id</i> )</li>
 </ul>
 <a name="details"></a>
@@ -73,24 +73,24 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="Variant-enum"></a>enum QUuid::Variant</h3>
 <p>This enum defines the variant of the UUID, which is the scheme which defines the layout of the 128-bits value.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QUuid::VarUnknown</tt></td><td align="center" valign="top"><tt>-1</tt></td><td valign="top">Variant is unknown</td></tr>
 <tr><td valign="top"><tt>QUuid::NCS</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">Reserved for NCS (Network Computing System) backward compatibility</td></tr>
 <tr><td valign="top"><tt>QUuid::DCE</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">Distributed Computing Environment, the scheme used by <a href="quuid.html">QUuid</a></td></tr>
 <tr><td valign="top"><tt>QUuid::Microsoft</tt></td><td align="center" valign="top"><tt>6</tt></td><td valign="top">Reserved for Microsoft backward compatibility (GUID)</td></tr>
 <tr><td valign="top"><tt>QUuid::Reserved</tt></td><td align="center" valign="top"><tt>7</tt></td><td valign="top">Reserved for future definition</td></tr>
-</table>
+</table></p>
 <h3 class="fn"><a name="Version-enum"></a>enum QUuid::Version</h3>
 <p>This enum defines the version of the UUID.</p>
-<table border="1" cellpadding="2" cellspacing="1" width="100%">
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QUuid::VerUnknown</tt></td><td align="center" valign="top"><tt>-1</tt></td><td valign="top">Version is unknown</td></tr>
 <tr><td valign="top"><tt>QUuid::Time</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Time-based, by using timestamp, clock sequence, and MAC network card address (if available) for the node sections</td></tr>
 <tr><td valign="top"><tt>QUuid::EmbeddedPOSIX</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">DCE Security version, with embedded POSIX UUIDs</td></tr>
 <tr><td valign="top"><tt>QUuid::Name</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">Name-based, by using values from a name for all sections</td></tr>
 <tr><td valign="top"><tt>QUuid::Random</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">Random-based, by using random numbers for all sections</td></tr>
-</table>
+</table></p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QUuid"></a>QUuid::QUuid ()</h3>
@@ -128,7 +128,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="operator-not-eq"></a>bool QUuid::operator!= ( const QUuid &amp; <i>other</i> ) const</h3>
 <p>Returns true if this <a href="quuid.html">QUuid</a> and the <i>other</i> <a href="quuid.html">QUuid</a> are different; otherwise returns false.</p>
 <h3 class="fn"><a name="operator-not-eq-2"></a>bool QUuid::operator!= ( const GUID &amp; <i>guid</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns true if this UUID is not equal to the Windows GUID <i>guid</i>; otherwise returns false.</p>
 <h3 class="fn"><a name="operator-lt"></a>bool QUuid::operator&lt; ( const QUuid &amp; <i>other</i> ) const</h3>
 <p>Returns true if this <a href="quuid.html">QUuid</a> is of the same variant, and lexicographically before the <i>other</i> <a href="quuid.html">QUuid</a>; otherwise returns false.</p>
@@ -139,23 +139,23 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="operator-eq-eq"></a>bool QUuid::operator== ( const QUuid &amp; <i>other</i> ) const</h3>
 <p>Returns true if this <a href="quuid.html">QUuid</a> and the <i>other</i> <a href="quuid.html">QUuid</a> are identical; otherwise returns false.</p>
 <h3 class="fn"><a name="operator-eq-eq-2"></a>bool QUuid::operator== ( const GUID &amp; <i>guid</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns true if this UUID is equal to the Windows GUID <i>guid</i>; otherwise returns false.</p>
 <h3 class="fn"><a name="operator-gt"></a>bool QUuid::operator&gt; ( const QUuid &amp; <i>other</i> ) const</h3>
 <p>Returns true if this <a href="quuid.html">QUuid</a> is of the same variant, and lexicographically after the <i>other</i> <a href="quuid.html">QUuid</a>; otherwise returns false.</p>
 <p>See also <a href="quuid.html#variant">variant</a>().</p>
 <hr />
 <h2>Related Non-Members</h2>
-<h3 class="fn"><a name="operator-lt-lt-29"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>s</i>, const QUuid &amp; <i>id</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<h3 class="fn"><a name="operator-lt-lt-30"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>s</i>, const QUuid &amp; <i>id</i> )</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes the uuid <i>id</i> to the datastream <i>s</i>.</p>
 <h3 class="fn"><a name="operator-gt-gt-16"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>s</i>, QUuid &amp; <i>id</i> )</h3>
-<p>This is an overloaded member function, provided for convenience. It behaves essentially like the above function.</p>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads uuid from from the stream <i>s</i> into <i>id</i>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

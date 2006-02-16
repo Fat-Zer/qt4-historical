@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -2921,7 +2921,7 @@ QByteArray QByteArray::trimmed() const
 QByteArray QByteArray::leftJustified(int width, char fill, bool truncate) const
 {
     QByteArray result;
-    int len = qstrlen(d->data);
+    int len = d->size;
     int padlen = width - len;
     if (padlen > 0) {
         result.resize(len+padlen);
@@ -2961,7 +2961,7 @@ QByteArray QByteArray::leftJustified(int width, char fill, bool truncate) const
 QByteArray QByteArray::rightJustified(int width, char fill, bool truncate) const
 {
     QByteArray result;
-    int len = qstrlen(d->data);
+    int len = d->size;
     int padlen = width - len;
     if (padlen > 0) {
         result.resize(len+padlen);
@@ -3160,7 +3160,7 @@ long QByteArray::toLong(bool *ok, int base) const
 ulong QByteArray::toULong(bool *ok, int base) const
 {
     qulonglong v = toULongLong(ok, base);
-    if (v > LONG_MAX) {
+    if (v > ULONG_MAX) {
         if (ok)
             *ok = false;
         v = 0;

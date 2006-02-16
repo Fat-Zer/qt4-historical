@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.0-espenr-1134733642675/qt-x11-opensource-src-4.1.0/doc/src/examples/mandelbrot.qdoc -->
+<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/doc/src/examples/mandelbrot.qdoc -->
 <head>
     <title>Qt 4.1: Mandelbrot Example</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -31,13 +31,13 @@ body { background: #ffffff; color: black; }</style>
 <p align="center"><img src="images/mandelbrot.png" alt="Screenshot of the Mandelbrot example" /></p><p>In real life, the approach described here is applicable to a large set of problems, including synchronous network I/O and database access, where the user interface must remain responsive while some heavy operation is taking place. The <a href="network-blockingfortuneclient.html">network/blockingfortuneclient</a> example shows the same principle at work in a TCP client.</p>
 <p>The Mandelbrot application supports zooming and scrolling using the mouse or the keyboard. To avoid freezing the main thread's event loop (and, as a consequence, the application's user interface), we put all the fractal computation in a separate worker thread. The thread emits a signal when it is done rendering the fractal.</p>
 <p>During the time where the worker thread is recomputing the fractal to reflect the new zoom factor position, the main thread simply scales the previously rendered pixmap to provide immediate feedback. The result doesn't look as good as what the worker thread eventually ends up providing, but at least it makes the application more responsive. The sequence of screenshots below shows the original image, the scaled image, and the rerendered image.</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#f0f0f0"><td><img src="images/mandelbrot_zoom1.png" /></td><td><img src="images/mandelbrot_zoom2.png" /></td><td><img src="images/mandelbrot_zoom3.png" /></td></tr>
-</table>
+</table></p>
 <p>Similarly, when the user scrolls, the previous pixmap is scrolled immediately, revealing unpainted areas beyond the edge of the pixmap, while the image is rendered by the worker thread.</p>
-<table align="center" cellpadding="2" cellspacing="1" border="0">
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#f0f0f0"><td><img src="images/mandelbrot_scroll1.png" /></td><td><img src="images/mandelbrot_scroll2.png" /></td><td><img src="images/mandelbrot_scroll3.png" /></td></tr>
-</table>
+</table></p>
 <p>The application consists of two classes:</p>
 <ul>
 <li><tt>RenderThread</tt> is a <a href="qthread.html">QThread</a> subclass that renders the Mandelbrot set.</li>
@@ -458,8 +458,8 @@ body { background: #ffffff; color: black; }</style>
     }</pre>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2005 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the tools applications of the Qt Toolkit.
 **
@@ -54,7 +54,7 @@ private:
 template<typename T>
 QTestData &operator<<(QTestData &data, const T &value)
 {
-    data.append(QMetaTypeId<T>::qt_metatype_id(), &value);
+    data.append(qMetaTypeId<T>(), &value);
     return data;
 }
 

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -57,7 +57,7 @@
     and retrieve it with id(). The id of the currently checked button
     is available with checkedId(), and there is an overloaded signal
     buttonClicked() which emits the id of the button. The purpose of
-    the mapping mechanism is to simply the representation of enum
+    the mapping mechanism is to simplify the representation of enum
     values in a user interface.
 
     \sa QGroupBox QPushButton, QCheckBox, QRadioButton

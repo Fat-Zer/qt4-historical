@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2005 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -66,6 +66,8 @@ public:
     QPixmap backingPixmap() const { return buffer; }
 #elif defined(Q_WS_QWS)
     QPixmap *backingPixmap()  { return buffer.pixmap(); }
+#endif
+#if defined (Q_WS_QWS) || defined (Q_WS_WIN)
     void releaseBuffer();
 #endif
 
@@ -101,7 +103,7 @@ private:
 #endif
     friend class QWidgetPrivate;
     friend class QWidget;
-
+    friend class QWSManagerPrivate;
 };
 
 #endif // QBACKINGSTORE_P_H
