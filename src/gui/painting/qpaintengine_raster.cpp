@@ -208,7 +208,11 @@ public:
 #ifdef QT_DEBUG_CONVERT
                 printf(" - implicitly closing\n");
 #endif
-                lineTo(m_elements.at(m_subpath_start));
+                // Put the object on the stack to avoid the odd case where
+                // lineTo reallocs the databuffer and the QPointF & will
+                // be invalidated.
+                QPointF pt = m_elements.at(m_subpath_start);
+                lineTo(pt);
             }
         }
     }
@@ -599,6 +603,7 @@ bool QRasterPaintEngine::begin(QPaintDevice *device)
     d->mono_surface = false;
     d->fast_pen = true;
     d->int_xform = true;
+    d->user_clip_enabled = false;
 
 #if defined(Q_WS_WIN)
     d->clear_type_text = false;
@@ -955,9 +960,19 @@ void QRasterPaintEngine::updateState(const QPaintEngineState &state)
         d->brushData.setupMatrix(d->brushMatrix(), d->txop, d->bilinear);
     }
 
+    if (flags & (DirtyClipPath | DirtyClipRegion)) {
+        d->user_clip_enabled = true;
+        // If we're setting a clip, we kill the old clip
+        if (d->rasterBuffer->disabled_clip) {
+            delete d->rasterBuffer->disabled_clip;
+            d->rasterBuffer->disabled_clip = 0;
+        }
+    }
+
     if (flags & DirtyClipEnabled) {
-        if (state.isClipEnabled() != d->rasterBuffer->clipEnabled) {
-            d->rasterBuffer->clipEnabled = state.isClipEnabled();
+
+        if (state.isClipEnabled() != d->user_clip_enabled) {
+            d->user_clip_enabled = state.isClipEnabled();
 
             // The tricky case... When we disable clipping we still do
             // system clip so we need to rasterize the system clip and
@@ -965,12 +980,12 @@ void QRasterPaintEngine::updateState(const QPaintEngineState &state)
             // choose to set clipping to true later on we have to the
             // current one (in disabled_clip).
             if (!d->baseClip.isEmpty()) {
-                if (!d->rasterBuffer->clipEnabled) {
+                if (!state.isClipEnabled()) { // save current clip for later
                     Q_ASSERT(!d->rasterBuffer->disabled_clip);
                     d->rasterBuffer->disabled_clip = d->rasterBuffer->clip;
                     d->rasterBuffer->clip = 0;
                     updateClipPath(QPainterPath(), Qt::NoClip);
-                } else {
+                } else { // re-enable old clip
                     Q_ASSERT(d->rasterBuffer->disabled_clip);
                     d->rasterBuffer->resetClip();
                     d->rasterBuffer->clip = d->rasterBuffer->disabled_clip;
@@ -3051,22 +3066,24 @@ static void draw_text_item_win(const QPointF &pos, const QTextItemInt &ti, HDC h
             matrix.translate(p.x(), p.y());
             ti.fontEngine->getGlyphPositions(ti.glyphs, ti.num_glyphs, matrix, ti.flags, _glyphs, positions);
 
-            bool outputEntireItem = QT_WA_INLINE(ti.num_glyphs > 0, false);
+            convertToText = convertToText && ti.num_glyphs == _glyphs.size();
+
+            bool outputEntireItem = QT_WA_INLINE(_glyphs.size() > 0, false);
 
             if (outputEntireItem) {
                 options |= ETO_PDY;
-                QVarLengthArray<INT> glyphDistances(ti.num_glyphs * 2);
-                QVarLengthArray<wchar_t> g(ti.num_glyphs);
-                for (int i=0; i<ti.num_glyphs - 1; ++i) {
+                QVarLengthArray<INT> glyphDistances(_glyphs.size() * 2);
+                QVarLengthArray<wchar_t> g(_glyphs.size());
+                for (int i=0; i<_glyphs.size() - 1; ++i) {
                     glyphDistances[i * 2] = qRound(positions[i + 1].x) - qRound(positions[i].x);
                     glyphDistances[i * 2 + 1] = qRound(positions[i + 1].y) - qRound(positions[i].y);
                     g[i] = _glyphs[i];
                 }
-                glyphDistances[(ti.num_glyphs - 1) * 2] = 0;
-                glyphDistances[(ti.num_glyphs - 1) * 2 + 1] = 0;
-                g[ti.num_glyphs - 1] = _glyphs[ti.num_glyphs - 1];
+                glyphDistances[(_glyphs.size() - 1) * 2] = 0;
+                glyphDistances[(_glyphs.size() - 1) * 2 + 1] = 0;
+                g[_glyphs.size() - 1] = _glyphs[_glyphs.size() - 1];
                 ExtTextOutW(hdc, qRound(positions[0].x), qRound(positions[0].y), options, 0,
-                            convertToText ? convertedGlyphs : g.data(), ti.num_glyphs, glyphDistances.data());
+                            convertToText ? convertedGlyphs : g.data(), _glyphs.size(), glyphDistances.data());
             } else {
                 int i = 0;
                 while(i < _glyphs.size()) {

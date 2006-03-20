@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1140086721886/qt-x11-opensource-src-4.1.1/src/gui/kernel/qwidget.cpp -->
+<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-x11-opensource-src-4.1.2/src/gui/kernel/qwidget.cpp -->
 <head>
     <title>Qt 4.1: QWidget Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -453,7 +453,7 @@ body { background: #ffffff; color: black; }</style>
 <h3>Transparency and Double Buffering</h3>
 <p>From Qt 4.0, QWidget automatically double-buffers its painting, so there's no need to write double-buffering code in <a href="qwidget.html#paintEvent">paintEvent</a>() to avoid flicker. Additionally, it became possible for widgets to propagate their contents to children, in order to enable transparency effects, by setting the <a href="qt.html#WidgetAttribute-enum">Qt::WA_ContentsPropagated</a> widget attribute - this is now deprecated in Qt 4.1.</p>
 <p>In Qt 4.1, the contents of parent widgets are propagated by default to each of their children. Custom widgets can be written to take advantage of this feature by only updating irregular regions (to create non-rectangular child widgets), or by using painting with colors that have less than the full alpha component. The following diagram shows how attributes and properties of a custom widget can be fine-tuned to achieve different effects.</p>
-<p align="center"><font color="red">[Missing image propagation-custom.png]</font></p><p>In the above diagram, a semi-transparent rectangular child widget with an area removed is constructed and added to a parent widget (a <a href="qlabel.html">QLabel</a> showing a pixmap) then different properties and widget attributes are set to achieve different effects:</p>
+<p align="center"><img src="images/propagation-custom.png" /></p><p>In the above diagram, a semi-transparent rectangular child widget with an area removed is constructed and added to a parent widget (a <a href="qlabel.html">QLabel</a> showing a pixmap) then different properties and widget attributes are set to achieve different effects:</p>
 <ul>
 <li>The top-left widget has no additional properties or widget attributes set. This default state suits most custom widgets that use transparency or are irregularly-shaped, and that do not paint over their entire area with an opaque brush.</li>
 <li>The top-right widget has the <a href="qwidget.html#autoFillBackground-prop">autoFillBackground</a> property set. This property is used with custom widgets that rely on the widget to supply a default background, and do not paint over their entire area with an opaque brush.</li>
@@ -1655,6 +1655,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
 </tr></table></div></address></body>
 </html>

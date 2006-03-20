@@ -78,8 +78,9 @@ public:
           render(0), timer(0), currentFrame(0),
           fps(30)
     {}
-    void init()
+    ~QSvgRendererPrivate()
     {
+        delete render;
     }
     QSvgTinyDocument *render;
     QTimer *timer;
@@ -93,8 +94,6 @@ public:
 QSvgRenderer::QSvgRenderer(QObject *parent)
     : QObject(*(new QSvgRendererPrivate), parent)
 {
-    Q_D(QSvgRenderer);
-    d->init();
 }
 
 /*!
@@ -104,8 +103,6 @@ QSvgRenderer::QSvgRenderer(QObject *parent)
 QSvgRenderer::QSvgRenderer(const QString &filename, QObject *parent)
     : QObject(*new QSvgRendererPrivate, parent)
 {
-    Q_D(QSvgRenderer);
-    d->init();
     load(filename);
 }
 
@@ -116,8 +113,6 @@ QSvgRenderer::QSvgRenderer(const QString &filename, QObject *parent)
 QSvgRenderer::QSvgRenderer(const QByteArray &contents, QObject *parent )
     : QObject(*new QSvgRendererPrivate, parent)
 {
-    Q_D(QSvgRenderer);
-    d->init();
     load(contents);
 }
 

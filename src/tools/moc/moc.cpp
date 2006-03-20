@@ -33,8 +33,6 @@
 static QByteArray normalizeTypeInternal(const char *t, const char *e, bool fixScope = false, bool adjustConst = true)
 {
     int len = e - t;
-    if (strncmp("void", t, len) == 0)
-        return QByteArray();
     /*
       Convert 'char const *' into 'const char *'. Start at index 1,
       not 0, because 'const char *' is already OK.
@@ -80,6 +78,10 @@ static QByteArray normalizeTypeInternal(const char *t, const char *e, bool fixSc
             t += 9+3;
             result += "uint";
         } else if (strncmp("long", t+9, 4) == 0
+                   // preserve '[unsigned] long int'
+                   && (strlen(t + 9 + 4) < 4
+                       || strncmp(t + 9 + 4, " int", 4) != 0
+                      )
                    // preserve '[unsigned] long long'
                    && (strlen(t + 9 + 4) < 5
                        || strncmp(t + 9 + 4, " long", 5) != 0
@@ -130,7 +132,7 @@ QByteArray normalizeType(const char *s, bool fixScope)
 {
     int len = qstrlen(s);
     char stackbuf[64];
-    char *buf = (len >= 64 ? new char[len] : stackbuf);
+    char *buf = (len >= 64 ? new char[len + 1] : stackbuf);
     char *d = buf;
     char last = 0;
     while(*s && is_space(*s))
@@ -144,7 +146,9 @@ QByteArray normalizeType(const char *s, bool fixScope)
             last = *d++ = ' ';
     }
     *d = '\0';
-    QByteArray result = normalizeTypeInternal(buf, d, fixScope);
+    QByteArray result;
+    if (strncmp("void", buf, d - buf) != 0)
+        result = normalizeTypeInternal(buf, d, fixScope);
     if (buf != stackbuf)
         delete [] buf;
     return result;
@@ -337,13 +341,14 @@ Type Moc::parseType()
         case SHORT:
         case INT:
         case LONG:
-            // preserve '[unsigned] long long'
-            if (test(LONG)) {
-                type.name += lexem();
+            type.name += lexem();
+            // preserve '[unsigned] long long', 'short int', 'long int', 'long double'
+            if (test(LONG) || test(INT) || test(DOUBLE)) {
                 type.name += ' ';
                 prev();
                 continue;
             }
+            break;
         case FLOAT:
         case DOUBLE:
         case VOID:
