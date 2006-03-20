@@ -196,7 +196,7 @@ QPixmap QPixmap::fromImage(const QImage &img, Qt::ImageConversionFlags flags)
             const QVector<QRgb> rgb = image.colorTable();
             for (int i = 0, count = image.numColors(); i < count; ++i) {
                 const int alpha = qAlpha(rgb[i]);
-                if (alpha != 0 && alpha != 0xff) {
+                if (alpha != 0xff) {
                     alphamap = true;
                     break;
                 }
@@ -403,6 +403,9 @@ QPixmapData::~QPixmapData()
 void
 QPixmapData::macSetAlphaChannel(const QPixmap *pix, bool asMask)
 {
+    if(!pixels || !h || !w || pix->data->w != w || pix->data->h != h)
+        return;
+
     quint32 *dptr = pixels, *drow;
     const uint dbpr = nbytes / h;
     const unsigned short sbpr = pix->data->nbytes / pix->data->h;
@@ -412,10 +415,8 @@ QPixmapData::macSetAlphaChannel(const QPixmap *pix, bool asMask)
         srow = sptr + (y * (sbpr/4));
         if(d == 1) {
             for (int x=0; x < w; ++x) {
-                if((*(srow+x) & RGB_MASK) && (*(drow+x) & RGB_MASK))
+                if((*(srow+x) & RGB_MASK))
                     *(drow+x) = 0xFFFFFFFF;
-                else
-                    *(drow+x) = 0x00000000;
             }
         } else if(d == 8) {
             for (int x=0; x < w; ++x)
@@ -748,7 +749,7 @@ CGImageRef qt_mac_create_imagemask(const QPixmap &px)
         drow = dptr + (y * (dbpr / 4));
         srow = sptr + (y * (sbpr / 4));
         for(int x = 0; x < px.data->w; ++x)
-            *(drow+x) = ~*(srow+x);
+            *(drow+x) = *(srow+x);
     }
     CGDataProviderRef provider = CGDataProviderCreateWithData(dptr, dptr, nbytes,
                                                               qt_mac_cgimage_data_free);
@@ -793,8 +794,19 @@ IconRef qt_mac_create_iconref(const QPixmap &px)
                     }
                 }
             } else {
-                for(int y = 0; y < images[i].height; y++) {
-                    memcpy((*hdl)+(y*dbpr), ((const uchar*)sptr+(sbpr*y)), dbpr);
+                char *dest = (*hdl);
+#if defined(__i386__)
+                if(images[i].depth == 32) {
+                    for(int y = 0; y < images[i].height; ++y) {
+                        uint *source = (uint*)((const uchar*)sptr+(sbpr*y));
+                        for(int x = 0; x < images[i].width; ++x, dest += 4)
+                            *((uint*)dest) = CFSwapInt32(*(source + x));
+                    }
+                } else
+#endif
+                {
+                    for(int y = 0; y < images[i].height; ++y)
+                        memcpy(dest+(y*dbpr), ((const uchar*)sptr+(sbpr*y)), dbpr);
                 }
             }
 

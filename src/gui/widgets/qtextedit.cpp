@@ -2550,6 +2550,8 @@ void QTextEdit::dropEvent(QDropEvent *e)
         return;
 
     e->acceptProposedAction();
+    
+    d->repaintSelection();
 
     if (e->dropAction() == Qt::MoveAction
         && (e->source() == this || e->source() == d->viewport))

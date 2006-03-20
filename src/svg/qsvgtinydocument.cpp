@@ -37,6 +37,10 @@ QSvgTinyDocument::QSvgTinyDocument()
 {
 }
 
+QSvgTinyDocument::~QSvgTinyDocument()
+{
+}
+
 QSvgTinyDocument * QSvgTinyDocument::load(const QString &fileName)
 {
     QSvgHandler handler;
