@@ -26,6 +26,8 @@
 
 #include <QtGui/qwindowsstyle.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 #if !defined(QT_NO_STYLE_WINDOWSXP)
@@ -76,5 +78,7 @@ private:
 };
 
 #endif // QT_NO_STYLE_WINDOWSXP
+
+QT_END_HEADER
 
 #endif // QWINDOWSXPSTYLE_H

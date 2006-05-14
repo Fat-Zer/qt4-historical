@@ -28,6 +28,8 @@
 
 #ifndef QT_NO_THREAD
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Core)
 
 class Q_CORE_EXPORT QThreadStorageData
@@ -125,6 +127,8 @@ public:
     inline void setLocalData(T t)
     { qThreadStorage_setLocalData(d, &t); }
 };
+
+QT_END_HEADER
 
 #endif // QT_NO_THREAD
 

@@ -87,8 +87,18 @@ public:
     http://www.nvg.ntnu.no/sinclair/computers/zxspectrum/zxspectrum.htm
     Sinclair Spectrum\endlink.
 
-    \inlineimage motif-lcdnumber.png An LCD number widget in the Motif widget style.
-    \inlineimage windows-lcdnumber.png An LCD number widget in the Windows widget style.
+    \table
+    \row \o \inlineimage motif-lcdnumber.png Screenshot of a Motif style LCD number widget
+    \inlineimage cde-lcdnumber.png Screenshot of a CDE style LCD number widget
+    \inlineimage windows-lcdnumber.png Screenshot of a Windows style LCD number widget
+    \inlineimage windowsxp-lcdnumber.png Screenshot of a Windows XP style LCD number widget
+    \inlineimage macintosh-lcdnumber.png Screenshot of a Macintosh style LCD number widget
+    \inlineimage plastique-lcdnumber.png Screenshot of a Plastique style LCD number widget
+    \row \o LCD number widgets shown in various widget styles (from left to right):
+    \l{Motif Style Widget Gallery}{Motif}, \l{CDE Style Widget Gallery}{CDE},
+    \l{Windows Style Widget Gallery}{Windows}, \l{Windows XP Style Widget Gallery}{Windows XP},
+    \l{Macintosh Style Widget Gallery}{Macintosh}, \l{Plastique Style Widget Gallery}{Plastique}.
+    \endtable
 
     \sa QLabel, QFrame
 */

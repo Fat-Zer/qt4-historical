@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-x11-opensource-src-4.1.2/src/gui/kernel/qwidget.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/src/gui/kernel/qwidget.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/src/gui/kernel/qwidget.cpp -->
 <head>
     <title>Qt 4.1: QWidget Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -133,6 +134,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>void <b><a href="qwidget.html#grabMouse">grabMouse</a></b> ()</li>
 <li><div class="fn"/>void <b><a href="qwidget.html#grabMouse-2">grabMouse</a></b> ( const QCursor &amp; <i>cursor</i> )</li>
 <li><div class="fn"/>int <b><a href="qwidget.html#grabShortcut">grabShortcut</a></b> ( const QKeySequence &amp; <i>key</i>, Qt::ShortcutContext <i>context</i> = Qt::WindowShortcut )</li>
+<li><div class="fn"/>bool <b><a href="qwidget.html#hasEditFocus">hasEditFocus</a></b> () const</li>
 <li><div class="fn"/>bool <b><a href="qwidget.html#focus-prop">hasFocus</a></b> () const</li>
 <li><div class="fn"/>bool <b><a href="qwidget.html#mouseTracking-prop">hasMouseTracking</a></b> () const</li>
 <li><div class="fn"/>int <b><a href="qwidget.html#height-prop">height</a></b> () const</li>
@@ -203,6 +205,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>void <b><a href="qwidget.html#setContentsMargins">setContentsMargins</a></b> ( int <i>left</i>, int <i>top</i>, int <i>right</i>, int <i>bottom</i> )</li>
 <li><div class="fn"/>void <b><a href="qwidget.html#contextMenuPolicy-prop">setContextMenuPolicy</a></b> ( Qt::ContextMenuPolicy <i>policy</i> )</li>
 <li><div class="fn"/>void <b><a href="qwidget.html#cursor-prop">setCursor</a></b> ( const QCursor &amp; )</li>
+<li><div class="fn"/>void <b><a href="qwidget.html#setEditFocus">setEditFocus</a></b> ( bool <i>on</i> )</li>
 <li><div class="fn"/>void <b><a href="qwidget.html#setFixedHeight">setFixedHeight</a></b> ( int <i>h</i> )</li>
 <li><div class="fn"/>void <b><a href="qwidget.html#setFixedSize">setFixedSize</a></b> ( const QSize &amp; <i>s</i> )</li>
 <li><div class="fn"/>void <b><a href="qwidget.html#setFixedSize-2">setFixedSize</a></b> ( int <i>w</i>, int <i>h</i> )</li>
@@ -438,7 +441,7 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="qwidget.html#keyReleaseEvent">keyReleaseEvent</a>() - called whenever a key is released, and also while it is held down if the key is auto-repeating. In that case the widget receives a key release event and immediately a key press event for every repeat. Note that the Tab and Shift+Tab keys are only passed to the widget if they are not used by the focus-change mechanisms. To force those keys to be processed by your widget, you must reimplement <a href="qwidget.html#event">QWidget::event</a>().</li>
 <li><a href="qwidget.html#wheelEvent">wheelEvent</a>() -- called whenever the user turns the mouse wheel while the widget has the focus.</li>
 <li><a href="qwidget.html#enterEvent">enterEvent</a>() - called when the mouse enters the widget's screen space. (This excludes screen space owned by any children of the widget.)</li>
-<li><a href="qwidget.html#leaveEvent">leaveEvent</a>() - called when the mouse leaves the widget's screen space.</li>
+<li><a href="qwidget.html#leaveEvent">leaveEvent</a>() - called when the mouse leaves the widget's screen space. Note that if the mouse enters a child widget it will not cause a leaveEvent.</li>
 <li><a href="qwidget.html#moveEvent">moveEvent</a>() - called when the widget has been moved relative to its parent.</li>
 <li><a href="qwidget.html#closeEvent">closeEvent</a>() - called when the user closes the widget (or when <a href="qwidget.html#close">close</a>() is called).</li>
 </ul>
@@ -463,7 +466,7 @@ body { background: #ffffff; color: black; }</style>
 <p>For rapidly updating custom widgets that constantly paint over their entire areas with opaque content, such as video streaming widgets, it is better to set the widget's <a href="qt.html#WidgetAttribute-enum">Qt::WA_OpaquePaintEvent</a>, avoiding any unnecessary overhead associated with repainting the widget's background.</p>
 <p>If a widget has both the <a href="qt.html#WidgetAttribute-enum">Qt::WA_OpaquePaintEvent</a> widget attribute <i>and</i> the <a href="qwidget.html#autoFillBackground-prop">autoFillBackground</a> property set, the <a href="qt.html#WidgetAttribute-enum">Qt::WA_OpaquePaintEvent</a> attribute takes precedence. You should choose just one of these depending on your requirements.</p>
 <p>In Qt 4.1, the contents of parent widgets are also propagated to standard Qt widgets. This can lead to some unexpected results if the parent widget is decorated in a non-standard way, as shown in the diagram below.</p>
-<p align="center"><font color="red">[Missing image propagation-standard.png]</font></p><p>The scope for customizing the painting behavior of standard Qt widgets, without resorting to subclassing, is slightly less than that possible for custom widgets. Usually, the desired appearance of a standard widget can be achieved by setting its <a href="qwidget.html#autoFillBackground-prop">autoFillBackground</a> property.</p>
+<p align="center"><img src="images/propagation-standard.png" /></p><p>The scope for customizing the painting behavior of standard Qt widgets, without resorting to subclassing, is slightly less than that possible for custom widgets. Usually, the desired appearance of a standard widget can be achieved by setting its <a href="qwidget.html#autoFillBackground-prop">autoFillBackground</a> property.</p>
 <p>See also <a href="qevent.html">QEvent</a>, <a href="qpainter.html">QPainter</a>, <a href="qgridlayout.html">QGridLayout</a>, and <a href="qboxlayout.html">QBoxLayout</a>.</p>
 <hr />
 <h2>Property Documentation</h2>
@@ -495,7 +498,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qaccessibleinterface.html#text">QAccessibleInterface::text</a>().</p>
 <h3 class="fn"><a name="autoFillBackground-prop"></a>autoFillBackground : bool</h3>
 <p>This property holds whether the widget background is filled automatically.</p>
-<p>If enabled, this will cause Qt to fill the background using the widget's background role before invoking the paint event.</p>
+<p>If enabled, this will cause Qt to fill the background using the widget's background role before invoking the paint event. The background role is defined by the widget's <a href="qwidget.html#palette-prop">palette</a>.</p>
 <p>In addition, Windows are always filled with <a href="qpalette.html#ColorRole-enum">QPalette::Window</a>, unless the WA_OpaquePaintEvent or WA_NoSystemBackground attributes are set.</p>
 <p>This property was introduced in Qt 4.1.</p>
 <p>Access functions:</p>
@@ -584,7 +587,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="font-prop"></a>font : <a href="qfont.html">QFont</a></h3>
 <p>This property holds the font currently set for the widget.</p>
 <p>The <a href="qwidget.html#fontInfo">fontInfo</a>() function reports the actual font that is being used by the widget.</p>
-<p>As long as no special font has been set, or after setFont(QFont()) is called, this is either a special font for the widget class, the parent's font or (if this widget is a top level widget), the default application font.</p>
+<p>As long as no special font has been set, or after setFont(<a href="porting4.html#qfont">QFont</a>()) is called, this is either a special font for the widget class, the parent's font or (if this widget is a top level widget), the default application font.</p>
 <p>This code fragment sets a 12 point helvetica bold font:</p>
 <pre>&nbsp;   QFont f(&quot;Helvetica&quot;, 12, QFont::Bold);
     setFont(f);</pre>
@@ -759,7 +762,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <p>See also <a href="qwidget.html#mouseMoveEvent">mouseMoveEvent</a>().</p>
 <h3 class="fn"><a name="normalGeometry-prop"></a>normalGeometry : const <a href="qrect.html">QRect</a></h3>
-<p>This property holds the geometry a toplevel widget has when it is not maximized or fullscreen.</p>
+<p>This property holds the geometry of the widget as it will appear when shown as a normal (not maximized or fullscreen) toplevel widget.</p>
 <p>For child widgets this property always holds an empty rect.</p>
 <p>Access functions:</p>
 <ul>
@@ -769,6 +772,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="palette-prop"></a>palette : <a href="qpalette.html">QPalette</a></h3>
 <p>This property holds the widget's palette.</p>
 <p>As long as no special palette has been set, this is either a special palette for the widget class, the parent's palette or (if this widget is a top level widget), the default application palette.</p>
+<p><b>Note:</b> The palette's background color will only have an effect on the appearance of the widget if the <a href="qwidget.html#autoFillBackground-prop">autoFillBackground</a> property is set.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>const QPalette &amp; palette () const</b></li>
@@ -1033,6 +1037,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="changeEvent"></a>void QWidget::changeEvent ( <a href="qevent.html">QEvent</a> * <i>event</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>This event handler can be reimplemented to handle state changes.</p>
 <p>The state being changed in this event can be retrieved through event <i>event</i>.</p>
+<p>Change events include: <a href="qevent.html#Type-enum">QEvent::ToolBarChange</a>, <a href="qevent.html#Type-enum">QEvent::ActivationChange</a>, <a href="qevent.html#Type-enum">QEvent::EnabledChange</a>, <a href="qevent.html#Type-enum">QEvent::FontChange</a>, <a href="qevent.html#Type-enum">QEvent::StyleChange</a>, <a href="qevent.html#Type-enum">QEvent::PaletteChange</a>, <a href="qevent.html#Type-enum">QEvent::WindowTitleChange</a>, <a href="qevent.html#Type-enum">QEvent::IconTextChange</a>, QEcvent::ModifiedChange, <a href="qevent.html#Type-enum">QEvent::MouseTrackingChange</a>, <a href="qevent.html#Type-enum">QEvent::ParentChange</a>, <a href="qevent.html#Type-enum">QEvent::WindowStateChange</a>.</p>
 <h3 class="fn"><a name="childAt"></a>QWidget * QWidget::childAt ( int <i>x</i>, int <i>y</i> ) const</h3>
 <p>Returns the visible child widget at the position (<i>x</i>, <i>y</i>) in the widget's coordinate system. If there is no visible child widget at the specified position, the function returns 0.</p>
 <h3 class="fn"><a name="childAt-4"></a>QWidget * QWidget::childAt ( const <a href="qpoint.html">QPoint</a> &amp; <i>p</i> ) const</h3>
@@ -1184,6 +1189,10 @@ body { background: #ffffff; color: black; }</style>
 <p>If the same <i>key</i> sequence has been grabbed by several widgets, when the <i>key</i> sequence occurs a <a href="qevent.html#Type-enum">QEvent::Shortcut</a> event is sent to all the widgets to which it applies in a non-deterministic order, but with the ``ambiguous'' flag set to true.</p>
 <p><b>Warning:</b> You should not normally need to use this function; instead create <a href="qaction.html">QAction</a>s with the shortcut key sequences you require (if you also want equivalent menu options and toolbar buttons), or create <a href="qshortcut.html">QShortcut</a>s if you just need key sequences. Both <a href="qaction.html">QAction</a> and <a href="qshortcut.html">QShortcut</a> handle all the event filtering for you, and provide signals which are triggered when the user triggers the key sequence, so are much easier to use than this low-level function.</p>
 <p>See also <a href="qwidget.html#releaseShortcut">releaseShortcut</a>() and <a href="qwidget.html#setShortcutEnabled">setShortcutEnabled</a>().</p>
+<h3 class="fn"><a name="hasEditFocus"></a>bool QWidget::hasEditFocus () const</h3>
+<p>Returns true if this widget currently has edit focus; otherwise false.</p>
+<p>This feature is available in Qtopia Core only.</p>
+<p>See also <a href="qwidget.html#setEditFocus">setEditFocus</a>() and <a href="qapplication.html#keypadNavigationEnabled">QApplication::keypadNavigationEnabled</a>().</p>
 <h3 class="fn"><a name="heightForWidth"></a>int QWidget::heightForWidth ( int <i>w</i> ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns the preferred height for this widget, given the width <i>w</i>.</p>
 <p>If this widget has a layout, the default implementation returns the layout's preferred height. if there is no layout, the default implementation returns -1 indicating that the preferred height does not depend on the width.</p>
@@ -1351,7 +1360,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qwidget.html#event">event</a>(), <a href="qwidget.html#repaint">repaint</a>(), <a href="qwidget.html#update">update</a>(), <a href="qpainter.html">QPainter</a>, <a href="qpixmap.html">QPixmap</a>, and <a href="qpaintevent.html">QPaintEvent</a>.</p>
 <h3 class="fn"><a name="parentWidget"></a>QWidget * QWidget::parentWidget () const</h3>
 <p>Returns the parent of this widget, or 0 if it does not have any parent widget.</p>
-<h3 class="fn"><a name="qwsEvent"></a>bool QWidget::qwsEvent ( QWSEvent * <i>event</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
+<h3 class="fn"><a name="qwsEvent"></a>bool QWidget::qwsEvent ( <a href="qwsevent.html">QWSEvent</a> * <i>event</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>This special event handler can be reimplemented in a subclass to receive native Qtopia Core events which are passed in the <i>event</i> parameter.</p>
 <p>In your reimplementation of this function, if you want to stop the event being handled by Qt, return true. If you return false, this native event is passed back to Qt, which translates the event into a Qt event and sends it to the widget.</p>
 <p><b>Warning:</b> This function is not portable.</p>
@@ -1422,6 +1431,10 @@ body { background: #ffffff; color: black; }</style>
 <p>Disables widget input events if <i>disable</i> is true; otherwise enables input events.</p>
 <p>See the <a href="qwidget.html#enabled-prop">enabled</a> documentation for more information.</p>
 <p>See also <a href="qwidget.html#isEnabledTo">isEnabledTo</a>(), <a href="qkeyevent.html">QKeyEvent</a>, <a href="qmouseevent.html">QMouseEvent</a>, and <a href="qwidget.html#changeEvent">changeEvent</a>().</p>
+<h3 class="fn"><a name="setEditFocus"></a>void QWidget::setEditFocus ( bool <i>on</i> )</h3>
+<p>Sets whether this widget has edit focus. If a widget has edit focus <a href="qt.html#Key-enum">Qt::Key_Up</a> and <a href="qt.html#Key-enum">Qt::Key_Down</a> will be delivered to the widget normally, otherwise they are used to change focus.</p>
+<p>This feature is available in Qtopia Core only.</p>
+<p>See also <a href="qwidget.html#hasEditFocus">hasEditFocus</a>() and <a href="qapplication.html#keypadNavigationEnabled">QApplication::keypadNavigationEnabled</a>().</p>
 <h3 class="fn"><a name="setFixedHeight"></a>void QWidget::setFixedHeight ( int <i>h</i> )</h3>
 <p>Sets both the minimum and maximum heights of the widget to <i>h</i> without changing the widths. Provided for convenience.</p>
 <p>See also <a href="qwidget.html#sizeHint-prop">sizeHint</a>(), <a href="qwidget.html#minimumSize-prop">minimumSize</a>(), <a href="qwidget.html#maximumSize-prop">maximumSize</a>(), and <a href="qwidget.html#setFixedSize">setFixedSize</a>().</p>
@@ -1482,14 +1495,15 @@ body { background: #ffffff; color: black; }</style>
         topLevelLabel.setPixmap(pixmap);
         topLevelLabel.setMask(pixmap.mask());</pre>
 <p>The label shown by this code is masked using the image it contains, giving the appearance that an irregularly-shaped image is being drawn directly onto the screen.</p>
-<p>See also <a href="qwidget.html#mask">mask</a>(), <a href="qwidget.html#clearMask">clearMask</a>(), and <a href="qwidget.html#windowOpacity-prop">windowOpacity</a>().</p>
+<p>Masked widgets receive mouse events only on their visible portions.</p>
+<p>See also <a href="qwidget.html#mask">mask</a>(), <a href="qwidget.html#clearMask">clearMask</a>(), <a href="qwidget.html#windowOpacity-prop">windowOpacity</a>(), and <a href="widgets-shapedclock.html">Shaped Clock Example</a>.</p>
 <h3 class="fn"><a name="setMask-2"></a>void QWidget::setMask ( const <a href="qregion.html">QRegion</a> &amp; <i>region</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Causes only the parts of the widget which overlap <i>region</i> to be visible. If the region includes pixels outside the <a href="qwidget.html#rect-prop">rect</a>() of the widget, window system controls in that area may or may not be visible, depending on the platform.</p>
 <p>Note that this effect can be slow if the region is particularly complex.</p>
 <p>See also <a href="qwidget.html#windowOpacity-prop">windowOpacity</a>.</p>
 <h3 class="fn"><a name="setParent"></a>void QWidget::setParent ( QWidget * <i>parent</i> )</h3>
-<p>Sets the parent of the widget to <i>parent</i>. The widget is moved to position (0, 0) in its new parent.</p>
+<p>Sets the parent of the widget to <i>parent</i>, and resets the window flags. The widget is moved to position (0, 0) in its new parent.</p>
 <p>If the new parent widget is in a different window, the reparented widget and its children are appended to the end of the <a href="qwidget.html#focusPolicy-prop">tab chain</a> of the new parent widget, in the same internal order as before. If one of the moved widgets had keyboard focus, setParent() calls <a href="qwidget.html#clearFocus">clearFocus</a>() for that widget.</p>
 <p>If the new parent widget is in the same window as the old parent, setting the parent doesn't change the tab order or keyboard focus.</p>
 <p>If the &quot;new&quot; parent widget is the old parent widget, this function does nothing.</p>
@@ -1531,6 +1545,7 @@ body { background: #ffffff; color: black; }</style>
 <p>In order to restore and activate a minimized window (while preserving its maximized and/or full-screen state), use the following:</p>
 <pre>&nbsp;   w-&gt;setWindowState(w-&gt;windowState() &amp; ~Qt::WindowMinimized | Qt::WindowActive);</pre>
 <p>Note: On some window systems <a href="qt.html#WindowState-enum">Qt::WindowActive</a> is not immediate, and may be ignored in certain cases.</p>
+<p>When the window state changes, the widget receives a <a href="qwidget.html#changeEvent">changeEvent</a>() of type <a href="qevent.html#Type-enum">QEvent::WindowStateChange</a>.</p>
 <p>See also <a href="qt.html#WindowState-enum">Qt::WindowState</a> and <a href="qwidget.html#windowState">windowState</a>().</p>
 <h3 class="fn"><a name="show"></a>void QWidget::show ()&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Shows the widget and its child widgets. This function is equivalent to setVisible(true).</p>
@@ -1655,6 +1670,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

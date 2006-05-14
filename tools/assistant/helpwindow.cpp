@@ -37,6 +37,7 @@
 #include <QMenu>
 #include <QAction>
 #include <QFileInfo>
+#include <QFont>
 #include <QtEvents>
 #include <QTextStream>
 #include <QTextCodec>
@@ -55,6 +56,9 @@ HelpWindow::HelpWindow(MainWindow *w, QWidget *parent)
       shiftPressed(false), newWindow(false),
       fwdAvail(false), backAvail(false)
 {
+    QFont f = font();
+    f.setPointSizeF(Config::configuration()->fontPointSize());
+    setFont(f);
     connect(this, SIGNAL(forwardAvailable(bool)), this, SLOT(updateForward(bool)));
     connect(this, SIGNAL(backwardAvailable(bool)), this, SLOT(updateBackward(bool)));
 }
@@ -186,7 +190,7 @@ void HelpWindow::setSource(const QUrl &name)
         QStringList args;
         if (pdfbrowser == QLatin1String("kfmclient"))
             args.append(QLatin1String("exec"));
-        args.append(name.toString());
+        args.append(name.toLocalFile());
 
         proc->start(pdfbrowser, args);
 

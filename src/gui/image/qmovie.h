@@ -38,6 +38,8 @@
 #include <QtGui/qpixmap.h>
 #endif
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 class QByteArray;
@@ -126,7 +128,7 @@ public Q_SLOTS:
 
 private:
     Q_DISABLE_COPY(QMovie)
-    Q_PRIVATE_SLOT(d_func(), void loadNextFrame())
+    Q_PRIVATE_SLOT(d_func(), void _q_loadNextFrame())
 
 #ifdef QT3_SUPPORT
 public:
@@ -144,5 +146,8 @@ public:
 #endif
 };
 
+QT_END_HEADER
+
 #endif // QT_NO_MOVIE
+
 #endif // QMOVIE_H

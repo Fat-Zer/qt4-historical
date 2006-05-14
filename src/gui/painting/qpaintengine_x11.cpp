@@ -333,12 +333,14 @@ static void dump_trap(const XTrapezoid &t)
 #endif
 
 static void qt_tesselate_polygon(QVector<XTrapezoid> *traps, const QPointF *pg, int pgSize,
-                                 bool winding)
+                                 bool winding, QRect *br)
 {
     QVector<QEdge> edges;
     edges.reserve(128);
     qreal ymin(INT_MAX/256);
     qreal ymax(INT_MIN/256);
+    qreal xmin(INT_MAX/256);
+    qreal xmax(INT_MIN/256);
 
     Q_ASSERT(pg[0] == pg[pgSize-1]);
     // generate edge table
@@ -362,9 +364,15 @@ static void qt_tesselate_polygon(QVector<XTrapezoid> *traps, const QPointF *pg, 
 	edge.b = p1.y() - edge.m * p1.x(); // intersection with y axis
 	edge.m = edge.m != 0.0 ? 1.0 / edge.m : 0.0; // inverted derivative
 	edges.append(edge);
+        xmin = qMin(xmin, XFixedToDouble(edge.p1.x));
+        xmax = qMax(xmax, XFixedToDouble(edge.p2.x));
         ymin = qMin(ymin, XFixedToDouble(edge.p1.y));
         ymax = qMax(ymax, XFixedToDouble(edge.p2.y));
     }
+    br->setX(qRound(xmin));
+    br->setY(qRound(ymin));
+    br->setWidth(qRound(xmax - xmin));
+    br->setHeight(qRound(ymax - ymin));
 
     QList<const QEdge *> et; 	    // edge list
     for (int i = 0; i < edges.size(); ++i)
@@ -670,6 +678,21 @@ void QX11PaintEnginePrivate::resetAdaptedOrigin()
         XSetTSOrigin(dpy, gc_brush, 0, 0);
 }
 
+void QX11PaintEnginePrivate::clipPolygon(const QPolygonF &poly, QPolygonF *clipped_poly)
+{
+    int clipped_count = 0;
+    qt_float_point *clipped_points = 0;
+    QRect old_clip = polygonClipper.boundingRect();
+    QRect logic_rect(matrix.inverted().mapRect(old_clip));
+    polygonClipper.setBoundingRect(logic_rect);
+    polygonClipper.clipPolygon((qt_float_point *) poly.data(), poly.size(),
+                               &clipped_points, &clipped_count);
+    polygonClipper.setBoundingRect(old_clip);
+    clipped_poly->resize(clipped_count);
+    for (int i=0; i<clipped_count; ++i)
+        (*clipped_poly)[i] = *((QPointF *)(&clipped_points[i]));
+
+}
 
 static QPaintEngine::PaintEngineFeatures qt_decide_features()
 {
@@ -710,7 +733,6 @@ QX11PaintEngine::~QX11PaintEngine()
 bool QX11PaintEngine::begin(QPaintDevice *pdev)
 {
     Q_D(QX11PaintEngine);
-    d->pdev = pdev;
     d->xinfo = qt_x11Info(pdev);
 #ifndef QT_NO_XRENDER
     if (pdev->devType() == QInternal::Widget) {
@@ -729,12 +751,6 @@ bool QX11PaintEngine::begin(QPaintDevice *pdev)
     Q_ASSERT(d->xinfo != 0);
     d->dpy = d->xinfo->display(); // get display variable
     d->scrn = d->xinfo->screen(); // get screen variable
-
-    if (isActive()) {                         // already active painting
-        qWarning("QX11PaintEngine::begin: Painter is already active."
-                 "\n\tYou must end() the painter before a second begin()");
-        return false;
-    }
 
     d->bg_col = Qt::white;
     d->bg_mode = Qt::TransparentMode;
@@ -798,7 +814,6 @@ bool QX11PaintEngine::begin(QPaintDevice *pdev)
 bool QX11PaintEngine::end()
 {
     Q_D(QX11PaintEngine);
-    setActive(false);
 
 #if !defined(QT_NO_XRENDER)
     if (d->picture) {
@@ -810,11 +825,12 @@ bool QX11PaintEngine::end()
     }
 #endif
 
-    if (d->gc_brush) {
+    if (d->gc_brush && d->pdev->painters < 2) {
         XFreeGC(d->dpy, d->gc_brush);
         d->gc_brush = 0;
     }
-    if (d->gc) {
+
+    if (d->gc && d->pdev->painters < 2) {
         XFreeGC(d->dpy, d->gc);
         d->gc = 0;
     }
@@ -899,7 +915,11 @@ void QX11PaintEngine::drawLines(const QLine *lines, int lineCount)
     Q_ASSERT(lines);
     Q_ASSERT(lineCount);
     Q_D(QX11PaintEngine);
-    if (d->use_path_fallback) {
+    if (d->has_alpha_brush
+        || d->has_alpha_pen
+        || d->has_custom_pen
+        || (d->cpen.widthF() > 0 && d->has_complex_xform)
+        || (d->render_hints & QPainter::Antialiasing)) {
         for (int i = 0; i < lineCount; ++i) {
             QPainterPath path(lines[i].p1());
             path.lineTo(lines[i].p2());
@@ -909,13 +929,12 @@ void QX11PaintEngine::drawLines(const QLine *lines, int lineCount)
     }
 
     if (d->has_pen) {
-        QPointF offset(d->matrix.dx(), d->matrix.dy());
         for (int i = 0; i < lineCount; ++i) {
             QLineF linef;
-            if (d->txop == QPainterPrivate::TxTranslate) {
-                linef = QLineF(lines[i].p1() + offset, lines[i].p2() + offset);
-            } else{
+            if (d->txop == QPainterPrivate::TxNone) {
                 linef = lines[i];
+            } else {
+                linef = QLineF(d->matrix.map(lines[i].p1()), d->matrix.map(lines[i].p2()));
             }
             if (clipLine(&linef, d->polygonClipper.boundingRect())) {
                 XDrawLine(d->dpy, d->hd, d->gc,
@@ -1027,7 +1046,11 @@ void QX11PaintEngine::drawPoints(const QPoint *points, int pointCount)
     if (!d->has_pen)
         return;
 
-    if (d->cpen.widthF() > .0f || d->use_path_fallback) {
+    if (d->cpen.widthF() > .0f
+        || d->has_alpha_brush
+        || d->has_alpha_pen
+        || d->has_custom_pen
+        || (d->render_hints & QPainter::Antialiasing)) {
         const QPoint *end = points + pointCount;
         while (points < end) {
             QPainterPath path;
@@ -1125,14 +1148,19 @@ void QX11PaintEngine::updateState(const QPaintEngineState &state)
     if (flags & DirtyFont) updateFont(state.font());
 
     if (state.state() & DirtyClipEnabled) {
-        if (state.isClipEnabled())
-            updateClipRegion(painter()->clipRegion(), Qt::ReplaceClip);
-        else
+        if (state.isClipEnabled()) {
+            QPolygonF clipped_poly;
+            d->clipPolygon(painter()->clipPath().toFillPolygon(), &clipped_poly);
+            updateClipRegion(QRegion(clipped_poly.toPolygon()), Qt::ReplaceClip);
+        } else {
             updateClipRegion(QRegion(), Qt::NoClip);
+        }
     }
 
     if (flags & DirtyClipPath) {
-        updateClipRegion(QRegion(state.clipPath().toFillPolygon().toPolygon(),
+        QPolygonF clipped_poly;
+        d->clipPolygon(state.clipPath().toFillPolygon(), &clipped_poly);
+        updateClipRegion(QRegion(clipped_poly.toPolygon(),
                                  state.clipPath().fillRule()),
                          state.clipOperation());
     } else if (flags & DirtyClipRegion) {
@@ -1475,6 +1503,31 @@ void QX11PaintEnginePrivate::fillPolygon_translated(const QPointF *polygonPoints
     fillPolygon_dev(translated_points.data(), pointCount, gcMode, mode);
 }
 
+#ifndef QT_NO_XRENDER
+static void qt_XRenderCompositeTrapezoids(Display *dpy,
+                                          int op,
+                                          Picture src,
+                                          Picture dst,
+                                          _Xconst XRenderPictFormat *maskFormat,
+                                          int xSrc,
+                                          int ySrc,
+                                          const QVector<XTrapezoid> &traps)
+{
+    const int MAX_TRAPS = 50000;
+    int traps_left = traps.size();
+    while (traps_left) {
+        int to_draw = traps_left;
+        if (to_draw > MAX_TRAPS)
+            to_draw = MAX_TRAPS;
+        XRenderCompositeTrapezoids(dpy, op, src, dst,
+                                   maskFormat,
+                                   xSrc, ySrc,
+                                   traps.constData()+traps.size()-traps_left, to_draw);
+        traps_left -= to_draw;
+    }
+}
+#endif
+
 void QX11PaintEnginePrivate::fillPolygon_dev(const QPointF *polygonPoints, int pointCount,
                                              QX11PaintEnginePrivate::GCMode gcMode,
                                              QPaintEngine::PolygonDrawMode mode)
@@ -1519,37 +1572,74 @@ void QX11PaintEnginePrivate::fillPolygon_dev(const QPointF *polygonPoints, int p
                                &clippedPoints, &clippedCount);
 
 #if !defined(QT_NO_XRENDER)
+    bool solid_fill = fill.color().alpha() == 255;
+    if (has_fill_texture && fill.texture().depth() == 1 && solid_fill) {
+        has_fill_texture = false;
+        has_fill_pattern = true;
+    }
+
     bool antialias = render_hints & QPainter::Antialiasing;
-    if (X11->use_xrender && fill.style() != Qt::NoBrush && !has_fill_pattern &&
-        (has_fill_texture || antialias || fill.color().alpha() != 255
-         || has_alpha_pen != has_alpha_brush))
+    if (X11->use_xrender
+        && picture
+        && !has_fill_pattern
+        && (clippedCount > 0)
+        && (fill.style() != Qt::NoBrush)
+        && (has_fill_texture || antialias || !solid_fill || has_alpha_pen != has_alpha_brush))
     {
-        if (picture) {
-            if (clippedCount > 0) {
-                QVector<XTrapezoid> traps;
-                traps.reserve(128);
-                qt_tesselate_polygon(&traps, (QPointF *)clippedPoints, clippedCount,
-                                     mode == QPaintEngine::WindingMode);
-                if (traps.size() > 0) {
-                    XRenderPictureAttributes attrs;
-                    attrs.poly_edge = antialias ? PolyEdgeSmooth : PolyEdgeSharp;
-                    XRenderChangePicture(dpy, picture, CPPolyEdge, &attrs);
-                    if (has_fill_pattern || has_fill_texture) {
-                        for (int i=0; i < traps.size(); ++i) {
-                            int x_offset = qRound(XFixedToDouble(traps.at(i).left.p1.x) - bg_origin.x());
-                            int y_offset = qRound(XFixedToDouble(traps.at(i).left.p1.y) - bg_origin.y());
-                            XRenderCompositeTrapezoids(dpy, composition_mode, src, picture,
-                                                       antialias ? XRenderFindStandardFormat(dpy, PictStandardA8) : 0,
-                                                       x_offset, y_offset,
-                                                       traps.constData() + i, 1);
-                        }
-                    } else {
+        QVector<XTrapezoid> traps;
+        traps.reserve(128);
+        QRect br;
+        qt_tesselate_polygon(&traps, (QPointF *)clippedPoints, clippedCount,
+                             mode == QPaintEngine::WindingMode, &br);
+        if (traps.size() > 0) {
+            XRenderPictureAttributes attrs;
+            attrs.poly_edge = antialias ? PolyEdgeSmooth : PolyEdgeSharp;
+            XRenderChangePicture(dpy, picture, CPPolyEdge, &attrs);
+
+            if (has_fill_texture) {
+                if (fill.texture().depth() == 1) {
+                    for (int i=0; i < traps.size(); ++i) {
+                        int x_offset = int(XFixedToDouble(traps.at(i).left.p1.x) - bg_origin.x());
+                        int y_offset = int(XFixedToDouble(traps.at(i).left.p1.y) - bg_origin.y());
                         XRenderCompositeTrapezoids(dpy, composition_mode, src, picture,
                                                    antialias ? XRenderFindStandardFormat(dpy, PictStandardA8) : 0,
-                                                   0, 0,
-                                                   traps.constData(), traps.size());
+                                                   x_offset, y_offset,
+                                                   traps.constData() + i, 1);
                     }
+                } else {
+                    int mask_w = br.width() + (br.x() > 0 ? br.x() : 0);
+                    int mask_h = br.height() + (br.y() > 0 ? br.y() : 0);
+                    Pixmap mask = XCreatePixmap (dpy, RootWindow(dpy, scrn),
+                                                 mask_w, mask_h, antialias ? 8 : 1);
+                    Picture mask_picture = XRenderCreatePicture (dpy, mask,
+                                                                 antialias ? XRenderFindStandardFormat(dpy, PictStandardA8)
+                                                                 : XRenderFindStandardFormat(dpy, PictStandardA1),
+                                                                 CPPolyEdge, &attrs);
+                    XRenderColor transparent;
+                    transparent.red = 0;
+                    transparent.green = 0;
+                    transparent.blue = 0;
+                    transparent.alpha = 0;
+                    XRenderFillRectangle(dpy, PictOpSrc, mask_picture, &transparent, 0, 0, mask_w, mask_h);
+
+                    Picture mask_src = X11->getSolidFill(scrn, Qt::white);
+                    qt_XRenderCompositeTrapezoids(dpy, PictOpOver, mask_src, mask_picture,
+                                                  antialias ? XRenderFindStandardFormat(dpy, PictStandardA8) : 0,
+                                                  0, 0,
+                                                  traps);
+                    XRenderComposite(dpy, composition_mode, src, mask_picture, picture,
+                                     qRound(bg_origin.x()), qRound(bg_origin.y()),
+                                     0, 0,
+                                     0, 0,
+                                     mask_w, mask_h);
+                    XFreePixmap(dpy, mask);
+                    XRenderFreePicture(dpy, mask_picture);
                 }
+            } else {
+                qt_XRenderCompositeTrapezoids(dpy, composition_mode, src, picture,
+                                              antialias ? XRenderFindStandardFormat(dpy, PictStandardA8) : 0,
+                                              0, 0,
+                                              traps);
             }
         }
     } else
@@ -1787,8 +1877,11 @@ void QX11PaintEngine::drawPixmap(const QRectF &r, const QPixmap &pixmap, const Q
                 XSetForeground(d->dpy, d->gc, QColormap::instance(d->scrn).pixel(d->bg_brush.color()));
             XFillRectangle(d->dpy, d->hd, d->gc, x, y, sw, sh);
         }
-        XSetClipMask(d->dpy, d->gc, pixmap.handle());
-        XSetClipOrigin(d->dpy, d->gc, x-sx, y-sy);
+        QRegion bitmap_region(pixmap);
+        bitmap_region.translate(x, y);
+        bitmap_region = bitmap_region & d->crgn;
+        x11SetClipRegion(d->dpy, d->gc, 0, 0, bitmap_region);
+
         if (mono_dst) {
             XSetBackground(d->dpy, d->gc, qGray(d->bg_brush.color().rgb()) > 127 ? 0 : 1);
             XSetForeground(d->dpy, d->gc, qGray(d->cpen.color().rgb()) > 127 ? 0 : 1);
@@ -1798,8 +1891,7 @@ void QX11PaintEngine::drawPixmap(const QRectF &r, const QPixmap &pixmap, const Q
             XSetForeground(d->dpy, d->gc, cmap.pixel(d->cpen.color()));
         }
         XFillRectangle(d->dpy, d->hd, d->gc, x, y, sw, sh);
-        XSetClipMask(d->dpy, d->gc, XNone);
-        XSetClipOrigin(d->dpy, d->gc, 0, 0);
+        restore_clip = true;
     } else {
         XCopyArea(d->dpy, pixmap.handle(), d->hd, d->gc, sx, sy, sw, sh, x, y);
     }
@@ -2025,6 +2117,8 @@ void QX11PaintEngine::drawBox(const QPointF &p, const QTextItemInt &ti)
     QMatrix matrix;
     matrix.translate(p.x(), p.y());
     ti.fontEngine->getGlyphPositions(ti.glyphs, ti.num_glyphs, matrix, ti.flags, glyphs, positions);
+    if (glyphs.size() == 0)
+        return;
 
     int size = qRound(ti.fontEngine->ascent());
     QSize s(size - 3, size - 3);
@@ -2060,6 +2154,8 @@ void QX11PaintEngine::drawXLFD(const QPointF &p, const QTextItemInt &ti)
     QMatrix matrix = d->matrix;
     matrix.translate(p.x(), p.y());
     ti.fontEngine->getGlyphPositions(ti.glyphs, ti.num_glyphs, matrix, ti.flags, glyphs, positions);
+    if (glyphs.size() == 0)
+        return;
 
     QFontEngineXLFD *xlfd = static_cast<QFontEngineXLFD *>(ti.fontEngine);
     Qt::HANDLE font_id = xlfd->fontStruct()->fid;
@@ -2071,7 +2167,7 @@ void QX11PaintEngine::drawXLFD(const QPointF &p, const QTextItemInt &ti)
     for (int i = 0; i < glyphs.size(); i++) {
         int xp = qRound(positions[i].x);
         int yp = qRound(positions[i].y);
-        if (xp < SHRT_MAX && xp > SHRT_MIN) {
+        if (xp < SHRT_MAX && xp > SHRT_MIN &&  yp > SHRT_MIN && yp < SHRT_MAX) {
             XChar2b ch;
             ch.byte1 = glyphs[i] >> 8;
             ch.byte2 = glyphs[i] & 0xff;
@@ -2084,7 +2180,8 @@ void QX11PaintEngine::drawXLFD(const QPointF &p, const QTextItemInt &ti)
 void QX11PaintEngine::core_render_glyph(QFontEngineFT *fe, int xp, int yp, uint g)
 {
     Q_D(QX11PaintEngine);
-    if (xp < SHRT_MIN || xp > SHRT_MAX || d->cpen.style() == Qt::NoPen)
+    if (xp < SHRT_MIN || xp > SHRT_MAX  || yp < SHRT_MIN || yp > SHRT_MAX
+        || d->cpen.style() == Qt::NoPen)
         return;
 
     QFontEngineFT::Glyph *glyph = fe->loadGlyph(g, QFontEngineFT::Format_Mono);
@@ -2098,7 +2195,7 @@ void QX11PaintEngine::core_render_glyph(QFontEngineFT *fe, int xp, int yp, uint 
     XRectangle rects[rectcount];
     int n = 0;
     int h = glyph->height;
-    xp -= glyph->x;
+    xp += glyph->x;
     yp += -glyph->y + glyph->height;
     int pitch = ((glyph->width + 31) & ~31) >> 3;
 
@@ -2155,6 +2252,8 @@ void QX11PaintEngine::drawFreetype(const QPointF &p, const QTextItemInt &ti)
     QMatrix matrix = d->matrix;
     matrix.translate(p.x(), p.y());
     ti.fontEngine->getGlyphPositions(ti.glyphs, ti.num_glyphs, matrix, ti.flags, glyphs, positions);
+    if (glyphs.size() == 0)
+        return;
 
 #ifndef QT_NO_XRENDER
     if (X11->use_xrender
@@ -2170,7 +2269,7 @@ void QX11PaintEngine::drawFreetype(const QPointF &p, const QTextItemInt &ti)
         for (int i = 0; i < glyphs.size(); ++i) {
             int xp = qRound(positions[i].x);
             int yp = qRound(positions[i].y);
-            if (xp > SHRT_MIN && xp < SHRT_MAX) {
+            if (xp > SHRT_MIN && xp < SHRT_MAX &&  yp > SHRT_MIN && yp < SHRT_MAX) {
                 glyphSpec[nGlyphs].glyphset = glyphSet;
                 glyphSpec[nGlyphs].chars = &glyphs[i];
                 glyphSpec[nGlyphs].nchars = 1;

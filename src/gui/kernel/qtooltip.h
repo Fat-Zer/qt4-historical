@@ -26,6 +26,8 @@
 
 #include <QtGui/qwidget.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_TOOLTIP
@@ -46,5 +48,7 @@ public:
 };
 
 #endif // QT_NO_TOOLTIP
+
+QT_END_HEADER
 
 #endif // QTOOLTIP_H

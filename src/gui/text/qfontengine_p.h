@@ -103,7 +103,7 @@ public:
     virtual Properties properties() const;
     virtual void getUnscaledGlyph(glyph_t glyph, QPainterPath *path, glyph_metrics_t *metrics);
     virtual QByteArray getSfntTable(uint /*tag*/) const { return QByteArray(); }
-    
+
     struct FaceId {
         FaceId() : index(0), encoding(0) {}
         QByteArray filename;
@@ -125,14 +125,14 @@ public:
     virtual void recalcAdvances(int , QGlyphLayout *, QTextEngine::ShaperFlags) const {}
     virtual void doKerning(int , QGlyphLayout *, QTextEngine::ShaperFlags) const {}
 
-#if !defined(Q_WS_X11) && !defined(Q_WS_WIN)
+#if !defined(Q_WS_X11) && !defined(Q_WS_WIN) && !defined(Q_WS_MAC)
     virtual void draw(QPaintEngine *p, qreal x, qreal y, const QTextItemInt &si) = 0;
 #endif
     virtual void addGlyphsToPath(glyph_t *glyphs, QFixedPoint *positions, int nglyphs,
                                  QPainterPath *path, QTextItem::RenderFlags flags);
-    void getGlyphPositions(const QGlyphLayout *glyphs, int nglyphs, const QMatrix &matrix, QTextItem::RenderFlags flags, 
+    void getGlyphPositions(const QGlyphLayout *glyphs, int nglyphs, const QMatrix &matrix, QTextItem::RenderFlags flags,
                            QVarLengthArray<glyph_t> &glyphs_out, QVarLengthArray<QFixedPoint> &positions);
-    
+
     virtual void addOutlineToPath(qreal, qreal, const QGlyphLayout *, int, QPainterPath *, QTextItem::RenderFlags flags);
     void addBitmapFontToPath(qreal x, qreal y, const QGlyphLayout *, int, QPainterPath *, QTextItem::RenderFlags);
 
@@ -193,8 +193,6 @@ public:
     FaceId _faceId;
     mutable int synthesized_flags;
     mutable QFixed lineWidth;
-#elif defined(Q_WS_MAC)
-    uint kerning : 1;
 #endif // Q_WS_WIN
 };
 
@@ -220,7 +218,7 @@ class QGlyph;
 class QFontEngineFT : public QFontEngine
 {
 public:
-    QFontEngineFT(const QFontDef&, FT_Face face);
+    QFontEngineFT(const QFontDef&, FT_Face face, bool antialiased = true);
    ~QFontEngineFT();
     FT_Face handle() const;
 
@@ -229,7 +227,7 @@ public:
     void getUnscaledGlyph(glyph_t glyph, QPainterPath *path, glyph_metrics_t *metrics);
     QByteArray getSfntTable(uint tag) const;
     int synthesized() const;
-    
+
     QOpenType *openType() const;
     void recalcAdvances(int len, QGlyphLayout *glyphs, QTextEngine::ShaperFlags flags) const;
 
@@ -249,7 +247,7 @@ public:
     QFixed descent() const;
     QFixed leading() const;
     QFixed xHeight() const;
-    
+
     qreal maxCharWidth() const;
     qreal minLeftBearing() const;
     qreal minRightBearing() const;
@@ -260,9 +258,11 @@ public:
 
     bool canRender(const QChar *string, int len);
     inline const char *name() const { return 0; }
+    inline bool drawAsOutline() const { return outline_drawing; }
 
     FT_Face face;
     bool smooth;
+    bool outline_drawing;
     QGlyph **rendered_glyphs;
     QOpenType *_openType;
     enum { cmapCacheSize = 0x200 };
@@ -322,7 +322,7 @@ public:
 
     bool stringToCMap(const QChar *str, int len, QGlyphLayout *glyphs, int *nglyphs, QTextEngine::ShaperFlags flags) const;
 
-#if !defined(Q_WS_X11) && !defined(Q_WS_WIN)
+#if !defined(Q_WS_X11) && !defined(Q_WS_WIN) && !defined(Q_WS_MAC)
     void draw(QPaintEngine *p, qreal x, qreal y, const QTextItemInt &si);
 #endif
     void addOutlineToPath(qreal x, qreal y, const QGlyphLayout *glyphs, int numGlyphs, QPainterPath *path, QTextItem::RenderFlags flags);
@@ -352,59 +352,6 @@ private:
     int _size;
 };
 
-#if defined(Q_WS_MAC)
-#include "private/qt_mac_p.h"
-#include "QtCore/qmap.h"
-#include "QtCore/qcache.h"
-
-struct QATSUStyle;
-struct QATSUGlyphInfo;
-class QFontEngineMac : public QFontEngine
-{
-    mutable ATSUTextLayout mTextLayout;
-    mutable QATSUStyle *internal_fi;
-    enum { widthCacheSize = 0x500 };
-    mutable int widthCache[widthCacheSize];
-    QATSUStyle *getFontStyle() const;
-    mutable QCache<QString, QATSUGlyphInfo> glyphCache;
-
-public:
-    ATSFontFamilyRef familyref;
-    QFontEngineMac();
-    ~QFontEngineMac();
-
-    bool stringToCMap(const QChar *str, int len, QGlyphLayout *glyphs, int *nglyphs, QTextEngine::ShaperFlags flags) const;
-    void recalcAdvances(int , QGlyphLayout *, QTextEngine::ShaperFlags) const;
-    void doKerning(int , QGlyphLayout *, QTextEngine::ShaperFlags) const;
-
-
-    void draw(QPaintEngine *p, qreal x, qreal y, const QTextItemInt &si);
-    void addOutlineToPath(qreal x, qreal y, const QGlyphLayout *glyphs, int numGlyphs, QPainterPath *path, QTextItem::RenderFlags flags);
-
-    glyph_metrics_t boundingBox(const QGlyphLayout *glyphs, int numGlyphs);
-    glyph_metrics_t boundingBox(glyph_t glyph);
-
-    QFixed ascent() const;
-    QFixed descent() const;
-    QFixed leading() const;
-    qreal maxCharWidth() const;
-
-    const char *name() const { return "ATSUI"; }
-
-    bool canRender(const QChar *string, int len);
-
-    Type type() const { return QFontEngine::Mac; }
-
-    void calculateCost();
-
-    enum { WIDTH=0x01, DRAW=0x02, EXISTS=0x04, ADVANCES=0x08 };
-    int doTextTask(const QChar *s, int pos, int use_len, int len, uchar task, QFixed x =-1, QFixed y=-1,
-                   QPaintEngine *p=0, void **data=0) const;
-};
-
-#endif
-
-
 class Q_GUI_EXPORT QFontEngineMulti : public QFontEngine
 {
 public:
@@ -425,7 +372,7 @@ public:
     QFixed descent() const;
     QFixed leading() const;
     QFixed xHeight() const;
-    
+
     QFixed lineThickness() const;
     QFixed underlinePosition() const;
     qreal maxCharWidth() const;
@@ -448,6 +395,100 @@ protected:
     QVector<QFontEngine *> engines;
 };
 
+#if defined(Q_WS_MAC)
+#include "private/qt_mac_p.h"
+#include "QtCore/qmap.h"
+#include "QtCore/qcache.h"
+
+#include "private/qcore_mac_p.h"
+
+struct QShaperItem;
+class QFontEngineMacMulti;
+
+class QFontEngineMac : public QFontEngine
+{
+    friend class QFontEngineMacMulti;
+public:
+    QFontEngineMac(ATSUStyle baseStyle, FMFont font, const QFontDef &def, QFontEngineMacMulti *multiEngine = 0);
+    virtual ~QFontEngineMac();
+
+    virtual bool stringToCMap(const QChar *str, int len, QGlyphLayout *glyphs, int *nglyphs, QTextEngine::ShaperFlags flags) const;
+
+    virtual glyph_metrics_t boundingBox(const QGlyphLayout *glyphs, int numGlyphs);
+    virtual glyph_metrics_t boundingBox(glyph_t glyph);
+
+    virtual QFixed ascent() const;
+    virtual QFixed descent() const;
+    virtual QFixed leading() const;
+    virtual QFixed xHeight() const;
+    virtual qreal maxCharWidth() const;
+
+    virtual void addGlyphsToPath(glyph_t *glyphs, QFixedPoint *positions, int numGlyphs,
+                                 QPainterPath *path, QTextItem::RenderFlags);
+
+    virtual const char *name() const { return "QFontEngineMac"; }
+
+    virtual bool canRender(const QChar *string, int len);
+
+    virtual int synthesized() const { return synthesisFlags; }
+
+    virtual Type type() const { return QFontEngine::Mac; }
+
+    void draw(CGContextRef ctx, qreal x, qreal y, const QTextItemInt &ti, int paintDeviceHeight);
+
+    virtual FaceId faceId() const;
+    virtual QByteArray getSfntTable(uint tag) const;
+    virtual Properties properties() const;
+    virtual void getUnscaledGlyph(glyph_t glyph, QPainterPath *path, glyph_metrics_t *metrics);
+
+private:
+    FMFont fmFont;
+    QCFType<CGFontRef> cgFont;
+    ATSUStyle style;
+    int synthesisFlags;
+    mutable QGlyphLayout kashidaGlyph;
+    QFontEngineMacMulti *multiEngine;
+    mutable unsigned char *cmap;
+    mutable bool symbolCMap;
+};
+
+class QFontEngineMacMulti : public QFontEngineMulti
+{
+    friend class QFontEngineMac;
+public:
+    QFontEngineMacMulti(const ATSFontFamilyRef &family, const QFontDef &fontDef, bool kerning);
+    virtual ~QFontEngineMacMulti();
+
+    virtual bool stringToCMap(const QChar *str, int len, QGlyphLayout *glyphs, int *nglyphs, QTextEngine::ShaperFlags flags) const;
+    bool stringToCMap(const QChar *str, int len, QGlyphLayout *glyphs, int *nglyphs, QTextEngine::ShaperFlags flags,
+                      QShaperItem *shaperItem) const;
+
+    virtual void recalcAdvances(int , QGlyphLayout *, QTextEngine::ShaperFlags) const;
+    virtual void doKerning(int , QGlyphLayout *, QTextEngine::ShaperFlags) const;
+
+    virtual const char *name() const { return "ATSUI"; }
+
+    bool canRender(const QChar *string, int len);
+
+    inline ATSFontFamilyRef fontFamilyRef() const { return familyref; }
+
+protected:
+    virtual void loadEngine(int at);
+
+private:
+    inline const QFontEngineMac *engineAt(int i) const
+    { return static_cast<const QFontEngineMac *>(engines.at(i)); }
+
+    int fontIndexForFMFont(FMFont font) const;
+
+    ATSFontFamilyRef familyref;
+    uint kerning : 1;
+
+    mutable ATSUTextLayout textLayout;
+    mutable ATSUStyle style;
+};
+
+#endif
 
 #if defined(Q_WS_X11)
 #  include "private/qfontengine_x11_p.h"

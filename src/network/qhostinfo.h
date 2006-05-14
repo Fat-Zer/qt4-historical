@@ -27,6 +27,8 @@
 #include <QtCore/qlist.h>
 #include <QtNetwork/qhostaddress.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Network)
 
 class QObject;
@@ -70,5 +72,7 @@ public:
 private:
     QHostInfoPrivate *d;
 };
+
+QT_END_HEADER
 
 #endif // QHOSTINFO_H

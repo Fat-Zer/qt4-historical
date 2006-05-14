@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-x11-opensource-src-4.1.2/src/gui/image/qimage.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/src/gui/image/qimage.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/src/gui/image/qimage.cpp -->
 <head>
     <title>Qt 4.1: QImage Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -28,7 +29,7 @@ body { background: #ffffff; color: black; }</style>
 <a name="public-types"></a>
 <h3>Public Types</h3>
 <ul>
-<li><div class="fn"/>enum <b><a href="qimage.html#Format-enum">Format</a></b> { Format_Invalid, Format_Mono, Format_MonoLSB, Format_Indexed8, ..., Format_Grayscale2LSB }</li>
+<li><div class="fn"/>enum <b><a href="qimage.html#Format-enum">Format</a></b> { Format_Invalid, Format_Mono, Format_MonoLSB, Format_Indexed8, ..., Format_RGB16 }</li>
 <li><div class="fn"/>enum <b><a href="qimage.html#InvertMode-enum">InvertMode</a></b> { InvertRgb, InvertRgba }</li>
 </ul>
 <a name="public-functions"></a>
@@ -133,7 +134,7 @@ body { background: #ffffff; color: black; }</style>
 <p>The QImage class provides a hardware-independent image representation that allows direct access to the pixel data, and can be used as a paint device.</p>
 <p>Qt provides four classes for handling image data: QImage, <a href="qpixmap.html">QPixmap</a>, <a href="qbitmap.html">QBitmap</a> and <a href="qpicture.html">QPicture</a>. QImage is designed and optimized for I/O, and for direct pixel access and manipulation, while <a href="qpixmap.html">QPixmap</a> is designed and optimized for showing images on screen. <a href="qbitmap.html">QBitmap</a> is only a convenience class that inherits <a href="qpixmap.html">QPixmap</a>, ensuring a depth of 1. Finally, the <a href="qpicture.html">QPicture</a> class is a paint device that records and replays <a href="qpainter.html">QPainter</a> commands.</p>
 <p>Because QImage is a <a href="qpaintdevice.html">QPaintDevice</a> subclass, <a href="qpainter.html">QPainter</a> can be used to draw directly onto images. When using <a href="qpainter.html">QPainter</a> on a QImage, the painting can be performed in another thread than the current GUI thread, that is except rendering text (because <a href="qfont.html">QFont</a> is GUI dependent). To render text in another thread, the text must first be derived as a <a href="qpainterpath.html">QPainterPath</a> in the GUI thread.</p>
-<p>The QImage class supports several image formats described by the <a href="qimage.html#Format-enum">Format</a> enum. These include monochrome, 8-bit, 32-bit and alpha-blended images which are available in all versions of Qt 4.x. In addition, QImage supports several formats that are specific to <a href="http://www.trolltech.com/products/qtopia/">Qtopia Core</a>.</p>
+<p>The QImage class supports several image formats described by the <a href="qimage.html#Format-enum">Format</a> enum. These include monochrome, 8-bit, 32-bit and alpha-blended images which are available in all versions of Qt 4.x. In addition, QImage supports several formats that are specific to <a href="qtopiacore.html">Qtopia Core</a>.</p>
 <p>QImage provides a collection of functions that can be used to obtain a variety of information about the image. There are also several functions that enables transformation of the image.</p>
 <p>QImage objects can be passed around by value since the QImage class uses <a href="shclass.html">implicit data sharing</a>. QImage objects can also be streamed and compared.</p>
 <ul><li><a href="#reading-and-writing-image-files">Reading and Writing Image Files</a></li>
@@ -259,17 +260,10 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QImage::Format_ARGB32</tt></td><td align="center" valign="top"><tt>5</tt></td><td valign="top">The image is stored using a 32-bit ARGB format (0xAARRGGBB).</td></tr>
 <tr><td valign="top"><tt>QImage::Format_ARGB32_Premultiplied</tt></td><td align="center" valign="top"><tt>6</tt></td><td valign="top">The image is stored using a premultiplied 32-bit ARGB format (0xAARRGGBB), i.e. the red, green, and blue channels are multiplied by the alpha component divided by 255. (If RR, GG, or BB has a higher value than the alpha channel, the results are undefined.)</td></tr>
 </table></p>
-<p>The following image formats are specific to <a href="http://www.trolltech.com/products/qtopia/">Qtopia Core</a>:</p>
+<p>The following image format is specific to <a href="qtopiacore.html">Qtopia Core</a>:</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
-<tr><td valign="top"><tt>QImage::Format_RGB16</tt></td><td align="center" valign="top"><tt>7</tt></td><td valign="top">The image is stored using a 16-bit RGB format.</td></tr>
-<tr><td valign="top"><tt>QImage::Format_RGB15</tt></td><td align="center" valign="top"><tt>8</tt></td><td valign="top">The image is stored using a 15-bit RGB format.</td></tr>
-<tr><td valign="top"><tt>QImage::Format_Grayscale16</tt></td><td align="center" valign="top"><tt>9</tt></td><td valign="top">The image is stored with 65536 levels of gray (16 bits per pixel).</td></tr>
-<tr><td valign="top"><tt>QImage::Format_Grayscale8</tt></td><td align="center" valign="top"><tt>10</tt></td><td valign="top">The image is stored with 256 levels of gray (8 bits per pixel).</td></tr>
-<tr><td valign="top"><tt>QImage::Format_Grayscale4</tt></td><td align="center" valign="top"><tt>11</tt></td><td valign="top">The image is stored with 16 levels of gray (4 bits per pixel).</td></tr>
-<tr><td valign="top"><tt>QImage::Format_Grayscale4LSB</tt></td><td align="center" valign="top"><tt>12</tt></td><td valign="top">The image is stored with 16 levels of gray, stored in a form where the lowest 4 bits in a byte contain the first pixel in each pair.</td></tr>
-<tr><td valign="top"><tt>QImage::Format_Grayscale2</tt></td><td align="center" valign="top"><tt>13</tt></td><td valign="top">The image is stored with 4 levels of gray (2 bits per pixel).</td></tr>
-<tr><td valign="top"><tt>QImage::Format_Grayscale2LSB</tt></td><td align="center" valign="top"><tt>14</tt></td><td valign="top">The image is stored with 4 levels of gray, stored in a form where the least significant bits contain the first pixel value and the most significant bits contain the last pixel value in each byte containing a group of 4 pixels.</td></tr>
+<tr><td valign="top"><tt>QImage::Format_RGB16</tt></td><td align="center" valign="top"><tt>7</tt></td><td valign="top">The image is stored using a 16-bit RGB format (5-6-5).</td></tr>
 </table></p>
 <p>See also <a href="qimage.html#format">format</a>() and <a href="qimage.html#convertToFormat">convertToFormat</a>().</p>
 <h3 class="fn"><a name="InvertMode-enum"></a>enum QImage::InvertMode</h3>
@@ -323,7 +317,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Destroys the image and cleans up.</p>
 <h3 class="fn"><a name="allGray"></a>bool QImage::allGray () const</h3>
 <p>Returns true if all the colors in the image are shades of gray (i.e. their red, green and blue components are equal); otherwise false.</p>
-<p>Note that this function is slow for large 32-bit images.</p>
+<p>Note that this function is slow for images without color table.</p>
 <p>See also <a href="qimage.html#isGrayscale">isGrayscale</a>().</p>
 <h3 class="fn"><a name="alphaChannel"></a>QImage QImage::alphaChannel () const</h3>
 <p>Extracts the alpha channel from this image as an 8 bit gray scale image and returns it.</p>
@@ -385,7 +379,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qimage.html#setDotsPerMeterY">setDotsPerMeterY</a>() and <a href="qimage.html#image-information">Image Information</a>.</p>
 <h3 class="fn"><a name="fill"></a>void QImage::fill ( <a href="qtglobal.html#uint-typedef">uint</a> <i>pixelValue</i> )</h3>
 <p>Fills the entire image with the given <i>pixelValue</i>.</p>
-<p>If the depth of this image is 1, only the lowest bit is used. If you say fill(0), fill(2), etc., the image is filled with 0s. If you say fill(1), fill(3), etc., the image is filled with 1s. If the depth is 8, the lowest 8 bits are used.</p>
+<p>If the depth of this image is 1, only the lowest bit is used. If you say fill(0), fill(2), etc., the image is filled with 0s. If you say fill(1), fill(3), etc., the image is filled with 1s. If the depth is 8, the lowest 8 bits are used and if the depth is 16 the lowest 16 bits are used.</p>
 <p>Note: <a href="qimage.html#pixel">QImage::pixel</a>() returns the color of the pixel at the given coordinates while <a href="qcolor-qt3.html#pixel">QColor::pixel</a>() returns the pixel value of the underlying window system (essentially an index value), so normally you will want to use <a href="qimage.html#pixel">QImage::pixel</a>() to use a color from an existing image or <a href="qcolor.html#rgb">QColor::rgb</a>() to use a specific color.</p>
 <p>See also <a href="qimage.html#depth">depth</a>() and <a href="qimage.html#image-transformations">Image Transformations</a>.</p>
 <h3 class="fn"><a name="format"></a><a href="qimage.html#Format-enum">Format</a> QImage::format () const</h3>
@@ -597,6 +591,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

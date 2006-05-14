@@ -38,7 +38,7 @@ public:
 
     int id() const { return mDisplayId; }
 
-    void sendKeyboardData(int unicode, int keycode,
+    void sendKeyboardData(QString unicode, int keycode,
             int modifiers, bool press, bool repeat);
     void sendMouseData(const QPoint &pos, int buttons, int wheel);
 
@@ -47,7 +47,7 @@ public:
     virtual int depth() const = 0;
     virtual int linestep() const = 0;
     virtual int  numcols() const = 0;
-    virtual QRgb *clut() const = 0;
+    virtual QVector<QRgb> clut() const = 0;
     virtual unsigned char *data() const = 0;
 
     virtual void setRate(int) {}
@@ -73,7 +73,7 @@ public:
 
     int id() const { return mDisplayId; }
 
-    virtual void sendKeyboardData(int unicode, int keycode,
+    virtual void sendKeyboardData(QString unicode, int keycode,
             int modifiers, bool press, bool repeat) = 0;
 
 private:
@@ -103,7 +103,7 @@ public:
     QVFbKeyPipeProtocol(int display_id);
     ~QVFbKeyPipeProtocol();
 
-    void sendKeyboardData(int unicode, int keycode,
+    void sendKeyboardData(QString unicode, int keycode,
             int modifiers, bool press, bool repeat);
 
     QString pipeName() const { return fileName; }

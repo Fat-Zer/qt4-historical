@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-x11-opensource-src-4.1.2/doc/src/coordsys.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/doc/src/coordsys.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/doc/src/coordsys.qdoc -->
 <head>
     <title>Qt 4.1: The Coordinate System</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -40,8 +41,8 @@ body { background: #ffffff; color: black; }</style>
 </table></p>
 <a name="aliased-painting"></a>
 <h3>Aliased Painting</h3>
-<p>The location of each pixel is resolved using the <a href="qpainter.html#RenderHint-enum">QPainter::Antialiasing</a> render hint when drawing.</p>
-<p>The <a href="qpainter.html#RenderHint-enum">RenderHint</a> enum is used to specify flags to <a href="qpainter.html">QPainter</a> that may or may not be respected by any given engine. <a href="qpainter.html#RenderHint-enum">QPainter::Antialiasing</a> indicates that the engine should antialias edges of primitives if possible, i.e. put additional pixels around the original ones to smooth the edges.</p>
+<p>When drawing, the pixel rendering is controlled by the <a href="qpainter.html#RenderHint-enum">QPainter::Antialiasing</a> render hint.</p>
+<p>The <a href="qpainter.html#RenderHint-enum">RenderHint</a> enum is used to specify flags to <a href="qpainter.html">QPainter</a> that may or may not be respected by any given engine. The <a href="qpainter.html#RenderHint-enum">QPainter::Antialiasing</a> value indicates that the engine should antialias edges of primitives if possible, i.e. smoothing the edges by using different color intensities.</p>
 <p>But by default the painter is <i>aliased</i> and other rules apply: When rendering with a one pixel wide pen the pixels will be rendered to the <i>right and below the mathematically defined points</i>. For example:</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#f0f0f0"><td><img src="images/coordinatesystem-rect-raster.png" /></td><td><img src="images/coordinatesystem-line-raster.png" /></td></tr>
@@ -171,6 +172,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

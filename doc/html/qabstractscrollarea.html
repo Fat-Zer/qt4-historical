@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-x11-opensource-src-4.1.2/src/gui/widgets/qabstractscrollarea.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/src/gui/widgets/qabstractscrollarea.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/src/gui/widgets/qabstractscrollarea.cpp -->
 <head>
     <title>Qt 4.1: QAbstractScrollArea Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -51,7 +52,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <ul>
 <li><div class="fn"/>13 public functions inherited from <a href="qframe.html#public-functions">QFrame</a></li>
-<li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>190 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -100,7 +101,7 @@ body { background: #ffffff; color: black; }</style>
 <p>With a scroll bar policy of <a href="qt.html#ScrollBarPolicy-enum">Qt::ScrollBarAsNeeded</a> (the default), QAbstractScrollArea shows scroll bars when those provide a non-zero scrolling range, and hides them otherwise. You control the range of each scroll bar with <a href="qabstractslider.html#setRange">QAbstractSlider::setRange</a>().</p>
 <p>In order to track scroll bar movements, reimplement the virtual function <a href="qabstractscrollarea.html#scrollContentsBy">scrollContentsBy</a>(). In order to fine-tune scrolling behavior, connect to a scroll bar's <a href="qabstractslider.html#actionTriggered">QAbstractSlider::actionTriggered</a>() signal and adjust the <a href="qabstractslider.html#sliderPosition-prop">QAbstractSlider::sliderPosition</a> as you wish.</p>
 <p>It is possible to reserve a margin area around the viewport, see <a href="qabstractscrollarea.html#setViewportMargins">setViewportMargins</a>(). The feature is mostly used to place a <a href="qheaderview.html">QHeaderView</a> widget above or beside the scrolling area.</p>
-<p>For convience, QAbstractScrollArea makes all viewport events available in the virtual <a href="qabstractscrollarea.html#viewportEvent">viewportEvent</a>() handler. <a href="qwidget.html">QWidget</a>'s specialised handlers are remapped to viewport events in the cases where this makes sense. The remapped specialised handlers are: <a href="qabstractscrollarea.html#paintEvent">paintEvent</a>(), <a href="qabstractscrollarea.html#mousePressEvent">mousePressEvent</a>(), <a href="qabstractscrollarea.html#mouseReleaseEvent">mouseReleaseEvent</a>(), <a href="qabstractscrollarea.html#mouseDoubleClickEvent">mouseDoubleClickEvent</a>(), <a href="qabstractscrollarea.html#mouseMoveEvent">mouseMoveEvent</a>(), <a href="qabstractscrollarea.html#wheelEvent">wheelEvent</a>(), <a href="qabstractscrollarea.html#dragEnterEvent">dragEnterEvent</a>(), <a href="qabstractscrollarea.html#dragMoveEvent">dragMoveEvent</a>(), <a href="qabstractscrollarea.html#dragLeaveEvent">dragLeaveEvent</a>(), <a href="qabstractscrollarea.html#dropEvent">dropEvent</a>(), <a href="qabstractscrollarea.html#contextMenuEvent">contextMenuEvent</a>(). and <a href="qabstractscrollarea.html#resizeEvent">resizeEvent</a>().</p>
+<p>For convenience, QAbstractScrollArea makes all viewport events available in the virtual <a href="qabstractscrollarea.html#viewportEvent">viewportEvent</a>() handler. <a href="qwidget.html">QWidget</a>'s specialised handlers are remapped to viewport events in the cases where this makes sense. The remapped specialised handlers are: <a href="qabstractscrollarea.html#paintEvent">paintEvent</a>(), <a href="qabstractscrollarea.html#mousePressEvent">mousePressEvent</a>(), <a href="qabstractscrollarea.html#mouseReleaseEvent">mouseReleaseEvent</a>(), <a href="qabstractscrollarea.html#mouseDoubleClickEvent">mouseDoubleClickEvent</a>(), <a href="qabstractscrollarea.html#mouseMoveEvent">mouseMoveEvent</a>(), <a href="qabstractscrollarea.html#wheelEvent">wheelEvent</a>(), <a href="qabstractscrollarea.html#dragEnterEvent">dragEnterEvent</a>(), <a href="qabstractscrollarea.html#dragMoveEvent">dragMoveEvent</a>(), <a href="qabstractscrollarea.html#dragLeaveEvent">dragLeaveEvent</a>(), <a href="qabstractscrollarea.html#dropEvent">dropEvent</a>(), <a href="qabstractscrollarea.html#contextMenuEvent">contextMenuEvent</a>(). and <a href="qabstractscrollarea.html#resizeEvent">resizeEvent</a>().</p>
 <hr />
 <h2>Property Documentation</h2>
 <h3 class="fn"><a name="horizontalScrollBarPolicy-prop"></a>horizontalScrollBarPolicy : <a href="qt.html#ScrollBarPolicy-enum">Qt::ScrollBarPolicy</a></h3>
@@ -197,6 +198,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qabstractscrollarea.html#verticalScrollBarPolicy-prop">verticalScrollBarPolicy</a> and <a href="qabstractscrollarea.html#horizontalScrollBar">horizontalScrollBar</a>().</p>
 <h3 class="fn"><a name="viewport"></a><a href="qwidget.html">QWidget</a> * QAbstractScrollArea::viewport () const</h3>
 <p>Returns the viewport widget.</p>
+<p>Use the QScrollBar::widget() function to retrieve the contents of the viewport widget.</p>
+<p>See also <a href="qscrollarea.html#widget">QScrollArea::widget</a>().</p>
 <h3 class="fn"><a name="viewportEvent"></a>bool QAbstractScrollArea::viewportEvent ( <a href="qevent.html">QEvent</a> * <i>e</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>The main event handler for the scrolling area (the <a href="qabstractscrollarea.html#viewport">viewport</a>() widget). It handles event <i>e</i>.</p>
 <p>You can reimplement this function in a subclass, but we recommend using one of the specialized event handlers instead.</p>
@@ -209,6 +212,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

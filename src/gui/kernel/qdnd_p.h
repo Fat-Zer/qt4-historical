@@ -84,9 +84,9 @@ public:
     static bool hasFormatHelper(const QString &mimeType, const QMimeData *data);
     static QByteArray renderDataHelper(const QString &mimeType, const QMimeData *data);
 
-protected:    
+protected:
     QVariant retrieveData(const QString &mimeType, QVariant::Type type) const;
-    
+
     virtual bool hasFormat_sys(const QString &mimeType) const = 0;
     virtual QStringList formats_sys() const = 0;
     virtual QVariant retrieveData_sys(const QString &mimeType, QVariant::Type type) const = 0;

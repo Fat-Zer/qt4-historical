@@ -26,6 +26,8 @@
 
 #include <QtCore/qglobal.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Core)
 
 #ifndef Q_MOC_RUN
@@ -363,6 +365,7 @@ public:
 
         WA_NoX11EventCompression = 81,
         WA_TintedBackground = 82,
+        WA_X11OpenGLOverlay = 83,
 
         // Add new attributes above this
         WA_AttributeCount
@@ -971,7 +974,8 @@ public:
         WhatsThisCursor,
         BusyCursor,
         LastCursor = BusyCursor,
-        BitmapCursor = 24
+        BitmapCursor = 24,
+        CustomCursor = 25
 
 #if defined(QT3_SUPPORT) && !defined(Q_MOC_RUN)
         ,
@@ -1335,4 +1339,7 @@ enum {
     QCOORD_MIN = -QCOORD_MAX - 1
 };
 #endif
+
+QT_END_HEADER
+
 #endif // QNAMESPACE_H

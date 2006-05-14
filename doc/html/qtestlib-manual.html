@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-x11-opensource-src-4.1.2/doc/src/qtestlib.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/doc/src/qtestlib.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/doc/src/qtestlib.qdoc -->
 <head>
     <title>Qt 4.1: QTestLib Manual</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -22,11 +23,13 @@ body { background: #ffffff; color: black; }</style>
 <p>Table of contents:</p>
 <ul><li><a href="#qtestlib-features">QTestLib Features</a></li>
 <li><a href="#qtestlib-api">QTestLib API</a></li>
-<li><a href="#qtestlib-tutorial">QTestLib Tutorial</a></li>
+<li><a href="#using-qtestlib">Using QTestLib</a></li>
+<ul><li><a href="#creating-a-test">Creating a test</a></li>
 <li><a href="#building-a-test">Building a Test</a></li>
 <li><a href="#qtestlib-command-line-arguments">QTestLib Command Line Arguments</a></li>
 <ul><li><a href="#syntax">Syntax</a></li>
 <li><a href="#options">Options</a></li>
+</ul>
 </ul>
 </ul>
 <a name="qtestlib-features"></a>
@@ -48,25 +51,44 @@ body { background: #ffffff; color: black; }</style>
 <a name="qtestlib-api"></a>
 <h2>QTestLib API</h2>
 <p>All public methods are in the <a href="qtest.html">QTest</a> namespace. In addition, the <a href="qsignalspy.html">QSignalSpy</a> class provides easy introspection for Qt's signals and slots.</p>
-<a name="qtestlib-tutorial"></a>
-<h2>QTestLib Tutorial</h2>
-<p>This tutorial gives a short introduction to how to use some of the features of the <a href="#qtestlib">QTestLib</a> framework. It is divided into four chapters:</p>
-<ol type="1">
-<li><a href="qtestlib-tutorial1.html">Writing a Unit Test</a></li>
-<li><a href="qtestlib-tutorial2.html">Data Driven Testing</a></li>
-<li><a href="qtestlib-tutorial3.html">Simulating GUI Events</a></li>
-<li><a href="qtestlib-tutorial4.html">Replaying GUI Events</a></li>
-</ol>
+<a name="using-qtestlib"></a>
+<h2>Using QTestLib</h2>
+<a name="creating-a-test"></a>
+<h3>Creating a test</h3>
+<p>To create a test, subclass <a href="qobject.html">QObject</a> and add one or more private slots to it. Each private slot is a testfunction in your test. <a href="qtest.html#qExec">QTest::qExec</a>() can be used to execute all testfunctions in the test object.</p>
+<p>In addition, there are four private slots that are <i>not</i> treated as testfunctions. They will be executed by the testing framework and can be used to initialize and clean up either the entire test or the current test function.</p>
+<ul>
+<li><tt>initTestCase()</tt> will be called before the first testfunction is executed.</li>
+<li><tt>cleanupTestCase()</tt> will be called after the last testfunction was executed.</li>
+<li><tt>init()</tt> will be called before each testfunction is executed.</li>
+<li><tt>cleanup()</tt> will be called after every testfunction.</li>
+</ul>
+<p>If <tt>initTestCase()</tt> fails, no testfunction will be executed. If <tt>init()</tt> fails, the following testfunction will not be executed, the test will proceed to the next testfunction.</p>
+<p>Example:</p>
+<pre>&nbsp;   class MyFirstTest: public QObject
+    {
+        Q_OBJECT
+    private slots:
+        void initTestCase()
+        { qDebug(&quot;called before everything else&quot;); }
+        void myFirstTest()
+        { QVERIFY(1 == 1); }
+        void mySecondTest()
+        { QVERIFY(1 != 2); }
+        void cleanupTestCase()
+        { qDebug(&quot;called after myFirstTest and mySecondTest&quot;); }
+    };</pre>
+<p>For more examples, refer to the <a href="qtestlib-tutorial.html">QTestLib Tutorial</a>.</p>
 <a name="building-a-test"></a>
-<h2>Building a Test</h2>
+<h3>Building a Test</h3>
 <p>If you are using <tt>qmake</tt> as your build tool, just add the following to your project file:</p>
 <pre>&nbsp;   CONFIG += qtestlib</pre>
 <p>If you are using other buildtools, make sure that you add the location of the <a href="#qtestlib">QTestLib</a> header files to your include path (usually <tt>include/QtTest</tt> under your Qt installation directory). If you are using a release build of Qt, link your test to the <tt>QtTest</tt> library. For debug builds, use <tt>QtTest_debug</tt>.</p>
 <p>See <a href="qtestlib-tutorial1.html">Writing a Unit Test</a> for a step by step explanation.</p>
 <a name="qtestlib-command-line-arguments"></a>
-<h2>QTestLib Command Line Arguments</h2>
+<h3>QTestLib Command Line Arguments</h3>
 <a name="syntax"></a>
-<h3>Syntax</h3>
+<h4>Syntax</h4>
 <p>The syntax to execute an autotest takes the following simple form:</p>
 <pre>&nbsp;   testname [options] [testfunctions[:testdata]]...</pre>
 <p>Substitute <tt>testname</tt> with the name of your executable. <tt>testfunctions</tt> can contain names of testfunctions to be executed. If no <tt>testfunctions</tt> are passed, all tests are run. If the name of an entry in the test function's test data is appended to the test function's name, the test function will be run only with that testdata.</p>
@@ -78,14 +100,14 @@ body { background: #ffffff; color: black; }</style>
 <pre>&nbsp;       /myTestDirectory$ testMyWidget -vs -eventdelay 500</pre>
 <p>Runs the testMyWidget function test, outputs every signal emission and waits 500 milliseconds after each simulated mouse/keyboard event.</p>
 <a name="options"></a>
-<h3>Options</h3>
+<h4>Options</h4>
 <p>The following command line arguments are understood:</p>
 <ul>
 <li><tt>-help</tt> <br /> outputs the possible command line arguments and give some useful help.</li>
 <li><tt>-functions</tt> <br /> outputs all test functions available in the test.</li>
 <li><tt>-o</tt> <i>filename</i> <br /> write output to the specified file, rather than to standard output</li>
 <li><tt>-v1</tt> <br /> verbose output; outputs information on entering and exiting test functions.</li>
-<li><tt>-v2</tt> <br /> extended verbose output; also outputs each <a href="qtest.html#QCOMPAREx">QCOMPARE</a>() and <a href="qtest.html#QVERIFY">QVERIFY</a>()</li>
+<li><tt>-v2</tt> <br /> extended verbose output; also outputs each <a href="qtest.html#QCOMPARE">QCOMPARE</a>() and <a href="qtest.html#QVERIFY">QVERIFY</a>()</li>
 <li><tt>-vs</tt> <br /> outputs every signal that gets emitted</li>
 <li><tt>-xml</tt> <br /> outputs XML formatted results instead of plain text</li>
 <li><tt>-lightxml</tt> <br /> outputs results as a stream of XML tags</li>
@@ -99,6 +121,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

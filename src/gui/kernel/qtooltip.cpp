@@ -33,6 +33,7 @@
 #include <qtimer.h>
 #include <qtooltip.h>
 #include <private/qeffects_p.h>
+#include <qtextdocument.h>
 #include <qdebug.h>
 
 #ifndef QT_NO_TOOLTIP
@@ -50,6 +51,9 @@
     widget's function. It is drawn immediately below the given
     position in a distinctive black-on-yellow color combination. The
     tip can be any \l{QTextEdit}{rich text} formatted string.
+
+    Rich text formatted tips implictely do word breaking, unless
+    specified differently with \c{<p style='white-space:pre'>}.
 
     The simplest and most common way to set a widget's tooltip is by
     calling its QWidget::setToolTip() function.
@@ -96,6 +100,7 @@ QTipLabel::QTipLabel(const QString& text, QWidget* parent)
     setAlignment(Qt::AlignLeft);
     setIndent(1);
     ensurePolished();
+    setWordWrap(Qt::mightBeRichText(text));
     setText(text);
 
     QFontMetrics fm(font());
@@ -177,12 +182,18 @@ bool QTipLabel::eventFilter(QObject *, QEvent *e)
 /*!
     Shows \a text as a tool tip, at global position \a pos. The
     optional widget argument, \a w, is used to determine the
-    appropriate screen on multi-head systems.
+    appropriate screen on multi-head systems. If \a text is empty the
+    tool tip is hidden.
 */
 void QToolTip::showText(const QPoint &pos, const QString &text, QWidget *w)
 {
     if (QTipLabel::instance && QTipLabel::instance->text() == text)
-        return;
+        return; /* this is NOT a bug, if the text doesn't change, you
+                 don't want the tool tips to move. If you divide your
+                 widget in different parts that show the same tool
+                 tip, you must handle that yourself. Simple hide the
+                 tip (by showing an empty string) and show the new
+                 one. */
 
     if (text.isEmpty()) {
         if (QTipLabel::instance)
@@ -190,7 +201,9 @@ void QToolTip::showText(const QPoint &pos, const QString &text, QWidget *w)
         return;
     }
 
+#ifndef QT_NO_EFFECTS
     bool preventAnimation = (QTipLabel::instance != 0);
+#endif
     int scr;
     if (QApplication::desktop()->isVirtualDesktop())
         scr = QApplication::desktop()->screenNumber(pos);

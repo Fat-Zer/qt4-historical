@@ -27,7 +27,6 @@
 #include <QList>
 #include <QStringList>
 #include <QMainWindow>
-#include <QTreeWidget>
 
 #include "torrentclient.h"
 

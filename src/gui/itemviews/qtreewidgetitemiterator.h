@@ -26,6 +26,8 @@
 
 #include <QtCore/qglobal.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_TREEWIDGET
@@ -34,6 +36,7 @@ class QTreeWidget;
 class QTreeWidgetItem;
 class QTreeModel;
 
+class QTreeWidgetItemIteratorPrivate;
 class Q_GUI_EXPORT QTreeWidgetItemIterator
 {
     friend class QTreeModel;
@@ -82,9 +85,10 @@ public:
 
 private:
     bool matchesFlags(const QTreeWidgetItem *item) const;
-    QTreeModel *model;
+    QTreeWidgetItemIteratorPrivate *d_ptr;
     QTreeWidgetItem *current;
     IteratorFlags flags;
+    Q_DECLARE_PRIVATE(QTreeWidgetItemIterator)
 };
 
 inline const QTreeWidgetItemIterator QTreeWidgetItemIterator::operator++(int)
@@ -127,4 +131,6 @@ inline QTreeWidgetItem *QTreeWidgetItemIterator::operator*() const
 Q_DECLARE_OPERATORS_FOR_FLAGS(QTreeWidgetItemIterator::IteratorFlags)
 
 #endif // QT_NO_TREEWIDGET
+QT_END_HEADER
+
 #endif // QTREEWIDGETITEMITERATOR_H

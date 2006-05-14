@@ -30,6 +30,8 @@
 #include <QtCore/qrect.h>
 #include <QtCore/qstring.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 class QIODevice;
@@ -69,9 +71,11 @@ public:
         Format_Indexed8,
         Format_RGB32,
         Format_ARGB32,
-        Format_ARGB32_Premultiplied
+        Format_ARGB32_Premultiplied, 
 #ifdef Q_WS_QWS
-        , Format_RGB16,
+        Format_RGB16,
+#if 0
+        // reserved for future use
         Format_RGB15,
         Format_Grayscale16,
         Format_Grayscale8,
@@ -79,6 +83,10 @@ public:
         Format_Grayscale4LSB,
         Format_Grayscale2,
         Format_Grayscale2LSB
+#endif
+#endif
+#ifndef qdoc
+        NImageFormats
 #endif
     };
 
@@ -269,6 +277,7 @@ private:
 
     friend class QPixmap;
     friend Q_GUI_EXPORT qint64 qt_image_id(const QImage &image);
+    friend const QVector<QRgb> *qt_image_colortable(const QImage &image);
 };
 
 Q_DECLARE_SHARED(QImage)
@@ -285,5 +294,7 @@ Q_GUI_EXPORT QDataStream &operator>>(QDataStream &, QImage &);
 Q_GUI_EXPORT QT3_SUPPORT void bitBlt(QImage* dst, int dx, int dy, const QImage* src,
                                      int sx=0, int sy=0, int sw=-1, int sh=-1, Qt::ImageConversionFlags flags = Qt::AutoColor);
 #endif
+
+QT_END_HEADER
 
 #endif // QIMAGE_H

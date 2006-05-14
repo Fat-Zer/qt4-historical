@@ -27,6 +27,8 @@
 #include <QtGui/qcolor.h>
 #include <QtCore/qvector.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(OpenGL)
 
 class Q_OPENGL_EXPORT QGLColormap
@@ -75,5 +77,7 @@ inline void QGLColormap::detach()
     if (d->ref != 1)
         detach_helper();
 }
+
+QT_END_HEADER
 
 #endif // QGLCOLORMAP_H

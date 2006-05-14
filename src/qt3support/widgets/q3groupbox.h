@@ -26,6 +26,8 @@
 
 #include <QtGui/qgroupbox.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Qt3SupportLight)
 
 class Q3GroupBoxPrivate;
@@ -74,10 +76,11 @@ private:
     void init();
     void calculateFrame();
     void insertWid(QWidget*);
-    void setTextSpacer();
     Q3GroupBoxPrivate * d;
 
     Q_DISABLE_COPY(Q3GroupBox)
 };
+
+QT_END_HEADER
 
 #endif // Q3GROUPBOX_H

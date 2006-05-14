@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-x11-opensource-src-4.1.2/doc/src/moc.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/doc/src/moc.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/doc/src/moc.qdoc -->
 <head>
     <title>Qt 4.1: Using the Meta-Object Compiler (moc)</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -76,17 +77,18 @@ body { background: #ffffff; color: black; }</style>
 <p>If you want to create your makefiles yourself, here are some tips on how to include moc handling.</p>
 <p>For <a href="qobject.html#Q_OBJECT">Q_OBJECT</a> class declarations in header files, here is a useful makefile rule if you only use GNU make:</p>
 <pre>&nbsp;   moc_%.cpp: %.h
-            moc $&lt; -o $@</pre>
-<p>If you want to write portably, you can use individual rules with the following form:</p>
+            moc $(DEFINES) $(INCPATH) $&lt; -o $@</pre>
+<p>If you want to write portably, you can use individual rules of the following form:</p>
 <pre>&nbsp;   moc_foo.cpp: foo.h
-            moc $&lt; -o $@</pre>
+            moc $(DEFINES) $(INCPATH) $&lt; -o $@</pre>
 <p>You must also remember to add <tt>moc_foo.cpp</tt> to your <tt>SOURCES</tt> (substitute your favorite name) variable and <tt>moc_foo.o</tt> or <tt>moc_foo.obj</tt> to your <tt>OBJECTS</tt> variable.</p>
-<p>(While we prefer to name our C++ source files <tt>.cpp</tt>, you can use any other extension, such as <tt>.C</tt>, <tt>.cc</tt>, <tt>.CC</tt>, <tt>.cxx</tt>, and <tt>.c++</tt>, if you prefer.)</p>
+<p>Both examples assume that <tt>$(DEFINES)</tt> and <tt>$(INCPATH)</tt> expand to the define and include path options that are passed to the C++ compiler. These are required by <tt>moc</tt> to preprocess the source files.</p>
+<p>While we prefer to name our C++ source files <tt>.cpp</tt>, you can use any other extension, such as <tt>.C</tt>, <tt>.cc</tt>, <tt>.CC</tt>, <tt>.cxx</tt>, and <tt>.c++</tt>, if you prefer.</p>
 <p>For <a href="qobject.html#Q_OBJECT">Q_OBJECT</a> class declarations in implementation (<tt>.cpp</tt>) files, we suggest a makefile rule like this:</p>
 <pre>&nbsp;   foo.o: foo.moc
 
     foo.moc: foo.cpp
-            moc -i $&lt; -o $@</pre>
+            moc $(DEFINES) $(INCPATH) -i $&lt; -o $@</pre>
 <p>This guarantees that make will run the moc before it compiles <tt>foo.cpp</tt>. You can then put</p>
 <pre>&nbsp;   #include &quot;foo.moc&quot;</pre>
 <p>at the end of <tt>foo.cpp</tt>, where all the classes declared in that file are fully known.</p>
@@ -214,6 +216,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

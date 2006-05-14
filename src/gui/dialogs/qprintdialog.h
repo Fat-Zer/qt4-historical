@@ -26,6 +26,8 @@
 
 #include <QtGui/qabstractprintdialog.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_PRINTDIALOG
@@ -54,22 +56,24 @@ private:
     Q_DISABLE_COPY(QPrintDialog)
 
 // #if defined (Q_OS_UNIX) && !defined (Q_OS_MAC)
-    Q_PRIVATE_SLOT(d_func(), void browseClicked())
-    Q_PRIVATE_SLOT(d_func(), void okClicked())
-    Q_PRIVATE_SLOT(d_func(), void printerOrFileSelected(QAbstractButton *))
-    Q_PRIVATE_SLOT(d_func(), void landscapeSelected(int))
-    Q_PRIVATE_SLOT(d_func(), void paperSizeSelected(int))
-    Q_PRIVATE_SLOT(d_func(), void orientSelected(int))
-    Q_PRIVATE_SLOT(d_func(), void pageOrderSelected(QAbstractButton *))
-    Q_PRIVATE_SLOT(d_func(), void colorModeSelected(QAbstractButton *))
-    Q_PRIVATE_SLOT(d_func(), void setNumCopies(int))
-    Q_PRIVATE_SLOT(d_func(), void printRangeSelected(QAbstractButton *))
-    Q_PRIVATE_SLOT(d_func(), void setFirstPage(int))
-    Q_PRIVATE_SLOT(d_func(), void setLastPage(int))
-    Q_PRIVATE_SLOT(d_func(), void fileNameEditChanged(const QString &text))
+    Q_PRIVATE_SLOT(d_func(), void _q_browseClicked())
+    Q_PRIVATE_SLOT(d_func(), void _q_okClicked())
+    Q_PRIVATE_SLOT(d_func(), void _q_printerOrFileSelected(QAbstractButton *))
+    Q_PRIVATE_SLOT(d_func(), void _q_landscapeSelected(int))
+    Q_PRIVATE_SLOT(d_func(), void _q_paperSizeSelected(int))
+    Q_PRIVATE_SLOT(d_func(), void _q_orientSelected(int))
+    Q_PRIVATE_SLOT(d_func(), void _q_pageOrderSelected(QAbstractButton *))
+    Q_PRIVATE_SLOT(d_func(), void _q_colorModeSelected(QAbstractButton *))
+    Q_PRIVATE_SLOT(d_func(), void _q_setNumCopies(int))
+    Q_PRIVATE_SLOT(d_func(), void _q_printRangeSelected(QAbstractButton *))
+    Q_PRIVATE_SLOT(d_func(), void _q_setFirstPage(int))
+    Q_PRIVATE_SLOT(d_func(), void _q_setLastPage(int))
+    Q_PRIVATE_SLOT(d_func(), void _q_fileNameEditChanged(const QString &text))
 // #endif
 };
 
 #endif // QT_NO_PRINTDIALOG
+
+QT_END_HEADER
 
 #endif // QPRINTDIALOG_H

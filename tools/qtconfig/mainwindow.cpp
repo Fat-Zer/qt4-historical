@@ -149,14 +149,13 @@ static QColorGroup::ColorRole effectFromItem( int item )
 
 static void setStyleHelper(QWidget *w, QStyle *s)
 {
-    w->setStyle(s);
-
     const QObjectList children = w->children();
     for (int i = 0; i < children.size(); ++i) {
         QObject *child = children.at(i);
         if (child->isWidgetType())
             setStyleHelper((QWidget *) child, s);
     }
+    w->setStyle(s);
 }
 
 
@@ -445,7 +444,7 @@ void MainWindow::fileSave()
 
         QStringList familysubs = QFont::substitutions();
         QStringList::Iterator fit = familysubs.begin();
-        settings.beginGroup("Font Substitutions");
+        settings.beginGroup(QLatin1String("Font Substitutions"));
         while (fit != familysubs.end()) {
             QStringList subs = QFont::substitutes(*fit);
             settings.setValue(*fit, subs);
@@ -725,25 +724,20 @@ void MainWindow::addSubstitute()
 {
     if (sublistbox->currentItem() < 0 ||
         uint(sublistbox->currentItem()) > sublistbox->count()) {
+        QFont::insertSubstitution(familysubcombo->currentText(), choosesubcombo->currentText());
         QStringList subs = QFont::substitutes(familysubcombo->currentText());
-        subs.append(choosesubcombo->currentText());
         sublistbox->clear();
         sublistbox->insertStringList(subs);
-        QFont::removeSubstitution(familysubcombo->currentText());
-        QFont::insertSubstitutions(familysubcombo->currentText(), subs);
         setModified(true);
-
         return;
     }
 
     int item = sublistbox->currentItem();
+    QFont::insertSubstitution(familysubcombo->currentText(), choosesubcombo->currentText());
     QStringList subs = QFont::substitutes(familysubcombo->currentText());
-    subs.insert(sublistbox->currentItem()+1, choosesubcombo->currentText());
     sublistbox->clear();
     sublistbox->insertStringList(subs);
     sublistbox->setCurrentItem(item);
-    QFont::removeSubstitution(familysubcombo->currentText());
-    QFont::insertSubstitutions(familysubcombo->currentText(), subs);
     setModified(true);
 }
 
@@ -898,7 +892,7 @@ void MainWindow::helpAbout()
                    "Qt Commercial License Agreement. For details, see the file LICENSE "
                    "that came with this software distribution."
 #endif
-                   "<br/><br/>Copyright 2000-2006 Trolltech AS. All rights reserved."
+                   "<br/><br/>Copyright (C) 2000-2006 Trolltech AS. All rights reserved."
                    "<br/><br/>The program is provided AS IS with NO WARRANTY OF ANY KIND,"
                    " INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A"
                    " PARTICULAR PURPOSE.<br/> ")

@@ -50,34 +50,38 @@
 #include <errno.h>
 #include <math.h>
 
-#ifndef Q_WS_QWS
-// Get the name of the directory where Qt/Embedded temporary data should
+
+#ifdef Q_WS_QWS
+#error qvfb must be compiled with  the Qt/X11 package
+#endif
+
+// Get the name of the directory where Qtopia Core temporary data should
 // live.
 static QString qws_dataDir(int qws_display_id)
 {
     QByteArray dataDir = QString("/tmp/qtembedded-%1").arg(qws_display_id).toLocal8Bit();
     if (mkdir(dataDir, 0700)) {
         if (errno != EEXIST) {
-            qFatal("Cannot create Qt/Embedded data directory: %s", dataDir.constData());
+            qFatal("Cannot create Qtopia Core data directory: %s", dataDir.constData());
         }
     }
 
     struct stat buf;
     if (lstat(dataDir, &buf))
-        qFatal("stat failed for Qt/Embedded data directory: %s", dataDir.constData());
+        qFatal("stat failed for Qtopia Core data directory: %s", dataDir.constData());
 
     if (!S_ISDIR(buf.st_mode))
         qFatal("%s is not a directory", dataDir.constData());
     if (buf.st_uid != getuid())
-        qFatal("Qt/Embedded data directory is not owned by user %d", getuid());
+        qFatal("Qtopia Core data directory is not owned by user %uh", getuid());
 
     if ((buf.st_mode & 0677) != 0600)
-        qFatal("Qt/Embedded data directory has incorrect permissions: %s", dataDir.constData());
+        qFatal("Qtopia Core data directory has incorrect permissions: %s", dataDir.constData());
     dataDir += "/";
 
     return QString(dataDir);
 }
-#endif
+
 
 static QString displayPipe;
 static QString displayPiped;
@@ -132,7 +136,7 @@ QShMemViewProtocol::QShMemViewProtocol(int displayid, const QSize &s,
         username = logname;
 
     QString oldPipe = "/tmp/qtembedded-" + username + "/" + QString( QTE_PIPE ).arg( displayid );
-    int oldPipeSemkey = ftok( oldPipe.latin1(), 'd' );
+    int oldPipeSemkey = ftok( oldPipe.toLatin1().constData(), 'd' );
     int oldPipeLockId = semget( oldPipeSemkey, 0, 0 );
     if (oldPipeLockId >= 0){
         sembuf sops;
@@ -143,7 +147,7 @@ QShMemViewProtocol::QShMemViewProtocol(int displayid, const QSize &s,
         do {
             rv = semop(lockId,&sops,1);
         } while ( rv == -1 && errno == EINTR );
-        qFatal("Cannot create lock file as an old version of QVFb has opened %s. Close other QVFb and try again", oldPipe.latin1());
+        qFatal("Cannot create lock file as an old version of QVFb has opened %s. Close other QVFb and try again", oldPipe.toLatin1().constData());
     }
 
     kh = new QVFbKeyPipeProtocol(displayid);
@@ -153,7 +157,7 @@ QShMemViewProtocol::QShMemViewProtocol(int displayid, const QSize &s,
 
     QString mousePipe = mh->pipeName();
 
-    key_t key = ftok( mousePipe.latin1(), 'b' );
+    key_t key = ftok( mousePipe.toLatin1().constData(), 'b' );
 
     int bpl;
     if ( d == 1 )
@@ -197,11 +201,8 @@ QShMemViewProtocol::QShMemViewProtocol(int displayid, const QSize &s,
     hdr->dataoffset = data_offset_value;
     hdr->update = QRect();
 
-#ifdef Q_WS_QWS
-    displayPipe = qws_dataDir() + QString( QTE_PIPE ).arg( displayid );
-#else
     displayPipe = qws_dataDir(displayid) + QString( QTE_PIPE ).arg( displayid );
-#endif
+
     displayPiped = displayPipe + 'd';
 
 
@@ -214,7 +215,7 @@ QShMemViewProtocol::~QShMemViewProtocol()
     struct shmid_ds shm;
     shmdt( (char*)hdr );
     shmctl( shmId, IPC_RMID, &shm );
-    delete dataCache;
+    free(dataCache);
     delete kh;
     delete mh;
 }
@@ -244,9 +245,13 @@ int  QShMemViewProtocol::numcols() const
     return hdr->numcols;
 }
 
-QRgb *QShMemViewProtocol::clut() const
+QVector<QRgb> QShMemViewProtocol::clut() const
 {
-    return hdr->clut;
+    QVector<QRgb> vector(hdr->numcols);
+    for (int i=0; i < hdr->numcols; ++i)
+        vector[i]=hdr->clut[i];
+
+    return vector;
 }
 
 unsigned char *QShMemViewProtocol::data() const
@@ -273,7 +278,7 @@ void QShMemViewProtocol::flushChanges()
     emit displayDataChanged(r);
 }
 
-void QShMemViewProtocol::setRate(int interval) 
+void QShMemViewProtocol::setRate(int interval)
 {
     if (interval > 0)
         return mRefreshTimer->start(1000/interval);

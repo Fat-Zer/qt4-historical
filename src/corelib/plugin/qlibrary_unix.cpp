@@ -41,8 +41,7 @@
 
 bool QLibraryPrivate::load_sys()
 {
-    if (QLibrary::isLibrary(fileName))
-        pHnd = (void*)shl_load(QFile::encodeName(fileName), BIND_DEFERRED | BIND_NONFATAL | DYNAMIC_PATH, 0);
+    pHnd = (void*)shl_load(QFile::encodeName(fileName), BIND_DEFERRED | BIND_NONFATAL | DYNAMIC_PATH, 0);
     if (pluginState != IsAPlugin) {
         if (!pHnd)
             pHnd = (void*)shl_load(QFile::encodeName(fileName + ".sl"), BIND_DEFERRED | BIND_NONFATAL | DYNAMIC_PATH, 0);
@@ -104,18 +103,25 @@ bool QLibraryPrivate::load_sys()
     else
         path += QLatin1Char('/');
 
+    // The first filename we want to attempt to load is the filename as the callee specified.
+    // Thus, the first attempt we do must be with an empty prefix and empty suffix.
     QStringList suffixes, prefixes("");
-    if (QLibrary::isLibrary(fileName))
-        suffixes << "";
+    suffixes << "";
     if (pluginState != IsAPlugin) {
         prefixes << "lib";
 #if defined(Q_OS_HPUX)
         suffixes << ".sl";
-        suffixes << QString(".%1").arg(majorVerNum);
+        if (majorVerNum > -1)
+            suffixes << QString(".sl.%1").arg(majorVerNum);
+# if defined(__ia64)
+        suffixes << ".so";
+        if (majorVerNum > -1)
+            suffixes << QString(".so.%1").arg(majorVerNum);
+# endif
 #elif defined(Q_OS_AIX)
         suffixes << ".a";
 #else
-        suffixes << ".so";       
+        suffixes << ".so";
         if (majorVerNum > -1)
             suffixes << QString(".so.%1").arg(majorVerNum);
 #endif
@@ -126,7 +132,7 @@ bool QLibraryPrivate::load_sys()
             suffixes << QString(".%1.dylib").arg(majorVerNum);
         }
 
-#endif            
+#endif
     }
         
     QString attempt;
@@ -136,7 +142,7 @@ bool QLibraryPrivate::load_sys()
                 continue;
             if (!suffixes.at(suffix).isEmpty() && name.endsWith(suffixes.at(suffix)))
                 continue;
-            attempt = path + prefixes.at(prefix) + name + suffixes.at(suffix);                        
+            attempt = path + prefixes.at(prefix) + name + suffixes.at(suffix);
             pHnd = DL_PREFIX(dlopen)(QFile::encodeName(attempt), RTLD_LAZY);
         }
     }
@@ -157,7 +163,7 @@ bool QLibraryPrivate::load_sys()
     }
 #endif
     if (pHnd)
-        qualifiedFileName = attempt;        
+        qualifiedFileName = attempt;
     return (pHnd != 0);
 }
 

@@ -30,6 +30,8 @@
 #include <QtCore/qvariant.h>
 #include <QtGui/qicon.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_ACTION
@@ -180,10 +182,13 @@ private:
     friend class QMenu;
     friend class QMenuBar;
     friend class QShortcutMap;
+    friend class QToolButton;
 };
 
 #include <QtGui/qactiongroup.h>
 
 #endif // QT_NO_ACTION
+
+QT_END_HEADER
 
 #endif // QACTION_H

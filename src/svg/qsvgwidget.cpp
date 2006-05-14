@@ -31,6 +31,8 @@
 
 /*!
     \class QSvgWidget
+    \ingroup multimedia
+
     \brief The QSvgWidget class provides a widget that is used to display the contents of
     Scalable Vector Graphics (SVG) files.
     \since 4.1
@@ -39,7 +41,7 @@
     is used in much the same way as QLabel is used for displaying text and bitmap images.
 
     Since QSvgWidget is a subclass of QWidget, SVG drawings are rendered using the properties
-    of the display. More control over can be exercised over the rendering process with the
+    of the display. More control can be exercised over the rendering process with the
     QSvgRenderer class, as this can be used to paint onto other paint devices, such as QImage
     and QGLWidget. The renderer used by the widget can be obtained with the renderer()
     function.
@@ -134,7 +136,7 @@ void QSvgWidget::paintEvent(QPaintEvent *)
 }
 
 /*!
-    Loads the contents of the SVG \a file and updates the widget.
+    Loads the contents of the specified SVG \a file and updates the widget.
 */
 void QSvgWidget::load(const QString &file)
 {

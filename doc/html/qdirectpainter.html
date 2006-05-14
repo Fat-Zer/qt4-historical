@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-x11-opensource-src-4.1.2/src/gui/embedded/qdirectpainter_qws.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/src/gui/embedded/qdirectpainter_qws.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/src/gui/embedded/qdirectpainter_qws.cpp -->
 <head>
     <title>Qt 4.1: QDirectPainter Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -30,7 +31,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>int <b><a href="qdirectpainter.html#linestep">linestep</a></b> ()</li>
 <li><div class="fn"/>void <b><a href="qdirectpainter.html#lock">lock</a></b> ()</li>
 <li><div class="fn"/>QRegion <b><a href="qdirectpainter.html#region">region</a></b> ()</li>
-<li><div class="fn"/>QRegion <b><a href="qdirectpainter.html#reserveRegion">reserveRegion</a></b> ( const QRegion &amp; <i>reg</i> )</li>
+<li><div class="fn"/>QRegion <b><a href="qdirectpainter.html#reserveRegion">reserveRegion</a></b> ( const QRegion &amp; <i>region</i> )</li>
 <li><div class="fn"/>int <b><a href="qdirectpainter.html#screenDepth">screenDepth</a></b> ()</li>
 <li><div class="fn"/>int <b><a href="qdirectpainter.html#screenHeight">screenHeight</a></b> ()</li>
 <li><div class="fn"/>int <b><a href="qdirectpainter.html#screenWidth">screenWidth</a></b> ()</li>
@@ -51,34 +52,47 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Detailed Description</h2>
 <p>The QDirectPainter class provides direct access to the video hardware.</p>
-<p>Only available in Qtopia Core.</p>
-<p>When the hardware is known and well defined, as is often the case with software for embedded devices, it may be useful to manipulate the underlying video hardware directly. In order to do this in a way that is co-operative with other applications, you must reserve a region of the screen for the application.</p>
-<p>QDirectPainter provides this functionality.</p>
-<p>Depending on the hardware, you may also have to lock the video hardware for exclusive use for a small time while you write to it. Use the functions <a href="qdirectpainter.html#lock">lock</a>() and <a href="qdirectpainter.html#unlock">unlock</a>() in that case.</p>
+<p>When the hardware is known and well defined, as is often the case with software for embedded devices, it may be useful to manipulate the underlying video hardware directly. Note that this functionality is only available in <a href="qtopiacore.html">Qtopia Core</a>.</p>
+<p>Access to the video hardware is provided by the <a href="qdirectpainter.html#frameBuffer">frameBuffer</a>() function which returns a pointer to the beginning of the display memory. In order to access the video hardware in a way that is co-operative with other applications, a region of the screen must be reserved for the application, QDirectPainter provides the necessary functionality: The <a href="qdirectpainter.html#reserveRegion">reserveRegion</a>() function attempts to reserve the given region and returns the region actually reserved. The reserved region can also be retrieved using the <a href="qdirectpainter.html#region">region</a>() function.</p>
+<p>Depending on the hardware, it might be necessary to lock the video hardware for exclusive use while writing to it. This is possible using the <a href="qdirectpainter.html#lock">lock</a>() and <a href="qdirectpainter.html#unlock">unlock</a>() functions. Note that calling <a href="qdirectpainter.html#lock">lock</a>() will prevent all other applications from working until <a href="qdirectpainter.html#unlock">unlock</a>() is called.</p>
+<p>In addition, QDirectPainter provides several functions returning information about the framebuffer as well as the screen: the <a href="qdirectpainter.html#linestep">linestep</a>() function returns the length (in bytes) of each scanline of the framebuffer while the <a href="qdirectpainter.html#screenDepth">screenDepth</a>(), <a href="qdirectpainter.html#screenWidth">screenWidth</a>() and <a href="qdirectpainter.html#screenHeight">screenHeight</a>() function return the screen metrics.</p>
+<p>See also <a href="qscreen.html">QScreen</a> and <a href="qdecoration.html">QDecoration</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="frameBuffer"></a><a href="qtglobal.html#uchar-typedef">uchar</a> * QDirectPainter::frameBuffer ()&nbsp;&nbsp;<tt> [static]</tt></h3>
+<p>Returns a pointer to the beginning of the display memory.</p>
+<p>Note that it is the applications responsibility to limit itself to modifying only the reserved region.</p>
+<p>See also <a href="qdirectpainter.html#region">region</a>() and <a href="qdirectpainter.html#linestep">linestep</a>().</p>
 <h3 class="fn"><a name="linestep"></a>int QDirectPainter::linestep ()&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Returns the length in bytes of each scanline of the framebuffer.</p>
+<p>Returns the length (in bytes) of each scanline of the framebuffer.</p>
+<p>See also <a href="qdirectpainter.html#frameBuffer">frameBuffer</a>().</p>
 <h3 class="fn"><a name="lock"></a>void QDirectPainter::lock ()&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Locks access to video hardware, stopping all other applications from accessing the screen.</p>
-<p><b>Warning:</b> this will prevent all other applications from working until <a href="qdirectpainter.html#unlock">unlock</a>() is called.</p>
+<p>Locks access to the video hardware.</p>
+<p>Note that calling this function will prevent all other applications from working until <a href="qdirectpainter.html#unlock">unlock</a>() is called.</p>
+<p>See also <a href="qdirectpainter.html#unlock">unlock</a>().</p>
 <h3 class="fn"><a name="region"></a><a href="qregion.html">QRegion</a> QDirectPainter::region ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns the reserved region.</p>
-<h3 class="fn"><a name="reserveRegion"></a><a href="qregion.html">QRegion</a> QDirectPainter::reserveRegion ( const <a href="qregion.html">QRegion</a> &amp; <i>reg</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Attempts to reserve the region <i>reg</i> and returns the region actually reserved. Releases the previously reserved region, if any. If not released explicitly, the region will be released on application exit.</p>
+<p>See also <a href="qdirectpainter.html#reserveRegion">reserveRegion</a>() and <a href="qdirectpainter.html#frameBuffer">frameBuffer</a>().</p>
+<h3 class="fn"><a name="reserveRegion"></a><a href="qregion.html">QRegion</a> QDirectPainter::reserveRegion ( const <a href="qregion.html">QRegion</a> &amp; <i>region</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
+<p>Attempts to reserve the given <i>region</i>, and returns the region that is actually reserved.</p>
+<p>This function also releases the previously reserved region if any. If not released explicitly, the region will be released on application exit.</p>
+<p>See also <a href="qdirectpainter.html#region">region</a>().</p>
 <h3 class="fn"><a name="screenDepth"></a>int QDirectPainter::screenDepth ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns the bit depth of the display.</p>
+<p>See also <a href="qdirectpainter.html#screenHeight">screenHeight</a>() and <a href="qdirectpainter.html#screenWidth">screenWidth</a>().</p>
 <h3 class="fn"><a name="screenHeight"></a>int QDirectPainter::screenHeight ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns the height of the display in pixels.</p>
+<p>See also <a href="qdirectpainter.html#screenWidth">screenWidth</a>() and <a href="qdirectpainter.html#screenDepth">screenDepth</a>().</p>
 <h3 class="fn"><a name="screenWidth"></a>int QDirectPainter::screenWidth ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns the width of the display in pixels.</p>
+<p>See also <a href="qdirectpainter.html#screenHeight">screenHeight</a>() and <a href="qdirectpainter.html#screenDepth">screenDepth</a>().</p>
 <h3 class="fn"><a name="unlock"></a>void QDirectPainter::unlock ()&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Unlocks the video lock, allowing other applications to display on the screen.</p>
+<p>Unlocks the lock on the video hardware (set by the <a href="qdirectpainter.html#lock">lock</a>() function), allowing other applications to access the screen.</p>
+<p>See also <a href="qdirectpainter.html#lock">lock</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

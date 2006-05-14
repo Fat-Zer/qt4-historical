@@ -539,7 +539,7 @@ void Launcher::addVersionAndCopyright(const QRectF &rect)
     display->appendShape(versionCaption);
 
     DisplayShape *copyrightCaption = new TitleShape(
-        QString("Copyright \xa9 2005 Trolltech"), font(),
+        QString("Copyright \xa9 2005-2006 Trolltech AS"), font(),
         QPen(QColor(0,0,0,0)),
         rect.topLeft(), QSizeF(0.5*rect.width(), rect.height()),
         Qt::AlignLeft | Qt::AlignVCenter);
@@ -1055,12 +1055,11 @@ void Launcher::resizeEvent(QResizeEvent *event)
     documentFont.setPointSizeF(qMin(documentFont.pointSizeF()*width()/640.0,
                                     documentFont.pointSizeF()*height()/480.0));
 
-    if (inFullScreenResize) {
-        emit windowResized();
+    if (inFullScreenResize)
         inFullScreenResize = false;
-    } else if (currentCategory != "[starting]") {
+
+    if (currentCategory != "[starting]")
         resizeTimer->start(500);
-    }
 }
 
 void Launcher::redisplayWindow()

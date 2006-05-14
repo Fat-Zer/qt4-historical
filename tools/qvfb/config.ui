@@ -55,7 +55,7 @@
       <number>6</number>
      </property>
      <item>
-      <widget class="Q3ButtonGroup" name="ButtonGroup1" >
+      <widget class="QGroupBox" name="ButtonGroup1" >
        <property name="sizePolicy" >
         <sizepolicy>
          <hsizetype>5</hsizetype>
@@ -66,9 +66,6 @@
        </property>
        <property name="title" >
         <string>Size</string>
-       </property>
-       <property name="orientation" >
-        <enum>Qt::Vertical</enum>
        </property>
        <layout class="QVBoxLayout" >
         <property name="margin" >
@@ -166,12 +163,9 @@
       </widget>
      </item>
      <item>
-      <widget class="Q3ButtonGroup" name="ButtonGroup2" >
+      <widget class="QGroupBox" name="ButtonGroup2" >
        <property name="title" >
         <string>Depth</string>
-       </property>
-       <property name="orientation" >
-        <enum>Qt::Vertical</enum>
        </property>
        <layout class="QVBoxLayout" >
         <property name="margin" >
@@ -307,12 +301,9 @@
     </widget>
    </item>
    <item>
-    <widget class="Q3GroupBox" name="GroupBox1" >
+    <widget class="QGroupBox" name="GroupBox1" >
      <property name="title" >
       <string>Gamma</string>
-     </property>
-     <property name="orientation" >
-      <enum>Qt::Vertical</enum>
      </property>
      <layout class="QGridLayout" >
       <property name="margin" >
@@ -1553,20 +1544,6 @@
  <layoutdefault spacing="6" margin="11" />
  <pixmapfunction></pixmapfunction>
  <customwidgets>
-  <customwidget>
-   <class>Q3ButtonGroup</class>
-   <extends></extends>
-   <header>Qt3Support/Q3ButtonGroup</header>
-   <container>1</container>
-   <pixmap></pixmap>
-  </customwidget>
-  <customwidget>
-   <class>Q3GroupBox</class>
-   <extends></extends>
-   <header>Qt3Support/Q3GroupBox</header>
-   <container>1</container>
-   <pixmap></pixmap>
-  </customwidget>
   <customwidget>
    <class>GammaView</class>
    <extends></extends>

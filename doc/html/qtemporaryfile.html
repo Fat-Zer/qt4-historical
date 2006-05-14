@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-x11-opensource-src-4.1.2/src/corelib/io/qtemporaryfile.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/src/corelib/io/qtemporaryfile.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/src/corelib/io/qtemporaryfile.cpp -->
 <head>
     <title>Qt 4.1: QTemporaryFile Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -40,7 +41,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>void <b><a href="qtemporaryfile.html#setFileTemplate">setFileTemplate</a></b> ( const QString &amp; <i>name</i> )</li>
 </ul>
 <ul>
-<li><div class="fn"/>19 public functions inherited from <a href="qfile.html#public-functions">QFile</a></li>
+<li><div class="fn"/>21 public functions inherited from <a href="qfile.html#public-functions">QFile</a></li>
 <li><div class="fn"/>32 public functions inherited from <a href="qiodevice.html#public-functions">QIODevice</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 </ul>
@@ -69,11 +70,14 @@ body { background: #ffffff; color: black; }</style>
 <p>The QTemporaryFile class is an I/O device that operates on temporary files.</p>
 <p>QTemporaryFile is used to create unique temporary files safely. The file itself is created by calling <a href="qtemporaryfile.html#open">open</a>(). The name of the temporary file is guaranteed to be unique (i.e., you are guaranteed to not overwrite an existing file), and the file will subsequently be removed upon destruction of the QTemporaryFile object. This is an important technique that avoids data corruption for applications that store data in temporary files. The file name is either auto-generated, or created based on a template, which is passed to QTemporaryFile's constructor.</p>
 <p>Example:</p>
-<pre>&nbsp;   QTemporaryFile *file = new QTemporaryFile;
-    if (file-&gt;open(QFile::ReadWrite)) {
-        // file-&gt;fileName() now contains the unique file name
-    }
-    delete file; // also removes the temporary file</pre>
+<pre>&nbsp;   {
+        QTemporaryFile file;
+        if (file.open()) {
+            // file.fileName() returns the unique file name
+        }
+
+        // the QTemporaryFile destructor removes the temporary file
+    }</pre>
 <p>Reopening a QTemporaryFile after calling <a href="qiodevice.html#close">close</a>() is safe. For as long as the QTemporaryFile object itself is not destroyed, the unique temporary file will exist and be kept open internally by QTemporaryFile.</p>
 <p>A temporary file will have some static part of the name and some part that is calculated to be unique. The default filename qt_temp will be placed into the temporary path as returned by <a href="qdir.html#tempPath">QDir::tempPath</a>().</p>
 <p>See also <a href="qdir.html#tempPath">QDir::tempPath</a>() and <a href="qfile.html">QFile</a>.</p>
@@ -123,6 +127,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

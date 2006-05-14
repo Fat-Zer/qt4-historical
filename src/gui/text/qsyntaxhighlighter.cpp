@@ -26,6 +26,7 @@
 #ifndef QT_NO_SYNTAXHIGHLIGHTER
 #include <private/qobject_p.h>
 #include <qtextdocument.h>
+#include <private/qtextdocument_p.h>
 #include <qtextlayout.h>
 #include <qpointer.h>
 #include <qtextobject.h>
@@ -42,9 +43,9 @@ public:
 
     QPointer<QTextDocument> doc;
 
-    void reformatDocument();
+    void _q_reformatDocument();
 
-    void reformatBlocks(int from, int charsRemoved, int charsAdded);
+    void _q_reformatBlocks(int from, int charsRemoved, int charsAdded);
     void reformatBlock(QTextBlock block);
 
     void applyFormatChanges();
@@ -52,7 +53,7 @@ public:
     QTextBlock currentBlock;
 };
 
-void QSyntaxHighlighterPrivate::reformatDocument()
+void QSyntaxHighlighterPrivate::_q_reformatDocument()
 {
     if (!doc)
         return;
@@ -60,7 +61,7 @@ void QSyntaxHighlighterPrivate::reformatDocument()
     QTextCursor cursor(doc);
     cursor.beginEditBlock();
     cursor.movePosition(QTextCursor::End);
-    reformatBlocks(0, 0, cursor.position());
+    _q_reformatBlocks(0, 0, cursor.position());
     cursor.endEditBlock();
 }
 
@@ -132,27 +133,24 @@ void QSyntaxHighlighterPrivate::applyFormatChanges()
     layout->setAdditionalFormats(ranges);
 }
 
-void QSyntaxHighlighterPrivate::reformatBlocks(int from, int charsRemoved, int charsAdded)
+void QSyntaxHighlighterPrivate::_q_reformatBlocks(int from, int charsRemoved, int charsAdded)
 {
     Q_UNUSED(charsRemoved);
 
     QTextBlock block = doc->findBlock(from);
     if (!block.isValid())
         return;
-
-    QTextBlock endBlock;
-    if (charsAdded > 0)
-        endBlock = doc->findBlock(from + charsAdded - 1);
+    
+    int endPosition;
+    QTextBlock lastBlock = doc->findBlock(from + charsAdded);
+    if (lastBlock.isValid())
+        endPosition = lastBlock.position() + lastBlock.length();
     else
-        endBlock = block;
+        endPosition = doc->docHandle()->length();
 
     bool forceHighlightOfNextBlock = false;
 
-    while (block.isValid()
-           && (!(endBlock < block)
-               || forceHighlightOfNextBlock
-              )
-          ) {
+    while (block.isValid() && (block.position() < endPosition || forceHighlightOfNextBlock)) {
         const int stateBeforeHighlight = block.userState();
 
         reformatBlock(block);
@@ -356,7 +354,7 @@ void QSyntaxHighlighter::setDocument(QTextDocument *doc)
     Q_D(QSyntaxHighlighter);
     if (d->doc) {
         disconnect(d->doc, SIGNAL(contentsChange(int, int, int)),
-                   this, SLOT(reformatBlocks(int, int, int)));
+                   this, SLOT(_q_reformatBlocks(int, int, int)));
 
         QTextCursor cursor(d->doc);
         cursor.beginEditBlock();
@@ -367,8 +365,8 @@ void QSyntaxHighlighter::setDocument(QTextDocument *doc)
     d->doc = doc;
     if (d->doc) {
         connect(d->doc, SIGNAL(contentsChange(int, int, int)),
-                this, SLOT(reformatBlocks(int, int, int)));
-        QTimer::singleShot(0, this, SLOT(reformatDocument()));
+                this, SLOT(_q_reformatBlocks(int, int, int)));
+        QTimer::singleShot(0, this, SLOT(_q_reformatDocument()));
     }
 }
 

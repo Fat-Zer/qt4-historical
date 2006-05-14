@@ -165,6 +165,7 @@
 #include "qimagereader.h"
 #include "qpixmap.h"
 #include "qrect.h"
+#include "qdatetime.h"
 #include "qtimer.h"
 #include "qpair.h"
 #include "qmap.h"
@@ -226,8 +227,8 @@ public:
     }
 
     // private slots
-    void loadNextFrame();
-    void loadNextFrame(bool starting);
+    void _q_loadNextFrame();
+    void _q_loadNextFrame(bool starting);
 
     QImageReader *reader;
     int speed;
@@ -294,7 +295,7 @@ bool QMoviePrivate::isDone()
 */
 int QMoviePrivate::speedAdjustedDelay(int delay) const
 {
-    return int(float(delay) * float(100.0) / float(speed));
+    return int( (qint64(delay) * qint64(100) ) / qint64(speed) );
 }
 
 /*!
@@ -411,6 +412,8 @@ QFrameInfo QMoviePrivate::infoForFrame(int frameNumber)
 */
 bool QMoviePrivate::next()
 {
+    QTime time;
+    time.start();
     QFrameInfo info = infoForFrame(nextFrameNumber);
     if (!info.isValid())
         return false;
@@ -443,17 +446,23 @@ bool QMoviePrivate::next()
     else
         currentPixmap = info.pixmap;
     nextDelay = speedAdjustedDelay(info.delay);
+    // Adjust delay according to the time it took to read the frame
+    int processingTime = time.elapsed();
+    if (processingTime > nextDelay)
+        nextDelay = 0;
+    else
+        nextDelay = nextDelay - processingTime;
     return true;
 }
 
 /*! \internal
  */
-void QMoviePrivate::loadNextFrame()
+void QMoviePrivate::_q_loadNextFrame()
 {
-    loadNextFrame(false);
+    _q_loadNextFrame(false);
 }
 
-void QMoviePrivate::loadNextFrame(bool starting)
+void QMoviePrivate::_q_loadNextFrame(bool starting)
 {
     Q_Q(QMovie);
     if (next()) {
@@ -494,7 +503,8 @@ void QMoviePrivate::loadNextFrame(bool starting)
 */
 bool QMoviePrivate::isValid() const
 {
-    return (greatestFrameNumber >= 0);
+    return (greatestFrameNumber >= 0) // have we seen valid data
+        || reader->canRead(); // or does the reader see valid data
 }
 
 /*!
@@ -509,7 +519,7 @@ bool QMoviePrivate::jumpToFrame(int frameNumber)
     nextFrameNumber = frameNumber;
     if (movieState == QMovie::Running)
         nextImageTimer.stop();
-    loadNextFrame();
+    _q_loadNextFrame();
     return (nextFrameNumber == currentFrameNumber+1);
 }
 
@@ -545,7 +555,7 @@ QMovie::QMovie(QObject *parent)
 {
     Q_D(QMovie);
     d->reader = new QImageReader;
-    connect(&d->nextImageTimer, SIGNAL(timeout()), this, SLOT(loadNextFrame()));
+    connect(&d->nextImageTimer, SIGNAL(timeout()), this, SLOT(_q_loadNextFrame()));
 }
 
 /*!
@@ -562,7 +572,7 @@ QMovie::QMovie(QIODevice *device, const QByteArray &format, QObject *parent)
     Q_D(QMovie);
     d->reader = new QImageReader(device, format);
     d->initialDevicePos = device->pos();
-    connect(&d->nextImageTimer, SIGNAL(timeout()), this, SLOT(loadNextFrame()));
+    connect(&d->nextImageTimer, SIGNAL(timeout()), this, SLOT(_q_loadNextFrame()));
 }
 
 /*!
@@ -580,7 +590,7 @@ QMovie::QMovie(const QString &fileName, const QByteArray &format, QObject *paren
     d->reader = new QImageReader(fileName, format);
     if (d->reader->device())
         d->initialDevicePos = d->reader->device()->pos();
-    connect(&d->nextImageTimer, SIGNAL(timeout()), this, SLOT(loadNextFrame()));
+    connect(&d->nextImageTimer, SIGNAL(timeout()), this, SLOT(_q_loadNextFrame()));
 }
 
 /*!
@@ -934,7 +944,7 @@ void QMovie::start()
 {
     Q_D(QMovie);
     if (d->movieState == NotRunning) {
-        d->loadNextFrame(true);
+        d->_q_loadNextFrame(true);
     } else if (d->movieState == Paused) {
         setPaused(false);
     }

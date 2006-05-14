@@ -256,7 +256,15 @@ struct QX11InfoData {
     int subpixel;
 };
 
-
+class QDrag;
+struct QXdndDropTransaction
+{
+    Time timestamp;
+    Window target;
+    Window proxy_target;
+    QWidget *embedding_widget;
+    QDrag *object;
+};
 
 struct QX11Data;
 extern QX11Data *qt_x11Data;
@@ -284,6 +292,8 @@ struct QX11Data
     static bool xdndHandleBadwindow();
     QByteArray xdndAtomToString(Atom a);
     Atom xdndStringToAtom(const char *);
+
+    QList<QXdndDropTransaction> dndDropTransactions;
 
     // from qmotifdnd_x11.cpp
     void motifdndHandle(QWidget *, const XEvent *, bool);

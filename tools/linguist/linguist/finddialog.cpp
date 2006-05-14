@@ -34,13 +34,7 @@ FindDialog::FindDialog(QWidget *parent)
 {
     setupUi(this);
 
-    findWhat->setBuddy(led);
-
     connect(findNxt, SIGNAL(clicked()), this, SLOT(emitFindNext()));
-    connect(cancel, SIGNAL(clicked()), this, SLOT(reject()));
-
-    resize(400, 1);
-    setMaximumHeight(height());
 
     led->setFocus();
 }

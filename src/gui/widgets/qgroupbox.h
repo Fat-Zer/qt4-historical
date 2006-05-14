@@ -26,6 +26,8 @@
 
 #include <QtGui/qframe.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_GROUPBOX
@@ -85,10 +87,12 @@ public:
 private:
     Q_DISABLE_COPY(QGroupBox)
     Q_DECLARE_PRIVATE(QGroupBox)
-    Q_PRIVATE_SLOT(d_func(), void fixFocus())
-    Q_PRIVATE_SLOT(d_func(), void setChildrenEnabled(bool b))
+    Q_PRIVATE_SLOT(d_func(), void _q_fixFocus())
+    Q_PRIVATE_SLOT(d_func(), void _q_setChildrenEnabled(bool b))
 };
 
 #endif // QT_NO_GROUPBOX
+
+QT_END_HEADER
 
 #endif // QGROUPBOX_H

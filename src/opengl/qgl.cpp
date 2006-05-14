@@ -35,6 +35,9 @@
 
 extern Q_GUI_EXPORT qint64 qt_image_id(const QImage &image);
 extern Q_GUI_EXPORT qint64 qt_pixmap_id(const QPixmap &pixmap);
+
+QThreadStorage<QGLThreadContext *> qgl_context_storage;
+
 Q_GLOBAL_STATIC(QGLFormat, qgl_default_format)
 
 class QGLDefaultOverlayFormat: public QGLFormat
@@ -42,6 +45,7 @@ class QGLDefaultOverlayFormat: public QGLFormat
 public:
     inline QGLDefaultOverlayFormat()
     {
+        setOption(QGL::FormatOption(0xffff << 16)); // turn off all options
         setOption(QGL::DirectRendering);
         setPlane(1);
     }
@@ -896,7 +900,6 @@ bool operator!=(const QGLFormat& a, const QGLFormat& b)
 /*****************************************************************************
   QGLContext implementation
  *****************************************************************************/
-
 void QGLContextPrivate::init(QPaintDevice *dev, const QGLFormat &format)
 {
     Q_Q(QGLContext);
@@ -1741,7 +1744,9 @@ void QGLContext::setInitialized(bool on)
 
 const QGLContext* QGLContext::currentContext()
 {
-    return currentCtx;
+    if (qgl_context_storage.hasLocalData())
+        return qgl_context_storage.localData()->context;
+    return 0;
 }
 
 /*!
@@ -1827,16 +1832,10 @@ const QGLContext* QGLContext::currentContext()
     \ingroup multimedia
     \mainclass
 
-    QGLWidget provides functionality for displaying OpenGL
-    \footnote
-        OpenGL is a trademark of Silicon Graphics, Inc. in the
-        United States and other countries.
-    \endfootnote
-    graphics integrated into a Qt application. It is very simple to
-    use. You inherit from it and use the subclass like any other
-    QWidget, except that instead of drawing the widget's contents
-    using QPainter etc. you use the standard OpenGL rendering
-    commands.
+    QGLWidget provides functionality for displaying OpenGL graphics integrated into
+    a Qt application. It is very simple to use. You inherit from it and use the
+    subclass like any other QWidget, except that instead of drawing the widget's
+    contents using QPainter you use the standard OpenGL rendering commands.
 
     QGLWidget provides three convenient virtual functions that you can
     reimplement in your subclass to perform the typical OpenGL tasks:
@@ -1943,6 +1942,35 @@ const QGLContext* QGLContext::currentContext()
 
     On X servers in which the default visual is in an overlay plane,
     non-GL Qt windows can also be used for overlays.
+
+    \section1 Painting Techniques
+
+    As described above, subclass QGLWidget to render pure 3D content in the
+    following way:
+
+    \list
+    \o Reimplement the QGLWidget::initializeGL() and QGLWidget::resizeGL() to
+       set up the OpenGL state and provide a perspective transformation.
+    \o Reimplement QGLWidget::paintGL() to paint the 3D scene, calling only
+       OpenGL functions to draw on the widget.
+    \endlist
+
+    It is also possible to draw 2D graphics onto a QGLWidget subclass, it is necessary
+    to reimplement QGLWidget::paintEvent() and do the following:
+
+    \list
+    \o Construct a QPainter object.
+    \o Initialize it for use on the widget with the QPainter::begin() function.
+    \o Draw primitives using QPainter's member functions.
+    \o Call QPainter::end() to finish painting.
+    \endlist
+
+    Overpainting 2D content on top of 3D content takes a little more effort.
+    One approach to doing this is shown in the
+    \l{Overpainting Example}{Overpainting} example.
+
+    \e{OpenGL is a trademark of Silicon Graphics, Inc. in the United States and other
+    countries.}
 */
 
 /*!
@@ -2659,8 +2687,9 @@ void QGLWidget::glDraw()
 void QGLWidget::qglColor(const QColor& c) const
 {
     Q_D(const QGLWidget);
-    if (d->glcx) {
-        if (d->glcx->format().rgba())
+    const QGLContext *ctx = QGLContext::currentContext();
+    if (ctx) {
+        if (ctx->format().rgba())
             glColor4ub(c.red(), c.green(), c.blue(), c.alpha());
         else if (!d->cmap.isEmpty()) { // QGLColormap in use?
             int i = d->cmap.find(c.rgb());
@@ -2668,7 +2697,7 @@ void QGLWidget::qglColor(const QColor& c) const
                 i = d->cmap.findNearest(c.rgb());
             glIndexi(i);
         } else
-            glIndexi(d->glcx->colorIndex(c));
+            glIndexi(ctx->colorIndex(c));
     }
 }
 
@@ -2683,8 +2712,9 @@ void QGLWidget::qglColor(const QColor& c) const
 void QGLWidget::qglClearColor(const QColor& c) const
 {
     Q_D(const QGLWidget);
-    if (d->glcx) {
-        if (d->glcx->format().rgba())
+    const QGLContext *ctx = QGLContext::currentContext();
+    if (ctx) {
+        if (ctx->format().rgba())
             glClearColor((GLfloat)c.red() / 255.0, (GLfloat)c.green() / 255.0,
                           (GLfloat)c.blue() / 255.0, (GLfloat) c.alpha() / 255.0);
         else if (!d->cmap.isEmpty()) { // QGLColormap in use?
@@ -2693,7 +2723,7 @@ void QGLWidget::qglClearColor(const QColor& c) const
                 i = d->cmap.findNearest(c.rgb());
             glClearIndex(i);
         } else
-            glClearIndex(d->glcx->colorIndex(c));
+            glClearIndex(ctx->colorIndex(c));
     }
 }
 
@@ -2858,6 +2888,8 @@ int QGLWidget::fontDisplayListBase(const QFont & fnt, int listBase)
    follow the last generated list. You would normally not have to
    change this value unless you are using lists in the same range. The
    lists are deleted when the widget is destroyed.
+
+   Note: this function only works reliably with ASCII strings.
 */
 
 static void qt_drawFontLining(double x, double y, const QString &str, const QFont &font)
@@ -2902,7 +2934,8 @@ void QGLWidget::renderText(int x, int y, const QString & str, const QFont & fnt,
     glRasterPos2i(0, 0);
     glBitmap(0, 0, 0, 0, x, -y, NULL);
     glListBase(fontDisplayListBase(fnt, listBase));
-    glCallLists(str.length(), GL_UNSIGNED_BYTE, str.toLocal8Bit());
+    QByteArray cstr(str.toLatin1());
+    glCallLists(cstr.size(), GL_UNSIGNED_BYTE, cstr.constData());
 
     if (fnt.underline() || fnt.strikeOut() || fnt.overline())
         qt_drawFontLining(x, y, str, fnt);
@@ -2934,7 +2967,8 @@ void QGLWidget::renderText(double x, double y, double z, const QString & str, co
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);
     glListBase(fontDisplayListBase(fnt, listBase));
-    glCallLists(str.length(), GL_UNSIGNED_BYTE, str.toLocal8Bit());
+    QByteArray cstr(str.toLatin1());
+    glCallLists(cstr.size(), GL_UNSIGNED_BYTE, cstr.constData());
 
     if (fnt.underline() || fnt.strikeOut() || fnt.overline()) {
         GLdouble model[4][4], proj[4][4];

@@ -708,9 +708,9 @@ int QSqlQuery::numRowsAffected() const
 
 /*!
     Returns error information about the last error (if any) that
-    occurred.
+    occurred with this query.
 
-    \sa QSqlError
+    \sa QSqlError, QSqlDatabase::lastError()
 */
 
 QSqlError QSqlQuery::lastError() const
@@ -827,6 +827,10 @@ void QSqlQuery::clear()
     colon-name (e.g., \c{:surname}), and ODBC style (\c{?})
     placeholders are supported; but they cannot be mixed in the same
     query. See the \l{QSqlQuery examples}{Detailed Description} for examples.
+
+    Portability note: Some databases choose to delay preparing a query until
+    it is executed the first time. In this case, preparing a syntactically wrong
+    query succeeds, but every consecutive exec() will fail.
 
     \sa exec(), bindValue(), addBindValue()
 */

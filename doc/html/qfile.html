@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-x11-opensource-src-4.1.2/src/corelib/io/qfile.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/src/corelib/io/qfile.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/src/corelib/io/qfile.cpp -->
 <head>
     <title>Qt 4.1: QFile Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -43,6 +44,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="qfile.html#QFile-3">QFile</a></b> ( QObject * <i>parent</i> )</li>
 <li><div class="fn"/><b><a href="qfile.html#QFile-4">QFile</a></b> ( const QString &amp; <i>name</i>, QObject * <i>parent</i> )</li>
 <li><div class="fn"/><b><a href="qfile.html#dtor.QFile">~QFile</a></b> ()</li>
+<li><div class="fn"/>virtual bool <b><a href="qfile.html#atEnd">atEnd</a></b> () const</li>
 <li><div class="fn"/>bool <b><a href="qfile.html#copy">copy</a></b> ( const QString &amp; <i>newName</i> )</li>
 <li><div class="fn"/>FileError <b><a href="qfile.html#error">error</a></b> () const</li>
 <li><div class="fn"/>bool <b><a href="qfile.html#exists-2">exists</a></b> () const</li>
@@ -61,6 +63,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>bool <b><a href="qfile.html#resize">resize</a></b> ( qint64 <i>sz</i> )</li>
 <li><div class="fn"/>void <b><a href="qfile.html#setFileName">setFileName</a></b> ( const QString &amp; <i>name</i> )</li>
 <li><div class="fn"/>bool <b><a href="qfile.html#setPermissions">setPermissions</a></b> ( Permissions <i>permissions</i> )</li>
+<li><div class="fn"/>virtual qint64 <b><a href="qfile.html#size">size</a></b> () const</li>
 <li><div class="fn"/>void <b><a href="qfile.html#unsetError">unsetError</a></b> ()</li>
 </ul>
 <ul>
@@ -104,7 +107,7 @@ body { background: #ffffff; color: black; }</style>
 <p>QFile is an I/O device for reading and writing text and binary files and <a href="resources.html">resources</a>. A QFile may be used by itself or, more conveniently, with a <a href="qtextstream.html">QTextStream</a> or <a href="qdatastream.html">QDataStream</a>.</p>
 <p>The file name is usually passed in the constructor, but it can be set at any time using <a href="qfile.html#setFileName">setFileName</a>(). You can check for a file's existence using <a href="qfile.html#exists">exists</a>(), and remove a file using <a href="qfile.html#remove">remove</a>(). (More advanced file system related operations are provided by <a href="qfileinfo.html">QFileInfo</a> and <a href="qdir.html">QDir</a>.)</p>
 <p>The file is opened with <a href="qfile.html#open">open</a>(), closed with <a href="qiodevice.html#close">close</a>(), and flushed with <a href="qfile.html#flush">flush</a>(). Data is usually read and written using <a href="qdatastream.html">QDataStream</a> or <a href="qtextstream.html">QTextStream</a>, but you can also call the <a href="qiodevice.html">QIODevice</a>-inherited functions <a href="qiodevice.html#read">read</a>(), <a href="qiodevice.html#readLine">readLine</a>(), <a href="qiodevice.html#readAll">readAll</a>(), <a href="qiodevice.html#write">write</a>(). QFile also inherits <a href="qiodevice.html#getChar">getChar</a>(), <a href="qiodevice.html#putChar">putChar</a>(), and <a href="qiodevice.html#ungetChar">ungetChar</a>(), which work one character at a time.</p>
-<p>The size of the file is returned by <a href="qiodevice.html#size">size</a>(). You can get the current file position using <a href="qiodevice.html#pos">pos</a>(), or move to a new file position using <a href="qiodevice.html#seek">seek</a>(). If you've reached the end of the file, <a href="qiodevice.html#atEnd">atEnd</a>() returns true.</p>
+<p>The size of the file is returned by <a href="qfile.html#size">size</a>(). You can get the current file position using <a href="qiodevice.html#pos">pos</a>(), or move to a new file position using <a href="qiodevice.html#seek">seek</a>(). If you've reached the end of the file, <a href="qfile.html#atEnd">atEnd</a>() returns true.</p>
 <p>The following example reads a text file line by line:</p>
 <pre>&nbsp;       QFile file(&quot;in.txt&quot;);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -135,6 +138,17 @@ body { background: #ffffff; color: black; }</style>
         out &lt;&lt; &quot;The magic number is: &quot; &lt;&lt; 49 &lt;&lt; &quot;\n&quot;;</pre>
 <p><a href="qdatastream.html">QDataStream</a> is similar, in that you can use operator&lt;&lt;() to write data and operator&gt;&gt;() to read it back. See the class documentation for details.</p>
 <p>When you use QFile, <a href="qfileinfo.html">QFileInfo</a>, and <a href="qdir.html">QDir</a> to access the file system with Qt, you can use Unicode file names. On Unix, these file names are converted to an 8-bit encoding. If you want to use standard C++ APIs (<tt>&lt;cstdio&gt;</tt> or <tt>&lt;iostream&gt;</tt>) or platform-specific APIs to access files instead of QFile, you can use the <a href="qfile.html#encodeName">encodeName</a>() and <a href="qfile.html#decodeName">decodeName</a>() functions to convert between Unicode file names and 8-bit file names.</p>
+<p>On Unix, there are some special system files (e.g. in <tt>/proc</tt>) for which <a href="qfile.html#size">size</a>() will always return 0, yet you may still be able to read more data from such a file; the data is generated in direct response to you calling <a href="qiodevice.html#read">read</a>(). In this case, however, you cannot use <a href="qfile.html#atEnd">atEnd</a>() to determine if there is more data to read (since <a href="qfile.html#atEnd">atEnd</a>() will return true for a file that claims to have size 0). Instead, you should either call <a href="qiodevice.html#readAll">readAll</a>(), or call <a href="qiodevice.html#read">read</a>() or <a href="qiodevice.html#readLine">readLine</a>() repeatedly until no more data can be read. The next example uses <a href="qtextstream.html">QTextStream</a> to read <tt>/proc/modules</tt> line by line:</p>
+<pre>&nbsp;       QFile file(&quot;/proc/modules&quot;);
+        if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+            return;
+
+        QTextStream in(&amp;file);
+        QString line = in.readLine();
+        while (!line.isNull()) {
+            process_line(line);
+            line = in.readLine();
+        }</pre>
 <p>See also <a href="qtextstream.html">QTextStream</a>, <a href="qdatastream.html">QDataStream</a>, <a href="qfileinfo.html">QFileInfo</a>, <a href="qdir.html">QDir</a>, and <a href="resources.html">The Qt Resource System</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
@@ -197,10 +211,14 @@ body { background: #ffffff; color: black; }</style>
 <p>Constructs a new file object with the given <i>parent</i> to represent the file with the specified <i>name</i>.</p>
 <h3 class="fn"><a name="dtor.QFile"></a>QFile::~QFile ()</h3>
 <p>Destroys the file object, closing it if necessary.</p>
+<h3 class="fn"><a name="atEnd"></a>bool QFile::atEnd () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
+<p>Returns true if the end of the file has been reached; otherwise returns false.</p>
+<p>For regular empty files on Unix (e.g. those in <tt>/proc</tt>), this function returns true, since the file system reports that the size of such a file is 0. Therefore, you should not depend on atEnd() when reading data from such a file, but rather call <a href="qiodevice.html#read">read</a>() until no more data can be read.</p>
+<p>Reimplemented from <a href="qiodevice.html#atEnd">QIODevice</a>.</p>
 <h3 class="fn"><a name="copy"></a>bool QFile::copy ( const <a href="qstring.html">QString</a> &amp; <i>newName</i> )</h3>
-<p>Copies the file currently specified by <a href="qfile.html#fileName">fileName</a>() to <i>newName</i>. Returns true if successful; otherwise returns false.</p>
-<p>If a file with the name <i>newName</i> already exists, copy() returns false (i.e., <a href="qfile.html">QFile</a> will not overwrite it).</p>
-<p>The file is closed before it is copied.</p>
+<p>Copies the file currently specified by <a href="qfile.html#fileName">fileName</a>() to a file called <i>newName</i>. Returns true if successful; otherwise returns false.</p>
+<p>Note that if a file with the name <i>newName</i> already exists, copy() returns false (i.e. <a href="qfile.html">QFile</a> will not overwrite it).</p>
+<p>The source file is closed before it is copied, and the new file's timestamp will be the time of the copy operation.</p>
 <p>See also <a href="qfile.html#setFileName">setFileName</a>().</p>
 <h3 class="fn"><a name="copy-2"></a>bool QFile::copy ( const <a href="qstring.html">QString</a> &amp; <i>fileName</i>, const <a href="qstring.html">QString</a> &amp; <i>newName</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>This is an overloaded member function, provided for convenience.</p>
@@ -274,7 +292,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Opens the existing file descripter <i>fd</i> in the given <i>mode</i>. Returns true if successful; otherwise returns false.</p>
 <p>When a <a href="qfile.html">QFile</a> is opened using this function, <a href="qiodevice.html#close">close</a>() does not actually close the file.</p>
 <p>The <a href="qfile.html">QFile</a> that is opened using this function is automatically set to be in raw mode; this means that the file input/output functions are slow. If you run into performance issues, you should try to use one of the other open functions.</p>
-<p><b>Warning:</b> If <i>fd</i> is 0 (<tt>stdin</tt>), 1 (<tt>stdout</tt>), or 2 (<tt>stderr</tt>), you may not be able to <a href="qiodevice.html#seek">seek</a>(). <a href="qiodevice.html#size">size</a>() is set to <tt>LLONG_MAX</tt> (in <tt>&lt;climits&gt;</tt>).</p>
+<p><b>Warning:</b> If <i>fd</i> is 0 (<tt>stdin</tt>), 1 (<tt>stdout</tt>), or 2 (<tt>stderr</tt>), you may not be able to <a href="qiodevice.html#seek">seek</a>(). <a href="qfile.html#size">size</a>() is set to <tt>LLONG_MAX</tt> (in <tt>&lt;climits&gt;</tt>).</p>
 <p>See also <a href="qiodevice.html#close">close</a>().</p>
 <h3 class="fn"><a name="permissions"></a><a href="qfile.html#Permission-enum">Permissions</a> QFile::permissions () const</h3>
 <p>Returns the complete OR-ed together combination of <a href="qfile.html#Permission-enum">QFile::Permission</a> for the file.</p>
@@ -311,7 +329,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qfile.html#rename">rename</a>().</p>
 <h3 class="fn"><a name="resize"></a>bool QFile::resize ( <a href="qtglobal.html#qint64-typedef">qint64</a> <i>sz</i> )</h3>
 <p>Sets the file size (in bytes) <i>sz</i>. Returns true if the file if the resize succeeds; false otherwise. If <i>sz</i> is larger than the file currently is the new bytes will be set to 0, if <i>sz</i> is smaller the file is simply truncated.</p>
-<p>See also <a href="qiodevice.html#size">size</a>() and <a href="qfile.html#setFileName">setFileName</a>().</p>
+<p>See also <a href="qfile.html#size">size</a>() and <a href="qfile.html#setFileName">setFileName</a>().</p>
 <h3 class="fn"><a name="resize-2"></a>bool QFile::resize ( const <a href="qstring.html">QString</a> &amp; <i>fileName</i>, <a href="qtglobal.html#qint64-typedef">qint64</a> <i>sz</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Sets <i>fileName</i> to size (in bytes) <i>sz</i>. Returns true if the file if the resize succeeds; false otherwise. If <i>sz</i> is larger than <i>fileName</i> currently is the new bytes will be set to 0, if <i>sz</i> is smaller the file is simply truncated.</p>
@@ -342,6 +360,10 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="setPermissions-2"></a>bool QFile::setPermissions ( const <a href="qstring.html">QString</a> &amp; <i>fileName</i>, <a href="qfile.html#Permission-enum">Permissions</a> <i>permissions</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Sets the permissions for <i>fileName</i> file to <i>permissions</i>.</p>
+<h3 class="fn"><a name="size"></a><a href="qtglobal.html#qint64-typedef">qint64</a> QFile::size () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
+<p>Returns the size of the file.</p>
+<p>For regular empty files on Unix (e.g. those in <tt>/proc</tt>), this function returns 0; the contents of such a file are generated on demand in response to you calling <a href="qiodevice.html#read">read</a>().</p>
+<p>Reimplemented from <a href="qiodevice.html#size">QIODevice</a>.</p>
 <h3 class="fn"><a name="unsetError"></a>void QFile::unsetError ()</h3>
 <p>Sets the file's error to <a href="qfile.html#FileError-enum">QFile::NoError</a>.</p>
 <p>See also <a href="qfile.html#error">error</a>().</p>
@@ -349,6 +371,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

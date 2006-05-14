@@ -538,7 +538,7 @@ void Win32MakefileGenerator::writeStandardParts(QTextStream &t)
         destDir += Option::dir_sep;
     QString target = QString(project->first("TARGET")+project->first("TARGET_EXT")).remove('"');
     project->variables()["DEST_TARGET"].prepend(destDir + target);
-    
+
     writeObjectsPart(t);
 
     writeExtraCompilerVariables(t);
@@ -558,9 +558,6 @@ void Win32MakefileGenerator::writeStandardParts(QTextStream &t)
 
     t << "####### Build rules" << endl << endl;
     writeBuildRulesPart(t);
-
-    if (!project->variables()["QMAKE_POST_LINK"].isEmpty())
-        t << "\t" <<var("QMAKE_POST_LINK") << endl;
 
     if(project->isActiveConfig("shared") && !project->variables()["DLLDESTDIR"].isEmpty()) {
         QStringList dlldirs = project->variables()["DLLDESTDIR"];

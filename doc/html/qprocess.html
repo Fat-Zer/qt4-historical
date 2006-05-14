@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-x11-opensource-src-4.1.2/src/corelib/io/qprocess.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/src/corelib/io/qprocess.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/src/corelib/io/qprocess.cpp -->
 <head>
     <title>Qt 4.1: QProcess Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -119,7 +120,16 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Detailed Description</h2>
 <p>The QProcess class is used to start external programs and to communicate with them.</p>
-<p>To start a process, pass the name and command line arguments of the program you want to run as arguments to <a href="qprocess.html#start">start</a>(). QProcess then enters the <a href="qprocess.html#ProcessState-enum">Starting</a> state, and when the program has started, QProcess enters the <a href="qprocess.html#ProcessState-enum">Running</a> state and emits <a href="qprocess.html#started">started</a>().</p>
+<p>To start a process, pass the name and command line arguments of the program you want to run as arguments to <a href="qprocess.html#start">start</a>(). For example:</p>
+<pre>&nbsp;       QObject *parent;
+        ...
+        QString program = &quot;./path/to/Qt/examples/widgets/analogclock&quot;;
+        QStringList arguments;
+        arguments &lt;&lt; &quot;-style&quot; &lt;&lt; &quot;motif&quot;;
+
+        QProcess *myProcess = new QProcess(parent);
+        myProcess-&gt;start(program, arguments);</pre>
+<p>QProcess then enters the <a href="qprocess.html#ProcessState-enum">Starting</a> state, and when the program has started, QProcess enters the <a href="qprocess.html#ProcessState-enum">Running</a> state and emits <a href="qprocess.html#started">started</a>().</p>
 <p>QProcess allows you to treat a process as a sequential I/O device. You can write to and read from the process just as you would access a network connection using <a href="qtcpsocket.html">QTcpSocket</a>. You can then write to the process's standard input by calling <a href="qiodevice.html#write">write</a>(), and read the standard output by calling <a href="qiodevice.html#read">read</a>(), <a href="qiodevice.html#readLine">readLine</a>(), and <a href="qiodevice.html#getChar">getChar</a>(). Because it inherits <a href="qiodevice.html">QIODevice</a>, QProcess can also be used as an input source for <a href="qxmlreader.html">QXmlReader</a>, or for generating data to be uploaded using <a href="qftp.html">QFtp</a>.</p>
 <p>When the process exits, QProcess reenters the <a href="qprocess.html#ProcessState-enum">NotRunning</a> state (the initial state), and emits <a href="qprocess.html#finished">finished</a>().</p>
 <p>The <a href="qprocess.html#finished">finished</a>() signal provides the exit code and exit status of the process as arguments, and you can also call <a href="qprocess.html#exitCode">exitCode</a>() to obtain the exit code of the last process that finished, and <a href="qprocess.html#exitStatus">exitStatus</a>() to obtain its exit status. If an error occurs at any point in time, QProcess will emit the <a href="qprocess.html#error">error</a>() signal. You can also call <a href="qprocess.html#error">error</a>() to find the type of error that occurred last, and <a href="qprocess.html#state">state</a>() to find the current process state.</p>
@@ -389,6 +399,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

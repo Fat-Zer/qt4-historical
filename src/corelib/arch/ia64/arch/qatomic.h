@@ -26,6 +26,8 @@
 
 #include <QtCore/qglobal.h>
 
+QT_BEGIN_HEADER
+
 #if defined(Q_CC_INTEL)
 
 // intrinsics provided by the Intel C++ Compiler
@@ -158,5 +160,7 @@ inline void *q_atomic_set_ptr(volatile void *ptr, void *newval)
 }
 
 #endif // Q_CC_INTEL
+
+QT_END_HEADER
 
 #endif // IA64_QATOMIC_H

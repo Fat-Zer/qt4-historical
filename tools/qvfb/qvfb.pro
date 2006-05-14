@@ -2,8 +2,6 @@ TEMPLATE        = app
 CONFIG          += qt warn_on uic
 TARGET          = qvfb
 
-QT		+= qt3support
-
 DEPENDPATH      = ../../include
 
 FORMS           = config.ui

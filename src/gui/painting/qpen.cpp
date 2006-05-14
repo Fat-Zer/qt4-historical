@@ -85,6 +85,9 @@
     convenience functions to extract and set the color of the pen's
     brush, respectively. Pens may also be compared and streamed.
 
+    For more information about painting in general, see {The Paint
+    System} documentation.
+
     \tableofcontents
 
     \section1 Pen Style
@@ -450,6 +453,7 @@ void QPen::setStyle(Qt::PenStyle s)
         return;
     detach();
     d->style = s;
+    d->dashPattern.clear();
 }
 
 /*!

@@ -63,6 +63,13 @@
     parent's top-level widget (if it is not top-level itself). It will
     also share the parent's taskbar entry.
 
+    Use the overload of the QWidget::setParent() function to change
+    the ownership of a QDialog widget. This function allows you to
+    explicitly set the window flags of the reparented widget; using
+    the overloaded function will clear the window flags specifying the
+    window-system properties for the widget (in particular it will
+    reset the Qt::Dialog flag).
+
     \section1 Modal Dialogs
 
     A \bold{modal} dialog is a dialog that blocks input to other
@@ -457,7 +464,9 @@ bool QDialog::eventFilter(QObject *o, QEvent *e)
 /*! \reimp */
 void QDialog::contextMenuEvent(QContextMenuEvent *e)
 {
-#if !defined(QT_NO_WHATSTHIS) && !defined(QT_NO_MENU)
+#if defined(QT_NO_WHATSTHIS) || defined(QT_NO_MENU)
+    Q_UNUSED(e);
+#else
     QWidget *w = childAt(e->pos());
     if (!w) {
         w = rect().contains(e->pos()) ? this : 0;
@@ -924,7 +933,9 @@ bool QDialog::isSizeGripEnabled() const
 
 void QDialog::setSizeGripEnabled(bool enabled)
 {
-#ifndef QT_NO_SIZEGRIP
+#ifdef QT_NO_SIZEGRIP
+    Q_UNUSED(enabled);
+#else
     Q_D(QDialog);
     if (!enabled != !d->resizer) {
         if (enabled) {

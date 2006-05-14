@@ -1483,6 +1483,7 @@ QList<QPolygonF> QPainterPath::toSubpathPolygons(const QMatrix &matrix) const
             if (current.size() > 1)
                 flatCurves += current;
             current.clear();
+            current.reserve(16);
             current += QPointF(e.x, e.y) * matrix;
             break;
         case QPainterPath::LineToElement:
@@ -1491,12 +1492,11 @@ QList<QPolygonF> QPainterPath::toSubpathPolygons(const QMatrix &matrix) const
         case QPainterPath::CurveToElement: {
             Q_ASSERT(d->elements.at(i+1).type == QPainterPath::CurveToDataElement);
             Q_ASSERT(d->elements.at(i+2).type == QPainterPath::CurveToDataElement);
-            QPolygonF bezier = QBezier::fromPoints(QPointF(d->elements.at(i-1).x, d->elements.at(i-1).y) * matrix,
+            QBezier bezier = QBezier::fromPoints(QPointF(d->elements.at(i-1).x, d->elements.at(i-1).y) * matrix,
                                        QPointF(e.x, e.y) * matrix,
                                        QPointF(d->elements.at(i+1).x, d->elements.at(i+1).y) * matrix,
-                                       QPointF(d->elements.at(i+2).x, d->elements.at(i+2).y) * matrix).toPolygon();
-            bezier.remove(0);
-            current += bezier;
+                                                 QPointF(d->elements.at(i+2).x, d->elements.at(i+2).y) * matrix);
+            bezier.addToPolygon(&current);
             i+=2;
             break;
         }
@@ -1545,6 +1545,11 @@ QPolygonF QPainterPath::toFillPolygon(const QMatrix &matrix) const
     return polygon;
 }
 
+static inline bool rect_intersects(const QRectF &r1, const QRectF &r2)
+{
+    return qMax(r1.left(), r2.left()) <= qMin(r1.right(), r2.right())
+        && qMax(r1.top(), r2.top()) <= qMin(r1.bottom(), r2.bottom());
+}
 /*!
     Converts the path into a list of polygons using the given
     transformation \a matrix, and returns the list.
@@ -1597,7 +1602,7 @@ QList<QPolygonF> QPainterPath::toFillPolygons(const QMatrix &matrix) const
     for (int j=0; j<count; ++j) {
         QRectF cbounds = bounds.at(j);
         for (int i=0; i<count; ++i) {
-            if (cbounds.intersects(bounds.at(i))) {
+            if (rect_intersects(cbounds, bounds.at(i))) {
                 isects[j] << i;
             }
         }
@@ -1696,7 +1701,10 @@ static void qt_painterpath_isect_curve(const QBezier &bezier, const QPointF &pt,
     qreal x = pt.x();
     QRectF bounds = bezier.bounds();
 
-    // potential intersection, divide and try again..
+    // potential intersection, divide and try again...
+    // Please note that a sideeffect of the bottom exclusion is that
+    // horizontal lines are dropped, but this is correct according to
+    // scan conversion rules.
     if (y >= bounds.y() && y < bounds.y() + bounds.height()) {
 
         // hit lower limit... This is a rough threshold, but its a
@@ -1707,7 +1715,7 @@ static void qt_painterpath_isect_curve(const QBezier &bezier, const QPointF &pt,
             // approximate a line after while (i.e. that it doesn't
             // change direction drastically during its slope)
             if (bezier.pt1().x() <= x) {
-                (*winding) += (bezier.pt2().y() > bezier.pt1().y() ? 1 : -1);
+                (*winding) += (bezier.pt4().y() > bezier.pt1().y() ? 1 : -1);
             }
             return;
         }
@@ -2214,6 +2222,7 @@ void qt_path_stroke_cubic_to(qfixed c1x, qfixed c1y,
 /*!
     \since 4.1
     \class QPainterPathStroker
+    \ingroup multimedia
 
     \brief The QPainterPathStroker class is used to generate fillable
     outlines for a given painter path.

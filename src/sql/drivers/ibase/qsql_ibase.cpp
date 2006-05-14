@@ -44,6 +44,8 @@
 
 #define FBVERSION SQL_DIALECT_V6
 
+enum { QIBaseChunkSize = SHRT_MAX / 2 };
+
 static bool getIBaseError(QString& msg, ISC_STATUS* status, long &sqlcode)
 {
     if (status[0] != 1 || status[1] <= 0)
@@ -349,10 +351,11 @@ bool QIBaseResultPrivate::writeBlob(int i, const QByteArray &ba)
                  QSqlError::StatementError)) {
         int i = 0;
         while (i < ba.size()) {
-            isc_put_segment(status, &handle, qMin(ba.size() - i, SHRT_MAX), const_cast<char*>(ba.data()) + i);
+            isc_put_segment(status, &handle, qMin(ba.size() - i, int(QIBaseChunkSize)),
+                            const_cast<char*>(ba.data()) + i);
             if (isError(QT_TRANSLATE_NOOP("QIBaseResult", "Unable to write BLOB")))
                 return false;
-            i += qMin(ba.size() - i, SHRT_MAX);
+            i += qMin(ba.size() - i, int(QIBaseChunkSize));
         }
     }
     isc_close_blob(status, &handle);
@@ -370,7 +373,7 @@ QVariant QIBaseResultPrivate::fetchBlob(ISC_QUAD *bId)
 
     unsigned short len = 0;
     QByteArray ba;
-    int chunkSize = SHRT_MAX; // for some reason it only works with 32kB chunks    
+    int chunkSize = QIBaseChunkSize;
     ba.resize(chunkSize);
     int read = 0;
     while ( isc_get_segment(status, &handle, &len, chunkSize, ba.data() + read) == 0 || status[1] == isc_segment ){
@@ -379,11 +382,11 @@ QVariant QIBaseResultPrivate::fetchBlob(ISC_QUAD *bId)
 	    break;
 	ba.resize(ba.size() + chunkSize);
     }
-    
+
     bool isErr = isError(QT_TRANSLATE_NOOP("QIBaseResult", "Unable to read BLOB"),
                          QSqlError::StatementError);
     isc_close_blob(status, &handle);
-    
+
     if (isErr)
         return QVariant();
 
@@ -947,12 +950,13 @@ bool QIBaseResult::exec()
                 return false;
             cleanup();
         }
-        if (d->sqlda)
-            init(d->sqlda->sqld);
         isc_dsql_execute(d->status, &d->trans, &d->stmt, FBVERSION, d->inda);
         if (d->isError(QT_TRANSLATE_NOOP("QIBaseResult", "Unable to execute query")))
             return false;
-    
+
+        if (d->sqlda)
+            init(d->sqlda->sqld);
+
         if (d->queryType != isc_info_sql_stmt_select)
              d->commit();
 

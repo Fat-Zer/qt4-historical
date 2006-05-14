@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-x11-opensource-src-4.1.2/src/opengl/qglpixelbuffer.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/src/opengl/qglpixelbuffer.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/src/opengl/qglpixelbuffer.cpp -->
 <head>
     <title>Qt 4.1: QGLPixelBuffer Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -74,7 +75,7 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QGLPixelBuffer"></a>QGLPixelBuffer::QGLPixelBuffer ( const <a href="qsize.html">QSize</a> &amp; <i>size</i>, const <a href="qglformat.html">QGLFormat</a> &amp; <i>format</i> = QGLFormat::defaultFormat(), <a href="qglwidget.html">QGLWidget</a> * <i>shareWidget</i> = 0 )</h3>
 <p>Constructs an OpenGL pbuffer of the given <i>size</i>. If no <i>format</i> is specified, the <a href="qglformat.html#defaultFormat">default format</a> is used. If the <i>shareWidget</i> parameter points to a valid <a href="qglwidget.html">QGLWidget</a>, the pbuffer will share its context with <i>shareWidget</i>.</p>
-<p>If you intend to bind this pbuffer as a dynamic texture, the width and height components of <tt>size</tt> must be powers of two (e.g., 512 x 128).</p>
+<p>If you intend to bind this pbuffer as a dynamic texture, the width and height components of <tt>size</tt> must be powers of two (e.g., 512 x 128). On Mac OS X, the size must be a power of two.</p>
 <p>See also <a href="qglpixelbuffer.html#size">size</a>() and <a href="qglpixelbuffer.html#format">format</a>().</p>
 <h3 class="fn"><a name="dtor.QGLPixelBuffer"></a>QGLPixelBuffer::~QGLPixelBuffer ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Destroys the pbuffer and frees any allocated resources.</p>
@@ -150,6 +151,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

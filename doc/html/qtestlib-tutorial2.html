@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-x11-opensource-src-4.1.2/doc/src/qtestlib.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/doc/src/qtestlib.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/doc/src/qtestlib.qdoc -->
 <head>
     <title>Qt 4.1: Chapter 2: Data Driven Testing</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -36,7 +37,7 @@ body { background: #ffffff; color: black; }</style>
     QCOMPARE(QString(&quot;Hello&quot;).toUpper(), QString(&quot;HELLO&quot;));
     QCOMPARE(QString(&quot;HellO&quot;).toUpper(), QString(&quot;HELLO&quot;));
     QCOMPARE(QString(&quot;HELLO&quot;).toUpper(), QString(&quot;HELLO&quot;));</pre>
-<p>To prevent that the function ends up being cluttered by repetative code, <a href="qtestlib-manual.html#qtestlib">QTestLib</a> supports adding test data to a test function. All we need is to add another private slot to our test class:</p>
+<p>To prevent that the function ends up being cluttered by repetitive code, <a href="qtestlib-manual.html#qtestlib">QTestLib</a> supports adding test data to a test function. All we need is to add another private slot to our test class:</p>
 <pre>&nbsp;   class TestQString: public QObject
     {
         Q_OBJECT
@@ -78,7 +79,7 @@ body { background: #ffffff; color: black; }</style>
         QCOMPARE(string.toUpper(), result);
     }</pre>
 <p>The TestQString::toUpper() function will be executed three times, once for each entry in the test table that we created in the associated TestQString::toUpper_data() function.</p>
-<p>First, we fetch the two elements of the data set using the <a href="qtest.html#QFETCH">QFETCH</a>() macro. <a href="qtest.html#QFETCH">QFETCH</a>() takes two arguments: The data type of the element and the element name. Then we perform the test using the <a href="qtest.html#QCOMPAREx">QCOMPARE</a>() macro.</p>
+<p>First, we fetch the two elements of the data set using the <a href="qtest.html#QFETCH">QFETCH</a>() macro. <a href="qtest.html#QFETCH">QFETCH</a>() takes two arguments: The data type of the element and the element name. Then we perform the test using the <a href="qtest.html#QCOMPARE">QCOMPARE</a>() macro.</p>
 <p>This approach makes it very easy to add new data to the test without modifying the test itself.</p>
 <p>And again, to make our test case a stand-alone executable, the following two lines are needed:</p>
 <pre>&nbsp;   QTEST_MAIN(TestQString)
@@ -93,6 +94,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

@@ -41,7 +41,7 @@
 
 QMMapViewProtocol::QMMapViewProtocol(int displayid, const QSize &s,
         int d, QObject *parent)
-    : QVFbViewProtocol(displayid, parent), hdr(0), dataCache(0) 
+    : QVFbViewProtocol(displayid, parent), hdr(0), dataCache(0)
 {
     int actualdepth=d;
 
@@ -85,8 +85,8 @@ QMMapViewProtocol::QMMapViewProtocol(int displayid, const QSize &s,
 
     dataSize = bpl * h + data_offset_value;
 
-    unlink(fileName.local8Bit().data());
-    fd = ::open( fileName.local8Bit().data(), O_CREAT|O_RDWR, 0666 );
+    unlink(fileName.toLocal8Bit().data());
+    fd = ::open( fileName.toLocal8Bit().data(), O_CREAT|O_RDWR, 0666 );
     ::lseek(fd, dataSize, SEEK_SET);
     ::write(fd, "\0", 1);
     if (fd < 0) {
@@ -125,7 +125,7 @@ QMMapViewProtocol::~QMMapViewProtocol()
 {
     munmap( (char *)hdr, dataSize );
     ::close( fd );
-    unlink( fileName );
+    unlink( fileName.toLocal8Bit().constData() );
     free(dataCache);
     delete kh;
     delete mh;
@@ -156,9 +156,13 @@ int  QMMapViewProtocol::numcols() const
     return hdr->numcols;
 }
 
-QRgb *QMMapViewProtocol::clut() const
+QVector<QRgb> QMMapViewProtocol::clut() const
 {
-    return hdr->clut;
+    QVector<QRgb> vector(hdr->numcols);
+    for (int i=0; i < hdr->numcols; ++i)
+        vector[i]=hdr->clut[i];
+
+    return vector;
 }
 
 unsigned char *QMMapViewProtocol::data() const
@@ -174,7 +178,7 @@ void QMMapViewProtocol::flushChanges()
     emit displayDataChanged(QRect(0, 0, width(), height()));
 }
 
-void QMMapViewProtocol::setRate(int interval) 
+void QMMapViewProtocol::setRate(int interval)
 {
     if (interval > 0)
         return mRefreshTimer->start(1000/interval);

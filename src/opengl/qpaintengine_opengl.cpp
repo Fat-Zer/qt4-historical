@@ -106,11 +106,13 @@ void qt_painterpath_split(const QPainterPath &path, QDataBuffer<int> *paths, QDa
                 break;
             }
             case QPainterPath::LineToElement:
+                Q_ASSERT(current);
                 current->unite(e.x, e.y);
                 break;
             case QPainterPath::CurveToElement: {
                 const QPainterPath::Element &cp2 = path.elementAt(i+1);
                 const QPainterPath::Element &ep = path.elementAt(i+2);
+                Q_ASSERT(current);
                 current->unite(e.x, e.y);
                 current->unite(cp2.x, cp2.y);
                 current->unite(ep.x, ep.y);
@@ -259,7 +261,7 @@ inline QColor QGLDrawable::backgroundColor() const
 {
     if (widget)
         return widget->palette().brush(QPalette::Background).color();
-    return QColor();
+    return QApplication::palette().brush(QPalette::Background).color();
 }
 
 #ifndef CALLBACK // for Windows
@@ -424,6 +426,10 @@ inline void QOpenGLPaintEnginePrivate::moveTo(const QPointF &p)
 inline void QOpenGLPaintEnginePrivate::lineTo(const QPointF &p)
 {
     GLUtesselator *qgl_tess = tessHandler()->qgl_tess;
+    // ### temp crash fix - the GLU tesselator can't handle the
+    // ### realloc being done after this
+    if (tessVector.size() + 3 > 20000)
+        return;
     tessVector.add(p.x());
     tessVector.add(p.y());
     tessVector.add(0);
@@ -626,22 +632,25 @@ static bool qt_resolve_frag_program_extensions()
 {
     static int resolved = false;
 
-    if (resolved && qt_glProgramStringARB)
-        return true;
-    else if (resolved)
-        return false;
+    if (!resolved) {
 
-    QGLContext cx(QGLFormat::defaultFormat());
+        QGLContext cx(QGLFormat::defaultFormat());
 
-    // ARB_fragment_program
-    qt_glProgramStringARB = (_glProgramStringARB) cx.getProcAddress("glProgramStringARB");
-    qt_glBindProgramARB = (_glBindProgramARB) cx.getProcAddress("glBindProgramARB");
-    qt_glDeleteProgramsARB = (_glDeleteProgramsARB) cx.getProcAddress("glDeleteProgramsARB");
-    qt_glGenProgramsARB = (_glGenProgramsARB) cx.getProcAddress("glGenProgramsARB");
-    qt_glProgramLocalParameter4fvARB = (_glProgramLocalParameter4fvARB) cx.getProcAddress("glProgramLocalParameter4fvARB");
+        // ARB_fragment_program
+        qt_glProgramStringARB = (_glProgramStringARB) cx.getProcAddress("glProgramStringARB");
+        qt_glBindProgramARB = (_glBindProgramARB) cx.getProcAddress("glBindProgramARB");
+        qt_glDeleteProgramsARB = (_glDeleteProgramsARB) cx.getProcAddress("glDeleteProgramsARB");
+        qt_glGenProgramsARB = (_glGenProgramsARB) cx.getProcAddress("glGenProgramsARB");
+        qt_glProgramLocalParameter4fvARB = (_glProgramLocalParameter4fvARB) cx.getProcAddress("glProgramLocalParameter4fvARB");
 
-    resolved = qt_glProgramLocalParameter4fvARB ? true : false;
-    return resolved;
+        resolved = true;
+    }
+
+    return qt_glProgramStringARB
+        && qt_glBindProgramARB
+        && qt_glDeleteProgramsARB
+        && qt_glGenProgramsARB
+        && qt_glProgramLocalParameter4fvARB;
 }
 
 void QOpenGLPaintEnginePrivate::generateGradientColorTable(const QGradientStops& s, unsigned int *colorTable, int size)
@@ -783,7 +792,6 @@ bool QOpenGLPaintEngine::begin(QPaintDevice *pdev)
     d->has_autoswap = d->drawable.autoBufferSwap();
     d->drawable.setAutoBufferSwap(false);
     d->inverseScale = 1;
-    setActive(true);
     d->drawable.makeCurrent();
 
     glPushAttrib(GL_ALL_ATTRIB_BITS);
@@ -858,7 +866,6 @@ bool QOpenGLPaintEngine::end()
     glFlush();
     d->drawable.swapBuffers();
     d->drawable.setAutoBufferSwap(d->has_autoswap);
-    setActive(false);
     return true;
 }
 
@@ -1026,6 +1033,15 @@ void QOpenGLPaintEngine::updatePen(const QPen &pen)
     } else if (pen_style != Qt::NoPen) {
         if (!d->dashStroker)
             d->dashStroker = new QDashStroker(&d->basicStroker);
+
+        QRectF deviceRect(0, 0, d->pdev->width(), d->pdev->height());
+        if (penWidth == 0) {
+            d->dashStroker->setClipRect(deviceRect);
+        } else {
+            QRectF clipRect = d->matrix.inverted().mapRect(deviceRect);
+            d->dashStroker->setClipRect(clipRect);
+        }
+
         d->dashStroker->setDashPattern(pen.dashPattern());
         d->stroker = d->dashStroker;
     } else {

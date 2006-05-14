@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-x11-opensource-src-4.1.2/doc/src/qt4-tulip.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/doc/src/qt4-tulip.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/doc/src/qt4-tulip.qdoc -->
 <head>
     <title>Qt 4.1: The Tulip Container Classes</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -40,9 +41,9 @@ body { background: #ffffff; color: black; }</style>
 <li>An empty container performs no memory allocation, and only requires the same space as a pointer.</li>
 <li>Even though they are implicitly shared, they can safely be copied across different threads without formality. There's no need to use <tt>QDeepCopy</tt>.</li>
 </ul>
-<p>Tulip provides the following sequential containers: <a href="qlist.html">QList</a>, <a href="qlinkedlist.html">QLinkedList</a>, <a href="qvector.html">QVector</a>, <a href="qstack.html">QStack</a>, and <a href="qqueue.html">QQueue</a>. For most applications, <a href="qlist.html">QList</a> is the best type to use. Although it is implemented as an array-list, it provides very fast prepends and appends. If you really need a linked-list, use <a href="qlinkedlist.html">QLinkedList</a>; if you want your items to occupy consecutive memory locations, use <a href="qvector.html">QVector</a>. <a href="qstack.html">QStack</a> and <a href="qqueue.html">QQueue</a> are convenience classes that provide FIFO and LIFO semantics.</p>
+<p>Tulip provides the following sequential containers: <a href="qlist.html">QList</a>, <a href="qlinkedlist.html">QLinkedList</a>, <a href="qvector.html">QVector</a>, <a href="qstack.html">QStack</a>, and <a href="qqueue.html">QQueue</a>. For most applications, <a href="qlist.html">QList</a> is the best type to use. Although it is implemented as an array-list, it provides very fast prepends and appends. If you really need a linked-list, use <a href="qlinkedlist.html">QLinkedList</a>; if you want your items to occupy consecutive memory locations, use <a href="qvector.html">QVector</a>. <a href="qstack.html">QStack</a> and <a href="qqueue.html">QQueue</a> are convenience classes that provide LIFO and FIFO semantics.</p>
 <p>Tulip also provides these associative containers: <a href="qmap.html">QMap</a>, <a href="qmultimap.html">QMultiMap</a>, <a href="qhash.html">QHash</a>, <a href="qmultihash.html">QMultiHash</a>, and <a href="qset.html">QSet</a>. The &quot;Multi&quot; containers conveniently support multiple values associated with a single key. The &quot;Hash&quot; containers provide faster lookup by using a hash function instead of a binary search on a sorted set.</p>
-<p>The Tulip containers support the foreach keyword, a Qt-specific addition to the C++ language that is implemented using the standard C++ preprocessor. The syntax is:</p>
+<p>The Tulip containers support the <a href="containers.html#foreach">foreach</a> keyword, a Qt-specific addition to the C++ language that is implemented using the standard C++ preprocessor. The syntax is:</p>
 <pre>&nbsp;   foreach (variable, container)
         statement;</pre>
 <p>Example:</p>
@@ -134,6 +135,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

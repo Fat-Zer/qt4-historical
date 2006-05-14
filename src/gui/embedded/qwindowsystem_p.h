@@ -1,14 +1,4 @@
 /****************************************************************************
-** $Id: .emacs,v 1.3 1998/02/20 15:06:53 agulbra Exp $
-**
-** Definition of something or other
-**
-** Created : 979899
-**
-** Copyright (C) 1997 by Troll Tech AS.  All rights reserved.
-**
-****************************************************************************/
-/****************************************************************************
 **
 ** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
 **
@@ -104,7 +94,7 @@ private:
     void set_opacity(const QWSSetOpacityCommand *);
     void request_focus(const QWSRequestFocusCommand *);
     void request_region(int winId, QWSMemId memId,
-                        int windowtype, QRegion, QWSWindow* = 0);
+                        int windowtype, QRegion, QImage::Format, QWSWindow* = 0);
     void repaint_region(int winId, bool opaque, QRegion);
     void destroy_region(const QWSRegionDestroyCommand *);
     void name_region(const QWSRegionNameCommand *);
@@ -182,16 +172,16 @@ private:
 //private slots:
 
 #ifndef QT_NO_QWS_MULTIPROCESS
-    void clientClosed();
-    void doClient();
-    void deleteWindowsLater();
+    void _q_clientClosed();
+    void _q_doClient();
+    void _q_deleteWindowsLater();
 #endif
 
-    void screenSaverWake();
-    void screenSaverSleep();
-    void screenSaverTimeout();
+    void _q_screenSaverWake();
+    void _q_screenSaverSleep();
+    void _q_screenSaverTimeout();
 #ifndef QT_NO_QWS_MULTIPROCESS
-    void newConnection();
+    void _q_newConnection();
 #endif
 
 //other private moved from class
@@ -264,7 +254,9 @@ private:
     QMap<QString, QList<QWSClient*> > channels;
 #endif
 
+#ifndef QT_NO_QWS_MULTIPROCESS
     QWSServerSocket *ssocket;
+#endif
 
 };
 #endif

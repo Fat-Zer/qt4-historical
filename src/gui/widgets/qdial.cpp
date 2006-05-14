@@ -182,8 +182,15 @@ int QDialPrivate::valueFromPoint(const QPoint &p) const
     right/down arrow keys move by lineStep(), page up and page down by
     pageStep() and Home and End to minValue() and maxValue().
 
-    \inlineimage qdial-m.png Screenshot in Motif style
-    \inlineimage qdial-w.png Screenshot in Windows style
+    \table
+    \row \o \inlineimage plastique-dial.png Screenshot of a dial in the Plastique widget style
+    \o \inlineimage windowsxp-dial.png Screenshot of a dial in the Windows XP widget style
+    \o \inlineimage macintosh-dial.png Screenshot of a dial in the Macintosh widget style
+    \row \o {3,1} Dials shown in various widget styles (from left to right):
+         \l{Plastique Style Widget Gallery}{Plastique},
+         \l{Windows XP Style Widget Gallery}{Windows XP},
+         \l{Macintosh Style Widget Gallery}{Macintosh}.
+    \endtable
 
     \sa QScrollBar, QSpinBox, {fowler}{GUI Design Handbook: Slider}
 */

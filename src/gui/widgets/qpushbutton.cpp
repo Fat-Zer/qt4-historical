@@ -50,15 +50,16 @@ class QPushButtonPrivate : public QAbstractButtonPrivate
     Q_DECLARE_PUBLIC(QPushButton)
 public:
     enum AutoDefaultValue {Off = 0, On = 1, Auto = 2};
-    QPushButtonPrivate():autoDefault(Auto), defaultButton(false), flat(false){}
+    QPushButtonPrivate():autoDefault(Auto), defaultButton(false), flat(false), menuOpen(false){}
     void init();
-    void popupPressed();
+    void _q_popupPressed();
     QStyleOptionButton getStyleOption() const;
     QDialog *dialogParent() const;
     QPointer<QMenu> menu;
     uint autoDefault : 2; 
     uint defaultButton : 1;
     uint flat : 1;
+    uint menuOpen : 1;
 };
 
 /*!
@@ -146,8 +147,14 @@ public:
     Other classes of buttons are option buttons (see QRadioButton) and
     check boxes (see QCheckBox).
 
-    \inlineimage macintosh-pushbutton.png Screenshot in Macintosh style
-    \inlineimage windows-pushbutton.png Screenshot in Windows style
+    \table 100%
+    \row \o \inlineimage macintosh-pushbutton.png Screenshot of a Macintosh style push button
+         \o A push button shown in the \l{Macintosh Style Widget Gallery}{Macintosh widget style}.
+    \row \o \inlineimage windowsxp-pushbutton.png Screenshot of a Windows XP style push button
+         \o A push button shown in the \l{Windows XP Style Widget Gallery}{Windows XP widget style}.
+    \row \o \inlineimage plastique-pushbutton.png Screenshot of a Plastique style push button
+         \o A push button shown in the \l{Plastique Style Widget Gallery}{Plastique widget style}.
+    \endtable
 
     In Qt, the QAbstractButton base class provides most of the modes
     and other API, and QPushButton provides GUI logic.
@@ -293,7 +300,7 @@ QStyleOptionButton QPushButtonPrivate::getStyleOption() const
         opt.features |= QStyleOptionButton::AutoDefaultButton;
     if (defaultButton)
         opt.features |= QStyleOptionButton::DefaultButton;
-    if (down)
+    if (down || menuOpen)
         opt.state |= QStyle::State_Sunken;
     if (checked)
         opt.state |= QStyle::State_On;
@@ -464,8 +471,8 @@ void QPushButton::setMenu(QMenu* menu)
 {
     Q_D(QPushButton);
     if (menu && !d->menu) {
-        disconnect(this, SIGNAL(pressed()), this, SLOT(popupPressed()));
-        connect(this, SIGNAL(pressed()), this, SLOT(popupPressed()));
+        disconnect(this, SIGNAL(pressed()), this, SLOT(_q_popupPressed()));
+        connect(this, SIGNAL(pressed()), this, SLOT(_q_popupPressed()));
     }
     d->menu = menu;
     update();
@@ -495,10 +502,10 @@ void QPushButton::showMenu()
     if (!d || !d->menu)
         return;
     setDown(true);
-    d->popupPressed();
+    d->_q_popupPressed();
 }
 
-void QPushButtonPrivate::popupPressed()
+void QPushButtonPrivate::_q_popupPressed()
 {
     Q_Q(QPushButton);
     if (!down || !menu)
@@ -530,13 +537,16 @@ void QPushButtonPrivate::popupPressed()
         else
             x -= menuSize.width();
     }
-    QObject *guard = q;
-    QMetaObject::addGuard(&guard);
-    menu->exec(QPoint(x, y));
-    if (guard)
-        q->setDown(false);
-    QMetaObject::removeGuard(&guard);
+    QPointer<QPushButton> guard(q);
 
+    //Because of a delay in menu effects, we must keep track of the
+    //menu visibility to avoid flicker on button release
+    menuOpen = true;
+    menu->exec(QPoint(x, y));
+    if (guard) {
+        menuOpen = false;
+        q->setDown(false);
+    }
 }
 #endif // QT_NO_MENU
 

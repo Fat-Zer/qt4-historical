@@ -51,6 +51,10 @@
 
 using namespace Qt;
 
+class Q3HeaderData;
+extern bool qt_get_null_label_bit(Q3HeaderData *data, int section);
+extern void qt_set_null_label_bit(Q3HeaderData *data, int section, bool b);
+
 static bool qt_update_cell_widget = true;
 static bool qt_table_clipper_enabled = true;
 #ifndef QT_INTERNAL_TABLE
@@ -1509,6 +1513,7 @@ QWidget *Q3CheckTableItem::createEditor() const
     cb->setChecked(checked);
     cb->setText(text());
     cb->setBackgroundColor(table()->viewport()->backgroundColor());
+    cb->setAutoFillBackground(true);
     QObject::connect(cb, SIGNAL(toggled(bool)), table(), SLOT(doValueChanged()));
     return cb;
 }
@@ -3531,8 +3536,12 @@ void Q3Table::selectRow(int row)
     row = QMIN(numRows()-1, row);
     if (row < 0)
 	return;
-    Q3TableSelection sel(row, 0, row, numCols() - 1);
-    addSelection(sel);
+    if (selectionMode() == SingleRow) {
+        setCurrentCell(row, currentColumn());
+    } else {
+        Q3TableSelection sel(row, 0, row, numCols() - 1);
+        addSelection(sel);
+    }
 }
 
 /*! Selects the column \a col.
@@ -4384,9 +4393,11 @@ void Q3Table::columnWidthChanged(int col)
 			 s.width() - w + 1, visibleHeight(), false);
 
     // update widgets that are affected by this change
-    if (widgets.size())
-	for (int c = col; c <= d->lastVisCol; ++c)
+    if (widgets.size()) {
+        int last = isHidden() ? numCols() - 1 : d->lastVisCol;
+	for (int c = col; c <= last; ++c)
 	    updateColWidgets(c);
+    }
     delayedUpdateGeometries();
 }
 
@@ -4416,7 +4427,8 @@ void Q3Table::rowHeightChanged(int row)
     // update widgets that are affected by this change
     if (widgets.size()) {
 	d->lastVisRow = rowAt(contentsY() + visibleHeight() + (s.height() - h + 1));
-	for (int r = row; r <= d->lastVisRow; ++r)
+        int last = isHidden() ? numRows() - 1 : d->lastVisRow;
+	for (int r = row; r <= last; ++r)
 	    updateRowWidgets(r);
     }
     delayedUpdateGeometries();
@@ -5021,6 +5033,8 @@ QWidget *Q3Table::beginEdit(int row, int col, bool replace)
 {
     if (isReadOnly() || isRowReadOnly(row) || isColumnReadOnly(col))
 	return 0;
+    if ( row < 0 || row >= numRows() || col < 0 || col >= numCols() )
+        return 0;
     Q3TableItem *itm = item(row, col);
     if (itm && !itm->isEnabled())
 	return 0;
@@ -5251,14 +5265,29 @@ void Q3Table::repaintSelections(Q3TableSelection *oldSelection,
     }
 
     int top, left, bottom, right;
-    top = QMIN(oldSelection ? oldSelection->topRow() : newSelection->topRow(),
-		newSelection ? newSelection->topRow() :oldSelection->topRow());
-    left = QMIN(oldSelection ? oldSelection->leftCol() : newSelection->leftCol(),
-		 newSelection ? newSelection->leftCol() : oldSelection->leftCol());
-    bottom = QMAX(oldSelection ? oldSelection->bottomRow() : newSelection->bottomRow(),
-		   newSelection ? newSelection->bottomRow() : oldSelection->bottomRow());
-    right = QMAX(oldSelection ? oldSelection->rightCol() : newSelection->rightCol(),
-		  newSelection ? newSelection->rightCol() : oldSelection->rightCol());
+    {
+        int oldTopRow = oldSelection ? oldSelection->topRow() : numRows() - 1;
+        int newTopRow = newSelection ? newSelection->topRow() : numRows() - 1;
+        top = QMIN(oldTopRow, newTopRow);
+    }
+
+    {
+        int oldLeftCol = oldSelection ? oldSelection->leftCol() : numCols() - 1;
+        int newLeftCol = newSelection ? newSelection->leftCol() : numCols() - 1;
+        left = QMIN(oldLeftCol, newLeftCol);
+    }
+
+    {
+        int oldBottomRow = oldSelection ? oldSelection->bottomRow() : 0;
+        int newBottomRow = newSelection ? newSelection->bottomRow() : 0;
+        bottom = QMAX(oldBottomRow, newBottomRow);
+    }
+
+    {
+        int oldRightCol = oldSelection ? oldSelection->rightCol() : 0;
+        int newRightCol = newSelection ? newSelection->rightCol() : 0;
+        right = QMAX(oldRightCol, newRightCol);
+    }
 
     if (updateHorizontal && numCols() > 0 && left >= 0 && !isRowSelection(selectionMode())) {
 	register int *s = &topHeader->states.data()[left];
@@ -5707,7 +5736,14 @@ void Q3Table::setRowHeight(int row, int h)
 
 void Q3Table::adjustColumn(int col)
 {
-    int w = topHeader->sectionSizeHint(col, fontMetrics()).width();
+    int w;
+    if ( currentColumn() == col ) {
+        QFont f = font();
+        f.setBold(true);
+        w = topHeader->sectionSizeHint( col, QFontMetrics(f) ).width();
+    } else {
+        w = topHeader->sectionSizeHint( col, fontMetrics() ).width();
+    }
     if (topHeader->iconSet(col))
 	w += topHeader->iconSet(col)->pixmap().width();
     w = QMAX(w, 20);
@@ -5894,7 +5930,7 @@ void Q3Table::setCellWidget(int row, int col, QWidget *e)
     if (e->parent() != viewport())
 	e->reparent(viewport(), QPoint(0,0));
     Q3TableItem *itm = item(row, col);
-    if (itm) { // get the correct row and col if the item is spanning
+    if (itm && itm->row() >= 0 && itm->col() >= 0) { // get the correct row and col if the item is spanning
         row = itm->row();
         col = itm->col();
     }
@@ -7210,8 +7246,13 @@ void Q3TableHeader::swapSections(int oldIdx, int newIdx, bool swapTable)
     bool sectionsHasContent = !(oldIconSet.isNull() && newIconSet.isNull()
                             && oldLabel.isNull() && newLabel.isNull());
     if (sectionsHasContent) {
+        Q3HeaderData *data = static_cast<Q3Header*>(this)->d;
+        bool oldNullLabel = qt_get_null_label_bit(data, oldIdx);
+        bool newNullLabel = qt_get_null_label_bit(data, newIdx);
         setLabel(oldIdx, newIconSet, newLabel);
         setLabel(newIdx, oldIconSet, oldLabel);
+        qt_set_null_label_bit(data, oldIdx, newNullLabel);
+        qt_set_null_label_bit(data, newIdx, oldNullLabel);
     }
 
     qt_qheader_label_return_null_strings = false;

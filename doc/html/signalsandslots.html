@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-x11-opensource-src-4.1.2/doc/src/signalsandslots.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/doc/src/signalsandslots.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/doc/src/signalsandslots.qdoc -->
 <head>
     <title>Qt 4.1: Signals and Slots</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -110,13 +111,8 @@ body { background: #ffffff; color: black; }</style>
 <p>A note about arguments: Our experience shows that signals and slots are more reusable if they do not use special types. If <a href="qabstractslider.html#valueChanged">QScrollBar::valueChanged</a>() were to use a special type such as the hypothetical QScrollBar::Range, it could only be connected to slots designed specifically for <a href="qscrollbar.html">QScrollBar</a>. Something as simple as the program in <a href="tutorial-t5.html">Tutorial 5</a> would be impossible.</p>
 <a name="slots"></a>
 <h2>Slots</h2>
-<p>A slot is called when a signal connected to it is emitted. Slots are normal C++ functions and can be called normally; their only special feature is that signals can be connected to them. A slot's arguments cannot have default values, and, like signals, it is rarely wise to use your own custom types for slot arguments.</p>
-<p>Since slots are normal member functions with just a little extra spice, they have access rights like ordinary member functions. A slot's access right determines who can connect to it:</p>
-<ul>
-<li>A <tt>public slots</tt> section contains slots that anyone can connect signals to. This is very useful for component programming: you create objects that know nothing about each other, connect their signals and slots so that information is passed correctly, and, like a model railway, turn it on and leave it running.</li>
-<li>A <tt>protected slots</tt> section contains slots that this class and its subclasses may connect signals to. This is intended for slots that are part of the class's implementation rather than its interface to the rest of the world.</li>
-<li>A <tt>private slots</tt> section contains slots that only the class itself may connect signals to. This is intended for very tightly connected classes, where even subclasses aren't trusted to get the connections right.</li>
-</ul>
+<p>A slot is called when a signal connected to it is emitted. Slots are normal C++ functions and can be called normally; their only special feature is that signals can be connected to them.</p>
+<p>Since slots are normal member functions, they follow the normal C++ rules when called directly. However, as slots, they can be invoked by any component, regardless of its access level, via a signal-slot connection. This means that a signal emitted from an instance of an arbitrary class can cause a private slot to be invoked in an instance of an unrelated class.</p>
 <p>You can also define slots to be virtual, which we have found quite useful in practice.</p>
 <p>Compared to callbacks, signals and slots are slightly slower because of the increased flexibility they provide, although the difference for real applications is insignificant. In general, emitting a signal that is connected to some slots, is approximately ten times slower than calling the receivers directly, with non-virtual function calls. This is the overhead required to locate the connection object, to safely iterate over all connections (i.e. checking that subsequent receivers have not been destroyed during the emission), and to marshall any parameters in a generic fashion. While ten non-virtual function calls may sound like a lot, it's much less overhead than any <tt>new</tt> or <tt>delete</tt> operation, for example. As soon as you perform a string, vector or list operation that behind the scene requires <tt>new</tt> or <tt>delete</tt>, the signals and slots overhead is only responsible for a very small proportion of the complete function call costs.</p>
 <p>The same is true whenever you do a system call in a slot; or indirectly call more than ten functions. On an i586-500, you can emit around 2,000,000 signals per second connected to one receiver, or around 1,200,000 per second connected to two receivers. The simplicity and flexibility of the signals and slots mechanism is well worth the overhead, which your users won't even notice.</p>
@@ -176,6 +172,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

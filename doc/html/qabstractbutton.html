@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-x11-opensource-src-4.1.2/src/gui/widgets/qabstractbutton.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/src/gui/widgets/qabstractbutton.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/src/gui/widgets/qabstractbutton.cpp -->
 <head>
     <title>Qt 4.1: QAbstractButton Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -70,7 +71,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>QString <b><a href="qabstractbutton.html#text-prop">text</a></b> () const</li>
 </ul>
 <ul>
-<li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>190 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -127,9 +128,9 @@ body { background: #ffffff; color: black; }</style>
 <pre>&nbsp;   QPushButton *button = new QPushButton(tr(&quot;Ro&amp;ck &amp;&amp; Roll&quot;), this);</pre>
 <p>In this example, the shortcut <b>Alt+C</b> is assigned to the button, so that when the user presses <b>Alt+C</b> the button will call <a href="qabstractbutton.html#animateClick">animateClick</a>().</p>
 <p>You can also set a custom shortcut key using the <a href="qabstractbutton.html#shortcut-prop">setShortcut</a>() function. This is useful mostly for buttons that do not have any text, because they have no automatic shortcut.</p>
-<pre>&nbsp;     button-&gt;setPixmap(QPixmap(&quot;:/images/print.png&quot;));
-      button-&gt;setShortcut(tr(&quot;Alt+F7&quot;));</pre>
-<p>All of the buttons provided by Qt (<a href="qpushbutton.html">QPushButton</a>, <a href="qtoolbutton.html">QToolButton</a>, <a href="qcheckbox.html">QCheckBox</a>, and <a href="qradiobutton.html">QRadioButton</a>) can display both text and pixmaps.</p>
+<pre>&nbsp;   button-&gt;setIcon(QIcon(&quot;:/images/print.png&quot;));
+    button-&gt;setShortcut(tr(&quot;Alt+F7&quot;));</pre>
+<p>All of the buttons provided by Qt (<a href="qpushbutton.html">QPushButton</a>, <a href="qtoolbutton.html">QToolButton</a>, <a href="qcheckbox.html">QCheckBox</a>, and <a href="qradiobutton.html">QRadioButton</a>) can display both <a href="qabstractbutton.html#text-prop">text</a> and <a href="qabstractbutton.html#icon-prop">icons</a>.</p>
 <p>A button can be made the default button in a dialog are provided by <a href="qpushbutton.html#default-prop">QPushButton::setDefault</a>() and <a href="qpushbutton.html#autoDefault-prop">QPushButton::setAutoDefault</a>().</p>
 <p>QAbstractButton provides most of the states used for buttons:</p>
 <ul>
@@ -288,6 +289,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

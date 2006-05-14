@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-x11-opensource-src-4.1.2/doc/src/qtsvg.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/doc/src/qtsvg.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/doc/src/qtsvg.qdoc -->
 <head>
     <title>Qt 4.1: QtSvg Module</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -39,10 +40,11 @@ body { background: #ffffff; color: black; }</style>
 <ul><li><a href="#svg-support">SVG Support</a></li>
 <li><a href="#configuring-the-build-process">Configuring the Build Process</a></li>
 <li><a href="#rendering-svg-files">Rendering SVG files</a></li>
+<li><a href="#additional-information">Additional Information</a></li>
 </ul>
 <a name="svg-support"></a>
 <h3>SVG Support</h3>
-<p>Qt supports Tiny profiles of both SVG 1.1 and SVG 1.2. ECMA scripts and DOM manipulation are currently not supported.</p>
+<p>Qt supports the <a href="http://www.w3.org/Graphics/SVG/feature/1.2/#SVG-static">static features</a> of <a href="http://www.w3.org/TR/SVGMobile12/">SVG 1.2 Tiny</a>. ECMA scripts and DOM manipulation are currently not supported.</p>
 <a name="configuring-the-build-process"></a>
 <h3>Configuring the Build Process</h3>
 <p>Applications that use Qt's SVG classes need to be configured to be built against the QtSvg module. To include the definitions of the module's classes, use the following directive:</p>
@@ -55,6 +57,12 @@ body { background: #ffffff; color: black; }</style>
 <p>The easiest way to render SVG files is to construct a <a href="qsvgwidget.html">QSvgWidget</a> and load an SVG file using one of the <a href="qsvgwidget.html#load">QSvgWidget::load</a>() functions.</p>
 <p><a href="qsvgrenderer.html">QSvgRenderer</a> is the class responsible for rendering SVG files for <a href="qsvgwidget.html">QSvgWidget</a>, and it can be used directly to provide SVG support for custom widgets. To load an SVG file, construct a <a href="qsvgrenderer.html">QSvgRenderer</a> with a file name or the contents of a file, or call <a href="qsvgrenderer.html#load">QSvgRenderer::load</a>() on an existing renderer. If the SVG file has been loaded successfully the <a href="qsvgrenderer.html#isValid">QSvgRenderer::isValid</a>() will return true.</p>
 <p>Once you have loaded the SVG file successfully, you can render it with the <a href="qsvgrenderer.html#render">QSvgRenderer::render</a>() function. Note that this scheme allows you to render SVG files on all paint devices supported by Qt, including <a href="qwidget.html">QWidget</a>, <a href="qglwidget.html">QGLWidget</a>, and <a href="qimage.html">QImage</a>. See the <a href="painting-svgviewer.html">SVG Viewer</a> example for more details.</p>
+<a name="additional-information"></a>
+<h3>Additional Information</h3>
+<p>Some code for arc handling in this module is derived from code with the following license:</p>
+<p>Copyright 2002 USC/Information Sciences Institute</p>
+<p>Permission to use, copy, modify, distribute, and sell this software and its documentation for any purpose is hereby granted without fee, provided that the above copyright notice appear in all copies and that both that copyright notice and this permission notice appear in supporting documentation, and that the name of Information Sciences Institute not be used in advertising or publicity pertaining to distribution of the software without specific, written prior permission. Information Sciences Institute makes no representations about the suitability of this software for any purpose. It is provided &quot;as is&quot; without express or implied warranty.</p>
+<p>INFORMATION SCIENCES INSTITUTE DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL INFORMATION SCIENCES INSTITUTE BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.</p>
 <p>
 [Previous: <a href="qtsql.html">QtSql Module</a>]
 [<a href="modules.html">Qt's Modules</a>]
@@ -64,6 +72,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

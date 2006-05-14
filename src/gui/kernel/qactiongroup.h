@@ -26,6 +26,8 @@
 
 #include <QtGui/qaction.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_ACTION
@@ -76,11 +78,13 @@ Q_SIGNALS:
 
 private:
     Q_DISABLE_COPY(QActionGroup)
-    Q_PRIVATE_SLOT(d_func(), void actionTriggered())
-    Q_PRIVATE_SLOT(d_func(), void actionChanged())
-    Q_PRIVATE_SLOT(d_func(), void actionHovered())
+    Q_PRIVATE_SLOT(d_func(), void _q_actionTriggered())
+    Q_PRIVATE_SLOT(d_func(), void _q_actionChanged())
+    Q_PRIVATE_SLOT(d_func(), void _q_actionHovered())
 };
 
 #endif // QT_NO_ACTION
+
+QT_END_HEADER
 
 #endif // QACTIONGROUP_H

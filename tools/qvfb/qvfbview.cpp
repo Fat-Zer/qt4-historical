@@ -31,7 +31,7 @@
 #include <QImage>
 #include <QBitmap>
 #include <QTimer>
-#include <QWMatrix>
+#include <QMatrix>
 #include <QPaintEvent>
 #include <QScrollArea>
 #include <QFile>
@@ -80,8 +80,7 @@ QVFbView::QVFbView( int id, int w, int h, int d, Rotation r, QWidget *parent )
     setAttribute(Qt::WA_PaintOnScreen, true);
     setMouseTracking( true );
     setFocusPolicy( Qt::StrongFocus );
-    setBackgroundMode( Qt::NoBackground );
-
+    setAttribute( Qt::WA_NoSystemBackground );
 
     resize( contentsWidth, contentsHeight );
 
@@ -138,7 +137,7 @@ void QVFbView::setGamma(double gr, double gg, double gb)
 	gmax = 255;
 	bmax = 255;
     }
-    int mm = QMAX(rmax,QMAX(gmax,bmax))+1;
+    int mm = qMax(rmax,qMax(gmax,bmax))+1;
     if ( gammatable )
 	delete [] gammatable;
     gammatable = new QRgb[mm];
@@ -238,10 +237,10 @@ static QRect mapToDevice( const QRect &r, const QSize &s, QVFbView::Rotation rot
 void QVFbView::sendMouseData( const QPoint &pos, int buttons, int wheel )
 {
     QPoint p = mapToDevice( QRect(pos,QSize(1,1)), QSize(displayWidth(), displayHeight()), rotation ).topLeft();
-    mView->sendMouseData(pos, buttons, wheel);
+    mView->sendMouseData(p, buttons, wheel);
 }
 
-void QVFbView::sendKeyboardData( int unicode, int keycode, int modifiers,
+void QVFbView::sendKeyboardData( QString unicode, int keycode, int modifiers,
 				 bool press, bool repeat )
 {
     mView->sendKeyboardData(unicode, keycode, modifiers, press, repeat);
@@ -274,7 +273,7 @@ QImage QVFbView::getBuffer( const QRect &r, int &leading ) const
         if (requiredSize > buffer.size())
             buffer.resize(requiredSize);
         uchar *b = reinterpret_cast<uchar*>(buffer.data());
-	QImage img(b, r.width(), r.height(), 32, 0, 0, QImage::IgnoreEndian);
+	QImage img(b, r.width(), r.height(), QImage::Format_RGB32);
 	const int rsh = viewdepth == 12 ? 12 : 11;
 	const int gsh = viewdepth == 12 ? 7 : 5;
 	const int bsh = viewdepth == 12 ? 1 : 0;
@@ -298,8 +297,8 @@ QImage QVFbView::getBuffer( const QRect &r, int &leading ) const
         if (requiredSize > buffer.size())
             buffer.resize(requiredSize);
         uchar *b = reinterpret_cast<uchar*>(buffer.data());
-	QImage img(b, r.width(), r.height(), 8, mView->clut(), 16,
-                   QImage::IgnoreEndian);
+	QImage img(b, r.width(), r.height(), QImage::Format_Indexed8);
+        //img.setColorTable(mView->clut());
 	for ( int row = 0; row < r.height(); row++ ) {
 	    unsigned char *dptr = img.scanLine( row );
 	    const unsigned char *sptr = mView->data() + (r.y()+row)*mView->linestep();
@@ -326,7 +325,7 @@ QImage QVFbView::getBuffer( const QRect &r, int &leading ) const
             int bpl = mView->width() *4;
             imgData = new unsigned char[bpl * mView->height()];
         }
-        QImage img(imgData, r.width(), r.height(), 32, 0, 0, QImage::IgnoreEndian);
+        QImage img(imgData, r.width(), r.height(), QImage::Format_RGB32);
         for (int row = 0; row < r.height(); ++row) {
             uchar *dptr = img.scanLine(row);
             const uchar *sptr = mView->data() + (r.y() + row) * mView->linestep();
@@ -344,20 +343,19 @@ QImage QVFbView::getBuffer( const QRect &r, int &leading ) const
     case 32: {
 	leading = r.x();
 	return QImage( mView->data() + r.y() * mView->linestep(),
-                       mView->width(), r.height(), mView->depth(), 0,
-                       0, QImage::LittleEndian );
+                       mView->width(), r.height(), QImage::Format_RGB32 );
     }
     case 8: {
-	leading = r.x();
-	return QImage( mView->data() + r.y() * mView->linestep(),
-                       mView->width(), r.height(), mView->depth(), mView->clut(),
-                       256, QImage::LittleEndian );
+        leading = r.x();
+        QImage img( mView->data() + r.y() * mView->linestep(),
+                    mView->width(), r.height(), QImage::Format_Indexed8 );
+        img.setColorTable(mView->clut());
+        return img;
     }
     case 1: {
 	leading = r.x();
 	return QImage( mView->data() + r.y() * mView->linestep(),
-                       mView->width(), r.height(), mView->depth(), mView->clut(),
-                       0, QImage::LittleEndian );
+                       mView->width(), r.height(), QImage::Format_MonoLSB );
     }
     }
     return QImage();
@@ -382,20 +380,20 @@ void QVFbView::drawScreen()
     QRect r(0, 0, mView->width(), mView->height() );
 
     if ( int(hzm) != hzm || int(vzm) != vzm ) {
-        r.rLeft() = findMultiple(r.left(),hzm,0,-1);
-        r.rTop() = findMultiple(r.top(),vzm,0,-1);
+        r.setLeft( findMultiple(r.left(),hzm,0,-1) );
+        r.setTop( findMultiple(r.top(),vzm,0,-1) );
         int w = findMultiple(r.width(),hzm,mView->width(),1);
         int h = findMultiple(r.height(),vzm,mView->height(),1);
-        r.rRight() = r.left()+w-1;
-        r.rBottom() = r.top()+h-1;
+        r.setRight( r.left()+w-1 );
+        r.setBottom( r.top()+h-1 );
     }
     int leading;
     QImage img( getBuffer( r, leading ) );
     QPixmap pm;
     if ( hzm == 1.0 && vzm == 1.0 ) {
-        pm.convertFromImage( img );
+        pm = QPixmap::fromImage( img );
     } else if ( emulateLcdScreen && hzm == 3.0 && vzm == 3.0 ) {
-        QImage img2( img.width()*3, img.height(), 32 );
+        QImage img2( img.width()*3, img.height(), QImage::Format_RGB32 );
         for ( int row = 0; row < img2.height(); row++ ) {
             QRgb *dptr = (QRgb*)img2.scanLine( row );
             QRgb *sptr = (QRgb*)img.scanLine( row );
@@ -406,17 +404,17 @@ void QVFbView::drawScreen()
                 *dptr++ = qRgb(0,0,qBlue(s));
             }
         }
-        QWMatrix m;
+        QMatrix m;
         m.scale(1.0, 3.0);
-        pm.convertFromImage( img2 );
-        pm = pm.xForm(m);
+        pm = QPixmap::fromImage( img2 );
+        pm = pm.transformed(m);
     } else if ( int(hzm) == hzm && int(vzm) == vzm ) {
-        QWMatrix m;
+        QMatrix m;
         m.scale(hzm,vzm);
-        pm.convertFromImage( img );
-        pm = pm.xForm(m);
+        pm = QPixmap::fromImage( img );
+        pm = pm.transformed(m);
     } else {
-        pm.convertFromImage( img.smoothScale(int(img.width()*hzm),int(img.height()*vzm)) );
+        pm = QPixmap::fromImage( img.scaled(int(img.width()*hzm),int(img.height()*vzm), Qt::IgnoreAspectRatio, Qt::SmoothTransformation) );
     }
 
     int x1 = r.x();
@@ -458,9 +456,9 @@ void QVFbView::drawScreen()
     leadingX = int(leadingX*hzm);
     leadingY = int(leadingY*vzm);
     if ( rotation != 0 ) {
-        QWMatrix m;
+        QMatrix m;
         m.rotate(rotation * 90.0);
-        pm = pm.xForm(m);
+        pm = pm.transformed(m);
     }
     p.setPen( Qt::black );
     p.setBrush( Qt::white );
@@ -476,7 +474,7 @@ void QVFbView::drawScreen()
 //    return QWidgetView::eventFilter( obj, e );
 //}
 
-void QVFbView::paintEvent( QPaintEvent *pe )
+void QVFbView::paintEvent( QPaintEvent * /*pe*/ )
 {
     /*
     QRect r( pe->rect() );
@@ -490,7 +488,7 @@ void QVFbView::paintEvent( QPaintEvent *pe )
 
 void QVFbView::mousePressEvent( QMouseEvent *e )
 {
-    sendMouseData( QPoint(int(e->x()/hzm),int(e->y()/vzm)), e->stateAfter(), 0 );
+    sendMouseData( QPoint(int(e->x()/hzm),int(e->y()/vzm)), e->buttons(), 0 );
 }
 
 void QVFbView::contextMenuEvent( QContextMenuEvent* )
@@ -500,23 +498,23 @@ void QVFbView::contextMenuEvent( QContextMenuEvent* )
 
 void QVFbView::mouseDoubleClickEvent( QMouseEvent *e )
 {
-    sendMouseData( QPoint(int(e->x()/hzm),int(e->y()/vzm)), e->stateAfter(), 0 );
+    sendMouseData( QPoint(int(e->x()/hzm),int(e->y()/vzm)), e->buttons(), 0 );
 }
 
 void QVFbView::mouseReleaseEvent( QMouseEvent *e )
 {
-    sendMouseData( QPoint(int(e->x()/hzm),int(e->y()/vzm)), e->stateAfter(), 0 );
+    sendMouseData( QPoint(int(e->x()/hzm),int(e->y()/vzm)), e->buttons(), 0 );
 }
 
 void QVFbView::skinMouseEvent( QMouseEvent *e )
 {
-    sendMouseData( QPoint(int(e->x()/hzm),int(e->y()/vzm)), e->stateAfter(), 0 );
+    sendMouseData( QPoint(int(e->x()/hzm),int(e->y()/vzm)), e->buttons(), 0 );
 }
 
 void QVFbView::mouseMoveEvent( QMouseEvent *e )
 {
-    if ( !emulateTouchscreen || (e->state() & Qt::MouseButtonMask ) )
-	sendMouseData( QPoint(int(e->x()/hzm),int(e->y()/vzm)), e->state(), 0 );
+    if ( !emulateTouchscreen || (e->buttons() & Qt::MouseButtonMask ) )
+	sendMouseData( QPoint(int(e->x()/hzm),int(e->y()/vzm)), e->buttons(), 0 );
 }
 
 void QVFbView::wheelEvent( QWheelEvent *e )
@@ -538,15 +536,15 @@ void QVFbView::setLcdScreenEmulation( bool b )
 
 void QVFbView::keyPressEvent( QKeyEvent *e )
 {
-    sendKeyboardData(e->text()[0].unicode(), e->key(),
-		     e->state()&(Qt::ShiftButton|Qt::ControlButton|Qt::AltButton),
+    sendKeyboardData(e->text(), e->key(),
+		     e->modifiers()&(Qt::ShiftModifier|Qt::ControlModifier|Qt::AltModifier),
 		     true, e->isAutoRepeat());
 }
 
 void QVFbView::keyReleaseEvent( QKeyEvent *e )
 {
-    sendKeyboardData(e->ascii(), e->key(),
-		     e->state()&(Qt::ShiftButton|Qt::ControlButton|Qt::AltButton),
+    sendKeyboardData(e->text(), e->key(),
+		     e->modifiers()&(Qt::ShiftModifier|Qt::ControlModifier|Qt::AltModifier),
 		     false, e->isAutoRepeat());
 }
 
@@ -564,8 +562,7 @@ void QVFbView::startAnimation( const QString& filename )
     animation = new QAnimationWriter(filename,"MNG");
     animation->setFrameRate(refreshRate);
     animation->appendFrame(QImage(mView->data(),
-                mView->width(), mView->height(), mView->depth(), mView->clut(),
-                256, QImage::LittleEndian));
+                mView->width(), mView->height(), QImage::Format_RGB32));
 }
 
 void QVFbView::stopAnimation()
@@ -577,12 +574,12 @@ void QVFbView::stopAnimation()
 
 void QVFbView::skinKeyPressEvent( int code, const QString& text, bool autorep )
 {
-    QKeyEvent e(QEvent::KeyPress,code,text.isEmpty() ? 0 : text[0].latin1(),0,text,autorep);
+    QKeyEvent e(QEvent::KeyPress,code,0,text,autorep);
     keyPressEvent(&e);
 }
 
 void QVFbView::skinKeyReleaseEvent( int code, const QString& text, bool autorep )
 {
-    QKeyEvent e(QEvent::KeyRelease,code,text.isEmpty() ? 0 : text[0].latin1(),0,text,autorep);
+    QKeyEvent e(QEvent::KeyRelease,code,0,text,autorep);
     keyReleaseEvent(&e);
 }

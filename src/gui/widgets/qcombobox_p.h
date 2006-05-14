@@ -67,7 +67,6 @@ protected:
     {
         QStyleOptionViewItem option = QListView::viewOptions();
         option.showDecorationSelected = true;
-        option.textElideMode = Qt::ElideMiddle;
         return option;
     }
 };
@@ -134,6 +133,7 @@ public:
     QAbstractItemView *itemView() const;
     void setItemView(QAbstractItemView *itemView);
     int spacing() const;
+
     QTimer blockMouseReleaseTimer;
     QPoint initialClickPosition;
 
@@ -143,6 +143,7 @@ public Q_SLOTS:
     void setCurrentIndex(const QModelIndex &index);
 
 protected:
+    void changeEvent(QEvent *e);
     bool eventFilter(QObject *o, QEvent *e);
     void mousePressEvent(QMouseEvent *e);
     void mouseReleaseEvent(QMouseEvent *e);
@@ -199,20 +200,21 @@ public:
     QComboBoxPrivateContainer* viewContainer();
     QStyleOptionComboBox getStyleOption() const;
     void updateLineEditGeometry();
-    void returnPressed();
-    void complete();
-    void itemSelected(const QModelIndex &item);
+    void _q_returnPressed();
+    void _q_complete();
+    void _q_itemSelected(const QModelIndex &item);
     bool contains(const QString &text, int role);
     void emitActivated(const QModelIndex&);
-    void emitHighlighted(const QModelIndex&);
-    void emitCurrentIndexChanged(int index);
-    void modelDestroyed();
-    void resetButton();
-    void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
-    void rowsAboutToBeInserted(const QModelIndex & parent, int start, int end);
-    void rowsInserted(const QModelIndex & parent, int start, int end);
-    void rowsAboutToBeRemoved(const QModelIndex & parent, int start, int end);
-    void rowsRemoved(const QModelIndex & parent, int start, int end);
+    void _q_emitHighlighted(const QModelIndex&);
+    void _q_emitCurrentIndexChanged(int index);
+    void _q_modelDestroyed();
+    void _q_modelReset();
+    void _q_resetButton();
+    void _q_dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
+    void _q_rowsAboutToBeInserted(const QModelIndex & parent, int start, int end);
+    void _q_rowsInserted(const QModelIndex & parent, int start, int end);
+    void _q_rowsAboutToBeRemoved(const QModelIndex & parent, int start, int end);
+    void _q_rowsRemoved(const QModelIndex & parent, int start, int end);
     void updateArrow(QStyle::StateFlag state);
     bool updateHoverControl(const QPoint &pos);
     QStyle::SubControl newHoverControl(const QPoint &pos);

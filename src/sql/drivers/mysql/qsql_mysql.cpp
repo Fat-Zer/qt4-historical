@@ -709,10 +709,10 @@ bool QMYSQLResult::exec()
 
             switch (val.type()) {
                 case QVariant::ByteArray:
-                currBind->buffer_type = MYSQL_TYPE_BLOB;
-                currBind->buffer = const_cast<char *>(val.toByteArray().constData());
-                currBind->buffer_length = val.toByteArray().size();
-                break;
+                    currBind->buffer_type = MYSQL_TYPE_BLOB;
+                    currBind->buffer = const_cast<char *>(val.toByteArray().constData());
+                    currBind->buffer_length = val.toByteArray().size();
+                    break;
 
                 case QVariant::Time:
                 case QVariant::Date:
@@ -742,20 +742,21 @@ bool QMYSQLResult::exec()
                     break; }
                 case QVariant::UInt:
                 case QVariant::Int:
-                    currBind->buffer_type =  MYSQL_TYPE_LONG;
+                case QVariant::Bool:
+                    currBind->buffer_type = MYSQL_TYPE_LONG;
                     currBind->buffer = data;
-                    currBind->buffer_length = sizeof(uint);
-                    currBind->is_unsigned = (val.type() == QVariant::UInt);
+                    currBind->buffer_length = sizeof(int);
+                    currBind->is_unsigned = (val.type() != QVariant::Int);
                     break;
                 case QVariant::Double:
-                    currBind->buffer_type =  MYSQL_TYPE_DOUBLE;
+                    currBind->buffer_type = MYSQL_TYPE_DOUBLE;
                     currBind->buffer = data;
                     currBind->buffer_length = sizeof(double);
                     currBind->is_unsigned = 0;
                     break;
                 case QVariant::LongLong:
                 case QVariant::ULongLong:
-                    currBind->buffer_type =  MYSQL_TYPE_LONGLONG;
+                    currBind->buffer_type = MYSQL_TYPE_LONGLONG;
                     currBind->buffer = data;
                     currBind->buffer_length = sizeof(qint64);
                     currBind->is_unsigned = (val.type() == QVariant::ULongLong);
@@ -764,7 +765,7 @@ bool QMYSQLResult::exec()
                 default: {
                     QByteArray ba = d->tc->fromUnicode(val.toString());
                     stringVector.append(ba);
-                    currBind->buffer_type =  MYSQL_TYPE_STRING;
+                    currBind->buffer_type = MYSQL_TYPE_STRING;
                     currBind->buffer = const_cast<char *>(ba.constData());
                     currBind->buffer_length = ba.length();
                     currBind->is_unsigned = 0;
@@ -956,7 +957,12 @@ bool QMYSQLDriver::open(const QString& db,
     if (isOpen())
         close();
 
-    unsigned int optionFlags = 0;
+    /* This is a hack to get MySQL's stored procedure support working.
+       Since a stored procedure _may_ return multiple result sets,
+       we have to enable CLIEN_MULTI_STATEMENTS here, otherwise _any_
+       stored procedure call will fail.
+    */
+    unsigned int optionFlags = CLIENT_MULTI_STATEMENTS;
     const QStringList opts(connOpts.split(QLatin1Char(';'), QString::SkipEmptyParts));
 
     // extract the real options from the string

@@ -104,11 +104,8 @@
 /*!
     \fn int QAbstractTextDocumentLayout::hitTest(const QPointF &point, Qt::HitTestAccuracy accuracy) const
 
-    \internal
-
-    Returns the cursor postion for the given \a point and with the
-    given \a accuracy. Returns -1 to indicate failure (i.e. no valid
-    cursor position was found.)
+    Returns the cursor postion for the given \a point with the \a accuracy specified.
+    Returns -1 to indicate failure if no valid cursor position was found.
 */
 
 /*!
@@ -170,7 +167,7 @@ void QAbstractTextDocumentLayout::registerHandler(int formatType, QObject *compo
     if (!iface)
         return; // ### print error message on terminal?
 
-    connect(component, SIGNAL(destroyed(QObject*)), this, SLOT(handlerDestroyed(QObject*)));
+    connect(component, SIGNAL(destroyed(QObject*)), this, SLOT(_q_handlerDestroyed(QObject*)));
 
     QTextObjectHandler h;
     h.iface = iface;
@@ -274,7 +271,7 @@ void QAbstractTextDocumentLayout::drawInlineObject(QPainter *p, const QRectF &re
 #endif
 }
 
-void QAbstractTextDocumentLayoutPrivate::handlerDestroyed(QObject *obj)
+void QAbstractTextDocumentLayoutPrivate::_q_handlerDestroyed(QObject *obj)
 {
     HandlerHash::Iterator it = handlers.begin();
     while (it != handlers.end())

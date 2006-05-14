@@ -246,13 +246,14 @@ QIODevicePrivate::~QIODevicePrivate()
     \sa readyRead()
 */
 
-/*!     \fn QIODevice::readyRead()
+/*!     
+    \fn QIODevice::readyRead()
 
     This signal is emitted once every time new data is available for
     reading from the device. It will only be emitted again once new
     data is available, such as when a new payload of network data has
     arrived on your network socket, or when a new block of data has
-    been appended to your file.
+    been appended to your device.
 
     readyRead() is not emitted recursively; if you reenter the event loop or
     call waitForReadyRead() inside a slot connected to the readyRead() signal,
@@ -520,10 +521,17 @@ bool QIODevice::seek(qint64 pos)
     Returns true if the current read and write position is at the end
     of the device (i.e. there is no more data available for reading on
     the device); otherwise returns false.
+
+    For some devices, atEnd() can return true even though there is more data
+    to read. This special case only applies to devices that generate data in
+    direct response to you calling read() (e.g., \c /dev or \c /proc files on
+    Unix and Mac OS X, or console input / \c stdin on all platforms).
+
+    \sa bytesAvailable(), read(), isSequential()
 */
 bool QIODevice::atEnd() const
 {
-    return isOpen() && (pos() == size());
+    return isOpen() && (bytesAvailable() == 0);
 }
 
 /*!
@@ -550,7 +558,7 @@ qint64 QIODevice::bytesAvailable() const
 {
     Q_D(const QIODevice);
     if (!isSequential())
-        return size() - pos();
+        return qMax(size() - pos(), qint64(0));
     return d->ungetBuffer.size();
 }
 

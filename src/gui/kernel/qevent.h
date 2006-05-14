@@ -35,6 +35,8 @@
 #include <QtGui/qdrag.h>
 #include <QtCore/qvariant.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 class QAction;
@@ -655,5 +657,7 @@ private:
 #ifndef QT_NO_DEBUG_STREAM
 Q_GUI_EXPORT QDebug operator<<(QDebug, const QEvent *);
 #endif
+
+QT_END_HEADER
 
 #endif // QEVENT_H

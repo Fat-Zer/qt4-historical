@@ -42,8 +42,8 @@
     right and Y increases downwards. The unit is one pixel.
 
     The drawing capabilities of QPaintDevice are currently implemented
-    by the QWidget, QPixmap, QPicture, QImage, and QPrinter
-    subclasses.
+    by the QWidget, QImage, QPixmap, QGLPixelBuffer, QPicture, and
+    QPrinter subclasses.
 
     To implement support for a new backend, you must derive from
     QPaintDevice and reimplement the virtual paintEngine() function to
@@ -77,7 +77,8 @@
     function returns the number of different colors available for the
     paint device.
 
-    \sa QPaintEngine, QPainter, {The Coordinate System}
+    \sa QPaintEngine, QPainter, {The Coordinate System}, {The Paint
+    System}
 */
 
 /*!
@@ -178,7 +179,7 @@ QPaintDevice::~QPaintDevice()
 
 Drawable Q_GUI_EXPORT qt_x11Handle(const QPaintDevice *pd)
 {
-    Q_ASSERT(pd);
+    if (!pd) return 0;
     if (pd->devType() == QInternal::Widget)
         return static_cast<const QWidget *>(pd)->handle();
     else if (pd->devType() == QInternal::Pixmap)
@@ -194,7 +195,7 @@ Drawable Q_GUI_EXPORT qt_x11Handle(const QPaintDevice *pd)
 */
 const Q_GUI_EXPORT QX11Info *qt_x11Info(const QPaintDevice *pd)
 {
-    Q_ASSERT(pd);
+    if (!pd) return 0;
     if (pd->devType() == QInternal::Widget)
         return &static_cast<const QWidget *>(pd)->x11Info();
     else if (pd->devType() == QInternal::Pixmap)

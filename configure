@@ -2,7 +2,7 @@
 #
 # Configures to build the Qt library
 #
-# Copyright (C) 1999-2006 Trolltech AS.  All rights reserved.
+# Copyright (C) 1999-2006 Trolltech AS. All rights reserved.
 #
 # This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 # WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -102,7 +102,6 @@ fi
 if [ -f $relpath/LICENSE.Qtopia ]; then
     # Qtopia Edition
     [ "$PLATFORM_MAC" = "maybe" ] && PLATFORM_MAC=yes
-    [ "$PLATFORM_QWS" = "maybe" ] && PLATFORM_QWS=yes
     Licensee="Qtopia"
     Edition="Qtopia"
     QT_EDITION="QT_EDITION_DESKTOP"
@@ -390,21 +389,25 @@ CFG_XRANDR=auto
 CFG_XRENDER=auto
 CFG_OPENGL=auto
 CFG_FONTCONFIG=auto
-CFG_QWS_FREETYPE=yes
+CFG_QWS_FREETYPE=auto
+CFG_LIBFREETYPE=auto
 CFG_SQL_AVAILABLE=
 CFG_GFX_AVAILABLE=""
 CFG_GFX_ON=""
 CFG_GFX_OFF=""
-CFG_KBD_AVAILABLE="tty usb sl5000 yopy vr41xx"
+CFG_KBD_AVAILABLE="tty usb sl5000 yopy vr41xx qvfb"
 CFG_KBD_ON="tty"    #default, see QMAKE_VARS above
 CFG_KBD_OFF=
-CFG_MOUSE_AVAILABLE="pc bus linuxtp yopy vr41xx tslib"
+CFG_MOUSE_AVAILABLE="pc bus linuxtp yopy vr41xx tslib qvfb"
 CFG_MOUSE_ON="pc"   #default, see QMAKE_VARS above
+CFG_MOUSE_PLUGIN_AVAILABLE=
+CFG_MOUSE_PLUGIN=
 CFG_MOUSE_OFF=
 CFG_USE_GNUMAKE=no
 CFG_IM=yes
-CFG_DECORATION_AVAILABLE=
-CFG_DECORATION_ON=
+CFG_DECORATION_AVAILABLE="styled windows default"
+CFG_DECORATION_ON="${CFG_DECORATION_AVAILABLE}" # all on by default
+CFG_DECORATION_PLUGIN_AVAILABLE=
 CFG_DECORATION_PLUGIN=
 CFG_TABLET=auto
 CFG_XKB=auto
@@ -427,7 +430,7 @@ CFG_IPV6IFNAME=auto
 CFG_RPATH=yes
 CFG_FRAMEWORK=auto
 CFG_UNIVERSAL_BINARY=auto
-CFG_SXV=no
+CFG_SXE=no
 CFG_SDK=
 D_FLAGS=
 I_FLAGS=
@@ -460,7 +463,7 @@ QT_INSTALL_DEMOS=
 
 
 #-------------------------------------------------------------------------------
-# check SQL drivers, styles and decorations available in this package
+# check SQL drivers, mouse drivers and decorations available in this package
 #-------------------------------------------------------------------------------
 
 CFG_SQL_AVAILABLE=`find $relpath/src/plugins/sqldrivers/* -prune -type d -exec basename {} \;`
@@ -470,13 +473,25 @@ for i in $CFG_SQL_AVAILABLE; do
     eval "CFG_SQL_$i=auto"
 done
 
-CFG_DECORATION_AVAILABLE=""
+CFG_DECORATION_PLUGIN_AVAILABLE=""
 if [ -d "$relpath/src/plugins/decorations" ]; then
-    CFG_DECORATION_AVAILABLE=`find $relpath/src/plugins/decorations/* -prune -type d -exec basename {} \;`
+    CFG_DECORATION_PLUGIN_AVAILABLE=`find $relpath/src/plugins/decorations/* -prune -type d -exec basename {} \;`
+    CFG_DECORATION_PLUGIN_AVAILABLE=`echo $CFG_DECORATION_PLUGIN_AVAILABLE` # normalize whitespace
 fi
-CFG_DECORATION_AVAILABLE=`echo $CFG_DECORATION_AVAILABLE` # normalize whitespace
-CFG_DECORATION_ON=`echo $CFG_DECORATION_AVAILABLE`        # All on by default
 
+CFG_MOUSE_PLUGIN_AVAILABLE=""
+if [ -d "$relpath/src/plugins/mousedrivers" ]; then
+    CFG_MOUSE_PLUGIN_AVAILABLE=`find $relpath/src/plugins/mousedrivers/* -prune -type d -exec basename {} \;`
+    CFG_MOUSE_PLUGIN_AVAILABLE=`echo $CFG_MOUSE_PLUGIN_AVAILABLE` # normalize whitespace
+fi
+
+CFG_GFX_PLUGIN_AVAILABLE=""
+if [ -d "$relpath/src/plugins/gfxdrivers" ]; then
+    CFG_GFX_PLUGIN_AVAILABLE=`find $relpath/src/plugins/gfxdrivers/* -prune -type d -exec basename {} \;`
+    CFG_GFX_PLUGIN_AVAILABLE=`echo $CFG_GFX_PLUGIN_AVAILABLE` # normalize whitespace
+    CFG_GFX_AVAILABLE="$CFG_GFX_AVAILABLE $CFG_GFX_PLUGIN_AVAILABLE"
+    CFG_GFX_OFF="$CFG_GFX_AVAILABLE" # assume all off
+fi
 
 #-------------------------------------------------------------------------------
 # parse command line arguments
@@ -611,6 +626,24 @@ while [ "$#" -gt 0 ]; do
         VAR="add_link"
         VAL=`echo $1 | sed 's,-l,,'`
         ;;
+    -F?*|-F)
+        VAR="add_fpath"
+        if [ "$1" = "-F" ]; then
+            shift
+            VAL="$1"
+        else
+            VAL=`echo $1 | sed 's,-F,,'`
+        fi
+        ;;
+    -fw?*|-fw)
+        VAR="add_framework"
+        if [ "$1" = "-fw" ]; then
+            shift
+            VAL="$1"
+        else
+            VAL=`echo $1 | sed 's,-fw,,'`
+        fi
+        ;;
     -*)
         VAR=`echo $1 | sed "s,^-\(.*\),\1,"`
         VAL="unknown"
@@ -686,8 +719,8 @@ while [ "$#" -gt 0 ]; do
     buildkey)
         CFG_USER_BUILD_KEY="$VAL"
         ;;
-    sxv)
-	CFG_SXV="$VAL"
+    sxe)
+	CFG_SXE="$VAL"
         ;;
     embedded)
         CFG_EMBEDDED="$VAL"
@@ -723,7 +756,12 @@ while [ "$#" -gt 0 ]; do
         ;;
     qvfb) # left for commandline compatibility, not documented
         if [ "$VAL" = "yes" ] || [ "$VAL" = "no" ]; then
-            [ "$VAL" = "yes" ] && QMAKE_VARS="$QMAKE_VARS \"gfx-drivers += qvfb\"" && CFG_GFX_ON="$CFG_GFX_ON qvfb"
+            if [ "$VAL" = "yes" ]; then
+                QMAKE_VARS="$QMAKE_VARS \"gfx-drivers += qvfb\" \"kbd-drivers += qvfb\" \"mouse-drivers += qvfb\""
+                CFG_GFX_ON="$CFG_GFX_ON qvfb"
+                CFG_KBD_ON="$CFG_KBD_ON qvfb"
+                CFG_MOUSE_ON="$CFG_MOUSE_ON qvfb"
+            fi
         else
             UNKNOWN_OPT=yes
         fi
@@ -967,7 +1005,8 @@ while [ "$#" -gt 0 ]; do
         fi
         ;;
     freetype)
-        if [ "$VAL" = "yes" ] || [ "$VAL" = "no" ]; then
+        [ "$VAL" = "qt" ] && VAL=yes
+        if [ "$VAL" = "yes" ] || [ "$VAL" = "no" ] || [ "$VAL" = "system" ]; then
             CFG_QWS_FREETYPE="$VAL"
         else
             UNKNOWN_OPT=yes
@@ -1095,37 +1134,64 @@ while [ "$#" -gt 0 ]; do
         OPT="$VAL"
         VAL=`echo $VAR | sed "s,^[^-]*-\([^-]*\).*,\1,"`
         VAR=`echo $VAR | sed "s,^\([^-]*\).*,\1,"`
-        ERROR=no
-        if [ "$VAR" = "decoration" ]; then
-            ERROR=yes
-            for d in $CFG_DECORATION_AVAILABLE; do
-                if [ "$VAL" = "$d" ]; then
-                    ERROR=no
-                    break
-                fi
-            done
-        elif [ "$VAR" = "sql" ]; then
-            ERROR=yes
-            # check if named driver is available
-            for d in $CFG_SQL_AVAILABLE; do
-                if [ "$VAL" = "$d" ]; then
-                    ERROR=no
-                    break
-                fi
-            done
+
+        # Grab the available values
+        case "$VAR" in
+        sql)
+            avail="$CFG_SQL_AVAILABLE"
+            ;;
+        gfx)
+            avail="$CFG_GFX_AVAILABLE"
+            ;;
+        decoration)
+            avail="$CFG_DECORATION_AVAILABLE"
+	    if [ "$OPT" = "plugin" ]; then
+		avail="$CFG_DECORATION_PLUGIN_AVAILABLE"
+	    fi
+            ;;
+        kbd)
+            avail="$CFG_KBD_AVAILABLE"
+            ;;
+        mouse)
+            avail="$CFG_MOUSE_AVAILABLE"
+	    if [ "$OPT" = "plugin" ]; then
+		avail="$CFG_MOUSE_PLUGIN_AVAILABLE"
+	    fi
+            ;;
+        *)
+            avail=""
+            echo "BUG: Unhandled type $VAR used in $CURRENT_OPT"
+            ;;
+        esac
+
+        # Check that that user's value is available.
+        found=no
+        for d in $avail; do
+            if [ "$VAL" = "$d" ]; then
+                found=yes
+                break
+            fi
+        done
+        [ "$found" = yes ] || ERROR=yes
+
+        if [ "$VAR" = "sql" ]; then
             # set the CFG_SQL_driver
             eval "CFG_SQL_$VAL=\$OPT"
             continue
         fi
+
         if [ "$OPT" = "plugin" ] || [ "$OPT" = "qt" ]; then
             if [ "$OPT" = "plugin" ]; then
                 [ "$VAR" = "decoration" ] && QMAKE_VARS="$QMAKE_VARS \"${VAR}s -= $VAL\""
                 [ "$VAR" = "decoration" ] && CFG_DECORATION_ON=`echo "${CFG_DECORATION_ON} " | sed "s,${VAL} ,,g"` && CFG_DECORATION_PLUGIN="$CFG_DECORATION_PLUGIN ${VAL}"
+                [ "$VAR" = "mouse" ] && QMAKE_VARS="$QMAKE_VARS \"${VAR}s -= $VAL\""
+                [ "$VAR" = "mouse" ] && CFG_MOUSE_ON=`echo "${CFG_MOUSE_ON} " | sed "s,${VAL} ,,g"` && CFG_MOUSE_PLUGIN="$CFG_MOUSE_PLUGIN ${VAL}"		
                 VAR="${VAR}-${OPT}"
             else
-                if [ "$VAR" = "gfx" ] || [ "$VAR" = "kbd" ] || [ "$VAR" = "mouse" ]; then
+                if [ "$VAR" = "gfx" ] || [ "$VAR" = "kbd" ] || [ "$VAR" = "decoration" ] || [ "$VAR" = "mouse" ]; then
                     [ "$VAR" = "gfx" ] && CFG_GFX_ON="$CFG_GFX_ON $VAL"
                     [ "$VAR" = "kbd" ] && CFG_KBD_ON="$CFG_KBD_ON $VAL"
+		    [ "$VAR" = "decoration" ] && CFG_DECORATION_ON="$CFG_DECORATION_ON $VAL"
                     [ "$VAR" = "mouse" ] && CFG_MOUSE_ON="$CFG_MOUSE_ON $VAL"
                     VAR="${VAR}-driver"
                 fi
@@ -1195,6 +1261,21 @@ while [ "$#" -gt 0 ]; do
     add_link)
         l_FLAGS="$l_FLAGS -l${VAL}"
         ;;
+    add_fpath)
+        if [ "$PLATFORM_MAC" = "yes" ]; then
+            L_FLAGS="$L_FLAGS -F${VAL}"
+            I_FLAGS="$I_FLAGS -F${VAL}"
+        else
+            UNKNOWN_OPT=yes
+        fi
+        ;;
+    add_framework)
+        if [ "$PLATFORM_MAC" = "yes" ]; then
+            l_FLAGS="$l_FLAGS -framework ${VAL}"
+        else
+            UNKNOWN_OPT=yes
+        fi
+        ;;
     *)
         UNKNOWN_OPT=yes
         ;;
@@ -1205,70 +1286,6 @@ while [ "$#" -gt 0 ]; do
         ERROR=yes
     fi
 done
-
-#-------------------------------------------------------------------------------
-# post process QT_INSTALL_* variables
-#-------------------------------------------------------------------------------
-
-#prefix
-if [ -z "$QT_INSTALL_PREFIX" ]; then
-    if [ "$Edition" = "Trolltech" ]; then
-        # At Trolltech, we use sandboxed builds by default
-	QT_INSTALL_PREFIX=$outpath
-    elif [ "$PLATFORM_QWS" = "yes" ]; then
-        QT_INSTALL_PREFIX=/usr/local/Trolltech/QtopiaCore-${QT_VERSION}
-    else
-        # the default install prefix is /usr/local/Trolltech/Qt-$QT_VERSION
-        QT_INSTALL_PREFIX=/usr/local/Trolltech/Qt-${QT_VERSION}
-    fi
-fi
-QT_INSTALL_PREFIX=`$relpath/config.tests/unix/makeabs "$QT_INSTALL_PREFIX"`
-
-#docs
-[ -z "$QT_INSTALL_DOCS" ] && QT_INSTALL_DOCS=$QT_INSTALL_PREFIX/doc #default
-QT_INSTALL_DOCS=`$relpath/config.tests/unix/makeabs "$QT_INSTALL_DOCS"`
-
-#headers
-[ -z "$QT_INSTALL_HEADERS" ] && QT_INSTALL_HEADERS=$QT_INSTALL_PREFIX/include #default
-QT_INSTALL_HEADERS=`$relpath/config.tests/unix/makeabs "$QT_INSTALL_HEADERS"`
-
-#libs
-[ -z "$QT_INSTALL_LIBS" ] && QT_INSTALL_LIBS=$QT_INSTALL_PREFIX/lib #default
-QT_INSTALL_LIBS=`$relpath/config.tests/unix/makeabs "$QT_INSTALL_LIBS"`
-
-#bins
-[ -z "$QT_INSTALL_BINS" ] && QT_INSTALL_BINS=$QT_INSTALL_PREFIX/bin #default
-QT_INSTALL_BINS=`$relpath/config.tests/unix/makeabs "$QT_INSTALL_BINS"`
-
-#plugins
-[ -z "$QT_INSTALL_PLUGINS" ] && QT_INSTALL_PLUGINS=$QT_INSTALL_PREFIX/plugins #default
-QT_INSTALL_PLUGINS=`$relpath/config.tests/unix/makeabs "$QT_INSTALL_PLUGINS"`
-
-#data
-[ -z "$QT_INSTALL_DATA" ] && QT_INSTALL_DATA=$QT_INSTALL_PREFIX #default
-QT_INSTALL_DATA=`$relpath/config.tests/unix/makeabs "$QT_INSTALL_DATA"`
-
-#translations
-[ -z "$QT_INSTALL_TRANSLATIONS" ] && QT_INSTALL_TRANSLATIONS=$QT_INSTALL_PREFIX/translations #default
-QT_INSTALL_TRANSLATIONS=`$relpath/config.tests/unix/makeabs "$QT_INSTALL_TRANSLATIONS"`
-
-#settings
-if [ "$PLATFORM_MAC" = "yes" ]; then
-   [ -z "$QT_INSTALL_SETTINGS" ] && QT_INSTALL_SETTINGS=/Library/Preferences/Qt #default
-else
-   [ -z "$QT_INSTALL_SETTINGS" ] && QT_INSTALL_SETTINGS=/etc/xdg #default
-fi
-if mkdir -p "$QT_INSTALL_SETTINGS" >/dev/null 2>&1; then
-  QT_INSTALL_SETTINGS=`(cd "$QT_INSTALL_SETTINGS"; /bin/pwd)` #absolute
-fi
-
-#examples
-[ -z "$QT_INSTALL_EXAMPLES" ] && QT_INSTALL_EXAMPLES=$QT_INSTALL_PREFIX/examples #default
-QT_INSTALL_EXAMPLES=`$relpath/config.tests/unix/makeabs "$QT_INSTALL_EXAMPLES"`
-
-#demos
-[ -z "$QT_INSTALL_DEMOS" ] && QT_INSTALL_DEMOS=$QT_INSTALL_PREFIX/demos #default
-QT_INSTALL_DEMOS=`$relpath/config.tests/unix/makeabs "$QT_INSTALL_DEMOS"`
 
 #-------------------------------------------------------------------------------
 # build tree initialization
@@ -1829,6 +1846,71 @@ if [ "$OPT_VERBOSE" = "yes" ]; then
 fi
 
 #-------------------------------------------------------------------------------
+# post process QT_INSTALL_* variables
+#-------------------------------------------------------------------------------
+
+#prefix
+if [ -z "$QT_INSTALL_PREFIX" ]; then
+    if [ "$Edition" = "Trolltech" ]; then
+        # At Trolltech, we use sandboxed builds by default
+	QT_INSTALL_PREFIX=$outpath
+    elif [ "$PLATFORM_QWS" = "yes" ]; then
+        QT_INSTALL_PREFIX=/usr/local/Trolltech/QtopiaCore-${QT_VERSION}
+	if [ "$PLATFORM" != "$XPLATFORM" ]; then
+	    QT_INSTALL_PREFIX="${QT_INSTALL_PREFIX}-${ARCH}"
+	fi
+    else
+        # the default install prefix is /usr/local/Trolltech/Qt-$QT_VERSION
+        QT_INSTALL_PREFIX=/usr/local/Trolltech/Qt-${QT_VERSION}
+    fi
+fi
+QT_INSTALL_PREFIX=`$relpath/config.tests/unix/makeabs "$QT_INSTALL_PREFIX"`
+
+#docs
+[ -z "$QT_INSTALL_DOCS" ] && QT_INSTALL_DOCS=$QT_INSTALL_PREFIX/doc #default
+QT_INSTALL_DOCS=`$relpath/config.tests/unix/makeabs "$QT_INSTALL_DOCS"`
+
+#headers
+[ -z "$QT_INSTALL_HEADERS" ] && QT_INSTALL_HEADERS=$QT_INSTALL_PREFIX/include #default
+QT_INSTALL_HEADERS=`$relpath/config.tests/unix/makeabs "$QT_INSTALL_HEADERS"`
+
+#libs
+[ -z "$QT_INSTALL_LIBS" ] && QT_INSTALL_LIBS=$QT_INSTALL_PREFIX/lib #default
+QT_INSTALL_LIBS=`$relpath/config.tests/unix/makeabs "$QT_INSTALL_LIBS"`
+
+#bins
+[ -z "$QT_INSTALL_BINS" ] && QT_INSTALL_BINS=$QT_INSTALL_PREFIX/bin #default
+QT_INSTALL_BINS=`$relpath/config.tests/unix/makeabs "$QT_INSTALL_BINS"`
+
+#plugins
+[ -z "$QT_INSTALL_PLUGINS" ] && QT_INSTALL_PLUGINS=$QT_INSTALL_PREFIX/plugins #default
+QT_INSTALL_PLUGINS=`$relpath/config.tests/unix/makeabs "$QT_INSTALL_PLUGINS"`
+
+#data
+[ -z "$QT_INSTALL_DATA" ] && QT_INSTALL_DATA=$QT_INSTALL_PREFIX #default
+QT_INSTALL_DATA=`$relpath/config.tests/unix/makeabs "$QT_INSTALL_DATA"`
+
+#translations
+[ -z "$QT_INSTALL_TRANSLATIONS" ] && QT_INSTALL_TRANSLATIONS=$QT_INSTALL_PREFIX/translations #default
+QT_INSTALL_TRANSLATIONS=`$relpath/config.tests/unix/makeabs "$QT_INSTALL_TRANSLATIONS"`
+
+#settings
+if [ "$PLATFORM_MAC" = "yes" ]; then
+   [ -z "$QT_INSTALL_SETTINGS" ] && QT_INSTALL_SETTINGS=/Library/Preferences/Qt #default
+else
+   [ -z "$QT_INSTALL_SETTINGS" ] && QT_INSTALL_SETTINGS=/etc/xdg #default
+fi
+QT_INSTALL_SETTINGS=`$relpath/config.tests/unix/makeabs "$QT_INSTALL_SETTINGS"`
+
+#examples
+[ -z "$QT_INSTALL_EXAMPLES" ] && QT_INSTALL_EXAMPLES=$QT_INSTALL_PREFIX/examples #default
+QT_INSTALL_EXAMPLES=`$relpath/config.tests/unix/makeabs "$QT_INSTALL_EXAMPLES"`
+
+#demos
+[ -z "$QT_INSTALL_DEMOS" ] && QT_INSTALL_DEMOS=$QT_INSTALL_PREFIX/demos #default
+QT_INSTALL_DEMOS=`$relpath/config.tests/unix/makeabs "$QT_INSTALL_DEMOS"`
+
+#-------------------------------------------------------------------------------
 # tests that don't need qmake (must be run before displaying help)
 #-------------------------------------------------------------------------------
 
@@ -1913,17 +1995,13 @@ fi
 # embedded 
 if [ "$PLATFORM_QWS" = "yes" ]; then
 
-    # graphics
-    CFG_GFX_PLUGINS_AVAILABLE=`find $relpath/src/plugins/gfxdrivers/* -prune -type d -print | awk -F/ '{print $NF}'`
-    CFG_GFX_AVAILABLE=`echo $CFG_GFX_PLUGINS_AVAILABLE $CFG_GFX_AVAILABLE`
-    CFG_GFX_OFF=`echo $CFG_GFX_AVAILABLE` # assume all off
     # No OpenGL for Qtopia Core
     if [ "$CFG_OPENGL" = "auto" ]; then
         CFG_OPENGL=no
     fi
 
     # mouse drivers
-    for mouse in ${CFG_MOUSE_ON}; do
+    for mouse in ${CFG_MOUSE_ON} ${CFG_MOUSE_PLUGIN}; do
 	if [ "${mouse}" = "tslib" ] && [ "${CFG_CONFIGURE_EXIT_ON_ERROR}" = "yes" ]; then
 	    if ! $unixtests/tslib.test "${XQMAKESPEC}" "${I_FLAGS}" "${L_FLAGS}" "${OPT_VERBOSE}"; then
 		echo "The tslib functionality test failed!"
@@ -2033,10 +2111,9 @@ Installation options:
 
 Configure options:
 
- The defaults (*) are usually acceptable.  If marked with a plus (+) a test
- for that feature has not been done yet, but will be evaluated later, the
- plus simply denotes the default value. Here is a short explanation of each
- option:
+ The defaults (*) are usually acceptable. A plus (+) denotes a default value
+ that needs to be evaluated. If the evaluation succeeds, the feature is 
+ included. Here is a short explanation of each option:
 
     -release ........... Compile and link Qt with debugging turned off.
     -debug ............. Compile and link Qt with debugging turned on.
@@ -2078,9 +2155,6 @@ fi
 
                          Possible values for <driver>:
                          [ $CFG_SQL_AVAILABLE ]
-
-                         By default none of the SQL drivers are built,
-                         even if they are auto-detected.
 
     -no-qt3support       Disables the Qt 3 support functionality.
 
@@ -2273,6 +2347,9 @@ if [ "$PLATFORM_MAC" = "yes" ]; then
 
 Qt/Mac only:
 
+    -Fstring ........... Add an explicit framework path.
+    -fw string ......... Add an explicit framework.
+
  *  -framework ......... Build Qt as a series of frameworks and
                          link tools against those frameworks.
     -no-framework ...... Do not build Qt as a series of frameworks.
@@ -2303,8 +2380,10 @@ Qtopia Core only:
                          cross-compiling, otherwise the host
                          endianness will be used.
 
-    -no-freetype ....... Qtopia Core only: do not compile in FreeType2 support.
- *  -freetype .......... Qtopia Core only: add FreeType2 font support.
+    -no-freetype ....... Do not compile in Freetype2 support.
+    -qt-freetype ....... Use the libfreetype bundled with Qt.
+ *  -system-libfreetype  Use libfreetype from the operating system.
+                         See http://www.freetype.org/
 
     -qconfig local ..... Use src/corelib/global/qconfig-local.h rather than the
                          default ($CFG_QCONFIG).
@@ -2315,12 +2394,12 @@ Qtopia Core only:
 
     -qt-decoration-<style> ....Enable a decoration <style> in the Qt Library,
                                by default all available decorations are on.
+			       Possible values for <style>: [ $CFG_DECORATION_AVAILABLE ]
     -plugin-decoration-<style> Enable decoration <style> as a plugin to be
                                linked to at run time.
+			       Possible values for <style>: [ $CFG_DECORATION_PLUGIN_AVAILABLE ]
     -no-decoration-<style> ....Disable decoration <style> entirely.
-
-                               Possible values for <style>:
-                               [ $CFG_DECORATION_AVAILABLE ]
+                               Possible values for <style>: [ $CFG_DECORATION_AVAILABLE ]
 
     -qt-gfx-<driver> ... Enable a graphics <driver> in the Qt Library.
     -plugin-gfx-<driver> Enable graphics <driver> as a plugin to be
@@ -2332,12 +2411,15 @@ Qtopia Core only:
     -qt-kbd-<driver> ... Enable a keyboard <driver> in the Qt Library.
     -no-kbd-<driver> ... Disable keyboard <driver> entirely.
 
-                         Possible values for <driver>: [ sl5000 tty usb yopy vr41xx ]
+                         Possible values for <driver>: [ $CFG_KBD_AVAILABLE ]
 
-    -qt-mouse-<driver> . Enable a mouse <driver> in the Qt Library.
-    -no-mouse-<driver> . Disable mouse <driver> entirely.
-
-                         Possible values for <driver>: [ pc bus linuxtp yopy vr41xx ]
+    -qt-mouse-<driver> ... Enable a mouse <driver> in the Qt Library.
+                           Possible values for <driver>: [ $CFG_MOUSE_AVAILABLE ]
+    -plugin-mouse-<driver> Enable mouse <driver> as a plugin to be 
+                           linked to at runtime.
+                           Possible values for <driver>: [ $CFG_MOUSE_PLUGIN_AVAILABLE ]
+    -no-mouse-<driver> ... Disable mouse <driver> entirely.
+                           Possible values for <driver>: [ $CFG_MOUSE_AVAILABLE ]
 
     -iwmmxt............. Compile using the iWMMXt instruction set 
                          (available on some XScale CPUs).
@@ -2745,11 +2827,28 @@ if true; then ###[ '!' -f "$outpath/bin/qmake" ];
         fi
         if [ "$PLATFORM_MAC" = "yes" ]; then
             echo "export MACOSX_DEPLOYMENT_TARGET = 10.2" >>$mkfile
-            echo "CARBON_LFLAGS +=-framework CoreServices -framework CoreFoundation" >>$mkfile
+            echo "CARBON_LFLAGS =-framework CoreServices -framework CoreFoundation" >>$mkfile
             EXTRA_LFLAGS="$EXTRA_LFLAGS \$(CARBON_LFLAGS)"
             EXTRA_CFLAGS="$EXTRA_CFLAGS \$(CARBON_CFLAGS)"
+            EXTRA_CXXFLAGS="$EXTRA_CFLAGS \$(CARBON_CXXFLAGS)"
             EXTRA_OBJS="qsettings_mac.o qcore_mac.o"
             EXTRA_SRCS="$relpath/src/corelib/io/qsettings_mac.cpp $relpath/src/corelib/kernel/qcore_mac.cpp"
+	    if [ "$CFG_UNIVERSAL_BINARY" = "yes" ]; then
+		X86_CFLAGS=`grep "^QMAKE_CFLAGS_X86[^_A-Z0-9]" $QMAKESPEC/qmake.conf | sed "s,.* *= *\(.*\)$,\1,"`
+		X86_LFLAGS=`grep "^QMAKE_LFLAGS_X86[^_A-Z0-9]" $QMAKESPEC/qmake.conf | sed "s,.* *= *\(.*\)$,\1,"`
+		PPC_CFLAGS=`grep "^QMAKE_CFLAGS_PPC[^_A-Z0-9]" $QMAKESPEC/qmake.conf | sed "s,.* *= *\(.*\)$,\1,"`
+		PPC_LFLAGS=`grep "^QMAKE_LFLAGS_PPC[^_A-Z0-9]" $QMAKESPEC/qmake.conf | sed "s,.* *= *\(.*\)$,\1,"`
+		EXTRA_CFLAGS="$X86_CFLAGS $PPC_CFLAGS $EXTRA_CFLAGS"
+		EXTRA_CXXFLAGS="$X86_CFLAGS $PPC_CFLAGS $EXTRA_CXXFLAGS"
+                EXTRA_LFLAGS="$EXTRA_LFLAGS $X86_LFLAGS $PPC_LFLAGS"
+            fi
+	    if [ '!' -z "$CFG_SDK" ]; then
+		echo "SDK_LFLAGS =-Wl,-syslibroot,$CFG_SDK" >>$mkfile
+		echo "SDK_CFLAGS =-isysroot $CFG_SDK" >>$mkfile
+		EXTRA_CFLAGS="$EXTRA_CFLAGS \$(SDK_CFLAGS)"
+		EXTRA_CXXFLAGS="$EXTRA_CXXFLAGS \$(SDK_CFLAGS)"
+		EXTRA_LFLAGS="$EXTRA_LFLAGS \$(SDK_LFLAGS)"
+            fi
         fi
         [ "$CFG_EMBEDDED" != "no" ] && EXTRA_CFLAGS="$EXTRA_CFLAGS -DQWS"
         if [ '!' -z "$D_FLAGS" ]; then
@@ -3143,6 +3242,7 @@ if [ "$PLATFORM_X11" = "yes" ]; then
 	if $unixtests/compile.test $XQMAKESPEC $OPT_VERBOSE $relpath $outpath config.tests/x11/fontconfig "FontConfig" $L_FLAGS $I_FLAGS $l_FLAGS $X11TESTS_FLAGS; then
 	    CFG_FONTCONFIG=yes
 	    QMAKE_VARS="$QMAKE_VARS \"QMAKE_LIBS_X11=-lfreetype -lfontconfig \$\$QMAKE_LIBS_X11\""
+	    CFG_LIBFREETYPE=system
 	else
 	    if [ "$CFG_FONTCONFIG" = "yes" ] && [ "$CFG_CONFIGURE_EXIT_ON_ERROR" = "yes" ]; then
 		echo "FontConfig support cannot be enabled due to functionality tests!"
@@ -3156,15 +3256,6 @@ if [ "$PLATFORM_X11" = "yes" ]; then
 	fi
     fi
 
-    # need freetype even when building without fontconfig
-    if [ "$CFG_FONTCONFIG" != "yes" ]; then
-        if $unixtests/compile.test $XQMAKESPEC $OPT_VERBOSE $relpath $outpath config.tests/x11/freetype "FreeType" $L_FLAGS $I_FLAGS $l_FLAGS $X11TESTS_FLAGS; then
-            QMAKE_VARS="$QMAKE_VARS \"QMAKE_LIBS_X11=-lfreetype \$\$QMAKE_LIBS_X11\""
-        else
-            QT_CONFIG="$QT_CONFIG freetype"
-        fi
-    fi
-    
     # auto-detect Session Management support
     if [ "$CFG_SM" = "auto" ]; then
 	if $unixtests/compile.test $XQMAKESPEC $OPT_VERBOSE $relpath $outpath config.tests/x11/sm "Session Management" $L_FLAGS $I_FLAGS $l_FLAGS $X11TESTS_FLAGS; then
@@ -3250,6 +3341,18 @@ if [ "$PLATFORM_X11" = "yes" ]; then
         fi
     fi
 fi # X11
+
+# freetype support
+[ "x$CFG_EMBEDDED" != "xno" ] && CFG_LIBFREETYPE="$CFG_QWS_FREETYPE"
+[ "x$PLATFORM_MAC" = "xyes" ] && CFG_LIBFREETYPE=no
+if [ "$CFG_LIBFREETYPE" = "auto" ]; then
+    if $unixtests/compile.test $XQMAKESPEC $OPT_VERBOSE $relpath $outpath config.tests/unix/freetype "FreeType" $L_FLAGS $I_FLAGS $l_FLAGS ; then
+        CFG_LIBFREETYPE=system
+    else
+        CFG_LIBFREETYPE=yes
+    fi
+fi
+    
 
 if [ "$CFG_ENDIAN" = "auto" ]; then
     if [ "$PLATFORM_MAC" = "yes" ]; then
@@ -3410,9 +3513,9 @@ else
     QT_CONFIG="$QT_CONFIG opengl"
 fi
 
-# disable secure execution environment
-if [ "$CFG_SXV" = "no" ]; then
-    QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NO_SXV"
+# safe execution environment
+if [ "$CFG_SXE" != "no" ]; then
+    QT_CONFIG="$QT_CONFIG sxe"
 fi
 
 # update QT_CONFIG to show our current predefined configuration
@@ -3513,6 +3616,14 @@ if [ "$CFG_GIF" = "no" ]; then
 elif [ "$CFG_GIF" = "yes" ]; then
     QT_CONFIG="$QT_CONFIG gif"
 fi
+if [ "$CFG_LIBFREETYPE" = "no" ]; then
+    QT_CONFIG="$QT_CONFIG no-freetype"
+elif [ "$CFG_LIBFREETYPE" = "system" ]; then
+    QT_CONFIG="$QT_CONFIG system-freetype"
+else
+    QT_CONFIG="$QT_CONFIG freetype"
+fi
+
 if [ "x$PLATFORM_MAC" = "xyes" ]; then
     #On Mac we implicitly link against libz, so we
     #never use the 3rdparty stuff.
@@ -3535,7 +3646,6 @@ fi
 [ "$CFG_CUPS" = "yes" ] && QT_CONFIG="$QT_CONFIG cups"
 [ "$CFG_NAS" = "system" ] && QT_CONFIG="$QT_CONFIG nas"
 
-[ "$CFG_QWS_FREETYPE" = "yes" -a "x$CFG_EMBEDDED" != "xno" ] && QT_CONFIG="$QT_CONFIG freetype"
 if [ "$PLATFORM_X11" = "yes" ]; then
     [ "$CFG_SM" = "yes" ] && QT_CONFIG="$QT_CONFIG x11sm"
 
@@ -3799,7 +3909,7 @@ full)
 *)
     tmpconfig=$outpath/src/corelib/global/qconfig.h.new
     echo "#ifndef QT_BOOTSTRAPPED" >$tmpconfig
-    echo "#include <qconfig-$CFG_QCONFIG.h>" >>$tmpconfig
+    cat "$outpath/include/QtCore/qconfig-$CFG_QCONFIG.h" >>$tmpconfig
     echo "#endif" >>$tmpconfig
     ;;
 esac
@@ -3932,11 +4042,10 @@ QMAKE_VARS="$QMAKE_VARS \"sql-plugins = $SQL_PLUGINS\""
 [ "$CFG_JPEG" != "yes" ]     && QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NO_IMAGEFORMAT_JPEG"
 [ "$CFG_MNG" != "yes" ]      && QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NO_IMAGEFORMAT_MNG"
 [ "$CFG_ZLIB" != "yes" ]     && QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NO_ZLIB"
-
 [ "$CFG_EXCEPTIONS" = "no" ] && QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NO_EXCEPTIONS"
 [ "$CFG_TABLET" = "no" ]     && QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NO_TABLET"
 [ "$CFG_IPV6" = "no" ]       && QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NO_IPV6"
-[ "$CFG_SXV" = "no" ]        && QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NO_SXV"
+[ "$CFG_SXE" = "no" ]        && QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NO_SXE"
 
 # X11/Unix/Mac only configs
 [ "$CFG_CUPS" = "no" ]       && QCONFIG_FLAGS="$QCONFIG_FLAGS QT_NO_CUPS"
@@ -4262,6 +4371,12 @@ if [ "$PLATFORM_QWS" = "yes" ]; then
     CFG_DECORATION_PLUGIN=`echo ${CFG_DECORATION_PLUGIN}`
     echo "Decorations (qt) .... $CFG_DECORATION_ON"
     echo "Decorations (plugin)  $CFG_DECORATION_PLUGIN"
+    CFG_KBD_ON=`echo ${CFG_KBD_ON}`
+    echo "Keyboard driver ..... ${CFG_KBD_ON}"
+    CFG_MOUSE_ON=`echo ${CFG_MOUSE_ON}`
+    CFG_MOUSE_PLUGIN=`echo ${CFG_MOUSE_PLUGIN}`
+    echo "Mouse driver (qt) ... $CFG_MOUSE_ON"
+    echo "Mouse driver (plugin) $CFG_MOUSE_PLUGIN"
 else
     echo "OpenGL support ...... $CFG_OPENGL"
 fi

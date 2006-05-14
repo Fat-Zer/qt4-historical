@@ -51,6 +51,7 @@ bool QEventDispatcherX11::processEvents(QEventLoop::ProcessEventsFlags flags)
 {
     Q_D(QEventDispatcherX11);
 
+    d->interrupt = false;
     QApplication::sendPostedEvents();
 
     ulong marker = XNextRequest(X11->display);
@@ -111,8 +112,11 @@ bool QEventDispatcherX11::processEvents(QEventLoop::ProcessEventsFlags flags)
             if (qApp->x11ProcessEvent(&event) == 1)
                 return true;
 
-            if (event.xany.serial >= marker)
+            if (event.xany.serial >= marker) {
+                if (XEventsQueued(X11->display, QueuedAfterFlush))
+                    flags &= ~QEventLoop::WaitForMoreEvents;
                 goto out;
+            }
         }
     } while (!d->interrupt && XEventsQueued(X11->display, QueuedAfterFlush));
 
@@ -126,8 +130,6 @@ bool QEventDispatcherX11::processEvents(QEventLoop::ProcessEventsFlags flags)
         }
         // return true if we handled events, false otherwise
         return QEventDispatcherUNIX::processEvents(flags) ||  (nevents > 0);
-    } else {
-        d->interrupt = false;
     }
     return nevents > 0;
 }

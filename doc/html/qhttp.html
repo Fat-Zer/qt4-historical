@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-x11-opensource-src-4.1.2/src/network/qhttp.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/src/network/qhttp.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/src/network/qhttp.cpp -->
 <head>
     <title>Qt 4.1: QHttp Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -317,7 +318,23 @@ body { background: #ffffff; color: black; }</style>
 <p>When the request is started the <a href="qhttp.html#requestStarted">requestStarted</a>() signal is emitted. When it is finished the <a href="qhttp.html#requestFinished">requestFinished</a>() signal is emitted.</p>
 <p>See also <a href="qhttp.html#get">get</a>(), <a href="qhttp.html#post">post</a>(), <a href="qhttp.html#head">head</a>(), <a href="qhttp.html#request">request</a>(), <a href="qhttp.html#requestStarted">requestStarted</a>(), <a href="qhttp.html#requestFinished">requestFinished</a>(), and <a href="qhttp.html#done">done</a>().</p>
 <h3 class="fn"><a name="setProxy"></a>int QHttp::setProxy ( const <a href="qstring.html">QString</a> &amp; <i>host</i>, int <i>port</i>, const <a href="qstring.html">QString</a> &amp; <i>username</i> = QString(), const <a href="qstring.html">QString</a> &amp; <i>password</i> = QString() )</h3>
-<p>Enables proxy support, using the proxy server <i>host</i> on port <i>port</i>. <i>username</i> and <i>password</i> can be provided if the proxy server requires authentication.</p>
+<p>Enables HTTP proxy support, using the proxy server <i>host</i> on port <i>port</i>. <i>username</i> and <i>password</i> can be provided if the proxy server requires authentication.</p>
+<p>Example:</p>
+<pre>&nbsp;   void Ticker::getTicks()
+    {
+      http = new QHttp(this);
+      connect(http, SIGNAL(done(bool)), this, SLOT(showPage()));
+      http-&gt;setProxy(&quot;proxy.example.com&quot;, 3128);
+      http-&gt;setHost(&quot;ticker.example.com&quot;);
+      http-&gt;get(&quot;/ticks.asp&quot;);
+    }
+
+    void Ticker::showPage()
+    {
+      display(http-&gt;readAll());
+    }</pre>
+<p><a href="qhttp.html">QHttp</a> supports non-transparent web proxy servers only, such as the Squid Web proxy cache server (from <a href="http://www.squid.org/">http://www.squid.org/</a>). For transparent proxying, such as SOCKS5, use <a href="qnetworkproxy.html">QNetworkProxy</a> instead.</p>
+<p>See also <a href="qftp.html#setProxy">QFtp::setProxy</a>().</p>
 <h3 class="fn"><a name="setSocket"></a>int QHttp::setSocket ( <a href="qtcpsocket.html">QTcpSocket</a> * <i>socket</i> )</h3>
 <p>Replaces the internal <a href="qtcpsocket.html">QTcpSocket</a> that <a href="qhttp.html">QHttp</a> uses with <i>socket</i>. This is useful if you want to use your own custom <a href="qtcpsocket.html">QTcpSocket</a> subclass instead of the plain <a href="qtcpsocket.html">QTcpSocket</a> that <a href="qhttp.html">QHttp</a> uses by default. <a href="qhttp.html">QHttp</a> does not take ownership of the socket, and will not delete <i>socket</i> when destroyed.</p>
 <p>The function does not block and returns immediately. The request is scheduled, and its execution is performed asynchronously. The function returns a unique identifier which is passed by <a href="qhttp.html#requestStarted">requestStarted</a>() and <a href="qhttp.html#requestFinished">requestFinished</a>().</p>
@@ -339,6 +356,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

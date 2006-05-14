@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-x11-opensource-src-4.1.2/doc/src/examples/worldtimeclockplugin.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/doc/src/examples/worldtimeclockplugin.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/doc/src/examples/worldtimeclockplugin.qdoc -->
 <head>
     <title>Qt 4.1: World Time Clock Plugin Example</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -74,7 +75,6 @@ body { background: #ffffff; color: black; }</style>
         bool isContainer() const;
         bool isInitialized() const;
         QIcon icon() const;
-        QString codeTemplate() const;
         QString domXml() const;
         QString group() const;
         QString includeFile() const;
@@ -89,7 +89,7 @@ body { background: #ffffff; color: black; }</style>
     };</pre>
 <p>The plugin class provides <i>Qt Designer</i> with basic information about our plugin, such as its class name and its include file. Furthermore it knows how to create instances of the <tt>WorldTimeClockPlugin</tt> widget. <tt>WorldTimeClockPlugin</tt> also defines the <a href="qdesignercustomwidgetinterface.html#initialize">initialize()</a> function which is called after the plugin is loaded into <i>Qt Designer</i>. The function's <a href="qdesignerformeditorinterface.html">QDesignerFormEditorInterface</a> parameter provides the plugin with a gateway to all of <i>Qt Designer</i>'s API's.</p>
 <p>The <tt>WorldTimeClockPlugin</tt> class inherits from both <a href="qobject.html">QObject</a> and <a href="qdesignercustomwidgetinterface.html">QDesignerCustomWidgetInterface</a>. It is important to remember, when using multiple inheritance, to ensure that all the interfaces (i.e. the classes that doesn't inherit <a href="qobject.html#Q_OBJECT">Q_OBJECT</a>) are made known to the meta object system using the <a href="qobject.html#Q_INTERFACES">Q_INTERFACES</a>() macro. This enables <i>Qt Designer</i> to use <a href="qobject.html#qobject_cast">qobject_cast</a>() to query for supported interfaces using nothing but a <a href="qobject.html">QObject</a> pointer.</p>
-<p>The implementation of the <tt>WorldTimeClockPlugin</tt> is also equivalent to the plugin interface implementation in the <a href="designer-customwidgetplugin.html">Custom Widget Plugin</a> example (only the class name and the implementation of <a href="qdesignercustomwidgetinterface.html#domXml">QDesignerCustomWidgetInterface::domXml</a>() differ). The main thing to remember is to use the <a href="qpluginloader.html#Q_EXPORT_PLUGIN2">Q_EXPORT_PLUGIN2</a>() macro to export the <tt>WorldTimeClockPlugin</tt> class for use with <i>Qt Designer</i>:</p>
+<p>The implementation of the <tt>WorldTimeClockPlugin</tt> is also equivalent to the plugin interface implementation in the <a href="designer-customwidgetplugin.html">Custom Widget Plugin</a> example (only the class name and the implementation of <a href="qdesignercustomwidgetinterface.html#domXml">QDesignerCustomWidgetInterface::domXml</a>() differ). The main thing to remember is to use the <a href="qtplugin.html#Q_EXPORT_PLUGIN2">Q_EXPORT_PLUGIN2</a>() macro to export the <tt>WorldTimeClockPlugin</tt> class for use with <i>Qt Designer</i>:</p>
 <pre>&nbsp;   Q_EXPORT_PLUGIN2(worldtimeclockplugin, WorldTimeClockPlugin)</pre>
 <p>Without this macro, there is no way for Qt Designer to use the widget.</p>
 <a name="the-project-file-worldtimeclockplugin-pro"></a>
@@ -114,12 +114,12 @@ body { background: #ffffff; color: black; }</style>
 <p>It is important to ensure that the plugin is installed in a location that is searched by <i>Qt Designer</i>. We do this by specifying a target path for the project and adding it to the list of items to install:</p>
 <pre>&nbsp;   target.path = $$[QT_INSTALL_PLUGINS]/designer
     INSTALLS += target</pre>
-<p>The custom widget is created as a library, and will be installed alongside the other <i>Qt Designer</i> plugins when the project is installed (using <tt>make install</tt> or an equivalent installation procedure). Later, we will ensure that it is recognized as a plugin by <i>Qt Designer</i> by using the <a href="qpluginloader.html#Q_EXPORT_PLUGIN2">Q_EXPORT_PLUGIN2</a>() macro to export the relevant widget information.</p>
-<p>Note that if you want the plugins to appear in a Visual Studio integration, you must copy the library into the plugin directory in the install path of the integration (for an example, see C:/program files/trolltech as/visual studio integration/plugins).</p>
+<p>The custom widget is created as a library, and will be installed alongside the other <i>Qt Designer</i> plugins when the project is installed (using <tt>make install</tt> or an equivalent installation procedure). Later, we will ensure that it is recognized as a plugin by <i>Qt Designer</i> by using the <a href="qtplugin.html#Q_EXPORT_PLUGIN2">Q_EXPORT_PLUGIN2</a>() macro to export the relevant widget information.</p>
+<p>Note that if you want the plugins to appear in a Visual Studio integration, the plugins must be built in release mode and their libraries must be copied into the plugin directory in the install path of the integration (for an example, see C:/program files/trolltech as/visual studio integration/plugins).</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

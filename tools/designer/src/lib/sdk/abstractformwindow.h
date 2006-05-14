@@ -28,6 +28,8 @@
 
 #include <QtGui/QWidget>
 
+QT_BEGIN_HEADER
+
 class QDesignerFormEditorInterface;
 class QDesignerFormWindowCursorInterface;
 class QDesignerFormWindowToolInterface;
@@ -151,5 +153,7 @@ Q_SIGNALS:
     void changed();
     void widgetRemoved(QWidget *w);
 };
+
+QT_END_HEADER
 
 #endif // ABSTRACTFORMWINDOW_H

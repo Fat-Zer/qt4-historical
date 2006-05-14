@@ -30,6 +30,7 @@
 #include "connectionedit_p.h"
 
 #include <QtDesigner/QtDesigner>
+#include <QtDesigner/private/qtundo_p.h>
 #include <qdesigner_promotedwidget_p.h>
 #include <qdesigner_command_p.h>
 #include <layoutinfo_p.h>
@@ -111,7 +112,7 @@ static bool isMouseMoveOrRelease(QEvent *e)
 bool FormWindowManager::eventFilter(QObject *o, QEvent *e)
 {
     if (
-#ifndef Q_OS_WIN
+#ifdef Q_WS_X11
         o == m_core->topLevel() &&
 #endif
         !m_drag_item_list.isEmpty() && isMouseMoveOrRelease(e)) {
@@ -317,21 +318,21 @@ void FormWindowManager::setupActions()
     m_actionAdjustSize->setEnabled(false);
 
     m_actionHorizontalLayout = new QAction(createIconSet(QLatin1String("edithlayout.png")), tr("Lay Out &Horizontally"), this);
-    m_actionHorizontalLayout->setShortcut(Qt::CTRL + Qt::Key_H);
+    m_actionHorizontalLayout->setShortcut(Qt::CTRL + Qt::Key_1);
     m_actionHorizontalLayout->setStatusTip(tr("Lays out the selected widgets horizontally"));
     m_actionHorizontalLayout->setWhatsThis(whatsThisFrom(QLatin1String("Layout|Lay Out Horizontally")));
     connect(m_actionHorizontalLayout, SIGNAL(triggered()), this, SLOT(slotActionHorizontalLayoutActivated()));
     m_actionHorizontalLayout->setEnabled(false);
 
     m_actionVerticalLayout = new QAction(createIconSet(QLatin1String("editvlayout.png")), tr("Lay Out &Vertically"), this);
-    m_actionVerticalLayout->setShortcut(Qt::CTRL + Qt::Key_L);
+    m_actionVerticalLayout->setShortcut(Qt::CTRL + Qt::Key_2);
     m_actionVerticalLayout->setStatusTip(tr("Lays out the selected widgets vertically"));
     m_actionVerticalLayout->setWhatsThis(whatsThisFrom(QLatin1String("Layout|Lay Out Vertically")));
     connect(m_actionVerticalLayout, SIGNAL(triggered()), this, SLOT(slotActionVerticalLayoutActivated()));
     m_actionVerticalLayout->setEnabled(false);
 
     m_actionGridLayout = new QAction(createIconSet(QLatin1String("editgrid.png")), tr("Lay Out in a &Grid"), this);
-    m_actionGridLayout->setShortcut(Qt::CTRL + Qt::Key_G);
+    m_actionGridLayout->setShortcut(Qt::CTRL + Qt::Key_5);
     m_actionGridLayout->setStatusTip(tr("Lays out the selected widgets in a grid"));
     m_actionGridLayout->setWhatsThis(whatsThisFrom(QLatin1String("Layout|Lay Out in a Grid")));
     connect(m_actionGridLayout, SIGNAL(triggered()), this, SLOT(slotActionGridLayoutActivated()));
@@ -339,6 +340,7 @@ void FormWindowManager::setupActions()
 
     m_actionSplitHorizontal = new QAction(createIconSet(QLatin1String("editvlayoutsplit.png")),
                                           tr("Lay Out Horizontally in S&plitter"), this);
+    m_actionSplitHorizontal->setShortcut(Qt::CTRL + Qt::Key_3);
     m_actionSplitHorizontal->setStatusTip(tr("Lays out the selected widgets horizontally in a splitter"));
     m_actionSplitHorizontal->setWhatsThis(whatsThisFrom(QLatin1String("Layout|Lay Out Horizontally in Splitter")));
     connect(m_actionSplitHorizontal, SIGNAL(triggered()), this, SLOT(slotActionSplitHorizontalActivated()));
@@ -346,23 +348,22 @@ void FormWindowManager::setupActions()
 
     m_actionSplitVertical = new QAction(createIconSet(QLatin1String("edithlayoutsplit.png")),
                                         tr("Lay Out Vertically in Sp&litter"), this);
+    m_actionSplitVertical->setShortcut(Qt::CTRL + Qt::Key_4);
     m_actionSplitVertical->setStatusTip(tr("Lays out the selected widgets vertically in a splitter"));
     m_actionSplitVertical->setWhatsThis(whatsThisFrom(QLatin1String("Layout|Lay Out Vertically in Splitter")));
     connect(m_actionSplitVertical, SIGNAL(triggered()), this, SLOT(slotActionSplitVerticalActivated()));
     m_actionSplitVertical->setEnabled(false);
 
     m_actionBreakLayout = new QAction(createIconSet(QLatin1String("editbreaklayout.png")), tr("&Break Layout"), this);
-    m_actionBreakLayout->setShortcut(Qt::CTRL + Qt::Key_B);
+    m_actionBreakLayout->setShortcut(Qt::CTRL + Qt::Key_0);
     m_actionBreakLayout->setStatusTip(tr("Breaks the selected layout"));
     m_actionBreakLayout->setWhatsThis(whatsThisFrom(QLatin1String("Layout|Break Layout")));
     connect(m_actionBreakLayout, SIGNAL(triggered()), this, SLOT(slotActionBreakLayoutActivated()));
     m_actionBreakLayout->setEnabled(false);
 
-    m_actionUndo = new QAction(tr("Undo"), this);
-    m_actionUndo->setShortcut(Qt::CTRL + Qt::Key_Z);
+    m_actionUndo = QtUndoManager::manager()->createUndoAction(this);
     m_actionUndo->setEnabled(false);
-    m_actionRedo = new QAction(tr("Redo"), this);
-    m_actionRedo->setShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_Z);
+    m_actionRedo = QtUndoManager::manager()->createRedoAction(this);
     m_actionRedo->setEnabled(false);
 }
 
@@ -550,9 +551,14 @@ void FormWindowManager::slotUpdateActions()
                                     && layout == 0;
 
                 m_layoutChilds = layoutAvailable;
-                // ### generalize (put in function)
-                breakAvailable = (layout != 0 && (!layout->isEmpty() || qobject_cast<QSplitter*>(widget)))
-                                  || LayoutInfo::isWidgetLaidout(m_core, widget);
+
+                breakAvailable = LayoutInfo::isWidgetLaidout(m_core, widget);
+
+                if (! breakAvailable && layout != 0)
+                    breakAvailable = ! layout->isEmpty();
+
+                if (! breakAvailable && qobject_cast<QSplitter*>(widget))
+                    breakAvailable = qobject_cast<QSplitter*>(widget)->count() != 0;
             }
         } else {
             layoutAvailable = unlaidoutWidgetCount > 1;
@@ -662,7 +668,7 @@ void FormWindowManager::beginDrag(const QList<QDesignerDnDItemInterface*> &item_
         deco->setWindowOpacity(0.8);
     }
 
-#ifndef Q_OS_WIN
+#ifdef Q_WS_X11
     m_core->topLevel()->grabMouse();
     m_savedContextMenuPolicy = m_core->topLevel()->contextMenuPolicy();
     m_core->topLevel()->setContextMenuPolicy(Qt::NoContextMenu);
@@ -732,7 +738,7 @@ void FormWindowManager::setItemsPos(const QPoint &globalPos)
 
 void FormWindowManager::endDrag(const QPoint &pos)
 {
-#ifndef Q_OS_WIN
+#ifdef Q_WS_X11
     m_core->topLevel()->releaseMouse();
     m_core->topLevel()->setContextMenuPolicy(m_savedContextMenuPolicy);
 #endif

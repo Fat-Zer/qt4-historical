@@ -43,7 +43,9 @@ body { background: #ffffff; color: black; }</style>
     #include &lt;QtDesigner/QExtensionFactory&gt;
     #include &lt;QtDesigner/QExtensionManager&gt;
     #include &lt;QtDesigner/QDesignerFormEditorInterface&gt;
+    #include &lt;QtDesigner/QDesignerFormWindowInterface&gt;
     #include &lt;QtDesigner/QDesignerContainerExtension&gt;
+    #include &lt;QtDesigner/QDesignerPropertySheetExtension&gt;
 
     #include &lt;QIcon&gt;
     #include &lt;QtPlugin&gt;
@@ -96,6 +98,10 @@ body { background: #ffffff; color: black; }</style>
     QWidget *MultiPageWidgetPlugin::createWidget(QWidget *parent)
     {
         MultiPageWidget *widget = new MultiPageWidget(parent);
+        connect(widget, SIGNAL(currentIndexChanged(int)),
+                this, SLOT(currentIndexChanged(int)));
+        connect(widget, SIGNAL(pageTitleChanged(const QString &amp;)),
+                this, SLOT(pageTitleChanged(const QString &amp;)));
         return widget;
     }
 
@@ -122,9 +128,35 @@ body { background: #ffffff; color: black; }</style>
     {
         return QString(&quot;\
         &lt;widget class=\&quot;MultiPageWidget\&quot; name=\&quot;multipagewidget\&quot;&gt;\
-            &lt;widget class=\&quot;QWidget\&quot; /&gt;\
+            &lt;widget class=\&quot;QWidget\&quot; name=\&quot;page\&quot; /&gt;\
         &lt;/widget&gt;\
         &quot;);
+    }
+
+    void MultiPageWidgetPlugin::currentIndexChanged(int index)
+    {
+        MultiPageWidget *widget = qobject_cast&lt;MultiPageWidget*&gt;(sender());
+        if (widget) {
+            QDesignerFormWindowInterface *form;
+            form = QDesignerFormWindowInterface::findFormWindow(widget);
+            form-&gt;emitSelectionChanged();
+        }
+    }
+
+    void MultiPageWidgetPlugin::pageTitleChanged(const QString &amp;title)
+    {
+        MultiPageWidget *widget = qobject_cast&lt;MultiPageWidget*&gt;(sender());
+        if (widget) {
+            QWidget *page = widget-&gt;widget(widget-&gt;currentIndex());
+            QDesignerFormWindowInterface *form;
+            form = QDesignerFormWindowInterface::findFormWindow(widget);
+            QDesignerFormEditorInterface *editor = form-&gt;core();
+            QExtensionManager *manager = editor-&gt;extensionManager();
+            QDesignerPropertySheetExtension *sheet;
+            sheet = qt_extension&lt;QDesignerPropertySheetExtension*&gt;(manager, page);
+            int propertyIndex = sheet-&gt;indexOf(QLatin1String(&quot;windowTitle&quot;));
+            sheet-&gt;setChanged(propertyIndex, true);
+        }
     }
 
     Q_EXPORT_PLUGIN2(containerextension, MultiPageWidgetPlugin)</pre>
@@ -132,6 +164,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

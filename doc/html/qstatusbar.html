@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-x11-opensource-src-4.1.2/src/gui/widgets/qstatusbar.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/src/gui/widgets/qstatusbar.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/src/gui/widgets/qstatusbar.cpp -->
 <head>
     <title>Qt 4.1: QStatusBar Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -46,7 +47,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>void <b><a href="qstatusbar.html#sizeGripEnabled-prop">setSizeGripEnabled</a></b> ( bool )</li>
 </ul>
 <ul>
-<li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>190 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -73,7 +74,6 @@ body { background: #ffffff; color: black; }</style>
 <h3>Protected Functions</h3>
 <ul>
 <li><div class="fn"/>void <b><a href="qstatusbar.html#hideOrShow">hideOrShow</a></b> ()</li>
-<li><div class="fn"/>virtual void <b><a href="qstatusbar.html#paintEvent">paintEvent</a></b> ( QPaintEvent * <i>event</i> )</li>
 <li><div class="fn"/>void <b><a href="qstatusbar.html#reformat">reformat</a></b> ()</li>
 </ul>
 <ul>
@@ -97,22 +97,36 @@ body { background: #ffffff; color: black; }</style>
 <li><i>Permanent</i> - is never hidden. Used for important mode indications, for example, some applications put a Caps Lock indicator in the status bar.</li>
 </ul>
 <p>QStatusBar lets you display all three types of indicators.</p>
-<p>To display a <i>temporary</i> message, call <a href="qstatusbar.html#showMessage">showMessage</a>() (perhaps by connecting a suitable signal to it). To remove a temporary message, call <a href="qstatusbar.html#clearMessage">clearMessage</a>(), or set a time limit when calling <a href="qstatusbar.html#showMessage">showMessage</a>():</p>
-<pre>&nbsp;   connect(loader, SIGNAL(progressMessage(QString)),
-             statusBar(), SLOT(showMessage(QString)));
+<p>Typically, a request for the status bar functionality occurs in relation to a <a href="qmainwindow.html">QMainWindow</a> object. <a href="qmainwindow.html">QMainWindow</a> provides a main application window, with a menu bar, tool bars, dock widgets <i>and</i> a status bar around a large central widget. The status bar can be retrieved using the <a href="qmainwindow.html#statusBar">QMainWindow::statusBar</a>() function, and replaced using the <a href="qmainwindow.html#setStatusBar">QMainWindow::setStatusBar</a>() function.</p>
+<p>Use the <a href="qstatusbar.html#showMessage">showMessage</a>() slot to display a <i>temporary</i> message:</p>
+<pre>&nbsp;   void MainWindow::createStatusBar()
+    {
+        statusBar()-&gt;showMessage(tr(&quot;Ready&quot;));
+    }</pre>
+<p>To remove a temporary message, use the <a href="qstatusbar.html#clearMessage">clearMessage</a>() slot, or set a time limit when calling <a href="qstatusbar.html#showMessage">showMessage</a>(). For example:</p>
+<pre>&nbsp;   void MainWindow::print()
+    {
+        QTextDocument *document = textEdit-&gt;document();
+        QPrinter printer;
 
-    statusBar()-&gt;showMessage(&quot;Loading...&quot;);  // Initial message
-    loader.loadStuff();                  // Emits progress messages
-    statusBar()-&gt;showMessage(&quot;Done.&quot;, 2000); // Final message for 2 seconds</pre>
-<p><i>Normal</i> and <i>Permanent</i> messages are displayed by creating a small widget and then adding it to the status bar with <a href="qstatusbar.html#addWidget">addWidget</a>() or <a href="qstatusbar.html#addPermanentWidget">addPermanentWidget</a>(). Widgets like <a href="qlabel.html">QLabel</a>, <a href="qprogressbar.html">QProgressBar</a> or even <a href="qtoolbutton.html">QToolButton</a> are useful for adding to status bars. <a href="qstatusbar.html#removeWidget">removeWidget</a>() is used to remove widgets.</p>
+        QPrintDialog *dlg = new QPrintDialog(&amp;printer, this);
+        if (dlg-&gt;exec() != QDialog::Accepted)
+            return;
+
+        document-&gt;print(&amp;printer);
+
+        statusBar()-&gt;showMessage(tr(&quot;Ready&quot;), 2000);
+    }</pre>
+<p>Use the <a href="qstatusbar.html#currentMessage">currentMessage</a>() function to retrieve the temporary message currently shown. The QStatusBar class also provide the <a href="qstatusbar.html#messageChanged">messageChanged</a>() signal which is emitted whenever the temporary status message changes.</p>
+<p><i>Normal</i> and <i>Permanent</i> messages are displayed by creating a small widget (<a href="qlabel.html">QLabel</a>, <a href="qprogressbar.html">QProgressBar</a> or even <a href="qtoolbutton.html">QToolButton</a>) and then adding it to the status bar using the <a href="qstatusbar.html#addWidget">addWidget</a>() or the <a href="qstatusbar.html#addPermanentWidget">addPermanentWidget</a>() function. Use the <a href="qstatusbar.html#removeWidget">removeWidget</a>() function to remove such messages from the status bar.</p>
 <pre>&nbsp;   statusBar()-&gt;addWidget(new MyReadWriteIndication);</pre>
-<p>By default QStatusBar provides a <a href="qsizegrip.html">QSizeGrip</a> in the lower-right corner. You can disable it with setSizeGripEnabled(false);</p>
-<p align="center"><img src="images/plastique-statusbar.png" alt="A status bar shown in the Plastique widget style." /></p><p>See also <a href="qtoolbar.html">QToolBar</a>, <a href="qmainwindow.html">QMainWindow</a>, <a href="qlabel.html">QLabel</a>, and <a href="guibooks.html#fowler">GUI Design Handbook: Status Bar</a>.</p>
+<p>By default QStatusBar provides a <a href="qsizegrip.html">QSizeGrip</a> in the lower-right corner. You can disable it using the <a href="qstatusbar.html#sizeGripEnabled-prop">setSizeGripEnabled</a>() function. Use the <a href="qstatusbar.html#sizeGripEnabled-prop">isSizeGripEnabled</a>() function to determine the current status of the size grip.</p>
+<p align="center"><img src="images/plastique-statusbar.png" alt="A status bar shown in the Plastique widget style." /></p><p>See also <a href="qmainwindow.html">QMainWindow</a>, <a href="qstatustipevent.html">QStatusTipEvent</a>, and <a href="guibooks.html#fowler">GUI Design Handbook: Status Bar</a>.</p>
 <hr />
 <h2>Property Documentation</h2>
 <h3 class="fn"><a name="sizeGripEnabled-prop"></a>sizeGripEnabled : bool</h3>
-<p>This property holds whether the QSizeGrip in the bottom-right of the status bar is enabled.</p>
-<p>Enables or disables the <a href="qsizegrip.html">QSizeGrip</a> in the bottom-right of the status bar. By default, the size grip is enabled.</p>
+<p>This property holds whether the QSizeGrip in the bottom-right corner of the status bar is enabled.</p>
+<p>The size grip is enabled by default.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>bool isSizeGripEnabled () const</b></li>
@@ -121,48 +135,46 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QStatusBar"></a>QStatusBar::QStatusBar ( <a href="qwidget.html">QWidget</a> * <i>parent</i> = 0 )</h3>
-<p>Constructs a status bar with a size grip with the given <i>parent</i>.</p>
+<p>Constructs a status bar with a size grip and the given <i>parent</i>.</p>
 <p>See also <a href="qstatusbar.html#sizeGripEnabled-prop">setSizeGripEnabled</a>().</p>
 <h3 class="fn"><a name="dtor.QStatusBar"></a>QStatusBar::~QStatusBar ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>Destroys the status bar and frees any allocated resources and child widgets.</p>
+<p>Destroys this status bar and frees any allocated resources and child widgets.</p>
 <h3 class="fn"><a name="addPermanentWidget"></a>void QStatusBar::addPermanentWidget ( <a href="qwidget.html">QWidget</a> * <i>widget</i>, int <i>stretch</i> = 0 )</h3>
-<p>Adds <i>widget</i> permanently to this status bar. <i>widget</i> is reparented if it isn't already a child of the <a href="qstatusbar.html">QStatusBar</a>.</p>
+<p>Adds the given <i>widget</i> permanently to this status bar, reparenting the widget if it isn't already a child of this <a href="qstatusbar.html">QStatusBar</a> object. The <i>stretch</i> parameter is used to compute a suitable size for the given <i>widget</i> as the status bar grows and shrinks. The default stretch factor is 0, i.e giving the widget a minimum of space.</p>
 <p>Permanently means that the widget may not be obscured by temporary messages. It is is located at the far right of the status bar.</p>
-<p><i>stretch</i> is used to compute a suitable size for <i>widget</i> as the status bar grows and shrinks. The default of 0 uses a minimum of space.</p>
-<p>This function may cause some flicker.</p>
+<p>Note that this function may cause some flicker.</p>
 <p>See also <a href="qstatusbar.html#removeWidget">removeWidget</a>() and <a href="qstatusbar.html#addWidget">addWidget</a>().</p>
 <h3 class="fn"><a name="addWidget"></a>void QStatusBar::addWidget ( <a href="qwidget.html">QWidget</a> * <i>widget</i>, int <i>stretch</i> = 0 )</h3>
-<p>Adds <i>widget</i> to this status bar. <i>widget</i> is reparented if it isn't already a child of the <a href="qstatusbar.html">QStatusBar</a>.</p>
+<p>Adds the given <i>widget</i> to this status bar, reparenting the widget if it isn't already a child of this <a href="qstatusbar.html">QStatusBar</a> object. The <i>stretch</i> parameter is used to compute a suitable size for the given <i>widget</i> as the status bar grows and shrinks. The default stretch factor is 0, i.e giving the widget a minimum of space.</p>
 <p>The widget is located to the far left of the first permanent widget (see <a href="qstatusbar.html#addPermanentWidget">addPermanentWidget</a>()) and may be obscured by temporary messages.</p>
-<p><i>stretch</i> is used to compute a suitable size for <i>widget</i> as the status bar grows and shrinks. The default of 0 uses a minimum of space.</p>
-<p>This function may cause some flicker.</p>
+<p>Note that this function may cause some flicker.</p>
 <p>See also <a href="qstatusbar.html#removeWidget">removeWidget</a>() and <a href="qstatusbar.html#addPermanentWidget">addPermanentWidget</a>().</p>
 <h3 class="fn"><a name="clearMessage"></a>void QStatusBar::clearMessage ()&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Removes any temporary message being shown.</p>
-<p>See also <a href="qstatusbar.html#showMessage">showMessage</a>().</p>
+<p>See also <a href="qstatusbar.html#currentMessage">currentMessage</a>(), <a href="qstatusbar.html#showMessage">showMessage</a>(), and <a href="qstatusbar.html#removeWidget">removeWidget</a>().</p>
 <h3 class="fn"><a name="currentMessage"></a><a href="qstring.html">QString</a> QStatusBar::currentMessage () const</h3>
 <p>Returns the temporary message currently shown, or an empty string if there is no such message.</p>
+<p>See also <a href="qstatusbar.html#showMessage">showMessage</a>().</p>
 <h3 class="fn"><a name="hideOrShow"></a>void QStatusBar::hideOrShow ()&nbsp;&nbsp;<tt> [protected]</tt></h3>
-<p>Ensures that the right widgets are visible. Used by <a href="qstatusbar.html#showMessage">showMessage</a>() and <a href="qstatusbar.html#clearMessage">clearMessage</a>().</p>
+<p>Ensures that the right widgets are visible.</p>
+<p>Used by the <a href="qstatusbar.html#showMessage">showMessage</a>() and <a href="qstatusbar.html#clearMessage">clearMessage</a>() functions.</p>
 <h3 class="fn"><a name="messageChanged"></a>void QStatusBar::messageChanged ( const <a href="qstring.html">QString</a> &amp; <i>message</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This signal is emitted when the temporary status messages changes. <i>message</i> is the new temporary message, and is a null-string when the message has been removed.</p>
+<p>This signal is emitted whenever the temporary status message changes. The new temporary message is passed in the <i>message</i> parameter which is a null-string when the message has been removed.</p>
 <p>See also <a href="qstatusbar.html#showMessage">showMessage</a>() and <a href="qstatusbar.html#clearMessage">clearMessage</a>().</p>
-<h3 class="fn"><a name="paintEvent"></a>void QStatusBar::paintEvent ( <a href="qpaintevent.html">QPaintEvent</a> * <i>event</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
-<p>Shows the temporary message, if appropriate, in response to the paint <i>event</i>.</p>
-<p>Reimplemented from <a href="qwidget.html#paintEvent">QWidget</a>.</p>
 <h3 class="fn"><a name="reformat"></a>void QStatusBar::reformat ()&nbsp;&nbsp;<tt> [protected]</tt></h3>
-<p>Changes the status bar's appearance to account for item changes. Special subclasses may need this, but geometry management will usually take care of any necessary rearrangements.</p>
+<p>Changes the status bar's appearance to account for item changes.</p>
+<p>Special subclasses may need this function, but geometry management will usually take care of any necessary rearrangements.</p>
 <h3 class="fn"><a name="removeWidget"></a>void QStatusBar::removeWidget ( <a href="qwidget.html">QWidget</a> * <i>widget</i> )</h3>
-<p>Removes <i>widget</i> from the status bar.</p>
+<p>Removes the specifed <i>widget</i> from the status bar (without deleting it).</p>
 <p>This function may cause some flicker.</p>
-<p>Note that <i>widget</i> is not deleted.</p>
-<p>See also <a href="qstatusbar.html#addWidget">addWidget</a>().</p>
+<p>See also <a href="qstatusbar.html#addWidget">addWidget</a>(), <a href="qstatusbar.html#addPermanentWidget">addPermanentWidget</a>(), and <a href="qstatusbar.html#clearMessage">clearMessage</a>().</p>
 <h3 class="fn"><a name="showMessage"></a>void QStatusBar::showMessage ( const <a href="qstring.html">QString</a> &amp; <i>message</i>, int <i>timeout</i> = 0 )&nbsp;&nbsp;<tt> [slot]</tt></h3>
-<p>Hides the normal status indications and displays <i>message</i> for <i>timeout</i> milli-seconds (if non-zero), or until <a href="qstatusbar.html#clearMessage">clearMessage</a>() or another showMessage() is called, whichever occurs first.</p>
+<p>Hides the normal status indications and displays the given <i>message</i> for the specified <i>timeout</i> milli-seconds (if non-zero), or until <a href="qstatusbar.html#clearMessage">clearMessage</a>() or another showMessage() is called, whichever occurs first.</p>
+<p>See also <a href="qstatusbar.html#messageChanged">messageChanged</a>(), <a href="qstatusbar.html#currentMessage">currentMessage</a>(), and <a href="qstatusbar.html#clearMessage">clearMessage</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-x11-opensource-src-4.1.2/src/gui/image/qpicture.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/src/gui/image/qpicture.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/src/gui/image/qpicture.cpp -->
 <head>
     <title>Qt 4.1: QPicture Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -76,7 +77,7 @@ body { background: #ffffff; color: black; }</style>
 <p>The QPicture class is a paint device that records and replays <a href="qpainter.html">QPainter</a> commands.</p>
 <p>A picture serializes painter commands to an IO device in a platform-independent format. They are sometimes referred to as meta-files.</p>
 <p>Qt pictures use a proprietary binary format. Unlike native picture (meta-file) formats on many window systems, Qt pictures have no limitations regarding their contents. Everything that can be painted on a widget or pixmap (e.g., fonts, pixmaps, regions, transformed graphics, etc.) can also be stored in a picture.</p>
-<p>QPicture is resolution independent, i.e. a QPicture can be displayed on different devices (for example svg, pdf, ps, printer and screen) looking the same. This is, for instance, needed for WYSIWYG print preview. QPicture always runs in 72 dpi, and scales the painter to match differences in resolution depending on the window system.</p>
+<p>QPicture is resolution independent, i.e. a QPicture can be displayed on different devices (for example svg, pdf, ps, printer and screen) looking the same. This is, for instance, needed for WYSIWYG print preview. QPicture runs in the default system dpi, and scales the painter to match differences in resolution depending on the window system.</p>
 <p>QPicture is an <a href="shclass.html">implicitly shared</a> class.</p>
 <p>Example of how to record a picture:</p>
 <pre>&nbsp;           QPicture picture;
@@ -114,7 +115,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="inputFormatList"></a><a href="qstringlist.html">QStringList</a> QPicture::inputFormatList ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns a list of picture formats that are supported for picture input.</p>
 <p>Note that if you want to iterate over the list, you should iterate over a copy, e.g.</p>
-<pre>&nbsp;           QStringList list = myPicture.inputFormatList();
+<pre>&nbsp;           QStringList list = QPicture::inputFormatList();
             foreach (QString string, list)
                 myProcessing(string);</pre>
 <p>See also <a href="qpicture.html#outputFormatList">outputFormatList</a>(), <a href="qpicture.html#inputFormats">inputFormats</a>(), and <a href="qpictureio.html">QPictureIO</a>.</p>
@@ -132,13 +133,13 @@ body { background: #ffffff; color: black; }</style>
 <p><i>dev</i> is the device to use for loading.</p>
 <h3 class="fn"><a name="metric"></a>int QPicture::metric ( <a href="qpaintdevice.html#PaintDeviceMetric-enum">PaintDeviceMetric</a> <i>m</i> ) const&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>Internal implementation of the virtual <a href="qpaintdevice.html#metric">QPaintDevice::metric</a>() function.</p>
-<p>A picture has the following hard-coded values: dpi=72, numcolors=16777216 and depth=24.</p>
+<p>A picture has the following hard-coded values: numcolors=16777216 and depth=24.</p>
 <p><i>m</i> is the metric to get.</p>
 <p>Reimplemented from <a href="qpaintdevice.html#metric">QPaintDevice</a>.</p>
 <h3 class="fn"><a name="outputFormatList"></a><a href="qstringlist.html">QStringList</a> QPicture::outputFormatList ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns a list of picture formats that are supported for picture output.</p>
 <p>Note that if you want to iterate over the list, you should iterate over a copy, e.g.</p>
-<pre>&nbsp;           QStringList list = myPicture.outputFormatList();
+<pre>&nbsp;           QStringList list = QPicture::outputFormatList();
             foreach (QString string, list)
                 myProcessing(string);</pre>
 <p>See also <a href="qpicture.html#inputFormatList">inputFormatList</a>(), <a href="qpicture.html#outputFormats">outputFormats</a>(), and <a href="qpictureio.html">QPictureIO</a>.</p>
@@ -182,6 +183,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

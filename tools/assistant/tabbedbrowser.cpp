@@ -36,6 +36,12 @@
 #include <QTimer>
 #include <QStackedWidget>
 
+#ifdef Q_WS_MAC
+const QLatin1String ImageLocation(":trolltech/assistant/images/mac/");
+#else
+const QLatin1String ImageLocation(":trolltech/assistant/images/win/");
+#endif
+
 TabbedBrowser::TabbedBrowser(MainWindow *parent)
     : QWidget(parent)
 {
@@ -108,14 +114,14 @@ void TabbedBrowser::previousTab()
         ui.tab->setCurrentIndex(idx);
 }
 
-HelpWindow *TabbedBrowser::createHelpWindow(const QString &title)
+HelpWindow *TabbedBrowser::createHelpWindow()
 {
     MainWindow *mainWin = mainWindow();
     HelpWindow *win = new HelpWindow(mainWin, 0);
     win->setFrameStyle(QFrame::NoFrame);
     win->setPalette(palette());
     win->setSearchPaths(Config::configuration()->mimePaths());
-    ui.tab->addTab(win, title);
+    ui.tab->addTab(win, tr("..."));
     connect(win, SIGNAL(highlighted(QString)),
              (const QObject*) (mainWin->statusBar()), SLOT(showMessage(QString)));
     connect(win, SIGNAL(chooseWebBrowser()), mainWin, SLOT(showWebBrowserSettings()));
@@ -130,9 +136,9 @@ HelpWindow *TabbedBrowser::createHelpWindow(const QString &title)
     return win;
 }
 
-HelpWindow *TabbedBrowser::newBackgroundTab(const QString &url)
+HelpWindow *TabbedBrowser::newBackgroundTab()
 {
-    HelpWindow *win = createHelpWindow(url);
+    HelpWindow *win = createHelpWindow();
     return win;
 }
 
@@ -144,7 +150,7 @@ void TabbedBrowser::newTab(const QString &lnk)
         if(w)
             link = w->source().toString();
     }
-    HelpWindow *win = createHelpWindow(link);
+    HelpWindow *win = createHelpWindow();
     ui.tab->setCurrentIndex(ui.tab->indexOf(win));
     if(!link.isNull()) {
          win->setSource(link);
@@ -154,11 +160,13 @@ void TabbedBrowser::newTab(const QString &lnk)
 void TabbedBrowser::zoomIn()
 {
     currentBrowser()->zoomIn();
+    Config::configuration()->setFontPointSize(currentBrowser()->font().pointSizeF());
 }
 
 void TabbedBrowser::zoomOut()
 {
     currentBrowser()->zoomOut();
+    Config::configuration()->setFontPointSize(currentBrowser()->font().pointSizeF());
 }
 
 void TabbedBrowser::init()
@@ -191,7 +199,7 @@ void TabbedBrowser::init()
     ui.tab->setCornerWidget(newTabButton, Qt::TopLeftCorner);
     newTabButton->setCursor(Qt::ArrowCursor);
     newTabButton->setAutoRaise(true);
-    newTabButton->setIcon(QPixmap(QString::fromUtf8(":/trolltech/assistant/images/addtab.png")));
+    newTabButton->setIcon(QIcon(ImageLocation + QLatin1String("addtab.png")));
     QObject::connect(newTabButton, SIGNAL(clicked()), this, SLOT(newTab()));
     newTabButton->setToolTip(tr("Add page"));
 
@@ -200,7 +208,7 @@ void TabbedBrowser::init()
     ui.tab->setCornerWidget(closeTabButton, Qt::TopRightCorner);
     closeTabButton->setCursor(Qt::ArrowCursor);
     closeTabButton->setAutoRaise(true);
-    closeTabButton->setIcon(QIcon(QLatin1String(":/trolltech/assistant/images/closetab.png")));
+    closeTabButton->setIcon(QIcon(ImageLocation + QLatin1String("closetab.png")));
     QObject::connect(closeTabButton, SIGNAL(clicked()), this, SLOT(closeTab()));
     closeTabButton->setToolTip(tr("Close page"));
     closeTabButton->setEnabled(false);
@@ -245,6 +253,7 @@ void TabbedBrowser::closeTab()
     if(ui.tab->count()==1)
         return;
     HelpWindow *win = currentBrowser();
+    mainWindow()->removePendingBrowser(win);
     ui.tab->removeTab(ui.tab->indexOf(win));
     QTimer::singleShot(0, win, SLOT(deleteLater()));
     ui.tab->cornerWidget(Qt::TopRightCorner)->setEnabled(ui.tab->count() > 1);

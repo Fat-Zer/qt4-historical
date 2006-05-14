@@ -175,7 +175,7 @@ QWorkspaceTitleBar::QWorkspaceTitleBar(QWidget *w, QWidget *parent, Qt::WFlags f
     d->window = w;
     d->buttonDown = QStyle::SC_None;
     d->act = 0;
-    if (w) { 
+    if (w) {
         if (w->maximumSize() != QSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX))
             d->flags &= ~Qt::WindowMaximizeButtonHint;
         setWindowTitle(w->windowTitle());
@@ -664,8 +664,9 @@ QSize QWorkspaceTitleBar::sizeHint() const
 
 /*!
     \class QWorkspace
-    \brief The QWorkspace widget provides a workspace window that be
+    \brief The QWorkspace widget provides a workspace window that can be
     used in an MDI application.
+    \ingroup application
 
     Multiple Document Interface (MDI) applications are typically
     composed of a main window containing a menu bar, a toolbar, and
@@ -677,14 +678,12 @@ QSize QWorkspaceTitleBar::sizeHint() const
     Workspaces can be placed in any layout, but are typically given
     as the central widget in a QMainWindow:
 
-    \code
-        MainWindow::MainWindow()
-        {
-            workspace = new QWorkspace(this);
-            setCentralWidget(workspace);
-            ...
-        }
-    \endcode
+    \quotefromfile mainwindows/mdi/mainwindow.cpp
+    \skipto MainWindow::MainWindow()
+    \printuntil setCentralWidget(workspace);
+    \dots
+    \skipto /^\}/
+    \printuntil /^\}/
 
     Child windows (MDI windows) are standard Qt widgets that are
     inserted into the workspace with addWindow(). As with top-level
@@ -855,13 +854,13 @@ public:
     QRect updateWorkspace();
 
 private:
-    void normalizeActiveWindow();
-    void minimizeActiveWindow();
-    void showOperationMenu();
-    void popupOperationMenu(const QPoint&);
-    void operationMenuActivated(QAction *);
-    void scrollBarChanged();
-    void updateActions();
+    void _q_normalizeActiveWindow();
+    void _q_minimizeActiveWindow();
+    void _q_showOperationMenu();
+    void _q_popupOperationMenu(const QPoint&);
+    void _q_operationMenuActivated(QAction *);
+    void _q_scrollBarChanged();
+    void _q_updateActions();
     bool inTitleChange;
 };
 
@@ -939,8 +938,8 @@ QWorkspacePrivate::init()
     actions[QWorkspacePrivate::ShadeAct] = new QAction(QIcon(q->style()->standardPixmap(QStyle::SP_TitleBarShadeButton)),
                                                           QWorkspace::tr("Sh&ade"), q);
 
-    QObject::connect(popup, SIGNAL(aboutToShow()), q, SLOT(updateActions()));
-    QObject::connect(popup, SIGNAL(triggered(QAction*)), q, SLOT(operationMenuActivated(QAction*)));
+    QObject::connect(popup, SIGNAL(aboutToShow()), q, SLOT(_q_updateActions()));
+    QObject::connect(popup, SIGNAL(triggered(QAction*)), q, SLOT(_q_operationMenuActivated(QAction*)));
     popup->addAction(actions[QWorkspacePrivate::RestoreAct]);
     popup->addAction(actions[QWorkspacePrivate::MoveAct]);
     popup->addAction(actions[QWorkspacePrivate::ResizeAct]);
@@ -949,8 +948,8 @@ QWorkspacePrivate::init()
     popup->addSeparator();
     popup->addAction(actions[QWorkspacePrivate::CloseAct]);
 
-    QObject::connect(toolPopup, SIGNAL(aboutToShow()), q, SLOT(updateActions()));
-    QObject::connect(toolPopup, SIGNAL(triggered(QAction*)), q, SLOT(operationMenuActivated(QAction*)));
+    QObject::connect(toolPopup, SIGNAL(aboutToShow()), q, SLOT(_q_updateActions()));
+    QObject::connect(toolPopup, SIGNAL(triggered(QAction*)), q, SLOT(_q_operationMenuActivated(QAction*)));
     toolPopup->addAction(actions[QWorkspacePrivate::MoveAct]);
     toolPopup->addAction(actions[QWorkspacePrivate::ResizeAct]);
     toolPopup->addAction(actions[QWorkspacePrivate::StaysOnTopAct]);
@@ -963,7 +962,7 @@ QWorkspacePrivate::init()
     shortcutMap.insert(q->grabShortcut(Qt::CTRL + Qt::Key_Tab), "activateNextWindow");
     shortcutMap.insert(q->grabShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_Tab), "activatePreviousWindow");
     shortcutMap.insert(q->grabShortcut(Qt::CTRL + Qt::Key_F4), "closeActiveWindow");
-    shortcutMap.insert(q->grabShortcut(Qt::ALT + Qt::Key_Minus), "showOperationMenu");
+    shortcutMap.insert(q->grabShortcut(Qt::ALT + Qt::Key_Minus), "_q_showOperationMenu");
     shortcutMap.insert(q->grabShortcut(Qt::CTRL + Qt::Key_F6), "activateNextWindow");
     shortcutMap.insert(q->grabShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_F6), "activatePreviousWindow");
     shortcutMap.insert(q->grabShortcut(Qt::Key_Forward), "activateNextWindow");
@@ -1041,11 +1040,14 @@ void QWorkspace::setBackground(const QBrush &background)
 }
 
 /*!
-  Adds widget \a w as new sub window to the workspace.  If \a flags
-  are non-zero, they will override the flags set on the widget.
+    Adds widget \a w as new sub window to the workspace.  If \a flags
+    are non-zero, they will override the flags set on the widget.
 
-  Returns the widget used for the window frame.
+    Returns the widget used for the window frame.
 
+    To remove the widget \a w from the workspace, simply call
+    setParent() with the new parent (or 0 to make it a stand-alone
+    window).
 */
 QWidget * QWorkspace::addWindow(QWidget *w, Qt::WFlags flags)
 {
@@ -1088,9 +1090,9 @@ QWidget * QWorkspace::addWindow(QWidget *w, Qt::WFlags flags)
     child->installEventFilter(this);
 
     connect(child, SIGNAL(popupOperationMenu(QPoint)),
-            this, SLOT(popupOperationMenu(QPoint)));
+            this, SLOT(_q_popupOperationMenu(QPoint)));
     connect(child, SIGNAL(showOperationMenu()),
-            this, SLOT(showOperationMenu()));
+            this, SLOT(_q_showOperationMenu()));
     d->windows.append(child);
     if (child->isVisibleTo(this))
         d->focus.append(child);
@@ -1676,9 +1678,9 @@ bool QWorkspace::eventFilter(QObject *o, QEvent * e)
                     if (isRightToLeft()) {
                         QPoint p = b->mapToGlobal(QPoint(b->x() + b->width(), b->y() + b->height()));
                         p.rx() -= d->popup->sizeHint().width();
-                        d->popupOperationMenu(p);
+                        d->_q_popupOperationMenu(p);
                     } else {
-                        d->popupOperationMenu(b->mapToGlobal(QPoint(b->x(), b->y() + b->height())));
+                        d->_q_popupOperationMenu(b->mapToGlobal(QPoint(b->x(), b->y() + b->height())));
                     }
                     t->start();
                     tc = this;
@@ -1811,7 +1813,7 @@ void QWorkspacePrivate::showMaximizeControls()
                 iconB->setIcon(pm);
                 iconB->setIconSize(pm.size());
                 QObject::connect(iconB, SIGNAL(clicked()),
-                                 q, SLOT(minimizeActiveWindow()));
+                                 q, SLOT(_q_minimizeActiveWindow()));
             }
 
             QToolButton* restoreB = new QToolButton(maxcontrols);
@@ -1825,7 +1827,7 @@ void QWorkspacePrivate::showMaximizeControls()
             restoreB->setIcon(pm);
             restoreB->setIconSize(pm.size());
             QObject::connect(restoreB, SIGNAL(clicked()),
-                             q, SLOT(normalizeActiveWindow()));
+                             q, SLOT(_q_normalizeActiveWindow()));
 
             l->addSpacing(2);
             QToolButton* closeB = new QToolButton(maxcontrols);
@@ -1936,7 +1938,7 @@ void QWorkspace::closeAllWindows()
     }
 }
 
-void QWorkspacePrivate::normalizeActiveWindow()
+void QWorkspacePrivate::_q_normalizeActiveWindow()
 {
     if (maxWindow)
         maxWindow->showNormal();
@@ -1944,7 +1946,7 @@ void QWorkspacePrivate::normalizeActiveWindow()
         active->showNormal();
 }
 
-void QWorkspacePrivate::minimizeActiveWindow()
+void QWorkspacePrivate::_q_minimizeActiveWindow()
 {
     if (maxWindow)
         maxWindow->showMinimized();
@@ -1952,7 +1954,7 @@ void QWorkspacePrivate::minimizeActiveWindow()
         active->showMinimized();
 }
 
-void QWorkspacePrivate::showOperationMenu()
+void QWorkspacePrivate::_q_showOperationMenu()
 {
     Q_Q(QWorkspace);
     if  (!active || !active->windowWidget())
@@ -1970,10 +1972,10 @@ void QWorkspacePrivate::showOperationMenu()
         p = active->iconWidget()->mapToGlobal(QPoint(0,0));
         p.ry() -= popup->sizeHint().height();
     }
-    popupOperationMenu(p);
+    _q_popupOperationMenu(p);
 }
 
-void QWorkspacePrivate::popupOperationMenu(const QPoint&  p)
+void QWorkspacePrivate::_q_popupOperationMenu(const QPoint&  p)
 {
     if (!active || !active->windowWidget() || !(active->windowWidget()->windowFlags() & Qt::WindowSystemMenuHint))
         return;
@@ -1983,7 +1985,7 @@ void QWorkspacePrivate::popupOperationMenu(const QPoint&  p)
         popup->popup(p);
 }
 
-void QWorkspacePrivate::updateActions()
+void QWorkspacePrivate::_q_updateActions()
 {
     Q_Q(QWorkspace);
     for (int i = 1; i < NCountAct-1; i++) {
@@ -2027,7 +2029,7 @@ void QWorkspacePrivate::updateActions()
         (active->windowWidget()->windowFlags() & Qt::WindowStaysOnTopHint));
 }
 
-void QWorkspacePrivate::operationMenuActivated(QAction *action)
+void QWorkspacePrivate::_q_operationMenuActivated(QAction *action)
 {
     if (!active)
         return;
@@ -2172,7 +2174,7 @@ void QWorkspace::cascade()
         d->hbar->blockSignals(true);
         d->hbar->setValue(0);
         d->hbar->blockSignals(false);
-        d->scrollBarChanged();
+        d->_q_scrollBarChanged();
     }
 
     const int xoffset = 13;
@@ -2241,7 +2243,7 @@ void QWorkspace::tile()
         d->hbar->blockSignals(true);
         d->hbar->setValue(0);
         d->hbar->blockSignals(false);
-        d->scrollBarChanged();
+        d->_q_scrollBarChanged();
     }
 
     int rows = 1;
@@ -2671,8 +2673,10 @@ bool QWorkspaceChild::eventFilter(QObject * o, QEvent * e)
     case QEvent::Resize:
         {
             QResizeEvent* re = (QResizeEvent*)e;
-            if (re->size() != windowSize && !shademode)
+            if (re->size() != windowSize && !shademode) {
                 resize(re->size() + baseSize());
+                childWidget->update(); //workaround
+            }
         }
         break;
 
@@ -2971,12 +2975,13 @@ void QWorkspaceChild::adjustToFullscreen()
         setGeometry(parentWidget()->rect());
     } else {
         int fw =  style()->pixelMetric(QStyle::PM_MDIFrameWidth, 0, this);
+        bool noBorder = style()->styleHint(QStyle::SH_TitleBar_NoBorder, 0, titlebar);
         int th = titlebar ? titlebar->sizeHint().height() : 0;
         int w = parentWidget()->width() + 2*fw;
         int h = parentWidget()->height() + 2*fw + th;
         w = qMax(w, childWidget->minimumWidth());
         h = qMax(h, childWidget->minimumHeight());
-        setGeometry(-fw, -fw - th, w, h);
+        setGeometry(-fw, (noBorder ? 0 : -fw) - th, w, h);
     }
     childWidget->overrideWindowState(Qt::WindowMaximized);
     overrideWindowState(Qt::WindowMaximized);
@@ -3053,10 +3058,10 @@ void QWorkspace::setScrollBarsEnabled(bool enable)
     if (enable) {
         d->vbar = new QScrollBar(Qt::Vertical, this);
         d->vbar->setObjectName(QLatin1String("vertical scrollbar"));
-        connect(d->vbar, SIGNAL(valueChanged(int)), this, SLOT(scrollBarChanged()));
+        connect(d->vbar, SIGNAL(valueChanged(int)), this, SLOT(_q_scrollBarChanged()));
         d->hbar = new QScrollBar(Qt::Horizontal, this);
         d->hbar->setObjectName(QLatin1String("horizontal scrollbar"));
-        connect(d->hbar, SIGNAL(valueChanged(int)), this, SLOT(scrollBarChanged()));
+        connect(d->hbar, SIGNAL(valueChanged(int)), this, SLOT(_q_scrollBarChanged()));
         d->corner = new QWidget(this);
         d->corner->setBackgroundRole(QPalette::Background);
         d->corner->setObjectName(QLatin1String("qt_corner"));
@@ -3181,7 +3186,7 @@ QRect QWorkspacePrivate::updateWorkspace()
 
 }
 
-void QWorkspacePrivate::scrollBarChanged()
+void QWorkspacePrivate::_q_scrollBarChanged()
 {
     int ver = yoffset - vbar->value();
     int hor = xoffset - hbar->value();

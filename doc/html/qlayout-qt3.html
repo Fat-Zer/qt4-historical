@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-x11-opensource-src-4.1.2/src/gui/kernel/qlayout.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/src/gui/kernel/qlayout.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/src/gui/kernel/qlayout.cpp -->
 <head>
     <title>Qt 4.1: Qt 3 Support Members for QLayout</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -53,6 +54,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Constructs a new top-level <a href="qlayout.html">QLayout</a> called <i>name</i>, with parent widget <i>parent</i>. <i>parent</i> may not be 0.</p>
 <p>The <i>margin</i> is the number of pixels between the edge of the widget and the managed children. The <i>spacing</i> sets the value of <a href="qlayout.html#spacing-prop">spacing</a>(), which gives the spacing between the managed widgets. If <i>spacing</i> is -1 (the default), spacing is set to the value of <i>margin</i>.</p>
 <p>There can be only one top-level layout for a widget. It is returned by <a href="qwidget.html#layout">QWidget::layout</a>()</p>
+<p>See also <a href="qwidget.html#setLayout">QWidget::setLayout</a>().</p>
 <h3 class="fn"><a name="QLayout-5"></a>QLayout::QLayout ( QLayout * <i>parentLayout</i>, int <i>spacing</i> = -1, const char * <i>name</i> = 0 )</h3>
 <p>Constructs a new child <a href="qlayout.html">QLayout</a> called <i>name</i>, and places it inside <i>parentLayout</i> by using the default placement defined by <a href="qlayout.html#addItem">addItem</a>().</p>
 <p>If <i>spacing</i> is -1, this <a href="qlayout.html">QLayout</a> inherits <i>parentLayout</i>'s <a href="qlayout.html#spacing-prop">spacing</a>(), otherwise the value of <i>spacing</i> is used.</p>
@@ -94,6 +96,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

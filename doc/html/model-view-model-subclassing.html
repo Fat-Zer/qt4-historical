@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-x11-opensource-src-4.1.2/doc/src/model-view-programming.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/doc/src/model-view-programming.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/doc/src/model-view-programming.qdoc -->
 <head>
     <title>Qt 4.1: Model Subclassing Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -12,6 +13,7 @@ td.postheader { font-family: sans-serif }
 tr.address { font-family: sans-serif }
 body { background: #ffffff; color: black; }</style>
     <link rel="prev" href="model-view-proxy-models.html" />
+    <link rel="contents" href="model-view-programming.html" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
@@ -20,6 +22,7 @@ body { background: #ffffff; color: black; }</style>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><p>
 [Previous: <a href="model-view-proxy-models.html">Proxy Models</a>]
+[<a href="model-view-programming.html">Contents</a>]
 </p>
 <h1 align="center">Model Subclassing Reference<br /><small></small></h1>
 <ul><li><a href="#introduction">Introduction</a></li>
@@ -77,8 +80,8 @@ body { background: #ffffff; color: black; }</style>
 <p>All types of model can support the insertion and removal of rows. Table models and hierarchical models can also support the insertion and removal of columns. It is important to notify other components about changes to the model's dimensions both <i>before</i> and <i>after</i> they occur. As a result, the following functions can be implemented to allow the model to be resized, but implementations must ensure that the appropriate functions are called to notify attached views and delegates:</p>
 <p><table width="90%" align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qabstractitemmodel.html#insertRows">insertRows()</a></td><td>Used to add new rows and items of data to all types of model. Implementations must call <a href="qabstractitemmodel.html#beginInsertRows">beginInsertRows()</a> <i>before</i> inserting new rows into any underlying data structures, and call <a href="qabstractitemmodel.html#endInsertRows">endInsertRows()</a> <i>immediately afterwards</i>.</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qabstractitemmodel.html#removeRows">removeRows()</a></td><td>Used to remove rows and the items of data they contain from all types of model. Implementations must call <a href="qabstractitemmodel.html#beginInsertColumns">beginInsertColumns()</a> <i>before</i> inserting new columns into any underlying data structures, and call <a href="qabstractitemmodel.html#endInsertColumns">endInsertColumns()</a> <i>immediately afterwards</i>.</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qabstractitemmodel.html#insertColumns">insertColumns()</a></td><td>Used to add new columns and items of data to table models and hierarchical models. Implementations must call <a href="qabstractitemmodel.html#beginRemoveRows">beginRemoveRows()</a> <i>before</i> rows are removed from any underlying data structures, and call <a href="qabstractitemmodel.html#endRemoveRows">endRemoveRows()</a> <i>immediately afterwards</i>.</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qabstractitemmodel.html#removeRows">removeRows()</a></td><td>Used to remove rows and the items of data they contain from all types of model. Implementations must call <a href="qabstractitemmodel.html#beginRemoveRows">beginRemoveRows()</a> <i>before</i> inserting new columns into any underlying data structures, and call <a href="qabstractitemmodel.html#endRemoveRows">endRemoveRows()</a> <i>immediately afterwards</i>.</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qabstractitemmodel.html#insertColumns">insertColumns()</a></td><td>Used to add new columns and items of data to table models and hierarchical models. Implementations must call <a href="qabstractitemmodel.html#beginInsertColumns">beginInsertColumns()</a> <i>before</i> rows are removed from any underlying data structures, and call <a href="qabstractitemmodel.html#endInsertColumns">endInsertColumns()</a> <i>immediately afterwards</i>.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qabstractitemmodel.html#removeColumns">removeColumns()</a></td><td>Used to remove columns and the items of data they contain from table models and hierarchical models. Implementations must call <a href="qabstractitemmodel.html#beginRemoveColumns">beginRemoveColumns()</a> <i>before</i> columns are removed from any underlying data structures, and call <a href="qabstractitemmodel.html#endRemoveColumns">endRemoveColumns()</a> <i>immediately afterwards</i>.</td></tr>
 </table></p>
 <p>Generally, these functions should return true if the operation was successful. However, there may be cases where the operation only partly succeeded; for example, if less than the specified number of rows could be inserted. In such cases, the model should return false to indicate failure to enable any attached components to handle the situation.</p>
@@ -132,11 +135,12 @@ body { background: #ffffff; color: black; }</style>
 <p>The convenience views (<a href="qlistwidget.html">QListWidget</a>, <a href="qtablewidget.html">QTableWidget</a>, and <a href="qtreewidget.html">QTreeWidget</a>) override the default drag and drop functionality to provide less flexible, but more natural behavior that is appropriate for many applications. For example, since it is more common to drop data into cells in a <a href="qtablewidget.html">QTableWidget</a>, replacing the existing contents with the data being transferred, the underlying model will set the data of the target items rather than insert new rows and columns into the model.</p>
 <p>
 [Previous: <a href="model-view-proxy-models.html">Proxy Models</a>]
+[<a href="model-view-programming.html">Contents</a>]
 </p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

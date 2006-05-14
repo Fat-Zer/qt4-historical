@@ -27,6 +27,8 @@
 #include <Qt3Support/q3scrollview.h>
 #include <QtGui/qpixmap.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Qt3SupportLight)
 
 #ifndef QT_NO_LISTBOX
@@ -399,5 +401,7 @@ private:
 };
 
 #endif // QT_NO_LISTBOX
+
+QT_END_HEADER
 
 #endif // Q3LISTBOX_H

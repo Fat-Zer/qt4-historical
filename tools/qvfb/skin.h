@@ -25,7 +25,7 @@
 #define SKIN_H
 
 #include <QWidget>
-#include <Q3PointArray>
+#include <QPolygon>
 #include <QRegion>
 #include <QPixmap>
 
@@ -95,7 +95,7 @@ private:
     typedef struct {
 	QString	name;
         int	keyCode;
-        Q3PointArray area;
+        QPolygon area;
         QRegion region;
 	QString text;
     } ButtonAreas;

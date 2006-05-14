@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-x11-opensource-src-4.1.2/doc/src/examples/mandelbrot.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/doc/src/examples/mandelbrot.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/doc/src/examples/mandelbrot.qdoc -->
 <head>
     <title>Qt 4.1: Mandelbrot Example</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -43,7 +44,7 @@ body { background: #ffffff; color: black; }</style>
 <li><tt>RenderThread</tt> is a <a href="qthread.html">QThread</a> subclass that renders the Mandelbrot set.</li>
 <li><tt>MandelbrotWidget</tt> is a <a href="qwidget.html">QWidget</a> subclass that shows the Mandelbrot set on screen and lets the user zoom and scroll.</li>
 </ul>
-<p>If you are not already familiar with Qt's thread support, we recommend that you start by reading the <a href="threads.html">Multithreaded Programming</a> overview.</p>
+<p>If you are not already familiar with Qt's thread support, we recommend that you start by reading the <a href="threads.html">Thread Support in Qt</a> overview.</p>
 <a name="renderthread-class-definition"></a>
 <h2>RenderThread Class Definition</h2>
 <p>We'll start with the definition of the <tt>RenderThread</tt> class:</p>
@@ -308,7 +309,7 @@ body { background: #ffffff; color: black; }</style>
         resize(550, 400);
     }</pre>
 <p>The interesting part of the constructor is the <a href="qmetatype.html#qRegisterMetaType">qRegisterMetaType</a>() and <a href="qobject.html#connect">QObject::connect</a>() calls. Let's start with the <a href="qobject.html#connect">connect()</a> call.</p>
-<p>Although it looks like a standard signal-slot connection between two <a href="qobject.html">QObject</a>s, because the objects <i>live</i> in different threads, the connection is actually a <a href="qt.html#ConnectionType-enum">queued connection</a>. These connections are asynchronous (i.e., non-blocking), meaning that the slot will be called at some point after the <tt>emit</tt> statement. What's more, the slot will be invoked in the thread in which the receiver lives. Here, the signal is emitted in the worker thread, and the slot is executed in the GUI thread when control returns to the event loop.</p>
+<p>Although it looks like a standard signal-slot connection between two <a href="qobject.html">QObject</a>s, because the signal is emitted in a different thread than the receiver lives in, the connection is effectively a <a href="qt.html#ConnectionType-enum">queued connection</a>. These connections are asynchronous (i.e., non-blocking), meaning that the slot will be called at some point after the <tt>emit</tt> statement. What's more, the slot will be invoked in the thread in which the receiver lives. Here, the signal is emitted in the worker thread, and the slot is executed in the GUI thread when control returns to the event loop.</p>
 <p>With queued connections, Qt must store a copy of the arguments that were passed to the signal so that it can pass them to the slot later on. Qt knows how to take of copy of many C++ and Qt types, but <a href="qimage.html">QImage</a> isn't one of them. We must therefore call the template function <a href="qmetatype.html#qRegisterMetaType">qRegisterMetaType</a>() before we can use <a href="qimage.html">QImage</a> as parameter in queued connections.</p>
 <pre>&nbsp;   void MandelbrotWidget::paintEvent(QPaintEvent * /* event */)
     {
@@ -460,6 +461,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

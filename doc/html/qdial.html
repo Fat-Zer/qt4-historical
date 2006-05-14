@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-x11-opensource-src-4.1.2/src/gui/widgets/qdial.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/src/gui/widgets/qdial.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/src/gui/widgets/qdial.cpp -->
 <head>
     <title>Qt 4.1: QDial Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -50,7 +51,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <ul>
 <li><div class="fn"/>22 public functions inherited from <a href="qabstractslider.html#public-functions">QAbstractSlider</a></li>
-<li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>190 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -88,7 +89,10 @@ body { background: #ffffff; color: black; }</style>
 <p>Unlike the slider, QDial attempts to draw a &quot;nice&quot; number of notches rather than one per <a href="qabstractslider-qt3.html#lineStepx">lineStep</a>(). If possible, the number of notches drawn is one per <a href="qabstractslider-qt3.html#lineStepx">lineStep</a>(), but if there aren't enough pixels to draw every one, QDial will draw every second, third etc., notch. <a href="qdial.html#notchSize-prop">notchSize</a>() returns the number of units per notch, hopefully a multiple of <a href="qabstractslider-qt3.html#lineStepx">lineStep</a>(); <a href="qdial.html#notchTarget-prop">setNotchTarget</a>() sets the target distance between neighbouring notches in pixels. The default is 3.75 pixels.</p>
 <p>Like the slider, the dial makes the <a href="qabstractslider.html">QAbstractSlider</a> functions <a href="qabstractslider.html#value-prop">setValue</a>(), <a href="qabstractslider-qt3.html#addLine">addLine</a>(), <a href="qabstractslider-qt3.html#subtractLine">subtractLine</a>(), <a href="qabstractslider-qt3.html#addPage">addPage</a>() and <a href="qabstractslider-qt3.html#subtractPage">subtractPage</a>() available as slots.</p>
 <p>The dial's keyboard interface is fairly simple: The left/up and right/down arrow keys move by <a href="qabstractslider-qt3.html#lineStepx">lineStep</a>(), page up and page down by <a href="qabstractslider.html#pageStep-prop">pageStep</a>() and Home and End to <a href="qabstractslider-qt3.html#minValue">minValue</a>() and <a href="qabstractslider-qt3.html#maxValue">maxValue</a>().</p>
-<p><font color="red">[Missing image qdial-m.png]</font> <font color="red">[Missing image qdial-w.png]</font></p>
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
+<tr valign="top" bgcolor="#f0f0f0"><td><img src="images/plastique-dial.png" alt="Screenshot of a dial in the Plastique widget style" /></td><td><img src="images/windowsxp-dial.png" alt="Screenshot of a dial in the Windows XP widget style" /></td><td><img src="images/macintosh-dial.png" alt="Screenshot of a dial in the Macintosh widget style" /></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td colspan="3">Dials shown in various widget styles (from left to right): <a href="gallery-plastique.html">Plastique</a>, <a href="gallery-windowsxp.html">Windows XP</a>, <a href="gallery-macintosh.html">Macintosh</a>.</td></tr>
+</table></p>
 <p>See also <a href="qscrollbar.html">QScrollBar</a>, <a href="qspinbox.html">QSpinBox</a>, and <a href="guibooks.html#fowler">GUI Design Handbook: Slider</a>.</p>
 <hr />
 <h2>Property Documentation</h2>
@@ -137,6 +141,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

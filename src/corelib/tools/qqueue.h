@@ -26,6 +26,8 @@
 
 #include <QtCore/qlist.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Core)
 
 template <class T>
@@ -39,5 +41,7 @@ public:
     inline T &head() { return QList<T>::first(); }
     inline const T &head() const { return QList<T>::first(); }
 };
+
+QT_END_HEADER
 
 #endif // QQUEUE_H

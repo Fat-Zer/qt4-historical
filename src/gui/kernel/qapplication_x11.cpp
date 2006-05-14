@@ -52,6 +52,7 @@
 #include "qfileinfo.h"
 #include "qhash.h"
 #include "qevent.h"
+#include "qvarlengtharray.h"
 #include "qdebug.h"
 #include <private/qunicodetables_p.h>
 #include <private/qcrashhandler_p.h>
@@ -100,38 +101,6 @@ char *_Xsetlocale(int category, const char *locale)
 # endif // setlocale
 #endif // X_NOT_BROKEN
 
-
-// Fix old X libraries
-#ifndef XK_KP_Home
-#define XK_KP_Home              0xFF95
-#endif
-#ifndef XK_KP_Left
-#define XK_KP_Left              0xFF96
-#endif
-#ifndef XK_KP_Up
-#define XK_KP_Up                0xFF97
-#endif
-#ifndef XK_KP_Right
-#define XK_KP_Right             0xFF98
-#endif
-#ifndef XK_KP_Down
-#define XK_KP_Down              0xFF99
-#endif
-#ifndef XK_KP_Prior
-#define XK_KP_Prior             0xFF9A
-#endif
-#ifndef XK_KP_Next
-#define XK_KP_Next              0xFF9B
-#endif
-#ifndef XK_KP_End
-#define XK_KP_End               0xFF9C
-#endif
-#ifndef XK_KP_Insert
-#define XK_KP_Insert            0xFF9E
-#endif
-#ifndef XK_KP_Delete
-#define XK_KP_Delete            0xFF9F
-#endif
 
 /* Warning: if you modify this string, modify the list of atoms in qt_x11_p.h as well! */
 static const char * x11_atomnames = {
@@ -291,6 +260,8 @@ extern void qt_desktopwidget_update_workarea();
 // modifier masks for alt/meta - detected when the application starts
 static long qt_alt_mask = 0;
 static long qt_meta_mask = 0;
+static long qt_super_mask = 0;
+static long qt_hyper_mask = 0;
 // modifier mask to remove mode switch from modifiers that have alt/meta set
 // this problem manifests itself on HP/UX 10.20 at least, and without it
 // modifiers do not work at all...
@@ -665,7 +636,7 @@ bool QApplicationPrivate::x11_apply_settings()
                                    effects.contains(QLatin1String("animatetoolbox")));
 
     settings.beginGroup(QLatin1String("Font Substitutions"));
-    QStringList fontsubs = settings.childGroups();
+    QStringList fontsubs = settings.childKeys();
     if (!fontsubs.isEmpty()) {
         QStringList::Iterator it = fontsubs.begin();
         for (; it != fontsubs.end(); ++it) {
@@ -727,7 +698,7 @@ static void qt_set_input_encoding()
     Atom type;
     int format;
     ulong  nitems, after = 1;
-    const char *data;
+    const char *data = 0;
 
     int e = XGetWindowProperty(X11->display, QX11Info::appRootWindow(),
                                 ATOM(_QT_INPUT_ENCODING), 0, 1024,
@@ -797,7 +768,7 @@ static void qt_set_x11_resources(const char* font = 0, const char* fg = 0,
             Atom type = XNone;
 
             while (after > 0) {
-                uchar *data;
+                uchar *data = 0;
                 XGetWindowProperty(X11->display, QX11Info::appRootWindow(0),
                                    ATOM(RESOURCE_MANAGER),
                                    offset, 8192, False, AnyPropertyType,
@@ -900,11 +871,13 @@ static void qt_set_x11_resources(const char* font = 0, const char* fg = 0,
                 fnt.setStrikeOut(fontinfo.strikeOut());
                 fnt.setStyleHint(fontinfo.styleHint());
 
-                if (fnt.pointSize() <= 0 && fnt.pixelSize() <= 0)
+                if (fnt.pointSize() <= 0 && fnt.pixelSize() <= 0) {
                     // size is all wrong... fix it
-                    fnt.setPointSize((int) ((fontinfo.pixelSize() * 72. /
-                                             (float) QX11Info::appDpiY()) +
-                                            0.5));
+                    qreal pointSize = fontinfo.pixelSize() * 72. / (float) QX11Info::appDpiY();
+                    if (pointSize <= 0)
+                        pointSize = 12;
+                    fnt.setPointSize(qRound(pointSize));
+                }
             }
         }
 
@@ -1538,11 +1511,11 @@ void qt_init(QApplicationPrivate *priv, int,
         int dpi = 0;
         getXDefault("Xft", FC_DPI, &dpi);
         if (dpi) {
-                    for (int s = 0; s < ScreenCount(X11->display); ++s) {
-                        QX11Info::setAppDpiX(s, dpi);
-                        QX11Info::setAppDpiY(s, dpi);
-                    }
-                }
+            for (int s = 0; s < ScreenCount(X11->display); ++s) {
+                QX11Info::setAppDpiX(s, dpi);
+                QX11Info::setAppDpiY(s, dpi);
+            }
+        }
         X11->fc_scale = 1.;
         getXDefault("Xft", FC_SCALE, &X11->fc_scale);
         for (int s = 0; s < ScreenCount(X11->display); ++s) {
@@ -1592,27 +1565,75 @@ void qt_init(QApplicationPrivate *priv, int,
         // look at the modifier mapping, and get the correct masks for alt/meta
         // find the alt/meta masks
         XModifierKeymap *map = XGetModifierMapping(X11->display);
+
+        // get the first and last keycode
+        int first_keycode = 8, last_keycode = 255;
+        XDisplayKeycodes(X11->display, &first_keycode, &last_keycode);
+        // only need keysyms_per_keycode
+        int keysyms_per_keycode = 1;
+        KeySym *keys = XGetKeyboardMapping(X11->display,
+                                  first_keycode,
+                                  last_keycode - first_keycode,
+                                  &keysyms_per_keycode);
+        if (keys)
+            XFree(keys);
+
         if (map) {
             int i, maskIndex = 0, mapIndex = 0;
             for (maskIndex = 0; maskIndex < 8; maskIndex++) {
                 for (i = 0; i < map->max_keypermod; i++) {
                     if (map->modifiermap[mapIndex]) {
-                        KeySym sym =
-                            XKeycodeToKeysym(X11->display, map->modifiermap[mapIndex], 0);
-                        if (qt_alt_mask == 0 &&
-                            (sym == XK_Alt_L || sym == XK_Alt_R)) {
-                            qt_alt_mask = 1 << maskIndex;
+                        KeySym sym;
+                        int x = 0;
+                        do {
+                            sym = XKeycodeToKeysym(X11->display, map->modifiermap[mapIndex], x++);
+                        } while (sym == NoSymbol && x < keysyms_per_keycode);
+                        const long mask = 1 << maskIndex;
+                        if (qt_alt_mask == 0
+                            && qt_meta_mask != mask
+                            && qt_super_mask != mask
+                            && qt_hyper_mask != mask
+                            && (sym == XK_Alt_L || sym == XK_Alt_R)) {
+                            qt_alt_mask = mask;
                         }
-                        if (qt_meta_mask == 0 &&
-                            (sym == XK_Meta_L || sym == XK_Meta_R)) {
-                            qt_meta_mask = 1 << maskIndex;
+                        if (qt_meta_mask == 0
+                            && qt_alt_mask != mask
+                            && qt_super_mask != mask
+                            && qt_hyper_mask != mask
+                            && (sym == XK_Meta_L || sym == XK_Meta_R)) {
+                            qt_meta_mask = mask;
+                        }
+                        if (qt_super_mask == 0
+                            && qt_alt_mask != mask
+                            && qt_meta_mask != mask
+                            && qt_hyper_mask != mask
+                            && (sym == XK_Super_L || sym == XK_Super_R)) {
+                            qt_super_mask = mask;
+                        }
+                        if (qt_hyper_mask == 0
+                            && qt_alt_mask != mask
+                            && qt_meta_mask != mask
+                            && qt_super_mask != mask
+                            && (sym == XK_Hyper_L || sym == XK_Hyper_R)) {
+                            qt_hyper_mask = mask;
                         }
                     }
                     mapIndex++;
                 }
             }
+            // if we don't have a meta key (or it's hidden behind alt), use super or hyper to generate
+            // Qt::Key_Meta and Qt::MetaModifier, since most newer XFree86/Xorg installations map the Windows
+            // key to Super
+            if (qt_meta_mask == 0 || qt_meta_mask == qt_alt_mask) {
+                // no meta keys... s,meta,super,
+                qt_meta_mask = qt_super_mask;
+                if (qt_meta_mask == 0 || qt_meta_mask == qt_alt_mask) {
+                    // no super keys either? guess we'll use hyper then
+                    qt_meta_mask = qt_hyper_mask;
+                }
+            }
 
-            // not look for mode_switch in qt_alt_mask and qt_meta_mask - if it is
+            // now look for mode_switch in qt_alt_mask and qt_meta_mask - if it is
             // present in one or both, then we set qt_mode_switch_remove_mask.
             // see QETWidget::translateKeyEventInternal for an explanation
             // of why this is needed
@@ -1642,6 +1663,7 @@ void qt_init(QApplicationPrivate *priv, int,
             // assume defaults
             qt_alt_mask = Mod1Mask;
             qt_meta_mask = Mod4Mask;
+            // leave qt_super_mask and qt_hyper_mask set to zero
             qt_mode_switch_remove_mask = 0;
         }
 
@@ -2015,7 +2037,7 @@ void qt_save_rootinfo()                                // save new root info
     Atom type;
     int format;
     unsigned long length, after;
-    uchar *data;
+    uchar *data = 0;
 
     if (ATOM(_XSETROOT_ID)) {                        // kill old pixmap
         if (XGetWindowProperty(X11->display, QX11Info::appRootWindow(),
@@ -2048,7 +2070,7 @@ bool qt_wstate_iconified(WId winid)
     Atom type;
     int format;
     unsigned long length, after;
-    uchar *data;
+    uchar *data = 0;
     int r = XGetWindowProperty(X11->display, winid, ATOM(WM_STATE), 0, 2,
                                  False, AnyPropertyType, &type, &format,
                                  &length, &after, &data);
@@ -2258,7 +2280,7 @@ Window QX11Data::findClientWindow(Window win, Atom property, bool leaf)
     Atom   type = XNone;
     int           format, i;
     ulong  nitems, after;
-    uchar *data;
+    uchar *data = 0;
     Window root, parent, target=0, *children=0;
     uint   nchildren;
     if (XGetWindowProperty(X11->display, win, property, 0, 0, false, AnyPropertyType,
@@ -2354,6 +2376,8 @@ void QApplication::beep()
 {
     if (X11->display)
         XBell(X11->display, 0);
+    else
+        printf("\7");
 }
 
 
@@ -2850,8 +2874,8 @@ int QApplication::x11ProcessEvent(XEvent* event)
                 if (widget->isVisible()) {
                     widget->d_func()->topData()->spont_unmapped = 1;
                     QHideEvent e;
-                QApplication::sendSpontaneousEvent(widget, &e);
-                widget->d_func()->hideChildren(true);
+                    QApplication::sendSpontaneousEvent(widget, &e);
+                    widget->d_func()->hideChildren(true);
                 }
             }
 
@@ -2876,6 +2900,14 @@ int QApplication::x11ProcessEvent(XEvent* event)
                     widget->d_func()->showChildren(true);
                     QShowEvent e;
                     QApplication::sendSpontaneousEvent(widget, &e);
+
+                    // show() must have been called on this widget in
+                    // order to reach this point, but we could have
+                    // cleared these 2 attributes in case something
+                    // previously forced us into WithdrawnState
+                    // (e.g. kdocker)
+                    widget->setAttribute(Qt::WA_WState_ExplicitShowHide, true);
+                    widget->setAttribute(Qt::WA_WState_Visible, true);
                 }
             }
         }
@@ -3524,6 +3556,13 @@ bool QETWidget::translateMouseEvent(const XEvent *event)
                 QMouseEvent e(type, mapFromGlobal(globalPos), globalPos, button,
                               buttons, modifiers);
                 QApplication::sendSpontaneousEvent(this, &e);
+
+                if (type == QEvent::MouseButtonPress
+                    && button == Qt::RightButton
+                    && (openPopupCount == oldOpenPopupCount)) {
+                    QContextMenuEvent e(QContextMenuEvent::Mouse, mapFromGlobal(globalPos), globalPos);
+                    QApplication::sendSpontaneousEvent(this, &e);
+                }
             }
             replayPopupMouseEvent = false;
         } else if (type == QEvent::MouseButtonPress
@@ -3908,7 +3947,8 @@ bool QETWidget::translatePropertyEvent(const XEvent *event)
                 // transition into or out of the Withdrawn state.",
                 // but apparently this particular window manager
                 // doesn't seem to care
-                hide();
+                setAttribute(Qt::WA_WState_ExplicitShowHide, false);
+                setAttribute(Qt::WA_WState_Visible, false);
             }
         } else {
             // the window manager has changed the WM State property...
@@ -3941,7 +3981,8 @@ bool QETWidget::translatePropertyEvent(const XEvent *event)
                         // of the Withdrawn state.", but apparently
                         // this particular window manager doesn't seem
                         // to care
-                        hide();
+                        setAttribute(Qt::WA_WState_ExplicitShowHide, false);
+                        setAttribute(Qt::WA_WState_Visible, false);
                     }
                     break;
 
@@ -4015,6 +4056,38 @@ bool QETWidget::translatePropertyEvent(const XEvent *event)
 #define XK_Kanji_Bangou 0xFF37 /* same as codeinput */
 #endif
 
+// Fix old X libraries
+#ifndef XK_KP_Home
+#define XK_KP_Home              0xFF95
+#endif
+#ifndef XK_KP_Left
+#define XK_KP_Left              0xFF96
+#endif
+#ifndef XK_KP_Up
+#define XK_KP_Up                0xFF97
+#endif
+#ifndef XK_KP_Right
+#define XK_KP_Right             0xFF98
+#endif
+#ifndef XK_KP_Down
+#define XK_KP_Down              0xFF99
+#endif
+#ifndef XK_KP_Prior
+#define XK_KP_Prior             0xFF9A
+#endif
+#ifndef XK_KP_Next
+#define XK_KP_Next              0xFF9B
+#endif
+#ifndef XK_KP_End
+#define XK_KP_End               0xFF9C
+#endif
+#ifndef XK_KP_Insert
+#define XK_KP_Insert            0xFF9E
+#endif
+#ifndef XK_KP_Delete
+#define XK_KP_Delete            0xFF9F
+#endif
+
 // the next lines are taken from XFree > 4.0 (X11/XF86keysyms.h), defining some special
 // multimedia keys. They are included here as not every system has them.
 #define XF86XK_Standby                0x1008FF10
@@ -4067,13 +4140,10 @@ static const unsigned int KeyTbl[] = {                // keyboard mapping table
     XK_BackSpace,        Qt::Key_Backspace,
     XK_Return,                Qt::Key_Return,
     XK_Insert,                Qt::Key_Insert,
-    XK_KP_Insert,        Qt::Key_Insert,
     XK_Delete,                Qt::Key_Delete,
-    XK_KP_Delete,        Qt::Key_Delete,
     XK_Clear,                Qt::Key_Delete,
     XK_Pause,                Qt::Key_Pause,
     XK_Print,                Qt::Key_Print,
-    XK_KP_Begin,        Qt::Key_Clear,
     0x1005FF60,                Qt::Key_SysReq,                // hardcoded Sun SysReq
     0x1007ff00,                Qt::Key_SysReq,                // hardcoded X386 SysReq
     XK_Home,                Qt::Key_Home,                // cursor movement
@@ -4084,14 +4154,6 @@ static const unsigned int KeyTbl[] = {                // keyboard mapping table
     XK_Down,                Qt::Key_Down,
     XK_Prior,                Qt::Key_PageUp,
     XK_Next,                Qt::Key_PageDown,
-    XK_KP_Home,                Qt::Key_Home,
-    XK_KP_End,                Qt::Key_End,
-    XK_KP_Left,                Qt::Key_Left,
-    XK_KP_Up,                Qt::Key_Up,
-    XK_KP_Right,        Qt::Key_Right,
-    XK_KP_Down,                Qt::Key_Down,
-    XK_KP_Prior,        Qt::Key_PageUp,
-    XK_KP_Next,                Qt::Key_PageDown,
     XK_Shift_L,                Qt::Key_Shift,                // modifiers
     XK_Shift_R,                Qt::Key_Shift,
     XK_Shift_Lock,        Qt::Key_Shift,
@@ -4104,16 +4166,6 @@ static const unsigned int KeyTbl[] = {                // keyboard mapping table
     XK_Caps_Lock,        Qt::Key_CapsLock,
     XK_Num_Lock,        Qt::Key_NumLock,
     XK_Scroll_Lock,        Qt::Key_ScrollLock,
-    XK_KP_Space,        Qt::Key_Space,                // numeric keypad
-    XK_KP_Tab,                Qt::Key_Tab,
-    XK_KP_Enter,        Qt::Key_Enter,
-    XK_KP_Equal,        Qt::Key_Equal,
-    XK_KP_Multiply,        Qt::Key_Asterisk,
-    XK_KP_Add,                Qt::Key_Plus,
-    XK_KP_Separator,        Qt::Key_Comma,
-    XK_KP_Subtract,        Qt::Key_Minus,
-    XK_KP_Decimal,        Qt::Key_Period,
-    XK_KP_Divide,        Qt::Key_Slash,
     XK_Super_L,                Qt::Key_Super_L,
     XK_Super_R,                Qt::Key_Super_R,
     XK_Menu,                Qt::Key_Menu,
@@ -4123,6 +4175,34 @@ static const unsigned int KeyTbl[] = {                // keyboard mapping table
     0x1000FF74,         Qt::Key_Backtab,     // hardcoded HP backtab
     0x1005FF10,         Qt::Key_F11,         // hardcoded Sun F36 (labeled F11)
     0x1005FF11,         Qt::Key_F12,         // hardcoded Sun F37 (labeled F12)
+
+    // numeric and function keypad keys
+
+    XK_KP_Space,        Qt::Key_Space,
+    XK_KP_Tab,          Qt::Key_Tab,
+    XK_KP_Enter,        Qt::Key_Enter,
+    //XK_KP_F1,         Qt::Key_F1,
+    //XK_KP_F2,         Qt::Key_F2,
+    //XK_KP_F3,         Qt::Key_F3,
+    //XK_KP_F4,         Qt::Key_F4,
+    XK_KP_Home,         Qt::Key_Home,
+    XK_KP_Left,         Qt::Key_Left,
+    XK_KP_Up,           Qt::Key_Up,
+    XK_KP_Right,        Qt::Key_Right,
+    XK_KP_Down,         Qt::Key_Down,
+    XK_KP_Prior,        Qt::Key_PageUp,
+    XK_KP_Next,         Qt::Key_PageDown,
+    XK_KP_End,          Qt::Key_End,
+    XK_KP_Begin,        Qt::Key_Clear,
+    XK_KP_Insert,       Qt::Key_Insert,
+    XK_KP_Delete,       Qt::Key_Delete,
+    XK_KP_Equal,        Qt::Key_Equal,
+    XK_KP_Multiply,     Qt::Key_Asterisk,
+    XK_KP_Add,          Qt::Key_Plus,
+    XK_KP_Separator,    Qt::Key_Comma,
+    XK_KP_Subtract,     Qt::Key_Minus,
+    XK_KP_Decimal,      Qt::Key_Period,
+    XK_KP_Divide,       Qt::Key_Slash,
 
     // International input method support keys
 
@@ -4258,6 +4338,28 @@ static const unsigned int KeyTbl[] = {                // keyboard mapping table
 
     0,                        0
 };
+
+static int translateKeySym(uint key)
+{
+    int code = -1;
+    int i = 0;                                // any other keys
+    while (KeyTbl[i]) {
+        if (key == KeyTbl[i]) {
+            code = (int)KeyTbl[i+1];
+            break;
+        }
+        i += 2;
+    }
+    if (qt_meta_mask) {
+        // translate Super/Hyper keys to Meta if we're using them as the MetaModifier
+        if (qt_meta_mask == qt_super_mask && (code == Qt::Key_Super_L || code == Qt::Key_Super_R)) {
+            code = Qt::Key_Meta;
+        } else if (qt_meta_mask == qt_hyper_mask && (code == Qt::Key_Hyper_L || code == Qt::Key_Hyper_R)) {
+            code = Qt::Key_Meta;
+        }
+    }
+    return code;
+}
 
 
 #if !defined(QT_NO_XIM)
@@ -4570,46 +4672,19 @@ bool QETWidget::translateKeyEventInternal(const XEvent *event, int& count, QStri
         code = isprint((int)key) ? toupper((int)key) : 0; // upper-case key, if known
     } else if (key >= XK_F1 && key <= XK_F35) {
         code = Qt::Key_F1 + ((int)key - XK_F1);        // function keys
-    } else if (key >= XK_KP_0 && key <= XK_KP_9) {
-        code = Qt::Key_0 + ((int)key - XK_KP_0);        // numeric keypad keys
+    } else if (key >= XK_KP_Space && key <= XK_KP_9) {
+        if (key >= XK_KP_0) {
+            // numeric keypad keys
+            code = Qt::Key_0 + ((int)key - XK_KP_0);
+        } else {
+            code = translateKeySym(key);
+        }
         modifiers |= Qt::KeypadModifier;
     } else if (text.length() == 1 && text.unicode()->unicode() > 0x1f && text.unicode()->unicode() != 0x7f && !(key >= XK_dead_grave && key <= XK_dead_horn)) {
         code = text.unicode()->toUpper().unicode();
     } else {
-        int i = 0;                                // any other keys
-        while (KeyTbl[i]) {
-            if (key == KeyTbl[i]) {
-                code = (int)KeyTbl[i+1];
-                break;
-            }
-            i += 2;
-        }
-        switch (key) {
-        case XK_KP_Insert:
-        case XK_KP_Delete:
-        case XK_KP_Home:
-        case XK_KP_End:
-        case XK_KP_Left:
-        case XK_KP_Up:
-        case XK_KP_Right:
-        case XK_KP_Down:
-        case XK_KP_Prior:
-        case XK_KP_Next:
-        case XK_KP_Space:
-        case XK_KP_Tab:
-        case XK_KP_Enter:
-        case XK_KP_Equal:
-        case XK_KP_Multiply:
-        case XK_KP_Add:
-        case XK_KP_Separator:
-        case XK_KP_Subtract:
-        case XK_KP_Decimal:
-        case XK_KP_Divide:
-            modifiers |= Qt::KeypadModifier;
-            break;
-        default:
-            break;
-        }
+        // any other keys
+        code = translateKeySym(key);
 
         if (code == Qt::Key_Tab && (modifiers & Qt::ShiftModifier)) {
             // map shift+tab to shift+backtab, QShortcutMap knows about it
@@ -5042,7 +5117,7 @@ bool QETWidget::translateConfigEvent(const XEvent *event)
         if (isVisible())
             QApplication::syncX();
 
-        if (! d->extra || d->extra->compress_events) {
+        if (d->extra->compress_events) {
             // ConfigureNotify compression for faster opaque resizing
             XEvent otherEvent;
             while (XCheckTypedWindowEvent(X11->display, winId(), ConfigureNotify,
@@ -5478,9 +5553,16 @@ static void sm_performSaveYourself(QSessionManagerPrivate* smd)
     // tell the session manager about our program in best POSIX style
     sm_setProperty(QString::fromLatin1(SmProgram), QString::fromLocal8Bit(qApp->argv()[0]));
     // tell the session manager about our user as well.
-    struct passwd* entry = getpwuid(geteuid());
-    if (entry)
-        sm_setProperty(QString::fromLatin1(SmUserID), QString::fromLatin1(entry->pw_name));
+    struct passwd *entryPtr = 0;
+#if !defined(QT_NO_THREAD) && defined(_POSIX_THREAD_SAFE_FUNCTIONS)
+    QVarLengthArray<char, 1024> buf(sysconf(_SC_GETPW_R_SIZE_MAX));
+    struct passwd entry;
+    getpwuid_r(geteuid(), &entry, buf.data(), buf.size(), &entryPtr);
+#else
+    entryPtr = getpwuid(geteuid());
+#endif
+    if (entryPtr)
+        sm_setProperty(QString::fromLatin1(SmUserID), QString::fromLatin1(entryPtr->pw_name));
 
     // generate a restart and discard command that makes sense
     QStringList restart;

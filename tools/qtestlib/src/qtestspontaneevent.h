@@ -31,6 +31,8 @@
 #pragma qt_no_master_include
 #endif
 
+QT_BEGIN_HEADER
+
 #ifndef QTEST_NO_SIZEOF_CHECK
 template <int>
 class QEventSizeOfChecker
@@ -73,5 +75,7 @@ private:
     ushort m_accept : 1;
     ushort reserved : 13;
 };
+
+QT_END_HEADER
 
 #endif

@@ -60,6 +60,7 @@
 #include <QtGui/QMainWindow>
 #include <QtGui/QSplitter>
 #include <QtGui/QMenuBar>
+#include <QtGui/QFileDialog>
 
 #include <QtCore/QBuffer>
 #include <QtCore/QDir>
@@ -136,12 +137,10 @@ void QDesignerResource::saveDom(DomUI *ui, QWidget *widget)
 
     ui->setElementClass(sheet->property(sheet->indexOf(QLatin1String("objectName"))).toString());
 
-    if (m_formWindow) {
-        for (int index = 0; index < m_formWindow->toolCount(); ++index) {
-            QDesignerFormWindowToolInterface *tool = m_formWindow->tool(index);
-            Q_ASSERT(tool != 0);
-            tool->saveToDom(ui, widget);
-        }
+    for (int index = 0; index < m_formWindow->toolCount(); ++index) {
+        QDesignerFormWindowToolInterface *tool = m_formWindow->tool(index);
+        Q_ASSERT(tool != 0);
+        tool->saveToDom(ui, widget);
     }
 
     QString author = m_formWindow->author();
@@ -456,6 +455,7 @@ void QDesignerResource::changeObjectName(QObject *o, QString objName)
 void QDesignerResource::applyProperties(QObject *o, const QList<DomProperty*> &properties)
 {
     if (QDesignerPropertySheetExtension *sheet = qt_extension<QDesignerPropertySheetExtension*>(m_core->extensionManager(), o)) {
+
         for (int i=0; i<properties.size(); ++i) {
             DomProperty *p = properties.at(i);
             QString propertyName = p->attributeName();
@@ -497,6 +497,12 @@ void QDesignerResource::applyProperties(QObject *o, const QList<DomProperty*> &p
 
             if (propertyName == QLatin1String("objectName"))
                 changeObjectName(o, o->objectName());
+        }
+        QSplitter *splitter = qobject_cast<QSplitter *>(o);
+        if (splitter) {
+            QDesignerWidgetFactoryInterface *widgetFactory = m_core->widgetFactory();
+            widgetFactory->createLayout(splitter, 0, splitter->orientation() == Qt::Horizontal ?
+                        LayoutInfo::HBox : LayoutInfo::VBox);
         }
     }
 }
@@ -582,8 +588,19 @@ DomWidget *QDesignerResource::createDom(QWidget *widget, DomWidget *ui_parentWid
     if (widgetInfoIndex != -1) {
         widgetInfo = m_core->widgetDataBase()->item(widgetInfoIndex);
 
-        if (widgetInfo->isCustom())
+        if (widgetInfo->isCustom()) {
+            if (widgetInfo->extends().isEmpty()) {
+                const QMetaObject *mo = widget->metaObject()->superClass();
+                while (mo != 0) {
+                    if (m_core->widgetDataBase()->indexOfClassName(QLatin1String(mo->className())) != -1) {
+                        widgetInfo->setExtends(QLatin1String(mo->className()));
+                        break;
+                    }
+                    mo = mo->superClass();
+                }
+            }
             m_usedCustomWidgets.insert(widgetInfo, true);
+        }
     }
 
     DomWidget *w = 0;
@@ -692,6 +709,8 @@ DomLayoutItem *QDesignerResource::createDom(QLayoutItem *item, DomLayout *ui_lay
         m_laidout.insert(item->widget(), true);
     } else if (!item->spacerItem()) { // we use spacer as fake item in the Designer
         ui_item = QAbstractFormBuilder::createDom(item, ui_layout, ui_parentWidget);
+    } else {
+        return 0;
     }
 
     if (m_chain.size() && item->widget()) {
@@ -1293,8 +1312,25 @@ void QDesignerResource::createResources(DomResources *resources)
 
     QList<DomResource*> dom_include = resources->elementInclude();
     foreach (DomResource *res, dom_include) {
-        QString path = m_formWindow->absoluteDir().absoluteFilePath(res->attributeLocation());
-        m_formWindow->addResourceFile(path);
+        QString path = m_formWindow->absoluteDir().absoluteFilePath(res->attributeLocation());        
+        while (!QFile::exists(path)) {
+            if (QMessageBox::warning(m_formWindow, QObject::tr("Loading qrc file"),
+                QObject::tr("The specified qrc file <p><b>%1</b></p><p>could not be found. "
+                "Do you want to update the file location?</p>").arg(path),
+                QObject::tr("&Yes"), QObject::tr("&No"),
+                QString(), 0, 1) == 0) {
+                QFileInfo fi(path);
+                path = QFileDialog::getOpenFileName(m_formWindow,
+                    QObject::tr("New location for %1").arg(fi.fileName()), fi.absolutePath(),
+                    QObject::tr("Resource files (*.qrc)"));
+                if (path.isEmpty())
+                    break;
+            } else {
+                break;
+            }
+        }
+        if (!path.isEmpty())
+            m_formWindow->addResourceFile(path);
     }
 }
 

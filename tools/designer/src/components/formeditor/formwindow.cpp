@@ -219,8 +219,7 @@ void FormWindow::init()
     m_geometryChangedTimer->setSingleShot(true);
     connect(m_geometryChangedTimer, SIGNAL(timeout()), this, SIGNAL(geometryChanged()));
 
-    m_rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
-    m_rubberBand->hide();
+    m_rubberBand = 0;
 
     setGrid(QPoint(10,10));
 
@@ -524,6 +523,8 @@ void FormWindow::startRectDraw(const QPoint &pos, QWidget *, RectType t)
     rectAnchor = (t == Insert) ? gridPoint(pos) : pos;
 
     currRect = QRect(rectAnchor, QSize(0, 0));
+    if (!m_rubberBand)
+        m_rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
     m_rubberBand->setGeometry(currRect);
     m_rubberBand->show();
 }
@@ -541,7 +542,8 @@ void FormWindow::continueRectDraw(const QPoint &pos, QWidget *, RectType t)
     if (r.width() > 1 || r.height() > 1) {
         oldRectValid = true;
         currRect = r;
-        m_rubberBand->setGeometry(currRect);
+        if (m_rubberBand)
+            m_rubberBand->setGeometry(currRect);
     } else {
         oldRectValid = false;
     }
@@ -549,10 +551,10 @@ void FormWindow::continueRectDraw(const QPoint &pos, QWidget *, RectType t)
 
 void FormWindow::endRectDraw()
 {
-    if (!m_rubberBand->isVisible())
-        return;
-
-    m_rubberBand->hide();
+    if (m_rubberBand) {
+        delete m_rubberBand;
+        m_rubberBand = 0;
+    }
 }
 
 QPoint FormWindow::gridPoint(const QPoint &p) const
@@ -569,6 +571,21 @@ QWidget *FormWindow::currentWidget() const
 void FormWindow::setCurrentWidget(QWidget *currentWidget)
 {
     m_currentWidget = currentWidget;
+}
+
+QSize FormWindow::sizeHint() const
+{
+    QMainWindow *mw = qobject_cast<QMainWindow*>(mainContainer());
+    if (!mw) {
+        return QSize(400, 300);
+    }
+    QSize sh = mw->sizeHint();
+    if (sh.width() < 400)
+        sh.setWidth(400);
+    if (sh.height() < 300)
+        sh.setHeight(300);
+    return sh;
+
 }
 
 void FormWindow::selectWidget(QWidget* w, bool select)
@@ -968,10 +985,7 @@ void FormWindow::selectWidgets()
 
 bool FormWindow::handleKeyPressEvent(QWidget *widget, QWidget *, QKeyEvent *e)
 {
-    if (qobject_cast<FormWindow*>(widget))
-        return false;
-
-    if (qobject_cast<QMenu*>(widget))
+    if (qobject_cast<FormWindow*>(widget) || qobject_cast<QMenu*>(widget))
         return false;
 
     e->accept(); // we always accept!
@@ -982,28 +996,26 @@ bool FormWindow::handleKeyPressEvent(QWidget *widget, QWidget *, QKeyEvent *e)
         case Qt::Key_Delete:
         case Qt::Key_Backspace:
             deleteWidgets();
-            return true;
+            break;
 
         case Qt::Key_Tab:
             cursor()->movePosition(QDesignerFormWindowCursorInterface::Next);
-            return true;
+            break;
 
         case Qt::Key_Backtab:
             cursor()->movePosition(QDesignerFormWindowCursorInterface::Prev);
-            return true;
+            break;
 
         case Qt::Key_Left:
         case Qt::Key_Right:
         case Qt::Key_Up:
         case Qt::Key_Down:
-            if (e->modifiers() && Qt::ControlModifier) {
+            if (e->modifiers() && Qt::ControlModifier)
                 handleArrowKeyEvent(e->key(), e->modifiers() == Qt::ControlModifier);
-                return true;
-            }
             break;
     }
 
-    return false;
+    return true;
 }
 
 void FormWindow::handleArrowKeyEvent(int key, bool modifier)

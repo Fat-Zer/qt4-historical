@@ -29,6 +29,8 @@
 #include <QtGui/qitemselectionmodel.h>
 #include <QtGui/qabstractitemdelegate.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_ITEMVIEWS
@@ -271,14 +273,16 @@ protected:
 private:
     Q_DECLARE_PRIVATE(QAbstractItemView)
     Q_DISABLE_COPY(QAbstractItemView)
-    Q_PRIVATE_SLOT(d_func(), void columnsAboutToBeRemoved(const QModelIndex&, int, int))
-    Q_PRIVATE_SLOT(d_func(), void columnsRemoved(const QModelIndex&, int, int))
-    Q_PRIVATE_SLOT(d_func(), void rowsRemoved(const QModelIndex&, int, int))
+    Q_PRIVATE_SLOT(d_func(), void _q_columnsAboutToBeRemoved(const QModelIndex&, int, int))
+    Q_PRIVATE_SLOT(d_func(), void _q_columnsRemoved(const QModelIndex&, int, int))
+    Q_PRIVATE_SLOT(d_func(), void _q_rowsRemoved(const QModelIndex&, int, int))
 
-    friend class QTreeViewPrivate;
+    friend class QTreeViewPrivate; // needed to compile with MSVC
 };
+
 Q_DECLARE_OPERATORS_FOR_FLAGS(QAbstractItemView::EditTriggers)
 
 #endif // QT_NO_ITEMVIEWS
+QT_END_HEADER
 
 #endif // QABSTRACTITEMVIEW_H

@@ -144,7 +144,7 @@ qint64 RCCFileInfo::writeDataBlob(FILE *out, qint64 offset, RCCResourceLibrary::
         }
     }
 #endif // QT_NO_COMPRESS
-    
+
     //some info
     if(format == RCCResourceLibrary::C_Code)
         fprintf(out, "  // %s\n  ", fileInfo.absoluteFilePath().toLatin1().constData());
@@ -216,7 +216,7 @@ RCCResourceLibrary::~RCCResourceLibrary()
     delete root;
 }
 
-bool RCCResourceLibrary::interpretResourceFile(QIODevice *inputDevice, QString fname, QString currentPath)
+bool RCCResourceLibrary::interpretResourceFile(QIODevice *inputDevice, QString fname, QString currentPath, bool ignoreErrors)
 {
     if (!currentPath.isEmpty() && !currentPath.endsWith(QLatin1String("/")))
         currentPath += '/';
@@ -226,6 +226,8 @@ bool RCCResourceLibrary::interpretResourceFile(QIODevice *inputDevice, QString f
         QString errorMsg;
         int errorLine, errorColumn;
         if(!document.setContent(inputDevice, &errorMsg, &errorLine, &errorColumn)) {
+            if(ignoreErrors)
+                return true;
             fprintf(stderr, "RCC Parse Error:%s:%d:%d [%s]\n", fname.toLatin1().constData(),
                     errorLine, errorColumn, errorMsg.toLatin1().constData());
             return false;
@@ -251,13 +253,12 @@ bool RCCResourceLibrary::interpretResourceFile(QIODevice *inputDevice, QString f
                 if (!prefix.endsWith(QLatin1String("/")))
                     prefix += '/';
 
-
                 for (QDomNode res = child.firstChild(); !res.isNull(); res = res.nextSibling()) {
                     if (res.toElement().tagName() == QLatin1String(TAG_FILE)) {
 
                         QString fileName(res.firstChild().toText().data());
-                        if (fileName.isEmpty())
-                            fprintf(stderr, "Warning: Null node in XML\n");
+                        if (ignoreErrors && fileName.isEmpty())
+                            fprintf(stderr, "RCC: Warning: Null node in XML\n");
 
                         QString alias;
                         if (res.toElement().hasAttribute(ATTRIBUTE_ALIAS))
@@ -279,12 +280,14 @@ bool RCCResourceLibrary::interpretResourceFile(QIODevice *inputDevice, QString f
                         alias = QDir::cleanPath(alias);
                         while (alias.startsWith("../"))
                             alias.remove(0, 3);
-                        alias = prefix + alias;
+                        alias = QDir::cleanPath(mResourceRoot) + prefix + alias;
 
                         QFileInfo file(currentPath + fileName);
                         if (!file.exists()) {
-                            fprintf(stderr, "Cannot find file: %s\n", fileName.toLatin1().constData());
-                            continue ;
+                            if(ignoreErrors)
+                                continue;
+                            fprintf(stderr, "RCC: Error: Cannot find file '%s'\n", fileName.toLatin1().constData());
+                            return false;
                         } else if (file.isFile()) {
                             addFile(alias, RCCFileInfo(alias.section('/', -1), file, lang,
                                                        RCCFileInfo::NoFlags, compressLevel, compressThreshold));
@@ -314,8 +317,8 @@ bool RCCResourceLibrary::interpretResourceFile(QIODevice *inputDevice, QString f
             }
         }
     }
-    if(this->root == 0) {
-        fprintf(stderr, "No resources in resource description.\n");
+    if(!ignoreErrors && this->root == 0) {
+        fprintf(stderr, "RCC: Warning: No resources in resource description.\n");
         return false;
     }
     return true;
@@ -352,11 +355,11 @@ bool RCCResourceLibrary::addFile(const QString &alias, const RCCFileInfo &file)
     return true;
 }
 
-bool RCCResourceLibrary::readFiles()
+bool RCCResourceLibrary::readFiles(bool ignoreErrors)
 {
     //read in data
     if (mVerbose)
-        fprintf(stderr, "Processing %d files\n", mFileNames.size());
+        fprintf(stderr, "Processing %d files [%d]\n", mFileNames.size(), ignoreErrors);
     for (int i=0; i<mFileNames.size(); ++i) {
         QFile fileIn;
         QString fname = mFileNames.at(i), pwd;
@@ -379,7 +382,7 @@ bool RCCResourceLibrary::readFiles()
         if (mVerbose)
             fprintf(stderr, "Interpreting %s\n", fname.toLatin1().constData());
 
-        if (!interpretResourceFile(&fileIn, fname, pwd))
+        if (!interpretResourceFile(&fileIn, fname, pwd, ignoreErrors))
             return false;
     }
     return true;

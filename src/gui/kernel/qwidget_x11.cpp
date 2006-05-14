@@ -726,8 +726,8 @@ void QWidgetPrivate::create_sys(WId window, bool initializeWindow, bool destroyO
 void QWidget::destroy(bool destroyWindow, bool destroySubWindows)
 {
     Q_D(QWidget);
-    if (QWidget *p = parentWidget())
-        p->d_func()->invalidateBuffer(geometry());
+    if (!isWindow() && parentWidget())
+        parentWidget()->d_func()->invalidateBuffer(geometry());
     d->deactivateWidgetCleanup();
     if (testAttribute(Qt::WA_WState_Created)) {
         setAttribute(Qt::WA_WState_Created, false);
@@ -1116,13 +1116,13 @@ void QWidgetPrivate::setWindowIcon_sys(bool forceReset)
         if (!QX11Info::appDefaultVisual(xinfo.screen())
             || !QX11Info::appDefaultColormap(xinfo.screen())) {
             // non-default visual/colormap, use 1bpp bitmap
-            if (!forceReset)
+            if (!forceReset || !topData->iconPixmap)
                 topData->iconPixmap = new QBitmap(pixmap);
             h->icon_pixmap = topData->iconPixmap->handle();
         } else {
             // default depth, use a normal pixmap (even though this
             // violates the ICCCM)
-            if (!forceReset)
+            if (!forceReset || !topData->iconPixmap)
                 topData->iconPixmap = new QPixmap(pixmap);
             h->icon_pixmap = topData->iconPixmap->data->x11ConvertToDefaultDepth();
         }
@@ -1547,8 +1547,7 @@ void QWidgetPrivate::show_sys()
             QWidget *p = q->parentWidget();
             if (p)
                 p = p->window();
-            if (p && (data.window_modality == Qt::NonModal
-                      || data.window_modality == Qt::WindowModal)) {
+            if (p) {
                 // transient for window
                 XSetTransientForHint(X11->display, q->winId(), p->winId());
             } else {
@@ -1839,7 +1838,7 @@ static void do_size_hints(QWidget* widget, QWExtra *x)
         }
     }
     s.flags |= PWinGravity;
-    s.win_gravity = NorthWestGravity;
+    s.win_gravity = QApplication::isRightToLeft() ? NorthEastGravity : NorthWestGravity;
     XSetWMNormalHints(X11->display, widget->winId(), &s);
 }
 
@@ -1893,7 +1892,7 @@ void QWidgetPrivate::setWSGeometry(bool dontShow)
     } else {
         // parent is not clipped, we may or may not have to clip
 
-        if (data.wrect.isValid()) {
+        if (data.wrect.isValid() && QRect(QPoint(),data.crect.size()).contains(data.wrect)) {
             // This is where the main optimization is: we are already
             // clipped, and if our clip is still valid, we can just
             // move our window, and do not need to move or clip
@@ -1904,7 +1903,7 @@ void QWidgetPrivate::setWSGeometry(bool dontShow)
             if (data.wrect.contains(vrect)) {
                 xrect = data.wrect;
                 xrect.translate(data.crect.topLeft());
-                XMoveResizeWindow(dpy, data.winid, xrect.x(), xrect.y(), xrect.width(), xrect.height());
+                XMoveWindow(dpy, data.winid, xrect.x(), xrect.y());
                 return;
             }
         }
@@ -2037,6 +2036,9 @@ void QWidgetPrivate::setGeometry_sys(int x, int y, int w, int h, bool isMove)
                 XMoveResizeWindow(dpy, data.winid, x, y, w, h);
         } else if (isResize)
             XResizeWindow(dpy, data.winid, w, h);
+        if (isResize) // set config pending only on resize, see qapplication_x11.cpp, translateConfigEvent()
+            q->setAttribute(Qt::WA_WState_ConfigPending);
+
     } else {
         if(!isResize && q->isVisible()) {
             moveRect(QRect(oldPos, oldSize), x - oldPos.x(), y - oldPos.y());
@@ -2064,9 +2066,6 @@ void QWidgetPrivate::setGeometry_sys(int x, int y, int w, int h, bool isMove)
             }
         }
         if (isResize) {
-            // set config pending only on resize, see qapplication_x11.cpp, translateConfigEvent()
-            q->setAttribute(Qt::WA_WState_ConfigPending);
-
             QResizeEvent e(q->size(), oldSize);
             QApplication::sendEvent(q, &e);
         }
@@ -2331,7 +2330,7 @@ void QWidgetPrivate::fixupDnd()
     // will sync children_use_dnd up to our window
     checkChildrenDnd();
     QWidget *window = q->window();
-    if (X11) {
+    if (X11 && !QApplication::closingDown()) {
         bool enableDnd = (window->d_func()->extra && window->d_func()->extra->children_use_dnd)
                          || window->testAttribute(Qt::WA_AcceptDrops);
         X11->dndEnable(q, enableDnd);
@@ -2394,10 +2393,6 @@ void QWidget::setMask(const QRegion& region)
     Note that this effect can be slow if the region is particularly
     complex.
 
-    \omit
-    See \c examples/tux for an example of masking for transparency.
-    \endomit
-
     The following code shows how an image with an alpha channel can be
     used to generate a mask for a widget:
 
@@ -2409,7 +2404,10 @@ void QWidget::setMask(const QRegion& region)
     giving the appearance that an irregularly-shaped image is being drawn
     directly onto the screen.
 
-    \sa clearMask(), windowOpacity()
+    Masked widgets receive mouse events only on their visible
+    portions.
+
+    \sa clearMask(), windowOpacity(), {widgets/shapedclock}{Shaped Clock Example}
 */
 
 void QWidget::setMask(const QBitmap &bitmap)

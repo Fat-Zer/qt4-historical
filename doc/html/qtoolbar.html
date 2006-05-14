@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-x11-opensource-src-4.1.2/src/gui/widgets/qtoolbar.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/src/gui/widgets/qtoolbar.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/src/gui/widgets/qtoolbar.cpp -->
 <head>
     <title>Qt 4.1: QToolBar Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -70,7 +71,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>Qt::ToolButtonStyle <b><a href="qtoolbar.html#toolButtonStyle-prop">toolButtonStyle</a></b> () const</li>
 </ul>
 <ul>
-<li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>190 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -154,8 +155,8 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b>void setOrientation ( Qt::Orientation <i>orientation</i> )</b></li>
 </ul>
 <h3 class="fn"><a name="toolButtonStyle-prop"></a>toolButtonStyle : <a href="qt.html#ToolButtonStyle-enum">Qt::ToolButtonStyle</a></h3>
-<p>This property holds style of toolbar buttons.</p>
-<p>The defaults is <a href="qt.html#ToolButtonStyle-enum">Qt::ToolButtonIconOnly</a>.</p>
+<p>This property holds the style of toolbar buttons.</p>
+<p>The default is <a href="qt.html#ToolButtonStyle-enum">Qt::ToolButtonIconOnly</a>.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>Qt::ToolButtonStyle toolButtonStyle () const</b></li>
@@ -195,6 +196,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qtoolbar.html#insertSeparator">insertSeparator</a>().</p>
 <h3 class="fn"><a name="addWidget"></a><a href="qaction.html">QAction</a> * QToolBar::addWidget ( <a href="qwidget.html">QWidget</a> * <i>widget</i> )</h3>
 <p>Adds the given <i>widget</i> to the toolbar as the toolbar's last item.</p>
+<p>Note: You should use <a href="qaction.html#visible-prop">QAction::setVisible</a>() to change the visibility of the widget. Using <a href="qwidget.html#visible-prop">QWidget::setVisible</a>(), <a href="qwidget.html#show">QWidget::show</a>() and <a href="qwidget.html#hide">QWidget::hide</a>() does not work.</p>
 <p>See also <a href="qtoolbar.html#insertWidget">insertWidget</a>().</p>
 <h3 class="fn"><a name="allowedAreasChanged"></a>void QToolBar::allowedAreasChanged ( <a href="qt.html#ToolBarArea-enum">Qt::ToolBarAreas</a> <i>allowedAreas</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when the collection of allowed areas for the toolbar is changed. The new areas in which the toolbar can be positioned are specified by <i>allowedAreas</i>.</p>
@@ -210,6 +212,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qtoolbar.html#addSeparator">addSeparator</a>().</p>
 <h3 class="fn"><a name="insertWidget"></a><a href="qaction.html">QAction</a> * QToolBar::insertWidget ( <a href="qaction.html">QAction</a> * <i>before</i>, <a href="qwidget.html">QWidget</a> * <i>widget</i> )</h3>
 <p>Inserts the given <i>widget</i> in front of the toolbar item associated with the <i>before</i> action.</p>
+<p>Note: You should use <a href="qaction.html#visible-prop">QAction::setVisible</a>() to change the visibility of the widget. Using <a href="qwidget.html#visible-prop">QWidget::setVisible</a>(), <a href="qwidget.html#show">QWidget::show</a>() and <a href="qwidget.html#hide">QWidget::hide</a>() does not work.</p>
 <p>See also <a href="qtoolbar.html#addWidget">addWidget</a>().</p>
 <h3 class="fn"><a name="isAreaAllowed"></a>bool QToolBar::isAreaAllowed ( <a href="qt.html#ToolBarArea-enum">Qt::ToolBarArea</a> <i>area</i> ) const</h3>
 <p>Returns true if this toolbar is dockable in the given <i>area</i>; otherwise returns false.</p>
@@ -230,6 +233,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

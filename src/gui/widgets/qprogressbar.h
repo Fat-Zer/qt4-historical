@@ -26,6 +26,8 @@
 
 #include <QtGui/qframe.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_PROGRESSBAR
@@ -94,5 +96,7 @@ private:
 };
 
 #endif // QT_NO_PROGRESSBAR
+
+QT_END_HEADER
 
 #endif // QPROGRESSBAR_H

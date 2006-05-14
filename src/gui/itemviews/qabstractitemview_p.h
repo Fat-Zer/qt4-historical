@@ -40,12 +40,16 @@
 #include "QtCore/qdatetime.h"
 #include "QtGui/qevent.h"
 #include "QtGui/qmime.h"
-#include "QtCore/qmap.h"
+#include "QtCore/qpair.h"
 #include "QtCore/qtimer.h"
 #include "QtGui/qregion.h"
 #include "QtCore/qdebug.h"
 
 #ifndef QT_NO_ITEMVIEWS
+
+typedef QList<QPair<QPersistentModelIndex, QPointer<QWidget> > > _q_abstractitemview_editor_container;
+typedef _q_abstractitemview_editor_container::const_iterator _q_abstractitemview_editor_const_iterator;
+typedef _q_abstractitemview_editor_container::iterator _q_abstractitemview_editor_iterator;
 
 class Q_GUI_EXPORT QAbstractItemViewPrivate : public QAbstractScrollAreaPrivate
 {
@@ -57,16 +61,19 @@ public:
 
     void init();
 
-    void rowsRemoved(const QModelIndex &parent, int start, int end);
-    void columnsAboutToBeRemoved(const QModelIndex &parent, int start, int end);
-    void columnsRemoved(const QModelIndex &parent, int start, int end);
+    void _q_rowsRemoved(const QModelIndex &parent, int start, int end);
+    void _q_columnsAboutToBeRemoved(const QModelIndex &parent, int start, int end);
+    void _q_columnsRemoved(const QModelIndex &parent, int start, int end);
 
     void fetchMore();
-    bool shouldEdit(QAbstractItemView::EditTrigger trigger, const QModelIndex &index);
-    bool shouldAutoScroll(const QPoint &pos);
+    bool shouldEdit(QAbstractItemView::EditTrigger trigger, const QModelIndex &index) const;
+    bool shouldForwardEvent(QAbstractItemView::EditTrigger trigger, const QEvent *event) const;
+    bool shouldAutoScroll(const QPoint &pos) const;
     void doDelayedItemsLayout();
 
     QWidget *editor(const QModelIndex &index, const QStyleOptionViewItem &options);
+    bool sendDelegateEvent(const QModelIndex &index, QEvent *event) const;
+    bool openEditor(const QModelIndex &index, QEvent *event);
 
     QItemSelectionModel::SelectionFlags multiSelectionCommand(const QModelIndex &index,
                                                               const QEvent *event) const;
@@ -126,8 +133,8 @@ public:
     }
 
     inline void executePostedLayout() const {
-        if (layoutPosted && state != QAbstractItemView::CollapsingState) {
-            layoutPosted = false;
+        if (delayedLayout.isActive() && state != QAbstractItemView::CollapsingState) {
+            delayedLayout.stop();
             const_cast<QAbstractItemView*>(q_func())->doItemsLayout();
         }
     }
@@ -168,6 +175,28 @@ public:
                       : q->horizontalOffset(), q->verticalOffset());
     }
 
+    QWidget *editorForIndex(const QModelIndex &index) const;
+    inline bool hasEditor(const QModelIndex &index) const {
+        return editorForIndex(index) != 0;
+    }
+
+    QModelIndex indexForEditor(QWidget *editor) const;
+    void addEditor(const QModelIndex &index, QWidget *editor);
+    void removeEditor(QWidget *editor);
+
+    inline QModelIndex indexForIterator(const _q_abstractitemview_editor_iterator &it) const {
+        return (*it).first;
+    }
+    inline QWidget *editorForIterator(const _q_abstractitemview_editor_iterator &it) const {
+        return (*it).second;
+    }
+    inline QModelIndex indexForIterator(const _q_abstractitemview_editor_const_iterator &it) const {
+        return (*it).first;
+    }
+    inline QWidget *editorForIterator(const _q_abstractitemview_editor_const_iterator &it) const {
+        return (*it).second;
+    }
+
     QPointer<QAbstractItemModel> model;
     QPointer<QAbstractItemDelegate> delegate;
     QPointer<QItemSelectionModel> selectionModel;
@@ -175,7 +204,7 @@ public:
     QAbstractItemView::SelectionMode selectionMode;
     QAbstractItemView::SelectionBehavior selectionBehavior;
 
-    QMap<QPersistentModelIndex, QPointer<QWidget> > editors;
+    _q_abstractitemview_editor_container editors;
     QList<QWidget*> persistent;
 
     QPersistentModelIndex enteredIndex;
@@ -209,16 +238,17 @@ public:
     int autoScrollInterval;
     int autoScrollCount;
 
-    mutable bool layoutPosted;
     bool alternatingColors;
 
     QSize iconSize;
     Qt::TextElideMode textElideMode;
 
     QRegion updateRegion; // used for the internal update system
-    QBasicTimer updateTimer;
-
     QPoint scrollDelayOffset;
+
+    QBasicTimer updateTimer;
+    QBasicTimer delayedEditing;
+    mutable QBasicTimer delayedLayout;
 };
 
 #include <qvector.h>

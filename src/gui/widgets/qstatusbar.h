@@ -26,6 +26,8 @@
 
 #include <QtGui/qwidget.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_STATUSBAR
@@ -72,6 +74,7 @@ protected:
     void paintEvent(QPaintEvent *);
     void resizeEvent(QResizeEvent *);
 
+    // ### Qt 5: consider making reformat() and hideOrShow() private
     void reformat();
     void hideOrShow();
     bool event(QEvent *);
@@ -82,5 +85,7 @@ private:
 };
 
 #endif // QT_NO_STATUSBAR
+
+QT_END_HEADER
 
 #endif // QSTATUSBAR_H

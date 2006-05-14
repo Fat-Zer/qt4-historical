@@ -55,7 +55,7 @@ public:
     void emitSignals(EmitPolicy ep, const QVariant &old);
     QString textFromValue(const QVariant &f) const;
     QVariant valueFromText(const QString &f) const;
-    void editorCursorPositionChanged(int lastpos, int newpos);
+    virtual void _q_editorCursorPositionChanged(int oldpos, int newpos);
     QVariant validateAndInterpret(QString &input, int &, QValidator::State &state, bool fixup = false) const;
 
     QVariant valueForPosition(int pos) const;
@@ -121,6 +121,17 @@ public:
   default to the maximum and minimum values for a QDate. You can
   change this by calling setMinimumDate(), setMaximumDate(),
   setMinimumTime(), and setMaximumTime().
+
+  \table 100%
+  \row \o \inlineimage windowsxp-datetimeedit.png Screenshot of a Windows XP style date time editing widget
+       \o A date time editing widget shown in the \l{Windows XP Style Widget Gallery}{Windows XP widget style}.
+  \row \o \inlineimage macintosh-datetimeedit.png Screenshot of a Macintosh style date time editing widget
+       \o A date time editing widget shown in the \l{Macintosh Style Widget Gallery}{Macintosh widget style}.
+  \row \o \inlineimage plastique-datetimeedit.png Screenshot of a Plastique style date time editing widget
+       \o A date time editing widget shown in the \l{Plastique Style Widget Gallery}{Plastique widget style}.
+  \endtable
+
+  \sa QDateEdit, QTimeEdit, QDate, QTime
 */
 
 /*!
@@ -610,10 +621,7 @@ void QDateTimeEdit::setDisplayFormat(const QString &format)
         d->updateEdit();
         d->edit->setCursorPosition(0);
         QDTEDEBUG << 0;
-        d->editorCursorPositionChanged(-1, 0);
-
-
-
+        d->_q_editorCursorPositionChanged(-1, 0);
     }
 }
 
@@ -973,7 +981,30 @@ QDateTimeEdit::StepEnabled QDateTimeEdit::stepEnabled() const
   \ingroup basic
   \mainclass
 
-  \sa QDateEdit QDateTimeEdit
+  Many of the properties and functions provided by QTimeEdit are implemented in
+  QDateTimeEdit. The following properties are most relevant to users of this
+  class:
+
+  \list
+  \o \l{QDateTimeEdit::time}{time} holds the date displayed by the widget.
+  \o \l{QDateTimeEdit::minimumTime}{minimumTime} defines the minimum (earliest) time
+     that can be set by the user.
+  \o \l{QDateTimeEdit::maximumTime}{maximumTime} defines the maximum (latest) time
+     that can be set by the user.
+  \o \l{QDateTimeEdit::displayFormat}{displayFormat} contains a string that is used
+     to format the time displayed in the widget.
+  \endlist
+
+  \table 100%
+  \row \o \inlineimage windowsxp-timeedit.png Screenshot of a Windows XP style time editing widget
+       \o A time editing widget shown in the \l{Windows XP Style Widget Gallery}{Windows XP widget style}.
+  \row \o \inlineimage macintosh-timeedit.png Screenshot of a Macintosh style time editing widget
+       \o A time editing widget shown in the \l{Macintosh Style Widget Gallery}{Macintosh widget style}.
+  \row \o \inlineimage plastique-timeedit.png Screenshot of a Plastique style time editing widget
+       \o A time editing widget shown in the \l{Plastique Style Widget Gallery}{Plastique widget style}.
+  \endtable
+
+  \sa QDateEdit, QDateTimeEdit
 */
 
 /*!
@@ -1004,7 +1035,30 @@ QTimeEdit::QTimeEdit(const QTime &time, QWidget *parent)
   \ingroup basic
   \mainclass
 
-  \sa QTimeEdit QDateTimeEdit
+  Many of the properties and functions provided by QDateEdit are implemented in
+  QDateTimeEdit. The following properties are most relevant to users of this
+  class:
+
+  \list
+  \o \l{QDateTimeEdit::date}{date} holds the date displayed by the widget.
+  \o \l{QDateTimeEdit::minimumDate}{minimumDate} defines the minimum (earliest)
+     date that can be set by the user.
+  \o \l{QDateTimeEdit::maximumDate}{maximumDate} defines the maximum (latest) date
+     that can be set by the user.
+  \o \l{QDateTimeEdit::displayFormat}{displayFormat} contains a string that is used
+     to format the date displayed in the widget.
+  \endlist
+
+  \table 100%
+  \row \o \inlineimage windowsxp-dateedit.png Screenshot of a Windows XP style date editing widget
+       \o A date editing widget shown in the \l{Windows XP Style Widget Gallery}{Windows XP widget style}.
+  \row \o \inlineimage macintosh-dateedit.png Screenshot of a Macintosh style date editing widget
+       \o A date editing widget shown in the \l{Macintosh Style Widget Gallery}{Macintosh widget style}.
+  \row \o \inlineimage plastique-dateedit.png Screenshot of a Plastique style date editing widget
+       \o A date editing widget shown in the \l{Plastique Style Widget Gallery}{Plastique widget style}.
+  \endtable
+
+  \sa QTimeEdit, QDateTimeEdit
 */
 
 /*!
@@ -1488,7 +1542,7 @@ void QDateTimeEditPrivate::emitSignals(EmitPolicy ep, const QVariant &old)
   \reimp
 */
 
-void QDateTimeEditPrivate::editorCursorPositionChanged(int oldpos, int newpos)
+void QDateTimeEditPrivate::_q_editorCursorPositionChanged(int oldpos, int newpos)
 {
     Q_Q(QDateTimeEdit);
     if (ignoreCursorPositionChanged || specialValue())

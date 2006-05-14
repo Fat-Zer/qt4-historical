@@ -45,7 +45,7 @@ class QSizeGripPrivate : public QWidgetPrivate
 public:
     void init();
     QPoint p;
-    QSize s;
+    QRect r;
     int d;
     bool hiddenByUser;
 };
@@ -59,7 +59,7 @@ static QWidget *qt_sizegrip_topLevelWidget(QWidget* w)
 
 
 /*!
-    \class QSizeGrip qsizegrip.h
+    \class QSizeGrip
 
     \brief The QSizeGrip class provides a corner-grip for resizing a top-level window.
 
@@ -81,14 +81,25 @@ static QWidget *qt_sizegrip_topLevelWidget(QWidget* w)
     On some platforms the sizegrip automatically hides itself when the
     window is shown full screen or maximised.
 
-    \image plastique-sizegrip.png A size grip widget shown in the Plastique widget style.
+    \table 50%
+    \row \o \inlineimage plastique-sizegrip.png Screenshot of a Plastique style size grip
+    \o A size grip widget at the bottom-right corner of a main window, shown in the
+    \l{Plastique Style Widget Gallery}{Plastique widget style}.
+    \endtable
+
+    The QSizeGrip class inherits QWidget and reimplements the \l
+    {QWidget::mousePressEvent()}{mousePressEvent()} and \l
+    {QWidget::mouseMoveEvent()}{mouseMoveEvent()} functions to feature
+    the resize functionality, and the \l
+    {QWidget::paintEvent()}{paintEvent()} function to render the
+    sizegrip widget.
 
     \sa QStatusBar QWidget::windowState()
 */
 
 
 /*!
-    Constructs a resize corner as a child widget of \a
+    Constructs a resize corner as a child widget of  the given \a
     parent.
 */
 QSizeGrip::QSizeGrip(QWidget * parent)
@@ -100,10 +111,10 @@ QSizeGrip::QSizeGrip(QWidget * parent)
 
 #ifdef QT3_SUPPORT
 /*!
-  \obsolete
+    \obsolete
 
-    Constructs a resize corner called \a name, as a child widget of \a
-    parent.
+    Constructs a resize corner with the given \a name, as a child
+    widget of the given \a parent.
 */
 QSizeGrip::QSizeGrip(QWidget * parent, const char* name)
     : QWidget(*new QSizeGripPrivate, parent, 0)
@@ -138,7 +149,7 @@ void QSizeGripPrivate::init()
 
 
 /*!
-    Destroys the size grip.
+    Destroys this size grip.
 */
 QSizeGrip::~QSizeGrip()
 {
@@ -153,7 +164,7 @@ QSizeGrip::~QSizeGrip()
 }
 
 /*!
-    Returns the size grip's size hint; this is a small size.
+  \reimp
 */
 QSize QSizeGrip::sizeHint() const
 {
@@ -164,9 +175,11 @@ QSize QSizeGrip::sizeHint() const
 }
 
 /*!
-    Paints the resize grip. Resize grips are usually rendered as small
-    diagonal textured lines in the lower-right corner. The event is in
-    \a event.
+    Paints the resize grip.
+
+    Resize grips are usually rendered as small diagonal textured lines
+    in the lower-right corner. The paint event is passed in the \a
+    event parameter.
 */
 void QSizeGrip::paintEvent(QPaintEvent *event)
 {
@@ -178,19 +191,24 @@ void QSizeGrip::paintEvent(QPaintEvent *event)
 }
 
 /*!
-    Primes the resize operation. The event is in \a e.
+    \fn void QSizeGrip::mousePressEvent(QMouseEvent * event)
+
+    Receives the mouse press events for the widget, and primes the
+    resize operation. The mouse press event is passed in the \a event
+    parameter.
 */
 void QSizeGrip::mousePressEvent(QMouseEvent * e)
 {
     Q_D(QSizeGrip);
     d->p = e->globalPos();
-    d->s = qt_sizegrip_topLevelWidget(this)->size();
+    d->r = qt_sizegrip_topLevelWidget(this)->geometry();
 }
 
 
 /*!
-    Resizes the top-level widget containing this widget. The event is
-    in \a e.
+    \fn void QSizeGrip::mouseMoveEvent(QMouseEvent * event)
+    Resizes the top-level widget containing this widget. The mouse
+    move event is passed in the \a event parameter.
 */
 void QSizeGrip::mouseMoveEvent(QMouseEvent * e)
 {
@@ -215,12 +233,12 @@ void QSizeGrip::mouseMoveEvent(QMouseEvent * e)
     }
 
     int w;
-    int h = np.y() - d->p.y() + d->s.height();
+    int h = np.y() - d->p.y() + d->r.height();
 
     if (isRightToLeft())
-        w = d->s.width() - (np.x() - d->p.x());
+        w = d->r.width() - (np.x() - d->p.x());
     else
-        w = np.x() - d->p.x() + d->s.width();
+        w = np.x() - d->p.x() + d->r.width();
 
     if (w < 1)
         w = 1;
@@ -234,23 +252,18 @@ void QSizeGrip::mouseMoveEvent(QMouseEvent * e)
         h = ms.height();
 
     if (isRightToLeft()) {
-        tlw->resize(w, h);
-        if (tlw->size() == QSize(w, h))
-            tlw->move(tlw->x() + (np.x() - d->p.x()), tlw->y());
+        QRect r(0, 0, w, h);
+        r.moveTopRight(d->r.topRight());
+        tlw->setGeometry(r);
     } else {
         tlw->resize(w, h);
     }
+
 #ifdef Q_WS_WIN
     MSG msg;
     while(PeekMessage(&msg, winId(), WM_MOUSEMOVE, WM_MOUSEMOVE, PM_REMOVE))
       ;
 #endif
-    QApplication::syncX();
-
-    if (isRightToLeft() && tlw->size() == QSize(w,h)) {
-        d->s.rwidth() = tlw->size().width();
-        d->p.rx() = np.x();
-    }
 }
 
 /*! \reimp */
@@ -273,7 +286,7 @@ bool QSizeGrip::eventFilter(QObject *o, QEvent *e)
 #ifndef Q_WS_MAC
                               | Qt::WindowMaximized
 #endif
-                                 ))==0);
+                              ))==0);
     }
     return false;
 }

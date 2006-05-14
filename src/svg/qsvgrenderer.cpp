@@ -33,6 +33,8 @@
 
 /*!
     \class QSvgRenderer
+    \ingroup multimedia
+
     \brief The QSvgRenderer class is used to draw the contents of SVG files onto paint devices.
     \since 4.1
 
@@ -48,6 +50,8 @@
     using the load() functions. Data is either supplied directly as serialized XML, or
     indirectly using a file name. If a valid file has been loaded, either when the renderer
     is constructed or at some later time, isValid() returns true; otherwise it returns false.
+    QSvgRenderer provides the render() slot to render the current document, or the current
+    frame of an animated document, using a given painter.
 
     The defaultSize() function provides information about the amount of space that is required
     to render the currently loaded SVG file. This is useful for paint devices, such as QWidget,
@@ -65,6 +69,9 @@
     \o The \l currentFrame property contains the current frame of the animation.
     \o The \l framesPerSecond property contains the rate at which the animation plays.
     \endlist
+
+    Finally, the QSvgRenderer class provides the repaintNeeded() signal which is emitted
+    whenever the rendering of the document needs to be updated.
 
     \sa QSvgWidget, {QtSvg Module}, {SVG Viewer Example}, QPicture
 */
@@ -200,6 +207,8 @@ void QSvgRenderer::setFramesPerSecond(int num)
 }
 
 /*!
+  \internal
+
     \property QSvgRenderer::currentFrame
     \brief the current frame of the document's animation, or 0 if the document is not animated
 
@@ -218,6 +227,8 @@ void QSvgRenderer::setCurrentFrame(int frame)
 }
 
 /*!
+  \internal
+
     Returns the number of frames in the animation, or 0 if the current document is not
     animated.
 
@@ -275,8 +286,8 @@ bool QSvgRenderer::load(const QByteArray &contents)
 /*!
     \fn void QSvgRenderer::render(QPainter *painter)
 
-    Renders the document, or current frame of an animated document, using the given
-    \a painter.
+    Renders the current document, or the current frame of an animated
+    document, using the given \a painter.
 */
 void QSvgRenderer::render(QPainter *p)
 {
@@ -289,8 +300,8 @@ void QSvgRenderer::render(QPainter *p)
 /*!
     \fn void QSvgRenderer::repaintNeeded()
 
-    This signal is emitted whenever the document needs to be updated, usually
-    for the purposes of animation.
+    This signal is emitted whenever the rendering of the document
+    needs to be updated, usually for the purposes of animation.
 */
 
 #include "moc_qsvgrenderer.cpp"

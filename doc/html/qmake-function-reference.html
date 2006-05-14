@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-x11-opensource-src-4.1.2/doc/src/qmake-manual.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/doc/src/qmake-manual.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/doc/src/qmake-manual.qdoc -->
 <head>
     <title>Qt 4.1: qmake Function Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -29,7 +30,7 @@ body { background: #ffffff; color: black; }</style>
 <p><tt>qmake</tt> provides built-in functions to allow the contents of variables to be processed, and to enable tests to be performed during the configuration process. Functions that process the contents of variables typically return values that can be assigned to other variables, and these values are obtained by prefixing function with the <tt>$$</tt> operator. Functions that perform tests are usually used as the conditional parts of scopes; these are indicated in the function descriptions below.</p>
 <p><table width="100%">
 <tr valign="top"><td width="50%">
-<ul><li><a href="#basename-file">basename(file)</a></li>
+<ul><li><a href="#basename-variablename">basename(variablename)</a></li>
 <li><a href="#config-config">CONFIG(config)</a></li>
 <li><a href="#contains-variablename-value">contains(variablename, value)</a></li>
 <li><a href="#count-variablename-number">count(variablename, number)</a></li>
@@ -54,11 +55,11 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="#warning-string">warning(string)</a></li>
 </ul>
 </td></tr></table></p>
-<a name="basename-file"></a>
-<h2>basename(file)</h2>
+<a name="basename-variablename"></a>
+<h2>basename(variablename)</h2>
 <p>Returns the basename of the file specified. For example:</p>
 <pre>&nbsp;   FILE = /etc/passwd
-    FILENAME = $$basename($$FILE) #passwd</pre>
+    FILENAME = $$basename(FILE) #passwd</pre>
 <a name="config-config"></a>
 <h2>CONFIG(config)</h2>
 <p>[Conditional]</p>
@@ -201,6 +202,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

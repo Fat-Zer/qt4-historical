@@ -27,6 +27,8 @@
 #include <QtCore/qobject.h>
 #include <QtCore/qpointer.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Core)
 
 #ifndef Q_EXTERN_C
@@ -109,5 +111,7 @@ typedef QObject *(*QtPluginInstanceFunction)();
 #  define Q_EXPORT_STATIC_PLUGIN2(PLUGIN, PLUGINCLASS)
 
 #endif
+
+QT_END_HEADER
 
 #endif // Q_PLUGIN_H

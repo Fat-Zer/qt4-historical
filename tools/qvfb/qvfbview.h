@@ -38,7 +38,7 @@ class QVFbView : public QWidget
 public:
     enum Rotation { Rot0, Rot90, Rot180, Rot270 };
     QVFbView( int id, int w, int h, int d, Rotation r, QWidget *parent = 0);
-    ~QVFbView();
+    virtual ~QVFbView();
 
     int displayId() const;
     int displayWidth() const;
@@ -81,7 +81,7 @@ protected:
     QImage getBuffer( const QRect &r, int &leading ) const;
     void drawScreen();
     void sendMouseData( const QPoint &pos, int buttons, int wheel );
-    void sendKeyboardData( int unicode, int keycode, int modifiers,
+    void sendKeyboardData( QString unicode, int keycode, int modifiers,
 			   bool press, bool repeat );
     //virtual bool eventFilter( QObject *obj, QEvent *e );
     virtual void paintEvent( QPaintEvent *pe );

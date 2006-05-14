@@ -271,12 +271,6 @@ void QWindowsStyle::unpolish(QApplication *app)
 void QWindowsStyle::polish(QWidget *widget)
 {
     QCommonStyle::polish(widget);
-#ifndef QT_NO_RUBBERBAND
-    if (qobject_cast<QRubberBand*>(widget)) {
-        widget->setWindowOpacity(0.7f);
-        widget->setAttribute(Qt::WA_PaintOnScreen);
-    }
-#endif
 #ifndef QT_NO_PROGRESSBAR
     if (qobject_cast<QProgressBar *>(widget))
         widget->installEventFilter(this);
@@ -287,12 +281,6 @@ void QWindowsStyle::polish(QWidget *widget)
 void QWindowsStyle::unpolish(QWidget *widget)
 {
     QCommonStyle::unpolish(widget);
-#ifndef QT_NO_RUBBERBAND
-    if (qobject_cast<QRubberBand*>(widget)) {
-        widget->setWindowOpacity(1.0);
-        widget->setAttribute(Qt::WA_PaintOnScreen, false);
-    }
-#endif
 #ifndef QT_NO_PROGRESSBAR
     if (qobject_cast<QProgressBar *>(widget))
         widget->removeEventFilter(this);
@@ -449,7 +437,15 @@ int QWindowsStyle::pixelMetric(PixelMetric pm, const QStyleOption *opt, const QW
         ret = GetSystemMetrics(SM_CYFRAME);
         break;
 #endif
-
+    case PM_ToolBarItemMargin:
+        ret = 1;
+        break;
+    case PM_ToolBarItemSpacing:
+        ret = 0;
+        break;
+    case PM_ToolBarHandleExtent:
+        ret = 10;
+        break;
     default:
         ret = QCommonStyle::pixelMetric(pm, opt, widget);
         break;
@@ -905,12 +901,206 @@ static const char * const file_link_xpm[]={
 
 #endif //QT_NO_IMAGEFORMAT_XPM
 
+#ifdef Q_WS_WIN
+QPixmap convertHIconToPixmap( const HICON icon)
+{
+    bool foundAlpha = false;
+    HDC screenDevice = qt_win_display_dc();
+    HDC hdc = CreateCompatibleDC(screenDevice);
+
+    ICONINFO iconinfo;
+    GetIconInfo(icon, &iconinfo); //x and y Hotspot describes the icon center
+
+    //create image
+    HBITMAP winBitmap = CreateBitmap(iconinfo.xHotspot * 2, iconinfo.yHotspot * 2, 1, 32, 0);
+    HGDIOBJ oldhdc = SelectObject(hdc, winBitmap);
+    DrawIconEx( hdc, 0, 0, icon, iconinfo.xHotspot * 2, iconinfo.yHotspot * 2, 0, 0, DI_NORMAL);
+    QPixmap::HBitmapFormat alphaType = QPixmap::PremultipliedAlpha;
+
+    BITMAP bitmapData;
+    GetObject(iconinfo.hbmColor, sizeof(BITMAP), &bitmapData);
+
+    QPixmap iconpixmap = QPixmap::fromWinHBITMAP(winBitmap, alphaType);
+    QImage img = iconpixmap.toImage();
+
+    if ( bitmapData.bmBitsPixel == 32 ) { //only check 32 bit images for alpha
+        for (int y = 0 ; y < iconpixmap.height() && !foundAlpha ; y++) {
+            QRgb *scanLine= reinterpret_cast<QRgb *>(img.scanLine(y));
+            for (int x = 0; x < img.width() ; x++) {
+                if (qAlpha(scanLine[x]) != 0) {
+                    foundAlpha = true;
+                    break;
+                }
+            }
+        }
+    }
+
+    if (!foundAlpha) {
+        //If no alpha was found, we use the mask to set alpha values
+        HBITMAP winMask = CreateBitmap(iconinfo.xHotspot * 2, iconinfo.yHotspot * 2, 1, 32, 0);
+        SelectObject(hdc, winMask);
+        DrawIconEx( hdc, 0, 0, icon, iconinfo.xHotspot * 2, iconinfo.yHotspot * 2, 0, 0, DI_MASK);
+
+        QPixmap maskPixmap = QPixmap::fromWinHBITMAP(winMask, alphaType);
+        QImage mask = maskPixmap.toImage();
+
+        for (int y = 0 ; y< iconpixmap.height() ; y++){
+            QRgb *scanlineImage = reinterpret_cast<QRgb *>(img.scanLine(y));
+            QRgb *scanlineMask = reinterpret_cast<QRgb *>(mask.scanLine(y));
+            for (int x = 0; x < img.width() ; x++){
+                if (qRed(scanlineMask[x]) != 0)
+                    scanlineImage[x] = 0; //mask out this pixel
+                else
+                    scanlineImage[x] |= 0xff000000; // set the alpha channel to 255
+            }
+        }
+        DeleteObject(winMask);
+    }
+
+    //dispose resources created by iconinfo call
+    DeleteObject(iconinfo.hbmMask);
+    DeleteObject(iconinfo.hbmColor);
+
+    SelectObject(hdc, oldhdc); //restore state
+    DeleteDC(hdc);
+    DeleteObject(winBitmap);
+    return QPixmap::fromImage(img);
+}
+
+QPixmap loadIconFromShell32( int resourceId, int size )
+{
+    HMODULE hmod = LoadLibraryA("shell32.dll");
+    if( hmod ) {
+        HICON iconHandle = (HICON)LoadImage(hmod, MAKEINTRESOURCE(resourceId), IMAGE_ICON, size, size, 0);
+        if( iconHandle ) {
+            QPixmap iconpixmap = convertHIconToPixmap( iconHandle );
+            DestroyIcon(iconHandle);
+            return iconpixmap;
+        }
+    }
+    return QPixmap();
+}
+#endif
+
 /*!
  \reimp
  */
 QPixmap QWindowsStyle::standardPixmap(StandardPixmap standardPixmap, const QStyleOption *opt,
                                       const QWidget *widget) const
 {
+#ifdef Q_WS_WIN
+    QPixmap desktopIcon;
+    switch(standardPixmap) {
+    case SP_DriveCDIcon:
+    case SP_DriveDVDIcon:
+        {
+            desktopIcon = loadIconFromShell32(12, 16);
+            break;
+        }
+    case SP_DriveNetIcon:
+        {
+            desktopIcon = loadIconFromShell32(10, 16);
+            break;
+        }
+    case SP_DriveHDIcon:
+        {
+            desktopIcon = loadIconFromShell32(9, 16);
+            break;
+        }
+    case SP_DriveFDIcon:
+        {
+            desktopIcon = loadIconFromShell32(7, 16);
+            break;
+        }
+    case SP_FileIcon:
+        {
+            desktopIcon = loadIconFromShell32(1, 16);
+            break;
+        }
+    case SP_FileLinkIcon:
+        {
+            desktopIcon = loadIconFromShell32(1, 16);
+            QPainter painter(&desktopIcon);
+            QPixmap link = loadIconFromShell32(30, 16);
+            painter.drawPixmap(0, 0, 16, 16, link);
+            break;
+        }
+    case SP_DirLinkIcon:
+        {
+            desktopIcon = loadIconFromShell32(4, 16);
+            QPainter painter(&desktopIcon);
+            QPixmap link = loadIconFromShell32(30, 16);
+            painter.drawPixmap(0, 0, 16, 16, link);
+            break;
+        }
+    case SP_DirClosedIcon:
+        {
+            desktopIcon = loadIconFromShell32(4, 16);
+            break;
+        }
+    case SP_DesktopIcon:
+        {
+            desktopIcon = loadIconFromShell32(35, 16);
+            break;
+        }
+    case SP_ComputerIcon:
+        {
+            desktopIcon = loadIconFromShell32(16, 16);
+            break;
+        }
+    case SP_DirOpenIcon:
+        {
+            desktopIcon = loadIconFromShell32(5, 16);
+            break;
+        }
+    case SP_FileDialogNewFolder:
+        {
+            desktopIcon = loadIconFromShell32(319, 16);
+            break;
+        }
+    case SP_FileDialogToParent:
+        {
+            desktopIcon = loadIconFromShell32(255, 16);
+            break;
+        }
+    case SP_TrashIcon:
+        {
+            desktopIcon = loadIconFromShell32(191, 16);
+            break;
+        }
+    case SP_MessageBoxInformation:
+        {
+            HICON iconHandle = LoadIcon(NULL, IDI_INFORMATION);
+            desktopIcon = convertHIconToPixmap( iconHandle );
+            DestroyIcon(iconHandle);
+            break;
+        }
+    case SP_MessageBoxWarning:
+        {
+            HICON iconHandle = LoadIcon(NULL, IDI_WARNING);
+            desktopIcon = convertHIconToPixmap( iconHandle );
+            DestroyIcon(iconHandle);
+            break;
+        }
+    case SP_MessageBoxCritical:
+        {
+            HICON iconHandle = LoadIcon(NULL, IDI_ERROR);
+            desktopIcon = convertHIconToPixmap( iconHandle );
+            DestroyIcon(iconHandle);
+            break;
+        }
+    case SP_MessageBoxQuestion:
+        {
+            HICON iconHandle = LoadIcon(NULL, IDI_QUESTION);
+            desktopIcon = convertHIconToPixmap( iconHandle );
+            DestroyIcon(iconHandle);
+            break;
+        }
+    }
+    if (!desktopIcon.isNull()) {
+        return desktopIcon;
+    }
+#endif
 #ifndef QT_NO_IMAGEFORMAT_XPM
     switch (standardPixmap) {
     case SP_TitleBarMenuButton:
@@ -950,7 +1140,7 @@ QPixmap QWindowsStyle::standardPixmap(StandardPixmap standardPixmap, const QStyl
 int QWindowsStyle::styleHint(StyleHint hint, const QStyleOption *opt, const QWidget *widget,
                              QStyleHintReturn *returnData) const
 {
-    int ret;
+    int ret = 0;
 
     switch (hint) {
     case SH_EtchDisabledText:
@@ -1013,6 +1203,23 @@ int QWindowsStyle::styleHint(StyleHint hint, const QStyleOption *opt, const QWid
         }
         break;
 #endif
+#ifndef QT_NO_RUBBERBAND
+    case SH_RubberBand_Mask:
+        if (const QStyleOptionRubberBand *rbOpt = qstyleoption_cast<const QStyleOptionRubberBand *>(opt)) {
+            ret = 0;
+            if (rbOpt->shape == QRubberBand::Rectangle) {
+                ret = true;
+                if(QStyleHintReturnMask *mask = qstyleoption_cast<QStyleHintReturnMask*>(returnData)) {
+                    mask->region = opt->rect;
+                    int size = 1;
+                    if (widget && widget->isWindow())
+                        size = 4;
+                    mask->region -= opt->rect.adjusted(size, size, -size, -size);
+                }
+            }
+        }
+        break;
+#endif // QT_NO_RUBBERBAND
     default:
         ret = QCommonStyle::styleHint(hint, opt, widget, returnData);
         break;
@@ -1061,6 +1268,31 @@ void QWindowsStyle::drawPrimitive(PrimitiveElement pe, const QStyleOption *opt, 
             }
         }
         break;
+    case PE_IndicatorToolBarHandle:
+        p->save();
+        p->translate(opt->rect.x(), opt->rect.y());
+        if (opt->state & State_Horizontal) {
+            int x = opt->rect.width() / 2 - 4;
+            if (QApplication::layoutDirection() == Qt::RightToLeft)
+                x -= 2;
+            if (opt->rect.height() > 4) {
+                qDrawShadePanel(p, x, 2, 3, opt->rect.height() - 4,
+                                opt->palette, false, 1, 0);
+                qDrawShadePanel(p, x + 3, 2, 3, opt->rect.height() - 4,
+                                opt->palette, false, 1, 0);
+            }
+        } else {
+            if (opt->rect.width() > 4) {
+                int y = opt->rect.height() / 2 - 4;
+                qDrawShadePanel(p, 2, y, opt->rect.width() - 4, 3,
+                                opt->palette, false, 1, 0);
+                qDrawShadePanel(p, 2, y + 3, opt->rect.width() - 4, 3,
+                                opt->palette, false, 1, 0);
+            }
+        }
+        p->restore();
+        break;
+
 #endif // QT_NO_TOOLBAR
     case PE_FrameButtonTool:
     case PE_PanelButtonTool: {
@@ -1372,13 +1604,16 @@ void QWindowsStyle::drawPrimitive(PrimitiveElement pe, const QStyleOption *opt, 
     case PE_Frame:
     case PE_FrameMenu:
         if (const QStyleOptionFrame *frame = qstyleoption_cast<const QStyleOptionFrame *>(opt)) {
-            if (frame->lineWidth == 2) {
+            if (frame->lineWidth == 2 || pe == PE_Frame) {
                 QPalette popupPal = frame->palette;
                 if (pe == PE_FrameMenu) {
                     popupPal.setColor(QPalette::Light, frame->palette.background().color());
                     popupPal.setColor(QPalette::Midlight, frame->palette.light().color());
                 }
-                qDrawWinPanel(p, frame->rect, popupPal, frame->state & State_Sunken);
+                if (use2000style && pe == PE_Frame && (frame->state & State_Raised))
+                    qDrawWinButton(p, frame->rect, popupPal, frame->state & State_Sunken);
+                else
+                    qDrawWinPanel(p, frame->rect, popupPal, frame->state & State_Sunken);
             } else {
                 QCommonStyle::drawPrimitive(pe, opt, p, w);
             }
@@ -1410,7 +1645,7 @@ void QWindowsStyle::drawPrimitive(PrimitiveElement pe, const QStyleOption *opt, 
         }
         QBrush brush(opt->palette.dark().color(), Qt::Dense4Pattern);
         if (opt->state & State_Item) {
-            if (QApplication::isRightToLeft())
+            if (opt->direction == Qt::RightToLeft)
                 p->fillRect(opt->rect.left(), mid_v, bef_h - opt->rect.left(), 1, brush);
             else
                 p->fillRect(aft_h, mid_v, opt->rect.right() - aft_h + 1, 1, brush);
@@ -1471,13 +1706,20 @@ void QWindowsStyle::drawPrimitive(PrimitiveElement pe, const QStyleOption *opt, 
         }
         p->setPen(oldPen);
         break; }
-    case PE_FrameDockWidget:
-        if (const QStyleOptionFrame *frame = qstyleoption_cast<const QStyleOptionFrame *>(opt)) {
+case PE_FrameDockWidget:
+        if (qstyleoption_cast<const QStyleOptionFrame *>(opt)) {
             drawPrimitive(QStyle::PE_FrameWindow, opt, p, w);
         }
     break;
 #endif // QT_NO_DOCKWIDGET
 
+    case PE_FrameTabWidget:
+        if (use2000style) {
+            QRect rect = opt->rect;
+            QPalette pal = opt->palette;
+            qDrawWinButton(p, opt->rect, opt->palette, false, 0);
+            break;
+       }
     default:
         QCommonStyle::drawPrimitive(pe, opt, p, w);
     }
@@ -1488,6 +1730,31 @@ void QWindowsStyle::drawControl(ControlElement ce, const QStyleOption *opt, QPai
                                 const QWidget *widget) const
 {
     switch (ce) {
+#ifndef QT_NO_RUBBERBAND
+    case CE_RubberBand:
+        if (qstyleoption_cast<const QStyleOptionRubberBand *>(opt)) {
+            // ### workaround for slow general painter path
+            QPixmap tiledPixmap(16, 16);
+            QPainter pixmapPainter(&tiledPixmap);
+            pixmapPainter.setPen(Qt::NoPen);
+            pixmapPainter.setBrush(Qt::Dense4Pattern);
+            pixmapPainter.setBackground(Qt::white);
+            pixmapPainter.setBackgroundMode(Qt::OpaqueMode);
+            pixmapPainter.drawRect(0, 0, tiledPixmap.width(), tiledPixmap.height());
+            pixmapPainter.end();
+            tiledPixmap = QPixmap::fromImage(tiledPixmap.toImage());
+            p->save();
+            QRect r = opt->rect;
+            QStyleHintReturnMask mask;
+            if (styleHint(QStyle::SH_RubberBand_Mask, opt, widget, &mask))
+                p->setClipRegion(mask.region);
+            p->drawTiledPixmap(r.x(), r.y(), r.width(), r.height(), tiledPixmap);
+            p->restore();
+            return;
+        }
+        break;
+#endif // QT_NO_RUBBERBAND
+
 #if !defined(QT_NO_MENU) && !defined(QT_NO_MAINWINDOW)
     case CE_MenuBarEmptyArea:
         if (widget && qobject_cast<const QMainWindow *>(widget->parentWidget())) {
@@ -1615,7 +1882,7 @@ void QWindowsStyle::drawControl(ControlElement ce, const QStyleOption *opt, QPai
             if (menuitem->menuItemType == QStyleOptionMenuItem::SubMenu) {// draw sub menu arrow
                 int dim = (h - 2 * windowsItemFrame) / 2;
                 PrimitiveElement arrow;
-                arrow = QApplication::isRightToLeft() ? PE_IndicatorArrowLeft : PE_IndicatorArrowRight;
+                arrow = (opt->direction == Qt::RightToLeft) ? PE_IndicatorArrowLeft : PE_IndicatorArrowRight;
                 xpos = x + w - windowsArrowHMargin - windowsItemFrame - dim;
                 QRect  vSubMenuRect = visualRect(opt->direction, menuitem->rect, QRect(xpos, y + h / 2 - dim / 2, dim, dim));
                 QStyleOptionMenuItem newMI = *menuitem;
@@ -1724,8 +1991,10 @@ void QWindowsStyle::drawControl(ControlElement ce, const QStyleOption *opt, QPai
                     p->setPen(light);
                     p->drawLine(x1, y1 + 2, x1, y2 - ((onlyOne || firstTab) && selected && leftAligned ? 0 : borderThinkness));
                     p->drawPoint(x1 + 1, y1 + 1);
-                    p->setPen(midlight);
-                    p->drawLine(x1 + 1, y1 + 2, x1 + 1, y2 - ((onlyOne || firstTab) && selected && leftAligned ? 0 : borderThinkness));
+                    if (!use2000style) {
+                        p->setPen(midlight);
+                        p->drawLine(x1 + 1, y1 + 2, x1 + 1, y2 - ((onlyOne || firstTab) && selected && leftAligned ? 0 : borderThinkness));
+                    }
                 }
                 // Top
                 {
@@ -1733,8 +2002,10 @@ void QWindowsStyle::drawControl(ControlElement ce, const QStyleOption *opt, QPai
                     int end = x2 - (nextSelected ? 0 : 2);
                     p->setPen(light);
                     p->drawLine(beg, y1, end, y1);
-                    p->setPen(midlight);
-                    p->drawLine(beg, y1 + 1, end, y1 + 1);
+                    if (!use2000style) {
+                        p->setPen(midlight);
+                        p->drawLine(beg, y1 + 1, end, y1 + 1);
+                    }
                 }
                 // Right
                 if (lastTab || selected || onlyOne || !nextSelected) {
@@ -1760,10 +2031,12 @@ void QWindowsStyle::drawControl(ControlElement ce, const QStyleOption *opt, QPai
                 // Left
                 if (firstTab || selected || onlyOne || !previousSelected) {
                     p->setPen(light);
-                    p->drawLine(x1, y2 - 2, x1, y1 - ((onlyOne || firstTab) && selected && leftAligned ? 0 : borderThinkness));
+                    p->drawLine(x1, y2 - 2, x1, y1 + ((onlyOne || firstTab) && selected && leftAligned ? 0 : borderThinkness));
                     p->drawPoint(x1 + 1, y2 - 1);
-                    p->setPen(midlight);
-                    p->drawLine(x1 + 1, y2 - 2, x1 + 1, y1 - ((onlyOne || firstTab) && selected && leftAligned ? 0 : borderThinkness));
+                    if (!use2000style) {
+                        p->setPen(midlight);
+                        p->drawLine(x1 + 1, y2 - 2, x1 + 1, y1 + ((onlyOne || firstTab) && selected && leftAligned ? 0 : borderThinkness));
+                    }
                 }
                 // Bottom
                 {
@@ -1800,8 +2073,10 @@ void QWindowsStyle::drawControl(ControlElement ce, const QStyleOption *opt, QPai
                     p->setPen(light);
                     p->drawLine(x1 + 2, y1, x2 - ((onlyOne || firstTab) && selected && leftAligned ? 0 : borderThinkness), y1);
                     p->drawPoint(x1 + 1, y1 + 1);
-                    p->setPen(midlight);
-                    p->drawLine(x1 + 2, y1 + 1, x2 - ((onlyOne || firstTab) && selected && leftAligned ? 0 : borderThinkness), y1 + 1);
+                    if (!use2000style) {
+                        p->setPen(midlight);
+                        p->drawLine(x1 + 2, y1 + 1, x2 - ((onlyOne || firstTab) && selected && leftAligned ? 0 : borderThinkness), y1 + 1);
+                    }
                 }
                 // Left
                 {
@@ -1809,8 +2084,10 @@ void QWindowsStyle::drawControl(ControlElement ce, const QStyleOption *opt, QPai
                     int end = y2 - (nextSelected ? 0 : 2);
                     p->setPen(light);
                     p->drawLine(x1, beg, x1, end);
-                    p->setPen(midlight);
-                    p->drawLine(x1 + 1, beg, x1 + 1, end);
+                    if (!use2000style) {
+                        p->setPen(midlight);
+                        p->drawLine(x1 + 1, beg, x1 + 1, end);
+                    }
                 }
                 // Bottom
                 if (lastTab || selected || onlyOne || !nextSelected) {
@@ -1840,9 +2117,11 @@ void QWindowsStyle::drawControl(ControlElement ce, const QStyleOption *opt, QPai
                     p->setPen(light);
                     p->drawLine(x2 - 2, y1, x1 + ((onlyOne || firstTab) && selected && leftAligned ? 0 : borderThinkness), y1);
                     p->drawPoint(x2 - 1, y1 + 1);
-                    p->setPen(midlight);
-                    p->drawLine(x2 - 3, y1 + 1, x1 + ((onlyOne || firstTab) && selected && leftAligned ? 0 : borderThinkness), y1 + 1);
-                    p->drawPoint(x2 - 1, y1);
+                    if (!use2000style) {
+                        p->setPen(midlight);
+                        p->drawLine(x2 - 3, y1 + 1, x1 + ((onlyOne || firstTab) && selected && leftAligned ? 0 : borderThinkness), y1 + 1);
+                        p->drawPoint(x2 - 1, y1);
+                    }
                 }
                 // Right
                 {
@@ -1872,7 +2151,7 @@ void QWindowsStyle::drawControl(ControlElement ce, const QStyleOption *opt, QPai
                         &opt->palette.brush(QPalette::Button));
         break;
 #ifndef QT_NO_SPLITTER
-    case CE_Splitter: {
+case CE_Splitter: {
         QPen oldPen = p->pen();
         p->setPen(opt->palette.light().color());
         if (opt->state & State_Horizontal) {
@@ -2199,8 +2478,7 @@ void QWindowsStyle::drawControl(ControlElement ce, const QStyleOption *opt, QPai
                 if (!dockWidget || !dockWidget->isFloating()) {
                     p->drawLine(r.topLeft(), r.topRight());
                     p->setPen(dwOpt->palette.color(QPalette::Dark));
-                    p->drawLine(r.bottomLeft(), r.bottomRight());
-                }
+                    p->drawLine(r.bottomLeft(), r.bottomRight());            }
             }
             if (!dwOpt->title.isEmpty()) {
                 QFont oldFont = p->font();
@@ -2242,8 +2520,10 @@ QRect QWindowsStyle::subElementRect(SubElement sr, const QStyleOption *opt, cons
     return r;
 }
 
+#ifdef QT3_SUPPORT
 Q_GLOBAL_STATIC_WITH_ARGS(QBitmap, globalVerticalLine, (1, 129))
 Q_GLOBAL_STATIC_WITH_ARGS(QBitmap, globalHorizontalLine, (128, 1))
+#endif
 
 /*! \reimp */
 void QWindowsStyle::drawComplexControl(ComplexControl cc, const QStyleOptionComplex *opt,
@@ -2644,8 +2924,12 @@ void QWindowsStyle::drawComplexControl(ComplexControl cc, const QStyleOptionComp
                     p->setBrush(cmb->palette.brush(QPalette::Button));
                     p->drawRect(ar.adjusted(0,0,-1,-1));
                 } else {
-                    qDrawWinPanel(p, ar, cmb->palette, false,
-                                  &cmb->palette.brush(QPalette::Button));
+                    // Make qDrawWinButton use the right colors for drawing the shade of the button
+                    QPalette pal(cmb->palette);
+                    pal.setColor(QPalette::Button, cmb->palette.light().color());
+                    pal.setColor(QPalette::Light, cmb->palette.button().color());
+                    qDrawWinButton(p, ar, pal, false,
+                                   &cmb->palette.brush(QPalette::Button));
                 }
 
                 ar.adjust(2, 2, -2, -2);
@@ -2761,6 +3045,14 @@ QSize QWindowsStyle::sizeFromContents(ContentsType ct, const QStyleOption *opt,
             sz += QSize(windowsItemHMargin * 4, windowsItemVMargin * 2);
         break;
 #endif
+                // Otherwise, fall through
+    case CT_ToolButton:
+        if (qstyleoption_cast<const QStyleOptionToolButton *>(opt))
+        {
+            return sz += QSize(7, 6);
+        }
+        // Otherwise, fall through
+
     default:
         sz = QCommonStyle::sizeFromContents(ct, opt, csz, widget);
     }

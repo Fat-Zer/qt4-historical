@@ -28,6 +28,8 @@
 #include <QtCore/qobject.h>
 #include <QtGui/qtextobject.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 class QTextCursor;
@@ -113,5 +115,7 @@ private:
 
 inline void QTextTable::setFormat(const QTextTableFormat &aformat)
 { QTextObject::setFormat(aformat); }
+
+QT_END_HEADER
 
 #endif // QTEXTTABLE_H

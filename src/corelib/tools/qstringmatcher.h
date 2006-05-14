@@ -26,6 +26,8 @@
 
 #include <QtCore/qstring.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Core)
 
 class QStringMatcherPrivate;
@@ -54,5 +56,7 @@ private:
     Qt::CaseSensitivity q_cs;
     uint q_skiptable[256];
 };
+
+QT_END_HEADER
 
 #endif // QSTRINGMATCHER_H

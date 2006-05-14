@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-x11-opensource-src-4.1.2/doc/src/mac-differences.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/doc/src/mac-differences.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/doc/src/mac-differences.qdoc -->
 <head>
     <title>Qt 4.1: Qt/Mac-Specific Issues</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -61,7 +62,7 @@ body { background: #ffffff; color: black; }</style>
 <h3>Bundle-Based Libraries</h3>
 <p>If you want to incorporate dynamic libraries as part of your Mac OS X application bundle (the application directory), then you place these into a directory called Frameworks, a subdirectory of the application bundle.</p>
 <p>The application finds these dynamic libraries if the libraries have an install name of &quot;<a href="mailto:@executable_path">@executable_path</a>/../Frameworks/libname.dylib.</p>
-<p>If you use <tt>qmake</tt> and Makefiles, use the <tt>QMAKE_LFFLAGS_SONAME</tt> setting:</p>
+<p>If you use <tt>qmake</tt> and Makefiles, use the <tt>QMAKE_LFLAGS_SONAME</tt> setting:</p>
 <pre>&nbsp;   QMAKE_LFLAGS_SONAME  = -Wl,-install_name,@executable_path/../Frameworks/</pre>
 <p>Alternatively you can modify the intall name using the install_name_tool(1) command line tool. See its manpage for more information.</p>
 <p>Note that the <tt>DYLD_LIBRARY_PATH</tt> environment variable will override these settings, and any other default paths such as a lookup of dynamic libraries inside <tt>/usr/lib</tt> and similar default locations.</p>
@@ -150,6 +151,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

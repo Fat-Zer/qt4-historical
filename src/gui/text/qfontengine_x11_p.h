@@ -37,6 +37,8 @@
 #include <private/qt_x11_p.h>
 #ifndef QT_NO_FONTCONFIG
 #include <fontconfig/fontconfig.h>
+#endif
+#ifndef QT_NO_FREETYPE
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #endif
@@ -67,12 +69,12 @@ public:
 
     QFontEngine::FaceId faceId() const;
     QFontEngine::Properties properties() const;
-#ifndef QT_NO_FONTCONFIG
+#ifndef QT_NO_FREETYPE
     void getUnscaledGlyph(glyph_t glyph, QPainterPath *path, glyph_metrics_t *metrics);
 #endif
     QByteArray getSfntTable(uint tag) const;
     int synthesized() const;
-    
+
     bool stringToCMap(const QChar *str, int len, QGlyphLayout *glyphs, int *nglyphs,
                       QTextEngine::ShaperFlags flags) const;
 
@@ -96,10 +98,11 @@ public:
     inline XFontStruct *fontStruct() const
     { return _fs; }
 
-#ifndef QT_NO_FONTCONFIG
+#ifndef QT_NO_FREETYPE
     FT_Face non_locked_face() const;
     glyph_t glyphIndexToFreetypeGlyphIndex(glyph_t g) const;
 #endif
+    uint toUnicode(glyph_t g) const;
 
 private:
     XFontStruct *_fs;
@@ -133,12 +136,12 @@ public:
     explicit QFontEngineFT(FcPattern *pattern, const QFontDef &fd, int screen);
     ~QFontEngineFT();
 
-    QFontEngine::FaceId faceId() const { return face_id; }
+    QFontEngine::FaceId faceId() const;
     QFontEngine::Properties properties() const;
     void getUnscaledGlyph(glyph_t glyph, QPainterPath *path, glyph_metrics_t *metrics);
     QByteArray getSfntTable(uint tag) const;
     int synthesized() const;
-    
+
     bool stringToCMap(const QChar *str, int len, QGlyphLayout *glyphs, int *nglyphs,
                       QTextEngine::ShaperFlags flags) const;
 
@@ -195,6 +198,7 @@ private:
     int subpixel;
     bool transform;
     int hint_style;
+    bool autohint;
     mutable FT_Matrix matrix; // need mutable because the freetype API doesn't use const
 
 public:

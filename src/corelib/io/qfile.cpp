@@ -96,22 +96,25 @@ QFilePrivate::openExternalFile(int flags, FILE *fh)
 void
 QFilePrivate::setError(QFile::FileError err)
 {
+    Q_Q(QFile);
     error = err;
-    errorString.clear();
+    q->setErrorString(QT_TRANSLATE_NOOP(QIODevice, QLatin1String("Unknown error")));
 }
 
 void
 QFilePrivate::setError(QFile::FileError err, const QString &errStr)
 {
+    Q_Q(QFile);
     error = err;
-    errorString = errStr;
+    q->setErrorString(errStr);
 }
 
 void
 QFilePrivate::setError(QFile::FileError err, int errNum)
 {
+    Q_Q(QFile);
     error = err;
-    errorString = qt_error_string(errNum);
+    q->setErrorString(qt_error_string(errNum));
 }
 
 //************* QFile
@@ -191,6 +194,19 @@ QFilePrivate::setError(QFile::FileError err, int errNum)
     platform-specific APIs to access files instead of QFile, you can
     use the encodeName() and decodeName() functions to convert
     between Unicode file names and 8-bit file names.
+
+    On Unix, there are some special system files (e.g. in \c /proc) for which
+    size() will always return 0, yet you may still be able to read more data
+    from such a file; the data is generated in direct response to you calling
+    read(). In this case, however, you cannot use atEnd() to determine if
+    there is more data to read (since atEnd() will return true for a file that
+    claims to have size 0). Instead, you should either call readAll(), or call
+    read() or readLine() repeatedly until no more data can be read. The next
+    example uses QTextStream to read \c /proc/modules line by line:
+
+    \skipto readRegularEmptyFile_snippet
+    \skipto QFile
+    \printto /^\}/
 
     \sa QTextStream, QDataStream, QFileInfo, QDir, {The Qt Resource System}
 */
@@ -443,6 +459,8 @@ QFile::decodeName(const QByteArray &localFileName)
 void
 QFile::setEncodingFunction(EncoderFn f)
 {
+    if (!f)
+        f = locale_encode;
     QFilePrivate::encoder = f;
 }
 
@@ -473,6 +491,8 @@ QFile::setEncodingFunction(EncoderFn f)
 void
 QFile::setDecodingFunction(DecoderFn f)
 {
+    if (!f)
+        f = locale_decode;
     QFilePrivate::decoder = f;
 }
 
@@ -588,7 +608,7 @@ QFile::remove(const QString &fileName)
 
     If a file with the name \a newName already exists, rename() returns false
     (i.e., QFile will not overwrite it).
-    
+
     The file is closed before it is renamed.
 
     \sa setFileName()
@@ -610,30 +630,32 @@ QFile::rename(const QString &newName)
     }
     close();
     if(error() == QFile::NoError) {
-        if(fileEngine()->rename(newName)) {
+        if (fileEngine()->rename(newName)) {
             unsetError();
             return true;
-        } else {
-            QFile in(fileName());
-            QFile out(newName);
-            if (in.open(QIODevice::ReadOnly)) {
-                if(out.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
-                    bool error = false;
-                    char block[1024];
-                    while(!in.atEnd()) {
-                        long read = in.read(block, 1024);
-                        if(read == -1)
-                            break;
-                        if(read != out.write(block, read)) {
-                            d->setError(QFile::CopyError, QLatin1String("Failure to write block"));
-                            error = true;
-                            break;
-                        }
+        }
+
+        QFile in(fileName());
+        QFile out(newName);
+        if (in.open(QIODevice::ReadOnly)) {
+            if(out.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+                bool error = false;
+                char block[1024];
+                while (!in.atEnd()) {
+                    qint64 read = in.read(block, 1024);
+                    if (read == -1) {
+                        error = true;
+                        break;
                     }
-                    if(!error)
-                        in.remove();
-                    return !error;
-                 }
+                    if (read != out.write(block, read)) {
+                        d->setError(QFile::CopyError, QLatin1String("Failure to write block"));
+                        error = true;
+                        break;
+                    }
+                }
+                if(!error)
+                    in.remove();
+                return !error;
             }
         }
         d->setError(QFile::RenameError, errno);
@@ -660,7 +682,7 @@ QFile::rename(const QString &oldName, const QString &newName)
 }
 
 /*!
-    Creates a link named \a linkName that points to the file currently specified by fileName(). 
+    Creates a link named \a linkName that points to the file currently specified by fileName().
     What a link is depends on the underlying filesystem
     (be it a shortcut on Windows or a symbolic link on Unix). Returns
     true if successful; otherwise returns false.
@@ -703,13 +725,14 @@ QFile::link(const QString &fileName, const QString &linkName)
 }
 
 /*!
-    Copies the file currently specified by fileName() to \a newName.
-    Returns true if successful; otherwise returns false.
+    Copies the file currently specified by fileName() to a file called
+    \a newName.  Returns true if successful; otherwise returns false.
 
-    If a file with the name \a newName already exists, copy() returns false
-    (i.e., QFile will not overwrite it).
+    Note that if a file with the name \a newName already exists,
+    copy() returns false (i.e. QFile will not overwrite it).
 
-    The file is closed before it is copied.
+    The source file is closed before it is copied, and the new file's
+    timestamp will be the time of the copy operation.
 
     \sa setFileName()
 */
@@ -953,7 +976,7 @@ QFile::handle() const
 {
     if (!isOpen())
         return -1;
-    
+
     if (QAbstractFileEngine *engine = fileEngine())
         return engine->handle();
     return -1;
@@ -1075,7 +1098,14 @@ QFile::setPermissions(const QString &fileName, Permissions permissions)
 bool
 QFile::flush()
 {
-    fileEngine()->flush();
+    Q_D(QFile);
+    if (!fileEngine()->flush()) {
+        QFile::FileError err = fileEngine()->error();
+        if(err == QFile::UnspecifiedError)
+            err = QFile::WriteError;
+        d->setError(err, fileEngine()->errorString());
+        return false;
+    }
     return true;
 }
 
@@ -1097,7 +1127,11 @@ QFile::close()
 }
 
 /*!
-  \reimp
+  Returns the size of the file.
+
+  For regular empty files on Unix (e.g. those in \c /proc), this function
+  returns 0; the contents of such a file are generated on demand in response
+  to you calling read().
 */
 
 qint64 QFile::size() const
@@ -1117,7 +1151,13 @@ qint64 QFile::pos() const
 }
 
 /*!
-  \reimp
+  Returns true if the end of the file has been reached; otherwise returns
+  false.
+
+  For regular empty files on Unix (e.g. those in \c /proc), this function
+  returns true, since the file system reports that the size of such a file is
+  0. Therefore, you should not depend on atEnd() when reading data from such a
+  file, but rather call read() until no more data can be read.
 */
 
 bool QFile::atEnd() const
@@ -1168,10 +1208,10 @@ qint64 QFile::readData(char *data, qint64 len)
     Q_D(QFile);
     unsetError();
 
-    qint64 ret = 0;
-    qint64 read = fileEngine()->read(data+ret, len-ret);
+    qint64 ret = -1;
+    qint64 read = fileEngine()->read(data, len);
     if (read != -1)
-        ret += read;
+        ret = read;
 
     if(ret < 0) {
         QFile::FileError err = fileEngine()->error();
@@ -1242,93 +1282,3 @@ QFile::unsetError()
     Q_D(QFile);
     d->setError(QFile::NoError);
 }
-
-/*
-    Returns a human-readable description of an error that occurred on
-    the device. The error described by the string corresponds to
-    changes of QFile::error(). If the status is reset, the error
-    string is also reset.
-
-    \code
-        QFile file("address.dat");
-        if (!file.open(QIODevice::ReadOnly) {
-            QMessageBox::critical(this, tr("Error"),
-                    tr("Could not open file for reading: %1")
-                    .arg(file.errorString()));
-            return;
-        }
-    \endcode
-
-    \sa unsetError()
-*/
-
-/* ### NEEDS TO BE FIXED
-QString
-QFile::errorString() const
-{
-    if (d->errorString.isEmpty()) {
-        const char *str = 0;
-        switch (d->error) {
-        case NoError:
-        case UnspecifiedError:
-            str = QT_TRANSLATE_NOOP("QFile", "Unknown error");
-            break;
-        case ReadError:
-            str = QT_TRANSLATE_NOOP("QFile", "Could not read from the file");
-            break;
-        case WriteError:
-            str = QT_TRANSLATE_NOOP("QFile", "Could not write to the file");
-            break;
-        case FatalError:
-            str = QT_TRANSLATE_NOOP("QFile", "Fatal error");
-            break;
-        case ResourceError:
-            str = QT_TRANSLATE_NOOP("QFile", "Resource error");
-            break;
-        case OpenError:
-            str = QT_TRANSLATE_NOOP("QFile", "Could not open the file");
-            break;
-#ifdef QT3_SUPPORT
-        case ConnectError:
-            str = QT_TRANSLATE_NOOP("QFile", "Could not connect to host");
-            break;
-#endif
-        case AbortError:
-            str = QT_TRANSLATE_NOOP("QFile", "Aborted");
-            break;
-        case TimeOutError:
-            str = QT_TRANSLATE_NOOP("QFile", "Timeout");
-            break;
-        case RemoveError:
-            str = QT_TRANSLATE_NOOP("QFile", "Could not remove file");
-            break;
-        case RenameError:
-            str = QT_TRANSLATE_NOOP("QFile", "Could not rename file");
-            break;
-        case PositionError:
-            str = QT_TRANSLATE_NOOP("QFile", "Could not position in file");
-            break;
-        case PermissionsError:
-            str = QT_TRANSLATE_NOOP("QFile", "Failure to set Permissions");
-            break;
-        case CopyError:
-            str = QT_TRANSLATE_NOOP("QFile", "Could not copy file");
-            break;
-        case ResizeError:
-            str = QT_TRANSLATE_NOOP("QFile", "Could not resize file");
-            break;
-        }
-#if defined(QT_BUILD_CORE_LIB)
-        QString ret = QCoreApplication::translate("QFile", str);
-#ifdef QT3_SUPPORT
-        if(ret == str)
-            ret = QCoreApplication::translate("QIODevice", str);
-#endif
-        return ret;
-#else
-        return QString::fromLatin1(str);
-#endif
-    }
-    return d->errorString;
-}
-*/

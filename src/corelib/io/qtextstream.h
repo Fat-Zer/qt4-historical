@@ -40,6 +40,8 @@
 #error qtextstream.h must be included before any header file that defines Status
 #endif
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Core)
 
 class QTextCodec;
@@ -340,5 +342,7 @@ private:
     Q_DISABLE_COPY(QTextOStream)
 };
 #endif
+
+QT_END_HEADER
 
 #endif // QTEXTSTREAM_H

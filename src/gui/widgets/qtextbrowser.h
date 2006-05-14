@@ -27,6 +27,8 @@
 #include <QtGui/qtextedit.h>
 #include <QtCore/qurl.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_TEXTBROWSER
@@ -87,9 +89,11 @@ public:
 private:
     Q_DISABLE_COPY(QTextBrowser)
     Q_DECLARE_PRIVATE(QTextBrowser)
-    Q_PRIVATE_SLOT(d_func(), void documentModified())
+    Q_PRIVATE_SLOT(d_func(), void _q_documentModified())
 };
 
 #endif // QT_NO_TEXTBROWSER
+
+QT_END_HEADER
 
 #endif // QTEXTBROWSER_H

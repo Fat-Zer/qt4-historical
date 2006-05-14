@@ -29,6 +29,8 @@
 #include <QtCore/qnamespace.h>
 #include <QtCore/qmetatype.h>
 
+QT_BEGIN_HEADER
+
 #define QVERIFY(statement) \
 do {\
     if (!QTest::qVerify((statement), #statement, "", __FILE__, __LINE__))\
@@ -274,5 +276,7 @@ namespace QTest
 }
 
 #undef QTEST_COMPARE_DECL
+
+QT_END_HEADER
 
 #endif

@@ -31,6 +31,8 @@
 #include <QtCore/qmap.h>
 #include <QtCore/qstring.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Core)
 
 class QBitArray;
@@ -649,5 +651,7 @@ Q_DECLARE_TYPEINFO(QVariant, Q_MOVABLE_TYPE);
 Q_CORE_EXPORT QDebug operator<<(QDebug, const QVariant &);
 Q_CORE_EXPORT QDebug operator<<(QDebug, const QVariant::Type);
 #endif
+
+QT_END_HEADER
 
 #endif // QVARIANT_H

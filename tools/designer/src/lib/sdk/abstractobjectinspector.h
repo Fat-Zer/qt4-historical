@@ -28,6 +28,8 @@
 
 #include <QtGui/QWidget>
 
+QT_BEGIN_HEADER
+
 class QDesignerFormEditorInterface;
 class QDesignerFormWindowInterface;
 
@@ -43,5 +45,7 @@ public:
 public Q_SLOTS:
     virtual void setFormWindow(QDesignerFormWindowInterface *formWindow) = 0;
 };
+
+QT_END_HEADER
 
 #endif // ABSTRACTOBJECTINSPECTOR_H

@@ -451,11 +451,6 @@ static QStringList split_arg_list(QString params)
             quote = unicode;
         } else if(!parens && !quote && unicode == symbols[COMMA]) {
             QString mid = params.mid(last, x - last).trimmed();
-            if(quote) {
-                if(mid[0] == quote && mid[(int)mid.length()-1] == quote)
-                    mid = mid.mid(1, mid.length()-2);
-                quote = 0;
-            }
             args << mid;
             last = x+1;
             while(last < params_len && ((params_data+last)->unicode() == symbols[SPACE]

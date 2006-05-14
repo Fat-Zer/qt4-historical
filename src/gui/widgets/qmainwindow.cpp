@@ -251,7 +251,7 @@ void QMainWindowPrivate::init()
 /*!
     \fn void QMainWindow::toolButtonStyleChanged(Qt::ToolButtonStyle toolButtonStyle)
 
-    This signal is emiited when the style used for tool buttons in the
+    This signal is emitted when the style used for tool buttons in the
     window is changed. The new style is passed in \a toolButtonStyle.
 
     You can connect this signal to other components to help maintain
@@ -361,7 +361,7 @@ QMenuBar *QMainWindow::menuBar() const
 void QMainWindow::setMenuBar(QMenuBar *menuBar)
 {
     Q_D(QMainWindow);
-    if (d->layout->menuBar())
+    if (d->layout->menuBar() && d->layout->menuBar() != menuBar)
         delete d->layout->menuBar();
     d->layout->setMenuBar(menuBar);
 }
@@ -389,15 +389,16 @@ QStatusBar *QMainWindow::statusBar() const
 /*!
     Sets the status bar for the main window to \a statusbar.
 
-    Note: QMainWindow takes ownership of the \a statusbar pointer and
-    deletes it at the appropriate time.
+    Setting the status bar to 0 will remove it from the main window.
+    Note that QMainWindow takes ownership of the \a statusbar pointer
+    and deletes it at the appropriate time.
 
     \sa statusBar()
 */
 void QMainWindow::setStatusBar(QStatusBar *statusbar)
 {
     Q_D(QMainWindow);
-    if (d->layout->statusBar())
+    if (d->layout->statusBar() && d->layout->statusBar() != statusbar)
         delete d->layout->statusBar();
     d->layout->setStatusBar(statusbar);
 }
@@ -492,18 +493,18 @@ void QMainWindow::addToolBar(Qt::ToolBarArea area, QToolBar *toolbar)
                "QMainWIndow::addToolBar", "specified 'area' is not an allowed area");
 
     disconnect(this, SIGNAL(iconSizeChanged(QSize)),
-               toolbar, SLOT(updateIconSize(QSize)));
+               toolbar, SLOT(_q_updateIconSize(QSize)));
     disconnect(this, SIGNAL(toolButtonStyleChanged(Qt::ToolButtonStyle)),
-               toolbar, SLOT(updateToolButtonStyle(Qt::ToolButtonStyle)));
+               toolbar, SLOT(_q_updateToolButtonStyle(Qt::ToolButtonStyle)));
 
     d->layout->removeWidget(toolbar);
 
-    toolbar->d_func()->updateIconSize(d->iconSize);
-    toolbar->d_func()->updateToolButtonStyle(d->toolButtonStyle);
+    toolbar->d_func()->_q_updateIconSize(d->iconSize);
+    toolbar->d_func()->_q_updateToolButtonStyle(d->toolButtonStyle);
     connect(this, SIGNAL(iconSizeChanged(QSize)),
-            toolbar, SLOT(updateIconSize(QSize)));
+            toolbar, SLOT(_q_updateIconSize(QSize)));
     connect(this, SIGNAL(toolButtonStyleChanged(Qt::ToolButtonStyle)),
-            toolbar, SLOT(updateToolButtonStyle(Qt::ToolButtonStyle)));
+            toolbar, SLOT(_q_updateToolButtonStyle(Qt::ToolButtonStyle)));
 
     d->layout->addToolBar(area, toolbar);
 
@@ -533,6 +534,20 @@ QToolBar *QMainWindow::addToolBar(const QString &title)
     return toolBar;
 }
 
+/* Removes the toolbar from the mainwindow so that it can be added again. Does not
+   explicitly hide the toolbar. */
+static void qt_remove_toolbar_from_layout(QToolBar *toolbar, QMainWindowPrivate *d)
+{
+    if (toolbar) {
+        QObject::disconnect(d->q_ptr, SIGNAL(iconSizeChanged(QSize)),
+                   toolbar, SLOT(_q_updateIconSize(QSize)));
+        QObject::disconnect(d->q_ptr, SIGNAL(toolButtonStyleChanged(Qt::ToolButtonStyle)),
+                   toolbar, SLOT(_q_updateToolButtonStyle(Qt::ToolButtonStyle)));
+
+        d->layout->removeWidget(toolbar);
+    }
+}
+
 /*!
     Inserts the \a toolbar into the area occupied by the \a before toolbar
     so that it appears before it. For example, in normal left-to-right
@@ -547,14 +562,14 @@ void QMainWindow::insertToolBar(QToolBar *before, QToolBar *toolbar)
     Q_ASSERT_X(toolbar->isAreaAllowed(toolBarArea(before)),
                "QMainWIndow::insertToolBar", "specified 'area' is not an allowed area");
 
-    removeToolBar(toolbar);
+    qt_remove_toolbar_from_layout(toolbar, d);    
 
-    toolbar->d_func()->updateIconSize(d->iconSize);
-    toolbar->d_func()->updateToolButtonStyle(d->toolButtonStyle);
+    toolbar->d_func()->_q_updateIconSize(d->iconSize);
+    toolbar->d_func()->_q_updateToolButtonStyle(d->toolButtonStyle);
     connect(this, SIGNAL(iconSizeChanged(QSize)),
-            toolbar, SLOT(updateIconSize(QSize)));
+            toolbar, SLOT(_q_updateIconSize(QSize)));
     connect(this, SIGNAL(toolButtonStyleChanged(Qt::ToolButtonStyle)),
-            toolbar, SLOT(updateToolButtonStyle(Qt::ToolButtonStyle)));
+            toolbar, SLOT(_q_updateToolButtonStyle(Qt::ToolButtonStyle)));
 
     d->layout->insertToolBar(before, toolbar);
 
@@ -569,18 +584,14 @@ void QMainWindow::insertToolBar(QToolBar *before, QToolBar *toolbar)
 void QMainWindow::removeToolBar(QToolBar *toolbar)
 {
     if (toolbar) {
-        disconnect(this, SIGNAL(iconSizeChanged(QSize)),
-                   toolbar, SLOT(updateIconSize(QSize)));
-        disconnect(this, SIGNAL(toolButtonStyleChanged(Qt::ToolButtonStyle)),
-                   toolbar, SLOT(updateToolButtonStyle(Qt::ToolButtonStyle)));
-
-        d_func()->layout->removeWidget(toolbar);
+        qt_remove_toolbar_from_layout(toolbar, d_func());
         toolbar->hide();
     }
 }
 
 /*!
-    Returns the tool bar area for \a toolbar.
+    Returns the Qt::ToolBarArea for \a toolbar. If \a toolbar has not
+    been added to the main window, this function returns zero.
 
     \sa addToolBar() addToolBarBreak() Qt::ToolBarArea
 */
@@ -674,7 +685,8 @@ void QMainWindow::removeDockWidget(QDockWidget *dockwidget)
 }
 
 /*!
-    Returns the Qt::DockWidgetArea for \a dockwidget.
+    Returns the Qt::DockWidgetArea for \a dockwidget. If \a dockwidget
+    has not been added to the main window, this function returns zero.
 
     \sa addDockWidget() splitDockWidget() Qt::DockWidgetArea
 */
@@ -820,14 +832,19 @@ void QMainWindow::contextMenuEvent(QContextMenuEvent *event)
 */
 QMenu *QMainWindow::createPopupMenu()
 {
+    Q_D(QMainWindow);
     QMenu *menu = 0;
 #ifndef QT_NO_DOCKWIDGET
     QList<QDockWidget *> dockwidgets = qFindChildren<QDockWidget *>(this);
     if (dockwidgets.size()) {
         menu = new QMenu(this);
-        for (int i = 0; i < dockwidgets.size(); ++i)
-            if (dockwidgets.at(i)->parentWidget() == this)
+        for (int i = 0; i < dockwidgets.size(); ++i) {
+            QDockWidget *dockWidget = dockwidgets.at(i);
+            if (dockWidget->parentWidget() == this
+                && d->layout->contains(dockWidget)) {
                 menu->addAction(dockwidgets.at(i)->toggleViewAction());
+            }
+        }
         menu->addSeparator();
     }
 #endif // QT_NO_DOCKWIDGET
@@ -836,11 +853,16 @@ QMenu *QMainWindow::createPopupMenu()
     if (toolbars.size()) {
         if (!menu)
             menu = new QMenu(this);
-        for (int i = 0; i < toolbars.size(); ++i)
-            if (toolbars.at(i)->parentWidget() == this)
+        for (int i = 0; i < toolbars.size(); ++i) {
+            QToolBar *toolBar = toolbars.at(i);
+            if (toolBar->parentWidget() == this
+                && d->layout->contains(toolBar)) {
                 menu->addAction(toolbars.at(i)->toggleViewAction());
+            }
+        }
     }
 #endif
+    Q_UNUSED(d);
     return menu;
 }
 #endif // QT_NO_MENU

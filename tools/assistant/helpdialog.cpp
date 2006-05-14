@@ -415,12 +415,10 @@ void HelpDialog::buildKeywordDB()
     QStringList addDocuFiles = Config::configuration()->docFiles();
     QStringList::iterator i = addDocuFiles.begin();
 
-    int steps = 0;
-    for(; i != addDocuFiles.end(); i++)
-        steps += QFileInfo(*i).size();
-
+    // Set up an indeterminate progress bar.
     ui.labelPrepare->setText(tr("Prepare..."));
-    ui.progressPrepare->setMaximum(steps);
+    ui.progressPrepare->setMaximum(0);
+    ui.progressPrepare->setMinimum(0);
     ui.progressPrepare->setValue(0);
     processEvents();
 
@@ -452,11 +450,10 @@ void HelpDialog::buildKeywordDB()
         foreach (IndexItem *indItem, indLst) {
             QFileInfo fi(indItem->reference);
             lst.append(IndexKeyword(indItem->keyword, indItem->reference));
-            if (ui.progressPrepare)
-                ui.progressPrepare->setValue(ui.progressPrepare->value() +
-                                             int(fi.absoluteFilePath().length() * 2));
 
             if(++counter%100 == 0) {
+                if (ui.progressPrepare)
+                    ui.progressPrepare->setValue(counter);
                 processEvents();
                 if(lwClosed) {
                     return;
@@ -808,6 +805,11 @@ void HelpDialog::saveBookmarks()
 
 void HelpDialog::insertContents()
 {
+#ifdef Q_WS_MAC
+    static const QLatin1String IconPath(":/trolltech/assistant/images/win/book.png");
+#else
+    static const QLatin1String IconPath(":/trolltech/assistant/images/win/book.png");
+#endif
     if (contentsInserted)
         return;
 
@@ -842,7 +844,7 @@ void HelpDialog::insertContents()
             ContentItem item = *it;
             if (item.depth == 0) {
                 newEntry = new QTreeWidgetItem(ui.listContents, 0);
-                newEntry->setIcon(0, QIcon(QString::fromUtf8(":/trolltech/assistant/images/win/book.png")));
+                newEntry->setIcon(0, QIcon(IconPath));
                 newEntry->setText(0, item.title);
                 newEntry->setData(0, LinkRole, item.reference);
                 stack.push(newEntry);

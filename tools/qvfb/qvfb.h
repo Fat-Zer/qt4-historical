@@ -31,13 +31,12 @@ class QVFbView;
 class QVFbRateDialog;
 class QPopupMenu;
 class QMenuData;
-class Q3FileDialog;
 class QAction;
 class Config;
 class Skin;
 class QVFb;
 class QLabel;
-class Q3PopupMenu;
+class QMenu;
 class QScrollArea;
 
 class Zoomer : public QWidget {
@@ -57,8 +56,7 @@ class QVFb: public QMainWindow
 {
     Q_OBJECT
 public:
-    QVFb( int display_id, int w, int h, int d, int r, const QString &skin, QWidget *parent = 0,
-		const char *name = 0, uint wflags = 0 );
+    QVFb( int display_id, int w, int h, int d, int r, const QString &skin, QWidget *parent = 0, Qt::WFlags wflags = 0 );
     ~QVFb();
 
     void enableCursor( bool e );
@@ -91,8 +89,8 @@ public slots:
     void setZoom(double);
 
 protected:
-    void createMenu(QMenuBar *menu);
-    void createMenu(Q3PopupMenu *menu);
+    template <typename T>
+    void createMenu(T *menu);
     QMenu* createFileMenu();
     QMenu* createViewMenu();
     QMenu* createHelpMenu();

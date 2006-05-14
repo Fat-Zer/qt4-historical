@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-x11-opensource-src-4.1.2/src/gui/kernel/qtooltip.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/src/gui/kernel/qtooltip.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/src/gui/kernel/qtooltip.cpp -->
 <head>
     <title>Qt 4.1: QToolTip Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -34,6 +35,7 @@ body { background: #ffffff; color: black; }</style>
 <h2>Detailed Description</h2>
 <p>The QToolTip class provides tool tips (balloon help) for any widget.</p>
 <p>The tip is a short piece of text reminding the user of the widget's function. It is drawn immediately below the given position in a distinctive black-on-yellow color combination. The tip can be any <a href="qtextedit.html">rich text</a> formatted string.</p>
+<p>Rich text formatted tips implictely do word breaking, unless specified differently with <tt>&lt;p style='white-space:pre'&gt;</tt>.</p>
 <p>The simplest and most common way to set a widget's tooltip is by calling its <a href="qwidget.html#toolTip-prop">QWidget::setToolTip</a>() function.</p>
 <p>It is also possible to show different tool tips for different regions of a widget, by using a <a href="qhelpevent.html">QHelpEvent</a> of type <a href="qevent.html#Type-enum">QEvent::ToolTip</a>. Intercept the help event in your widget's <a href="qwidget.html#event">QWidget::event</a>() function and call <a href="qtooltip.html#showText">QToolTip::showText</a>() with the text you want to display. The <a href="widgets-tooltips.html">Tooltips</a> example illustrates this technique.</p>
 <p>See also <a href="qwidget.html#toolTip-prop">QWidget::toolTip</a> and <a href="qaction.html#toolTip-prop">QAction::toolTip</a>.</p>
@@ -42,11 +44,11 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="palette"></a><a href="qpalette.html">QPalette</a> QToolTip::palette ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns the palette used to render tooltips.</p>
 <h3 class="fn"><a name="showText"></a>void QToolTip::showText ( const <a href="qpoint.html">QPoint</a> &amp; <i>pos</i>, const <a href="qstring.html">QString</a> &amp; <i>text</i>, <a href="qwidget.html">QWidget</a> * <i>w</i> = 0 )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Shows <i>text</i> as a tool tip, at global position <i>pos</i>. The optional widget argument, <i>w</i>, is used to determine the appropriate screen on multi-head systems.</p>
+<p>Shows <i>text</i> as a tool tip, at global position <i>pos</i>. The optional widget argument, <i>w</i>, is used to determine the appropriate screen on multi-head systems. If <i>text</i> is empty the tool tip is hidden.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

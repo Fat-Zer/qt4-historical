@@ -37,7 +37,7 @@
 
 #include "qtextengine_p.h"
 
-#if defined(QT_HAVE_FREETYPE) && !defined(QT_NO_FREETYPE)
+#ifndef QT_NO_OPENTYPE
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include "ftxopen.h"
@@ -64,7 +64,7 @@ public:
     void selectScript(unsigned int script, const Features *features = 0);
     
     void shape(QShaperItem *item, const unsigned int *properties = 0);
-    bool positionAndAdd(QShaperItem *item, bool doLogClusters = true);
+    bool positionAndAdd(QShaperItem *item, int availableGlyphs, bool doLogClusters = true);
 
     OTL_GlyphItem glyphs() const { return otl_buffer->in_string; }
     int len() const { return otl_buffer->in_length; }
@@ -89,6 +89,6 @@ private:
     int loadFlags;
 };
 
-#endif // QT_HAVE_FREETYPE
+#endif // QT_NO_OPENTYPE
 
 #endif // QOPENTYPE_P_H

@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-x11-opensource-src-4.1.2/src/corelib/tools/qdatetime.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/src/corelib/tools/qdatetime.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/src/corelib/tools/qdatetime.cpp -->
 <head>
     <title>Qt 4.1: QDate Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -84,7 +85,7 @@ body { background: #ffffff; color: black; }</style>
 <p>QDate provides a full set of operators to compare two QDate objects where smaller means earlier, and larger means later.</p>
 <p>You can increment (or decrement) a date by a given number of days using <a href="qdate.html#addDays">addDays</a>(). Similarly you can use <a href="qdate.html#addMonths">addMonths</a>() and <a href="qdate.html#addYears">addYears</a>(). The <a href="qdate.html#daysTo">daysTo</a>() function returns the number of days between two dates.</p>
 <p>The <a href="qdate.html#daysInMonth">daysInMonth</a>() and <a href="qdate.html#daysInYear">daysInYear</a>() functions return how many days there are in this date's month and year, respectively. The <a href="qdate.html#isLeapYear">isLeapYear</a>() function indicates whether this date is in a leap year.</p>
-<p>Note that QDate should not be used for date calculations for dates prior to the introduction of the Gregorian calendar. This calendar was adopted by England from the 14 September 1752 (hence this is the earliest valid QDate), and subsequently by most other Western countries, by 1923. The latest valid year within this scheme is the year 8000.</p>
+<p>Note that QDate should not be used for date calculations for dates prior to the introduction of the Gregorian calendar. This calendar was adopted by England from the 14 September 1752 (hence this is the earliest valid QDate), and subsequently by most other Western countries, by 1923. The latest valid date within this scheme is 31 December 7999.</p>
 <p>See also <a href="qtime.html">QTime</a>, <a href="qdatetime.html">QDateTime</a>, <a href="qdateedit.html">QDateEdit</a>, and <a href="qdatetimeedit.html">QDateTimeEdit</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
@@ -113,7 +114,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the day of the month (1 to 31) of this date.</p>
 <p>See also <a href="qdate.html#year">year</a>(), <a href="qdate.html#month">month</a>(), and <a href="qdate.html#dayOfWeek">dayOfWeek</a>().</p>
 <h3 class="fn"><a name="dayOfWeek"></a>int QDate::dayOfWeek () const</h3>
-<p>Returns the weekday for this date.</p>
+<p>Returns the weekday (1 to 7) for this date.</p>
 <p>See also <a href="qdate.html#day">day</a>(), <a href="qdate.html#dayOfYear">dayOfYear</a>(), and <a href="qt.html#DayOfWeek-enum">Qt::DayOfWeek</a>.</p>
 <h3 class="fn"><a name="dayOfYear"></a>int QDate::dayOfYear () const</h3>
 <p>Returns the day of the year (1 to 365) for this date.</p>
@@ -309,7 +310,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the date as a string. The <i>format</i> parameter determines the format of the string.</p>
 <p>If the <i>format</i> is <a href="qt.html#DateFormat-enum">Qt::TextDate</a>, the string is formatted in the default way. <a href="qdate.html#shortDayName">QDate::shortDayName</a>() and <a href="qdate.html#shortMonthName">QDate::shortMonthName</a>() are used to generate the string, so the day and month names will be localized names. An example of this formatting is &quot;Sat May 20 1995&quot;.</p>
 <p>If the <i>format</i> is <a href="qt.html#DateFormat-enum">Qt::ISODate</a>, the string format corresponds to the ISO 8601 extended specification for representations of dates and times, taking the form YYYY-MM-DD, where YYYY is the year, MM is the month of the year (between 01 and 12), and DD is the day of the month between 01 and 31.</p>
-<p>If the <i>format</i> is <a href="qt.html#DateFormat-enum">Qt::LocalDate</a>, the string format depends on the locale settings of the system.</p>
+<p>If the <i>format</i> is <a href="qt.html#DateFormat-enum">Qt::LocalDate</a>, the string format depends on the locale settings of the system. On Mac OS X, an assumption is made that the date is in the local time zone.</p>
 <p>If the datetime is invalid, an empty string will be returned.</p>
 <p>See also <a href="qdate.html#shortDayName">shortDayName</a>() and <a href="qdate.html#shortMonthName">shortMonthName</a>().</p>
 <h3 class="fn"><a name="weekNumber"></a>int QDate::weekNumber ( int * <i>yearNumber</i> = 0 ) const</h3>
@@ -349,6 +350,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

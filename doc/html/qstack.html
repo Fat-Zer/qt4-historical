@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-x11-opensource-src-4.1.2/src/corelib/tools/qstack.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/src/corelib/tools/qstack.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/src/corelib/tools/qstack.cpp -->
 <head>
     <title>Qt 4.1: QStack Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -48,12 +49,12 @@ body { background: #ffffff; color: black; }</style>
 <p>QStack&lt;T&gt; is one of Qt's generic <a href="containers.html#container-classes">container classes</a>. It implements a stack data structure for items of a same type.</p>
 <p>A stack is a last in, first out (LIFO) structure. Items are added to the top of the stack using <a href="qstack.html#push">push</a>() and retrieved from the top using <a href="qstack.html#pop">pop</a>(). The <a href="qstack.html#top">top</a>() function provides access to the topmost item without removing it.</p>
 <p>Example:</p>
-<pre>&nbsp;   QStack&lt;int&gt; stack;
-    stack.push(1);
-    stack.push(2);
-    stack.push(3);
-    while (!stack.isEmpty())
-        cout &lt;&lt; stack.pop() &lt;&lt; endl;</pre>
+<pre>&nbsp;       QStack&lt;int&gt; stack;
+        stack.push(1);
+        stack.push(2);
+        stack.push(3);
+        while (!stack.isEmpty())
+            cout &lt;&lt; stack.pop() &lt;&lt; endl;</pre>
 <p>The example will output 3, 2, 1 in that order.</p>
 <p>QStack inherits from <a href="qvector.html">QVector</a>. All of <a href="qvector.html">QVector</a>'s functionality also applies to QStack. For example, you can use <a href="qvector.html#isEmpty">isEmpty</a>() to test whether the stack is empty, and you can traverse a QStack using <a href="qvector.html">QVector</a>'s iterator classes (for example, <a href="qvectoriterator.html">QVectorIterator</a>). But in addition, QStack provides three convenience functions that make it easy to implement LIFO semantics: <a href="qstack.html#push">push</a>(), <a href="qstack.html#pop">pop</a>(), and <a href="qstack.html#top">top</a>().</p>
 <p>QStack's value type must be an <a href="containers.html#assignable-data-types">assignable data type</a>. This covers most data types that are commonly used, but the compiler won't let you, for example, store a <a href="qwidget.html">QWidget</a> as a value; instead, store a <a href="qwidget.html">QWidget</a> *.</p>
@@ -82,6 +83,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

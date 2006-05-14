@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-x11-opensource-src-4.1.2/doc/src/porting4.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/doc/src/porting4.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/doc/src/porting4.qdoc -->
 <head>
     <title>Qt 4.1: Porting to Qt 4</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -87,6 +88,7 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="#qeventloop">QEventLoop</a></li>
 <li><a href="#qfiledialog">QFileDialog</a></li>
 <li><a href="#qfocusdata">QFocusData</a></li>
+<li><a href="#qfont">QFont</a></li>
 <li><a href="#qframe">QFrame</a></li>
 <li><a href="#qftp">QFtp</a></li>
 <li><a href="#qglayoutiterator">QGLayoutIterator</a></li>
@@ -121,11 +123,12 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="#qnetworkprotocol">QNetworkProtocol</a></li>
 <li><a href="#qobject">QObject</a></li>
 <li><a href="#qobjectdictionary">QObjectDictionary</a></li>
-<li><a href="#qobjectlist">QObjectList</a></li>
 </ul></td><td width="25%"><ul>
+<li><a href="#qobjectlist">QObjectList</a></li>
 <li><a href="#qpaintdevice">QPaintDevice</a></li>
 <li><a href="#qpaintdevicemetrics">QPaintDeviceMetrics</a></li>
 <li><a href="#qpainter">QPainter</a></li>
+<li><a href="#qpixmap">QPixmap</a></li>
 <li><a href="#qpointarray">QPointArray</a></li>
 <li><a href="#qpopupmenu">QPopupMenu</a></li>
 <li><a href="#qprinter">QPrinter</a></li>
@@ -151,7 +154,7 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="#qsimplerichtext">QSimpleRichText</a></li>
 <li><a href="#qslider">QSlider</a></li>
 <li><a href="#qsocket">QSocket</a></li>
-<li><a href="#qsocket">QSocket</a></li>
+<li><a href="#qsocketdevice">QSocketDevice</a></li>
 <li><a href="#qsortedlist">QSortedList</a></li>
 <li><a href="#qsplitter">QSplitter</a></li>
 <li><a href="#qspinbox">QSpinBox</a></li>
@@ -163,9 +166,9 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="#qsqlform">QSqlForm</a></li>
 <li><a href="#qsqlpropertymap">QSqlPropertyMap</a></li>
 <li><a href="#qsqlquery">QSqlQuery</a></li>
+</ul></td><td width="25%"><ul>
 <li><a href="#qsqlrecord">QSqlRecord</a></li>
 <li><a href="#qsqlrecordinfo">QSqlRecordInfo</a></li>
-</ul></td><td width="25%"><ul>
 <li><a href="#qsqlselectcursor">QSqlSelectCursor</a></li>
 <li><a href="#qstoreddrag">QStoredDrag</a></li>
 <li><a href="#qstr-i-list">QStr(I)List</a></li>
@@ -187,6 +190,7 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="#qtimeedit">QTimeEdit</a></li>
 <li><a href="#qtoolbar">QToolBar</a></li>
 <li><a href="#qtoolbutton">QToolButton</a></li>
+<li><a href="#qtooltip">QToolTip</a></li>
 <li><a href="#quridrag">QUriDrag</a></li>
 <li><a href="#qurl">QUrl</a></li>
 <li><a href="#qurloperator">QUrlOperator</a></li>
@@ -259,233 +263,234 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#e0e0e0"><td>IO_Translate</td><td>QIODevice::Translate</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>IO_Truncate</td><td><a href="qiodevice.html#OpenModeFlag-enum">QIODevice::Truncate</a></td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>IO_WriteOnly</td><td><a href="qiodevice.html#OpenModeFlag-enum">QIODevice::WriteOnly</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qaccessible.html#StateFlag-enum">QAccessible::Moveable</a></td><td><a href="qaccessible.html#StateFlag-enum">QAccessible::Movable</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qapplication-qt3.html#CustomColors-var">QApplication::CustomColors</a></td><td><a href="qapplication.html#ColorSpec-enum">QApplication::CustomColor</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qapplication-qt3.html#NormalColors-var">QApplication::NormalColors</a></td><td><a href="qapplication.html#ColorSpec-enum">QApplication::NormalColor</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>QButton::NoChange</td><td><a href="qcheckbox-qt3.html#ToggleState-enum">QCheckBox::NoChange</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>QButton::Off</td><td><a href="qcheckbox-qt3.html#ToggleState-enum">QCheckBox::Off</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>QButton::On</td><td><a href="qcheckbox-qt3.html#ToggleState-enum">QCheckBox::On</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qchar.html#Decomposition-enum">QChar::Single</a></td><td><a href="qchar.html#Decomposition-enum">QChar::NoDecomposition</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qchar.html#SpecialCharacter-enum">QChar::byteOrderMark</a></td><td><a href="qchar.html#SpecialCharacter-enum">QChar::ByteOrderMark</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qchar.html#SpecialCharacter-enum">QChar::byteOrderSwapped</a></td><td><a href="qchar.html#SpecialCharacter-enum">QChar::ByteOrderSwapped</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qchar.html#SpecialCharacter-enum">QChar::nbsp</a></td><td><a href="qchar.html#SpecialCharacter-enum">QChar::Nbsp</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qchar.html#SpecialCharacter-enum">QChar::null</a></td><td><a href="qchar.html#SpecialCharacter-enum">QChar::Null</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qchar.html#SpecialCharacter-enum">QChar::replacement</a></td><td><a href="qchar.html#SpecialCharacter-enum">QChar::ReplacementCharacter</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qcombobox.html#InsertPolicy-enum">QComboBox::AfterCurrent</a></td><td><a href="qcombobox.html#InsertPolicy-enum">QComboBox::InsertAfterCurrent</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qcombobox.html#InsertPolicy-enum">QComboBox::AtBottom</a></td><td><a href="qcombobox.html#InsertPolicy-enum">QComboBox::InsertAtBottom</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qcombobox.html#InsertPolicy-enum">QComboBox::AtCurrent</a></td><td><a href="qcombobox.html#InsertPolicy-enum">QComboBox::InsertAtCurrent</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qcombobox.html#InsertPolicy-enum">QComboBox::AtTop</a></td><td><a href="qcombobox.html#InsertPolicy-enum">QComboBox::InsertAtTop</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qcombobox.html#InsertPolicy-enum">QComboBox::BeforeCurrent</a></td><td><a href="qcombobox.html#InsertPolicy-enum">QComboBox::InsertBeforeCurrent</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qcombobox.html#InsertPolicy-enum">QComboBox::NoInsertion</a></td><td><a href="qcombobox.html#InsertPolicy-enum">QComboBox::NoInsert</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qdir.html#Filter-enum">QDir::DefaultFilter</a></td><td><a href="qdir.html#Filter-enum">QDir::NoFilter</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qdir.html#SortFlag-enum">QDir::DefaultSort</a></td><td><a href="qdir.html#SortFlag-enum">QDir::NoSort</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qevent.html#Type-enum">QEvent::Accel</a></td><td><a href="qevent.html#Type-enum">QEvent::Shortcut</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qevent.html#Type-enum">QEvent::AccelOverride</a></td><td><a href="qevent.html#Type-enum">QEvent::ShortcutOverride</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qevent.html#Type-enum">QEvent::CaptionChange</a></td><td><a href="qevent.html#Type-enum">QEvent::WindowTitleChange</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qevent.html#Type-enum">QEvent::ChildInserted</a></td><td><a href="qevent.html#Type-enum">QEvent::ChildAdded</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>QEvent::IMCompose</td><td>QEvent::InputMethodCompose</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>QEvent::IMEnd</td><td>QEvent::InputMethodEnd</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>QEvent::IMStart</td><td>QEvent::InputMethodStart</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qevent.html#Type-enum">QEvent::IconChange</a></td><td><a href="qevent.html#Type-enum">QEvent::WindowIconChange</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qevent.html#Type-enum">QEvent::LayoutHint</a></td><td><a href="qevent.html#Type-enum">QEvent::LayoutRequest</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qevent.html#Type-enum">QEvent::Reparent</a></td><td><a href="qevent.html#Type-enum">QEvent::ParentChange</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qfileinfo-qt3.html#Permission-enum">QFileInfo::ExeGroup</a></td><td><a href="qfile.html#Permission-enum">QFile::ExeGroup</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qfileinfo-qt3.html#Permission-enum">QFileInfo::ExeOther</a></td><td><a href="qfile.html#Permission-enum">QFile::ExeOther</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qfileinfo-qt3.html#Permission-enum">QFileInfo::ExeOwner</a></td><td><a href="qfile.html#Permission-enum">QFile::ExeOwner</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qfileinfo-qt3.html#Permission-enum">QFileInfo::ExeUser</a></td><td><a href="qfile.html#Permission-enum">QFile::ExeUser</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qfileinfo-qt3.html#Permission-enum">QFileInfo::ReadGroup</a></td><td><a href="qfile.html#Permission-enum">QFile::ReadGroup</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qfileinfo-qt3.html#Permission-enum">QFileInfo::ReadOther</a></td><td><a href="qfile.html#Permission-enum">QFile::ReadOther</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qfileinfo-qt3.html#Permission-enum">QFileInfo::ReadOwner</a></td><td><a href="qfile.html#Permission-enum">QFile::ReadOwner</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qfileinfo-qt3.html#Permission-enum">QFileInfo::ReadUser</a></td><td><a href="qfile.html#Permission-enum">QFile::ReadUser</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qfileinfo-qt3.html#Permission-enum">QFileInfo::WriteGroup</a></td><td><a href="qfile.html#Permission-enum">QFile::WriteGroup</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qfileinfo-qt3.html#Permission-enum">QFileInfo::WriteOther</a></td><td><a href="qfile.html#Permission-enum">QFile::WriteOther</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qfileinfo-qt3.html#Permission-enum">QFileInfo::WriteOwner</a></td><td><a href="qfile.html#Permission-enum">QFile::WriteOwner</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qfileinfo-qt3.html#Permission-enum">QFileInfo::WriteUser</a></td><td><a href="qfile.html#Permission-enum">QFile::WriteUser</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qframe.html#Shape-enum">QFrame::GroupBoxPanel</a></td><td><a href="qframe.html#Shape-enum">QFrame::StyledPanel</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qframe.html#Shape-enum">QFrame::LineEditPanel</a></td><td><a href="qframe.html#Shape-enum">QFrame::StyledPanel</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qframe.html#Shape-enum">QFrame::MenuBarPanel</a></td><td><a href="qframe.html#Shape-enum">QFrame::StyledPanel</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qframe.html#Shape-enum">QFrame::PopupPanel</a></td><td><a href="qframe.html#Shape-enum">QFrame::StyledPanel</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qframe.html#Shape-enum">QFrame::TabWidgetPanel</a></td><td><a href="qframe.html#Shape-enum">QFrame::StyledPanel</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qframe.html#Shape-enum">QFrame::ToolBarPanel</a></td><td><a href="qframe.html#Shape-enum">QFrame::StyledPanel</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>QImage::ScaleFree</td><td><a href="qt.html#AspectRatioMode-enum">Qt::IgnoreAspectRatio</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>QImage::ScaleMax</td><td><a href="qt.html#AspectRatioMode-enum">Qt::KeepAspectRatioByExpanding</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>QImage::ScaleMin</td><td><a href="qt.html#AspectRatioMode-enum">Qt::KeepAspectRatio</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>Qt::Identical</td><td><a href="qkeysequence.html#SequenceMatch-enum">QKeySequence::ExactMatch</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>Qt::NoMatch</td><td><a href="qkeysequence.html#SequenceMatch-enum">QKeySequence::NoMatch</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>Qt::PartialMatch</td><td><a href="qkeysequence.html#SequenceMatch-enum">QKeySequence::PartialMatch</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qlayout.html#SizeConstraint-enum">QLayout::Auto</a></td><td><a href="qlayout.html#SizeConstraint-enum">QLayout::SetDefaultConstraint</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qlayout.html#SizeConstraint-enum">QLayout::Fixed</a></td><td><a href="qlayout.html#SizeConstraint-enum">QLayout::SetFixedSize</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qlayout.html#SizeConstraint-enum">QLayout::FreeResize</a></td><td><a href="qlayout.html#SizeConstraint-enum">QLayout::SetNoConstraint</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qlayout.html#SizeConstraint-enum">QLayout::Minimum</a></td><td><a href="qlayout.html#SizeConstraint-enum">QLayout::SetMinimumSize</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qmacstyle.html#WidgetSizePolicy-enum">QMacStyle::SizeNone</a></td><td><a href="qmacstyle.html#WidgetSizePolicy-enum">QMacStyle::SizeDefault</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qsettings.html#Scope-enum">QSettings::Global</a></td><td><a href="qsettings.html#Scope-enum">QSettings::SystemScope</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qsettings.html#Scope-enum">QSettings::User</a></td><td><a href="qsettings.html#Scope-enum">QSettings::UserScope</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>QSize::ScaleFree</td><td><a href="qt.html#AspectRatioMode-enum">Qt::IgnoreAspectRatio</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>QSize::ScaleMax</td><td><a href="qt.html#AspectRatioMode-enum">Qt::KeepAspectRatioByExpanding</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>QSize::ScaleMin</td><td><a href="qt.html#AspectRatioMode-enum">Qt::KeepAspectRatio</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>QSizePolicy::Horizontal</td><td><a href="qsizepolicy-qt3.html#ExpandData-enum">QSizePolicy::Horizontally</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>QSizePolicy::Vertical</td><td><a href="qsizepolicy-qt3.html#ExpandData-enum">QSizePolicy::Vertically</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qslider.html#TickPosition-enum">QSlider::Above</a></td><td><a href="qslider.html#TickPosition-enum">QSlider::TicksAbove</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qslider.html#TickPosition-enum">QSlider::Below</a></td><td><a href="qslider.html#TickPosition-enum">QSlider::TicksBelow</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qslider.html#TickPosition-enum">QSlider::Both</a></td><td><a href="qslider.html#TickPosition-enum">QSlider::TicksBothSides</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qslider.html#TickPosition-enum">QSlider::Left</a></td><td><a href="qslider.html#TickPosition-enum">QSlider::TicksLeft</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qslider.html#TickPosition-enum">QSlider::NoMarks</a></td><td><a href="qslider.html#TickPosition-enum">QSlider::NoTicks</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qslider.html#TickPosition-enum">QSlider::Right</a></td><td><a href="qslider.html#TickPosition-enum">QSlider::TicksRight</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>QSocket::Closing</td><td><a href="q3socket.html#State-enum">Q3Socket::Closing</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>QSocket::Connected</td><td><a href="q3socket.html#State-enum">Q3Socket::Connected</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>QSocket::Connecting</td><td><a href="q3socket.html#State-enum">Q3Socket::Connecting</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>QSocket::Connection</td><td><a href="q3socket.html#State-enum">Q3Socket::Connection</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>QSocket::ErrConnectionRefused</td><td><a href="q3socket.html#Error-enum">Q3Socket::ErrConnectionRefused</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>QSocket::ErrHostNotFound</td><td><a href="q3socket.html#Error-enum">Q3Socket::ErrHostNotFound</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>QSocket::ErrSocketRead</td><td><a href="q3socket.html#Error-enum">Q3Socket::ErrSocketRead</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>QSocket::HostLookup</td><td><a href="qabstractsocket.html#SocketState-enum">QAbstractSocket::HostLookupState</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>QSocket::Idle</td><td><a href="qabstractsocket.html#SocketState-enum">QAbstractSocket::UnconnectedState</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qsqlerror.html#ErrorType-enum">QSqlError::Connection</a></td><td><a href="qsqlerror.html#ErrorType-enum">QSqlError::ConnectionError</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qsqlerror.html#ErrorType-enum">QSqlError::None</a></td><td><a href="qsqlerror.html#ErrorType-enum">QSqlError::NoError</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qsqlerror.html#ErrorType-enum">QSqlError::Statement</a></td><td><a href="qsqlerror.html#ErrorType-enum">QSqlError::StatementError</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qsqlerror.html#ErrorType-enum">QSqlError::Transaction</a></td><td><a href="qsqlerror.html#ErrorType-enum">QSqlError::TransactionError</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qsqlerror.html#ErrorType-enum">QSqlError::Unknown</a></td><td><a href="qsqlerror.html#ErrorType-enum">QSqlError::UnknownError</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>QStyle::CC_ListView</td><td><a href="qstyle.html#ComplexControl-enum">QStyle::CC_Q3ListView</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qstyle.html#StyleHint-enum">QStyle::SH_UnderlineAccelerator</a></td><td><a href="qstyle.html#StyleHint-enum">QStyle::SH_UnderlineShortcut</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>QStyle::Style_Active</td><td><a href="qstyle.html#StateFlag-enum">QStyle::State_Active</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>QStyle::Style_AutoRaise</td><td><a href="qstyle.html#StateFlag-enum">QStyle::State_AutoRaise</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>QStyle::Style_Bottom</td><td><a href="qstyle.html#StateFlag-enum">QStyle::State_Bottom</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>QStyle::Style_Children</td><td><a href="qstyle.html#StateFlag-enum">QStyle::State_Children</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>QStyle::Style_Default</td><td><a href="qstyle.html#StateFlag-enum">QStyle::State_None</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>QStyle::Style_Down</td><td><a href="qstyle.html#StateFlag-enum">QStyle::State_DownArrow</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>QStyle::Style_Editing</td><td><a href="qstyle.html#StateFlag-enum">QStyle::State_Editing</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>QStyle::Style_Enabled</td><td><a href="qstyle.html#StateFlag-enum">QStyle::State_Enabled</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>QStyle::Style_FocusAtBorder</td><td><a href="qstyle.html#StateFlag-enum">QStyle::State_FocusAtBorder</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>QStyle::Style_HasFocus</td><td><a href="qstyle.html#StateFlag-enum">QStyle::State_HasFocus</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>QStyle::Style_Horizontal</td><td><a href="qstyle.html#StateFlag-enum">QStyle::State_Horizontal</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>QStyle::Style_Item</td><td><a href="qstyle.html#StateFlag-enum">QStyle::State_Item</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>QStyle::Style_MouseOver</td><td><a href="qstyle.html#StateFlag-enum">QStyle::State_MouseOver</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>QStyle::Style_NoChange</td><td><a href="qstyle.html#StateFlag-enum">QStyle::State_NoChange</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>QStyle::Style_None</td><td><a href="qstyle.html#StateFlag-enum">QStyle::State_None</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>QStyle::Style_Off</td><td><a href="qstyle.html#StateFlag-enum">QStyle::State_Off</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>QStyle::Style_On</td><td><a href="qstyle.html#StateFlag-enum">QStyle::State_On</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>QStyle::Style_Open</td><td><a href="qstyle.html#StateFlag-enum">QStyle::State_Open</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>QStyle::Style_Raised</td><td><a href="qstyle.html#StateFlag-enum">QStyle::State_Raised</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>QStyle::Style_Rectangle</td><td>QStyle::State_Rectangle</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>QStyle::Style_Selected</td><td><a href="qstyle.html#StateFlag-enum">QStyle::State_Selected</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>QStyle::Style_Sibling</td><td><a href="qstyle.html#StateFlag-enum">QStyle::State_Sibling</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>QStyle::Style_Sunken</td><td><a href="qstyle.html#StateFlag-enum">QStyle::State_Sunken</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>QStyle::Style_Top</td><td><a href="qstyle.html#StateFlag-enum">QStyle::State_Top</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>QStyle::Style_Up</td><td>QStyle::State_Up</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qtabbar.html#Shape-enum">QTabBar::RoundedAbove</a></td><td><a href="qtabbar.html#Shape-enum">QTabBar::RoundedNorth</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qtabbar.html#Shape-enum">QTabBar::RoundedBelow</a></td><td><a href="#qtabbar">QTabBar::</a> RoundedSouth</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qtabbar.html#Shape-enum">QTabBar::TriangularAbove</a></td><td><a href="#qtabbar">QTabBar::</a> TriangularNorth</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qtabbar.html#Shape-enum">QTabBar::TriangularBelow</a></td><td><a href="#qtabbar">QTabBar::</a> TriangularSouth</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qtextedit.html#CursorAction-enum">QTextEdit::MovePgDown</a></td><td><a href="qtextedit.html#CursorAction-enum">QTextEdit::MovePageDown</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qtextedit.html#CursorAction-enum">QTextEdit::MovePgUp</a></td><td><a href="qtextedit.html#CursorAction-enum">QTextEdit::MovePageUp</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qtoolbutton-qt3.html#TextPosition-enum">QToolButton::Right</a></td><td><a href="qtoolbutton-qt3.html#TextPosition-enum">QToolButton::BesideIcon</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qtoolbutton-qt3.html#TextPosition-enum">QToolButton::Under</a></td><td><a href="qtoolbutton-qt3.html#TextPosition-enum">QToolButton::BelowIcon</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qvalidator.html#State-enum">QValidator::Valid</a></td><td><a href="qvalidator.html#State-enum">QValidator::Intermediate</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qvariant.html#Type-enum">QVariant::IconSet</a></td><td>QCoreVariant::Icon</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>QWidget::ClickFocus</td><td><a href="qt.html#FocusPolicy-enum">Qt::ClickFocus</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>QWidget::NoFocus</td><td><a href="qt.html#FocusPolicy-enum">Qt::NoFocus</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>QWidget::StrongFocus</td><td><a href="qt.html#FocusPolicy-enum">Qt::StrongFocus</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>QWidget::TabFocus</td><td><a href="qt.html#FocusPolicy-enum">Qt::TabFocus</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>QWidget::WheelFocus</td><td><a href="qt.html#FocusPolicy-enum">Qt::WheelFocus</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#AlignmentFlag-enum">Qt::AlignAuto</a></td><td><a href="qt.html#AlignmentFlag-enum">Qt::AlignLeft</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt-qt3.html#ButtonState_enum-enum">Qt::AltButton</a></td><td><a href="qt.html#KeyboardModifier-enum">Qt::AltModifier</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#SortOrder-enum">Qt::Ascending</a></td><td><a href="qt.html#SortOrder-enum">Qt::AscendingOrder</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#Dock-enum">Qt::Bottom</a></td><td><a href="qt.html#Dock-enum">Qt::DockBottom</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#Corner-enum">Qt::BottomLeft</a></td><td><a href="qt.html#Corner-enum">Qt::BottomLeftCorner</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#Corner-enum">Qt::BottomRight</a></td><td><a href="qt.html#Corner-enum">Qt::BottomRightCorner</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#TextFlag-enum">Qt::BreakAnywhere</a></td><td><a href="qt.html#TextFlag-enum">Qt::TextWrapAnywhere</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt-qt3.html#ButtonState_enum-enum">Qt::ControlButton</a></td><td><a href="qt.html#KeyboardModifier-enum">Qt::ControlModifier</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#BrushStyle-enum">Qt::CustomPattern</a></td><td><a href="qt.html#BrushStyle-enum">Qt::TexturePattern</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#SortOrder-enum">Qt::Descending</a></td><td><a href="qt.html#SortOrder-enum">Qt::DescendingOrder</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#TextFlag-enum">Qt::DontClip</a></td><td><a href="qt.html#TextFlag-enum">Qt::TextDontClip</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#TextFlag-enum">Qt::DontPrint</a></td><td><a href="qt.html#TextFlag-enum">Qt::TextDontPrint</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#TextFlag-enum">Qt::ExpandTabs</a></td><td><a href="qt.html#TextFlag-enum">Qt::TextExpandTabs</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#TextFlag-enum">Qt::IncludeTrailingSpaces</a></td><td><a href="qt.html#TextFlag-enum">Qt::TextIncludeTrailingSpaces</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt-qt3.html#ButtonState_enum-enum">Qt::KeyButtonMask</a></td><td><a href="qt.html#KeyboardModifier-enum">Qt::KeyboardModifierMask</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#Key-enum">Qt::Key_BackSpace</a></td><td><a href="qt.html#Key-enum">Qt::Key_Backspace</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#Key-enum">Qt::Key_BackTab</a></td><td><a href="qt.html#Key-enum">Qt::Key_Backtab</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#Key-enum">Qt::Key_MediaPrev</a></td><td><a href="qt.html#Key-enum">Qt::Key_MediaPrevious</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#Key-enum">Qt::Key_Next</a></td><td><a href="qt.html#Key-enum">Qt::Key_PageDown</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#Key-enum">Qt::Key_Prior</a></td><td><a href="qt.html#Key-enum">Qt::Key_PageUp</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#Key-enum">Qt::Key_aacute</a></td><td><a href="qt.html#Key-enum">Qt::Key_Aacute</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#Key-enum">Qt::Key_acircumflex</a></td><td><a href="qt.html#Key-enum">Qt::Key_Acircumflex</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#Key-enum">Qt::Key_adiaeresis</a></td><td><a href="qt.html#Key-enum">Qt::Key_Adiaeresis</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#Key-enum">Qt::Key_ae</a></td><td><a href="qt.html#Key-enum">Qt::Key_AE</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#Key-enum">Qt::Key_agrave</a></td><td><a href="qt.html#Key-enum">Qt::Key_Agrave</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#Key-enum">Qt::Key_aring</a></td><td><a href="qt.html#Key-enum">Qt::Key_Aring</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#Key-enum">Qt::Key_atilde</a></td><td><a href="qt.html#Key-enum">Qt::Key_Atilde</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#Key-enum">Qt::Key_ccedilla</a></td><td><a href="qt.html#Key-enum">Qt::Key_Ccedilla</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#Key-enum">Qt::Key_eacute</a></td><td><a href="qt.html#Key-enum">Qt::Key_Eacute</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#Key-enum">Qt::Key_ecircumflex</a></td><td><a href="qt.html#Key-enum">Qt::Key_Ecircumflex</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#Key-enum">Qt::Key_ediaeresis</a></td><td><a href="qt.html#Key-enum">Qt::Key_Ediaeresis</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#Key-enum">Qt::Key_egrave</a></td><td><a href="qt.html#Key-enum">Qt::Key_Egrave</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#Key-enum">Qt::Key_eth</a></td><td><a href="qt.html#Key-enum">Qt::Key_ETH</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#Key-enum">Qt::Key_iacute</a></td><td><a href="qt.html#Key-enum">Qt::Key_Iacute</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#Key-enum">Qt::Key_icircumflex</a></td><td><a href="qt.html#Key-enum">Qt::Key_Icircumflex</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#Key-enum">Qt::Key_idiaeresis</a></td><td><a href="qt.html#Key-enum">Qt::Key_Idiaeresis</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#Key-enum">Qt::Key_igrave</a></td><td><a href="qt.html#Key-enum">Qt::Key_Igrave</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#Key-enum">Qt::Key_ntilde</a></td><td><a href="qt.html#Key-enum">Qt::Key_Ntilde</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#Key-enum">Qt::Key_oacute</a></td><td><a href="qt.html#Key-enum">Qt::Key_Oacute</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#Key-enum">Qt::Key_ocircumflex</a></td><td><a href="qt.html#Key-enum">Qt::Key_Ocircumflex</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#Key-enum">Qt::Key_odiaeresis</a></td><td><a href="qt.html#Key-enum">Qt::Key_Odiaeresis</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#Key-enum">Qt::Key_ograve</a></td><td><a href="qt.html#Key-enum">Qt::Key_Ograve</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#Key-enum">Qt::Key_oslash</a></td><td><a href="qt.html#Key-enum">Qt::Key_Ooblique</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#Key-enum">Qt::Key_otilde</a></td><td><a href="qt.html#Key-enum">Qt::Key_Otilde</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#Key-enum">Qt::Key_thorn</a></td><td><a href="qt.html#Key-enum">Qt::Key_THORN</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#Key-enum">Qt::Key_uacute</a></td><td><a href="qt.html#Key-enum">Qt::Key_Uacute</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#Key-enum">Qt::Key_ucircumflex</a></td><td><a href="qt.html#Key-enum">Qt::Key_Ucircumflex</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#Key-enum">Qt::Key_udiaeresis</a></td><td><a href="qt.html#Key-enum">Qt::Key_Udiaeresis</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#Key-enum">Qt::Key_ugrave</a></td><td><a href="qt.html#Key-enum">Qt::Key_Ugrave</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#Key-enum">Qt::Key_yacute</a></td><td><a href="qt.html#Key-enum">Qt::Key_Yacute</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt-qt3.html#ButtonState_enum-enum">Qt::Keypad</a></td><td><a href="qt.html#KeyboardModifier-enum">Qt::KeypadModifier</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#Dock-enum">Qt::Left</a></td><td><a href="qt.html#Dock-enum">Qt::DockLeft</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt-qt3.html#MacintoshVersion-enum">Qt::MV_10_DOT_0</a></td><td><a href="qsysinfo.html#MacVersion-enum">QSysInfo::MV_10_0</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt-qt3.html#MacintoshVersion-enum">Qt::MV_10_DOT_1</a></td><td><a href="qsysinfo.html#MacVersion-enum">QSysInfo::MV_10_1</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt-qt3.html#MacintoshVersion-enum">Qt::MV_10_DOT_2</a></td><td><a href="qsysinfo.html#MacVersion-enum">QSysInfo::MV_10_2</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt-qt3.html#MacintoshVersion-enum">Qt::MV_10_DOT_3</a></td><td><a href="qsysinfo.html#MacVersion-enum">QSysInfo::MV_10_3</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt-qt3.html#MacintoshVersion-enum">Qt::MV_10_DOT_4</a></td><td><a href="qsysinfo.html#MacVersion-enum">QSysInfo::MV_10_4</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt-qt3.html#MacintoshVersion-enum">Qt::MV_9</a></td><td><a href="qsysinfo.html#MacVersion-enum">QSysInfo::MV_9</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt-qt3.html#MacintoshVersion-enum">Qt::MV_CHEETAH</a></td><td><a href="qsysinfo.html#MacVersion-enum">QSysInfo::MV_10_0</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt-qt3.html#MacintoshVersion-enum">Qt::MV_JAGUAR</a></td><td><a href="qsysinfo.html#MacVersion-enum">QSysInfo::MV_10_2</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt-qt3.html#MacintoshVersion-enum">Qt::MV_PANTHER</a></td><td><a href="qsysinfo.html#MacVersion-enum">QSysInfo::MV_10_3</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt-qt3.html#MacintoshVersion-enum">Qt::MV_PUMA</a></td><td><a href="qsysinfo.html#MacVersion-enum">QSysInfo::MV_10_1</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt-qt3.html#MacintoshVersion-enum">Qt::MV_TIGER</a></td><td><a href="qsysinfo.html#MacVersion-enum">QSysInfo::MV_10_4</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt-qt3.html#MacintoshVersion-enum">Qt::MV_Unknown</a></td><td><a href="qsysinfo.html#MacVersion-enum">QSysInfo::MV_Unknown</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt-qt3.html#ButtonState_enum-enum">Qt::MetaButton</a></td><td><a href="qt.html#KeyboardModifier-enum">Qt::MetaModifier</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#Dock-enum">Qt::Minimized</a></td><td><a href="qt.html#Dock-enum">Qt::DockMinimized</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#TextFlag-enum">Qt::NoAccel</a></td><td><a href="qt.html#TextFlag-enum">Qt::TextHideMnemonic</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>Qt::Overline</td><td>Qt::TextOverline</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#Dock-enum">Qt::Right</a></td><td><a href="qt.html#Dock-enum">Qt::DockRight</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt-qt3.html#ButtonState_enum-enum">Qt::ShiftButton</a></td><td><a href="qt.html#KeyboardModifier-enum">Qt::ShiftModifier</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#TextFlag-enum">Qt::ShowPrefix</a></td><td><a href="qt.html#TextFlag-enum">Qt::TextShowMnemonic</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#TextFlag-enum">Qt::SingleLine</a></td><td><a href="qt.html#TextFlag-enum">Qt::TextSingleLine</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>Qt::StrikeOut</td><td>Qt::TextStrikeOut</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#Dock-enum">Qt::Top</a></td><td><a href="qt.html#Dock-enum">Qt::DockTop</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#Corner-enum">Qt::TopLeft</a></td><td><a href="qt.html#Corner-enum">Qt::TopLeftCorner</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#Corner-enum">Qt::TopRight</a></td><td><a href="qt.html#Corner-enum">Qt::TopRightCorner</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#Dock-enum">Qt::TornOff</a></td><td><a href="qt.html#Dock-enum">Qt::DockTornOff</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>Qt::Underline</td><td>Qt::TextUnderline</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#Dock-enum">Qt::Unmanaged</a></td><td><a href="qt.html#Dock-enum">Qt::DockUnmanaged</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#WindowType-enum">Qt::WNorthWestGravity</a></td><td><a href="qt.html#WindowType-enum">Qt::WStaticContents</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#WindowType-enum">Qt::WRepaintNoErase</a></td><td><a href="qt.html#WindowType-enum">Qt::WNoAutoErase</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#WindowType-enum">Qt::WStyle_Dialog</a></td><td><a href="qt.html#WindowType-enum">Qt::WType_Dialog</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#WindowType-enum">Qt::WStyle_NoBorderEx</a></td><td><a href="qt.html#WindowType-enum">Qt::WStyle_NoBorder</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#WindowType-enum">Qt::WType_Modal</a></td><td>(<a href="qt.html#WindowType-enum">Qt::WType_Dialog</a> | <a href="qt.html#WindowType-enum">Qt::WShowModal</a>)</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt-qt3.html#WindowsVersion-enum">Qt::WV_2000</a></td><td><a href="qsysinfo.html#WinVersion-enum">QSysInfo::WV_2000</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt-qt3.html#WindowsVersion-enum">Qt::WV_2003</a></td><td><a href="qsysinfo.html#WinVersion-enum">QSysInfo::WV_2003</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt-qt3.html#WindowsVersion-enum">Qt::WV_32s</a></td><td><a href="qsysinfo.html#WinVersion-enum">QSysInfo::WV_32s</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt-qt3.html#WindowsVersion-enum">Qt::WV_95</a></td><td><a href="qsysinfo.html#WinVersion-enum">QSysInfo::WV_95</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt-qt3.html#WindowsVersion-enum">Qt::WV_98</a></td><td><a href="qsysinfo.html#WinVersion-enum">QSysInfo::WV_98</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt-qt3.html#WindowsVersion-enum">Qt::WV_CE</a></td><td><a href="qsysinfo.html#WinVersion-enum">QSysInfo::WV_CE</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt-qt3.html#WindowsVersion-enum">Qt::WV_CENET</a></td><td><a href="qsysinfo.html#WinVersion-enum">QSysInfo::WV_CENET</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt-qt3.html#WindowsVersion-enum">Qt::WV_CE_based</a></td><td><a href="qsysinfo.html#WinVersion-enum">QSysInfo::WV_CE_based</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt-qt3.html#WindowsVersion-enum">Qt::WV_DOS_based</a></td><td><a href="qsysinfo.html#WinVersion-enum">QSysInfo::WV_DOS_based</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt-qt3.html#WindowsVersion-enum">Qt::WV_Me</a></td><td><a href="qsysinfo.html#WinVersion-enum">QSysInfo::WV_Me</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt-qt3.html#WindowsVersion-enum">Qt::WV_NT</a></td><td><a href="qsysinfo.html#WinVersion-enum">QSysInfo::WV_NT</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt-qt3.html#WindowsVersion-enum">Qt::WV_NT_based</a></td><td><a href="qsysinfo.html#WinVersion-enum">QSysInfo::WV_NT_based</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt-qt3.html#WindowsVersion-enum">Qt::WV_XP</a></td><td><a href="qsysinfo.html#WinVersion-enum">QSysInfo::WV_XP</a></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#TextFlag-enum">Qt::WordBreak</a></td><td><a href="qt.html#TextFlag-enum">Qt::TextWordWrap</a></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>Qt::IbeamCursor</td><td><a href="qt.html#CursorShape-enum">Qt::IBeamCursor</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>IO_Raw</td><td><a href="qiodevice.html#OpenModeFlag-enum">QIODevice::Unbuffered</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qaccessible.html#StateFlag-enum">QAccessible::Moveable</a></td><td><a href="qaccessible.html#StateFlag-enum">QAccessible::Movable</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qapplication-qt3.html#CustomColors-var">QApplication::CustomColors</a></td><td><a href="qapplication.html#ColorSpec-enum">QApplication::CustomColor</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qapplication-qt3.html#NormalColors-var">QApplication::NormalColors</a></td><td><a href="qapplication.html#ColorSpec-enum">QApplication::NormalColor</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>QButton::NoChange</td><td><a href="qcheckbox-qt3.html#ToggleState-enum">QCheckBox::NoChange</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>QButton::Off</td><td><a href="qcheckbox-qt3.html#ToggleState-enum">QCheckBox::Off</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>QButton::On</td><td><a href="qcheckbox-qt3.html#ToggleState-enum">QCheckBox::On</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qchar.html#Decomposition-enum">QChar::Single</a></td><td><a href="qchar.html#Decomposition-enum">QChar::NoDecomposition</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qchar.html#SpecialCharacter-enum">QChar::byteOrderMark</a></td><td><a href="qchar.html#SpecialCharacter-enum">QChar::ByteOrderMark</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qchar.html#SpecialCharacter-enum">QChar::byteOrderSwapped</a></td><td><a href="qchar.html#SpecialCharacter-enum">QChar::ByteOrderSwapped</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qchar.html#SpecialCharacter-enum">QChar::nbsp</a></td><td><a href="qchar.html#SpecialCharacter-enum">QChar::Nbsp</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qchar.html#SpecialCharacter-enum">QChar::null</a></td><td><a href="qchar.html#SpecialCharacter-enum">QChar::Null</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qchar.html#SpecialCharacter-enum">QChar::replacement</a></td><td><a href="qchar.html#SpecialCharacter-enum">QChar::ReplacementCharacter</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qcombobox.html#InsertPolicy-enum">QComboBox::AfterCurrent</a></td><td><a href="qcombobox.html#InsertPolicy-enum">QComboBox::InsertAfterCurrent</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qcombobox.html#InsertPolicy-enum">QComboBox::AtBottom</a></td><td><a href="qcombobox.html#InsertPolicy-enum">QComboBox::InsertAtBottom</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qcombobox.html#InsertPolicy-enum">QComboBox::AtCurrent</a></td><td><a href="qcombobox.html#InsertPolicy-enum">QComboBox::InsertAtCurrent</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qcombobox.html#InsertPolicy-enum">QComboBox::AtTop</a></td><td><a href="qcombobox.html#InsertPolicy-enum">QComboBox::InsertAtTop</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qcombobox.html#InsertPolicy-enum">QComboBox::BeforeCurrent</a></td><td><a href="qcombobox.html#InsertPolicy-enum">QComboBox::InsertBeforeCurrent</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qcombobox.html#InsertPolicy-enum">QComboBox::NoInsertion</a></td><td><a href="qcombobox.html#InsertPolicy-enum">QComboBox::NoInsert</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qdir.html#Filter-enum">QDir::DefaultFilter</a></td><td><a href="qdir.html#Filter-enum">QDir::NoFilter</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qdir.html#SortFlag-enum">QDir::DefaultSort</a></td><td><a href="qdir.html#SortFlag-enum">QDir::NoSort</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qevent.html#Type-enum">QEvent::Accel</a></td><td><a href="qevent.html#Type-enum">QEvent::Shortcut</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qevent.html#Type-enum">QEvent::AccelOverride</a></td><td><a href="qevent.html#Type-enum">QEvent::ShortcutOverride</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qevent.html#Type-enum">QEvent::CaptionChange</a></td><td><a href="qevent.html#Type-enum">QEvent::WindowTitleChange</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qevent.html#Type-enum">QEvent::ChildInserted</a></td><td><a href="qevent.html#Type-enum">QEvent::ChildAdded</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>QEvent::IMCompose</td><td>QEvent::InputMethodCompose</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>QEvent::IMEnd</td><td>QEvent::InputMethodEnd</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>QEvent::IMStart</td><td>QEvent::InputMethodStart</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qevent.html#Type-enum">QEvent::IconChange</a></td><td><a href="qevent.html#Type-enum">QEvent::WindowIconChange</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qevent.html#Type-enum">QEvent::LayoutHint</a></td><td><a href="qevent.html#Type-enum">QEvent::LayoutRequest</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qevent.html#Type-enum">QEvent::Reparent</a></td><td><a href="qevent.html#Type-enum">QEvent::ParentChange</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qfileinfo-qt3.html#Permission-enum">QFileInfo::ExeGroup</a></td><td><a href="qfile.html#Permission-enum">QFile::ExeGroup</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qfileinfo-qt3.html#Permission-enum">QFileInfo::ExeOther</a></td><td><a href="qfile.html#Permission-enum">QFile::ExeOther</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qfileinfo-qt3.html#Permission-enum">QFileInfo::ExeOwner</a></td><td><a href="qfile.html#Permission-enum">QFile::ExeOwner</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qfileinfo-qt3.html#Permission-enum">QFileInfo::ExeUser</a></td><td><a href="qfile.html#Permission-enum">QFile::ExeUser</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qfileinfo-qt3.html#Permission-enum">QFileInfo::ReadGroup</a></td><td><a href="qfile.html#Permission-enum">QFile::ReadGroup</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qfileinfo-qt3.html#Permission-enum">QFileInfo::ReadOther</a></td><td><a href="qfile.html#Permission-enum">QFile::ReadOther</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qfileinfo-qt3.html#Permission-enum">QFileInfo::ReadOwner</a></td><td><a href="qfile.html#Permission-enum">QFile::ReadOwner</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qfileinfo-qt3.html#Permission-enum">QFileInfo::ReadUser</a></td><td><a href="qfile.html#Permission-enum">QFile::ReadUser</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qfileinfo-qt3.html#Permission-enum">QFileInfo::WriteGroup</a></td><td><a href="qfile.html#Permission-enum">QFile::WriteGroup</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qfileinfo-qt3.html#Permission-enum">QFileInfo::WriteOther</a></td><td><a href="qfile.html#Permission-enum">QFile::WriteOther</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qfileinfo-qt3.html#Permission-enum">QFileInfo::WriteOwner</a></td><td><a href="qfile.html#Permission-enum">QFile::WriteOwner</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qfileinfo-qt3.html#Permission-enum">QFileInfo::WriteUser</a></td><td><a href="qfile.html#Permission-enum">QFile::WriteUser</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qframe.html#Shape-enum">QFrame::GroupBoxPanel</a></td><td><a href="qframe.html#Shape-enum">QFrame::StyledPanel</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qframe.html#Shape-enum">QFrame::LineEditPanel</a></td><td><a href="qframe.html#Shape-enum">QFrame::StyledPanel</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qframe.html#Shape-enum">QFrame::MenuBarPanel</a></td><td><a href="qframe.html#Shape-enum">QFrame::StyledPanel</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qframe.html#Shape-enum">QFrame::PopupPanel</a></td><td><a href="qframe.html#Shape-enum">QFrame::StyledPanel</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qframe.html#Shape-enum">QFrame::TabWidgetPanel</a></td><td><a href="qframe.html#Shape-enum">QFrame::StyledPanel</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qframe.html#Shape-enum">QFrame::ToolBarPanel</a></td><td><a href="qframe.html#Shape-enum">QFrame::StyledPanel</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>QImage::ScaleFree</td><td><a href="qt.html#AspectRatioMode-enum">Qt::IgnoreAspectRatio</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>QImage::ScaleMax</td><td><a href="qt.html#AspectRatioMode-enum">Qt::KeepAspectRatioByExpanding</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>QImage::ScaleMin</td><td><a href="qt.html#AspectRatioMode-enum">Qt::KeepAspectRatio</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>Qt::Identical</td><td><a href="qkeysequence.html#SequenceMatch-enum">QKeySequence::ExactMatch</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>Qt::NoMatch</td><td><a href="qkeysequence.html#SequenceMatch-enum">QKeySequence::NoMatch</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>Qt::PartialMatch</td><td><a href="qkeysequence.html#SequenceMatch-enum">QKeySequence::PartialMatch</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qlayout.html#SizeConstraint-enum">QLayout::Auto</a></td><td><a href="qlayout.html#SizeConstraint-enum">QLayout::SetDefaultConstraint</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qlayout.html#SizeConstraint-enum">QLayout::Fixed</a></td><td><a href="qlayout.html#SizeConstraint-enum">QLayout::SetFixedSize</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qlayout.html#SizeConstraint-enum">QLayout::FreeResize</a></td><td><a href="qlayout.html#SizeConstraint-enum">QLayout::SetNoConstraint</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qlayout.html#SizeConstraint-enum">QLayout::Minimum</a></td><td><a href="qlayout.html#SizeConstraint-enum">QLayout::SetMinimumSize</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qmacstyle.html#WidgetSizePolicy-enum">QMacStyle::SizeNone</a></td><td><a href="qmacstyle.html#WidgetSizePolicy-enum">QMacStyle::SizeDefault</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qsettings.html#Scope-enum">QSettings::Global</a></td><td><a href="qsettings.html#Scope-enum">QSettings::SystemScope</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qsettings.html#Scope-enum">QSettings::User</a></td><td><a href="qsettings.html#Scope-enum">QSettings::UserScope</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>QSize::ScaleFree</td><td><a href="qt.html#AspectRatioMode-enum">Qt::IgnoreAspectRatio</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>QSize::ScaleMax</td><td><a href="qt.html#AspectRatioMode-enum">Qt::KeepAspectRatioByExpanding</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>QSize::ScaleMin</td><td><a href="qt.html#AspectRatioMode-enum">Qt::KeepAspectRatio</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>QSizePolicy::Horizontal</td><td><a href="qsizepolicy-qt3.html#ExpandData-enum">QSizePolicy::Horizontally</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>QSizePolicy::Vertical</td><td><a href="qsizepolicy-qt3.html#ExpandData-enum">QSizePolicy::Vertically</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qslider.html#TickPosition-enum">QSlider::Above</a></td><td><a href="qslider.html#TickPosition-enum">QSlider::TicksAbove</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qslider.html#TickPosition-enum">QSlider::Below</a></td><td><a href="qslider.html#TickPosition-enum">QSlider::TicksBelow</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qslider.html#TickPosition-enum">QSlider::Both</a></td><td><a href="qslider.html#TickPosition-enum">QSlider::TicksBothSides</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qslider.html#TickPosition-enum">QSlider::Left</a></td><td><a href="qslider.html#TickPosition-enum">QSlider::TicksLeft</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qslider.html#TickPosition-enum">QSlider::NoMarks</a></td><td><a href="qslider.html#TickPosition-enum">QSlider::NoTicks</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qslider.html#TickPosition-enum">QSlider::Right</a></td><td><a href="qslider.html#TickPosition-enum">QSlider::TicksRight</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>QSocket::Closing</td><td><a href="q3socket.html#State-enum">Q3Socket::Closing</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>QSocket::Connected</td><td><a href="q3socket.html#State-enum">Q3Socket::Connected</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>QSocket::Connecting</td><td><a href="q3socket.html#State-enum">Q3Socket::Connecting</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>QSocket::Connection</td><td><a href="q3socket.html#State-enum">Q3Socket::Connection</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>QSocket::ErrConnectionRefused</td><td><a href="q3socket.html#Error-enum">Q3Socket::ErrConnectionRefused</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>QSocket::ErrHostNotFound</td><td><a href="q3socket.html#Error-enum">Q3Socket::ErrHostNotFound</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>QSocket::ErrSocketRead</td><td><a href="q3socket.html#Error-enum">Q3Socket::ErrSocketRead</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>QSocket::HostLookup</td><td><a href="qabstractsocket.html#SocketState-enum">QAbstractSocket::HostLookupState</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>QSocket::Idle</td><td><a href="qabstractsocket.html#SocketState-enum">QAbstractSocket::UnconnectedState</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qsqlerror.html#ErrorType-enum">QSqlError::Connection</a></td><td><a href="qsqlerror.html#ErrorType-enum">QSqlError::ConnectionError</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qsqlerror.html#ErrorType-enum">QSqlError::None</a></td><td><a href="qsqlerror.html#ErrorType-enum">QSqlError::NoError</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qsqlerror.html#ErrorType-enum">QSqlError::Statement</a></td><td><a href="qsqlerror.html#ErrorType-enum">QSqlError::StatementError</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qsqlerror.html#ErrorType-enum">QSqlError::Transaction</a></td><td><a href="qsqlerror.html#ErrorType-enum">QSqlError::TransactionError</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qsqlerror.html#ErrorType-enum">QSqlError::Unknown</a></td><td><a href="qsqlerror.html#ErrorType-enum">QSqlError::UnknownError</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>QStyle::CC_ListView</td><td><a href="qstyle.html#ComplexControl-enum">QStyle::CC_Q3ListView</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qstyle.html#StyleHint-enum">QStyle::SH_UnderlineAccelerator</a></td><td><a href="qstyle.html#StyleHint-enum">QStyle::SH_UnderlineShortcut</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>QStyle::Style_Active</td><td><a href="qstyle.html#StateFlag-enum">QStyle::State_Active</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>QStyle::Style_AutoRaise</td><td><a href="qstyle.html#StateFlag-enum">QStyle::State_AutoRaise</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>QStyle::Style_Bottom</td><td><a href="qstyle.html#StateFlag-enum">QStyle::State_Bottom</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>QStyle::Style_Children</td><td><a href="qstyle.html#StateFlag-enum">QStyle::State_Children</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>QStyle::Style_Default</td><td><a href="qstyle.html#StateFlag-enum">QStyle::State_None</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>QStyle::Style_Down</td><td><a href="qstyle.html#StateFlag-enum">QStyle::State_DownArrow</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>QStyle::Style_Editing</td><td><a href="qstyle.html#StateFlag-enum">QStyle::State_Editing</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>QStyle::Style_Enabled</td><td><a href="qstyle.html#StateFlag-enum">QStyle::State_Enabled</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>QStyle::Style_FocusAtBorder</td><td><a href="qstyle.html#StateFlag-enum">QStyle::State_FocusAtBorder</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>QStyle::Style_HasFocus</td><td><a href="qstyle.html#StateFlag-enum">QStyle::State_HasFocus</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>QStyle::Style_Horizontal</td><td><a href="qstyle.html#StateFlag-enum">QStyle::State_Horizontal</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>QStyle::Style_Item</td><td><a href="qstyle.html#StateFlag-enum">QStyle::State_Item</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>QStyle::Style_MouseOver</td><td><a href="qstyle.html#StateFlag-enum">QStyle::State_MouseOver</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>QStyle::Style_NoChange</td><td><a href="qstyle.html#StateFlag-enum">QStyle::State_NoChange</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>QStyle::Style_None</td><td><a href="qstyle.html#StateFlag-enum">QStyle::State_None</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>QStyle::Style_Off</td><td><a href="qstyle.html#StateFlag-enum">QStyle::State_Off</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>QStyle::Style_On</td><td><a href="qstyle.html#StateFlag-enum">QStyle::State_On</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>QStyle::Style_Open</td><td><a href="qstyle.html#StateFlag-enum">QStyle::State_Open</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>QStyle::Style_Raised</td><td><a href="qstyle.html#StateFlag-enum">QStyle::State_Raised</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>QStyle::Style_Rectangle</td><td>QStyle::State_Rectangle</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>QStyle::Style_Selected</td><td><a href="qstyle.html#StateFlag-enum">QStyle::State_Selected</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>QStyle::Style_Sibling</td><td><a href="qstyle.html#StateFlag-enum">QStyle::State_Sibling</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>QStyle::Style_Sunken</td><td><a href="qstyle.html#StateFlag-enum">QStyle::State_Sunken</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>QStyle::Style_Top</td><td><a href="qstyle.html#StateFlag-enum">QStyle::State_Top</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>QStyle::Style_Up</td><td>QStyle::State_Up</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qtabbar.html#Shape-enum">QTabBar::RoundedAbove</a></td><td><a href="qtabbar.html#Shape-enum">QTabBar::RoundedNorth</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qtabbar.html#Shape-enum">QTabBar::RoundedBelow</a></td><td><a href="#qtabbar">QTabBar::</a> RoundedSouth</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qtabbar.html#Shape-enum">QTabBar::TriangularAbove</a></td><td><a href="#qtabbar">QTabBar::</a> TriangularNorth</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qtabbar.html#Shape-enum">QTabBar::TriangularBelow</a></td><td><a href="#qtabbar">QTabBar::</a> TriangularSouth</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qtextedit.html#CursorAction-enum">QTextEdit::MovePgDown</a></td><td><a href="qtextedit.html#CursorAction-enum">QTextEdit::MovePageDown</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qtextedit.html#CursorAction-enum">QTextEdit::MovePgUp</a></td><td><a href="qtextedit.html#CursorAction-enum">QTextEdit::MovePageUp</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qtoolbutton-qt3.html#TextPosition-enum">QToolButton::Right</a></td><td><a href="qtoolbutton-qt3.html#TextPosition-enum">QToolButton::BesideIcon</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qtoolbutton-qt3.html#TextPosition-enum">QToolButton::Under</a></td><td><a href="qtoolbutton-qt3.html#TextPosition-enum">QToolButton::BelowIcon</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qvalidator.html#State-enum">QValidator::Valid</a></td><td><a href="qvalidator.html#State-enum">QValidator::Intermediate</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qvariant.html#Type-enum">QVariant::IconSet</a></td><td>QCoreVariant::Icon</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>QWidget::ClickFocus</td><td><a href="qt.html#FocusPolicy-enum">Qt::ClickFocus</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>QWidget::NoFocus</td><td><a href="qt.html#FocusPolicy-enum">Qt::NoFocus</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>QWidget::StrongFocus</td><td><a href="qt.html#FocusPolicy-enum">Qt::StrongFocus</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>QWidget::TabFocus</td><td><a href="qt.html#FocusPolicy-enum">Qt::TabFocus</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>QWidget::WheelFocus</td><td><a href="qt.html#FocusPolicy-enum">Qt::WheelFocus</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#AlignmentFlag-enum">Qt::AlignAuto</a></td><td><a href="qt.html#AlignmentFlag-enum">Qt::AlignLeft</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt-qt3.html#ButtonState_enum-enum">Qt::AltButton</a></td><td><a href="qt.html#KeyboardModifier-enum">Qt::AltModifier</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#SortOrder-enum">Qt::Ascending</a></td><td><a href="qt.html#SortOrder-enum">Qt::AscendingOrder</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#Dock-enum">Qt::Bottom</a></td><td><a href="qt.html#Dock-enum">Qt::DockBottom</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#Corner-enum">Qt::BottomLeft</a></td><td><a href="qt.html#Corner-enum">Qt::BottomLeftCorner</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#Corner-enum">Qt::BottomRight</a></td><td><a href="qt.html#Corner-enum">Qt::BottomRightCorner</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#TextFlag-enum">Qt::BreakAnywhere</a></td><td><a href="qt.html#TextFlag-enum">Qt::TextWrapAnywhere</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt-qt3.html#ButtonState_enum-enum">Qt::ControlButton</a></td><td><a href="qt.html#KeyboardModifier-enum">Qt::ControlModifier</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#BrushStyle-enum">Qt::CustomPattern</a></td><td><a href="qt.html#BrushStyle-enum">Qt::TexturePattern</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#SortOrder-enum">Qt::Descending</a></td><td><a href="qt.html#SortOrder-enum">Qt::DescendingOrder</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#TextFlag-enum">Qt::DontClip</a></td><td><a href="qt.html#TextFlag-enum">Qt::TextDontClip</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#TextFlag-enum">Qt::DontPrint</a></td><td><a href="qt.html#TextFlag-enum">Qt::TextDontPrint</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#TextFlag-enum">Qt::ExpandTabs</a></td><td><a href="qt.html#TextFlag-enum">Qt::TextExpandTabs</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#TextFlag-enum">Qt::IncludeTrailingSpaces</a></td><td><a href="qt.html#TextFlag-enum">Qt::TextIncludeTrailingSpaces</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt-qt3.html#ButtonState_enum-enum">Qt::KeyButtonMask</a></td><td><a href="qt.html#KeyboardModifier-enum">Qt::KeyboardModifierMask</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#Key-enum">Qt::Key_BackSpace</a></td><td><a href="qt.html#Key-enum">Qt::Key_Backspace</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#Key-enum">Qt::Key_BackTab</a></td><td><a href="qt.html#Key-enum">Qt::Key_Backtab</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#Key-enum">Qt::Key_MediaPrev</a></td><td><a href="qt.html#Key-enum">Qt::Key_MediaPrevious</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#Key-enum">Qt::Key_Next</a></td><td><a href="qt.html#Key-enum">Qt::Key_PageDown</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#Key-enum">Qt::Key_Prior</a></td><td><a href="qt.html#Key-enum">Qt::Key_PageUp</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#Key-enum">Qt::Key_aacute</a></td><td><a href="qt.html#Key-enum">Qt::Key_Aacute</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#Key-enum">Qt::Key_acircumflex</a></td><td><a href="qt.html#Key-enum">Qt::Key_Acircumflex</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#Key-enum">Qt::Key_adiaeresis</a></td><td><a href="qt.html#Key-enum">Qt::Key_Adiaeresis</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#Key-enum">Qt::Key_ae</a></td><td><a href="qt.html#Key-enum">Qt::Key_AE</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#Key-enum">Qt::Key_agrave</a></td><td><a href="qt.html#Key-enum">Qt::Key_Agrave</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#Key-enum">Qt::Key_aring</a></td><td><a href="qt.html#Key-enum">Qt::Key_Aring</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#Key-enum">Qt::Key_atilde</a></td><td><a href="qt.html#Key-enum">Qt::Key_Atilde</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#Key-enum">Qt::Key_ccedilla</a></td><td><a href="qt.html#Key-enum">Qt::Key_Ccedilla</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#Key-enum">Qt::Key_eacute</a></td><td><a href="qt.html#Key-enum">Qt::Key_Eacute</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#Key-enum">Qt::Key_ecircumflex</a></td><td><a href="qt.html#Key-enum">Qt::Key_Ecircumflex</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#Key-enum">Qt::Key_ediaeresis</a></td><td><a href="qt.html#Key-enum">Qt::Key_Ediaeresis</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#Key-enum">Qt::Key_egrave</a></td><td><a href="qt.html#Key-enum">Qt::Key_Egrave</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#Key-enum">Qt::Key_eth</a></td><td><a href="qt.html#Key-enum">Qt::Key_ETH</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#Key-enum">Qt::Key_iacute</a></td><td><a href="qt.html#Key-enum">Qt::Key_Iacute</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#Key-enum">Qt::Key_icircumflex</a></td><td><a href="qt.html#Key-enum">Qt::Key_Icircumflex</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#Key-enum">Qt::Key_idiaeresis</a></td><td><a href="qt.html#Key-enum">Qt::Key_Idiaeresis</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#Key-enum">Qt::Key_igrave</a></td><td><a href="qt.html#Key-enum">Qt::Key_Igrave</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#Key-enum">Qt::Key_ntilde</a></td><td><a href="qt.html#Key-enum">Qt::Key_Ntilde</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#Key-enum">Qt::Key_oacute</a></td><td><a href="qt.html#Key-enum">Qt::Key_Oacute</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#Key-enum">Qt::Key_ocircumflex</a></td><td><a href="qt.html#Key-enum">Qt::Key_Ocircumflex</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#Key-enum">Qt::Key_odiaeresis</a></td><td><a href="qt.html#Key-enum">Qt::Key_Odiaeresis</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#Key-enum">Qt::Key_ograve</a></td><td><a href="qt.html#Key-enum">Qt::Key_Ograve</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#Key-enum">Qt::Key_oslash</a></td><td><a href="qt.html#Key-enum">Qt::Key_Ooblique</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#Key-enum">Qt::Key_otilde</a></td><td><a href="qt.html#Key-enum">Qt::Key_Otilde</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#Key-enum">Qt::Key_thorn</a></td><td><a href="qt.html#Key-enum">Qt::Key_THORN</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#Key-enum">Qt::Key_uacute</a></td><td><a href="qt.html#Key-enum">Qt::Key_Uacute</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#Key-enum">Qt::Key_ucircumflex</a></td><td><a href="qt.html#Key-enum">Qt::Key_Ucircumflex</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#Key-enum">Qt::Key_udiaeresis</a></td><td><a href="qt.html#Key-enum">Qt::Key_Udiaeresis</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#Key-enum">Qt::Key_ugrave</a></td><td><a href="qt.html#Key-enum">Qt::Key_Ugrave</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#Key-enum">Qt::Key_yacute</a></td><td><a href="qt.html#Key-enum">Qt::Key_Yacute</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt-qt3.html#ButtonState_enum-enum">Qt::Keypad</a></td><td><a href="qt.html#KeyboardModifier-enum">Qt::KeypadModifier</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#Dock-enum">Qt::Left</a></td><td><a href="qt.html#Dock-enum">Qt::DockLeft</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt-qt3.html#MacintoshVersion-enum">Qt::MV_10_DOT_0</a></td><td><a href="qsysinfo.html#MacVersion-enum">QSysInfo::MV_10_0</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt-qt3.html#MacintoshVersion-enum">Qt::MV_10_DOT_1</a></td><td><a href="qsysinfo.html#MacVersion-enum">QSysInfo::MV_10_1</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt-qt3.html#MacintoshVersion-enum">Qt::MV_10_DOT_2</a></td><td><a href="qsysinfo.html#MacVersion-enum">QSysInfo::MV_10_2</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt-qt3.html#MacintoshVersion-enum">Qt::MV_10_DOT_3</a></td><td><a href="qsysinfo.html#MacVersion-enum">QSysInfo::MV_10_3</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt-qt3.html#MacintoshVersion-enum">Qt::MV_10_DOT_4</a></td><td><a href="qsysinfo.html#MacVersion-enum">QSysInfo::MV_10_4</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt-qt3.html#MacintoshVersion-enum">Qt::MV_9</a></td><td><a href="qsysinfo.html#MacVersion-enum">QSysInfo::MV_9</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt-qt3.html#MacintoshVersion-enum">Qt::MV_CHEETAH</a></td><td><a href="qsysinfo.html#MacVersion-enum">QSysInfo::MV_10_0</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt-qt3.html#MacintoshVersion-enum">Qt::MV_JAGUAR</a></td><td><a href="qsysinfo.html#MacVersion-enum">QSysInfo::MV_10_2</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt-qt3.html#MacintoshVersion-enum">Qt::MV_PANTHER</a></td><td><a href="qsysinfo.html#MacVersion-enum">QSysInfo::MV_10_3</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt-qt3.html#MacintoshVersion-enum">Qt::MV_PUMA</a></td><td><a href="qsysinfo.html#MacVersion-enum">QSysInfo::MV_10_1</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt-qt3.html#MacintoshVersion-enum">Qt::MV_TIGER</a></td><td><a href="qsysinfo.html#MacVersion-enum">QSysInfo::MV_10_4</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt-qt3.html#MacintoshVersion-enum">Qt::MV_Unknown</a></td><td><a href="qsysinfo.html#MacVersion-enum">QSysInfo::MV_Unknown</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt-qt3.html#ButtonState_enum-enum">Qt::MetaButton</a></td><td><a href="qt.html#KeyboardModifier-enum">Qt::MetaModifier</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#Dock-enum">Qt::Minimized</a></td><td><a href="qt.html#Dock-enum">Qt::DockMinimized</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#TextFlag-enum">Qt::NoAccel</a></td><td><a href="qt.html#TextFlag-enum">Qt::TextHideMnemonic</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>Qt::Overline</td><td>Qt::TextOverline</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#Dock-enum">Qt::Right</a></td><td><a href="qt.html#Dock-enum">Qt::DockRight</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt-qt3.html#ButtonState_enum-enum">Qt::ShiftButton</a></td><td><a href="qt.html#KeyboardModifier-enum">Qt::ShiftModifier</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#TextFlag-enum">Qt::ShowPrefix</a></td><td><a href="qt.html#TextFlag-enum">Qt::TextShowMnemonic</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#TextFlag-enum">Qt::SingleLine</a></td><td><a href="qt.html#TextFlag-enum">Qt::TextSingleLine</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>Qt::StrikeOut</td><td>Qt::TextStrikeOut</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#Dock-enum">Qt::Top</a></td><td><a href="qt.html#Dock-enum">Qt::DockTop</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#Corner-enum">Qt::TopLeft</a></td><td><a href="qt.html#Corner-enum">Qt::TopLeftCorner</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#Corner-enum">Qt::TopRight</a></td><td><a href="qt.html#Corner-enum">Qt::TopRightCorner</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#Dock-enum">Qt::TornOff</a></td><td><a href="qt.html#Dock-enum">Qt::DockTornOff</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>Qt::Underline</td><td>Qt::TextUnderline</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#Dock-enum">Qt::Unmanaged</a></td><td><a href="qt.html#Dock-enum">Qt::DockUnmanaged</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#WindowType-enum">Qt::WNorthWestGravity</a></td><td><a href="qt.html#WindowType-enum">Qt::WStaticContents</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#WindowType-enum">Qt::WRepaintNoErase</a></td><td><a href="qt.html#WindowType-enum">Qt::WNoAutoErase</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#WindowType-enum">Qt::WStyle_Dialog</a></td><td><a href="qt.html#WindowType-enum">Qt::WType_Dialog</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#WindowType-enum">Qt::WStyle_NoBorderEx</a></td><td><a href="qt.html#WindowType-enum">Qt::WStyle_NoBorder</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#WindowType-enum">Qt::WType_Modal</a></td><td>(<a href="qt.html#WindowType-enum">Qt::WType_Dialog</a> | <a href="qt.html#WindowType-enum">Qt::WShowModal</a>)</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt-qt3.html#WindowsVersion-enum">Qt::WV_2000</a></td><td><a href="qsysinfo.html#WinVersion-enum">QSysInfo::WV_2000</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt-qt3.html#WindowsVersion-enum">Qt::WV_2003</a></td><td><a href="qsysinfo.html#WinVersion-enum">QSysInfo::WV_2003</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt-qt3.html#WindowsVersion-enum">Qt::WV_32s</a></td><td><a href="qsysinfo.html#WinVersion-enum">QSysInfo::WV_32s</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt-qt3.html#WindowsVersion-enum">Qt::WV_95</a></td><td><a href="qsysinfo.html#WinVersion-enum">QSysInfo::WV_95</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt-qt3.html#WindowsVersion-enum">Qt::WV_98</a></td><td><a href="qsysinfo.html#WinVersion-enum">QSysInfo::WV_98</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt-qt3.html#WindowsVersion-enum">Qt::WV_CE</a></td><td><a href="qsysinfo.html#WinVersion-enum">QSysInfo::WV_CE</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt-qt3.html#WindowsVersion-enum">Qt::WV_CENET</a></td><td><a href="qsysinfo.html#WinVersion-enum">QSysInfo::WV_CENET</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt-qt3.html#WindowsVersion-enum">Qt::WV_CE_based</a></td><td><a href="qsysinfo.html#WinVersion-enum">QSysInfo::WV_CE_based</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt-qt3.html#WindowsVersion-enum">Qt::WV_DOS_based</a></td><td><a href="qsysinfo.html#WinVersion-enum">QSysInfo::WV_DOS_based</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt-qt3.html#WindowsVersion-enum">Qt::WV_Me</a></td><td><a href="qsysinfo.html#WinVersion-enum">QSysInfo::WV_Me</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt-qt3.html#WindowsVersion-enum">Qt::WV_NT</a></td><td><a href="qsysinfo.html#WinVersion-enum">QSysInfo::WV_NT</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt-qt3.html#WindowsVersion-enum">Qt::WV_NT_based</a></td><td><a href="qsysinfo.html#WinVersion-enum">QSysInfo::WV_NT_based</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt-qt3.html#WindowsVersion-enum">Qt::WV_XP</a></td><td><a href="qsysinfo.html#WinVersion-enum">QSysInfo::WV_XP</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#TextFlag-enum">Qt::WordBreak</a></td><td><a href="qt.html#TextFlag-enum">Qt::TextWordWrap</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>Qt::IbeamCursor</td><td><a href="qt.html#CursorShape-enum">Qt::IBeamCursor</a></td></tr>
 </table></p>
 <p>In addition, the following <a href="qt.html#WindowType-enum">window flags</a> have been either replaced with <a href="qt.html#WidgetAttribute-enum">widget attributes</a> or have been deprecated:</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
@@ -499,9 +504,16 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#WindowType-enum">Qt::WPaintClever</a></td><td>Unnecessary in Qt 4.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#WindowType-enum">Qt::WMacNoSheet</a></td><td>Unnecessary in Qt 4.</td></tr>
 </table></p>
+<p>In Qt 4.1, the widget flags used to determine window modality have been replaced by a single enum that can be used to specify the modal behavior of top-level widgets:</p>
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
+<tr valign="top" bgcolor="#a2c511"><th>Qt 3 type</th><th>Qt 4 equivalent</th></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#WindowType-enum">Qt::WShowModal</a></td><td>Use QWidget::setWindowModality(<a href="qt.html#WindowModality-enum">Qt::ApplicationModal</a>) instead.</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#WindowType-enum">Qt::WGroupLeader</a></td><td>Use QWidget::setWindowModality(Qt::WindowModel) for each child dialog of the group leader, but do not change the modality of the group leader itself.</td></tr>
+</table></p>
 <a name="properties"></a><a name="properties"></a>
 <h2>Properties</h2>
 <p>Some properties have been renamed in Qt 4, to make Qt's API more consistent and more intuitive. For example, <a href="qwidget.html">QWidget</a>'s <tt>caption</tt> property has been renamed <tt>windowTitle</tt> to make it clear that it refers to the title shown in the window's title bar.</p>
+<p>In addition, the property system has been extended to allow properties to be redefined in subclasses with the <a href="qobject.html#Q_PROPERTY">Q_PROPERTY</a>() macro, removing the need for a Q_OVERRIDE macro.</p>
 <p>The table below lists the Qt properties that have been renamed in Qt 4. Occurrences of these in <i>Qt Designer</i> <tt>.ui</tt> files are automatically converted to the new name by <tt>uic</tt>.</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Qt 3 name</th><th>Qt 4 name</th></tr>
@@ -1200,6 +1212,9 @@ body { background: #ffffff; color: black; }</style>
 <a name="qfocusdata"></a>
 <h2>QFocusData</h2>
 <p>The <a href="#qfocusdata">QFocusData</a> class is not available in Qt 4. Some of its functionality is available via the <a href="qwidget.html#nextInFocusChain">QWidget::nextInFocusChain</a>() and <a href="qwidget.html#focusNextPrevChild">QWidget::focusNextPrevChild</a>() functions.</p>
+<a name="qfont"></a>
+<h2>QFont</h2>
+<p><tt>QFont::Script</tt> has been moved to <a href="qfontdatabase.html#WritingSystem-enum">QFontDatabase::WritingSystem</a>.</p>
 <a name="qframe"></a>
 <h2>QFrame</h2>
 <p>The <a href="qframe.html">QFrame</a> class has been made more lightweight in Qt 4, by reducing the number of properties and virtual functions. The reduction in the number of virtual functions is significant because <a href="qframe.html">QFrame</a> is the base class of many Qt classes.</p>
@@ -1305,7 +1320,9 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#f0f0f0"><td>QImageIO::format()</td><td><a href="qimagereader.html#format">QImageReader::format</a>() and <a href="qimagewriter.html#format">QImageWriter::format</a>()</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>QImageIO::gamma()</td><td><a href="qimagewriter.html#gamma">QImageWriter::gamma</a>()</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>QImageIO::image()</td><td>Return value of <a href="qimagereader.html#read">QImageReader::read</a>()</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>QImageIO::ioDevice()</td><td><a href="qimagereader.html#device">QImageReader::device</a>() and <a href="qimagewriter.html#device">QImageWriter::device</a>()</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>QImageIO::inputFormats()</td><td><a href="qimagereader.html#supportedImageFormats">QImageReader::supportedImageFormats</a>()</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>QImageIO::ioDevice()</td><td><a href="qimagereader.html#device">QImageReader::device</a>() and <a href="qimagewriter.html#device">QImageWriter::device</a>()</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>QImageIO::outputFormats()</td><td><a href="qimagewriter.html#supportedImageFormats">QImageWriter::supportedImageFormats</a>()</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>QImageIO::parameters()</td><td>N/A</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>QImageIO::quality()</td><td><a href="qimagewriter.html#quality">QImageWriter::quality</a>()</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>QImageIO::read()</td><td><a href="qimagereader.html#read">QImageReader::read</a>()</td></tr>
@@ -1363,7 +1380,7 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#e0e0e0"><td>IO_Sequential</td><td>Use <a href="qiodevice.html#isSequential">QIODevice::isSequential</a>() instead.</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>IO_Combined</td><td>N/A</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>IO_TypeMask</td><td>N/A</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>IO_Raw</td><td>N/A</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>IO_Raw</td><td><a href="qiodevice.html#OpenModeFlag-enum">QIODevice::Unbuffered</a></td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>IO_Async</td><td>N/A</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>IO_ReadOnly</td><td><a href="qiodevice.html#OpenModeFlag-enum">QIODevice::ReadOnly</a></td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>IO_WriteOnly</td><td><a href="qiodevice.html#OpenModeFlag-enum">QIODevice::WriteOnly</a></td></tr>
@@ -1398,7 +1415,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="#virtual-functions">Virtual Functions</a> for a list of <a href="qlabel.html">QLabel</a> virtual member functions in Qt 3 that are no longer virtual in Qt 4.</p>
 <a name="qlayout"></a>
 <h2>QLayout</h2>
-<p><a href="qlayout.html">QLayout</a> setSupportsMargin()</p>
+<p>In Qt 4, margins are always handled by layouts; there is no QLayout::setSupportsMargin() function anymore.</p>
 <p>The deleteAllItems() function is now only available if <tt>QT3_SUPPORT</tt> is defined. If you maintain a <a href="qlist.html">QList</a> of layout items, you can use <a href="qtalgorithms.html#qDeleteAll">qDeleteAll</a>() to remove all the items in one go.</p>
 <p>In Qt 3, it was possible to change the resizing behavior for layouts in top-level widgets by adjusting the layout's <tt>resizeMode</tt> property. In Qt 4, this property has been replaced by the <a href="qlayout.html#sizeConstraint-prop">QLayout::sizeConstraint</a> property which provides more control over how the layout behaves when resized.</p>
 <p>See also the <a href="#qlayoutiterator-section">section on QLayoutIterator</a> and the <a href="#qglayoutiterator-section">section on QGLayoutIterator</a>.</p>
@@ -1544,6 +1561,15 @@ body { background: #ffffff; color: black; }</style>
 <p>The <a href="qpainter.html">QPainter</a> class has undergone some changes in Qt 4 because of the way rectangles are drawn. In Qt 4, the result of drawing a <a href="qrect.html">QRect</a> with a pen width of 1 pixel is 1 pixel wider and 1 pixel taller than in Qt 3.</p>
 <p>For compatibility, we provide a <a href="q3painter.html">Q3Painter</a> class in <a href="qt3support.html">Qt3Support</a> that provides the old semantics. See the <a href="q3painter.html">Q3Painter</a> documentation for details and for the reasons why we had to make this change.</p>
 <p>The <a href="http://doc.trolltech.com/3.3/qpainter.html#CoordinateMode-enum">QPainter::CoordinateMode</a> enum has been removed in Qt 4. All clipping operations are now defined using logical coordinates and are subject to transformation operations.</p>
+<a name="qpixmap"></a>
+<h2>QPixmap</h2>
+<p>The mask() function has been changed to return a reference to a <a href="qbitmap.html">QBitmap</a> rather than a pointer. As a result, it is no longer possible simply to test for a null pointer when determining whether a pixmap has a mask. Instead, you need to explicitly test whether the mask bitmap is null or not.</p>
+<p>For example, if you have code like</p>
+<pre><font color="#404040">        if (pixmap.mask())
+            widget-&gt;setMask(*p.mask());</font></pre>
+<p>you can rewrite it as</p>
+<pre>        if (pixmap.mask().isNull() == false)
+            widget-&gt;setMask(pixmap.mask());</pre>
 <a name="qpointarray"></a>
 <h2>QPointArray</h2>
 <p>The <tt>QPointArray</tt> class has been renamed <a href="qpolygon.html">QPolygon</a> in Qt 4 and has undergone significant changes. In Qt 3, <tt>QPointArray</tt> inherited from QMemArray&lt;<a href="qpoint.html">QPoint</a>&gt;. In Qt 4, <a href="qpolygon.html">QPolygon</a> inherits from <a href="qvector.html">QVector</a>&lt;<a href="qpoint.html">QPoint</a>&gt;. Everything mentioned in the <a href="#qmemarray-section">section on QMemArray&lt;T&gt;</a> apply for <a href="#qpointarray">QPointArray</a> as well.</p>
@@ -1905,6 +1931,7 @@ body { background: #ffffff; color: black; }</style>
 <a name="qscrollview"></a>
 <h2>QScrollView</h2>
 <p>The <tt>QScrollView</tt> class has been renamed <a href="q3scrollview.html">Q3ScrollView</a> and moved to the <a href="qt3support.html">Qt3Support</a> library. It has been replaced by the <a href="qabstractscrollarea.html">QAbstractScrollArea</a> and <a href="qscrollarea.html">QScrollArea</a> classes.</p>
+<p>Note that Qt 4 in general uses the <a href="qscrollarea.html#widget">QScrollArea::widget</a>() function where Qt 3 used QScrollView::viewport(). The rationale for this is that it is no longer possible to draw directly on a scroll area. The <a href="qscrollarea.html#widget">QScrollArea::widget</a>() function returns the widget set on the scroll area.</p>
 <p><tt>QScrollView</tt> was designed to work around the 16-bit limitation on widget coordinates found on most window systems. In Qt 4, this is done transparently for <i>all</i> widgets, so there is no longer a need for such functionality in <tt>QScrollView</tt>. For that reason, the new <a href="qabstractscrollarea.html">QAbstractScrollArea</a> and <a href="qscrollarea.html">QScrollArea</a> classes are much more lightweight, and concentrate on handling scroll bars.</p>
 <a name="qserversocket"></a>
 <h2>QServerSocket</h2>
@@ -1941,8 +1968,8 @@ body { background: #ffffff; color: black; }</style>
 <a name="qsocket"></a>
 <h2>QSocket</h2>
 <p>The <tt>QSocket</tt> class has been renamed <a href="q3socket.html">Q3Socket</a> and moved to the <a href="qt3support.html">Qt3Support</a> library. In Qt 4, it has been replaced by the <a href="qtcpsocket.html">QTcpSocket</a> class, which inherits most of its functionality from <a href="qabstractsocket.html">QAbstractSocket</a>.</p>
-<a name="qsocket"></a>
-<h2>QSocket</h2>
+<a name="qsocketdevice"></a>
+<h2>QSocketDevice</h2>
 <p>The <tt>QSocketDevice</tt> class has been renamed <a href="q3socketdevice.html">Q3SocketDevice</a> and moved to the <a href="qt3support.html">Qt3Support</a> library. In Qt 4, there is no direct equivalent to <a href="q3socketdevice.html">Q3SocketDevice</a>:</p>
 <ul>
 <li>If you use <a href="q3socketdevice.html">Q3SocketDevice</a> in a thread to perform blocking network I/O (a technique encouraged by the <i>Qt Quarterly</i> article <a href="http://doc.trolltech.com/qq/qq09-networkthread.html">Unblocking Networking</a>), you can now use <a href="qtcpsocket.html">QTcpSocket</a>, <a href="qftp.html">QFtp</a>, or <a href="qhttp.html">QHttp</a> instead, which can now be used from non-GUI threads.</li>
@@ -2058,7 +2085,7 @@ body { background: #ffffff; color: black; }</style>
 </li>
 <li>The <tt>QT_NO_ASCII_CAST</tt> and <tt>QT_NO_CAST_ASCII</tt> macros have been renamed <tt>QT_NO_CAST_TO_ASCII</tt> and <tt>QT_NO_CAST_FROM_ASCII</tt>, respectively.</li>
 <li>The <a href="qstring.html#data">QString::data</a>() used to return the same as <a href="qstring-qt3.html#ascii">QString::ascii</a>(). It now returns a pointer to the Unicode data stored in the <a href="qstring.html">QString</a> object. Call <a href="qstring-qt3.html#ascii">QString::ascii</a>() if you want the old behavior.</li>
-<li>QString::simpleText() has been renamed QString::isSimpleText().</li>
+<li><a href="qstring.html#arg">QString::arg</a>() now converts two-digit place markers, allowing up to 99 place markers to be used in any given string.</li>
 </ol>
 <a name="qstringlist"></a>
 <h2>QStringList</h2>
@@ -2139,8 +2166,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See <a href="richtext.html">Rich Text Processing</a> for an overview of the Qt 4 rich text classes.</p>
 <a name="qsyntaxhighlighter"></a>
 <h2>QSyntaxHighlighter</h2>
-<p>The <a href="qsyntaxhighlighter.html">QSyntaxHighlighter</a> class has been renamed <a href="q3syntaxhighlighter.html">Q3SyntaxHighlighter</a> and moved to the <a href="qt3support.html">Qt3Support</a> library.</p>
-<p>See <a href="richtext.html">Rich Text Processing</a> for an overview of the Qt 4 rich text classes.</p>
+<p>The <tt>QSyntaxHighlighter</tt> class from Qt 3 has been renamed <a href="q3syntaxhighlighter.html">Q3SyntaxHighlighter</a> and moved to the <a href="qt3support.html">Qt3Support</a> library. Since Qt 4.1, it has been replaced by a new <a href="qsyntaxhighlighter.html">QSyntaxHighlighter</a> class based on Qt 4's new rich text engine.</p>
 <a name="qtabbar"></a>
 <h2>QTabBar</h2>
 <p>See <a href="#properties">Properties</a> for a list of <a href="qtabbar.html">QTabBar</a> properties in Qt 3 that have changed in Qt 4.</p>
@@ -2186,6 +2212,9 @@ body { background: #ffffff; color: black; }</style>
 <a name="qtoolbutton"></a>
 <h2>QToolButton</h2>
 <p>See <a href="#properties">Properties</a> for a list of <a href="qtoolbar.html">QToolBar</a> properties in Qt 3 that have changed in Qt 4.</p>
+<a name="qtooltip"></a>
+<h2>QToolTip</h2>
+<p>The QToolTip::setGloballyEnable() function does no longer exist.</p>
 <a name="quridrag"></a>
 <h2>QUriDrag</h2>
 <p>The <tt>QUriDrag</tt> class has been renamed <a href="q3uridrag.html">Q3UriDrag</a> and moved to the <a href="qt3support.html">Qt3Support</a> library. In Qt 4, use <a href="qmimedata.html">QMimeData</a> instead and call QMimeData::setUrl() to set the URL.</p>
@@ -2245,6 +2274,7 @@ body { background: #ffffff; color: black; }</style>
 <li>The <tt>QVariant::IconSet</tt> enum value has been renamed <a href="qvariant.html#Type-enum">QVariant::Icon</a>.</li>
 <li>The <tt>QVariant::CString</tt> enum value is now a synonym for <a href="qvariant.html#Type-enum">QVariant::ByteArray</a>.</li>
 </ol>
+<p>Also,</p>
 <a name="qvbox"></a>
 <h2>QVBox</h2>
 <p>The <tt>QVBox</tt> class is now only available as <a href="q3vbox.html">Q3VBox</a> in Qt 4. You can achieve the same result as <tt>QVBox</tt> by creating a <a href="qwidget.html">QWidget</a> with a vertical layout:</p>
@@ -2267,7 +2297,7 @@ body { background: #ffffff; color: black; }</style>
 <p>The <a href="qwhatsthis.html">QWhatsThis</a> class has been redesigned in Qt 4. The old <tt>QWhatsThis</tt> class is available as <a href="q3whatsthis.html">Q3WhatsThis</a> in <a href="qt3support.html">Qt3Support</a>.</p>
 <a name="qwidget"></a>
 <h2>QWidget</h2>
-<p>Widget background painting has been greatly improved, supporting flicker-free updates and making it possible to have semitransparent widgets. This renders the following background handling functions obsolete:</p>
+<p>Widget background painting has been greatly improved, supporting flicker-free updates and making it possible to have semi-transparent widgets. This renders the following background handling functions obsolete:</p>
 <ul>
 <li>QWidget::repaint(bool noErase) - the <tt>noErase</tt> boolean parameter is gone</li>
 <li>QWidget::setBackgroundMode(BackgroundMode m)</li>
@@ -3078,6 +3108,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>
