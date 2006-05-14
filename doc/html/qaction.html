@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-mac-opensource-src-4.1.2/src/gui/kernel/qaction.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-mac-opensource-src-4.1.3/src/gui/kernel/qaction.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-mac-opensource-src-4.1.3/src/gui/kernel/qaction.cpp -->
 <head>
     <title>Qt 4.1: QAction Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -206,7 +207,10 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <h3 class="fn"><a name="iconText-prop"></a>iconText : <a href="qstring.html">QString</a></h3>
 <p>This property holds the action's descriptive icon text.</p>
-<p>If QMainWindow::usesTextLabel is true, the text appears as a label in the relevant tool button. It also serves as the default text in menus and tooltips if these have not been specifically defined with <a href="qaction.html#text-prop">setText</a>() or <a href="qaction.html#toolTip-prop">setToolTip</a>(). If the icon text is not explicitly set in the by using setIconText(), the action's normal text will be used as icon text. There is no default icon text.</p>
+<p>If <a href="qtoolbar.html#toolButtonStyle-prop">QToolBar::toolButtonStyle</a> is set to a value that permits text to be displayed, the text defined held in this property appears as a label in the relevant tool button.</p>
+<p>It also serves as the default text in menus and tooltips if the action has not been defined with <a href="qaction.html#text-prop">setText</a>() or <a href="qaction.html#toolTip-prop">setToolTip</a>(), and will also be used in toolbar buttons if no icon has been defined using <a href="qaction.html#icon-prop">setIcon</a>().</p>
+<p>If the icon text is not explicitly set, the action's normal text will be used for the icon text.</p>
+<p>There is no default icon text.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>QString iconText () const</b></li>
@@ -346,6 +350,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

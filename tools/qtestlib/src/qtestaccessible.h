@@ -40,6 +40,8 @@
 #include <QtGui/qaccessible.h>
 #include <QtGui/qapplication.h>
 
+QT_BEGIN_HEADER
+
 class QObject;
 
 struct QTestAccessibilityEvent
@@ -133,5 +135,7 @@ private:
 };
 
 #endif
+
+QT_END_HEADER
 
 #endif

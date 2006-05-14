@@ -135,8 +135,12 @@ QProcessManager::QProcessManager()
     // extremely unlikely event that the pipe fills up, we do not under any
     // circumstances want to block.
     ::pipe(qt_qprocess_deadChild_pipe);
+    ::fcntl(qt_qprocess_deadChild_pipe[0], F_SETFD, FD_CLOEXEC);
+    ::fcntl(qt_qprocess_deadChild_pipe[1], F_SETFD, FD_CLOEXEC);
     ::fcntl(qt_qprocess_deadChild_pipe[0], F_SETFL,
 	    ::fcntl(qt_qprocess_deadChild_pipe[0], F_GETFL) | O_NONBLOCK);
+    ::fcntl(qt_qprocess_deadChild_pipe[1], F_SETFL,
+	    ::fcntl(qt_qprocess_deadChild_pipe[1], F_GETFL) | O_NONBLOCK);
 
     // set up the SIGCHLD handler, which writes a single byte to the dead
     // child pipe every time a child dies.
@@ -287,12 +291,12 @@ static void qt_create_pipe(int *pipe)
 #ifdef Q_OS_IRIX
     if (::socketpair(AF_UNIX, SOCK_STREAM, 0, pipe) == -1) {
         qWarning("QProcessPrivate::createPipe(%p) failed: %s",
-                 pipe, strerror(errno));
+                 pipe, qPrintable(qt_error_string(errno)));
     }
 #else
     if (::pipe(pipe) != 0) {
         qWarning("QProcessPrivate::createPipe(%p) failed: %s",
-                 pipe, strerror(errno));
+                 pipe, qPrintable(qt_error_string(errno)));
     }
 #endif
 }
@@ -325,15 +329,17 @@ void QProcessPrivate::startProcess()
         startupSocketNotifier = new QSocketNotifier(childStartedPipe[0],
                                                     QSocketNotifier::Read, q);
         QObject::connect(startupSocketNotifier, SIGNAL(activated(int)),
-                         q, SLOT(startupNotification()));
+                         q, SLOT(_q_startupNotification()));
     }
 
     qt_create_pipe(deathPipe);
+    ::fcntl(deathPipe[0], F_SETFD, FD_CLOEXEC);
+    ::fcntl(deathPipe[1], F_SETFD, FD_CLOEXEC);
     if (QAbstractEventDispatcher::instance(q->thread())) {
         deathNotifier = new QSocketNotifier(deathPipe[0],
                                             QSocketNotifier::Read, q);
         QObject::connect(deathNotifier, SIGNAL(activated(int)),
-                         q, SLOT(processDied()));
+                         q, SLOT(_q_processDied()));
     }
 
     qt_create_pipe(writePipe);
@@ -341,7 +347,7 @@ void QProcessPrivate::startProcess()
         writeSocketNotifier = new QSocketNotifier(writePipe[1],
                                                   QSocketNotifier::Write, q);
         QObject::connect(writeSocketNotifier, SIGNAL(activated(int)),
-                         q, SLOT(canWrite()));
+                         q, SLOT(_q_canWrite()));
         writeSocketNotifier->setEnabled(false);
     }
 
@@ -353,13 +359,13 @@ void QProcessPrivate::startProcess()
                                                          QSocketNotifier::Read,
                                                          q);
         QObject::connect(standardReadSocketNotifier, SIGNAL(activated(int)),
-                         q, SLOT(canReadStandardOutput()));
+                         q, SLOT(_q_canReadStandardOutput()));
 
         errorReadSocketNotifier = new QSocketNotifier(errorReadPipe[0],
                                                       QSocketNotifier::Read,
                                                       q);
         QObject::connect(errorReadSocketNotifier, SIGNAL(activated(int)),
-                         q, SLOT(canReadStandardError()));
+                         q, SLOT(_q_canReadStandardError()));
     }
 
     // Start the process (platform dependent)
@@ -369,6 +375,18 @@ void QProcessPrivate::startProcess()
     QByteArray encodedProg = QFile::encodeName(program);
     processManager()->lock();
     pid_t childPid = fork();
+    if (childPid < 0) {
+        // Cleanup, report error and return
+        processManager()->unlock();
+        processState = QProcess::NotRunning;
+        emit q->stateChanged(processState);
+        processError = QProcess::FailedToStart;
+        q->setErrorString(QT_TRANSLATE_NOOP(QProcess, "Resource error (fork failure)"));
+        emit q->error(processError);
+        cleanup();
+        return;
+    }
+
     if (childPid == 0) {
         execChild(encodedProg);
         ::_exit(-1);
@@ -437,11 +455,14 @@ void QProcessPrivate::execChild(const QByteArray &programName)
 
     // copy the stdin socket
     ::dup2(writePipe[0], fileno(stdin));
+    ::close(writePipe[0]);
 
     // copy the stdout and stderr if asked to
     if (processChannelMode != QProcess::ForwardedChannels) {
         ::dup2(standardReadPipe[1], fileno(stdout));
         ::dup2(errorReadPipe[1], fileno(stderr));
+        ::close(standardReadPipe[1]);
+        ::close(errorReadPipe[1]);
 
         // merge stdout and stderr if asked to
         if (processChannelMode == QProcess::MergedChannels)
@@ -675,7 +696,7 @@ bool QProcessPrivate::waitForStarted(int msecs)
         return false;
     }
 
-    bool startedEmitted = startupNotification();
+    bool startedEmitted = _q_startupNotification();
 #if defined (QPROCESS_DEBUG)
     qDebug("QProcessPrivate::waitForStarted() == %s", startedEmitted ? "true" : "false");
 #endif
@@ -726,18 +747,18 @@ bool QProcessPrivate::waitForReadyRead(int msecs)
 	}
 
 	if (childStartedPipe[0] != -1 && FD_ISSET(childStartedPipe[0], &fdread)) {
-	    if (!startupNotification())
-		return false;
+            if (!_q_startupNotification())
+                return false;
 	}
 
         bool readyReadEmitted = false;
 	if (standardReadPipe[0] != -1 && FD_ISSET(standardReadPipe[0], &fdread)) {
-	    bool canRead = canReadStandardOutput();
+	    bool canRead = _q_canReadStandardOutput();
             if (processChannel == QProcess::StandardOutput && canRead)
                 readyReadEmitted = true;
 	}
 	if (errorReadPipe[0] != -1 && FD_ISSET(errorReadPipe[0], &fdread)) {
-	    bool canRead = canReadStandardError();
+	    bool canRead = _q_canReadStandardError();
             if (processChannel == QProcess::StandardError && canRead)
                 readyReadEmitted = true;
 	}
@@ -745,10 +766,10 @@ bool QProcessPrivate::waitForReadyRead(int msecs)
             return true;
 
 	if (writePipe[1] != -1 && FD_ISSET(writePipe[1], &fdwrite))
-	    canWrite();
+	    _q_canWrite();
 
 	if (FD_ISSET(deathPipe[0], &fdread)) {
-            if (processDied())
+            if (_q_processDied())
                 return false;
         }
     }
@@ -792,28 +813,29 @@ bool QProcessPrivate::waitForBytesWritten(int msecs)
                 continue;
             break;
         }
-	if (ret == 0) {
+
+        if (ret == 0) {
 	    processError = QProcess::Timedout;
 	    q->setErrorString(QT_TRANSLATE_NOOP(QProcess, "Process operation timed out"));
 	    return false;
 	}
 
 	if (childStartedPipe[0] != -1 && FD_ISSET(childStartedPipe[0], &fdread)) {
-	    if (!startupNotification())
+	    if (!_q_startupNotification())
 		return false;
 	}
 
 	if (writePipe[1] != -1 && FD_ISSET(writePipe[1], &fdwrite))
-	    return canWrite();
+	    return _q_canWrite();
 
 	if (standardReadPipe[0] != -1 && FD_ISSET(standardReadPipe[0], &fdread))
-	    canReadStandardOutput();
+	    _q_canReadStandardOutput();
 
 	if (errorReadPipe[0] != -1 && FD_ISSET(errorReadPipe[0], &fdread))
-	    canReadStandardError();
+	    _q_canReadStandardError();
 
 	if (FD_ISSET(deathPipe[0], &fdread)) {
-            if (processDied())
+            if (_q_processDied())
                 return false;
         }
     }
@@ -866,20 +888,20 @@ bool QProcessPrivate::waitForFinished(int msecs)
 	}
 
 	if (childStartedPipe[0] != -1 && FD_ISSET(childStartedPipe[0], &fdread)) {
-	    if (!startupNotification())
+	    if (!_q_startupNotification())
 		return false;
 	}
 	if (writePipe[1] != -1 && FD_ISSET(writePipe[1], &fdwrite))
-	    canWrite();
+	    _q_canWrite();
 
 	if (standardReadPipe[0] != -1 && FD_ISSET(standardReadPipe[0], &fdread))
-	    canReadStandardOutput();
+	    _q_canReadStandardOutput();
 
 	if (errorReadPipe[0] != -1 && FD_ISSET(errorReadPipe[0], &fdread))
-	    canReadStandardError();
+	    _q_canReadStandardError();
 
 	if (FD_ISSET(deathPipe[0], &fdread)) {
-            if (processDied())
+            if (_q_processDied())
                 return true;
 	}
     }
@@ -932,7 +954,7 @@ bool QProcessPrivate::waitForDeadChild()
     return false;
 }
 
-void QProcessPrivate::notified()
+void QProcessPrivate::_q_notified()
 {
 }
 
@@ -940,6 +962,8 @@ void QProcessPrivate::notified()
  */
 bool QProcessPrivate::startDetached(const QString &program, const QStringList &arguments)
 {
+    processManager()->start();
+
     pid_t childPid = fork();
     if (childPid == 0) {
         ::setsid();

@@ -34,7 +34,6 @@
 #  include "qmutex.h"
 #endif
 
-#define QMAC_EVENT_NOWAIT kEventDurationNoWait
 
 /*****************************************************************************
   Externals
@@ -75,6 +74,14 @@ static void qt_mac_activate_timer(EventLoopTimerRef, void *data)
 
 void QEventDispatcherMac::registerTimer(int timerId, int interval, QObject *obj)
 {
+    if (timerId < 1 || interval < 0 || !obj) {
+        qWarning("QEventDispatcherUNIX::registerTimer: invalid arguments");
+        return;
+    } else if (obj->thread() != thread() || thread() != QThread::currentThread()) {
+        qWarning("QObject::startTimer: timers cannot be started from another thread");
+        return;
+    }
+
     Q_D(QEventDispatcherMac);
     if (!d->macTimerList)
         d->macTimerList = new MacTimerList;
@@ -91,7 +98,7 @@ void QEventDispatcherMac::registerTimer(int timerId, int interval, QObject *obj)
         EventTimerInterval mint = (((EventTimerInterval)interval) / 1000);
         d->macTimerList->append(t); //carbon timers go at the end..
         if (InstallEventLoopTimer(GetMainEventLoop(), mint, mint,
-                                 timerUPP, &d->macTimerList->last(), &d->macTimerList->last().mac_timer)) {
+                                  timerUPP, &d->macTimerList->last(), &d->macTimerList->last().mac_timer)) {
             qFatal("This cannot really happen, can it!?!");
             return; //exceptional error
         }
@@ -112,6 +119,14 @@ static Boolean find_timer_event(EventRef event, void *data)
 
 bool QEventDispatcherMac::unregisterTimer(int id)
 {
+    if (id < 1) {
+        qWarning("QEventDispatcherUNIX::unregisterTimer: invalid argument");
+        return false;
+    } else if (thread() != QThread::currentThread()) {
+        qWarning("QObject::killTimer: timers cannot be stopped from another thread");
+        return false;
+    }
+
     Q_D(QEventDispatcherMac);
     if(!d->macTimerList || id <= 0)
         return false;                                // not init'd or invalid timer
@@ -137,6 +152,14 @@ bool QEventDispatcherMac::unregisterTimer(int id)
 
 bool QEventDispatcherMac::unregisterTimers(QObject *obj)
 {
+    if (!obj) {
+        qWarning("QEventDispatcherUNIX::unregisterTimers: invalid argument");
+        return false;
+    } else if (obj->thread() != thread() || thread() != QThread::currentThread()) {
+        qWarning("QObject::killTimers: timers cannot be stopped from another thread");
+        return false;
+    }
+
     Q_D(QEventDispatcherMac);
     if(!d->macTimerList)                                // not initialized
         return false;
@@ -170,6 +193,11 @@ bool QEventDispatcherMac::unregisterTimers(QObject *obj)
 QList<QEventDispatcherMac::TimerInfo>
 QEventDispatcherMac::registeredTimers(QObject *object) const
 {
+    if (!object) {
+        qWarning("QEventDispatcherUNIX:registeredTimers: invalid argument");
+        return QList<TimerInfo>();
+    }
+
     Q_D(const QEventDispatcherMac);
     QList<TimerInfo> list;
     if (!d->macTimerList)
@@ -223,10 +251,10 @@ QEventDispatcherMac::~QEventDispatcherMac()
         DisposeEventLoopTimerUPP(timerUPP);
         timerUPP = 0;
     }
-    
+
     // Remove CFSockets from the runloop.
     for (MacSocketHash::ConstIterator it = d->macSockets.constBegin(); it != d->macSockets.constEnd(); ++it) {
-        const CFSocketRef socket = (*it)->socket; 
+        const CFSocketRef socket = (*it)->socket;
         if (CFSocketIsValid(socket) == false)
             continue;
         if (qt_mac_remove_socket_from_runloop(socket) == false)
@@ -254,12 +282,12 @@ void qt_mac_internal_select_callbk(int, int, QEventDispatcherMac *eloop)
      qt_mac_select_timer_callbk(0, eloop);
 }
 
-void qt_mac_socket_callback (CFSocketRef s, CFSocketCallBackType callbackType, CFDataRef address, 
+void qt_mac_socket_callback (CFSocketRef s, CFSocketCallBackType callbackType, CFDataRef address,
                                 const void  *data,  void  *info ) {
     Q_UNUSED(address); Q_UNUSED(data); Q_UNUSED(s);
     QEventDispatcherMac *const eventDispatcher = reinterpret_cast<QEventDispatcherMac *>(info);
-    Q_ASSERT(eventDispatcher); 
-    
+    Q_ASSERT(eventDispatcher);
+
     switch (callbackType) {
         case kCFSocketReadCallBack:
         case kCFSocketWriteCallBack:
@@ -278,7 +306,7 @@ bool qt_mac_add_socket_to_runloop(const CFSocketRef socket)
     CFRunLoopSourceRef loopSource = CFSocketCreateRunLoopSource(kCFAllocatorDefault, socket, 0);
     if (!loopSource)
         return false;
-            
+
     CFRunLoopAddSource(CFRunLoopGetCurrent(), loopSource, kCFRunLoopDefaultMode);
     CFRelease(loopSource);
     return true;
@@ -292,37 +320,50 @@ bool qt_mac_remove_socket_from_runloop(const CFSocketRef socket)
     CFRunLoopSourceRef loopSource = CFSocketCreateRunLoopSource(kCFAllocatorDefault, socket, 0);
     if (!loopSource)
         return false;
-        
+
     CFRunLoopRemoveSource(CFRunLoopGetCurrent(), loopSource, kCFRunLoopDefaultMode);
     CFRelease(loopSource);
     return true;
 }
 
-/*  
+/*
     Register a QSocketNotifier with the mac event system by creating a CFSocket with
     with a read/write callback.
-    
+
     Qt has separate socket notifiers for reading and writing, but on the mac there is
     a limitation of one CFSocket object for each native socket.
 */
 void QEventDispatcherMac::registerSocketNotifier(QSocketNotifier *notifier)
 {
+    int nativeSocket;
+    int type;
+    if (!notifier
+        || (nativeSocket = notifier->socket()) < 0
+        || nativeSocket > FD_SETSIZE
+        || (type = notifier->type()) < 0
+        || type > 2) {
+        qWarning("QSocketNotifier: Internal error");
+        return;
+    } else if (notifier->thread() != thread()
+               || thread() != QThread::currentThread()) {
+        qWarning("QSocketNotifier: socket notifiers cannot be enabled from another thread");
+        return;
+    }
+
     Q_D(QEventDispatcherMac);
     QEventDispatcherUNIX::registerSocketNotifier(notifier);
 
-    const  QSocketNotifier::Type type = notifier->type();
     if (type == QSocketNotifier::Exception) {
         qWarning("QSocketNotifier::Exception is not supported on Mac OS X");
         return;
     }
-                      
+
     // Check if we have a CFSocket for the native socket, create one if not.
-    const int nativeSocket = notifier->socket();
     MacSocketInfo *socketInfo = d->macSockets.value(nativeSocket);
     if (!socketInfo) {
         socketInfo = new MacSocketInfo();
-        
-        // Create CFSocket, specify that we want both read and write callbacks (the callbacks 
+
+        // Create CFSocket, specify that we want both read and write callbacks (the callbacks
         // are enabled/disabled later on).
         const int callbackTypes = kCFSocketReadCallBack | kCFSocketWriteCallBack;
         CFSocketContext context = {0, this, NULL, NULL, NULL};
@@ -331,13 +372,13 @@ void QEventDispatcherMac::registerSocketNotifier(QSocketNotifier *notifier)
             qWarning("QEventDispatcherMac::registerSocketNotifier: Failed to create CFSocket");
             return;
         }
-        
+
         // Enable auto-reenable-write-callback. A write QSocketNotifier stays enabled
         // after a write, while a CFSocket by default does not.
         CFOptionFlags flags = CFSocketGetSocketFlags(socketInfo->socket);
         flags |= kCFSocketAutomaticallyReenableWriteCallBack;
         CFSocketSetSocketFlags(socketInfo->socket, flags);
-        
+
         // Add CFSocket to runloop.
         if (qt_mac_add_socket_to_runloop(socketInfo->socket) == false) {
             qWarning("QEventDispatcherMac::registerSocketNotifier: Failed to add CFSocket to runloop");
@@ -348,12 +389,12 @@ void QEventDispatcherMac::registerSocketNotifier(QSocketNotifier *notifier)
         // Disable both callback types by default. This must be done after
         // we add the CFSocket to the runloop, or else these calls will have
         // no effect.
-        CFSocketDisableCallBacks(socketInfo->socket, kCFSocketReadCallBack); 
-        CFSocketDisableCallBacks(socketInfo->socket, kCFSocketWriteCallBack); 
+        CFSocketDisableCallBacks(socketInfo->socket, kCFSocketReadCallBack);
+        CFSocketDisableCallBacks(socketInfo->socket, kCFSocketWriteCallBack);
 
         d->macSockets.insert(nativeSocket, socketInfo);
     }
-    
+
     // Increment read/write counters and select enable callbacks if neccesary.
     if (type == QSocketNotifier::Read) {
         if (++socketInfo->read == 1)
@@ -371,30 +412,43 @@ void QEventDispatcherMac::registerSocketNotifier(QSocketNotifier *notifier)
 */
 void QEventDispatcherMac::unregisterSocketNotifier(QSocketNotifier *notifier)
 {
+    int nativeSocket;
+    int type;
+    if (!notifier
+        || (nativeSocket = notifier->socket()) < 0
+        || nativeSocket > FD_SETSIZE
+        || (type = notifier->type()) < 0
+        || type > 2) {
+        qWarning("QSocketNotifier: Internal error");
+        return;
+    } else if (notifier->thread() != thread()
+               || thread() != QThread::currentThread()) {
+        qWarning("QSocketNotifier: socket notifiers cannot be disabled from another thread");
+        return;
+    }
+
     Q_D(QEventDispatcherMac);
     QEventDispatcherUNIX::unregisterSocketNotifier(notifier);
-    
-    const  QSocketNotifier::Type type = notifier->type();
+
     if (type == QSocketNotifier::Exception) {
         qWarning("QSocketNotifier::Exception is not supported on Mac OS X");
-        return; 
+        return;
     }
-    const int nativeSocket = notifier->socket();
     MacSocketInfo *socketInfo = d->macSockets.value(nativeSocket);
     if (!socketInfo) {
         qWarning("QEventDispatcherMac::unregisterSocketNotifier: Tried to unregister a not registered notifier");
-        return; 
+        return;
     }
-    
+
     // Decrement read/write counters and disable callbacks if neccesary.
     if (type == QSocketNotifier::Read) {
         if (--socketInfo->read == 0)
-            CFSocketDisableCallBacks(socketInfo->socket, kCFSocketReadCallBack); 
+            CFSocketDisableCallBacks(socketInfo->socket, kCFSocketReadCallBack);
     } else if (type == QSocketNotifier::Write) {
         if (--socketInfo->write == 0)
-            CFSocketDisableCallBacks(socketInfo->socket, kCFSocketWriteCallBack); 
+            CFSocketDisableCallBacks(socketInfo->socket, kCFSocketWriteCallBack);
     }
-        
+
     // Remove CFSocket from runloop if this was the last QSocketNotifier.
     if (socketInfo->read <= 0 && socketInfo->write <= 0) {
         if (CFSocketIsValid(socketInfo->socket)) {
@@ -423,6 +477,7 @@ bool QEventDispatcherMac::processEvents(QEventLoop::ProcessEventsFlags flags)
         return false;
     }
 #endif
+    d->interrupt = false;
     emit awake();
 
     if(!qt_mac_safe_pdev) { //create an empty widget and this can be used for a port anytime
@@ -450,9 +505,9 @@ bool QEventDispatcherMac::processEvents(QEventLoop::ProcessEventsFlags flags)
                 // process a pending user input event
                 event = d->queuedUserInputEvents.takeFirst();
             } else {
-                if(ReceiveNextEvent(0, 0, QMAC_EVENT_NOWAIT, true, &event)
-                      != noErr)
-                    break;
+                OSStatus err = ReceiveNextEvent(0,0, kEventDurationNoWait, true, &event);
+                if(err != noErr)
+                    continue;
                 // else
                 if (flags & QEventLoop::ExcludeUserInputEvents) {
                      UInt32 ekind = GetEventKind(event),
@@ -473,9 +528,7 @@ bool QEventDispatcherMac::processEvents(QEventLoop::ProcessEventsFlags flags)
             if (!filterEvent(&event) && qt_mac_send_event(flags, event))
                 retVal = true;
             ReleaseEvent(event);
-        } while(!d->interrupt && GetNumEventsInQueue(GetMainEventQueue()));
-
-        QApplication::sendPostedEvents(0, (flags & QEventLoop::DeferredDeletion) ? -1 : 0);
+        } while(!d->interrupt && GetNumEventsInQueue(GetMainEventQueue()) > 0);
 
         bool canWait = (!retVal
                         && threadData->canWait
@@ -487,10 +540,10 @@ bool QEventDispatcherMac::processEvents(QEventLoop::ProcessEventsFlags flags)
             while(CFRunLoopRunInMode(kCFRunLoopDefaultMode, 1.0e20, true) == kCFRunLoopRunTimedOut);
             emit awake();
         } else {
+            CFRunLoopRunInMode(kCFRunLoopDefaultMode, kEventDurationNoWait, true);
             break;
         }
     }
-    d->interrupt = false;
     return retVal;
 }
 
@@ -505,6 +558,8 @@ int QEventDispatcherMacPrivate::activateTimers()
             ret++;
             QTimerEvent e(t.id);
             QApplication::sendEvent(t.obj, &e);
+            if(ret == zero_timer_count)
+                break;
         }
     }
     return ret;
@@ -517,8 +572,7 @@ void QEventDispatcherMac::wakeUp()
 
 void QEventDispatcherMac::flush()
 {
-    extern void qt_event_send_window_change(); //qapplication_mac.cpp
-    qt_event_send_window_change();
+    QMacWindowChangeEvent::exec(true);
 
 //    sendPostedEvents();
     if(qApp) {
@@ -541,6 +595,13 @@ void QEventDispatcherMac::flush()
 
 /* This allows the eventloop to block, and will keep things going - including keeping away
    the evil spinning cursor */
+int qt_mac_send_zero_timers()
+{
+    if(QEventDispatcherMac *disp = qobject_cast<QEventDispatcherMac*>(QAbstractEventDispatcher::instance()))
+        return disp->d_func()->activateTimers();
+    return 0;
+}
+
 class QMacBlockingFunction::Object : public QObject
 {
     QAtomic ref;
@@ -553,7 +614,7 @@ public:
 protected:
     void timerEvent(QTimerEvent *)
     {
-        // if(QApplication::eventLoop()->activateTimers())
+        if(qt_mac_send_zero_timers())
             QApplication::flush();
     }
 };

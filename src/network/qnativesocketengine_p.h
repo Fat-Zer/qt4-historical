@@ -98,7 +98,7 @@ private:
     Q_DECLARE_PRIVATE(QNativeSocketEngine)
     Q_DISABLE_COPY(QNativeSocketEngine)
 #ifdef Q_OS_WIN
-    Q_PRIVATE_SLOT(d_func(), void systemReadNotification())
+    Q_PRIVATE_SLOT(d_func(), void _q_systemReadNotification())
 #endif
 };
 
@@ -139,7 +139,8 @@ public:
         OperationUnsupportedErrorString,
         ProtocolUnsupportedErrorString,
         InvalidSocketErrorString,
-        UnreachableErrorString,
+        HostUnreachableErrorString,
+        NetworkUnreachableErrorString,
         AccessErrorString,
         ConnectionTimeOutErrorString,
         ConnectionRefusedErrorString,
@@ -185,7 +186,7 @@ public:
     bool fetchConnectionParameters();
 
 #ifdef Q_OS_WIN
-    void systemReadNotification();
+    void _q_systemReadNotification();
 #endif
 };
 

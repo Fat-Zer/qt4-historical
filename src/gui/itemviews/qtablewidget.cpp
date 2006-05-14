@@ -401,14 +401,14 @@ void QTableModel::setColumnCount(int columns)
         removeColumns(qMax(columns, 0), cc - columns);
 }
 
-int QTableModel::rowCount(const QModelIndex &) const
+int QTableModel::rowCount(const QModelIndex &parent) const
 {
-    return vertical.count();
+    return parent.isValid() ? 0 : vertical.count();
 }
 
-int QTableModel::columnCount(const QModelIndex &) const
+int QTableModel::columnCount(const QModelIndex &parent) const
 {
-    return horizontal.count();
+    return parent.isValid() ? 0 : horizontal.count();
 }
 
 QVariant QTableModel::data(const QModelIndex &index, int role) const
@@ -421,6 +421,9 @@ QVariant QTableModel::data(const QModelIndex &index, int role) const
 
 bool QTableModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
+    if (!index.isValid())
+        return false;
+
     QTableWidgetItem *itm = item(index);
     if (itm) {
         itm->setData(role, value);
@@ -527,9 +530,10 @@ QVariant QTableModel::headerData(int section, Qt::Orientation orientation, int r
 bool QTableModel::setHeaderData(int section, Qt::Orientation orientation,
                                 const QVariant &value, int role)
 {
-    if ((orientation == Qt::Horizontal && horizontal.size() == 0) ||
-        (orientation == Qt::Vertical && vertical.size() == 0))
-        return false;
+    if (section < 0 ||
+       (orientation == Qt::Horizontal && horizontal.size() <= section) ||
+       (orientation == Qt::Vertical && vertical.size() <= section))
+    return false;
 
     QTableWidgetItem *itm = 0;
     if (orientation == Qt::Horizontal)
@@ -1034,6 +1038,8 @@ QTableWidgetItem *QTableWidgetItem::clone() const
 
 /*!
     Sets the item's data for the given \a role to the specified \a value.
+
+    \sa Qt::ItemDataRole, data()
 */
 void QTableWidgetItem::setData(int role, const QVariant &value)
 {
@@ -1213,6 +1219,15 @@ QTableWidgetItem &QTableWidgetItem::operator=(const QTableWidgetItem &other)
     number of columns with columnCount(). The table can be cleared with the
     clear() function.
 
+    \table 100%
+    \row \o \inlineimage windowsxp-tableview.png Screenshot of a Windows XP style table widget
+         \o \inlineimage macintosh-tableview.png Screenshot of a Macintosh style table widget
+         \o \inlineimage plastique-tableview.png Screenshot of a Plastique style table widget
+    \row \o A \l{Windows XP Style Widget Gallery}{Windows XP style} table widget.
+         \o A \l{Macintosh Style Widget Gallery}{Macintosh style} table widget.
+         \o A \l{Plastique Style Widget Gallery}{Plastique style} table widget.
+    \endtable
+
     \sa QTableWidgetItem, QTableView, {Model/View Programming}
 */
 
@@ -1240,15 +1255,15 @@ public:
     inline QTableModel *model() const { return ::qobject_cast<QTableModel*>(q_func()->model()); }
     void setup();
     // view signals
-    void emitItemPressed(const QModelIndex &index);
-    void emitItemClicked(const QModelIndex &index);
-    void emitItemDoubleClicked(const QModelIndex &index);
-    void emitItemActivated(const QModelIndex &index);
-    void emitItemEntered(const QModelIndex &index);
+    void _q_emitItemPressed(const QModelIndex &index);
+    void _q_emitItemClicked(const QModelIndex &index);
+    void _q_emitItemDoubleClicked(const QModelIndex &index);
+    void _q_emitItemActivated(const QModelIndex &index);
+    void _q_emitItemEntered(const QModelIndex &index);
     // model signals
-    void emitItemChanged(const QModelIndex &index);
+    void _q_emitItemChanged(const QModelIndex &index);
     // selection signals
-    void emitCurrentItemChanged(const QModelIndex &previous, const QModelIndex &current);
+    void _q_emitCurrentItemChanged(const QModelIndex &previous, const QModelIndex &current);
     // data
     bool sortingEnabled;
 };
@@ -1257,23 +1272,23 @@ void QTableWidgetPrivate::setup()
 {
     Q_Q(QTableWidget);
     // view signals
-    QObject::connect(q, SIGNAL(pressed(QModelIndex)), q, SLOT(emitItemPressed(QModelIndex)));
-    QObject::connect(q, SIGNAL(clicked(QModelIndex)), q, SLOT(emitItemClicked(QModelIndex)));
+    QObject::connect(q, SIGNAL(pressed(QModelIndex)), q, SLOT(_q_emitItemPressed(QModelIndex)));
+    QObject::connect(q, SIGNAL(clicked(QModelIndex)), q, SLOT(_q_emitItemClicked(QModelIndex)));
     QObject::connect(q, SIGNAL(doubleClicked(QModelIndex)),
-                     q, SLOT(emitItemDoubleClicked(QModelIndex)));
-    QObject::connect(q, SIGNAL(activated(QModelIndex)), q, SLOT(emitItemActivated(QModelIndex)));
-    QObject::connect(q, SIGNAL(entered(QModelIndex)), q, SLOT(emitItemEntered(QModelIndex)));
+                     q, SLOT(_q_emitItemDoubleClicked(QModelIndex)));
+    QObject::connect(q, SIGNAL(activated(QModelIndex)), q, SLOT(_q_emitItemActivated(QModelIndex)));
+    QObject::connect(q, SIGNAL(entered(QModelIndex)), q, SLOT(_q_emitItemEntered(QModelIndex)));
     // model signals
     QObject::connect(model(), SIGNAL(dataChanged(QModelIndex,QModelIndex)),
-                     q, SLOT(emitItemChanged(QModelIndex)));
+                     q, SLOT(_q_emitItemChanged(QModelIndex)));
     // selection signals
     QObject::connect(q->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
-                     q, SLOT(emitCurrentItemChanged(QModelIndex,QModelIndex)));
+                     q, SLOT(_q_emitCurrentItemChanged(QModelIndex,QModelIndex)));
     QObject::connect(q->selectionModel(), SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
                      q, SIGNAL(itemSelectionChanged()));
 }
 
-void QTableWidgetPrivate::emitItemPressed(const QModelIndex &index)
+void QTableWidgetPrivate::_q_emitItemPressed(const QModelIndex &index)
 {
     Q_Q(QTableWidget);
     if (QTableWidgetItem *item = model()->item(index))
@@ -1281,7 +1296,7 @@ void QTableWidgetPrivate::emitItemPressed(const QModelIndex &index)
     emit q->cellPressed(index.row(), index.column());
 }
 
-void QTableWidgetPrivate::emitItemClicked(const QModelIndex &index)
+void QTableWidgetPrivate::_q_emitItemClicked(const QModelIndex &index)
 {
     Q_Q(QTableWidget);
     if (QTableWidgetItem *item = model()->item(index))
@@ -1289,7 +1304,7 @@ void QTableWidgetPrivate::emitItemClicked(const QModelIndex &index)
     emit q->cellClicked(index.row(), index.column());
 }
 
-void QTableWidgetPrivate::emitItemDoubleClicked(const QModelIndex &index)
+void QTableWidgetPrivate::_q_emitItemDoubleClicked(const QModelIndex &index)
 {
     Q_Q(QTableWidget);
     if (QTableWidgetItem *item = model()->item(index))
@@ -1297,7 +1312,7 @@ void QTableWidgetPrivate::emitItemDoubleClicked(const QModelIndex &index)
     emit q->cellDoubleClicked(index.row(), index.column());
 }
 
-void QTableWidgetPrivate::emitItemActivated(const QModelIndex &index)
+void QTableWidgetPrivate::_q_emitItemActivated(const QModelIndex &index)
 {
     Q_Q(QTableWidget);
     if (QTableWidgetItem *item = model()->item(index))
@@ -1305,14 +1320,14 @@ void QTableWidgetPrivate::emitItemActivated(const QModelIndex &index)
     emit q->cellActivated(index.row(), index.column());
 }
 
-void QTableWidgetPrivate::emitItemEntered(const QModelIndex &index)
+void QTableWidgetPrivate::_q_emitItemEntered(const QModelIndex &index)
 {
     Q_Q(QTableWidget);
     if (QTableWidgetItem *item = model()->item(index))
         emit q->itemEntered(item);
 }
 
-void QTableWidgetPrivate::emitItemChanged(const QModelIndex &index)
+void QTableWidgetPrivate::_q_emitItemChanged(const QModelIndex &index)
 {
     Q_Q(QTableWidget);
     if (QTableWidgetItem *item = model()->item(index))
@@ -1320,7 +1335,7 @@ void QTableWidgetPrivate::emitItemChanged(const QModelIndex &index)
     emit q->cellChanged(index.row(), index.column());
 }
 
-void QTableWidgetPrivate::emitCurrentItemChanged(const QModelIndex &current,
+void QTableWidgetPrivate::_q_emitCurrentItemChanged(const QModelIndex &current,
                                                  const QModelIndex &previous)
 {
     Q_Q(QTableWidget);
@@ -1457,8 +1472,11 @@ void QTableWidgetPrivate::emitCurrentItemChanged(const QModelIndex &current,
 /*!
     \fn QTableWidgetItem *QTableWidget::itemAt(int ax, int ay) const
 
-    Returns the item at the position (\a{ax}, \a{ay}) in the table's
-    coordinate system.
+    Returns the item at the position (\a{ax}, \a{ay}) in the table
+    widget's coordinate system, or returns 0 if the specified point is not
+    covered by an item in the table widget.
+
+    \sa item()
 */
 
 /*!
@@ -1585,7 +1603,8 @@ int QTableWidget::column(const QTableWidgetItem *item) const
 
 
 /*!
-    Returns the item for the given \a row and \a column.
+    Returns the item for the given \a row and \a column if one has been set; otherwise
+    returns 0.
 
     \sa setItem()
 */
@@ -1598,7 +1617,9 @@ QTableWidgetItem *QTableWidget::item(int row, int column) const
 /*!
     Sets the item for the given \a row and \a column to \a item.
 
-    \sa item()
+    The table takes ownership of the item.
+
+    \sa item() takeItem()
 */
 void QTableWidget::setItem(int row, int column, QTableWidgetItem *item)
 {
@@ -2016,7 +2037,12 @@ int QTableWidget::visualColumn(int logicalColumn) const
 }
 
 /*!
-  Returns a pointer to the item at the coordinates \a p.
+  \fn QTableWidgetItem *QTableWidget::itemAt(const QPoint &point) const
+
+  Returns a pointer to the item at the given \a point, or returns 0 if
+  the point is not covered by an item in the table widget.
+
+  \sa item()
 */
 
 QTableWidgetItem *QTableWidget::itemAt(const QPoint &p) const

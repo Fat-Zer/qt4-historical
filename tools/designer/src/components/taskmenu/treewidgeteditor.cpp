@@ -29,6 +29,7 @@
 #include <QtDesigner/QtDesigner>
 #include <QtCore/QDir>
 #include <QtCore/QQueue>
+#include <QHeaderView>
 
 using namespace qdesigner_internal;
 
@@ -59,6 +60,8 @@ TreeWidgetEditor::TreeWidgetEditor(QDesignerFormWindowInterface *form, QWidget *
     ui.moveItemDownButton->setIcon(downIcon);
     ui.moveItemRightButton->setIcon(forwardIcon);
     ui.moveItemLeftButton->setIcon(backIcon);
+
+    ui.treeWidget->header()->setMovable(false);
 }
 
 TreeWidgetEditor::~TreeWidgetEditor()
@@ -515,9 +518,7 @@ void TreeWidgetEditor::on_previewPixmapItemButton_clicked()
     QString qrc_path;
 
     QIcon icon = curItem->icon(currentRow);
-    if (icon.isNull()) {
-        file_path = m_form->absoluteDir().absolutePath();
-    } else {
+    if (!icon.isNull()) {
         file_path = m_form->core()->iconCache()->iconToFilePath(icon);
         qrc_path = m_form->core()->iconCache()->iconToQrcPath(icon);
     }

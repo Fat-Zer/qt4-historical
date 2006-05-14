@@ -33,6 +33,10 @@
 #include <errno.h>
 #include <fcntl.h>
 
+#ifndef QT_NO_IPV6IFNAME
+#include <net/if.h>
+#endif
+
 #if defined QNATIVESOCKETENGINE_DEBUG
 #include <qstring.h>
 #include <ctype.h>
@@ -326,8 +330,11 @@ bool QNativeSocketEnginePrivate::nativeConnect(const QHostAddress &addr, quint16
         case ETIMEDOUT:
             setError(QAbstractSocket::NetworkError, ConnectionTimeOutErrorString);
             break;
+        case EHOSTUNREACH:
+            setError(QAbstractSocket::NetworkError, HostUnreachableErrorString);
+            break;
         case ENETUNREACH:
-            setError(QAbstractSocket::NetworkError, UnreachableErrorString);
+            setError(QAbstractSocket::NetworkError, NetworkUnreachableErrorString);
             break;
         case EADDRINUSE:
             setError(QAbstractSocket::NetworkError, AddressInuseErrorString);

@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-mac-opensource-src-4.1.2/src/gui/kernel/qapplication.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-mac-opensource-src-4.1.3/src/gui/kernel/qapplication.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-mac-opensource-src-4.1.3/src/gui/kernel/qapplication.cpp -->
 <head>
     <title>Qt 4.1: QApplication Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -123,6 +124,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>bool <b><a href="qapplication.html#isRightToLeft">isRightToLeft</a></b> ()</li>
 <li><div class="fn"/>int <b><a href="qapplication.html#keyboardInputInterval-prop">keyboardInputInterval</a></b> ()</li>
 <li><div class="fn"/>Qt::KeyboardModifiers <b><a href="qapplication.html#keyboardModifiers">keyboardModifiers</a></b> ()</li>
+<li><div class="fn"/>bool <b><a href="qapplication.html#keypadNavigationEnabled">keypadNavigationEnabled</a></b> ()</li>
 <li><div class="fn"/>Qt::LayoutDirection <b><a href="qapplication.html#layoutDirection-prop">layoutDirection</a></b> ()</li>
 <li><div class="fn"/>Qt::MouseButtons <b><a href="qapplication.html#mouseButtons">mouseButtons</a></b> ()</li>
 <li><div class="fn"/>QCursor * <b><a href="qapplication.html#overrideCursor">overrideCursor</a></b> ()</li>
@@ -143,6 +145,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>void <b><a href="qapplication.html#setFont">setFont</a></b> ( const QFont &amp; <i>font</i>, const char * <i>className</i> = 0 )</li>
 <li><div class="fn"/>void <b><a href="qapplication.html#globalStrut-prop">setGlobalStrut</a></b> ( const QSize &amp; )</li>
 <li><div class="fn"/>void <b><a href="qapplication.html#keyboardInputInterval-prop">setKeyboardInputInterval</a></b> ( int )</li>
+<li><div class="fn"/>void <b><a href="qapplication.html#setKeypadNavigationEnabled">setKeypadNavigationEnabled</a></b> ( bool <i>enable</i> )</li>
 <li><div class="fn"/>void <b><a href="qapplication.html#layoutDirection-prop">setLayoutDirection</a></b> ( Qt::LayoutDirection <i>direction</i> )</li>
 <li><div class="fn"/>void <b><a href="qapplication.html#setOverrideCursor">setOverrideCursor</a></b> ( const QCursor &amp; <i>cursor</i> )</li>
 <li><div class="fn"/>void <b><a href="qapplication.html#setPalette">setPalette</a></b> ( const QPalette &amp; <i>palette</i>, const char * <i>className</i> = 0 )</li>
@@ -451,7 +454,7 @@ body { background: #ffffff; color: black; }</style>
         exitAct-&gt;setShortcut(tr(&quot;Ctrl+Q&quot;));
         exitAct-&gt;setStatusTip(tr(&quot;Exit the application&quot;));
         connect(exitAct, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));</pre>
-<p>The windows are closed in random order, until one window does not accept the close event. The application quits when the last window was successfully closed; this can be turned of by setting <a href="qapplication.html#quitOnLastWindowClosed-prop">quitOnLastWindowClosed</a> to false.</p>
+<p>The windows are closed in random order, until one window does not accept the close event. The application quits when the last window was successfully closed; this can be turned off by setting <a href="qapplication.html#quitOnLastWindowClosed-prop">quitOnLastWindowClosed</a> to false.</p>
 <p>See also <a href="qapplication.html#quitOnLastWindowClosed-prop">quitOnLastWindowClosed</a>, <a href="qapplication.html#lastWindowClosed">lastWindowClosed</a>(), <a href="qwidget.html#close">QWidget::close</a>(), <a href="qwidget.html#closeEvent">QWidget::closeEvent</a>(), <a href="qapplication.html#lastWindowClosed">lastWindowClosed</a>(), <a href="qcoreapplication.html#quit">quit</a>(), <a href="qapplication.html#topLevelWidgets">topLevelWidgets</a>(), and <a href="qwidget.html#isWindow">QWidget::isWindow</a>().</p>
 <h3 class="fn"><a name="colorSpec"></a>int QApplication::colorSpec ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns the color specification.</p>
@@ -480,7 +483,7 @@ body { background: #ffffff; color: black; }</style>
 <p>To make your application perform idle processing, i.e. executing a special function whenever there are no pending events, use a <a href="qtimer.html">QTimer</a> with 0 timeout. More advanced idle processing schemes can be achieved using <a href="qcoreapplication.html#processEvents">processEvents</a>().</p>
 <p>See also <a href="qapplication.html#quitOnLastWindowClosed-prop">quitOnLastWindowClosed</a>, <a href="qcoreapplication.html#quit">quit</a>(), <a href="qcoreapplication.html#exit">exit</a>(), <a href="qcoreapplication.html#processEvents">processEvents</a>(), and <a href="qcoreapplication.html#exec">QCoreApplication::exec</a>().</p>
 <h3 class="fn"><a name="focusChanged"></a>void QApplication::focusChanged ( <a href="qwidget.html">QWidget</a> * <i>old</i>, <a href="qwidget.html">QWidget</a> * <i>now</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This signal is emitted when the widget that has keyboard focus changed from <i>old</i> to <i>now</i>, i.e. because the user presse the tab-key, clicked into a widget or changed the active window. Note that both <i>old</i> and <i>now</i> can be the null-pointer.</p>
+<p>This signal is emitted when the widget that has keyboard focus changed from <i>old</i> to <i>now</i>, i.e. because the user pressed the tab-key, clicked into a widget or changed the active window. Note that both <i>old</i> and <i>now</i> can be the null-pointer.</p>
 <p>The signal is emitted after both widget have been notified about the change through <a href="qfocusevent.html">QFocusEvent</a>.</p>
 <p>This function was introduced in Qt 4.1.</p>
 <p>See also <a href="qwidget.html#setFocus">QWidget::setFocus</a>(), <a href="qwidget.html#clearFocus">QWidget::clearFocus</a>(), and <a href="qt.html#FocusReason-enum">Qt::FocusReason</a>.</p>
@@ -514,6 +517,8 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the current state of the modifier keys on the keyboard. The current state is updated sychronously as the event queue is emptied of events that will spontaneously change the keyboard state (<a href="qevent.html#Type-enum">QEvent::KeyPress</a> and <a href="qevent.html#Type-enum">QEvent::KeyRelease</a> events).</p>
 <p>It should be noted this may not reflect the actual keys held on the input device at the time of calling but rather the modifiers as last reported in one of the above events. If no keys are being held <a href="qt.html#KeyboardModifier-enum">Qt::NoModifier</a> is returned.</p>
 <p>See also <a href="qapplication.html#mouseButtons">mouseButtons</a>().</p>
+<h3 class="fn"><a name="keypadNavigationEnabled"></a>bool QApplication::keypadNavigationEnabled ()&nbsp;&nbsp;<tt> [static]</tt></h3>
+<p>See also <a href="qapplication.html#setKeypadNavigationEnabled">setKeypadNavigationEnabled</a>().</p>
 <h3 class="fn"><a name="lastWindowClosed"></a>void QApplication::lastWindowClosed ()&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted from <a href="qapplication.html#exec">QApplication::exec</a>() when the last visible primary window (i.e. window with no parent) with the <a href="qt.html#WidgetAttribute-enum">Qt::WA_QuitOnClose</a> attribute set is closed.</p>
 <p>By default,</p>
@@ -551,7 +556,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Return the QWSDecoration used for decorating windows.</p>
 <p>This method is non-portable. It is only available in Qtopia Core.</p>
 <p>See also <a href="qdecoration.html">QDecoration</a>.</p>
-<h3 class="fn"><a name="qwsEventFilter"></a>bool QApplication::qwsEventFilter ( QWSEvent * <i>event</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
+<h3 class="fn"><a name="qwsEventFilter"></a>bool QApplication::qwsEventFilter ( <a href="qwsevent.html">QWSEvent</a> * <i>event</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>This virtual function is only implemented under Qtopia Core.</p>
 <p>If you create an application that inherits <a href="qapplication.html">QApplication</a> and reimplement this function, you get direct access to all QWS (Q Window System) events that the are received from the QWS master process. The events are passed in the <i>event</i> parameter.</p>
 <p>Return true if you want to stop the event from being processed. Return false for normal event dispatching. The default implementation returns false.</p>
@@ -567,7 +572,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="qwsSetDecoration-2"></a><a href="qdecoration.html">QDecoration</a> * QApplication::qwsSetDecoration ( const <a href="qstring.html">QString</a> &amp; <i>decoration</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Requests a <a href="qdecoration.html">QDecoration</a> object for <i>decoration</i> from the <a href="qdecorationfactory.html">QDecorationFactory</a>.</p>
-<p>The string must be one of the <a href="qstylefactory.html#keys">QStyleFactory::keys</a>().</p>
+<p>The string must be one of the <a href="qdecorationfactory.html#keys">QDecorationFactory::keys</a>(). Keys are case insensitive.</p>
 <p>A later call to the <a href="qapplication.html">QApplication</a> constructor will override the requested style when a &quot;-style&quot; option is passed in as a commandline parameter.</p>
 <p>Returns 0 if an unknown <i>decoration</i> is passed, otherwise the <a href="qstyle.html">QStyle</a> object returned is set as the application's GUI style.</p>
 <h3 class="fn"><a name="restoreOverrideCursor"></a>void QApplication::restoreOverrideCursor ()&nbsp;&nbsp;<tt> [static]</tt></h3>
@@ -642,6 +647,11 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="setInputContext"></a>void QApplication::setInputContext ( <a href="qinputcontext.html">QInputContext</a> * <i>inputContext</i> )</h3>
 <p>This function replaces the <a href="qinputcontext.html">QInputContext</a> instance used by the application with <i>inputContext</i>.</p>
 <p>See also <a href="qapplication.html#inputContext">inputContext</a>().</p>
+<h3 class="fn"><a name="setKeypadNavigationEnabled"></a>void QApplication::setKeypadNavigationEnabled ( bool <i>enable</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
+<p>Sets whether Qt should use focus navigation suitable for use with a minimal keypad.</p>
+<p>If enabled, <a href="qt.html#Key-enum">Qt::Key_Up</a> and <a href="qt.html#Key-enum">Qt::Key_Down</a> are used to change focus.</p>
+<p>This feature is available in Qtopia Core only.</p>
+<p>See also <a href="qapplication.html#keypadNavigationEnabled">keypadNavigationEnabled</a>().</p>
 <h3 class="fn"><a name="setOverrideCursor"></a>void QApplication::setOverrideCursor ( const <a href="qcursor.html">QCursor</a> &amp; <i>cursor</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Sets the application override cursor to <i>cursor</i>.</p>
 <p>Application override cursors are intended for showing the user that the application is in a special state, for example during an operation that might take some time.</p>
@@ -668,7 +678,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="setStyle-2"></a><a href="qstyle.html">QStyle</a> * QApplication::setStyle ( const <a href="qstring.html">QString</a> &amp; <i>style</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Requests a <a href="qstyle.html">QStyle</a> object for <i>style</i> from the <a href="qstylefactory.html">QStyleFactory</a>.</p>
-<p>The string must be one of the <a href="qstylefactory.html#keys">QStyleFactory::keys</a>(), typically one of &quot;windows&quot;, &quot;motif&quot;, &quot;cde&quot;, &quot;plastique&quot;, &quot;windowsxp&quot;, or &quot;macintosh&quot;.</p>
+<p>The string must be one of the <a href="qstylefactory.html#keys">QStyleFactory::keys</a>(), typically one of &quot;windows&quot;, &quot;motif&quot;, &quot;cde&quot;, &quot;plastique&quot;, &quot;windowsxp&quot;, or &quot;macintosh&quot;. Style names are case insensitive.</p>
 <p>Returns 0 if an unknown <i>style</i> is passed, otherwise the <a href="qstyle.html">QStyle</a> object returned is set as the application's GUI style.</p>
 <p><b>Warning:</b> To ensure that the application's style is set correctly, it is best to call this function before the <a href="qapplication.html">QApplication</a> constructor, if possible.</p>
 <h3 class="fn"><a name="style"></a><a href="qstyle.html">QStyle</a> * QApplication::style ()&nbsp;&nbsp;<tt> [static]</tt></h3>
@@ -721,6 +731,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

@@ -149,8 +149,8 @@ public:
     //firing of events
     void activateAction(QAction *, QAction::ActionEvent);
 
-    void actionTriggered();
-    void actionHovered();
+    void _q_actionTriggered();
+    void _q_actionHovered();
 
     //menu fading/scrolling effects
     bool doChildEffects;

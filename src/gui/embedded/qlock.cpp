@@ -74,7 +74,7 @@ public:
 
     \internal
 
-    It is used by Qtopia Core for synchronizing access to the graphics
+    It is used by \l {Qtopia Core} for synchronizing access to the graphics
     card and shared memory region between processes.
 */
 
@@ -89,16 +89,20 @@ public:
     \fn QLock::QLock(const QString &filename, char id, bool create)
 
     Creates a lock. \a filename is the file path of the Unix-domain
-    socket the Qtopia Core client is using. \a id is the name of the
+    socket the \l {Qtopia Core} client is using. \a id is the name of the
     particular lock to be created on that socket. If \a create is true
-    the lock is to be created (as the Qtopia Core server does); if \a
-    create is false the lock should exist already (as the Qtopia Core
+    the lock is to be created (as the \l {Qtopia Core} server does); if \a
+    create is false the lock should exist already (as the \l {Qtopia Core}
     client expects).
 */
 
 QLock::QLock(const QString &filename, char id, bool create)
 {
-#ifndef QT_NO_QWS_MULTIPROCESS
+#ifdef QT_NO_QWS_MULTIPROCESS
+    Q_UNUSED(filename);
+    Q_UNUSED(id);
+    Q_UNUSED(create);
+#else
     data = new QLockData;
     data->count = 0;
 #ifdef Q_NO_SEMAPHORE
@@ -188,7 +192,9 @@ bool QLock::isValid() const
 
 void QLock::lock(Type t)
 {
-#ifndef QT_NO_QWS_MULTIPROCESS
+#ifdef QT_NO_QWS_MULTIPROCESS
+    Q_UNUSED(t);
+#else
     if (!data->count) {
 #ifdef Q_NO_SEMAPHORE
         int op = LOCK_SH;

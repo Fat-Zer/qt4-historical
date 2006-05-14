@@ -36,6 +36,7 @@
 #endif
 
 #ifdef Q_WS_QWS
+#include <qscreen_qws.h>
 #include <qwsdisplay_qws.h>
 #include <qapplication.h>
 #include <qwsmanager_qws.h>
@@ -49,7 +50,9 @@
 
 extern bool qt_sendSpontaneousEvent(QObject*, QEvent*); // qapplication_xxx.cpp
 
+#ifndef Q_WS_QWS
 static bool qt_enable_backingstore = true;
+#endif
 #ifdef Q_WS_X11
 // for compatibility with Qt 4.0
 Q_GUI_EXPORT void qt_x11_set_global_double_buffer(bool enable)
@@ -69,6 +72,11 @@ bool QWidgetBackingStore::paintOnScreen(QWidget *w)
 #else
     if (w && w->testAttribute(Qt::WA_PaintOnScreen))
         return true;
+
+    // sanity check for overlarge toplevels. Better: store at least screen size and move offset.
+    if (w && w->isWindow() && (w->width() > 4096  || w->height() > 4096))
+        return true;
+
     static signed char checked_env = -1;
     if(checked_env == -1)
         checked_env = (qgetenv("QT_ONSCREEN_PAINT") == "1") ? 1 : 0;
@@ -93,12 +101,12 @@ static void qt_showYellowThing(QWidget *widget, const QRegion &rgn, int msec, bo
     if (widget)
         globalRgn.translate(widget->mapToGlobal(QPoint()));
 
-    QWidget::qwsDisplay()->requestRegion(yWinId, -1, false, globalRgn);
+    QWidget::qwsDisplay()->requestRegion(yWinId, -1, QWSBackingStore::DebugHighlighter, globalRgn, QImage::Format_Invalid);
     QWidget::qwsDisplay()->setAltitude(yWinId, 1, true);
     QWidget::qwsDisplay()->repaintRegion(yWinId, false, globalRgn);
 
     ::usleep(500*msec);
-    QWidget::qwsDisplay()->requestRegion(yWinId, -1, false, QRegion());
+    QWidget::qwsDisplay()->requestRegion(yWinId, -1, QWSBackingStore::DebugHighlighter, QRegion(), QImage::Format_Invalid);
     ::usleep(500*msec);
 }
 
@@ -110,7 +118,7 @@ static void qt_showYellowThing(QWidget *widget, const QRegion &toBePainted, int 
     if (unclipped && !QWidgetBackingStore::paintOnScreen(widget))
         widget->setAttribute(Qt::WA_PaintUnclipped);
 
-    bool setFlag = widget && !widget->testAttribute(Qt::WA_WState_InPaintEvent);
+    bool setFlag = !widget->testAttribute(Qt::WA_WState_InPaintEvent);
     if(setFlag)
         widget->setAttribute(Qt::WA_WState_InPaintEvent);
 
@@ -384,7 +392,9 @@ void QWidgetPrivate::moveRect(const QRect &rect, int dx, int dy)
     QRect clipR = pd->clipRect();
     QRect newRect = rect.translated(dx,dy);
 
-    QRect destRect = rect.intersect(clipR).translated(dx,dy).intersect(clipR);
+    QRect destRect = rect.intersect(clipR);
+    if (destRect.isValid())
+        destRect = destRect.translated(dx,dy).intersect(clipR);
     QRect sourceRect = destRect.translated(-dx, -dy);
 
     bool accelerateMove = accelEnv &&  isOpaque() && !isOverlapped(sourceRect)
@@ -449,7 +459,7 @@ void QWidgetPrivate::scrollRect(const QRect &rect, int dx, int dy)
     } else {
         QRect scrollRect = rect & clipRect();
 
-        QRect destRect = scrollRect.translated(dx,dy).intersect(scrollRect);
+        QRect destRect = scrollRect.isValid() ? scrollRect.translated(dx,dy).intersect(scrollRect) : QRect();
         QRect sourceRect = destRect.translated(-dx, -dy);
 
         QWidgetBackingStore *wbs = x->backingStore;
@@ -638,12 +648,23 @@ void QWidgetBackingStore::cleanRegion(const QRegion &rgn, QWidget *widget, bool 
         QRegion toClean;
 
 #ifdef Q_WS_QWS
-        //QWExtra *extra = tlw->d_func()->extra;
-        QRect tlwFrame = tlw->frameGeometry();
-        QSize tlwSize = tlwFrame.size();
-#else
-        QSize tlwSize = tlw->size();
+        bool created = buffer.createIfNecessary(tlw);
+
+        if (created) {
+#ifndef QT_NO_QWS_MANAGER
+            if (topextra->qwsManager)
+                topextra->qwsManager->d_func()->dirtyRegion(QDecoration::All,
+                                                            QDecoration::Normal);
 #endif
+            toClean = QRegion(0, 0, tlw->width(), tlw->height());
+        } else {
+            toClean = dirty;
+        }
+        tlwOffset = buffer.tlwOffset();
+#else // not QWS
+
+        QSize tlwSize = tlw->size();
+
         if (buffer.size() != tlwSize) {
 #if defined(Q_WS_X11)
             extern int qt_x11_preferred_pixmap_depth;
@@ -654,33 +675,12 @@ void QWidgetBackingStore::cleanRegion(const QRegion &rgn, QWidget *widget, bool 
             qt_x11_preferred_pixmap_depth = old_qt_x11_preferred_pixmap_depth;
 #elif defined(Q_WS_WIN)
             releaseBuffer();
-#elif defined(Q_WS_QWS)
-            QRegion tlwRegion = tlwFrame;
-            tlwOffset = tlw->geometry().topLeft() - tlwFrame.topLeft();
-            if (!tlw->d_func()->extra->mask.isEmpty()) {
-                tlwRegion = tlw->d_func()->extra->mask;
-                tlwRegion.translate(tlw->geometry().topLeft());
-                tlwRegion &= tlwFrame;
-                tlwSize = tlwRegion.boundingRect().size();
-                tlwOffset = tlw->geometry().topLeft() - tlwRegion.boundingRect().topLeft();
-            }
-            buffer.create(tlwSize);
-            QBrush bgBrush = tlw->palette().brush(tlw->backgroundRole());
-            bool opaque = bgBrush.style() == Qt::NoBrush || bgBrush.isOpaque();
-            QWidget::qwsDisplay()->requestRegion(tlw->data->winid,
-                                                 buffer.memoryId(),
-                                                 opaque, tlwRegion);
-
-#ifndef QT_NO_QWS_MANAGER
-            if (topextra->qwsManager)
-                topextra->qwsManager->d_func()->dirtyRegion(QDecoration::All,
-                                                            QDecoration::Normal);
-#endif
-#endif // Q_WS_QWS
+#endif // Q_WS_X11
                 toClean = QRegion(0, 0, tlw->width(), tlw->height());
         } else {
             toClean = dirty;
         }
+#endif //Q_WS_QWS
 
 #ifdef Q_WS_QWS
         buffer.lock();
@@ -689,7 +689,7 @@ void QWidgetBackingStore::cleanRegion(const QRegion &rgn, QWidget *widget, bool 
             dirty -= toClean;
             if (tlw->updatesEnabled()) {
 #ifdef Q_WS_QWS
-                tlw->d_func()->drawWidget(buffer.pixmap(), toClean, tlwOffset);
+                tlw->d_func()->drawWidget(buffer.paintDevice(), toClean, tlwOffset);
 #else
                 tlw->d_func()->drawWidget(&buffer, toClean, tlwOffset);
 #endif
@@ -700,7 +700,7 @@ void QWidgetBackingStore::cleanRegion(const QRegion &rgn, QWidget *widget, bool 
 #ifdef Q_WS_QWS
 #ifndef QT_NO_QWS_MANAGER
         if (topextra->qwsManager)
-            toFlush += topextra->qwsManager->d_func()->paint(buffer.pixmap());
+            toFlush += topextra->qwsManager->d_func()->paint(buffer.paintDevice());
 #endif
         buffer.unlock();
 #endif // Q_WS_QWS
@@ -721,7 +721,7 @@ void QWidgetBackingStore::cleanRegion(const QRegion &rgn, QWidget *widget, bool 
 void QWidgetBackingStore::releaseBuffer()
 {
     buffer.detach();
-    QWidget::qwsDisplay()->requestRegion(tlw->data->winid, 0, true, QRegion(0));
+    QWidget::qwsDisplay()->requestRegion(tlw->data->winid, 0, buffer.windowType(), QRegion(0), QImage::Format_Invalid);
 }
 #elif defined(Q_WS_WIN)
 void QWidgetBackingStore::releaseBuffer()

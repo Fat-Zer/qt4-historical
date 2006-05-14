@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-mac-opensource-src-4.1.2/src/corelib/tools/qdatetime.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-mac-opensource-src-4.1.3/src/corelib/tools/qdatetime.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-mac-opensource-src-4.1.3/src/corelib/tools/qdatetime.cpp -->
 <head>
     <title>Qt 4.1: QTime Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -81,7 +82,7 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QTime"></a>QTime::QTime ()</h3>
-<p>Constructs the time 0 hours, minutes, seconds and milliseconds, i.e. 00:00:00.000 (midnight). This is a valid time.</p>
+<p>Constructs a null time object.</p>
 <p>See also <a href="qtime.html#isValid">isValid</a>().</p>
 <h3 class="fn"><a name="QTime-2"></a>QTime::QTime ( int <i>h</i>, int <i>m</i>, int <i>s</i> = 0, int <i>ms</i> = 0 )</h3>
 <p>Constructs a time with hour <i>h</i>, minute <i>m</i>, seconds <i>s</i> and milliseconds <i>ms</i>.</p>
@@ -146,7 +147,7 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the hour part (0 to 23) of the time.</p>
 <p>See also <a href="qtime.html#minute">minute</a>(), <a href="qtime.html#second">second</a>(), and <a href="qtime.html#msec">msec</a>().</p>
 <h3 class="fn"><a name="isNull"></a>bool QTime::isNull () const</h3>
-<p>Returns true if the time is equal to 00:00:00.000; otherwise returns false. A null time is valid.</p>
+<p>Returns true if the time is null; otherwise returns false. A null time is also an invalid time.</p>
 <p>See also <a href="qtime.html#isValid">isValid</a>().</p>
 <h3 class="fn"><a name="isValid"></a>bool QTime::isValid () const</h3>
 <p>Returns true if the time is valid; otherwise returns false. For example, the time 23:30:55.746 is valid, but 24:12:30 is invalid.</p>
@@ -253,6 +254,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

@@ -31,6 +31,8 @@ class QWidget;
 class QVariant;
 class QString;
 
+QT_BEGIN_HEADER
+
 class QDESIGNER_SDK_EXPORT QDesignerFormWindowCursorInterface
 {
 public:
@@ -79,5 +81,7 @@ public:
 
     bool isWidgetSelected(QWidget *widget) const;
 };
+
+QT_END_HEADER
 
 #endif // ABSTRACTFORMWINDOWCURSOR_H

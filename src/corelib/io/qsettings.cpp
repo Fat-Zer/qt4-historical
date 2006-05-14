@@ -21,6 +21,7 @@
 **
 ****************************************************************************/
 
+#include <qdebug.h>
 #include "qplatformdefs.h"
 #include "qsettings.h"
 
@@ -102,8 +103,8 @@ static bool unixLock(int handle, int lockType)
 }
 #endif
 
-QConfFile::QConfFile(const QString &fileName)
-    : name(fileName), size(0), ref(1)
+QConfFile::QConfFile(const QString &fileName, bool _userPerms)
+    : name(fileName), size(0), ref(1), userPerms(_userPerms)
 {
     usedHashFunc()->insert(name, this);
 }
@@ -120,7 +121,7 @@ InternalSettingsMap QConfFile::mergedKeyMap() const
     return result;
 }
 
-QConfFile *QConfFile::fromName(const QString &fileName)
+QConfFile *QConfFile::fromName(const QString &fileName, bool _userPerms)
 {
     QString absPath = QFileInfo(fileName).absoluteFilePath();
 
@@ -138,7 +139,7 @@ QConfFile *QConfFile::fromName(const QString &fileName)
         confFile->ref.ref();
         return confFile;
     }
-    return new QConfFile(absPath);
+    return new QConfFile(absPath, _userPerms);
 }
 
 void QConfFile::clearCache()
@@ -275,7 +276,7 @@ void QSettingsPrivate::requestUpdate()
     }
 }
 
-QStringList QSettingsPrivate::variantListToStringList(const QVariantList &l) const
+QStringList QSettingsPrivate::variantListToStringList(const QVariantList &l)
 {
     QStringList result;
     QVariantList::const_iterator it = l.constBegin();
@@ -284,7 +285,7 @@ QStringList QSettingsPrivate::variantListToStringList(const QVariantList &l) con
     return result;
 }
 
-QVariant QSettingsPrivate::stringListToVariantList(const QStringList &l) const
+QVariant QSettingsPrivate::stringListToVariantList(const QStringList &l)
 {
     QVariantList variantList;
     bool foundNonStringItem = false;
@@ -1025,14 +1026,14 @@ QConfFileSettingsPrivate::QConfFileSettingsPrivate(QSettings::Format format,
     if (scope == QSettings::UserScope) {
         QString userPath = getPath(format, QSettings::UserScope);
         if (!application.isEmpty())
-            confFiles[F_User | F_Application] = QConfFile::fromName(userPath + appFile);
-        confFiles[F_User | F_Organization] = QConfFile::fromName(userPath + orgFile);
+            confFiles[F_User | F_Application] = QConfFile::fromName(userPath + appFile, true);
+        confFiles[F_User | F_Organization] = QConfFile::fromName(userPath + orgFile, true);
     }
 
     QString systemPath = getPath(format, QSettings::SystemScope);
     if (!application.isEmpty())
-        confFiles[F_System | F_Application] = QConfFile::fromName(systemPath + appFile);
-    confFiles[F_System | F_Organization] = QConfFile::fromName(systemPath + orgFile);
+        confFiles[F_System | F_Application] = QConfFile::fromName(systemPath + appFile, false);
+    confFiles[F_System | F_Organization] = QConfFile::fromName(systemPath + orgFile, false);
 
     for (i = 0; i < NumConfFiles; ++i) {
         if (confFiles[i]) {
@@ -1050,7 +1051,7 @@ QConfFileSettingsPrivate::QConfFileSettingsPrivate(const QString &fileName,
     this->format = format;
     initFormat();
 
-    confFiles[0] = QConfFile::fromName(fileName);
+    confFiles[0] = QConfFile::fromName(fileName, true);
     for (int i = 1; i < NumConfFiles; ++i)
         confFiles[i] = 0;
 
@@ -1262,7 +1263,7 @@ void QConfFileSettingsPrivate::syncConfFile(int confFileNo)
         .plist files.
     */
     QFile file(confFile->name);
-
+    bool createFile = !file.exists();
     if (!readOnly)
         file.open(QFile::ReadWrite);
     if (!file.isOpen())
@@ -1295,6 +1296,16 @@ void QConfFileSettingsPrivate::syncConfFile(int confFileNo)
     if (file.isOpen())
         unixLock(file.handle(), readOnly ? F_RDLCK : F_WRLCK);
 #endif
+
+    // If we have created the file, apply the file perms
+    if (file.isOpen()) {
+        if (createFile) {
+            QFile::Permissions perms = QFile::ReadOwner|QFile::WriteOwner;
+            if (!confFile->userPerms)
+                perms |= QFile::ReadGroup|QFile::ReadOther;
+            file.setPermissions(perms);
+        }
+    }
 
     /*
         We hold the lock. Let's reread the file if it has changed
@@ -1477,7 +1488,7 @@ bool QConfFileSettingsPrivate::readIniLine(QIODevice &device, QByteArray &line, 
                 goto end;
 
             if (ch == '\n' || ch == '\r') {
-                if (!device.getChar(&ch2)) {
+                if (device.getChar(&ch2)) {
                     if ((ch2 != '\n' && ch2 != '\r') || ch == ch2) {
                         ch = ch2;
                         goto process_ch;
@@ -1641,7 +1652,14 @@ bool QConfFileSettingsPrivate::writeIniFile(QIODevice &device, const InternalSet
             block += '=';
 
             const QVariant &value = j.value();
-            if (value.type() == QVariant::StringList || value.type() == QVariant::List) {
+
+            /*
+                The size() != 1 trick is necessary because
+                QVariant(QString("foo")).toList() returns an empty
+                list, not a list containing "foo".
+            */
+            if (value.type() == QVariant::StringList
+                    || (value.type() == QVariant::List && value.toList().size() != 1)) {
                 iniEscapedStringList(variantListToStringList(value.toList()), block);
             } else {
                 iniEscapedString(variantToString(value), block);
@@ -1828,7 +1846,7 @@ bool QConfFileSettingsPrivate::writeIniFile(QIODevice &device, const InternalSet
 
     \list 1
     \o a user-specific location for the Star Runner application
-    \o a user-spefific location for all applications by MySoft
+    \o a user-specific location for all applications by MySoft
     \o a system-wide location for the Star Runner application
     \o a system-wide location for all applications by MySoft
     \endlist

@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-mac-opensource-src-4.1.2/src/gui/widgets/qsizegrip.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-mac-opensource-src-4.1.3/src/gui/widgets/qsizegrip.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-mac-opensource-src-4.1.3/src/gui/widgets/qsizegrip.cpp -->
 <head>
     <title>Qt 4.1: QSizeGrip Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -29,18 +30,17 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/><b><a href="qsizegrip.html#QSizeGrip">QSizeGrip</a></b> ( QWidget * <i>parent</i> )</li>
 <li><div class="fn"/><b><a href="qsizegrip.html#dtor.QSizeGrip">~QSizeGrip</a></b> ()</li>
-<li><div class="fn"/>virtual QSize <b><a href="qsizegrip.html#sizeHint">sizeHint</a></b> () const</li>
 </ul>
 <ul>
-<li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>190 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <a name="protected-functions"></a>
 <h3>Protected Functions</h3>
 <ul>
-<li><div class="fn"/>virtual void <b><a href="qsizegrip.html#mouseMoveEvent">mouseMoveEvent</a></b> ( QMouseEvent * <i>e</i> )</li>
-<li><div class="fn"/>virtual void <b><a href="qsizegrip.html#mousePressEvent">mousePressEvent</a></b> ( QMouseEvent * <i>e</i> )</li>
+<li><div class="fn"/>virtual void <b><a href="qsizegrip.html#mouseMoveEvent">mouseMoveEvent</a></b> ( QMouseEvent * <i>event</i> )</li>
+<li><div class="fn"/>virtual void <b><a href="qsizegrip.html#mousePressEvent">mousePressEvent</a></b> ( QMouseEvent * <i>event</i> )</li>
 <li><div class="fn"/>virtual void <b><a href="qsizegrip.html#paintEvent">paintEvent</a></b> ( QPaintEvent * <i>event</i> )</li>
 </ul>
 <ul>
@@ -66,29 +66,31 @@ body { background: #ffffff; color: black; }</style>
 <p>This widget works like the standard Windows resize handle. In the X11 version this resize handle generally works differently from the one provided by the system; we hope to reduce this difference in the future.</p>
 <p>Put this widget anywhere in a widget tree and the user can use it to resize the top-level window. Generally, this should be in the lower right-hand corner. Note that <a href="qstatusbar.html">QStatusBar</a> already uses this widget, so if you have a status bar (e.g. you are using <a href="qmainwindow.html">QMainWindow</a>), then you don't need to use this widget explicitly.</p>
 <p>On some platforms the sizegrip automatically hides itself when the window is shown full screen or maximised.</p>
-<p align="center"><img src="images/plastique-sizegrip.png" alt="A size grip widget shown in the Plastique widget style." /></p><p>See also <a href="qstatusbar.html">QStatusBar</a> and <a href="qwidget.html#windowState">QWidget::windowState</a>().</p>
+<p><table width="50%" align="center" cellpadding="2" cellspacing="1" border="0">
+<tr valign="top" bgcolor="#f0f0f0"><td><img src="images/plastique-sizegrip.png" alt="Screenshot of a Plastique style size grip" /></td><td>A size grip widget at the bottom-right corner of a main window, shown in the <a href="gallery-plastique.html">Plastique widget style</a>.</td></tr>
+</table></p>
+<p>The QSizeGrip class inherits <a href="qwidget.html">QWidget</a> and reimplements the <a href="qwidget.html#mousePressEvent">mousePressEvent()</a> and <a href="qwidget.html#mouseMoveEvent">mouseMoveEvent()</a> functions to feature the resize functionality, and the <a href="qwidget.html#paintEvent">paintEvent()</a> function to render the sizegrip widget.</p>
+<p>See also <a href="qstatusbar.html">QStatusBar</a> and <a href="qwidget.html#windowState">QWidget::windowState</a>().</p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QSizeGrip"></a>QSizeGrip::QSizeGrip ( <a href="qwidget.html">QWidget</a> * <i>parent</i> )</h3>
-<p>Constructs a resize corner as a child widget of <i>parent</i>.</p>
+<p>Constructs a resize corner as a child widget of the given <i>parent</i>.</p>
 <h3 class="fn"><a name="dtor.QSizeGrip"></a>QSizeGrip::~QSizeGrip ()</h3>
-<p>Destroys the size grip.</p>
-<h3 class="fn"><a name="mouseMoveEvent"></a>void QSizeGrip::mouseMoveEvent ( <a href="qmouseevent.html">QMouseEvent</a> * <i>e</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
-<p>Resizes the top-level widget containing this widget. The event is in <i>e</i>.</p>
+<p>Destroys this size grip.</p>
+<h3 class="fn"><a name="mouseMoveEvent"></a>void QSizeGrip::mouseMoveEvent ( <a href="qmouseevent.html">QMouseEvent</a> * <i>event</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
+<p>Resizes the top-level widget containing this widget. The mouse move event is passed in the <i>event</i> parameter.</p>
 <p>Reimplemented from <a href="qwidget.html#mouseMoveEvent">QWidget</a>.</p>
-<h3 class="fn"><a name="mousePressEvent"></a>void QSizeGrip::mousePressEvent ( <a href="qmouseevent.html">QMouseEvent</a> * <i>e</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
-<p>Primes the resize operation. The event is in <i>e</i>.</p>
+<h3 class="fn"><a name="mousePressEvent"></a>void QSizeGrip::mousePressEvent ( <a href="qmouseevent.html">QMouseEvent</a> * <i>event</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
+<p>Receives the mouse press events for the widget, and primes the resize operation. The mouse press event is passed in the <i>event</i> parameter.</p>
 <p>Reimplemented from <a href="qwidget.html#mousePressEvent">QWidget</a>.</p>
 <h3 class="fn"><a name="paintEvent"></a>void QSizeGrip::paintEvent ( <a href="qpaintevent.html">QPaintEvent</a> * <i>event</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
-<p>Paints the resize grip. Resize grips are usually rendered as small diagonal textured lines in the lower-right corner. The event is in <i>event</i>.</p>
+<p>Paints the resize grip.</p>
+<p>Resize grips are usually rendered as small diagonal textured lines in the lower-right corner. The paint event is passed in the <i>event</i> parameter.</p>
 <p>Reimplemented from <a href="qwidget.html#paintEvent">QWidget</a>.</p>
-<h3 class="fn"><a name="sizeHint"></a><a href="qsize.html">QSize</a> QSizeGrip::sizeHint () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>Returns the size grip's size hint; this is a small size.</p>
-<p>Reimplemented from <a href="qwidget.html#sizeHint-prop">QWidget</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

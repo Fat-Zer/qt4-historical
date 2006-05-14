@@ -56,6 +56,13 @@ static pthread_key_t current_thread_key;
 static void create_current_thread_key()
 { pthread_key_create(&current_thread_key, NULL); }
 
+
+void QThreadPrivate::createEventDispatcher(QThreadData *data)
+{
+    data->eventDispatcher = new QEventDispatcherUNIX;
+    data->eventDispatcher->startingUp();
+}
+
 void QThreadPrivate::setCurrentThread(QThread *thread)
 {
     pthread_once(&current_thread_key_once, create_current_thread_key);
@@ -74,8 +81,7 @@ void *QThreadPrivate::start(void *arg)
     QThreadData *data = QThreadData::get(thr);
     data->quitNow = false;
     // ### TODO: allow the user to create a custom event dispatcher
-    data->eventDispatcher = new QEventDispatcherUNIX;
-    data->eventDispatcher->startingUp();
+    createEventDispatcher(data);
 
     emit thr->started();
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
@@ -146,7 +152,12 @@ Qt::HANDLE QThread::currentThreadId()
 QThread *QThread::currentThread()
 {
     pthread_once(&current_thread_key_once, create_current_thread_key);
-    return reinterpret_cast<QThread *>(pthread_getspecific(current_thread_key));
+    QThread *current = reinterpret_cast<QThread *>(pthread_getspecific(current_thread_key));
+    if (!current && QThreadPrivate::adoptCurrentThreadEnabled) {
+        current = QThreadPrivate::adoptCurrentThread();
+    }
+    return current;
+
 }
 
 /*  \internal
@@ -308,7 +319,8 @@ void QThread::start(Priority priority)
 #endif // _POSIX_THREAD_ATTR_STACKSIZE
 
         if (code) {
-            qWarning("QThread::start: thread stack size error: %s", strerror(code)) ;
+            qWarning("QThread::start: thread stack size error: %s",
+                     qPrintable(qt_error_string(code)));
 
             // we failed to set the stacksize, and as the documentation states,
             // the thread will fail to run...
@@ -331,7 +343,7 @@ void QThread::start(Priority priority)
     pthread_attr_destroy(&attr);
 
     if (code) {
-        qWarning("QThread::start: thread creation error: %s", strerror(code));
+        qWarning("QThread::start: thread creation error: %s", qPrintable(qt_error_string(code)));
 
         d->running = false;
         d->finished = false;
@@ -373,7 +385,8 @@ void QThread::terminate()
 
     int code = pthread_cancel(d->thread_id);
     if (code) {
-        qWarning("QThread::start: thread termination error: %s", strerror(code));
+        qWarning("QThread::start: thread termination error: %s",
+                 qPrintable(qt_error_string((code))));
     } else {
         d->terminated = true;
     }

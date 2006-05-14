@@ -42,15 +42,9 @@
     URLs can be represented in two forms: encoded or unencoded. The
     unencoded representation is suitable for showing to users, but
     the encoded representation is typically what you would send to
-    a web server.
-
-    \code
-        // Unencoded URL
-        "http://bühler.example.com/List of applicants.xml"
-
-        // Encoded URL
-        "http://xn--bhler-kva.example.com/List%20of%20applicants.xml"
-    \endcode
+    a web server. For example, the unencoded URL
+    "http://b\uuml\c{}hler.example.com" would be sent to the server as
+    "http://xn--bhler-kva.example.com/List%20of%20applicants.xml".
 
     A URL can also be constructed piece by piece by calling
     setScheme(), setUserName(), setPassword(), setHost(), setPort(),
@@ -3646,11 +3640,27 @@ void QUrl::setEncodedUrl(const QByteArray &encodedUrl, ParsingMode parsingMode)
             }
         }
 
+        // Find the host part
+        int start = tmp.indexOf("//");
+        if (start != -1) {
+            // Has host part, find delimiter
+            start += 2; // skip "//"
+            int hostEnd = tmp.indexOf('/', start);
+            if (hostEnd == -1)
+                hostEnd = tmp.indexOf('#', start);
+            if (hostEnd == -1)
+                hostEnd = tmp.indexOf('?');
+            start = (hostEnd == -1) ? -1 : hostEnd + 1;
+        } else {
+            start = 0; // Has no host part
+        }
+
         // Replace non-US-ASCII characters with percent encoding
         copy = tmp;
         tmp.clear();
         for (int i = 0; i < copy.size(); ++i) {
-            if (quint8(copy.at(i)) < 32 || quint8(copy.at(i)) > 127) {
+            quint8 c = quint8(copy.at(i));
+            if (c < 32 || c > 127 || (start != -1 && i >= start && (c == '[' || c == ']'))) {
                 char buf[4];
                 qsnprintf(buf, sizeof(buf), "%%%02hhX", quint8(copy.at(i)));
                 buf[3] = '\0';
@@ -3845,6 +3855,8 @@ void QUrl::setHost(const QString &host)
     QURL_UNSETFLAG(d->stateFlags, QUrlPrivate::Validated | QUrlPrivate::Normalized);
 
     d->host = qt_nameprep(host.trimmed());
+    if (d->host.contains(QLatin1Char(':')))
+        d->host = QLatin1Char('[') + d->host + QLatin1Char(']');
 }
 
 /*!
@@ -3855,15 +3867,19 @@ QString QUrl::host() const
 {
     if (!QURL_HASFLAG(d->stateFlags, QUrlPrivate::Parsed)) d->parse();
 
-    return d->host;
+    if (d->host.isEmpty() || d->host.at(0) != QLatin1Char('['))
+        return d->host;
+    QString tmp = d->host.mid(1);
+    tmp.truncate(tmp.length() - 1);
+    return tmp;
 }
 
 /*!
     Sets the port of the URL to \a port. The port is part of the
     authority of the URL, as described in setAuthority().
 
-    If \a port is negative or has a value larger than 65535, the port
-    will be set to -1 indicating that the port is indefined.
+    \a port must be between 0 and 65535 inclusive. Setting the
+    port to -1 indicates that the port is unspecified.
 */
 void QUrl::setPort(int port)
 {
@@ -3871,10 +3887,9 @@ void QUrl::setPort(int port)
     detach();
     QURL_UNSETFLAG(d->stateFlags, QUrlPrivate::Validated | QUrlPrivate::Normalized);
 
-    if (port < 0 || port > 65535) {
+    if (port < -1 || port > 65535) {
         qWarning("QUrl::setPort() called with out of range port");
         port = -1;
-        return;
     }
 
     d->port = port;

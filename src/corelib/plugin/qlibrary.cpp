@@ -304,7 +304,7 @@ static bool qt_unix_query(const QString &library, uint *version, bool *debug, QB
     if (!file.open(QIODevice::ReadOnly)) {
 #if defined(QT_DEBUG_COMPONENT)
         qWarning("%s: %s", (const char*) QFile::encodeName(library),
-            strerror(errno));
+            qPrintable(qt_error_string(errno)));
 #endif
         return false;
     }
@@ -324,7 +324,7 @@ static bool qt_unix_query(const QString &library, uint *version, bool *debug, QB
     } else {
         // mmap failed
 #if defined(QT_DEBUG_COMPONENT)
-        qWarning("mmap: %s", strerror(errno));
+        qWarning("mmap: %s", qPrintable(qt_error_string(errno)));
 #endif
 #endif // USE_MMAP
         // try reading the data into memory instead
@@ -347,7 +347,7 @@ static bool qt_unix_query(const QString &library, uint *version, bool *debug, QB
 #ifdef USE_MMAP
     if (mapaddr != MAP_FAILED && munmap(mapaddr, maplen) != 0) {
 #if defined(QT_DEBUG_COMPONENT)
-        qWarning("munmap: %s", strerror(errno));
+        qWarning("munmap: %s", qPrintable(qt_error_string(errno)));
 #endif
     }
 #endif // USE_MMAP
@@ -450,32 +450,49 @@ bool QLibraryPrivate::loadPlugin()
  */
 bool QLibrary::isLibrary(const QString &fileName)
 {
+#if defined(Q_OS_WIN32)
+    return fileName.endsWith(QLatin1String(".dll"));
+#else
     QString completeSuffix = QFileInfo(fileName).completeSuffix();
     if (completeSuffix.isEmpty())
         return false;
     QStringList suffixes = completeSuffix.split(QLatin1Char('.'));
     QString suffix = suffixes.first();
-#if defined(Q_OS_WIN32)
-    bool valid = (suffix == "dll");
-#elif defined(Q_OS_DARWIN)
-    bool valid = (suffix == "dylib"
-            || suffix == "so"
-            || suffix == "bundle");
-#elif defined(Q_OS_HPUX)
+# if defined(Q_OS_DARWIN)
+    
+    // On Mac, libs look like libmylib.1.0.0.dylib
+    const QString lastSuffix = suffixes.at(suffixes.count() - 1);
+    const QString firstSuffix = suffixes.at(0);
+        
+    bool valid = (lastSuffix == "dylib"
+            || firstSuffix == "so"
+            || firstSuffix == "bundle");
+
+    return valid;
+# elif defined(Q_OS_HPUX)
+/*  
+    See "HP-UX Linker and Libraries User's Guide", section "Link-time Differences between PA-RISC and IPF":
+    "In PA-RISC (PA-32 and PA-64) shared libraries are suffixed with .sl. In IPF (32-bit and 64-bit), 
+    the shared libraries are suffixed with .so. For compatibility, the IPF linker also supports the .sl suffix."
+ */
     bool valid = (suffix == "sl");
-#elif defined(Q_OS_UNIX)
+#  if defined __ia64
+    valid |= (suffix == "so")
+#  endif
+# elif defined(Q_OS_UNIX)
     bool valid = (suffix == "so");
-#elif defined(Q_OS_AIX)
+# elif defined(Q_OS_AIX)
 	bool valid = (suffix == "a"
 			|| suffix == "so");
-#else
+# else
     bool valid = false;
-#endif
+# endif
 
     for (int i = 1; i < suffixes.count() && valid; ++i)
         suffixes.at(i).toInt(&valid);
-
     return valid;
+#endif
+
 }
 
 bool QLibraryPrivate::isPlugin()

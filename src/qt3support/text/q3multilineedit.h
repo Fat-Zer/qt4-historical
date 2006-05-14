@@ -26,6 +26,8 @@
 
 #include <Qt3Support/q3textedit.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Qt3SupportLight)
 
 #ifndef QT_NO_MULTILINEEDIT
@@ -113,5 +115,7 @@ private:
 };
 
 #endif // QT_NO_MULTILINEEDIT
+
+QT_END_HEADER
 
 #endif // Q3MULTILINEEDIT_H

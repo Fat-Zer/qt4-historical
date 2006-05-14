@@ -259,7 +259,7 @@ void QGridLayoutPrivate::recalcHFW(int w, int spacing)
 
     hfw_width = w;
     hfw_height = qMin(QLAYOUTSIZE_MAX, h);
-    hfw_minheight = qMin(QLAYOUTSIZE_MAX, h);
+    hfw_minheight = qMin(QLAYOUTSIZE_MAX, mh);
 }
 
 int QGridLayoutPrivate::heightForWidth(int w, int margin, int spacing)
@@ -793,15 +793,17 @@ QRect QGridLayoutPrivate::cellRect(int row, int col) const
     other layouts into the cells of your grid layout using
     addWidget(), addItem(), and addLayout().
 
-    QGridLayout also includes two margin widths: the border and the
-    spacing. The border is the width of the reserved space along each
-    of the QGridLayout's four sides. The spacing is the width of the
-    automatically allocated spacing between neighboring boxes.
+    QGridLayout also includes two margin widths: the \l margin and
+    the \l spacing. The margin is the width of the reserved space
+    along each of the QGridLayout's four sides. The spacing is the
+    width of the automatically allocated spacing between neighboring
+    boxes.
 
-    The default border and the spacing values are provided by the
-    style. The default margin Qt styles specify is 9 for widgets
-    and 11 for top level windows.
-
+    The default \l margin and \l spacing values are provided by the
+    style. The default margin Qt styles specify is 9 for child
+    widgets and 11 for windows. The spacing defaults to the same as
+    the margin width for a top-level layout, or to the same as the
+    parent layout.
 
     \sa QBoxLayout, QStackedLayout, {Layout Classes}
 */
@@ -1219,6 +1221,7 @@ void QGridLayout::addWidget(QWidget *widget, int fromRow, int fromColumn,
     QGridBox *b = new QGridBox(widget);
     b->setAlignment(alignment);
     d->add(b, fromRow, toRow, fromColumn, toColumn);
+    invalidate();
 }
 
 /*!

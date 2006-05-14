@@ -72,6 +72,7 @@ public:
     QList<QDockWidgetLayoutInfo> layout_info;
     QList<QDockWidgetLayoutInfo> *save_layout_info;
     mutable QSize minSize;
+    mutable QSize maxSize;
     mutable QSize szHint;
 
     QDockWidgetLayout(Qt::DockWidgetArea a, Qt::Orientation o);
@@ -92,6 +93,7 @@ public:
     int count() const;
     QSize sizeHint() const;
     QSize minimumSize() const;
+    QSize maximumSize() const;
     void invalidate();
     bool isEmpty() const;
 
@@ -118,7 +120,10 @@ public:
     void drop(QDockWidget *dockwidget, const QRect &r, const QPoint &mouse);
 
     void extend(QDockWidget *dockwidget, Qt::Orientation direction);
-    void split(QDockWidget *existing, QDockWidget *with, Qt::DockWidgetArea area);
+    static void split(QDockWidgetLayout *layout,
+                      QDockWidget *existing,
+                      QDockWidget *with,
+                      Qt::DockWidgetArea area);
 
 Q_SIGNALS:
     void emptied();

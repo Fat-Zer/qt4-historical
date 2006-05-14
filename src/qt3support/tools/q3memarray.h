@@ -27,6 +27,8 @@
 #include <Qt3Support/q3garray.h>
 #include <QtCore/qvector.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Qt3SupportLight)
 
 template<class type>
@@ -114,5 +116,7 @@ Q_OUTOFLINE_TEMPLATE Q3MemArray<type>::operator QVector<type>() const
         vector.append(at(i));
     return vector;
 }
+
+QT_END_HEADER
 
 #endif // Q3MEMARRAY_H

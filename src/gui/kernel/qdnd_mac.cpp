@@ -57,6 +57,7 @@ struct QMacDndAnswerRecord {
   QDnD debug facilities
  *****************************************************************************/
 //#define DEBUG_DRAG_EVENTS
+//#define DEBUG_DRAG_PROMISES
 
 /*****************************************************************************
   QDnD globals
@@ -89,9 +90,9 @@ class QMacMimeData : public QMimeData
   */
 OSErr QDragManager::qt_mac_send_handler(FlavorType flav, void *data, DragItemRef, DragRef dragRef)
 {
-#if 0
-    qDebug("asked to send %c%c%c%c", (flav >> 24) & 0xFF, (flav >> 16) & 0xFF, (flav >> 8) & 0xFF,
-            flav & 0xFF);
+#ifdef DEBUG_DRAG_PROMISES
+    qDebug("asked to send %c%c%c%c", char(flav >> 24) & 0xFF, char(flav >> 16) & 0xFF, char(flav >> 8) & 0xFF,
+            char(flav) & 0xFF);
 #endif
     QDragPrivate *o = (QDragPrivate *)data;
     QDragManager *manager = QDragManager::self();
@@ -273,7 +274,8 @@ bool QDropData::hasFormat_sys(const QString &mime) const
     QMacMime::QMacMimeType qmt = QMacMime::MIME_DND;
     Size sz;
     extern ScrapFlavorType qt_mac_mime_type; //qmime_mac.cpp
-    if(GetFlavorDataSize(qt_mac_current_dragRef, ref, qt_mac_mime_type, &sz) == noErr)
+    if(GetFlavorDataSize(qt_mac_current_dragRef, ref, qt_mac_mime_type, &sz) == noErr
+                            && mime != QLatin1String("text/plain"))
         qmt = QMacMime::MIME_QT_CONVERTOR;
     for(int x = 1; x <= (int)cnt; x++) {
         if(GetFlavorType(qt_mac_current_dragRef, ref, x, &flav) == noErr) {
@@ -294,7 +296,8 @@ QVariant QDropData::retrieveData_sys(const QString &mime, QVariant::Type) const
         if(GetDragItemReferenceNumber(qt_mac_current_dragRef, 1, &ref) == noErr) {
             Size sz;
             extern ScrapFlavorType qt_mac_mime_type; //qmime_mac.cpp
-            if(GetFlavorDataSize(qt_mac_current_dragRef, ref, qt_mac_mime_type, &sz) == noErr)
+            if(GetFlavorDataSize(qt_mac_current_dragRef, ref, qt_mac_mime_type, &sz) == noErr
+                    && mime != QLatin1String("text/plain"))
                 qmt = QMacMime::MIME_QT_CONVERTOR;
         }
     }
@@ -601,7 +604,7 @@ Qt::DropAction QDragManager::drag(QDrag *o)
             if(c->flavorFor(fmts.at(i))) {
                 for (int j = 0; j < c->countFlavors(); j++) {
                     const uint flav = c->flavor(j);
-#if 0
+#ifdef DEBUG_DRAG_PROMISES
                     qDebug("%d) trying to append (%s) '%s' -> %d[%c%c%c%c] (%d)",
                            i, c->convertorName().toLatin1().constData(), fmts.at(i).toLatin1().constData(),
                            flav, (flav >> 24) & 0xFF, (flav >> 16) & 0xFF, (flav >> 8) & 0xFF, flav & 0xFF,
@@ -673,11 +676,8 @@ Qt::DropAction QDragManager::drag(QDrag *o)
     //set the drag image
     QRegion dragRegion(boundsPoint.h, boundsPoint.v, pix.width(), pix.height()), pixRegion;
     if(!pix.isNull()) {
-        if(!pix.mask().isNull())
-            pixRegion = QRegion(pix.mask());
-        else
-            pixRegion = QRegion(0, 0, pix.width(), pix.height());
-        SetDragImage(dragRef, GetGWorldPixMap((GWorldPtr)pix.macQDHandle()), pixRegion.handle(true), boundsPoint, 0);
+        HIPoint hipoint = { -hotspot.x(), -hotspot.y() };
+        SetDragImageWithCGImage(dragRef, static_cast<CGImageRef>(pix.macCGHandle()), &hipoint, 0);
     }
 
     SetDragItemBounds(dragRef, (ItemReference)1 , &boundsRect);
@@ -688,6 +688,7 @@ Qt::DropAction QDragManager::drag(QDrag *o)
         result = TrackDrag(dragRef, &fakeEvent, dragRegion.handle(true));
         qt_mac_in_drag = false;
     }
+    object = 0;
     if(result == noErr) {
         DragActions ret = kDragActionNothing;
         GetDragDropAction(dragRef, &ret);

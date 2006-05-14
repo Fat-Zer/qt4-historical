@@ -99,9 +99,4 @@ QString WorldTimeClockPlugin::includeFile() const
     return "worldtimeclock.h";
 }
 
-QString WorldTimeClockPlugin::codeTemplate() const
-{
-    return "";
-}
-
 Q_EXPORT_PLUGIN2(worldtimeclockplugin, WorldTimeClockPlugin)

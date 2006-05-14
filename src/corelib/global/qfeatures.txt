@@ -1,124 +1,144 @@
 # Kernel
 
 Feature: PROPERTIES
+Description: Supports scripting Qt-based applications.
 Section: Kernel
 Requires: 
 Name: Properties
 SeeAlso: ???
 
 Feature: THREAD
+Description: Supports multithreaded programming.
 Section: Kernel
 Requires:
-Name: Thread support
+Name: QThread
 SeeAlso: ???
 
 Feature: DRAGANDDROP
+Description: Supports the drag and drop mechansim.
 Section: Kernel
 Requires: QWS_PROPERTIES IMAGEFORMAT_XPM
 Name: Drag and drop
 SeeAlso: ???
 
 Feature: SESSIONMANAGER
+Description: Supports session management.
 Section: Kernel
 Requires: 
-Name: Session management
+Name: Session Manager
 SeeAlso: ???
 
 Feature: SHORTCUT
+Description: Supports keyboard accelerators and shortcuts.
 Section: Kernel
 Requires: 
-Name: Keyboard accelerators and shortcuts
+Name: QShortcut
 SeeAlso: ???
 
 Feature: ACTION
+Description: Supports widget actions.
 Section: Kernel
 Requires: 
 Name: QAction
 SeeAlso: ???
 
 Feature: CURSOR
+Description: Supports mouse cursors.
 Section: Kernel
 Requires:
-Name: Cursors
+Name: QCursor
 SeeAlso: ???
 
 Feature: CLIPBOARD
+Description: Supports cut and paste operations.
 Section: Kernel
 Requires: QWS_PROPERTIES
-Name: Cut and paste
+Name: QClipboard
 SeeAlso: ???
 
 Feature: WHEELEVENT
+Description: Supports wheel events.
 Section: Kernel
 Requires:
-Name: Wheel-mouse events
+Name: QWheelEvent
 SeeAlso: ???
 
 Feature: SOUND
+Description: Supports playing audio files.
 Section: Kernel
 Requires:
-Name: Playing sounds
+Name: Sounds
 SeeAlso: ???
 
 Feature: EFFECTS
+Description: Supports special widget effects (e.g. fading and scrolling).
 Section: Kernel
 Requires:
-Name: Special widget effects (fading, scrolling)
+Name: Effects
 SeeAlso: ???
 
 # Data structures
 
 Feature: STL
+Description: Supports standard template library compatiblity.
 Section: Data structures
 Requires:
-Name: Standard template library compatiblity
+Name: Standard Template Library
 SeeAlso: ???
 
 Feature: QUUID_STRING
+Description: Supports convertion between UUID and strings.
 Section: Data structures
 Requires: 
-Name: Convert UUID to/from string
+Name:  Universally Unique Identifier Convertion
 SeeAlso: ???
 
 Feature: TEXTDATE
+Description: Supports month and day names in dates.
 Section: Data structures
 Requires: 
-Name: Month and day names in dates
+Name: Text Date
 SeeAlso: ???
 
 Feature: DATESTRING
+Description: Supports convertion between dates and strings.
 Section: Data structures
 Requires: TEXTDATE
-Name: QDate/QTime/QDateTime toString() and fromString()
+Name: QDate/QTime/QDateTime
 SeeAlso: ???
 
 # File I/O
 
 Feature: PROCESS
+Description: Supports external process invocation.
 Section: File I/O
 Requires: THREAD
-Name: External process invocation.
+Name: QProcess
 SeeAlso: ???
 
 Feature: TEXTSTREAM
+Description: Supports reading and writing of text.
 Section: File I/O
 Requires:
 Name: QTextStream
 SeeAlso: ???
 
 Feature: LIBRARY
+Description: Supports a shared library wrapper.
 Section: File I/O
 Requires: SETTINGS
-Name: Shared library wrapper
+Name: QLibrary
 SeeAlso: ???
 
 Feature: SETTINGS
+Description: Supports persistent application settings.
 Section: File I/O
 Requires: TEXTSTREAM 
-Name: Persistent application settings
+Name: QSettings
 SeeAlso: ???
 
 Feature: DOM
+Description: Supports the Document Object Model.
 Section: File I/O
 Requires:
 Name: Document Object Model
@@ -127,240 +147,289 @@ SeeAlso: ???
 # Widgets
 
 Feature: TREEWIDGET
+Description: Supports views using tree models. 
 Section: Widgets
 Requires: TREEVIEW
 Name: QTreeWidget
 SeeAlso: ???
 
 Feature: LISTWIDGET
+Description: Supports item-based list widgets.
 Section: Widgets
 Requires: LISTVIEW
 Name: QListWidget
 SeeAlso: ???
 
 Feature: TABLEWIDGET
+Description: Supports item-based table views.
 Section: Widgets
 Requires: TABLEVIEW
 Name: QTableWidget
 SeeAlso: ???
 
 Feature: DATETIMEEDIT
+Description: Supports editing dates and times.
 Section: Widgets
 Requires: SPINBOX DATESTRING
 Name: QDateTimeEdit
 SeeAlso: ???
 
 Feature: STACKEDWIDGET
+Description: Supports stacked widgets.
 Section: Widgets
 Requires:
 Name: QStackedWidget
 SeeAlso: ???
 
 Feature: TEXTBROWSER
+Description: Supports HTML document browsing.
 Section: Widgets
 Requires: TEXTEDIT
 Name: QTextBrowser
 SeeAlso: ???
 
 Feature: SPLASHSCREEN
+Description: Supports splash screens that can be shown during application startup.
 Section: Widgets
 Requires: 
 Name: Splash screen widget
 SeeAlso: ???
 
 Feature: SPLITTER
+Description: Supports user controlled splitter widgets.
 Section: Widgets
 Requires: RUBBERBAND
-Name: Splitters
+Name: QSplitter
 SeeAlso: ???
 
 Feature: LCDNUMBER
+Description: Supports LCD-like digits. 
 Section: Widgets
 Requires:
 Name: QLCDNumber
 SeeAlso: ???
 
 Feature: MENU
+Description: Supports popup-menus.
 Section: Widgets
 Requires: ACTION
-Name: Popup-menus
+Name: QMenu
 SeeAlso: ???
 
 Feature: LINEEDIT
+Description: Supports single-line edits.
 Section: Widgets
 Requires:
-Name: Single-line edits
+Name: QLineEdit
 SeeAlso: ???
 
 Feature: SPINBOX
+Description: Supports spin boxes handling integers and discrete sets of values.
 Section: Widgets
 Requires: SPINWIDGET LINEEDIT VALIDATOR
-Name: Spin boxes
+Name: QSpinBox
 SeeAlso: ???
 
 Feature: TABBAR
+Description: Supports tab bars, e.g. for use in tabbed dialogs.
 Section: Widgets
 Requires: TOOLBUTTON
-Name: Tab-bars
+Name: QTabBar
 SeeAlso: ???
 
 Feature: TABWIDGET
+Description: Supports stacking tabbed widgets.
 Section: Widgets
 Requires: TABBAR STACKEDWIDGET
-Name: Tab widgets
+Name: QTabWidget
 SeeAlso: ???
 
 Feature: COMBOBOX
+Description: Supports comboboxes presenting a list of options to the user.
 Section: Widgets
 Requires: LINEEDIT STANDARDITEMMODEL LISTVIEW
 Name: QComboBox
 SeeAlso: ???
 
 Feature: TOOLBUTTON
+Description: Supports quick-access buttons to commands and options.
 Section: Widgets
 Requires: ICON ACTION
-Name: Tool-buttons
+Name: QToolButton
 SeeAlso: ???
 
 Feature: TOOLBAR
+Description: Supports movable panels containing a set of controls.
 Section: Widgets
 Requires: MAINWINDOW
-Name: Toolbars
+Name: QToolBar
 SeeAlso: ???
 
 Feature: TOOLBOX
+Description:  Supports columns of tabbed widget items.
 Section: Widgets
 Requires: ICON TOOLTIP TOOLBUTTON SCROLLAREA
-Name: Tool box
+Name: QToolBox
 SeeAlso: ???
 
 Feature: GROUPBOX
+Description: Supports group box frames.
 Section: Widgets
 Requires:
-Name: Group boxes
+Name: QGroupBox
 SeeAlso: ???
 
 Feature: BUTTONGROUP
+Description: Supports organizing groups of button widgets.
 Section: Widgets
 Requires: GROUPBOX 
-Name: Button groups
+Name: QButtonGroup
 SeeAlso: ???
 
 Feature: MAINWINDOW
+Description: Supports main application windows.
 Section: Widgets
 Requires: MENU RESIZEHANDLER TOOLBUTTON
-Name: Main-windows
+Name: QMainWindow
 SeeAlso: ???
 
 Feature: DOCKWIDGET
+Description: Supports docking widgets inside a QMainWindow or floated as 
+a top-level window on the desktop.
 Section: Widgets
 Requires: RUBBERBAND MAINWINDOW
-Name: Main-windows
+Name: QDockwidget
 SeeAlso: ???
 
 Feature: WORKSPACE
+Description: Supports workspace windows, e.g. used in an MDI application. 
 Section: Widgets
 Requires: SCROLLBAR RESIZEHANDLER MENU TOOLBUTTON MAINWINDOW TOOLBAR MENUBAR
 Name: QWorkSpace
 SeeAlso: ???
 
 Feature: RESIZEHANDLER
+Description: Supports an internal resize handler.
 Section: Widgets
 Requires:
-Name: Internal resize handler
+Name: Resize Handler
 SeeAlso: ???
 
 Feature: STATUSBAR
+Description: Supports presentation of status information.
 Section: Widgets
 Requires:
-Name: Status bars
+Name: QStatusBar
 SeeAlso: ???
 
 Feature: MENUBAR
+Description: Supports pull-down menu items.
 Section: Widgets
 Requires: MENU TOOLBUTTON
-Name: Menu bars
+Name: QMenuBar
 SeeAlso: ???
 
 Feature: PROGRESSBAR
+Description: Supports presentation of operation progress.
 Section: Widgets
 Requires:
-Name: Progress bars
+Name: QProgressBar
 SeeAlso: ???
 
 Feature: SLIDER
+Description: Supports sliders controlling a bounded value.
 Section: Widgets
 Requires:
-Name: Sliders
+Name: QSlider
 SeeAlso: ???
 
 Feature: SCROLLBAR
+Description: Supports scrollbars allowing the user access parts of a 
+document that is larger than the widget used to display it. 
 Section: Widgets
 Requires: SLIDER
-Name: Scroll bars
+Name: QScrollBar
 SeeAlso: ???
 
 Feature: DIAL
+Description: Supports rounded range control, e.g. like a speedometer.
 Section: Widgets
 Requires: SLIDER
-Name: Dials
+Name: QDial
 SeeAlso: ???
 
 Feature: SCROLLAREA
+Description: Supports scrolling views onto widgets.
 Section: Widgets
 Requires: SCROLLBAR
 Name: QScrollArea
 SeeAlso: ???
 
 Feature: SPINWIDGET
+Description: Supports spinbox control widgets.
 Section: Widgets
 Requires:
-Name: Spinbox control widget
+Name: Spin Widget
 SeeAlso: ???
 
 Feature: TEXTEDIT
+Description: Supports rich text editing.
 Section: Widgets
 Requires: SCROLLAREA
-Name: Rich text edit
+Name: QTextEdit
 SeeAlso: ???
 
 Feature: SYNTAXHIGHLIGHTER
+Description: Supports custom syntax highlighting. 
 Section: Widgets
 Requires: TEXTEDIT
 Name: QSyntaxHighlighter
 SeeAlso: ???
 
 Feature: RUBBERBAND
+Description: Supports using rubberbands to indicate selections and boundaries.
 Section: Widgets
 Requires:
 Name: QRubberBand
 SeeAlso: ???
 
 Feature: TOOLTIP
+Description: Supports presentation of tooltips.
 Section: Widgets
 Requires:
-Name: Tool tips
+Name: QToolTip
 SeeAlso: ???
 
 Feature: STATUSTIP
+Description: Supports status tip functionality and events.
 Section: Widgets
 Requires:
-Name: QStatusTip
+Name: Status Tip
+SeeAlso: ???
+
+Feature: SIGNALMAPPER
+Description: Supports bundling of signals from identifiable senders.
+Section: Widgets
+Requires:
+Name: QSignalMapper
 SeeAlso: ???
 
 Feature: WHATSTHIS
+Description: Supports displaying "What's this" help.
 Section: Widgets
 Requires: TOOLBUTTON ACTION
-Name: "What's this" help
+Name: QWhatsThis
 SeeAlso: ???
 
 Feature: VALIDATOR
+Description: Supports validation of input text.
 Section: Widgets
 Requires:
-Name: Input validators
+Name: QValidator
 SeeAlso: ???
 
 Feature: SIZEGRIP
+Description: Supports corner-grips for resizing a top-level windows.
 Section: Widgets
 Requires:
 Name: QSizeGrip
@@ -369,54 +438,64 @@ SeeAlso: ???
 # Dialogs
 
 Feature: MESSAGEBOX
+Description: Supports message boxes displaying  
+informative messages and simple questions.
 Section: Dialogs
 Requires:
 Name: QMessageBox
 SeeAlso: ???
 
 Feature: COLORDIALOG
+Description: Supports a dialog widget for specifying colors.
 Section: Dialogs
 Requires: LINEEDIT VALIDATOR SPINBOX
 Name: QColorDialog
 SeeAlso: ???
 
 Feature: FILEDIALOG
+Description: Supports a dialog widget for selecting files or directories. 
 Section: Dialogs
 Requires: DIRMODEL TREEVIEW MESSAGEBOX COMBOBOX TOOLBUTTON BUTTONGROUP 
 Name: QFileDialog
 SeeAlso: ???
 
 Feature: FONTDIALOG
+Description: Supports a dialog widget for selecting fonts.
 Section: Dialogs
 Requires: STRINGLISTMODEL COMBOBOX VALIDATOR GROUPBOX
 Name: QFontDialog
 SeeAlso: ???
 
 Feature: PRINTDIALOG
+Description: Supports a dialog widget for specifying printer configuration.
 Section: Dialogs
 Requires: PRINTER COMBOBOX BUTTONGROUP SPINBOX TREEVIEW
 Name: QPrintDialog
 SeeAlso: ???
 
 Feature: PROGRESSDIALOG
+Description: Supports feedback on the progress of a slow operation.
 Section: Dialogs
 Requires: PROGRESSBAR
 Name: QProgressDialog
 SeeAlso: ???
 
 Feature: INPUTDIALOG
+Description: Supports a simple convenience dialog to get a single value from the user.
 Section: Dialogs
 Requires: COMBOBOX SPINBOX STACKEDWIDGET
 Name: QInputDialog
 SeeAlso: ???
 
 Feature: TABDIALOG
+Description: Supports a stack of tabbed widgets.
 Section: Dialogs
 Requires: TABBAR
 Name: Q3TabDialog
 SeeAlso: ???
 
 Feature: ERRORMESSAGE
+Description:  Supports an error message display dialog.
 Section: Dialogs
 Requires: TEXTEDIT
 Name: QErrorMessage
@@ -425,54 +504,65 @@ SeeAlso: ???
 # ItemViews
 
 Feature: ITEMVIEWS
+Description: Supports the model/view architecture managing the relationship 
+between data and the way it is presented to the user.
 Section: ItemViews
 Requires: RUBBERBAND SCROLLAREA
 Name: The Model/View Framework
 SeeAlso: ???
 
 Feature: DIRMODEL
+Description: Supports a data model for the local filesystem.
 Section: ItemViews
 Requires: ITEMVIEWS
 Name: QDirModel
 SeeAlso: ???
 
 Feature: STANDARDITEMMODEL
+Description: Supports a generic model for storing custom data.
 Section: ItemViews
 Requires: ITEMVIEWS
 Name: QStandardItemModel
 SeeAlso: ???
 
 Feature: PROXYMODEL
+Description: Supports processing of data passed between another model and a view.
 Section: ItemViews
 Requires: ITEMVIEWS
 Name: QAbstractProxyModel
 SeeAlso: ???
 
 Feature: SORTFILTERPROXYMODEL
+Description: Supports sorting and filtering of data passed between 
+another model and a view. 
 Section: ItemViews
 Requires: PROXYMODEL
 Name: QSortFilterProxyModel
 SeeAlso: ???
 
 Feature: STRINGLISTMODEL
+Description: Supports a model that supplies strings to views.
 Section: ItemViews
 Requires: ITEMVIEWS
 Name: QStringListModel
 SeeAlso: ???
 
 Feature: LISTVIEW
+Description: Supports a list or icon view onto a model.
 Section: ItemViews
 Requires: ITEMVIEWS
 Name: QListView
 SeeAlso: ???
 
 Feature: TABLEVIEW
+Description: Supports a default model/view implementation of a table view. 
 Section: ItemViews
 Requires: ITEMVIEWS 
 Name: QTableView
 SeeAlso: ???
 
 Feature: TREEVIEW
+Description: Supports a default model/view implementation of a tree view.
 Section: ItemViews
 Requires: ITEMVIEWS
 Name: QTreeView
@@ -481,325 +571,374 @@ SeeAlso: ???
 # Styles
 
 Feature: STYLE_WINDOWS
+Description: Supports a Microsoft Windows-like look and feel. 
 Section: Styles
 Requires:
-Name: Windows style
+Name: QWindowsStyle
 SeeAlso: ???
 
 Feature: STYLE_MOTIF
+Description: Supports a Motif look and feel. 
 Section: Styles
 Requires:
-Name: Motif style
+Name: QMotifStyle
 SeeAlso: ???
 
 Feature: STYLE_CDE
+Description:  Supports a CDE look and feel. 
 Section: Styles
 Requires: STYLE_MOTIF
-Name: CDE style
+Name: QCDEStyle
 SeeAlso: ???
 
 Feature: STYLE_PLASTIQUE
+Description: Supports a widget style similar to the Plastik style available in KDE.
 Section: Styles
 Requires: STYLE_WINDOWS IMAGEFORMAT_XPM
-Name: Plastique style
+Name: QPlastiqueStyle
 SeeAlso: ???
 
 Feature: STYLE_WINDOWSXP
+Description: Supports a Microsoft WindowsXP-like look and feel.
 Section: Styles
 Requires: STYLE_WINDOWS
-Name: WindowsXP style
+Name: QWindowsXPStyle
 SeeAlso: ???
 
 # Images
 
 Feature: IMAGEFORMATPLUGIN
+Description: Supports writing an image format plugin.
 Section: Images
 Requires: 
-Name: QImageFormatPlugin
-SeeAlso: ???
-
-Feature: SIGNALMAPPER
-Section: Widgets
-Requires:
-Name: QSignalMapper
+Name: QImageIOPlugin
 SeeAlso: ???
 
 Feature: ICON
+Description: Supports scalable icons in different modes and states.
 Section: Images
 Requires: IMAGE_HEURISTIC_MASK
 Name: QIcon
 SeeAlso: ???
 
 Feature: MOVIE
+Description: Supports animated images.
 Section: Images
 Requires:
-Name: Animated images
+Name: QMovie
 SeeAlso: ???
 
 Feature: IMAGEFORMAT_BMP
+Description: Supports Microsoft's  Bitmap image file format.
 Section: Images
 Requires:
-Name: BMP image I/O
+Name: BMP Image Format
 SeeAlso: ???
 
 Feature: IMAGEFORMAT_PPM
+Description: Supports the Portable Pixmap image file format.
 Section: Images
 Requires: 
-Name: PPM image I/O
+Name: PPM Image Format
 SeeAlso: ???
 
 Feature: IMAGEFORMAT_XBM
+Description: Supports the X11 Bitmap image file format.
 Section: Images
 Requires: 
-Name: XBM image I/O
+Name: XBM Image Format
 SeeAlso: ???
 
 Feature: IMAGEFORMAT_XPM
+Description: Supports the X11 Pixmap image file format.
 Section: Images
 Requires: TEXTSTREAM
-Name: XPM image I/O
+Name: XPM Image Format
 SeeAlso: ???
 
 Feature: IMAGEFORMAT_PNG
+Description: Supports the Portable Network Graphics image file format.
 Section: Images
 Requires: 
-Name: PNG image I/O
+Name: PNG Image Format
 SeeAlso: ???
 
 Feature: IMAGEFORMAT_JPEG
+Description: Supports the Joint Photographic Experts Group image file format.
 Section: Images
 Requires: 
-Name: JPEG image I/O
+Name: JPEG Image Format
 SeeAlso: ???
 
 Feature: IMAGE_HEURISTIC_MASK
+Description: Supports creating a 1-bpp heuristic mask for images.
 Section: Images
 Requires:
 Name: QImage::createHeuristicMask()
 SeeAlso: ???
 
 Feature: IMAGE_TEXT
+Description: Supports image file text strings.
 Section: Images
 Requires:
-Name: Image file text strings
+Name: Image Text
 SeeAlso: ???
 
 # Painting
 
 Feature: DIRECTPAINTER
+Description: Supports direct access to the video hardware.
 Section: Painting
 Requires:
 Name: QDirectPainter
 SeeAlso: ???
 
 Feature: PICTURE
+Description: Supports recording and replaying QPainter commands.
 Section: Painting
 Requires: 
 Name: QPicture
 SeeAlso: ???
 
 Feature: COLORNAMES
+Description: Supports color names such as "red", used by QColor
+and by some HTML documents.
 Section: Painting
 Requires:
-Name: Named colors
+Name: Color Names
 SeeAlso: ???
 
 Feature: PRINTER
+Description: Supports printing 
 Section: Painting
 Requires: TEXTSTREAM FILEDIALOG
-Name: Printing
+Name: QPrinter
 SeeAlso: ???
 
 # Fonts
 
 Feature: FREETYPE
+Description: Supports the FreeType 2 font engine (and its supported font formats).
 Section: Fonts
 Requires:
-Name: Freetype font engine
+Name: Freetype Font Engine
 SeeAlso: ???
 
 Feature: QWS_QPF
+Description: Supports Qt's pre-rendered fonts, a light-weight non-scalable font format 
+specific to Qtopia Core.
 Section: Fonts
 Requires:
-Name: Pre-rendered fonts
+Name: Qt Prerendered Font Format
 SeeAlso: ???
 
 # Internationalization
 
 Feature: TEXTCODECPLUGIN
+Description: Supports custom text codecs that can be loaded dynamically into applications.
 Section: Internationalization
 Requires: TEXTCODEC LIBRARY
 Name: QTextCodecPlugin
 SeeAlso: ???
 
 Feature: TRANSLATION
+Description: Supports translations using QObject::tr().
 Section: Internationalization
 Requires:
-Name: Translations via QObject::tr()
+Name: Translation
 SeeAlso: ???
 
 Feature: TRANSLATION_UTF8
+Description: Supports translations using QObject::trUtf8().
 Section: Internationalization
 Requires: TRANSLATION TEXTCODEC
-Name: Translations via QObject::trUtf8()
+Name: Translation (UTF-8 representation) 
 SeeAlso: ???
 
 Feature: TEXTCODEC
+Description: Supports conversions between text encodings.
 Section: Internationalization
 Requires:
-Name: Character set conversions
+Name: QTextCodec
 SeeAlso: ???
 
 Feature: CODECS
+Description: Supports non-unicode text conversions.
 Section: Internationalization
 Requires: TEXTCODEC
-Name: Non-Unicode text conversions
+Name: Codecs
 SeeAlso: ???
 
 Feature: BIG_CODECS
+Description: Supports big codecs, e.g. CJK.
 Section: Internationalization
 Requires: 
-Name: Big Codecs (eg. CJK)
+Name: Big Codecs
 SeeAlso: ???
 
 Feature: QWS_INPUTMETHODS
+Description: Supports international input methods.
 Section: Internationalization
 Requires: 
-Name: Input methods
+Name: QWSInputMethod
 SeeAlso: ???
 
 # Networking
 
 Feature: URLINFO
+Description: Supports storage of URL information.
 Section: Networking
 Requires: 
 Name: QUrlInfo
 SeeAlso: ???
 
 Feature: HOSTINFO
+Description: Supports host name lookups.
 Section: Networking
 Requires: TEXTSTREAM 
 Name: QHostInfo
 SeeAlso: ???
 
 Feature: FTP
+Description: Supports FTP file access.
 Section: Networking
 Requires: URLINFO TEXTDATE
-Name: FTP file access
+Name: File Transfer Protocol
 SeeAlso: ???
 
 Feature: HTTP
+Description: Supports HTTP file access.
 Section: Networking
 Requires: HOSTINFO
-Name: HTTP file access
+Name: Hyper Text Transfer Protocol
 SeeAlso: ???
 
 Feature: UDPSOCKET
+Description: Supports User Datagram Protocol sockets.
 Section: Networking
 Requires: 
 Name: QUdpSocket
 SeeAlso: ???
 
 Feature: NETWORKPROXY
+Description: Supports configuring network layer proxy support to the Qt network classes.
 Section: Networking
 Requires: 
 Name: QNetworkProxy
 SeeAlso: ???
 
 Feature: SOCKS5
+Description: Supports SOCKS v5 network proxy.
 Section: Networking
 Requires: NETWORKPROXY
-Name: SOCKS v5 network proxy
+Name:  SOCKS5
 SeeAlso: ???
 
 Feature: COP
+Description: Supports the QCOP protocol, which is a many-to-many
+communication protocol for transferring messages on various
+channels, and Inter Process Communications (IPC).
 Section: Networking
 Requires:
-Name: QCop IPC
+Name: QCopChannel
 SeeAlso: ???
 
-# Qt/Embedded-specific
+# Qtopia Core
 
 Feature: QWS_SOUNDSERVER
-Section: Qt/Embedded-specific
+Description: Supports servers playing sounds.
+Section: Qtopia Core
 Requires: SOUND HOSTINFO QWS_MULTIPROCESS
-Name: Server to play sound
+Name: Sound Server
 SeeAlso: ???
 
 Feature: QWS_MULTIPROCESS
-Section: Qt/Embedded-specific
+Description: Supports multi-process architecture.
+Section: Qtopia Core
 Requires:
-Name: Multi-process architecture
+Name: Multi-Process
 SeeAlso: ???
 
 Feature: QWS_KEYBOARD
-Section: Qt/Embedded-specific
+Description: Supports the console keyboard.
+Section: Qtopia Core
 Requires:
-Name: Console keyboard
+Name: Keyboard
 SeeAlso: ???
 
 Feature: QWS_CURSOR
-Section: Qt/Embedded-specific
+Description: Supports visible cursors.
+Section: Qtopia Core
 Requires: CURSOR
-Name: Visible cursor
+Name: Cursor
 SeeAlso: ???
 
 Feature: QWS_ALPHA_CURSOR
-Section: Qt/Embedded-specific
+Description: Supports alpha-blended cursors.
+Section: Qtopia Core
 Requires:
-Name: Alpha-blended cursor
+Name: Alpha Cursor
 SeeAlso: ???
 
 Feature: QWS_MANAGER
-Section: Qt/Embedded-specific
+Description: Supports the window manager.
+Section: Qtopia Core
 Requires: QWS_DECORATION_DEFAULT
-Name: Window Manager
+Name: Manager
 SeeAlso: ???
 
 Feature: QWS_DECORATION_DEFAULT
-Section: Qt/Embedded-specific
+Description: Supports default decoration of the top level windows. 
+Section: Qtopia Core
 Requires: 
-Name:
+Name: Decoration
 SeeAlso: ???
 
 Feature: QWS_DECORATION_WINDOWS
-Section: Qt/Embedded-specific
+Description: Supports a "Windows" style decoration of the top level windows. 
+Section: Qtopia Core
 Requires: QWS_DECORATION_DEFAULT
-Name: The "Windows" style
+Name: Decoration (Windows Style)
 SeeAlso: ???
 
 Feature: QWS_DECORATION_STYLED
-Section: Qt/Embedded-specific
+Description: Supports styled decoration of the top level windows. 
+Section: Qtopia Core
 Requires: QWS_DECORATION_DEFAULT
-Name:
+Name: Decoration (Styled)
 SeeAlso: ???
 
 Feature: QWS_MOUSE
-Section: Qt/Embedded-specific
+Description: Supports mouse drivers.
+Section: Qtopia Core
 Requires:
 Name: Mouse
 SeeAlso: ???
 
 Feature: QWS_MOUSE_AUTO
-Section: Qt/Embedded-specific
+Description: Supports auto-detected mouse drivers.
+Section: Qtopia Core
 Requires:
-Name: Autodetecting mouse driver
+Name: Mouse (Auto)
 SeeAlso: ???
 
 Feature: QWS_MOUSE_MANUAL
-Section: Qt/Embedded-specific
+Description: Supports non-autodetected mouse drivers.
+Section: Qtopia Core
 Requires:
-Name: Non-autodetecting mouse driver
+Name: Mouse (Non-Auto)
 SeeAlso: ???
 
 Feature: QWS_PROPERTIES
-Section: Qt/Embedded-specific
+Description: Supports window system properties.
+Section: Qtopia Core
 Requires:
-Name: Qt/Embedded window system properties.
+Name: Properties
 SeeAlso: ???
 
-Feature: SXV
-Section: Qt/Embedded-specific
+Feature: SXE
+Description: Supports Safe Execution Environment (experimental).
+Section: Qtopia Core
 Requires: QWS_MULTIPROCESS
-Name: Secure Execution Environment (experimental)
+Name: SXE
 SeeAlso: ???

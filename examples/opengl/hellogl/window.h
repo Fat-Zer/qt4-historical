@@ -37,7 +37,7 @@ public:
     Window();
 
 private:
-    QSlider *createSlider(const char *changedSignal, const char *setterSlot);
+    QSlider *createSlider();
 
     GLWidget *glWidget;
     QSlider *xSlider;

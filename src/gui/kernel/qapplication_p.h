@@ -173,7 +173,11 @@ public:
 
     bool notify_helper(QObject *receiver, QEvent * e);
 
-    void construct();
+    void construct(
+#ifdef Q_WS_X11
+                   Display *dpy = 0, Qt::HANDLE visual = 0, Qt::HANDLE cmap = 0
+#endif
+                   );
     void initialize();
     void process_cmdline();
 
@@ -185,6 +189,7 @@ public:
     void closePopup(QWidget *popup);
     void openPopup(QWidget *popup);
     static void setFocusWidget(QWidget *focus, Qt::FocusReason reason);
+    static QWidget *focusNextPrevChild_helper(QWidget *toplevel, bool next);
 
 #ifndef QT_NO_SESSIONMANAGER
     QSessionManager *session_manager;
@@ -255,6 +260,8 @@ public:
 
 #if defined(Q_WS_X11)
     static void applyX11SpecificCommandLineArguments(QWidget *main_widget);
+#elif defined(Q_WS_QWS)
+    static void applyQWSSpecificCommandLineArguments(QWidget *main_widget);
 #endif
 
 #ifdef Q_WS_MAC
@@ -282,6 +289,8 @@ public:
     static bool keypadNavigation;
     static QWidget *oldEditFocus;
 #endif
+
+    void _q_tryEmitLastWindowClosed();
 
 private:
     static QApplicationPrivate *self;

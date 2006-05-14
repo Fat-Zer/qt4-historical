@@ -40,7 +40,7 @@ public:
 
 #ifndef QT_NO_QOBJECT
     // private slots
-    void emitSignals();
+    void _q_emitSignals();
 
     bool signalsEmitted;
     qint64 writtenSinceLastEmit;
@@ -53,7 +53,7 @@ public:
 };
 
 #ifndef QT_NO_QOBJECT
-void QBufferPrivate::emitSignals()
+void QBufferPrivate::_q_emitSignals()
 {
     Q_Q(QBuffer);
     emit q->bytesWritten(writtenSinceLastEmit);
@@ -438,7 +438,7 @@ qint64 QBuffer::writeData(const char *data, qint64 len)
     d->writtenSinceLastEmit += len;
     if (!d->signalsEmitted) {
         d->signalsEmitted = true;
-        QMetaObject::invokeMethod(this, "emitSignals", Qt::QueuedConnection);
+        QMetaObject::invokeMethod(this, "_q_emitSignals", Qt::QueuedConnection);
     }
 #endif
     return len;

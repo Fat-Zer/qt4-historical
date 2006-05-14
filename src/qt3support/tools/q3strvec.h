@@ -28,6 +28,8 @@
 #include <Qt3Support/q3ptrvector.h>
 #include <QtCore/qdatastream.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Qt3SupportLight)
 
 class Q3StrVec : public Q3PtrVector<char>
@@ -63,5 +65,7 @@ private:
 				{ return qstricmp((const char*)s1,
 						 (const char*)s2); }
 };
+
+QT_END_HEADER
 
 #endif // Q3STRVEC_H

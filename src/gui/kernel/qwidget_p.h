@@ -291,7 +291,7 @@ public:
     static int maxInstances; // Maximum number of widget instances
 
 #ifdef QT_KEYPAD_NAVIGATION
-    static QWidget *editingWidget;
+    static QPointer<QWidget> editingWidget;
 #endif
 
     QWidgetData data;

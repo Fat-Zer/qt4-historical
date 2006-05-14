@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-mac-opensource-src-4.1.2/doc/src/qmake-manual.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-mac-opensource-src-4.1.3/doc/src/qmake-manual.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-mac-opensource-src-4.1.3/doc/src/qmake-manual.qdoc -->
 <head>
     <title>Qt 4.1: qmake Project Files</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -112,22 +113,27 @@ body { background: #ffffff; color: black; }</style>
 <p>The only system variable that is recognised for this template is the <tt>SUBDIRS</tt> variable. This variable contains a list of all the subdirectories that contain project files to be processed. It is essential that the project file in each subdirectory has the same name as the subdirectory, so that <tt>qmake</tt> can find it. For example, if the subdirectory is called <tt>myapp</tt> then the project file in that directory should be called <tt>myapp.pro</tt>.</p>
 <a name="generalconfiguration"></a><a name="general-configuration"></a>
 <h2>General Configuration</h2>
-<p>The <tt>CONFIG</tt> variable specifies the options and features that the compiler should use and the libraries that should be linked against. Anything can be added to the <tt>CONFIG</tt> variable, but the options covered below are recognized by <tt>qmake</tt> internally.</p>
+<p>The <a href="qmake-variable-reference.html#config">CONFIG variable</a> specifies the options and features that the compiler should use and the libraries that should be linked against. Anything can be added to the <tt>CONFIG</tt> variable, but the options covered below are recognized by <tt>qmake</tt> internally.</p>
 <p>The following options control the compiler flags that are used to build the project:</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Option</th><th>Description</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>release</td><td>The project is to be built in release mode. This is ignored if <tt>debug</tt> is also specified.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>debug</td><td>The project is to be built in debug mode.</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>debug_and_release</td><td>The project is built in <i>both</i> debug and release modes.</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td>build_all</td><td>If <tt>debug_and_release</tt> is specified, the project is built in both debug and release modes by default.</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>warn_on</td><td>The compiler should output as many warnings as possible. This is ignored if <tt>warn_off</tt> is specified.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>warn_off</td><td>The compiler should output as few warnings as possible.</td></tr>
 </table></p>
-<p>Note that each of the options specified in the <tt>CONFIG</tt> variable can also be used as a condition in scopes. This enables different configurations to be defined for <tt>release</tt> and <tt>debug</tt> builds, and is described in more detail in the <a href="qmake-advanced-usage.html#scopes">Scopes</a> section of the Advanced Usage chapter of this manual.</p>
-<p>You can test for the presence of certain configuration options by using the built-in <a href="qmake-function-reference.html#config-config">CONFIG()</a> function. For example, the following lines show the function as the condition in a scope to test whether only the <tt>debug</tt> option is in use:</p>
-<pre>&nbsp;   CONFIG(debug, debug|release) {
-        message(Building in debug mode.)
+<p>The <tt>debug_and_release</tt> option is special in that it enables <i>both</i> debug and release versions of a project to be built. In such a case, the Makefile that <tt>qmake</tt> generates includes a rule that builds both versions, and this can be invoked in the following way:</p>
+<pre>&nbsp;   make all</pre>
+<p>Adding the <tt>build_all</tt> option to the <tt>CONFIG</tt> variable makes this rule the default when building the project, and installation targets will be created for both debug and release builds.</p>
+<p>Note that each of the options specified in the <tt>CONFIG</tt> variable can also be used as a scope condition. You can test for the presence of certain configuration options by using the built-in <a href="qmake-function-reference.html#config-config">CONFIG()</a> function. For example, the following lines show the function as the condition in a scope to test whether only the <tt>opengl</tt> option is in use:</p>
+<pre>&nbsp;   CONFIG(opengl) {
+        message(Building with OpenGL support.)
     } else {
-        message(Building in release mode. Ignoring debug if it is available.)
+        message(OpenGL support is not available.)
     }</pre>
+<p>This enables different configurations to be defined for <tt>release</tt> and <tt>debug</tt> builds, and is described in more detail in the <a href="qmake-advanced-usage.html#scopes">Scopes</a> section of the <a href="qmake-advanced-usage.html">Advanced Usage</a> chapter of this manual.</p>
 <p>The following options define the type of project to be built. Note that some of these options only take effect when used on the relevant platform. On other platforms, they have no effect.</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Option</th><th>Description</th></tr>
@@ -144,9 +150,9 @@ body { background: #ffffff; color: black; }</style>
 <p>If you enable qmake's support for Qt with the <tt>CONFIG</tt> variable, it is possible to further specify which of the Qt libraries you will link with your application. This is achieved with the <tt>QT</tt> variable which can be used to declare the required extension modules. For example, we can enable the XML and network modules in the following way:</p>
 <pre>&nbsp;   CONFIG += qt
     QT += network xml</pre>
-<p>Note that <tt>QT</tt> includes the core and GUI modules by default, so the above declaration <i>adds</i> the network and XML modules to this default list. The following assignment <i>omits</i> the default modules, and will lead to errors when the application's source code is being compiled:</p>
-<pre>&nbsp;   QT = network xml # This will omit the core and GUI modules.</pre>
-<p>If you want to build a project <i>without</i> the GUI module, you need to exclude it with the &quot;-=&quot; operator. By default, <tt>QT</tt> contains both <tt>core</tt> and <tt>gui</tt>, so the following line will result in a minimal Qt project being built:</p>
+<p>Note that <tt>QT</tt> includes the <tt>core</tt> and <tt>gui</tt> modules by default, so the above declaration <i>adds</i> the network and XML modules to this default list. The following assignment <i>omits</i> the default modules, and will lead to errors when the application's source code is being compiled:</p>
+<pre>&nbsp;   QT = network xml # This will omit the core and gui modules.</pre>
+<p>If you want to build a project <i>without</i> the <tt>gui</tt> module, you need to exclude it with the &quot;-=&quot; operator. By default, <tt>QT</tt> contains both <tt>core</tt> and <tt>gui</tt>, so the following line will result in a minimal Qt project being built:</p>
 <pre>&nbsp;   QT -= gui # Only the core module is used.</pre>
 <p>The table below shows the options that can be used with the <tt>QT</tt> variable and the features that are associated with each of them:</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
@@ -160,12 +166,13 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#f0f0f0"><td>xml</td><td><a href="qtxml.html">QtXml</a> module</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>qt3support</td><td><a href="qt3support.html">Qt3Support</a> module</td></tr>
 </table></p>
+<p>Note that adding the <tt>opengl</tt> option to the <tt>QT</tt> variable automatically causes the equivalent option to be added to the <tt>CONFIG</tt> variable. Therefore, for Qt applications, it is not necessary to add the <tt>opengl</tt> option to both <tt>CONFIG</tt> and <tt>QT</tt>.</p>
 <a name="configuration-features"></a>
 <h2>Configuration Features</h2>
 <p><tt>qmake</tt> can be set up with extra configuration features that are specified in feature (.prf) files. These extra features often provide support for custom tools that are used during the build process. To add a feature to the build process, append the feature name (the stem of the feature filename) to the <tt>CONFIG</tt> variable.</p>
 <p>For example, <tt>qmake</tt> can configure the build process to take advantage of external libraries that are supported by <a href="http://www.freedesktop.org/wiki/Software_2fpkgconfig">pkg-config</a>, such as the D-BUS and ogg libraries, with the following lines:</p>
-<pre>&nbsp;       CONFIG += link_pkgconfig
-        PKGCONFIG += ogg dbus-1</pre>
+<pre>&nbsp;   CONFIG += link_pkgconfig
+    PKGCONFIG += ogg dbus-1</pre>
 <p>More information about features can be found in the <a href="qmake-advanced-usage.html#adding-new-configuration-features">Adding New Configuration Features</a> section of the <a href="qmake-advanced-usage.html">qmake Advanced Usage</a> chapter.</p>
 <p>
 [Previous: <a href="qmake-using.html">Using qmake</a>]
@@ -176,6 +183,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

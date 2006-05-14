@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-mac-opensource-src-4.1.2/src/gui/widgets/qtextedit.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-mac-opensource-src-4.1.3/src/gui/widgets/qtextedit.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-mac-opensource-src-4.1.3/src/gui/widgets/qtextedit.cpp -->
 <head>
     <title>Qt 4.1: QTextEdit Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -116,7 +117,7 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/>8 public functions inherited from <a href="qabstractscrollarea.html#public-functions">QAbstractScrollArea</a></li>
 <li><div class="fn"/>13 public functions inherited from <a href="qframe.html#public-functions">QFrame</a></li>
-<li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>190 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -190,10 +191,10 @@ body { background: #ffffff; color: black; }</style>
 <p>The QTextEdit class provides a widget that is used to edit and display both plain and rich text.</p>
 <ul><li><a href="#introduction-and-concepts">Introduction and Concepts</a></li>
 <li><a href="#using-qtextedit-as-a-display-widget">Using QTextEdit as a Display Widget</a></li>
-<ul><li><a href="#read-only-key-bindings">Read-only key bindings</a></li>
+<ul><li><a href="#read-only-key-bindings">Read-only Key Bindings</a></li>
 </ul>
 <li><a href="#using-qtextedit-as-an-editor">Using QTextEdit as an Editor</a></li>
-<ul><li><a href="#editing-key-bindings">Editing key bindings</a></li>
+<ul><li><a href="#editing-key-bindings">Editing Key Bindings</a></li>
 </ul>
 </ul>
 <a name="introduction-and-concepts"></a>
@@ -211,8 +212,8 @@ body { background: #ffffff; color: black; }</style>
 <p>By default the text edit wraps words at whitespace to fit within the text edit widget. The <a href="qtextedit.html#lineWrapMode-prop">setLineWrapMode</a>() function is used to specify the kind of line wrap you want, or <a href="qtextedit.html#LineWrapMode-enum">NoWrap</a> if you don't want any wrapping. Call <a href="qtextedit.html#lineWrapMode-prop">setLineWrapMode</a>() to set a fixed pixel width <a href="qtextedit.html#LineWrapMode-enum">FixedPixelWidth</a>, or character column (e.g. 80 column) <a href="qtextedit.html#LineWrapMode-enum">FixedColumnWidth</a> with the pixels or columns specified with <a href="qtextedit.html#lineWrapColumnOrWidth-prop">setLineWrapColumnOrWidth</a>(). If you use word wrap to the widget's width <a href="qtextedit.html#LineWrapMode-enum">WidgetWidth</a>, you can specify whether to break on whitespace or anywhere with <a href="qtextedit.html#wordWrapMode-prop">setWordWrapMode</a>().</p>
 <p>The <a href="qtextedit.html#find">find</a>() function can be used to find and select a given string within the text.</p>
 <a name="read-only-key-bindings"></a>
-<h4>Read-only key bindings</h4>
-<p>When QTextEdit is used read-only the key-bindings are limited to navigation, and text may only be selected with the mouse:</p>
+<h4>Read-only Key Bindings</h4>
+<p>When QTextEdit is used read-only the key bindings are limited to navigation, and text may only be selected with the mouse:</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Keypresses</th><th>Action</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#ArrowType-enum">Qt::UpArrow</a></td><td>Moves one line up.</td></tr>
@@ -225,6 +226,7 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#e0e0e0"><td>End</td><td>Moves to the end of the text.</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>Alt+Wheel</td><td>Scrolls the page horizontally (the Wheel is the mouse wheel).</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>Ctrl+Wheel</td><td>Zooms the text.</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td>Ctrl+A</td><td>Selects all text.</td></tr>
 </table></p>
 <p>The text edit may be able to provide some meta-information. For example, the <a href="qtextedit.html#documentTitle-prop">documentTitle</a>() function will return the text from within HTML <tt>&lt;title&gt;</tt> tags.</p>
 <a name="using-qtextedit-as-an-editor"></a>
@@ -235,23 +237,15 @@ body { background: #ffffff; color: black; }</style>
 <p>When the cursor is moved and the underlying formatting attributes change, the <a href="qtextedit.html#currentCharFormatChanged">currentCharFormatChanged</a>() signal is emitted to reflect the new attributes at the new cursor position.</p>
 <p>QTextEdit holds a <a href="qtextdocument.html">QTextDocument</a> object which can be retrieved using the <a href="qtextedit.html#document">document</a>() method. You can also set your own document object using <a href="qtextedit.html#setDocument">setDocument</a>(). <a href="qtextdocument.html">QTextDocument</a> emits a <a href="qtextedit.html#textChanged">textChanged</a>() signal if the text changes and it also provides a <a href="qtextedit-qt3.html#isModified">isModified</a>() function which will return true if the text has been modified since it was either loaded or since the last call to setModified with false as argument. In addition it provides methods for undo and redo.</p>
 <a name="editing-key-bindings"></a>
-<h4>Editing key bindings</h4>
-<p>The list of key-bindings which are implemented for editing:</p>
+<h4>Editing Key Bindings</h4>
+<p>The list of key bindings which are implemented for editing:</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" bgcolor="#a2c511"><th>Keypresses</th><th>Action</th></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>Backspace</td><td>Deletes the character to the left of the cursor.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>Delete</td><td>Deletes the character to the right of the cursor.</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>Ctrl+A</td><td>Moves the cursor to the beginning of the line.</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>Ctrl+B</td><td>Moves the cursor one character to the left.</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>Ctrl+C</td><td>Copy the selected text to the clipboard.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>Ctrl+Insert</td><td>Copy the selected text to the clipboard.</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>Ctrl+D</td><td>Delete the character to the right of the cursor.</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>Ctrl+E</td><td>Moves the cursor to the end of the line.</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>Ctrl+F</td><td>Moves the cursor one character to the right.</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>Ctrl+H</td><td>Deletes the character to the left of the cursor.</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>Ctrl+K</td><td>Deletes to the end of the line.</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>Ctrl+N</td><td>Moves the cursor one line down.</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>Ctrl+P</td><td>Moves the cursor one line up.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>Ctrl+V</td><td>Pastes the clipboard text into text edit.</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td>Shift+Insert</td><td>Pastes the clipboard text into text edit.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td>Ctrl+X</td><td>Deletes the selected text and copies it to the clipboard.</td></tr>
@@ -603,6 +597,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

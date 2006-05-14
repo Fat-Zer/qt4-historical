@@ -517,7 +517,7 @@ void TrWindow::findAgain()
 
     QModelIndex indxItem = stv->currentIndex();
     if (indxItem.isValid())
-        itemNo = indxItem.row() + 1;      // The for-loop condition for the ContextItem will rule this potential overflow on itemNo
+        itemNo = indxItem.row();
     QModelIndex indxScope = tv->currentIndex();
     if (indxScope.isValid())
         scopeNo = indxScope.row();
@@ -807,7 +807,7 @@ void TrWindow::about()
                     "Qt Commercial License Agreement. For details, see the file LICENSE "
                     "that came with this software distribution.<br/>"
 #endif
-                    "<br/>Copyright 2000-2006 Trolltech AS. All rights reserved."
+                    "<br/>Copyright (C) 2000-2006 Trolltech AS. All rights reserved."
                     "<br/><br/>The program is provided AS IS with NO WARRANTY OF ANY KIND,"
                     " INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A"
                     " PARTICULAR PURPOSE.<br/> "));
@@ -1791,8 +1791,7 @@ void TrWindow::readConfig()
         r.moveTopLeft(QApplication::desktop()->availableGeometry().topLeft());
 
     if (r.isValid()) {
-        resize(r.size());
-        move(r.topLeft());
+        setGeometry(r);
     } 
 
     QDockWidget *dw;

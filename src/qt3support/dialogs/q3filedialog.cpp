@@ -1944,14 +1944,7 @@ QString Q3FileDialogPrivate::File::text(int column) const
 
     switch(column) {
     case 0:
-        {
-            QString name = info.name();
-#ifdef Q_OS_WIN
-            if (info.isSymLink() && name.endsWith(".lnk"))
-                name = name.left(name.length() - 4);
-#endif
-            return name;
-        }
+        return info.name();
     case 1:
         if (info.isFile()) {
             QIODevice::Offset size = info.size();
@@ -3663,7 +3656,13 @@ void Q3FileDialog::okClicked()
             f = QUrlInfo(d->url.info(nameEdit->text().isEmpty() ? QString::fromLatin1(".") : nameEdit->text()));
         }
         if (f.isDir()) {
-            setUrl(Q3UrlOperator(d->url, Q3FileDialogPrivate::encodeFileName(f.name() + "/")));
+#if defined(Q_WS_WIN)
+            if (f.isSymLink())
+                setUrl(Q3UrlOperator(d->url, Q3FileDialogPrivate::encodeFileName(fn + "/")));
+            else
+#else
+                setUrl(Q3UrlOperator(d->url, Q3FileDialogPrivate::encodeFileName(f.name() + "/")));
+#endif
             d->checkForFilter = true;
             trySetSelection(true, d->url, true);
             d->checkForFilter = false;
@@ -5148,6 +5147,9 @@ const QPixmap * QWindowsIconProvider::pixmap(const QFileInfo &fi)
             return &defaultFile;
         }
         RegCloseKey(k2);
+
+        if (s.isEmpty())
+            return &defaultFile;
 
         QStringList lst = QStringList::split(",", s);
 

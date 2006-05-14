@@ -26,6 +26,8 @@
 
 #include <QtCore/QObject>
 
+QT_BEGIN_HEADER
+
 class QWidget;
 class QLayout;
 class QAction;
@@ -56,5 +58,7 @@ private:
     Q_DECLARE_PRIVATE(QUiLoader)
     Q_DISABLE_COPY(QUiLoader)
 };
+
+QT_END_HEADER
 
 #endif // QUILOADER_H

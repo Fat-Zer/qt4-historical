@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-mac-opensource-src-4.1.2/src/gui/widgets/qmainwindow.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-mac-opensource-src-4.1.3/src/gui/widgets/qmainwindow.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-mac-opensource-src-4.1.3/src/gui/widgets/qmainwindow.cpp -->
 <head>
     <title>Qt 4.1: QMainWindow Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -69,7 +70,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>Qt::ToolButtonStyle <b><a href="qmainwindow.html#toolButtonStyle-prop">toolButtonStyle</a></b> () const</li>
 </ul>
 <ul>
-<li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>190 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -194,7 +195,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="createPopupMenu"></a><a href="qmenu.html">QMenu</a> * QMainWindow::createPopupMenu ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>This function is called to create a popup menu when the user right-clicks on the menu bar, a toolbar or a dock widget. If you want to create a custom popup menu, reimplement this function and return the created popup menu. Ownership of the popup menu is transferred to the caller.</p>
 <h3 class="fn"><a name="dockWidgetArea"></a><a href="qt.html#DockWidgetArea-enum">Qt::DockWidgetArea</a> QMainWindow::dockWidgetArea ( <a href="qdockwidget.html">QDockWidget</a> * <i>dockwidget</i> ) const</h3>
-<p>Returns the <a href="qt.html#DockWidgetArea-enum">Qt::DockWidgetArea</a> for <i>dockwidget</i>.</p>
+<p>Returns the <a href="qt.html#DockWidgetArea-enum">Qt::DockWidgetArea</a> for <i>dockwidget</i>. If <i>dockwidget</i> has not been added to the main window, this function returns zero.</p>
 <p>See also <a href="qmainwindow.html#addDockWidget">addDockWidget</a>(), <a href="qmainwindow.html#splitDockWidget">splitDockWidget</a>(), and <a href="qt.html#DockWidgetArea-enum">Qt::DockWidgetArea</a>.</p>
 <h3 class="fn"><a name="iconSizeChanged"></a>void QMainWindow::iconSizeChanged ( const <a href="qsize.html">QSize</a> &amp; <i>iconSize</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when the size of the icons used in the window is changed. The new icon size is passed in <i>iconSize</i>.</p>
@@ -234,7 +235,7 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qmainwindow.html#menuBar">menuBar</a>().</p>
 <h3 class="fn"><a name="setStatusBar"></a>void QMainWindow::setStatusBar ( <a href="qstatusbar.html">QStatusBar</a> * <i>statusbar</i> )</h3>
 <p>Sets the status bar for the main window to <i>statusbar</i>.</p>
-<p>Note: <a href="qmainwindow.html">QMainWindow</a> takes ownership of the <i>statusbar</i> pointer and deletes it at the appropriate time.</p>
+<p>Setting the status bar to 0 will remove it from the main window. Note that <a href="qmainwindow.html">QMainWindow</a> takes ownership of the <i>statusbar</i> pointer and deletes it at the appropriate time.</p>
 <p>See also <a href="qmainwindow.html#statusBar">statusBar</a>().</p>
 <h3 class="fn"><a name="splitDockWidget"></a>void QMainWindow::splitDockWidget ( <a href="qdockwidget.html">QDockWidget</a> * <i>first</i>, <a href="qdockwidget.html">QDockWidget</a> * <i>second</i>, <a href="qt.html#Orientation-enum">Qt::Orientation</a> <i>orientation</i> )</h3>
 <p>Splits the space covered by the <i>first</i> dock widget into two parts, moves the <i>first</i> dock widget into the first part, and moves the <i>second</i> dock widget into the second part.</p>
@@ -244,16 +245,16 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the status bar for the main window. This function creates and returns an empty status bar if the status bar does not exist.</p>
 <p>See also <a href="qmainwindow.html#setStatusBar">setStatusBar</a>().</p>
 <h3 class="fn"><a name="toolBarArea"></a><a href="qt.html#ToolBarArea-enum">Qt::ToolBarArea</a> QMainWindow::toolBarArea ( <a href="qtoolbar.html">QToolBar</a> * <i>toolbar</i> ) const</h3>
-<p>Returns the tool bar area for <i>toolbar</i>.</p>
+<p>Returns the <a href="qt.html#ToolBarArea-enum">Qt::ToolBarArea</a> for <i>toolbar</i>. If <i>toolbar</i> has not been added to the main window, this function returns zero.</p>
 <p>See also <a href="qmainwindow.html#addToolBar">addToolBar</a>(), <a href="qmainwindow.html#addToolBarBreak">addToolBarBreak</a>(), and <a href="qt.html#ToolBarArea-enum">Qt::ToolBarArea</a>.</p>
 <h3 class="fn"><a name="toolButtonStyleChanged"></a>void QMainWindow::toolButtonStyleChanged ( <a href="qt.html#ToolButtonStyle-enum">Qt::ToolButtonStyle</a> <i>toolButtonStyle</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This signal is emiited when the style used for tool buttons in the window is changed. The new style is passed in <i>toolButtonStyle</i>.</p>
+<p>This signal is emitted when the style used for tool buttons in the window is changed. The new style is passed in <i>toolButtonStyle</i>.</p>
 <p>You can connect this signal to other components to help maintain a consistent appearance for your application.</p>
 <p>See also <a href="qmainwindow.html#toolButtonStyle-prop">setToolButtonStyle</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

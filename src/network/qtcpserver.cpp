@@ -115,7 +115,7 @@ public:
 #endif
 
     // private slots
-    void processIncomingConnection();
+    void _q_processIncomingConnection();
 };
 
 /*! \internal
@@ -143,13 +143,13 @@ QTcpServerPrivate::~QTcpServerPrivate()
 
 /*! \internal
 */
-void QTcpServerPrivate::processIncomingConnection()
+void QTcpServerPrivate::_q_processIncomingConnection()
 {
     Q_Q(QTcpServer);
     for (;;) {
         if (pendingConnections.count() >= maxConnections) {
 #if defined (QTCPSERVER_DEBUG)
-            qDebug("QTcpServerPrivate::processIncomingConnection() too many connections");
+            qDebug("QTcpServerPrivate::_q_processIncomingConnection() too many connections");
 #endif
             if (socketEngine->isReadNotificationEnabled())
                 socketEngine->setReadNotificationEnabled(false);
@@ -160,7 +160,7 @@ void QTcpServerPrivate::processIncomingConnection()
         if (descriptor == -1)
             break;
 #if defined (QTCPSERVER_DEBUG)
-        qDebug("QTcpServerPrivate::processIncomingConnection() accepted socket %i", descriptor);
+        qDebug("QTcpServerPrivate::_q_processIncomingConnection() accepted socket %i", descriptor);
 #endif
         q->incomingConnection(descriptor);
 
@@ -259,7 +259,7 @@ bool QTcpServer::listen(const QHostAddress &address, quint16 port)
         return false;
     }
 
-    connect(d->socketEngine, SIGNAL(readNotification()), SLOT(processIncomingConnection()));
+    connect(d->socketEngine, SIGNAL(readNotification()), SLOT(_q_processIncomingConnection()));
     d->socketEngine->setReadNotificationEnabled(true);
 
     d->state = QAbstractSocket::ListeningState;
@@ -353,7 +353,7 @@ bool QTcpServer::setSocketDescriptor(int socketDescriptor)
         return false;
     }
 
-    connect(d->socketEngine, SIGNAL(readNotification()), SLOT(processIncomingConnection()));
+    connect(d->socketEngine, SIGNAL(readNotification()), SLOT(_q_processIncomingConnection()));
     d->socketEngine->setReadNotificationEnabled(true);
 
     d->state = d->socketEngine->state();
@@ -424,7 +424,7 @@ bool QTcpServer::waitForNewConnection(int msec, bool *timedOut)
     if (timedOut && *timedOut)
         return false;
 
-    d->processIncomingConnection();
+    d->_q_processIncomingConnection();
 
     return true;
 }
@@ -502,9 +502,11 @@ void QTcpServer::incomingConnection(int socketDescriptor)
     nextPendingConnection() is called. By default, the limit is 30
     pending connections.
 
-    Clients that attempt to connect to the server after it has
-    reached its maximum number of pending connections will either
-    immediately fail to connect or time out.
+    Clients may still able to connect after the server has reached
+    its maximum number of pending connections (i.e., QTcpSocket can
+    still emit the connected() signal). QTcpServer will stop
+    accepting the new connections, but the operating system may
+    still keep them in queue.
 
     \sa maxPendingConnections(), hasPendingConnections()
 */

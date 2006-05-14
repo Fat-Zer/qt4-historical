@@ -41,16 +41,16 @@ public:
     uint visible : 1;
 
 private:
-    void actionTriggered();  //private slot
-    void actionChanged();    //private slot
-    void actionHovered();    //private slot
+    void _q_actionTriggered();  //private slot
+    void _q_actionChanged();    //private slot
+    void _q_actionHovered();    //private slot
 };
 
-void QActionGroupPrivate::actionChanged()
+void QActionGroupPrivate::_q_actionChanged()
 {
     Q_Q(QActionGroup);
     QAction *action = qobject_cast<QAction*>(q->sender());
-    Q_ASSERT_X(action != 0, "QWidgetGroup::actionChanged", "internal error");
+    Q_ASSERT_X(action != 0, "QWidgetGroup::_q_actionChanged", "internal error");
     if(exclusive && action->isChecked() && action != current) {
         if(current)
             current->setChecked(false);
@@ -58,20 +58,20 @@ void QActionGroupPrivate::actionChanged()
     }
 }
 
-void QActionGroupPrivate::actionTriggered()
+void QActionGroupPrivate::_q_actionTriggered()
 {
     Q_Q(QActionGroup);
     QAction *action = qobject_cast<QAction*>(q->sender());
-    Q_ASSERT_X(action != 0, "QWidgetGroup::actionTriggered", "internal error");
+    Q_ASSERT_X(action != 0, "QWidgetGroup::_q_actionTriggered", "internal error");
     emit q->triggered(action);
     emit q->selected(action);
 }
 
-void QActionGroupPrivate::actionHovered()
+void QActionGroupPrivate::_q_actionHovered()
 {
     Q_Q(QActionGroup);
     QAction *action = qobject_cast<QAction*>(q->sender());
-    Q_ASSERT_X(action != 0, "QWidgetGroup::actionHovered", "internal error");
+    Q_ASSERT_X(action != 0, "QWidgetGroup::_q_actionHovered", "internal error");
     emit q->hovered(action);
 }
 
@@ -79,7 +79,6 @@ void QActionGroupPrivate::actionHovered()
     \class QActionGroup
     \brief The QActionGroup class groups actions together.
 
-    \ingroup basic
     \ingroup application
 
     In some situations it is useful to group actions together. For
@@ -154,9 +153,9 @@ QAction *QActionGroup::addAction(QAction* a)
     Q_D(QActionGroup);
     if(!d->actions.contains(a)) {
         d->actions.append(a);
-        QObject::connect(a, SIGNAL(triggered()), this, SLOT(actionTriggered()));
-        QObject::connect(a, SIGNAL(changed()), this, SLOT(actionChanged()));
-        QObject::connect(a, SIGNAL(hovered()), this, SLOT(actionHovered()));
+        QObject::connect(a, SIGNAL(triggered()), this, SLOT(_q_actionTriggered()));
+        QObject::connect(a, SIGNAL(changed()), this, SLOT(_q_actionChanged()));
+        QObject::connect(a, SIGNAL(hovered()), this, SLOT(_q_actionHovered()));
     }
     if(!a->d_func()->forceDisabled) {
         a->setEnabled(d->enabled);
@@ -211,9 +210,9 @@ void QActionGroup::removeAction(QAction *action)
 {
     Q_D(QActionGroup);
     if (d->actions.removeAll(action)) {
-        QObject::disconnect(action, SIGNAL(triggered()), this, SLOT(actionTriggered()));
-        QObject::disconnect(action, SIGNAL(changed()), this, SLOT(actionChanged()));
-        QObject::disconnect(action, SIGNAL(hovered()), this, SLOT(actionHovered()));
+        QObject::disconnect(action, SIGNAL(triggered()), this, SLOT(_q_actionTriggered()));
+        QObject::disconnect(action, SIGNAL(changed()), this, SLOT(_q_actionChanged()));
+        QObject::disconnect(action, SIGNAL(hovered()), this, SLOT(_q_actionHovered()));
         action->d_func()->group = 0;
     }
 }

@@ -129,6 +129,7 @@ public:
     int formatMajor;
     int formatMinor;
     QRect brect;
+    QRect override_rect;
     QPaintEngine *paintEngine;
 
     QPicture *q_ptr;

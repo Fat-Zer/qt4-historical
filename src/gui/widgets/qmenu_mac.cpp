@@ -233,6 +233,16 @@ static MenuCommand qt_mac_menu_merge_action(MenuRef merge, QMacMenuAction *actio
         ret = kHICommandQuit;
     }
 #undef MENU_TRANSLATE
+
+    QMenuMergeList *list = 0;
+    GetMenuItemProperty(merge, 0, kMenuCreatorQt, kMenuPropertyMergeList,
+                        sizeof(list), 0, &list);
+    for(int i = 0; list && i < list->size(); ++i) {
+        QMenuMergeItem item = list->at(i);
+        if(item.command == ret && item.action)
+            return 0;
+    }
+
     QAction *cmd_action = 0;
     GetMenuCommandProperty(merge, ret, kMenuCreatorQt, kMenuPropertyQAction,
                            sizeof(cmd_action), 0, &cmd_action);
@@ -415,11 +425,48 @@ OSStatus qt_mac_menu_event(EventHandlerCallRef er, EventRef event, void *)
             if(GetMenuItemProperty(mr, 0, kMenuCreatorQt, kMenuPropertyQWidget, sizeof(widget), 0, &widget) == noErr) {
                 if(QMenu *qmenu = ::qobject_cast<QMenu*>(widget)) {
                     handled_event = true;
-                    if(ekind == kEventMenuOpening)
+                    if(ekind == kEventMenuOpening) {
                         emit qmenu->aboutToShow();
+
+                        int merged = 0;
+                        const QMenuPrivate::QMacMenuPrivate *mac_menu = qmenu->d_func()->mac_menu;
+                        for(int i = 0; i < mac_menu->actionItems.size(); ++i) {
+                            QMacMenuAction *action = mac_menu->actionItems.at(i);
+                            if(action->action->isSeparator()) {
+                                bool hide = false;
+                                if(merged && merged == i) {
+                                    hide = true;
+                                } else {
+                                    for(int l = i+1; l < mac_menu->actionItems.size(); ++l) {
+                                        QMacMenuAction *action = mac_menu->actionItems.at(l);
+                                        if(action->merged) {
+                                            hide = true;
+                                        } else if(action->action->isSeparator()) {
+                                            if(hide)
+                                                break;
+                                        } else if(!action->merged) {
+                                            hide = false;
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                const int index = qt_mac_menu_find_action(mr, action);
+                                if(hide) {
+                                    ++merged;
+                                    ChangeMenuItemAttributes(mr, index, kMenuItemAttrHidden, 0);
+                                } else {
+                                    ChangeMenuItemAttributes(mr, index, 0, kMenuItemAttrHidden);
+                                }
+                            } else if(action->merged) {
+                                ++merged;
+                            }
+                        }
+                    }
 #ifdef QT3_SUPPORT
-                    else
+                    else {
                         emit qmenu->aboutToHide();
+                    }
 #endif
                 }
             }
@@ -506,6 +553,10 @@ QMenuPrivate::QMacMenuPrivate::addAction(QMacMenuAction *action, QMacMenuAction 
     if(!action)
         return;
     int before_index = actionItems.indexOf(before);
+    if(before_index < 0) {
+        before = 0;
+        before_index = actionItems.size();
+    }
     actionItems.insert(before_index, action);
 
     int index = qt_mac_menu_find_action(menu, action);
@@ -570,23 +621,6 @@ QMenuPrivate::QMacMenuPrivate::syncAction(QMacMenuAction *action)
     ChangeMenuItemAttributes(action->menu, index, 0, kMenuItemAttrHidden);
 
     if(action->action->isSeparator()) {
-        for(int i = 0; i < actionItems.size(); ++i) {
-            if(actionItems.at(i) == action) {
-                bool hide = true;
-                for(++i; i < actionItems.size(); ++i) {
-                    QMacMenuAction *action = actionItems.at(i);
-                    if(!action->merged && !action->action->isSeparator()) {
-                        hide = false;
-                        break;
-                    }
-                }
-                if(hide)
-                    ChangeMenuItemAttributes(action->menu, index, kMenuItemAttrHidden, 0);
-                else
-                    ChangeMenuItemAttributes(action->menu, index, 0, kMenuItemAttrHidden);
-                break;
-            }
-        }
         ChangeMenuItemAttributes(action->menu, index, kMenuItemAttrSeparator, 0);
         return;
     }

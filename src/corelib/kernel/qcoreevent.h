@@ -26,6 +26,8 @@
 
 #include <QtCore/qnamespace.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Core)
 
 class QEventPrivate;
@@ -263,5 +265,7 @@ public:
     QT3_SUPPORT void setData(void* data) { d = reinterpret_cast<QEventPrivate *>(data); }
 };
 #endif
+
+QT_END_HEADER
 
 #endif // QCOREEVENT_H

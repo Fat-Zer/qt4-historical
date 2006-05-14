@@ -27,6 +27,8 @@
 #include <QtGui/qwidget.h>
 #include <QtGui/qvalidator.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_SPINBOX
@@ -121,8 +123,8 @@ protected:
     QAbstractSpinBox(QAbstractSpinBoxPrivate &dd, QWidget *parent = 0);
 
 private:
-    Q_PRIVATE_SLOT(d_func(), void editorTextChanged(const QString &))
-    Q_PRIVATE_SLOT(d_func(), void editorCursorPositionChanged(int, int))
+    Q_PRIVATE_SLOT(d_func(), void _q_editorTextChanged(const QString &))
+    Q_PRIVATE_SLOT(d_func(), void _q_editorCursorPositionChanged(int, int))
 
     Q_DECLARE_PRIVATE(QAbstractSpinBox)
     Q_DISABLE_COPY(QAbstractSpinBox)
@@ -130,5 +132,7 @@ private:
 Q_DECLARE_OPERATORS_FOR_FLAGS(QAbstractSpinBox::StepEnabled)
 
 #endif // QT_NO_SPINBOX
+
+QT_END_HEADER
 
 #endif // QABSTRACTSPINBOX_H

@@ -29,6 +29,8 @@
 #include <QtCore/qbasictimer.h> // conceptual inheritance
 #include <QtCore/qobject.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Core)
 
 class Q_CORE_EXPORT QTimer : public QObject
@@ -83,6 +85,8 @@ private:
 };
 
 inline void QTimer::setSingleShot(bool asingleShot) { single = asingleShot; }
+
+QT_END_HEADER
 
 #endif // QT_NO_QOBJECT
 

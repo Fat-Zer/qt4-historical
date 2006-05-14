@@ -28,6 +28,8 @@
 #include <QtGui/qstyle.h>
 #include <QtGui/qwidget.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 class QStylePainter : public QPainter
@@ -81,5 +83,7 @@ void QStylePainter::drawItemPixmap(const QRect &r, int flags, const QPixmap &pix
 {
     wstyle->drawItemPixmap(this, r, flags, pixmap);
 }
+
+QT_END_HEADER
 
 #endif // QSTYLEPAINTER_H

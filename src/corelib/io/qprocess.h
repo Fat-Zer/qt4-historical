@@ -33,6 +33,8 @@ typedef struct _PROCESS_INFORMATION* Q_PID;
 typedef qint64 Q_PID;
 #endif
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Core)
 
 #ifndef QT_NO_PROCESS
@@ -44,7 +46,7 @@ class Q_CORE_EXPORT QProcess : public QIODevice
     Q_OBJECT
 public:
     enum ProcessError {
-        FailedToStart, //### file not found
+        FailedToStart, //### file not found, resource error
         Crashed,
         Timedout,
         ReadError,
@@ -150,15 +152,17 @@ private:
     Q_DECLARE_PRIVATE(QProcess)
     Q_DISABLE_COPY(QProcess)
 
-    Q_PRIVATE_SLOT(d_func(), bool canReadStandardOutput())
-    Q_PRIVATE_SLOT(d_func(), bool canReadStandardError())
-    Q_PRIVATE_SLOT(d_func(), bool canWrite())
-    Q_PRIVATE_SLOT(d_func(), bool startupNotification())
-    Q_PRIVATE_SLOT(d_func(), bool processDied())
-    Q_PRIVATE_SLOT(d_func(), void notified())
+    Q_PRIVATE_SLOT(d_func(), bool _q_canReadStandardOutput())
+    Q_PRIVATE_SLOT(d_func(), bool _q_canReadStandardError())
+    Q_PRIVATE_SLOT(d_func(), bool _q_canWrite())
+    Q_PRIVATE_SLOT(d_func(), bool _q_startupNotification())
+    Q_PRIVATE_SLOT(d_func(), bool _q_processDied())
+    Q_PRIVATE_SLOT(d_func(), void _q_notified())
     friend class QProcessManager;
 };
 
 #endif // QT_NO_PROCESS
+
+QT_END_HEADER
 
 #endif // QPROCESS_H

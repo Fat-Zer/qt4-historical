@@ -229,7 +229,7 @@ QImage QPixmap::toImage() const
     int h = data->h;
     QImage::Format format = QImage::Format_MonoLSB;
     if(data->d != 1) //Doesn't support index color modes
-        format = (data->has_alpha ? QImage::Format_ARGB32 :
+        format = (data->has_alpha ? QImage::Format_ARGB32_Premultiplied :
                   QImage::Format_RGB32);
 
     QImage image(w, h, format);
@@ -269,7 +269,7 @@ void QPixmap::fill(const QColor &fillColor)
     { //we don't know what backend to use so we cannot paint here
         quint32 *dptr = data->pixels;
         Q_ASSERT_X(dptr, "QPixmap::fill", "No dptr");
-        const quint32 colr = fillColor.rgba();
+        const quint32 colr = PREMUL(fillColor.rgba());
         if(!colr) {
             memset(dptr, 0, data->nbytes);
         } else {
@@ -760,6 +760,8 @@ CGImageRef qt_mac_create_imagemask(const QPixmap &px)
 
 IconRef qt_mac_create_iconref(const QPixmap &px)
 {
+    if (px.isNull())
+        return 0;
     QMacSavedPortInfo pi; //save the current state
     //create icon
     IconFamilyHandle iconFamily = reinterpret_cast<IconFamilyHandle>(NewHandle(0));
@@ -896,18 +898,35 @@ QPaintEngine *QPixmap::paintEngine() const
 QPixmap QPixmap::copy(const QRect &rect) const
 {
     QPixmap pm;
-    if (data->type == BitmapType)
+    if (data->type == BitmapType) {
         pm = QBitmap::fromImage(toImage().copy(rect));
-    else {
+    } else {
         if (rect.isNull()) {
             pm = QPixmap(size());
             memcpy(pm.data->pixels, data->pixels, data->nbytes);
         } else {
-            pm = QPixmap(rect.size());
-            for (int i = 0; i < rect.height(); ++i)
-                memcpy(pm.data->pixels + i*pm.data->w,
-		       data->pixels + (i + rect.y())*data->w + rect.x(),
-		       rect.width()*4);
+            int x = rect.x(), y = rect.y(), w = rect.width(), h = rect.height();
+            if(x < 0) {
+                w += x;
+                x = 0;
+            }
+            if(y < 0) {
+                h += y;
+                y = 0;
+            }
+            if (w > 0 && h > 0 && x < data->w && y < data->h) {
+                pm = QPixmap(w, h);
+                if (x+w > data->w || y+h > data->h) {
+                    pm.fill(Qt::color0);  // bitBlt will not cover entire image - clear it.
+                    if(x+w > data->w)
+                        w = data->w - x;
+                    if(y+h > data->h)
+                        h = data->h - y;
+                }
+                for (int i = 0; i < h; ++i)
+                    memcpy(pm.data->pixels + i*pm.data->w,
+                           data->pixels + (i + y)*data->w + x, w*4);
+            }
         }
         pm.data->has_alpha = data->has_alpha;
         pm.data->has_mask = data->has_mask;

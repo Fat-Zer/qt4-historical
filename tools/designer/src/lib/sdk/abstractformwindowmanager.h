@@ -29,6 +29,8 @@
 
 #include <QtCore/QObject>
 
+QT_BEGIN_HEADER
+
 class QAction;
 class QDesignerFormEditorInterface;
 class DomUI;
@@ -81,5 +83,7 @@ public Q_SLOTS:
     virtual void removeFormWindow(QDesignerFormWindowInterface *formWindow);
     virtual void setActiveFormWindow(QDesignerFormWindowInterface *formWindow);
 };
+
+QT_END_HEADER
 
 #endif // ABSTRACTFORMWINDOWMANAGER_H

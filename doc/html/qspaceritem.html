@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-mac-opensource-src-4.1.2/src/gui/kernel/qlayoutitem.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-mac-opensource-src-4.1.3/src/gui/kernel/qlayoutitem.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-mac-opensource-src-4.1.3/src/gui/kernel/qlayoutitem.cpp -->
 <head>
     <title>Qt 4.1: QSpacerItem Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -53,6 +54,8 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="changeSize"></a>void QSpacerItem::changeSize ( int <i>w</i>, int <i>h</i>, <a href="qsizepolicy.html#Policy-enum">QSizePolicy::Policy</a> <i>hPolicy</i> = QSizePolicy::Minimum, <a href="qsizepolicy.html#Policy-enum">QSizePolicy::Policy</a> <i>vPolicy</i> = QSizePolicy::Minimum )</h3>
 <p>Changes this spacer item to have preferred width <i>w</i>, preferred height <i>h</i>, horizontal size policy <i>hPolicy</i> and vertical size policy <i>vPolicy</i>.</p>
 <p>The default values provide a gap that is able to stretch if nothing else wants the space.</p>
+<p>Note that if changeSize() is called after the spacer item has been added to a layout, it is necessary to invalidate the layout in order for the spacer item's new size to take effect.</p>
+<p>See also <a href="qlayoutitem.html#invalidate">QLayout::invalidate</a>().</p>
 <h3 class="fn"><a name="isEmpty"></a>bool QSpacerItem::isEmpty () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns true.</p>
 <p>Reimplemented from <a href="qlayoutitem.html#isEmpty">QLayoutItem</a>.</p>
@@ -63,6 +66,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

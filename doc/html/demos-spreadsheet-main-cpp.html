@@ -43,13 +43,13 @@ body { background: #ffffff; color: black; }</style>
     #include &lt;QtGui&gt;
 
     static QString encode_pos(int row, int col) {
-        return QString(col + 'A') + QString(row + '0');
+        return QString(col + 'A') + QString::number(row + 1);
     }
 
     static void decode_pos(const QString &amp;pos, int *row, int *col)
     {
         *col = pos.at(0).toLatin1() - 'A';
-        *row = pos.at(1).toLatin1() - '0';
+        *row = pos.right(pos.size() - 1).toInt() - 1;
     }
 
     class SpreadSheetItem : public QTableWidgetItem
@@ -66,8 +66,6 @@ body { background: #ffffff; color: black; }</style>
 
         inline QString formula() const
             { return QTableWidgetItem::data(Qt::DisplayRole).toString(); }
-
-        QPoint convertCoords(const QString coords) const;
 
     private:
         mutable bool isResolving;
@@ -122,18 +120,19 @@ body { background: #ffffff; color: black; }</style>
 
     QVariant SpreadSheetItem::display() const
     {
-        // check if the string is actially a formula or not
+        // check if the string is actually a formula or not
         QString formula = this-&gt;formula();
         QStringList list = formula.split(' ');
         if (list.count() != 3)
             return formula; // its a normal string
 
         QString op = list.at(0).toLower();
-        QPoint one = convertCoords(list.at(1));
-        QPoint two = convertCoords(list.at(2));
+        int firstRow, firstCol, secondRow, secondCol;
+        decode_pos(list.at(1), &amp;firstRow, &amp;firstCol);
+        decode_pos(list.at(2), &amp;secondRow, &amp;secondCol);
 
-        const QTableWidgetItem *start = tableWidget()-&gt;item(one.y(), one.x());
-        QTableWidgetItem *end = tableWidget()-&gt;item(two.y(), two.x());
+        const QTableWidgetItem *start = tableWidget()-&gt;item(firstRow, firstCol);
+        const QTableWidgetItem *end = tableWidget()-&gt;item(secondRow, secondCol);
 
         if (!start || !end)
             return &quot;Error: Item does not exist!&quot;;
@@ -166,22 +165,11 @@ body { background: #ffffff; color: black; }</style>
             else
                 result = (start-&gt;text().toInt() / end-&gt;text().toInt());
         } else {
-            result = &quot;Error: Operation does not exist!&quot;;
+            result = formula;
         }
 
         isResolving = false;
         return result;
-    }
-
-    QPoint SpreadSheetItem::convertCoords(const QString coords) const
-    {
-        int r = 0;
-        int c = coords.at(0).toUpper().toAscii() - 'A';
-        for (int i = 1; i &lt; coords.count(); ++i) {
-            r *= 10;
-            r += coords.at(i).digitValue();
-        }
-        return QPoint(c, r);
     }
 
     class SpreadSheet : public QMainWindow
@@ -446,9 +434,12 @@ body { background: #ffffff; color: black; }</style>
                                      const QString &amp;outText,
                                      QString *cell1, QString *cell2, QString *outCell)
     {
-        const QStringList rows = QStringList() &lt;&lt; &quot;0&quot; &lt;&lt; &quot;1&quot; &lt;&lt; &quot;2&quot; &lt;&lt; &quot;3&quot; &lt;&lt; &quot;4&quot;
-                                               &lt;&lt; &quot;5&quot; &lt;&lt; &quot;6&quot; &lt;&lt; &quot;7&quot; &lt;&lt; &quot;8&quot; &lt;&lt; &quot;9&quot;;
-        const QStringList cols = QStringList() &lt;&lt; &quot;A&quot; &lt;&lt; &quot;B&quot; &lt;&lt; &quot;C&quot; &lt;&lt; &quot;D&quot; &lt;&lt; &quot;E&quot; &lt;&lt; &quot;F&quot;;
+
+        QStringList rows, cols;
+        for (int c = 0; c &lt; table-&gt;columnCount(); ++c)
+            cols &lt;&lt; QChar('A' + c);
+        for (int r = 0; r &lt; table-&gt;rowCount(); ++r)
+            rows &lt;&lt; QString::number(1 + r);
 
         QDialog addDialog(this);
         addDialog.setWindowTitle(title);
@@ -458,33 +449,39 @@ body { background: #ffffff; color: black; }</style>
 
         QLabel cell1Label(c1Text, &amp;group);
         QComboBox cell1RowInput(&amp;group);
+        int c1Row, c1Col;
+        decode_pos(*cell1, &amp;c1Row, &amp;c1Col);
         cell1RowInput.addItems(rows);
-        cell1RowInput.setCurrentIndex(cell1-&gt;at(1).toLatin1() - '0');
+        cell1RowInput.setCurrentIndex(c1Row);
         QComboBox cell1ColInput(&amp;group);
         cell1ColInput.addItems(cols);
-        cell1ColInput.setCurrentIndex(cell1-&gt;at(0).toLatin1() - 'A');
+        cell1ColInput.setCurrentIndex(c1Col);
 
         QLabel operatorLabel(opText, &amp;group);
         operatorLabel.setAlignment(Qt::AlignHCenter);
 
         QLabel cell2Label(c2Text, &amp;group);
         QComboBox cell2RowInput(&amp;group);
+        int c2Row, c2Col;
+        decode_pos(*cell2, &amp;c2Row, &amp;c2Col);
         cell2RowInput.addItems(rows);
-        cell2RowInput.setCurrentIndex(cell2-&gt;at(1).toLatin1() - '0');
+        cell2RowInput.setCurrentIndex(c2Row);
         QComboBox cell2ColInput(&amp;group);
         cell2ColInput.addItems(cols);
-        cell2ColInput.setCurrentIndex(cell2-&gt;at(0).toLatin1() - 'A');
+        cell2ColInput.setCurrentIndex(c2Col);
 
         QLabel equalsLabel(&quot;=&quot;, &amp;group);
         equalsLabel.setAlignment(Qt::AlignHCenter);
 
         QLabel outLabel(outText, &amp;group);
         QComboBox outRowInput(&amp;group);
+        int outRow, outCol;
+        decode_pos(*outCell, &amp;outRow, &amp;outCol);
         outRowInput.addItems(rows);
-        outRowInput.setCurrentIndex(outCell-&gt;at(1).toLatin1() - '0');
+        outRowInput.setCurrentIndex(outRow);
         QComboBox outColInput(&amp;group);
         outColInput.addItems(cols);
-        outColInput.setCurrentIndex(outCell-&gt;at(0).toLatin1() - 'A');
+        outColInput.setCurrentIndex(outCol);
 
         QPushButton cancelButton(tr(&quot;Cancel&quot;), &amp;addDialog);
         connect(&amp;cancelButton, SIGNAL(clicked()), &amp;addDialog, SLOT(reject()));
@@ -590,9 +587,8 @@ body { background: #ffffff; color: black; }</style>
         QString out = &quot;B3&quot;;
 
         QTableWidgetItem *current = table-&gt;currentItem();
-        if (current) {
-            out = QString(table-&gt;currentColumn() + 'A') + QString(table-&gt;currentRow() + '0');
-        }
+        if (current)
+            out = encode_pos(table-&gt;currentRow(), table-&gt;currentColumn());
 
         if (runInputDialog(title, tr(&quot;Cell 1&quot;), tr(&quot;Cell 2&quot;), op, tr(&quot;Output to:&quot;),
                            &amp;cell1, &amp;cell2, &amp;out)) {
@@ -715,14 +711,14 @@ body { background: #ffffff; color: black; }</style>
         table-&gt;item(0, 4)-&gt;setBackgroundColor(titleBackground);
         table-&gt;item(0, 4)-&gt;setToolTip(&quot;This column shows the expenses in NOK&quot;);
         table-&gt;item(0, 4)-&gt;setFont(titleFont);
-        table-&gt;setItem(1, 4, new SpreadSheetItem(&quot;* B1 D1&quot;));
-        table-&gt;setItem(2, 4, new SpreadSheetItem(&quot;* B2 D2&quot;));
-        table-&gt;setItem(3, 4, new SpreadSheetItem(&quot;* B3 D3&quot;));
-        table-&gt;setItem(4, 4, new SpreadSheetItem(&quot;* B4 D4&quot;));
-        table-&gt;setItem(5, 4, new SpreadSheetItem(&quot;* B5 D5&quot;));
-        table-&gt;setItem(6, 4, new SpreadSheetItem(&quot;* B6 D6&quot;));
-        table-&gt;setItem(7, 4, new SpreadSheetItem(&quot;* B7 D7&quot;));
-        table-&gt;setItem(8, 4, new SpreadSheetItem(&quot;* B8 D8&quot;));
+        table-&gt;setItem(1, 4, new SpreadSheetItem(&quot;* B2 D2&quot;));
+        table-&gt;setItem(2, 4, new SpreadSheetItem(&quot;* B3 D3&quot;));
+        table-&gt;setItem(3, 4, new SpreadSheetItem(&quot;* B4 D4&quot;));
+        table-&gt;setItem(4, 4, new SpreadSheetItem(&quot;* B5 D5&quot;));
+        table-&gt;setItem(5, 4, new SpreadSheetItem(&quot;* B6 D6&quot;));
+        table-&gt;setItem(6, 4, new SpreadSheetItem(&quot;* B7 D7&quot;));
+        table-&gt;setItem(7, 4, new SpreadSheetItem(&quot;* B8 D8&quot;));
+        table-&gt;setItem(8, 4, new SpreadSheetItem(&quot;* B9 D9&quot;));
         table-&gt;setItem(9, 4, new SpreadSheetItem(&quot;sum E2 E9&quot;));
         table-&gt;item(9,4)-&gt;setBackgroundColor(Qt::lightGray);
 
@@ -763,6 +759,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

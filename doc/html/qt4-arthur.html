@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-mac-opensource-src-4.1.2/doc/src/qt4-arthur.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-mac-opensource-src-4.1.3/doc/src/qt4-arthur.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-mac-opensource-src-4.1.3/doc/src/qt4-arthur.qdoc -->
 <head>
     <title>Qt 4.1: The Arthur Paint System</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -183,7 +184,7 @@ body { background: #ffffff; color: black; }</style>
     painter.end();</pre>
 <a name="svg-rendering-support"></a>
 <h3>SVG Rendering Support</h3>
-<p><a href="http://www.w3.org/Graphics/SVG/About.html#scalable-vector-graphics">Scalable Vector Graphics</a> (SVG) is an language for describing both static and animated two-dimensional vector graphics. Qt includes support for the Tiny profiles of both SVG 1.1 and SVG 1.2, taking advantage of the improved paint system in Qt 4. SVG drawings can be rendered onto any <a href="qpaintdevice.html">QPaintDevice</a> subclass, such as <a href="qwidget.html">QWidget</a>, <a href="qimage.html">QImage</a>, and <a href="qglwidget.html">QGLWidget</a>, to take advantage of specific advantages of each device. This approach gives developers the flexibility to experiment, in order to find the best solution for each application.</p>
+<p><a href="http://www.w3.org/Graphics/SVG/About.html#scalable-vector-graphics">Scalable Vector Graphics</a> (SVG) is an language for describing both static and animated two-dimensional vector graphics. Qt includes support for the <a href="http://www.w3.org/Graphics/SVG/feature/1.2/#SVG-static">static features</a> of <a href="http://www.w3.org/TR/SVGMobile12/">SVG 1.2 Tiny</a>, taking advantage of the improved paint system in Qt 4. SVG drawings can be rendered onto any <a href="qpaintdevice.html">QPaintDevice</a> subclass, such as <a href="qwidget.html">QWidget</a>, <a href="qimage.html">QImage</a>, and <a href="qglwidget.html">QGLWidget</a>, to take advantage of specific advantages of each device. This approach gives developers the flexibility to experiment, in order to find the best solution for each application.</p>
 <p align="center"><img src="images/svg-image.png" /></p><p>Since SVG is an XML-based format, the <a href="qtxml.html">QtXml</a> module is required to read SVG files. For this reason, classes for SVG handling are provided separately in the <a href="qtsvg.html">QtSvg</a> module.</p>
 <p>Displaying an SVG drawing in an application is as simple as displaying a bitmap image. <a href="qsvgwidget.html">QSvgWidget</a> is a display widget that can be placed in an appropriate place in a user interface, and new content can be loaded as required. For example, a predetermined file can be loaded and displayed in a widget with little effort:</p>
 <pre>&nbsp;       QSvgWidget window(&quot;:/files/spheres.svg&quot;);
@@ -198,6 +199,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

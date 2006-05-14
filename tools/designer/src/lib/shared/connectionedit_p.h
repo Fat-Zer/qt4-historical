@@ -165,6 +165,11 @@ public:
     QtUndoStack *undoStack() const { return m_undo_stack; }
 
     void clear();
+    
+    void showEvent(QShowEvent * /*e*/)
+    {
+        updateBackground();
+    }
 
 signals:
     void aboutToAddConnection(int idx);

@@ -54,7 +54,7 @@ Q_GUI_EXPORT _qt_pixmap_cleanup_hook qt_pixmap_cleanup_hook = 0;
 
 Q_GUI_EXPORT qint64 qt_pixmap_id(const QPixmap &pixmap)
 {
-    return (((qint64) pixmap.data->ser_no) << 32) | ((qint64) pixmap.data->detach_no);
+    return -(((qint64) pixmap.data->ser_no) << 32) | ((qint64) (pixmap.data->detach_no));
 }
 
 /*!
@@ -491,7 +491,7 @@ void QPixmap::resize_helper(const QSize &s)
     \fn bool QPixmap::selfMask() const
     \compat
 
-    Returns whether the pixmap is it's own mask or not.
+    Returns whether the pixmap is its own mask or not.
 
     This function is no longer relevant since the concept of self
     masking doesn't exists anymore.

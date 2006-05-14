@@ -877,7 +877,25 @@ void QHashData::destroyAndFree()
     from the hash, and returns an iterator to the next item in the
     hash.
 
-    \sa remove()
+    Unlike remove() and take(), this function never causes QHash to
+    rehash its internal data structure. This means that it can safely
+    be called while iterating, and won't affect the order of items in
+    the hash. For example:
+
+    \code
+        QHash<QObject *, int> objectHash;
+        ...
+        QHash<QObject *, int>::iterator i = objectHash.find(obj);
+        while (i != objectHash.end() && i.key() == obj) {
+            if (i.value() == 0) {
+                i = objectHash.erase(i);
+            } else {
+                ++i;
+            }
+        }
+    \endcode
+
+    \sa remove(), take(), find()
 */
 
 /*! \fn QHash::iterator QHash::find(const Key &key)
@@ -1669,17 +1687,8 @@ void QHashData::destroyAndFree()
     The items that share the same key are available from most
     recently to least recently inserted.
 
-    A more efficient approach is to use QHashIterator::findNextKey() or
-    QMutableHashIterator::findNextKey():
-
-    \code
-        QHashIterator<QString, int> i(hash);
-        while (i.findNextKey("plenty"))
-            cout << i.value() << endl;
-    \endcode
-
-    If you prefer the STL-style iterators, you can call find() to get
-    the iterator for the first item with a key and iterate from
+    A more efficient approach is to call find() to get
+    the STL-style iterator for the first item with a key and iterate from
     there:
 
     \code

@@ -27,6 +27,8 @@
 #include <QtGui/qwidget.h>
 #include <QtGui/qicon.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_TABWIDGET
@@ -163,13 +165,15 @@ Q_SIGNALS:
 private:
     Q_DECLARE_PRIVATE(QTabWidget)
     Q_DISABLE_COPY(QTabWidget)
-    Q_PRIVATE_SLOT(d_func(), void showTab(int))
-    Q_PRIVATE_SLOT(d_func(), void removeTab(int))
+    Q_PRIVATE_SLOT(d_func(), void _q_showTab(int))
+    Q_PRIVATE_SLOT(d_func(), void _q_removeTab(int))
 
     void setUpLayout(bool = false);
     friend class Q3TabDialog;
 };
 
 #endif // QT_NO_TABWIDGET
+
+QT_END_HEADER
 
 #endif // QTABWIDGET_H

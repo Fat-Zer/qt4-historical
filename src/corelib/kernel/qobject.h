@@ -34,6 +34,8 @@
 #include <QtCore/qcoreevent.h>
 #endif
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Core)
 
 class QEvent;
@@ -267,7 +269,7 @@ protected:
 
 private:
     Q_DISABLE_COPY(QObject)
-    Q_PRIVATE_SLOT(d_func(), void reregisterTimers(void *))
+    Q_PRIVATE_SLOT(d_func(), void _q_reregisterTimers(void *))
 };
 
 inline bool QObject::connect(const QObject *asender, const char *asignal,
@@ -400,6 +402,8 @@ template <> inline IFace *qobject_cast<IFace *>(const QObject *object) \
 #ifndef QT_NO_DEBUG_STREAM
 Q_CORE_EXPORT QDebug operator<<(QDebug, const QObject *);
 #endif
+
+QT_END_HEADER
 
 #endif
 

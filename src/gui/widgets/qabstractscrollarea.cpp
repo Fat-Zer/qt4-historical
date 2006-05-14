@@ -78,7 +78,7 @@
     setViewportMargins(). The feature is mostly used to place a
     QHeaderView widget above or beside the scrolling area.
 
-    For convience, QAbstractScrollArea makes all viewport events available in
+    For convenience, QAbstractScrollArea makes all viewport events available in
     the virtual viewportEvent() handler.  QWidget's specialised
     handlers are remapped to viewport events in the cases where this
     makes sense. The remapped specialised handlers are: paintEvent(),
@@ -120,13 +120,13 @@ void QAbstractScrollAreaPrivate::init()
     hbar = new QScrollBar(Qt::Horizontal, q);
     hbar->setRange(0,0);
     hbar->setVisible(false);
-    QObject::connect(hbar, SIGNAL(valueChanged(int)), q, SLOT(hslide(int)));
-    QObject::connect(hbar, SIGNAL(rangeChanged(int,int)), q, SLOT(showOrHideScrollBars()), Qt::QueuedConnection);
+    QObject::connect(hbar, SIGNAL(valueChanged(int)), q, SLOT(_q_hslide(int)));
+    QObject::connect(hbar, SIGNAL(rangeChanged(int,int)), q, SLOT(_q_showOrHideScrollBars()), Qt::QueuedConnection);
     vbar = new QScrollBar(Qt::Vertical, q);
     vbar->setRange(0,0);
     vbar->setVisible(false);
-    QObject::connect(vbar, SIGNAL(valueChanged(int)), q, SLOT(vslide(int)));
-    QObject::connect(vbar, SIGNAL(rangeChanged(int,int)), q, SLOT(showOrHideScrollBars()), Qt::QueuedConnection);
+    QObject::connect(vbar, SIGNAL(valueChanged(int)), q, SLOT(_q_vslide(int)));
+    QObject::connect(vbar, SIGNAL(rangeChanged(int,int)), q, SLOT(_q_showOrHideScrollBars()), Qt::QueuedConnection);
     viewport = new QAbstractScrollAreaViewport(q);
     viewport->setBackgroundRole(QPalette::Base);
     viewport->setAutoFillBackground(true);
@@ -276,8 +276,14 @@ QAbstractScrollArea::~QAbstractScrollArea()
 {
 }
 
-/*! Returns the viewport widget.
- */
+/*!
+    Returns the viewport widget.
+
+    Use the QScrollBar::widget() function to retrieve the contents of
+    the viewport widget.
+
+    \sa QScrollArea::widget()
+*/
 QWidget *QAbstractScrollArea::viewport() const
 {
     Q_D(const QAbstractScrollArea);
@@ -297,7 +303,7 @@ QSize QAbstractScrollArea::maximumViewportSize() const
     int vsbExt = d->vbar->sizeHint().width();
 
     int f = 2 * d->frameWidth;
-    QSize max = size() - QSize(f,f);
+    QSize max = size() - QSize(f + d->left + d->right, f + d->top + d->bottom);
     if (d->vbarpolicy == Qt::ScrollBarAlwaysOn)
         max.rwidth() -= vsbExt;
     if (d->hbarpolicy == Qt::ScrollBarAlwaysOn)
@@ -702,7 +708,7 @@ void QAbstractScrollArea::scrollContentsBy(int, int)
     viewport()->update();
 }
 
-void QAbstractScrollAreaPrivate::hslide(int x)
+void QAbstractScrollAreaPrivate::_q_hslide(int x)
 {
     Q_Q(QAbstractScrollArea);
     int dx = xoffset - x;
@@ -710,7 +716,7 @@ void QAbstractScrollAreaPrivate::hslide(int x)
     q->scrollContentsBy(dx, 0);
 }
 
-void QAbstractScrollAreaPrivate::vslide(int y)
+void QAbstractScrollAreaPrivate::_q_vslide(int y)
 {
     Q_Q(QAbstractScrollArea);
     int dy = yoffset - y;
@@ -718,7 +724,7 @@ void QAbstractScrollAreaPrivate::vslide(int y)
     q->scrollContentsBy(0, dy);
 }
 
-void QAbstractScrollAreaPrivate::showOrHideScrollBars()
+void QAbstractScrollAreaPrivate::_q_showOrHideScrollBars()
 {
     layoutChildren();
 }

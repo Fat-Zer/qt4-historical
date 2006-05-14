@@ -600,14 +600,15 @@ Q_GUI_EXPORT void qt_event_request_window_change()
     PostEventToQueue(GetMainEventQueue(), request_window_change_pending,
                      kEventPriorityHigh);
 }
-Q_GUI_EXPORT void qt_event_send_window_change()
+bool qt_event_remove_window_change()
 {
     if(request_window_change_pending) {
-        QMacWindowChangeEvent::exec(true);
         if (IsEventInQueue(GetMainEventQueue(), request_window_change_pending))
             RemoveEventFromQueue(GetMainEventQueue(), request_window_change_pending);
         qt_mac_event_release(request_window_change_pending);
+        return true;
     }
+    return false;
 }
 
 /* activation */
@@ -956,6 +957,15 @@ void qt_init(QApplicationPrivate *priv, int)
 
 void qt_cleanup()
 {
+    if (mac_display_changeUPP) {
+        ProcessSerialNumber psn;
+        if(GetCurrentProcess(&psn) == noErr) {
+            DMRemoveExtendedNotifyProc(mac_display_changeUPP, 0, &psn, kNilOptions);
+            DisposeDMExtendedNotificationUPP(mac_display_changeUPP);
+            mac_display_changeUPP = 0;
+        }
+    }
+
     qt_release_app_proc_handler();
     if(app_proc_handlerUPP) {
         DisposeEventHandlerUPP(app_proc_handlerUPP);
@@ -1292,6 +1302,54 @@ static mac_enum_mapper keyscan_symbols[] = { //real scan codes
     { 111, MAP_MAC_ENUM(Qt::Key_F12) },
     {   0, MAP_MAC_ENUM(0) }
 };
+
+
+static int get_uniKey(int modif, const QChar &key, int scan)
+{
+    if (key == kClearCharCode && scan == 0x47)
+        return Qt::Key_Clear;
+
+    if (key.isDigit()) {
+        return (key.digitValue() - '0') + Qt::Key_0;
+    }
+
+    if (key.isLetter()) {
+        return (key.toUpper().unicode() - 'A') + Qt::Key_A;
+    }
+    for(int i = 0; keyboard_symbols[i].qt_code; i++) {
+        if(keyboard_symbols[i].mac_code == key) {
+            /* To work like Qt/X11 we issue Backtab when Shift + Tab are pressed */
+            if(keyboard_symbols[i].qt_code == Qt::Key_Tab && (modif & Qt::ShiftModifier)) {
+#ifdef DEBUG_KEY_MAPS
+                qDebug("%d: got key: Qt::Key_Backtab", __LINE__);
+#endif
+                return Qt::Key_Backtab;
+            }
+
+#ifdef DEBUG_KEY_MAPS
+            qDebug("%d: got key: %s", __LINE__, keyboard_symbols[i].desc);
+#endif
+            return keyboard_symbols[i].qt_code;
+        }
+    }
+
+    //last ditch try to match the scan code
+    for(int i = 0; keyscan_symbols[i].qt_code; i++) {
+        if(keyscan_symbols[i].mac_code == scan) {
+#ifdef DEBUG_KEY_MAPS
+            qDebug("%d: got key: %s", __LINE__, keyscan_symbols[i].desc);
+#endif
+            return keyscan_symbols[i].qt_code;
+        }
+    }
+
+    //oh well
+#ifdef DEBUG_KEY_MAPS
+    qDebug("Unknown case.. %s:%d %d %d", __FILE__, __LINE__, key, scan);
+#endif
+    return Qt::Key_unknown;
+}
+
 
 static int get_key(int modif, int key, int scan)
 {
@@ -1634,7 +1692,6 @@ static Boolean qt_KeyEventComparatorProc(EventRef inEvent, void *data)
 static bool translateKeyEventInternal(EventHandlerCallRef er, EventRef keyEvent, int *qtKey,
                                       QChar *outChar, Qt::KeyboardModifiers *outModifiers, bool *outHandled)
 {
-
     const UInt32 ekind = GetEventKind(keyEvent);
     {
         UInt32 mac_modifiers = 0;
@@ -1655,55 +1712,108 @@ static bool translateKeyEventInternal(EventHandlerCallRef er, EventRef keyEvent,
 
     //get mac mapping
     static UInt32 tmp_unused_state = 0L;
-    char translatedChar = KeyTranslate((void *)GetScriptVariable(smCurrentScript, smKCHRCache),
-            (GetCurrentEventKeyModifiers() &
-             (kEventKeyModifierNumLockMask|shiftKey|cmdKey|
-              rightShiftKey|alphaLock)) | keyCode,
-            &tmp_unused_state);
-    if(!translatedChar) {
-        if (outHandled) {
-            qt_mac_eat_unicode_key = false;
-            CallNextEventHandler(er, keyEvent);
-            *outHandled = qt_mac_eat_unicode_key;
+    static KeyboardLayoutRef prevKeyLayoutRef = 0;
+    KeyboardLayoutRef keyLayout = 0;
+    UCKeyboardLayout *uchrData = 0;
+    KLGetCurrentKeyboardLayout(&keyLayout);
+    OSStatus err;
+    if (keyLayout != 0) {
+        err = KLGetKeyboardLayoutProperty(keyLayout, kKLuchrData,
+                                  const_cast<const void **>(reinterpret_cast<void **>(&uchrData)));
+        if (err != noErr) {
+            qWarning("Qt::internal::unable to get keyboardlayout %ld %s:%d",
+                     err, __FILE__, __LINE__);
         }
-        return false;
     }
 
-    //map it into qt keys
-    *qtKey = get_key(*outModifiers, translatedChar, keyCode);
-    if(*outModifiers & (Qt::AltModifier | Qt::ControlModifier)) {
-        if(translatedChar & (1 << 7)) //high ascii
-            translatedChar = 0;
-    } else {          //now get the real ascii value
-        UInt32 tmp_mod = 0L;
-        static UInt32 tmp_state = 0L;
-        if(*outModifiers & Qt::ShiftModifier)
-            tmp_mod |= shiftKey;
-        if(*outModifiers & Qt::MetaModifier)
-            tmp_mod |= controlKey;
-        if(*outModifiers & Qt::ControlModifier)
-            tmp_mod |= cmdKey;
-        if(GetCurrentEventKeyModifiers() & alphaLock) //no Qt mapper
-            tmp_mod |= alphaLock;
-        if(*outModifiers & Qt::AltModifier)
-            tmp_mod |= optionKey;
-        if(*outModifiers & Qt::KeypadModifier)
-            tmp_mod |= kEventKeyModifierNumLockMask;
-        translatedChar = KeyTranslate((void *)GetScriptManagerVariable(smUnicodeScript),
-                tmp_mod | keyCode, &tmp_state);
-    }
-    /* I don't know why the str is only filled in in RawKeyDown - but it does seem to be on X11
-       is this a bug on X11? --Sam */
-    if (ekind != kEventRawKeyUp) {
-        UInt32 unilen = 0;
-        if (GetEventParameter(keyEvent, kEventParamKeyUnicodes, typeUnicodeText, 0, 0, &unilen, 0)
-                == noErr && unilen == 2) {
-            GetEventParameter(keyEvent, kEventParamKeyUnicodes, typeUnicodeText, 0, unilen, 0, outChar);
-        } else if (translatedChar) {
-            static QTextCodec *c = 0;
-            if (!c)
-                c = QTextCodec::codecForName("Apple Roman");
-            *outChar = c->toUnicode(&translatedChar, 1).at(0);
+    if (uchrData) {
+        static UInt32 deadKeyState;
+        if (prevKeyLayoutRef != keyLayout) {
+            // Clear the dead state
+            deadKeyState = 0;
+            prevKeyLayoutRef = keyLayout;
+        }
+        // The easy use the unicode stuff!
+        UniChar string[4];
+        UniCharCount actualLength;
+        int keyAction;
+        switch (ekind) {
+        default:
+        case kEventRawKeyDown:
+            keyAction = kUCKeyActionDown;
+            break;
+        case kEventRawKeyUp:
+            keyAction = kUCKeyActionUp;
+            break;
+        case kEventRawKeyRepeat:
+            keyAction = kUCKeyActionAutoKey;
+            break;
+        }
+        OSStatus err = UCKeyTranslate(uchrData, keyCode, keyAction,
+                                  ((GetCurrentEventKeyModifiers() >> 8) & 0xff), LMGetKbdType(),
+                                  kUCKeyTranslateNoDeadKeysBit, &tmp_unused_state, 4, &actualLength,
+                                  string);
+        if (err == noErr) {
+            *qtKey = get_uniKey(*outModifiers, QChar(string[0]), keyCode);
+            if (ekind != kEventRawKeyUp)
+                *outChar = QChar(string[0]);
+        } else {
+            qWarning("Qt::internal::UCKeyTranslate is returnining %ld %s:%d",
+                     err, __FILE__, __LINE__);
+        }
+    } else {
+        // The road less travelled, Try to get the unichar, using the
+        // given the "mac" keyboard resource.
+        char translatedChar = KeyTranslate((void *)GetScriptVariable(smCurrentScript, smKCHRCache),
+                (GetCurrentEventKeyModifiers() &
+                 (kEventKeyModifierNumLockMask|shiftKey|cmdKey|
+                  rightShiftKey|alphaLock)) | keyCode,
+                &tmp_unused_state);
+        if(!translatedChar) {
+            if (outHandled) {
+                qt_mac_eat_unicode_key = false;
+                CallNextEventHandler(er, keyEvent);
+                *outHandled = qt_mac_eat_unicode_key;
+            }
+            return false;
+        }
+
+        //map it into qt keys
+        *qtKey = get_key(*outModifiers, translatedChar, keyCode);
+        if(*outModifiers & (Qt::AltModifier | Qt::ControlModifier)) {
+            if(translatedChar & (1 << 7)) //high ascii
+                translatedChar = 0;
+        } else {          //now get the real ascii value
+            UInt32 tmp_mod = 0L;
+            static UInt32 tmp_state = 0L;
+            if(*outModifiers & Qt::ShiftModifier)
+                tmp_mod |= shiftKey;
+            if(*outModifiers & Qt::MetaModifier)
+                tmp_mod |= controlKey;
+            if(*outModifiers & Qt::ControlModifier)
+                tmp_mod |= cmdKey;
+            if(GetCurrentEventKeyModifiers() & alphaLock) //no Qt mapper
+                tmp_mod |= alphaLock;
+            if(*outModifiers & Qt::AltModifier)
+                tmp_mod |= optionKey;
+            if(*outModifiers & Qt::KeypadModifier)
+                tmp_mod |= kEventKeyModifierNumLockMask;
+            translatedChar = KeyTranslate((void *)GetScriptManagerVariable(smUnicodeScript),
+                    tmp_mod | keyCode, &tmp_state);
+        }
+        /* I don't know why the str is only filled in in RawKeyDown - but it does seem to be on X11
+           is this a bug on X11? --Sam */
+        if (ekind != kEventRawKeyUp) {
+            UInt32 unilen = 0;
+            if (GetEventParameter(keyEvent, kEventParamKeyUnicodes, typeUnicodeText, 0, 0, &unilen, 0)
+                    == noErr && unilen == 2) {
+                GetEventParameter(keyEvent, kEventParamKeyUnicodes, typeUnicodeText, 0, unilen, 0, outChar);
+            } else if (translatedChar) {
+                static QTextCodec *c = 0;
+                if (!c)
+                    c = QTextCodec::codecForName("Apple Roman");
+                *outChar = c->toUnicode(&translatedChar, 1).at(0);
+            }
         }
     }
     return true;
@@ -1795,7 +1905,6 @@ QApplicationPrivate::globalEventProcessor(EventHandlerCallRef er, EventRef event
                 if(widget) {
                     QPoint plocal(widget->mapFromGlobal(where));
                     QContextMenuEvent qme(QContextMenuEvent::Mouse, plocal, where);
-                    qme.ignore();
                     QApplication::sendEvent(widget, &qme);
                     if(qme.isAccepted()) { //once this happens the events before are pitched
                         qt_button_down = 0;
@@ -2084,7 +2193,8 @@ QApplicationPrivate::globalEventProcessor(EventHandlerCallRef er, EventRef event
                 if(qt_mac_dblclick.use_qt_time_limit) {
                     EventTime now = GetEventTime(event);
                     if(qt_mac_dblclick.last_time != -2 && qt_mac_dblclick.last_widget == widget &&
-                       now - qt_mac_dblclick.last_time <= ((double)QApplicationPrivate::mouse_double_click_time)/1000)
+                       now - qt_mac_dblclick.last_time <= ((double)QApplicationPrivate::mouse_double_click_time)/1000 &&
+                       qt_mac_dblclick.last_button == button)
                         etype = QEvent::MouseButtonDblClick;
                 } else {
                     UInt32 count = 0;
@@ -2153,8 +2263,10 @@ QApplicationPrivate::globalEventProcessor(EventHandlerCallRef er, EventRef event
                 }
             } else {
 #ifdef QMAC_SPEAK_TO_ME
-                if(etype == QMouseEvent::MouseButtonDblClick && (modifiers & Qt::AltModifier)) {
-                    QVariant v = widget->property("text");
+                const int speak_keys = Qt::AltModifier | Qt::ShiftModifier;
+		if(etype == QMouseEvent::MouseButtonDblClick && ((modifiers & speak_keys) == speak_keys)) {
+                    QVariant v = widget->property("displayText");
+                    if(!v.isValid()) v = widget->property("text");
                     if(!v.isValid()) v = widget->property("windowTitle");
                     if(v.isValid()) {
                         QString s = v.toString();
@@ -2720,8 +2832,8 @@ void QApplicationPrivate::closePopup(QWidget *popup)
         // first popup grabbed the keyboard), so we have to do that
         // manually: A popup was closed, so the previous popup gets
         // the focus.
-        QApplicationPrivate::active_window = QApplicationPrivate::popupWidgets->last();
-        if (QWidget *fw = QApplicationPrivate::active_window->focusWidget())
+        QWidget* aw = QApplicationPrivate::popupWidgets->last();
+        if (QWidget *fw = aw->focusWidget())
             fw->setFocus(Qt::PopupFocusReason);
     }
 }
@@ -2975,7 +3087,7 @@ bool QApplicationPrivate::qt_mac_apply_settings()
         }
 
         settings.beginGroup(QLatin1String("Font Substitutions"));
-        QStringList fontsubs = settings.childGroups();
+        QStringList fontsubs = settings.childKeys();
         if (!fontsubs.isEmpty()) {
             QStringList::Iterator it = fontsubs.begin();
             for (; it != fontsubs.end(); ++it) {

@@ -648,8 +648,7 @@ QQuickDrawPaintEngine::drawPixmap(const QRectF &r, const QPixmap &pm, const QRec
 
 void QQuickDrawPaintEngine::drawTextItem(const QPointF &p, const QTextItem &textItem)
 {
-    const QTextItemInt &ti = static_cast<const QTextItemInt &>(textItem);
-    ti.fontEngine->draw(this, p.x(), p.y(), ti);
+    QPaintEngine::drawTextItem(p, textItem);
 }
 
 void
@@ -1410,6 +1409,65 @@ QCoreGraphicsPaintEngine::drawPixmap(const QRectF &r, const QPixmap &pm, const Q
     CGContextRestoreGState(d->hd);
 }
 
+
+static void drawImageReleaseData (void *info, const void *, size_t)
+{
+    delete static_cast<QImage *>(info);
+}
+
+
+void QCoreGraphicsPaintEngine::drawImage(const QRectF &r, const QImage &img, const QRectF &sr,
+                                         Qt::ImageConversionFlags flags)
+{
+    Q_D(QCoreGraphicsPaintEngine);
+    Q_UNUSED(flags);
+    Q_ASSERT(isActive());
+    if (img.isNull())
+        return;
+
+    const QImage *image = &img;
+    QImage *newImage = 0;
+    if (img.depth() != 32) {
+        newImage = new QImage(img.convertToFormat(QImage::Format_ARGB32_Premultiplied));
+        image = newImage;
+    }
+
+#if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4)
+    uint cgflags = kCGImageAlphaNone;
+#else
+    CGImageAlphaInfo cgflags = kCGImageAlphaNone;
+#endif
+    switch (image->format()) {
+    case QImage::Format_ARGB32_Premultiplied:
+        cgflags = kCGImageAlphaPremultipliedFirst;
+        break;
+    case QImage::Format_ARGB32:
+        cgflags = kCGImageAlphaFirst;
+        break;
+    case QImage::Format_RGB32:
+        cgflags = kCGImageAlphaNoneSkipFirst;
+    default:
+        break;
+    }
+#if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4) && defined(kCGBitmapByteOrder32Host) //only needed because CGImage.h added symbols in the minor version
+    if(QSysInfo::MacintoshVersion >= QSysInfo::MV_10_4)
+        cgflags |= kCGBitmapByteOrder32Host;
+#endif
+    QCFType<CGDataProviderRef> dataProvider = CGDataProviderCreateWithData(newImage,
+                                                          image->bits(),
+                                                          image->numBytes(),
+                                                          drawImageReleaseData);
+   QCFType<CGImageRef> cgimage = CGImageCreate(image->width(), image->height(), 8, 32,
+                                        image->bytesPerLine(),
+                                QCFType<CGColorSpaceRef>(CGColorSpaceCreateDeviceRGB()),
+                                cgflags, dataProvider, 0, false, kCGRenderingIntentDefault);
+
+    const float sx = ((float)r.width())/sr.width(), sy = ((float)r.height())/sr.height();
+    CGRect rect = CGRectMake(r.x()-(sr.x()*sx), r.y()-(sr.y()*sy),
+                             image->width()*sx, image->height()*sy);
+    HIViewDrawCGImage(d->hd, &rect, cgimage);
+}
+
 void
 QCoreGraphicsPaintEngine::initialize()
 {
@@ -1493,7 +1551,7 @@ QCoreGraphicsPaintEnginePrivate::penOffset()
         return 0;
     float ret = 0;
     if(current.pen.style() != Qt::NoPen) {
-        if(current.pen.widthF() <= 1.0)
+        if(current.pen.widthF() < 1.0)
             ret = 0.5;
         else
             ret = 0.0f;
@@ -1523,7 +1581,7 @@ QCoreGraphicsPaintEnginePrivate::setStrokePen(const QPen &pen)
     else if(pen.joinStyle() == Qt::RoundJoin)
         cglinejoin = kCGLineJoinRound;
     CGContextSetLineJoin(hd, cglinejoin);
-    CGContextSetMiterLimit(hd, pen.miterLimit());
+//    CGContextSetMiterLimit(hd, pen.miterLimit());
 
     //pen style
     QVector<float> linedashes;
@@ -1609,7 +1667,21 @@ QCoreGraphicsPaintEnginePrivate::setFillBrush(const QBrush &brush, const QPointF
             height = qpattern->data.pixmap.height();
         } else {
             qpattern->as_mask = true;
-            qpattern->data.bytes = qt_patternForBrush(bs, false);
+
+            Qt::BrushStyle bsForPattern;
+            switch (bs) {
+            // Since the matrix is flipped, we need to filp the diagonal
+            default:
+                bsForPattern = bs;
+                break;
+            case Qt::BDiagPattern:
+                bsForPattern = Qt::FDiagPattern;
+                break;
+            case Qt::FDiagPattern:
+                bsForPattern = Qt::BDiagPattern;
+                break;
+            }
+            qpattern->data.bytes = qt_patternForBrush(bsForPattern, false);
             width = height = 8;
             const QColor &col = brush.color();
             components[0] = qt_mac_convert_color_to_cg(col.red());
@@ -1722,3 +1794,76 @@ void QCoreGraphicsPaintEnginePrivate::drawPath(uchar ops, CGMutablePathRef path)
         }
     }
 }
+
+static void drawTextItemDecoration(QPainter *painter, const QPointF &pos, const QTextItemInt &ti)
+{
+    QFontEngine *fe = ti.fontEngine;
+
+    const QPen oldPen = painter->pen();
+    const QBrush oldBrush = painter->brush();
+    painter->setPen(Qt::NoPen);
+
+    if (ti.flags & QTextItem::Underline) {
+        if (ti.underlineColor.isValid())
+            painter->setBrush(ti.underlineColor);
+        else
+            painter->setBrush(oldPen.brush());
+
+        int lw = qRound(fe->lineThickness());
+        int yp = qRound(pos.y() + fe->underlinePosition().toReal());
+        painter->drawRect(qRound(pos.x()), yp, qRound(ti.width), lw);
+    }
+
+    painter->setBrush(oldPen.brush());
+
+    if (ti.flags & QTextItem::StrikeOut) {
+        int lw = qRound(fe->lineThickness());
+        int yp = qRound(pos.y() - fe->ascent().toReal()/3.);
+        painter->drawRect(qRound(pos.x()), yp, qRound(ti.width), lw);
+    }
+
+    if (ti.flags & QTextItem::Overline) {
+        int lw = qRound(fe->lineThickness());
+        int yp = qRound(pos.y() - fe->ascent().toReal());
+        painter->drawRect(qRound(pos.x()), yp, qRound(ti.width), lw);
+    }
+
+    painter->setPen(oldPen);
+    painter->setBrush(oldBrush);
+}
+
+
+void QCoreGraphicsPaintEngine::drawTextItem(const QPointF &pos, const QTextItem &item)
+{
+    Q_D(QCoreGraphicsPaintEngine);
+
+    const QTextItemInt &ti = static_cast<const QTextItemInt &>(item);
+
+    QPen oldPen = painter()->pen();
+    QBrush oldBrush = painter()->brush();
+    QPointF oldBrushOrigin = painter()->brushOrigin();
+    updatePen(Qt::NoPen);
+    updateBrush(oldPen.brush(), QPointF(0, 0));
+
+    Q_ASSERT(type() == QPaintEngine::CoreGraphics);
+
+    const bool textAA = state->renderHints() & QPainter::TextAntialiasing;
+    const bool lineAA = state->renderHints() & QPainter::Antialiasing;
+    if(textAA != lineAA)
+        CGContextSetShouldAntialias(d->hd, textAA);
+
+    Q_ASSERT(ti.fontEngine->type() == QFontEngine::Mac);
+
+    QFontEngineMac *fe = static_cast<QFontEngineMac*>(ti.fontEngine);
+    if (ti.num_glyphs)
+        fe->draw(d->hd, pos.x(), pos.y(), ti, paintDevice()->height());
+    drawTextItemDecoration(painter(), pos, ti);
+
+    if(textAA != lineAA)
+        CGContextSetShouldAntialias(d->hd, !textAA);
+
+    updatePen(oldPen);
+    updateBrush(oldBrush, oldBrushOrigin);
+}
+
+

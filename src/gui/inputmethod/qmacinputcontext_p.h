@@ -42,6 +42,7 @@ class Q_GUI_EXPORT QMacInputContext : public QInputContext
 {
     Q_OBJECT
     //Q_DECLARE_PRIVATE(QMacInputContext)
+    void createTextDocument();
 public:
     explicit QMacInputContext(QObject* parent = 0);
     virtual ~QMacInputContext();
@@ -61,7 +62,7 @@ protected:
     void mouseHandler(int pos, QMouseEvent *);
 private:
     bool composing;
-    TSMDocumentID id;
+    TSMDocumentID textDocument;
     QString currentText;
 };
 

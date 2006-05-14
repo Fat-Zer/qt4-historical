@@ -49,12 +49,16 @@ body { background: #ffffff; color: black; }</style>
     {
         glWidget = new GLWidget;
 
-        xSlider = createSlider(SIGNAL(xRotationChanged(int)),
-                               SLOT(setXRotation(int)));
-        ySlider = createSlider(SIGNAL(yRotationChanged(int)),
-                               SLOT(setYRotation(int)));
-        zSlider = createSlider(SIGNAL(zRotationChanged(int)),
-                               SLOT(setZRotation(int)));
+        xSlider = createSlider();
+        ySlider = createSlider();
+        zSlider = createSlider();
+
+        connect(xSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setXRotation(int)));
+        connect(glWidget, SIGNAL(xRotationChanged(int)), xSlider, SLOT(setValue(int)));
+        connect(ySlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setYRotation(int)));
+        connect(glWidget, SIGNAL(yRotationChanged(int)), ySlider, SLOT(setValue(int)));
+        connect(zSlider, SIGNAL(valueChanged(int)), glWidget, SLOT(setZRotation(int)));
+        connect(glWidget, SIGNAL(zRotationChanged(int)), zSlider, SLOT(setValue(int)));
 
         QHBoxLayout *mainLayout = new QHBoxLayout;
         mainLayout-&gt;addWidget(glWidget);
@@ -69,7 +73,7 @@ body { background: #ffffff; color: black; }</style>
         setWindowTitle(tr(&quot;Hello GL&quot;));
     }
 
-    QSlider *Window::createSlider(const char *changedSignal, const char *setterSlot)
+    QSlider *Window::createSlider()
     {
         QSlider *slider = new QSlider(Qt::Vertical);
         slider-&gt;setRange(0, 360 * 16);
@@ -77,14 +81,12 @@ body { background: #ffffff; color: black; }</style>
         slider-&gt;setPageStep(15 * 16);
         slider-&gt;setTickInterval(15 * 16);
         slider-&gt;setTickPosition(QSlider::TicksRight);
-        connect(slider, SIGNAL(valueChanged(int)), glWidget, setterSlot);
-        connect(glWidget, changedSignal, slider, SLOT(setValue(int)));
         return slider;
     }</pre>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

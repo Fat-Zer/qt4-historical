@@ -29,6 +29,8 @@
 #include <QtCore/qfileinfo.h>
 #include <QtGui/qicon.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 #ifndef QT_NO_DIRMODEL
@@ -142,9 +144,11 @@ protected:
 private:
     Q_DECLARE_PRIVATE(QDirModel)
     Q_DISABLE_COPY(QDirModel)
-    Q_PRIVATE_SLOT(d_func(), void refresh())
+    Q_PRIVATE_SLOT(d_func(), void _q_refresh())
 };
 
 #endif // QT_NO_DIRMODEL
+
+QT_END_HEADER
 
 #endif // QDIRMODEL_H

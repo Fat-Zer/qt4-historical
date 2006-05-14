@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-mac-opensource-src-4.1.2/src/gui/widgets/qprogressbar.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-mac-opensource-src-4.1.3/src/gui/widgets/qprogressbar.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-mac-opensource-src-4.1.3/src/gui/widgets/qprogressbar.cpp -->
 <head>
     <title>Qt 4.1: QProgressBar Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -69,7 +70,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>int <b><a href="qprogressbar.html#value-prop">value</a></b> () const</li>
 </ul>
 <ul>
-<li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>190 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -111,7 +112,11 @@ body { background: #ffffff; color: black; }</style>
 <p>The progress bar uses the concept of <i>steps</i>. You set it up by specifying the minumum and maximum possible step values, and it will display the percentage of steps that have been completed when you later give it the current step value. The percentage is calculated by dividing the progress (<a href="qprogressbar.html#value-prop">value</a>() - <a href="qprogressbar.html#minimum-prop">minimum</a>()) divided by <a href="qprogressbar.html#maximum-prop">maximum</a>() - <a href="qprogressbar.html#minimum-prop">minimum</a>().</p>
 <p>You can specify the minimum and maximum number of steps with <a href="qprogressbar.html#minimum-prop">setMinimum</a>() and setMaximum. The current number of steps is set with <a href="qprogressbar.html#value-prop">setValue</a>(). The progress bar can be rewound to the beginning with <a href="qprogressbar.html#reset">reset</a>().</p>
 <p>If minimum and maximum both are set to 0, the bar shows a busy indicator instead of a percentage of steps. This is useful, for example, when using <a href="qftp.html">QFtp</a> or <a href="qhttp.html">QHttp</a> to download items when they are unable to determine the size of the item being downloaded.</p>
-<p><img src="images/macintosh-progressbar.png" alt="Screenshot in Macintosh style" /> <img src="images/windows-progressbar.png" alt="Screenshot in Windows style" /></p>
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
+<tr valign="top" bgcolor="#f0f0f0"><td><img src="images/macintosh-progressbar.png" alt="Screenshot of a Macintosh style progress bar" /></td><td>A progress bar shown in the Macintosh widget style.</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><img src="images/windowsxp-progressbar.png" alt="Screenshot of a Windows XP style progress bar" /></td><td>A progress bar shown in the Windows XP widget style.</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><img src="images/plastique-progressbar.png" alt="Screenshot of a Plastique style progress bar" /></td><td>A progress bar shown in the Plastique widget style.</td></tr>
+</table></p>
 <p>See also <a href="qprogressdialog.html">QProgressDialog</a> and <a href="guibooks.html#fowler">GUI Design Handbook: Progress Indicator</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
@@ -223,6 +228,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

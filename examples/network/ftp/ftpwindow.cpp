@@ -54,7 +54,7 @@ FtpWindow::FtpWindow(QWidget *parent)
 
     connect(fileList, SIGNAL(itemDoubleClicked(QListWidgetItem *)),
             this, SLOT(processItem(QListWidgetItem *)));
-    connect(fileList, SIGNAL(itemSelectionChanged()),
+    connect(fileList, SIGNAL(currentItemChanged(QListWidgetItem *, QListWidgetItem *)),
             this, SLOT(enableDownloadButton()));
     connect(progressDialog, SIGNAL(canceled()), this, SLOT(cancelDownload()));
     connect(connectButton, SIGNAL(clicked()), this, SLOT(connectOrDisconnect()));
@@ -88,6 +88,7 @@ void FtpWindow::connectOrDisconnect()
     if (ftp) {
         ftp->abort();
         ftp->deleteLater();
+        ftp = 0;
         fileList->setEnabled(false);
         downloadButton->setEnabled(false);
         connectButton->setText(tr("Connect"));

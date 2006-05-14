@@ -183,7 +183,7 @@ QVariant DomTool::elementToVariant(const QDomElement& e, const QVariant& defValu
         f.init();
         while (!n3.isNull()) {
             if (n3.tagName() == QLatin1String("family"))
-                f.family = qstrdup(n3.firstChild().toText().data());
+                f.family = qstrdup(n3.firstChild().toText().data().toLatin1());
             else if (n3.tagName() == QLatin1String("pointsize"))
                 f.pointsize = n3.firstChild().toText().data().toInt();
             else if (n3.tagName() == QLatin1String("bold"))
@@ -388,7 +388,7 @@ static double versionToDouble(QString version)
     QString num_str;
     for (int i = 0; i < version.size(); ++i) {
         char c = version.at(i).toAscii();
-        if (c < '0' && c > '9' && c != '.')
+        if ((c < '0' || c > '9') && c != '.')
             break;
         if (c == '.') {
             if (decpt)

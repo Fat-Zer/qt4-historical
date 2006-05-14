@@ -30,6 +30,8 @@
 #include <QtGui/qlayout.h>
 #include <QtCore/qpointer.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Qt3SupportLight)
 
 #ifndef QT_NO_MAINWINDOW
@@ -48,7 +50,7 @@ class Q_COMPAT_EXPORT Q3DockAreaLayout : public QLayout
 
 public:
     Q3DockAreaLayout(QWidget* parent, Qt::Orientation o, QList<Q3DockWindow *> *wl, int space = -1, int margin = -1, const char *name = 0)
-        : QLayout(parent), orient(o), dockWindows(wl), parentWidget(parent)
+        : QLayout(parent), orient(o), dockWindows(wl), parentWidget(parent), dirty(true)
     {
         if (space != -1)
             setSpacing(space);
@@ -169,5 +171,7 @@ Q_COMPAT_EXPORT QTextStream &operator>>(QTextStream &, Q3DockArea &);
 #endif
 
 #endif // QT_NO_MAINWINDOW
+
+QT_END_HEADER
 
 #endif // Q3DOCKAREA_H

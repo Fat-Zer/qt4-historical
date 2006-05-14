@@ -26,6 +26,8 @@
 
 #include <QtGui/qwidget.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Svg)
 
 class QSvgWidgetPrivate;
@@ -52,5 +54,7 @@ private:
     Q_DISABLE_COPY(QSvgWidget)
     Q_DECLARE_PRIVATE(QSvgWidget)
 };
+
+QT_END_HEADER
 
 #endif // QSVGWIDGET_H

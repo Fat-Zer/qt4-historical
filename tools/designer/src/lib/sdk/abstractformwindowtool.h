@@ -28,6 +28,8 @@
 
 #include <QtCore/QObject>
 
+QT_BEGIN_HEADER
+
 class QDesignerFormEditorInterface;
 class QDesignerFormWindowInterface;
 class QWidget;
@@ -55,5 +57,7 @@ public:
 
     virtual bool handleEvent(QWidget *widget, QWidget *managedWidget, QEvent *event) = 0;
 };
+
+QT_END_HEADER
 
 #endif // ABSTRACTFORMWINDOWTOOL_H

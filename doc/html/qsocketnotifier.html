@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-mac-opensource-src-4.1.2/src/corelib/kernel/qsocketnotifier.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-mac-opensource-src-4.1.3/src/corelib/kernel/qsocketnotifier.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-mac-opensource-src-4.1.3/src/corelib/kernel/qsocketnotifier.cpp -->
 <head>
     <title>Qt 4.1: QSocketNotifier Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -67,53 +68,45 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Detailed Description</h2>
 <p>The QSocketNotifier class provides support for monitoring activity on a file descriptor.</p>
-<p>The QSocketNotifier makes it possible to integrate Qt's event loop with other event loops based on file descriptors. For example, the QtCorba Solution uses it to process CORBA events. File descriptor action is detected in Qt's main event loop (<a href="qcoreapplication.html#exec">QCoreApplication::exec</a>()).</p>
-<p>Once you have opened a device using a low-level (usually platform-specific) API, you can create a socket notifier to monitor the file descriptor. You can then connect the <a href="qsocketnotifier.html#activated">activated</a>() signal to the slot you want to be called whenever an event occurs.</p>
-<p>Although the class is called QSocketNotifier, it is normally used for other types of devices than sockets. <a href="qtcpsocket.html">QTcpSocket</a> and <a href="qudpsocket.html">QUdpSocket</a> provide notification through signals, so there is normally no need to use a QSocketNotifier on them.</p>
-<a name="write-notifiers"></a><p>There are three types of socket notifiers: read, write, and exception. You must specify one of these in the constructor.</p>
-<p>The type specifies when the <a href="qsocketnotifier.html#activated">activated</a>() signal is to be emitted:</p>
-<ol type="1">
-<li><a href="qsocketnotifier.html#Type-enum">QSocketNotifier::Read</a> - There is data to be read.</li>
-<li><a href="qsocketnotifier.html#Type-enum">QSocketNotifier::Write</a> - Data can be written.</li>
-<li><a href="qsocketnotifier.html#Type-enum">QSocketNotifier::Exception</a> - An exception has occurred. We recommend against using this.</li>
-</ol>
-<p><b>Note:</b> If you need to monitor both reads and writes for the same file descriptor, you must create two socket notifiers. It is not possible to install two socket notifiers of the same type (<a href="qsocketnotifier.html#Type-enum">Read</a>, <a href="qsocketnotifier.html#Type-enum">Write</a>, <a href="qsocketnotifier.html#Type-enum">Exception</a>) on the same socket.</p>
+<p>The QSocketNotifier makes it possible to integrate Qt's event loop with other event loops based on file descriptors. For example, the <a href="http://www.trolltech.com/products/solutions/catalog/4/Utilities/qtcorba/">QtCorba Solution</a> uses it to process CORBA events. File descriptor action is detected in Qt's main event loop (<a href="qcoreapplication.html#exec">QCoreApplication::exec</a>()).</p>
+<a name="write-notifiers"></a><p>Once you have opened a device using a low-level (usually platform-specific) API, you can create a socket notifier to monitor the file descriptor. The socket notifier is enabled by default, i.e. it emits the <a href="qsocketnotifier.html#activated">activated</a>() signal whenever a socket event corresponding to its type occurs. Connect the <a href="qsocketnotifier.html#activated">activated</a>() signal to the slot you want to be called when an event corresponding to your socket notifier's type occurs.</p>
+<p>There are three types of socket notifiers: read, write, and exception. The type is described by the <a href="qsocketnotifier.html#Type-enum">Type</a> enum, and must be specified when constructing the socket notifier. After construction it can be determined using the <a href="qsocketnotifier.html#type">type</a>() function. Note that if you need to monitor both reads and writes for the same file descriptor, you must create two socket notifiers. Note also that it is not possible to install two socket notifiers of the same type (<a href="qsocketnotifier.html#Type-enum">Read</a>, <a href="qsocketnotifier.html#Type-enum">Write</a>, <a href="qsocketnotifier.html#Type-enum">Exception</a>) on the same socket.</p>
+<p>The <a href="qsocketnotifier.html#setEnabled">setEnabled</a>() function allows you to disable as well as enable the socket notifier. It is generally advisable to explicitly enable or disable the socket notifier, especially for write notifiers. A disabled notifier ignores socket events (the same effect as not creating the socket notifier). Use the <a href="qsocketnotifier.html#isEnabled">isEnabled</a>() function to determine the notifier's current status.</p>
+<p>Finally, you can use the <a href="qsocketnotifier.html#socket">socket</a>() function to retrieve the socket identifier. Although the class is called QSocketNotifier, it is normally used for other types of devices than sockets. <a href="qtcpsocket.html">QTcpSocket</a> and <a href="qudpsocket.html">QUdpSocket</a> provide notification through signals, so there is normally no need to use a QSocketNotifier on them.</p>
+<p><b>Note for Windows users:</b> The socket passed to QSocketNotifier will become non-blocking, even if it was created as a blocking socket.</p>
 <p>See also <a href="qfile.html">QFile</a>, <a href="qprocess.html">QProcess</a>, <a href="qtcpsocket.html">QTcpSocket</a>, and <a href="qudpsocket.html">QUdpSocket</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="Type-enum"></a>enum QSocketNotifier::Type</h3>
-<p>The socket notifier can be used to inform the application of the following types of event:</p>
+<p>This enum describes the various types of events that a socket notifier can recognize. The type must be specified when constructing the socket notifier.</p>
+<p>Note that if you need to monitor both reads and writes for the same file descriptor, you must create two socket notifiers. Note also that it is not possible to install two socket notifiers of the same type (Read, Write, Exception) on the same socket.</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
-<tr><td valign="top"><tt>QSocketNotifier::Read</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">There is incoming data.</td></tr>
+<tr><td valign="top"><tt>QSocketNotifier::Read</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">There is data to be read.</td></tr>
 <tr><td valign="top"><tt>QSocketNotifier::Write</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Data can be written.</td></tr>
-<tr><td valign="top"><tt>QSocketNotifier::Exception</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">An exception has occurred.</td></tr>
+<tr><td valign="top"><tt>QSocketNotifier::Exception</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">An exception has occurred. We recommend against using this.</td></tr>
 </table></p>
+<p>See also <a href="qsocketnotifier.html#QSocketNotifier">QSocketNotifier</a>() and <a href="qsocketnotifier.html#type">type</a>().</p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QSocketNotifier"></a>QSocketNotifier::QSocketNotifier ( int <i>socket</i>, <a href="qsocketnotifier.html#Type-enum">Type</a> <i>type</i>, <a href="qobject.html">QObject</a> * <i>parent</i> = 0 )</h3>
 <p>Constructs a socket notifier with the given <i>parent</i>. It enables the <i>socket</i>, and watches for events of the given <i>type</i>.</p>
 <p>It is generally advisable to explicitly enable or disable the socket notifier, especially for write notifiers.</p>
+<p><b>Note for Windows users:</b> The socket passed to <a href="qsocketnotifier.html">QSocketNotifier</a> will become non-blocking, even if it was created as a blocking socket.</p>
 <p>See also <a href="qsocketnotifier.html#setEnabled">setEnabled</a>() and <a href="qsocketnotifier.html#isEnabled">isEnabled</a>().</p>
 <h3 class="fn"><a name="dtor.QSocketNotifier"></a>QSocketNotifier::~QSocketNotifier ()</h3>
-<p>Destroys the socket notifier.</p>
+<p>Destroys this socket notifier.</p>
 <h3 class="fn"><a name="activated"></a>void QSocketNotifier::activated ( int <i>socket</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This signal is emitted under certain conditions specified by the notifier <a href="qsocketnotifier.html#type">type</a>():</p>
-<ol type="1">
-<li><a href="qsocketnotifier.html#Type-enum">QSocketNotifier::Read</a> - There is data to be read (socket read event).</li>
-<li><a href="qsocketnotifier.html#Type-enum">QSocketNotifier::Write</a> - Data can be written (socket write event).</li>
-<li><a href="qsocketnotifier.html#Type-enum">QSocketNotifier::Exception</a> - An exception has occurred (socket exception event).</li>
-</ol>
-<p>The <i>socket</i> is the socket identifier.</p>
+<p>This signal is emitted whenever the socket notifier is enabled and a socket event corresponding to its <a href="qsocketnotifier.html#Type-enum">type</a> occurs.</p>
+<p>The socket identifier is passed in the <i>socket</i> parameter.</p>
 <p>See also <a href="qsocketnotifier.html#type">type</a>() and <a href="qsocketnotifier.html#socket">socket</a>().</p>
 <h3 class="fn"><a name="isEnabled"></a>bool QSocketNotifier::isEnabled () const</h3>
 <p>Returns true if the notifier is enabled; otherwise returns false.</p>
 <p>See also <a href="qsocketnotifier.html#setEnabled">setEnabled</a>().</p>
 <h3 class="fn"><a name="setEnabled"></a>void QSocketNotifier::setEnabled ( bool <i>enable</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>If <i>enable</i> is true, the notifier is enabled; otherwise the notifier is disabled.</p>
-<p>The notifier is enabled by default.</p>
-<p>If the notifier is enabled, it emits the <a href="qsocketnotifier.html#activated">activated</a>() signal whenever a socket event corresponding to its <a href="qsocketnotifier.html#type">type</a> occurs. If it is disabled, it ignores socket events (the same effect as not creating the socket notifier).</p>
-<p>Write notifiers should normally be disabled immediately after the <a href="qsocketnotifier.html#activated">activated</a>() signal has been emitted; see discussion of write notifiers in the <a href="qsocketnotifier.html#write-notifiers">class description</a> above.</p>
+<p>The notifier is enabled by default, i.e. it emits the <a href="qsocketnotifier.html#activated">activated</a>() signal whenever a socket event corresponding to its <a href="qsocketnotifier.html#type">type</a> occurs. If it is disabled, it ignores socket events (the same effect as not creating the socket notifier).</p>
+<p>Write notifiers should normally be disabled immediately after the <a href="qsocketnotifier.html#activated">activated</a>() signal has been emitted</p>
 <p>See also <a href="qsocketnotifier.html#isEnabled">isEnabled</a>() and <a href="qsocketnotifier.html#activated">activated</a>().</p>
 <h3 class="fn"><a name="socket"></a>int QSocketNotifier::socket () const</h3>
 <p>Returns the socket identifier specified to the constructor.</p>
@@ -125,6 +118,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

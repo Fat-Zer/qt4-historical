@@ -26,6 +26,8 @@
 
 #include <QtGui/qwidget.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 class QPushButton;
@@ -100,5 +102,7 @@ protected:
 private:
     Q_DISABLE_COPY(QDialog)
 };
+
+QT_END_HEADER
 
 #endif // QDIALOG_H

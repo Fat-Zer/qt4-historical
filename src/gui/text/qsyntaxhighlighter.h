@@ -31,6 +31,8 @@
 #include <QtCore/qobject.h>
 #include <QtGui/qtextobject.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 class QTextDocument;
@@ -71,9 +73,12 @@ protected:
 
 private:
     Q_DISABLE_COPY(QSyntaxHighlighter)
-    Q_PRIVATE_SLOT(d_func(), void reformatBlocks(int from, int charsRemoved, int charsAdded))
-    Q_PRIVATE_SLOT(d_func(), void reformatDocument())
+    Q_PRIVATE_SLOT(d_func(), void _q_reformatBlocks(int from, int charsRemoved, int charsAdded))
+    Q_PRIVATE_SLOT(d_func(), void _q_reformatDocument())
 };
 
+QT_END_HEADER
+
 #endif // QT_NO_SYNTAXHIGHLIGHTER
+
 #endif // QSYNTAXHIGHLIGHTER_H

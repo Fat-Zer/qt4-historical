@@ -104,21 +104,21 @@ bool QGLContext::chooseContext(const QGLContext* shareContext)
     aglDescribePixelFormat(fmt, AGL_DEPTH_SIZE, &res);
     d->glFormat.setDepth(res);
     if (d->glFormat.depth())
-	d->glFormat.setDepthBufferSize(res);
+        d->glFormat.setDepthBufferSize(res);
     aglDescribePixelFormat(fmt, AGL_RGBA, &res);
     d->glFormat.setRgba(res);
     aglDescribePixelFormat(fmt, AGL_ALPHA_SIZE, &res);
     d->glFormat.setAlpha(res);
     if (d->glFormat.alpha())
-	d->glFormat.setAlphaBufferSize(res);
+        d->glFormat.setAlphaBufferSize(res);
     aglDescribePixelFormat(fmt, AGL_ACCUM_RED_SIZE, &res);
     d->glFormat.setAccum(res);
     if (d->glFormat.accum())
-	d->glFormat.setAccumBufferSize(res);
+        d->glFormat.setAccumBufferSize(res);
     aglDescribePixelFormat(fmt, AGL_STENCIL_SIZE, &res);
     d->glFormat.setStencil(res);
     if (d->glFormat.stencil())
-	d->glFormat.setStencilBufferSize(res);
+        d->glFormat.setStencilBufferSize(res);
     aglDescribePixelFormat(fmt, AGL_STEREO, &res);
     d->glFormat.setStereo(res);
     aglDescribePixelFormat(fmt, AGL_SAMPLE_BUFFERS_ARB, &res);
@@ -159,6 +159,12 @@ bool QGLContext::chooseContext(const QGLContext* shareContext)
     }
     if(deviceIsPixmap())
         updatePaintDevice();
+    { //sync the vrefresh
+        const GLint sync = 1;
+        aglSetInteger((AGLContext)d->cx, AGL_SWAP_INTERVAL, &sync);
+        if(!aglIsEnabled((AGLContext)d->cx, AGL_SWAP_INTERVAL))
+            aglEnable((AGLContext)d->cx, AGL_SWAP_INTERVAL);
+    }
     return true;
 }
 
@@ -175,84 +181,81 @@ bool QGLContext::chooseContext(const QGLContext* shareContext)
   \sa chooseContext()
 */
 
-void *QGLContext::chooseMacVisual(GDHandle /* device */)
+AGLPixelFormat QGLContextPrivate::tryFormat(const QGLFormat &format)
 {
-    Q_D(QGLContext);
-    GLint attribs[40], cnt=0;
-    if(deviceIsPixmap()) {
+    GLint attribs[40], cnt = 0;
+    bool device_is_pixmap = (paintDevice->devType() == QInternal::Pixmap);
+
+    attribs[cnt++] = AGL_RGBA;
+    attribs[cnt++] = AGL_BUFFER_SIZE;
+    attribs[cnt++] = device_is_pixmap ? static_cast<QPixmap *>(paintDevice)->depth() : 32;
+    attribs[cnt++] = AGL_LEVEL;
+    attribs[cnt++] = format.plane();
+
+    if (device_is_pixmap) {
         attribs[cnt++] = AGL_PIXEL_SIZE;
-        attribs[cnt++] = ((QPixmap*)d->paintDevice)->depth();
+        attribs[cnt++] = static_cast<QPixmap *>(paintDevice)->depth();
     }
-    if(d->glFormat.stereo())
-        attribs[cnt++] = AGL_STEREO;
-    {
-        attribs[cnt++] = AGL_RGBA;
-        attribs[cnt++] = AGL_BUFFER_SIZE;
-        attribs[cnt++] = deviceIsPixmap() ? ((QPixmap*)d->paintDevice)->depth() : 32;
-    }
-    if(d->glFormat.alpha()) {
-        attribs[cnt++] = AGL_ALPHA_SIZE;
-        attribs[cnt++] = d->glFormat.alphaBufferSize() == -1 ? 8 : d->glFormat.alphaBufferSize();
-    }
-    if(d->glFormat.stencil()) {
-        attribs[cnt++] = AGL_STENCIL_SIZE;
-        attribs[cnt++] = d->glFormat.stencilBufferSize() == -1 ? 8 : d->glFormat.stencilBufferSize();
-    }
-    if(d->glFormat.depth()) {
-        attribs[cnt++] = AGL_DEPTH_SIZE;
-        attribs[cnt++] = d->glFormat.depthBufferSize() == -1 ? 32 : d->glFormat.depthBufferSize();
-    }
-    if(d->glFormat.accum()) {
-        attribs[cnt++] = AGL_ACCUM_RED_SIZE;
-        attribs[cnt++] = d->glFormat.accumBufferSize() == -1 ? 16 : d->glFormat.accumBufferSize();
-        attribs[cnt++] = AGL_ACCUM_BLUE_SIZE;
-        attribs[cnt++] = d->glFormat.accumBufferSize() == -1 ? 16 : d->glFormat.accumBufferSize();
-        attribs[cnt++] = AGL_ACCUM_GREEN_SIZE;
-        attribs[cnt++] = d->glFormat.accumBufferSize() == -1 ? 16 : d->glFormat.accumBufferSize();
-        attribs[cnt++] = AGL_ACCUM_ALPHA_SIZE;
-        attribs[cnt++] = d->glFormat.accumBufferSize() == -1 ? 16 : d->glFormat.accumBufferSize();
-    }
-    {
-        attribs[cnt++] = AGL_LEVEL;
-        attribs[cnt++] = d->glFormat.plane();
+    if (device_is_pixmap) {
+        attribs[cnt++] = AGL_OFFSCREEN;
+    } else {
+        if(format.doubleBuffer())
+            attribs[cnt++] = AGL_DOUBLEBUFFER;
     }
 
-    if(d->glFormat.sampleBuffers()) {
+    if(glFormat.stereo())
+        attribs[cnt++] = AGL_STEREO;
+    if(format.alpha()) {
+        attribs[cnt++] = AGL_ALPHA_SIZE;
+        attribs[cnt++] = format.alphaBufferSize() == -1 ? 8 : format.alphaBufferSize();
+    }
+    if(format.stencil()) {
+        attribs[cnt++] = AGL_STENCIL_SIZE;
+        attribs[cnt++] = format.stencilBufferSize() == -1 ? 8 : format.stencilBufferSize();
+    }
+    if(format.depth()) {
+        attribs[cnt++] = AGL_DEPTH_SIZE;
+        attribs[cnt++] = format.depthBufferSize() == -1 ? 32 : format.depthBufferSize();
+    }
+    if(format.accum()) {
+        attribs[cnt++] = AGL_ACCUM_RED_SIZE;
+        attribs[cnt++] = format.accumBufferSize() == -1 ? 16 : format.accumBufferSize();
+        attribs[cnt++] = AGL_ACCUM_BLUE_SIZE;
+        attribs[cnt++] = format.accumBufferSize() == -1 ? 16 : format.accumBufferSize();
+        attribs[cnt++] = AGL_ACCUM_GREEN_SIZE;
+        attribs[cnt++] = format.accumBufferSize() == -1 ? 16 : format.accumBufferSize();
+        attribs[cnt++] = AGL_ACCUM_ALPHA_SIZE;
+        attribs[cnt++] = format.accumBufferSize() == -1 ? 16 : format.accumBufferSize();
+    }
+    if(format.sampleBuffers()) {
         attribs[cnt++] = AGL_SAMPLE_BUFFERS_ARB;
         attribs[cnt++] = 1;
         attribs[cnt++] = AGL_SAMPLES_ARB;
-        attribs[cnt++] = d->glFormat.samples() == -1 ? 4 : d->glFormat.samples();
-    }
-
-    if(deviceIsPixmap()) {
-        attribs[cnt++] = AGL_OFFSCREEN;
-    } else {
-        if(d->glFormat.doubleBuffer())
-            attribs[cnt++] = AGL_DOUBLEBUFFER;
-//        attribs[cnt++] = AGL_ACCELERATED;
+        attribs[cnt++] = format.samples() == -1 ? 4 : format.samples();
     }
 
     attribs[cnt] = AGL_NONE;
+    Q_ASSERT(cnt < 40);
+    return aglChoosePixelFormat(0, 0, attribs);
+}
 
-    Q_ASSERT(cnt < 40); // resize buffer above if too small
+void *QGLContext::chooseMacVisual(GDHandle /* device */)
+{
+    Q_D(QGLContext);
+    AGLPixelFormat fmt;
 
-    AGLPixelFormat fmt = aglChoosePixelFormat(0, 0, attribs);
-    if(!fmt) {
-        GLenum err = aglGetError();
-        qWarning("got an error tex: %d", (int)err);
+    fmt = d->tryFormat(d->glFormat);
+    if (!fmt && d->glFormat.stereo()) {
+        d->glFormat.setStereo(false);
+        fmt = d->tryFormat(d->glFormat);
     }
-#if 0
-    else {
-        GLint res;
-        int x = 0;
-        for(AGLPixelFormat fmt2 = fmt; fmt2; fmt2 = aglNextPixelFormat(fmt2)) {
-            aglDescribePixelFormat(fmt2, AGL_RENDERER_ID, &res);
-            GLint res2;
-            aglDescribePixelFormat(fmt2, AGL_ACCELERATED, &res2);
-            qDebug("%d) 0x%08x 0x%08x %d", x++, (int)res, (int)AGL_RENDERER_GENERIC_ID, (int)res2);
-        }
+    if (!fmt && d->glFormat.sampleBuffers()) {
+        d->glFormat.setSampleBuffers(false);
+        fmt = d->tryFormat(d->glFormat);
     }
-#endif
+    if(!fmt)
+        qWarning("QGLContext::chooseMacVisual(): unable to choose a pixel format (error: %d).",
+                 (int)aglGetError());
     return fmt;
 }
 
@@ -283,13 +286,16 @@ void QGLContext::makeCurrent()
     }
     aglSetCurrentContext((AGLContext)d->cx);
     if (d->update)
-	updatePaintDevice();
+        updatePaintDevice();
     currentCtx = this;
+    if (!qgl_context_storage.hasLocalData())
+        qgl_context_storage.setLocalData(new QGLThreadContext);
+    qgl_context_storage.localData()->context = this;
 }
 
 static QRegion qt_mac_get_widget_rgn(const QWidget *widget)
 {
-    if(widget->isHidden() || widget->isMinimized())
+    if(!widget->isVisible() || widget->isMinimized())
         return QRegion();
     const QRect wrect = QRect(qt_mac_posInWindow(widget), widget->size());
     if(!wrect.isValid())
@@ -308,7 +314,7 @@ static QRegion qt_mac_get_widget_rgn(const QWidget *widget)
             ret &= qt_mac_convert_mac_region(macr);
         }
         const QObjectList &children = clip->children();
-        for(int i = children.size()-1; i >= 0; i--) {
+        for(int i = children.size()-1; i >= 0; --i) {
             if(QWidget *child = qobject_cast<QWidget*>(children.at(i))) {
                 if(child == last_clip)
                     break;
@@ -341,8 +347,9 @@ void QGLContext::updatePaintDevice()
         WindowPtr window = qt_mac_window_for(hiview);
 #ifdef DEBUG_OPENGL_REGION_UPDATE
         static int serial_no_gl = 0;
-        qDebug("[%d] %p setting on %s %p/%p [%s]", ++serial_no_gl, w,
-               w->metaObject()->className(), hiview, window, w->handle() ? "Inside" : "Outside");
+        qDebug("[%d] %p setting on %s::%s %p/%p [%s]", ++serial_no_gl, w,
+               w->metaObject()->className(), w->objectName().toLatin1().constData(),
+               hiview, window, w->handle() ? "Inside" : "Outside");
 #endif
 
         //update drawable
@@ -375,8 +382,11 @@ void QGLContext::updatePaintDevice()
                 if(aglIsEnabled((AGLContext)d->cx, AGL_CLIP_REGION))
                     aglDisable((AGLContext)d->cx, AGL_CLIP_REGION);
             } else {
-                QPoint wpos = qt_mac_posInWindow(w);
-                const GLint offs[4] = { wpos.x(), w->window()->height() - (wpos.y() + w->height()),
+                HIPoint origin = { 0., 0. };
+                HIViewConvertPoint(&origin, HIViewRef(w->winId()), 0);
+                const GLint offs[4] = { qRound(origin.x),
+                                        w->window()->frameGeometry().height()
+                                                - (qRound(origin.y) + w->height()),
                                         w->width(), w->height() };
                 aglSetInteger((AGLContext)d->cx, AGL_BUFFER_RECT, offs);
                 aglSetInteger((AGLContext)d->cx, AGL_CLIP_REGION, (const GLint *)clp.handle(true));
@@ -401,6 +411,8 @@ void QGLContext::doneCurrent()
 
         return;
     currentCtx = 0;
+    if (qgl_context_storage.hasLocalData())
+        qgl_context_storage.localData()->context = 0;
     aglSetCurrentContext(0);
 }
 
@@ -417,6 +429,7 @@ QColor QGLContext::overlayTransparentColor() const
 {
     return QColor(0, 0, 0);                // Invalid color
 }
+
 
 static QColor cmap[256];
 static bool cmap_init = false;
@@ -464,7 +477,7 @@ void QGLContext::generateFontDisplayLists(const QFont & fnt, int listBase)
     if(fnt.italic())
         fstyle |= italic;
     if(fnt.underline())
-	fstyle |= underline;
+        fstyle |= underline;
     Str255 name;
     FMGetFontFamilyName((FMFontFamily)((UInt32)fnt.handle()), name);
     short fnum;
@@ -479,20 +492,20 @@ static CFBundleRef qt_getOpenGLBundle()
     CFBundleRef bundle = 0;
 
     OSStatus err = FindFolder(kSystemDomain, kFrameworksFolderType, kDontCreateFolder,
-		              &frameworksVRefNum, &frameworksDirID);
+                              &frameworksVRefNum, &frameworksDirID);
     if (err == noErr) {
-	FSSpec spec;
-	FSRef ref;
+        FSSpec spec;
+        FSRef ref;
 
         Str255 framework_name;
         qt_mac_to_pascal_string(QLatin1String("OpenGL.framework"), framework_name);
         err = FSMakeFSSpec(frameworksVRefNum, frameworksDirID, framework_name, &spec);
-	if (err == noErr) {
-	    FSpMakeFSRef(&spec, &ref);
-	    QCFType<CFURLRef> url = CFURLCreateFromFSRef(kCFAllocatorDefault, &ref);
-	    if (url)
-		bundle = CFBundleCreate(kCFAllocatorDefault, url);
-	}
+        if (err == noErr) {
+            FSpMakeFSRef(&spec, &ref);
+            QCFType<CFURLRef> url = CFURLCreateFromFSRef(kCFAllocatorDefault, &ref);
+            if (url)
+                bundle = CFBundleCreate(kCFAllocatorDefault, url);
+        }
     }
     return bundle;
 }
@@ -591,7 +604,7 @@ void QGLWidget::resizeEvent(QResizeEvent *)
     if(!isValid())
         return;
     if (!isWindow())
-	d->glcx->d_func()->update = true;
+        d->glcx->d_func()->update = true;
     makeCurrent();
     if(!d->glcx->initialized())
         glInit();
@@ -710,7 +723,7 @@ void QGLExtensions::init()
     static bool init_done = false;
 
     if (init_done)
-	return;
+        return;
     init_done = true;
 
     GLint attribs[] = { AGL_RGBA, AGL_NONE };

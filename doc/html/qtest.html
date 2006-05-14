@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-mac-opensource-src-4.1.2/tools/qtestlib/src/qtestcase.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-mac-opensource-src-4.1.3/tools/qtestlib/src/qtestcase.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-mac-opensource-src-4.1.3/tools/qtestlib/src/qtestcase.cpp -->
 <head>
     <title>Qt 4.1: QTest Namespace Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -52,27 +53,21 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>void <b><a href="qtest.html#mousePress">mousePress</a></b> ( QWidget * <i>widget</i>, Qt::MouseButton <i>button</i>, Qt::KeyboardModifiers <i>modifier</i> = 0, QPoint <i>pos</i> = QPoint(), int <i>delay</i> = -1 )</li>
 <li><div class="fn"/>void <b><a href="qtest.html#mouseRelease">mouseRelease</a></b> ( QWidget * <i>widget</i>, Qt::MouseButton <i>button</i>, Qt::KeyboardModifiers <i>modifier</i> = 0, QPoint <i>pos</i> = QPoint(), int <i>delay</i> = -1 )</li>
 <li><div class="fn"/>QTestData &amp; <b><a href="qtest.html#newRow">newRow</a></b> ( const char * <i>dataTag</i> )</li>
-<li><div class="fn"/>bool <b><a href="qtest.html#qCompare">qCompare</a></b> ( QString const &amp; <i>t1</i>, QLatin1String const &amp; <i>t2</i>, const char * <i>actual</i>, const char * <i>expected</i>, const char * <i>file</i>, int <i>line</i> )</li>
-<li><div class="fn"/>bool <b><a href="qtest.html#qCompare-2">qCompare</a></b> ( QLatin1String const &amp; <i>t1</i>, QString const &amp; <i>t2</i>, const char * <i>actual</i>, const char * <i>expected</i>, const char * <i>file</i>, int <i>line</i> )</li>
-<li><div class="fn"/>bool <b><a href="qtest.html#qCompare-3">qCompare</a></b> ( QStringList const &amp; <i>t1</i>, QStringList const &amp; <i>t2</i>, const char * <i>actual</i>, const char * <i>expected</i>, const char * <i>file</i>, int <i>line</i> )</li>
-<li><div class="fn"/>bool <b><a href="qtest.html#qCompare-4">qCompare</a></b> ( QFlags&lt;T&gt; const &amp; <i>t1</i>, T const &amp; <i>t2</i>, const char * <i>actual</i>, const char * <i>expected</i>, const char * <i>file</i>, int <i>line</i> )</li>
-<li><div class="fn"/>bool <b><a href="qtest.html#qCompare-5">qCompare</a></b> ( QFlags&lt;T&gt; const &amp; <i>t1</i>, int const &amp; <i>t2</i>, const char * <i>actual</i>, const char * <i>expected</i>, const char * <i>file</i>, int <i>line</i> )</li>
 <li><div class="fn"/>int <b><a href="qtest.html#qExec">qExec</a></b> ( QObject * <i>testObject</i>, int <i>argc</i> = 0, char ** <i>argv</i> = 0 )</li>
 <li><div class="fn"/>void <b><a href="qtest.html#qSleep">qSleep</a></b> ( int <i>ms</i> )</li>
 <li><div class="fn"/>void <b><a href="qtest.html#qWait">qWait</a></b> ( int <i>ms</i> )</li>
-<li><div class="fn"/>int <b><a href="qtest.html#qt_snprintf">qt_snprintf</a></b> ( char * <i>str</i>, int <i>size</i>, const char * <i>format</i>, ... )</li>
-<li><div class="fn"/>char * <b><a href="qtest.html#toString">toString</a></b> ( const QLatin1String &amp; <i>str</i> )</li>
-<li><div class="fn"/>char * <b><a href="qtest.html#toString-2">toString</a></b> ( const QString &amp; <i>str</i> )</li>
-<li><div class="fn"/>char * <b><a href="qtest.html#toString-3">toString</a></b> ( const QTime &amp; <i>time</i> )</li>
-<li><div class="fn"/>char * <b><a href="qtest.html#toString-4">toString</a></b> ( const QDate &amp; <i>date</i> )</li>
-<li><div class="fn"/>char * <b><a href="qtest.html#toString-5">toString</a></b> ( const QDateTime &amp; <i>dateTime</i> )</li>
-<li><div class="fn"/>char * <b><a href="qtest.html#toString-6">toString</a></b> ( const QChar &amp; <i>c</i> )</li>
-<li><div class="fn"/>char * <b><a href="qtest.html#toString-7">toString</a></b> ( const T &amp; <i>value</i> )</li>
+<li><div class="fn"/>char * <b><a href="qtest.html#toString">toString</a></b> ( const T &amp; <i>value</i> )</li>
+<li><div class="fn"/>char * <b><a href="qtest.html#toString-4">toString</a></b> ( const QLatin1String &amp; <i>string</i> )</li>
+<li><div class="fn"/>char * <b><a href="qtest.html#toString-5">toString</a></b> ( const QString &amp; <i>string</i> )</li>
+<li><div class="fn"/>char * <b><a href="qtest.html#toString-6">toString</a></b> ( const QTime &amp; <i>time</i> )</li>
+<li><div class="fn"/>char * <b><a href="qtest.html#toString-7">toString</a></b> ( const QDate &amp; <i>date</i> )</li>
+<li><div class="fn"/>char * <b><a href="qtest.html#toString-8">toString</a></b> ( const QDateTime &amp; <i>dateTime</i> )</li>
+<li><div class="fn"/>char * <b><a href="qtest.html#toString-9">toString</a></b> ( const QChar &amp; <i>character</i> )</li>
 </ul>
 <a name="macros"></a>
 <h3>Macros</h3>
 <ul>
-<li><div class="fn"/><b><a href="qtest.html#QCOMPAREx">QCOMPARE</a></b> (  <i>actual</i>,  <i>expected</i> )</li>
+<li><div class="fn"/><b><a href="qtest.html#QCOMPARE">QCOMPARE</a></b> (  <i>actual</i>,  <i>expected</i> )</li>
 <li><div class="fn"/><b><a href="qtest.html#QEXPECT_FAIL">QEXPECT_FAIL</a></b> (  <i>dataIndex</i>,  <i>comment</i>,  <i>mode</i> )</li>
 <li><div class="fn"/><b><a href="qtest.html#QFAIL">QFAIL</a></b> (  <i>message</i> )</li>
 <li><div class="fn"/><b><a href="qtest.html#QFETCH">QFETCH</a></b> (  <i>type</i>,  <i>name</i> )</li>
@@ -118,7 +113,7 @@ body { background: #ffffff; color: black; }</style>
 </table></p>
 <p>See also <a href="qtest.html#QSKIP">QSKIP</a>().</p>
 <h3 class="fn"><a name="TestFailMode-enum"></a>enum QTest::TestFailMode</h3>
-<p>This enum describes the modes for handling an expected failure of the <a href="qtest.html#QVERIFY">QVERIFY</a>() or <a href="qtest.html#QCOMPAREx">QCOMPARE</a>() macros.</p>
+<p>This enum describes the modes for handling an expected failure of the <a href="qtest.html#QVERIFY">QVERIFY</a>() or <a href="qtest.html#QCOMPARE">QCOMPARE</a>() macros.</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QTest::Abort</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Aborts the execution of the test. Use this mode when it doesn't make sense to execute the test any further after the expected failure.</td></tr>
@@ -181,16 +176,16 @@ body { background: #ffffff; color: black; }</style>
 <p>The example above simulates clicking <tt>a</tt> on <tt>myWidget</tt> without any keyboard modifiers and without delay of the test.</p>
 <p>See also <a href="qtest.html#keyClicks">QTest::keyClicks</a>().</p>
 <h3 class="fn"><a name="keyClicks"></a>void QTest::keyClicks ( <a href="qwidget.html">QWidget</a> * <i>widget</i>, const <a href="qstring.html">QString</a> &amp; <i>sequence</i>, <a href="qt.html#KeyboardModifier-enum">Qt::KeyboardModifiers</a> <i>modifier</i> = Qt::NoModifier, int <i>delay</i> = -1 )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Simulates clicking a <i>sequence</i> of keys on a <i>widget</i>. Optionally, a keyboard <i>modifier</i> can be specified as well as a <i>delay</i> (in milliseconds) of the test after each key click.</p>
+<p>Simulates clicking a <i>sequence</i> of keys on a <i>widget</i>. Optionally, a keyboard <i>modifier</i> can be specified as well as a <i>delay</i> (in milliseconds) of the test before each key click.</p>
 <p>Example:</p>
 <pre>&nbsp;   QTest::keyClicks(myWidget, &quot;hello world&quot;);</pre>
 <p>The example above simulates clicking the sequence of keys representing &quot;hello world&quot; on <tt>myWidget</tt> without any keyboard modifiers and without delay of the test.</p>
 <p>See also <a href="qtest.html#keyClick">QTest::keyClick</a>().</p>
 <h3 class="fn"><a name="keyEvent"></a>void QTest::keyEvent ( <a href="qtest.html#KeyAction-enum">KeyAction</a> <i>action</i>, <a href="qwidget.html">QWidget</a> * <i>widget</i>, <a href="qt.html#Key-enum">Qt::Key</a> <i>key</i>, <a href="qt.html#KeyboardModifier-enum">Qt::KeyboardModifiers</a> <i>modifier</i> = Qt::NoModifier, int <i>delay</i> = -1 )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Sends a Qt key event to <i>widget</i> with the given <i>key</i> and an associated <i>action</i>. Optionally, a keyboard <i>modifier</i> can be specified, as well as a <i>delay</i> (in milliseconds) of the test after sending the event.</p>
+<p>Sends a Qt key event to <i>widget</i> with the given <i>key</i> and an associated <i>action</i>. Optionally, a keyboard <i>modifier</i> can be specified, as well as a <i>delay</i> (in milliseconds) of the test before sending the event.</p>
 <h3 class="fn"><a name="keyEvent-2"></a>void QTest::keyEvent ( <a href="qtest.html#KeyAction-enum">KeyAction</a> <i>action</i>, <a href="qwidget.html">QWidget</a> * <i>widget</i>, char <i>ascii</i>, <a href="qt.html#KeyboardModifier-enum">Qt::KeyboardModifiers</a> <i>modifier</i> = Qt::NoModifier, int <i>delay</i> = -1 )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>This is an overloaded member function, provided for convenience.</p>
-<p>Sends a Qt key event to <i>widget</i> with the given key <i>ascii</i> and an associated <i>action</i>. Optionally, a keyboard <i>modifier</i> can be specified, as well as a <i>delay</i> (in milliseconds) of the test after sending the event.</p>
+<p>Sends a Qt key event to <i>widget</i> with the given key <i>ascii</i> and an associated <i>action</i>. Optionally, a keyboard <i>modifier</i> can be specified, as well as a <i>delay</i> (in milliseconds) of the test before sending the event.</p>
 <h3 class="fn"><a name="keyPress"></a>void QTest::keyPress ( <a href="qwidget.html">QWidget</a> * <i>widget</i>, <a href="qt.html#Key-enum">Qt::Key</a> <i>key</i>, <a href="qt.html#KeyboardModifier-enum">Qt::KeyboardModifiers</a> <i>modifier</i> = Qt::NoModifier, int <i>delay</i> = -1 )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Simulates pressing a <i>key</i> with an optional <i>modifier</i> on a <i>widget</i>. If <i>delay</i> is larger than 0, the test will wait for <i>delay</i> milliseconds.</p>
 <p><b>Note:</b> At some point you should release the key using <a href="qtest.html#keyRelease">keyRelease</a>().</p>
@@ -208,18 +203,18 @@ body { background: #ffffff; color: black; }</style>
 <p>Simulates releasing a <i>key</i> with an optional <i>modifier</i> on a <i>widget</i>. If <i>delay</i> is larger than 0, the test will wait for <i>delay</i> milliseconds.</p>
 <p>See also <a href="qtest.html#keyClick">QTest::keyClick</a>().</p>
 <h3 class="fn"><a name="mouseClick"></a>void QTest::mouseClick ( <a href="qwidget.html">QWidget</a> * <i>widget</i>, <a href="qt.html#MouseButton-enum">Qt::MouseButton</a> <i>button</i>, <a href="qt.html#KeyboardModifier-enum">Qt::KeyboardModifiers</a> <i>modifier</i> = 0, <a href="qpoint.html">QPoint</a> <i>pos</i> = QPoint(), int <i>delay</i> = -1 )</h3>
-<p>Simulates clicking a mouse <i>button</i> with an optional <i>modifier</i> on a <i>widget</i>. The position of the click is defined by <i>pos</i>; the default position is the center of the widget. If <i>delay</i> is specified, the test will wait for the specified amount of milliseconds after pressing and after releasing the button.</p>
+<p>Simulates clicking a mouse <i>button</i> with an optional <i>modifier</i> on a <i>widget</i>. The position of the click is defined by <i>pos</i>; the default position is the center of the widget. If <i>delay</i> is specified, the test will wait for the specified amount of milliseconds before pressing and before releasing the button.</p>
 <p>See also <a href="qtest.html#mousePress">QTest::mousePress</a>() and <a href="qtest.html#mouseRelease">QTest::mouseRelease</a>().</p>
 <h3 class="fn"><a name="mouseDClick"></a>void QTest::mouseDClick ( <a href="qwidget.html">QWidget</a> * <i>widget</i>, <a href="qt.html#MouseButton-enum">Qt::MouseButton</a> <i>button</i>, <a href="qt.html#KeyboardModifier-enum">Qt::KeyboardModifiers</a> <i>modifier</i> = 0, <a href="qpoint.html">QPoint</a> <i>pos</i> = QPoint(), int <i>delay</i> = -1 )</h3>
-<p>Simulates double clicking a mouse <i>button</i> with an optional <i>modifier</i> on a <i>widget</i>. The position of the click is defined by <i>pos</i>; the default position is the center of the widget. If <i>delay</i> is specified, the test will wait for the specified amount of milliseconds after each press and release.</p>
+<p>Simulates double clicking a mouse <i>button</i> with an optional <i>modifier</i> on a <i>widget</i>. The position of the click is defined by <i>pos</i>; the default position is the center of the widget. If <i>delay</i> is specified, the test will wait for the specified amount of milliseconds before each press and release.</p>
 <p>See also <a href="qtest.html#mouseClick">QTest::mouseClick</a>().</p>
 <h3 class="fn"><a name="mouseMove"></a>void QTest::mouseMove ( <a href="qwidget.html">QWidget</a> * <i>widget</i>, <a href="qpoint.html">QPoint</a> <i>pos</i> = QPoint(), int <i>delay</i> = -1 )</h3>
-<p>Moves the mouse pointer to a <i>widget</i>. If <i>pos</i> is not specified, the mouse pointer moves to the center of the widget. If a <i>delay</i> (in milliseconds) is given, the test will wait after moving the mouse pointer.</p>
+<p>Moves the mouse pointer to a <i>widget</i>. If <i>pos</i> is not specified, the mouse pointer moves to the center of the widget. If a <i>delay</i> (in milliseconds) is given, the test will wait before moving the mouse pointer.</p>
 <h3 class="fn"><a name="mousePress"></a>void QTest::mousePress ( <a href="qwidget.html">QWidget</a> * <i>widget</i>, <a href="qt.html#MouseButton-enum">Qt::MouseButton</a> <i>button</i>, <a href="qt.html#KeyboardModifier-enum">Qt::KeyboardModifiers</a> <i>modifier</i> = 0, <a href="qpoint.html">QPoint</a> <i>pos</i> = QPoint(), int <i>delay</i> = -1 )</h3>
-<p>Simulates pressing a mouse <i>button</i> with an optional <i>modifier</i> on a <i>widget</i>. The position is defined by <i>pos</i>; the default position is the center of the widget. If <i>delay</i> is specified, the test will wait for the specified amount of milliseconds after the press.</p>
+<p>Simulates pressing a mouse <i>button</i> with an optional <i>modifier</i> on a <i>widget</i>. The position is defined by <i>pos</i>; the default position is the center of the widget. If <i>delay</i> is specified, the test will wait for the specified amount of milliseconds before the press.</p>
 <p>See also <a href="qtest.html#mouseRelease">QTest::mouseRelease</a>() and <a href="qtest.html#mouseClick">QTest::mouseClick</a>().</p>
 <h3 class="fn"><a name="mouseRelease"></a>void QTest::mouseRelease ( <a href="qwidget.html">QWidget</a> * <i>widget</i>, <a href="qt.html#MouseButton-enum">Qt::MouseButton</a> <i>button</i>, <a href="qt.html#KeyboardModifier-enum">Qt::KeyboardModifiers</a> <i>modifier</i> = 0, <a href="qpoint.html">QPoint</a> <i>pos</i> = QPoint(), int <i>delay</i> = -1 )</h3>
-<p>Simulates releasing a mouse <i>button</i> with an optional <i>modifier</i> on a <i>widget</i>. The position of the release is defined by <i>pos</i>; the default position is the center of the widget. If <i>delay</i> is specified, the test will wait for the specified amount of milliseconds after releasing the button.</p>
+<p>Simulates releasing a mouse <i>button</i> with an optional <i>modifier</i> on a <i>widget</i>. The position of the release is defined by <i>pos</i>; the default position is the center of the widget. If <i>delay</i> is specified, the test will wait for the specified amount of milliseconds before releasing the button.</p>
 <p>See also <a href="qtest.html#mousePress">QTest::mousePress</a>() and <a href="qtest.html#mouseClick">QTest::mouseClick</a>().</p>
 <h3 class="fn"><a name="newRow"></a>QTestData &amp; QTest::newRow ( const char * <i>dataTag</i> )</h3>
 <p>Appends a new row to the current test data. <i>dataTag</i> is the name of the testdata that will appear in the test output. Returns a QTestData reference that can be used to stream in data.</p>
@@ -233,18 +228,17 @@ body { background: #ffffff; color: black; }</style>
 <p><b>Note:</b> This macro can only be used in a test's data function that is invoked by the test framework.</p>
 <p>See <a href="qtestlib-tutorial2.html">Data Driven Testing</a> for a more extensive example.</p>
 <p>See also <a href="qtest.html#addColumn">addColumn</a>() and <a href="qtest.html#QFETCH">QFETCH</a>().</p>
-<h3 class="fn"><a name="qCompare"></a>bool QTest::qCompare ( <a href="qstring.html">QString</a> const &amp; <i>t1</i>, <a href="qlatin1string.html">QLatin1String</a> const &amp; <i>t2</i>, const char * <i>actual</i>, const char * <i>expected</i>, const char * <i>file</i>, int <i>line</i> )</h3>
-<h3 class="fn"><a name="qCompare-2"></a>bool QTest::qCompare ( <a href="qlatin1string.html">QLatin1String</a> const &amp; <i>t1</i>, <a href="qstring.html">QString</a> const &amp; <i>t2</i>, const char * <i>actual</i>, const char * <i>expected</i>, const char * <i>file</i>, int <i>line</i> )</h3>
-<p>This is an overloaded member function, provided for convenience.</p>
-<h3 class="fn"><a name="qCompare-3"></a>bool QTest::qCompare ( <a href="qstringlist.html">QStringList</a> const &amp; <i>t1</i>, <a href="qstringlist.html">QStringList</a> const &amp; <i>t2</i>, const char * <i>actual</i>, const char * <i>expected</i>, const char * <i>file</i>, int <i>line</i> )</h3>
-<p>This is an overloaded member function, provided for convenience.</p>
-<h3 class="fn"><a name="qCompare-4"></a>bool QTest::qCompare ( <a href="qflags.html">QFlags</a>&lt;T&gt; const &amp; <i>t1</i>, T const &amp; <i>t2</i>, const char * <i>actual</i>, const char * <i>expected</i>, const char * <i>file</i>, int <i>line</i> )</h3>
-<p>This is an overloaded member function, provided for convenience.</p>
-<h3 class="fn"><a name="qCompare-5"></a>bool QTest::qCompare ( <a href="qflags.html">QFlags</a>&lt;T&gt; const &amp; <i>t1</i>, int const &amp; <i>t2</i>, const char * <i>actual</i>, const char * <i>expected</i>, const char * <i>file</i>, int <i>line</i> )</h3>
-<p>This is an overloaded member function, provided for convenience.</p>
 <h3 class="fn"><a name="qExec"></a>int QTest::qExec ( <a href="qobject.html">QObject</a> * <i>testObject</i>, int <i>argc</i> = 0, char ** <i>argv</i> = 0 )</h3>
-<p>Executes tests declared in <i>testObject</i>. Optionally, the command line arguments <i>argc</i> and <i>argv</i> can be provided. For a list of recognized arguments, read <a href="qtestlib-manual.html#qtestlib-command-line-arguments">QTestLib Command Line Arguments</a>.</p>
+<p>Executes tests declared in <i>testObject</i>. In addition, the private slots <tt>initTestCase()</tt>, <tt>cleanupTestCase()</tt>, <tt>init()</tt> and <tt>cleanup()</tt> are executed if they exist. See <a href="qtestlib-manual.html#creating-a-test">Creating a test</a> for more details.</p>
+<p>Optionally, the command line arguments <i>argc</i> and <i>argv</i> can be provided. For a list of recognized arguments, read <a href="qtestlib-manual.html#qtestlib-command-line-arguments">QTestLib Command Line Arguments</a>.</p>
 <p>For stand-alone tests, the convenience macro <a href="qtest.html#QTEST_MAIN">QTEST_MAIN</a>() can be used to declare a main method that parses the command line arguments and executes the tests.</p>
+<p>The following example will run all tests in <tt>MyFirstTestObject</tt> and <tt>MySecondTestObject</tt>:</p>
+<pre>&nbsp;   MyFirstTestObject test1;
+    QTest::qExec(&amp;test1);
+
+    MySecondTestObject test2;
+    QTest::qExec(&amp;test2);</pre>
+<p>Note: This function is not reentrant, only one test can run at a time. A test that was executed with qExec() can't run another test via qExec() and threads are not allowed to call qExec() simultaneously.</p>
 <p>See also <a href="qtest.html#QTEST_MAIN">QTEST_MAIN</a>().</p>
 <h3 class="fn"><a name="qSleep"></a>void QTest::qSleep ( int <i>ms</i> )</h3>
 <p>Sleeps for <i>ms</i> milliseconds, blocking execution of the test. qSleep() will not do any event processing and leave your test unresponsive. Network communication might time out while sleeping. Use <a href="qtest.html#qWait">qWait</a>() to do non-blocking sleeping.</p>
@@ -261,23 +255,10 @@ body { background: #ffffff; color: black; }</style>
         QTest::qWait(250);</pre>
 <p>The code above will wait until the network server is responding for a maximum of about 12.5 seconds.</p>
 <p>See also <a href="qtest.html#qSleep">QTest::qSleep</a>().</p>
-<h3 class="fn"><a name="qt_snprintf"></a>int QTest::qt_snprintf ( char * <i>str</i>, int <i>size</i>, const char * <i>format</i>, ... )</h3>
-<h3 class="fn"><a name="toString"></a>char * QTest::toString ( const <a href="qlatin1string.html">QLatin1String</a> &amp; <i>str</i> )</h3>
-<h3 class="fn"><a name="toString-2"></a>char * QTest::toString ( const <a href="qstring.html">QString</a> &amp; <i>str</i> )</h3>
-<p>This is an overloaded member function, provided for convenience.</p>
-<h3 class="fn"><a name="toString-3"></a>char * QTest::toString ( const <a href="qtime.html">QTime</a> &amp; <i>time</i> )</h3>
-<p>This is an overloaded member function, provided for convenience.</p>
-<h3 class="fn"><a name="toString-4"></a>char * QTest::toString ( const <a href="qdate.html">QDate</a> &amp; <i>date</i> )</h3>
-<p>This is an overloaded member function, provided for convenience.</p>
-<h3 class="fn"><a name="toString-5"></a>char * QTest::toString ( const <a href="qdatetime.html">QDateTime</a> &amp; <i>dateTime</i> )</h3>
-<p>This is an overloaded member function, provided for convenience.</p>
-<h3 class="fn"><a name="toString-6"></a>char * QTest::toString ( const <a href="qchar.html">QChar</a> &amp; <i>c</i> )</h3>
-<p>This is an overloaded member function, provided for convenience.</p>
-<h3 class="fn"><a name="toString-7"></a>char * QTest::toString ( const T &amp; <i>value</i> )</h3>
-<p>This is an overloaded member function, provided for convenience.</p>
-<p>Returns a textual representation of <i>value</i>. This function is used by <a href="qtest.html#QCOMPAREx">QCOMPARE</a>() to output verbose information in case of a test failure.</p>
+<h3 class="fn"><a name="toString"></a>char * QTest::toString ( const T &amp; <i>value</i> )</h3>
+<p>Returns a textual representation of <i>value</i>. This function is used by <a href="qtest.html#QCOMPARE">QCOMPARE</a>() to output verbose information in case of a test failure.</p>
 <p>You can add specializations of this function to your test to enable verbose output.</p>
-<p><b>Note:</b> The caller of <a href="qtest.html#toString">toString</a>() must delete the returned data using <tt>delete[]</tt>. Your implementation should return a string created with <tt>new[]</tt> or <a href="qbytearray.html#qstrdup">qstrdup</a>().</p>
+<p><b>Note:</b> The caller of toString() must delete the returned data using <tt>delete[]</tt>. Your implementation should return a string created with <tt>new[]</tt> or <a href="qbytearray.html#qstrdup">qstrdup</a>().</p>
 <p>Example:</p>
 <pre>&nbsp;   namespace QTest {
         template&lt;&gt;
@@ -289,11 +270,29 @@ body { background: #ffffff; color: black; }</style>
             return qstrdup(ba.data());
         }
     }</pre>
-<p>The example above defines a <a href="qtest.html#toString">toString</a>() specialization for a class called <tt>MyPoint</tt>. Whenever a comparison of two instances of <tt>MyPoint</tt> fails, <a href="qtest.html#QCOMPAREx">QCOMPARE</a>() will call this function to output the contents of <tt>MyPoint</tt> to the test log.</p>
-<p>See also <a href="qtest.html#QCOMPAREx">QCOMPARE</a>().</p>
+<p>The example above defines a toString() specialization for a class called <tt>MyPoint</tt>. Whenever a comparison of two instances of <tt>MyPoint</tt> fails, <a href="qtest.html#QCOMPARE">QCOMPARE</a>() will call this function to output the contents of <tt>MyPoint</tt> to the test log.</p>
+<p>See also <a href="qtest.html#QCOMPARE">QCOMPARE</a>().</p>
+<h3 class="fn"><a name="toString-4"></a>char * QTest::toString ( const <a href="qlatin1string.html">QLatin1String</a> &amp; <i>string</i> )</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p>Returns a textual representation of the given <i>string</i>. This function is used by <a href="qtest.html#QCOMPARE">QCOMPARE</a>() to output verbose information in case of a test failure.</p>
+<h3 class="fn"><a name="toString-5"></a>char * QTest::toString ( const <a href="qstring.html">QString</a> &amp; <i>string</i> )</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p>Returns a textual representation of the given <i>string</i>. This function is used by <a href="qtest.html#QCOMPARE">QCOMPARE</a>() to output verbose information in case of a test failure.</p>
+<h3 class="fn"><a name="toString-6"></a>char * QTest::toString ( const <a href="qtime.html">QTime</a> &amp; <i>time</i> )</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p>Returns a textual representation of the given <i>time</i>. This function is used by <a href="qtest.html#QCOMPARE">QCOMPARE</a>() to output verbose information in case of a test failure.</p>
+<h3 class="fn"><a name="toString-7"></a>char * QTest::toString ( const <a href="qdate.html">QDate</a> &amp; <i>date</i> )</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p>Returns a textual representation of the given <i>date</i>. This function is used by <a href="qtest.html#QCOMPARE">QCOMPARE</a>() to output verbose information in case of a test failure.</p>
+<h3 class="fn"><a name="toString-8"></a>char * QTest::toString ( const <a href="qdatetime.html">QDateTime</a> &amp; <i>dateTime</i> )</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p>Returns a textual representation of the date and time specified by <i>dateTime</i>. This function is used by <a href="qtest.html#QCOMPARE">QCOMPARE</a>() to output verbose information in case of a test failure.</p>
+<h3 class="fn"><a name="toString-9"></a>char * QTest::toString ( const <a href="qchar.html">QChar</a> &amp; <i>character</i> )</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p>Returns a textual representation of the given <i>character</i>. This function is used by <a href="qtest.html#QCOMPARE">QCOMPARE</a>() to output verbose information in case of a test failure.</p>
 <hr />
 <h2>Macro Documentation</h2>
-<h3 class="fn"><a name="QCOMPAREx"></a>QCOMPARE (  <i>actual</i>,  <i>expected</i> )</h3>
+<h3 class="fn"><a name="QCOMPARE"></a>QCOMPARE (  <i>actual</i>,  <i>expected</i> )</h3>
 <p>The QCOMPARE macro compares an <i>actual</i> value to an <i>expected</i> value using the equals operator. If <i>actual</i> and <i>expected</i> are identical, execution continues. If not, a failure is recorded in the test log and the test won't be executed further.</p>
 <p>QCOMPARE tries to output the contents of the values if the comparison fails, so it is visible from the test log why the comparison failed.</p>
 <p><b>Note:</b> QCOMPARE is very strict on the data types. Both <i>actual</i> and <i>expected</i> have to be of the same type, otherwise the test won't compile. This prohibits unspecified behavior from being introduced; that is behavior that usually occurs when the compiler implicitely casts the argument.</p>
@@ -303,8 +302,8 @@ body { background: #ffffff; color: black; }</style>
 <pre>&nbsp;   QCOMPARE(QString(&quot;hello&quot;).toUpper(), QString(&quot;HELLO&quot;));</pre>
 <p>See also <a href="qtest.html#QVERIFY">QVERIFY</a>() and <a href="qtest.html#toString">QTest::toString</a>().</p>
 <h3 class="fn"><a name="QEXPECT_FAIL"></a>QEXPECT_FAIL (  <i>dataIndex</i>,  <i>comment</i>,  <i>mode</i> )</h3>
-<p>The QEXPECT_FAIL() macro marks the next <a href="qtest.html#QCOMPAREx">QCOMPARE</a>() or <a href="qtest.html#QVERIFY">QVERIFY</a>() as an expected failure. Instead of adding a failure to the test log, an expected failure will be reported.</p>
-<p>If a <a href="qtest.html#QVERIFY">QVERIFY</a>() or <a href="qtest.html#QCOMPAREx">QCOMPARE</a>() is marked as an expected failure, but passes instead, an unexpected pass (XPASS) is written to the test log.</p>
+<p>The QEXPECT_FAIL() macro marks the next <a href="qtest.html#QCOMPARE">QCOMPARE</a>() or <a href="qtest.html#QVERIFY">QVERIFY</a>() as an expected failure. Instead of adding a failure to the test log, an expected failure will be reported.</p>
+<p>If a <a href="qtest.html#QVERIFY">QVERIFY</a>() or <a href="qtest.html#QCOMPARE">QCOMPARE</a>() is marked as an expected failure, but passes instead, an unexpected pass (XPASS) is written to the test log.</p>
 <p>The parameter <i>dataIndex</i> describes for which entry in the test data the failure is expected. Pass an empty string (<tt>&quot;&quot;</tt>) if the failure is expected for all entries or if no test data exists.</p>
 <p><i>comment</i> will be appended to the test log for the expected failure.</p>
 <p><i>mode</i> is a <a href="qtest.html#TestFailMode-enum">QTest::TestFailMode</a> and sets whether the test should continue to execute or not.</p>
@@ -313,12 +312,12 @@ body { background: #ffffff; color: black; }</style>
 <pre>&nbsp;   QEXPECT_FAIL(&quot;&quot;, &quot;Will fix in the next release&quot;, Continue);
     QCOMPARE(i, 42);
     QCOMPARE(j, 43);</pre>
-<p>In the example above, an expected fail will be written into the test output if the variable <tt>i</tt> is not 42. If the variable <tt>i</tt> is 42, an unexpected pass is written instead. The QEXPECT_FAIL() has no influence on the second <a href="qtest.html#QCOMPAREx">QCOMPARE</a>() statement in the example.</p>
+<p>In the example above, an expected fail will be written into the test output if the variable <tt>i</tt> is not 42. If the variable <tt>i</tt> is 42, an unexpected pass is written instead. The QEXPECT_FAIL() has no influence on the second <a href="qtest.html#QCOMPARE">QCOMPARE</a>() statement in the example.</p>
 <p>Example 2:</p>
 <pre>&nbsp;   QEXPECT_FAIL(&quot;data27&quot;, &quot;Oh my, this is soooo broken&quot;, Abort);
     QCOMPARE(i, 42);</pre>
 <p>The above testfunction will not continue executing for the test data entry <tt>data27</tt>.</p>
-<p>See also <a href="qtest.html#TestFailMode-enum">QTest::TestFailMode</a>, <a href="qtest.html#QVERIFY">QVERIFY</a>(), and <a href="qtest.html#QCOMPAREx">QCOMPARE</a>().</p>
+<p>See also <a href="qtest.html#TestFailMode-enum">QTest::TestFailMode</a>, <a href="qtest.html#QVERIFY">QVERIFY</a>(), and <a href="qtest.html#QCOMPARE">QCOMPARE</a>().</p>
 <h3 class="fn"><a name="QFAIL"></a>QFAIL (  <i>message</i> )</h3>
 <p>This macro can be used to force a test failure. The test stops executing and the failure <i>message</i> is appended to the test log.</p>
 <p><b>Note:</b> This macro can only be used in a test function that is invoked by the test framework.</p>
@@ -355,14 +354,14 @@ body { background: #ffffff; color: black; }</style>
         QSKIP(&quot;This test requires the SQLITE database driver&quot;, SkipAll);</pre>
 <p>See also <a href="qtest.html#SkipMode-enum">QTest::SkipMode</a>.</p>
 <h3 class="fn"><a name="QTEST"></a>QTEST (  <i>actual</i>,  <i>testElement</i> )</h3>
-<p>QTEST() is a convenience macro for <a href="qtest.html#QCOMPAREx">QCOMPARE</a>() that compares the value <i>actual</i> with the element <i>testElement</i> from the test's data. If there is no such element, the test asserts.</p>
-<p>Apart from that, QTEST() behaves exactly as <a href="qtest.html#QCOMPAREx">QCOMPARE</a>().</p>
+<p>QTEST() is a convenience macro for <a href="qtest.html#QCOMPARE">QCOMPARE</a>() that compares the value <i>actual</i> with the element <i>testElement</i> from the test's data. If there is no such element, the test asserts.</p>
+<p>Apart from that, QTEST() behaves exactly as <a href="qtest.html#QCOMPARE">QCOMPARE</a>().</p>
 <p>Instead of writing:</p>
 <pre>&nbsp;   QFETCH(QString, myString);
     QCOMPARE(QString(&quot;hello&quot;).toUpper(), myString);</pre>
 <p>you can write:</p>
 <pre>&nbsp;   QTEST(QString(&quot;hello&quot;).toUpper(), &quot;myString&quot;);</pre>
-<p>See also <a href="qtest.html#QCOMPAREx">QCOMPARE</a>().</p>
+<p>See also <a href="qtest.html#QCOMPARE">QCOMPARE</a>().</p>
 <h3 class="fn"><a name="QTEST_APPLESS_MAIN"></a>QTEST_APPLESS_MAIN (  <i>TestClass</i> )</h3>
 <p>Implements a main() function that executes all tests in <i>TestClass</i>.</p>
 <p>Behaves like <a href="qtest.html#QTEST_MAIN">QTEST_MAIN</a>(), but doesn't instanciate a <a href="qapplication.html">QApplication</a> object. Use this macro for really simple stand-alone non-GUI tests.</p>
@@ -387,7 +386,7 @@ body { background: #ffffff; color: black; }</style>
 <p><b>Note:</b> This macro can only be used in a test function that is invoked by the test framework.</p>
 <p>Example:</p>
 <pre>&nbsp;   QVERIFY(1 + 1 == 2);</pre>
-<p>See also <a href="qtest.html#QCOMPAREx">QCOMPARE</a>().</p>
+<p>See also <a href="qtest.html#QCOMPARE">QCOMPARE</a>().</p>
 <h3 class="fn"><a name="QWARN"></a>QWARN (  <i>message</i> )</h3>
 <p>Appends <i>message</i> as a warning to the test log. This macro can be used anywhere in your tests.</p>
 <p><b>Note:</b> This function is <a href="threads.html#thread-safe">thread-safe</a>.</p>
@@ -395,6 +394,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

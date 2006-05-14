@@ -26,6 +26,8 @@
 
 #include <Qt3Support/q3editorfactory.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Qt3Support)
 
 #ifndef QT_NO_SQL_EDIT_WIDGETS
@@ -48,5 +50,7 @@ private:
 };
 
 #endif // QT_NO_SQL_EDIT_WIDGETS
+
+QT_END_HEADER
 
 #endif // Q3SQLEDITORFACTORY_H

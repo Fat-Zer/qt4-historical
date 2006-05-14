@@ -26,6 +26,8 @@
 
 #include <QtCore/qglobal.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Qt3Support)
 
 #ifndef QT_NO_NETWORK
@@ -33,5 +35,7 @@ QT_MODULE(Qt3Support)
 Q_COMPAT_EXPORT void q3InitNetworkProtocols();
 
 #endif // QT_NO_NETWORK
+
+QT_END_HEADER
 
 #endif // Q3NETWORK_H

@@ -693,6 +693,8 @@ template <class Iterator> bool qt_stroke_side(Iterator *it,
 
 
 /*!
+    \internal
+
     Creates a number of curves for a given arc definition. The arc is
     defined an arc along the ellipses that fits into \a rect starting
     at \a startAngle and an arc length of \a sweepLength.
@@ -764,7 +766,7 @@ QPointF qt_curves_for_arc(const QRectF &rect, qreal startAngle, qreal sweepLengt
     qreal b = rect.height() / 2.0;
 
     qreal absSweepLength = (sweepLength < 0 ? -sweepLength : sweepLength);
-    int iterations = ceil((absSweepLength) / 90.0);
+    int iterations = (int)ceil((absSweepLength) / 90.0);
 
     QPointF first_point;
 
@@ -882,7 +884,17 @@ void QDashStroker::processCurrentSubpath()
 
     QSubpathFlatIterator it(&m_elements);
     qfixed2d prev = it.next();
-    m_stroker->moveTo(prev.x, prev.y);
+
+    bool clipping = !m_clip_rect.isEmpty();
+    qfixed2d move_to_pos = prev;
+    qfixed2d line_to_pos;
+
+    // Pad to avoid clipping the borders of thick pens.
+    qfixed padding = qMax(m_stroker->strokeWidth(), m_stroker->miterLimit());
+    qfixed2d clip_tl = { qt_real_to_fixed(m_clip_rect.left()) - padding,
+                         qt_real_to_fixed(m_clip_rect.top()) - padding };
+    qfixed2d clip_br = { qt_real_to_fixed(m_clip_rect.right()) + padding ,
+                         qt_real_to_fixed(m_clip_rect.bottom()) + padding };
 
     while (it.hasNext()) {
         QStrokerOps::Element e = it.next();
@@ -901,6 +913,7 @@ void QDashStroker::processCurrentSubpath()
             QPointF p2;
 
             int idash_incr = 0;
+            bool has_offset = doffset > 0;
             qreal dpos = pos + dashes[idash] - doffset - estart;
 
             Q_ASSERT(dpos >= 0);
@@ -917,11 +930,29 @@ void QDashStroker::processCurrentSubpath()
             }
 
             if (idash % 2 == 0) {
-                m_stroker->lineTo(qt_real_to_fixed(p2.x()),
-                                  qt_real_to_fixed(p2.y()));
+                line_to_pos.x = qt_real_to_fixed(p2.x());
+                line_to_pos.y = qt_real_to_fixed(p2.y());
+
+                if (!clipping
+                    // if move_to is inside...
+                    || (move_to_pos.x > clip_tl.x && move_to_pos.x < clip_br.x
+                     && move_to_pos.y > clip_tl.y && move_to_pos.y < clip_br.y)
+                    // Or if line_to is inside...
+                    || (line_to_pos.x > clip_tl.x && line_to_pos.x < clip_br.x
+                        && line_to_pos.y > clip_tl.y && line_to_pos.y < clip_br.y))
+                {
+                    // If we have an offset, we're continuing a dash
+                    // from a previous element and should only
+                    // continue the current dash, without starting a
+                    // new subpath.
+                    if (!has_offset)
+                        m_stroker->moveTo(move_to_pos.x, move_to_pos.y);
+
+                    m_stroker->lineTo(line_to_pos.x, line_to_pos.y);
+                }
             } else {
-                m_stroker->moveTo(qt_real_to_fixed(p2.x()),
-                                  qt_real_to_fixed(p2.y()));
+                move_to_pos.x = qt_real_to_fixed(p2.x());
+                move_to_pos.y = qt_real_to_fixed(p2.y());
             }
 
             idash = (idash + idash_incr) % dashCount;

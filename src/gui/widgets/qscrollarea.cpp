@@ -30,6 +30,7 @@
 #include "qlayout.h"
 #include "qstyle.h"
 #include "qapplication.h"
+#include "qvariant.h"
 #include "private/qlayoutengine_p.h"
 class QScrollAreaPrivate: public QAbstractScrollAreaPrivate
 {
@@ -381,7 +382,8 @@ bool QScrollArea::focusNextPrevChild(bool next)
     if (QWidget::focusNextPrevChild(next)) {
         if (QWidget *fw = focusWidget()) {
             if (d->widget && fw != d->widget && d->widget->isAncestorOf(fw)) {
-                QRect focusRect(fw->mapTo(d->widget, QPoint(0,0)), fw->size());
+                QRect focusRect = fw->inputMethodQuery(Qt::ImMicroFocus).toRect();
+                focusRect.moveTopLeft(fw->mapTo(d->widget, focusRect.topLeft()));
                 QRect visibleRect(-d->widget->pos(), d->viewport->size());
                 if (!visibleRect.contains(focusRect)) {
                     if (focusRect.right() > visibleRect.right())
@@ -430,38 +432,17 @@ void QScrollArea::ensureVisible(int x, int y, int xmargin, int ymargin)
 
     int logicalX = QStyle::visualPos(layoutDirection(), d->viewport->rect(), QPoint(x, y)).x();
 
-    if (logicalX < d->hbar->value() - xmargin){
+    if (logicalX - xmargin < d->hbar->value()) {
         d->hbar->setValue(qMax(0, logicalX - xmargin));
     } else if (logicalX > d->hbar->value() + d->viewport->width() - xmargin) {
         d->hbar->setValue(qMin(logicalX - d->viewport->width() + xmargin, d->hbar->maximum()));
     }
 
-    if (y < d->vbar->value() - ymargin){
+    if (y - ymargin < d->vbar->value()) {
         d->vbar->setValue(qMax(0, y - ymargin));
     } else if (y > d->vbar->value() + d->viewport->height() - ymargin) {
         d->vbar->setValue(qMin(y - d->viewport->height() + ymargin, d->vbar->maximum()));
     }
 }
-
-
-#if QT_VERSION >= 0x040200
-/*
-    \property QScrollArea::alignment
-    \brief the alignment of the scroll area's widget
-*/
-
-void QScrollArea::setAlignment(Qt::Alignment alignment)
-{
-    Q_D(QScrollArea);
-    d->alignment = alignment;
-    d->updateWidgetPosition();
-}
-
-Qt::Alignment QScrollArea::alignment() const
-{
-    Q_D(const QScrollArea);
-    return d->alignment;
-}
-#endif
 
 #endif // QT_NO_SCROLLAREA

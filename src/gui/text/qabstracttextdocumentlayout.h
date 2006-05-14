@@ -30,6 +30,8 @@
 #include <QtGui/qtextcursor.h>
 #include <QtGui/qpalette.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 class QAbstractTextDocumentLayoutPrivate;
@@ -104,9 +106,9 @@ private:
     friend class QTextEngine;
     friend class QTextLayout;
     friend class QTextLine;
-    Q_PRIVATE_SLOT(d_func(), void handlerDestroyed(QObject *obj))
-    Q_PRIVATE_SLOT(d_func(), int dynamicPageCountSlot())
-    Q_PRIVATE_SLOT(d_func(), QSizeF dynamicDocumentSizeSlot())
+    Q_PRIVATE_SLOT(d_func(), void _q_handlerDestroyed(QObject *obj))
+    Q_PRIVATE_SLOT(d_func(), int _q_dynamicPageCountSlot())
+    Q_PRIVATE_SLOT(d_func(), QSizeF _q_dynamicDocumentSizeSlot())
 };
 
 class Q_GUI_EXPORT QTextObjectInterface
@@ -117,5 +119,7 @@ public:
     virtual void drawObject(QPainter *painter, const QRectF &rect, QTextDocument *doc, int posInDocument, const QTextFormat &format) = 0;
 };
 Q_DECLARE_INTERFACE(QTextObjectInterface, "com.trolltech.Qt.QTextObjectInterface")
+
+QT_END_HEADER
 
 #endif // QABSTRACTTEXTDOCUMENTLAYOUT_H

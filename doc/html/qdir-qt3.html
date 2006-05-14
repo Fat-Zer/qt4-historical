@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-mac-opensource-src-4.1.2/src/corelib/io/qdir.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-mac-opensource-src-4.1.3/src/corelib/io/qdir.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-mac-opensource-src-4.1.3/src/corelib/io/qdir.cpp -->
 <head>
     <title>Qt 4.1: Qt 3 Support Members for QDir</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -25,7 +26,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>QString <b><a href="qdir-qt3.html#absFilePath">absFilePath</a></b> ( const QString &amp; <i>fileName</i>, bool <i>acceptAbsPath</i> = true ) const</li>
 <li><div class="fn"/>QString <b><a href="qdir-qt3.html#absPath">absPath</a></b> () const</li>
 <li><div class="fn"/>void <b><a href="qdir-qt3.html#convertToAbs">convertToAbs</a></b> ()</li>
-<li><div class="fn"/>QFileInfoList <b><a href="qdir-qt3.html#entryInfoList">entryInfoList</a></b> ( const QString &amp; <i>nameFilter</i>, Filters <i>filters</i> = NoFilter, SortFlags <i>sort</i> = NoSort ) const</li>
+<li><div class="fn"/>QFileInfoList <b><a href="qdir-qt3.html#entryInfoList-2">entryInfoList</a></b> ( const QString &amp; <i>nameFilter</i>, Filters <i>filters</i> = NoFilter, SortFlags <i>sort</i> = NoSort ) const</li>
 <li><div class="fn"/>QStringList <b><a href="qdir-qt3.html#entryList-2">entryList</a></b> ( const QString &amp; <i>nameFilter</i>, Filters <i>filters</i> = NoFilter, SortFlags <i>sort</i> = NoSort ) const</li>
 <li><div class="fn"/>bool <b><a href="qdir-qt3.html#matchAllDirs">matchAllDirs</a></b> () const</li>
 <li><div class="fn"/>bool <b><a href="qdir-qt3.html#mkdir-2">mkdir</a></b> ( const QString &amp; <i>dirName</i>, bool <i>acceptAbsPath</i> ) const</li>
@@ -55,7 +56,8 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="currentDirPath"></a><a href="qstring.html">QString</a> QDir::currentDirPath ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns the current working directory or &quot;/&quot; if the current directory cannot be determined.</p>
 <p>See also <a href="qdir-qt3.html#homeDirPath">homeDirPath</a>() and <a href="qdir-qt3.html#rootDirPath">rootDirPath</a>().</p>
-<h3 class="fn"><a name="entryInfoList"></a>QFileInfoList QDir::entryInfoList ( const <a href="qstring.html">QString</a> &amp; <i>nameFilter</i>, <a href="qdir.html#Filter-enum">Filters</a> <i>filters</i> = NoFilter, <a href="qdir.html#SortFlag-enum">SortFlags</a> <i>sort</i> = NoSort ) const</h3>
+<h3 class="fn"><a name="entryInfoList-2"></a>QFileInfoList QDir::entryInfoList ( const <a href="qstring.html">QString</a> &amp; <i>nameFilter</i>, <a href="qdir.html#Filter-enum">Filters</a> <i>filters</i> = NoFilter, <a href="qdir.html#SortFlag-enum">SortFlags</a> <i>sort</i> = NoSort ) const</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Use the overload that takes a name filter string list as first argument instead.</p>
 <h3 class="fn"><a name="entryList-2"></a><a href="qstringlist.html">QStringList</a> QDir::entryList ( const <a href="qstring.html">QString</a> &amp; <i>nameFilter</i>, <a href="qdir.html#Filter-enum">Filters</a> <i>filters</i> = NoFilter, <a href="qdir.html#SortFlag-enum">SortFlags</a> <i>sort</i> = NoSort ) const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
@@ -86,7 +88,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="setNameFilter"></a>void QDir::setNameFilter ( const <a href="qstring.html">QString</a> &amp; <i>nameFilter</i> )</h3>
 <p>Use <a href="qdir.html#setNameFilters">setNameFilters</a>() instead.</p>
 <p>The <i>nameFilter</i> is a wildcard (globbing) filter that understands &quot;*&quot; and &quot;?&quot; wildcards. (See <a href="qregexp.html#qregexp-wildcard-matching">QRegExp wildcard matching</a>.) You may specify several filter entries, each separated by spaces or by semicolons.</p>
-<p>For example, if you want <a href="qdir.html#entryList">entryList</a>() and <a href="qdir-qt3.html#entryInfoList">entryInfoList</a>() to list all files ending with either &quot;.cpp&quot; or &quot;.h&quot;, you would use either dir.setNameFilters(&quot;*.cpp *.h&quot;) or dir.setNameFilters(&quot;*.cpp;*.h&quot;).</p>
+<p>For example, if you want <a href="qdir.html#entryList">entryList</a>() and <a href="qdir.html#entryInfoList">entryInfoList</a>() to list all files ending with either &quot;.cpp&quot; or &quot;.h&quot;, you would use either dir.setNameFilters(&quot;*.cpp *.h&quot;) or dir.setNameFilters(&quot;*.cpp;*.h&quot;).</p>
 <p>For example, if you have code like</p>
 <pre><font color="#404040">    QString filter = &quot;*.cpp *.cxx *.cc&quot;;
     dir.setNameFilter(filter);</font></pre>
@@ -98,6 +100,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

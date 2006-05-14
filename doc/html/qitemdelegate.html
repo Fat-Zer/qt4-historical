@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-mac-opensource-src-4.1.2/src/gui/itemviews/qitemdelegate.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-mac-opensource-src-4.1.3/src/gui/itemviews/qitemdelegate.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-mac-opensource-src-4.1.3/src/gui/itemviews/qitemdelegate.cpp -->
 <head>
     <title>Qt 4.1: QItemDelegate Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -73,6 +74,22 @@ body { background: #ffffff; color: black; }</style>
 <p>This class provides default implementations of the functions for painting item data in a view, and editing data obtained from a model. Default implementations of the <a href="qitemdelegate.html#paint">paint</a>() and <a href="qitemdelegate.html#sizeHint">sizeHint</a>() virtual functions, defined in <a href="qabstractitemdelegate.html">QAbstractItemDelegate</a>, are provided to ensure that the delegate implements the correct basic behavior expected by views. You can reimplement these functions in subclasses to customize the appearance of items.</p>
 <p>Delegates can be used to manipulate item data in two complementary ways: by processing events in the normal manner, or by implementing a custom editor widget. The item delegate takes the approach of providing a widget for editing purposes that can be supplied to QAbstractItemView::setDelegate() or the equivalent function in subclasses of <a href="qabstractitemview.html">QAbstractItemView</a>.</p>
 <p>Only the standard editing functions for widget-based delegates are reimplemented here: editor() returns the widget used to change data from the model; <a href="qitemdelegate.html#setEditorData">setEditorData</a>() provides the widget with data to manipulate; <a href="qitemdelegate.html#updateEditorGeometry">updateEditorGeometry</a>() ensures that the editor is displayed correctly with respect to the item view; <a href="qitemdelegate.html#setModelData">setModelData</a>() returns the updated data to the model; releaseEditor() indicates that the user has completed editing the data, and that the editor widget can be destroyed.</p>
+<a name="standard-roles-and-data-types"></a>
+<h3>Standard Roles and Data Types</h3>
+<p>The default delegate used by the standard views supplied with Qt associates each standard role (defined by <a href="qt.html#ItemDataRole-enum">Qt::ItemDataRole</a>) with certain data types. Models that return data in these types can influence the appearance of the delegate as described in the following table.</p>
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
+<tr valign="top" bgcolor="#a2c511"><th>Role</th><th>Accepted Types</th></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#ItemDataRole-enum">Qt::BackgroundColorRole</a></td><td><a href="qcolor.html">QColor</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#ItemDataRole-enum">Qt::CheckStateRole</a></td><td><a href="qt.html#CheckState-enum">Qt::CheckState</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#ItemDataRole-enum">Qt::DecorationRole</a></td><td><a href="qicon.html">QIcon</a> and <a href="qcolor.html">QColor</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#ItemDataRole-enum">Qt::DisplayRole</a></td><td><a href="qstring.html">QString</a> and types with a string representation</td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#ItemDataRole-enum">Qt::EditRole</a></td><td>See <a href="qitemeditorfactory.html">QItemEditorFactory</a> for details</td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#ItemDataRole-enum">Qt::FontRole</a></td><td><a href="qfont.html">QFont</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#ItemDataRole-enum">Qt::SizeHintRole</a></td><td><a href="qsize.html">QSize</a></td></tr>
+<tr valign="top" bgcolor="#e0e0e0"><td><a href="qt.html#ItemDataRole-enum">Qt::TextAlignmentRole</a></td><td><a href="qt.html#AlignmentFlag-enum">Qt::Alignment</a></td></tr>
+<tr valign="top" bgcolor="#f0f0f0"><td><a href="qt.html#ItemDataRole-enum">Qt::TextColorRole</a></td><td><a href="qcolor.html">QColor</a></td></tr>
+</table></p>
+<p>If the default delegate does not allow the level of customization that you need, it is possible to subclass QItemDelegate to implement the desired behavior.</p>
 <a name="subclassing"></a>
 <h3>Subclassing</h3>
 <p>When subclassing QItemDelegate to create a delegate that displays items using a custom renderer, it is important to ensure that the delegate can render items suitably for all the required states; e.g. selected, disabled, checked. The documentation for the <a href="qitemdelegate.html#paint">paint</a>() function contains some hints to show how this can be achieved.</p>
@@ -104,12 +121,13 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qitemdelegate.html#setItemEditorFactory">setItemEditorFactory</a>().</p>
 <h3 class="fn"><a name="paint"></a>void QItemDelegate::paint ( <a href="qpainter.html">QPainter</a> * <i>painter</i>, const <a href="qstyleoptionviewitem.html">QStyleOptionViewItem</a> &amp; <i>option</i>, const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>index</i> ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Renders the delegate using the given <i>painter</i> and style <i>option</i> for the item specified by <i>index</i>.</p>
-<p>When reimplementing this function in a subclass, you should use the <i>option</i> to determine the state of the item to be displated and adjust the way it is painted accordingly.</p>
+<p>When reimplementing this function in a subclass, you should update the area held by the option's <a href="qstyleoption.html#rect-var">rect</a> variable, using the option's <a href="qstyleoption.html#state-var">state</a> variable to determine the state of the item to be displayed, and adjust the way it is painted accordingly.</p>
 <p>For example, a selected item may need to be displayed differently to unselected items, as shown in the following code:</p>
 <pre>&nbsp;       if (option.state &amp; QStyle::State_Selected)
             painter-&gt;setBrush(option.palette.highlight());
         else
         ...</pre>
+<p>After painting, you should ensure that the painter is returned to its the state it was supplied in when this function was called. For example, it may be useful to call <a href="qpainter.html#save">QPainter::save</a>() before painting and <a href="qpainter.html#restore">QPainter::restore</a>() afterwards.</p>
 <p>Reimplemented from <a href="qabstractitemdelegate.html#paint">QAbstractItemDelegate</a>.</p>
 <p>See also <a href="qstyle.html#StateFlag-enum">QStyle::State</a>.</p>
 <h3 class="fn"><a name="setEditorData"></a>void QItemDelegate::setEditorData ( <a href="qwidget.html">QWidget</a> * <i>editor</i>, const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>index</i> ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
@@ -131,6 +149,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-mac-opensource-src-4.1.2/src/gui/kernel/qstackedlayout.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-mac-opensource-src-4.1.3/src/gui/kernel/qstackedlayout.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-mac-opensource-src-4.1.3/src/gui/kernel/qstackedlayout.cpp -->
 <head>
     <title>Qt 4.1: QStackedLayout Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -82,25 +83,29 @@ body { background: #ffffff; color: black; }</style>
 <h2>Detailed Description</h2>
 <p>The QStackedLayout class provides a stack of widgets where only one widget is visible at a time.</p>
 <p>QStackedLayout can be used to create a user interface similar to the one provided by <a href="qtabwidget.html">QTabWidget</a>. There is also a convenience <a href="qstackedwidget.html">QStackedWidget</a> class built on top of QStackedLayout.</p>
-<p>A QStackedLayout can be populated with a number of child widgets (&quot;pages&quot;):</p>
-<pre>&nbsp;   QWidget *firstPageWidget = new QWidget;
-    QWidget *secondPageWidget = new QWidget;
-    QWidget *thirdPageWidget = new QWidget;
-    ...
+<p>A QStackedLayout can be populated with a number of child widgets (&quot;pages&quot;). For example:</p>
+<pre>&nbsp;       QWidget *firstPageWidget = new QWidget;
+        QWidget *secondPageWidget = new QWidget;
+        QWidget *thirdPageWidget = new QWidget;
 
-    QStackedLayout *layout = new QStackedLayout;
-    layout-&gt;addWidget(firstPageWidget);
-    layout-&gt;addWidget(secondPageWidget);
-    layout-&gt;addWidget(thirdPageWidget);
-    setLayout(layout);</pre>
-<p>When inserted, the widgets are added to an internal list. The <a href="qlayout.html#indexOf">indexOf</a>() function returns the index of a widget in that list. The <a href="qstackedlayout.html#widget">widget</a>() function returns the widget at a given index position. The index of the widget that is shown on screen is given by <a href="qstackedlayout.html#currentIndex-prop">currentIndex</a>() and can be changed using <a href="qstackedlayout.html#currentIndex-prop">setCurrentIndex</a>().</p>
+        QStackedLayout *stackedLayout = new QStackedLayout;
+        stackedLayout-&gt;addWidget(firstPageWidget);
+        stackedLayout-&gt;addWidget(secondPageWidget);
+        stackedLayout-&gt;addWidget(thirdPageWidget);
+
+        QVBoxLayout *mainLayout = new QVBoxLayout;
+        mainLayout-&gt;addLayout(stackedLayout);
+        setLayout(mainLayout);</pre>
 <p>QStackedLayout provides no intrinsic means for the user to switch page. This is typically done through a <a href="qcombobox.html">QComboBox</a> or a <a href="qlistwidget.html">QListWidget</a> that stores the titles of the QStackedLayout's pages. For example:</p>
-<pre>&nbsp;   QComboBox *pageComboBox = new QComboBox;
-    pageComboBox-&gt;addItem(tr(&quot;Page 1&quot;));
-    pageComboBox-&gt;addItem(tr(&quot;Page 2&quot;));
-    pageComboBox-&gt;addItem(tr(&quot;Page 3&quot;));
-    connect(pageComboBox, SIGNAL(activated(int)),
-            layout, SLOT(setCurrentIndex(int)));</pre>
+<pre>&nbsp;       QComboBox *pageComboBox = new QComboBox;
+        pageComboBox-&gt;addItem(tr(&quot;Page 1&quot;));
+        pageComboBox-&gt;addItem(tr(&quot;Page 2&quot;));
+        pageComboBox-&gt;addItem(tr(&quot;Page 3&quot;));
+        connect(pageComboBox, SIGNAL(activated(int)),
+                stackedLayout, SLOT(setCurrentIndex(int)));</pre>
+<p>When populating a layout, the widgets are added to an internal list. The <a href="qlayout.html#indexOf">indexOf</a>() function returns the index of a widget in that list. The widgets can either be added to the end of the list using the <a href="qstackedlayout.html#addWidget">addWidget</a>() function, or inserted at a given index using the <a href="qstackedlayout.html#insertWidget">insertWidget</a>() function. The <a href="qlayout.html#removeWidget">removeWidget</a>() function removes the widget at the given index from the layout. The number of widgets contained in the layout, can be obtained using the <a href="qstackedlayout.html#count-prop">count</a>() function.</p>
+<p>The <a href="qstackedlayout.html#widget">widget</a>() function returns the widget at a given index position. The index of the widget that is shown on screen is given by <a href="qstackedlayout.html#currentIndex-prop">currentIndex</a>() and can be changed using <a href="qstackedlayout.html#currentIndex-prop">setCurrentIndex</a>(). In a similar manor, the currently shown widget can be retrieved using the <a href="qstackedlayout.html#currentWidget">currentWidget</a>() function, and altered using the <a href="qstackedlayout.html#setCurrentWidget">setCurrentWidget</a>() function.</p>
+<p>Whenever the current widget in the layout changes or a widget is removed from the layout, the <a href="qstackedlayout.html#currentChanged">currentChanged</a>() and <a href="qstackedlayout.html#widgetRemoved">widgetRemoved</a>() signals are emitted respectively.</p>
 <p>See also <a href="qstackedwidget.html">QStackedWidget</a> and <a href="qtabwidget.html">QTabWidget</a>.</p>
 <hr />
 <h2>Property Documentation</h2>
@@ -110,6 +115,7 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/><b>virtual int count () const</b></li>
 </ul>
+<p>See also <a href="qstackedlayout.html#currentIndex-prop">currentIndex</a>() and <a href="qstackedlayout.html#widget">widget</a>().</p>
 <h3 class="fn"><a name="currentIndex-prop"></a>currentIndex : int</h3>
 <p>This property holds the index position of the widget that is visible.</p>
 <p>The current index is -1 if there is no current widget.</p>
@@ -123,43 +129,43 @@ body { background: #ffffff; color: black; }</style>
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QStackedLayout"></a>QStackedLayout::QStackedLayout ()</h3>
 <p>Constructs a <a href="qstackedlayout.html">QStackedLayout</a> with no parent.</p>
-<p>This <a href="qstackedlayout.html">QStackedLayout</a> must be added to another layout later on to become effective.</p>
+<p>This <a href="qstackedlayout.html">QStackedLayout</a> must be installed on a widget later on to become effective.</p>
+<p>See also <a href="qstackedlayout.html#addWidget">addWidget</a>() and <a href="qstackedlayout.html#insertWidget">insertWidget</a>().</p>
 <h3 class="fn"><a name="QStackedLayout-2"></a>QStackedLayout::QStackedLayout ( <a href="qwidget.html">QWidget</a> * <i>parent</i> )</h3>
 <p>Constructs a new <a href="qstackedlayout.html">QStackedLayout</a> with the given <i>parent</i>.</p>
 <p>This layout will install itself on the <i>parent</i> widget and manage the geometry of its children.</p>
 <h3 class="fn"><a name="QStackedLayout-3"></a>QStackedLayout::QStackedLayout ( <a href="qlayout.html">QLayout</a> * <i>parentLayout</i> )</h3>
 <p>Constructs a new <a href="qstackedlayout.html">QStackedLayout</a> and inserts it into the given <i>parentLayout</i>.</p>
 <h3 class="fn"><a name="dtor.QStackedLayout"></a>QStackedLayout::~QStackedLayout ()</h3>
-<p>Destroys this <a href="qstackedlayout.html">QStackedLayout</a>.</p>
-<p>The layout's widgets are <i>not</i> destroyed.</p>
+<p>Destroys this <a href="qstackedlayout.html">QStackedLayout</a>. Note that the layout's widgets are <i>not</i> destroyed.</p>
 <h3 class="fn"><a name="addWidget"></a>int QStackedLayout::addWidget ( <a href="qwidget.html">QWidget</a> * <i>widget</i> )</h3>
-<p>Adds <i>widget</i> to the end of this layout and returns the index position of <i>widget</i>.</p>
-<p>If the <a href="qstackedlayout.html">QStackedLayout</a> is empty before this function is called, <i>widget</i> becomes the current widget.</p>
-<p>See also <a href="qstackedlayout.html#insertWidget">insertWidget</a>(), <a href="qlayout.html#removeWidget">removeWidget</a>(), and <a href="qstackedlayout.html#currentWidget">currentWidget</a>().</p>
+<p>Adds the given <i>widget</i> to the end of this layout and returns the index position of the <i>widget</i>.</p>
+<p>If the <a href="qstackedlayout.html">QStackedLayout</a> is empty before this function is called, the given <i>widget</i> becomes the current widget.</p>
+<p>See also <a href="qstackedlayout.html#insertWidget">insertWidget</a>(), <a href="qlayout.html#removeWidget">removeWidget</a>(), and <a href="qstackedlayout.html#setCurrentWidget">setCurrentWidget</a>().</p>
 <h3 class="fn"><a name="currentChanged"></a>void QStackedLayout::currentChanged ( int <i>index</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This signal is emitted when the current widget in the layout changes. The <i>index</i> specifies the index of the new current widget.</p>
+<p>This signal is emitted whenever the current widget in the layout changes. The <i>index</i> specifies the index of the new current widget.</p>
 <p>See also <a href="qstackedlayout.html#currentWidget">currentWidget</a>() and <a href="qstackedlayout.html#setCurrentWidget">setCurrentWidget</a>().</p>
 <h3 class="fn"><a name="currentWidget"></a><a href="qwidget.html">QWidget</a> * QStackedLayout::currentWidget () const</h3>
 <p>Returns the current widget, or 0 if there are no widgets in this layout.</p>
-<p>Equivalent to widget(<a href="qstackedlayout.html#currentIndex-prop">currentIndex</a>()).</p>
-<p>See also <a href="qstackedlayout.html#setCurrentWidget">setCurrentWidget</a>() and <a href="qstackedlayout.html#currentIndex-prop">currentIndex</a>().</p>
+<p>See also <a href="qstackedlayout.html#currentIndex-prop">currentIndex</a>() and <a href="qstackedlayout.html#setCurrentWidget">setCurrentWidget</a>().</p>
 <h3 class="fn"><a name="insertWidget"></a>int QStackedLayout::insertWidget ( int <i>index</i>, <a href="qwidget.html">QWidget</a> * <i>widget</i> )</h3>
-<p>Inserts <i>widget</i> at position <i>index</i> in this <a href="qstackedlayout.html">QStackedLayout</a>. If <i>index</i> is out of range, the widget is appended. Returns the actual index of <i>widget</i>.</p>
-<p>If the <a href="qstackedlayout.html">QStackedLayout</a> is empty before this function is called, <i>widget</i> becomes the current widget.</p>
-<p>See also <a href="qstackedlayout.html#addWidget">addWidget</a>().</p>
+<p>Inserts the given <i>widget</i> at the given <i>index</i> in this <a href="qstackedlayout.html">QStackedLayout</a>. If <i>index</i> is out of range, the widget is appended (in which case it is the actual index of the <i>widget</i> that is returned).</p>
+<p>If the <a href="qstackedlayout.html">QStackedLayout</a> is empty before this function is called, the given <i>widget</i> becomes the current widget.</p>
+<p>Inserting a new widget at an index less than or equal to the current index will increment the current index, but keep the current widget.</p>
+<p>See also <a href="qstackedlayout.html#addWidget">addWidget</a>(), <a href="qlayout.html#removeWidget">removeWidget</a>(), and <a href="qstackedlayout.html#setCurrentWidget">setCurrentWidget</a>().</p>
 <h3 class="fn"><a name="setCurrentWidget"></a>void QStackedLayout::setCurrentWidget ( <a href="qwidget.html">QWidget</a> * <i>widget</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
-<p>Sets the current widget to the <i>widget</i> specified. The new widget must already be contained in this stacked layout.</p>
+<p>Sets the current widget to be the specified <i>widget</i>. The new current widget must already be contained in this stacked layout.</p>
 <p>See also <a href="qstackedlayout.html#currentIndex-prop">setCurrentIndex</a>() and <a href="qstackedlayout.html#currentWidget">currentWidget</a>().</p>
 <h3 class="fn"><a name="widget"></a><a href="qwidget.html">QWidget</a> * QStackedLayout::widget ( int <i>index</i> ) const</h3>
-<p>Returns the widget at position <i>index</i>, or 0 if there is no widget at the given position.</p>
+<p>Returns the widget at the given <i>index</i>, or 0 if there is no widget at the given position.</p>
 <p>See also <a href="qstackedlayout.html#currentWidget">currentWidget</a>() and <a href="qlayout.html#indexOf">indexOf</a>().</p>
 <h3 class="fn"><a name="widgetRemoved"></a>void QStackedLayout::widgetRemoved ( int <i>index</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This signal is emitted when the widget at position <i>index</i> is removed from the layout.</p>
+<p>This signal is emitted whenever a widget is removed from the layout. The widget's <i>index</i> is passed as parameter.</p>
 <p>See also <a href="qlayout.html#removeWidget">removeWidget</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

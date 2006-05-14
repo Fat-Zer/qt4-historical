@@ -26,6 +26,8 @@
 
 #include <QtGui/qdialog.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Qt3SupportLight)
 
 class QHBoxLayout;
@@ -111,5 +113,7 @@ private:
 
     Q_DISABLE_COPY(Q3Wizard)
 };
+
+QT_END_HEADER
 
 #endif // Q3WIZARD_H

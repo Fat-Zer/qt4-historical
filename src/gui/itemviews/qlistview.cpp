@@ -82,6 +82,15 @@
     within a notional grid of size specified by gridSize(). The items can
     be rendered as large or small icons depending on their iconSize().
 
+    \table 100%
+    \row \o \inlineimage windowsxp-listview.png Screenshot of a Windows XP style list view
+         \o \inlineimage macintosh-listview.png Screenshot of a Macintosh style table view
+         \o \inlineimage plastique-listview.png Screenshot of a Plastique style table view
+    \row \o A \l{Windows XP Style Widget Gallery}{Windows XP style} list view.
+         \o A \l{Macintosh Style Widget Gallery}{Macintosh style} list view.
+         \o A \l{Plastique Style Widget Gallery}{Plastique style} list view.
+    \endtable
+
     \sa {Model/View Programming}, QTreeView, QTableView, QListWidget
 */
 
@@ -231,7 +240,7 @@ QListView::Flow QListView::flow() const
 void QListView::setWrapping(bool enable)
 {
     Q_D(QListView);
-    d->modeProperties |= uint(QListViewPrivate::Movement);
+    d->modeProperties |= uint(QListViewPrivate::Wrap);
     d->wrap = enable;
     d->doDelayedItemsLayout();
 }
@@ -433,7 +442,7 @@ QRect QListView::visualRect(const QModelIndex &index) const
 {
     if (!index.isValid() || isIndexHidden(index))
         return QRect();
-    
+
     Q_D(const QListView);
     d->executePostedLayout();
     return d->mapToViewport(rectForIndex(index));
@@ -650,8 +659,7 @@ void QListView::mouseReleaseEvent(QMouseEvent *e)
 void QListView::timerEvent(QTimerEvent *e)
 {
     Q_D(QListView);
-    if (e->timerId() == d->startLayoutTimer.timerId()) {
-        d->startLayoutTimer.stop();
+    if (e->timerId() == d->delayedLayout.timerId()) {
         setState(ExpandingState); // showing the scrollbars will trigger a resize event,
         doItemsLayout();          // so we set the state to expanding to avoid
         setState(NoState);        // triggering another layout
@@ -676,11 +684,10 @@ void QListView::resizeEvent(QResizeEvent *e)
         // if we are in adjust mode, post a delayed layout
         if (d->resizeMode == Adjust) {
             QSize delta = e->size() - e->oldSize();
-            if (!d->layoutPosted
+            if (!d->delayedLayout.isActive()
                 && ((d->flow == LeftToRight && delta.width() != 0)
                     || (d->flow == TopToBottom && delta.height() != 0))) {
-                d->layoutPosted = true;
-                d->startLayoutTimer.start(100, this); // wait 1/10 sec before starting the layout
+                d->delayedLayout.start(100, this); // wait 1/10 sec before starting the layout
             }
         }
     }
@@ -869,12 +876,22 @@ void QListView::paintEvent(QPaintEvent *e)
     const QItemSelectionModel *selections = selectionModel();
     const bool focus = (hasFocus() || d->viewport->hasFocus()) && current.isValid();
     const bool alternate = d->alternatingColors;
-    const QPalette::ColorGroup cg = (option.state & QStyle::State_Enabled
-                                     ? QPalette::Normal : QPalette::Disabled);
-    const QBrush baseBrush = option.palette.brush(cg, QPalette::Base);
-    const QBrush alternateBrush = option.palette.brush(cg, QPalette::AlternateBase);
     const QStyle::State state = option.state;
     const QAbstractItemView::State viewState = this->state();
+    const bool enabled = (state & QStyle::State_Enabled) != 0;
+
+    bool alternateBase = false;
+    if (alternate && !toBeRendered.isEmpty()) {
+        int first = toBeRendered.first().row();
+        if (!d->hiddenRows.isEmpty()) {
+            for (int row = 0; row < first; ++row) {
+                if (!d->hiddenRows.contains(row))
+                    alternateBase = !alternateBase;
+            }
+        } else {
+            alternateBase = (first & 1) != 0;
+        }
+    }
 
     QVector<QModelIndex>::const_iterator end = toBeRendered.constEnd();
     for (QVector<QModelIndex>::const_iterator it = toBeRendered.constBegin(); it != end; ++it) {
@@ -883,8 +900,16 @@ void QListView::paintEvent(QPaintEvent *e)
         option.state = state;
         if (selections && selections->isSelected(*it))
             option.state |= QStyle::State_Selected;
-        if ((itemModel->flags(*it) & Qt::ItemIsEnabled) == 0)
-            option.state &= ~QStyle::State_Enabled;
+        if (enabled) {
+            QPalette::ColorGroup cg;
+            if ((itemModel->flags(*it) & Qt::ItemIsEnabled) == 0) {
+                option.state &= ~QStyle::State_Enabled;
+                cg = QPalette::Disabled;
+            } else {
+                cg = QPalette::Normal;
+            }
+            option.palette.setCurrentColorGroup(cg);
+        }
         if (focus && current == *it) {
             option.state |= QStyle::State_HasFocus;
             if (viewState == EditingState)
@@ -896,8 +921,11 @@ void QListView::paintEvent(QPaintEvent *e)
             option.state &= ~QStyle::State_MouseOver;
 
         if (alternate) {
-            option.palette.setBrush(QPalette::Base, (*it).row() & 1 ? alternateBrush : baseBrush);
-            painter.fillRect(option.rect, (*it).row() & 1 ? alternateBrush : baseBrush);
+            QBrush fill = alternateBase
+                          ? option.palette.brush(QPalette::AlternateBase)
+                          : option.palette.brush(QPalette::Base);
+            alternateBase = !alternateBase;
+            painter.fillRect(option.rect, fill);
         }
         delegate->paint(&painter, option, *it);
     }
@@ -916,7 +944,7 @@ void QListView::paintEvent(QPaintEvent *e)
 #ifndef QT_NO_RUBBERBAND
     if (d->elasticBand.isValid()) {
         QStyleOptionRubberBand opt;
-        opt.init(this);
+        opt.initFrom(this);
         opt.shape = QRubberBand::Rectangle;
         opt.opaque = false;
         opt.rect = d->mapToViewport(d->elasticBand).intersect(
@@ -1029,8 +1057,13 @@ QModelIndex QListView::moveCursor(CursorAction cursorAction, Qt::KeyboardModifie
     case MoveUp:
         while (d->intersectVector.isEmpty()) {
             rect.translate(0, -rect.height());
-            if (rect.bottom() <= 0)
+            if (rect.bottom() <= 0) {
+#ifdef QT_KEYPAD_NAVIGATION
+                if (QApplication::keypadNavigationEnabled())
+                    return model()->index(d->batchStartRow - 1, d->column, rootIndex());
+#endif
                 return current;
+            }
             if (rect.top() < 0)
                 rect.setTop(0);
             d->intersectingSet(rect);
@@ -1048,8 +1081,13 @@ QModelIndex QListView::moveCursor(CursorAction cursorAction, Qt::KeyboardModifie
     case MoveDown:
         while (d->intersectVector.isEmpty()) {
             rect.translate(0, rect.height());
-            if (rect.top() >= contents.height())
+            if (rect.top() >= contents.height()) {
+#ifdef QT_KEYPAD_NAVIGATION
+                if (QApplication::keypadNavigationEnabled())
+                    return model()->index(0, d->column, rootIndex());
+#endif
                 return current;
+            }
             if (rect.bottom() > contents.height())
                 rect.setBottom(contents.height());
             d->intersectingSet(rect);
@@ -1099,16 +1137,14 @@ void QListView::setPositionForIndex(const QPoint &position, const QModelIndex &i
     if (d->movement == Static
         || !index.isValid()
         || index.parent() != rootIndex()
-        || index.column() != d->column
-        || index.row() >= d->items.count())
+        || index.column() != d->column)
         return;
     d->executePostedLayout();
-    QListViewItem *item = &d->items[index.row()];
-    if (isVisible())
-        d->viewport->update(visualRect(index)); // update old position
-    item->move(position);
-    if (isVisible())
-        d->viewport->update(visualRect(index)); // update new position
+    if (index.row() >= d->items.count())
+        return;
+    d->setDirtyRegion(visualRect(index)); // update old position
+    d->moveItem(index.row(), position);
+    d->setDirtyRegion(visualRect(index)); // update new position
 }
 
 /*!
@@ -1198,6 +1234,7 @@ QModelIndexList QListView::selectedIndexes() const
 void QListView::doItemsLayout()
 {
     Q_D(QListView);
+    d->layoutChildren(); // make sure the viewport has the right size
     d->prepareItemsLayout();
     if (model() && model()->columnCount(rootIndex()) > 0) { // no columns means no contents
         if (layoutMode() == SinglePass)
@@ -1222,15 +1259,21 @@ void QListView::updateGeometries()
     } else {
         QModelIndex index = model()->index(0, d->column, rootIndex());
         QStyleOptionViewItem option = viewOptions();
-        QSize size = d->itemSize(option, index);
+        QSize step = d->itemSize(option, index);
 
-        horizontalScrollBar()->setSingleStep(size.width() + d->spacing);
-        horizontalScrollBar()->setPageStep(d->viewport->width());
-        horizontalScrollBar()->setRange(0, d->contentsSize.width() - d->viewport->width() - 1);
+        QSize vsize = d->viewport->size();
+        QSize max = maximumViewportSize();
 
-        verticalScrollBar()->setSingleStep(size.height() + d->spacing);
-        verticalScrollBar()->setPageStep(d->viewport->height());
-        verticalScrollBar()->setRange(0, d->contentsSize.height() - d->viewport->height() - 1);
+        if (max.width() >= d->contentsSize.width() && max.height() >= d->contentsSize.height())
+            vsize = max;
+
+        horizontalScrollBar()->setSingleStep(step.width() + d->spacing);
+        horizontalScrollBar()->setPageStep(vsize.width());
+        horizontalScrollBar()->setRange(0, d->contentsSize.width() - vsize.width());
+
+        verticalScrollBar()->setSingleStep(step.height() + d->spacing);
+        verticalScrollBar()->setPageStep(vsize.height());
+        verticalScrollBar()->setRange(0, d->contentsSize.height() - vsize.height());
     }
     // if the scrollbars are turned off, we resize the contents to the viewport
     if (d->movement == Static && !d->wrap) {
@@ -1281,8 +1324,8 @@ int QListView::modelColumn() const
     \brief whether all items in the listview have the same size
     \since 4.1
 
-    This property should only be set to true if it is guarantied that all items
-    in the view has the same size. This enables the view to do some
+    This property should only be set to true if it is guaranteed that all items
+    in the view have the same size. This enables the view to do some
     optimizations.
 */
 void QListView::setUniformItemSizes(bool enable)
@@ -1597,6 +1640,9 @@ void QListViewPrivate::doDynamicLayout(const QRect &bounds, int first, int last)
         segPosition = topLeft.x();
     }
 
+    if (moved.count() != items.count())
+        moved.resize(items.count());
+
     QRect rect(QPoint(0, 0), topLeft);
     QListViewItem *item = 0;
     for (int row = first; row <= last; ++row) {
@@ -1634,12 +1680,14 @@ void QListViewPrivate::doDynamicLayout(const QRect &bounds, int first, int last)
                 deltaSegPosition = qMax(deltaSegPosition, deltaSegHint);
             }
             // set the position of the item
-            if (flow == QListView::LeftToRight) {
-                item->x = flowPosition;
-                item->y = segPosition;
-            } else { // TopToBottom
-                item->y = flowPosition;
-                item->x = segPosition;
+            if (!moved.testBit(row)) {
+                if (flow == QListView::LeftToRight) {
+                    item->x = flowPosition;
+                    item->y = segPosition;
+                } else { // TopToBottom
+                    item->y = flowPosition;
+                    item->x = segPosition;
+                }
             }
             rect |= item->rect(); // let the contents contain the new item
 
@@ -1794,7 +1842,7 @@ QListViewItem QListViewPrivate::indexToListViewItem(const QModelIndex &index) co
         pos.setX(segmentPositions.at(s));
     }
 
-    QSize size = itemSize(q->viewOptions(), index);
+    QSize size = (uniformItemSizes && cachedItemSize.isValid()) ? cachedItemSize : itemSize(q->viewOptions(), index);
     return QListViewItem(QRect(pos, size), index.row());
 }
 
@@ -1870,8 +1918,7 @@ void QListViewPrivate::moveItem(int index, const QPoint &dest)
 
     // move the item without removing it from the tree
     tree.removeLeaf(rect, index);
-    item->x = dest.x();
-    item->y = dest.y();
+    item->move(dest);
     tree.insertLeaf(QRect(dest, rect.size()), index);
 
     // resize the contents area
@@ -1880,6 +1927,10 @@ void QListViewPrivate::moveItem(int index, const QPoint &dest)
     w = w > contentsSize.width() ? w : contentsSize.width();
     h = h > contentsSize.height() ? h : contentsSize.height();
     q->resizeContents(w, h);
+
+    if (moved.count() != items.count())
+        moved.resize(items.count());
+    moved.setBit(index, true);
 }
 
 QPoint QListViewPrivate::snapToGrid(const QPoint &pos) const
@@ -1950,7 +2001,7 @@ QSize QListViewPrivate::itemSize(const QStyleOptionViewItem &option, const QMode
 {
     if (!uniformItemSizes)
         return delegate->sizeHint(option, index);
-    if (!cachedItemSize.isValid()) { // the last item is probaly the largest, so we use it's size
+    if (!cachedItemSize.isValid()) { // the last item is probaly the largest, so we use its size
         int row = model->rowCount(root) - 1;
         QModelIndex sample = model->index(row, column, root);
         cachedItemSize = delegate->sizeHint(option, sample);

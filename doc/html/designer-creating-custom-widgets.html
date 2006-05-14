@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-mac-opensource-src-4.1.2/doc/src/designer-manual.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-mac-opensource-src-4.1.3/doc/src/designer-manual.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-mac-opensource-src-4.1.3/doc/src/designer-manual.qdoc -->
 <head>
     <title>Qt 4.1: Creating Custom Widgets for Qt Designer</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -13,7 +14,7 @@ tr.address { font-family: sans-serif }
 body { background: #ffffff; color: black; }</style>
     <link rel="prev" href="designer-using-a-component.html" />
     <link rel="contents" href="designer-manual.html" />
-    <link rel="next" href="creating-custom-widgets-extensions.html" />
+    <link rel="next" href="designer-creating-custom-widgets-extensions.html" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
@@ -23,7 +24,7 @@ body { background: #ffffff; color: black; }</style>
 <td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><p>
 [Previous: <a href="designer-using-a-component.html">Using a Component in Your Application</a>]
 [<a href="designer-manual.html">Contents</a>]
-[Next: <a href="creating-custom-widgets-extensions.html">Creating Custom Widget Extensions</a>]
+[Next: <a href="designer-creating-custom-widgets-extensions.html">Creating Custom Widget Extensions</a>]
 </p>
 <h1 align="center">Creating Custom Widgets for Qt Designer<br /><small></small></h1>
 <p><i>Qt Designer</i>'s plugin-based architecture allows user-defined and third party custom widgets to be edited in the same way as standard Qt widgets. All the features of the custom widgets are made available to <i>Qt Designer</i>, including widget properties, signals, and slots. Since <i>Qt Designer</i> uses real widgets during the form design process, custom widgets will appear the same as they do when previewed.</p>
@@ -51,7 +52,6 @@ body { background: #ffffff; color: black; }</style>
 <tr valign="top" bgcolor="#f0f0f0"><td><tt>isContainer()</tt></td><td>True if the widget will be used to hold child widgets; otherwise false.</td></tr>
 <tr valign="top" bgcolor="#e0e0e0"><td><tt>createWidget()</tt></td><td>A <a href="qwidget.html">QWidget</a> pointer to an instance of the custom widget, constructed with the parent supplied.</td></tr>
 <tr valign="top" bgcolor="#f0f0f0"><td><tt>domXml()</tt></td><td>A description of the widget's properties, such as its object name, size hint, and other standard <a href="qwidget.html">QWidget</a> properties.</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><tt>codeTemplate()</tt></td><td>The default code to be used to construct and set up the widget in <tt>uic</tt>-generated files.</td></tr>
 </table></p>
 <p>Two other virtual functions can also be reimplemented:</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
@@ -93,12 +93,12 @@ body { background: #ffffff; color: black; }</style>
 <p>
 [Previous: <a href="designer-using-a-component.html">Using a Component in Your Application</a>]
 [<a href="designer-manual.html">Contents</a>]
-[Next: <a href="creating-custom-widgets-extensions.html">Creating Custom Widget Extensions</a>]
+[Next: <a href="designer-creating-custom-widgets-extensions.html">Creating Custom Widget Extensions</a>]
 </p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

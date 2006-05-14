@@ -34,6 +34,11 @@
 
 #include <qdebug.h>
 
+void QSqlTableModelPrivate::translateFieldNames(int, QSqlRecord &) const
+{
+    // do nothing
+}
+
 /*! \internal
     Populates our record with values.
 */
@@ -64,7 +69,8 @@ bool QSqlTableModelPrivate::setRecord(int row, const QSqlRecord &record)
             continue;
         QModelIndex cIndex = q->createIndex(row, idx);
         QVariant value = record.value(i);
-        if (q->data(cIndex) != value)
+        QVariant oldValue = q->data(cIndex);
+        if (oldValue.isNull() || oldValue != value)
             isOk &= q->setData(cIndex, value, Qt::EditRole);
     }
     if (isOk && oldStrategy == QSqlTableModel::OnFieldChange)
@@ -77,6 +83,12 @@ bool QSqlTableModelPrivate::setRecord(int row, const QSqlRecord &record)
 int QSqlTableModelPrivate::nameToIndex(const QString &name) const
 {
     return rec.indexOf(name);
+}
+
+void QSqlTableModelPrivate::initRecordAndPrimaryIndex()
+{
+    rec = db.record(tableName);
+    primaryIndex = db.primaryIndex(tableName);
 }
 
 void QSqlTableModelPrivate::clear()
@@ -178,7 +190,6 @@ bool QSqlTableModelPrivate::exec(const QString &stmt, bool prepStatement,
             return false;
         }
     }
-    //qDebug("executed: %s (%d)", stmt.ascii(), editQuery.numRowsAffected());
     return true;
 }
 
@@ -328,8 +339,7 @@ void QSqlTableModel::setTable(const QString &tableName)
     Q_D(QSqlTableModel);
     clear();
     d->tableName = tableName;
-    d->rec = d->db.record(tableName);
-    d->primaryIndex = d->db.primaryIndex(tableName);
+    d->initRecordAndPrimaryIndex();
 }
 
 /*!
@@ -358,7 +368,13 @@ bool QSqlTableModel::select()
     revertAll();
     QSqlQuery qu(query, d->db);
     setQuery(qu);
-    return qu.isActive();
+
+    if (!qu.isActive()) {
+        // something went wrong - revert to non-select state
+        d->initRecordAndPrimaryIndex();
+        return false;
+    }
+    return true;
 }
 
 /*!
@@ -406,7 +422,7 @@ QVariant QSqlTableModel::data(const QModelIndex &index, int role) const
 QVariant QSqlTableModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     Q_D(const QSqlTableModel);
-    if (orientation == Qt::Vertical) {
+    if (orientation == Qt::Vertical && role == Qt::DisplayRole) {
         switch (d->strategy) {
         case OnFieldChange:
         case OnRowChange:
@@ -470,7 +486,7 @@ bool QSqlTableModel::setData(const QModelIndex &index, const QVariant &value, in
     if (role != Qt::EditRole)
         return QSqlQueryModel::setData(index, value, role);
 
-    if (index.column() >= d->rec.count() || index.row() >= rowCount())
+    if (!index.isValid() || index.column() >= d->rec.count() || index.row() >= rowCount())
         return false;
 
     bool isOk = true;
@@ -580,7 +596,8 @@ bool QSqlTableModel::updateRowInTable(int row, const QSqlRecord &values)
 bool QSqlTableModel::insertRowIntoTable(const QSqlRecord &values)
 {
     Q_D(QSqlTableModel);
-    QSqlRecord rec(values);
+    QSqlRecord rec = values;
+    d->translateFieldNames(0, rec);
     emit beforeInsert(rec);
 
     bool prepStatement = d->db.driver()->hasFeature(QSqlDriver::PreparedQueries);
@@ -637,11 +654,12 @@ bool QSqlTableModel::submitAll()
 
     switch (d->strategy) {
     case OnFieldChange:
-        return true;
-    case OnRowChange:
-        if (d->editBuffer.isEmpty()){
+        if (d->insertIndex == -1)
             return true;
-        }
+        // else fall through
+    case OnRowChange:
+        if (d->editBuffer.isEmpty())
+            return true;
         if (d->insertIndex != -1) {
             if (!insertRowIntoTable(d->editBuffer))
                 return false;
@@ -685,7 +703,8 @@ bool QSqlTableModel::submitAll()
     user stopped editing the current row.
 
     Submits the currently edited row if the model's strategy is set
-    to OnRowChange. Does nothing for the other edit strategies.
+    to OnRowChange or OnFieldChange. Does nothing for the OnManualSubmit
+    strategy.
 
     Use submitAll() to submit all pending changes for the
     OnManualSubmit strategy.
@@ -698,7 +717,7 @@ bool QSqlTableModel::submitAll()
 bool QSqlTableModel::submit()
 {
     Q_D(QSqlTableModel);
-    if (d->strategy == OnRowChange)
+    if (d->strategy == OnRowChange || d->strategy == OnFieldChange)
         return submitAll();
     return true;
 }
@@ -731,6 +750,9 @@ void QSqlTableModel::revert()
     \value OnRowChange  Changes to a row will be applied when the user selects a different row.
     \value OnManualSubmit  All changes will be cached in the model until either submitAll()
                            or revertAll() is called.
+
+    Note: To prevent inserting only partly initialized rows into the database,
+    \c OnFieldChange will behave like \c OnRowChange for newly inserted rows.
 
     \sa setEditStrategy()
 */
@@ -942,6 +964,11 @@ QString QSqlTableModel::selectStatement() const
     return query;
 }
 
+void QSqlTableModelPrivate::removeColumnWorkaround(int, int)
+{
+    // do nothing
+}
+
 /*!
     Removes \a count columns from the \a parent model, starting at
     index \a column.
@@ -956,8 +983,9 @@ bool QSqlTableModel::removeColumns(int column, int count, const QModelIndex &par
     Q_D(QSqlTableModel);
     if (parent.isValid() || column < 0 || column + count > d->rec.count())
         return false;
+    d->removeColumnWorkaround(column, count);
     for (int i = 0; i < count; ++i)
-        d->rec.remove(column + i);
+        d->rec.remove(column);
     if (d->query.isActive())
         return select();
     return true;

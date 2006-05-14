@@ -40,6 +40,11 @@
 #include "qprintengine_pdf_p.h"
 #include "private/qdrawhelper_p.h"
 
+extern int qt_defaultDpi();
+
+extern qint64 qt_pixmap_id(const QPixmap &pixmap);
+extern qint64 qt_image_id(const QImage &image);
+
 //#define FONT_DUMP
 
 // might be helpful for smooth transforms of images
@@ -51,9 +56,6 @@ static const bool do_compress = false;
 #else
 static const bool do_compress = true;
 #endif
-
-static const int resolution = 72;
-
 
 QPdfPage::QPdfPage()
     : QPdf::ByteStream(&data)
@@ -80,15 +82,22 @@ inline QPaintEngine::PaintEngineFeatures qt_pdf_decide_features()
     return f;
 }
 
-QPdfEngine::QPdfEngine()
+QPdfEngine::QPdfEngine(QPrinter::PrinterMode m)
     : QPdfBaseEngine(*new QPdfEnginePrivate, qt_pdf_decide_features()), outFile_(new QFile)
 {
     Q_D(QPdfEngine);
     device_ = 0;
+    state = QPrinter::Idle;
 
     pagesize_ = QPrinter::A4;
+
+    if (m == QPrinter::HighResolution)
+        d->resolution = 1200;
+    else if (m == QPrinter::ScreenResolution)
+        d->resolution = qt_defaultDpi();
+
     QRect r = paperRect();
-    d->setDimensions(r.width(),r.height());
+    d->setDimensions(qRound(r.width()*72./d->resolution),qRound(r.height()*72./d->resolution));
 }
 
 QPdfEngine::~QPdfEngine()
@@ -109,8 +118,6 @@ void QPdfEngine::setProperty(PrintEnginePropertyKey key, const QVariant &value)
         break;
     case PPK_Orientation: {
         d->orientation = QPrinter::Orientation(value.toInt());
-        QRect r = paperRect();
-        d->setDimensions(r.width(),r.height());
         break;
     }
     case PPK_OutputFileName: {
@@ -129,16 +136,18 @@ void QPdfEngine::setProperty(PrintEnginePropertyKey key, const QVariant &value)
         break;
     case PPK_PageSize: {
         pagesize_ = QPrinter::PageSize(value.toInt());
-        QRect r = paperRect();
-        d->setDimensions(r.width(),r.height());
     }
         break;
+    case PPK_Resolution:
+        d->resolution = value.toInt();
     case PPK_FullPage:
         d->fullPage = value.toBool();
         break;
     default:
         break;
     }
+    QRect r = paperRect();
+    d->setDimensions(qRound(r.width()*72./d->resolution),qRound(r.height()*72./d->resolution));
 }
 
 QVariant QPdfEngine::property(PrintEnginePropertyKey key) const
@@ -168,9 +177,9 @@ QVariant QPdfEngine::property(PrintEnginePropertyKey key) const
     case PPK_PaperSource:
         return QPrinter::Auto;
     case PPK_Resolution:
-        return 600;
+        return d->resolution;
     case PPK_SupportedResolutions:
-        return QList<QVariant>() << resolution;
+        return QList<QVariant>() << d->resolution;
     default:
         break;
     }
@@ -193,8 +202,8 @@ QRect QPdfEngine::paperRect() const
 {
     Q_D(const QPdfEngine);
     QPdf::PaperSize s = QPdf::paperSize(pagesize_);
-    int w = qRound(s.width);
-    int h = qRound(s.height);
+    int w = qRound(s.width*d->resolution/72.);
+    int h = qRound(s.height*d->resolution/72.);
     if (d->orientation == QPrinter::Portrait)
         return QRect(0, 0, w, h);
     else
@@ -208,7 +217,7 @@ QRect QPdfEngine::pageRect() const
     if (d->fullPage)
         return r;
     // would be nice to get better margins than this.
-    return QRect(resolution/3, resolution/3, r.width()-2*resolution/3, r.height()-2*resolution/3);
+    return QRect(d->resolution/3, d->resolution/3, r.width()-2*d->resolution/3, r.height()-2*d->resolution/3);
 }
 
 void QPdfEngine::setDevice(QIODevice* dev)
@@ -243,6 +252,7 @@ bool QPdfEngine::begin(QPaintDevice *)
     d->unsetDevice();
     d->setDevice(device_);
     setActive(true);
+    state = QPrinter::Active;
     d->writeHeader();
     newPage();
 
@@ -257,6 +267,7 @@ bool QPdfEngine::end()
     device_->close();
     d->unsetDevice();
     setActive(false);
+    state = QPrinter::Idle;
     return true;
 }
 
@@ -269,7 +280,8 @@ void QPdfEngine::drawPixmap (const QRectF & rectangle, const QPixmap & pixmap, c
 
     QBrush b = d->brush;
 
-    QPixmap pm = pixmap.copy(sr.toRect());
+    QRect sourceRect = sr.toRect();
+    QPixmap pm = sourceRect != pixmap.rect() ? pixmap.copy(sourceRect) : pixmap;
     QImage image = pm.toImage();
 
     *d->currentPage << "q\n";
@@ -277,7 +289,7 @@ void QPdfEngine::drawPixmap (const QRectF & rectangle, const QPixmap & pixmap, c
         << QPdf::generateMatrix(QMatrix(rectangle.width() / sr.width(), 0, 0, rectangle.height() / sr.height(),
                                         rectangle.x(), rectangle.y()) * d->stroker.matrix);
     bool bitmap = true;
-    int object = d->addImage(image, &bitmap);
+    int object = d->addImage(image, &bitmap, qt_pixmap_id(pm));
     if (bitmap) {
         if (d->backgroundMode == Qt::OpaqueMode) {
             // draw background
@@ -301,14 +313,15 @@ void QPdfEngine::drawImage(const QRectF & rectangle, const QImage & image, const
         return;
     Q_D(QPdfEngine);
 
-    QImage im = image.copy(sr.toRect());
+    QRect sourceRect = sr.toRect();
+    QImage im = sourceRect != image.rect() ? image.copy(sr.toRect()) : image;
 
     *d->currentPage << "q\n";
     *d->currentPage
         << QPdf::generateMatrix(QMatrix(rectangle.width() / sr.width(), 0, 0, rectangle.height() / sr.height(),
                                         rectangle.x(), rectangle.y()) * d->stroker.matrix);
     bool bitmap = false;
-    int object = d->addImage(im, &bitmap);
+    int object = d->addImage(im, &bitmap, qt_image_id(im));
     d->currentPage->streamImage(image.width(), image.height(), object);
     *d->currentPage << "Q\n";
 }
@@ -394,15 +407,17 @@ int QPdfEngine::metric(QPaintDevice::PaintDeviceMetric metricType) const
         break;
     case QPaintDevice::PdmDpiX:
     case QPaintDevice::PdmDpiY:
+        val = d->resolution;
+        break;
     case QPaintDevice::PdmPhysicalDpiX:
     case QPaintDevice::PdmPhysicalDpiY:
-        val = 72;
+        val = 1200;
         break;
     case QPaintDevice::PdmWidthMM:
-        val = qRound(r.width()*25.4/72.);
+        val = qRound(r.width()*25.4/d->resolution);
         break;
     case QPaintDevice::PdmHeightMM:
-        val = qRound(r.height()*25.4/72.);
+        val = qRound(r.height()*25.4/d->resolution);
         break;
     case QPaintDevice::PdmNumColors:
         val = INT_MAX;
@@ -562,7 +577,7 @@ int QPdfEnginePrivate::addBrushPattern(const QMatrix &m, bool *specifyColor, int
 
     QMatrix matrix = m;
     matrix.translate(brushOrigin.x(), brushOrigin.y());
-    matrix = matrix * QMatrix(1, 0, 0, -1, 0, height_);
+    matrix = matrix * pageMatrix();
     //qDebug() << brushOrigin << matrix;
 
     Qt::BrushStyle style = brush.style();
@@ -597,7 +612,7 @@ int QPdfEnginePrivate::addBrushPattern(const QMatrix &m, bool *specifyColor, int
             return 0;
         QImage image = brush.texture().toImage();
         bool bitmap = true;
-        imageObject = addImage(image, &bitmap);
+        imageObject = addImage(image, &bitmap, qt_pixmap_id(brush.texture()));
         QImage::Format f = image.format();
         if (f != QImage::Format_MonoLSB && f != QImage::Format_Mono) {
             paintType = 1; // Colored tiling
@@ -646,10 +661,14 @@ int QPdfEnginePrivate::addBrushPattern(const QMatrix &m, bool *specifyColor, int
     return patternObj;
 }
 
-int QPdfEnginePrivate::addImage(const QImage &img, bool *bitmap)
+int QPdfEnginePrivate::addImage(const QImage &img, bool *bitmap, qint64 serial_no)
 {
     if (img.isNull())
         return -1;
+
+    int object = imageCache.value(serial_no);
+    if(object)
+        return object;
 
     QImage image = img;
     QImage::Format format = image.format();
@@ -675,57 +694,66 @@ int QPdfEnginePrivate::addImage(const QImage &img, bool *bitmap)
             memcpy(rawdata, image.scanLine(y), bytesPerLine);
             rawdata += bytesPerLine;
         }
-        return writeImage(data, w, h, d, 0, 0);
-    }
+        object = writeImage(data, w, h, d, 0, 0);
+    } else {
+        QByteArray imageData;
+        QByteArray softMaskData;
 
-    QByteArray imageData;
-    QByteArray softMaskData;
+        imageData.resize(3 * w * h);
+        softMaskData.resize(w * h);
 
-    imageData.resize(3 * w * h);
-    softMaskData.resize(w * h);
-
-    uchar *data = (uchar *)imageData.data();
-    uchar *sdata = (uchar *)softMaskData.data();
-    bool hasAlpha = false;
-    bool hasMask = false;
-    for (int y = 0; y < h; ++y) {
-        const QRgb *rgb = (const QRgb *)image.scanLine(y);
-        for (int x = 0; x < w; ++x) {
-            *(data++) = qRed(*rgb);
-            *(data++) = qGreen(*rgb);
-            *(data++) = qBlue(*rgb);
-            uchar alpha = qAlpha(*rgb);
-            *sdata++ = alpha;
-            hasMask |= (alpha < 255);
-            hasAlpha |= (alpha != 0 && alpha != 255);
-            ++rgb;
-        }
-    }
-    int maskObject = 0;
-    int softMaskObject = 0;
-    if (hasAlpha) {
-        softMaskObject = writeImage(softMaskData, w, h, 8, 0, 0);
-    } else if (hasMask) {
-        // dither the soft mask to 1bit and add it. This also helps PDF viewers
-        // without transparency support
-        int bytesPerLine = (w + 7) >> 3;
-        QByteArray mask(bytesPerLine * h, 0);
-        uchar *mdata = (uchar *)mask.data();
-        const uchar *sdata = (const uchar *)softMaskData.constData();
+        uchar *data = (uchar *)imageData.data();
+        uchar *sdata = (uchar *)softMaskData.data();
+        bool hasAlpha = false;
+        bool hasMask = false;
         for (int y = 0; y < h; ++y) {
+            const QRgb *rgb = (const QRgb *)image.scanLine(y);
             for (int x = 0; x < w; ++x) {
-                if (*sdata)
-                    mdata[x>>3] |= (0x80 >> (x&7));
-                ++sdata;
+                *(data++) = qRed(*rgb);
+                *(data++) = qGreen(*rgb);
+                *(data++) = qBlue(*rgb);
+                uchar alpha = qAlpha(*rgb);
+                *sdata++ = alpha;
+                hasMask |= (alpha < 255);
+                hasAlpha |= (alpha != 0 && alpha != 255);
+                ++rgb;
             }
-            mdata += bytesPerLine;
         }
-        maskObject = writeImage(mask, w, h, 1, 0, 0);
+        int maskObject = 0;
+        int softMaskObject = 0;
+        if (hasAlpha) {
+            softMaskObject = writeImage(softMaskData, w, h, 8, 0, 0);
+        } else if (hasMask) {
+            // dither the soft mask to 1bit and add it. This also helps PDF viewers
+            // without transparency support
+            int bytesPerLine = (w + 7) >> 3;
+            QByteArray mask(bytesPerLine * h, 0);
+            uchar *mdata = (uchar *)mask.data();
+            const uchar *sdata = (const uchar *)softMaskData.constData();
+            for (int y = 0; y < h; ++y) {
+                for (int x = 0; x < w; ++x) {
+                    if (*sdata)
+                        mdata[x>>3] |= (0x80 >> (x&7));
+                    ++sdata;
+                }
+                mdata += bytesPerLine;
+            }
+            maskObject = writeImage(mask, w, h, 1, 0, 0);
+        }
+        object = writeImage(imageData, w, h, 32, maskObject, softMaskObject);
     }
-
-    return writeImage(imageData, w, h, 32, maskObject, softMaskObject);
+    imageCache.insert(serial_no, object);
+    return object;
 }
 
+QMatrix QPdfEnginePrivate::pageMatrix() const
+{
+    qreal scale = 72./resolution;
+    QMatrix tmp(scale, 0.0, 0.0, -scale, 0.0, height_);
+    if (!fullPage)
+        tmp.translate(resolution/3, resolution/3);
+    return tmp;
+}
 
 void QPdfEnginePrivate::newPage()
 {
@@ -736,11 +764,9 @@ void QPdfEnginePrivate::newPage()
     stroker.stream = currentPage;
     pages.append(requestObject());
 
-    *currentPage << "/GSa gs /CSp cs /CSp CS\n";
-    QMatrix tmp(1.0, 0.0, 0.0, -1.0, 0.0, height_);
-    if (!fullPage)
-        tmp.translate(resolution/3, resolution/3);
-    *currentPage << QPdf::generateMatrix(tmp) << "q\n";
+    *currentPage << "/GSa gs /CSp cs /CSp CS\n"
+                 << QPdf::generateMatrix(pageMatrix())
+                 << "q\n";
 }
 
 
@@ -961,7 +987,13 @@ void QPdfEnginePrivate::embedFont(QFontSubset *font)
         QByteArray descriptor;
         QPdf::ByteStream s(&descriptor);
         s << "<< /Type /FontDescriptor\n"
-            "/FontName /" << properties.postscriptName << "\n"
+            "/FontName /Q";
+        int tag = fontDescriptor;
+        for (int i = 0; i < 5; ++i) {
+            s << (char)('A' + (tag % 26));
+            tag /= 26;
+        }
+        s <<  "+" << properties.postscriptName << "\n"
             "/Flags " << 4 << "\n"
             "/FontBBox ["
           << properties.boundingBox.x()*scale

@@ -805,6 +805,8 @@ void QLayoutSupport::computeGridLayout(QHash<QLayoutItem*, QRect> *l)
 void QLayoutSupport::rebuildGridLayout(QHash<QLayoutItem*, QRect> *infos)
 {
     QGridLayout *gridLayout = qobject_cast<QGridLayout*>(layout());
+    int margin = gridLayout->margin();
+    int spacing = gridLayout->spacing();
 
     { // take the items
         int index = 0;
@@ -828,6 +830,9 @@ void QLayoutSupport::rebuildGridLayout(QHash<QLayoutItem*, QRect> *infos)
         gridLayout->addItem(it.key(), info.y(), info.x(),
                 info.height(), info.width());
     }
+
+    gridLayout->setMargin(margin);
+    gridLayout->setSpacing(spacing);
 }
 
 QLayoutWidget::QLayoutWidget(QDesignerFormWindowInterface *formWindow, QWidget *parent)
@@ -849,7 +854,7 @@ void QLayoutWidget::paintEvent(QPaintEvent*)
     QPainter p(this);
 
     if (layout() != 0) {
-        p.setPen(QPen(QColor(255, 0, 0, 35), 1, Qt::SolidLine));
+        p.setPen(QPen(QColor(255, 0, 0, 35)));
 
         int index = 0;
 
@@ -862,7 +867,7 @@ void QLayoutWidget::paintEvent(QPaintEvent*)
 
     }
 
-    p.setPen(QPen(Qt::red, 1));
+    p.setPen(QPen(Qt::red));
     p.drawRect(0, 0, width() - 1, height() - 1);
 }
 

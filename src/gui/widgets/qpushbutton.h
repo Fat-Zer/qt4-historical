@@ -26,6 +26,8 @@
 
 #include <QtGui/qabstractbutton.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 class QPushButtonPrivate;
@@ -87,8 +89,10 @@ private:
     Q_DISABLE_COPY(QPushButton)
     Q_DECLARE_PRIVATE(QPushButton)
 #ifndef QT_NO_MENU        
-    Q_PRIVATE_SLOT(d_func(), void popupPressed())
+    Q_PRIVATE_SLOT(d_func(), void _q_popupPressed())
 #endif
 };
+
+QT_END_HEADER
 
 #endif // QPUSHBUTTON_H

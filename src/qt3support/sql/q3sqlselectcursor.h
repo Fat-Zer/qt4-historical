@@ -26,6 +26,8 @@
 
 #include <Qt3Support/q3sqlcursor.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Qt3Support)
 
 #ifndef QT_NO_SQL
@@ -78,5 +80,7 @@ private:
 };
 
 #endif // QT_NO_SQL
+
+QT_END_HEADER
 
 #endif // Q3SQLSELECTCURSOR_H

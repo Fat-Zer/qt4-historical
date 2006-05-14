@@ -31,6 +31,7 @@
 #include "qdir.h"
 #include "qdatetime.h"
 #include "qdebug.h"
+#include "qvarlengtharray.h"
 
 #include <stdlib.h>
 #include <limits.h>
@@ -317,6 +318,7 @@ bool QFSFileEnginePrivate::isSymlink() const
     if (need_lstat) {
         QFSFileEnginePrivate *that = const_cast<QFSFileEnginePrivate *>(this);
         that->need_lstat = false;
+        QT_STATBUF st;          // don't clobber our main one
         that->is_link = (QT_LSTAT(QFile::encodeName(file), &st) == 0) ? S_ISLNK(st.st_mode) : false;
     }
     return is_link;
@@ -380,9 +382,9 @@ QAbstractFileEngine::FileFlags QFSFileEngine::fileFlags(QAbstractFileEngine::Fil
         {
             if ((type & LinkType) && d->isSymlink())
                 ret |= LinkType;
-            if((d->st.st_mode & S_IFMT) == S_IFREG)
+            if (exists && (d->st.st_mode & S_IFMT) == S_IFREG)
                 ret |= FileType;
-            else if((d->st.st_mode & S_IFMT) == S_IFDIR)
+            else if (exists && (d->st.st_mode & S_IFMT) == S_IFDIR)
                 ret |= DirectoryType;
         }
     }
@@ -396,97 +398,6 @@ QAbstractFileEngine::FileFlags QFSFileEngine::fileFlags(QAbstractFileEngine::Fil
             ret |= RootFlag;
     }
     return ret;
-}
-
-/*
-    From http://www.ietf.org/rfc/rfc3986.txt, 5.2.4: Remove dot segments
-
-    Removes unnecessary ../ and ./ from the path. Used for normalizing
-    the URL.
-*/
-QString qt_removeDotsFromPath(const QString &dottedPath)
-{
-    // The input buffer is initialized with the now-appended path
-    // components and the output buffer is initialized to the empty
-    // string.
-    QString origPath = dottedPath;
-    QString path;
-    path.reserve(origPath.length());
-
-    const QLatin1String Dot(".");
-    const QLatin1Char Slash('/');
-    const QLatin1String DotDot("..");
-    const QLatin1String DotSlash("./");
-    const QLatin1String SlashDot("/.");
-    const QLatin1String DotDotSlash("../");
-    const QLatin1String SlashDotSlash("/./");
-    const QLatin1String SlashDotDotSlash("/../");
-    const QLatin1String SlashDotDot("/..");
-
-    // While the input buffer is not empty, loop:
-    while (!origPath.isEmpty()) {
-
-        // If the input buffer begins with a prefix of "../" or "./",
-        // then remove that prefix from the input buffer;
-        if (origPath.startsWith(DotSlash)) {
-            origPath.remove(0, 2);
-        } else if (origPath.startsWith(DotDotSlash)) {
-            origPath.remove(0, 3);
-        } else {
-            // otherwise, if the input buffer begins with a prefix of
-            // "/./" or "/.", where "." is a complete path segment,
-            // then replace that prefix with "/" in the input buffer;
-            if (origPath.startsWith(SlashDotSlash)) {
-                origPath.remove(0, 2);
-            } else if (origPath == SlashDot) {
-                origPath = Slash;
-            } else {
-                // otherwise, if the input buffer begins with a prefix
-                // of "/../" or "/..", where ".." is a complete path
-                // segment, then replace that prefix with "/" in the
-                // input buffer and remove the last //segment and its
-                // preceding "/" (if any) from the output buffer;
-                if (origPath.startsWith(SlashDotDotSlash)) {
-                    origPath.remove(0, 3);
-                    if (path.contains(Slash))
-                        path.truncate(path.lastIndexOf(Slash));
-                } else if (origPath == SlashDotDot) {
-                    origPath = Slash;
-                    if (path.contains(Slash))
-                        path.truncate(path.lastIndexOf(Slash));
-                } else {
-                    // otherwise, if the input buffer consists only of
-                    // "." or "..", then remove that from the input
-                    // buffer;
-                    if (origPath == Dot || origPath == DotDot) {
-                        origPath.clear();
-                    } else {
-                        // otherwise move the first path segment in
-                        // the input buffer to the end of the output
-                        // buffer, including the initial "/" character
-                        // (if any) and any subsequent characters up
-                        // to, but not including, the next "/"
-                        // character or the end of the input buffer.
-                        int index = origPath.indexOf(Slash);
-                        if (index == 0) {
-                            path += Slash;
-                            origPath.remove(0, 1);
-                            index = origPath.indexOf(Slash);
-                        }
-                        if (index != -1) {
-                            path += origPath.left(index);
-                            origPath.remove(0, index);
-                        } else {
-                            path += origPath;
-                            origPath.clear();
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    return path;
 }
 
 QString QFSFileEngine::fileName(FileName file) const
@@ -570,7 +481,6 @@ QString QFSFileEngine::fileName(FileName file) const
                 s[len] = '\0';
                 ret += QFile::decodeName(QByteArray(s));
 
-                extern QString qt_removeDotsFromPath(const QString &dottedPath);
                 if (!ret.startsWith(QLatin1Char('/'))) {
                     if (d->file.startsWith(QLatin1Char('/'))) {
                         ret.prepend(d->file.left(d->file.lastIndexOf('/')) + QLatin1Char('/'));
@@ -578,8 +488,8 @@ QString QFSFileEngine::fileName(FileName file) const
                         ret.prepend(QDir::currentPath() + QLatin1Char('/'));
                     }
                 }
-                ret = qt_removeDotsFromPath(ret);
-                if (ret.endsWith(QLatin1Char('/')))
+                ret = QDir::cleanPath(ret);
+                if (ret.size() > 1 && ret.endsWith(QLatin1Char('/')))
                     ret.chop(1);
                 return ret;
             }
@@ -629,12 +539,29 @@ uint QFSFileEngine::ownerId(FileOwner own) const
 
 QString QFSFileEngine::owner(FileOwner own) const
 {
+#if !defined(QT_NO_THREAD) && defined(_POSIX_THREAD_SAFE_FUNCTIONS)
+    QVarLengthArray<char, 1024> buf(sysconf(_SC_GETPW_R_SIZE_MAX));
+#endif
+
     if(own == OwnerUser) {
-        passwd *pw = getpwuid(ownerId(own));
+        struct passwd *pw = 0;
+#if !defined(QT_NO_THREAD) && defined(_POSIX_THREAD_SAFE_FUNCTIONS)
+        struct passwd entry;
+        getpwuid_r(ownerId(own), &entry, buf.data(), buf.size(), &pw);
+#else
+        pw = getpwuid(ownerId(own));
+#endif
         if(pw)
             return QFile::decodeName(QByteArray(pw->pw_name));
     } else if(own == OwnerGroup) {
-        struct group *gr = getgrgid(ownerId(own));
+        struct group *gr = 0;
+#if !defined(QT_NO_THREAD) && defined(_POSIX_THREAD_SAFE_FUNCTIONS)
+        buf.resize(sysconf(_SC_GETGR_R_SIZE_MAX));
+        struct group entry;
+        getgrgid_r(ownerId(own), &entry, buf.data(), buf.size(), &gr);
+#else
+        gr = getgrgid(ownerId(own));
+#endif
         if(gr)
             return QFile::decodeName(QByteArray(gr->gr_name));
     }

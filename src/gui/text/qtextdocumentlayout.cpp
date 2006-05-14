@@ -87,7 +87,7 @@ public:
 };
 
 struct QLayoutStruct {
-    QLayoutStruct() : widthUsed(0), minimumWidth(0), maximumWidth(INT_MAX),
+    QLayoutStruct() : contentsWidth(0), minimumWidth(0), maximumWidth(INT_MAX),
                       fullLayout(false), pageHeight(0.0),
                       pageBottom(0.0), pageMargin(0.0)
     {}
@@ -95,7 +95,7 @@ struct QLayoutStruct {
     qreal x_left;
     qreal x_right;
     qreal y;
-    qreal widthUsed;
+    qreal contentsWidth;
     qreal minimumWidth;
     qreal maximumWidth;
     bool fullLayout;
@@ -275,6 +275,9 @@ struct QCheckPoint
 {
     qreal y;
     int positionInFrame;
+    qreal minimumWidth;
+    qreal maximumWidth;
+    qreal contentsWidth;
 };
 Q_DECLARE_TYPEINFO(QCheckPoint, Q_PRIMITIVE_TYPE);
 
@@ -344,10 +347,11 @@ public:
         PointInside,
         PointExact
     };
-    HitPoint hitTest(QTextFrame *frame, const QPointF &point, int *position) const;
-    HitPoint hitTest(QTextFrame::Iterator it, HitPoint hit, const QPointF &p, int *position) const;
-    HitPoint hitTest(QTextTable *table, const QPointF &point, int *position) const;
-    HitPoint hitTest(QTextBlock bl, const QPointF &point, int *position) const;
+    HitPoint hitTest(QTextFrame *frame, const QPointF &point, int *position, QTextLayout **l) const;
+    HitPoint hitTest(QTextFrame::Iterator it, HitPoint hit, const QPointF &p, 
+                     int *position, QTextLayout **l) const;
+    HitPoint hitTest(QTextTable *table, const QPointF &point, int *position, QTextLayout **l) const;
+    HitPoint hitTest(QTextBlock bl, const QPointF &point, int *position, QTextLayout **l) const;
 
     QLayoutStruct layoutCell(QTextTable *t, const QTextTableCell &cell, qreal width,
                             int layoutFrom, int layoutTo);
@@ -433,7 +437,7 @@ QTextFrame::Iterator QTextDocumentLayoutPrivate::iteratorForTextPosition(int pos
 }
 
 QTextDocumentLayoutPrivate::HitPoint
-QTextDocumentLayoutPrivate::hitTest(QTextFrame *frame, const QPointF &point, int *position) const
+QTextDocumentLayoutPrivate::hitTest(QTextFrame *frame, const QPointF &point, int *position, QTextLayout **l) const
 {
     Q_Q(const QTextDocumentLayout);
     QTextFrameData *fd = data(frame);
@@ -461,7 +465,7 @@ QTextDocumentLayoutPrivate::hitTest(QTextFrame *frame, const QPointF &point, int
     }
 
     if (QTextTable *table = qobject_cast<QTextTable *>(frame))
-        return hitTest(table, relativePoint, position);
+        return hitTest(table, relativePoint, position, l);
 
     HitPoint hit = PointInside;
     QTextFrame::Iterator it = frame->begin();
@@ -478,11 +482,12 @@ QTextDocumentLayoutPrivate::hitTest(QTextFrame *frame, const QPointF &point, int
         hit = PointBefore;
     }
 
-    return hitTest(it, hit, relativePoint, position);
+    return hitTest(it, hit, relativePoint, position, l);
 }
 
 QTextDocumentLayoutPrivate::HitPoint
-QTextDocumentLayoutPrivate::hitTest(QTextFrame::Iterator it, HitPoint hit, const QPointF &p, int *position) const
+QTextDocumentLayoutPrivate::hitTest(QTextFrame::Iterator it, HitPoint hit, const QPointF &p, 
+                                    int *position, QTextLayout **l) const
 {
     INC_INDENT;
 
@@ -491,9 +496,9 @@ QTextDocumentLayoutPrivate::hitTest(QTextFrame::Iterator it, HitPoint hit, const
         HitPoint hp;
         int pos = -1;
         if (c) {
-            hp = hitTest(c, p, &pos);
+            hp = hitTest(c, p, &pos, l);
         } else {
-            hp = hitTest(it.currentBlock(), p, &pos);
+            hp = hitTest(it.currentBlock(), p, &pos, l);
         }
         if (hp >= PointInside) {
             if (isEmptyBlockBeforeTable(it))
@@ -517,7 +522,8 @@ QTextDocumentLayoutPrivate::hitTest(QTextFrame::Iterator it, HitPoint hit, const
 }
 
 QTextDocumentLayoutPrivate::HitPoint
-QTextDocumentLayoutPrivate::hitTest(QTextTable *table, const QPointF &point, int *position) const
+QTextDocumentLayoutPrivate::hitTest(QTextTable *table, const QPointF &point, 
+                                    int *position, QTextLayout **l) const
 {
     QTextTableData *td = static_cast<QTextTableData *>(data(table));
 
@@ -542,7 +548,7 @@ QTextDocumentLayoutPrivate::hitTest(QTextTable *table, const QPointF &point, int
 
     *position = cell.firstPosition();
 
-    HitPoint hp = hitTest(cell.begin(), PointInside, point - td->cellPosition(cell), position);
+    HitPoint hp = hitTest(cell.begin(), PointInside, point - td->cellPosition(cell), position, l);
 
     if (hp == PointExact)
         return hp;
@@ -552,9 +558,9 @@ QTextDocumentLayoutPrivate::hitTest(QTextTable *table, const QPointF &point, int
 }
 
 QTextDocumentLayoutPrivate::HitPoint
-QTextDocumentLayoutPrivate::hitTest(QTextBlock bl, const QPointF &point, int *position) const
+QTextDocumentLayoutPrivate::hitTest(QTextBlock bl, const QPointF &point, int *position, QTextLayout **l) const
 {
-    const QTextLayout *tl = bl.layout();
+    QTextLayout *tl = bl.layout();
     QRectF textrect = tl->boundingRect();
     textrect.translate(tl->position());
 //     LDEBUG << "    checking block" << bl.position() << "point=" << point
@@ -574,6 +580,7 @@ QTextDocumentLayoutPrivate::hitTest(QTextBlock bl, const QPointF &point, int *po
     // ### rtl?
 
     HitPoint hit = PointInside;
+    *l = tl;
     int off = 0;
     for (int i = 0; i < tl->lineCount(); ++i) {
         QTextLine line = tl->lineAt(i);
@@ -934,8 +941,12 @@ void QTextDocumentLayoutPrivate::drawBlock(const QPointF &offset, QPainter *pain
     QTextBlockFormat blockFormat = bl.blockFormat();
 
     QBrush bg = blockFormat.background();
-    if (bg != Qt::NoBrush)
-        painter->fillRect(r, bg);
+    if (bg != Qt::NoBrush) {
+        // don't paint into the left margin. Right margin is already excluded by the line breaking
+        QRectF contentsRect = r;
+        contentsRect.setLeft(contentsRect.left() + bl.blockFormat().leftMargin());
+        painter->fillRect(contentsRect, bg);
+    }
 
     QVector<QTextLayout::FormatRange> selections;
     int blpos = bl.position();
@@ -1555,7 +1566,7 @@ QRectF QTextDocumentLayoutPrivate::layoutFrame(QTextFrame *f, int layoutFrom, in
     layoutStruct.x_left = margin + fd->padding;
     layoutStruct.x_right = margin + fd->contentsWidth - fd->padding;
     layoutStruct.y = margin + fd->padding;
-    layoutStruct.widthUsed = 0;
+    layoutStruct.contentsWidth = 0;
     layoutStruct.minimumWidth = 0;
     layoutStruct.maximumWidth = INT_MAX;
     layoutStruct.fullLayout = fd->contentsWidth != newContentsWidth;
@@ -1574,7 +1585,7 @@ QRectF QTextDocumentLayoutPrivate::layoutFrame(QTextFrame *f, int layoutFrom, in
     QTextFrame::Iterator it = f->begin();
     layoutFlow(it, &layoutStruct, layoutFrom, layoutTo);
 
-    fd->contentsWidth = qMax(fd->contentsWidth, layoutStruct.widthUsed);
+    fd->contentsWidth = qMax(fd->contentsWidth, layoutStruct.contentsWidth);
     fd->minimumWidth = layoutStruct.minimumWidth;
     fd->maximumWidth = layoutStruct.maximumWidth;
 
@@ -1608,6 +1619,9 @@ void QTextDocumentLayoutPrivate::layoutFlow(QTextFrame::Iterator it, QLayoutStru
                     --checkPoint;
 
                 layoutStruct->y = checkPoint->y;
+                layoutStruct->minimumWidth = checkPoint->minimumWidth;
+                layoutStruct->maximumWidth = checkPoint->maximumWidth;
+                layoutStruct->contentsWidth = checkPoint->contentsWidth;
 
                 if (layoutStruct->pageHeight > 0.0) {
                     int page = int(layoutStruct->y / layoutStruct->pageHeight);
@@ -1631,7 +1645,10 @@ void QTextDocumentLayoutPrivate::layoutFlow(QTextFrame::Iterator it, QLayoutStru
             QCheckPoint cp;
             cp.y = layoutStruct->y;
             cp.positionInFrame = 0;
-            checkPoints << cp;
+            cp.minimumWidth = layoutStruct->minimumWidth;
+            cp.maximumWidth = layoutStruct->maximumWidth;
+            cp.contentsWidth = layoutStruct->contentsWidth;
+            checkPoints.append(cp);
         }
     }
                 
@@ -1652,6 +1669,9 @@ void QTextDocumentLayoutPrivate::layoutFlow(QTextFrame::Iterator it, QLayoutStru
                     QCheckPoint p;
                     p.y = layoutStruct->y;
                     p.positionInFrame = docPos;
+                    p.minimumWidth = layoutStruct->minimumWidth;
+                    p.maximumWidth = layoutStruct->maximumWidth;
+                    p.contentsWidth = layoutStruct->contentsWidth;
                     checkPoints.append(p);
 
                     if (currentLazyLayoutPosition != -1
@@ -1687,7 +1707,7 @@ void QTextDocumentLayoutPrivate::layoutFlow(QTextFrame::Iterator it, QLayoutStru
                 QTextTable *table = qobject_cast<QTextTable *>(c);
 
                 if (table)
-                    align = table->format().alignment();
+                    align = table->format().alignment() & Qt::AlignHorizontal_Mask;
 
                 // align only if there is space for alignment
                 if (right - left > cd->size.width()) {
@@ -1784,6 +1804,9 @@ void QTextDocumentLayoutPrivate::layoutFlow(QTextFrame::Iterator it, QLayoutStru
             QCheckPoint cp;
             cp.y = layoutStruct->y;
             cp.positionInFrame = q->document()->docHandle()->length();
+            cp.minimumWidth = layoutStruct->minimumWidth;
+            cp.maximumWidth = layoutStruct->maximumWidth;
+            cp.contentsWidth = layoutStruct->contentsWidth;
             checkPoints.append(cp);
         } else {
             currentLazyLayoutPosition = checkPoints.last().positionInFrame;
@@ -1938,8 +1961,8 @@ void QTextDocumentLayoutPrivate::layoutBlock(const QTextBlock &bl, QLayoutStruct
 
             line.setPosition(QPointF(left - layoutStruct->x_left, layoutStruct->y - cy));
             layoutStruct->y += lineHeight;
-            layoutStruct->widthUsed
-                = qMax<qreal>(layoutStruct->widthUsed, left - layoutStruct->x_left + line.naturalTextWidth());
+            layoutStruct->contentsWidth
+                = qMax<qreal>(layoutStruct->contentsWidth, left - layoutStruct->x_left + line.naturalTextWidth());
 
             // position floats
             for (int i = 0; i < layoutStruct->pendingFloats.size(); ++i) {
@@ -1954,8 +1977,8 @@ void QTextDocumentLayoutPrivate::layoutBlock(const QTextBlock &bl, QLayoutStruct
         const int cnt = tl->lineCount();
         for (int i = 0; i < cnt; ++i) {
             QTextLine line = tl->lineAt(i);
-            layoutStruct->widthUsed
-                = qMax(layoutStruct->widthUsed, line.x() + tl->lineAt(i).naturalTextWidth());
+            layoutStruct->contentsWidth
+                = qMax(layoutStruct->contentsWidth, line.x() + tl->lineAt(i).naturalTextWidth());
         }
         if (layoutStruct->updateRect.isValid()
             && bl.length() > 1) {
@@ -2226,13 +2249,17 @@ int QTextDocumentLayout::hitTest(const QPointF &point, Qt::HitTestAccuracy accur
     d->ensureLayouted(point.y());
     QTextFrame *f = document()->rootFrame();
     int position = 0;
-    QTextDocumentLayoutPrivate::HitPoint p = d->hitTest(f, point, &position);
+    QTextLayout *l = 0;
+    QTextDocumentLayoutPrivate::HitPoint p = d->hitTest(f, point, &position, &l);
     if (accuracy == Qt::ExactHit && p < QTextDocumentLayoutPrivate::PointExact)
         return -1;
 
     // ensure we stay within document bounds
-    if (position > f->lastPosition())
-        position = f->lastPosition();
+    int lastPos = f->lastPosition();
+    if (l && !l->preeditAreaText().isEmpty())
+        lastPos += l->preeditAreaText().length();
+    if (position > lastPos)
+        position = lastPos;
     else if (position < 0)
         position = 0;
 

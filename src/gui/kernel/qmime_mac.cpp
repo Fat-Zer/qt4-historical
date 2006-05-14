@@ -58,6 +58,11 @@ static void cleanup_mimes()
         delete mimes->takeFirst();
 }
 
+/*****************************************************************************
+  QDnD debug facilities
+ *****************************************************************************/
+//#define DEBUG_MIME_MAPS
+
 //functions
 extern QString qt_mac_from_pascal_string(const Str255);  //qglobal.cpp
 extern void qt_mac_from_pascal_string(QString, Str255, TextEncoding encoding=0, int len=-1);  //qglobal.cpp
@@ -482,10 +487,8 @@ int QMacMimeText::flavorFor(const QString &mime)
 
 QString QMacMimeText::mimeFor(int flav)
 {
-    if(flav == kScrapFlavorTypeText)
+    if (flav == kScrapFlavorTypeText || flav == kScrapFlavorTypeUnicode)
         return QLatin1String("text/plain");
-    else if(flav == kScrapFlavorTypeUnicode)
-        return QLatin1String("text/plain;charset=ISO-10646-UCS-2");
     return QString();
 }
 
@@ -715,8 +718,8 @@ QList<QByteArray> QMacMimeFileUri::convertFromMime(const QString &mime, QVariant
         else
             uri = url.toString();
         if(uri.startsWith(QLatin1String("file:///")))
-            uri.insert(6, "localhost"); //Mac likes localhost to be in it!
-        ret.append(uri.toLatin1());
+            uri.insert(7, "localhost"); //Mac likes localhost to be in it!
+        ret.append(uri.toUtf8());
     }
     return ret;
 }
@@ -736,7 +739,7 @@ public:
 
 int QMacMimeHFSUri::countFlavors()
 {
-    return 2;
+    return 1;
 }
 
 QString QMacMimeHFSUri::convertorName()
@@ -744,10 +747,8 @@ QString QMacMimeHFSUri::convertorName()
     return "HFSUri";
 }
 
-int QMacMimeHFSUri::flavor(int flav)
+int QMacMimeHFSUri::flavor(int)
 {
-    if(flav == 0)
-        return kDragFlavorTypePromiseHFS;
     return kDragFlavorTypeHFS;
 }
 
@@ -760,7 +761,7 @@ int QMacMimeHFSUri::flavorFor(const QString &mime)
 
 QString QMacMimeHFSUri::mimeFor(int flav)
 {
-    if(flav == kDragFlavorTypeHFS || flav == kDragFlavorTypePromiseHFS)
+    if(flav == kDragFlavorTypeHFS)
         return QString("text/uri-list");
     return QString();
 }
@@ -768,14 +769,13 @@ QString QMacMimeHFSUri::mimeFor(int flav)
 bool QMacMimeHFSUri::canConvert(const QString &mime, int flav)
 {
     if(mime == QLatin1String("text/uri-list"))
-        return flav == kDragFlavorTypeHFS || flav == kDragFlavorTypePromiseHFS;
+        return flav == kDragFlavorTypeHFS;
     return false;
 }
 
 QVariant QMacMimeHFSUri::convertToMime(const QString &mime, QList<QByteArray> data, int flav)
 {
-    if(mime != QLatin1String("text/uri-list") ||
-       (flav != kDragFlavorTypeHFS && flav != kDragFlavorTypePromiseHFS))
+    if(mime != QLatin1String("text/uri-list") || flav != kDragFlavorTypeHFS)
         return QByteArray();
     QList<QVariant> ret;
     char *buffer = (char*)malloc(1024);
@@ -793,28 +793,45 @@ QVariant QMacMimeHFSUri::convertToMime(const QString &mime, QList<QByteArray> da
 QList<QByteArray> QMacMimeHFSUri::convertFromMime(const QString &mime, QVariant data, int flav)
 {
     QList<QByteArray> ret;
-    if(mime != QLatin1String("text/uri-list") ||
-       (flav != kDragFlavorTypeHFS && flav != kDragFlavorTypePromiseHFS))
+    if(mime != QLatin1String("text/uri-list") || flav != kDragFlavorTypeHFS)
         return ret;
     QList<QVariant> urls = data.toList();
     for(int i = 0; i < urls.size(); ++i) {
-#if 0
-        QUrl url = urls.at(i).toUrl();
-        QString uri;
-        if(url.scheme().isEmpty())
-            uri = QUrl::fromLocalFile(url.toString()).toString();
-        else
-            uri = url.toString();
-#else
-        QString uri = urls.at(i).toUrl().toString();
-#endif
-
-        HFSFlavor hfs;
-        hfs.fileType = 'TEXT';
-        hfs.fileCreator = qt_mac_mime_type;
-        hfs.fdFlags = 0;
-        if(qt_mac_create_fsspec(uri, &hfs.fileSpec) == noErr)
-            ret.append(uri.toLatin1());
+        QString uri = urls.at(i).toUrl().toLocalFile();
+        // Attempt to create an HFSFlavor to give back
+        // The following code is not for the squemish.
+        QByteArray ba(sizeof(HFSFlavor), '\0');
+        HFSFlavor *phfs = reinterpret_cast<HFSFlavor *>(ba.data());
+        FSRef fsref;
+        OSErr err = FSPathMakeRef(reinterpret_cast<const UInt8 *>(uri.toUtf8().constData()),
+                                  &fsref, 0);
+        if (err == noErr) {
+            // Find out more info about the thing.
+            FSRefParam fsrefparam;
+            FSCatalogInfo catInfo;
+            memset(&catInfo, 0, sizeof(FSCatalogInfo));
+            memset(&fsrefparam, 0, sizeof(FSRefParam));
+            fsrefparam.ref = &fsref;
+            fsrefparam.whichInfo = kFSCatInfoGettableInfo;
+            fsrefparam.spec = &phfs->fileSpec;
+            fsrefparam.catInfo = &catInfo;
+            err = PBGetCatalogInfoSync(&fsrefparam);
+            if (err == noErr) {
+                const FileInfo *fileInfo = reinterpret_cast<const FileInfo *>(catInfo.finderInfo);
+                phfs->fdFlags = fileInfo->finderFlags;
+                if (phfs->fileSpec.parID == fsRtParID) {
+                    phfs->fileCreator = 'MACS';
+                    phfs->fileType = 'disk';
+                } else if (catInfo.nodeFlags & kFSNodeIsDirectoryMask) {
+                    phfs->fileCreator = 'MACS';
+                    phfs->fileType = 'fold';
+                } else {
+                    phfs->fileCreator = fileInfo->fileCreator;
+                    phfs->fileType = fileInfo->fileType;
+                }
+            }
+        }
+        ret.append(ba);
     }
     return ret;
 }
@@ -849,15 +866,15 @@ QMacMime::convertor(QMacMimeType t, const QString &mime, int flav)
 
     MimeList *mimes = globalMimeList();
     for(MimeList::const_iterator it = mimes->constBegin(); it != mimes->constEnd(); ++it) {
-#if 0
-        qDebug("seeing if %s (%d) can convert %s to %d[%c%c%c%c] [%d]",
+#ifdef DEBUG_MIME_MAPS
+        qDebug("QMacMime::convertor: seeing if %s (%d) can convert %s to %d[%c%c%c%c] [%d]",
                (*it)->convertorName().toLatin1().constData(),
                (*it)->type & t, mime.toLatin1().constData(),
                flav, (flav >> 24) & 0xFF, (flav >> 16) & 0xFF, (flav >> 8) & 0xFF, (flav) & 0xFF,
                (*it)->canConvert(mime,flav));
         for(int i = 0; i < (*it)->countFlavors(); ++i) {
             int f = (*it)->flavor(i);
-            qDebug("%d) %d[%c%c%c%c] [%s]", i, f,
+            qDebug("  %d) %d[%c%c%c%c] [%s]", i, f,
                    (f >> 24) & 0xFF, (f >> 16) & 0xFF, (f >> 8) & 0xFF, (f) & 0xFF,
                    (*it)->convertorName().toLatin1().constData());
         }
@@ -875,6 +892,13 @@ QString QMacMime::flavorToMime(QMacMimeType t, int flav)
 {
     MimeList *mimes = globalMimeList();
     for(MimeList::const_iterator it = mimes->constBegin(); it != mimes->constEnd(); ++it) {
+#ifdef DEBUG_MIME_MAPS
+        qDebug("QMacMIme::flavorToMime: attempting %s (%d) for flavor %d[%c%c%c%c] [%s]",
+               (*it)->convertorName().toLatin1().constData(),
+               (*it)->type & t, flav, (flav >> 24) & 0xFF, (flav >> 16) & 0xFF, (flav >> 8) & 0xFF, (flav) & 0xFF,
+               (*it)->mimeFor(flav).toLatin1().constData());
+
+#endif
         if((*it)->type & t) {
             QString mimeType = (*it)->mimeFor(flav);
             if(!mimeType.isNull())

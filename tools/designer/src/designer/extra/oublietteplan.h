@@ -3,7 +3,7 @@
  *  qthack
  *
  *  Created by Trenton Schulz on 3/24/05.
- *  Copyright 2005 Trolltech AS. All rights reserved.
+ *  Copyright (C) 2005-2006 Trolltech AS. All rights reserved.
  *
  */
 

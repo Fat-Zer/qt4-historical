@@ -41,6 +41,8 @@
 #include <QtGui/qevent.h>
 #endif
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Gui)
 
 class QLayout;
@@ -626,6 +628,7 @@ private:
     friend bool qt_mac_is_metal(const QWidget *w);
 #endif
 #ifdef Q_WS_QWS
+    friend class QWSBackingStore;
     friend class QWSManager;
     friend class QWSManagerPrivate;
     friend class QDecoration;
@@ -916,5 +919,7 @@ inline QT3_SUPPORT void QWidget::erase(const QRect &r) { erase_helper(r.x(), r.y
 #endif
 
 #define QWIDGETSIZE_MAX ((1<<24)-1)
+
+QT_END_HEADER
 
 #endif // QWIDGET_H

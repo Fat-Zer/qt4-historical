@@ -26,6 +26,8 @@
 
 #include <Qt3Support/q3ptrcollection.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Qt3SupportLight)
 
 class Q_COMPAT_EXPORT Q3LNode
@@ -249,5 +251,7 @@ protected:
     inline Q3LNode *next() { return node->next; }
     Q3LNode *node;
 };
+
+QT_END_HEADER
 
 #endif	// Q3GLIST_H

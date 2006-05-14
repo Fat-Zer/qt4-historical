@@ -91,8 +91,7 @@ MainWindow::MainWindow()
 
     QRect geom = config->geometry();
     if(geom.isValid()) {
-        resize(geom.size());
-        move(geom.topLeft());
+        setGeometry(geom);
     }
 
     restoreState(config->mainWindowState());
@@ -101,12 +100,24 @@ MainWindow::MainWindow()
 
     tabs->setup();
     QTimer::singleShot(0, this, SLOT(setup()));
-#if defined(Q_OS_MACX)
+#if defined(Q_WS_MAC)
     // Use the same forward and backward browser shortcuts as Safari and Internet Explorer do
     // on the Mac. This means that if you have access to one of those cool Intellimice, the thing
     // works just fine, since that's how Microsoft hacked it.
     ui.actionGoPrevious->setShortcut(QKeySequence(Qt::CTRL|Qt::Key_Left));
     ui.actionGoNext->setShortcut(QKeySequence(Qt::CTRL|Qt::Key_Right));
+
+    static const QLatin1String MacIconPath(":/trolltech/assistant/images/mac");
+    ui.actionGoNext->setIcon(QIcon(MacIconPath + QLatin1String("/next.png")));
+    ui.actionGoPrevious->setIcon(QIcon(MacIconPath + QLatin1String("/prev.png")));
+    ui.actionGoHome->setIcon(QIcon(MacIconPath + QLatin1String("/home.png")));
+    ui.actionEditCopy->setIcon(QIcon(MacIconPath + QLatin1String("/editcopy.png")));
+    ui.actionEditCopy->setIcon(QIcon(MacIconPath + QLatin1String("/editcopy.png")));
+    ui.actionEditFind->setIcon(QIcon(MacIconPath + QLatin1String("/find.png")));
+    ui.actionFilePrint->setIcon(QIcon(MacIconPath + QLatin1String("/print.png")));
+    ui.actionZoomOut->setIcon(QIcon(MacIconPath + QLatin1String("/zoomout.png")));
+    ui.actionZoomIn->setIcon(QIcon(MacIconPath + QLatin1String("/zoomin.png")));
+    ui.actionHelpWhatsThis->setIcon(QIcon(MacIconPath + QLatin1String("/whatsthis.png")));
 #endif
 }
 
@@ -168,7 +179,12 @@ void MainWindow::setup()
     viewsAction->setText(tr("Views"));
     ui.viewMenu->addAction(viewsAction);
 
-    helpDock->tabWidget()->setCurrentIndex(config->sideBarPage());
+    const int tabIndex = config->sideBarPage();
+    helpDock->tabWidget()->setCurrentIndex(tabIndex);
+    // The tab index is 0 by default, so we need to force an upate
+    // to poulate the contents in this case.
+    if (tabIndex == 0) 
+        helpDock->currentTabChanged(tabIndex);
 
     qApp->restoreOverrideCursor();
     ui.actionGoPrevious->setEnabled(false);
@@ -210,6 +226,7 @@ void MainWindow::setupGoActions()
             }
             action = new QAction(this);
             action->setText(title);
+            action->setWhatsThis(tr("Displays the main page of a specific documentation set."));
             action->setIcon(QIcon(pix));
             ui.goMenu->addAction(action);
             ui.goActionToolbar->addAction(action);
@@ -260,7 +277,7 @@ void MainWindow::about()
                    "Qt Commercial License Agreement. For details, see the file LICENSE "
                    "that came with this software distribution."
 #endif
-                   "<br/><br/>Copyright 2000-2006 Trolltech AS. All rights reserved."
+                   "<br/><br/>Copyright (C) 2000-2006 Trolltech AS. All rights reserved."
                    "<br/><br/>The program is provided AS IS with NO WARRANTY OF ANY KIND,"
                    " INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A"
                    " PARTICULAR PURPOSE.<br/> ")
@@ -339,10 +356,10 @@ QString MainWindow::urlifyFileName(const QString &fileName)
 #if defined(Q_OS_WIN32)
     if (!url.isValid() || url.scheme().isEmpty() || url.scheme().toLower() != "file:") {
         name = name.toLower();
+        name.replace('\\', '/');
         foreach (QFileInfo drive, QDir::drives()) {
             if (name.startsWith(drive.absolutePath().toLower())) {
                 name = "file:" + name;
-                name = name.replace("\\", "/");
                 break;
             }
         }
@@ -434,18 +451,22 @@ void MainWindow::showLinks(const QStringList &links)
         return;
     }
 
-    pendingLinks = links;
-
-    QStringList::ConstIterator it = pendingLinks.begin();
+    QStringList::ConstIterator it = links.begin();
     // Initial showing, The tab is empty so update that without creating it first
     if (!tabs->currentBrowser()->source().isValid()) {
-        pendingBrowsers.append(tabs->currentBrowser());
-        tabs->setTitle(tabs->currentBrowser(), pendingLinks.first());
+        QPair<HelpWindow*, QString> browser;
+        browser.first = tabs->currentBrowser();
+        browser.second = links.first();
+        pendingBrowsers.append(browser);
+        tabs->setTitle(tabs->currentBrowser(), tr("..."));
     }
     ++it;
 
-    while(it != pendingLinks.end()) {
-        pendingBrowsers.append(tabs->newBackgroundTab(*it));
+    while(it != links.end()) {
+        QPair<HelpWindow*, QString> browser;
+        browser.first = tabs->newBackgroundTab();
+        browser.second = *it;
+        pendingBrowsers.append(browser);
         ++it;
     }
 
@@ -453,16 +474,30 @@ void MainWindow::showLinks(const QStringList &links)
     return;
 }
 
+void MainWindow::removePendingBrowser(HelpWindow *win)
+{
+    if (!pendingBrowsers.count())
+        return;
+
+    QMutableListIterator<QPair<HelpWindow*, QString> > it(pendingBrowsers);
+    while (it.hasNext()) {
+        QPair<HelpWindow*, QString> browser = it.next();
+        if (browser.first == win) {
+            it.remove();
+            break;
+        }
+    }
+}
+
 void MainWindow::timerEvent(QTimerEvent *e)
 {
-    QString link = pendingLinks.first();
-    HelpWindow *win = pendingBrowsers.first();
-    pendingLinks.pop_front();
-    pendingBrowsers.removeFirst();
-    if (pendingLinks.size() == 0)
+    QPair<HelpWindow*, QString> browser = pendingBrowsers.first();
+    pendingBrowsers.pop_front();
+    
+    if (pendingBrowsers.size() == 0)
         killTimer(e->timerId());
 
-    win->setSource(MainWindow::urlifyFileName(link));
+    browser.first->setSource(MainWindow::urlifyFileName(browser.second));
 }
 
 void MainWindow::showQtHelp()
@@ -733,8 +768,9 @@ void MainWindow::on_actionSaveAs_triggered()
             }
         }
     }
-    QString src = doc->toHtml();
+    QString src = doc->toHtml("utf-8");
     QTextStream s(&file);
+    s.setCodec("utf-8");
     s << src;
     s.flush();
     file.close();

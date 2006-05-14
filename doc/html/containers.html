@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-mac-opensource-src-4.1.2/doc/src/containers.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-mac-opensource-src-4.1.3/doc/src/containers.qdoc -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-mac-opensource-src-4.1.3/doc/src/containers.qdoc -->
 <head>
     <title>Qt 4.1: Generic Containers</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -275,7 +276,7 @@ body { background: #ffffff; color: black; }</style>
     QLinkedListIterator&lt;QString&gt; i(list);
     while (i.hasNext())
         qDebug() &lt;&lt; i.next();</pre>
-<p>Just like C++'s <tt>for</tt> loop, the variable used for iteration can be defined within the <tt>foreach</tt> statement:</p>
+<p>Unless the data type contains a comma (e.g., <tt>QPair&lt;int, int&gt;</tt>), the variable used for iteration can be defined within the <tt>foreach</tt> statement:</p>
 <pre>&nbsp;   QLinkedList&lt;QString&gt; list;
     ...
     foreach (QString str, list)
@@ -296,10 +297,9 @@ body { background: #ffffff; color: black; }</style>
 <p>For a multi-valued map:</p>
 <pre>&nbsp;   QMultiMap&lt;QString, int&gt; map;
     ...
-    foreach (QString str, map.keys())
+    foreach (QString str, map.keys().toSet())
         foreach (int i, map.values(str))
             qDebug() &lt;&lt; str &lt;&lt; &quot;:&quot; &lt;&lt; i;</pre>
-<p>Note that, in some cases, there may be duplicate keys in the map. To obtain a list of unique keys, where each key from the map only occurs once, use an intermediate <a href="qset.html">QSet</a> object to filter out duplicates.</p>
 <p>Qt automatically takes a copy of the container when it enters a <tt>foreach</tt> loop. If you modify the container as you are iterating, that won't affect the loop. (If you don't modify the container, the copy still takes place, but thanks to <a href="shclass.html#implicit-sharing">implicit sharing</a> copying a container is very fast.)</p>
 <p>In addition to <tt>foreach</tt>, Qt also provides a <tt>forever</tt> pseudo-keyword for infinite loops:</p>
 <pre>&nbsp;   forever {
@@ -378,6 +378,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

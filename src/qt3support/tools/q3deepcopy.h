@@ -26,6 +26,8 @@
 
 #include <QtCore/qglobal.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Qt3SupportLight)
 
 template <class T>
@@ -59,5 +61,7 @@ public:
 private:
     T deepcopy;
 };
+
+QT_END_HEADER
 
 #endif // Q3DEEPCOPY_H

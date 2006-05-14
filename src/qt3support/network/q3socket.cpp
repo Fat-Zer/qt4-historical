@@ -1229,8 +1229,11 @@ void Q3Socket::sn_read( bool force )
 	    d->connectionClosed();
 	    emit connectionClosed();
 	    Q3SocketPrivate::sn_read_alreadyCalled.removeRef( this );
+            delete a;
 	    return;
 	} else if ( nread < 0 ) {
+            delete a;
+
 	    if ( d->socket->error() == Q3SocketDevice::NoError ) {
 		// all is fine
 		Q3SocketPrivate::sn_read_alreadyCalled.removeRef( this );
@@ -1239,7 +1242,6 @@ void Q3Socket::sn_read( bool force )
 #if defined(QT_CHECK_RANGE)
 	    qWarning( "Q3Socket::sn_read: Read error" );
 #endif
-	    delete a;
 	    if ( d->rsn )
 		d->rsn->setEnabled( false );
 	    emit error( ErrSocketRead );

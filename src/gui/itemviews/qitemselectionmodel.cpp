@@ -520,6 +520,70 @@ QItemSelection QItemSelectionModelPrivate::expandSelection(const QItemSelection 
 }
 
 /*!
+  \internal
+
+*/
+void QItemSelectionModelPrivate::_q_rowsAboutToBeRemoved(const QModelIndex &parent,
+                                                         int start, int end)
+{
+    Q_Q(QItemSelectionModel);
+
+    // update current index
+    if (currentIndex.isValid() && parent == currentIndex.parent()
+        && currentIndex.row() >= start && currentIndex.row() <= end) {
+        QModelIndex old = currentIndex;
+        if (start > 0) // there are rows left above the change
+            currentIndex = model->index(start - 1, old.column(), parent);
+        else if (model && end < model->rowCount() - 1) // there are rows left below the change
+            currentIndex = model->index(end + 1, old.column(), parent);
+        else // there are no rows left in the table
+            currentIndex = QModelIndex();
+        emit q->currentChanged(currentIndex, old);
+        emit q->currentRowChanged(currentIndex, old);
+        if (currentIndex.column() != old.column())
+            emit q->currentColumnChanged(currentIndex, old);
+    }
+
+    // update selectionsx
+    QModelIndex tl = model->index(start, 0, parent);
+    QModelIndex br = model->index(end, model->columnCount(parent) - 1, parent);
+    q->select(QItemSelection(tl, br), QItemSelectionModel::Deselect);
+    finalize();
+}
+
+/*!
+  \internal
+
+*/
+void QItemSelectionModelPrivate::_q_columnsAboutToBeRemoved(const QModelIndex &parent,
+                                                            int start, int end)
+{
+    Q_Q(QItemSelectionModel);
+
+    // update current index
+    if (currentIndex.isValid() && parent == currentIndex.parent()
+        && currentIndex.column() >= start && currentIndex.column() <= end) {
+        QModelIndex old = currentIndex;
+        if (start > 0) // there are columns to the left of the change
+            currentIndex = model->index(old.row(), start - 1, parent);
+        else if (model && end < model->columnCount() - 1) // there are columns to the right of the change
+            currentIndex = model->index(old.row(), end + 1, parent);
+        else // there are no columns left in the table
+            currentIndex = QModelIndex();
+        emit q->currentChanged(currentIndex, old);
+        if (currentIndex.row() != old.row())
+            emit q->currentRowChanged(currentIndex, old);
+        emit q->currentColumnChanged(currentIndex, old);
+    }
+    
+    // update selections
+    QModelIndex tl = model->index(0, start, parent);
+    QModelIndex br = model->index(model->rowCount(parent) - 1, end, parent);
+    q->select(QItemSelection(tl, br), QItemSelectionModel::Deselect);
+    finalize();
+}
+
+/*!
   \class QItemSelectionModel
 
   \brief The QItemSelectionModel class keeps track of a view's selected items.
@@ -560,6 +624,12 @@ QItemSelectionModel::QItemSelectionModel(QAbstractItemModel *model)
     : QObject(*new QItemSelectionModelPrivate, model)
 {
     d_func()->model = model;
+    if (model) {
+        connect(model, SIGNAL(rowsAboutToBeRemoved(const QModelIndex&,int,int)),
+                this, SLOT(_q_rowsAboutToBeRemoved(const QModelIndex&,int,int)));
+        connect(model, SIGNAL(columnsAboutToBeRemoved(const QModelIndex&,int,int)),
+                this, SLOT(_q_columnsAboutToBeRemoved(const QModelIndex&,int,int)));
+    }
 }
 
 /*!
@@ -569,6 +639,12 @@ QItemSelectionModel::QItemSelectionModel(QAbstractItemModel *model, QObject *par
     : QObject(*new QItemSelectionModelPrivate, parent)
 {
     d_func()->model = model;
+    if (model) {
+        connect(model, SIGNAL(rowsAboutToBeRemoved(const QModelIndex&,int,int)),
+                this, SLOT(_q_rowsAboutToBeRemoved(const QModelIndex&,int,int)));
+        connect(model, SIGNAL(columnsAboutToBeRemoved(const QModelIndex&,int,int)),
+                this, SLOT(_q_columnsAboutToBeRemoved(const QModelIndex&,int,int)));
+    }
 }
 
 /*!
@@ -578,6 +654,12 @@ QItemSelectionModel::QItemSelectionModel(QItemSelectionModelPrivate &dd, QAbstra
     : QObject(dd, model)
 {
     d_func()->model = model;
+    if (model) {
+        connect(model, SIGNAL(rowsAboutToBeRemoved(const QModelIndex&,int,int)),
+                this, SLOT(_q_rowsAboutToBeRemoved(const QModelIndex&,int,int)));
+        connect(model, SIGNAL(columnsAboutToBeRemoved(const QModelIndex&,int,int)),
+                this, SLOT(_q_columnsAboutToBeRemoved(const QModelIndex&,int,int)));
+    }
 }
 
 /*!
@@ -691,10 +773,8 @@ void QItemSelectionModel::select(const QItemSelection &selection, QItemSelection
     }
 
     // merge and clear currentSelection if Current was not set (ie. start new currentSelection)
-    if (!(command & Current)) {
-        d->ranges.merge(d->currentSelection, d->currentCommand);
-        d->currentSelection.clear();
-    }
+    if (!(command & Current))
+        d->finalize();
 
     // update currentSelection
     if (command & Toggle || command & Select || command & Deselect) {
@@ -760,11 +840,11 @@ void QItemSelectionModel::setCurrentIndex(const QModelIndex &index, QItemSelecti
             select(index, command); // select item
         return;
     }
-    QModelIndex previous = d->currentIndex;
+    QPersistentModelIndex previous = d->currentIndex;
     d->currentIndex = index; // set current before emitting selection changed below
     if (command != NoUpdate)
-        select(index, command); // select item
-    emit currentChanged(index, previous);
+        select(d->currentIndex, command); // select item
+    emit currentChanged(d->currentIndex, previous);
     if (d->currentIndex.row() != previous.row())
         emit currentRowChanged(d->currentIndex, previous);
     if (d->currentIndex.column() != previous.column())
@@ -1086,5 +1166,7 @@ QDebug operator<<(QDebug dbg, const QItemSelectionRange &range)
 #endif
 }
 #endif
+
+#include "moc_qitemselectionmodel.cpp"
 
 #endif // QT_NO_ITEMVIEWS

@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-mac-opensource-src-4.1.2/src/opengl/qgl.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-mac-opensource-src-4.1.3/src/opengl/qgl.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-mac-opensource-src-4.1.3/src/opengl/qgl.cpp -->
 <head>
     <title>Qt 4.1: QGLWidget Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -57,7 +58,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>void <b><a href="qglwidget.html#swapBuffers">swapBuffers</a></b> ()</li>
 </ul>
 <ul>
-<li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>190 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -113,9 +114,8 @@ body { background: #ffffff; color: black; }</style>
 <hr />
 <h2>Detailed Description</h2>
 <p>The QGLWidget class is a widget for rendering OpenGL graphics.</p>
-<p>QGLWidget provides functionality for displaying OpenGL </p>
-<!-- <p>OpenGL is a trademark of Silicon Graphics, Inc. in the United States and other countries.</p>
---> graphics integrated into a Qt application. It is very simple to use. You inherit from it and use the subclass like any other <a href="qwidget.html">QWidget</a>, except that instead of drawing the widget's contents using <a href="qpainter.html">QPainter</a> etc. you use the standard OpenGL rendering commands.<p>QGLWidget provides three convenient virtual functions that you can reimplement in your subclass to perform the typical OpenGL tasks:</p>
+<p>QGLWidget provides functionality for displaying OpenGL graphics integrated into a Qt application. It is very simple to use. You inherit from it and use the subclass like any other <a href="qwidget.html">QWidget</a>, except that instead of drawing the widget's contents using <a href="qpainter.html">QPainter</a> you use the standard OpenGL rendering commands.</p>
+<p>QGLWidget provides three convenient virtual functions that you can reimplement in your subclass to perform the typical OpenGL tasks:</p>
 <ul>
 <li><a href="qglwidget.html#paintGL">paintGL</a>() - Renders the OpenGL scene. Gets called whenever the widget needs to be updated.</li>
 <li><a href="qglwidget.html#resizeGL">resizeGL</a>() - Sets up the OpenGL viewport, projection, etc. Gets called whenever the the widget has been resized (and also when it is shown for the first time because all newly created widgets get a resize event automatically).</li>
@@ -180,6 +180,22 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <p>These methods work in the same way as the normal <a href="qglwidget.html#paintGL">paintGL</a>() etc. functions, except that they will be called when the overlay context is made current. You can explicitly make the overlay context current by using <a href="qglwidget.html#makeOverlayCurrent">makeOverlayCurrent</a>(), and you can access the overlay context directly (e.g. to ask for its transparent color) by calling <a href="qglwidget.html#overlayContext">overlayContext</a>().</p>
 <p>On X servers in which the default visual is in an overlay plane, non-GL Qt windows can also be used for overlays.</p>
+<a name="painting-techniques"></a>
+<h3>Painting Techniques</h3>
+<p>As described above, subclass QGLWidget to render pure 3D content in the following way:</p>
+<ul>
+<li>Reimplement the <a href="qglwidget.html#initializeGL">QGLWidget::initializeGL</a>() and <a href="qglwidget.html#resizeGL">QGLWidget::resizeGL</a>() to set up the OpenGL state and provide a perspective transformation.</li>
+<li>Reimplement <a href="qglwidget.html#paintGL">QGLWidget::paintGL</a>() to paint the 3D scene, calling only OpenGL functions to draw on the widget.</li>
+</ul>
+<p>It is also possible to draw 2D graphics onto a QGLWidget subclass, it is necessary to reimplement <a href="qglwidget.html#paintEvent">QGLWidget::paintEvent</a>() and do the following:</p>
+<ul>
+<li>Construct a <a href="qpainter.html">QPainter</a> object.</li>
+<li>Initialize it for use on the widget with the <a href="qpainter.html#begin">QPainter::begin</a>() function.</li>
+<li>Draw primitives using <a href="qpainter.html">QPainter</a>'s member functions.</li>
+<li>Call <a href="qpainter.html#end">QPainter::end</a>() to finish painting.</li>
+</ul>
+<p>Overpainting 2D content on top of 3D content takes a little more effort. One approach to doing this is shown in the <a href="opengl-overpainting.html">Overpainting</a> example.</p>
+<p><i>OpenGL is a trademark of Silicon Graphics, Inc. in the United States and other countries.</i></p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QGLWidget"></a>QGLWidget::QGLWidget ( <a href="qwidget.html">QWidget</a> * <i>parent</i> = 0, const QGLWidget * <i>shareWidget</i> = 0, <a href="qt.html#WFlags-typedef">Qt::WFlags</a> <i>f</i> = 0 )</h3>
@@ -335,6 +351,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

@@ -26,6 +26,7 @@
 #include "replacetoken.h"
 #include "logger.h"
 #include "tokenizer.h"
+#include "filewriter.h"
 #include <QFile>
 #include <QDir>
 #include <QFileInfo>
@@ -146,15 +147,17 @@ QByteArray FilePorter::includeAnalyse(QByteArray fileContents)
         }
     }
 
+    const QByteArray lineEnding = detectLineEndings(fileContents);
+    
     // Insert include directives undeclared classes.
     int insertCount = insertHeaders.count();
     if (insertCount > 0) {
         QByteArray insertText;
         QByteArray logText;
 
-        insertText += "//Added by qt3to4:\n";
+        insertText += "//Added by qt3to4:" + lineEnding;
         logText += "In file ";
-        logText += Logger::instance()->globalState.value("currentFileName");
+        logText += Logger::instance()->globalState.value("currentFileName").toLocal8Bit();
         logText += ": Added the following include directives:\n";
         foreach (QByteArray headerName, insertHeaders) {
             insertText = insertText + headerName + "\n";
@@ -337,8 +340,7 @@ void IncludeDirectiveAnalyzer::evaluateText(const Text *textLine)
             foundInsertPos = true;
             const int containerIndex = token->index();
             const QByteArray tokenText = fileContents.text(containerIndex);
-            if (tokenText[0] == 'Q')
-                m_usedClasses.insert(tokenText);
+            m_usedClasses.insert(tokenText);
         }
     }
 }

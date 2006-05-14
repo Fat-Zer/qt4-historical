@@ -26,6 +26,8 @@
 
 #include <QtCore/qglobal.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Core)
 
 /*
@@ -362,5 +364,7 @@ inline void qStableSortHelper(BiIterator begin, BiIterator end, const T &dummy)
 }
 
 } //namespace QAlgorithmsPrivate
+
+QT_END_HEADER
 
 #endif // QALGORITHMS_H

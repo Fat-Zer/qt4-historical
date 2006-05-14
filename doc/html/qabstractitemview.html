@@ -2,7 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.1-espenr-1142858866440/qt-mac-opensource-src-4.1.2/src/gui/itemviews/qabstractitemview.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-mac-opensource-src-4.1.3/src/gui/itemviews/qabstractitemview.cpp -->
+<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-mac-opensource-src-4.1.3/src/gui/itemviews/qabstractitemview.cpp -->
 <head>
     <title>Qt 4.1: QAbstractItemView Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -105,7 +106,7 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/>8 public functions inherited from <a href="qabstractscrollarea.html#public-functions">QAbstractScrollArea</a></li>
 <li><div class="fn"/>13 public functions inherited from <a href="qframe.html#public-functions">QFrame</a></li>
-<li><div class="fn"/>188 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>190 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
@@ -218,7 +219,7 @@ body { background: #ffffff; color: black; }</style>
 <p>QAbstractItemView class is the base class for every standard view that uses a <a href="qabstractitemmodel.html">QAbstractItemModel</a>. QAbstractItemView is an abstract class and cannot itself be instantiated. It provides a standard interface for interoperating with models through the signals and slots mechanism, enabling subclasses to be kept up-to-date with changes to their models. This class provides standard support for keyboard and mouse navigation, viewport scrolling, item editing, and selections.</p>
 <p>The QAbstractItemView class is one of the <a href="model-view.html">Model/View Classes</a> and is part of Qt's <a href="model-view-programming.html">model/view framework</a>.</p>
 <p>The view classes that inherit QAbstractItemView only need to implement their own view-specific functionality, such as drawing items, returning the geometry of items, finding items, etc.</p>
-<p>QAbstractItemView provides common slots such as <a href="qabstractitemview.html#edit">edit</a>() and <a href="qabstractitemview.html#setCurrentIndex">setCurrentIndex</a>(). Many protected slots are also provided, including <a href="qabstractitemview.html#dataChanged">dataChanged</a>(), <a href="qabstractitemview.html#rowsInserted">rowsInserted</a>(), <a href="qabstractitemview.html#rowsAboutToBeRemoved">rowsAboutToBeRemoved</a>(), columnsInserted(), columnsRemoved(), <a href="qabstractitemview.html#selectionChanged">selectionChanged</a>(), and <a href="qabstractitemview.html#currentChanged">currentChanged</a>().</p>
+<p>QAbstractItemView provides common slots such as <a href="qabstractitemview.html#edit">edit</a>() and <a href="qabstractitemview.html#setCurrentIndex">setCurrentIndex</a>(). Many protected slots are also provided, including <a href="qabstractitemview.html#dataChanged">dataChanged</a>(), <a href="qabstractitemview.html#rowsInserted">rowsInserted</a>(), <a href="qabstractitemview.html#rowsAboutToBeRemoved">rowsAboutToBeRemoved</a>(), columnsInserted(), _q_columnsRemoved(), <a href="qabstractitemview.html#selectionChanged">selectionChanged</a>(), and <a href="qabstractitemview.html#currentChanged">currentChanged</a>().</p>
 <p>The root item is returned by <a href="qabstractitemview.html#rootIndex">rootIndex</a>(), and the current item by <a href="qabstractitemview.html#currentIndex">currentIndex</a>(). To make sure that an item is visible use <a href="qabstractitemview.html#scrollTo">scrollTo</a>().</p>
 <p>Some of QAbstractItemView's functions are concerned with scrolling, for example setHorizontalFactor() and setVerticalFactor(). Several other functions are concerned with selection control; for example <a href="qabstractitemview.html#selectionMode-prop">setSelectionMode</a>(), and <a href="qabstractitemview.html#selectionBehavior-prop">setSelectionBehavior</a>(). This class provides a default selection model to work with (<a href="qabstractitemview.html#selectionModel">selectionModel</a>()), but this can be replaced by using <a href="qabstractitemview.html#setSelectionModel">setSelectionModel</a>() with an instance of <a href="qitemselectionmodel.html">QItemSelectionModel</a>.</p>
 <p>When implimenting a view that will have scrollbars you want to overload resizeEvent to set the scrollbars range so they will turn on and off, for example:</p>
@@ -246,6 +247,14 @@ body { background: #ffffff; color: black; }</style>
 </table></p>
 <p>See also <a href="qabstractitemview.html#moveCursor">moveCursor</a>().</p>
 <h3 class="fn"><a name="DropIndicatorPosition-enum"></a>enum QAbstractItemView::DropIndicatorPosition</h3>
+<p>This enum indicates the position of the drop indicator in relation to the index at the current mouse position:</p>
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
+<tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
+<tr><td valign="top"><tt>QAbstractItemView::OnItem</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The item will be dropped on the index.</td></tr>
+<tr><td valign="top"><tt>QAbstractItemView::AboveItem</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The item will be dropped above the index.</td></tr>
+<tr><td valign="top"><tt>QAbstractItemView::BelowItem</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">The item will be dropped below the index.</td></tr>
+<tr><td valign="top"><tt>QAbstractItemView::OnViewport</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">The item will be dropped onto a region of the viewport with no items. The way each view handles items dropped onto the viewport depends on the behavior of the underlying model in use.</td></tr>
+</table></p>
 <h3 class="flags"><a name="EditTrigger-enum"></a>enum QAbstractItemView::EditTrigger<br />flags QAbstractItemView::EditTriggers</h3>
 <p>This enum describes actions which will initiate item editing.</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
@@ -386,7 +395,7 @@ body { background: #ffffff; color: black; }</style>
 <p>This signal is emitted when the item specified by <i>index</i> is activated by the user (e.g., by single- or double-clicking the item, depending on the platform).</p>
 <p>See also <a href="qabstractitemview.html#clicked">clicked</a>(), <a href="qabstractitemview.html#doubleClicked">doubleClicked</a>(), <a href="qabstractitemview.html#entered">entered</a>(), and <a href="qabstractitemview.html#pressed">pressed</a>().</p>
 <h3 class="fn"><a name="clearSelection"></a>void QAbstractItemView::clearSelection ()&nbsp;&nbsp;<tt> [slot]</tt></h3>
-<p>Clears all selected items.</p>
+<p>Clears all selected items and the current index.</p>
 <h3 class="fn"><a name="clicked"></a>void QAbstractItemView::clicked ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>index</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when a mouse button is clicked. The item the mouse was clicked on is specified by <i>index</i>. The signal is only emitted when the index is valid.</p>
 <p>See also <a href="qabstractitemview.html#activated">activated</a>(), <a href="qabstractitemview.html#doubleClicked">doubleClicked</a>(), <a href="qabstractitemview.html#entered">entered</a>(), and <a href="qabstractitemview.html#pressed">pressed</a>().</p>
@@ -563,6 +572,7 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="setIndexWidget"></a>void QAbstractItemView::setIndexWidget ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>index</i>, <a href="qwidget.html">QWidget</a> * <i>widget</i> )</h3>
 <p>Sets the given <i>widget</i> on the item at the given <i>index</i>.</p>
 <p>This function should only be used to display static content within the visible area corresponding to an item of data. If you want to display custom dynamic content or implement a custom editor widget, subclass <a href="qitemdelegate.html">QItemDelegate</a> instead.</p>
+<p>Note: the viewport takes ownership of the widget.</p>
 <p>This function was introduced in Qt 4.1.</p>
 <p>See also <a href="qabstractitemview.html#indexWidget">indexWidget</a>() and <a href="model-view-delegate.html">Delegate Classes</a>.</p>
 <h3 class="fn"><a name="setItemDelegate"></a>void QAbstractItemView::setItemDelegate ( <a href="qabstractitemdelegate.html">QAbstractItemDelegate</a> * <i>delegate</i> )</h3>
@@ -570,8 +580,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qabstractitemview.html#itemDelegate">itemDelegate</a>().</p>
 <h3 class="fn"><a name="setModel"></a>void QAbstractItemView::setModel ( <a href="qabstractitemmodel.html">QAbstractItemModel</a> * <i>model</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Sets the <i>model</i> for the view to present.</p>
-<p>This function will also create and set a new selection model.</p>
-<p>See also <a href="qabstractitemview.html#model">model</a>().</p>
+<p><b>Note:</b> This function will also create and set a new selection model, replacing any previously set with <a href="qabstractitemview.html#setSelectionModel">setSelectionModel</a>().</p>
+<p>See also <a href="qabstractitemview.html#model">model</a>(), <a href="qabstractitemview.html#selectionModel">selectionModel</a>(), and <a href="qabstractitemview.html#setSelectionModel">setSelectionModel</a>().</p>
 <h3 class="fn"><a name="setRootIndex"></a>void QAbstractItemView::setRootIndex ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>index</i> )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Sets the root item to the item at the given <i>index</i>.</p>
 <p>See also <a href="qabstractitemview.html#rootIndex">rootIndex</a>().</p>
@@ -581,7 +591,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qabstractitemview.html#selectionCommand">selectionCommand</a>().</p>
 <h3 class="fn"><a name="setSelectionModel"></a>void QAbstractItemView::setSelectionModel ( <a href="qitemselectionmodel.html">QItemSelectionModel</a> * <i>selectionModel</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Sets the current selection to the given <i>selectionModel</i>.</p>
-<p>See also <a href="qabstractitemview.html#selectionModel">selectionModel</a>() and <a href="qabstractitemview.html#clearSelection">clearSelection</a>().</p>
+<p>Note that, if you call <a href="qabstractitemview.html#setModel">setModel</a>() after this function, the given <i>selectionModel</i> will be replaced by a one created by the view.</p>
+<p>See also <a href="qabstractitemview.html#selectionModel">selectionModel</a>(), <a href="qabstractitemview.html#setModel">setModel</a>(), and <a href="qabstractitemview.html#clearSelection">clearSelection</a>().</p>
 <h3 class="fn"><a name="setState"></a>void QAbstractItemView::setState ( <a href="qabstractitemview.html#State-enum">State</a> <i>state</i> )&nbsp;&nbsp;<tt> [protected]</tt></h3>
 <p>Sets the item view's state to the given <i>state</i></p>
 <p>See also <a href="qabstractitemview.html#state">state</a>().</p>
@@ -633,6 +644,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
 </tr></table></div></address></body>
 </html>

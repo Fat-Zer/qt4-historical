@@ -86,6 +86,9 @@ public:
     QByteArray mainWindowState() const { return mainWinState; }
     void setMainWindowState( const QByteArray &state ) { mainWinState = state; }
 
+    qreal fontPointSize() const { return pointFntSize; }
+    void setFontPointSize(qreal size) { pointFntSize = size; }
+    
     QString assistantDocPath() const;
 
     bool docRebuild() const { return rebuildDocs; }
@@ -112,6 +115,7 @@ private:
     QString pdfApp;
     QStringList src;
     QByteArray mainWinState;
+    qreal pointFntSize;
     QRect geom;
     int sideBar;
     bool maximized;

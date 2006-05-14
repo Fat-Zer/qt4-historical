@@ -34,6 +34,8 @@
 #error qbytearray.h must be included before any header file that defines truncate
 #endif
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Core)
 
 /*****************************************************************************
@@ -509,5 +511,7 @@ inline QByteArray qUncompress(const QByteArray& data)
 
 Q_DECLARE_TYPEINFO(QByteArray, Q_MOVABLE_TYPE);
 Q_DECLARE_SHARED(QByteArray)
+
+QT_END_HEADER
 
 #endif // QBYTEARRAY_H

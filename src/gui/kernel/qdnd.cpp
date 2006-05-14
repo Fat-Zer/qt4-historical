@@ -377,7 +377,7 @@ void QDragManager::setCurrentTarget(QWidget *target, bool dropped)
     }
 
 }
-    
+
 QWidget *QDragManager::currentTarget()
 {
     return currentDropTarget;

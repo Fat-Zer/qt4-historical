@@ -27,6 +27,8 @@
 #include <QtCore/qfile.h>
 #include <QtCore/qlist.h>
 
+QT_BEGIN_HEADER
+
 QT_MODULE(Core)
 
 class QDir;
@@ -154,5 +156,7 @@ typedef QList<QFileInfo> QFileInfoList;
 #ifdef QT3_SUPPORT
 typedef QList<QFileInfo>::Iterator QFileInfoListIterator;
 #endif
+
+QT_END_HEADER
 
 #endif // QFILEINFO_H
