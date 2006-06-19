@@ -2,8 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-mac-opensource-src-4.1.3/doc/src/examples/containerextension.qdoc -->
-<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-mac-opensource-src-4.1.3/doc/src/examples/containerextension.qdoc -->
+<!-- /tmp/qt-4.1.4-harald-1150713676011/qt-mac-opensource-src-4.1.4/doc/src/examples/containerextension.qdoc -->
+<!-- /tmp/qt-4.1.4-harald-1150713676011/qt-mac-opensource-src-4.1.4/doc/src/examples/containerextension.qdoc -->
 <head>
     <title>Qt 4.1: Container Extension Example</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -185,7 +185,8 @@ body { background: #ffffff; color: black; }</style>
 <pre>&nbsp;       if (widget) {
             QDesignerFormWindowInterface *form;
             form = QDesignerFormWindowInterface::findFormWindow(widget);
-            form-&gt;emitSelectionChanged();
+            if (form)
+                form-&gt;emitSelectionChanged();
         }
     }</pre>
 <p>Once we have the widget we can update the property editor. <i>Qt Designer</i> uses the <a href="qdesignerpropertysheetextension.html">QDesignerPropertySheetExtension</a> class to feed its property editor, and whenever a widget is selected in its workspace, Qt Designer will query for the widget's property sheet extension and update the property editor.</p>
@@ -199,13 +200,14 @@ body { background: #ffffff; color: black; }</style>
             QDesignerFormWindowInterface *form;
             form = QDesignerFormWindowInterface::findFormWindow(widget);</pre>
 <p>Again we first retrieve the widget emitting the signal, using the <a href="qobject.html#sender">QObject::sender</a>() and <a href="qobject.html#qobject_cast">qobject_cast</a>() functions. Then we retrieve the current page from the widget that emitted the signal, and we use the static <a href="qdesignerformwindowinterface.html#findFormWindow">QDesignerFormWindowInterface::findFormWindow</a>() function to retrieve the form containing our widget.</p>
-<pre>&nbsp;           QDesignerFormEditorInterface *editor = form-&gt;core();
-            QExtensionManager *manager = editor-&gt;extensionManager();</pre>
+<pre>&nbsp;               QDesignerFormEditorInterface *editor = form-&gt;core();
+                QExtensionManager *manager = editor-&gt;extensionManager();</pre>
 <p>Now that we have the form window, the <a href="qdesignerformwindowinterface.html">QDesignerFormWindowInterface</a> class provides the <a href="qdesignerformwindowinterface.html#core">core()</a> function which returns the current <a href="qdesignerformeditorinterface.html">QDesignerFormEditorInterface</a> object. The <a href="qdesignerformeditorinterface.html">QDesignerFormEditorInterface</a> class allows you to access Qt Designer's various components. In particular, the <a href="qdesignerformeditorinterface.html#extensionManager">QDesignerFormEditorInterface::extensionManager</a>() function returns a reference to the current extension manager.</p>
-<pre>&nbsp;           QDesignerPropertySheetExtension *sheet;
-            sheet = qt_extension&lt;QDesignerPropertySheetExtension*&gt;(manager, page);
-            int propertyIndex = sheet-&gt;indexOf(QLatin1String(&quot;windowTitle&quot;));
-            sheet-&gt;setChanged(propertyIndex, true);
+<pre>&nbsp;               QDesignerPropertySheetExtension *sheet;
+                sheet = qt_extension&lt;QDesignerPropertySheetExtension*&gt;(manager, page);
+                int propertyIndex = sheet-&gt;indexOf(QLatin1String(&quot;windowTitle&quot;));
+                sheet-&gt;setChanged(propertyIndex, true);
+            }
         }
     }</pre>
 <p>Once we have the extension manager we can update the extension sheet: First we retrieve the property extension for the page which title we want to change, using the <a href="qextensionmanager.html#qt_extension">qt_extension</a>() function. Then we retrieve the index for the page title using the <a href="qdesignerpropertysheetextension.html#indexOf">QDesignerPropertySheetExtension::indexOf</a>() function. Note that to be able to give each page their own title, we have chosen to use the <a href="qwidget.html#windowTitle-prop">QWidget::windowTitle</a> property to store the page title (for more information see the MultiPageWidget class <a href="designer-containerextension-multipagewidget-cpp.html">implementation</a>). Finally, we implicitly force an update of the page's property sheet by calling the the <a href="qdesignerpropertysheetextension.html#setChanged">QDesignerPropertySheetExtension::setChanged</a>() function.</p>
@@ -390,6 +392,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.4</div></td>
 </tr></table></div></address></body>
 </html>

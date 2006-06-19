@@ -2,7 +2,7 @@
 #
 # Configures to build the Qt library
 #
-# Copyright (C) 1999-2006 Trolltech AS. All rights reserved.
+# Copyright (C) 1999-2006 Trolltech ASA. All rights reserved.
 #
 # This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 # WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -2607,7 +2607,7 @@ elif [ "$Edition" != "Trolltech" ]; then
             esac
         fi
     fi
-    TheLicense=`head -n 1 LICENSE`
+    TheLicense=`head -n 1 $outpath/LICENSE`
     while true; do
         if [ "$OPT_CONFIRM_LICENSE" = "yes" ]; then
 	    echo "You have already accepted the terms of the $TheLicense."
@@ -2635,7 +2635,7 @@ elif [ "$Edition" != "Trolltech" ]; then
             echo
             exit 1
         else [ "$acceptance" = "?" ]
-            more $relpath/LICENSE
+            more $outpath/LICENSE
         fi
     done
 fi
@@ -3909,7 +3909,7 @@ full)
 *)
     tmpconfig=$outpath/src/corelib/global/qconfig.h.new
     echo "#ifndef QT_BOOTSTRAPPED" >$tmpconfig
-    cat "$outpath/include/QtCore/qconfig-$CFG_QCONFIG.h" >>$tmpconfig
+    cat "$relpath/src/corelib/global/qconfig-$CFG_QCONFIG.h" >>$tmpconfig
     echo "#endif" >>$tmpconfig
     ;;
 esac

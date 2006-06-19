@@ -829,7 +829,7 @@ static int full_fsync(int fd, int fullSync, int dataOnly){
   if( rc ) rc = fsync(fd);
 
 #else /* if !defined(F_FULLSYNC) */
-#if  defined(_POSIX_SYNCHRONIZED_IO) && _POSIX_SYNCHRONIZED_IO>0
+#if  defined(_POSIX_SYNCHRONIZED_IO) && _POSIX_SYNCHRONIZED_IO-0>0
   if( dataOnly ){
     rc = fdatasync(fd);
   }else

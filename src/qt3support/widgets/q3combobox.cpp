@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the Qt3Support module of the Qt Toolkit.
 **
@@ -368,7 +368,7 @@ void Q3ComboBoxPopupItem::paint( QPainter* p, const QColorGroup&, bool,
 class Q3ComboBoxData
 {
 public:
-    Q3ComboBoxData( Q3ComboBox *cb ): ed( 0 ), usingLBox( false ), pop( 0 ), lBox( 0 ), combo( cb )
+    Q3ComboBoxData( Q3ComboBox *cb ): current( 0 ), arrowDown(false), ed( 0 ), usingLBox( false ), pop( 0 ), lBox( 0 ), combo( cb )
     {
 	duplicatesEnabled = true;
 	cb->setSizePolicy( QSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed ) );

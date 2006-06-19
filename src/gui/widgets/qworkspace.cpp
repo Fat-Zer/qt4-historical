@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -1708,7 +1708,7 @@ bool QWorkspace::eventFilter(QObject *o, QEvent * e)
         if (!d->inTitleChange) {
             if (o == window())
                 d->topTitle = window()->windowTitle();
-            if (d->maxWindow && d->topTitle.size()) {
+            if (d->maxWindow && d->maxWindow->windowWidget() && d->topTitle.size()) {
                 d->inTitleChange = true;
                 window()->setWindowTitle(tr("%1 - [%2]")
                                          .arg(d->topTitle).arg(d->maxWindow->windowWidget()->windowTitle()));
@@ -1766,14 +1766,16 @@ void QWorkspacePrivate::showMaximizeControls()
     if (!topTitle.size())
         topTitle = q->window()->windowTitle();
 
-    QString docTitle = maxWindow->windowWidget()->windowTitle();
-    if (topTitle.size() && docTitle.size()) {
-        inTitleChange = true;
-        q->window()->setWindowTitle(QWorkspace::tr("%1 - [%2]").arg(topTitle).arg(docTitle));
-        inTitleChange = false;
+    if (maxWindow->windowWidget()) {
+        QString docTitle = maxWindow->windowWidget()->windowTitle();
+        if (topTitle.size() && docTitle.size()) {
+            inTitleChange = true;
+            q->window()->setWindowTitle(QWorkspace::tr("%1 - [%2]").arg(topTitle).arg(docTitle));
+            inTitleChange = false;
+        }
+        q->window()->setWindowModified(maxWindow->windowWidget()->isWindowModified());
     }
-    q->window()->setWindowModified(maxWindow->windowWidget()->isWindowModified());
-
+    
     if (!q->style()->styleHint(QStyle::SH_Workspace_FillSpaceOnMaximize, 0, q)) {
         QMenuBar* b = 0;
 

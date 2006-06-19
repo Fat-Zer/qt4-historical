@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -26,13 +26,13 @@
 
 #include <stddef.h>
 
-#define QT_VERSION_STR   "4.1.3"
+#define QT_VERSION_STR   "4.1.4"
 /*
    QT_VERSION is (major << 16) + (minor << 8) + patch.
 */
-#define QT_VERSION 0x040103
+#define QT_VERSION 0x040104
 
-#define QT_PACKAGEDATE_STR "2006-05-14"
+#define QT_PACKAGEDATE_STR "2006-06-19"
 
 #if !defined(QT_BUILD_MOC)
 #include <QtCore/qconfig.h>
@@ -713,7 +713,11 @@ QT_BEGIN_HEADER
 
 #ifdef __i386__
 #  if defined(Q_CC_GNU)
+#if !defined(Q_CC_INTEL) && ((100*(__GNUC__ - 0) + 10*(__GNUC_MINOR__ - 0) + __GNUC_PATCHLEVEL__) >= 332)
 #    define QT_FASTCALL __attribute__((regparm(3)))
+#else
+#    define QT_FASTCALL
+#endif
 #  elif defined(Q_CC_MSVC)
 #    define QT_FASTCALL __fastcall
 #  else

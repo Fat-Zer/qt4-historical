@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -512,6 +512,8 @@ bool QFontEngineMacMulti::canRender(const QChar *string, int len)
                                  &changeCount);
         if (e == kATSUFontsMatched) {
             pos = changedOffset + changeCount;
+        } else if (e == kATSUFontsNotMatched) {
+            break;
         }
     } while (pos < len && e != noErr);
 

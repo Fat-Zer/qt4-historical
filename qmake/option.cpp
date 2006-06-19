@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the qmake application of the Qt Toolkit.
 **
@@ -223,7 +223,7 @@ Option::parseCommandLine(int argc, char **argv, int skip)
                         qmake_version(), QT_VERSION_STR,
                         QLibraryInfo::location(QLibraryInfo::LibrariesPath).toLatin1().constData());
 #ifdef QMAKE_OPENSOURCE_VERSION
-                fprintf(stdout, "QMake is Open Source software from Trolltech AS.\n");
+                fprintf(stdout, "QMake is Open Source software from Trolltech ASA.\n");
 #endif
                 return Option::QMAKE_CMDLINE_BAIL;
             } else if(opt == "h" || opt == "help") {

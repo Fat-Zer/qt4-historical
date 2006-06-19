@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -1234,7 +1234,10 @@ QCoreGraphicsPaintEngine::updateClipPath(const QPainterPath &p, Qt::ClipOperatio
                 CGMutablePathRef path = qt_mac_compose_path(p);
                 CGContextBeginPath(d->hd);
                 CGContextAddPath(d->hd, path);
-                CGContextClip(d->hd);
+                if(p.fillRule() == Qt::WindingFill)
+                    CGContextClip(d->hd);
+                else
+                    CGContextEOClip(d->hd);
                 CGPathRelease(path);
             }
         } else if(op == Qt::IntersectClip) {
@@ -1462,10 +1465,35 @@ void QCoreGraphicsPaintEngine::drawImage(const QRectF &r, const QImage &img, con
                                 QCFType<CGColorSpaceRef>(CGColorSpaceCreateDeviceRGB()),
                                 cgflags, dataProvider, 0, false, kCGRenderingIntentDefault);
 
-    const float sx = ((float)r.width())/sr.width(), sy = ((float)r.height())/sr.height();
-    CGRect rect = CGRectMake(r.x()-(sr.x()*sx), r.y()-(sr.y()*sy),
-                             image->width()*sx, image->height()*sy);
+   CGRect rect;
+   QRectF baseSize(0, 0, image->width(), image->height());
+    bool wrongSize = (baseSize != sr);
+#if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4)
+    if (QSysInfo::MacintoshVersion >= QSysInfo::MV_10_4) {
+        cgimage = CGImageCreateWithImageInRect(cgimage, CGRectMake(sr.x(), sr.y(),
+                                                                   sr.width(), sr.height()));
+        rect = CGRectMake(r.x(), r.y(), r.width(), r.height());
+    } else
+#endif
+    {
+        const float sx = ((float)r.width())/sr.width(), sy = ((float)r.height())/sr.height();
+        rect = CGRectMake(r.x()-(sr.x()*sx), r.y()-(sr.y()*sy),
+                          image->width()*sx, image->height()*sy);
+        if (wrongSize) {
+            CGContextSaveGState(d->hd);
+            //set clip
+            QRegion rgn(r.toRect());
+            qt_mac_clip_cg(d->hd, rgn, 0, 0);
+        }
+    }
     HIViewDrawCGImage(d->hd, &rect, cgimage);
+    if (wrongSize
+#if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4)
+            && QSysInfo::MacintoshVersion < QSysInfo::MV_10_4
+#endif
+       ) {
+        CGContextRestoreGState(d->hd);
+    }
 }
 
 void

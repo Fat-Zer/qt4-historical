@@ -40140,7 +40140,7 @@
  <page access="public" name="install-x11.html" subtype="page" title="Installing Qt/X11" fulltitle="Installing Qt/X11" subtitle="" location="installation.qdoc" />
  <page access="public" name="install-win.html" subtype="page" title="Installing Qt/Windows" fulltitle="Installing Qt/Windows" subtitle="" location="installation.qdoc" />
  <page access="public" name="install-mac.html" subtype="page" title="Installing Qt/Mac" fulltitle="Installing Qt/Mac" subtitle="" location="installation.qdoc" />
- <page access="public" name="known-issues.html" subtype="page" title="Known Issues in 4.1.3" fulltitle="Known Issues in 4.1.3" subtitle="" location="known-issues.qdoc" />
+ <page access="public" name="known-issues.html" subtype="page" title="Known Issues in 4.1.4" fulltitle="Known Issues in 4.1.4" subtitle="" location="known-issues.qdoc" />
  <page access="public" name="layout.html" subtype="page" title="Layout Classes" fulltitle="Layout Classes" subtitle="" location="layout.qdoc">
   <keyword name="stretch-factor" />
   <contents name="horizontal-vertical-and-grid-layouts" title="Horizontal, Vertical, and Grid Layouts" />

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -135,7 +135,7 @@ QOpenType::QOpenType(QFontEngine *fe, FT_Face _face)
         qDebug("error loading gpos table: %d", error);
 #endif
     }
-    
+
     for (uint i = 0; i < QUnicodeTables::ScriptCount; ++i)
         supported_scripts[i] = checkScript(i);
 }
@@ -166,7 +166,7 @@ bool QOpenType::checkScript(unsigned int script)
     if (requirements & RequiresGsub) {
         if (!gsub)
             return false;
-        
+
         FT_UShort script_index;
         FT_Error error = TT_GSUB_Select_Script(gsub, tag, &script_index);
         if (error) {
@@ -176,11 +176,11 @@ bool QOpenType::checkScript(unsigned int script)
             return false;
         }
     }
-    
+
     if (requirements & RequiresGpos) {
         if (!gpos)
             return false;
-        
+
         FT_UShort script_index;
         FT_Error error = TT_GPOS_Select_Script(gpos, script, &script_index);
         if (error) {
@@ -199,7 +199,7 @@ void QOpenType::selectScript(unsigned int script, const Features *features)
 {
     if (current_script == script)
         return;
-    
+
     assert(script < QUnicodeTables::ScriptCount);
     // find script in our list of supported scripts.
     uint tag = ot_scripts[script].tag;
@@ -236,7 +236,7 @@ void QOpenType::selectScript(unsigned int script, const Features *features)
             }
         }
     }
-    
+
     if (gpos) {
         TT_GPOS_Clear_Features(gpos);
         FT_UShort script_index;
@@ -283,7 +283,7 @@ static void dump_string(OTL_Buffer buffer)
 
 extern void qt_heuristicPosition(QShaperItem *item);
 
-void QOpenType::shape(QShaperItem *item, const unsigned int *properties)
+bool QOpenType::shape(QShaperItem *item, const unsigned int *properties)
 {
     length = item->num_glyphs;
 
@@ -310,8 +310,11 @@ void QOpenType::shape(QShaperItem *item, const unsigned int *properties)
 
     loadFlags = item->flags & QTextEngine::DesignMetrics ? FT_LOAD_NO_HINTING : FT_LOAD_DEFAULT;
 
-    if (gsub)
-        TT_GSUB_Apply_String(gsub, otl_buffer);
+    if (gsub) {
+        uint error = TT_GSUB_Apply_String(gsub, otl_buffer);
+        if (error && error != TTO_Err_Not_Covered)
+            return false;
+    }
 
 #ifdef OT_DEBUG
 //     qDebug("log clusters before shaping:");
@@ -323,6 +326,8 @@ void QOpenType::shape(QShaperItem *item, const unsigned int *properties)
     qDebug("-----------------------------------------");
 //     dump_string(otl_buffer);
 #endif
+
+    return true;
 }
 
 bool QOpenType::positionAndAdd(QShaperItem *item, int availableGlyphs, bool doLogClusters)
@@ -339,7 +344,7 @@ bool QOpenType::positionAndAdd(QShaperItem *item, int availableGlyphs, bool doLo
         static_cast<QFontEngineFT *>(fontEngine)->unlockFace();
 #endif
     }
-    
+
     // make sure we have enough space to write everything back
     if (availableGlyphs < (int)otl_buffer->in_length) {
         item->num_glyphs = otl_buffer->in_length;

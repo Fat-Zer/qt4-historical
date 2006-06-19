@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -1515,10 +1515,10 @@ void QHeaderView::paintEvent(QPaintEvent *e)
     const int width = d->viewport->width();
     const int height = d->viewport->height();
     const bool active = isActiveWindow();
-    const QFont fnt(painter.font()); // save the painter font
     for (int i = start; i <= end; ++i) {
         if (sections.at(i).hidden)
             continue;
+        painter.save();
         logical = logicalIndex(i);
         if (orientation() == Qt::Horizontal) {
             rect.setRect(sectionViewportPosition(logical), 0, sectionSize(logical), height);
@@ -1528,24 +1528,29 @@ void QHeaderView::paintEvent(QPaintEvent *e)
             highlight = d->selectionModel->rowIntersectsSelection(logical, rootIndex());
         }
         rect.translate(offset);
-        if (d->highlightSelected && highlight && active) {
-            QFont bf(fnt);
-            bf.setBold(true);
-            painter.setFont(bf);
-            paintSection(&painter, rect, logical);
-            painter.setFont(fnt); // restore the font
-        } else {
-            paintSection(&painter, rect, logical);
+
+        QVariant variant = d->model->headerData(logical, orientation(),
+                                                Qt::FontRole);
+        if (variant.isValid() && qVariantCanConvert<QFont>(variant)) {
+            QFont sectionFont = qvariant_cast<QFont>(variant);
+            if (highlight)
+                sectionFont.setBold(true);
+            painter.setFont(sectionFont);
         }
+        paintSection(&painter, rect, logical);
+
+        painter.restore();
     }
 
+    // Paint the area beyond where there are indexes
     if (d->reverse()) {
         if (rect.left() > area.left())
             painter.fillRect(area.left(), 0, rect.left() - area.left(), height,
                              palette().background());
     } else if (rect.right() < area.right()) {
+        // paint to the right
         painter.fillRect(rect.right() + 1, 0,
-                         width - rect.right() - 1, height,
+                         area.right() - rect.right(), height,
                          palette().background());
     } else if (rect.bottom() < area.bottom()) {
         painter.fillRect(0, rect.bottom() + 1,

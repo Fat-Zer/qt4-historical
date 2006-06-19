@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -31,7 +31,7 @@ void QBspTree::create(int n)
     int c;
     for (c = 0; n; ++c)
         n = n / 10;
-    depth = c << 1;
+    depth = qMax(c << 1, 1);
     nodes.resize((1 << depth) - 1); // resize to number of nodes
     leaves.resize(1 << depth); // resize to number of leaves
 }

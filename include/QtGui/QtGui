@@ -39,7 +39,6 @@
 #include "qbitmap.h"
 #include "qicon.h"
 #include "qpictureformatplugin.h"
-#include "qvfbhdr.h"
 #include "qcolormap.h"
 #include "qprintengine.h"
 #include "qbrush.h"
