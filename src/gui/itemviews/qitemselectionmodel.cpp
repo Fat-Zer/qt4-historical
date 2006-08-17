@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -444,7 +444,7 @@ void QItemSelection::split(const QItemSelectionRange &range,
 {
     if (range.parent() != other.parent())
         return;
-    
+
     QModelIndex parent = other.parent();
     int top = range.top();
     int left = range.left();
@@ -534,7 +534,7 @@ void QItemSelectionModelPrivate::_q_rowsAboutToBeRemoved(const QModelIndex &pare
         QModelIndex old = currentIndex;
         if (start > 0) // there are rows left above the change
             currentIndex = model->index(start - 1, old.column(), parent);
-        else if (model && end < model->rowCount() - 1) // there are rows left below the change
+        else if (model && end < model->rowCount(parent) - 1) // there are rows left below the change
             currentIndex = model->index(end + 1, old.column(), parent);
         else // there are no rows left in the table
             currentIndex = QModelIndex();
@@ -575,7 +575,7 @@ void QItemSelectionModelPrivate::_q_columnsAboutToBeRemoved(const QModelIndex &p
             emit q->currentRowChanged(currentIndex, old);
         emit q->currentColumnChanged(currentIndex, old);
     }
-    
+
     // update selections
     QModelIndex tl = model->index(0, start, parent);
     QModelIndex br = model->index(model->rowCount(parent) - 1, end, parent);
@@ -930,7 +930,7 @@ bool QItemSelectionModel::isRowSelected(int row, const QModelIndex &parent) cons
     for (int column = 0; column < colCount; ++column) {
         for (it = joined.begin(); it != joined.end(); ++it)
             if ((*it).contains(model()->index(row, column, parent))) {
-                column = qMax(column, (*it).right()); 
+                column = qMax(column, (*it).right());
                 break;
             }
         if (it == joined.end())

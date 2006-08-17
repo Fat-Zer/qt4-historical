@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -1324,6 +1324,8 @@ void QPrintDialogPrivate::_q_browseClicked()
 void QPrintDialogPrivate::_q_okClicked()
 {
     Q_Q(QPrintDialog);
+
+#ifndef QT_NO_MESSAGEBOX
     if (outputToFile && fileName->isModified() && QFileInfo(fileName->text()).exists()) {
         int confirm = QMessageBox::warning(
             q, q->windowTitle(),
@@ -1333,6 +1335,8 @@ void QPrintDialogPrivate::_q_okClicked()
         if (confirm == QMessageBox::No)
             return;
     }
+#endif
+
     lastPage->interpretText();
     firstPage->interpretText();
     copies->interpretText();

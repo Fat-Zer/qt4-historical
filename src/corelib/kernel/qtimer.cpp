@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -77,6 +77,14 @@
     in GUI applications; multithreading is now becoming available on
     more and more platforms, and we expect that zero-millisecond
     QTimers will gradually be replaced by \l{QThread}s.
+
+    In multithreaded applications, you can use QTimer in any thread
+    that has an event loop. To start an event loop from a non-GUI
+    thread, use QThread::exec(). Qt uses the the timer's
+    \l{QObject::thread()}{thread affinity} to determine which thread
+    will emit the \l{QTimer::}{timeout()} signal. Because of this, you
+    must start and stop the timer in its thread; it is not possible to
+    start a timer from another thread.
 
     Note that QTimer's accuracy depends on the underlying operating
     system and hardware. Most platforms support an accuracy of

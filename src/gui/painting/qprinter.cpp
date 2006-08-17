@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -1340,6 +1340,44 @@ void QPrinter::setFromTo(int from, int to)
 #endif
 }
 
+
+/*!
+    \since 4.1
+
+    Sets the print range option in to be \a range.
+*/
+void QPrinter::setPrintRange( PrintRange range )
+{
+#ifndef QT_NO_PRINTDIALOG
+    Q_D(QPrinter);
+    d->ensurePrintDialog();
+    d->printDialog->setPrintRange(QPrintDialog::PrintRange(range));
+#else
+    Q_UNUSED(range);
+#endif
+}
+
+/*!
+    \since 4.1
+
+    Returns the page range of the QPrinter. After the print setup
+    dialog has been opened, this function returns the value selected
+    by the user.
+
+    \sa setPrintRange()
+*/
+QPrinter::PrintRange QPrinter::printRange() const
+{
+#ifndef QT_NO_PRINTDIALOG
+    Q_D(const QPrinter);
+    d->ensurePrintDialog();
+    return PrintRange(d->printDialog->printRange());
+#else
+    return AllPages;
+#endif
+}
+
+
 #if defined(QT3_SUPPORT) && !(defined(QT_NO_PRINTDIALOG))
 
 void QPrinter::setOutputToFile(bool f)
@@ -1477,34 +1515,6 @@ void QPrinter::setCollateCopiesEnabled(bool enable)
     else
         opt &= ~QPrintDialog::PrintCollateCopies;
     d->printDialog->setEnabledOptions(opt);
-}
-
-/*!
-    \since 4.1
-
-    Sets the print range option in to be \a range.
-*/
-void QPrinter::setPrintRange( PrintRange range )
-{
-    Q_D(QPrinter);
-    d->ensurePrintDialog();
-    d->printDialog->setPrintRange(QPrintDialog::PrintRange(range));
-}
-
-/*!
-    \since 4.1
-
-    Returns the page renge of the QPrinter. After the print setup
-    dialog has been opened, this function returns the value selected
-    by the user.
-
-    \sa setPrintRange()
-*/
-QPrinter::PrintRange QPrinter::printRange() const
-{
-    Q_D(const QPrinter);
-    d->ensurePrintDialog();
-    return PrintRange(d->printDialog->printRange());
 }
 
 /*!

@@ -2,8 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/doc/src/threads.qdoc -->
-<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/doc/src/threads.qdoc -->
+<!-- /tmp/qt-4.1.4-harald-1150713676011/qt-x11-opensource-src-4.1.4/doc/src/threads.qdoc -->
+<!-- /tmp/qt-4.1.4-harald-1150713676011/qt-x11-opensource-src-4.1.4/doc/src/threads.qdoc -->
 <head>
     <title>Qt 4.1: Thread Support in Qt</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -127,9 +127,10 @@ body { background: #ffffff; color: black; }</style>
 <p>More interesting is that <a href="qobject.html">QObject</a>s can be used in multiple threads, emit signals that invoke slots in other threads, and post events to objects that &quot;live&quot; in other threads. This is possible because each thread is allowed to have its own event loop.</p>
 <a name="qobject-reentrancy"></a>
 <h3>QObject Reentrancy</h3>
-<p><a href="qobject.html">QObject</a> is reentrant. Most of its non-GUI subclasses, such as <a href="qtimer.html">QTimer</a>, <a href="qtcpsocket.html">QTcpSocket</a>, <a href="qudpsocket.html">QUdpSocket</a>, <a href="qhttp.html">QHttp</a>, <a href="qftp.html">QFtp</a>, and <a href="qprocess.html">QProcess</a>, are also reentrant, making it possible to use these classes from multiple threads simultaneously. There are two constraints to be aware of:</p>
+<p><a href="qobject.html">QObject</a> is reentrant. Most of its non-GUI subclasses, such as <a href="qtimer.html">QTimer</a>, <a href="qtcpsocket.html">QTcpSocket</a>, <a href="qudpsocket.html">QUdpSocket</a>, <a href="qhttp.html">QHttp</a>, <a href="qftp.html">QFtp</a>, and <a href="qprocess.html">QProcess</a>, are also reentrant, making it possible to use these classes from multiple threads simultaneously. There are three constraints to be aware of:</p>
 <ul>
 <li><i>The child of a <a href="qobject.html">QObject</a> must always be created in the thread where the parent was created.</i> This implies, among other things, that you should never pass the <a href="qthread.html">QThread</a> object (<tt>this</tt>) as the parent of an object created in the thread (since the <a href="qthread.html">QThread</a> object itself was created in another thread).</li>
+<li><i>Event driven objects may only be used in a single thread.</i> Specifically, this applies to the <a href="timers.html">timer mechanism</a> and the <a href="qtnetwork.html">network module.</a> For example, you cannot start a timer or connect a socket in a thread that is not the object's thread.</li>
 <li><i>You must ensure that all objects created in a thread are deleted before you delete the <a href="qthread.html">QThread</a>.</i> This can be done easily by creating the objects on the stack in your <a href="qthread.html#run">run()</a> implementation.</li>
 </ul>
 <p>Although <a href="qobject.html">QObject</a> is reentrant, the GUI classes, notably <a href="qwidget.html">QWidget</a> and all its subclasses, are not reentrant. They can only be used from the main thread. As noted earlier, <a href="qcoreapplication.html#exec">QCoreApplication::exec</a>() must also be called from that thread.</p>
@@ -184,6 +185,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.4</div></td>
 </tr></table></div></address></body>
 </html>

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -169,7 +169,7 @@ private:
 
     void resetEngine();
 
-//private slots:
+//private Q_SLOTS:
 
 #ifndef QT_NO_QWS_MULTIPROCESS
     void _q_clientClosed();

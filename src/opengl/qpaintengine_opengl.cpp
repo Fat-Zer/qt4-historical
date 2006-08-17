@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtOpenGL module of the Qt Toolkit.
 **
@@ -795,10 +795,12 @@ bool QOpenGLPaintEngine::begin(QPaintDevice *pdev)
     d->drawable.makeCurrent();
 
     glPushAttrib(GL_ALL_ATTRIB_BITS);
-    glDisable(GL_MULTISAMPLE);
+    if (QGLExtensions::glExtensions & QGLExtensions::SampleBuffers)
+        glDisable(GL_MULTISAMPLE);
     glDisable(GL_TEXTURE_1D);
     glDisable(GL_TEXTURE_2D);
-    glDisable(GL_TEXTURE_RECTANGLE_NV);
+    if (QGLExtensions::glExtensions & QGLExtensions::TextureRectangle)
+        glDisable(GL_TEXTURE_RECTANGLE_NV);
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_STENCIL_TEST);
     glShadeModel(GL_FLAT);
@@ -1194,6 +1196,8 @@ void QOpenGLPaintEngine::updateClipRegion(const QRegion &clipRegion, Qt::ClipOpe
 
 void QOpenGLPaintEngine::updateRenderHints(QPainter::RenderHints hints)
 {
+    if (!(QGLExtensions::glExtensions & QGLExtensions::SampleBuffers))
+        return;
     if (hints & QPainter::Antialiasing)
         glEnable(GL_MULTISAMPLE);
     else

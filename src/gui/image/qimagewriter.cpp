@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -112,7 +112,7 @@ static QImageIOHandler *createWriteHandler(QIODevice *device, const QByteArray &
     QStringList keys = l->keys();
     for (int i = 0; i < keys.count(); ++i) {
         QImageIOPlugin *plugin = qobject_cast<QImageIOPlugin *>(l->instance(keys.at(i)));
-        if (plugin->capabilities(device, form) & QImageIOPlugin::CanWrite) {
+        if (plugin && (plugin->capabilities(device, form) & QImageIOPlugin::CanWrite)) {
             handler = plugin->create(device, form);
             break;
         }
@@ -558,7 +558,7 @@ QList<QByteArray> QImageWriter::supportedImageFormats()
     QStringList keys = l->keys();
     for (int i = 0; i < keys.count(); ++i) {
         QImageIOPlugin *plugin = qobject_cast<QImageIOPlugin *>(l->instance(keys.at(i)));
-        if ((plugin->capabilities(0, keys.at(i).toLatin1()) & QImageIOPlugin::CanWrite) != 0)
+        if (plugin && (plugin->capabilities(0, keys.at(i).toLatin1()) & QImageIOPlugin::CanWrite) != 0)
             formats << keys.at(i).toLatin1();
     }
 #endif // QT_NO_LIBRARY

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -662,7 +662,7 @@
     their component fields.
 
     \code
-        str = "Trolltech AS\twww.trolltech.com\tNorway";
+        str = "Trolltech ASA\twww.trolltech.com\tNorway";
         QString company, web, country;
         rx.setPattern("^([^\t]+)\t([^\t]+)\t([^\t]+)$");
         if (rx.indexIn(str) != -1) {

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -71,7 +71,7 @@ public:
     void updateFont(const QFont &font);
     void updateBackground(Qt::BGMode bgmode, const QBrush &bgBrush);
     void updateMatrix(const QMatrix &matrix);
-    void updateClipRegion(const QRegion &region, Qt::ClipOperation op);
+    void updateClipRegion_dev(const QRegion &region, Qt::ClipOperation op);
 
     void drawLines(const QLine *lines, int lineCount);
     inline void drawLines(const QLineF *lines, int lineCount) { QPaintEngine::drawLines(lines, lineCount); }
@@ -161,7 +161,7 @@ public:
                             || (cpen.widthF() > 0 && has_complex_xform)
                             || (render_hints & QPainter::Antialiasing);
     }
-    void clipPolygon(const QPolygonF &poly, QPolygonF *clipped_poly);
+    void clipPolygon_dev(const QPolygonF &poly, QPolygonF *clipped_poly);
 
     Display *dpy;
     int scrn;

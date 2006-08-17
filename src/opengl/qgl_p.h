@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtOpenGL module of the Qt Toolkit.
 **
@@ -38,6 +38,7 @@
 #include "QtOpenGL/qgl.h"
 #include "QtOpenGL/qglcolormap.h"
 #include "QtCore/qmap.h"
+#include "QtCore/qthread.h"
 #include "QtCore/qthreadstorage.h"
 #include "private/qwidget_p.h"
 

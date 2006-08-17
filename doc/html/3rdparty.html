@@ -2,8 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/doc/src/3rdparty.qdoc -->
-<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/doc/src/3rdparty.qdoc -->
+<!-- /tmp/qt-4.1.4-harald-1150713676011/qt-x11-opensource-src-4.1.4/doc/src/3rdparty.qdoc -->
+<!-- /tmp/qt-4.1.4-harald-1150713676011/qt-x11-opensource-src-4.1.4/doc/src/3rdparty.qdoc -->
 <head>
     <title>Qt 4.1: Third-Party Licenses Used in Qt</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -38,6 +38,18 @@ body { background: #ffffff; color: black; }</style>
 <p><i>The <a href="qtopiacore-fonts.html#freetype">FreeType</a> project is a team of volunteers who develop free, portable and high-quality software solutions for digital typography. We specifically target embedded systems and focus on bringing small, efficient and ubiquitous products.</i> -- quoted from <tt>3rdparty/freetype/docs/freetype2.html</tt>.</p>
 <p>See <tt>src/3rdparty/freetype/docs/FTL.txt</tt> and <tt>src/3rdparty/freetype/docs/GPL.txt</tt> for license details.</p>
 <p>See also the files in <tt>src/3rdparty/opentype</tt>, which are used by <a href="qtopiacore-fonts.html#freetype">FreeType</a>.</p>
+<p>Parts of the <a href="qtopiacore-fonts.html#freetype">FreeType</a> projects have been modified and put into Qt for use in the painting subsystem. These files are ftraster.h, ftraster.c, ftgrays.h and ftgrays.c. The following modifications has been made to these files:</p>
+<ul>
+<li>Renamed FT_ and ft_ symbols to QT_FT_ and qt_ft_ to avoid name conflicts.</li>
+<li>Removed parts of code not relevant when compiled with _STANDALONE_ defined.</li>
+<li>Changed behavior in ftraster.c to follow X polygon filling rules.</li>
+<li>Implemented support in ftraster.c for winding / odd even polygon fill rules.</li>
+<li>Replaced bitmap generation with span generation in ftraster.c</li>
+<li>Renamed: ftraster.h to qblackraster_p.h</li>
+<li>Renamed: ftraster.c to qblackraster.c</li>
+<li>Renamed: ftgrays.h to qgrayraster_p.h</li>
+<li>Renamed: ftgrays.c to qgrayraster.c</li>
+</ul>
 <a name="the-independent-jpeg-group-s-jpeg-software"></a>
 <h2>The Independent JPEG Group's JPEG Software (<tt>libjpeg</tt>)</h2>
 <p><i>This package contains C software to implement JPEG image compression and decompression. JPEG (pronounced &quot;jay-peg&quot;) is a standardized compression method for full-color and gray-scale images. JPEG is intended for compressing &quot;real-world&quot; scenes; line drawings, cartoons and other non-realistic images are not its strong suit. JPEG is lossy, meaning that the output image is not exactly identical to the input image.</i> -- quoted from <tt>src/3rdparty/libjpeg/README</tt>.</p>
@@ -66,6 +78,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.4</div></td>
 </tr></table></div></address></body>
 </html>

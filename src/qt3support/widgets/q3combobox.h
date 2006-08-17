@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the Qt3Support module of the Qt Toolkit.
 **
@@ -141,20 +141,20 @@ public:
 
     void	hide();
 
-public slots:
+public Q_SLOTS:
     void	clear();
     void	clearValidator();
     void	clearEdit();
     virtual void setEditText( const QString &);
 
-signals:
+Q_SIGNALS:
     void	activated( int index );
     void	highlighted( int index );
     void	activated( const QString &);
     void	highlighted( const QString &);
     void	textChanged( const QString &);
 
-private slots:
+private Q_SLOTS:
     void	internalActivate( int );
     void	internalHighlight( int );
     void	internalClickTimeout();

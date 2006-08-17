@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -3150,7 +3150,9 @@ static void draw_text_item_win(const QPointF &pos, const QTextItemInt &ti, HDC h
 
             convertToText = convertToText && ti.num_glyphs == _glyphs.size();
 
-            bool outputEntireItem = QT_WA_INLINE(_glyphs.size() > 0, false);
+            bool outputEntireItem = (QSysInfo::WindowsVersion & QSysInfo::WV_NT_based)
+                && QSysInfo::WindowsVersion != QSysInfo::WV_NT
+                && _glyphs.size() > 0;
 
             if (outputEntireItem) {
                 options |= ETO_PDY;
@@ -3293,14 +3295,18 @@ static void drawLine_midpoint_i(int x1, int y1, int x2, int y2, ProcessSpans spa
         int x = x1;
         int y = y1;
 
+        if (y2 <= y1)
+            ordered = false;
+
         if (x>=0 && y>=0 && y < devRect.height()) {
             Q_ASSERT(x >= 0 && y >= 0 && x < devRect.width() && y < devRect.height());
-            int index = (y2 > y1 ? current : NSPANS - 1 - current);
+            int index = (ordered ? current : NSPANS - 1 - current);
             spans[index].len = 1;
             spans[index].coverage = 255;
             spans[index].x = x;
             spans[index].y = y;
-            ++current;
+            if (ordered) // only incremented when y changes in the 0-45 case
+                ++current;
         }
 
         if (y2 > y1) { // 315 -> 360 and 135 -> 180 (unit circle degrees)
@@ -3350,11 +3356,23 @@ static void drawLine_midpoint_i(int x1, int y1, int x2, int y2, ProcessSpans spa
             if (y < 0)
                 goto flush_and_return;
 
-            ordered = false;
             while (x < x2) {
                 if (d < 0) {
+                    ++current;
+                    if (current == NSPANS) {
+                        span_func(NSPANS, spans, data);
+                        current = 0;
+                    }
+
                     --y;
                     d += incrNE;
+
+                    const int index = NSPANS - 1 - current;
+                    spans[index].len = 0;
+                    spans[index].coverage = 255;
+                    spans[index].x = x;
+                    spans[index].y = y;
+
                     if (y < 0)
                         goto flush_and_return;
                 } else {
@@ -3366,14 +3384,10 @@ static void drawLine_midpoint_i(int x1, int y1, int x2, int y2, ProcessSpans spa
                     continue;
 
                 Q_ASSERT(x<devRect.width() && y<devRect.height());
-                if (current == NSPANS) {
-                    span_func(NSPANS, spans, data);
-                    current = 0;
-                }
-                spans[NSPANS - 1 - current].len = 1;
-                spans[NSPANS - 1 - current].coverage = 255;
-                spans[NSPANS - 1 - current].x = x;
-                spans[NSPANS - 1 - current].y = y;
+                Q_ASSERT(spans[NSPANS - 1 - current].y == y);
+                spans[NSPANS - 1 - current].len++;
+            }
+            if (spans[NSPANS - 1 - current].len > 0) {
                 ++current;
             }
         }
@@ -3665,11 +3679,10 @@ static void drawLine_midpoint_dashed_i(int x1, int y1, int x2, int y2,
                     span_func(NSPANS, spans, data);
                     current = 0;
                 }
-                int index = (y2 > y1 ? current : NSPANS - 1 - current);
-                spans[index].len = 1;
-                spans[index].coverage = 255;
-                spans[index].x = x;
-                spans[index].y = y;
+                spans[current].len = 1;
+                spans[current].coverage = 255;
+                spans[current].x = x;
+                spans[current].y = y;
                 ++current;
             }
             if (--currPattern <= 0) {
@@ -3732,9 +3745,13 @@ static void drawLine_midpoint_dashed_i(int x1, int y1, int x2, int y2,
             if (y < 0)
                 goto flush_and_return;
 
-            ordered = false;
             while (x < x2) {
                 if (d < 0) {
+                    if (current > 0) {
+                        span_func(current, spans, data);
+                        current = 0;
+                    }
+
                     --y;
                     d += incrNE;
                     if (y < 0)
@@ -3753,11 +3770,10 @@ static void drawLine_midpoint_dashed_i(int x1, int y1, int x2, int y2,
                         span_func(NSPANS, spans, data);
                         current = 0;
                     }
-                    const int index = NSPANS - current - 1;
-                    spans[index].len = 1;
-                    spans[index].coverage = 255;
-                    spans[index].x = x;
-                    spans[index].y = y;
+                    spans[current].len = 1;
+                    spans[current].coverage = 255;
+                    spans[current].x = x;
+                    spans[current].y = y;
                     ++current;
                 }
                 if (--currPattern <= 0) {

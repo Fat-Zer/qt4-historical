@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -163,7 +163,7 @@ public:
     virtual bool waitForReadyRead(int msec = 300);
     virtual bool waitForBytesWritten(int msec = 300);
 
-signals:
+Q_SIGNALS:
     void stateChanged(SocketState socketState);
 
 protected:

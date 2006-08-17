@@ -2,8 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/src/gui/kernel/qwidget.cpp -->
-<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/src/gui/kernel/qwidget.cpp -->
+<!-- /tmp/qt-4.1.4-harald-1150713676011/qt-x11-opensource-src-4.1.4/src/gui/kernel/qwidget.cpp -->
+<!-- /tmp/qt-4.1.4-harald-1150713676011/qt-x11-opensource-src-4.1.4/src/gui/kernel/qwidget.cpp -->
 <head>
     <title>Qt 4.1: QWidget Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -1408,8 +1408,8 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qwidget.html#moveEvent">moveEvent</a>(), <a href="qwidget.html#event">event</a>(), <a href="qwidget.html#size-prop">resize</a>(), <a href="qresizeevent.html">QResizeEvent</a>, and <a href="qwidget.html#paintEvent">paintEvent</a>().</p>
 <h3 class="fn"><a name="scroll"></a>void QWidget::scroll ( int <i>dx</i>, int <i>dy</i> )</h3>
 <p>Scrolls the widget including its children <i>dx</i> pixels to the right and <i>dy</i> downwards. Both <i>dx</i> and <i>dy</i> may be negative.</p>
-<p>After scrolling, scroll() sends a paint event for the the part that is read but not written. For example, when scrolling 10 pixels rightwards, the leftmost ten pixels of the widget need repainting. The paint event may be delivered immediately or later, depending on some heuristics (note that you might have to force processing of paint events using <a href="qcoreapplication.html#sendPostedEvents">QApplication::sendPostedEvents</a>() when using scroll() and <a href="qwidget.html#pos-prop">move</a>() in combination).</p>
-<p>See also <a href="porting4.html#qscrollview">QScrollView</a> and <a href="qimage-qt3.html#bitBlt">bitBlt</a>().</p>
+<p>After scrolling, the widgets eventually receives paint events for the areas that need to be repainted. For widgets that Qt knows to be opaque, this is only the newly exposed parts. For example, if an opaque widget is scrolled 8 pixels to the left, only an 8-pixel wide stripe at the right edge needs updating. Widgets are semi-transparent by default. Use <a href="qwidget.html#autoFillBackground-prop">setAutoFillBackground</a>(), or set the <a href="qt.html#WidgetAttribute-enum">Qt::WA_OpaquePaintEvent</a> attribute, to make a widget opaque.</p>
+<p>For semi-transparent widgets, a scroll will cause an update of the entire scroll area.</p>
 <h3 class="fn"><a name="scroll-2"></a>void QWidget::scroll ( int <i>dx</i>, int <i>dy</i>, const <a href="qrect.html">QRect</a> &amp; <i>r</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>This version only scrolls <i>r</i> and does not move the children of the widget.</p>
@@ -1670,6 +1670,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.4</div></td>
 </tr></table></div></address></body>
 </html>

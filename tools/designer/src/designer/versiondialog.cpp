@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2005-2006 Trolltech AS. All rights reserved.
+** Copyright (C) 2005-2006 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the Qt Designer of the Qt Toolkit.
 **
@@ -166,7 +166,7 @@ VersionDialog::VersionDialog(QWidget *parent)
                     "Qt Commercial License Agreement. For details, see the file LICENSE "
                     "that came with this software distribution.<br/>"
 #endif
-                    "<br/>Copyright 2000-2006 Trolltech AS. All rights reserved."
+                    "<br/>Copyright 2000-2006 Trolltech ASA. All rights reserved."
                     "<br/><br/>The program is provided AS IS with NO WARRANTY OF ANY KIND,"
                     " INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A"
                     " PARTICULAR PURPOSE.<br/> ").arg(tr("Qt Designer"))

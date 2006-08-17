@@ -2,8 +2,8 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/src/corelib/tools/qregexp.cpp -->
-<!-- /tmp/qt-4.1.3-harald-1147602944809/qt-x11-opensource-src-4.1.3/src/corelib/tools/qregexp.cpp -->
+<!-- /tmp/qt-4.1.4-harald-1150713676011/qt-x11-opensource-src-4.1.4/src/corelib/tools/qregexp.cpp -->
+<!-- /tmp/qt-4.1.4-harald-1150713676011/qt-x11-opensource-src-4.1.4/src/corelib/tools/qregexp.cpp -->
 <head>
     <title>Qt 4.1: QRegExp Class Reference</title>
     <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
@@ -256,7 +256,7 @@ body { background: #ffffff; color: black; }</style>
     }</pre>
 <p>We've used the <a href="qregexp.html#indexIn">indexIn</a>() function to repeatedly match the regexp in the string. Note that instead of moving forward by one character at a time <tt>pos++</tt> we could have written <tt>pos += rx.matchedLength()</tt> to skip over the already matched string. The count will equal 3, matching 'One <u>Eric</u> another <u>Eirik</u>, and an Ericsson. How many Eiriks, <u>Eric</u>?'; it doesn't match 'Ericsson' or 'Eiriks' because they are not bounded by non-word boundaries.</p>
 <p>One common use of regexps is to split lines of delimited data into their component fields.</p>
-<pre>&nbsp;   str = &quot;Trolltech AS\twww.trolltech.com\tNorway&quot;;
+<pre>&nbsp;   str = &quot;Trolltech ASA\twww.trolltech.com\tNorway&quot;;
     QString company, web, country;
     rx.setPattern(&quot;^([^\t]+)\t([^\t]+)\t([^\t]+)$&quot;);
     if (rx.indexIn(str) != -1) {
@@ -459,6 +459,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.1.4</div></td>
 </tr></table></div></address></body>
 </html>

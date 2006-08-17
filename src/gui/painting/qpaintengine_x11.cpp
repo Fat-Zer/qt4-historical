@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -678,20 +678,15 @@ void QX11PaintEnginePrivate::resetAdaptedOrigin()
         XSetTSOrigin(dpy, gc_brush, 0, 0);
 }
 
-void QX11PaintEnginePrivate::clipPolygon(const QPolygonF &poly, QPolygonF *clipped_poly)
+void QX11PaintEnginePrivate::clipPolygon_dev(const QPolygonF &poly, QPolygonF *clipped_poly)
 {
     int clipped_count = 0;
     qt_float_point *clipped_points = 0;
-    QRect old_clip = polygonClipper.boundingRect();
-    QRect logic_rect(matrix.inverted().mapRect(old_clip));
-    polygonClipper.setBoundingRect(logic_rect);
     polygonClipper.clipPolygon((qt_float_point *) poly.data(), poly.size(),
                                &clipped_points, &clipped_count);
-    polygonClipper.setBoundingRect(old_clip);
     clipped_poly->resize(clipped_count);
     for (int i=0; i<clipped_count; ++i)
         (*clipped_poly)[i] = *((QPointF *)(&clipped_points[i]));
-
 }
 
 static QPaintEngine::PaintEngineFeatures qt_decide_features()
@@ -1093,7 +1088,11 @@ void QX11PaintEngine::drawPoints(const QPointF *points, int pointCount)
     if (!d->has_pen)
         return;
 
-    if (d->cpen.widthF() > .0f || d->use_path_fallback) {
+    if (d->cpen.widthF() > .0f
+        || d->has_alpha_brush
+        || d->has_alpha_pen
+        || d->has_custom_pen
+        || (d->render_hints & QPainter::Antialiasing)) {
         const QPointF *end = points + pointCount;
         while (points < end) {
             QPainterPath path;
@@ -1149,22 +1148,23 @@ void QX11PaintEngine::updateState(const QPaintEngineState &state)
 
     if (state.state() & DirtyClipEnabled) {
         if (state.isClipEnabled()) {
-            QPolygonF clipped_poly;
-            d->clipPolygon(painter()->clipPath().toFillPolygon(), &clipped_poly);
-            updateClipRegion(QRegion(clipped_poly.toPolygon()), Qt::ReplaceClip);
+            QPolygonF clip_poly_dev(d->matrix.map(painter()->clipPath().toFillPolygon()));
+            QPolygonF clipped_poly_dev;
+            d->clipPolygon_dev(clip_poly_dev, &clipped_poly_dev);
+            updateClipRegion_dev(QRegion(clipped_poly_dev.toPolygon()), Qt::ReplaceClip);
         } else {
-            updateClipRegion(QRegion(), Qt::NoClip);
+            updateClipRegion_dev(QRegion(), Qt::NoClip);
         }
     }
 
     if (flags & DirtyClipPath) {
-        QPolygonF clipped_poly;
-        d->clipPolygon(state.clipPath().toFillPolygon(), &clipped_poly);
-        updateClipRegion(QRegion(clipped_poly.toPolygon(),
-                                 state.clipPath().fillRule()),
-                         state.clipOperation());
+        QPolygonF clip_poly_dev(d->matrix.map(state.clipPath().toFillPolygon()));
+        QPolygonF clipped_poly_dev;
+        d->clipPolygon_dev(clip_poly_dev, &clipped_poly_dev);
+        updateClipRegion_dev(QRegion(clipped_poly_dev.toPolygon(), state.clipPath().fillRule()),
+                             state.clipOperation());
     } else if (flags & DirtyClipRegion) {
-        updateClipRegion(state.clipRegion(), state.clipOperation());
+        updateClipRegion_dev(d->matrix.map(state.clipRegion()), state.clipOperation());
     }
     if (flags & DirtyHints) updateRenderHints(state.renderHints());
 #if !defined(QT_NO_XRENDER)
@@ -1877,10 +1877,25 @@ void QX11PaintEngine::drawPixmap(const QRectF &r, const QPixmap &pixmap, const Q
                 XSetForeground(d->dpy, d->gc, QColormap::instance(d->scrn).pixel(d->bg_brush.color()));
             XFillRectangle(d->dpy, d->hd, d->gc, x, y, sw, sh);
         }
-        QRegion bitmap_region(pixmap);
-        bitmap_region.translate(x, y);
-        bitmap_region = bitmap_region & d->crgn;
-        x11SetClipRegion(d->dpy, d->gc, 0, 0, bitmap_region);
+
+        if (!d->crgn.isEmpty()) {
+            Pixmap comb = XCreatePixmap(d->dpy, d->hd, sw, sh, 1);
+            GC cgc = XCreateGC(d->dpy, comb, 0, 0);
+            XSetForeground(d->dpy, cgc, 0);
+            XFillRectangle(d->dpy, comb, cgc, 0, 0, sw, sh);
+            int num;
+            XRectangle *rects = (XRectangle *)qt_getClipRects(d->crgn, num);
+            XSetClipRectangles(d->dpy, cgc, -x, -y, rects, num, Unsorted);
+            XCopyArea(d->dpy, pixmap.handle(), comb, cgc, 0, 0, sw, sh, 0, 0);
+            XFreeGC(d->dpy, cgc);
+
+            XSetClipMask(d->dpy, d->gc, comb);
+            XSetClipOrigin(d->dpy, d->gc, x, y);
+            XFreePixmap(d->dpy, comb);
+        } else {
+            XSetClipMask(d->dpy, d->gc, pixmap.handle());
+            XSetClipOrigin(d->dpy, d->gc, x, y);
+        }
 
         if (mono_dst) {
             XSetBackground(d->dpy, d->gc, qGray(d->bg_brush.color().rgb()) > 127 ? 0 : 1);
@@ -1951,7 +1966,10 @@ void QX11PaintEngine::updateMatrix(const QMatrix &mtx)
     d->has_complex_xform = (d->txop > QPainterPrivate::TxTranslate);
 }
 
-void QX11PaintEngine::updateClipRegion(const QRegion &clipRegion, Qt::ClipOperation op)
+/*
+   NB! the clip region is expected to be in dev coordinates
+*/
+void QX11PaintEngine::updateClipRegion_dev(const QRegion &clipRegion, Qt::ClipOperation op)
 {
     Q_D(QX11PaintEngine);
     QRegion sysClip = systemClip();
@@ -1966,22 +1984,21 @@ void QX11PaintEngine::updateClipRegion(const QRegion &clipRegion, Qt::ClipOperat
         return;
     }
 
-    QRegion region = clipRegion * d->matrix;
     switch (op) {
     case Qt::IntersectClip:
         if (d->has_clipping) {
-            d->crgn &= region;
+            d->crgn &= clipRegion;
             break;
         }
         // fall through
     case Qt::ReplaceClip:
         if (!sysClip.isEmpty())
-            d->crgn = region.intersect(sysClip);
+            d->crgn = clipRegion.intersect(sysClip);
         else
-            d->crgn = region;
+            d->crgn = clipRegion;
         break;
     case Qt::UniteClip:
-        d->crgn |= region;
+        d->crgn |= clipRegion;
         if (!sysClip.isEmpty())
             d->crgn = d->crgn.intersect(sysClip);
         break;

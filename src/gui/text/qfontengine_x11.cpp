@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech AS. All rights reserved.
+** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -1265,7 +1265,7 @@ FT_Face QFontEngineFT::lockFace() const
 {
     freetype->lock();
     FT_Face face = freetype->face;
-    if (freetype->xsize != xsize && freetype->ysize != ysize) {
+    if (freetype->xsize != xsize || freetype->ysize != ysize) {
         FT_Set_Char_Size(face, xsize, ysize, 0, 0);
         freetype->xsize = xsize;
         freetype->ysize = ysize;
