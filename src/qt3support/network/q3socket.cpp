@@ -619,7 +619,7 @@ void Q3Socket::tryConnecting()
     \sa close()
 */
 
-bool Q3Socket::open( int m )
+bool Q3Socket::open( OpenMode m )
 {
     if ( isOpen() ) {
 #if defined(QT_CHECK_STATE)
@@ -627,10 +627,14 @@ bool Q3Socket::open( int m )
 #endif
 	return false;
     }
-    QIODevice::setOpenMode( OpenMode(m & IO_ReadWrite) );
+    QIODevice::setOpenMode( m & ReadWrite );
     return true;
 }
 
+/*!
+    \fn bool Q3Socket::open(int m)
+    \overload
+*/
 
 /*!
     Closes the socket.
@@ -870,7 +874,7 @@ qint64 Q3Socket::bytesAvailable() const
     Q3Socket * that = (Q3Socket *)this;
     if ( that->d->socket->bytesAvailable() ) // a little slow, perhaps...
 	(void)that->sn_read();
-    return that->d->rba.size();
+    return that->d->rba.size() + QIODevice::bytesAvailable();
 }
 
 

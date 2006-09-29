@@ -21,8 +21,19 @@
 **
 ****************************************************************************/
 
-#ifndef QTESTRESULT_H
-#define QTESTRESULT_H
+#ifndef QTESTRESULT_P_H
+#define QTESTRESULT_P_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists purely as an
+// implementation detail.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
 
 #include <QtTest/qtest_global.h>
 
@@ -44,6 +55,7 @@ public:
     static const char *currentDataTag();
     static const char *currentGlobalDataTag();
     static void finishedCurrentTestFunction();
+    static void reset();
 
     static int passCount();
     static int failCount();

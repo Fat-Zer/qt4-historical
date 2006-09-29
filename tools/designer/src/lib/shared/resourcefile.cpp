@@ -21,6 +21,10 @@
 **
 ****************************************************************************/
 
+/*
+TRANSLATOR qdesigner_internal::ResourceModel
+*/
+
 #include <QtCore/QFile>
 #include <QtCore/QTextStream>
 #include <QtCore/QDir>
@@ -604,6 +608,9 @@ QModelIndex ResourceModel::addFiles(const QModelIndex &model_idx, const QStringL
     foreach (QString file, file_list)
         m_resource_file.addFile(prefix_idx, file);
 
+    QFileInfo fi(file_list.last());
+    m_lastResourceDir = fi.absolutePath();
+
     endInsertRows();
     setDirty(true);
 
@@ -673,6 +680,13 @@ bool ResourceModel::save()
     if (result)
         setDirty(false);
     return result;
+}
+
+QString ResourceModel::lastResourceOpenDirectory() const
+{
+    if (m_lastResourceDir.isEmpty())
+        return absolutePath(QString());
+    return m_lastResourceDir;
 }
 
 } // namespace qdesigner_internal

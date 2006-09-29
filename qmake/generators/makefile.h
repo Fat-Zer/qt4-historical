@@ -42,7 +42,7 @@ struct ReplaceExtraCompilerCacheKey
 {
     mutable uint hash;
     QString var, in, out, pwd;
-    ReplaceExtraCompilerCacheKey(const QString &v, const QString &i, const QString &o);
+    ReplaceExtraCompilerCacheKey(const QString &v, const QStringList &i, const QStringList &o);
     bool operator==(const ReplaceExtraCompilerCacheKey &f) const;
     inline uint hashCode() const {
         if(!hash)
@@ -60,7 +60,7 @@ class MakefileGenerator : protected QMakeSourceFileInfo
     bool init_opath_already, init_already, no_io;
     QHash<QString, bool> init_compiler_already;
     QStringList createObjectList(const QStringList &sources);
-    QString build_args();
+    QString build_args(const QString &outdir=QString());
     void checkMultipleDefinition(const QString &, const QString &);
 
     //internal caches
@@ -98,13 +98,21 @@ protected:
 
     //extra compiler interface
     bool verifyExtraCompiler(const QString &c, const QString &f);
-    virtual QString replaceExtraCompilerVariables(const QString &, const QString &, const QString &);
+    virtual QString replaceExtraCompilerVariables(const QString &, const QStringList &, const QStringList &);
+    inline QString replaceExtraCompilerVariables(const QString &val, const QString &in, const QString &out)
+    { return replaceExtraCompilerVariables(val, QStringList(in), QStringList(out)); }
 
     //interface to the source file info
     QMakeLocalFileName fixPathForFile(const QMakeLocalFileName &, bool);
     QMakeLocalFileName findFileForDep(const QMakeLocalFileName &, const QMakeLocalFileName &);
     QFileInfo findFileInfo(const QMakeLocalFileName &);
     QMakeProject *project;
+
+    //escape
+    virtual QString unescapeFilePath(const QString &path) const;
+    virtual QStringList unescapeFilePaths(const QStringList &path) const;
+    virtual QString escapeFilePath(const QString &path) const { return path; }
+    QStringList escapeFilePaths(const QStringList &paths) const;
 
     //initialization
     void verifyCompilers();
@@ -130,9 +138,11 @@ protected:
     };
     QStringList findFilesInVPATH(QStringList l, uchar flags, const QString &var="");
 
+    QString mkdir_p_asstring(const QString &dir, bool escape=true) const;
+
     //subclasses can use these to query information about how the generator was "run"
-    QString buildArgs();
-    QString specdir();
+    QString buildArgs(const QString &outdir=QString());
+    QString specdir(const QString &outdir=QString());
 
     virtual QStringList &findDependencies(const QString &file);
     virtual bool doDepends() const { return Option::mkfile::do_deps; }
@@ -212,7 +222,5 @@ inline bool MakefileGenerator::findLibraries()
 
 inline MakefileGenerator::~MakefileGenerator()
 { }
-
-QString mkdir_p_asstring(const QString &dir);
 
 #endif // MAKEFILE_H

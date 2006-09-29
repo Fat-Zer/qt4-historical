@@ -26,13 +26,13 @@
 
 #include <stddef.h>
 
-#define QT_VERSION_STR   "4.1.5"
+#define QT_VERSION_STR   "4.2.0"
 /*
    QT_VERSION is (major << 16) + (minor << 8) + patch.
 */
-#define QT_VERSION 0x040105
+#define QT_VERSION 0x040200
 
-#define QT_PACKAGEDATE_STR "2006-10-20"
+#define QT_PACKAGEDATE_STR "2006-09-29"
 
 #if !defined(QT_BUILD_MOC)
 #include <QtCore/qconfig.h>
@@ -73,6 +73,7 @@
 
 #if defined(__APPLE__) && (defined(__GNUC__) || defined(__xlC__) || defined(__xlc__))
 #  define Q_OS_DARWIN
+#  define Q_OS_BSD4
 #elif defined(__CYGWIN__)
 #  define Q_OS_CYGWIN
 #elif defined(MSDOS) || defined(_MSDOS)
@@ -263,6 +264,9 @@
 #elif defined(__GNUC__)
 #  define Q_CC_GNU
 #  define Q_C_CALLBACKS
+#  if defined(__MINGW32__)
+#    define Q_CC_MINGW
+#  endif
 #  if defined(__INTEL_COMPILER)
 /* Intel C++ also masquerades as GCC 3.2.0 */
 #    define Q_CC_INTEL
@@ -503,6 +507,14 @@
     } AFUNC ## __dest_instance__;
 #endif
 
+#ifndef Q_REQUIRED_RESULT
+#  if defined(Q_CC_GNU) && !defined(Q_CC_INTEL) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 1))
+#    define Q_REQUIRED_RESULT __attribute__ ((warn_unused_result))
+#  else
+#    define Q_REQUIRED_RESULT
+#  endif
+#endif
+
 
 /*
    The window system, must be one of: (Q_WS_x)
@@ -545,6 +557,8 @@
 
 /*
    Size-dependent types (architechture-dependent byte order)
+
+   Make sure to update QMetaType when changing these typedefs
 */
 
 typedef signed char qint8;         /* 8 bit signed */
@@ -568,20 +582,38 @@ typedef unsigned long long quint64; /* 64 bit unsigned */
 typedef qint64 qlonglong;
 typedef quint64 qulonglong;
 
-#if defined(Q_OS_WIN64)
+#if defined(Q_OS_WIN64) || defined(Q_WS_MAC64)
 # define QT_POINTER_SIZE 8
 #elif defined(Q_OS_WIN32)
 # define QT_POINTER_SIZE 4
 #endif
 
 #define Q_INIT_RESOURCE(name) \
-    do { extern int qInitResources_ ## name (); \
-    qInitResources_ ## name (); } while (0)
+    do { extern int qInitResources_ ## name ();       \
+        qInitResources_ ## name (); } while (0)
 #define Q_CLEANUP_RESOURCE(name) \
-    do { extern int qCleanupResources_ ## name (); \
+    do { extern int qCleanupResources_ ## name ();    \
         qCleanupResources_ ## name (); } while (0)
 
 #if defined(__cplusplus)
+
+/*
+  quintptr and qptrdiff is guaranteed to be the same size as a pointer, i.e.
+
+      sizeof(void *) == sizeof(quintptr)
+      && sizeof(void *) == sizeof(qptrdiff)
+*/
+template <int> class QUintForSize    { private: typedef void    Type; };
+template <>    class QUintForSize<4> { public:  typedef quint32 Type; };
+template <>    class QUintForSize<8> { public:  typedef quint64 Type; };
+template <typename T> class QUintForType : public QUintForSize<sizeof(T)> { };
+typedef QUintForType<void *>::Type quintptr;
+
+template <int> class QIntForSize    { private: typedef void   Type; };
+template <>    class QIntForSize<4> { public:  typedef qint32 Type; };
+template <>    class QIntForSize<8> { public:  typedef qint64 Type; };
+template <typename T> class QIntForType : public QIntForSize<sizeof(T)> { };
+typedef QIntForType<void *>::Type qptrdiff;
 
 /*
    Useful type definitions for Qt
@@ -600,12 +632,14 @@ typedef unsigned long ulong;
    Constant bool values
 */
 
-#ifndef TRUE
-#define TRUE true
-#define FALSE false
+#ifndef QT_LSB /* the LSB defines TRUE and FALSE for us */
+#  ifndef TRUE
+#   define TRUE true
+#   define FALSE false
+#  endif
 #endif
 
-#if defined(Q_OS_MAC)
+#if defined(Q_OS_MAC) && !defined(Q_CC_INTEL)
 #define QT_BEGIN_HEADER extern "C++" {
 #define QT_END_HEADER }
 #else
@@ -617,9 +651,10 @@ QT_BEGIN_HEADER
 /*
    Proper for-scoping in VC++6 and MIPSpro CC
 */
-
-#if (defined(Q_CC_MSVC) && !defined(Q_CC_MSVC_NET) && !defined(Q_CC_INTEL)) || defined(Q_CC_MIPS)
-#  define for if(0){}else for
+#ifndef QT_NO_KEYWORDS
+#  if (defined(Q_CC_MSVC) && !defined(Q_CC_MSVC_NET) && !defined(Q_CC_INTEL)) || defined(Q_CC_MIPS)
+#    define for if(0){}else for
+#  endif
 #endif
 
 
@@ -654,7 +689,7 @@ QT_BEGIN_HEADER
 #ifndef Q_DECL_VARIABLE_DEPRECATED
 #  define Q_DECL_VARIABLE_DEPRECATED Q_DECL_DEPRECATED
 #endif
-#ifndef QT3_SUPPORT_CONSTRUCTOR
+#ifndef Q_DECL_CONSTRUCTOR_DEPRECATED
 #  if defined(Q_MOC_RUN)
 #    define Q_DECL_CONSTRUCTOR_DEPRECATED Q_DECL_CONSTRUCTOR_DEPRECATED
 #  elif defined(Q_NO_DEPRECATED_CONSTRUCTORS)
@@ -663,6 +698,33 @@ QT_BEGIN_HEADER
 #    define Q_DECL_CONSTRUCTOR_DEPRECATED Q_DECL_DEPRECATED
 #  endif
 #endif
+
+#if defined(QT_NO_DEPRECATED)
+/* disable Qt3 support as well */
+#  undef QT3_SUPPORT_WARNINGS
+#  undef QT3_SUPPORT
+#  undef QT_DEPRECATED
+#  undef QT_DEPRECATED_VARIABLE
+#  undef QT_DEPRECATED_CONSTRUCTOR
+#elif defined(QT_DEPRECATED_WARNINGS)
+/* enable Qt3 support warnings as well */
+#  undef QT3_SUPPORT_WARNINGS
+#  define QT3_SUPPORT_WARNINGS
+#  undef QT_DEPRECATED
+#  define QT_DEPRECATED Q_DECL_DEPRECATED
+#  undef QT_DEPRECATED_VARIABLE
+#  define QT_DEPRECATED_VARIABLE Q_DECL_VARIABLE_DEPRECATED
+#  undef QT_DEPRECATED_CONSTRUCTOR
+#  define QT_DEPRECATED_CONSTRUCTOR explicit Q_DECL_CONSTRUCTOR_DEPRECATED
+#else
+#  undef QT_DEPRECATED
+#  define QT_DEPRECATED
+#  undef QT_DEPRECATED_VARIABLE
+#  define QT_DEPRECATED_VARIABLE
+#  undef QT_DEPRECATED_CONSTRUCTOR
+#  define QT_DEPRECATED_CONSTRUCTOR
+#endif
+
 #if defined(QT3_SUPPORT_WARNINGS)
 #  if !defined(QT_COMPAT_WARNINGS) /* also enable compat */
 #    define QT_COMPAT_WARNINGS
@@ -684,21 +746,7 @@ QT_BEGIN_HEADER
 #  undef QT3_SUPPORT_CONSTRUCTOR
 #  define QT3_SUPPORT_CONSTRUCTOR explicit
 #endif
-#if defined(QT_COMPAT_WARNINGS)
-#  undef QT_COMPAT
-#  define QT_COMPAT Q_DECL_DEPRECATED
-#  undef QT_COMPAT_VARIABLE
-#  define QT_COMPAT_VARIABLE Q_DECL_VARIABLE_DEPRECATED
-#  undef QT_COMPAT_CONSTRUCTOR
-#  define QT_COMPAT_CONSTRUCTOR explicit Q_DECL_CONSTRUCTOR_DEPRECATED
-#elif defined(QT_COMPAT) /* define back to nothing */
-#  undef QT_COMPAT
-#  define QT_COMPAT
-#  undef QT_COMPAT_VARIABLE
-#  define QT_COMPAT_VARIABLE
-#  undef QT_COMPAT_CONSTRUCTOR
-#  define QT_COMPAT_CONSTRUCTOR
-#endif
+
 /* moc compats (signals/slots) */
 #ifndef QT_MOC_COMPAT
 #  if defined(QT3_SUPPORT)
@@ -709,6 +757,19 @@ QT_BEGIN_HEADER
 #else
 #  undef QT_MOC_COMPAT
 #  define QT_MOC_COMPAT
+#endif
+
+#if 0 /* #ifdef QT_ASCII_CAST_WARNINGS */
+#  define QT_ASCII_CAST_WARN Q_DECL_DEPRECATED
+#  if defined(Q_CC_GNU) && __GNUC__ < 4
+     /* gcc < 4 doesn't like Q_DECL_DEPRECATED in front of constructors */
+#    define QT_ASCII_CAST_WARN_CONSTRUCTOR
+#  else
+#    define QT_ASCII_CAST_WARN_CONSTRUCTOR Q_DECL_CONSTRUCTOR_DEPRECATED
+#  endif
+#else
+#  define QT_ASCII_CAST_WARN
+#  define QT_ASCII_CAST_WARN_CONSTRUCTOR
 #endif
 
 #ifdef __i386__
@@ -793,7 +854,7 @@ class QDataStream;
 #  ifdef MAC_OS_X_VERSION_MIN_REQUIRED
 #    undef MAC_OS_X_VERSION_MIN_REQUIRED
 #  endif
-#  define MAC_OS_X_VERSION_MIN_REQUIRED MAC_OS_X_VERSION_10_2
+#  define MAC_OS_X_VERSION_MIN_REQUIRED MAC_OS_X_VERSION_10_3
 #  include <AvailabilityMacros.h>
 #  if !defined(MAC_OS_X_VERSION_10_3)
 #     define MAC_OS_X_VERSION_10_3 MAC_OS_X_VERSION_10_2 + 1
@@ -801,7 +862,13 @@ class QDataStream;
 #  if !defined(MAC_OS_X_VERSION_10_4)
 #       define MAC_OS_X_VERSION_10_4 MAC_OS_X_VERSION_10_3 + 1
 #  endif
-#  if (MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_4)
+#  if !defined(MAC_OS_X_VERSION_10_5)
+#       define MAC_OS_X_VERSION_10_5 MAC_OS_X_VERSION_10_4 + 1
+#  endif
+#  if (MAC_OS_X_VERSION_MAX_ALLOWED == MAC_OS_X_VERSION_10_5)
+#       warning "Support for this version of Mac OS X is still preliminary"
+#endif
+#  if (MAC_OS_X_VERSION_MAX_ALLOWED > MAC_OS_X_VERSION_10_5)
 #    error "This version of Mac OS X is unsupported"
 #  endif
 #endif
@@ -842,7 +909,6 @@ class QDataStream;
 
 /*
    Create Qt DLL if QT_DLL is defined (Windows only)
-   or QT_SHARED is defined (Kylix only)
 */
 
 #if defined(Q_OS_WIN)
@@ -943,17 +1009,35 @@ class QDataStream;
 #  endif
 #endif
 
+// Functions marked as Q_GUI_EXPORT_INLINE were exported and inlined by mistake.
+// Compilers like MinGW complain that the import attribute is ignored.
+#if defined(Q_CC_MINGW)
+#    if defined(QT_BUILD_CORE_LIB)
+#      define Q_CORE_EXPORT_INLINE Q_CORE_EXPORT inline
+#    else
+#      define Q_CORE_EXPORT_INLINE inline
+#    endif
+#    if defined(QT_BUILD_GUI_LIB)
+#      define Q_GUI_EXPORT_INLINE Q_GUI_EXPORT inline
+#    else
+#      define Q_GUI_EXPORT_INLINE inline
+#    endif
+#else
+#    define Q_CORE_EXPORT_INLINE Q_CORE_EXPORT inline
+#    define Q_GUI_EXPORT_INLINE Q_GUI_EXPORT inline
+#endif
+
 /*
    No, this is not an evil backdoor. QT_BUILD_INTERNAL just exports more symbols
    for Trolltech's internal unit tests. If you want slower loading times and more
    symbols that can vanish from version to version, feel free to define QT_BUILD_INTERNAL.
 */
 #if defined(QT_BUILD_INTERNAL) && defined(Q_OS_WIN) && defined(QT_MAKEDLL)
-#    define Q_INTERNAL_EXPORT Q_DECL_EXPORT
+#    define Q_AUTOTEST_EXPORT Q_DECL_EXPORT
 #elif defined(QT_BUILD_INTERNAL) && !defined(Q_OS_WIN) && defined(QT_SHARED)
-#    define Q_INTERNAL_EXPORT Q_DECL_EXPORT
+#    define Q_AUTOTEST_EXPORT Q_DECL_EXPORT
 #else
-#    define Q_INTERNAL_EXPORT
+#    define Q_AUTOTEST_EXPORT
 #endif
 
 /*
@@ -963,7 +1047,7 @@ class QDataStream;
 class QString;
 class Q_CORE_EXPORT QSysInfo {
 public:
-    enum {
+    enum Sizes {
         WordSize = (sizeof(void *)<<3)
     };
 
@@ -1023,13 +1107,15 @@ public:
         MV_10_2 = 0x0004,
         MV_10_3 = 0x0005,
         MV_10_4 = 0x0006,
+        MV_10_5 = 0x0007,
 
         /* codenames */
         MV_CHEETAH = MV_10_0,
         MV_PUMA = MV_10_1,
         MV_JAGUAR = MV_10_2,
         MV_PANTHER = MV_10_3,
-        MV_TIGER = MV_10_4
+        MV_TIGER = MV_10_4,
+        MV_LEOPARD = MV_10_5
     };
     static const MacVersion MacintoshVersion;
 #endif
@@ -1084,7 +1170,7 @@ inline QT3_SUPPORT int qWinVersion() { return QSysInfo::WindowsVersion; }
    Avoid "unused parameter" warnings
 */
 
-#if defined(Q_CC_INTEL)
+#if defined(Q_CC_INTEL) && !defined(Q_OS_WIN)
 template <typename T>
 inline void qUnused(T &x) { (void)x; }
 #  define Q_UNUSED(x) qUnused(x);
@@ -1135,9 +1221,6 @@ Q_CORE_EXPORT QT3_SUPPORT void qSystemWarning(const char *msg, int code = -1);
 Q_CORE_EXPORT void qErrnoWarning(int code, const char *msg, ...);
 Q_CORE_EXPORT void qErrnoWarning(const char *msg, ...);
 
-class QDebug;
-class QNoDebug;
-
 #ifdef QT_NO_DEBUG_OUTPUT
 #  define qDebug if(1); else qDebug
 #endif
@@ -1146,6 +1229,21 @@ class QNoDebug;
 #endif
 #if (defined(QT_NO_DEBUG_OUTPUT) || defined(QT_NO_TEXTSTREAM)) && !defined(QT_NO_DEBUG_STREAM)
 #define QT_NO_DEBUG_STREAM
+#endif
+
+/*
+  Forward declarations only.
+
+  In order to use the qDebug() stream, you must #include<QDebug>
+*/
+class QDebug;
+class QNoDebug;
+#ifndef QT_NO_DEBUG_STREAM
+Q_CORE_EXPORT_INLINE QDebug qDebug();
+Q_CORE_EXPORT_INLINE QDebug qWarning();
+Q_CORE_EXPORT_INLINE QDebug qCritical();
+#else
+inline QNoDebug qDebug();
 #endif
 
 inline void qt_noop() {}
@@ -1559,6 +1657,8 @@ public:
     inline QFlags operator~() const { QFlags g; g.i = ~i; return g; }
 
     inline bool operator!() const { return !i; }
+
+    inline bool testFlag(Enum f) const { return i & f; }
 };
 
 #define Q_DECLARE_FLAGS(Flags, Enum)\
@@ -1682,6 +1782,11 @@ Q_CORE_EXPORT QByteArray qgetenv(const char *varName);
 inline int qIntCast(double f) { return int(f); }
 inline int qIntCast(float f) { return int(f); }
 
+/*
+  Reentrant versions of basic rand() functions for random number generation
+*/
+Q_CORE_EXPORT void qsrand(uint seed);
+Q_CORE_EXPORT int qrand();
 
 /*
    Compat functions that were generated by configure
@@ -1720,6 +1825,7 @@ QT3_SUPPORT Q_CORE_EXPORT const char *qInstallPathSysconf();
 #define QT_MODULE_QT3SUPPORT            0x080
 #define QT_MODULE_SVG                   0x100
 #define QT_MODULE_ACTIVEQT              0x200
+#define QT_MODULE_GRAPHICSVIEW          0x400
 
 /* Qt editions */
 #define QT_EDITION_CONSOLE      (QT_MODULE_CORE \
@@ -1737,7 +1843,8 @@ QT3_SUPPORT Q_CORE_EXPORT const char *qInstallPathSysconf();
                                  | QT_MODULE_XML \
                                  | QT_MODULE_QT3SUPPORTLIGHT \
                                  | QT_MODULE_QT3SUPPORT \
-                                 | QT_MODULE_SVG)
+                                 | QT_MODULE_SVG \
+                                 | QT_MODULE_GRAPHICSVIEW)
 #define QT_EDITION_DESKTOP      (QT_EDITION_OPENSOURCE \
                                  | QT_MODULE_ACTIVEQT)
 #define QT_EDITION_UNIVERSAL    QT_EDITION_DESKTOP

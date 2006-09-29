@@ -50,6 +50,10 @@
 #include "QtCore/qpair.h"
 #include "QtCore/qtimer.h"
 #include "private/qwidget_p.h"
+#include "QtCore/qpointer.h"
+#include "QtGui/qcompleter.h"
+#include "QtGui/qevent.h"
+#include "QtCore/qdebug.h"
 
 #include <limits.h>
 
@@ -59,8 +63,8 @@ class QComboBoxListView : public QListView
 protected:
     void resizeEvent(QResizeEvent *event)
     {
-        QListView::resizeEvent(event);
         resizeContents(viewport()->width(), contentsSize().height());
+        QListView::resizeEvent(event);
     }
 
     QStyleOptionViewItem viewOptions() const
@@ -88,19 +92,47 @@ public:
     }
 
 protected:
-    void enterEvent(QEvent *) {
-        timer.start(100, this);
-    }
-    void leaveEvent(QEvent *) {
+    inline void stopTimer() {
         timer.stop();
+    }
+
+    inline void startTimer() {
+        timer.start(100, this);
+        fast = false;
+    }
+    
+    void enterEvent(QEvent *) {
+        startTimer();
+    }
+    
+    void leaveEvent(QEvent *) {
+        stopTimer();
     }
     void timerEvent(QTimerEvent *e) {
-        if (e->timerId() == timer.timerId())
+        if (e->timerId() == timer.timerId()) {
             emit doScroll(sliderAction);
+            if (fast) {
+                emit doScroll(sliderAction);
+                emit doScroll(sliderAction);
+            }
+        }
     }
     void hideEvent(QHideEvent *) {
-        timer.stop();
+        stopTimer();
     }
+
+    void mouseMoveEvent(QMouseEvent *e)
+    {
+        // Enable fast scrolling if the cursor is directly above or below the popup.
+        const int mouseX = e->pos().x();
+        const int mouseY = e->pos().y();
+        const bool horizontallyInside = pos().x() < mouseX && mouseX < rect().right() + 1;
+        const bool verticallyOutside = (sliderAction == QAbstractSlider::SliderSingleStepAdd) ? 
+                                        rect().bottom() + 1 < mouseY : mouseY < pos().y();
+        
+        fast = horizontallyInside && verticallyOutside;
+    }
+
     void paintEvent(QPaintEvent *) {
         QPainter p(this);
         QStyleOptionMenuItem menuOpt;
@@ -122,6 +154,7 @@ Q_SIGNALS:
 private:
     QAbstractSlider::SliderAction sliderAction;
     QBasicTimer timer;
+    bool fast;
 };
 
 class QComboBoxPrivateContainer : public QFrame
@@ -141,12 +174,14 @@ public Q_SLOTS:
     void scrollItemView(int action);
     void updateScrollers();
     void setCurrentIndex(const QModelIndex &index);
+    void viewDestroyed();
 
 protected:
     void changeEvent(QEvent *e);
     bool eventFilter(QObject *o, QEvent *e);
     void mousePressEvent(QMouseEvent *e);
     void mouseReleaseEvent(QMouseEvent *e);
+    void showEvent(QShowEvent *e);
     void hideEvent(QHideEvent *e);
     QStyleOptionComboBox comboStyleOption() const;
 
@@ -172,7 +207,7 @@ protected:
                const QModelIndex &index) const {
         QStyleOptionMenuItem opt = getStyleOption(option, index);
         painter->eraseRect(option.rect);
-        mCombo->style()->drawControl(QStyle::CE_MenuItem, &opt, painter, 0);
+        mCombo->style()->drawControl(QStyle::CE_MenuItem, &opt, painter, mCombo);
     }
     QSize sizeHint(const QStyleOptionViewItem &option,
                    const QModelIndex &index) const {
@@ -180,7 +215,7 @@ protected:
         QVariant value = index.model()->data(index, Qt::FontRole);
         QFont fnt = value.isValid() ? qvariant_cast<QFont>(value) : option.font;
         return mCombo->style()->sizeFromContents(
-            QStyle::CT_MenuItem, &opt, option.rect.size(), 0);
+            QStyle::CT_MenuItem, &opt, option.rect.size(), mCombo);
     }
 
 private:
@@ -190,7 +225,7 @@ private:
     QPalette pal;
 };
 
-class QComboBoxPrivate: public QWidgetPrivate
+class QComboBoxPrivate : public QWidgetPrivate
 {
     Q_DECLARE_PUBLIC(QComboBox)
 public:
@@ -218,6 +253,10 @@ public:
     void updateArrow(QStyle::StateFlag state);
     bool updateHoverControl(const QPoint &pos);
     QStyle::SubControl newHoverControl(const QPoint &pos);
+    int computeWidthHint() const;
+    QSize recomputeSizeHint(QSize &sh) const;
+    QString itemText(const QModelIndex &index) const;
+    int itemRole() const;
 
     QAbstractItemModel *model;
     QLineEdit *lineEdit;
@@ -229,12 +268,12 @@ public:
     uint shownOnce : 1;
     uint autoCompletion : 1;
     uint duplicatesEnabled : 1;
-    uint skipCompletion : 1;
     uint frame : 1;
     uint padding : 26;
     int maxVisibleItems;
     int maxCount;
     int modelColumn;
+    mutable QSize minimumSizeHint;
     mutable QSize sizeHint;
     QStyle::StateFlag arrowState;
     QStyle::SubControl hoverControl;
@@ -243,6 +282,9 @@ public:
     QPersistentModelIndex root;
     Qt::CaseSensitivity autoCompletionCaseSensitivity;
     int indexBeforeChange;
+#ifndef QT_NO_COMPLETER
+    QPointer<QCompleter> completer;
+#endif
 };
 
 #endif // QT_NO_COMBOBOX

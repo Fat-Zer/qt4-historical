@@ -2,25 +2,20 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-mac-opensource-src-4.1.5/src/xml/qxml.cpp -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-mac-opensource-src-4.1.5/src/xml/qxml.cpp -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-mac-opensource-src-4.2.0/src/xml/qxml.cpp -->
 <head>
-    <title>Qt 4.1: QXmlEntityResolver Class Reference</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
+  <title>Qt 4.2: QXmlEntityResolver Class Reference</title>
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
+<a name="//apple_ref/cpp/cl//QXmlEntityResolver" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QXmlEntityResolver Class Reference<br /><sup><sup>[<a href="qtxml.html">QtXml</a> module]</sup></sup></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">QXmlEntityResolver Class Reference<br /><sup><sup>[<a href="qtxml.html">QtXml</a> module]</sup></sup></h1>
 <p>The QXmlEntityResolver class provides an interface to resolve external entities contained in XML data. <a href="#details">More...</a></p>
-<pre>#include &lt;QXmlEntityResolver&gt;</pre><p>Inherited by <a href="qxmldefaulthandler.html">QXmlDefaultHandler</a>.</p>
+<pre> #include &lt;QXmlEntityResolver&gt;</pre><p>Inherited by <a href="qxmldefaulthandler.html">QXmlDefaultHandler</a>.</p>
 <p><b>Note:</b> All the functions in this class are <a href="threads.html#reentrant">reentrant</a>.</p>
 <ul>
 <li><a href="qxmlentityresolver-members.html">List of all members, including inherited members</a></li>
@@ -40,10 +35,13 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qxmldtdhandler.html">QXmlDTDHandler</a>, <a href="qxmldeclhandler.html">QXmlDeclHandler</a>, <a href="qxmlcontenthandler.html">QXmlContentHandler</a>, <a href="qxmlerrorhandler.html">QXmlErrorHandler</a>, <a href="qxmllexicalhandler.html">QXmlLexicalHandler</a>, and <a href="qtxml.html#introduction-to-sax2">Introduction to SAX2</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
+<a name="//apple_ref/cpp/instm/QXmlEntityResolver/~QXmlEntityResolver" />
 <h3 class="fn"><a name="dtor.QXmlEntityResolver"></a>QXmlEntityResolver::~QXmlEntityResolver ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Destroys the entity resolver.</p>
+<a name="//apple_ref/cpp/instm/QXmlEntityResolver/errorString" />
 <h3 class="fn"><a name="errorString"></a><a href="qstring.html">QString</a> QXmlEntityResolver::errorString () const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>The reader calls this function to get an error string if any of the handler functions returns false.</p>
+<a name="//apple_ref/cpp/instm/QXmlEntityResolver/resolveEntity" />
 <h3 class="fn"><a name="resolveEntity"></a>bool QXmlEntityResolver::resolveEntity ( const <a href="qstring.html">QString</a> &amp; <i>publicId</i>, const <a href="qstring.html">QString</a> &amp; <i>systemId</i>, <a href="qxmlinputsource.html">QXmlInputSource</a> *&amp; <i>ret</i> )&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>The reader calls this function before it opens any external entity, except the top-level document entity. The application may request the reader to resolve the entity itself (<i>ret</i> is 0) or to use an entirely different input source (<i>ret</i> points to the input source).</p>
 <p>The reader deletes the input source <i>ret</i> when it no longer needs it, so you should allocate it on the heap with <tt>new</tt>.</p>
@@ -53,6 +51,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

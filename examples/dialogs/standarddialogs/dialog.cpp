@@ -212,6 +212,7 @@ void Dialog::setColor()
     if (color.isValid()) {
         colorLabel->setText(color.name());
         colorLabel->setPalette(QPalette(color));
+        colorLabel->setAutoFillBackground(true);
     }
 }
 
@@ -270,11 +271,10 @@ void Dialog::setSaveFileName()
 
 void Dialog::criticalMessage()
 {
-    int reply = QMessageBox::critical(this, tr("QMessageBox::showCritical()"),
-                                      MESSAGE,
-                                      QMessageBox::Abort,
-                                      QMessageBox::Retry,
-                                      QMessageBox::Ignore);
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::critical(this, tr("QMessageBox::critical()"),
+                                    MESSAGE,
+                                    QMessageBox::Abort | QMessageBox::Retry | QMessageBox::Ignore);
     if (reply == QMessageBox::Abort)
         criticalLabel->setText(tr("Abort"));
     else if (reply == QMessageBox::Retry)
@@ -285,17 +285,20 @@ void Dialog::criticalMessage()
 
 void Dialog::informationMessage()
 {
-    QMessageBox::information(this, tr("QMessageBox::showInformation()"), MESSAGE);
-    informationLabel->setText(tr("Closed with OK or Esc"));
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::information(this, tr("QMessageBox::information()"), MESSAGE);
+    if (reply == QMessageBox::Ok)
+        informationLabel->setText(tr("OK"));
+    else
+        informationLabel->setText(tr("Escape"));
 }
 
 void Dialog::questionMessage()
 {
-    int reply = QMessageBox::question(this, tr("QMessageBox::showQuestion()"),
-                                      MESSAGE,
-                                      QMessageBox::Yes,
-                                      QMessageBox::No,
-                                      QMessageBox::Cancel);
+    QMessageBox::StandardButton reply;
+    reply = QMessageBox::question(this, tr("QMessageBox::question()"),
+                                    MESSAGE,
+                                    QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
     if (reply == QMessageBox::Yes)
         questionLabel->setText(tr("Yes"));
     else if (reply == QMessageBox::No)
@@ -306,11 +309,11 @@ void Dialog::questionMessage()
 
 void Dialog::warningMessage()
 {
-    int reply = QMessageBox::warning(this, tr("QMessageBox::showWarning()"),
-                                     MESSAGE,
-                                     tr("Save &Again"),
-                                     tr("&Continue"));
-    if (reply == 0)
+    QMessageBox msgBox(QMessageBox::Warning, tr("QMessageBox::warning()"),
+                       MESSAGE, 0, this);
+    msgBox.addButton(tr("Save &Again"), QMessageBox::AcceptRole);
+    msgBox.addButton(tr("&Continue"), QMessageBox::RejectRole);
+    if (msgBox.exec() == QMessageBox::AcceptRole)
         warningLabel->setText(tr("Save Again"));
     else
         warningLabel->setText(tr("Continue"));

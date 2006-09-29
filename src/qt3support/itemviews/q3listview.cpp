@@ -44,7 +44,6 @@
 #include "qtimer.h"
 #include "qtooltip.h"
 #include "qdebug.h"
-#include <private/qinternal_p.h>
 #ifndef QT_NO_ACCESSIBILITY
 #include "qaccessible.h"
 #endif
@@ -2573,7 +2572,7 @@ void Q3ListViewItem::ignoreDoubleClick()
 
     \sa QWidget::setAttribute()
 */
-Q3ListView::Q3ListView(QWidget * parent, const char *name, Qt::WFlags f)
+Q3ListView::Q3ListView(QWidget * parent, const char *name, Qt::WindowFlags f)
     : Q3ScrollView(parent, name, f | Qt::WStaticContents | Qt::WNoAutoErase)
 {
     init();
@@ -2796,7 +2795,7 @@ void Q3ListView::drawContentsOffset(QPainter * p, int ox, int oy,
         QRect br(cx - ox, cy - oy, cw, ch);
         for (int i = 0; i < d->dirtyItems.size(); ++i) {
             const Q3ListViewItem * item = d->dirtyItems.at(i);
-            QRect ir = itemRect(item).intersect(viewport()->rect());
+            QRect ir = itemRect(item).intersected(viewport()->rect());
             if (ir.isEmpty() || br.contains(ir))
                 // we're painting this one, or it needs no painting: forget it
                 d->dirtyItems.removeAt(i);
@@ -3134,9 +3133,11 @@ void Q3ListView::clear()
     d->dirtyItems.clear();
     d->dirtyItemTimer->stop();
 
+    d->highlighted = 0;
     d->focusItem = 0;
     d->selectAnchor = 0;
     d->pressedItem = 0;
+    d->startDragItem = 0;
 
     // if it's down its downness makes no sense, so undown it
     d->buttonDown = false;
@@ -3603,8 +3604,8 @@ void Q3ListView::updateDirtyItems()
         return;
     QRect ir;
     for (int i = 0; i < d->dirtyItems.size(); ++i) {
-        const Q3ListViewItem * item = d->dirtyItems.at(i);
-        ir = ir.unite(itemRect(item));
+        const Q3ListViewItem *item = d->dirtyItems.at(i);
+        ir = ir.united(itemRect(item));
     }
     if (!ir.isEmpty())  {                      // rectangle to be repainted
         if (ir.x() < 0)
@@ -6036,7 +6037,7 @@ Q3CheckListItem::Q3CheckListItem(Q3ListViewItem *parent, const QString &text,
 void Q3CheckListItem::init()
 {
     d = new Q3CheckListItemPrivate();
-    on = false; // ### remove on ver 4
+    on = false;
     // CheckBoxControllers by default have tristate set to true
     if (myType == CheckBoxController)
         setTristate(true);
@@ -7037,10 +7038,7 @@ void Q3ListView::contentsDragEnterEvent(QDragEnterEvent *e)
         d->focusItem->dragEntered();
         d->focusItem->repaint();
     }
-    if (i && i->dropEnabled() && i->acceptDrop(e) || acceptDrops())
-        e->accept();
-    else
-        e->ignore();
+    e->accept();
 }
 
 /*! \reimp */

@@ -39,43 +39,38 @@ class QSyntaxHighlighterPrivate : public QObjectPrivate
 {
     Q_DECLARE_PUBLIC(QSyntaxHighlighter)
 public:
-    inline QSyntaxHighlighterPrivate() {}
+    inline QSyntaxHighlighterPrivate() : rehighlightPending(false) {}
 
     QPointer<QTextDocument> doc;
-
-    void _q_reformatDocument();
 
     void _q_reformatBlocks(int from, int charsRemoved, int charsAdded);
     void reformatBlock(QTextBlock block);
 
+    inline void _q_delayedRehighlight() {
+        if (!rehighlightPending)
+            return;
+        rehighlightPending = false;
+        q_func()->rehighlight();
+        return;
+    }
+
     void applyFormatChanges();
     QVector<QTextCharFormat> formatChanges;
     QTextBlock currentBlock;
+    bool rehighlightPending;
 };
-
-void QSyntaxHighlighterPrivate::_q_reformatDocument()
-{
-    if (!doc)
-        return;
-
-    QTextCursor cursor(doc);
-    cursor.beginEditBlock();
-    cursor.movePosition(QTextCursor::End);
-    _q_reformatBlocks(0, 0, cursor.position());
-    cursor.endEditBlock();
-}
 
 void QSyntaxHighlighterPrivate::applyFormatChanges()
 {
     QTextLayout *layout = currentBlock.layout();
 
-    QList<QTextLayout::FormatRange> ranges = layout->additionalFormats();    
-    
+    QList<QTextLayout::FormatRange> ranges = layout->additionalFormats();
+
     const int preeditAreaStart = layout->preeditAreaPosition();
     const int preeditAreaLength = layout->preeditAreaText().length();
 
     QList<QTextLayout::FormatRange>::Iterator it = ranges.begin();
-    while (it != ranges.constEnd()) {
+    while (it != ranges.end()) {
         if (it->start >= preeditAreaStart
             && it->start + it->length <= preeditAreaStart + preeditAreaLength)
             ++it;
@@ -107,13 +102,13 @@ void QSyntaxHighlighterPrivate::applyFormatChanges()
             break;
 
         r.length = i - r.start;
-        
+
         if (r.start >= preeditAreaStart) {
             r.start += preeditAreaLength;
         } else if (r.start + r.length >= preeditAreaStart) {
             r.length += preeditAreaLength;
         }
-        
+
         ranges << r;
         r.start = r.length = -1;
     }
@@ -136,6 +131,7 @@ void QSyntaxHighlighterPrivate::applyFormatChanges()
 void QSyntaxHighlighterPrivate::_q_reformatBlocks(int from, int charsRemoved, int charsAdded)
 {
     Q_UNUSED(charsRemoved);
+    rehighlightPending = false;
 
     QTextBlock block = doc->findBlock(from);
     if (!block.isValid())
@@ -182,7 +178,7 @@ void QSyntaxHighlighterPrivate::reformatBlock(QTextBlock block)
 }
 
 /*!
-    \class QSyntaxHighlighter qsyntaxhighlighter.h
+    \class QSyntaxHighlighter
 
     \brief The QSyntaxHighlighter class allows you to define syntax
     highlighting rules, and in addition you can use the class to query
@@ -304,7 +300,7 @@ void QSyntaxHighlighterPrivate::reformatBlock(QTextBlock block)
     parsing the paragraph's text. For an example, see the
     setCurrentBlockUserData() documentation.
 
-    \sa {richtext/syntaxhighlighter}{the Syntax Highlighter example}
+    \sa QTextEdit, {Syntax Highlighter Example}
 */
 
 /*!
@@ -353,8 +349,8 @@ void QSyntaxHighlighter::setDocument(QTextDocument *doc)
 {
     Q_D(QSyntaxHighlighter);
     if (d->doc) {
-        disconnect(d->doc, SIGNAL(contentsChange(int, int, int)),
-                   this, SLOT(_q_reformatBlocks(int, int, int)));
+        disconnect(d->doc, SIGNAL(contentsChange(int,int,int)),
+                   this, SLOT(_q_reformatBlocks(int,int,int)));
 
         QTextCursor cursor(d->doc);
         cursor.beginEditBlock();
@@ -364,9 +360,10 @@ void QSyntaxHighlighter::setDocument(QTextDocument *doc)
     }
     d->doc = doc;
     if (d->doc) {
-        connect(d->doc, SIGNAL(contentsChange(int, int, int)),
-                this, SLOT(_q_reformatBlocks(int, int, int)));
-        QTimer::singleShot(0, this, SLOT(_q_reformatDocument()));
+        connect(d->doc, SIGNAL(contentsChange(int,int,int)),
+                this, SLOT(_q_reformatBlocks(int,int,int)));
+        QTimer::singleShot(0, this, SLOT(_q_delayedRehighlight()));
+        d->rehighlightPending = true;
     }
 }
 
@@ -378,6 +375,24 @@ QTextDocument *QSyntaxHighlighter::document() const
 {
     Q_D(const QSyntaxHighlighter);
     return d->doc;
+}
+
+/*!
+    \since 4.2
+
+    Redoes the highlighting of the whole document.
+*/
+void QSyntaxHighlighter::rehighlight()
+{
+    Q_D(QSyntaxHighlighter);
+    if (!d->doc)
+        return;
+
+    QTextCursor cursor(d->doc);
+    cursor.beginEditBlock();
+    cursor.movePosition(QTextCursor::End);
+    d->_q_reformatBlocks(0, 0, cursor.position());
+    cursor.endEditBlock();
 }
 
 /*!
@@ -473,6 +488,9 @@ void QSyntaxHighlighter::setFormat(int start, int count, const QTextCharFormat &
     The specified \a color is applied to the current text block from
     the \a start position for a length of \a count characters.
 
+    The other attributes of the current text block, e.g. the font and
+    background color, are reset to default values.
+
     \sa format(), highlightBlock()
 */
 void QSyntaxHighlighter::setFormat(int start, int count, const QColor &color)
@@ -487,6 +505,9 @@ void QSyntaxHighlighter::setFormat(int start, int count, const QColor &color)
 
     The specified \a font is applied to the current text block from
     the \a start position for a length of \a count characters.
+
+    The other attributes of the current text block, e.g. the font and
+    background color, are reset to default values.
 
     \sa format(), highlightBlock()
 */
@@ -582,9 +603,9 @@ void QSyntaxHighlighter::setCurrentBlockState(int newState)
         };
 
         struct BlockData : public QTextBlockUserData
-       {
-           QVector<ParenthesisInfo> parentheses;
-       };
+        {
+            QVector<ParenthesisInfo> parentheses;
+        };
     \endcode
 
     During cursor navigation in the associated editor, you can ask the

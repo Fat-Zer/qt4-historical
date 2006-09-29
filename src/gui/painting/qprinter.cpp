@@ -27,6 +27,7 @@
 #include "qlist.h"
 #include <qpagesetupdialog.h>
 #include <qapplication.h>
+#include <qfileinfo.h>
 
 #ifndef QT_NO_PRINTER
 
@@ -34,11 +35,12 @@
 #include <private/qprintengine_win_p.h>
 #elif defined (Q_WS_MAC)
 #include <private/qprintengine_mac_p.h>
-#elif defined (Q_OS_UNIX)
-#include <private/qprintengine_ps_p.h>
+#elif defined (QTOPIA_PRINTENGINE)
+#include <private/qprintengine_qws_p.h>
 #endif
+#include <private/qprintengine_ps_p.h>
 
-#ifdef QT_PDF_SUPPORT
+#ifndef QT_NO_PDF
 #include "qprintengine_pdf_p.h"
 #endif
 
@@ -48,13 +50,28 @@
 
 #define ABORT_IF_ACTIVE(location) \
     if (d->printEngine->printerState() == QPrinter::Active) { \
-        qWarning("%s, cannot be changed while printer is active", location); \
+        qWarning("%s: Cannot be changed while printer is active", location); \
         return; \
     }
 
 void QPrinterPrivate::createDefaultEngines()
 {
-    if (outputFormat == QPrinter::NativeFormat) {
+    QPrinter::OutputFormat realOutputFormat = outputFormat;
+#if !defined (QTOPIA_PRINTENGINE)
+#if defined (Q_OS_UNIX) && ! defined (Q_WS_MAC)
+    if(outputFormat == QPrinter::NativeFormat) {
+#if !defined(QT_NO_CUPS)
+        if(QCUPSSupport::cupsVersion() >= 10200)
+            realOutputFormat = QPrinter::PdfFormat;
+        else
+#endif
+            realOutputFormat = QPrinter::PostScriptFormat;
+    }
+#endif
+#endif
+
+    switch (realOutputFormat) {
+    case QPrinter::NativeFormat: {
 #if defined (Q_WS_WIN)
         QWin32PrintEngine *winEngine = new QWin32PrintEngine(printerMode);
         paintEngine = winEngine;
@@ -63,17 +80,28 @@ void QPrinterPrivate::createDefaultEngines()
         QMacPrintEngine *macEngine = new QMacPrintEngine(printerMode);
         paintEngine = macEngine;
         printEngine = macEngine;
+#elif defined (QTOPIA_PRINTENGINE)
+        QtopiaPrintEngine *qwsEngine = new QtopiaPrintEngine(printerMode);
+        paintEngine = qwsEngine;
+        printEngine = qwsEngine;
 #elif defined (Q_OS_UNIX)
-        QPSPrintEngine *psEngine = new QPSPrintEngine(printerMode);
-        paintEngine = psEngine;
-        printEngine = psEngine;
+        Q_ASSERT(false);
 #endif
-    } else {
+        }
+        break;
+    case QPrinter::PdfFormat: {
         QPdfEngine *pdfEngine = new QPdfEngine(printerMode);
         paintEngine = pdfEngine;
         printEngine = pdfEngine;
     }
-
+        break;
+    case QPrinter::PostScriptFormat: {
+        QPSPrintEngine *psEngine = new QPSPrintEngine(printerMode);
+        paintEngine = psEngine;
+        printEngine = psEngine;
+    }
+        break;
+    }
     use_default_engine = true;
 }
 
@@ -121,8 +149,30 @@ void QPrinterPrivate::createDefaultEngines()
   printer dialog) and that applications are expected to obey. See
   QAbstractPrintDialog's documentation for more details.
 
-  Once you start printing, calling newPage() is essential. You will
-  probably also need to look at the device metrics for the
+  Once QPainter::begin() has been called, you must call newPage() for each
+  page that you want to print \e before performing any painting operations.
+
+  \table
+  \header \o Printer and Painter Coordinate Systems
+  \row \o \inlineimage printer-rects.png
+  \o The paperRect() and pageRect() functions provide information about
+  the size of the paper used for printing and the area on it that can be
+  painted on.
+
+  The rectangle returned by pageRect() typically lies inside the rectangle
+  returned by paperRect(). You do not need to take the positions and sizes
+  of these area into account when using a QPainter with a QPrinter as the
+  underlying paint device; the origin of the painter's coordinate system
+  will coincide with the top-left corner of the pageRect() and painting
+  operations will be clipped to the bounds of the drawable part of the page.
+  \endtable
+
+  The paint system automatically uses the correct device metrics when painting
+  text but, if you need to position text using information obtained from
+  font metrics, you need to ensure that the print device is specified when
+  you construct QFontMetrics and QFontMetricsF objects.
+
+  use you will probably also need to look at the device metrics for the
   printer.
 
   If you want to abort the print job, abort() will try its best to
@@ -164,7 +214,7 @@ void QPrinterPrivate::createDefaultEngines()
     printer code.
 
     \value HighResolution Use printer resolution on Windows, and set
-    the resolution of the Postscript driver to 600dpi.
+    the resolution of the PostScript driver to 600 dpi.
 */
 
 /*!
@@ -353,7 +403,8 @@ QPrinter::QPrinter(PrinterMode mode)
 
 /*!
     This function is used by subclasses of QPrinter to specify custom
-    print engine and paint engine.
+    print and paint engines (\a printEngine and \a paintEngine,
+    respectively).
 
     QPrinter does not take ownership of the engines, so you need to
     manage these engine instances yourself.
@@ -400,28 +451,43 @@ QPrinter::~QPrinter()
     by the platform it is running on, e.g. This is how printing was
     traditionally done in Qt. This mode is the default.
 
-    \value PdfFormat QPrinter will generate its output as a PDF file.
-    As of Qt 4.1.3 PDF files generated by Qt are searchable on all platforms.
+    \value PdfFormat QPrinter will generate its output as a searchable PDF file.
+
+    \value PostScriptFormat QPrinter will generate its output as in the PostScript format.
+    Available since 4.2
 */
 
 /*!
     \since 4.1
 
     Sets the output format for this printer to \a format.
-
-    Setting the output format will reset the state of the printer
 */
 void QPrinter::setOutputFormat(OutputFormat format)
 {
 
-#ifdef QT_PDF_SUPPORT
+#ifndef QT_NO_PDF
     Q_D(QPrinter);
     if (d->outputFormat == format)
         return;
     d->outputFormat = format;
-    if (d->use_default_engine)
-        delete d->printEngine;
+
+    QPrintEngine *oldPrintEngine = d->printEngine;
+    const bool def_engine = d->use_default_engine;
+    d->printEngine = 0;
+
     d->createDefaultEngines();
+
+    if (oldPrintEngine) {
+        for (int i = 0; i < QPrintEngine::PPK_CustomBase; ++i) {
+            QPrintEngine::PrintEnginePropertyKey key = (QPrintEngine::PrintEnginePropertyKey)i;
+            QVariant prop = oldPrintEngine->property(key);
+            if (prop.isValid())
+                d->printEngine->setProperty(key, prop);
+        }
+    }
+
+    if (def_engine)
+        delete oldPrintEngine;
 
 #else
     Q_UNUSED(format);
@@ -431,7 +497,7 @@ void QPrinter::setOutputFormat(OutputFormat format)
 /*!
     \since 4.1
 
-    Returns the output format for this printer
+    Returns the output format for this printer.
 */
 QPrinter::OutputFormat QPrinter::outputFormat() const
 {
@@ -467,7 +533,7 @@ QString QPrinter::printerName() const
 void QPrinter::setPrinterName(const QString &name)
 {
     Q_D(QPrinter);
-    ABORT_IF_ACTIVE("QPrinter::setPrinterName()");
+    ABORT_IF_ACTIVE("QPrinter::setPrinterName");
     d->printEngine->setProperty(QPrintEngine::PPK_PrinterName, name);
 }
 
@@ -517,13 +583,25 @@ QString QPrinter::outputFileName() const
   Setting a null or empty name (0 or "") disables printing to a file. Setting a
   non-empty name enables printing to a file.
 
+  If the file name has the suffix ".ps" then PostScript is automatically selected
+  as output format. If the file name has the ".pdf" suffix PDF is generated.
+
   \sa outputFileName(), setOutputToFile()
 */
 
 void QPrinter::setOutputFileName(const QString &fileName)
 {
     Q_D(QPrinter);
-    ABORT_IF_ACTIVE("QPrinter::setOutputFileName()");
+    ABORT_IF_ACTIVE("QPrinter::setOutputFileName");
+
+    QFileInfo fi(fileName);
+    if (!fi.suffix().compare(QLatin1String("ps"), Qt::CaseInsensitive))
+        setOutputFormat(QPrinter::PostScriptFormat);
+    else if (!fi.suffix().compare(QLatin1String("pdf"), Qt::CaseInsensitive))
+        setOutputFormat(QPrinter::PdfFormat);
+    else if (fileName.isEmpty())
+        setOutputFormat(QPrinter::NativeFormat);
+
     d->printEngine->setProperty(QPrintEngine::PPK_OutputFileName, fileName);
 }
 
@@ -558,7 +636,7 @@ QString QPrinter::printProgram() const
 void QPrinter::setPrintProgram(const QString &printProg)
 {
     Q_D(QPrinter);
-    ABORT_IF_ACTIVE("QPrinter::setPrintProgram()");
+    ABORT_IF_ACTIVE("QPrinter::setPrintProgram");
     d->printEngine->setProperty(QPrintEngine::PPK_PrinterProgram, printProg);
 }
 
@@ -581,7 +659,7 @@ QString QPrinter::docName() const
 void QPrinter::setDocName(const QString &name)
 {
     Q_D(QPrinter);
-    ABORT_IF_ACTIVE("QPrinter::setDocName()");
+    ABORT_IF_ACTIVE("QPrinter::setDocName");
     d->printEngine->setProperty(QPrintEngine::PPK_DocumentName, name);
 }
 
@@ -679,9 +757,9 @@ QPrinter::PageSize QPrinter::pageSize() const
 void QPrinter::setPageSize(PageSize newPageSize)
 {
     Q_D(QPrinter);
-    ABORT_IF_ACTIVE("QPrinter::setPageSize()");
+    ABORT_IF_ACTIVE("QPrinter::setPageSize");
     if (newPageSize > NPageSize) {
-        qWarning("QPrinter::SetPageSize: illegal page size %d", newPageSize);
+        qWarning("QPrinter::SetPageSize: Illegal page size %d", newPageSize);
         return;
     }
     d->printEngine->setProperty(QPrintEngine::PPK_PageSize, newPageSize);
@@ -701,7 +779,7 @@ void QPrinter::setPageSize(PageSize newPageSize)
 void QPrinter::setPageOrder(PageOrder pageOrder)
 {
     Q_D(QPrinter);
-    ABORT_IF_ACTIVE("QPrinter::setPageOrder()");
+    ABORT_IF_ACTIVE("QPrinter::setPageOrder");
     d->printEngine->setProperty(QPrintEngine::PPK_PageOrder, pageOrder);
 }
 
@@ -729,7 +807,7 @@ QPrinter::PageOrder QPrinter::pageOrder() const
 void QPrinter::setColorMode(ColorMode newColorMode)
 {
     Q_D(QPrinter);
-    ABORT_IF_ACTIVE("QPrinter::setColorMode()");
+    ABORT_IF_ACTIVE("QPrinter::setColorMode");
     d->printEngine->setProperty(QPrintEngine::PPK_ColorMode, newColorMode);
 }
 
@@ -780,7 +858,7 @@ int QPrinter::numCopies() const
 void QPrinter::setNumCopies(int numCopies)
 {
     Q_D(QPrinter);
-    ABORT_IF_ACTIVE("QPrinter::setNumCopies()");
+    ABORT_IF_ACTIVE("QPrinter::setNumCopies");
     d->printEngine->setProperty(QPrintEngine::PPK_NumberOfCopies, numCopies);
 }
 
@@ -813,7 +891,7 @@ bool QPrinter::collateCopies() const
 void QPrinter::setCollateCopies(bool collate)
 {
     Q_D(QPrinter);
-    ABORT_IF_ACTIVE("QPrinter::setCollateCopies()");
+    ABORT_IF_ACTIVE("QPrinter::setCollateCopies");
     d->printEngine->setProperty(QPrintEngine::PPK_CollateCopies, collate);
 }
 
@@ -878,7 +956,7 @@ bool QPrinter::fullPage() const
 void QPrinter::setResolution(int dpi)
 {
     Q_D(QPrinter);
-    ABORT_IF_ACTIVE("QPrinter::setResolution()");
+    ABORT_IF_ACTIVE("QPrinter::setResolution");
     d->printEngine->setProperty(QPrintEngine::PPK_Resolution, dpi);
 }
 
@@ -940,7 +1018,7 @@ void QPrinter::setFontEmbeddingEnabled(bool enable)
 /*!
   \since 4.1
 
-  Returns true is font embedding is enabled.
+  Returns true if font embedding is enabled.
 
   Currently this option is only supported on X11.
 
@@ -951,6 +1029,34 @@ bool QPrinter::fontEmbeddingEnabled() const
     Q_D(const QPrinter);
     return d->printEngine->property(QPrintEngine::PPK_FontEmbedding).toBool();
 }
+
+/*!
+  \since 4.2
+
+  Enables double side printing if \a enable is true; otherwise disables it.
+
+  Currently this option is only supported on X11.
+*/
+void QPrinter::setDoubleSidedPrinting(bool doubleSided)
+{
+    Q_D(QPrinter);
+    d->printEngine->setProperty(QPrintEngine::PPK_Duplex, doubleSided);
+}
+
+
+/*!
+  \since 4.2
+
+  Returns true if double side printing is enabled.
+
+  Currently this option is only supported on X11.
+*/
+bool QPrinter::doubleSidedPrinting() const
+{
+    Q_D(const QPrinter);
+    return d->printEngine->property(QPrintEngine::PPK_Duplex).toBool();
+}
+
 
 /*!
     Returns the page's rectangle; this is usually smaller than the
@@ -1021,7 +1127,7 @@ QPrintEngine *QPrinter::printEngine() const
 void QPrinter::setWinPageSize(int pageSize)
 {
     Q_D(QPrinter);
-    ABORT_IF_ACTIVE("QPrinter::setWinPageSize()");
+    ABORT_IF_ACTIVE("QPrinter::setWinPageSize");
     d->printEngine->setProperty(QPrintEngine::PPK_WindowsPageSize, pageSize);
 }
 
@@ -1272,8 +1378,6 @@ int QPrinter::fromPage() const
 {
 #if !defined(QT_NO_PRINTDIALOG)
     Q_D(const QPrinter);
-    if (d->outputFormat == QPrinter::PdfFormat)
-        return 0;
     d->ensurePrintDialog();
     return d->printDialog->fromPage();
 #else
@@ -1299,9 +1403,6 @@ int QPrinter::toPage() const
 {
 #if !defined(QT_NO_PRINTDIALOG)
     Q_D(const QPrinter);
-    if (d->outputFormat == QPrinter::PdfFormat)
-        return 0;
-
     d->ensurePrintDialog();
     return d->printDialog->toPage();
 #else
@@ -1330,8 +1431,6 @@ void QPrinter::setFromTo(int from, int to)
 {
 #if !defined(QT_NO_PRINTDIALOG)
     Q_D(QPrinter);
-    if (d->outputFormat == QPrinter::PdfFormat)
-        return;
     d->ensurePrintDialog();
     d->printDialog->setFromTo(from, to);
 #else
@@ -1341,6 +1440,7 @@ void QPrinter::setFromTo(int from, int to)
 }
 
 
+#ifndef QT_NO_PRINTDIALOG
 /*!
     \since 4.1
 
@@ -1348,13 +1448,9 @@ void QPrinter::setFromTo(int from, int to)
 */
 void QPrinter::setPrintRange( PrintRange range )
 {
-#ifndef QT_NO_PRINTDIALOG
     Q_D(QPrinter);
     d->ensurePrintDialog();
     d->printDialog->setPrintRange(QPrintDialog::PrintRange(range));
-#else
-    Q_UNUSED(range);
-#endif
 }
 
 /*!
@@ -1368,23 +1464,19 @@ void QPrinter::setPrintRange( PrintRange range )
 */
 QPrinter::PrintRange QPrinter::printRange() const
 {
-#ifndef QT_NO_PRINTDIALOG
     Q_D(const QPrinter);
     d->ensurePrintDialog();
     return PrintRange(d->printDialog->printRange());
-#else
-    return AllPages;
-#endif
 }
+#endif // QT_NO_PRINTDIALOG
 
-
-#if defined(QT3_SUPPORT) && !(defined(QT_NO_PRINTDIALOG))
+#if defined(QT3_SUPPORT)
 
 void QPrinter::setOutputToFile(bool f)
 {
     if (f) {
         if (outputFileName().isEmpty())
-            setOutputFileName("untitled_printer_document");
+            setOutputFileName(QLatin1String("untitled_printer_document"));
     } else {
         setOutputFileName(QString());
     }
@@ -1566,16 +1658,23 @@ bool QPrinter::isOptionEnabled( PrinterOption option ) const
     engine and QPrinter. A property may or may not be supported by a
     given print engine.
 
-    \value PPK_CollateCopies A bool value describing wether the
+    \value PPK_CollateCopies A boolean value indicating whether the
     printout should be collated or not.
 
     \value PPK_ColorMode Refers to QPrinter::ColorMode, either color or
     monochrome.
 
-    \value PPK_Creator
+    \value PPK_Creator A string describing the document's creator.
+
+    \value PPK_Duplex A boolean value indicating whether both sides of
+    the printer paper should be used for the printout.
 
     \value PPK_DocumentName A string describing the document name in
     the spooler.
+
+    \value PPK_FontEmbedding A boolean value indicating whether data for
+    the document's fonts should be embedded in the data sent to the
+    printer.
 
     \value PPK_FullPage A boolean describing if the printer should be
     full page or not.
@@ -1611,12 +1710,12 @@ bool QPrinter::isOptionEnabled( PrinterOption option ) const
     \value PPK_SupportedResolutions A list of integer QVariants
     describing the set of supported resolutions that the printer has.
 
-    \value PPK_WindowsPageSize An integer specifying a DM_PAPER entry
-    on Windows.
-
     \value PPK_SuppressSystemPrintStatus Suppress the built-in dialog for showing
     printing progress. As of 4.1 this only has effect on Mac OS X where, by default,
     a status dialog is shown.
+
+    \value PPK_WindowsPageSize An integer specifying a DM_PAPER entry
+    on Windows.
 
     \value PPK_CustomBase Basis for extension.
 */

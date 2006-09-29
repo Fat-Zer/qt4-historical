@@ -31,6 +31,7 @@
 #include "qapplication.h"
 #include "q3widgetstack.h"
 #include "qlayout.h"
+
 using namespace Qt;
 
 /*!
@@ -128,9 +129,8 @@ using namespace Qt;
 class Q3TabDialogPrivate
 {
 public:
-    Q3TabDialogPrivate(Q3TabDialog *qq);
+    Q3TabDialogPrivate();
 
-    Q3TabDialog *q;
     QTabWidget* tw;
 
     QPushButton * ok;
@@ -140,12 +140,10 @@ public:
     QPushButton * ab;
 
     QBoxLayout * tll;
-
-    void emitSelected(int index);
 };
 
-Q3TabDialogPrivate::Q3TabDialogPrivate(Q3TabDialog *qq)
-	: q(qq), tw(0),
+Q3TabDialogPrivate::Q3TabDialogPrivate()
+	: tw(0),
 	  ok(0), cb(0), db(0), hb(0), ab(0),
 	  tll(0)
 { }
@@ -156,14 +154,14 @@ Q3TabDialogPrivate::Q3TabDialogPrivate(Q3TabDialog *qq)
   are passed on to the QDialog constructor.
 */
 
-Q3TabDialog::Q3TabDialog(QWidget *parent, const char *name, bool modal, Qt::WFlags f)
+Q3TabDialog::Q3TabDialog(QWidget *parent, const char *name, bool modal, Qt::WindowFlags f)
     : QDialog(parent, name, modal, f)
 {
-    d = new Q3TabDialogPrivate(this);
+    d = new Q3TabDialogPrivate;
     Q_CHECK_PTR(d);
 
     d->tw = new QTabWidget(this, "tab widget");
-    connect (d->tw, SIGNAL(currentChanged(int)), this, SLOT(emitSelected(int)));
+    connect (d->tw, SIGNAL (selected(QString)), this, SIGNAL(selected(QString)));
     connect (d->tw, SIGNAL (currentChanged(QWidget*)), this, SIGNAL(currentChanged(QWidget*)));
 
     d->ok = new QPushButton(this, "ok");
@@ -329,7 +327,7 @@ bool Q3TabDialog::hasOkButton() const
   the dialog's contents. The dialog should reflect the current state
   of the application when it appears; if there is any possibility that
   the state of the application may change between the time you call
-  Q3TabDialog::Q3TabDialog() and Q3TabDialog::show(), you should set the
+  Q3TabDialog() and show(), you should set the
   dialog's state in a slot and connect this signal to it.
 
   This applies mainly to Q3TabDialog objects that are kept around
@@ -341,6 +339,8 @@ bool Q3TabDialog::hasOkButton() const
 
 /*!
     \internal
+
+    Implemented to delay show()'ing of every page.
 */
 void Q3TabDialog::show()
 {
@@ -444,6 +444,11 @@ void Q3TabDialog::insertTab(QWidget *child, const QIcon& iconset, const QString 
 */
 void Q3TabDialog::setTabBar(QTabBar* tb)
 {
+    if (tb == 0){
+        qWarning("Q3TabDialog::setTabBar() called with null QTabBar pointer");
+        return;
+    }
+    
     d->tw->setTabBar(tb);
     setUpLayout();
 }
@@ -760,18 +765,6 @@ void Q3TabDialog::setCancelButton()
     setCancelButton(tr("Cancel"));
 }
 
-
-/*!
-    \internal
-
-    Workaround to emit selected() since the qt3support signal is
-    missing from QTabWidget
-*/
-void Q3TabDialogPrivate::emitSelected(int index)
-{
-    emit q->selected(tw->tabText(index));
-}
-
 /*!  Sets up the layout manager for the tab dialog.
 
   \sa setSizes() setApplyButton() setCancelButton() setDefaultButton()
@@ -1059,5 +1052,3 @@ void Q3TabDialog::removePage(QWidget * w)
 {
     d->tw->removePage(w);
 }
-
-#include "moc_q3tabdialog.cpp"

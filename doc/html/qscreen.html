@@ -2,25 +2,20 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-mac-opensource-src-4.1.5/src/gui/embedded/qscreen_qws.cpp -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-mac-opensource-src-4.1.5/src/gui/embedded/qscreen_qws.cpp -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-mac-opensource-src-4.2.0/src/gui/embedded/qscreen_qws.cpp -->
 <head>
-    <title>Qt 4.1: QScreen Class Reference</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
+  <title>Qt 4.2: QScreen Class Reference</title>
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
+<a name="//apple_ref/cpp/cl//QScreen" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QScreen Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">QScreen Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QScreen class is a base class for implementing screen drivers in Qtopia Core. <a href="#details">More...</a></p>
-<pre>#include &lt;QScreen&gt;</pre><p>Inherited by <a href="qlinuxfbscreen.html">QLinuxFbScreen</a>, <a href="qtransformedscreen.html">QTransformedScreen</a>, <a href="qvfbscreen.html">QVFbScreen</a>, and <a href="qvncscreen.html">QVNCScreen</a>.</p>
+<pre> #include &lt;QScreen&gt;</pre><p>Inherited by <a href="qlinuxfbscreen.html">QLinuxFbScreen</a>, <a href="qtransformedscreen.html">QTransformedScreen</a>, <a href="qvfbscreen.html">QVFbScreen</a>, and <a href="qvncscreen.html">QVNCScreen</a>.</p>
 <ul>
 <li><a href="qscreen-members.html">List of all members, including inherited members</a></li>
 </ul>
@@ -40,6 +35,8 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>virtual void <b><a href="qscreen.html#blit">blit</a></b> ( const QImage &amp; <i>image</i>, const QPoint &amp; <i>topLeft</i>, const QRegion &amp; <i>region</i> )</li>
 <li><div class="fn"/>QRgb * <b><a href="qscreen.html#clut">clut</a></b> ()</li>
 <li><div class="fn"/>virtual bool <b><a href="qscreen.html#connect">connect</a></b> ( const QString &amp; <i>displaySpec</i> ) = 0</li>
+<li><div class="fn"/>virtual QWSWindowSurface * <b><a href="qscreen.html#createSurface">createSurface</a></b> ( QWidget * <i>widget</i> ) const</li>
+<li><div class="fn"/>virtual QWSWindowSurface * <b><a href="qscreen.html#createSurface-2">createSurface</a></b> ( const QString &amp; <i>key</i> ) const</li>
 <li><div class="fn"/>int <b><a href="qscreen.html#depth">depth</a></b> () const</li>
 <li><div class="fn"/>int <b><a href="qscreen.html#deviceHeight">deviceHeight</a></b> () const</li>
 <li><div class="fn"/>int <b><a href="qscreen.html#deviceWidth">deviceWidth</a></b> () const</li>
@@ -49,7 +46,6 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>virtual bool <b><a href="qscreen.html#initDevice">initDevice</a></b> () = 0</li>
 <li><div class="fn"/>virtual bool <b><a href="qscreen.html#isInterlaced">isInterlaced</a></b> () const</li>
 <li><div class="fn"/>virtual bool <b><a href="qscreen.html#isTransformed">isTransformed</a></b> () const</li>
-<li><div class="fn"/>int * <b><a href="qscreen.html#lastOp">lastOp</a></b> ()</li>
 <li><div class="fn"/>int <b><a href="qscreen.html#linestep">linestep</a></b> () const</li>
 <li><div class="fn"/>virtual QSize <b><a href="qscreen.html#mapFromDevice">mapFromDevice</a></b> ( const QSize &amp; <i>size</i> ) const</li>
 <li><div class="fn"/>virtual QPoint <b><a href="qscreen.html#mapFromDevice-2">mapFromDevice</a></b> ( const QPoint &amp; <i>point</i>, const QSize &amp; <i>screenSize</i> ) const</li>
@@ -62,13 +58,16 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>virtual QImage <b><a href="qscreen.html#mapToDevice-4">mapToDevice</a></b> ( const QImage &amp; <i>image</i> ) const</li>
 <li><div class="fn"/>virtual QRegion <b><a href="qscreen.html#mapToDevice-5">mapToDevice</a></b> ( const QRegion &amp; <i>region</i>, const QSize &amp; <i>screenSize</i> ) const</li>
 <li><div class="fn"/>int <b><a href="qscreen.html#numCols">numCols</a></b> ()</li>
+<li><div class="fn"/>QPoint <b><a href="qscreen.html#offset">offset</a></b> () const</li>
 <li><div class="fn"/>virtual bool <b><a href="qscreen.html#onCard">onCard</a></b> ( const unsigned char * <i>buffer</i> ) const</li>
 <li><div class="fn"/>virtual bool <b><a href="qscreen.html#onCard-2">onCard</a></b> ( const unsigned char * <i>buffer</i>, ulong &amp; <i>offset</i> ) const</li>
-<li><div class="fn"/>int * <b><a href="qscreen.html#opType">opType</a></b> ()</li>
+<li><div class="fn"/>int <b><a href="qscreen.html#physicalHeight">physicalHeight</a></b> () const</li>
+<li><div class="fn"/>int <b><a href="qscreen.html#physicalWidth">physicalWidth</a></b> () const</li>
 <li><div class="fn"/>PixelType <b><a href="qscreen.html#pixelType">pixelType</a></b> () const</li>
 <li><div class="fn"/>virtual int <b><a href="qscreen.html#pixmapDepth">pixmapDepth</a></b> () const</li>
 <li><div class="fn"/>virtual int <b><a href="qscreen.html#pixmapLinestepAlignment">pixmapLinestepAlignment</a></b> ()</li>
 <li><div class="fn"/>virtual int <b><a href="qscreen.html#pixmapOffsetAlignment">pixmapOffsetAlignment</a></b> ()</li>
+<li><div class="fn"/>virtual QRegion <b><a href="qscreen.html#region">region</a></b> () const</li>
 <li><div class="fn"/>virtual void <b><a href="qscreen.html#restore">restore</a></b> ()</li>
 <li><div class="fn"/>virtual void <b><a href="qscreen.html#save">save</a></b> ()</li>
 <li><div class="fn"/>int <b><a href="qscreen.html#screenSize">screenSize</a></b> () const</li>
@@ -76,10 +75,17 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>virtual void <b><a href="qscreen.html#setMode">setMode</a></b> ( int <i>width</i>, int <i>height</i>, int <i>depth</i> ) = 0</li>
 <li><div class="fn"/>virtual void <b><a href="qscreen.html#shutdownDevice">shutdownDevice</a></b> ()</li>
 <li><div class="fn"/>virtual void <b><a href="qscreen.html#solidFill">solidFill</a></b> ( const QColor &amp; <i>color</i>, const QRegion &amp; <i>region</i> )</li>
+<li><div class="fn"/>int <b><a href="qscreen.html#subScreenIndexAt">subScreenIndexAt</a></b> ( const QPoint &amp; <i>position</i> ) const</li>
+<li><div class="fn"/>virtual QList&lt;QScreen *&gt; <b><a href="qscreen.html#subScreens">subScreens</a></b> () const</li>
 <li><div class="fn"/>virtual bool <b><a href="qscreen.html#supportsDepth">supportsDepth</a></b> ( int <i>depth</i> ) const</li>
 <li><div class="fn"/>int <b><a href="qscreen.html#totalSize">totalSize</a></b> () const</li>
 <li><div class="fn"/>virtual int <b><a href="qscreen.html#transformOrientation">transformOrientation</a></b> () const</li>
 <li><div class="fn"/>int <b><a href="qscreen.html#width">width</a></b> () const</li>
+</ul>
+<a name="static-public-members"></a>
+<h3>Static Public Members</h3>
+<ul>
+<li><div class="fn"/>QScreen * <b><a href="qscreen.html#instance">instance</a></b> ()</li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -115,10 +121,13 @@ body { background: #ffffff; color: black; }</style>
 <p>Use the <a href="qscreen.html#pixmapDepth">pixmapDepth</a>() function to obtain the preferred depth for pixmaps. In addition, QScreen provides the <a href="qscreen.html#pixmapOffsetAlignment">pixmapOffsetAlignment</a>() function returning the value to which the start address of pixmaps held in the graphics card's memory, should be aligned. The <a href="qscreen.html#pixmapLinestepAlignment">pixmapLinestepAlignment</a>() returns the value to which the <i>individual scanlines</i> of pixmaps should be aligned.</p>
 <p>The <a href="qscreen.html#isInterlaced">isInterlaced</a>() function tells whether the screen is displaying images progressively, and the <a href="qscreen.html#isTransformed">isTransformed</a>() function whether it is rotated. The <a href="qscreen.html#transformOrientation">transformOrientation</a>() function can be reimplemented to return the current rotation.</p>
 <p>The <a href="qscreen.html#linestep">linestep</a>() function returns the length of each scanline of the framebuffer.</p>
-<p>The <a href="qscreen.html#pixelType">pixelType</a>() returns the screen's pixel storage format as described by the <a href="qscreen.html#PixelType-enum">PixelType</a> enum, the <a href="qscreen.html#opType">opType</a>() function returns the screen's operation type, and the <a href="qscreen.html#lastOp">lastOp</a>() function returns the screens last operation.</p>
+<p>The <a href="qscreen.html#pixelType">pixelType</a>() returns the screen's pixel storage format as described by the <a href="qscreen.html#PixelType-enum">PixelType</a> enum, the opType() function returns the screen's operation type, and the lastOp() function returns the screens last operation.</p>
 <p>See also <a href="qtopiacore-running.html">Running Applications</a> and <a href="qtopiacore.html">Qtopia Core</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
+<a name="//apple_ref/cpp/tag/QScreen/PixelType" />
+<a name="//apple_ref/cpp/econst/QScreen/NormalPixel" />
+<a name="//apple_ref/cpp/econst/QScreen/BGRPixel" />
 <h3 class="fn"><a name="PixelType-enum"></a>enum QScreen::PixelType</h3>
 <p>This enum describes the pixel storage format of the screen, i.e. the order of the red (R), green (G) and blue (B) components of a pixel.</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
@@ -129,73 +138,103 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qscreen.html#pixelType">pixelType</a>().</p>
 <hr />
 <h2>Member Function Documentation</h2>
+<a name="//apple_ref/cpp/instm/QScreen/QScreen" />
 <h3 class="fn"><a name="QScreen"></a>QScreen::QScreen ( int <i>displayId</i> )</h3>
 <p>Constructs a <a href="qscreen.html">QScreen</a> object. The <i>displayId</i> identifies the the <a href="qtopiacore.html">Qtopia Core</a> server to connect to.</p>
+<a name="//apple_ref/cpp/instm/QScreen/~QScreen" />
 <h3 class="fn"><a name="dtor.QScreen"></a>QScreen::~QScreen ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Destroys this <a href="qscreen.html">QScreen</a> object.</p>
+<a name="//apple_ref/cpp/instm/QScreen/alloc" />
 <h3 class="fn"><a name="alloc"></a>int QScreen::alloc ( unsigned int <i>red</i>, unsigned int <i>green</i>, unsigned int <i>blue</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns the index in the screen's palette which is the closest match to the given RGB value (<i>red</i>, <i>green</i>, <i>blue</i>).</p>
 <p>Note that this function only apply in paletted modes, i.e. in modes where only palette indexes (and not actual color values) are stored in memory (e.g. 8-bit mode).</p>
 <p>See also <a href="qscreen.html#clut">clut</a>().</p>
+<a name="//apple_ref/cpp/instm/QScreen/base" />
 <h3 class="fn"><a name="base"></a><a href="qtglobal.html#uchar-typedef">uchar</a> * QScreen::base () const</h3>
 <p>Returns a pointer to the beginning of the framebuffer.</p>
 <p>See also <a href="qscreen.html#onCard">onCard</a>().</p>
+<a name="//apple_ref/cpp/instm/QScreen/blank" />
 <h3 class="fn"><a name="blank"></a>void QScreen::blank ( bool <i>on</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Avoids displaying any contents on the screen if <i>on</i> is true; otherwise the contents is shown.</p>
 <p>The default implementation does nothing.</p>
+<a name="//apple_ref/cpp/instm/QScreen/blit" />
 <h3 class="fn"><a name="blit"></a>void QScreen::blit ( const <a href="qimage.html">QImage</a> &amp; <i>image</i>, const <a href="qpoint.html">QPoint</a> &amp; <i>topLeft</i>, const <a href="qregion.html">QRegion</a> &amp; <i>region</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Copies the given <i>region</i> in the given <i>image</i> to the point specified by <i>topLeft</i> using device coordinates.</p>
 <p>Reimplement this function to use accelerated hardware. Note that reimplementing this function requires that the <a href="qscreen.html#solidFill">solidFill</a>() function is reimplemented as well.</p>
 <p>See also <a href="qscreen.html#exposeRegion">exposeRegion</a>() and <a href="qtopiacore-accel.html">Adding an Accelerated Graphics Driver</a>.</p>
+<a name="//apple_ref/cpp/instm/QScreen/clut" />
 <h3 class="fn"><a name="clut"></a><a href="qcolor.html#QRgb-typedef">QRgb</a> * QScreen::clut ()</h3>
 <p>Returns the screen's color lookup table (i.e. its color palette).</p>
 <p>Note that this function only apply in paletted modes, i.e. in modes where only palette indexes (and not actual color values) are stored in memory (e.g. 8-bit mode).</p>
 <p>See also <a href="qscreen.html#alloc">alloc</a>(), <a href="qscreen.html#depth">depth</a>(), and <a href="qscreen.html#numCols">numCols</a>().</p>
+<a name="//apple_ref/cpp/instm/QScreen/connect" />
 <h3 class="fn"><a name="connect"></a>bool QScreen::connect ( const <a href="qstring.html">QString</a> &amp; <i>displaySpec</i> )&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>This function is called by every <a href="qtopiacore.html">Qtopia Core</a> application on startup, and must be reimplemented to map in the framebuffer and the accelerated drivers that the graphics card control registers.</p>
 <p>The <i>displaySpec</i> argument is passed by the <a href="qtopiacore-envvars.html#qws-display">QWS_DISPLAY</a> environment variable or the -display command line parameter, and has the following syntax:</p>
-<pre>&nbsp;   [screen driver][:driver specific options][:display number]</pre>
+<pre> [screen driver][:driver specific options][:display number]</pre>
 <p>For example, to use the mach64 driver on fb1 as display 2:</p>
-<pre>&nbsp;   Mach64:/dev/fb1:2</pre>
+<pre> Mach64:/dev/fb1:2</pre>
 <p>See also <a href="qscreen.html#disconnect">disconnect</a>() and <a href="qtopiacore-running.html">Running Applications</a>.</p>
+<a name="//apple_ref/cpp/instm/QScreen/createSurface" />
+<h3 class="fn"><a name="createSurface"></a><a href="qwswindowsurface.html">QWSWindowSurface</a> * QScreen::createSurface ( <a href="qwidget.html">QWidget</a> * <i>widget</i> ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
+<p>Creates a new <a href="qwswindowsurface.html">QWSWindowSurface</a> for <i>widget</i>.</p>
+<h3 class="fn"><a name="createSurface-2"></a><a href="qwswindowsurface.html">QWSWindowSurface</a> * QScreen::createSurface ( const <a href="qstring.html">QString</a> &amp; <i>key</i> ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p>Creates a new <a href="qwswindowsurface.html">QWSWindowSurface</a> matching the name given by <i>key</i>.</p>
+<p>This function is used by the application that runs as a GuiServer when when it needs to create a server side representation of a surface.</p>
+<p>This function was introduced in Qt 4.2.</p>
+<p>See also <a href="qapplication.html#Type-enum">QApplication::Type</a>.</p>
+<a name="//apple_ref/cpp/instm/QScreen/depth" />
 <h3 class="fn"><a name="depth"></a>int QScreen::depth () const</h3>
 <p>Returns the depth of the framebuffer, in bits per pixel.</p>
 <p>Note that the returned depth is the number of bits each pixel takes up rather than the number of significant bits, so 24bpp and 32bpp express the same range of colors (8 bits of red, green and blue).</p>
 <p>See also <a href="qscreen.html#clut">clut</a>() and <a href="qscreen.html#pixmapDepth">pixmapDepth</a>().</p>
+<a name="//apple_ref/cpp/instm/QScreen/deviceHeight" />
 <h3 class="fn"><a name="deviceHeight"></a>int QScreen::deviceHeight () const</h3>
 <p>Returns the full height of the framebuffer device.</p>
 <p>Note that the returned height can differ from the height which <a href="qtopiacore.html">Qtopia Core</a> will actually use, that is if the display is centered within the framebuffer.</p>
 <p>See also <a href="qscreen.html#deviceWidth">deviceWidth</a>() and <a href="qscreen.html#height">height</a>().</p>
+<a name="//apple_ref/cpp/instm/QScreen/deviceWidth" />
 <h3 class="fn"><a name="deviceWidth"></a>int QScreen::deviceWidth () const</h3>
 <p>Returns the full width of the framebuffer device.</p>
 <p>Note that the returned width can differ from the width which <a href="qtopiacore.html">Qtopia Core</a> will actually use, that is if the display is centered within the framebuffer.</p>
 <p>See also <a href="qscreen.html#deviceHeight">deviceHeight</a>() and <a href="qscreen.html#width">width</a>().</p>
+<a name="//apple_ref/cpp/instm/QScreen/disconnect" />
 <h3 class="fn"><a name="disconnect"></a>void QScreen::disconnect ()&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>This function is called by every <a href="qtopiacore.html">Qtopia Core</a> application just before exiting, and should be reimplemented to unmap the framebuffer.</p>
 <p>See also <a href="qscreen.html#connect">connect</a>().</p>
+<a name="//apple_ref/cpp/instm/QScreen/exposeRegion" />
 <h3 class="fn"><a name="exposeRegion"></a>void QScreen::exposeRegion ( <a href="qregion.html">QRegion</a> <i>region</i>, int <i>windowIndex</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Paints the given <i>region</i> on screen. The <i>windowIndex</i> parameter refer to the affected windows.</p>
 <p>Note that there is no need to call this function explicitly, but it must be reimplemented in derived classes. It can also be reimplemented to make use of accelerated hardware, but this is typically done by reimplementing the <a href="qscreen.html#blit">blit</a>() function instead.</p>
 <p>See also <a href="qscreen.html#blit">blit</a>().</p>
+<a name="//apple_ref/cpp/instm/QScreen/height" />
 <h3 class="fn"><a name="height"></a>int QScreen::height () const</h3>
 <p>Returns the height of the framebuffer, in pixels.</p>
 <p>See also <a href="qscreen.html#deviceHeight">deviceHeight</a>() and <a href="qscreen.html#width">width</a>().</p>
+<a name="//apple_ref/cpp/instm/QScreen/initDevice" />
 <h3 class="fn"><a name="initDevice"></a>bool QScreen::initDevice ()&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>This function is called by the <a href="qtopiacore.html">Qtopia Core</a> server when initializing the framebuffer.</p>
 <p>Reimplement this function to make accelerated drivers set up the graphics card. The default implementation does nothing.</p>
 <p>See also <a href="qtopiacore-accel.html">Adding an Accelerated Graphics Driver</a>.</p>
+<a name="//apple_ref/cpp/clm/QScreen/instance" />
+<h3 class="fn"><a name="instance"></a>QScreen * QScreen::instance ()&nbsp;&nbsp;<tt> [static]</tt></h3>
+<p>Returns a pointer to the application's <a href="qscreen.html">QScreen</a> instance.</p>
+<p>If this screen consists of several subscreens, operations to this instance will affect all subscreens. Use the subscreens() function to retrieve access to a particular subscreen.</p>
+<p>See also <a href="qscreen.html#subScreens">subScreens</a>() and <a href="qscreen.html#subScreenIndexAt">subScreenIndexAt</a>().</p>
+<a name="//apple_ref/cpp/instm/QScreen/isInterlaced" />
 <h3 class="fn"><a name="isInterlaced"></a>bool QScreen::isInterlaced () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns true if the display is interlaced (for instance a television screen); otherwise returns false.</p>
 <p>If true, drawing is altered to look better on such displays.</p>
+<a name="//apple_ref/cpp/instm/QScreen/isTransformed" />
 <h3 class="fn"><a name="isTransformed"></a>bool QScreen::isTransformed () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns true if the screen is transformed (for instance, rotated 90 degrees); otherwise returns false.</p>
 <p>See also <a href="qtransformedscreen.html#transformation">QTransformedScreen::transformation</a>().</p>
-<h3 class="fn"><a name="lastOp"></a>int * QScreen::lastOp ()</h3>
-<p>Returns the screens last operation.</p>
-<p>See also <a href="qscreen.html#opType">opType</a>().</p>
+<a name="//apple_ref/cpp/instm/QScreen/linestep" />
 <h3 class="fn"><a name="linestep"></a>int QScreen::linestep () const</h3>
 <p>Returns the length of each scanline of the framebuffer, in bytes.</p>
 <p>See also <a href="qdirectpainter.html#linestep">QDirectPainter::linestep</a>().</p>
+<a name="//apple_ref/cpp/instm/QScreen/mapFromDevice" />
 <h3 class="fn"><a name="mapFromDevice"></a><a href="qsize.html">QSize</a> QScreen::mapFromDevice ( const <a href="qsize.html">QSize</a> &amp; <i>size</i> ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>This virtual function allows subclasses of <a href="qscreen.html">QScreen</a> to map the given object from the framebuffer coordinate system to the coordinate space used by the application.</p>
 <p>In the case of a <i>size</i> object, this means switching its height and width. Note that the default implementation simply returns the given <i>size</i> as it is.</p>
@@ -216,6 +255,7 @@ body { background: #ffffff; color: black; }</style>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>This virtual function allows subclasses of <a href="qscreen.html">QScreen</a> to map the given object from the framebuffer coordinate system to the coordinate space used by the application, passing the device's <i>screenSize</i> as argument .</p>
 <p>The default implementation returns the given <i>region</i> as it is.</p>
+<a name="//apple_ref/cpp/instm/QScreen/mapToDevice" />
 <h3 class="fn"><a name="mapToDevice"></a><a href="qsize.html">QSize</a> QScreen::mapToDevice ( const <a href="qsize.html">QSize</a> &amp; <i>size</i> ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>This virtual function allows subclasses of <a href="qscreen.html">QScreen</a> to map the given object from the coordinate space used by the application to the framebuffer coordinate system.</p>
 <p>In the case of a <i>size</i> object, this means switching its height and width. Note that the default implementation simply returns the given <i>size</i> as it is.</p>
@@ -236,70 +276,113 @@ body { background: #ffffff; color: black; }</style>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>This virtual function allows subclasses of <a href="qscreen.html">QScreen</a> to map the given object from the coordinate space used by the application to the framebuffer coordinate system, passing the device's <i>screenSize</i> as argument.</p>
 <p>The default implementation returns the given <i>region</i> as it is.</p>
+<a name="//apple_ref/cpp/instm/QScreen/numCols" />
 <h3 class="fn"><a name="numCols"></a>int QScreen::numCols ()</h3>
 <p>Returns the number of entries in the screen's color lookup table (i.e. its color palette). The color table can be retrieved using the <a href="qscreen.html#clut">clut</a>() function.</p>
 <p>See also <a href="qscreen.html#clut">clut</a>().</p>
+<a name="//apple_ref/cpp/instm/QScreen/offset" />
+<h3 class="fn"><a name="offset"></a><a href="qpoint.html">QPoint</a> QScreen::offset () const</h3>
+<p>Returns the logical offset of the screen.</p>
+<p>This function was introduced in Qt 4.2.</p>
+<a name="//apple_ref/cpp/instm/QScreen/onCard" />
 <h3 class="fn"><a name="onCard"></a>bool QScreen::onCard ( const unsigned char * <i>buffer</i> ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns true if the specified <i>buffer</i> is within the graphics card's memory; otherwise returns false (i.e. if it's in main RAM).</p>
 <p>See also <a href="qscreen.html#base">base</a>() and <a href="qscreen.html#totalSize">totalSize</a>().</p>
 <h3 class="fn"><a name="onCard-2"></a>bool QScreen::onCard ( const unsigned char * <i>buffer</i>, <a href="qtglobal.html#ulong-typedef">ulong</a> &amp; <i>offset</i> ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>If the specified <i>buffer</i> is within the graphics card's memory, this function stores the offset (in bytes) from the start of graphics card memory, in the location specified by the <i>offset</i> parameter.</p>
-<h3 class="fn"><a name="opType"></a>int * QScreen::opType ()</h3>
-<p>Returns the screen's operation type.</p>
-<p>See also <a href="qscreen.html#lastOp">lastOp</a>().</p>
+<a name="//apple_ref/cpp/instm/QScreen/physicalHeight" />
+<h3 class="fn"><a name="physicalHeight"></a>int QScreen::physicalHeight () const</h3>
+<p>Returns the physical height of the screen (in millimeters).</p>
+<p>This function was introduced in Qt 4.2.</p>
+<p>See also <a href="qscreen.html#physicalWidth">physicalWidth</a>().</p>
+<a name="//apple_ref/cpp/instm/QScreen/physicalWidth" />
+<h3 class="fn"><a name="physicalWidth"></a>int QScreen::physicalWidth () const</h3>
+<p>Returns the physical width of the screen (in millimeters).</p>
+<p>This function was introduced in Qt 4.2.</p>
+<p>See also <a href="qscreen.html#physicalHeight">physicalHeight</a>().</p>
+<a name="//apple_ref/cpp/instm/QScreen/pixelType" />
 <h3 class="fn"><a name="pixelType"></a><a href="qscreen.html#PixelType-enum">PixelType</a> QScreen::pixelType () const</h3>
 <p>Returns the pixel storage format of the screen.</p>
 <p>See also <a href="qscreen.html#PixelType-enum">PixelType</a>.</p>
+<a name="//apple_ref/cpp/instm/QScreen/pixmapDepth" />
 <h3 class="fn"><a name="pixmapDepth"></a>int QScreen::pixmapDepth () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns the preferred depth for pixmaps, in bits per pixel.</p>
 <p>See also <a href="qscreen.html#depth">depth</a>().</p>
+<a name="//apple_ref/cpp/instm/QScreen/pixmapLinestepAlignment" />
 <h3 class="fn"><a name="pixmapLinestepAlignment"></a>int QScreen::pixmapLinestepAlignment ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns the value (in bits) to which individual scanlines of pixmaps held in the graphics card's memory, should be aligned.</p>
 <p>The default implementation returns 64. Reimplement this function to override the return value when implementing an accelerated driver.</p>
 <p>See also <a href="qscreen.html#pixmapOffsetAlignment">pixmapOffsetAlignment</a>() and <a href="qtopiacore-accel.html">Adding an Accelerated Graphics Driver</a>.</p>
+<a name="//apple_ref/cpp/instm/QScreen/pixmapOffsetAlignment" />
 <h3 class="fn"><a name="pixmapOffsetAlignment"></a>int QScreen::pixmapOffsetAlignment ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns the value (in bits) to which the start address of pixmaps held in the graphics card's memory, should be aligned.</p>
 <p>The default implementation returns 64. Reimplement this function to override the return value when implementing an accelerated driver.</p>
 <p>See also <a href="qscreen.html#pixmapLinestepAlignment">pixmapLinestepAlignment</a>() and <a href="qtopiacore-accel.html">Adding an Accelerated Graphics Driver</a>.</p>
+<a name="//apple_ref/cpp/instm/QScreen/region" />
+<h3 class="fn"><a name="region"></a><a href="qregion.html">QRegion</a> QScreen::region () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
+<p>Returns the region covered by this screen.</p>
+<p>This function was introduced in Qt 4.2.</p>
+<a name="//apple_ref/cpp/instm/QScreen/restore" />
 <h3 class="fn"><a name="restore"></a>void QScreen::restore ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>This virtual function allows subclasses of <a href="qscreen.html">QScreen</a> to restore a previously saved state of the graphics card.</p>
 <p>Note that the default implementation does nothing.</p>
 <p>See also <a href="qscreen.html#save">save</a>().</p>
+<a name="//apple_ref/cpp/instm/QScreen/save" />
 <h3 class="fn"><a name="save"></a>void QScreen::save ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>This virtual function allows subclasses of <a href="qscreen.html">QScreen</a> to save the state of the graphics card, and be able to restored it later.</p>
 <p>Hardware <a href="qscreen.html">QScreen</a> descendants should save the state of the registers here, if necessary, to enable switching between virtual consoles (for example to and from X).</p>
 <p>Note that the default implementation does nothing.</p>
 <p>See also <a href="qscreen.html#restore">restore</a>().</p>
+<a name="//apple_ref/cpp/instm/QScreen/screenSize" />
 <h3 class="fn"><a name="screenSize"></a>int QScreen::screenSize () const</h3>
 <p>Returns the size of the screen, in bytes.</p>
 <p>The screen size is always located at the beginning of framebuffer memory, i.e. it can also be retrieved using the <a href="qscreen.html#base">base</a>() function.</p>
 <p>See also <a href="qscreen.html#base">base</a>().</p>
+<a name="//apple_ref/cpp/instm/QScreen/setDirty" />
 <h3 class="fn"><a name="setDirty"></a>void QScreen::setDirty ( const <a href="qrect.html">QRect</a> &amp; <i>rectangle</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>This virtual function allows subclasses of <a href="qscreen.html">QScreen</a> to indicate that the given <i>rectangle</i> of the screen has been altered.</p>
 <p>Note that the default implementation does nothing.</p>
+<a name="//apple_ref/cpp/instm/QScreen/setMode" />
 <h3 class="fn"><a name="setMode"></a>void QScreen::setMode ( int <i>width</i>, int <i>height</i>, int <i>depth</i> )&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>This virtual function allows subclasses of <a href="qscreen.html">QScreen</a> to set the framebuffer to a new resolution (<i>width</i> and <i>height</i>) and bit <i>depth</i>.</p>
 <p>After doing this any currently-existing paint engines will be invalid and the screen should be completely redrawn. In a multiple-process situation, all other applications must be notified to set the same mode and redraw.</p>
 <p>Note that the default implementation does nothing.</p>
+<a name="//apple_ref/cpp/instm/QScreen/shutdownDevice" />
 <h3 class="fn"><a name="shutdownDevice"></a>void QScreen::shutdownDevice ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>This virtual function is called by the <a href="qtopiacore.html">Qtopia Core</a> server on shutdown, and allows subclasses of <a href="qscreen.html">QScreen</a> to support graphics card specific cleanup.</p>
 <p>The default implementation simply hides the mouse cursor.</p>
+<a name="//apple_ref/cpp/instm/QScreen/solidFill" />
 <h3 class="fn"><a name="solidFill"></a>void QScreen::solidFill ( const <a href="qcolor.html">QColor</a> &amp; <i>color</i>, const <a href="qregion.html">QRegion</a> &amp; <i>region</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>This virtual function allows subclasses of <a href="qscreen.html">QScreen</a> to fill the given <i>region</i> of the screen with the specified <i>color</i>. Note that this function is not intended to be called explicitly.</p>
 <p>See also <a href="qscreen.html#blit">blit</a>().</p>
+<a name="//apple_ref/cpp/instm/QScreen/subScreenIndexAt" />
+<h3 class="fn"><a name="subScreenIndexAt"></a>int QScreen::subScreenIndexAt ( const <a href="qpoint.html">QPoint</a> &amp; <i>position</i> ) const</h3>
+<p>Returns the index of the subscreen at the given <i>position</i>; returns -1 if no screen is found.</p>
+<p>The index identifies the subscreen in the list of pointers returned by the <a href="qscreen.html#subScreens">subScreens</a>() function.</p>
+<p>This function was introduced in Qt 4.2.</p>
+<p>See also <a href="qscreen.html#instance">instance</a>() and <a href="qscreen.html#subScreens">subScreens</a>().</p>
+<a name="//apple_ref/cpp/instm/QScreen/subScreens" />
+<h3 class="fn"><a name="subScreens"></a><a href="qlist.html">QList</a>&lt;QScreen *&gt; QScreen::subScreens () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
+<p>Returns a list of this screen's subscreens. Use this function to retrieve access to a particular subscreen. Use the <a href="qscreen.html#subScreenIndexAt">subScreenIndexAt</a>() function to retrieve the index of a screen at a given position.</p>
+<p>Note that if <i>this</i> screen consists of several subscreens, operations to <i>this</i> instance will affect all subscreens by default.</p>
+<p>This function was introduced in Qt 4.2.</p>
+<p>See also <a href="qscreen.html#instance">instance</a>() and <a href="qscreen.html#subScreenIndexAt">subScreenIndexAt</a>().</p>
+<a name="//apple_ref/cpp/instm/QScreen/supportsDepth" />
 <h3 class="fn"><a name="supportsDepth"></a>bool QScreen::supportsDepth ( int <i>depth</i> ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns true if the screen supports the specified color <i>depth</i>; otherwise returns false.</p>
-<p>Possible values are 1,4,8,16 and 32.</p>
 <p>See also <a href="qscreen.html#clut">clut</a>().</p>
+<a name="//apple_ref/cpp/instm/QScreen/totalSize" />
 <h3 class="fn"><a name="totalSize"></a>int QScreen::totalSize () const</h3>
 <p>Returns the size of the available graphics card memory, including the screen, in bytes.</p>
 <p>Offscreen memory is only used by the accelerated drivers.</p>
 <p>See also <a href="qscreen.html#onCard">onCard</a>().</p>
+<a name="//apple_ref/cpp/instm/QScreen/transformOrientation" />
 <h3 class="fn"><a name="transformOrientation"></a>int QScreen::transformOrientation () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>This virtual function allows subclasses of <a href="qscreen.html">QScreen</a> to return the current rotation of the screeen as an integer value.</p>
 <p>The default implementation returns 0.</p>
 <p>See also <a href="qscreen.html#isTransformed">isTransformed</a>().</p>
+<a name="//apple_ref/cpp/instm/QScreen/width" />
 <h3 class="fn"><a name="width"></a>int QScreen::width () const</h3>
 <p>Returns the width of the framebuffer, in pixels.</p>
 <p>See also <a href="qscreen.html#deviceWidth">deviceWidth</a>() and <a href="qscreen.html#height">height</a>().</p>
@@ -307,6 +390,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

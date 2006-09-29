@@ -26,12 +26,14 @@
 #include <private/qpaintengine_mac_p.h>
 #include <qpainterpath.h>
 #include <qpixmapcache.h>
+#include <private/qpaintengine_raster_p.h>
 #include <private/qprintengine_mac_p.h>
 #include <qprinter.h>
 #include <qstack.h>
 #include <qtextcodec.h>
 #include <qwidget.h>
 #include <qvarlengtharray.h>
+#include <qdebug.h>
 
 #include <private/qfont_p.h>
 #include <private/qfontengine_p.h>
@@ -44,6 +46,8 @@
 
 #include <string.h>
 
+extern int qt_antialiasing_threshold; // QApplication.cpp
+
 /*****************************************************************************
   Internal variables and functions
  *****************************************************************************/
@@ -52,7 +56,7 @@
 /*****************************************************************************
   External functions
  *****************************************************************************/
-extern CGImageRef qt_mac_create_imagemask(const QPixmap &px); //qpixmap_mac.cpp
+extern CGImageRef qt_mac_create_imagemask(const QPixmap &px, const QRectF &sr); //qpixmap_mac.cpp
 extern QPoint qt_mac_posInWindow(const QWidget *w); //qwidget_mac.cpp
 extern WindowPtr qt_mac_window_for(const QWidget *); //qwidget_mac.cpp
 extern GrafPtr qt_mac_qd_context(const QPaintDevice *); //qpaintdevice_mac.cpp
@@ -67,764 +71,15 @@ QMacCGContext::QMacCGContext(QPainter *p)
     QPaintEngine *pe = p->paintEngine();
     if(pe->type() == QPaintEngine::MacPrinter)
         pe = static_cast<QMacPrintEngine*>(pe)->paintEngine();
-    Q_ASSERT(pe->type() == QPaintEngine::CoreGraphics);
     pe->syncState();
-    context = static_cast<QCoreGraphicsPaintEngine*>(pe)->handle();
+    context = 0;
+    if(pe->type() == QPaintEngine::CoreGraphics)
+        context = static_cast<QCoreGraphicsPaintEngine*>(pe)->handle();
+    else if(pe->type() == QPaintEngine::Raster)
+        context = static_cast<QRasterPaintEngine*>(pe)->macCGContext();
     CGContextRetain(context);
 }
 
-/*****************************************************************************
-  QQuickDrawPaintEngine member functions
- *****************************************************************************/
-
-inline static QPaintEngine::PaintEngineFeatures qt_mac_qd_features()
-{
-    return QPaintEngine::PaintEngineFeatures(0);
-}
-
-QQuickDrawPaintEngine::QQuickDrawPaintEngine()
-    : QPaintEngine(*(new QQuickDrawPaintEnginePrivate), qt_mac_qd_features())
-{
-}
-
-QQuickDrawPaintEngine::QQuickDrawPaintEngine(QPaintEnginePrivate &dptr, PaintEngineFeatures devcaps)
-    : QPaintEngine(dptr, (devcaps ? devcaps : qt_mac_qd_features()))
-{
-}
-
-QQuickDrawPaintEngine::~QQuickDrawPaintEngine()
-{
-}
-
-bool
-QQuickDrawPaintEngine::begin(QPaintDevice *pdev)
-{
-    Q_D(QQuickDrawPaintEngine);
-    if(isActive()) {                         // already active painting
-        qWarning("QQuickDrawPaintEngine::begin: Painter is already active."
-                  "\n\tYou must end() the painter before a second begin()");
-        return false;
-    }
-
-    // Set up the polygon clipper.
-    const int BUFFERZONE = 100;
-    d->polygonClipper.setBoundingRect(QRect(-BUFFERZONE,
-                                            -BUFFERZONE,
-                                            pdev->width() + 2*BUFFERZONE,
-                                            pdev->height() + 2 * BUFFERZONE));
-
-    d->has_clipping = false;
-    d->saved = new QMacSavedPortInfo;     //save the gworld now, we'll reset it in end()
-    d->pdev = pdev;
-    setActive(true);
-
-    d->clip.serial = 0;
-    d->clip.dirty = false;
-    d->offx = d->offy = 0;
-    bool unclipped = false;
-    if(d->pdev->devType() == QInternal::Widget) {
-        QWidget *w = static_cast<QWidget*>(d->pdev);
-        { //offset painting in widget relative the tld
-            QPoint wp = qt_mac_posInWindow(w);
-            d->offx = wp.x();
-            d->offy = wp.y();
-        }
-        bool unclipped = w->testAttribute(Qt::WA_PaintUnclipped);
-
-        if(!d->locked) {
-            LockPortBits(GetWindowPort(qt_mac_window_for(w)));
-            d->locked = true;
-        }
-
-        if((w->windowType() == Qt::Desktop)) {
-            if(!unclipped)
-                qWarning("QQuickDrawPaintEngine::begin: Does not support clipped desktop on Mac OS X");
-            ShowWindow(qt_mac_window_for(w));
-        } else if(unclipped) {
-            qWarning("QQuickDrawPaintEngine::begin: Does not support unclipped painting");
-        }
-    } else if(d->pdev->devType() == QInternal::Pixmap) {             // device is a pixmap
-        QPixmap *pm = static_cast<QPixmap*>(d->pdev);
-        if(pm->isNull()) {
-            qWarning("QQuickDrawPaintEngine::begin: Cannot paint null pixmap");
-            end();
-            return false;
-        }
-    }
-    d->unclipped = unclipped;
-
-    setDirty(QPaintEngine::DirtyPen);
-    setDirty(QPaintEngine::DirtyBrush);
-    setDirty(QPaintEngine::DirtyBackground);
-
-    if(type() != CoreGraphics)
-        setupQDPort(true); //force setting paint device, this does unclipped fu
-    return true;
-}
-
-bool
-QQuickDrawPaintEngine::end()
-{
-    Q_D(QQuickDrawPaintEngine);
-    setActive(false);
-
-    if(d->locked) {
-        if(d->pdev->devType() == QInternal::Widget)
-            UnlockPortBits(GetWindowPort(qt_mac_window_for(static_cast<QWidget*>(d->pdev))));
-        d->locked = false;
-    }
-
-    delete d->saved;
-    d->saved = 0;
-    if(d->pdev->devType() == QInternal::Widget && static_cast<QWidget*>(d->pdev)->windowType() == Qt::Desktop)
-        HideWindow(qt_mac_window_for(static_cast<QWidget*>(d->pdev)));
-
-    d->pdev = 0;
-    return true;
-}
-
-void QQuickDrawPaintEngine::updateState(const QPaintEngineState &state)
-{
-    QPaintEngine::DirtyFlags flags = state.state();
-    if(flags & DirtyTransform)
-        updateMatrix(state.matrix());
-    if(flags & DirtyPen)
-        updatePen(state.pen());
-    if(flags & (DirtyBrush|DirtyBrushOrigin))
-        updateBrush(state.brush(), state.brushOrigin());
-    if(flags & (DirtyBackground|DirtyBackgroundMode))
-        updateBackground(state.backgroundMode(), state.backgroundBrush());
-    if(flags & DirtyFont)
-        updateFont(state.font());
-
-    if(flags & DirtyClipEnabled) {
-        if (state.isClipEnabled())
-            updateClipRegion(painter()->clipRegion(), Qt::ReplaceClip);
-        else
-            updateClipRegion(QRegion(), Qt::NoClip);
-    } else if(flags & DirtyClipRegion) {
-        updateClipRegion(state.clipRegion(), state.clipOperation());
-    }
-}
-
-void
-QQuickDrawPaintEngine::updatePen(const QPen &pen)
-{
-    Q_D(QQuickDrawPaintEngine);
-    d->current.pen = pen;
-}
-
-
-void
-QQuickDrawPaintEngine::updateBrush(const QBrush &brush, const QPointF &origin)
-{
-    Q_D(QQuickDrawPaintEngine);
-    d->current.brush = brush;
-    d->current.bg.origin = origin;
-}
-
-void
-QQuickDrawPaintEngine::updateFont(const QFont &)
-{
-    Q_D(QQuickDrawPaintEngine);
-    updatePen(d->current.pen);
-}
-
-void
-QQuickDrawPaintEngine::updateBackground(Qt::BGMode mode, const QBrush &bgBrush)
-{
-    Q_D(QQuickDrawPaintEngine);
-    Q_ASSERT(isActive());
-    d->current.bg.mode = mode;
-    d->current.bg.brush = bgBrush;
-}
-
-void
-QQuickDrawPaintEngine::updateMatrix(const QMatrix &matrix)
-{
-    Q_D(QQuickDrawPaintEngine);
-    d->current.matrix = matrix;
-}
-
-void
-QQuickDrawPaintEngine::setClippedRegionInternal(QRegion *rgn)
-{
-    Q_D(QQuickDrawPaintEngine);
-    if(rgn) {
-        d->current.clip = *rgn;
-        d->has_clipping = true;
-    } else {
-        d->current.clip = QRegion();
-        d->has_clipping = false;
-    }
-    d->clip.dirty = 1;
-}
-
-void
-QQuickDrawPaintEngine::updateClipRegion(const QRegion &region, Qt::ClipOperation op)
-{
-    Q_D(QQuickDrawPaintEngine);
-    Q_ASSERT(isActive());
-    if(op == Qt::NoClip) {
-        setClippedRegionInternal(0);
-    } else {
-        QRegion clip = region * d->current.matrix;
-        if(d->has_clipping) {
-            if(op == Qt::IntersectClip)
-                clip = d->current.clip.intersect(clip);
-            else if(op == Qt::UniteClip)
-                clip = d->current.clip.unite(clip);
-        }
-        setClippedRegionInternal(&clip);
-    }
-}
-
-void QQuickDrawPaintEngine::drawRects(const QRectF *rects, int rectCount)
-{
-    Q_D(QQuickDrawPaintEngine);
-    Q_ASSERT(isActive());
-    setupQDPort();
-    if(d->clip.paintable.isEmpty())
-        return;
-
-    for (int i=0; i<rectCount; ++i) {
-        QRect r = rects[i].toRect().intersect(d->polygonClipper.boundingRect()).normalized();
-
-        Rect rect;
-        SetRect(&rect, qRound(r.x())+d->offx, qRound(r.y())+d->offy,
-                qRound(r.x() + r.width())+d->offx, qRound(r.y() + r.height())+d->offy);
-        if(d->current.brush.style() != Qt::NoBrush) {
-            setupQDBrush();
-            if(d->current.brush.style() == Qt::SolidPattern) {
-                PaintRect(&rect);
-            } else {
-                QPixmap pm;
-                if(d->brush_style_pix) {
-                    pm = *d->brush_style_pix;
-                    if(d->current.bg.mode == Qt::OpaqueMode) {
-                        ::RGBColor f;
-                        f.red = d->current.bg.brush.color().red()*256;
-                        f.green = d->current.bg.brush.color().green()*256;
-                        f.blue = d->current.bg.brush.color().blue()*256;
-                        RGBForeColor(&f);
-                        PaintRect(&rect);
-                    }
-                } else {
-                    pm = d->current.brush.texture();
-                }
-                if(!pm.isNull()) {
-                    //save the clip
-                    QRegion clip = d->current.clip;
-
-                    //create the region
-                    QRegion newclip(r);
-                    if(d->has_clipping)
-                        newclip &= clip;
-                    setClippedRegionInternal(&newclip);
-
-                    //draw the brush
-                    drawTiledPixmap(r, pm, QPoint(r.x(), r.y()) - d->current.bg.origin);
-
-                    //restore the clip
-                    setClippedRegionInternal(d->has_clipping ? &clip : 0);
-                }
-            }
-        }
-        if(d->current.pen.style() != Qt::NoPen) {
-            setupQDPen();
-            FrameRect(&rect);
-        }
-    }
-}
-
-void
-QQuickDrawPaintEngine::drawPoints(const QPointF *points, int pointCount)
-{
-    Q_D(QQuickDrawPaintEngine);
-    Q_ASSERT(isActive());
-
-    if(d->current.pen.style() != Qt::NoPen) {
-        setupQDPort();
-        if(d->clip.paintable.isEmpty())
-            return;
-        setupQDPen();
-        for(int i=0; i < pointCount; i++) {
-            MoveTo(qRound(points[i].x())+d->offx, qRound(points[i].y())+d->offy);
-            Line(0, 0);
-        }
-    }
-}
-
-void
-QQuickDrawPaintEngine::drawEllipse(const QRectF &in_r)
-{
-    Q_ASSERT(isActive());
-    Q_D(QQuickDrawPaintEngine);
-
-    QRect r = in_r.toRect().intersect(d->polygonClipper.boundingRect()).normalized();
-
-    setupQDPort();
-    if(d->clip.paintable.isEmpty())
-        return;
-
-    Rect mac_r;
-    SetRect(&mac_r, r.x() + d->offx, r.y() + d->offy,
-            r.x() + r.width() + d->offx, r.y() + r.height() + d->offy);
-    if(d->current.brush.style() != Qt::NoBrush) {
-        setupQDBrush();
-        if(d->current.brush.style() == Qt::SolidPattern) {
-            PaintOval(&mac_r);
-        } else {
-            QPixmap pm = 0;
-            if(d->brush_style_pix) {
-                pm = *d->brush_style_pix;
-                if(d->current.bg.mode == Qt::OpaqueMode) {
-                    ::RGBColor f;
-                    f.red = d->current.bg.brush.color().red()*256;
-                    f.green = d->current.bg.brush.color().green()*256;
-                    f.blue = d->current.bg.brush.color().blue()*256;
-                    RGBForeColor(&f);
-                    PaintOval(&mac_r);
-                }
-            } else {
-                pm = d->current.brush.texture();
-            }
-            if(!pm.isNull()) {
-                //save the clip
-                QRegion clip = d->current.clip;
-
-                //create the region
-                QRegion newclip(r, QRegion::Ellipse);
-                if(d->has_clipping)
-                    newclip &= clip;
-                setClippedRegionInternal(&newclip);
-
-                //draw the brush
-                drawTiledPixmap(r, pm, QPointF(r.x(), r.y()) - d->current.bg.origin);
-
-                //restore the clip
-                setClippedRegionInternal(d->has_clipping ? &clip : 0);
-            }
-        }
-    }
-
-    if(d->current.pen.style() != Qt::NoPen) {
-        setupQDPen();
-        FrameOval(&mac_r);
-    }
-}
-
-void
-QQuickDrawPaintEngine::drawLines(const QLineF *lines, int lineCount)
-{
-    Q_D(QQuickDrawPaintEngine);
-    Q_ASSERT(isActive());
-
-    setupQDPort();
-    if(d->clip.paintable.isEmpty())
-        return;
-
-    setupQDPen();
-    for(int i = 0; i < lineCount; i++) {
-        const QPointF start = lines[i].p1(), end = lines[i].p2();
-        MoveTo(qRound(start.x()) + d->offx, qRound(start.y()) + d->offy);
-        LineTo(qRound(end.x()) + d->offx, qRound(end.y()) + d->offy);
-    }
-}
-
-void
-QQuickDrawPaintEngine::drawPolygon(const QPointF *points, int pointCount, PolygonDrawMode mode)
-{
-    Q_D(QQuickDrawPaintEngine);
-    Q_ASSERT(isActive());
-
-    // clip and round
-    int cCount;
-    qt_float_point *cPoints;
-    d->polygonClipper.clipPolygon((qt_float_point *)points, pointCount, &cPoints, &cCount);
-    QVarLengthArray<QPoint> fixedPoints(cCount);
-    for (int i = 0; i < cCount; ++i) {
-        fixedPoints[i].rx() = qRound(cPoints[i].x);
-        fixedPoints[i].ry() = qRound(cPoints[i].y);
-    }
-
-    //do the drawing
-    if(mode == PolylineMode) {
-        if(pointCount)
-            return;
-        setupQDPort();
-        if(d->clip.paintable.isEmpty())
-            return;
-
-        setupQDPen();
-        QPoint penPoint(0, 0);
-        if(d->current.pen.width() > 0) {
-            int dot = d->current.pen.width() / 2;
-            penPoint = QPoint(-dot, -dot);
-        }
-
-        // We draw 5000 chunks at a time because of limitations in QD
-        for(int chunk = 0; chunk < fixedPoints.count();) {
-            //make a region of it
-            PolyHandle poly = OpenPoly();
-            MoveTo(fixedPoints[chunk].x()+d->offx+penPoint.x(), fixedPoints[chunk].y()+d->offy+penPoint.y());
-            for(int last_chunk=chunk+5000; chunk < last_chunk; chunk++) {
-                if(chunk == pointCount)
-                    break;
-                LineTo(fixedPoints[chunk].x()+d->offx+penPoint.x(), fixedPoints[chunk].y()+d->offy+penPoint.y());
-            }
-            ClosePoly();
-            //now draw it
-            FramePoly(poly);
-            KillPoly(poly);
-        }
-    } else {
-        setupQDPort();
-        if(d->clip.paintable.isEmpty())
-            return;
-
-        PolyHandle polyHandle = OpenPoly();
-        MoveTo(fixedPoints[0].x()+d->offx, fixedPoints[0].y()+d->offy);
-        for(int x = 1; x < fixedPoints.size(); x++)
-            LineTo(fixedPoints[x].x()+d->offx, fixedPoints[x].y()+d->offy);
-        LineTo(fixedPoints[0].x()+d->offx, fixedPoints[0].y()+d->offy);
-        ClosePoly();
-
-        if(d->current.brush.style() != Qt::NoBrush) {
-            setupQDBrush();
-            if(d->current.brush.style() == Qt::SolidPattern) {
-                PaintPoly(polyHandle);
-            } else {
-                QPixmap pm = 0;
-                if(d->brush_style_pix) {
-                    pm = *d->brush_style_pix;
-                    if(d->current.bg.mode == Qt::OpaqueMode) {
-                        ::RGBColor f;
-                        f.red = d->current.bg.brush.color().red()*256;
-                        f.green = d->current.bg.brush.color().green()*256;
-                        f.blue = d->current.bg.brush.color().blue()*256;
-                        RGBForeColor(&f);
-                        PaintPoly(polyHandle);
-                    }
-                } else {
-                    pm = d->current.brush.texture();
-                }
-
-                if(!pm.isNull()) {
-                    //save the clip
-                    QRegion clip = d->current.clip;
-
-                    QPolygon pa;
-                    pa.reserve(pointCount);
-                    for (int i=0; i<pointCount; ++i)
-                        pa.append(points[i].toPoint());
-
-                    //create the region
-                    QRegion newclip(pa);
-                    if(d->has_clipping)
-                        newclip &= clip;
-                    setClippedRegionInternal(&newclip);
-
-                    //draw the brush
-                    QRect r(pa.boundingRect());
-                    drawTiledPixmap(r, pm, r.topLeft() - d->current.bg.origin);
-
-                    //restore the clip
-                    setClippedRegionInternal(d->has_clipping ? &clip : 0);
-                }
-            }
-        }
-        if(d->current.pen.style() != Qt::NoPen) {
-            setupQDPen();
-            FramePoly(polyHandle);
-        }
-        KillPoly(polyHandle);
-    }
-}
-
-void
-QQuickDrawPaintEngine::drawTiledPixmap(const QRectF &r, const QPixmap &pixmap, const QPointF &p)
-{
-    int yPos=qRound(r.y()), xPos, drawH, drawW, yOff=qRound(p.y()), xOff;
-    int rBottom = qRound(r.y() + r.height());
-    int rRight = qRound(r.x() + r.width());
-    while(yPos < rBottom) {
-        drawH = pixmap.height() - yOff;    // Cropping first row
-        if(yPos + drawH > rBottom)        // Cropping last row
-            drawH = rBottom - yPos;
-        xPos = qRound(r.x());
-        xOff = qRound(p.x());
-        while(xPos < rRight) {
-            drawW = pixmap.width() - xOff; // Cropping first column
-            if(xPos + drawW > rRight)    // Cropping last column
-                drawW = rRight - xPos;
-            drawPixmap(QRect(xPos, yPos, drawW, drawH), pixmap, QRect(xOff, yOff, drawW, drawH));
-            xPos += drawW;
-            xOff = 0;
-        }
-        yPos += drawH;
-        yOff = 0;
-    }
-}
-
-void
-QQuickDrawPaintEngine::drawPixmap(const QRectF &r, const QPixmap &pm, const QRectF &sr)
-{
-    Q_D(QQuickDrawPaintEngine);
-    Q_ASSERT(isActive());
-    if(pm.isNull())
-        return;
-
-    setupQDPort();
-    if(d->clip.paintable.isEmpty())
-        return;
-
-    //setup port
-    ::RGBColor f;
-    if(pm.depth() == 1) {
-        f.red = d->current.pen.color().red()*256;
-        f.green = d->current.pen.color().green()*256;
-        f.blue = d->current.pen.color().blue()*256;
-    } else {
-        f.red = f.green = f.blue = 0;
-    }
-    RGBForeColor(&f);
-    f.red = f.green = f.blue = ~0u;
-    RGBBackColor(&f);
-
-    //the copy mode
-    short copymode = srcCopy;
-
-    //get pixmap bits
-    const BitMap *srcbitmap = GetPortBitMapForCopyBits(qt_mac_qd_context(&pm));
-    const BitMap *maskbits = 0;
-    if(pm.macQDAlphaHandle()) {
-        maskbits = GetPortBitMapForCopyBits((GWorldPtr)pm.macQDAlphaHandle());
-        if(pm.hasAlphaChannel())
-            copymode = ditherCopy;
-    }
-
-    //get pdev bits
-    const BitMap *dstbitmap=0;
-    switch(d->pdev->devType()) {
-        case QInternal::Widget: {
-                                    QWidget *w = static_cast<QWidget*>(d->pdev);
-                                    dstbitmap = GetPortBitMapForCopyBits(GetWindowPort(qt_mac_window_for(w)));
-                                    break; }
-        case QInternal::Printer:
-        case QInternal::Pixmap: {
-                                    dstbitmap = GetPortBitMapForCopyBits(qt_mac_qd_context(d->pdev));
-                                    break; }
-    }
-
-    //do the blt
-    Rect srcr;
-    SetRect(&srcr, qRound(sr.x()), qRound(sr.y()),
-            qRound(sr.x() + sr.width()), qRound(sr.y()+sr.height()));
-    Rect dstr;
-    SetRect(&dstr, d->offx + qRound(r.x()), d->offy + qRound(r.y()),
-            d->offx + qRound(r.x() + r.width()),
-            d->offy + qRound(r.y() + r.height()));
-    if(maskbits) {
-        if(d->pdev->devType() == QInternal::Printer) { //can't use CopyDeepMask on a printer
-            QPixmap tmppix = pm.depth() == 1 ? QPixmap(QBitmap(qRound(r.width()), qRound(r.height()))) : QPixmap(qRound(r.width()), qRound(r.height()));
-            Rect pixr;
-            SetRect(&pixr, 0, 0, qRound(r.width()), qRound(r.height()));
-            const BitMap *pixbits = GetPortBitMapForCopyBits((GWorldPtr)tmppix.macQDHandle());
-            {
-                QMacSavedPortInfo pi(&tmppix);
-                EraseRect(&pixr);
-                CopyDeepMask(srcbitmap, maskbits, pixbits, &srcr, &srcr, &pixr, copymode, 0);
-            }
-            setupQDPort(true);
-            CopyBits(pixbits, dstbitmap, &pixr, &dstr, srcOr, 0); //use srcOr transfer, to "emulate" the mask
-        } else {
-            CopyDeepMask(srcbitmap, maskbits, dstbitmap, &srcr, &srcr, &dstr, copymode, 0);
-        }
-    } else {
-        CopyBits(srcbitmap, dstbitmap, &srcr, &dstr, copymode, 0);
-    }
-}
-
-void QQuickDrawPaintEngine::drawTextItem(const QPointF &p, const QTextItem &textItem)
-{
-    QPaintEngine::drawTextItem(p, textItem);
-}
-
-void
-QQuickDrawPaintEngine::initialize()
-{
-}
-
-void
-QQuickDrawPaintEngine::cleanup()
-{
-}
-
-/*!
-  \internal
-  */
-void
-QQuickDrawPaintEngine::setupQDPen()
-{
-    Q_D(QQuickDrawPaintEngine);
-    //pen size
-    int dot = d->current.pen.width();
-    if(dot < 1)
-        dot = 1;
-    PenSize(dot, dot);
-
-    //forecolor
-    ::RGBColor f;
-    f.red = d->current.pen.color().red()*256;
-    f.green = d->current.pen.color().green()*256;
-    f.blue = d->current.pen.color().blue()*256;
-    Pattern pat;
-    GetQDGlobalsBlack(&pat);
-    PenPat(&pat);
-    RGBForeColor(&f);
-
-    //backcolor
-    ::RGBColor b;
-    b.red = d->current.bg.brush.color().red()*256;
-    b.green = d->current.bg.brush.color().green()*256;
-    b.blue = d->current.bg.brush.color().blue()*256;
-    RGBBackColor(&b);
-
-    //penmodes
-    PenMode(patCopy);
-}
-
-/*!
-  \internal
-  */
-void
-QQuickDrawPaintEngine::setupQDBrush()
-{
-    Q_D(QQuickDrawPaintEngine);
-    //pattern
-    delete d->brush_style_pix;
-    d->brush_style_pix = 0;
-    int bs = d->current.brush.style();
-    if(bs >= Qt::Dense1Pattern && bs <= Qt::DiagCrossPattern) {
-        d->brush_style_pix = new QPixmap(8, 8);
-        d->brush_style_pix->fill(d->current.brush.color());
-        d->brush_style_pix->setMask(qt_pixmapForBrush(bs, true));
-    } else if(bs == Qt::TexturePattern) {
-        QPixmap texture = d->current.brush.texture();
-        if(texture.isQBitmap()) {
-            d->brush_style_pix = new QPixmap(texture.width(), texture.height());
-            d->brush_style_pix->fill(d->current.brush.color());
-            d->brush_style_pix->setMask(*((QBitmap*)&texture));
-        }
-    }
-
-    //forecolor
-    ::RGBColor f;
-    f.red = d->current.brush.color().red()*256;
-    f.green = d->current.brush.color().green()*256;
-    f.blue = d->current.brush.color().blue()*256;
-    Pattern pat;
-    GetQDGlobalsBlack(&pat);
-    PenPat(&pat);
-    RGBForeColor(&f);
-
-    //backcolor
-    ::RGBColor b;
-    b.red = d->current.bg.brush.color().red()*256;
-    b.green = d->current.bg.brush.color().green()*256;
-    b.blue = d->current.bg.brush.color().blue()*256;
-    RGBBackColor(&b);
-
-    //penmodes
-    PenMode(patCopy);
-}
-
-/*!
-  \internal
-  */
-void
-QQuickDrawPaintEngine::setupQDFont()
-{
-    setupQDPen();
-}
-
-/*!
-  \internal
-  */
-void QQuickDrawPaintEngine::setupQDPort(bool force, QPoint *off, QRegion *rgn)
-{
-    Q_D(QQuickDrawPaintEngine);
-    bool remade_clip = false;
-    if(d->pdev->devType() == QInternal::Printer) {
-        if(force) {
-            remade_clip = true;
-            d->clip.pdev = QRegion(0, 0, d->pdev->width(), d->pdev->height());
-        }
-    } else if(d->pdev->devType() == QInternal::Widget) {                    // device is a widget
-        QWidget *w = (QWidget*)d->pdev;
-        if(!(remade_clip = force)) {
-            if(!w->isVisible())
-                remade_clip = d->clip.serial;
-            else
-                remade_clip = (d->clip.serial != w->d_func()->clippedSerial(!d->unclipped));
-        }
-        if(remade_clip) {
-            //offset painting in widget relative the tld
-            QPoint wp = qt_mac_posInWindow(w);
-            d->offx = wp.x();
-            d->offy = wp.y();
-
-            if(!w->isVisible()) {
-                d->clip.pdev = QRegion(0, 0, 0, 0); //make the clipped reg empty if not visible!!!
-                d->clip.serial = 0;
-            } else {
-                d->clip.pdev = w->d_func()->clippedRegion(!d->unclipped);
-                d->clip.serial = w->d_func()->clippedSerial(!d->unclipped);
-            }
-            QRegion sysClip = systemClip();
-            if(!sysClip.isEmpty()) {
-                sysClip.translate(wp.x(), wp.y());
-                d->clip.pdev &= sysClip;
-            }
-        }
-    } else if(d->pdev->devType() == QInternal::Pixmap) {             // device is a pixmap
-        QPixmap *pm = (QPixmap*)d->pdev;
-        if(force) {//clip out my bounding rect
-            remade_clip = true;
-            d->clip.pdev = QRegion(0, 0, pm->width(), pm->height());
-        }
-    }
-    if(remade_clip || d->clip.dirty) {         //update clipped region
-        remade_clip = true;
-        if(!d->clip.pdev.isEmpty() && d->has_clipping) {
-            d->clip.paintable = d->current.clip;
-            d->clip.paintable.translate(d->offx, d->offy);
-            d->clip.paintable &= d->clip.pdev;
-        } else {
-            d->clip.paintable = d->clip.pdev;
-        }
-
-        CGrafPtr ptr = qt_mac_qd_context(d->pdev);
-        if(RgnHandle rgn = d->clip.paintable.handle()) {
-            QDAddRegionToDirtyRegion(ptr, rgn);
-        } else {
-            QRect qr = d->clip.paintable.boundingRect();
-            Rect mr; SetRect(&mr, qr.x(), qr.y(), qr.right(), qr.bottom());
-            QDAddRectToDirtyRegion(ptr, &mr);
-        }
-        d->clip.dirty = false;
-    }
-    { //setup the port
-        QMacSavedPortInfo::setPaintDevice(d->pdev);
-        if(type() != CoreGraphics)
-            QMacSavedPortInfo::setClipRegion(d->clip.paintable);
-    }
-    if(off)
-        *off = QPoint(d->offx, d->offy);
-    if(rgn)
-        *rgn = d->clip.paintable;
-}
 
 /*****************************************************************************
   QCoreGraphicsPaintEngine utility functions
@@ -859,7 +114,6 @@ static void qt_mac_clip_cg_reset(CGContextRef hd)
     //setup xforms
     CGAffineTransform old_xform = CGContextGetCTM(hd);
     CGContextConcatCTM(hd, CGAffineTransformInvert(old_xform));
-    CGContextConcatCTM(hd, CGAffineTransformIdentity);
 
     //do the clip reset
     QRect qrect = QRect(0, 0, 99999, 999999);
@@ -916,7 +170,7 @@ static CGMutablePathRef qt_mac_compose_path(const QPainterPath &p, float off=0)
     return ret;
 }
 
-static void qt_mac_clip_cg(CGContextRef hd, const QRegion &rgn, const QPoint *pt, CGAffineTransform *orig_xform)
+void qt_mac_clip_cg(CGContextRef hd, const QRegion &rgn, const QPoint *pt, CGAffineTransform *orig_xform)
 {
     CGAffineTransform old_xform = CGAffineTransformIdentity;
     if(orig_xform) { //setup xforms
@@ -952,11 +206,10 @@ static void qt_mac_clip_cg(CGContextRef hd, const QRegion &rgn, const QPoint *pt
 
 //pattern handling (tiling)
 struct QMacPattern {
-    QMacPattern() : opaque(true), as_mask(false), image(0) { data.bytes = 0; }
+    QMacPattern() : as_mask(false), image(0) { data.bytes = 0; }
     ~QMacPattern() { CGImageRelease(image); }
     //input
-    QColor background, foreground;
-    bool opaque;
+    QColor foreground;
     bool as_mask;
     struct {
         QPixmap pixmap;
@@ -979,7 +232,7 @@ static void qt_mac_draw_pattern(void *info, CGContextRef c)
             w = pat->data.pixmap.width();
             h = pat->data.pixmap.height();
             if(pat->data.pixmap.depth() == 1) {
-                pat->image = qt_mac_create_imagemask(pat->data.pixmap);
+                pat->image = qt_mac_create_imagemask(pat->data.pixmap, pat->data.pixmap.rect());
             } else {
                 pat->image = (CGImageRef)pat->data.pixmap.macCGHandle();
                 CGImageRetain(pat->image);
@@ -994,13 +247,6 @@ static void qt_mac_draw_pattern(void *info, CGContextRef c)
     CGRect rect = CGRectMake(0, 0, w, h);
     CGContextSaveGState(c);
     if(CGImageIsMask(pat->image)) {
-        if(pat->opaque) {
-            CGContextSetRGBFillColor(c, qt_mac_convert_color_to_cg(pat->background.red()),
-                    qt_mac_convert_color_to_cg(pat->background.green()),
-                    qt_mac_convert_color_to_cg(pat->background.blue()),
-                    qt_mac_convert_color_to_cg(pat->background.alpha()));
-            CGContextFillRect(c, rect);
-        }
         CGContextSetRGBFillColor(c, qt_mac_convert_color_to_cg(pat->foreground.red()),
                 qt_mac_convert_color_to_cg(pat->foreground.green()),
                 qt_mac_convert_color_to_cg(pat->foreground.blue()),
@@ -1032,12 +278,12 @@ inline static QPaintEngine::PaintEngineFeatures qt_mac_cg_features()
 }
 
     QCoreGraphicsPaintEngine::QCoreGraphicsPaintEngine()
-: QQuickDrawPaintEngine(*(new QCoreGraphicsPaintEnginePrivate), qt_mac_cg_features())
+: QPaintEngine(*(new QCoreGraphicsPaintEnginePrivate), qt_mac_cg_features())
 {
 }
 
     QCoreGraphicsPaintEngine::QCoreGraphicsPaintEngine(QPaintEnginePrivate &dptr)
-: QQuickDrawPaintEngine(dptr, qt_mac_cg_features())
+: QPaintEngine(dptr, qt_mac_cg_features())
 {
 }
 
@@ -1050,16 +296,14 @@ QCoreGraphicsPaintEngine::begin(QPaintDevice *pdev)
 {
     Q_D(QCoreGraphicsPaintEngine);
     if(isActive()) {                         // already active painting
-        qWarning("QCoreGraphicsPaintEngine::begin: Painter is already active."
-                "\n\tYou must end() the painter before a second begin()");
+        qWarning("QCoreGraphicsPaintEngine::begin: Painter already active");
         return false;
     }
 
     d->complexXForm = false;
 
     //initialization
-    d->has_clipping = false;
-    d->offx = d->offy = 0; // (quickdraw compat!!)
+    d->current.clipEnabled = false;
     d->pdev = pdev;
     d->hd = qt_mac_cg_context(pdev);
     if(d->hd) {
@@ -1070,17 +314,11 @@ QCoreGraphicsPaintEngine::begin(QPaintDevice *pdev)
         }
         d->setClip(0);  //clear the context's clipping
     }
-    d->saved = new QMacSavedPortInfo;     //save the gworld now, we'll reset it in end()
 
     setActive(true);
 
     if(d->pdev->devType() == QInternal::Widget) {                    // device is a widget
         QWidget *w = (QWidget*)d->pdev;
-        { //offset painting in widget relative the tld (quickdraw compat!!!)
-            QPoint wp = qt_mac_posInWindow(w);
-            d->offx = wp.x();
-            d->offy = wp.y();
-        }
         bool unclipped = w->testAttribute(Qt::WA_PaintUnclipped);
 
         if((w->windowType() == Qt::Desktop)) {
@@ -1117,8 +355,6 @@ QCoreGraphicsPaintEngine::end()
         CGShadingRelease(d->shading);
         d->shading = 0;
     }
-    delete d->saved;
-    d->saved = 0;
     d->pdev = 0;
     if(d->hd) {
         CGContextSynchronize(d->hd);
@@ -1133,14 +369,15 @@ void QCoreGraphicsPaintEngine::updateState(const QPaintEngineState &state)
     QPaintEngine::DirtyFlags flags = state.state();
     if(flags & DirtyTransform)
         updateMatrix(state.matrix());
-    if(flags & (DirtyBackground|DirtyBackgroundMode))
-        updateBackground(state.backgroundMode(), state.backgroundBrush());
+
     if(flags & DirtyPen)
         updatePen(state.pen());
     if(flags & (DirtyBrush|DirtyBrushOrigin))
         updateBrush(state.brush(), state.brushOrigin());
     if(flags & DirtyFont)
         updateFont(state.font());
+    if (flags & DirtyOpacity)
+        updateOpacity(state.opacity());
     if (state.state() & DirtyClipEnabled) {
         if (state.isClipEnabled())
             updateClipPath(painter()->clipPath(), Qt::ReplaceClip);
@@ -1171,13 +408,18 @@ QCoreGraphicsPaintEngine::updateBrush(const QBrush &brush, const QPointF &brushO
     Q_D(QCoreGraphicsPaintEngine);
     Q_ASSERT(isActive());
     d->current.brush = brush;
-    d->current.bg.origin = brushOrigin;
-
     if(d->shading) {
         CGShadingRelease(d->shading);
         d->shading = 0;
     }
     d->setFillBrush(brush, brushOrigin);
+}
+
+void
+QCoreGraphicsPaintEngine::updateOpacity(qreal opacity)
+{
+    Q_D(QCoreGraphicsPaintEngine);
+    CGContextSetAlpha(d->hd, opacity);
 }
 
 void
@@ -1189,15 +431,6 @@ QCoreGraphicsPaintEngine::updateFont(const QFont &)
 }
 
 void
-QCoreGraphicsPaintEngine::updateBackground(Qt::BGMode mode, const QBrush &brush)
-{
-    Q_D(QCoreGraphicsPaintEngine);
-    Q_ASSERT(isActive());
-    d->current.bg.mode = mode;
-    d->current.bg.brush = brush;
-}
-
-void
 QCoreGraphicsPaintEngine::updateMatrix(const QMatrix &matrix)
 {
     Q_D(QCoreGraphicsPaintEngine);
@@ -1206,6 +439,10 @@ QCoreGraphicsPaintEngine::updateMatrix(const QMatrix &matrix)
 
     d->complexXForm = (matrix.m11() != 1 || matrix.m22() != 1
             || matrix.m12() != 0 || matrix.m21() != 0);
+
+    d->pixelSize = d->devicePixelSize(d->hd);
+    static const float sqrt2 = sqrt(2);
+    d->cosmeticPenSize = sqrt(pow(d->pixelSize.y(), 2) + pow(d->pixelSize.x(), 2)) / sqrt2;
 }
 
 void
@@ -1214,15 +451,15 @@ QCoreGraphicsPaintEngine::updateClipPath(const QPainterPath &p, Qt::ClipOperatio
     Q_D(QCoreGraphicsPaintEngine);
     Q_ASSERT(isActive());
     if(op == Qt::NoClip) {
-        if(d->has_clipping) {
-            d->has_clipping = false;
+        if(d->current.clipEnabled) {
+            d->current.clipEnabled = false;
             d->current.clip = QRegion();
             d->setClip(0);
         }
     } else {
-        if(!d->has_clipping)
+        if(!d->current.clipEnabled)
             op = Qt::ReplaceClip;
-        d->has_clipping = true;
+        d->current.clipEnabled = true;
         QRegion clipRegion(p.toFillPolygon().toPolygon(), p.fillRule());
         if(op == Qt::ReplaceClip) {
             d->current.clip = clipRegion;
@@ -1241,10 +478,10 @@ QCoreGraphicsPaintEngine::updateClipPath(const QPainterPath &p, Qt::ClipOperatio
                 CGPathRelease(path);
             }
         } else if(op == Qt::IntersectClip) {
-            d->current.clip = d->current.clip.intersect(clipRegion);
+            d->current.clip = d->current.clip.intersected(clipRegion);
             d->setClip(&d->current.clip);
         } else if(op == Qt::UniteClip) {
-            d->current.clip = d->current.clip.unite(clipRegion);
+            d->current.clip = d->current.clip.united(clipRegion);
             d->setClip(&d->current.clip);
         }
     }
@@ -1256,19 +493,19 @@ QCoreGraphicsPaintEngine::updateClipRegion(const QRegion &clipRegion, Qt::ClipOp
     Q_D(QCoreGraphicsPaintEngine);
     Q_ASSERT(isActive());
     if(op == Qt::NoClip) {
-        d->has_clipping = false;
+        d->current.clipEnabled = false;
         d->current.clip = QRegion();
         d->setClip(0);
     } else {
-        if(!d->has_clipping)
+        if(!d->current.clipEnabled)
             op = Qt::ReplaceClip;
-        d->has_clipping = true;
+        d->current.clipEnabled = true;
         if(op == Qt::IntersectClip)
-            d->current.clip = d->current.clip.intersect(clipRegion);
+            d->current.clip = d->current.clip.intersected(clipRegion);
         else if(op == Qt::ReplaceClip)
             d->current.clip = clipRegion;
         else if(op == Qt::UniteClip)
-            d->current.clip = d->current.clip.unite(clipRegion);
+            d->current.clip = d->current.clip.united(clipRegion);
         d->setClip(&d->current.clip);
     }
 }
@@ -1277,7 +514,7 @@ void
 QCoreGraphicsPaintEngine::drawPath(const QPainterPath &p)
 {
     Q_D(QCoreGraphicsPaintEngine);
-    CGMutablePathRef path = qt_mac_compose_path(p, d->penOffset() ? .5 : 0);
+    CGMutablePathRef path = qt_mac_compose_path(p);
     uchar ops = QCoreGraphicsPaintEnginePrivate::CGStroke;
     if(p.fillRule() == Qt::WindingFill)
         ops |= QCoreGraphicsPaintEnginePrivate::CGFill;
@@ -1298,7 +535,7 @@ QCoreGraphicsPaintEngine::drawRects(const QRectF *rects, int rectCount)
         QRectF r = rects[i];
 
         CGMutablePathRef path = CGPathCreateMutable();
-        CGPathAddRect(path, 0, qt_mac_compose_rect(r, d->penOffset()));
+        CGPathAddRect(path, 0, qt_mac_compose_rect(r));
         d->drawPath(QCoreGraphicsPaintEnginePrivate::CGFill|QCoreGraphicsPaintEnginePrivate::CGStroke,
                 path);
         CGPathRelease(path);
@@ -1314,10 +551,18 @@ QCoreGraphicsPaintEngine::drawPoints(const QPointF *points, int pointCount)
     CGMutablePathRef path = CGPathCreateMutable();
     for(int i=0; i < pointCount; i++) {
         float x = points[i].x(), y = points[i].y();
-        CGPathMoveToPoint(path, 0, x, y + 1);
-        CGPathAddLineToPoint(path, 0, x + 0.01, y+1);
+        CGPathMoveToPoint(path, 0, x, y);
+        CGPathAddLineToPoint(path, 0, x, y);
     }
+
+    const bool nedPenWidthChange = !d->cosmeticPen && !(state->renderHints() & QPainter::Antialiasing);
+
+    if (nedPenWidthChange)
+        CGContextSetLineWidth(d->hd, d->current.pen.widthF());
     d->drawPath(QCoreGraphicsPaintEnginePrivate::CGStroke, path);
+    if (nedPenWidthChange)
+        CGContextSetLineWidth(d->hd, d->adjustPenWidth(d->current.pen.widthF()));
+
     CGPathRelease(path);
 }
 
@@ -1329,8 +574,8 @@ QCoreGraphicsPaintEngine::drawEllipse(const QRectF &r)
 
     CGMutablePathRef path = CGPathCreateMutable();
     CGAffineTransform transform = CGAffineTransformMakeScale(r.width() / r.height(), 1);
-    CGPathAddArc(path, &transform,((r.x()+d->penOffset()) + (r.width() / 2)) / (r.width() / r.height()),
-            (r.y()+d->penOffset()) + (r.height() / 2), r.height() / 2, 0, (2 * M_PI), false);
+    CGPathAddArc(path, &transform,(r.x() + (r.width() / 2)) / (r.width() / r.height()),
+            r.y() + (r.height() / 2), r.height() / 2, 0, (2 * M_PI), false);
     d->drawPath(QCoreGraphicsPaintEnginePrivate::CGFill | QCoreGraphicsPaintEnginePrivate::CGStroke,
             path);
     CGPathRelease(path);
@@ -1343,11 +588,11 @@ QCoreGraphicsPaintEngine::drawPolygon(const QPointF *points, int pointCount, Pol
     Q_ASSERT(isActive());
 
     CGMutablePathRef path = CGPathCreateMutable();
-    CGPathMoveToPoint(path, 0, points[0].x(), points[0].y()+1);
+    CGPathMoveToPoint(path, 0, points[0].x(), points[0].y());
     for(int x = 1; x < pointCount; ++x)
-        CGPathAddLineToPoint(path, 0, points[x].x(), points[x].y()+1);
+        CGPathAddLineToPoint(path, 0, points[x].x(), points[x].y());
     if(mode != PolylineMode && points[0] != points[pointCount-1])
-        CGPathAddLineToPoint(path, 0, points[0].x(), points[0].y()+1);
+        CGPathAddLineToPoint(path, 0, points[0].x(), points[0].y());
     uint op = QCoreGraphicsPaintEnginePrivate::CGStroke;
     if (mode != PolylineMode)
         op |= mode == OddEvenMode ? QCoreGraphicsPaintEnginePrivate::CGEOFill
@@ -1365,8 +610,8 @@ QCoreGraphicsPaintEngine::drawLines(const QLineF *lines, int lineCount)
     CGMutablePathRef path = CGPathCreateMutable();
     for(int i = 0; i < lineCount; i++) {
         const QPointF start = lines[i].p1(), end = lines[i].p2();
-        CGPathMoveToPoint(path, 0, start.x(), start.y()+1);
-        CGPathAddLineToPoint(path, 0, end.x(), end.y()+1);
+        CGPathMoveToPoint(path, 0, start.x(), start.y());
+        CGPathAddLineToPoint(path, 0, end.x(), end.y());
     }
     d->drawPath(QCoreGraphicsPaintEnginePrivate::CGStroke, path);
     CGPathRelease(path);
@@ -1380,44 +625,50 @@ QCoreGraphicsPaintEngine::drawPixmap(const QRectF &r, const QPixmap &pm, const Q
     if(pm.isNull())
         return;
 
-    //save
-    CGContextSaveGState(d->hd);
-
-    //set clip
-    QRegion rgn(r.toRect());
-    qt_mac_clip_cg(d->hd, rgn, 0, 0);
-
-    //draw
-    const float sx = ((float)r.width())/sr.width(), sy = ((float)r.height())/sr.height();
-    CGRect rect = CGRectMake(r.x()-(sr.x()*sx), r.y()-(sr.y()*sy), pm.width()*sx, pm.height()*sy);
+    bool differentSize = (QRectF(0, 0, pm.width(), pm.height()) != sr), doRestore = false;
+    CGRect rect = CGRectMake(r.x(), r.y(), r.width(), r.height());
+    QCFType<CGImageRef> image;
     if(pm.depth() == 1) {
-        if(d->current.bg.mode == Qt::OpaqueMode) {
-            d->setFillBrush(d->current.bg.brush);
-            CGContextFillRect(d->hd, qt_mac_compose_rect(r, 0));
-        }
+        doRestore = true;
+        CGContextSaveGState(d->hd);
+
         const QColor &col = d->current.pen.color();
         CGContextSetRGBFillColor(d->hd, qt_mac_convert_color_to_cg(col.red()),
                 qt_mac_convert_color_to_cg(col.green()),
                 qt_mac_convert_color_to_cg(col.blue()),
                 qt_mac_convert_color_to_cg(col.alpha()));
 
-        CGImageRef image = qt_mac_create_imagemask(pm);
-        HIViewDrawCGImage(d->hd, &rect, image);
-        CGImageRelease(image);
+        image = qt_mac_create_imagemask(pm, sr);
+    } else if (differentSize) {
+#if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4)
+        if (QSysInfo::MacintoshVersion >= QSysInfo::MV_10_4) {
+            image = CGImageCreateWithImageInRect(CGImageRef(pm.macCGHandle()),
+                                                 CGRectMake(sr.x(), sr.y(), sr.width(), sr.height()));
+        } else
+#endif
+        {
+            const int sx = qRound(sr.x()), sy = qRound(sr.y()), sw = qRound(sr.width()), sh = qRound(sr.height());
+            quint32 *pantherData = pm.data->pixels + (sy * pm.width() + sx);
+            QCFType<CGDataProviderRef> provider = CGDataProviderCreateWithData(0, pantherData, sw*sh*sizeof(uint), 0);
+            image = CGImageCreate(sw, sh, 8, 32, pm.width() * sizeof(uint),
+                                  QCFType<CGColorSpaceRef>(CGColorSpaceCreateDeviceRGB()),
+                                  kCGImageAlphaPremultipliedFirst, provider, 0, 0,
+                                  kCGRenderingIntentDefault);
+        }
     } else {
-        HIViewDrawCGImage(d->hd, &rect, (CGImageRef)pm.macCGHandle());
+        CGImageRef pixmapImage = CGImageRef(pm.macCGHandle());
+        CFRetain(pixmapImage);
+        image = pixmapImage;
     }
-
-    //restore
-    CGContextRestoreGState(d->hd);
+    HIViewDrawCGImage(d->hd, &rect, image);
+    if (doRestore)
+        CGContextRestoreGState(d->hd);
 }
-
 
 static void drawImageReleaseData (void *info, const void *, size_t)
 {
     delete static_cast<QImage *>(info);
 }
-
 
 void QCoreGraphicsPaintEngine::drawImage(const QRectF &r, const QImage &img, const QRectF &sr,
                                          Qt::ImageConversionFlags flags)
@@ -1460,40 +711,33 @@ void QCoreGraphicsPaintEngine::drawImage(const QRectF &r, const QImage &img, con
                                                           image->bits(),
                                                           image->numBytes(),
                                                           drawImageReleaseData);
-   QCFType<CGImageRef> cgimage = CGImageCreate(image->width(), image->height(), 8, 32,
+    QCFType<CGImageRef> cgimage = CGImageCreate(image->width(), image->height(), 8, 32,
                                         image->bytesPerLine(),
-                                QCFType<CGColorSpaceRef>(CGColorSpaceCreateDeviceRGB()),
-                                cgflags, dataProvider, 0, false, kCGRenderingIntentDefault);
+                                        QCFType<CGColorSpaceRef>(CGColorSpaceCreateDeviceRGB()),
+                                        cgflags, dataProvider, 0, false, kCGRenderingIntentDefault);
 
-   CGRect rect;
-   QRectF baseSize(0, 0, image->width(), image->height());
-    bool wrongSize = (baseSize != sr);
+   CGRect rect = CGRectMake(r.x(), r.y(), r.width(), r.height());
+   if ((QRectF(0, 0, img.width(), img.height()) != sr)) {
 #if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4)
-    if (QSysInfo::MacintoshVersion >= QSysInfo::MV_10_4) {
-        cgimage = CGImageCreateWithImageInRect(cgimage, CGRectMake(sr.x(), sr.y(),
-                                                                   sr.width(), sr.height()));
-        rect = CGRectMake(r.x(), r.y(), r.width(), r.height());
-    } else
+        if (QSysInfo::MacintoshVersion >= QSysInfo::MV_10_4) {
+            cgimage = CGImageCreateWithImageInRect(cgimage, CGRectMake(sr.x(), sr.y(),
+                                                                       sr.width(), sr.height()));
+        } else
 #endif
-    {
-        const float sx = ((float)r.width())/sr.width(), sy = ((float)r.height())/sr.height();
-        rect = CGRectMake(r.x()-(sr.x()*sx), r.y()-(sr.y()*sy),
-                          image->width()*sx, image->height()*sy);
-        if (wrongSize) {
-            CGContextSaveGState(d->hd);
-            //set clip
-            QRegion rgn(r.toRect());
-            qt_mac_clip_cg(d->hd, rgn, 0, 0);
+        {
+            int sx = qRound(sr.x());
+            int sy = qRound(sr.y());
+            int sw = qRound(sr.width());
+            int sh = qRound(sr.height());
+            // Make another CGImage based on the part that we need.
+            const uchar *pantherData = image->scanLine(sy) + sx * sizeof(uint);
+            dataProvider = CGDataProviderCreateWithData(0, pantherData, sw * sh * sizeof(uint), 0);
+            cgimage = CGImageCreate(sw, sh, 8, 32, image->bytesPerLine(),
+                                    QCFType<CGColorSpaceRef>(CGColorSpaceCreateDeviceRGB()),
+                                    cgflags, dataProvider, 0, false, kCGRenderingIntentDefault);
         }
-    }
+   }
     HIViewDrawCGImage(d->hd, &rect, cgimage);
-    if (wrongSize
-#if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4)
-            && QSysInfo::MacintoshVersion < QSysInfo::MV_10_4
-#endif
-       ) {
-        CGContextRestoreGState(d->hd);
-    }
 }
 
 void
@@ -1525,9 +769,7 @@ QCoreGraphicsPaintEngine::drawTiledPixmap(const QRectF &r, const QPixmap &pixmap
     //setup the pattern
     QMacPattern *qpattern = new QMacPattern;
     qpattern->data.pixmap = pixmap;
-    qpattern->opaque = (d->current.bg.mode == Qt::OpaqueMode);
     qpattern->foreground = d->current.pen.color();
-    qpattern->background = d->current.bg.brush.color();
     CGPatternCallbacks callbks;
     callbks.version = 0;
     callbks.drawPattern = qt_mac_draw_pattern;
@@ -1555,6 +797,37 @@ QCoreGraphicsPaintEngine::drawTiledPixmap(const QRectF &r, const QPixmap &pixmap
     CGPatternRelease(pat);
 }
 
+void QCoreGraphicsPaintEngine::drawTextItem(const QPointF &pos, const QTextItem &item)
+{
+    Q_D(QCoreGraphicsPaintEngine);
+
+    const QTextItemInt &ti = static_cast<const QTextItemInt &>(item);
+
+    QPen oldPen = painter()->pen();
+    QBrush oldBrush = painter()->brush();
+    QPointF oldBrushOrigin = painter()->brushOrigin();
+    updatePen(Qt::NoPen);
+    updateBrush(oldPen.brush(), QPointF(0, 0));
+
+    Q_ASSERT(type() == QPaintEngine::CoreGraphics);
+
+    QFontEngineMac *fe = static_cast<QFontEngineMac *>(ti.fontEngine);
+
+    const bool textAA = state->renderHints() & QPainter::TextAntialiasing && fe->fontDef.pointSize > qt_antialiasing_threshold;
+    const bool lineAA = state->renderHints() & QPainter::Antialiasing;
+    if(textAA != lineAA)
+        CGContextSetShouldAntialias(d->hd, textAA);
+
+    if (ti.num_glyphs)
+        fe->draw(d->hd, pos.x(), pos.y(), ti, paintDevice()->height());
+
+    if(textAA != lineAA)
+        CGContextSetShouldAntialias(d->hd, !textAA);
+
+    updatePen(oldPen);
+    updateBrush(oldBrush, oldBrushOrigin);
+}
+
 QPainter::RenderHints
 QCoreGraphicsPaintEngine::supportedRenderHints() const
 {
@@ -1571,20 +844,49 @@ QCoreGraphicsPaintEngine::updateRenderHints(QPainter::RenderHints hints)
     CGContextSetShouldSmoothFonts(d->hd, hints & QPainter::TextAntialiasing);
 }
 
-    float
-QCoreGraphicsPaintEnginePrivate::penOffset()
+/*
+    Returns the size of one device pixel in user-space coordinates.
+*/
+QPointF QCoreGraphicsPaintEnginePrivate::devicePixelSize(CGContextRef context)
 {
-    // ### This function does not deserve to exist, remove!
-    if(complexXForm)
-        return 0;
-    float ret = 0;
-    if(current.pen.style() != Qt::NoPen) {
-        if(current.pen.widthF() < 1.0)
-            ret = 0.5;
-        else
-            ret = 0.0f;
+    CGPoint p1;  p1.x = 0;  p1.y = 0;
+    CGPoint p2;  p2.x = 1;  p2.y = 1;
+   
+#if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4)
+    if (QSysInfo::MacintoshVersion >= QSysInfo::MV_10_4) {
+        const CGPoint convertedP1 = CGContextConvertPointToUserSpace(context, p1);
+        const CGPoint convertedP2 = CGContextConvertPointToUserSpace(context, p2);    
+        return QPointF(convertedP2.x - convertedP1.x, convertedP2.y - convertedP1.y);
+    } else
+# endif
+    {
+        const CGAffineTransform invertedCurrentTransform = CGAffineTransformInvert(CGContextGetCTM(context));
+        const CGPoint convertedP1 = CGPointApplyAffineTransform(p1, invertedCurrentTransform);
+        const CGPoint convertedP2 = CGPointApplyAffineTransform(p2, invertedCurrentTransform);
+        // The order of the points is switched in this case.
+        return QPointF(convertedP1.x - convertedP2.x, convertedP1.y - convertedP2.y);
     }
-    return ret;
+}
+
+/*
+    Adjusts the pen width so we get correct line widths in the
+    non-transformed, aliased case.
+*/
+float QCoreGraphicsPaintEnginePrivate::adjustPenWidth(float penWidth)
+{
+    Q_Q(QCoreGraphicsPaintEngine);
+    if (complexXForm || q->state->renderHints() & QPainter::Antialiasing)
+        return penWidth;
+
+    if (penWidth < 2) {
+        return 1;
+    } else if (penWidth < 3) {
+        return 1.5;
+    } else {
+        return penWidth -1;
+    }
+
+    return penWidth;
 }
 
 void
@@ -1598,9 +900,7 @@ QCoreGraphicsPaintEnginePrivate::setStrokePen(const QPen &pen)
         cglinecap = kCGLineCapRound;
     CGContextSetLineCap(hd, cglinecap);
 
-    //penwidth
-    const float cglinewidth = pen.widthF() <= 0.0f ? 1.0f : float(pen.widthF());
-    CGContextSetLineWidth(hd, cglinewidth);
+    CGContextSetLineWidth(hd, adjustPenWidth(pen.widthF()));
 
     //join
     CGLineJoin cglinejoin = kCGLineJoinMiter;
@@ -1636,6 +936,7 @@ QCoreGraphicsPaintEnginePrivate::setStrokePen(const QPen &pen)
         linedashes.append(1);
         linedashes.append(1);
     }
+    const float cglinewidth = pen.widthF() <= 0.0f ? 1.0f : float(pen.widthF());
     for(int i = 0; i < linedashes.size(); ++i) {
         linedashes[i] *= cglinewidth;
         if(cglinecap == kCGLineCapSquare || cglinecap == kCGLineCapRound) {
@@ -1675,7 +976,7 @@ QCoreGraphicsPaintEnginePrivate::setFillBrush(const QBrush &brush, const QPointF
 #endif
     } else if(bs == Qt::RadialGradientPattern || bs == Qt::ConicalGradientPattern) {
 #ifdef QMAC_NATIVE_GRADIENTS
-        qWarning("Unhandled gradient! %d", (int)bs);
+        qWarning("QCoreGraphicsPaintEngine: Unhandled gradient %d", (int)bs);
 #endif
     } else if(bs != Qt::SolidPattern && bs != Qt::NoBrush) {
         int width = 0, height = 0;
@@ -1717,10 +1018,7 @@ QCoreGraphicsPaintEnginePrivate::setFillBrush(const QBrush &brush, const QPointF
             components[2] = qt_mac_convert_color_to_cg(col.blue());
             base_colorspace = CGColorSpaceCreateDeviceRGB();
         }
-        //qpattern->offset = offset.toPoint();
-        qpattern->opaque = (current.bg.mode == Qt::OpaqueMode);
         qpattern->foreground = brush.color();
-        qpattern->background = current.bg.brush.color();
 
         CGColorSpaceRef fill_colorspace = CGColorSpaceCreatePattern(base_colorspace);
         CGContextSetFillColorSpace(hd, fill_colorspace);
@@ -1772,6 +1070,7 @@ QCoreGraphicsPaintEnginePrivate::setClip(const QRegion *rgn)
 
 void QCoreGraphicsPaintEnginePrivate::drawPath(uchar ops, CGMutablePathRef path)
 {
+    Q_Q(QCoreGraphicsPaintEngine);
     Q_ASSERT((ops & (CGFill | CGEOFill)) != (CGFill | CGEOFill)); //can't really happen
     if((ops & (CGFill | CGEOFill))) {
         if(current.brush.style() == Qt::LinearGradientPattern) {
@@ -1804,94 +1103,28 @@ void QCoreGraphicsPaintEnginePrivate::drawPath(uchar ops, CGMutablePathRef path)
             CGContextFillPath(hd);
     }
 
+    // Avoid saving and restoring the context if we can.
+    const bool needContextSave = (cosmeticPen || !(q->state->renderHints() & QPainter::Antialiasing));
+
     if (ops & CGStroke) {
-        if (cosmeticPen) {
+        if (needContextSave)
             CGContextSaveGState(hd);
-            CGContextBeginPath(hd);
-            CGContextAddPath(hd, path);
-            CGAffineTransform newTransform = CGAffineTransformInvert(CGContextGetCTM(hd));
-            newTransform = CGAffineTransformScale(newTransform, 1, -1);
-            newTransform = CGAffineTransformTranslate(newTransform, 0, -pdev->height());
-            CGContextConcatCTM(hd, newTransform);
-            CGContextStrokePath(hd);
-            CGContextRestoreGState(hd);
-        } else {
-            CGContextBeginPath(hd);
-            CGContextAddPath(hd, path);
-            CGContextStrokePath(hd);
+        CGContextBeginPath(hd);
+
+        // Make sure the cosmetic pen stays one pixel wide.
+        if (cosmeticPen) {
+            if (q->state->renderHints() & QPainter::Antialiasing)
+                CGContextSetLineWidth(hd,  cosmeticPenSize);
+            else
+                CGContextSetLineWidth(hd, cosmeticPenSize * 0.9f);
         }
+
+        if (!(q->state->renderHints() & QPainter::Antialiasing))
+            CGContextTranslateCTM(hd, 0, double(pixelSize.y()) / 10.0);
+
+        CGContextAddPath(hd, path);
+        CGContextStrokePath(hd);
+        if (needContextSave)
+            CGContextRestoreGState(hd);
     }
 }
-
-static void drawTextItemDecoration(QPainter *painter, const QPointF &pos, const QTextItemInt &ti)
-{
-    QFontEngine *fe = ti.fontEngine;
-
-    const QPen oldPen = painter->pen();
-    const QBrush oldBrush = painter->brush();
-    painter->setPen(Qt::NoPen);
-
-    if (ti.flags & QTextItem::Underline) {
-        if (ti.underlineColor.isValid())
-            painter->setBrush(ti.underlineColor);
-        else
-            painter->setBrush(oldPen.brush());
-
-        int lw = qRound(fe->lineThickness());
-        int yp = qRound(pos.y() + fe->underlinePosition().toReal());
-        painter->drawRect(qRound(pos.x()), yp, qRound(ti.width), lw);
-    }
-
-    painter->setBrush(oldPen.brush());
-
-    if (ti.flags & QTextItem::StrikeOut) {
-        int lw = qRound(fe->lineThickness());
-        int yp = qRound(pos.y() - fe->ascent().toReal()/3.);
-        painter->drawRect(qRound(pos.x()), yp, qRound(ti.width), lw);
-    }
-
-    if (ti.flags & QTextItem::Overline) {
-        int lw = qRound(fe->lineThickness());
-        int yp = qRound(pos.y() - fe->ascent().toReal());
-        painter->drawRect(qRound(pos.x()), yp, qRound(ti.width), lw);
-    }
-
-    painter->setPen(oldPen);
-    painter->setBrush(oldBrush);
-}
-
-
-void QCoreGraphicsPaintEngine::drawTextItem(const QPointF &pos, const QTextItem &item)
-{
-    Q_D(QCoreGraphicsPaintEngine);
-
-    const QTextItemInt &ti = static_cast<const QTextItemInt &>(item);
-
-    QPen oldPen = painter()->pen();
-    QBrush oldBrush = painter()->brush();
-    QPointF oldBrushOrigin = painter()->brushOrigin();
-    updatePen(Qt::NoPen);
-    updateBrush(oldPen.brush(), QPointF(0, 0));
-
-    Q_ASSERT(type() == QPaintEngine::CoreGraphics);
-
-    const bool textAA = state->renderHints() & QPainter::TextAntialiasing;
-    const bool lineAA = state->renderHints() & QPainter::Antialiasing;
-    if(textAA != lineAA)
-        CGContextSetShouldAntialias(d->hd, textAA);
-
-    Q_ASSERT(ti.fontEngine->type() == QFontEngine::Mac);
-
-    QFontEngineMac *fe = static_cast<QFontEngineMac*>(ti.fontEngine);
-    if (ti.num_glyphs)
-        fe->draw(d->hd, pos.x(), pos.y(), ti, paintDevice()->height());
-    drawTextItemDecoration(painter(), pos, ti);
-
-    if(textAA != lineAA)
-        CGContextSetShouldAntialias(d->hd, !textAA);
-
-    updatePen(oldPen);
-    updateBrush(oldBrush, oldBrushOrigin);
-}
-
-

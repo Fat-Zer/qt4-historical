@@ -161,8 +161,9 @@ public:
     void setCurrentTarget(QWidget *target, bool dropped = false);
     QWidget *currentTarget();
 
-#ifdef Q_WS_MAC
-    static OSErr qt_mac_send_handler(FlavorType, void *, DragItemRef, DragRef); //qdnd_mac.cpp
+#ifdef Q_WS_X11
+    QPixmap xdndMimeTransferedPixmap[2];
+    int xdndMimeTransferedPixmapIndex;
 #endif
 
 private:
@@ -211,6 +212,36 @@ private:
     QPointer<QMimeData> data;
     int CF_PERFORMEDDROPEFFECT;
     DWORD performedEffect;
+};
+
+
+class QOleEnumFmtEtc : public IEnumFORMATETC
+{
+public:
+    explicit QOleEnumFmtEtc(const QVector<FORMATETC> &fmtetcs);
+    explicit QOleEnumFmtEtc(const QVector<LPFORMATETC> &lpfmtetcs);
+    virtual ~QOleEnumFmtEtc();
+
+    bool isNull() const;
+
+    // IUnknown methods
+    STDMETHOD(QueryInterface)(REFIID riid, void FAR* FAR* ppvObj);
+    STDMETHOD_(ULONG,AddRef)(void);
+    STDMETHOD_(ULONG,Release)(void);
+
+    // IEnumFORMATETC methods
+    STDMETHOD(Next)(ULONG celt, LPFORMATETC rgelt, ULONG FAR* pceltFetched);
+    STDMETHOD(Skip)(ULONG celt);
+    STDMETHOD(Reset)(void);
+    STDMETHOD(Clone)(LPENUMFORMATETC FAR* newEnum);
+
+private:
+    bool copyFormatEtc(LPFORMATETC dest, LPFORMATETC src) const;
+
+    ULONG m_dwRefs;
+    ULONG m_nIndex;
+    QVector<LPFORMATETC> m_lpfmtetcs;
+    bool m_isNull;
 };
 
 #endif

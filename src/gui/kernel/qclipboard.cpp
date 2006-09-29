@@ -91,13 +91,19 @@
 
     \endlist
 
+    \section1 Notes for Mac OS X Users
+
+    Mac OS X supports a separate find buffer that holds the current
+    search string in Find operations. This find clipboard can be accessed
+    by specifying the FindBuffer mode.
+
     \section1 Notes for Windows and Mac OS X Users
 
     \list
 
     \i Windows and Mac OS X do not support the global mouse
     selection; they only supports the global clipboard, i.e. they
-    only adds text to the clipboard when an explicit copy or cut is
+    only add text to the clipboard when an explicit copy or cut is
     made.
 
     \i Windows and Mac OS X does not have the concept of ownership;
@@ -144,9 +150,21 @@ QClipboard::~QClipboard()
 #endif
 
 /*!
+    \fn void QClipboard::changed(QClipboard::Mode mode)
+    \since 4.2
+
+    This signal is emitted when the data for the given clipboard \a
+    mode is changed.
+
+    \sa dataChanged(), selectionChanged(), findBufferChanged()
+*/
+
+/*!
     \fn void QClipboard::dataChanged()
 
     This signal is emitted when the clipboard data is changed.
+
+    \sa findBufferChanged(), selectionChanged(), changed()
 */
 
 /*!
@@ -154,8 +172,21 @@ QClipboard::~QClipboard()
 
     This signal is emitted when the selection is changed. This only
     applies to windowing systems that support selections, e.g. X11.
-    Windows doesn't support selections.
+    Windows and Mac OS X don't support selections.
+
+    \sa dataChanged(), findBufferChanged(), changed()
 */
+
+/*!
+    \fn void QClipboard::findBufferChanged()
+    \since 4.2
+
+    This signal is emitted when the find buffer is changed. This only
+    applies to Mac OS X.
+
+    \sa dataChanged(), selectionChanged(), changed()
+*/
+
 
 /*! \enum QClipboard::Mode
     \keyword clipboard mode
@@ -167,10 +198,13 @@ QClipboard::~QClipboard()
     the global clipboard.
 
     \value Selection  indicates that data should be stored and retrieved from
-    the global mouse selection.
+    the global mouse selection. Support for \c Selection is provided only on 
+    systems with a global mouse selection (e.g. X11).
+    
+    \value FindBuffer indicates that data should be stored and retrieved from
+    the Find buffer. This mode is used for holding search strings on Mac OS X.
 
-    \e Note: Support for \c Selection is provided only on systems with a
-    global mouse selection (e.g. X11).
+    \omitvalue LastMode
 
     \sa QClipboard::supportsSelection()
 */
@@ -232,7 +266,8 @@ QString QClipboard::text(QString &subtype, Mode mode) const
     clipboard is used.  If \a mode is QClipboard::Clipboard, the
     text is retrieved from the global clipboard.  If \a mode is
     QClipboard::Selection, the text is retrieved from the global
-    mouse selection.
+    mouse selection. If \a mode is QClipboard::FindBuffer, the
+    text is retrieved from the search string buffer.
 
     \sa setText(), data()
 */
@@ -249,7 +284,8 @@ QString QClipboard::text(Mode mode) const
     clipboard is used.  If \a mode is QClipboard::Clipboard, the
     text is stored in the global clipboard.  If \a mode is
     QClipboard::Selection, the text is stored in the global
-    mouse selection.
+    mouse selection. If \a mode is QClipboard::FindBuffer, the
+    text is stored in the search string buffer.
 
     \sa text(), setData()
 */
@@ -269,7 +305,7 @@ void QClipboard::setText(const QString &text, Mode mode)
     clipboard is used.  If \a mode is QClipboard::Clipboard, the
     image is retrieved from the global clipboard.  If \a mode is
     QClipboard::Selection, the image is retrieved from the global
-    mouse selection.
+    mouse selection. 
 
     \sa setImage() pixmap() data(), QImage::isNull()
 */
@@ -294,7 +330,7 @@ QImage QClipboard::image(Mode mode) const
 
     \code
         QMimeData *data = new QMimeData;
-        data->setPixmap(image);
+        data->setImageData(image);
         clipboard->setMimeData(data, mode);
     \endcode
 
@@ -359,7 +395,8 @@ void QClipboard::setPixmap(const QPixmap &pixmap, Mode mode)
     clipboard is used.  If \a mode is QClipboard::Clipboard, the
     data is retrieved from the global clipboard.  If \a mode is
     QClipboard::Selection, the data is retrieved from the global
-    mouse selection.
+    mouse selection. If \a mode is QClipboard::FindBuffer, the
+    data is retrieved from the search string buffer.
 
     The text(), image(), and pixmap() functions are simpler
     wrappers for retrieving text, image, and pixmap data.
@@ -376,9 +413,10 @@ void QClipboard::setPixmap(const QPixmap &pixmap, Mode mode)
 
     The \a mode argument is used to control which part of the system
     clipboard is used.  If \a mode is QClipboard::Clipboard, the
-    data is retrieved from the global clipboard.  If \a mode is
-    QClipboard::Selection, the data is retrieved from the global
-    mouse selection.
+    data is stored in the global clipboard.  If \a mode is
+    QClipboard::Selection, the data is stored in the global
+    mouse selection. If \a mode is QClipboard::FindBuffer, the
+    data is stored in the search string buffer.
 
     The setText(), setImage() and setPixmap() functions are simpler
     wrappers for setting text, image and pixmap data respectively.
@@ -393,7 +431,8 @@ void QClipboard::setPixmap(const QPixmap &pixmap, Mode mode)
     clipboard is used.  If \a mode is QClipboard::Clipboard, this
     function clears the the global clipboard contents.  If \a mode is
     QClipboard::Selection, this function clears the global mouse
-    selection contents.
+    selection contents. If \a mode is QClipboard::FindBuffer, this 
+    function clears the search string buffer.
 
     \sa QClipboard::Mode, supportsSelection()
 */
@@ -409,7 +448,7 @@ QMimeSource *QClipboard::data(Mode mode) const
 {
     Q_D(const QClipboard);
 
-    if (mode != Clipboard && !supportsSelection())
+    if (supportsMode(mode) == false)
         return 0;
 
     if (d->compat_data[mode])
@@ -430,13 +469,93 @@ void QClipboard::setData(QMimeSource *source, Mode mode)
 {
     Q_D(QClipboard);
 
-    if (mode != Clipboard && !supportsSelection())
+    if (supportsMode(mode) == false)
         return;
 
     d->compat_data[mode] = source;
     setMimeData(new QMimeSourceWrapper(d, mode));
 }
 #endif // QT3_SUPPORT
+
+/*!
+    Returns true if the clipboard supports mouse selection; otherwise
+    returns false.
+*/
+bool QClipboard::supportsSelection() const
+{
+    return supportsMode(Selection);
+}
+
+/*!
+    Returns true if the clipboard supports a separate search buffer; otherwise
+    returns false.
+*/
+bool QClipboard::supportsFindBuffer() const
+{
+    return supportsMode(FindBuffer);
+}
+
+/*!
+    Returns true if this clipboard object owns the clipboard data;
+    otherwise returns false.
+*/
+bool QClipboard::ownsClipboard() const
+{
+    return ownsMode(Clipboard);
+}
+
+/*!
+    Returns true if this clipboard object owns the mouse selection
+    data; otherwise returns false.
+*/
+bool QClipboard::ownsSelection() const
+{
+    return ownsMode(Selection);
+}
+
+/*!
+    \since 4.2
+
+    Returns true if this clipboard object owns the find buffer data;
+    otherwise returns false.
+*/
+bool QClipboard::ownsFindBuffer() const
+{
+    return ownsMode(FindBuffer);
+}
+
+/*! \internal
+    \fn bool QClipboard::supportsMode(Mode mode) const;
+    Returns true if the clipboard supports the clipboard mode speacified by \a mode;
+    otherwise returns false.
+*/
+
+/*! \internal
+    \fn bool QClipboard::ownsMode(Mode mode) const;
+    Returns true if the clipboard supports the clipboard data speacified by \a mode;
+    otherwise returns false.
+*/
+
+/*! \internal
+    Emits the appropriate changed signal for \a mode.
+*/
+void QClipboard::emitChanged(Mode mode)
+{
+    switch (mode) {
+        case Clipboard:
+            emit dataChanged();
+        break;
+        case Selection:
+            emit selectionChanged();
+        break;
+        case FindBuffer:
+            emit findBufferChanged();
+        break;
+        default:
+        break;
+        emit changed(mode);
+    }
+}
 
 const char* QMimeDataWrapper::format(int n) const
 {

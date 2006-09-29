@@ -39,7 +39,7 @@
 #include "QtCore/qbytearray.h"
 #include "QtCore/qlist.h"
 #include "QtCore/qtimer.h"
-#include "private/qinternal_p.h"
+#include "private/qringbuffer_p.h"
 #include "private/qiodevice_p.h"
 #include "private/qnativesocketengine_p.h"
 #include "qnetworkproxy.h"

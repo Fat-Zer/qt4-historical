@@ -34,9 +34,12 @@
 #include <QtCore/qdatetime.h>
 #include <QtCore/qobject.h>
 
-QT_BEGIN_HEADER
+#include <QtCore/qpoint.h>
+#include <QtCore/qsize.h>
+#include <QtCore/qrect.h>
 
-Q_DECLARE_METATYPE(QStringList)
+
+QT_BEGIN_HEADER
 
 namespace QTest
 {
@@ -75,6 +78,36 @@ template<> inline char *toString(const QDateTime &dateTime)
 template<> inline char *toString(const QChar &c)
 {
     return qstrdup(QString::fromLatin1("QChar: '%1' (0x%2)").arg(c).arg(QString::number(c.unicode(), 16)).toLatin1().constData());
+}
+
+template<> inline char *toString(const QPoint &p)
+{
+    return qstrdup(QString::fromLatin1("QPoint(%1,%2)").arg(p.x()).arg(p.y()).toLatin1().constData());
+}
+
+template<> inline char *toString(const QSize &s)
+{
+    return qstrdup(QString::fromLatin1("QSize(%1x%2)").arg(s.width()).arg(s.height()).toLatin1().constData());
+}
+
+template<> inline char *toString(const QRect &s)
+{
+    return qstrdup(QString::fromLatin1("QRect(%1,%2 %5x%6) (bottomright %3,%4)").arg(s.left()).arg(s.top()).arg(s.right()).arg(s.bottom()).arg(s.width()).arg(s.height()).toLatin1().constData());
+}
+
+template<> inline char *toString(const QPointF &p)
+{
+    return qstrdup(QString::fromLatin1("QPointF(%1,%2)").arg(p.x()).arg(p.y()).toLatin1().constData());
+}
+
+template<> inline char *toString(const QSizeF &s)
+{
+    return qstrdup(QString::fromLatin1("QSizeF(%1x%2)").arg(s.width()).arg(s.height()).toLatin1().constData());
+}
+
+template<> inline char *toString(const QRectF &s)
+{
+    return qstrdup(QString::fromLatin1("QRectF(%1,%2 %5x%6) (bottomright %3,%4)").arg(s.left()).arg(s.top()).arg(s.right()).arg(s.bottom()).arg(s.width()).arg(s.height()).toLatin1().constData());
 }
 
 #ifndef QTEST_NO_SPECIALIZATIONS

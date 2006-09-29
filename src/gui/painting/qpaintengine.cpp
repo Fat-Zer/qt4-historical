@@ -33,6 +33,11 @@
 
 #include <math.h>
 
+/*!
+    \class QTextItem
+    \internal
+*/
+
 qreal QTextItem::descent() const
 {
     const QTextItemInt *ti = static_cast<const QTextItemInt *>(this);
@@ -88,8 +93,8 @@ QFont QTextItem::font() const
   paint engine that is a fallback for when an engine does not support a certain
   capability.
 
-  If one wants to use QPainter to draw to a different backend, such as
-  PDF, one must subclass QPaintEngine and reimplement all its virtual
+  If one wants to use QPainter to draw to a different backend,
+  one must subclass QPaintEngine and reimplement all its virtual
   functions. The QPaintEngine implementation is then made available by
   subclassing QPaintDevice and reimplementing the virtual function
   QPaintDevice::paintEngine().
@@ -129,7 +134,15 @@ QFont QTextItem::font() const
   \value PainterPaths       The engine has path support.
   \value Antialiasing       The engine can use antialising to improve the appearance
                             of rendered primitives.
-  \value BrushStroke
+  \value BrushStroke        The engine supports drawing strokes that
+                            contain brushes as fills, not just solid
+                            colors (e.g. a dashed gradient line of
+                            width 2).
+  \value ConstantOpacity    The engine supports the feature provided by
+                            QPainter::setOpacity().
+  \value MaskedBrush        The engine is capable of rendering brushes that has a
+                            texture with an alpha channel or a mask.
+
   \value PaintOutsidePaintEvent The engine is capable of painting outside of
                                 paint events.
   \value AllFeatures
@@ -153,7 +166,6 @@ QFont QTextItem::font() const
 
 /*!
     \enum QPaintEngine::DirtyFlag
-    \typedef QPaintEngine::DirtyFlags
 
     \value DirtyPen The pen is dirty and needs to be updated.
 
@@ -187,6 +199,10 @@ QFont QTextItem::font() const
 
     \value DirtyClipEnabled Whether clipping is enabled or not is
     dirty and needs to be updated.
+
+    \value DirtyOpacity The constant opacity has changed and needs to
+                        be updated as part of the state change in
+                        QPaintEngine::updateState().
 
     \value AllDirty Convenience enum used internally.
 
@@ -276,7 +292,7 @@ void QPaintEngine::drawPolygon(const QPoint *points, int pointCount, PolygonDraw
     \value Windows
     \value MacPrinter
     \value CoreGraphics Mac OS X's Quartz2D (CoreGraphics)
-    \value QuickDraw Mac OS X's older QuickDraw-based painting
+    \value QuickDraw Mac OS X's QuickDraw
     \value QWindowSystem Qtopia Core
     \value PostScript
     \value OpenGL
@@ -433,7 +449,8 @@ void qt_draw_tile(QPaintEngine *gc, qreal x, qreal y, qreal w, qreal h,
             drawW = pixmap.width() - xOff; // Cropping first column
             if (xPos + drawW > x + w)           // Cropping last column
                 drawW = x + w - xPos;
-            gc->drawPixmap(QRectF(xPos, yPos, drawW, drawH), pixmap, QRectF(xOff, yOff, drawW, drawH));
+            if (drawW > 0 && drawH > 0)
+                gc->drawPixmap(QRectF(xPos, yPos, drawW, drawH), pixmap, QRectF(xOff, yOff, drawW, drawH));
             xPos += drawW;
             xOff = 0;
         }
@@ -604,7 +621,7 @@ QPainter *QPaintEngine::painter() const
 void QPaintEngine::drawPath(const QPainterPath &)
 {
     if (hasFeature(PainterPaths)) {
-        qWarning("QPaintEngine::drawPath(), must be implemented when feature PainterPaths is set");
+        qWarning("QPaintEngine::drawPath: Must be implemented when feature PainterPaths is set");
     }
 }
 
@@ -642,7 +659,9 @@ void QPaintEngine::drawTextItem(const QPointF &p, const QTextItem &textItem)
     }
     if (!path.isEmpty()) {
         painter()->save();
-        painter()->setRenderHint(QPainter::Antialiasing, bool(painter()->renderHints() & QPainter::TextAntialiasing));
+        painter()->setRenderHint(QPainter::Antialiasing,
+                                 bool((painter()->renderHints() & QPainter::TextAntialiasing)
+                                      && !(painter()->font().styleStrategy() & QFont::NoAntialias)));
         painter()->setBrush(state->pen().brush());
         painter()->setPen(Qt::NoPen);
         painter()->drawPath(path);
@@ -828,7 +847,7 @@ QPoint QPaintEngine::coordinateOffset() const
 void QPaintEngine::setSystemClip(const QRegion &region)
 {
     if (isActive()) {
-        qWarning("QPaintEngine::setSystemClip(), should not be changed while engine is active");
+        qWarning("QPaintEngine::setSystemClip: Should not be changed while engine is active");
         return;
     }
     d_func()->systemClip = region;
@@ -857,7 +876,7 @@ QRegion QPaintEngine::systemClip() const
 void QPaintEngine::setSystemRect(const QRect &rect)
 {
     if (isActive()) {
-        qWarning("QPaintEngine::setSystemRect, should not be changed while engine is active");
+        qWarning("QPaintEngine::setSystemRect: Should not be changed while engine is active");
         return;
     }
     d_func()->systemRect = rect;

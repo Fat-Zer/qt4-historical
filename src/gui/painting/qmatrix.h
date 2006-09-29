@@ -36,6 +36,7 @@ QT_BEGIN_HEADER
 QT_MODULE(Gui)
 
 class QPainterPath;
+class QVariant;
 
 class Q_GUI_EXPORT QMatrix // 2D transform matrix
 {
@@ -91,6 +92,8 @@ public:
 
     QMatrix &operator=(const QMatrix &);
 
+    operator QVariant() const;
+
 #ifdef QT3_SUPPORT
     inline QT3_SUPPORT QMatrix invert(bool *invertible=0) const { return inverted(invertible); }
     inline QT3_SUPPORT QRect map(const QRect &r) const { return mapRect(r); }
@@ -105,19 +108,19 @@ private:
 Q_DECLARE_TYPEINFO(QMatrix, Q_MOVABLE_TYPE);
 
 // mathematical semantics
-inline Q_GUI_EXPORT QPoint operator*(const QPoint &p, const QMatrix &m)
+Q_GUI_EXPORT_INLINE QPoint operator*(const QPoint &p, const QMatrix &m)
 { return m.map(p); }
-inline Q_GUI_EXPORT QPointF operator*(const QPointF &p, const QMatrix &m)
+Q_GUI_EXPORT_INLINE QPointF operator*(const QPointF &p, const QMatrix &m)
 { return m.map(p); }
-inline Q_GUI_EXPORT QLineF operator*(const QLineF &l, const QMatrix &m)
+Q_GUI_EXPORT_INLINE QLineF operator*(const QLineF &l, const QMatrix &m)
 { return m.map(l); }
-inline Q_GUI_EXPORT QLine operator*(const QLine &l, const QMatrix &m)
+Q_GUI_EXPORT_INLINE QLine operator*(const QLine &l, const QMatrix &m)
 { return m.map(l); }
-inline Q_GUI_EXPORT QPolygon operator *(const QPolygon &a, const QMatrix &m)
+Q_GUI_EXPORT_INLINE QPolygon operator *(const QPolygon &a, const QMatrix &m)
 { return m.map(a); }
-inline Q_GUI_EXPORT QPolygonF operator *(const QPolygonF &a, const QMatrix &m)
+Q_GUI_EXPORT_INLINE QPolygonF operator *(const QPolygonF &a, const QMatrix &m)
 { return m.map(a); }
-inline Q_GUI_EXPORT QRegion operator *(const QRegion &r, const QMatrix &m)
+Q_GUI_EXPORT_INLINE QRegion operator *(const QRegion &r, const QMatrix &m)
 { return m.map(r); }
 Q_GUI_EXPORT QPainterPath operator *(const QPainterPath &p, const QMatrix &m);
 

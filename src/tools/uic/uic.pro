@@ -13,7 +13,7 @@ TARGET = uic
 DESTDIR = ../../../bin
 
 DEFINES	       += QT_BOOTSTRAPPED QT_UIC QT_LITE_UNICODE QT_NO_DATASTREAM \
-	          QT_NO_THREAD QT_NO_QOBJECT QT_NO_UNICODETABLES QT_NO_LIBRARY
+	          QT_NO_THREAD QT_NO_QOBJECT QT_NO_UNICODETABLES QT_NO_LIBRARY QT_NO_SYSTEMLOCALE
 win32:DEFINES += QT_NODLL
 
 CONFIG -= qt
@@ -22,6 +22,7 @@ INCLUDEPATH	 = ../../corelib/arch/generic $$QT_BUILD_TREE/include . \
 DEPENDPATH	+= $$INCLUDEPATH ../../corelib/base ../../corelib/tools ../../corelib/io ../../corelib/codecs ../../xml
 
 include(uic.pri)
+include(cpp/cpp.pri)
 
 SOURCES += main.cpp
 
@@ -36,7 +37,6 @@ SOURCES	+= ../../corelib/global/qglobal.cpp \
 	   ../../corelib/io/qiodevice.cpp	\
 	   ../../corelib/io/qtemporaryfile.cpp \
 	   ../../corelib/io/qtextstream.cpp \
-	   ../../corelib/kernel/qinternal.cpp \
 	   ../../corelib/tools/qbytearraymatcher.cpp \
 	   ../../corelib/tools/qchar.cpp		\
 	   ../../corelib/tools/qdatetime.cpp	\
@@ -60,7 +60,6 @@ SOURCES	+= ../../corelib/global/qglobal.cpp \
            ../../corelib/codecs/qtsciicodec.cpp \
            ../../corelib/codecs/qlatincodec.cpp \
            ../../corelib/codecs/qsimplecodec.cpp \
-	   ../../corelib/codecs/qfontlaocodec.cpp \
            ../../xml/qdom.cpp \
 	   ../../xml/qxml.cpp
 

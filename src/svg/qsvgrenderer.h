@@ -24,6 +24,7 @@
 #ifndef QSVGRENDERER_H
 #define QSVGRENDERER_H
 
+#include <QtGui/qmatrix.h>
 #include <QtCore/qobject.h>
 #include <QtCore/qsize.h>
 #include <QtCore/qrect.h>
@@ -40,7 +41,7 @@ class Q_SVG_EXPORT QSvgRenderer : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(QRect viewBox READ viewBox WRITE setViewBox)
+    Q_PROPERTY(QRectF viewBox READ viewBoxF WRITE setViewBox)
     Q_PROPERTY(int framesPerSecond READ framesPerSecond WRITE setFramesPerSecond)
     Q_PROPERTY(int currentFrame READ currentFrame WRITE setCurrentFrame)
 public:
@@ -54,7 +55,9 @@ public:
     QSize defaultSize() const;
 
     QRect viewBox() const;
+    QRectF viewBoxF() const;
     void setViewBox(const QRect &viewbox);
+    void setViewBox(const QRectF &viewbox);
 
     bool animated() const;
     int framesPerSecond() const;
@@ -63,10 +66,18 @@ public:
     void setCurrentFrame(int);
     int animationDuration() const;//in seconds
 
+    QRectF boundsOnElement(const QString &id) const;
+    bool elementExists(const QString &id) const;
+    QMatrix matrixForElement(const QString &id) const;
+    
 public Q_SLOTS:
     bool load(const QString &filename);
     bool load(const QByteArray &contents);
     void render(QPainter *p);
+    void render(QPainter *p, const QRectF &bounds);
+    
+    void render(QPainter *p, const QString &elementId,
+                const QRectF &bounds=QRectF());
 
 Q_SIGNALS:
     void repaintNeeded();

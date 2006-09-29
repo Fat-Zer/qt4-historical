@@ -56,8 +56,7 @@
 QAbstractProxyModel::QAbstractProxyModel(QObject *parent)
     :QAbstractItemModel(*new QAbstractProxyModelPrivate, parent)
 {
-    Q_D(QAbstractProxyModel);
-    setSourceModel(&d->empty);
+    setSourceModel(QAbstractItemModelPrivate::staticEmptyModel());
 }
 
 /*!
@@ -67,8 +66,7 @@ QAbstractProxyModel::QAbstractProxyModel(QObject *parent)
 QAbstractProxyModel::QAbstractProxyModel(QAbstractProxyModelPrivate &dd, QObject *parent)
     : QAbstractItemModel(dd, parent)
 {
-    Q_D(QAbstractProxyModel);
-    setSourceModel(&d->empty);
+    setSourceModel(QAbstractItemModelPrivate::staticEmptyModel());
 }
 
 /*!
@@ -88,7 +86,7 @@ void QAbstractProxyModel::setSourceModel(QAbstractItemModel *sourceModel)
     if (sourceModel)
         d->model = sourceModel;
     else
-        d->model = &d->empty;
+        d->model = QAbstractItemModelPrivate::staticEmptyModel();
 }
 
 /*!
@@ -138,6 +136,8 @@ void QAbstractProxyModel::revert()
 */
 
 /*!
+  Returns a source selection mapped from the specified \a proxySelection.
+
   Reimplement this method to map proxy selections to source selections.
  */
 QItemSelection QAbstractProxyModel::mapSelectionToSource(const QItemSelection &proxySelection) const
@@ -150,6 +150,8 @@ QItemSelection QAbstractProxyModel::mapSelectionToSource(const QItemSelection &p
 }
 
 /*!
+  Returns a proxy selection mapped from the specified \a sourceSelection.
+
   Reimplement this method to map source selections to proxy selections.
 */
 QItemSelection QAbstractProxyModel::mapSelectionFromSource(const QItemSelection &sourceSelection) const
@@ -159,6 +161,33 @@ QItemSelection QAbstractProxyModel::mapSelectionFromSource(const QItemSelection 
     for (int i = 0; i < sourceIndexes.size(); ++i)
         proxySelection << QItemSelectionRange(mapFromSource(sourceIndexes.at(i)));
     return proxySelection;
+}
+
+/*!
+    \reimp
+ */
+QVariant QAbstractProxyModel::data(const QModelIndex &proxyIndex, int role) const
+{
+    Q_D(const QAbstractProxyModel);
+    return d->model->data(mapToSource(proxyIndex), role);
+}
+
+/*!
+    \reimp
+ */
+QVariant QAbstractProxyModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+    Q_D(const QAbstractProxyModel);
+    return d->model->headerData(section, orientation, role);
+}
+
+/*!
+    \reimp
+ */
+Qt::ItemFlags QAbstractProxyModel::flags(const QModelIndex &index) const
+{
+    Q_D(const QAbstractProxyModel);
+    return d->model->flags(mapToSource(index));
 }
 
 #endif // QT_NO_PROXYMODEL

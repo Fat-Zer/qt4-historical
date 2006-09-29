@@ -37,6 +37,7 @@ class QPersistentModelIndex;
 class Q_CORE_EXPORT QModelIndex
 {
     friend class QAbstractItemModel;
+    friend class QProxyModel;
 public:
     inline QModelIndex() : r(-1), c(-1), p(0), m(0) {}
     inline QModelIndex(const QModelIndex &other)
@@ -50,6 +51,7 @@ public:
     inline QModelIndex sibling(int row, int column) const;
     inline QModelIndex child(int row, int column) const;
     inline QVariant data(int role = Qt::DisplayRole) const;
+    inline Qt::ItemFlags flags() const;
     inline const QAbstractItemModel *model() const { return m; }
     inline bool isValid() const { return (r >= 0) && (c >= 0) && (m != 0); }
     inline bool operator==(const QModelIndex &other) const
@@ -84,6 +86,8 @@ public:
     ~QPersistentModelIndex();
     bool operator<(const QPersistentModelIndex &other) const;
     bool operator==(const QPersistentModelIndex &other) const;
+    inline bool operator!=(const QPersistentModelIndex &other) const
+    { return !operator==(other); }
     QPersistentModelIndex &operator=(const QPersistentModelIndex &other);
     bool operator==(const QModelIndex &other) const;
     bool operator!=(const QModelIndex &other) const;
@@ -97,6 +101,7 @@ public:
     QModelIndex sibling(int row, int column) const;
     QModelIndex child(int row, int column) const;
     QVariant data(int role = Qt::DisplayRole) const;
+    Qt::ItemFlags flags() const;
     const QAbstractItemModel *model() const;
     bool isValid() const;
 private:
@@ -158,6 +163,9 @@ public:
                               int row, int column, const QModelIndex &parent);
     virtual Qt::DropActions supportedDropActions() const;
 
+    Qt::DropActions supportedDragActions() const;
+    void setSupportedDragActions(Qt::DropActions);
+
     virtual bool insertRows(int row, int count, const QModelIndex &parent = QModelIndex());
     virtual bool insertColumns(int column, int count, const QModelIndex &parent = QModelIndex());
     virtual bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex());
@@ -189,6 +197,7 @@ Q_SIGNALS:
     void dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
     void headerDataChanged(Qt::Orientation orientation, int first, int last);
     void layoutChanged();
+    void layoutAboutToBeChanged();
 
 #if !defined(Q_MOC_RUN) && !defined(qdoc)
 private: // can only be emitted by QAbstractItemModel
@@ -205,6 +214,7 @@ private: // can only be emitted by QAbstractItemModel
     void columnsAboutToBeRemoved(const QModelIndex &parent, int first, int last);
     void columnsRemoved(const QModelIndex &parent, int first, int last);
 
+    void modelAboutToBeReset();
     void modelReset();
 
 public Q_SLOTS:
@@ -216,6 +226,7 @@ protected:
 
     inline QModelIndex createIndex(int row, int column, void *data = 0) const;
     inline QModelIndex createIndex(int row, int column, int id) const;
+    inline QModelIndex createIndex(int row, int column, quint32 id) const;
 
     void encodeData(const QModelIndexList &indexes, QDataStream &stream) const;
     bool decodeData(int row, int column, const QModelIndex &parent, QDataStream &stream);
@@ -236,7 +247,8 @@ protected:
 
     void changePersistentIndex(const QModelIndex &from, const QModelIndex &to);
     void changePersistentIndexList(const QModelIndexList &from, const QModelIndexList &to);
-
+    QModelIndexList persistentIndexList() const;
+    
 private:
     Q_DECLARE_PRIVATE(QAbstractItemModel)
     Q_DISABLE_COPY(QAbstractItemModel)
@@ -262,6 +274,16 @@ inline QModelIndex QAbstractItemModel::createIndex(int arow, int acolumn, int ai
 #if defined(Q_CC_MSVC)
 #pragma warning( pop )
 #endif
+inline QModelIndex QAbstractItemModel::createIndex(int arow, int acolumn, quint32 aid) const
+#if defined(Q_CC_MSVC)
+#pragma warning( push )
+#pragma warning( disable : 4312 ) // avoid conversion warning on 64-bit
+#endif
+{ return QModelIndex(arow, acolumn, reinterpret_cast<void*>(aid), this); }
+#if defined(Q_CC_MSVC)
+#pragma warning( pop )
+#endif
+
 
 class Q_CORE_EXPORT QAbstractTableModel : public QAbstractItemModel
 {
@@ -321,6 +343,9 @@ inline QModelIndex QModelIndex::child(int arow, int acolumn) const
 
 inline QVariant QModelIndex::data(int arole) const
 { return m ? m->data(*this, arole) : QVariant(); }
+
+inline Qt::ItemFlags QModelIndex::flags() const
+{ return m ? m->flags(*this) : Qt::ItemFlags(0); }
 
 inline uint qHash(const QModelIndex &index)
 { return uint((index.row() << 4) + index.column() + index.internalId()); }

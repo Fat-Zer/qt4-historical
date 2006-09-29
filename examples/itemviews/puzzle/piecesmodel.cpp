@@ -49,7 +49,7 @@ QVariant PiecesModel::data(const QModelIndex &index, int role) const
 void PiecesModel::addPiece(const QPixmap &pixmap, const QPoint &location)
 {
     int row;
-    if (int(2.0*rand()/(RAND_MAX+1.0)) == 1)
+    if (int(2.0*qrand()/(RAND_MAX+1.0)) == 1)
         row = 0;
     else
         row = pixmaps.size();
@@ -64,7 +64,7 @@ Qt::ItemFlags PiecesModel::flags(const QModelIndex &index) const
 {
     if (index.isValid()) {
         return (Qt::ItemIsEnabled | Qt::ItemIsSelectable
-              | Qt::ItemIsDragEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled);
+              | Qt::ItemIsDragEnabled | Qt::ItemIsSelectable);
     }
 
     return Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
@@ -133,11 +133,12 @@ bool PiecesModel::dropMimeData(const QMimeData *data, Qt::DropAction action,
 
     int endRow;
 
-    if (!parent.isValid() && row < 0)
-        endRow = pixmaps.size();
-    else if (!parent.isValid())
-        endRow = qMin(row, pixmaps.size());
-    else
+    if (!parent.isValid()) {
+        if (row < 0)
+            endRow = pixmaps.size();
+        else
+            endRow = qMin(row, pixmaps.size());
+    } else
         endRow = parent.row();
 
     QByteArray encodedData = data->data("image/x-puzzle-piece");
@@ -170,4 +171,18 @@ int PiecesModel::rowCount(const QModelIndex &parent) const
 Qt::DropActions PiecesModel::supportedDropActions() const
 {
     return Qt::CopyAction | Qt::MoveAction;
+}
+
+void PiecesModel::addPieces(const QPixmap& pixmap)
+{
+    beginRemoveRows(QModelIndex(), 0, 24);
+    pixmaps.clear();
+    locations.clear();
+    endRemoveRows();
+    for (int y = 0; y < 5; ++y) {
+        for (int x = 0; x < 5; ++x) {
+            QPixmap pieceImage = pixmap.copy(x*80, y*80, 80, 80);
+            addPiece(pieceImage, QPoint(x, y));
+        }
+    }
 }

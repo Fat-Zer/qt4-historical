@@ -42,6 +42,7 @@ class Q_COMPAT_EXPORT Q3ProgressDialog : public QDialog
 {
     Q_OBJECT
     Q_PROPERTY(bool wasCanceled READ wasCanceled)
+    Q_PROPERTY(bool wasCancelled READ wasCancelled DESIGNABLE false STORED false)
     Q_PROPERTY(int totalSteps READ totalSteps WRITE setTotalSteps)
     Q_PROPERTY(int progress READ progress WRITE setProgress)
     Q_PROPERTY(bool autoReset READ autoReset WRITE setAutoReset)
@@ -51,14 +52,14 @@ class Q_COMPAT_EXPORT Q3ProgressDialog : public QDialog
 
 public:
     Q3ProgressDialog(QWidget* parent, const char* name, bool modal=false,
-                                           Qt::WFlags f=0);
+                                           Qt::WindowFlags f=0);
     Q3ProgressDialog(const QString& labelText,
                                            const QString &cancelButtonText, int totalSteps,
                                            QWidget* parent=0, const char* name=0,
-                                           bool modal=false, Qt::WFlags f=0);
-    Q3ProgressDialog(QWidget* parent = 0, Qt::WFlags f = 0);
+                                           bool modal=false, Qt::WindowFlags f=0);
+    Q3ProgressDialog(QWidget* parent = 0, Qt::WindowFlags f = 0);
     Q3ProgressDialog(const QString& labelText, const QString &cancelButtonText,
-                     int totalSteps, QWidget* parent=0, Qt::WFlags f=0);
+                     int totalSteps, QWidget* parent=0, Qt::WindowFlags f=0);
     ~Q3ProgressDialog();
 
     void setLabel(QLabel *);
@@ -66,6 +67,7 @@ public:
     void setBar(Q3ProgressBar *);
 
     bool wasCanceled() const;
+    bool wasCancelled() const;
 
     int totalSteps() const;
     int progress()   const;
@@ -94,6 +96,7 @@ public:
 
 Q_SIGNALS:
     void canceled();
+    void cancelled();
 
 protected:
     void resizeEvent(QResizeEvent *);

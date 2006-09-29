@@ -39,7 +39,7 @@ class Q_COMPAT_EXPORT Q3TabDialog : public QDialog
 {
     Q_OBJECT
 public:
-    Q3TabDialog(QWidget* parent=0, const char* name=0, bool modal=false, Qt::WFlags f=0);
+    Q3TabDialog(QWidget* parent=0, const char* name=0, bool modal=false, Qt::WindowFlags f=0);
     ~Q3TabDialog();
 
     void show();
@@ -107,8 +107,6 @@ Q_SIGNALS:
     void selected(const QString&); // obsolete
 
 private:
-    friend class Q3TabDialogPrivate;
-    Q_PRIVATE_SLOT(d, void emitSelected(int))
     void setSizes();
     void setUpLayout();
 

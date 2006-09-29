@@ -26,6 +26,7 @@
 #include <qfile.h>
 #include "qlibrary_p.h"
 #include <qfileinfo.h>
+#include <qcoreapplication.h>
 
 #ifndef QT_NO_LIBRARY
 
@@ -47,23 +48,31 @@ bool QLibraryPrivate::load_sys()
             pHnd = (void*)shl_load(QFile::encodeName(fileName + ".sl"), BIND_DEFERRED | BIND_NONFATAL | DYNAMIC_PATH, 0);
         if (!pHnd) {
             QFileInfo fi(fileName);
+            int dlFlags = DYNAMIC_PATH | BIND_NONFATAL;
+            if (loadHints & QLibrary::ResolveAllSymbolsHint) {
+                dlFlags |= BIND_IMMEDIATE;
+            } else {
+                dlFlags |= BIND_DEFERRED;
+            }
             pHnd = (void*)shl_load(QFile::encodeName(fi.path() + "/lib" + fi.fileName() + ".sl"),
-                                   BIND_DEFERRED | BIND_NONFATAL | DYNAMIC_PATH, 0);
+                                   dlFlags, 0);
         }
     }
-#if defined(QT_DEBUG_COMPONENT)
-    if (!pHnd)
-        qWarning("QLibrary: Cannot load %s", QFile::encodeName(fileName).constData());
-#endif
+    if (!pHnd) {
+        errorString = QLibrary::tr("QLibrary::load_sys: Cannot load %1 (%2)").arg(fileName).arg(QString());
+    } else {
+        errorString.clear();
+    }
     return pHnd != 0;
 }
 
 bool QLibraryPrivate::unload_sys()
 {
     if (shl_unload((shl_t)pHnd)) {
-        qWarning("QLibrary: Cannot unload %s", QFile::encodeName(fileName).constData());
+        errorString = QLibrary::tr("QLibrary::unload_sys: Cannot unload %1 (%2)").arg(fileName).arg(QString());
         return false;
     }
+    errorString.clear();
     return true;
 }
 
@@ -71,27 +80,23 @@ void* QLibraryPrivate::resolve_sys(const char* symbol)
 {
     void* address = 0;
     if (shl_findsym((shl_t*)&pHnd, symbol, TYPE_UNDEFINED, &address) < 0) {
-#if defined(QT_DEBUG_COMPONENT)
-        qWarning("QLibrary: Undefined symbol \"%s\" in %s", symbol, QFile::encodeName(fileName).constData());
-#endif
+        errorString = QLibrary::tr("QLibrary::resolve_sys: Symbol \"%1\" undefined in %2 (%3)").arg(
+            QString::fromAscii(symbol)).arg(fileName).arg(QString());
         address = 0;
+    } else {
+        errorString.clear();
     }
     return address;
 }
 
 #else // POSIX
 #include <dlfcn.h>
-#ifndef DL_PREFIX //for mac dlcompat
-#  define DL_PREFIX(x) x
-#endif
 
-#if defined(QT_DEBUG_COMPONENT)
 static const char *qdlerror()
 {
-    const char *err = DL_PREFIX(dlerror)();
+    const char *err = dlerror();
     return err ? err : "";
 }
-#endif
 
 bool QLibraryPrivate::load_sys()
 {
@@ -105,36 +110,54 @@ bool QLibraryPrivate::load_sys()
 
     // The first filename we want to attempt to load is the filename as the callee specified.
     // Thus, the first attempt we do must be with an empty prefix and empty suffix.
-    QStringList suffixes, prefixes("");
-    suffixes << "";
+    QStringList suffixes(QLatin1String("")), prefixes(QLatin1String(""));
     if (pluginState != IsAPlugin) {
-        prefixes << "lib";
+        prefixes << QLatin1String("lib");
 #if defined(Q_OS_HPUX)
-        suffixes << ".sl";
-        if (majorVerNum > -1)
-            suffixes << QString(".sl.%1").arg(majorVerNum);
+        if (majorVerNum > -1) {
+            suffixes << QString::fromLatin1(".sl.%1").arg(majorVerNum);
+        } else {
+            suffixes << QLatin1String(".sl");
+        }
 # if defined(__ia64)
-        suffixes << ".so";
-        if (majorVerNum > -1)
-            suffixes << QString(".so.%1").arg(majorVerNum);
+        if (majorVerNum > -1) {
+            suffixes << QString::fromLatin1(".so.%1").arg(majorVerNum);
+        } else {
+            suffixes << QLatin1String(".so");
+        }
 # endif
 #elif defined(Q_OS_AIX)
         suffixes << ".a";
 #else
-        suffixes << ".so";
-        if (majorVerNum > -1)
-            suffixes << QString(".so.%1").arg(majorVerNum);
+        if (majorVerNum > -1) {
+            suffixes << QString::fromLatin1(".so.%1").arg(majorVerNum);
+        } else {
+            suffixes << QLatin1String(".so");
+        }
 #endif
 # ifdef Q_OS_MAC
-        suffixes << ".bundle" << ".dylib";
         if (majorVerNum > -1) {
-            suffixes << QString(".%1.bundle").arg(majorVerNum);
-            suffixes << QString(".%1.dylib").arg(majorVerNum);
+            suffixes << QString::fromLatin1(".%1.bundle").arg(majorVerNum);
+            suffixes << QString::fromLatin1(".%1.dylib").arg(majorVerNum);
+        } else {
+            suffixes << QLatin1String(".bundle") << QLatin1String(".dylib");
         }
-
 #endif
     }
-        
+    int dlFlags = 0;
+    if (loadHints & QLibrary::ResolveAllSymbolsHint) {
+        dlFlags |= RTLD_NOW;
+    } else {
+        dlFlags |= RTLD_LAZY;
+    }
+    if (loadHints & QLibrary::ExportExternalSymbolsHint) {
+        dlFlags |= RTLD_GLOBAL;
+    }
+#if defined(Q_OS_AIX)	// Not sure if any other platform actually support this thing.
+    if (loadHints & QLibrary::LoadArchiveMemberHint) {
+        dlFlags |= RTLD_MEMBER;
+    }
+#endif
     QString attempt;
     for(int prefix = 0; !pHnd && prefix < prefixes.size(); prefix++) {
         for(int suffix = 0; !pHnd && suffix < suffixes.size(); suffix++) {
@@ -142,47 +165,52 @@ bool QLibraryPrivate::load_sys()
                 continue;
             if (!suffixes.at(suffix).isEmpty() && name.endsWith(suffixes.at(suffix)))
                 continue;
-            attempt = path + prefixes.at(prefix) + name + suffixes.at(suffix);
-            pHnd = DL_PREFIX(dlopen)(QFile::encodeName(attempt), RTLD_LAZY);
+            if (loadHints & QLibrary::LoadArchiveMemberHint) {
+                attempt = name;
+                int lparen = attempt.indexOf(QLatin1Char('('));
+                if (lparen == -1)
+                    lparen = attempt.count();
+                attempt = path + prefixes.at(prefix) + attempt.insert(lparen, suffixes.at(suffix));
+            } else {
+                attempt = path + prefixes.at(prefix) + name + suffixes.at(suffix);
+            }
+            pHnd = dlopen(QFile::encodeName(attempt), dlFlags);
         }
     }
 #ifdef Q_OS_MAC
     if (!pHnd) {
-        if(QCFType<CFBundleRef> bundle = CFBundleGetBundleWithIdentifier(QCFString(fileName))) {
+        if (CFBundleRef bundle = CFBundleGetBundleWithIdentifier(QCFString(fileName))) {
             QCFType<CFURLRef> url = CFBundleCopyExecutableURL(bundle);
             QCFString str = CFURLCopyFileSystemPath(url, kCFURLPOSIXPathStyle);
-            pHnd = DL_PREFIX(dlopen)(QFile::encodeName(str), RTLD_LAZY);
+            pHnd = dlopen(QFile::encodeName(str), dlFlags);
             attempt = str;
         }
     }
 # endif
-#if defined(QT_DEBUG_COMPONENT)
     if (!pHnd) {
-        qWarning("QLibrary: Cannot load '%s' :%s", QFile::encodeName(fileName).constData(),
-                 qdlerror());
+        errorString = QLibrary::tr("QLibrary::load_sys: Cannot load %1 (%2)").arg(fileName).arg(QString::fromAscii(qdlerror()));
     }
-#endif
-    if (pHnd)
+    if (pHnd) {
         qualifiedFileName = attempt;
+        errorString.clear();
+    }
     return (pHnd != 0);
 }
 
 bool QLibraryPrivate::unload_sys()
 {
-    if (DL_PREFIX(dlclose)(pHnd)) {
-#if defined(QT_DEBUG_COMPONENT)
-        qWarning("QLibrary: Cannot unload '%s': %s", QFile::encodeName(fileName).constData(),
-                 qdlerror());
-#endif
+    if (dlclose(pHnd)) {
+        errorString = QLibrary::tr("QLibrary::unload_sys: Cannot unload %1 (%2)").arg(fileName).arg(QString::fromAscii(qdlerror()));
         return false;
     }
+    errorString.clear();
     return true;
 }
 
 #ifdef Q_OS_MAC
 Q_CORE_EXPORT void *qt_mac_resolve_sys(void *handle, const char *symbol)
 {
-    return DL_PREFIX(dlsym)(handle, symbol);
+    return dlsym(handle, symbol);
 }
 #endif
 
@@ -193,15 +221,17 @@ void* QLibraryPrivate::resolve_sys(const char* symbol)
     char* undrscr_symbol = new char[strlen(symbol)+2];
     undrscr_symbol[0] = '_';
     strcpy(undrscr_symbol+1, symbol);
-    void* address = DL_PREFIX(dlsym)(pHnd, undrscr_symbol);
+    void* address = dlsym(pHnd, undrscr_symbol);
     delete [] undrscr_symbol;
 #else
-    void* address = DL_PREFIX(dlsym)(pHnd, symbol);
+    void* address = dlsym(pHnd, symbol);
 #endif
-#if defined(QT_DEBUG_COMPONENT)
-    if (!address)
-        qWarning("QLibrary: Undefined symbol \"%s\" in %s", symbol, QFile::encodeName(fileName).constData());
-#endif
+    if (!address) {
+        errorString = QLibrary::tr("QLibrary::resolve_sys: Symbol \"%1\" undefined in %2 (%3)").arg(
+            QString::fromAscii(symbol)).arg(fileName).arg(QString::fromAscii(qdlerror()));
+    } else {
+        errorString.clear();
+    }
     return address;
 }
 

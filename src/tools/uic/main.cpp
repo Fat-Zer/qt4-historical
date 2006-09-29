@@ -24,7 +24,9 @@
 #include "uic.h"
 #include "option.h"
 #include "driver.h"
+#include "../../corelib/global/qconfig.cpp"
 #include <QFile>
+#include <QDir>
 #include <QTextStream>
 #include <QTextCodec>
 
@@ -32,17 +34,18 @@ static const char *error = 0;
 
 void showHelp(const char *appName)
 {
-    fprintf(stderr, "Qt user interface compiler %s.\n", QT_VERSION_STR);
+    fprintf(stderr, "Qt User Interface Compiler version %s\n", QT_VERSION_STR);
     if (error)
         fprintf(stderr, "%s: %s\n", appName, error);
 
-    fprintf(stderr, "Usage: %s [OPTION]... <UIFILE>\n\n"
+    fprintf(stderr, "Usage: %s [options] <uifile>\n\n"
             "  -h, -help                 display this help and exit\n"
             "  -v, -version              display version\n"
             "  -d, -dependencies         display the dependencies\n"
             "  -o <file>                 place the output into <file>\n"
             "  -tr <func>                use func() for i18n\n"
             "  -p, -no-protection        disable header protection\n"
+            "  -g <name>                 change generator\n"
             "\n", appName);
 }
 
@@ -61,7 +64,7 @@ int main(int argc, char *argv[])
         } else if (opt == QLatin1String("-d") || opt == QLatin1String("-dependencies")) {
             driver.option().dependencies = true;
         } else if (opt == QLatin1String("-v") || opt == QLatin1String("-version")) {
-            fprintf(stderr, "Qt user interface compiler %s.\n", QT_VERSION_STR);
+            fprintf(stderr, "Qt User Interface Compiler version %s\n", QT_VERSION_STR);
             return 0;
         } else if (opt == QLatin1String("-o") || opt == QLatin1String("-output")) {
             ++arg;
@@ -93,6 +96,14 @@ int main(int argc, char *argv[])
                 return 1;
             }
             driver.option().translateFunction = QLatin1String(argv[arg]);
+        } else if (opt == QLatin1String("-g") || opt == QLatin1String("-generator")) {
+            ++arg;
+            if (!argv[arg]) {
+                showHelp(argv[0]);
+                return 1;
+            }
+            QString name = QString::fromLocal8Bit(argv[arg]).toLower ();
+            driver.option().generator = (name == QLatin1String ("java")) ? Option::JavaGenerator : Option::CppGenerator;
         } else if (!fileName) {
             fileName = argv[arg];
         } else {
@@ -102,6 +113,20 @@ int main(int argc, char *argv[])
 
         ++arg;
     }
+
+    // report Qt usage for commercial customers with a "metered license" (currently experimental)
+#if QT_EDITION != QT_EDITION_OPENSOURCE
+#ifdef QT_CONFIGURE_BINARIES_PATH
+    const char *binariesPath = QT_CONFIGURE_BINARIES_PATH;
+    QString reporterPath = QString::fromLocal8Bit(binariesPath) + QDir::separator()
+                           + "qtusagereporter";
+#if defined(Q_OS_WIN)
+    reporterPath += ".exe";
+#endif
+    if (QFile::exists(reporterPath))
+        system(qPrintable(reporterPath + " uic"));
+#endif
+#endif
 
     QString inputFile;
     if (fileName)
@@ -117,7 +142,7 @@ int main(int argc, char *argv[])
     QFile f;
     if (driver.option().outputFile.size()) {
         f.setFileName(driver.option().outputFile);
-        if (!f.open(QIODevice::WriteOnly)) {
+        if (!f.open(QIODevice::WriteOnly | QFile::Text)) {
             fprintf(stderr, "Could not create output file\n");
             return 1;
         }

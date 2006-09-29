@@ -50,21 +50,27 @@ public:
     QHeaderViewPrivate()
         : state(NoState),
           offset(0),
-          sortIndicatorOrder(Qt::AscendingOrder),
+          sortIndicatorOrder(Qt::DescendingOrder),
           sortIndicatorSection(0),
           sortIndicatorShown(false),
           lastPos(-1),
           firstPos(-1),
+          originalSize(-1),
           section(-1),
           target(-1),
           pressed(-1),
           hover(-1),
+          length(0),
+          sectionCount(0),
           movableSections(false),
           clickableSections(false),
           highlightSelected(false),
           stretchLastSection(false),
+          cascadingResizing(false),
           stretchSections(0),
-          customSections(0),
+          contentsSections(0),
+          minimumSectionSize(-1),
+          lastSectionSize(0),
           sectionIndicatorOffset(0),
           sectionIndicator(0),
           globalResizeMode(QHeaderView::Interactive) {}
@@ -76,22 +82,104 @@ public:
     void _q_sectionsRemoved(const QModelIndex &,int,int);
 
     bool isSectionSelected(int section) const;
-    inline void prepareSectionSelected()
-        { if (sectionSelection.count() != sections.count() * 2)
-            sectionSelection.fill(false, sections.count() * 2);
-          else sectionSelection.fill(false); }
 
-    inline bool reverse() const
-        { return q_func()->isRightToLeft() && orientation == Qt::Horizontal; }
+    inline bool rowIntersectsSelection(int row) const {
+        return (selectionModel ? selectionModel->rowIntersectsSelection(row, root) : false);
+    }
 
-    inline int logicalIndex(int visualIndex) const
-        { return logicalIndices.isEmpty() ? visualIndex : logicalIndices.at(visualIndex); }
+    inline bool columnIntersectsSelection(int column) const {
+        return (selectionModel ? selectionModel->columnIntersectsSelection(column, root) : false);
+    }
 
-    inline bool hasAutoResizeSections() const
-        { return stretchSections || stretchLastSection;/* || customSections;*/ }
+    inline bool isRowSelected(int row) const {
+        return (selectionModel ? selectionModel->isRowSelected(row, root) : false);
+    }
 
-    inline void invalidateCachedSizeHint() const
-        { cachedSizeHint = QSize(); }
+    inline bool isColumnSelected(int column) const {
+        return (selectionModel ? selectionModel->isColumnSelected(column, root) : false);
+    }
+
+    inline void prepareSectionSelected() {
+        if (!selectionModel || !selectionModel->hasSelection())
+            sectionSelected.clear();
+        else if (sectionSelected.count() != sectionCount * 2)
+            sectionSelected.fill(false, sectionCount * 2);
+        else sectionSelected.fill(false);
+    }
+
+    inline bool reverse() const {
+        return q_func()->isRightToLeft() && orientation == Qt::Horizontal;
+    }
+
+    inline int logicalIndex(int visualIndex) const {
+        return logicalIndices.isEmpty() ? visualIndex : logicalIndices.at(visualIndex);
+    }
+
+    inline void setDefaultValues(Qt::Orientation o) {
+        orientation = o;
+        defaultSectionSize = (o == Qt::Horizontal ? 100
+                              : qMax(q_func()->minimumSectionSize(), 30));
+        defaultAlignment = (o == Qt::Horizontal
+                            ? Qt::Alignment(Qt::AlignCenter)
+                            : Qt::AlignLeft|Qt::AlignVCenter);
+    }
+
+    inline bool isVisualIndexHidden(int visual) const {
+        return !sectionHidden.isEmpty() && sectionHidden.at(visual);
+    }
+
+    inline void setVisualIndexHidden(int visual, bool hidden) {
+        if (!sectionHidden.isEmpty()) sectionHidden.setBit(visual, hidden);
+    }
+
+    inline QHeaderView::ResizeMode visualIndexResizeMode(int visual) const {
+        return headerSectionResizeMode(visual);
+    }
+
+    inline bool hasAutoResizeSections() const {
+        return stretchSections || stretchLastSection || contentsSections;
+    }
+
+    QStyleOptionHeader getStyleOption() const;
+
+    inline void invalidateCachedSizeHint() const {
+        cachedSizeHint = QSize();
+    }
+
+    inline void initializeIndexMapping() const {
+        if (visualIndices.count() != sectionCount
+            || logicalIndices.count() != sectionCount) {
+            visualIndices.resize(sectionCount);
+            logicalIndices.resize(sectionCount);
+            for (int s = 0; s < sectionCount; ++s) {
+                visualIndices[s] = s;
+                logicalIndices[s] = s;
+            }
+        }
+    }
+
+    inline void clearCascadingSections() {
+        firstCascadingSection = sectionCount;
+        lastCascadingSection = 0;
+        cascadingSectionSize.clear();
+    }
+
+    inline void saveCascadingSectionSize(int visual, int size) {
+        if (!cascadingSectionSize.contains(visual)) {
+            cascadingSectionSize.insert(visual, size);
+            firstCascadingSection = qMin(firstCascadingSection, visual);
+            lastCascadingSection = qMax(lastCascadingSection, visual);
+        }
+    }
+
+    inline bool sectionIsCascadable(int visual) {
+        return visualIndexResizeMode(visual) == QHeaderView::Interactive;
+    }
+
+
+    void clear();
+    void flipSortIndicator(int section);
+    void cascadingResize(int visual, int newSize);
 
     enum State { NoState, ResizeSection, MoveSection } state;
 
@@ -101,45 +189,103 @@ public:
     int sortIndicatorSection;
     bool sortIndicatorShown;
 
-    struct HeaderSection {
-        int position;
-        uint hidden : 1;
-        QHeaderView::ResizeMode mode;
-    };
-
-    void clear() {
-        sections.clear();
-        visualIndices.clear();
-        logicalIndices.clear();
-        sectionSelection.clear();
-        hiddenSectionSize.clear();
-        cachedSizeHint = QSize();
-    }
-    mutable QVector<HeaderSection> sections; // HeaderSection = sections.at(visualIndex)
     mutable QVector<int> visualIndices; // visualIndex = visualIndices.at(logicalIndex)
     mutable QVector<int> logicalIndices; // logicalIndex = row or column in the model
-    mutable QBitArray sectionSelection;
+    mutable QBitArray sectionSelected;
+    mutable QBitArray sectionHidden;
     mutable QHash<int, int> hiddenSectionSize; // from logical index to section size
+    mutable QHash<int, int> cascadingSectionSize; // from visual index to section size
     mutable QSize cachedSizeHint;
+
+    int firstCascadingSection;
+    int lastCascadingSection;
 
     int lastPos;
     int firstPos;
+    int originalSize;
     int section; // used for resizing and moving sections
     int target;
     int pressed;
     int hover;
+    int length;
+    int sectionCount;
     bool movableSections;
     bool clickableSections;
     bool highlightSelected;
     bool stretchLastSection;
+    bool cascadingResizing;
     int stretchSections;
-    int customSections;
-    int sectionIndicatorOffset;
+    int contentsSections;
     int defaultSectionSize;
+    int minimumSectionSize;
+    int lastSectionSize; // $$$
+    int sectionIndicatorOffset;
     Qt::Alignment defaultAlignment;
     QLabel *sectionIndicator;
-    QStyleOptionHeader getStyleOption() const;
     QHeaderView::ResizeMode globalResizeMode;
+
+    // header section spans
+
+    struct SectionSpan {
+        int size;
+        int count;
+        QHeaderView::ResizeMode resizeMode;
+        inline SectionSpan() : size(0), count(0), resizeMode(QHeaderView::Interactive) {}
+        inline SectionSpan(int length, int sections, QHeaderView::ResizeMode mode)
+            : size(length), count(sections), resizeMode(mode) {}
+        inline int sectionSize() const { return size / count; }
+    };
+
+    QVector<SectionSpan> sectionSpans;
+
+    void createSectionSpan(int start, int end, int size, QHeaderView::ResizeMode mode);
+    void removeSectionsFromSpans(int start, int end);
+    void resizeSectionSpan(int visualIndex, int oldSize, int newSize);
+
+    inline int headerSectionCount() const { // for debugging
+        int count = 0;
+        for (int i = 0; i < sectionSpans.count(); ++i)
+            count += sectionSpans.at(i).count;
+        return count;
+    }
+
+    inline int headerLength() const { // for debugging
+        int len = 0;
+        for (int i = 0; i < sectionSpans.count(); ++i)
+            len += sectionSpans.at(i).size;
+        return len;
+    }
+
+    inline void removeSpans(const QList<int> &spans) {
+        for (int i = spans.count() - 1; i >= 0; --i) {
+            length -= sectionSpans.at(spans.at(i)).size;
+            sectionSpans.remove(spans.at(i));
+        }
+    }
+
+    inline int sectionSpanIndex(int visual) const {
+        int section_start = 0;
+        for (int i = 0; i < sectionSpans.count(); ++i) {
+            int section_end = section_start + sectionSpans.at(i).count - 1;
+            if (visual >= section_start && visual <= section_end)
+                return i;
+            section_start = section_end + 1;
+        }
+        return -1;
+    }
+
+    int headerSectionSize(int visual) const;
+    int headerSectionPosition(int visual) const;
+    int headerVisualIndexAt(int position) const;
+
+    // resize mode
+    void setHeaderSectionResizeMode(int visual, QHeaderView::ResizeMode mode);
+    QHeaderView::ResizeMode headerSectionResizeMode(int visual) const;
+    void setGlobalHeaderResizeMode(QHeaderView::ResizeMode mode);
+
+    // other
+    int viewSectionSizeHint(int logical) const;
+
 };
 
 #endif // QT_NO_ITEMVIEWS

@@ -264,10 +264,10 @@ const QRect& Q3CanvasClusterizer::operator[](int i) const
 
 static void qt_setclipregion(QPainter *p, const QRegion &r)
 {
-    bool xfrm = p->hasWorldXForm();
-    p->setWorldXForm(false);
+    QMatrix matrix = p->worldMatrix();
+    p->setWorldMatrix(QMatrix());
     p->setClipRegion(r);
-    p->setWorldXForm(xfrm);
+    p->setWorldMatrix(matrix);
 }
 
 static void qt_setcliprect(QPainter *p, const QRect &r)
@@ -324,7 +324,7 @@ private:
 
     The \l Q3ValueList documentation describes how to use this list.
 
-    \sa QtCanvas
+    \sa QtCanvas, {Porting to Graphics View}
 */
 
 /*!
@@ -583,7 +583,7 @@ static int scm(int a, int b)
     The examples/canvas application and the 2D graphics page of the
     examples/demo application demonstrate many of Q3Canvas's facilities.
 
-    \sa Q3CanvasView Q3CanvasItem, QtCanvas
+    \sa Q3CanvasView Q3CanvasItem, QtCanvas, {Porting to Graphics View}
 */
 void Q3Canvas::init(int w, int h, int chunksze, int mxclusters)
 {
@@ -1088,7 +1088,7 @@ void Q3Canvas::drawViewArea(Q3CanvasView* view, QPainter* p, const QRect& vr, bo
 	    QRect cvr = vr; cvr.moveBy(tl.x(),tl.y());
 	    qt_setclipregion(p, QRegion(cvr)-QRegion(a));
 	    p->fillRect(vr,view->viewport()->palette()
-                        .brush(QPalette::Active,QColorGroup::Background));
+                        .brush(QPalette::Active,QPalette::Window));
 	}
 	qt_setclipregion(p, a);
     }
@@ -1107,7 +1107,6 @@ void Q3Canvas::drawViewArea(Q3CanvasView* view, QPainter* p, const QRect& vr, bo
     p->setWorldMatrix(wm*twm);
 #else
 #endif
-    p->setBrushOrigin(tl.x(), tl.y());
     drawCanvasArea(ivr,p,false);
 }
 
@@ -1170,7 +1169,7 @@ void Q3Canvas::setAllChanged()
 */
 void Q3Canvas::setChanged(const QRect& area)
 {
-    QRect thearea = area.intersect(QRect(0,0,width(),height()));
+    QRect thearea = area.intersected(QRect(0, 0, width(), height()));
 
     int mx = (thearea.x()+thearea.width()+chunksize)/chunksize;
     int my = (thearea.y()+thearea.height()+chunksize)/chunksize;
@@ -1197,7 +1196,7 @@ void Q3Canvas::setChanged(const QRect& area)
 */
 void Q3Canvas::setUnchanged(const QRect& area)
 {
-    QRect thearea = area.intersect(QRect(0,0,width(),height()));
+    QRect thearea = area.intersected(QRect(0, 0, width(), height()));
 
     int mx = (thearea.x()+thearea.width()+chunksize)/chunksize;
     int my = (thearea.y()+thearea.height()+chunksize)/chunksize;
@@ -1223,7 +1222,7 @@ void Q3Canvas::setUnchanged(const QRect& area)
 */
 QRect Q3Canvas::changeBounds(const QRect& inarea)
 {
-    QRect area=inarea.intersect(QRect(0,0,width(),height()));
+    QRect area = inarea.intersected(QRect(0, 0, width(), height()));
 
     int mx = (area.x()+area.width()+chunksize)/chunksize;
     int my = (area.y()+area.height()+chunksize)/chunksize;
@@ -1293,7 +1292,7 @@ void Q3Canvas::drawArea(const QRect& clip, QPainter* painter, bool dbuf)
 */
 void Q3Canvas::drawCanvasArea(const QRect& inarea, QPainter* p, bool /*double_buffer*/)
 {
-    QRect area=inarea.intersect(QRect(0,0,width(),height()));
+    QRect area=inarea.intersected(QRect(0,0,width(),height()));
 
     if (!p) return; // Nothing to do.
 
@@ -1763,7 +1762,7 @@ class Q3CanvasItemExtra {
     motion. The subclasses provided in Qt do not change these defaults
     except where noted.
 
-    \sa QtCanvas
+    \sa QtCanvas, {Porting to Graphics View}
 */
 
 /*!
@@ -2181,7 +2180,7 @@ bool qt_testCollision(const Q3CanvasSprite* s1, const Q3CanvasSprite* s2)
 
     QRect s1area = s1->boundingRectAdvanced();
 
-    QRect ourarea = s1area.intersect(cyourarea);
+    QRect ourarea = s1area.intersected(cyourarea);
 
     if (ourarea.isEmpty())
 	return false;
@@ -2375,7 +2374,7 @@ static bool collision_double_dispatch(const Q3CanvasSprite* s1,
     setting coordinates with Q3CanvasItem::setX(), Q3CanvasItem::setY()
     and Q3CanvasItem::setZ().
 
-    \sa QtCanvas
+    \sa QtCanvas, {Porting to Graphics View}
 */
 
 
@@ -2676,7 +2675,7 @@ QRect Q3CanvasItem::boundingRectAdvanced() const
     position of each Q3CanvasPixmap object is set so that the hotspot
     stays in the same position.
 
-    \sa Q3CanvasPixmapArray Q3CanvasItem Q3CanvasSprite, QtCanvas
+    \sa Q3CanvasPixmapArray Q3CanvasItem Q3CanvasSprite, QtCanvas, {Porting to Graphics View}
 */
 
 #ifndef QT_NO_IMAGEIO
@@ -2790,7 +2789,7 @@ Q3CanvasPixmap::~Q3CanvasPixmap()
     can change this by reading in a separate set of image masks using
     readCollisionMasks().
 
-    \sa QtCanvas
+    \sa QtCanvas, {Porting to Graphics View}
 */
 
 /*!
@@ -3303,11 +3302,11 @@ void Q3CanvasSprite::draw(QPainter& painter)
     \code
     void MyCanvasView::contentsMousePressEvent(QMouseEvent* e)
     {
-	Q3CanvasItemList l = canvas()->collisions(e->pos());
-	for (Q3CanvasItemList::Iterator it=l.begin(); it!=l.end(); ++it) {
-	    if ((*it)->rtti() == Q3CanvasRectangle::RTTI)
-		qDebug("A Q3CanvasRectangle lies somewhere at this point");
-	}
+        Q3CanvasItemList l = canvas()->collisions(e->pos());
+        for (Q3CanvasItemList::Iterator it=l.begin(); it!=l.end(); ++it) {
+            if ((*it)->rtti() == Q3CanvasRectangle::RTTI)
+                qDebug("A Q3CanvasRectangle lies somewhere at this point");
+        }
     }
     \endcode
 
@@ -3322,10 +3321,10 @@ void Q3CanvasSprite::draw(QPainter& painter)
     QMatrix wm;
     wm.scale(2, 2);   // Zooms in by 2 times
     wm.rotate(90);    // Rotates 90 degrees counter clockwise
-			// around the origin.
+                      // around the origin.
     wm.translate(0, -canvas->height());
-			// moves the canvas down so what was visible
-			// before is still visible.
+                      // moves the canvas down so what was visible
+                      // before is still visible.
     myCanvasView->setWorldMatrix(wm);
     \endcode
 
@@ -3341,11 +3340,11 @@ void Q3CanvasSprite::draw(QPainter& painter)
 
     \code
     QRect rc = QRect(myCanvasView->contentsX(), myCanvasView->contentsY(),
-			myCanvasView->visibleWidth(), myCanvasView->visibleHeight());
+                     myCanvasView->visibleWidth(), myCanvasView->visibleHeight());
     QRect canvasRect = myCanvasView->inverseWorldMatrix().mapRect(rc);
     \endcode
 
-    \sa QMatrix QPainter::setWorldMatrix(), QtCanvas
+    \sa QMatrix QPainter::setWorldMatrix(), QtCanvas, {Porting to Graphics View}
 */
 
 /*!
@@ -3354,7 +3353,7 @@ void Q3CanvasSprite::draw(QPainter& painter)
     with a canvas, so you must to call setCanvas() to view a
     canvas.
 */
-Q3CanvasView::Q3CanvasView(QWidget* parent, const char* name, Qt::WFlags f)
+Q3CanvasView::Q3CanvasView(QWidget* parent, const char* name, Qt::WindowFlags f)
     : Q3ScrollView(parent,name,f|WResizeNoErase|WStaticContents)
 {
     d = new Q3CanvasViewData;
@@ -3368,7 +3367,7 @@ Q3CanvasView::Q3CanvasView(QWidget* parent, const char* name, Qt::WFlags f)
     Constructs a Q3CanvasView which views canvas \a canvas, with parent
     \a parent, and name \a name, using the widget flags \a f.
 */
-Q3CanvasView::Q3CanvasView(Q3Canvas* canvas, QWidget* parent, const char* name, Qt::WFlags f)
+Q3CanvasView::Q3CanvasView(Q3Canvas* canvas, QWidget* parent, const char* name, Qt::WindowFlags f)
     : Q3ScrollView(parent,name,f|WResizeNoErase|WStaticContents)
 {
     d = new Q3CanvasViewData;
@@ -3411,6 +3410,7 @@ void Q3CanvasView::setCanvas(Q3Canvas* canvas)
     if (viewing) {
 	connect(viewing,SIGNAL(resized()), this, SLOT(updateContentsSize()));
 	viewing->addView(this);
+	viewing->setAllChanged();
     }
     if (d) // called by d'tor
         updateContentsSize();
@@ -3589,7 +3589,7 @@ QSize Q3CanvasView::sizeHint() const
     Q3CanvasItem::move() and Q3CanvasItem::moveBy(), or by setting coordinates
     with Q3CanvasItem::setX(), Q3CanvasItem::setY() and Q3CanvasItem::setZ().
 
-    \sa QtCanvas
+    \sa QtCanvas, {Porting to Graphics View}
 */
 
 
@@ -3711,7 +3711,7 @@ public:
     {
 	QRect pixelbounds = pa.boundingRect();
 	int cs = canvas->chunkSize();
-    QRect canvasbounds = pixelbounds.intersect(canvas->rect());
+    QRect canvasbounds = pixelbounds.intersected(canvas->rect());
     bounds.setLeft(canvasbounds.left()/cs);
     bounds.setRight(canvasbounds.right()/cs);
     bounds.setTop(canvasbounds.top()/cs);
@@ -3954,7 +3954,7 @@ void Q3CanvasPolygonalItem::setBrush(QBrush b)
 
     Note: Q3CanvasPolygon does not use the pen.
 
-    \sa QtCanvas
+    \sa QtCanvas, {Porting to Graphics View}
 */
 
 /*!
@@ -4048,7 +4048,7 @@ void Q3CanvasPolygon::moveBy(double dx, double dy)
     coordinates with Q3CanvasItem::setX(), Q3CanvasItem::setY() and
     Q3CanvasItem::setZ().
 
-    \sa QtCanvas
+    \sa QtCanvas, {Porting to Graphics View}
 */
 
 /*!
@@ -4190,7 +4190,7 @@ Q3PointArray Q3CanvasPolygon::areaPoints() const
     coordinates with Q3CanvasItem::setX(), Q3CanvasItem::setY() and
     Q3CanvasItem::setZ().
 
-    \sa QtCanvas
+    \sa QtCanvas, {Porting to Graphics View}
 */
 
 /*!
@@ -4336,7 +4336,7 @@ void Q3CanvasLine::moveBy(double dx, double dy)
     coordinates with Q3CanvasItem::setX(), Q3CanvasItem::setY() and
     Q3CanvasItem::setZ().
 
-    \sa QtCanvas
+    \sa QtCanvas, {Porting to Graphics View}
 */
 
 /*!
@@ -4481,7 +4481,7 @@ void Q3CanvasRectangle::drawShape(QPainter & p)
 
     Note: Q3CanvasEllipse does not use the pen.
 
-    \sa QtCanvas
+    \sa QtCanvas, {Porting to Graphics View}
 */
 
 /*!
@@ -4649,7 +4649,7 @@ void Q3CanvasEllipse::drawShape(QPainter & p)
     coordinates with Q3CanvasItem::setX(), Q3CanvasItem::setY() and
     Q3CanvasItem::setZ().
 
-    \sa QtCanvas
+    \sa QtCanvas, {Porting to Graphics View}
 */
 
 /*!

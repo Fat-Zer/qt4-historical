@@ -128,14 +128,14 @@ void MdiChild::documentWasModified()
 bool MdiChild::maybeSave()
 {
     if (document()->isModified()) {
-        int ret = QMessageBox::warning(this, tr("MDI"),
+	QMessageBox::StandardButton ret;
+        ret = QMessageBox::warning(this, tr("MDI"),
                      tr("'%1' has been modified.\n"
                         "Do you want to save your changes?")
                      .arg(userFriendlyCurrentFile()),
-                     QMessageBox::Yes | QMessageBox::Default,
-                     QMessageBox::No,
-                     QMessageBox::Cancel | QMessageBox::Escape);
-        if (ret == QMessageBox::Yes)
+                     QMessageBox::Save | QMessageBox::Discard
+		     | QMessageBox::Cancel);
+        if (ret == QMessageBox::Save)
             return save();
         else if (ret == QMessageBox::Cancel)
             return false;

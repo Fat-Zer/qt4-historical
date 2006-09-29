@@ -538,7 +538,7 @@ void Q3ProcessPrivate::newProc( pid_t pid, Q3Process *process )
  * sigchld handler callback
  *
  **********************************************************************/
-static QT_SIGNAL_RETTYPE qt_C_sigchldHnd( QT_SIGNAL_ARGS )
+static QT_SIGNAL_RETTYPE qt_C_sigchldHnd(QT_SIGNAL_ARGS)
 {
     if ( Q3ProcessPrivate::procManager == 0 )
 	return;
@@ -1004,7 +1004,7 @@ void Q3Process::tryTerminate() const
     is to do something like this:
     \code
 	process->tryTerminate();
-	QTimer::singleShot( 5000, process, SLOT( kill() ) );
+	QTimer::singleShot( 5000, process, SLOT(kill()) );
     \endcode
 
     This tries to terminate the process the nice way. If the process

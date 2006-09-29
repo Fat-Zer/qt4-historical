@@ -25,7 +25,7 @@
 
 #include <QtDesigner/QDesignerIconCacheInterface>
 #include <QtDesigner/QDesignerFormEditorInterface>
-#include <QtDesigner/ui4.h>
+#include <QtDesigner/private/ui4_p.h>
 
 #include <Qt3Support/Q3Table>
 
@@ -64,7 +64,7 @@ bool Q3TableExtraInfo::saveWidgetExtraInfo(DomWidget *ui_widget)
 
     Q3Table *table = qobject_cast<Q3Table*>(widget());
     Q_ASSERT(table != 0);
-
+    Q_UNUSED(table);
     return true;
 }
 
@@ -74,6 +74,7 @@ bool Q3TableExtraInfo::loadWidgetExtraInfo(DomWidget *ui_widget)
 
     Q3Table *table = qobject_cast<Q3Table*>(widget());
     Q_ASSERT(table != 0);
+    Q_UNUSED(table);
     return true;
 }
 

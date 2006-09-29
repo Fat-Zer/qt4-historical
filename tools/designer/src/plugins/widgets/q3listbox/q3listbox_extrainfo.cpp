@@ -25,7 +25,7 @@
 
 #include <QtDesigner/QDesignerIconCacheInterface>
 #include <QtDesigner/QDesignerFormEditorInterface>
-#include <QtDesigner/ui4.h>
+#include <QtDesigner/private/ui4_p.h>
 
 #include <Qt3Support/Q3ListBox>
 
@@ -64,7 +64,7 @@ bool Q3ListBoxExtraInfo::saveWidgetExtraInfo(DomWidget *ui_widget)
 
     Q3ListBox *listBox = qobject_cast<Q3ListBox*>(widget());
     Q_ASSERT(listBox != 0);
-
+    Q_UNUSED(listBox);
     return true;
 }
 
@@ -74,6 +74,7 @@ bool Q3ListBoxExtraInfo::loadWidgetExtraInfo(DomWidget *ui_widget)
 
     Q3ListBox *listBox = qobject_cast<Q3ListBox*>(widget());
     Q_ASSERT(listBox != 0);
+    Q_UNUSED(listBox);
     return true;
 }
 

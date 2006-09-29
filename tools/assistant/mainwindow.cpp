@@ -24,8 +24,6 @@
 #include "mainwindow.h"
 #include "tabbedbrowser.h"
 #include "helpdialog.h"
-#include "finddialog.h"
-#include "settingsdialog.h"
 #include "config.h"
 
 #include <QDockWidget>
@@ -67,11 +65,10 @@ MainWindow::MainWindow()
 
     goActions = QList<QAction*>();
     goActionDocFiles = new QMap<QAction*,QString>;
-
+    
     windows.append(this);
     tabs = new TabbedBrowser(this);
     setCentralWidget(tabs);
-    settingsDia = 0;
 
     Config *config = Config::configuration();
 
@@ -89,11 +86,7 @@ MainWindow::MainWindow()
     // read geometry configuration
     setupGoActions();
 
-    QRect geom = config->geometry();
-    if(geom.isValid()) {
-        setGeometry(geom);
-    }
-
+    restoreGeometry(config->windowGeometry());
     restoreState(config->mainWindowState());
     if (config->sideBarHidden())
         dw->hide();
@@ -101,6 +94,10 @@ MainWindow::MainWindow()
     tabs->setup();
     QTimer::singleShot(0, this, SLOT(setup()));
 #if defined(Q_WS_MAC)
+    QMenu *windowMenu = new QMenu(tr("&Window"), this);
+    menuBar()->insertMenu(ui.helpMenu->menuAction(), windowMenu);
+    windowMenu->addAction(tr("Minimize"), this,
+        SLOT(showMinimized()), QKeySequence(tr("Ctrl+M")));
     // Use the same forward and backward browser shortcuts as Safari and Internet Explorer do
     // on the Mac. This means that if you have access to one of those cool Intellimice, the thing
     // works just fine, since that's how Microsoft hacked it.
@@ -117,6 +114,7 @@ MainWindow::MainWindow()
     ui.actionFilePrint->setIcon(QIcon(MacIconPath + QLatin1String("/print.png")));
     ui.actionZoomOut->setIcon(QIcon(MacIconPath + QLatin1String("/zoomout.png")));
     ui.actionZoomIn->setIcon(QIcon(MacIconPath + QLatin1String("/zoomin.png")));
+    ui.actionSyncToc->setIcon(QIcon(MacIconPath + QLatin1String("/synctoc.png")));
     ui.actionHelpWhatsThis->setIcon(QIcon(MacIconPath + QLatin1String("/whatsthis.png")));
 #endif
 }
@@ -185,8 +183,10 @@ void MainWindow::setup()
     // to poulate the contents in this case.
     if (tabIndex == 0) 
         helpDock->currentTabChanged(tabIndex);
-
-    qApp->restoreOverrideCursor();
+    QObject::connect(ui.actionEditFind, SIGNAL(triggered()), tabs, SLOT(find()));
+    QObject::connect(ui.actionEditFindNext, SIGNAL(triggered()), tabs, SLOT(findNext()));
+    QObject::connect(ui.actionEditFindPrev, SIGNAL(triggered()), tabs, SLOT(findPrevious()));
+	qApp->restoreOverrideCursor();
     ui.actionGoPrevious->setEnabled(false);
     ui.actionGoNext->setEnabled(false);
 }
@@ -260,28 +260,34 @@ void MainWindow::closeEvent(QCloseEvent *e)
 void MainWindow::about()
 {
     QMessageBox box(this);
-    box.setText(tr("<center><img src=\":/trolltech/assistant/images/assistant-128.png\">"
-                   "<h3>%1</h3>"
-                   "<br/>Version %2"
 #if QT_EDITION == QT_EDITION_OPENSOURCE
-                   " Open Source Edition</center><p>"
-                   "This version of Qt Assistant is part of the Qt Open Source Edition, for use "
-                   "in the development of Open Source applications. "
-                   "Qt is a comprehensive C++ framework for cross-platform application "
-                   "development.<br/><br/>"
-                   "You need a commercial Qt license for development of proprietary (closed "
-                   "source) applications. Please see <tt>http://www.trolltech.com/company/model"
-                   ".html</tt> for an overview of Qt licensing."
-#else
-                   "</center><p>This program is licensed to you under the terms of the "
+    QString edition = tr("Open Source Edition");
+    QString info = tr("This version of Qt Assistant is part of the Qt Open Source Edition, for use "
+                      "in the development of Open Source applications. "
+                      "Qt is a comprehensive C++ framework for cross-platform application "
+                      "development.");
+    QString moreInfo = tr("You need a commercial Qt license for development of proprietary (closed "
+                   "source) applications. Please see <a href=\"http://www.trolltech.com/company/model"
+                   ".html\">www.trolltech.com/company/model.html</a> for an overview of Qt licensing.");
+#else 
+    QString edition;
+    QString info;
+    QString moreInfo(tr("This program is licensed to you under the terms of the "
                    "Qt Commercial License Agreement. For details, see the file LICENSE "
-                   "that came with this software distribution."
+                   "that came with this software distribution."));
+
 #endif
-                   "<br/><br/>Copyright (C) 2000-2006 Trolltech ASA. All rights reserved."
-                   "<br/><br/>The program is provided AS IS with NO WARRANTY OF ANY KIND,"
+
+    box.setText(QString("<center><img src=\":/trolltech/assistant/images/assistant-128.png\">"
+                   "<h3>%1</h3>"
+                   "<p>Version %2 %3</p></center>"
+                   "<p>%4</p>"
+                   "<p>%5</p>"
+                   "<p>Copyright (C) 2000-2006 Trolltech ASA. All rights reserved.</p>"
+                   "<p>The program is provided AS IS with NO WARRANTY OF ANY KIND,"
                    " INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A"
-                   " PARTICULAR PURPOSE.<br/> ")
-                   .arg(tr("Qt Assistant")).arg(QT_VERSION_STR));
+                   " PARTICULAR PURPOSE.<p/>")
+                   .arg(tr("Qt Assistant")).arg(QT_VERSION_STR).arg(edition).arg(info).arg(moreInfo));
     box.setWindowTitle(tr("Qt Assistant"));
     box.setIcon(QMessageBox::NoIcon);
     box.exec();
@@ -299,7 +305,7 @@ void MainWindow::on_actionAboutApplication_triggered()
         url = url.mid(5);
     QFile file(url);
     if(file.exists() && file.open(QFile::ReadOnly))
-        text = QString::fromAscii(file.readAll());
+        text = QString::fromUtf8(file.readAll());
     if(text.isNull())
         text = tr("Failed to open about application contents in file: '%1'").arg(url);
 
@@ -313,34 +319,6 @@ void MainWindow::on_actionAboutApplication_triggered()
 void MainWindow::on_actionAboutAssistant_triggered()
 {
     about();
-}
-
-void MainWindow::on_actionEditFind_triggered()
-{
-    if (!findDialog)
-        findDialog = new FindDialog(this);
-    findDialog->reset();
-    findDialog->show();
-    findDialog->raise();
-    findDialog->activateWindow();
-}
-
-void MainWindow::on_actionEditFindAgain_triggered()
-{
-    if (!findDialog || !findDialog->hasFindExpression()) {
-        on_actionEditFind_triggered();
-        return;
-    }
-    findDialog->doFind(true);
-}
-
-void MainWindow::on_actionEditFindAgainPrev_triggered()
-{
-    if (!findDialog || !findDialog->hasFindExpression()) {
-        on_actionEditFind_triggered();
-        return;
-    }
-    findDialog->doFind(false);
 }
 
 void MainWindow::on_actionGoHome_triggered()
@@ -506,33 +484,6 @@ void MainWindow::showQtHelp()
              QLatin1String("/html/index.html"));
 }
 
-void MainWindow::on_actionSettings_triggered()
-{
-    showSettingsDialog(-1);
-}
-
-void MainWindow::showPDFReaderSettings()
-{
-    showSettingsDialog(2);
-}
-
-void MainWindow::showWebBrowserSettings()
-{
-    showSettingsDialog(1);
-}
-
-void MainWindow::showSettingsDialog(int page)
-{
-    if (!settingsDia){
-        settingsDia = new SettingsDialog(this);
-    }
-
-    if (page != -1)
-        settingsDia->settingsTab()->setCurrentIndex(page);
-
-    settingsDia->exec();
-}
-
 MainWindow* MainWindow::newWindow()
 {
     saveSettings();
@@ -551,10 +502,9 @@ void MainWindow::saveSettings()
     Config *config = Config::configuration();
 
     config->setSideBarPage(helpDock->tabWidget()->currentIndex());
-    config->setGeometry(normalGeometry());
-    config->setMaximized(isMaximized());
+    config->setWindowGeometry(saveGeometry());
     config->setMainWindowState(saveState());
-
+    
     // Create list of the tab urls
     QStringList lst;
     QList<HelpWindow*> browsers = tabs->browsers();
@@ -687,6 +637,17 @@ void MainWindow::setupPopupMenu(QMenu *m)
     m->addSeparator();
     m->addAction(ui.actionEditCopy);
     m->addAction(ui.actionEditFind);
+}
+
+void MainWindow::on_actionSyncToc_triggered()
+{
+    HelpWindow *w = tabs->currentBrowser();
+    if(w) {
+        qApp->setOverrideCursor(QCursor(Qt::WaitCursor));
+        QString  link = w->source().toString();
+        helpDock->locateContents(link);
+     	qApp->restoreOverrideCursor();
+    }
 }
 
 void MainWindow::on_actionNewWindow_triggered()

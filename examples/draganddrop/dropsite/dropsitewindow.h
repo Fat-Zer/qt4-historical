@@ -25,36 +25,32 @@
 #define DROPSITEWINDOW_H
 
 #include <QWidget>
-#include "dropsitewidget.h"
 
+class QDialogButtonBox;
 class QLabel;
 class QMimeData;
 class QPushButton;
-class QStringList;
 class QTableWidget;
-class QVBoxLayout;
+class DropArea;
 
 class DropSiteWindow : public QWidget
 {
     Q_OBJECT
 
 public:
-    DropSiteWindow(QWidget *parent = 0);
+    DropSiteWindow();
 
 public slots:
-    void updateSupportedFormats(const QMimeData *mimeData = 0);
-
-protected:
-    void resizeEvent(QResizeEvent *event);
+    void updateFormatsTable(const QMimeData *mimeData);
 
 private:
-    DropSiteWidget *dropSiteWidget;
+    DropArea *dropArea;
     QLabel *abstractLabel;
-    QTableWidget *supportedFormats;
+    QTableWidget *formatsTable;
 
     QPushButton *clearButton;
     QPushButton *quitButton;
-    QVBoxLayout *layout;
+    QDialogButtonBox *buttonBox;
 };
 
 #endif

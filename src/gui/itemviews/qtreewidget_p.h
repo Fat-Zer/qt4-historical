@@ -34,32 +34,39 @@
 // We mean it.
 //
 
-#include "QtCore/qabstractitemmodel.h"
-#include "QtCore/qpair.h"
+#include <QtCore/qabstractitemmodel.h>
+#include <QtCore/qpair.h>
+#include <QtGui/qtreewidget.h>
 
 #ifndef QT_NO_TREEWIDGET
 
 class QTreeWidgetItem;
 class QTreeWidgetItemIterator;
+class QTreeModelPrivate;
 
 class QTreeModel : public QAbstractItemModel
 {
     Q_OBJECT
     friend class QTreeWidget;
+    friend class QTreeWidgetPrivate;
     friend class QTreeWidgetItem;
     friend class QTreeWidgetItemIterator;
     friend class QTreeWidgetItemIteratorPrivate;
 
 public:
-    QTreeModel(int columns = 0, QObject *parent = 0);
+    QTreeModel(int columns = 0, QTreeWidget *parent = 0);
     ~QTreeModel();
+
+    inline QTreeWidget *view() const
+        { return qobject_cast<QTreeWidget*>(QObject::parent()); }
 
     void clear();
     void setColumnCount(int columns);
 
     QTreeWidgetItem *item(const QModelIndex &index) const;
+    void itemChanged(QTreeWidgetItem *item);
 
-    QModelIndex index(QTreeWidgetItem *item, int column) const;
+    QModelIndex index(const QTreeWidgetItem *item, int column) const;
     QModelIndex index(int row, int column, const QModelIndex &parent) const;
     QModelIndex parent(const QModelIndex &child) const;
     int rowCount(const QModelIndex &parent) const;
@@ -76,17 +83,21 @@ public:
     Qt::ItemFlags flags(const QModelIndex &index) const;
 
     void sort(int column, Qt::SortOrder order);
+    void ensureSorted(int column, Qt::SortOrder order,
+                      int start, int end, const QModelIndex &parent);
     static bool itemLessThan(const QPair<QTreeWidgetItem*,int> &left,
                              const QPair<QTreeWidgetItem*,int> &right);
     static bool itemGreaterThan(const QPair<QTreeWidgetItem*,int> &left,
                                 const QPair<QTreeWidgetItem*,int> &right);
-
-    void insertInTopLevel(int row, QTreeWidgetItem *item);
-
-    void insertListInTopLevel(int row, const QList<QTreeWidgetItem*> &items);
+    static QList<QTreeWidgetItem*>::iterator sortedInsertionIterator(
+        const QList<QTreeWidgetItem*>::iterator &begin,
+        const QList<QTreeWidgetItem*>::iterator &end,
+        Qt::SortOrder order, QTreeWidgetItem *item);
 
     bool insertRows(int row, int count, const QModelIndex &);
     bool insertColumns(int column, int count, const QModelIndex &);
+
+    bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex());
 
     // dnd
     QStringList mimeTypes() const;
@@ -98,19 +109,32 @@ public:
     QMimeData *internalMimeData()  const;
 
 protected:
+    QTreeModel(QTreeModelPrivate &, QTreeWidget *parent = 0);
     void emitDataChanged(QTreeWidgetItem *item, int column);
     void beginInsertItems(QTreeWidgetItem *parent, int row, int count);
+    void endInsertItems();
     void beginRemoveItems(QTreeWidgetItem *parent, int row, int count);
+    void endRemoveItems();
     void sortItems(QList<QTreeWidgetItem*> *items, int column, Qt::SortOrder order);
 
 private:
-    QList<QTreeWidgetItem*> tree;
-    QTreeWidgetItem *header;
-    Qt::SortOrder sorting;
+    QTreeWidgetItem *rootItem;
+    QTreeWidgetItem *headerItem;
 
-    // A cache must be mutable if get-functions should have const modifiers
     mutable QModelIndexList cachedIndexes;
     QList<QTreeWidgetItemIterator*> iterators;
+
+    mutable bool sortPending;
+    bool executePendingSort() const;
+
+    Q_DECLARE_PRIVATE(QTreeModel)
+};
+
+#include "private/qabstractitemmodel_p.h"
+
+class QTreeModelPrivate : public QAbstractItemModelPrivate
+{
+    Q_DECLARE_PUBLIC(QTreeModel)
 };
 
 #endif // QT_NO_TREEWIDGET

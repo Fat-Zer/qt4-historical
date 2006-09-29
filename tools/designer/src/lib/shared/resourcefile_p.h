@@ -145,6 +145,8 @@ public:
     QString relativePath(const QString &path) const
         { return m_resource_file.relativePath(path); }
 
+    QString lastResourceOpenDirectory() const;
+
     virtual bool reload();
     virtual bool save();
     QString errorMessage() const { return m_resource_file.errorMessage(); }
@@ -160,6 +162,7 @@ signals:
 private:
     ResourceFile m_resource_file;
     bool m_dirty;
+    QString m_lastResourceDir;
 };
 
 } // namespace qdesigner_internal

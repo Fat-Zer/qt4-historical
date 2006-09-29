@@ -1,10 +1,13 @@
 TEMPLATE      = subdirs
+CONFIG       += ordered
 SUBDIRS       = codecs \
+                completer \
                 i18n \
-                plugandpaint \
                 plugandpaintplugins \
+                plugandpaint \
                 regexp \
-                settingseditor
+                settingseditor \
+                customcompleter
 !cross_compile:SUBDIRS += qtdemo 
 
 # install

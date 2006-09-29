@@ -50,6 +50,7 @@ private:
     Q_PROPERTY(bool tearOffEnabled READ isTearOffEnabled WRITE setTearOffEnabled)
     Q_PROPERTY(QString title READ title WRITE setTitle)
     Q_PROPERTY(QIcon icon READ icon WRITE setIcon)
+    Q_PROPERTY(bool separatorsCollapsible READ separatorsCollapsible WRITE setSeparatorsCollapsible)
 
 public:
     explicit QMenu(QWidget *parent = 0);
@@ -75,6 +76,7 @@ public:
     QAction *insertMenu(QAction *before, QMenu *menu);
     QAction *insertSeparator(QAction *before);
 
+    bool isEmpty() const;
     void clear();
 
     void setTearOffEnabled(bool);
@@ -112,8 +114,12 @@ public:
     MenuRef macMenu(MenuRef merge=0);
 #endif
 
+    bool separatorsCollapsible() const;
+    void setSeparatorsCollapsible(bool collapse);
+
 Q_SIGNALS:
     void aboutToShow();
+    void aboutToHide();
     void triggered(QAction *action);
     void hovered(QAction *action);
 
@@ -133,6 +139,7 @@ protected:
     void actionEvent(QActionEvent *);
     void timerEvent(QTimerEvent *);
     bool event(QEvent *);
+    bool focusNextPrevChild(bool next);
 
 private Q_SLOTS:
     void internalSetSloppyAction();
@@ -341,7 +348,6 @@ protected:
     }
 
 Q_SIGNALS:
-    QT_MOC_COMPAT void aboutToHide();
     QT_MOC_COMPAT void activated(int itemId);
     QT_MOC_COMPAT void highlighted(int itemId);
 
@@ -362,6 +368,7 @@ private:
     friend class QComboBox;
 
 #ifdef Q_WS_MAC
+    friend void qt_mac_trayicon_activate_action(QMenu *, QAction *action);
     friend bool qt_mac_watchingAboutToShow(QMenu *);
     friend OSStatus qt_mac_menu_event(EventHandlerCallRef, EventRef, void *);
     friend bool qt_mac_activate_action(MenuRef, uint, QAction::ActionEvent, bool);

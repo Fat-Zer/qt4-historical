@@ -37,7 +37,11 @@
 #include <QtGui/QDockWidget>
 #include <QtGui/QDialog>
 #include <QtGui/QStackedWidget>
+#include <QtGui/QToolBar>
+#include <QtGui/QStatusBar>
 #include <QtGui/QLabel>
+#include <QtGui/QCalendarWidget>
+#include <QtGui/QDialogButtonBox>
 
 namespace qdesigner_internal {
 
@@ -63,6 +67,14 @@ static bool hasLayoutAttributes(QObject *object)
     if (qobject_cast<QLabel*>(object) != 0)
         return false;
     if (qobject_cast<QDockWidget*>(object) != 0)
+        return false;
+    if (qobject_cast<QToolBar*>(object) != 0)
+        return false;
+    if (qobject_cast<QStatusBar*>(object) != 0)
+        return false;
+    if (qobject_cast<QCalendarWidget*>(object) != 0)
+        return false;
+    if (qobject_cast<QDialogButtonBox*>(object) != 0)
         return false;
     return true;
 }
@@ -239,11 +251,13 @@ QVariant QDesignerPropertySheet::property(int index) const
         EnumType e;
         e.value = v;
         QMetaEnum me = p.enumerator();
+        QString scope = QString::fromUtf8(me.scope());
+        if (!scope.isEmpty())
+            scope += QString::fromUtf8("::");
         for (int i=0; i<me.keyCount(); ++i) {
-            QString k = QString::fromUtf8(me.scope());
-            k += QString::fromUtf8("::");
-            k += QLatin1String(me.key(i));
-            e.items.insert(k, me.keyToValue(k.toUtf8()));
+            QString key = scope + QLatin1String(me.key(i));
+            e.items.insert(key, me.keyToValue(key.toUtf8()));
+            e.names.append(key);
         }
 
         qVariantSetValue(v, e);
@@ -277,13 +291,13 @@ QVariant QDesignerPropertySheet::metaProperty(int index) const
         EnumType e;
         e.value = v;
         QMetaEnum me = p.enumerator();
+        QString scope = QString::fromUtf8(me.scope());
+        if (!scope.isEmpty())
+            scope += QString::fromUtf8("::");
         for (int i=0; i<me.keyCount(); ++i) {
-            QString key;
-            key += QLatin1String(me.scope());
-            key += QLatin1String("::");
-            key += QLatin1String(me.key(i));
-
+            QString key = scope + QLatin1String(me.key(i));
             e.items.insert(key, me.keyToValue(key.toUtf8()));
+            e.names.append(key);
         }
 
         qVariantSetValue(v, e);

@@ -658,7 +658,7 @@ qint64 Q3SocketDevice::bytesAvailable() const
     // gives shorter than true amounts on Unix domain sockets.
     if ( ::ioctl(fd, FIONREAD, (char*)&nbytes) < 0 )
 	return -1;
-    return (Q_LONG) *((int *) &nbytes);
+    return (Q_LONG) *((int *) &nbytes) + QIODevice::bytesAvailable();
 }
 
 

@@ -41,8 +41,9 @@ class QWidgetItemData;
 class Q_GUI_EXPORT QListWidgetItem
 {
     friend class QListModel;
+    friend class QListWidget;
 public:
-    enum { Type = 0, UserType = 1000 };
+    enum ItemType { Type = 0, UserType = 1000 };
     explicit QListWidgetItem(QListWidget *view = 0, int type = Type);
     explicit QListWidgetItem(const QString &text, QListWidget *view = 0, int type = Type);
     explicit QListWidgetItem(const QIcon &icon, const QString &text,
@@ -54,8 +55,14 @@ public:
 
     inline QListWidget *listWidget() const { return view; }
 
+    inline void setSelected(bool select);
+    inline bool isSelected() const;
+
+    inline void setHidden(bool hide);
+    inline bool isHidden() const;
+
     inline Qt::ItemFlags flags() const { return itemFlags; }
-    inline void setFlags(Qt::ItemFlags flags);
+    void setFlags(Qt::ItemFlags flags);
 
     inline QString text() const
         { return data(Qt::DisplayRole).toString(); }
@@ -95,10 +102,20 @@ public:
     virtual void setBackgroundColor(const QColor &color)
         { setData(Qt::BackgroundColorRole, color); }
 
+    inline QBrush background() const
+        { return qvariant_cast<QBrush>(data(Qt::BackgroundRole)); }
+    inline void setBackground(const QBrush &brush)
+        { setData(Qt::BackgroundRole, brush); }
+
     inline QColor textColor() const
         { return qvariant_cast<QColor>(data(Qt::TextColorRole)); }
     inline void setTextColor(const QColor &color)
         { setData(Qt::TextColorRole, color); }
+
+    inline QBrush foreground() const
+        { return qvariant_cast<QBrush>(data(Qt::ForegroundRole)); }
+    inline void setForeground(const QBrush &brush)
+        { setData(Qt::ForegroundRole, brush); }
 
     inline Qt::CheckState checkState() const
         { return static_cast<Qt::CheckState>(data(Qt::CheckStateRole).toInt()); }
@@ -130,9 +147,6 @@ private:
     QListModel *model;
     Qt::ItemFlags itemFlags;
 };
-
-inline void QListWidgetItem::setFlags(Qt::ItemFlags aflags)
-{ itemFlags = aflags; }
 
 inline void QListWidgetItem::setText(const QString &atext)
 { setData(Qt::DisplayRole, atext); }
@@ -168,6 +182,7 @@ class Q_GUI_EXPORT QListWidget : public QListView
     Q_OBJECT
     Q_PROPERTY(int count READ count)
     Q_PROPERTY(int currentRow READ currentRow WRITE setCurrentRow NOTIFY currentRowChanged USER true)
+    Q_PROPERTY(bool sortingEnabled READ isSortingEnabled WRITE setSortingEnabled)
 
     friend class QListWidgetItem;
     friend class QListModel;
@@ -197,6 +212,8 @@ public:
     QRect visualItemRect(const QListWidgetItem *item) const;
 
     void sortItems(Qt::SortOrder order = Qt::AscendingOrder);
+    void setSortingEnabled(bool enable);
+    bool isSortingEnabled() const;
 
     void editItem(QListWidgetItem *item);
     void openPersistentEditor(QListWidgetItem *item);
@@ -212,6 +229,7 @@ public:
 
     bool isItemHidden(const QListWidgetItem *item) const;
     void setItemHidden(const QListWidgetItem *item, bool hide);
+    void dropEvent(QDropEvent *event);
 
 public Q_SLOTS:
     void scrollToItem(const QListWidgetItem *item, QAbstractItemView::ScrollHint hint = EnsureVisible);
@@ -246,6 +264,7 @@ protected:
 
 private:
     void setModel(QAbstractItemModel *model);
+    Qt::SortOrder sortOrder() const;
 
     Q_DECLARE_PRIVATE(QListWidget)
     Q_DISABLE_COPY(QListWidget)
@@ -257,6 +276,8 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_emitItemEntered(const QModelIndex &index))
     Q_PRIVATE_SLOT(d_func(), void _q_emitItemChanged(const QModelIndex &index))
     Q_PRIVATE_SLOT(d_func(), void _q_emitCurrentItemChanged(const QModelIndex &previous, const QModelIndex &current))
+    Q_PRIVATE_SLOT(d_func(), void _q_sort())
+    Q_PRIVATE_SLOT(d_func(), void _q_dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight))
 };
 
 inline void QListWidget::addItem(QListWidgetItem *aitem)
@@ -264,6 +285,18 @@ inline void QListWidget::addItem(QListWidgetItem *aitem)
 
 inline QListWidgetItem *QListWidget::itemAt(int ax, int ay) const
 { return itemAt(QPoint(ax, ay)); }
+
+inline void QListWidgetItem::setSelected(bool aselect)
+{ if (view) view->setItemSelected(this, aselect); }
+
+inline bool QListWidgetItem::isSelected() const
+{ return (view ? view->isItemSelected(this) : false); }
+
+inline void QListWidgetItem::setHidden(bool ahide)
+{ if (view) view->setItemHidden(this, ahide); }
+
+inline bool QListWidgetItem::isHidden() const
+{ return (view ? view->isItemHidden(this) : false); }
 
 #endif // QT_NO_LISTWIDGET
 

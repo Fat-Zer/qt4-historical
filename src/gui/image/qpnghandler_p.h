@@ -40,7 +40,7 @@
 #ifndef QT_NO_IMAGEFORMAT_PNG
 
 class QPngHandlerPrivate;
-class Q_GUI_EXPORT QPngHandler : public QImageIOHandler
+class QPngHandler : public QImageIOHandler
 {
 public:
     QPngHandler();

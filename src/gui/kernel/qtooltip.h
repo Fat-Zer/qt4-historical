@@ -37,8 +37,13 @@ class Q_GUI_EXPORT QToolTip
     QToolTip();
 public:
     static void showText(const QPoint &pos, const QString &text, QWidget *w = 0);
+    static void showText(const QPoint &pos, const QString &text, QWidget *w, const QRect &rect);
+    static inline void hideText() { showText(QPoint(), QString()); }
 
     static QPalette palette();
+    static void setPalette(const QPalette &);
+    static QFont font();
+    static void setFont(const QFont &);
 #ifdef QT3_SUPPORT
     static inline QT3_SUPPORT void add(QWidget *w, const QString &s) { w->setToolTip(s); }
     static inline QT3_SUPPORT void add(QWidget *w, const QRect &, const QString &s)

@@ -21,6 +21,10 @@
 **
 ****************************************************************************/
 
+/*
+TRANSLATOR qdesigner_internal::ButtonTaskMenu
+*/
+
 #include "button_taskmenu.h"
 #include "inplace_editor.h"
 

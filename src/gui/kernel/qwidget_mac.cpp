@@ -20,6 +20,7 @@
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 **
 ****************************************************************************/
+//#define QT_RASTER_PAINTENGINE
 
 #include <private/qt_mac_p.h>
 
@@ -33,9 +34,8 @@
 #include "qlayout.h"
 #ifdef QT_RASTER_PAINTENGINE
 # include <private/qpaintengine_raster_p.h>
-#else
-# include <private/qpaintengine_mac_p.h>
 #endif
+#include <private/qpaintengine_mac_p.h>
 #include "qpainter.h"
 #include "qstack.h"
 #include "qstyle.h"
@@ -43,6 +43,8 @@
 #include "qtimer.h"
 #include "qdebug.h"
 
+#include <private/qabstractscrollarea_p.h>
+#include <qabstractscrollarea.h>
 #include <ApplicationServices/ApplicationServices.h>
 #include <limits.h>
 
@@ -50,6 +52,7 @@
 
 #define XCOORD_MAX 32767
 #define WRECT_MAX 8191
+
 
 /*****************************************************************************
   QWidget debug facilities
@@ -69,8 +72,8 @@ const UInt32 kWidgetCreatorQt = 'cute';
 enum {
     kWidgetPropertyQWidget = 'QWId' //QWidget *
 };
+static CFStringRef kObjectQWidget = CFSTR("com.trolltech.qt.widget");
 Q_GUI_EXPORT QPoint qt_mac_posInWindow(const QWidget *w);
-
 
 /*****************************************************************************
   Externals
@@ -108,11 +111,7 @@ static QSize qt_initial_size(QWidget *w) {
         s.setWidth(qMax(s.width(), 200));
     if (exp & Qt::Vertical)
         s.setHeight(qMax(s.height(), 150));
-#if defined(Q_WS_X11)
-    QRect screen = QApplication::desktop()->screenGeometry(w->x11Info()->screen());
-#else // all others
     QRect screen = QApplication::desktop()->screenGeometry(w->pos());
-#endif
     s.setWidth(qMin(s.width(), screen.width()*2/3));
     s.setHeight(qMin(s.height(), screen.height()*2/3));
     int left, top, right, bottom;
@@ -166,23 +165,36 @@ inline static void qt_mac_set_fullscreen_mode(bool b)
 #endif
 }
 
-#if (MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_2)
-#define kControlOpaqueMetaPart -3
-#endif
+Q_GUI_EXPORT HIViewRef qt_mac_hiview_for(const QWidget *w)
+{
+    return (HIViewRef)w->data->winid;
+}
+Q_GUI_EXPORT HIViewRef qt_mac_hiview_for(WindowPtr w)
+{
+    HIViewRef ret = 0;
+    OSStatus err = HIViewFindByID(HIViewGetRoot(w), kHIViewWindowContentID, &ret);
+    if(err == errUnknownControl)
+        ret = HIViewGetRoot(w);
+    else if(err != noErr)
+        qWarning("That cannot happen! %d [%ld]", __LINE__, err);
+    return ret;
+}
 
-//find a WindowPtr from a QWidget/HIView
 Q_GUI_EXPORT WindowPtr qt_mac_window_for(HIViewRef hiview)
 {
-#if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3)
-    if(QSysInfo::MacintoshVersion >= QSysInfo::MV_10_3)
-        return HIViewGetWindow(hiview);
-#endif
-    return GetControlOwner(hiview);
-
+    return HIViewGetWindow(hiview);
 }
 Q_GUI_EXPORT WindowPtr qt_mac_window_for(const QWidget *w)
 {
-    return qt_mac_window_for((HIViewRef)w->winId());
+    HIViewRef hiview = qt_mac_hiview_for(w);
+    Q_ASSERT(hiview);
+    WindowPtr window = qt_mac_window_for(hiview);
+    if(!window && HIObjectIsOfClass((HIObjectRef)hiview, kObjectQWidget)) {
+        w->window()->d_func()->createWindow_sys();
+        hiview = qt_mac_hiview_for(w);
+        window = qt_mac_window_for(hiview);
+    }
+    return window;
 }
 
 /* Use this function instead of ReleaseWindowGroup, this will be sure to release the
@@ -203,7 +215,7 @@ static WindowGroupRef qt_mac_get_stays_on_top_group()
 {
     if(!qt_mac_stays_on_top_group) {
         CreateWindowGroup(kWindowActivationScopeNone, &qt_mac_stays_on_top_group);
-        SetWindowGroupLevel(qt_mac_stays_on_top_group, kCGOverlayWindowLevelKey);
+        SetWindowGroupLevel(qt_mac_stays_on_top_group, kCGNormalWindowLevel);
         SetWindowGroupParent(qt_mac_stays_on_top_group, GetWindowGroupOfClass(kAllWindowClasses));
     }
     RetainWindowGroup(qt_mac_stays_on_top_group);
@@ -212,40 +224,50 @@ static WindowGroupRef qt_mac_get_stays_on_top_group()
 
 void qt_mac_set_widget_is_opaque(QWidget *w, bool o)
 {
-#if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3)
-    if(QSysInfo::MacintoshVersion >= QSysInfo::MV_10_3) {
-        HIViewFeatures bits;
-        HIViewRef hiview = HIViewRef(w->winId());
-        HIViewGetFeatures(hiview, &bits);
-        if ((bits & kHIViewIsOpaque) == o)
-            return;
-        if(o) {
-            HIViewChangeFeatures(hiview, kHIViewIsOpaque, 0);
-        } else {
-            HIViewChangeFeatures(hiview, 0, kHIViewIsOpaque);
-        }
+    if (!w->testAttribute(Qt::WA_WState_Created))
+        return;
+    HIViewFeatures bits;
+    HIViewRef hiview = qt_mac_hiview_for(w);
+    HIViewGetFeatures(hiview, &bits);
+    if ((bits & kHIViewIsOpaque) == o)
+        return;
+    if(o) {
+        HIViewChangeFeatures(hiview, kHIViewIsOpaque, 0);
+    } else {
+        HIViewChangeFeatures(hiview, 0, kHIViewIsOpaque);
     }
-#endif
     if (w->isVisible())
-        HIViewReshapeStructure((HIViewRef)w->winId());
+        HIViewReshapeStructure(qt_mac_hiview_for(w));
 }
 
 void qt_mac_update_ignore_mouseevents(QWidget *w)
 {
+    if (!w->testAttribute(Qt::WA_WState_Created))
+        return;
+
     if(w->isWindow()) {
-#if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_2)
-        if(QSysInfo::MacintoshVersion >= QSysInfo::MV_10_2) {
-            if(w->testAttribute(Qt::WA_TransparentForMouseEvents))
-                ChangeWindowAttributes(qt_mac_window_for(w), kWindowIgnoreClicksAttribute, 0);
-            else
-                ChangeWindowAttributes(qt_mac_window_for(w), 0, kWindowIgnoreClicksAttribute);
-        }
+        if(w->testAttribute(Qt::WA_TransparentForMouseEvents))
+            ChangeWindowAttributes(qt_mac_window_for(w), kWindowIgnoreClicksAttribute, 0);
+        else
+            ChangeWindowAttributes(qt_mac_window_for(w), 0, kWindowIgnoreClicksAttribute);
+        ReshapeCustomWindow(qt_mac_window_for(w));
+    } else {
+#ifndef kHIViewFeatureIgnoresClicks
+#define kHIViewFeatureIgnoresClicks kHIViewIgnoresClicks
 #endif
+        if(w->testAttribute(Qt::WA_TransparentForMouseEvents))
+            HIViewChangeFeatures(qt_mac_hiview_for(w), kHIViewFeatureIgnoresClicks, 0);
+        else
+            HIViewChangeFeatures(qt_mac_hiview_for(w), 0, kHIViewFeatureIgnoresClicks);
+        HIViewReshapeStructure(qt_mac_hiview_for(w));
     }
 }
 
 void qt_mac_update_metal_style(QWidget *w)
 {
+    if (!w->testAttribute(Qt::WA_WState_Created))
+        return;
+
     if(w->isWindow()) {
         if(w->testAttribute(Qt::WA_MacMetalStyle))
             ChangeWindowAttributes(qt_mac_window_for(w), kWindowMetalAttribute, 0);
@@ -254,24 +276,32 @@ void qt_mac_update_metal_style(QWidget *w)
     }
 }
 
+void qt_mac_update_opaque_sizegrip(QWidget *window)
+{
+    if (!window->testAttribute(Qt::WA_WState_Created) || !window->isWindow())
+        return;
+
+    HIViewRef growBox;
+    HIViewFindByID(HIViewGetRoot(qt_mac_window_for(window)), kHIViewWindowGrowBoxID, &growBox);
+    if (!growBox)
+        return;
+    HIGrowBoxViewSetTransparent(growBox, !window->testAttribute(Qt::WA_MacOpaqueSizeGrip));
+}
+
 static OSStatus qt_mac_create_window(WindowClass wclass, WindowAttributes wattr,
                                      Rect *geo, WindowPtr *w)
 {
     OSStatus ret;
-    if(geo->right == geo->left)
-        geo->right++;
-    if(geo->bottom == geo->top)
-        geo->bottom++;
-    if(QSysInfo::MacintoshVersion >= QSysInfo::MV_10_3) {
-        Rect null_rect; SetRect(&null_rect, 0, 0, 1, 1);
-        ret = CreateNewWindow(wclass, wattr, &null_rect, w);
-        if(ret == noErr) {
-            ret = SetWindowBounds(*w, kWindowContentRgn, geo);
-            if(ret != noErr)
-                qWarning("%s:%d This error shouldn't really ever happen!!!", __FILE__, __LINE__);
-        }
-    } else {
-        ret = CreateNewWindow(wclass, wattr, geo, w);
+    if(geo->right <= geo->left)
+        geo->right = geo->left + 1;
+    if(geo->bottom <= geo->top)
+        geo->bottom = geo->top + 1;
+    Rect null_rect; SetRect(&null_rect, 0, 0, 1, 1);
+    ret = CreateNewWindow(wclass, wattr, &null_rect, w);
+    if(ret == noErr) {
+        ret = SetWindowBounds(*w, kWindowContentRgn, geo);
+        if(ret != noErr)
+            qWarning("QWidget: Internal error (%s:%d)", __FILE__, __LINE__);
     }
     return ret;
 }
@@ -319,29 +349,16 @@ OSStatus QWidgetPrivate::qt_window_event(EventHandlerCallRef er, EventRef event,
         }
         break;
     case kEventClassMouse: {
+#if 0
+        return SendEventToApplication(event);
+#endif
+
         bool send_to_app = false;
         {
             WindowPartCode wpc;
-#if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3)
-            if (QSysInfo::MacintoshVersion >= QSysInfo::MV_10_3) {
-                if (GetEventParameter(event, kEventParamWindowPartCode, typeWindowPartCode, 0,
-                                      sizeof(wpc), 0, &wpc) == noErr && wpc != inContent)
-                    send_to_app = true;
-            } else
-#endif
-            {
-                HIPoint hipt;
-                WindowRef wref;
-                if (GetEventParameter(event, kEventParamMouseLocation, typeHIPoint, 0,
-                                      sizeof(hipt), 0, &hipt) == noErr
-                    && GetEventParameter(event, kEventParamWindowRef, typeWindowRef, 0,
-                                         sizeof(wref), 0, &wref) == noErr) {
-                    Point lopt = { int(hipt.y), int(hipt.x) };
-                    wpc = FindWindow(lopt, &wref);
-                    if (wpc != inContent)
-                        send_to_app = true;
-                }
-            }
+            if (GetEventParameter(event, kEventParamWindowPartCode, typeWindowPartCode, 0,
+                                  sizeof(wpc), 0, &wpc) == noErr && wpc != inContent)
+                send_to_app = true;
         }
         if(!send_to_app) {
             WindowRef window;
@@ -349,8 +366,14 @@ OSStatus QWidgetPrivate::qt_window_event(EventHandlerCallRef er, EventRef event,
                                  sizeof(window), 0, &window) == noErr) {
                 HIViewRef hiview;
                 if(HIViewGetViewForMouseEvent(HIViewGetRoot(window), event, &hiview) == noErr) {
-                    if(QWidget *w = QWidget::find((WId)hiview))
+                    if(QWidget *w = QWidget::find((WId)hiview)) {
+#if 0
                         send_to_app = !w->isActiveWindow();
+#else
+                        Q_UNUSED(w);
+                        send_to_app = true;
+#endif
+                    }
                 }
             }
         }
@@ -368,7 +391,6 @@ OSStatus QWidgetPrivate::qt_window_event(EventHandlerCallRef er, EventRef event,
 
 // widget events
 static HIObjectClassRef widget_class = 0;
-static CFStringRef kObjectQWidget = CFSTR("com.trolltech.qt.widget");
 static EventTypeSpec widget_events[] = {
     { kEventClassHIObject, kEventHIObjectConstruct },
     { kEventClassHIObject, kEventHIObjectDestruct },
@@ -381,7 +403,13 @@ static EventTypeSpec widget_events[] = {
     { kEventClassControl, kEventControlDragEnter },
     { kEventClassControl, kEventControlDragWithin },
     { kEventClassControl, kEventControlDragLeave },
-    { kEventClassControl, kEventControlDragReceive }
+    { kEventClassControl, kEventControlDragReceive },
+    { kEventClassControl, kEventControlOwningWindowChanged },
+
+    { kEventClassMouse, kEventMouseDown },
+    { kEventClassMouse, kEventMouseUp },
+    { kEventClassMouse, kEventMouseMoved },
+    { kEventClassMouse, kEventMouseDragged }
 };
 static EventHandlerUPP mac_widget_eventUPP = 0;
 static void cleanup_widget_eventUPP()
@@ -396,27 +424,27 @@ static const EventHandlerUPP make_widget_eventUPP()
     qAddPostRoutine(cleanup_widget_eventUPP);
     return mac_widget_eventUPP = NewEventHandlerUPP(QWidgetPrivate::qt_widget_event);
 }
-OSStatus QWidgetPrivate::qt_widget_event(EventHandlerCallRef, EventRef event, void *)
+OSStatus QWidgetPrivate::qt_widget_event(EventHandlerCallRef er, EventRef event, void *)
 {
     bool handled_event = true;
     UInt32 ekind = GetEventKind(event), eclass = GetEventClass(event);
     switch(eclass) {
-    case kEventClassHIObject:
+    case kEventClassHIObject: {
+        HIViewRef view = 0;
+        GetEventParameter(event, kEventParamHIObjectInstance, typeHIObjectRef,
+                          0, sizeof(view), 0, &view);
         if(ekind == kEventHIObjectConstruct) {
-            HIViewRef view;
-            if(GetEventParameter(event, kEventParamHIObjectInstance, typeHIObjectRef,
-                                 0, sizeof(view), 0, &view) == noErr) {
-#if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3)
-                if(QSysInfo::MacintoshVersion >= QSysInfo::MV_10_3)
-                    HIViewChangeFeatures(view, kHIViewAllowsSubviews, 0);
-#endif
+            if(view) {
+                HIViewChangeFeatures(view, kHIViewAllowsSubviews, 0);
+                SetEventParameter(event, kEventParamHIObjectInstance,
+                                  typeVoidPtr, sizeof(view), &view);
             }
         } else if(ekind == kEventHIObjectDestruct) {
             //nothing to really do.. or is there?
         } else {
             handled_event = false;
         }
-        break;
+        break; }
     case kEventClassControl: {
         QWidget *widget = 0;
         HIViewRef hiview = 0;
@@ -452,26 +480,29 @@ OSStatus QWidgetPrivate::qt_widget_event(EventHandlerCallRef, EventRef event, vo
                     widget->d_func()->hd = old_qdref;
 
 #ifdef DEBUG_WIDGET_PAINT
-                qDebug("asked to draw %p [%s::%s] %p", hiview, widget->metaObject()->className(),
-                       widget->objectName().local8Bit().data(),
-                       (HIViewRef)(widget->parentWidget() ? widget->parentWidget()->winId() : (WId)-1));
+                const bool doDebug = true;
+                if(doDebug)  {
+                    qDebug("asked to draw %p[%p] [%s::%s] %p[%p] [%d] [%dx%d]", widget, hiview, widget->metaObject()->className(),
+                           widget->objectName().local8Bit().data(), widget->parentWidget(),
+                           (HIViewRef)(widget->parentWidget() ? qt_mac_hiview_for(widget->parentWidget()) : (HIViewRef)0),
+                           HIViewIsCompositingEnabled(hiview), qt_mac_posInWindow(widget).x(), qt_mac_posInWindow(widget).y());
 #if 0
-                QVector<QRect> region_rects = qrgn.rects();
-                qDebug("Region! %d", region_rects.count());
-                for(int i = 0; i < region_rects.count(); i++)
-                    qDebug("%d %d %d %d", region_rects[i].x(), region_rects[i].y(),
-                           region_rects[i].width(), region_rects[i].height());
-                region_rects = widget->d_func()->clp.rects();
-                qDebug("Widget Region! %d", region_rects.count());
-                for(int i = 0; i < region_rects.count(); i++)
-                    qDebug("%d %d %d %d", region_rects[i].x(), region_rects[i].y(),
-                           region_rects[i].width(), region_rects[i].height());
+                    QVector<QRect> region_rects = qrgn.rects();
+                    qDebug("Region! %d", region_rects.count());
+                    for(int i = 0; i < region_rects.count(); i++)
+                        qDebug("%d %d %d %d", region_rects[i].x(), region_rects[i].y(),
+                               region_rects[i].width(), region_rects[i].height());
+                    region_rects = widget->d_func()->clp.rects();
+                    qDebug("Widget Region! %d", region_rects.count());
+                    for(int i = 0; i < region_rects.count(); i++)
+                        qDebug("%d %d %d %d", region_rects[i].x(), region_rects[i].y(),
+                               region_rects[i].width(), region_rects[i].height());
 #endif
+                }
 #endif
                 if (widget->isVisible() && widget->updatesEnabled()) { //process the actual paint event.
                     if(widget->testAttribute(Qt::WA_WState_InPaintEvent))
-                        qWarning("QWidget::repaint: recursive repaint detected.");
-
+                        qWarning("QWidget::repaint: Recursive repaint detected");
 
                     QPoint redirectionOffset(0, 0);
                     // handle the first paintable point since Mac doesn't.
@@ -490,6 +521,11 @@ OSStatus QWidgetPrivate::qt_widget_event(EventHandlerCallRef, EventRef event, vo
                     if (engine && !widget->testAttribute(Qt::WA_NoSystemBackground)
                         && (widget->isWindow() || widget->autoFillBackground()) || widget->testAttribute(Qt::WA_TintedBackground)) {
                         QRect rr = qrgn.boundingRect();
+#ifdef DEBUG_WIDGET_PAINT
+                        if(doDebug)
+                            qDebug(" Handling erase for [%s::%s]", widget->metaObject()->className(),
+                                   widget->objectName().local8Bit().data());
+#endif
                         if (!redirectionOffset.isNull()) {
                             QPainter::setRedirected(widget, widget, redirectionOffset);
                             rr.setWidth(rr.width()+redirectionOffset.x());
@@ -501,6 +537,15 @@ OSStatus QWidgetPrivate::qt_widget_event(EventHandlerCallRef, EventRef event, vo
                         if(was_unclipped)
                             widget->setAttribute(Qt::WA_PaintUnclipped);
                         p.setClipRegion(qrgn.translated(redirectionOffset));
+
+                        QAbstractScrollArea *scrollArea = qobject_cast<QAbstractScrollArea *>(widget->parent());
+                        if (scrollArea && scrollArea->viewport() == widget) {
+                            QAbstractScrollAreaPrivate *priv = static_cast<QAbstractScrollAreaPrivate *>(static_cast<QWidget *>(scrollArea)->d_ptr);
+                            const QPoint offset = priv->contentsOffset();
+                            p.translate(-offset);
+                            rr.translate(offset);
+                        }
+
                         widget->d_func()->paintBackground(&p, rr, widget->isWindow());
                         if (widget->testAttribute(Qt::WA_TintedBackground)) {
                             QColor tint = widget->palette().window().color();
@@ -511,6 +556,9 @@ OSStatus QWidgetPrivate::qt_widget_event(EventHandlerCallRef, EventRef event, vo
                         if (!redirectionOffset.isNull())
                             QPainter::restoreRedirected(widget);
                     }
+
+                    if(!HIObjectIsOfClass((HIObjectRef)hiview, kObjectQWidget))
+                        CallNextEventHandler(er, event);
 
                     //send the paint
                     redirectionOffset += widget->data->wrect.topLeft(); // Map from system to qt coordinates
@@ -524,6 +572,11 @@ OSStatus QWidgetPrivate::qt_widget_event(EventHandlerCallRef, EventRef event, vo
                     QApplication::sendSpontaneousEvent(widget, &e);
                     if (!redirectionOffset.isNull())
                         QPainter::restoreRedirected(widget);
+#ifdef QT_RASTER_PAINTENGINE
+                    if(engine->type() == QPaintEngine::Raster)
+                        static_cast<QRasterPaintEngine*>(engine)->flush(widget,
+                                                                        qrgn.boundingRect().topLeft());
+#endif
 
                     //cleanup
                     if (engine)
@@ -531,7 +584,7 @@ OSStatus QWidgetPrivate::qt_widget_event(EventHandlerCallRef, EventRef event, vo
 
                     widget->setAttribute(Qt::WA_WState_InPaintEvent, false);
                     if(!widget->testAttribute(Qt::WA_PaintOutsidePaintEvent) && widget->paintingActive())
-                        qWarning("It is dangerous to leave painters active on a widget outside of the PaintEvent");
+                        qWarning("QWidget: It is dangerous to leave painters active on a widget outside of the PaintEvent");
                 }
                 SetGWorld(old_qdref, old_device); //restore the state..
 
@@ -539,36 +592,48 @@ OSStatus QWidgetPrivate::qt_widget_event(EventHandlerCallRef, EventRef event, vo
                 widget->d_func()->clp_serial++;
                 widget->d_func()->clp = QRegion();
                 widget->d_func()->hd = 0;
+            } else if(!HIObjectIsOfClass((HIObjectRef)hiview, kObjectQWidget)) {
+                CallNextEventHandler(er, event);
             }
         } else if(ekind == kEventControlInitialize) {
-            UInt32 features = kControlSupportsDragAndDrop | kControlSupportsClickActivation | kControlSupportsFocus;
-            if(QSysInfo::MacintoshVersion < QSysInfo::MV_10_3)
-                features |= (kControlSupportsEmbedding|kControlSupportsGetRegion);
-            SetEventParameter(event, kEventParamControlFeatures, typeUInt32, sizeof(features), &features);
+            if(HIObjectIsOfClass((HIObjectRef)hiview, kObjectQWidget)) {
+                UInt32 features = kControlSupportsDragAndDrop | kControlSupportsClickActivation | kControlSupportsFocus;
+                SetEventParameter(event, kEventParamControlFeatures, typeUInt32, sizeof(features), &features);
+            } else {
+                handled_event = false;
+            }
         } else if(ekind == kEventControlSetFocusPart) {
+            if(!HIObjectIsOfClass((HIObjectRef)hiview, kObjectQWidget))
+                CallNextEventHandler(er, event);
         } else if(ekind == kEventControlGetClickActivation) {
             ClickActivationResult clickT = kActivateAndIgnoreClick;
             SetEventParameter(event, kEventParamClickActivation, typeClickActivationResult,
                               sizeof(clickT), &clickT);
         } else if(ekind == kEventControlGetPartRegion) {
             handled_event = false;
+            if(!HIObjectIsOfClass((HIObjectRef)hiview, kObjectQWidget) && CallNextEventHandler(er, event) == noErr) {
+                handled_event = true;
+                break;
+            }
             if(widget && !widget->isWindow()) {
                 ControlPartCode part;
                 GetEventParameter(event, kEventParamControlPart, typeControlPartCode, 0,
                                   sizeof(part), 0, &part);
-                if(part == kControlStructureMetaPart
-#if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3)
-                   || part == kControlClickableMetaPart
-#endif
-                    ) {
+                if(part == kControlClickableMetaPart && widget->testAttribute(Qt::WA_TransparentForMouseEvents)) {
+                    RgnHandle rgn;
+                    GetEventParameter(event, kEventParamControlRegion, typeQDRgnHandle, 0,
+                                      sizeof(rgn), 0, &rgn);
+                    SetEmptyRgn(rgn);
+                    handled_event = true;
+                } else if(part == kControlStructureMetaPart || part == kControlClickableMetaPart) {
                     RgnHandle rgn;
                     GetEventParameter(event, kEventParamControlRegion, typeQDRgnHandle, 0,
                                       sizeof(rgn), 0, &rgn);
                     SetRectRgn(rgn, 0, 0, widget->width(), widget->height());
                     if(QWidgetPrivate::qt_widget_rgn(widget, kWindowStructureRgn, rgn, false))
                         handled_event = true;
-                } else if (part == kControlOpaqueMetaPart) {
-                    if (widget->d_func()->isOpaque()) {
+                } else if(part == kControlOpaqueMetaPart) {
+                    if(widget->d_func()->isOpaque()) {
                         RgnHandle rgn;
                         GetEventParameter(event, kEventParamControlRegion, typeQDRgnHandle, 0,
                                           sizeof(RgnHandle), 0, &rgn);
@@ -579,6 +644,15 @@ OSStatus QWidgetPrivate::qt_widget_event(EventHandlerCallRef, EventRef event, vo
                         handled_event = true;
                     }
                 }
+            }
+        } else if(ekind == kEventControlOwningWindowChanged) {
+            if(!HIObjectIsOfClass((HIObjectRef)hiview, kObjectQWidget))
+                CallNextEventHandler(er, event);
+            if(widget && qt_mac_window_for(hiview)) {
+                WindowRef foo = 0;
+                GetEventParameter(event, kEventParamControlCurrentOwningWindow, typeWindowRef, 0,
+                                  sizeof(foo), 0, &foo);
+                widget->d_func()->initWindowPtr();
             }
         } else if(ekind == kEventControlDragEnter || ekind == kEventControlDragWithin ||
                   ekind == kEventControlDragLeave || ekind == kEventControlDragReceive) {
@@ -593,15 +667,24 @@ OSStatus QWidgetPrivate::qt_widget_event(EventHandlerCallRef, EventRef event, vo
                     handled_event = true;
                 }
             }
-#if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3)
-            if(QSysInfo::MacintoshVersion >= QSysInfo::MV_10_3) {
-                if(ekind == kEventControlDragEnter) {
-                    const Boolean wouldAccept = drag_allowed ? true : false;
-                    SetEventParameter(event, kEventParamControlWouldAcceptDrop, typeBoolean,
-                                      sizeof(wouldAccept), &wouldAccept);
-                }
+            if(ekind == kEventControlDragEnter) {
+                const Boolean wouldAccept = drag_allowed ? true : false;
+                SetEventParameter(event, kEventParamControlWouldAcceptDrop, typeBoolean,
+                        sizeof(wouldAccept), &wouldAccept);
             }
-#endif
+        }
+        break; }
+    case kEventClassMouse: {
+        bool send_to_app = false;
+        extern QPointer<QWidget> qt_button_down; //qapplication_mac.cpp
+        if(qt_button_down)
+            send_to_app = true;
+        if(send_to_app) {
+            OSStatus err = SendEventToApplication(event);
+            if(err != noErr)
+                handled_event = false;
+        } else {
+            CallNextEventHandler(er, event);
         }
         break; }
     default:
@@ -619,13 +702,14 @@ static HIViewRef qt_mac_create_widget(HIViewRef parent)
                                                 GetEventTypeCount(widget_events), widget_events,
                                                 0, &widget_class);
         if (err && err != hiObjectClassExistsErr)
-            qWarning("That cannot happen!!! %d", __LINE__);
+            qWarning("QWidget: Internal error (%d)", __LINE__);
     }
     HIViewRef ret = 0;
     if(HIObjectCreate(kObjectQWidget, 0, (HIObjectRef*)&ret) != noErr)
-        qWarning("That cannot happen!!! %d", __LINE__);
-    if(ret)
+        qWarning("QWidget: Internal error (%d)", __LINE__);
+    if(ret && parent)
         HIViewAddSubview(parent, ret);
+    //HIViewSetVisible(ret, false);
     return ret;
 }
 
@@ -634,9 +718,9 @@ bool qt_mac_can_clickThrough(const QWidget *w)
     // Idea here is that if a parent doesn't have a clickthrough property,
     // neither can it's child
     while (w) {
-	if (w->testAttribute(Qt::WA_MacNoClickThrough))
-	    return false;
-	w = w->parentWidget();
+        if (w->testAttribute(Qt::WA_MacNoClickThrough))
+            return false;
+        w = w->parentWidget();
     }
     return true;
 }
@@ -781,9 +865,9 @@ bool QWidgetPrivate::qt_recreate_root_win() {
 
 bool QWidgetPrivate::qt_widget_rgn(QWidget *widget, short wcode, RgnHandle rgn, bool force = false)
 {
+    bool ret = false;
     switch(wcode) {
     case kWindowStructureRgn: {
-        bool ret = false;
         if(widget) {
             if(widget->d_func()->extra && !widget->d_func()->extra->mask.isEmpty()) {
                 QRegion rin = qt_mac_convert_mac_region(rgn);
@@ -816,23 +900,339 @@ bool QWidgetPrivate::qt_widget_rgn(QWidget *widget, short wcode, RgnHandle rgn, 
                 ret = true;
             }
         }
-        return ret; }
+        break; }
     default: break;
     }
-    return false;
+    //qDebug() << widget << ret << wcode << qt_mac_convert_mac_region(rgn);
+    return ret;
 }
 
 /*****************************************************************************
   QWidget member functions
  *****************************************************************************/
+void QWidgetPrivate::determineWindowClass()
+{
+    Q_Q(QWidget);
+
+    Qt::WindowType type = q->windowType();
+    Qt::WindowFlags &flags = data.window_flags;
+
+    bool desktop = (type == Qt::Desktop);
+    bool popup = (type == Qt::Popup);
+    bool tool = (type == Qt::Tool || type == Qt::SplashScreen);
+    QWidget *parentWidget = q->parentWidget();
+
+    if (type == Qt::ToolTip)
+        flags |= Qt::FramelessWindowHint;
+
+    if(type == Qt::Popup || type == Qt::ToolTip)
+        flags |= Qt::WindowStaysOnTopHint;
+    else if(parentWidget && (parentWidget->window()->windowFlags() & Qt::WindowStaysOnTopHint)) // If our parent has Qt::WStyle_StaysOnTop, so must we
+        flags |= Qt::WindowStaysOnTopHint;
+
+    if (0 && q->testAttribute(Qt::WA_ShowModal)  // ### Look at this, again!
+            && !(flags & Qt::CustomizeWindowHint)
+            && !(desktop || popup)) {
+        flags &= ~(Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowMinMaxButtonsHint);
+    }
+
+    WindowClass wclass = kSheetWindowClass;
+    if(qt_mac_is_macdrawer(q))
+        wclass = kDrawerWindowClass;
+    else if(popup || type == Qt::SplashScreen)
+        wclass = kModalWindowClass;
+    else if(q->testAttribute(Qt::WA_ShowModal))
+        wclass = kMovableModalWindowClass;
+    else if(type == Qt::ToolTip)
+        wclass = kHelpWindowClass;
+    else if(tool)
+        wclass = kFloatingWindowClass;
+    else
+        wclass = kDocumentWindowClass;
+
+    WindowGroupRef grp = 0;
+    WindowAttributes wattr = (kWindowCompositingAttribute | kWindowStandardHandlerAttribute);
+    if(qt_mac_is_macsheet(q)) {
+        //grp = GetWindowGroupOfClass(kMovableModalWindowClass);
+        wclass = kSheetWindowClass;
+    } else {
+        grp = GetWindowGroupOfClass(wclass);
+        // Shift things around a bit to get the correct window class based on the presence
+        // (or lack) of the border.
+        if(flags & Qt::FramelessWindowHint) {
+            if(wclass == kDocumentWindowClass) {
+                wclass = kSimpleWindowClass;
+            } else if(wclass == kFloatingWindowClass) {
+                wclass = kToolbarWindowClass;
+            }
+        } else {
+            if(wclass != kModalWindowClass)
+                wattr |= kWindowResizableAttribute;
+        }
+        // Only add extra decorations (well, buttons) for widgets that can have them
+        // and have an actual border we can put them on.
+        if(wclass != kModalWindowClass && wclass != kMovableModalWindowClass
+                && wclass != kSheetWindowClass && wclass != kPlainWindowClass
+                && !(flags & Qt::FramelessWindowHint) && wclass != kDrawerWindowClass
+                && wclass != kHelpWindowClass) {
+            if(flags & Qt::WindowMaximizeButtonHint)
+                wattr |= kWindowFullZoomAttribute;
+            if(flags & Qt::WindowMinimizeButtonHint)
+                wattr |= kWindowCollapseBoxAttribute;
+            if(flags & Qt::WindowSystemMenuHint)
+                wattr |= kWindowCloseBoxAttribute;
+        }
+    }
+    if((popup || (tool && type != Qt::SplashScreen)) && !q->isModal())
+        wattr |= kWindowHideOnSuspendAttribute;
+    wattr |= kWindowLiveResizeAttribute;
+
+#ifdef DEBUG_WINDOW_CREATE
+#define ADD_DEBUG_WINDOW_NAME(x) { x, #x }
+    struct {
+        UInt32 tag;
+        const char *name;
+    } known_attribs[] = {
+        ADD_DEBUG_WINDOW_NAME(kWindowCompositingAttribute),
+        ADD_DEBUG_WINDOW_NAME(kWindowStandardHandlerAttribute),
+        ADD_DEBUG_WINDOW_NAME(kWindowMetalAttribute),
+        ADD_DEBUG_WINDOW_NAME(kWindowHideOnSuspendAttribute),
+        ADD_DEBUG_WINDOW_NAME(kWindowStandardHandlerAttribute),
+        ADD_DEBUG_WINDOW_NAME(kWindowCollapseBoxAttribute),
+        ADD_DEBUG_WINDOW_NAME(kWindowHorizontalZoomAttribute),
+        ADD_DEBUG_WINDOW_NAME(kWindowVerticalZoomAttribute),
+        ADD_DEBUG_WINDOW_NAME(kWindowResizableAttribute),
+        ADD_DEBUG_WINDOW_NAME(kWindowNoActivatesAttribute),
+        ADD_DEBUG_WINDOW_NAME(kWindowNoUpdatesAttribute),
+        ADD_DEBUG_WINDOW_NAME(kWindowOpaqueForEventsAttribute),
+        ADD_DEBUG_WINDOW_NAME(kWindowLiveResizeAttribute),
+        ADD_DEBUG_WINDOW_NAME(kWindowCloseBoxAttribute),
+        ADD_DEBUG_WINDOW_NAME(kWindowHideOnSuspendAttribute),
+        { 0, 0 }
+    }, known_classes[] = {
+        ADD_DEBUG_WINDOW_NAME(kHelpWindowClass),
+        ADD_DEBUG_WINDOW_NAME(kPlainWindowClass),
+        ADD_DEBUG_WINDOW_NAME(kDrawerWindowClass),
+        ADD_DEBUG_WINDOW_NAME(kUtilityWindowClass),
+        ADD_DEBUG_WINDOW_NAME(kToolbarWindowClass),
+        ADD_DEBUG_WINDOW_NAME(kSheetWindowClass),
+        ADD_DEBUG_WINDOW_NAME(kFloatingWindowClass),
+        ADD_DEBUG_WINDOW_NAME(kDocumentWindowClass),
+        ADD_DEBUG_WINDOW_NAME(kToolbarWindowClass),
+        ADD_DEBUG_WINDOW_NAME(kMovableModalWindowClass),
+        ADD_DEBUG_WINDOW_NAME(kModalWindowClass),
+        { 0, 0 }
+    };
+    qDebug("Qt: internal: ************* Creating new window %p (%s::%s)", q, q->metaObject()->className(),
+            q->objectName().toLocal8Bit().constData());
+    bool found_class = false;
+    for(int i = 0; known_classes[i].name; i++) {
+        if(wclass == known_classes[i].tag) {
+            found_class = true;
+            qDebug("Qt: internal: ** Class: %s", known_classes[i].name);
+            break;
+        }
+    }
+    if(!found_class)
+        qDebug("Qt: internal: !! Class: Unknown! (%d)", (int)wclass);
+    if(wattr) {
+        WindowAttributes tmp_wattr = wattr;
+        qDebug("Qt: internal: ** Attributes:");
+        for(int i = 0; tmp_wattr && known_attribs[i].name; i++) {
+            if((tmp_wattr & known_attribs[i].tag) == known_attribs[i].tag) {
+                tmp_wattr ^= known_attribs[i].tag;
+                qDebug("Qt: internal: * %s %s", known_attribs[i].name,
+                        (GetAvailableWindowAttributes(wclass) & known_attribs[i].tag) ? "" : "(*)");
+            }
+        }
+        if(tmp_wattr)
+            qDebug("Qt: internal: !! Attributes: Unknown (%d)", (int)tmp_wattr);
+    }
+#endif
+
+    /* Just to be extra careful we will change to the kUtilityWindowClass if the
+       requested attributes cannot be used */
+    if((GetAvailableWindowAttributes(wclass) & wattr) != wattr) {
+        WindowClass tmp_class = wclass;
+        if(wclass == kToolbarWindowClass || wclass == kUtilityWindowClass)
+            wclass = kFloatingWindowClass;
+        if(tmp_class != wclass) {
+            if(!grp)
+                grp = GetWindowGroupOfClass(wclass);
+            wclass = tmp_class;
+        }
+    }
+    topData()->wclass = wclass;
+    topData()->wattr = wattr;
+}
+
+void QWidgetPrivate::initWindowPtr()
+{
+    Q_Q(QWidget);
+    WindowPtr windowRef = qt_mac_window_for(qt_mac_hiview_for(q)); //do not create!
+    if(!windowRef)
+        return;
+    QWidget *window = q->window(), *oldWindow = 0;
+    if(GetWindowProperty(windowRef, kWidgetCreatorQt, kWidgetPropertyQWidget, sizeof(oldWindow), 0, &oldWindow) == noErr) {
+        Q_ASSERT(window == oldWindow);
+        return;
+    }
+
+    if(SetWindowProperty(windowRef, kWidgetCreatorQt, kWidgetPropertyQWidget, sizeof(window), &window) != noErr)
+        qWarning("Qt:Internal error (%s:%d)", __FILE__, __LINE__); //no real way to recover
+    if(!q->windowType() != Qt::Desktop) { //setup an event callback handler on the window
+        InstallWindowEventHandler(windowRef, make_win_eventUPP(), GetEventTypeCount(window_events),
+                window_events, static_cast<void *>(qApp), &window_event);
+    }
+}
+
+void QWidgetPrivate::createWindow_sys()
+{
+    Q_Q(QWidget);
+
+    Qt::WindowType type = q->windowType();
+    Qt::WindowFlags flags = data.window_flags;
+    QWidget *parentWidget = q->parentWidget();
+
+    bool desktop = (type == Qt::Desktop);
+    bool dialog = (type == Qt::Dialog
+                   || type == Qt::Sheet
+                   || type == Qt::Drawer
+                   || (flags & Qt::MSWindowsFixedSizeDialogHint));
+    QTLWExtra *topExtra = topData();
+    quint32 wattr = topExtra->wattr;
+
+    Rect r;
+    SetRect(&r, data.crect.left(), data.crect.top(), data.crect.right(), data.crect.bottom());
+    data.fstrut_dirty = true;
+    WindowRef windowRef = 0;
+    if (OSStatus ret = qt_mac_create_window(topExtra->wclass, wattr, &r, &windowRef))
+        qWarning("QWidget: Internal error: %s:%d: If you reach this error please contact Trolltech and include the\n"
+                "      WidgetFlags used in creating the widget (%ld)", __FILE__, __LINE__, ret);
+    if (!desktop)
+        SetAutomaticControlDragTrackingEnabledForWindow(windowRef, true);
+    HIWindowChangeFeatures(windowRef, kWindowCanCollapse, 0);
+#if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4)
+    if (QSysInfo::MacintoshVersion >= QSysInfo::MV_10_4) {
+        if (wattr & kWindowHideOnSuspendAttribute)
+            HIWindowChangeAvailability(windowRef, kHIWindowExposeHidden, 0);
+        else
+            HIWindowChangeAvailability(windowRef, 0, kHIWindowExposeHidden);
+    }
+#endif
+    WindowGroupRef grp = 0;
+    if ((flags & Qt::WindowStaysOnTopHint))
+        ChangeWindowAttributes(windowRef, kWindowNoAttributes, kWindowHideOnSuspendAttribute);
+    if (qt_mac_is_macdrawer(q) && parentWidget)
+        SetDrawerParent(windowRef, qt_mac_window_for (parentWidget));
+    if (dialog && !parentWidget && !q->testAttribute(Qt::WA_ShowModal))
+        grp = GetWindowGroupOfClass(kDocumentWindowClass);
+    if (topExtra->group) {
+        qt_mac_release_window_group(topExtra->group);
+        topExtra->group = 0;
+    }
+    if (flags & Qt::WindowStaysOnTopHint) {
+        topExtra->group = qt_mac_get_stays_on_top_group();
+        SetWindowGroup(windowRef, topExtra->group);
+    } else if (grp) {
+        SetWindowGroup(windowRef, grp);
+    }
+#ifdef DEBUG_WINDOW_CREATE
+    if (WindowGroupRef grpf = GetWindowGroup(windowRef)) {
+        QCFString cfname;
+        CopyWindowGroupName(grpf, &cfname);
+        SInt32 lvl;
+        GetWindowGroupLevel(grpf, &lvl);
+        const char *from = "Default";
+        if (topExtra && grpf == topData()->group)
+            from = "Created";
+        else if (grpf == grp)
+            from = "Copied";
+        qDebug("Qt: internal: With window group '%s' [%p] @ %d: %s",
+                static_cast<QString>(cfname).toLatin1().constData(), grpf, (int)lvl, from);
+    } else {
+        qDebug("Qt: internal: No window group!!!");
+    }
+    HIWindowAvailability hi_avail = 0;
+    if (HIWindowGetAvailability(windowRef, &hi_avail) == noErr) {
+        struct {
+            UInt32 tag;
+            const char *name;
+        } known_avail[] = {
+            ADD_DEBUG_WINDOW_NAME(kHIWindowExposeHidden),
+            { 0, 0 }
+        };
+        qDebug("Qt: internal: ** HIWindowAvailibility:");
+        for (int i = 0; hi_avail && known_avail[i].name; i++) {
+            if ((hi_avail & known_avail[i].tag) == known_avail[i].tag) {
+                hi_avail ^= known_avail[i].tag;
+                qDebug("Qt: internal: * %s", known_avail[i].name);
+            }
+        }
+        if (hi_avail)
+            qDebug("Qt: internal: !! Attributes: Unknown (%d)", (int)hi_avail);
+    }
+#undef ADD_DEBUG_WINDOW_NAME
+#endif
+    if (extra && !extra->mask.isEmpty())
+        ReshapeCustomWindow(windowRef);
+    SetWindowModality(windowRef, kWindowModalityNone, 0);
+    if (qt_mac_is_macdrawer(q))
+        SetDrawerOffsets(windowRef, 0.0, 25.0);
+    data.fstrut_dirty = true; // when we create a toplevel widget, the frame strut should be dirty
+    HIViewRef hiview = (HIViewRef)data.winid;
+    HIViewRef window_hiview = qt_mac_hiview_for(windowRef);
+    if(!hiview) {
+        hiview = qt_mac_create_widget(window_hiview);
+        setWinId((WId)hiview);
+    } else {
+        HIViewAddSubview(window_hiview, hiview);
+    }
+    if (hiview) {
+        Rect win_rect;
+        GetWindowBounds(qt_mac_window_for (window_hiview), kWindowContentRgn, &win_rect);
+        HIRect bounds = CGRectMake(0, 0, win_rect.right-win_rect.left, win_rect.bottom-win_rect.top);
+        HIViewSetFrame(hiview, &bounds);
+        HIViewSetVisible(hiview, true);
+        if (q->testAttribute(Qt::WA_DropSiteRegistered))
+            registerDropSite(true);
+        transferChildren();
+    }
+    initWindowPtr();
+
+    if (topExtra->posFromMove) {
+        updateFrameStrut();
+        const QRect &fStrut = frameStrut();
+        SetRect(&r, r.left + fStrut.left(), r.top + fStrut.top(),
+                    (r.left + fStrut.left() + data.crect.width()) - fStrut.right(),
+                    (r.top + fStrut.top() + data.crect.height()) - fStrut.bottom());
+        SetWindowBounds(windowRef, kWindowContentRgn, &r);
+        topExtra->posFromMove = false;
+    }
+
+    if (qt_mac_is_macsheet(q))
+        q->setWindowOpacity(0.95);
+    else if (topExtra->opacity != 255)
+        q->setWindowOpacity(topExtra->opacity / 255.0f);
+
+    // Since we only now have a window, sync our state.
+    qt_mac_update_opaque_sizegrip(q);
+    qt_mac_update_metal_style(q);
+    qt_mac_update_ignore_mouseevents(q);
+    setWindowTitle_helper(extra->topextra->caption);
+    setWindowIconText_helper(extra->topextra->iconText);
+    setWindowModified_sys(q->isWindowModified());
+    updateFrameStrut();
+}
+
 void QWidgetPrivate::create_sys(WId window, bool initializeWindow, bool destroyOldWindow)
 {
     Q_Q(QWidget);
     window_event = 0;
-    WId destroyid = 0;
+    HIViewRef destroyid = 0;
 
     Qt::WindowType type = q->windowType();
-    Qt::WindowFlags &flags = data.window_flags;
+    Qt::WindowFlags flags = data.window_flags;
     QWidget *parentWidget = q->parentWidget();
 
     bool topLevel = (flags & Qt::Window);
@@ -842,344 +1242,122 @@ void QWidgetPrivate::create_sys(WId window, bool initializeWindow, bool destroyO
                    || type == Qt::Drawer
                    || (flags & Qt::MSWindowsFixedSizeDialogHint));
     bool desktop = (type == Qt::Desktop);
-    bool tool = (type == Qt::Tool || type == Qt::SplashScreen);
 
-    if (type == Qt::ToolTip)
-        flags |= Qt::FramelessWindowHint;
-
-    bool customize =  (flags & (
-                                Qt::X11BypassWindowManagerHint
-                                | Qt::FramelessWindowHint
-                                | Qt::WindowTitleHint
-                                | Qt::WindowSystemMenuHint
-                                | Qt::WindowMinimizeButtonHint
-                                | Qt::WindowMaximizeButtonHint
-                                | Qt::WindowContextHelpButtonHint
-                                ));
-
-
-
-    //position
-    QRect dskr;
-    if(desktop) {
+    if (desktop) {
         int w = 0, h = 0;
         for(GDHandle g = GetMainDevice(); g; g = GetNextDevice(g)) {
             w = qMax<int>(w, (*g)->gdRect.right);
             h = qMax<int>(h, (*g)->gdRect.bottom);
         }
-        dskr = QRect(0, 0, w, h);
         q->setAttribute(Qt::WA_WState_Visible);
-    } else {
-        if(QDesktopWidget *dsk = QApplication::desktop()) {
-            int deskn = dsk->primaryScreen();
-            if(parentWidget && parentWidget->windowType() != Qt::Desktop)
-                deskn = dsk->screenNumber(parentWidget);
-            dskr = dsk->screenGeometry(deskn);
-        }
-        q->setAttribute(Qt::WA_WState_Visible, false);
-    }
-    if(desktop)                             // desktop widget
-        data.crect.setRect(0, 0, dskr.width(), dskr.height());
-    else if(topLevel)                    // calc pos/size from screen
-        data.crect.setRect(dskr.width()/4, 3*dskr.height()/10, dskr.width()/2, 4*dskr.height()/10);
-    else                                    // child widget
-        data.crect.setRect(0, 0, 100, 30);
-
-    if(desktop)
+        data.crect.setRect(0, 0, w, h);
         dialog = popup = false;                  // force these flags off
+    } else {
+        q->setAttribute(Qt::WA_WState_Visible, false);
+
+        if (topLevel && (type != Qt::Drawer)) {
+            if(QDesktopWidget *dsk = QApplication::desktop()) { // calc pos/size from screen
+                const bool wasResized = q->testAttribute(Qt::WA_Resized);
+                const bool wasMoved = q->testAttribute(Qt::WA_Moved);
+
+                int deskn = dsk->primaryScreen();
+                if(parentWidget && parentWidget->windowType() != Qt::Desktop)
+                    deskn = dsk->screenNumber(parentWidget);
+                QRect dskr = dsk->screenGeometry(deskn);
+                if (!wasResized)
+                    data.crect.setSize(QSize(dskr.width()/2, 4*dskr.height()/10));
+                if (!wasMoved)
+                    data.crect.moveTopLeft(QPoint(dskr.width()/4, 3*dskr.height()/10));
+            }
+        }
+    }
+
+
     if(!window)                              // always initialize
         initializeWindow=true;
-    if(topLevel && parentWidget) { // if our parent has Qt::WStyle_StaysOnTop, so must we
-        QWidget *ptl = parentWidget->window();
-        if(ptl && (ptl->windowFlags() & Qt::WindowStaysOnTopHint))
-            flags |= Qt::WindowStaysOnTopHint;
-    }
-    if (!customize) {
-        if (type == Qt::Tool)
-            flags |= Qt::WindowTitleHint | Qt::WindowSystemMenuHint;
-        else if (!(desktop || popup) && !q->testAttribute(Qt::WA_ShowModal))
-            flags |= Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowMinMaxButtonsHint;
-    }
-
 
     hd = 0;
     cg_hd = 0;
-    if(window) {                                // override the old window
+    if(window) {                                // override the old window (with a new HIViewRef)
         HIViewRef hiview = (HIViewRef)window, parent = 0;
+        CFRetain(hiview);
+        if(destroyOldWindow)
+            destroyid = qt_mac_hiview_for(q);
+        bool transfer = false;
+        setWinId((WId)hiview);
+#ifndef HIViewInstallEventHandler
+        // Macro taken from the CarbonEvents Header on Tiger
+#define HIViewInstallEventHandler( target, handler, numTypes, list, userData, outHandlerRef ) \
+               InstallEventHandler( HIObjectGetEventTarget( (HIObjectRef) (target) ), (handler), (numTypes), (list), (userData), (outHandlerRef) )
+#endif
+        HIViewInstallEventHandler(hiview, make_widget_eventUPP(), GetEventTypeCount(widget_events), widget_events, 0, 0);
         if(topLevel) {
-            WindowRef windowref = qt_mac_window_for(q);
-            OSStatus err = HIViewFindByID(HIViewGetRoot(windowref), kHIViewWindowContentID, &parent);
-            if(err == errUnknownControl)
-                parent = HIViewGetRoot(windowref);
-            else if(err != noErr)
-                qWarning("That cannot happen! %d [%ld]", __LINE__, err);
-        } else if(parentWidget) {
-            parent = (HIViewRef)parentWidget->winId();
+            determineWindowClass();
+            for(int i = 0; i < 2; ++i) {
+                if(i == 1) {
+                    if(!initializeWindow)
+                        break;
+                    createWindow_sys();
+                }
+                if(WindowRef windowref = qt_mac_window_for(hiview)) {
+                    RetainWindow(windowref);
+                    parent = qt_mac_hiview_for(windowref);
+                    break;
+                }
+            }
+            if(!parent)
+                transfer = true;
+        } else if (parentWidget) {
+            // I need to be added to my parent, therefore my parent needs an HIViewRef
+            parentWidget->createWinId();
+            parent = qt_mac_hiview_for(parentWidget);
         }
-        if(parent) {
+        if(parent)
             HIViewAddSubview(parent, hiview);
-            if(destroyOldWindow)
-                destroyid = q->winId();
-            setWinId((WId)hiview);
-
-            data.fstrut_dirty = true; // we'll re calculate this later
-            q->setAttribute(Qt::WA_WState_Visible, HIViewIsVisible(hiview));
+        if(transfer)
+            transferChildren();
+        data.fstrut_dirty = true; // we'll re calculate this later
+        q->setAttribute(Qt::WA_WState_Visible, HIViewIsVisible(hiview));
+        if(initializeWindow) {
             HIRect bounds = CGRectMake(data.crect.x(), data.crect.y(), data.crect.width(), data.crect.height());
             HIViewSetFrame(hiview, &bounds);
+            q->setAttribute(Qt::WA_WState_Visible, HIViewIsVisible(hiview));
         }
+        initWindowPtr();
     } else if(desktop) {                        // desktop widget
         if(!qt_root_win)
             QWidgetPrivate::qt_create_root_win();
+        CFRetain(qt_root_win);
         if(HIViewRef hiview = HIViewGetRoot(qt_root_win)) {
-            CFRetain((HIViewRef)hiview);
+            CFRetain(hiview);
             setWinId((WId)hiview);
         }
     } else if(topLevel) {
-        Rect r;
-        SetRect(&r, data.crect.left(), data.crect.top(), data.crect.right(), data.crect.bottom());
-        data.fstrut_dirty = true;
-        WindowClass wclass = kSheetWindowClass;
-        if(qt_mac_is_macdrawer(q))
-            wclass = kDrawerWindowClass;
-        else if(popup || type == Qt::SplashScreen)
-            wclass = kModalWindowClass;
-        else if(q->testAttribute(Qt::WA_ShowModal))
-            wclass = kMovableModalWindowClass;
-        else if(type == Qt::ToolTip)
-            wclass = kHelpWindowClass;
-        else if(tool)
-            wclass = kFloatingWindowClass;
-        else
-            wclass = kDocumentWindowClass;
-
-        WindowGroupRef grp = 0;
-        WindowAttributes wattr = kWindowCompositingAttribute;
-        if(qt_mac_is_macsheet(q)) {
-            //grp = GetWindowGroupOfClass(kMovableModalWindowClass);
-            wclass = kSheetWindowClass;
-        } else {
-            grp = GetWindowGroupOfClass(wclass);
-            // Shift things around a bit to get the correct window class based on the presence
-            // (or lack) of the border.
-            if(flags & Qt::FramelessWindowHint) {
-                if(wclass == kDocumentWindowClass) {
-#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3
-                    wclass = kSimpleWindowClass;
-#else
-                    wclass = kPlainWindowClass;
-#endif
-                } else if(wclass == kFloatingWindowClass) {
-                    wclass = kToolbarWindowClass;
-                }
-            } else {
-                if(wclass != kModalWindowClass)
-                    wattr |= kWindowResizableAttribute;
-            }
-            // Only add extra decorations (well, buttons) for widgets that can have them
-            // and have an actual border we can put them on.
-            if(wclass != kModalWindowClass && wclass != kMovableModalWindowClass
-                && wclass != kSheetWindowClass && wclass != kPlainWindowClass
-                && !(flags & Qt::FramelessWindowHint) && wclass != kDrawerWindowClass
-                && wclass != kHelpWindowClass) {
-                if(flags & Qt::WindowMaximizeButtonHint)
-                    wattr |= kWindowFullZoomAttribute;
-                if(flags & Qt::WindowMinimizeButtonHint)
-                    wattr |= kWindowCollapseBoxAttribute;
-                if(flags & Qt::WindowSystemMenuHint)
-                   wattr |= kWindowCloseBoxAttribute;
-            }
-        }
-        if(tool && type != Qt::SplashScreen && !q->isModal())
-            wattr |= kWindowHideOnSuspendAttribute;
-        wattr |= kWindowLiveResizeAttribute;
-
-#ifdef DEBUG_WINDOW_CREATE
-#define ADD_DEBUG_WINDOW_NAME(x) { x, #x }
-        struct {
-            UInt32 tag;
-            const char *name;
-        } known_attribs[] = {
-            ADD_DEBUG_WINDOW_NAME(kWindowCompositingAttribute),
-            ADD_DEBUG_WINDOW_NAME(kWindowMetalAttribute),
-            ADD_DEBUG_WINDOW_NAME(kWindowHideOnSuspendAttribute),
-            ADD_DEBUG_WINDOW_NAME(kWindowStandardHandlerAttribute),
-            ADD_DEBUG_WINDOW_NAME(kWindowCollapseBoxAttribute),
-            ADD_DEBUG_WINDOW_NAME(kWindowHorizontalZoomAttribute),
-            ADD_DEBUG_WINDOW_NAME(kWindowVerticalZoomAttribute),
-            ADD_DEBUG_WINDOW_NAME(kWindowResizableAttribute),
-            ADD_DEBUG_WINDOW_NAME(kWindowNoActivatesAttribute),
-            ADD_DEBUG_WINDOW_NAME(kWindowNoUpdatesAttribute),
-            ADD_DEBUG_WINDOW_NAME(kWindowOpaqueForEventsAttribute),
-            ADD_DEBUG_WINDOW_NAME(kWindowLiveResizeAttribute),
-            ADD_DEBUG_WINDOW_NAME(kWindowCloseBoxAttribute),
-            ADD_DEBUG_WINDOW_NAME(kWindowHideOnSuspendAttribute),
-            { 0, 0 }
-        }, known_classes[] = {
-            ADD_DEBUG_WINDOW_NAME(kHelpWindowClass),
-            ADD_DEBUG_WINDOW_NAME(kPlainWindowClass),
-            ADD_DEBUG_WINDOW_NAME(kDrawerWindowClass),
-            ADD_DEBUG_WINDOW_NAME(kUtilityWindowClass),
-            ADD_DEBUG_WINDOW_NAME(kToolbarWindowClass),
-            ADD_DEBUG_WINDOW_NAME(kSheetWindowClass),
-            ADD_DEBUG_WINDOW_NAME(kFloatingWindowClass),
-            ADD_DEBUG_WINDOW_NAME(kDocumentWindowClass),
-            ADD_DEBUG_WINDOW_NAME(kToolbarWindowClass),
-            ADD_DEBUG_WINDOW_NAME(kMovableModalWindowClass),
-            ADD_DEBUG_WINDOW_NAME(kModalWindowClass),
-            { 0, 0 }
-        };
-        qDebug("Qt: internal: ************* Creating new window %p (%s::%s)", q, q->metaObject()->className(),
-               q->objectName().toLocal8Bit().constData());
-        bool found_class = false;
-        for(int i = 0; known_classes[i].name; i++) {
-            if(wclass == known_classes[i].tag) {
-                found_class = true;
-                qDebug("Qt: internal: ** Class: %s", known_classes[i].name);
-                break;
-            }
-        }
-        if(!found_class)
-            qDebug("Qt: internal: !! Class: Unknown! (%d)", (int)wclass);
-        if(wattr) {
-            WindowAttributes tmp_wattr = wattr;
-            qDebug("Qt: internal: ** Attributes:");
-            for(int i = 0; tmp_wattr && known_attribs[i].name; i++) {
-                if((tmp_wattr & known_attribs[i].tag) == known_attribs[i].tag) {
-                    tmp_wattr ^= known_attribs[i].tag;
-                    qDebug("Qt: internal: * %s %s", known_attribs[i].name,
-                           (GetAvailableWindowAttributes(wclass) & known_attribs[i].tag) ? "" : "(*)");
-                }
-            }
-            if(tmp_wattr)
-                qDebug("Qt: internal: !! Attributes: Unknown (%d)", (int)tmp_wattr);
-        }
-#endif
-
-        /* Just to be extra careful we will change to the kUtilityWindowClass if the
-           requested attributes cannot be used */
-        if((GetAvailableWindowAttributes(wclass) & wattr) != wattr) {
-            WindowClass tmp_class = wclass;
-            if(wclass == kToolbarWindowClass || wclass == kUtilityWindowClass)
-                wclass = kFloatingWindowClass;
-            if(tmp_class != wclass) {
-                if(!grp)
-                    grp = GetWindowGroupOfClass(wclass);
-                wclass = tmp_class;
-            }
-        }
-
-        WindowRef window = 0;
-        if(OSStatus ret = qt_mac_create_window(wclass, wattr, &r, &window))
-            qWarning("Qt: internal: %s:%d If you reach this error please contact Trolltech and include the\n"
-                   "      WidgetFlags used in creating the widget (%ld)", __FILE__, __LINE__, ret);
-        QWidget *me = q;
-        if(SetWindowProperty(window, kWidgetCreatorQt, kWidgetPropertyQWidget, sizeof(me), &me) != noErr)
-            qWarning("Qt: internal: %s:%d This should not happen!", __FILE__, __LINE__); //no real way to recover
-        if(!desktop) { //setup an event callback handler on the window
-            SetAutomaticControlDragTrackingEnabledForWindow(window, true);
-            InstallWindowEventHandler(window, make_win_eventUPP(), GetEventTypeCount(window_events),
-                                      window_events, static_cast<void *>(qApp), &window_event);
-        }
-#if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3)
-        if(QSysInfo::MacintoshVersion >= QSysInfo::MV_10_3)
-            HIWindowChangeFeatures(window, kWindowCanCollapse, 0);
-#endif
-#if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4)
-            if (QSysInfo::MacintoshVersion >= QSysInfo::MV_10_4) {
-                if(wattr & kWindowHideOnSuspendAttribute)
-                    HIWindowChangeAvailability(window, kHIWindowExposeHidden, 0);
-                else
-                    HIWindowChangeAvailability(window, 0, kHIWindowExposeHidden);
-            }
-#endif
-	if((flags & Qt::WindowStaysOnTopHint))
-	    ChangeWindowAttributes(window, kWindowNoAttributes, kWindowHideOnSuspendAttribute);
-        if(qt_mac_is_macdrawer(q) && parentWidget)
-            SetDrawerParent(window, qt_mac_window_for(parentWidget));
-        if(dialog && !parentWidget && !q->testAttribute(Qt::WA_ShowModal))
-            grp = GetWindowGroupOfClass(kDocumentWindowClass);
-        if(topData()->group) {
-            qt_mac_release_window_group(topData()->group);
-            topData()->group = 0;
-        }
-        if(flags & Qt::WindowStaysOnTopHint) {
-            topData()->group = qt_mac_get_stays_on_top_group();
-            SetWindowGroup(window, topData()->group);
-        } else if(grp) {
-            SetWindowGroup(window, grp);
-        }
-#ifdef DEBUG_WINDOW_CREATE
-        if(WindowGroupRef grpf = GetWindowGroup(window)) {
-            QCFString cfname;
-            CopyWindowGroupName(grpf, &cfname);
-            SInt32 lvl;
-            GetWindowGroupLevel(grpf, &lvl);
-            const char *from = "Default";
-            if(topData() && grpf == topData()->group)
-                from = "Created";
-            else if(grpf == grp)
-                from = "Copied";
-            qDebug("Qt: internal: With window group '%s' [%p] @ %d: %s",
-                   static_cast<QString>(cfname).toLatin1().constData(), grpf, (int)lvl, from);
-        } else {
-            qDebug("Qt: internal: No window group!!!");
-        }
-        HIWindowAvailability hi_avail = 0;
-        if(HIWindowGetAvailability(window, &hi_avail) == noErr) {
-            struct {
-                UInt32 tag;
-                const char *name;
-            } known_avail[] = {
-                ADD_DEBUG_WINDOW_NAME(kHIWindowExposeHidden),
-                { 0, 0 }
-            };
-            qDebug("Qt: internal: ** HIWindowAvailibility:");
-            for(int i = 0; hi_avail && known_avail[i].name; i++) {
-                if((hi_avail & known_avail[i].tag) == known_avail[i].tag) {
-                    hi_avail ^= known_avail[i].tag;
-                    qDebug("Qt: internal: * %s", known_avail[i].name);
-                }
-            }
-            if(hi_avail)
-                qDebug("Qt: internal: !! Attributes: Unknown (%d)", (int)hi_avail);
-        }
-#undef ADD_DEBUG_WINDOW_NAME
-#endif
-        if(extra && !extra->mask.isEmpty())
-           ReshapeCustomWindow(window);
-        if((q->windowType() == Qt::Popup) || (q->windowType() == Qt::Tool))
-            SetWindowModality(window, kWindowModalityNone, 0);
-        if(qt_mac_is_macsheet(q))
-            q->setWindowOpacity(0.70);
-        else if(qt_mac_is_macdrawer(q))
-            SetDrawerOffsets(window, 0.0, 25.0);
-        data.fstrut_dirty = true; // when we create a toplevel widget, the frame strut should be dirty
-        HIViewRef window_hiview = 0;
-        OSStatus err = HIViewFindByID(HIViewGetRoot(window), kHIViewWindowContentID, &window_hiview);
-        if(err == errUnknownControl)
-            window_hiview = HIViewGetRoot(window);
-        else if(err != noErr)
-            qWarning("That cannot happen! %d [%ld]", __LINE__, err);
-        if(HIViewRef hiview = qt_mac_create_widget(window_hiview)) {
-            Rect win_rect;
-            GetWindowBounds(qt_mac_window_for(window_hiview), kWindowContentRgn, &win_rect);
-            HIRect bounds = CGRectMake(0, 0, win_rect.right-win_rect.left, win_rect.bottom-win_rect.top);
+        determineWindowClass();
+        if(HIViewRef hiview = qt_mac_create_widget(0)) {
+            HIRect bounds = CGRectMake(data.crect.x(), data.crect.y(),
+                                       data.crect.width(), data.crect.height());
             HIViewSetFrame(hiview, &bounds);
-            HIViewSetVisible(hiview, true);
             setWinId((WId)hiview);
         }
     } else {
         data.fstrut_dirty = false; // non-toplevel widgets don't have a frame, so no need to update the strut
-        if(HIViewRef hiview = qt_mac_create_widget((HIViewRef)parentWidget->winId())) {
+        if(HIViewRef hiview = qt_mac_create_widget(qt_mac_hiview_for(parentWidget))) {
             HIRect bounds = CGRectMake(data.crect.x(), data.crect.y(), data.crect.width(), data.crect.height());
             HIViewSetFrame(hiview, &bounds);
             setWinId((WId)hiview);
+            if (q->testAttribute(Qt::WA_DropSiteRegistered))
+                registerDropSite(true);
         }
     }
 
-    if(HIViewRef destroy_hiview = (HIViewRef)destroyid) {
-        HIViewRemoveFromSuperview(destroy_hiview);
-        CFRelease(destroy_hiview);
+    updateIsOpaque();
+    if (!topLevel && initializeWindow)
+        setWSGeometry();
+
+    if(destroyid) {
+        HIViewRemoveFromSuperview(destroyid);
+        CFRelease(destroyid);
     }
 }
 
@@ -1210,35 +1388,48 @@ void QWidget::destroy(bool destroyWindow, bool destroySubWindows)
         if(destroyWindow) {
             if(d->window_event)
                 RemoveEventHandler(d->window_event);
-            if(HIViewRef hiview = (HIViewRef)winId()) {
+            if(HIViewRef hiview = qt_mac_hiview_for(this)) {
                 WindowPtr window = isWindow() ? qt_mac_window_for(hiview) : 0;
                 if(window) {
                     RemoveWindowProperty(window, kWidgetCreatorQt, kWidgetPropertyQWidget);
                     ReleaseWindow(window);
                 } else {
-                   HIViewRemoveFromSuperview(hiview);
-                   CFRelease(hiview);
+                    HIViewRemoveFromSuperview(hiview);
+                    CFRelease(hiview);
                 }
             }
         }
+        d->setWinId(0);
     }
-    d->setWinId(0);
 }
 
-void QWidgetPrivate::setParent_sys(QWidget *parent, Qt::WFlags f)
+void QWidgetPrivate::transferChildren()
 {
     Q_Q(QWidget);
-    QCursor oldcurs;
-    bool setcurs=q->testAttribute(Qt::WA_SetCursor);
-    if(setcurs) {
-        oldcurs = q->cursor();
-        q->unsetCursor();
+    QObjectList chlist = q->children();
+    for (int i = 0; i < chlist.size(); ++i) {
+        QObject *obj = chlist.at(i);
+        if(obj->isWidgetType()) {
+            QWidget *w = (QWidget *)obj;
+            if(!w->isWindow()) {
+                if (!topData()->caption.isEmpty())
+                    setWindowTitle_helper(extra->topextra->caption);
+                HIViewAddSubview(qt_mac_hiview_for(q), qt_mac_hiview_for(w));
+            }
+        }
     }
+}
+
+void QWidgetPrivate::setParent_sys(QWidget *parent, Qt::WindowFlags f)
+{
+    Q_Q(QWidget);
+    QTLWExtra *topData = maybeTopData();
+    bool wasCreated = q->testAttribute(Qt::WA_WState_Created);
 
     EventHandlerRef old_window_event = 0;
     HIViewRef old_id = 0;
-    if(!(q->windowType() == Qt::Desktop)) {
-        old_id = (HIViewRef)q->winId();
+    if (wasCreated && !(q->windowType() == Qt::Desktop)) {
+        old_id = qt_mac_hiview_for(q);
         old_window_event = window_event;
     }
     QWidget* oldtlw = q->window();
@@ -1248,10 +1439,7 @@ void QWidgetPrivate::setParent_sys(QWidget *parent, Qt::WFlags f)
 
     //recreate and setup flags
     QObjectPrivate::setParent_helper(parent);
-    bool enable = q->isEnabled();
-    Qt::FocusPolicy fp = q->focusPolicy();
     QPoint pt = q->pos();
-    QSize s = q->size();
     bool explicitlyHidden = q->testAttribute(Qt::WA_WState_Hidden) && q->testAttribute(Qt::WA_WState_ExplicitShowHide);
     setWinId(0); //do after the above because they may want the id
 
@@ -1259,42 +1447,30 @@ void QWidgetPrivate::setParent_sys(QWidget *parent, Qt::WFlags f)
     q->setAttribute(Qt::WA_WState_Created, false);
     q->setAttribute(Qt::WA_WState_Visible, false);
     q->setAttribute(Qt::WA_WState_Hidden, false);
-    q->create();
-    if(q->isWindow() || (!parent || parent->isVisible()) || explicitlyHidden)
+    adjustFlags(data.window_flags, q);
+    //### simplify logic after TP
+    if (wasCreated && !q->isWindow() && !parent->testAttribute(Qt::WA_WState_Created))
+        parent->d_func()->createWinId();
+    if (parent && !q->isWindow() && parent->testAttribute(Qt::WA_WState_Created))
+        q->create(0, true, false);
+    if (q->isWindow() || (!parent || parent->isVisible()) || explicitlyHidden)
         q->setAttribute(Qt::WA_WState_Hidden);
     q->setAttribute(Qt::WA_WState_ExplicitShowHide, explicitlyHidden);
 
-    //reparent children
-    QObjectList chlist = q->children();
-    for (int i = 0; i < chlist.size(); ++i) {
-        QObject *obj = chlist.at(i);
-        if(obj->isWidgetType()) {
-            QWidget *w = (QWidget *)obj;
-            if(!w->isWindow()) {
-                if (!topData()->caption.isEmpty())
-                    setWindowTitle_sys(extra->topextra->caption);
-                HIViewAddSubview((HIViewRef)q->winId(), (HIViewRef)w->winId());
-            }
+    if (wasCreated) {
+        if (q->data->winid != 0) {
+            transferChildren();
+            if (topData && !topData->caption.isEmpty())
+                setWindowTitle_helper(topData->caption);
+        } else {
+            uncreateRecursively(false);
         }
     }
 
-    //get new hd, now size
-    q->resize(s);
-
-    //reset flags and show (if neccesary)
-    setEnabled_helper(enable); //preserving WA_ForceDisabled
-    q->setFocusPolicy(fp);
-    if (extra && !extra->mask.isEmpty()) {
-        QRegion r = extra->mask;
-        extra->mask = QRegion();
-        q->setMask(r);
-    }
     if (q->testAttribute(Qt::WA_AcceptDrops)
         || (!q->isWindow() && q->parentWidget()
             && q->parentWidget()->testAttribute(Qt::WA_DropSiteRegistered)))
         q->setAttribute(Qt::WA_DropSiteRegistered, true);
-    if(setcurs)
-        q->setCursor(oldcurs);
 
     //cleanup
     if(old_window_event)
@@ -1302,6 +1478,7 @@ void QWidgetPrivate::setParent_sys(QWidget *parent, Qt::WFlags f)
     if(old_id) { //don't need old window anymore
         WindowPtr window = (oldtlw == q) ? qt_mac_window_for(old_id) : 0;
         if(window) {
+            RemoveWindowProperty(window, kWidgetCreatorQt, kWidgetPropertyQWidget);
             ReleaseWindow(window);
         } else {
             HIViewRemoveFromSuperview(old_id);
@@ -1314,9 +1491,13 @@ void QWidgetPrivate::setParent_sys(QWidget *parent, Qt::WFlags f)
 QPoint QWidget::mapToGlobal(const QPoint &pos) const
 {
     Q_D(const QWidget);
+    if (!testAttribute(Qt::WA_WState_Created)) {
+        QPoint p = pos + data->crect.topLeft();
+        return isWindow() ?  p : parentWidget()->mapToGlobal(p);
+    }
     QPoint tmp = d->mapToWS(pos);
     HIPoint hi_pos = CGPointMake(tmp.x(), tmp.y());
-    HIViewConvertPoint(&hi_pos, (HIViewRef)winId(), 0);
+    HIViewConvertPoint(&hi_pos, qt_mac_hiview_for(this), 0);
     Rect win_rect;
     GetWindowBounds(qt_mac_window_for(this), kWindowStructureRgn, &win_rect);
     return QPoint((int)hi_pos.x+win_rect.left, (int)hi_pos.y+win_rect.top);
@@ -1325,10 +1506,14 @@ QPoint QWidget::mapToGlobal(const QPoint &pos) const
 QPoint QWidget::mapFromGlobal(const QPoint &pos) const
 {
     Q_D(const QWidget);
+    if (!testAttribute(Qt::WA_WState_Created)) {
+        QPoint p = isWindow() ?  pos : parentWidget()->mapFromGlobal(pos);
+        return p - data->crect.topLeft();
+    }
     Rect win_rect;
     GetWindowBounds(qt_mac_window_for(this), kWindowStructureRgn, &win_rect);
     HIPoint hi_pos = CGPointMake(pos.x()-win_rect.left, pos.y()-win_rect.top);
-    HIViewConvertPoint(&hi_pos, 0, (HIViewRef)winId());
+    HIViewConvertPoint(&hi_pos, 0, qt_mac_hiview_for(this));
     return d->mapFromWS(QPoint((int)hi_pos.x, (int)hi_pos.y));
 }
 
@@ -1336,17 +1521,11 @@ void QWidgetPrivate::updateSystemBackground()
 {
 }
 
-
-void QWidget::setCursor(const QCursor &cursor)
+void QWidgetPrivate::setCursor_sys(const QCursor &cursor)
 {
-    Q_D(QWidget);
-    d->createExtra();
-    delete d->extraData()->curs;
-    d->extraData()->curs = new QCursor(cursor);
-    setAttribute(Qt::WA_SetCursor);
-
-    if(qApp && isEnabled() && qApp->activeWindow() &&
-       QApplication::widgetAt(QCursor::pos()) == this) {
+    Q_Q(QWidget);
+    if(qApp && q->isEnabled() && qApp->activeWindow() &&
+       QApplication::widgetAt(QCursor::pos()) == q) {
         const QCursor *n = &cursor;
         if(QApplication::overrideCursor())
             n = QApplication::overrideCursor();
@@ -1354,24 +1533,16 @@ void QWidget::setCursor(const QCursor &cursor)
     }
 }
 
-void QWidget::unsetCursor()
+void QWidgetPrivate::unsetCursor_sys()
 {
-    Q_D(QWidget);
-    if(!isWindow()) {
-        if(QWExtra *extra = d->extraData()) {
-            delete extra->curs;
-            extra->curs = 0;
-        }
-        setAttribute(Qt::WA_SetCursor, false);
-    }
-
-    if(qApp && isEnabled() && qApp->activeWindow() &&
-       QApplication::widgetAt(QCursor::pos()) == this) {
+    Q_Q(QWidget);
+    if(qApp && q->isEnabled() && qApp->activeWindow() &&
+       QApplication::widgetAt(QCursor::pos()) == q) {
         const QCursor *n = 0;
         if(QApplication::overrideCursor()) {
             n = QApplication::overrideCursor();
         } else {
-            for(QWidget *p = this; p; p = p->parentWidget()) {
+            for(QWidget *p = q; p; p = p->parentWidget()) {
                 QWExtra *extra = p->d_func()->extraData();
                 if(extra && extra->curs) {
                     n = extra->curs;
@@ -1395,24 +1566,30 @@ void QWidgetPrivate::setWindowTitle_sys(const QString &caption)
 void QWidgetPrivate::setWindowModified_sys(bool mod)
 {
     Q_Q(QWidget);
-    if(q->isWindow())
+    if (q->isWindow() && q->testAttribute(Qt::WA_WState_Created))
         SetWindowModified(qt_mac_window_for(q), mod);
 }
 
 void QWidgetPrivate::setWindowIcon_sys(bool forceReset)
 {
     Q_Q(QWidget);
-    if (extra->topextra->iconPixmap && !forceReset) // already set
+
+    if (!q->testAttribute(Qt::WA_WState_Created))
+        return;
+
+    QTLWExtra *topData = this->topData();
+    if (topData->iconPixmap && !forceReset) // already set
         return;
 
     QIcon icon = q->windowIcon();
     QPixmap *pm = 0;
     if (!icon.isNull()) {
-        if (!extra->topextra->iconPixmap) {
+        // now create the extra
+        if (!topData->iconPixmap) {
             pm = new QPixmap(icon.pixmap(QSize(22, 22)));
-            extra->topextra->iconPixmap = pm;
+            topData->iconPixmap = pm;
         } else {
-            pm = extra->topextra->iconPixmap;
+            pm = topData->iconPixmap;
         }
     }
     if (q->isWindow()) {
@@ -1510,29 +1687,22 @@ void QWidget::update()
 void QWidget::update(const QRect &r)
 {
     int x = r.x(), y = r.y(), w = r.width(), h = r.height();
-    if(updatesEnabled() && isVisible()) {
-        if(w < 0)
-            w = data->crect.width()  - x;
-        if(h < 0)
-            h = data->crect.height() - y;
-        if(w && h) {
-            QRegion rgn(x, y, w, h);
-            if (testAttribute(Qt::WA_WState_InPaintEvent)) {
-                QApplication::postEvent(this, new QUpdateLaterEvent(rgn));
-            } else {
-                HIViewSetNeedsDisplayInRegion((HIViewRef)winId(), rgn.handle(true), true);
-            }
-        }
-    }
+    if(w < 0)
+        w = data->crect.width()  - x;
+    if(h < 0)
+        h = data->crect.height() - y;
+    if(w && h)
+        update(QRegion(x, y, w, h));
 }
 
 void QWidget::update(const QRegion &rgn)
 {
-    if(updatesEnabled() && isVisible())
+    if(updatesEnabled() && isVisible()) {
         if (testAttribute(Qt::WA_WState_InPaintEvent))
             QApplication::postEvent(this, new QUpdateLaterEvent(rgn));
         else
-            HIViewSetNeedsDisplayInRegion((HIViewRef)winId(), rgn.handle(true), true);
+            HIViewSetNeedsDisplayInRegion(qt_mac_hiview_for(this), rgn.handle(true), true);
+    }
 }
 
 void QWidget::repaint(const QRegion &rgn)
@@ -1540,11 +1710,11 @@ void QWidget::repaint(const QRegion &rgn)
     if(rgn.isEmpty())
         return;
 
-    HIViewSetNeedsDisplayInRegion((HIViewRef)winId(), rgn.handle(true), true);
+    HIViewSetNeedsDisplayInRegion(qt_mac_hiview_for(this), rgn.handle(true), true);
 #if 0 && (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3)
     OSStatus (*HIViewRender_ptr)(HIViewRef) = HIViewRender; // workaround for gcc warning
     if(HIViewRender_ptr)
-        (*HIViewRender_ptr)((HIViewRef)window()->winId()); //yes the top level!!
+        (*HIViewRender_ptr)(qt_mac_hiview_for(window())); //yes the top level!!
 #endif
 }
 
@@ -1564,11 +1734,11 @@ void QWidgetPrivate::show_sys()
             int movex = q->x(), movey = q->y();
             QRect r = q->frameGeometry();
             QRect avail = dsk->availableGeometry(dsk->screenNumber(q));
-                if(r.bottom() > avail.bottom())
-                    movey = avail.bottom() - r.height();
-                if(r.right() > avail.right())
-                    movex = avail.right() - r.width();
-                q->move(qMax(avail.left(), movex), qMax(avail.top(), movey));
+            if(r.bottom() > avail.bottom())
+                movey = avail.bottom() - r.height();
+            if(r.right() > avail.right())
+                movex = avail.right() - r.width();
+            q->move(qMax(avail.left(), movex), qMax(avail.top(), movey));
         }
     }
     data.fstrut_dirty = true;
@@ -1592,7 +1762,7 @@ void QWidgetPrivate::show_sys()
             CollapseWindow(window, true);
         qt_event_request_activate(q);
     } else if(!q->parentWidget() || q->parentWidget()->isVisible()) {
-        HIViewSetVisible((HIViewRef)q->winId(), true);
+        HIViewSetVisible(qt_mac_hiview_for(q), true);
     }
     qt_event_request_window_change();
 }
@@ -1637,7 +1807,7 @@ void QWidgetPrivate::hide_sys()
                 qt_event_request_activate(w);
         }
     } else {
-        HIViewSetVisible((HIViewRef)q->winId(), false);
+        HIViewSetVisible(qt_mac_hiview_for(q), false);
     }
     qt_event_request_window_change();
     deactivateWidgetCleanup();
@@ -1653,7 +1823,6 @@ void QWidget::setWindowState(Qt::WindowStates newstate)
         return;
 
     if(isWindow()) {
-        WindowPtr window = qt_mac_window_for(this);
         if((oldstate & Qt::WindowFullScreen) != (newstate & Qt::WindowFullScreen)) {
             if(newstate & Qt::WindowFullScreen) {
                 if(QTLWExtra *tlextra = d->topData()) {
@@ -1681,6 +1850,9 @@ void QWidget::setWindowState(Qt::WindowStates newstate)
             }
         }
 
+        d->createWinId();
+
+        WindowRef window = qt_mac_window_for(this);
         if((oldstate & Qt::WindowMinimized) != (newstate & Qt::WindowMinimized))
             CollapseWindow(window, (newstate & Qt::WindowMinimized) ? true : false);
 
@@ -1719,17 +1891,16 @@ void QWidget::setWindowState(Qt::WindowStates newstate)
                     if(bounds.bottom - bounds.top > extra->maxh)
                         bounds.bottom = bounds.top + extra->maxh;
                 }
-                if(QTLWExtra *tlextra = d->topData()) {
-                    if(data->fstrut_dirty)
-                        d->updateFrameStrut();
-                    bounds.left += tlextra->fleft;
+                if(d->topData()) {
+                    QRect fs = d->frameStrut();
+                    bounds.left += fs.left();
                     if(bounds.right < avail.x()+avail.width())
-                        bounds.right = qMin<short>((uint)avail.x()+avail.width(), bounds.right+tlextra->fleft);
+                        bounds.right = qMin<short>((uint)avail.x()+avail.width(), bounds.right+fs.left());
                     if(bounds.bottom < avail.y()+avail.height())
-                        bounds.bottom = qMin<short>((uint)avail.y()+avail.height(), bounds.bottom+tlextra->ftop);
-                    bounds.top += tlextra->ftop;
-                    bounds.right -= tlextra->fright;
-                    bounds.bottom -= tlextra->fbottom;
+                        bounds.bottom = qMin<short>((uint)avail.y()+avail.height(), bounds.bottom+fs.top());
+                    bounds.top += fs.top();
+                    bounds.right -= fs.right();
+                    bounds.bottom -= fs.bottom();
                 }
                 QRect orect(geometry().x(), geometry().y(), width(), height()),
                       nrect(bounds.left, bounds.top, bounds.right - bounds.left,
@@ -1783,7 +1954,7 @@ void QWidgetPrivate::raise_sys()
         GetCurrentProcess(&psn);
         SetFrontProcessWithOptions(&psn, kSetFrontProcessFrontWindowOnly);
     } else if(q->parentWidget()) {
-        HIViewSetZOrder((HIViewRef)q->winId(), kHIViewZOrderAbove, 0);
+        HIViewSetZOrder(qt_mac_hiview_for(q), kHIViewZOrderAbove, 0);
         qt_event_request_window_change();
     }
 }
@@ -1796,7 +1967,7 @@ void QWidgetPrivate::lower_sys()
     if(q->isWindow()) {
         SendBehind(qt_mac_window_for(q), 0);
     } else if(q->parentWidget()) {
-        HIViewSetZOrder((HIViewRef)q->winId(), kHIViewZOrderBelow, 0);
+        HIViewSetZOrder(qt_mac_hiview_for(q), kHIViewZOrderBelow, 0);
         qt_event_request_window_change();
     }
 }
@@ -1810,7 +1981,7 @@ void QWidgetPrivate::stackUnder_sys(QWidget *w)
     QWidget *p = q->parentWidget();
     if(!p || p != w->parentWidget())
         return;
-    HIViewSetZOrder((HIViewRef)q->winId(), kHIViewZOrderBelow, (HIViewRef)w->winId());
+    HIViewSetZOrder(qt_mac_hiview_for(q), kHIViewZOrderBelow, qt_mac_hiview_for(w));
     qt_event_request_window_change();
 }
 
@@ -1875,7 +2046,14 @@ void QWidgetPrivate::setWSGeometry(bool dontShow)
                 xrect.translate(data.crect.topLeft());
                 HIRect bounds = CGRectMake(xrect.x(), xrect.y(),
                                            xrect.width(), xrect.height());
-                HIViewSetFrame((HIViewRef)q->winId(), &bounds);
+                HIViewSetFrame(qt_mac_hiview_for(q), &bounds);
+                if (q->testAttribute(Qt::WA_OutsideWSRange)) {
+                    q->setAttribute(Qt::WA_OutsideWSRange, false);
+                    if (!dontShow) {
+                        q->setAttribute(Qt::WA_Mapped);
+                        HIViewSetVisible(qt_mac_hiview_for(q), true);
+                    }
+                }
                 return;
             }
         }
@@ -1897,7 +2075,7 @@ void QWidgetPrivate::setWSGeometry(bool dontShow)
     if (q->testAttribute(Qt::WA_OutsideWSRange) != outsideRange) {
         q->setAttribute(Qt::WA_OutsideWSRange, outsideRange);
         if (outsideRange) {
-            HIViewSetVisible((HIViewRef)q->winId(), false);
+            HIViewSetVisible(qt_mac_hiview_for(q), false);
             q->setAttribute(Qt::WA_Mapped, false);
         } else if (!q->isHidden()) {
             mapWindow = true;
@@ -1917,7 +2095,7 @@ void QWidgetPrivate::setWSGeometry(bool dontShow)
         QObject *object = children.at(i);
         if (object->isWidgetType()) {
             QWidget *w = static_cast<QWidget *>(object);
-            if (!w->isWindow())
+            if (!w->isWindow() && w->testAttribute(Qt::WA_WState_Created))
                 w->d_func()->setWSGeometry();
         }
     }
@@ -1925,11 +2103,9 @@ void QWidgetPrivate::setWSGeometry(bool dontShow)
     // move ourselves to the new position and map (if necessary) after
     // the movement. Rationale: moving unmapped windows is much faster
     // than moving mapped windows
-    //if (jump) //avoid flicker when jumping
-    //    XSetWindowBackgroundPixmap(dpy, data.winid, XNone);
     HIRect bounds = CGRectMake(xrect.x(), xrect.y(),
                                xrect.width(), xrect.height());
-    HIViewSetFrame((HIViewRef)q->winId(), &bounds);
+    HIViewSetFrame(qt_mac_hiview_for(q), &bounds);
 
     if  (jump) {
         updateSystemBackground();
@@ -1937,7 +2113,7 @@ void QWidgetPrivate::setWSGeometry(bool dontShow)
     }
     if (mapWindow && !dontShow) {
         q->setAttribute(Qt::WA_Mapped);
-        HIViewSetVisible((HIViewRef)q->winId(), true);
+        HIViewSetVisible(qt_mac_hiview_for(q), true);
     }
 }
 
@@ -1945,6 +2121,7 @@ void QWidgetPrivate::setWSGeometry(bool dontShow)
 void QWidgetPrivate::setGeometry_sys(int x, int y, int w, int h, bool isMove)
 {
     Q_Q(QWidget);
+    Q_ASSERT(q->testAttribute(Qt::WA_WState_Created));
     if(q->isWindow() && isMove)
         topData()->is_moved = 1;
     if((q->windowType() == Qt::Desktop))
@@ -1997,12 +2174,12 @@ void QWidgetPrivate::setGeometry_sys(int x, int y, int w, int h, bool isMove)
     if(q->isWindow()) {
         //update the widget also..
         HIRect bounds = CGRectMake(0, 0, w, h);
-        HIViewSetFrame((HIViewRef)q->winId(), &bounds);
+        HIViewSetFrame(qt_mac_hiview_for(q), &bounds);
 
         Rect r; SetRect(&r, x, y, x+w, y+h);
-        HIViewSetDrawingEnabled((HIViewRef)q->winId(), false);
+        HIViewSetDrawingEnabled(qt_mac_hiview_for(q), false);
         SetWindowBounds(qt_mac_window_for(q), kWindowContentRgn, &r);
-        HIViewSetDrawingEnabled((HIViewRef)q->winId(), true);
+        HIViewSetDrawingEnabled(qt_mac_hiview_for(q), true);
     } else {
         setWSGeometry();
     }
@@ -2038,11 +2215,11 @@ void QWidget::scroll(int dx, int dy)
 
 void QWidget::scroll(int dx, int dy, const QRect& r)
 {
-    bool valid_rect = r.isValid();
+    const bool valid_rect = r.isValid();
     if(!updatesEnabled() &&  (valid_rect || children().isEmpty()))
         return;
 
-    if (HIViewGetNeedsDisplay((HIViewRef)winId())) {
+    if (HIViewGetNeedsDisplay(qt_mac_hiview_for(this))) {
         update(valid_rect ? r : rect());
         return;
     }
@@ -2058,7 +2235,7 @@ void QWidget::scroll(int dx, int dy, const QRect& r)
                     w->data->crect = QRect(w->pos() + pd, w->size());
                     HIRect bounds = CGRectMake(w->data->crect.x(), w->data->crect.y(),
                                                w->data->crect.width(), w->data->crect.height());
-                    HIViewSetFrame((HIViewRef)w->winId(), &bounds);
+                    HIViewSetFrame(qt_mac_hiview_for(w), &bounds);
                     moved.append(w);
                 }
             }
@@ -2070,8 +2247,10 @@ void QWidget::scroll(int dx, int dy, const QRect& r)
             QApplication::sendEvent(w, &e);
         }
     }
-    HIRect scrollrect = CGRectMake(r.x(), r.y(), r.width(), r.height());
-    HIViewScrollRect((HIViewRef)winId(), valid_rect ? &scrollrect : 0, dx, dy);
+    if(isVisible()) {
+        HIRect scrollrect = CGRectMake(r.x(), r.y(), r.width(), r.height());
+        HIViewScrollRect(qt_mac_hiview_for(this), valid_rect ? &scrollrect : 0, dx, dy);
+    }
 }
 
 int QWidget::metric(PaintDeviceMetric m) const
@@ -2084,7 +2263,7 @@ int QWidget::metric(PaintDeviceMetric m) const
     case PdmHeight:
     case PdmWidth: {
         HIRect rect;
-        HIViewGetFrame((HIViewRef)winId(), &rect);
+        HIViewGetFrame(qt_mac_hiview_for(this), &rect);
         if(m == PdmWidth)
             return (int)rect.size.width;
         return (int)rect.size.height; }
@@ -2103,7 +2282,7 @@ int QWidget::metric(PaintDeviceMetric m) const
         ScreenRes(&dpix, &dpiy);
         return dpiy; }
     default: //leave this so the compiler complains when new ones are added
-        qWarning("Qt: QWidget::metric unhandled parameter %d", m);
+        qWarning("QWidget::metric: Unhandled parameter %d", m);
         return QPaintDevice::metric(m);
     }
     return 0;
@@ -2119,6 +2298,7 @@ void QWidgetPrivate::deleteSysExtra()
 
 void QWidgetPrivate::createTLSysExtra()
 {
+    extra->topextra->wclass = 0;
     extra->topextra->group = 0;
     extra->topextra->is_moved = 0;
     extra->topextra->resizer = 0;
@@ -2132,53 +2312,55 @@ void QWidgetPrivate::deleteTLSysExtra()
     }
 }
 
-void QWidgetPrivate::updateFrameStrut() const
+void QWidgetPrivate::updateFrameStrut()
 {
-    Q_Q(const QWidget);
+    Q_Q(QWidget);
+
     QWidgetPrivate *that = const_cast<QWidgetPrivate*>(this);
-    if(!data.fstrut_dirty) {
-        that->data.fstrut_dirty = q->isVisible();
-        return;
-    }
+
     that->data.fstrut_dirty = false;
     QTLWExtra *top = that->topData();
-    top->fleft = top->fright = top->ftop = top->fbottom = 0;
-    if(!(q->windowType() == Qt::Desktop) && q->isWindow()) {
-        WindowPtr window = qt_mac_window_for(q);
-        Rect window_r, content_r;
-        //get bounding rects
-        RgnHandle rgn = qt_mac_get_rgn();
-        GetWindowRegion(window, kWindowStructureRgn, rgn);
-        GetRegionBounds(rgn, &window_r);
-        GetWindowRegion(window, kWindowContentRgn, rgn);
-        GetRegionBounds(rgn, &content_r);
-        qt_mac_dispose_rgn(rgn);
-        //put into qt structure
-        top->fleft = content_r.left - window_r.left;
-        top->ftop = content_r.top - window_r.top;
-        top->fright = window_r.right - content_r.right;
-        top->fbottom = window_r.bottom - content_r.bottom;
-    }
+
+    WindowPtr window = qt_mac_window_for(q);
+    Rect window_r, content_r;
+    //get bounding rects
+    RgnHandle rgn = qt_mac_get_rgn();
+    GetWindowRegion(window, kWindowStructureRgn, rgn);
+    GetRegionBounds(rgn, &window_r);
+    GetWindowRegion(window, kWindowContentRgn, rgn);
+    GetRegionBounds(rgn, &content_r);
+    qt_mac_dispose_rgn(rgn);
+    //put into qt structure
+    top->frameStrut.setCoords(content_r.left - window_r.left,
+                              content_r.top - window_r.top,
+                              window_r.right - content_r.right,
+                              window_r.bottom - content_r.bottom);
 }
 
 void QWidgetPrivate::registerDropSite(bool on)
 {
     Q_Q(QWidget);
-    SetControlDragTrackingEnabled((HIViewRef)q->winId(), on);
+    if (!q->testAttribute(Qt::WA_WState_Created))
+        return;
+    SetControlDragTrackingEnabled(qt_mac_hiview_for(q), on);
 }
 
 void QWidget::setMask(const QRegion &region)
 {
     Q_D(QWidget);
-    d->createExtra();
-    if(region.isEmpty() && d->extraData()->mask.isEmpty())
+    // ### Paul: Consider making this cross-platform?
+    if (region.isEmpty() && (!d->extra || d->extraData()->mask.isEmpty()))
         return;
 
+    d->createExtra();
     d->extra->mask = region;
-    if(isWindow())
+    if (!testAttribute(Qt::WA_WState_Created))
+        return;
+
+    if (isWindow())
         ReshapeCustomWindow(qt_mac_window_for(this));
     else
-        HIViewReshapeStructure((HIViewRef)winId());
+        HIViewReshapeStructure(qt_mac_hiview_for(this));
 }
 
 void QWidget::setMask(const QBitmap &bitmap)
@@ -2194,17 +2376,20 @@ void QWidget::clearMask()
 void QWidget::setWindowOpacity(qreal level)
 {
     Q_D(QWidget);
-    if(!isWindow())
+
+    if (!isWindow())
         return;
 
-    level = qMin<qreal>(qMax(level, 0.0), 1.0);
-    QMacSavedPortInfo::setWindowAlpha(this, level);
+    level = qBound(0.0, level, 1.0);
     d->topData()->opacity = (uchar)(level * 255);
+    if (!testAttribute(Qt::WA_WState_Created))
+        return;
+    QMacSavedPortInfo::setWindowAlpha(this, level);
 }
 
 qreal QWidget::windowOpacity() const
 {
-    return isWindow() ? ((QWidget*)this)->d_func()->topData()->opacity / 255.0 : 0.0;
+    return isWindow() ? ((QWidget*)this)->d_func()->topData()->opacity / 255.0 : 1.0;
 }
 
 struct QPaintEngineCleanupHandler
@@ -2221,32 +2406,23 @@ QPaintEngine *QWidget::paintEngine() const
     QPaintEngine *&pe = engineHandler()->engine;
 #ifdef QT_RASTER_PAINTENGINE
     if (!pe) {
-        pe = new QRasterPaintEngine();
-        pe->setFlushOnEnd(false);
-    }
-
-    if (pe->isActive()) {
-        QRasterPaintEngine *extraEngine = new QRasterPaintEngine();
-        extraEngine->setAutoDestruct(true);
-        extraEngine->setFlushOnEnd(false);
-        return extraEngine;
-    }
-#else
-    if (!pe) {
-#if !defined(QMAC_NO_COREGRAPHICS)
-        if(qgetenv("QT_MAC_USE_QUICKDRAW").isNull())
-            pe = new QCoreGraphicsPaintEngine();
+        if(qgetenv("QT_MAC_USE_COREGRAPHICS").isNull())
+            pe = new QRasterPaintEngine();
         else
-#endif
-            pe = new QQuickDrawPaintEngine();
+            pe = new QCoreGraphicsPaintEngine();
     }
     if (pe->isActive()) {
         QPaintEngine *engine =
-#if !defined(QMAC_NO_COREGRAPHICS)
-        qgetenv("QT_MAC_USE_QUICKDRAW").isNull()
-            ? new QCoreGraphicsPaintEngine() :
-#endif
-            new QQuickDrawPaintEngine();
+            qgetenv("QT_MAC_USE_COREGRAPHICS").isNull()
+            ? (QPaintEngine*)new QRasterPaintEngine() : (QPaintEngine*)new QCoreGraphicsPaintEngine();
+        engine->setAutoDestruct(true);
+        return engine;
+    }
+#else
+    if (!pe)
+        pe = new QCoreGraphicsPaintEngine();
+    if (pe->isActive()) {
+        QPaintEngine *engine = new QCoreGraphicsPaintEngine();
         engine->setAutoDestruct(true);
         return engine;
     }
@@ -2257,34 +2433,27 @@ QPaintEngine *QWidget::paintEngine() const
 void QWidgetPrivate::setModal_sys()
 {
     Q_Q(QWidget);
-    // We need a different window type if we are to be run modal. SetWindowClass will
-    // disappear, so Apple recommends changing the window group instead.
-    // Also, of this widget's window is a secondary window, we need to set the window
-    // type if the primary window is modal.
+
+    if (!q->testAttribute(Qt::WA_WState_Created))
+        return;
+
     const QWidget * const windowParent = q->window()->parentWidget();
     const QWidget * const primaryWindow = windowParent ? windowParent->window() : 0;
-    const WindowGroupRef wgr = GetWindowGroupOfClass(kMovableModalWindowClass);
-    if (q->testAttribute(Qt::WA_ShowModal) || (primaryWindow && primaryWindow->testAttribute(Qt::WA_ShowModal))) {
-        if (q->testAttribute(Qt::WA_WState_Created) && !topData()->group) {
-            SetWindowGroup(qt_mac_window_for(q), wgr);
-        }
-    }
+    const bool primaryWindowModal = primaryWindow ? primaryWindow->testAttribute(Qt::WA_ShowModal) : false;
+    const bool modal = q->testAttribute(Qt::WA_ShowModal);
 
-    // Set the window group for child windows. This is done to make sure that non-modal
-    // child windows that were created before this window became modal are shown on top
-    // of this window.
-    if (q->testAttribute(Qt::WA_ShowModal)) {
-        const QObjectList children = q->children();
-        for (QObjectList::ConstIterator it = children.constBegin(); it != children.constEnd(); ++it) {
-            const QObject * const child = *it;
-            if (child->isWidgetType() == false) 
-                continue;
-            const QWidget * const widget = static_cast<QWidget const * const>(child);
-            if (widget->isWindow() == false)
-                continue;
-            if (widget->windowFlags() & Qt::WindowStaysOnTopHint)
-                continue;
-            SetWindowGroup(qt_mac_window_for(widget), wgr);
+    //setup the proper window class
+    const WindowRef window = qt_mac_window_for(q);
+    WindowClass old_wclass;
+    GetWindowClass(window, &old_wclass);
+
+    if (modal || primaryWindowModal) {
+        if(old_wclass == kDocumentWindowClass || old_wclass == kFloatingWindowClass || old_wclass == kUtilityWindowClass) {
+            HIWindowChangeClass(window ? window : qt_mac_window_for(q), kMovableModalWindowClass);
         }
+    } else if(window) {
+        WindowClass newClass = topData()->wclass;
+        if (old_wclass != newClass && newClass != 0)
+            HIWindowChangeClass(qt_mac_window_for(q), newClass);
     }
 }

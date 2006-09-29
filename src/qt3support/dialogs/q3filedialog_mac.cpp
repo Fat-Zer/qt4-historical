@@ -130,19 +130,13 @@ static Boolean qt_mac_nav_filter(AEDesc *theItem, void *info,
         return true;
     if(theItem->descriptorType == typeFSS) {
         AliasHandle alias;
-        Str63 str;
         FSSpec      FSSpec;
-        AliasInfoType x = 0;
         AEGetDescData(theItem, &FSSpec, sizeof(FSSpec));
         if(NewAlias(NULL, &FSSpec, &alias) != noErr)
             return true;
-        GetAliasInfo(alias, (AliasInfoType)x++, str);
-        if(str[0]) {
-            char tmp[sizeof(Str63)+2];
-            strncpy((char *)tmp, (const char *)str+1, str[0]);
-            tmp[str[0]] = '\0';
-            file = tmp;
-        }
+        QCFString aliasPath;
+        FSCopyAliasInfo(alias, 0, 0, &aliasPath, 0, 0);
+        file = aliasPath;
     } else if(theItem->descriptorType == typeFSRef) {
         FSRef ref;
         AEGetDescData(theItem, &ref, sizeof(ref));
@@ -312,9 +306,10 @@ QStringList Q3FileDialog::macGetOpenFileNames(const QString &filter, QString *pw
     if(options.modality == kWindowModalityWindowModal) { //simulate modality
         QWidget modal_widg(parent, __FILE__ "__modal_dlg",
                            Qt::WType_TopLevel | Qt::WStyle_Customize | Qt::WStyle_DialogBorder);
+        modal_widg.createWinId();
         QApplicationPrivate::enterModal(&modal_widg);
         while(g_nav_blocking)
-            qApp->processEvents();
+            qApp->processEvents(QEventLoop::WaitForMoreEvents);
         QApplicationPrivate::leaveModal(&modal_widg);
     }
 
@@ -481,9 +476,10 @@ QString Q3FileDialog::macGetSaveFileName(const QString &start, const QString &fi
     if(options.modality == kWindowModalityWindowModal) { //simulate modality
         QWidget modal_widg(parent, __FILE__ "__modal_dlg",
                            Qt::WType_TopLevel | Qt::WStyle_Customize | Qt::WStyle_DialogBorder);
+        modal_widg.createWinId();
         QApplicationPrivate::enterModal(&modal_widg);
         while(g_nav_blocking)
-            qApp->processEvents();
+            qApp->processEvents(QEventLoop::WaitForMoreEvents);
         QApplicationPrivate::leaveModal(&modal_widg);
     }
 

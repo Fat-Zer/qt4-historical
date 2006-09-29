@@ -33,6 +33,7 @@
 #include <QtDebug>
 #include <QFile>
 #include <QHash>
+#include <QPair>
 #include <QStringList>
 #include <QDateTime>
 #include <QRegExp>
@@ -81,12 +82,14 @@ DomUI *Ui3Reader::generateUi4(const QDomElement &widget)
     QString objClass = getClassName(widget);
     if (objClass.isEmpty())
         return 0;
+    QString objName = getObjectName(widget);
 
     DomUI *ui = new DomUI;
     ui->setAttributeVersion(QLatin1String("4.0"));
 
     QString pixmapFunction = QLatin1String("qPixmapFromMimeSource");
     QStringList ui_tabstops;
+    QStringList ui_custom_slots;
     QList<DomInclude*> ui_includes;
     QList<DomWidget*> ui_toolbars;
     QList<DomWidget*> ui_menubars;
@@ -94,6 +97,7 @@ DomUI *Ui3Reader::generateUi4(const QDomElement &widget)
     QList<DomActionGroup*> ui_action_group_list;
     QList<DomCustomWidget*> ui_customwidget_list;
     QList<DomConnection*> ui_connection_list;
+    QList<QPair<int, int> > ui_connection_lineinfo_list;
     QString author, comment, exportMacro;
     QString klass;
 
@@ -119,6 +123,19 @@ DomUI *Ui3Reader::generateUi4(const QDomElement &widget)
             comment = n.firstChild().toText().data();
         } else if (tagName == QLatin1String("exportMacro")) {
             exportMacro = n.firstChild().toText().data();
+        } else if ( n.tagName() == "includehints" ) {
+            QDomElement n2 = n.firstChild().toElement();
+            while ( !n2.isNull() ) {
+                if ( n2.tagName() == "includehint" ) {
+                    QString name = n2.firstChild().toText().data();
+
+                    DomInclude *incl = new DomInclude();
+                    incl->setText(fixHeaderName(name));
+                    incl->setAttributeLocation(n.attribute(QLatin1String("location"), QLatin1String("local")));
+                    ui_includes.append(incl);
+                }
+                n2 = n2.nextSibling().toElement();
+            }
         } else if (tagName == QLatin1String("includes")) {
             QDomElement n2 = n.firstChild().toElement();
             while (!n2.isNull()) {
@@ -290,28 +307,57 @@ DomUI *Ui3Reader::generateUi4(const QDomElement &widget)
                     DomConnection *connection = new DomConnection;
                     connection->read(n2);
 
-                    QString sender = connection->elementSender();
-                    QString senderClass = fixClassName(classNameForObjectName(widget, sender));
                     QString signal = fixMethod(connection->elementSignal());
-                    QString receiver = connection->elementReceiver();
-                    QString receiverClass = fixClassName(classNameForObjectName(widget, receiver));
                     QString slot = fixMethod(connection->elementSlot());
+                    connection->setElementSignal(signal);
+                    connection->setElementSlot(slot);
 
-                    // make sure that the signal and slot are present in Qt4
-                    if (!WidgetInfo::isValidSignal(senderClass, signal)) {
-                        errorInvalidSignal(signal, sender, senderClass);
-                        delete connection;
-                    }
-                    else if (!WidgetInfo::isValidSlot(receiverClass, slot)) {
-                        errorInvalidSlot(slot, receiver, receiverClass);
-                        delete connection;
-                    } else {
-                        connection->setElementSignal(signal);
-                        connection->setElementSlot(slot);
-                        ui_connection_list.append(connection);
-                    }
+                    ui_connection_list.append(connection);
+                    ui_connection_lineinfo_list.append(
+                        QPair<int, int>(n2.lineNumber(), n2.columnNumber()));
                 }
                 n2 = n2.nextSibling().toElement();
+            }
+        } else if (tagName == QLatin1String("slots")) {
+            QDomElement n2 = n.firstChild().toElement();
+            while (!n2.isNull()) {
+                if (n2.tagName().toLower() == QLatin1String("slot")) {
+                    QString name = n2.firstChild().toText().data();
+                    ui_custom_slots.append(fixMethod(name));
+                }
+                n2 = n2.nextSibling().toElement();
+            }
+        }
+    }
+
+    // validate the connections
+    for (int i = 0; i < ui_connection_list.size(); ++i) {
+        DomConnection *conn = ui_connection_list.at(i);
+        QPair<int, int> lineinfo = ui_connection_lineinfo_list.at(i);
+        QString sender = conn->elementSender();
+        QString senderClass = fixClassName(classNameForObjectName(widget, sender));
+        QString signal = conn->elementSignal();
+        QString receiver = conn->elementReceiver();
+        QString receiverClass = fixClassName(classNameForObjectName(widget, receiver));
+        QString slot = conn->elementSlot();
+
+        if (!WidgetInfo::isValidSignal(senderClass, signal)) {
+            errorInvalidSignal(signal, sender, senderClass,
+                               lineinfo.first, lineinfo.second);
+        } else if (!WidgetInfo::isValidSlot(receiverClass, slot)) {
+            bool resolved = false;
+            if (objName == receiver) {
+                // see if it's a custom slot
+                foreach (QString cs, ui_custom_slots) {
+                    if (cs == slot) {
+                        resolved = true;
+                        break;
+                    }
+                }
+            }
+            if (!resolved) {
+                errorInvalidSlot(slot, receiver, receiverClass,
+                                 lineinfo.first, lineinfo.second);
             }
         }
     }
@@ -412,7 +458,6 @@ QString Ui3Reader::fixActionProperties(QList<DomProperty*> &properties,
                                        bool isActionGroup)
 {
     QString objectName;
-    bool hasMenuText = false;
 
     QMutableListIterator<DomProperty*> it(properties);
     while (it.hasNext()) {
@@ -424,11 +469,10 @@ QString Ui3Reader::fixActionProperties(QList<DomProperty*> &properties,
         } else if (isActionGroup && name == QLatin1String("exclusive")) {
             // continue
         } else if (isActionGroup) {
-            errorInvalidProperty(name, objectName, isActionGroup ? QLatin1String("QActionGroup") : QLatin1String("QAction"));
+            errorInvalidProperty(name, objectName, isActionGroup ? QLatin1String("QActionGroup") : QLatin1String("QAction"), -1, -1);
             delete prop;
             it.remove();
         } else if (name == QLatin1String("menuText")) {
-            hasMenuText = true;
             prop->setAttributeName("text");
         } else if (name == QLatin1String("text")) {
             prop->setAttributeName("iconText");
@@ -441,7 +485,7 @@ QString Ui3Reader::fixActionProperties(QList<DomProperty*> &properties,
         } else if (name == QLatin1String("on")) {
             prop->setAttributeName(QLatin1String("checked"));
         } else if (!WidgetInfo::isValidProperty(QLatin1String("QAction"), name)) {
-            errorInvalidProperty(name, objectName, isActionGroup ? QLatin1String("QActionGroup") : QLatin1String("QAction"));
+            errorInvalidProperty(name, objectName, isActionGroup ? QLatin1String("QActionGroup") : QLatin1String("QAction"), -1, -1);
             delete prop;
             it.remove();
         }
@@ -516,8 +560,6 @@ DomWidget *Ui3Reader::createWidget(const QDomElement &w, const QString &widgetCl
     QList<DomActionRef*> ui_action_list;
     QList<DomWidget*> ui_mainwindow_child_list;
 
-    bool needPolish = false;
-
     createProperties(w, &ui_property_list, className);
     createAttributes(w, &ui_attribute_list, className);
 
@@ -532,13 +574,36 @@ DomWidget *Ui3Reader::createWidget(const QDomElement &w, const QString &widgetCl
 
     QDomElement e = w.firstChild().toElement();
     bool inQ3ToolBar = className == QLatin1String("Q3ToolBar");
+    bool inQ3GroupBox = (className == QLatin1String("Q3GroupBox")) || (className == QLatin1String("Q3ButtonGroup"));
 
     while (!e.isNull()) {
         QString t = e.tagName().toLower();
         if (t == QLatin1String("vbox") || t == QLatin1String("hbox") || t == QLatin1String("grid")) {
             DomLayout *lay = createLayout(e);
             Q_ASSERT(lay != 0);
+
             if (ui_layout_list.isEmpty()) {
+                DomProperty *pmargin = 0;
+
+                if (inQ3GroupBox) {
+                    foreach (DomProperty *prop, lay->elementProperty()) {
+                        if (prop->attributeName() == QLatin1String("margin")) {
+                            pmargin = prop;
+                            break;
+                        }
+                    }
+
+                    if (! pmargin) {
+                        pmargin = new DomProperty();
+                        pmargin->setAttributeName(QLatin1String("margin"));
+                        pmargin->setElementNumber(0);
+
+                        QList<DomProperty*> plist = lay->elementProperty();
+                        plist.append(pmargin);
+                        lay->setElementProperty(plist);
+                    }
+                }
+
                 ui_layout_list.append(lay);
             } else {
                 // it's not possible to have more than one layout for widget!
@@ -622,12 +687,6 @@ DomWidget *Ui3Reader::createWidget(const QDomElement &w, const QString &widgetCl
             ui_item_list.append(item);
         }
 
-        QString s = getClassName(e);
-        if (s == QLatin1String("QDataTable") || s == QLatin1String("QDataBrowser")) {
-            if (isFrameworkCodeGenerated(e))
-                 needPolish = true;
-        }
-
         e = e.nextSibling().toElement();
     }
 
@@ -675,7 +734,6 @@ DomLayout *Ui3Reader::createLayout(const QDomElement &w)
     createProperties(w, &ui_property_list, className);
     createAttributes(w, &ui_attribute_list, className);
 
-    bool needPolish = false;
     QDomElement e = w.firstChild().toElement();
     while (!e.isNull()) {
         QString t = e.tagName().toLower();
@@ -687,13 +745,6 @@ DomLayout *Ui3Reader::createLayout(const QDomElement &w)
             DomLayoutItem *lay_item = createLayoutItem(e);
             Q_ASSERT(lay_item != 0);
             ui_item_list.append(lay_item);
-        }
-
-        QString s = getClassName(e);
-        if (s == QLatin1String("QDataTable")
-                 || s == QLatin1String("QDataBrowser")) {
-            if (isFrameworkCodeGenerated(e))
-                 needPolish = true;
         }
 
         e = e.nextSibling().toElement();
@@ -861,32 +912,34 @@ void Ui3Reader::createProperties(const QDomElement &n, QList<DomProperty*> *prop
 {
     QString objectName;
 
+    bool wordWrapFound = false;
+
     for (QDomElement e=n.firstChild().toElement(); !e.isNull(); e = e.nextSibling().toElement()) {
         if (e.tagName().toLower() == QLatin1String("property")) {
             QString name = e.attribute(QLatin1String("name"));
 
             // changes in QPalette
             if (name == QLatin1String("colorGroup")
-                    || name == QLatin1String("paletteForegroundColor")
-                    || name == QLatin1String("paletteBackgroundColor")
-                    || name == QLatin1String("backgroundMode")
-                    || name == QLatin1String("backgroundOrigin")
-                    || name == QLatin1String("paletteBackgroundPixmap")
-                    || name == QLatin1String("backgroundBrush")) {
-                errorInvalidProperty(name, objectName, className);
+                || name == QLatin1String("paletteForegroundColor")
+                || name == QLatin1String("paletteBackgroundColor")
+                || name == QLatin1String("backgroundMode")
+                || name == QLatin1String("backgroundOrigin")
+                || name == QLatin1String("paletteBackgroundPixmap")
+                || name == QLatin1String("backgroundBrush")) {
+                errorInvalidProperty(name, objectName, className, n.lineNumber(), n.columnNumber());
                 continue;
             }
 
             // changes in QFrame
             if (name == QLatin1String("contentsRect")) {
-                errorInvalidProperty(name, objectName, className);
+                errorInvalidProperty(name, objectName, className, n.lineNumber(), n.columnNumber());
                 continue;
             }
 
             // changes in QWidget
             if (name == QLatin1String("underMouse")
-                    || name == QLatin1String("ownFont")) {
-                errorInvalidProperty(name, objectName, className);
+                || name == QLatin1String("ownFont")) {
+                errorInvalidProperty(name, objectName, className, n.lineNumber(), n.columnNumber());
                 continue;
             }
 
@@ -913,8 +966,14 @@ void Ui3Reader::createProperties(const QDomElement &n, QList<DomProperty*> *prop
                 }
             }
 
+            // objectName
+            if (name == QLatin1String("name")) {
+                objectName = prop->elementCstring();
+                continue;
+            }
+
             if (className == QLatin1String("Line")
-                    && prop->attributeName() == QLatin1String("orientation")) {
+                && prop->attributeName() == QLatin1String("orientation")) {
                 delete prop;
                 continue;
             }
@@ -966,6 +1025,14 @@ void Ui3Reader::createProperties(const QDomElement &n, QList<DomProperty*> *prop
 
             name = prop->attributeName(); // sync the name
 
+            if (className == QLatin1String("QLabel") && name == QLatin1String("alignment")) {
+                QString v = prop->elementSet();
+
+                if (v.contains(QRegExp("\\bWordBreak\\b")))
+                    wordWrapFound = true;
+            }
+
+
             // resolve the flags and enumerator
             if (prop->kind() == DomProperty::Set) {
                 QStringList flags = prop->elementSet().split(QLatin1Char('|'));
@@ -1006,13 +1073,14 @@ void Ui3Reader::createProperties(const QDomElement &n, QList<DomProperty*> *prop
                 prop->setElementEnum(e);
             }
 
+
             if (className.size()
-                    && !(className == QLatin1String("QLabel") && name == QLatin1String("buddy"))
-                    && !(name == QLatin1String("buttonGroupId"))
-                    && !(name == QLatin1String("frameworkCode"))
-                    && !(name == QLatin1String("database"))) {
+                && !(className == QLatin1String("QLabel") && name == QLatin1String("buddy"))
+                && !(name == QLatin1String("buttonGroupId"))
+                && !(name == QLatin1String("frameworkCode"))
+                && !(name == QLatin1String("database"))) {
                 if (!WidgetInfo::isValidProperty(className, name)) {
-                    errorInvalidProperty(name, objectName, className);
+                    errorInvalidProperty(name, objectName, className, n.lineNumber(), n.columnNumber());
                     delete prop;
                 } else {
                     properties->append(prop);
@@ -1021,6 +1089,15 @@ void Ui3Reader::createProperties(const QDomElement &n, QList<DomProperty*> *prop
                 properties->append(prop);
             }
         }
+    }
+    if (className == QLatin1String("QLabel")) {
+        DomProperty *wordWrap = new DomProperty();
+        wordWrap->setAttributeName(QLatin1String("wordWrap"));
+        if (wordWrapFound)
+            wordWrap->setElementBool(QLatin1String("true"));
+        else
+            wordWrap->setElementBool(QLatin1String("false"));
+        properties->append(wordWrap);
     }
 }
 
@@ -1034,7 +1111,15 @@ DomProperty *Ui3Reader::readProperty(const QDomElement &e)
     DomProperty *p = new DomProperty;
     p->read(e);
 
-    if (p->kind() == DomProperty::Unknown) {
+    if (p->kind() == DomProperty::Number) {
+        QString value = e.firstChild().toElement().firstChild().nodeValue();
+
+        if (value.contains(QLatin1Char('.'))) {
+            p->setElementDouble(value.toDouble());
+        }
+    }
+
+    else if (p->kind() == DomProperty::Unknown) {
         delete p;
         p = 0;
     }

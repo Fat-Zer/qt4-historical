@@ -29,9 +29,17 @@
 #include <qscrollbar.h>
 #include <qstyle.h>
 #include <qstyleoption.h>
+#include <qdebug.h>
+#include <qglobal.h>
 
 #ifndef QT_NO_ACCESSIBILITY
-QString Q_GUI_EXPORT qt_accStripAmp(const QString &text);
+extern QString Q_GUI_EXPORT qt_accStripAmp(const QString &text);
+#ifndef QT_NO_SCROLLBAR
+extern QStyleOptionSlider Q_GUI_EXPORT qt_qscrollbarStyleOption(QScrollBar *scrollBar);
+#endif
+#ifndef QT_NO_SLIDER
+extern QStyleOptionSlider Q_GUI_EXPORT qt_qsliderStyleOption(QSlider *slider);
+#endif
 
 #ifndef QT_NO_SPINBOX
 /*!
@@ -251,41 +259,32 @@ QScrollBar *QAccessibleScrollBar::scrollBar() const
 /*! \reimp */
 QRect QAccessibleScrollBar::rect(int child) const
 {
-    QRect rect;
-    QStyleOptionSlider option;
-    QRect srect = scrollBar()->style()->subControlRect(QStyle::CC_Slider, &option,
-                                                       QStyle::SC_SliderHandle, scrollBar());
-    int sz = scrollBar()->style()->pixelMetric(QStyle::PM_ScrollBarExtent, &option, scrollBar());
+    QStyle::SubControl subControl;
     switch (child) {
     case LineUp:
-        rect = QRect(0, 0, sz, sz);
+        subControl = QStyle ::SC_ScrollBarSubLine;
         break;
     case PageUp:
-        if (scrollBar()->orientation() == Qt::Vertical)
-            rect = QRect(0, sz, sz, srect.y() - sz);
-        else
-            rect = QRect(sz, 0, srect.x() - sz, sz);
+        subControl = QStyle::SC_ScrollBarSubPage;
         break;
     case Position:
-        rect = srect;
+        subControl = QStyle::SC_ScrollBarSlider;
         break;
     case PageDown:
-        if (scrollBar()->orientation() == Qt::Vertical)
-            rect = QRect(0, srect.bottom(), sz, scrollBar()->rect().height() - srect.bottom() - sz);
-        else
-            rect = QRect(srect.right(), 0, scrollBar()->rect().width() - srect.right() - sz, sz) ;
+        subControl = QStyle::SC_ScrollBarAddPage;
         break;
     case LineDown:
-        if (scrollBar()->orientation() == Qt::Vertical)
-            rect = QRect(0, scrollBar()->rect().height() - sz, sz, sz);
-        else
-            rect = QRect(scrollBar()->rect().width() - sz, 0, sz, sz);
+        subControl = QStyle::SC_ScrollBarAddLine;
         break;
     default:
         return QAccessibleWidget::rect(child);
     }
 
-    QPoint tp = scrollBar()->mapToGlobal(QPoint(0,0));
+    const QStyleOptionSlider option = qt_qscrollbarStyleOption(scrollBar());
+    const QRect rect = scrollBar()->style()->subControlRect(QStyle::CC_ScrollBar, &option,
+                                                       subControl, scrollBar());
+
+    const QPoint tp = scrollBar()->mapToGlobal(QPoint(0,0));
     return QRect(tp.x() + rect.x(), tp.y() + rect.y(), rect.width(), rect.height());
 }
 
@@ -343,10 +342,10 @@ QAccessible::Role QAccessibleScrollBar::role(int child) const
 QAccessible::State QAccessibleScrollBar::state(int child) const
 {
     const State parentState = QAccessibleWidget::state(0);
-    
+
     if (child == 0)
         return parentState;
-    
+
     // Inherit the Invisible state from parent.
     State state = parentState & QAccessible::Invisible;
 
@@ -435,11 +434,10 @@ QSlider *QAccessibleSlider::slider() const
 QRect QAccessibleSlider::rect(int child) const
 {
     QRect rect;
-    QStyleOptionSlider option;
-    option.init(slider());
-    option.orientation = slider()->orientation();
+    const QStyleOptionSlider option = qt_qsliderStyleOption(slider());
     QRect srect = slider()->style()->subControlRect(QStyle::CC_Slider, &option,
                                                     QStyle::SC_SliderHandle, slider());
+
     switch (child) {
     case PageLeft:
         if (slider()->orientation() == Qt::Vertical)
@@ -514,10 +512,10 @@ QAccessible::Role QAccessibleSlider::role(int child) const
 QAccessible::State QAccessibleSlider::state(int child) const
 {
     const State parentState = QAccessibleWidget::state(0);
-    
+
     if (child == 0)
         return parentState;
-    
+
     // Inherit the Invisible state from parent.
     State state = parentState & QAccessible::Invisible;
 

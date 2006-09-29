@@ -2,26 +2,20 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-mac-opensource-src-4.1.5/doc/src/qt4-sql.qdoc -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-mac-opensource-src-4.1.5/doc/src/qt4-sql.qdoc -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-mac-opensource-src-4.2.0/doc/src/qt4-sql.qdoc -->
 <head>
-    <title>Qt 4.1: The Qt 4 Database GUI Layer</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
-    <link rel="prev" href="qt4-accessibility.html" />
-    <link rel="contents" href="qt4-intro.html" />
-    <link rel="next" href="qt4-network.html" />
+  <title>Qt 4.2: The Qt 4 Database GUI Layer</title>
+  <link rel="prev" href="qt4-accessibility.html" />
+  <link rel="contents" href="qt4-intro.html" />
+  <link rel="next" href="qt4-network.html" />
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><p>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><p>
 [Previous: <a href="qt4-accessibility.html">Cross-Platform Accessibility Support in Qt 4</a>]
 [<a href="qt4-intro.html">Home</a>]
 [Next: <a href="qt4-network.html">The Network Module in Qt 4</a>]
@@ -52,73 +46,73 @@ body { background: #ffffff; color: black; }</style>
 <a name="example-code"></a>
 <h2>Example Code</h2>
 <p>The simplest way to present data from a database is to simply combine a <a href="qsqlquerymodel.html">QSqlQueryModel</a> with a <a href="qtableview.html">QTableView</a>:</p>
-<pre>&nbsp;   QSqlQueryModel model;
-    model.setQuery(&quot;select * from person&quot;);
+<pre> QSqlQueryModel model;
+ model.setQuery(&quot;select * from person&quot;);
 
-    QTableView view;
-    view.setModel(&amp;model);
-    view.show();</pre>
+ QTableView view;
+ view.setModel(&amp;model);
+ view.show();</pre>
 <p>To present the contents of a single table, we can use <a href="qsqltablemodel.html">QSqlTableModel</a> instead:</p>
-<pre>&nbsp;   QSqlTableModel model;
-    model.setTable(&quot;person&quot;);
-    model.select();
+<pre> QSqlTableModel model;
+ model.setTable(&quot;person&quot;);
+ model.select();
 
-    QTableView view;
-    view.setModel(&amp;model);
-    view.show();</pre>
+ QTableView view;
+ view.setModel(&amp;model);
+ view.show();</pre>
 <p>In practice, it's common that we need to customize the rendering of a field in the database. In that case, we can create our own model based on <a href="qsqlquerymodel.html">QSqlQueryModel</a>. The next code snippet shows a custom model that prepends '#' to the value in field 0 and converts the value in field 2 to uppercase:</p>
-<pre>&nbsp;   class CustomSqlModel : public QSqlQueryModel
-    {
-        Q_OBJECT
+<pre> class CustomSqlModel : public QSqlQueryModel
+ {
+     Q_OBJECT
 
-    public:
-        CustomSqlModel(QObject *parent = 0);
+ public:
+     CustomSqlModel(QObject *parent = 0);
 
-        QVariant data(const QModelIndex &amp;item, int role) const;
-    };
+     QVariant data(const QModelIndex &amp;item, int role) const;
+ };
 
-    QVariant CustomSqlModel::data(const QModelIndex &amp;index, int role) const
-    {
-        QVariant value = QSqlQueryModel::data(index, role);
-        if (value.isValid() &amp;&amp; role == Qt::DisplayRole) {
-            if (index.column() == 0)
-                return value.toString().prepend(&quot;#&quot;);
-            else if (index.column() == 2)
-                return value.toString().toUpper();
-        }
-        if (role == Qt::TextColorRole &amp;&amp; index.column() == 1)
-            return qVariantFromValue(QColor(Qt::blue));
-        return value;
-    }</pre>
+ QVariant CustomSqlModel::data(const QModelIndex &amp;index, int role) const
+ {
+     QVariant value = QSqlQueryModel::data(index, role);
+     if (value.isValid() &amp;&amp; role == Qt::DisplayRole) {
+         if (index.column() == 0)
+             return value.toString().prepend(&quot;#&quot;);
+         else if (index.column() == 2)
+             return value.toString().toUpper();
+     }
+     if (role == Qt::TextColorRole &amp;&amp; index.column() == 1)
+         return qVariantFromValue(QColor(Qt::blue));
+     return value;
+ }</pre>
 <p>It is also possible to subclass <a href="qsqlquerymodel.html">QSqlQueryModel</a> to add support for editing. This is done by reimplementing <a href="qabstractitemmodel.html#flags">QAbstractItemModel::flags</a>() to specify which database fields are editable and <a href="qabstractitemmodel.html#setData">QAbstractItemModel::setData</a>() to modify the database. Here's an example of a setData() reimplementation that changes the first or last name of a person:</p>
-<pre>&nbsp;   bool EditableSqlModel::setData(const QModelIndex &amp;index, const QVariant &amp;value, int /* role */)
-    {
-        if (index.column() &lt; 1 || index.column() &gt; 2)
-            return false;
+<pre> bool EditableSqlModel::setData(const QModelIndex &amp;index, const QVariant &amp;value, int /* role */)
+ {
+     if (index.column() &lt; 1 || index.column() &gt; 2)
+         return false;
 
-        QModelIndex primaryKeyIndex = QSqlQueryModel::index(index.row(), 0);
-        int id = data(primaryKeyIndex).toInt();
+     QModelIndex primaryKeyIndex = QSqlQueryModel::index(index.row(), 0);
+     int id = data(primaryKeyIndex).toInt();
 
-        clear();
+     clear();
 
-        bool ok;
-        if (index.column() == 1) {
-            ok = setFirstName(id, value.toString());
-        } else {
-            ok = setLastName(id, value.toString());
-        }
-        refresh();
-        return ok;
-    }</pre>
+     bool ok;
+     if (index.column() == 1) {
+         ok = setFirstName(id, value.toString());
+     } else {
+         ok = setLastName(id, value.toString());
+     }
+     refresh();
+     return ok;
+ }</pre>
 <p>It relies on helper functions called <tt>setFirstName()</tt> and <tt>setLastName()</tt>, which execute an <tt>update</tt>. Here's <tt>setFirstName()</tt>:</p>
-<pre>&nbsp;   bool EditableSqlModel::setFirstName(int personId, const QString &amp;firstName)
-    {
-        QSqlQuery query;
-        query.prepare(&quot;update person set firstname = ? where id = ?&quot;);
-        query.addBindValue(firstName);
-        query.addBindValue(personId);
-        return query.exec();
-    }</pre>
+<pre> bool EditableSqlModel::setFirstName(int personId, const QString &amp;firstName)
+ {
+     QSqlQuery query;
+     query.prepare(&quot;update person set firstname = ? where id = ?&quot;);
+     query.addBindValue(firstName);
+     query.addBindValue(personId);
+     return query.exec();
+ }</pre>
 <p>See Qt's <tt>examples/sql</tt> directory for more examples.</p>
 <a name="comparison-with-qt-3"></a>
 <h2>Comparison with Qt 3</h2>
@@ -138,6 +132,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

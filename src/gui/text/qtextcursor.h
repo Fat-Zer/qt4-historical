@@ -109,7 +109,8 @@ public:
     enum SelectionType {
         WordUnderCursor,
         LineUnderCursor,
-        BlockUnderCursor
+        BlockUnderCursor,
+        Document
     };
     void select(SelectionType selection);
 
@@ -162,7 +163,9 @@ public:
     QTextFrame *currentFrame() const;
 
     void insertFragment(const QTextDocumentFragment &fragment);
+    void insertHtml(const QString &html);
 
+    void insertImage(const QTextImageFormat &format, QTextFrameFormat::Position alignment);
     void insertImage(const QTextImageFormat &format);
     void insertImage(const QString &name);
 
@@ -178,6 +181,9 @@ public:
     bool operator>(const QTextCursor &rhs) const;
 
     bool isCopyOf(const QTextCursor &other) const;
+
+    int blockNumber() const;
+    int columnNumber() const;
 
 private:
     QSharedDataPointer<QTextCursorPrivate> d;

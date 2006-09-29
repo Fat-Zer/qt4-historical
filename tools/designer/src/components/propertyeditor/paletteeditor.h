@@ -29,6 +29,8 @@
 
 class QListView;
 class QLabel;
+class QtColorButton;
+class QDesignerFormEditorInterface;
 
 namespace qdesigner_internal {
 
@@ -38,7 +40,8 @@ class PaletteEditor: public QDialog
 public:
     virtual ~PaletteEditor();
 
-    static QPalette getPalette(QWidget* parent, const QPalette &init = QPalette(),
+    static QPalette getPalette(QDesignerFormEditorInterface *core,
+                QWidget* parent, const QPalette &init = QPalette(),
                 const QPalette &parentPal = QPalette(), int *result = 0);
 
     QPalette palette() const;
@@ -47,7 +50,7 @@ public:
 
 private slots:
 
-    void on_buildButton_changed();
+    void on_buildButton_colorChanged(const QColor &);
     void on_activeRadio_clicked();
     void on_inactiveRadio_clicked();
     void on_disabledRadio_clicked();
@@ -59,7 +62,7 @@ private slots:
 protected:
 
 private:
-    PaletteEditor(QWidget *parent);
+    PaletteEditor(QDesignerFormEditorInterface *core, QWidget *parent);
     void buildPalette();
 
     void updatePreviewPalette();
@@ -76,6 +79,7 @@ private:
     bool m_modelUpdated;
     bool m_paletteUpdated;
     bool m_compute;
+    QDesignerFormEditorInterface *m_core;
 };
 
 
@@ -112,22 +116,24 @@ private:
     bool m_compute;
 };
 
-class ColorEditor : public QWidget
+class BrushEditor : public QWidget
 {
     Q_OBJECT
 public:
-    ColorEditor(QWidget *parent = 0);
+    BrushEditor(QDesignerFormEditorInterface *core, QWidget *parent = 0);
 
-    void setColor(const QColor &color);
-    QColor color() const;
+    void setBrush(const QBrush &brush);
+    QBrush brush() const;
     bool changed() const;
 signals:
     void changed(QWidget *widget);
 private slots:
-    void colorChanged();
+    void brushChanged();
+    void textureChooserActivated(QWidget *parent, const QBrush &initialBrush);
 private:
-    StyledButton *button;
+    QtColorButton *button;
     bool m_changed;
+    QDesignerFormEditorInterface *m_core;
 };
 
 class RoleEditor : public QWidget
@@ -153,7 +159,7 @@ class ColorDelegate : public QItemDelegate
     Q_OBJECT
 
 public:
-    ColorDelegate(QObject *parent = 0) : QItemDelegate(parent) { }
+    ColorDelegate(QDesignerFormEditorInterface *core, QObject *parent = 0) : QItemDelegate(parent) { m_core = core; }
 
     QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
                 const QModelIndex &index) const;
@@ -168,6 +174,8 @@ public:
     virtual void paint(QPainter *painter, const QStyleOptionViewItem &opt,
                        const QModelIndex &index) const;
     virtual QSize sizeHint(const QStyleOptionViewItem &opt, const QModelIndex &index) const;
+private:
+    QDesignerFormEditorInterface *m_core;
 };
 
 }  // namespace qdesigner_internal

@@ -231,7 +231,7 @@
 #endif
 
 enum {
-    DefaultStreamVersion = QDataStream::Qt_4_1
+    DefaultStreamVersion = QDataStream::Qt_4_2
 };
 
 // ### 4.0: when streaming invalid QVariants, just the type should
@@ -511,6 +511,7 @@ void QDataStream::setByteOrder(ByteOrder bo)
     \value Qt_3_3 Version 6 (Qt 3.3)
     \value Qt_4_0 Version 7 (Qt 4.0, Qt 4.1)
     \value Qt_4_1 Version 7 (Qt 4.0, Qt 4.1)
+    \value Qt_4_2 Version 8 (Qt 4.2)
 
     \sa setVersion(), version()
 */
@@ -542,6 +543,7 @@ void QDataStream::setByteOrder(ByteOrder bo)
 
     \table
     \header \i Qt Version       \i QDataStream Version
+    \row \i Qt 4.2              \i 8
     \row \i Qt 4.0              \i 7
     \row \i Qt 3.3              \i 6
     \row \i Qt 3.1, 3.2         \i 5

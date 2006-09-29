@@ -24,6 +24,7 @@
 #include "generator.h"
 #include "outputrevision.h"
 #include "utils.h"
+#include <QtCore/qmetatype.h>
 #include <stdio.h>
 
 // if the flags change, you MUST to change it in qmetaobject.cpp too
@@ -31,7 +32,7 @@ enum PropertyFlags  {
     Invalid = 0x00000000,
     Readable = 0x00000001,
     Writable = 0x00000002,
-    Resetable = 0x00000004,
+    Resettable = 0x00000004,
     EnumOrFlag = 0x00000008,
     StdCppSet = 0x00000100,
 //     Override = 0x00000200,
@@ -58,91 +59,24 @@ enum MethodFlags {
     MethodScriptable = 0x40
 };
 
-/*
-  Attention!  This table is copied from qvariant.cpp. If you
-  change one, change both.
-*/
-enum { CoreTypeCount = 28 };
-static const char* const core_type_map[CoreTypeCount] =
+uint qvariant_nameToType(const char* name)
 {
-    0,
-    "bool",
-    "int",
-    "uint",
-    "qlonglong",
-    "qulonglong",
-    "double",
-    "QChar",
-    "QVariantMap",
-    "QVariantList",
-    "QString",
-    "QStringList",
-    "QByteArray",
-    "QBitArray",
-    "QDate",
-    "QTime",
-    "QDateTime",
-    "QUrl",
-    "QLocale",
-    "QRect",
-    "QRectF",
-    "QSize",
-    "QSizeF",
-    "QLine",
-    "QLineF",
-    "QPoint",
-    "QPointF",
-    "QRegExp"
-};
+    if (!name)
+        return 0;
 
-enum { GuiTypeCount = 79 - 63 + 1 };
-static const char* const gui_type_map[GuiTypeCount] =
-{
-    "QColorGroup",
-    "QFont",
-    "QPixmap",
-    "QBrush",
-    "QColor",
-    "QPalette",
-    "QIcon",
-    "QImage",
-    "QPolygon",
-    "QRegion",
-    "QBitmap",
-    "QCursor",
-    "QSizePolicy",
-    "QKeySequence",
-    "QPen",
-    "QTextLength",
-    "QTextFormat"
-};
+    if (strcmp(name, "QVariant") == 0)
+        return 0xffffffff;
+    if (strcmp(name, "QCString") == 0)
+        return QMetaType::QByteArray;
+    if (strcmp(name, "Q_LLONG") == 0)
+        return QMetaType::LongLong;
+    if (strcmp(name, "Q_ULLONG") == 0)
+        return QMetaType::ULongLong;
+    if (strcmp(name, "QIconSet") == 0)
+        return QMetaType::QIcon;
 
-int qvariant_nameToType(const char* name)
-{
-    if (name) {
-        if (strcmp(name, "QVariant") == 0)
-            return 0xffffffff;
-
-        if (strcmp(name, "QCString") == 0)
-            name = "QByteArray";
-        else if (strcmp(name, "Q_LLONG") == 0)
-            name = "qlonglong";
-        else if (strcmp(name, "Q_ULLONG") == 0)
-            name = "qulonglong";
-        else if (strcmp(name, "QIconSet") == 0)
-            name = "QIcon";
-
-        int i;
-        for (i = 1; i < CoreTypeCount; ++i) {
-            if (strcmp(core_type_map[i], name) == 0)
-                return i;
-        }
-        for (i = 0; i < GuiTypeCount; ++i) {
-            if (strcmp(gui_type_map[i], name) == 0)
-                return (i + 63);
-        }
-    }
-    return 0;
+    uint tp = QMetaType::type(name);
+    return tp < QMetaType::User ? tp : 0;
 }
 
 /*
@@ -153,7 +87,7 @@ bool isVariantType(const char* type)
     return qvariant_nameToType(type) != 0;
 }
 
-Generator::Generator(FILE *outfile, ClassDef *classDef) :out(outfile), cdef(classDef)
+Generator::Generator(FILE *outfile, ClassDef *classDef, const QList<QByteArray> &metaTypes) : out(outfile), cdef(classDef), metaTypes(metaTypes)
 {
     if (cdef->superclassList.size())
         purestSuperClass = cdef->superclassList.first().first;
@@ -288,8 +222,8 @@ void Generator::generateCode()
     QList<QByteArray> extraList;
     for (int i = 0; i < cdef->propertyList.count(); ++i) {
         const PropertyDef &p = cdef->propertyList.at(i);
-        if (!isVariantType(p.type)) {
-            int s = p.type.indexOf("::");
+        if (!isVariantType(p.type) && !metaTypes.contains(p.type)) {
+            int s = p.type.lastIndexOf("::");
             if (s > 0) {
                 QByteArray scope = p.type.left(s);
                 if (scope != "Qt" && scope != cdef->classname && !extraList.contains(scope))
@@ -494,7 +428,7 @@ void Generator::generateProperties()
         fprintf(out, "\n // properties: name, type, flags\n");
     for (int i = 0; i < cdef->propertyList.count(); ++i) {
         const PropertyDef &p = cdef->propertyList.at(i);
-        int flags = Invalid;
+        uint flags = Invalid;
         if (!isVariantType(p.type)) {
             flags |= EnumOrFlag;
         } else {
@@ -508,7 +442,7 @@ void Generator::generateProperties()
                 flags |= StdCppSet;
         }
         if (!p.reset.isEmpty())
-            flags |= Resetable;
+            flags |= Resettable;
 
 //         if (p.override)
 //             flags |= Override;
@@ -532,12 +466,12 @@ void Generator::generateProperties()
             flags |= ResolveEditable;
         else if (p.editable != "false")
             flags |= Editable;
-        
+
         if (p.user.isEmpty())
             flags |= ResolveUser;
         else if (p.user != "false")
             flags |= User;
-        
+
         fprintf(out, "    %4d, %4d, 0x%.8x,\n",
                  strreg(p.name),
                  strreg(p.type),
@@ -815,7 +749,7 @@ void Generator::generateMetacall()
                 "        _id -= %d;\n"
                 "    }", cdef->propertyList.count());
 
-        
+
         fprintf(out, " else ");
         fprintf(out, "if (_c == QMetaObject::QueryPropertyUser) {\n");
         if (needUser) {
@@ -834,7 +768,7 @@ void Generator::generateMetacall()
                 "        _id -= %d;\n"
                 "    }", cdef->propertyList.count());
 
-        
+
         fprintf(out, "\n#endif // QT_NO_PROPERTIES");
     }
  skip_properties:

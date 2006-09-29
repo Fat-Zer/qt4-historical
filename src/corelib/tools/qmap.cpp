@@ -26,17 +26,16 @@
 #include <stdlib.h>
 
 QMapData QMapData::shared_null = {
-    reinterpret_cast<Node *>(&shared_null),
-    { reinterpret_cast<Node *>(&shared_null), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, Q_ATOMIC_INIT(1), 0,
-    0, 0, false, true
+    &shared_null,
+    { &shared_null, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, Q_ATOMIC_INIT(1), 0, 0, 0, false, true
 };
 
 QMapData *QMapData::createData()
 {
     QMapData *d = new QMapData;
     Node *e = reinterpret_cast<Node *>(d);
-    d->backward = e;
-    d->forward[0] = e;
+    e->backward = e;
+    e->forward[0] = e;
     d->ref.init(1);
     d->topLevel = 0;
     d->size = 0;
@@ -49,7 +48,7 @@ QMapData *QMapData::createData()
 void QMapData::continueFreeData(int offset)
 {
     Node *e = reinterpret_cast<Node *>(this);
-    Node *cur = forward[0];
+    Node *cur = e->forward[0];
     Node *prev;
     while (cur != e) {
         prev = cur;
@@ -71,7 +70,7 @@ QMapData::Node *QMapData::node_create(Node *update[], int offset)
 
     ++randomBits;
     if (level == 3 && !insertInOrder)
-        randomBits = ::rand();
+        randomBits = ::qrand();
 
     if (level > topLevel) {
         Node *e = reinterpret_cast<Node *>(this);
@@ -115,7 +114,7 @@ void QMapData::node_delete(Node *update[], int offset, Node *node)
 uint QMapData::adjust_ptr(Node *node)
 {
     if (node == reinterpret_cast<Node *>(this)) {
-        return (uint)0xFFFFFFFF;
+       return (uint)0xDEADBEEF;
     } else {
         return (uint)node;
     }
@@ -572,20 +571,30 @@ void QMapData::dump()
     Same as value().
 */
 
+/*! \fn QList<Key> QMap::uniqueKeys() const
+    \since 4.2
+
+    Returns a list containing all the keys in the map in ascending
+    order. Keys that occur multiple times in the map (because items
+    were inserted with insertMulti(), or unite() was used) occur only
+    once in the returned list.
+
+    \sa keys(), values()
+*/
+
 /*! \fn QList<Key> QMap::keys() const
 
     Returns a list containing all the keys in the map in ascending
     order. Keys that occur multiple times in the map (because items
-    were inserted with insertMulti(), or unite() was used), also
+    were inserted with insertMulti(), or unite() was used) also
     occur multiple times in the list.
 
     To obtain a list of unique keys, where each key from the map only
-    occurs once, use an intermediate QSet object to filter out
-    duplicates.
+    occurs once, use uniqueKeys().
 
     The order is guaranteed to be the same as that used by values().
 
-    \sa values(), key()
+    \sa uniqueKeys(), values(), key()
 */
 
 /*! \fn QList<Key> QMap::keys(const T &value) const
@@ -618,9 +627,9 @@ void QMapData::dump()
 /*! \fn QList<T> QMap::values() const
 
     Returns a list containing all the values in the map, in ascending
-    order of their keys. If a key is associated multiple values, all
-    of its values will be in the list, and not just the most recently
-    inserted one.
+    order of their keys. If a key is associated with multiple values,
+    all of its values will be in the list, and not just the most
+    recently inserted one.
 
     \sa keys()
 */
@@ -738,7 +747,7 @@ void QMapData::dump()
 
     Returns an const iterator pointing to the item with key \a key in the
     map.
-    
+
     If the map contains no item with key \a key, the function
     returns constEnd().
 
@@ -862,6 +871,26 @@ void QMapData::dump()
 /*! \typedef QMap::ConstIterator
 
     Qt-style synonym for QMap::const_iterator.
+*/
+
+/*! \typedef QMap::difference_type
+
+    Typedef for ptrdiff_t. Provided for STL compatibility.
+*/
+
+/*! \typedef QMap::key_type
+
+    Typedef for Key. Provided for STL compatibility.
+*/
+
+/*! \typedef QMap::mapped_type
+
+    Typedef for T. Provided for STL compatibility.
+*/
+
+/*! \typedef QMap::size_type
+
+    Typedef for int. Provided for STL compatibility.
 */
 
 /*! \fn bool QMap::empty() const

@@ -1,11 +1,13 @@
 isEmpty(TARGET):error(You must set TARGET before include()'ing $${_FILE_})
 INCLUDEPATH *= $$QMAKE_INCDIR_QT/$$TARGET #just for today to have some compat
+isEmpty(QT_ARCH):!isEmpty(ARCH):QT_ARCH=$$ARCH #another compat that will rot for change #215700
 TEMPLATE	= lib
 isEmpty(QT_MAJOR_VERSION) {
-   VERSION=4.1.5
+   VERSION=4.2.0
 } else {
    VERSION=$${QT_MAJOR_VERSION}.$${QT_MINOR_VERSION}.$${QT_PATCH_VERSION}
 }
+mac:!contains(QMAKE_EXT_C, .mm):QMAKE_EXT_C += .mm
 
 #load up the headers info
 CONFIG += qt_install_headers
@@ -32,14 +34,14 @@ win32:DLLDESTDIR = $$[QT_INSTALL_PREFIX]/bin
 CONFIG		+= qt warn_on depend_includepath
 CONFIG          += qmake_cache target_qt 
 CONFIG          -= fix_output_dirs
-!macx-xcode:CONFIG += debug_and_release
+win32|mac:!macx-xcode:CONFIG += debug_and_release
 
 contains(QT_CONFIG, reduce_exports):CONFIG += hide_symbols
 contains(QT_CONFIG, largefile):CONFIG += largefile
 
 #mac frameworks
 mac:!static:contains(QT_CONFIG, qt_framework) {
-   QMAKE_FRAMEWORK_VERSION = 4.0
+   #QMAKE_FRAMEWORK_VERSION = 4.0
    QMAKE_FRAMEWORK_BUNDLE_NAME = $$TARGET
    CONFIG += lib_bundle qt_no_framework_direct_includes qt_framework
    CONFIG(debug, debug|release) {
@@ -55,10 +57,6 @@ mac:!static:contains(QT_CONFIG, qt_framework) {
               !contains(FRAMEWORK_HEADERS.files, .*/qconfig.h) {
 	          FRAMEWORK_HEADERS.files *= $$QT_BUILD_TREE/src/corelib/global/qconfig.h 
 	      }
-	      ARCH_FRAMEWORK_HEADERS.version = $$FRAMEWORK_HEADERS.version
-	      ARCH_FRAMEWORK_HEADERS.files = $$QT_SOURCE_TREE/src/corelib/arch/$$ARCH/arch/qatomic.h
-	      ARCH_FRAMEWORK_HEADERS.path = $$FRAMEWORK_HEADERS.path/arch
-	      QMAKE_BUNDLE_DATA += ARCH_FRAMEWORK_HEADERS
           }
       }
       QMAKE_BUNDLE_DATA += FRAMEWORK_HEADERS
@@ -68,7 +66,7 @@ mac:!static:contains(QT_CONFIG, qt_framework) {
 mac {
    CONFIG += explicitlib
    QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.2 #enables weak linking for 10.2 (exported)
-   !macx-xlc: {
+   macx-g++ {
        QMAKE_CFLAGS += -fconstant-cfstrings
        QMAKE_CXXFLAGS += -fconstant-cfstrings
    }
@@ -119,16 +117,24 @@ unix {
 }
 
 contains(QT_PRODUCT, OpenSource.*):DEFINES *= QT_OPENSOURCE
-DEFINES += QT_NO_CAST_TO_ASCII
+DEFINES += QT_NO_CAST_TO_ASCII QT_ASCII_CAST_WARNINGS
 contains(QT_CONFIG, qt3support):DEFINES *= QT3_SUPPORT
 DEFINES *= QT_MOC_COMPAT #we don't need warnings from calling moc code in our generated code
 
 !debug_and_release|build_pass {
    CONFIG(debug, debug|release) {
-      unix:TARGET = $$member(TARGET, 0)_debug
-      else:TARGET = $$member(TARGET, 0)d
+      mac:TARGET = $$member(TARGET, 0)_debug
+      win32:TARGET = $$member(TARGET, 0)d
    }
 }
+
+moc_dir.name = moc_location
+moc_dir.variable = QMAKE_MOC
+
+uic_dir.name = uic_location
+uic_dir.variable = QMAKE_UIC
+
+QMAKE_PKGCONFIG_VARIABLES += moc_dir uic_dir
 
 include(qt_targets.pri)
 

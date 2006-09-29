@@ -2,25 +2,19 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-mac-opensource-src-4.1.5/doc/src/qmake-manual.qdoc -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-mac-opensource-src-4.1.5/doc/src/qmake-manual.qdoc -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-mac-opensource-src-4.2.0/doc/src/qmake-manual.qdoc -->
 <head>
-    <title>Qt 4.1: qmake Manual</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
-    <link rel="next" href="qmake-tutorial.html" />
-    <link rel="start" href="index.html" />
+  <title>Qt 4.2: qmake Manual</title>
+  <link rel="next" href="qmake-tutorial.html" />
+  <link rel="start" href="index.html" />
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><p>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><p>
 [Next: <a href="qmake-tutorial.html">qmake Tutorial</a>]
 </p>
 <h1 align="center">qmake Manual<br /><small></small></h1>
@@ -73,6 +67,7 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="qmake-project-files.html#general-configuration">General Configuration</a></li>
 <li><a href="qmake-project-files.html#declaring-qt-libraries">Declaring Qt Libraries</a></li>
 <li><a href="qmake-project-files.html#configuration-features">Configuration Features</a></li>
+<li><a href="qmake-project-files.html#declaring-other-libraries">Declaring Other Libraries</a></li>
 </ul>
 </li>
 <li><a href="qmake-running.html">Running qmake</a> <ul><li><a href="qmake-running.html#command-line-options">Command-Line Options</a></li>
@@ -80,6 +75,19 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="qmake-running.html#options">Options</a></li>
 <li><a href="qmake-running.html#makefile-mode-options">Makefile Mode Options</a></li>
 <li><a href="qmake-running.html#project-mode-options">Project Mode Options</a></li>
+</ul>
+</ul>
+</li>
+<li><a href="qmake-platform-notes.html">qmake Platform Notes</a> <ul><li><a href="qmake-platform-notes.html#mac-os-x">Mac OS X</a></li>
+<ul><li><a href="qmake-platform-notes.html#using-frameworks">Using Frameworks</a></li>
+<li><a href="qmake-platform-notes.html#creating-library-bundles">Creating Library Bundles</a></li>
+<li><a href="qmake-platform-notes.html#creating-frameworks">Creating Frameworks</a></li>
+<li><a href="qmake-platform-notes.html#creating-universal-binaries">Creating Universal Binaries</a></li>
+<li><a href="qmake-platform-notes.html#creating-and-moving-xcode-projects">Creating and Moving Xcode Projects</a></li>
+</ul>
+<li><a href="qmake-platform-notes.html#windows">Windows</a></li>
+<ul><li><a href="qmake-platform-notes.html#creating-visual-studio-project-files">Creating Visual Studio Project Files</a></li>
+<li><a href="qmake-platform-notes.html#visual-studio-2005-manifest-files">Visual Studio 2005 Manifest Files</a></li>
 </ul>
 </ul>
 </li>
@@ -153,6 +161,7 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="qmake-variable-reference.html#qmake-app-or-dll">QMAKE_APP_OR_DLL</a></li>
 <li><a href="qmake-variable-reference.html#qmake-ar-cmd">QMAKE_AR_CMD</a></li>
 <li><a href="qmake-variable-reference.html#qmake-bundle-data">QMAKE_BUNDLE_DATA</a></li>
+<li><a href="qmake-variable-reference.html#qmake-bundle-extension">QMAKE_BUNDLE_EXTENSION</a></li>
 <li><a href="qmake-variable-reference.html#qmake-cflags-debug">QMAKE_CFLAGS_DEBUG</a></li>
 <li><a href="qmake-variable-reference.html#qmake-cflags-mt">QMAKE_CFLAGS_MT</a></li>
 <li><a href="qmake-variable-reference.html#qmake-cflags-mt-dbg">QMAKE_CFLAGS_MT_DBG</a></li>
@@ -185,12 +194,14 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="qmake-variable-reference.html#qmake-ext-h">QMAKE_EXT_H</a></li>
 <li><a href="qmake-variable-reference.html#qmake-failed-requirements">QMAKE_FAILED_REQUIREMENTS</a></li>
 <li><a href="qmake-variable-reference.html#qmake-filetags">QMAKE_FILETAGS</a></li>
+<li><a href="qmake-variable-reference.html#qmake-framework-bundle-name">QMAKE_FRAMEWORK_BUNDLE_NAME</a></li>
 <li><a href="qmake-variable-reference.html#qmake-framework-version">QMAKE_FRAMEWORK_VERSION</a></li>
 <li><a href="qmake-variable-reference.html#qmake-incdir">QMAKE_INCDIR</a></li>
 <li><a href="qmake-variable-reference.html#qmake-incdir-opengl">QMAKE_INCDIR_OPENGL</a></li>
 <li><a href="qmake-variable-reference.html#qmake-incdir-qt">QMAKE_INCDIR_QT</a></li>
 <li><a href="qmake-variable-reference.html#qmake-incdir-thread">QMAKE_INCDIR_THREAD</a></li>
 <li><a href="qmake-variable-reference.html#qmake-incdir-x11">QMAKE_INCDIR_X11</a></li>
+<li><a href="qmake-variable-reference.html#qmake-lflags">QMAKE_LFLAGS</a></li>
 <li><a href="qmake-variable-reference.html#qmake-lflags-console">QMAKE_LFLAGS_CONSOLE</a></li>
 <li><a href="qmake-variable-reference.html#qmake-lflags-console-dll">QMAKE_LFLAGS_CONSOLE_DLL</a></li>
 <li><a href="qmake-variable-reference.html#qmake-lflags-debug">QMAKE_LFLAGS_DEBUG</a></li>
@@ -227,6 +238,7 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="qmake-variable-reference.html#qmake-post-link">QMAKE_POST_LINK</a></li>
 <li><a href="qmake-variable-reference.html#qmake-pre-link">QMAKE_PRE_LINK</a></li>
 <li><a href="qmake-variable-reference.html#qmake-ln-shlib">QMAKE_LN_SHLIB</a></li>
+<li><a href="qmake-variable-reference.html#qmake-mac-sdk">QMAKE_MAC_SDK</a></li>
 <li><a href="qmake-variable-reference.html#qmake-makefile">QMAKE_MAKEFILE</a></li>
 <li><a href="qmake-variable-reference.html#qmake-moc-src">QMAKE_MOC_SRC</a></li>
 <li><a href="qmake-variable-reference.html#qmake-qmake">QMAKE_QMAKE</a></li>
@@ -237,6 +249,7 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="qmake-variable-reference.html#qmake-run-cxx-imp">QMAKE_RUN_CXX_IMP</a></li>
 <li><a href="qmake-variable-reference.html#qmake-target">QMAKE_TARGET</a></li>
 <li><a href="qmake-variable-reference.html#qmake-uic">QMAKE_UIC</a></li>
+<li><a href="qmake-variable-reference.html#qt">QT</a></li>
 <li><a href="qmake-variable-reference.html#qtplugin">QTPLUGIN</a></li>
 <li><a href="qmake-variable-reference.html#rc-file">RC_FILE</a></li>
 <li><a href="qmake-variable-reference.html#rcc-dir">RCC_DIR</a></li>
@@ -303,7 +316,7 @@ body { background: #ffffff; color: black; }</style>
 <a name="additional-information"></a>
 <h2>Additional Information</h2>
 <ul>
-<li><a href="qmake-environment-reference.html">Third-Party Code Used in qmake</a> <ul><li><a href="qmake-environment-reference.html#rsa-data-security-inc-md5-message-digest-algorithm">RSA Data Security, Inc. MD5 Message-Digest Algorithm</a></li>
+<li><a href="qmake-third-party-code.html">Third-Party Code Used in qmake</a> <ul><li><a href="qmake-third-party-code.html#rsa-data-security-inc-md5-message-digest-algorithm">RSA Data Security, Inc. MD5 Message-Digest Algorithm</a></li>
 </ul>
 </li>
 </ul>
@@ -314,6 +327,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

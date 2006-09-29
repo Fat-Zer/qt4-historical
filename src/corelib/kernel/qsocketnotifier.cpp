@@ -28,6 +28,8 @@
 #include "qabstracteventdispatcher.h"
 #include "qcoreapplication.h"
 
+#include "qobject_p.h"
+#include <private/qthread_p.h>
 
 /*!
     \class QSocketNotifier
@@ -36,13 +38,11 @@
 
     \ingroup io
 
-    The QSocketNotifier makes it possible to integrate Qt's event loop
-    with other event loops based on file descriptors. For example, the
-    \l
-    {http://www.trolltech.com/products/solutions/catalog/4/Utilities/qtcorba/}
-    {QtCorba Solution} uses it to process CORBA events.  File
-    descriptor action is detected in Qt's main event loop
-    (QCoreApplication::exec()).
+    The QSocketNotifier makes it possible to integrate Qt's event
+    loop with other event loops based on file descriptors. For
+    example, the \l{CORBA Framework} uses it to process CORBA
+    events.  File descriptor action is detected in Qt's main event
+    loop (QCoreApplication::exec()).
 
     \target write notifiers
 
@@ -76,8 +76,13 @@
     QTcpSocket and QUdpSocket provide notification through signals, so
     there is normally no need to use a QSocketNotifier on them.
 
-    \bold{Note for Windows users:} The socket passed to QSocketNotifier
+    \bold{Notes for Windows users:} The socket passed to QSocketNotifier
     will become non-blocking, even if it was created as a blocking socket.
+    The activated() signal is sometimes triggered by high general activity
+    on the host, even if there is nothing to read. A subsequent read from
+    the socket can then fail, the error indicating that there is no data
+    available (e.g., WSAEWOULDBLOCK). This is an operating system
+    limitation, and not a bug in QSocketNotifier.
 
     \sa QFile, QProcess, QTcpSocket, QUdpSocket
 */
@@ -127,11 +132,11 @@ QSocketNotifier::QSocketNotifier(int socket, Type type, QObject *parent)
     sntype = type;
     snenabled = true;
 
-    QAbstractEventDispatcher *eventDispatcher = QAbstractEventDispatcher::instance(thread());
-    if (!eventDispatcher) {
-        qWarning("QSocketNotifier can only be used with threads started with QThread");
+    Q_D(QObject);
+    if (!d->threadData->eventDispatcher) {
+        qWarning("QSocketNotifier: Can only be used with threads started with QThread");
     } else {
-        eventDispatcher->registerSocketNotifier(this);
+        d->threadData->eventDispatcher->registerSocketNotifier(this);
     }
 }
 
@@ -165,11 +170,11 @@ QSocketNotifier::QSocketNotifier(int socket, Type type, QObject *parent,
     sntype = type;
     snenabled = true;
 
-    QAbstractEventDispatcher *eventDispatcher = QAbstractEventDispatcher::instance(thread());
-    if (!eventDispatcher) {
-        qWarning("QSocketNotifier can only be used with threads started with QThread");
+    Q_D(QObject);
+    if (!d->threadData->eventDispatcher) {
+        qWarning("QSocketNotifier: Can only be used with threads started with QThread");
     } else {
-        eventDispatcher->registerSocketNotifier(this);
+        d->threadData->eventDispatcher->registerSocketNotifier(this);
     }
 }
 #endif
@@ -243,13 +248,13 @@ void QSocketNotifier::setEnabled(bool enable)
         return;
     snenabled = enable;
 
-    QAbstractEventDispatcher *eventDispatcher = QAbstractEventDispatcher::instance(thread());
-    if (!eventDispatcher) // perhaps application/thread is shutting down
+    Q_D(QObject);
+    if (!d->threadData->eventDispatcher) // perhaps application/thread is shutting down
         return;
     if (snenabled)
-        eventDispatcher->registerSocketNotifier(this);
+        d->threadData->eventDispatcher->registerSocketNotifier(this);
     else
-        eventDispatcher->unregisterSocketNotifier(this);
+        d->threadData->eventDispatcher->unregisterSocketNotifier(this);
 }
 
 

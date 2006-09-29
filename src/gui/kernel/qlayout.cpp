@@ -67,7 +67,8 @@ static int menuBarHeightForWidth(QWidget *menubar, int w)
 
     Geometry management stops when the layout manager is deleted.
 
-    \sa QLayoutItem, {Layout Classes}
+    \sa QLayoutItem, {Layout Classes}, {Basic Layouts Example},
+        {Border Layout Example}, {Flow Layout Example}
 */
 
 
@@ -108,8 +109,8 @@ QLayout::QLayout(QLayoutPrivate &dd, QLayout *lay, QWidget *w)
         lay->addItem(this);
     } else if (w) {
         if (w->layout()) {
-            qWarning("Attempting to add QLayout \"%s\" to %s \"%s\", which already has a"
-                     " layout.",
+            qWarning("QLayout: Attempting to add QLayout \"%s\" to %s \"%s\", which"
+                     " already has a layout",
                      qPrintable(QObject::objectName()), w->metaObject()->className(),
                      w->objectName().toLocal8Bit().data());
             setParent(0);
@@ -717,6 +718,17 @@ void QLayout::addChildLayout(QLayout *l)
 
 }
 
+#ifdef QT_DEBUG
+static bool layoutDebug()
+{
+    static int checked_env = -1;
+    if(checked_env == -1)
+        checked_env = !!qgetenv("QT_LAYOUT_DEBUG").toInt();
+
+    return checked_env;
+}
+#endif
+
 void QLayoutPrivate::reparentChildWidgets(QWidget *mw)
 {
     Q_Q(QLayout);
@@ -732,7 +744,7 @@ void QLayoutPrivate::reparentChildWidgets(QWidget *mw)
         if (QWidget *w = item->widget()) {
             QWidget *pw = w->parentWidget();
 #ifdef QT_DEBUG
-            if (pw && pw != mw) {
+            if (pw && pw != mw && layoutDebug()) {
                 qWarning("QLayout::addChildLayout: widget %s \"%s\" in wrong parent; moved to correct parent",
                          w->metaObject()->className(), w->objectName().toLocal8Bit().data());
             }
@@ -762,13 +774,20 @@ void QLayout::addChildWidget(QWidget *w)
     //been in a layout.
     if (pw && w->testAttribute(Qt::WA_LaidOut)) {
         QLayout *l = pw->layout();
-        if (l && removeWidgetRecursively(l, w))
-            qWarning("QLayout::addChildWidget: %s \"%s\" is already in a layout; moved to new layout",
-                     w->metaObject()->className(), w->objectName().toLocal8Bit().data());
+        if (l && removeWidgetRecursively(l, w)) {
+#ifdef QT_DEBUG
+            if (layoutDebug())
+                qWarning("QLayout::addChildWidget: %s \"%s\" is already in a layout; moved to new layout",
+                         w->metaObject()->className(), w->objectName().toLocal8Bit().data());
+#endif
+        }
     }
     if (pw && mw && pw != mw) {
-        qWarning("QLayout::addChildWidget: %s \"%s\" in wrong parent; moved to correct parent",
-                 w->metaObject()->className(), w->objectName().toLocal8Bit().data());
+#ifdef QT_DEBUG
+            if (layoutDebug())
+                qWarning("QLayout::addChildWidget: %s \"%s\" in wrong parent; moved to correct parent",
+                         w->metaObject()->className(), w->objectName().toLocal8Bit().data());
+#endif
         pw = 0;
     }
     bool needShow = mw && mw->isVisible() && !(w->isHidden() && w->testAttribute(Qt::WA_WState_ExplicitShowHide));
@@ -776,7 +795,7 @@ void QLayout::addChildWidget(QWidget *w)
         w->setParent(mw);
     w->setAttribute(Qt::WA_LaidOut);
     if (needShow)
-        w->show();
+        QMetaObject::invokeMethod(w, "_q_showIfNotHidden", Qt::QueuedConnection); //show later
 }
 
 #ifdef QT3_SUPPORT
@@ -1340,4 +1359,34 @@ QSize QLayout::closestAcceptableSize(const QWidget *widget, const QSize &size)
 
     Use sizeConstraint() instead.
 */
+
+#ifndef QT_NO_DATASTREAM
+/*!
+    \relates QSizePolicy
+    \since 4.2
+
+    Writes the size \a policy to the data stream \a stream.
+
+    \sa \link datastreamformat.html Format of the QDataStream operators \endlink
+*/
+QDataStream &operator<<(QDataStream &stream, const QSizePolicy &policy)
+{
+    stream << policy.data;
+    return stream;
+}
+
+/*!
+    \relates QSizePolicy
+    \since 4.2
+
+    Reads the size \a policy from the data stream \a stream.
+
+    \sa \link datastreamformat.html Format of the QDataStream operators \endlink
+*/
+QDataStream &operator>>(QDataStream &stream, QSizePolicy &policy)
+{
+    stream >> policy.data;
+    return stream;
+}
+#endif
 

@@ -1,4 +1,7 @@
-                          INSTALLING Qt/Mac Version 4.1.5
+                          INSTALLING Qt/Mac Version 4.2.0
+
+Note: If you have obtained a binary package for this platform, consult the
+installation instructions provided instead of the ones in this document.
 
 1.  If you have the commercial edition of Qt, install your license
     file as $HOME/.qt-license.
@@ -8,38 +11,47 @@
 2.  Unpack the archive if you have not done so already:
 
         cd /tmp
-        gunzip qt-mac-opensource-src-4.1.5.tar.gz        # uncompress the archive
-        tar xvf qt-mac-opensource-src-4.1.5.tar          # unpack it
+        gunzip qt-mac-opensource-src-4.2.0.tar.gz        # uncompress the archive
+        tar xvf qt-mac-opensource-src-4.2.0.tar          # unpack it
 
-    This creates the directory /tmp/qt-mac-opensource-src-4.1.5 containing the files
+    This creates the directory /tmp/qt-mac-opensource-src-4.2.0 containing the files
     from the archive.
 
 3.  Building
 
-    To configure the Qt library for your machine type:
+    To configure the Qt library for your machine type, run the
+    ./configure script in the package directory.
 
-        cd /tmp/qt-mac-opensource-src-4.1.5
+    By default, Qt is configured for installation in the
+    /usr/local/Trolltech/Qt-4.2.0 directory, but this can be
+    changed by using the -prefix option. Alternatively, the
+    -prefix-install option can be used to specify a "local"
+    installation within the source directory.
+
+        cd /tmp/qt-mac-opensource-src-4.2.0
         ./configure
 
     Type "./configure -help" to get a list of all available options.
+
     Note that you will need to specify -universal if you want to
     build universal binaries, and also supply a path to the -sdk
-    option if your development machine has a PowerPC CPU.
+    option if your development machine has a PowerPC CPU. By default,
+    Qt is built as a framework, but you can built it as a set of
+    dynamic libraries (dylibs) by specifying the -no-framework option.
 
     To create the library and compile all the demos, examples, tools,
     and tutorials, type:
 
         make
 
-    To install the library, demos, examples, tools, and tutorials,
-    type:
+    If you did not configure Qt using the -prefix-install option,
+    you need to install the library, demos, examples, tools, and
+    tutorials in the appropriate place. To do this, type:
 
         sudo make install
 
     and enter your password, this requires that you have administrator access
-    to your machine. Qt is by default installed into
-    /usr/local/Trolltech/Qt-4.1.5 but this can be changed by using the
-    -prefix parameter.
+    to your machine.
 
     If you need to reconfigure and rebuild Qt from the same location,
     ensure that all traces of the previous configuration are removed
@@ -65,12 +77,12 @@
 
     In .profile (if your shell is bash), add the following lines:
 
-        PATH=/usr/local/Trolltech/Qt-4.1.5/bin:$PATH
+        PATH=/usr/local/Trolltech/Qt-4.2.0/bin:$PATH
         export PATH
 
     In .login (in case your shell is csh or tcsh), add the following line:
 
-        setenv PATH /usr/local/Trolltech/Qt-4.1.5/bin:$PATH
+        setenv PATH /usr/local/Trolltech/Qt-4.2.0/bin:$PATH
 
     If you use a different shell, please modify your environment
     variables accordingly.
@@ -79,13 +91,13 @@
 
     If you are new to Qt, we suggest that you take a look at the demos and
     examples to see Qt in action. Run the Qt Examples and Demos either by
-    typing 'open /usr/local/Trolltech/Qt-4.1.5/bin/qtdemo.app' on the
+    typing 'open /usr/local/Trolltech/Qt-4.2.0/bin/qtdemo.app' on the
     command line or by double-clicking on the 'qtdemo' icon in the Finder.
 
     You might also want to try the following links:
 
-        http://doc.trolltech.com/4.1/how-to-learn-qt.html
-        http://doc.trolltech.com/4.1/tutorial.html
+        http://doc.trolltech.com/4.2/how-to-learn-qt.html
+        http://doc.trolltech.com/4.2/tutorial.html
         http://www.trolltech.com/developer
 
     We hope you will enjoy using Qt. Good luck!

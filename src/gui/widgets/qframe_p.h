@@ -36,6 +36,7 @@
 //
 
 #include "private/qwidget_p.h"
+#include "qframe.h"
 
 class Q_GUI_EXPORT QFramePrivate : public QWidgetPrivate
 {
@@ -44,13 +45,16 @@ public:
     QFramePrivate();
 
     void        updateFrameWidth();
+    void        updateStyledFrameWidths();
 
     QRect       frect;
     int         frameStyle;
     short       lineWidth;
     short       midLineWidth;
     short       frameWidth;
-
+    short       leftFrameWidth, rightFrameWidth;
+    short       topFrameWidth, bottomFrameWidth;
+    short       oldFrameStyle;
 };
 
 #endif // QFRAME_P_H

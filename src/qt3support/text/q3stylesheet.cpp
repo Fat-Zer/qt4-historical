@@ -1075,7 +1075,7 @@ Q3StyleSheet::Q3StyleSheet(QObject *parent, const char *name)
 */
 Q3StyleSheet::~Q3StyleSheet()
 {
-    QHash<QString, Q3StyleSheetItem *>::ConstIterator it = styles.begin();
+    QHash<QString, Q3StyleSheetItem *>::iterator it = styles.begin();
     while (it != styles.end()) {
         delete it.value();
         ++it;

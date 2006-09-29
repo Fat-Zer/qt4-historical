@@ -123,9 +123,9 @@ QColorGroup QPalette::createColorGroup(ColorGroup cr) const
 
 void QPalette::setColorGroup(ColorGroup cg, const QColorGroup &g)
 {
-    setColorGroup(cg, g.brush(Foreground), g.brush(Button), g.brush(Light),
+    setColorGroup(cg, g.brush(WindowText), g.brush(Button), g.brush(Light),
                   g.brush(Dark), g.brush(Mid), g.brush(Text), g.brush(BrightText),
-                  g.brush(Base), g.brush(AlternateBase), g.brush(Background),
+                  g.brush(Base), g.brush(AlternateBase), g.brush(Window),
                   g.brush(Midlight), g.brush(ButtonText), g.brush(Shadow),
                   g.brush(Highlight), g.brush(HighlightedText), g.brush(Link),
                   g.brush(LinkVisited));
@@ -389,9 +389,8 @@ void QPalette::setColorGroup(ColorGroup cg, const QColorGroup &g)
     You can copy a palette using the copy constructor and test to see
     if two palettes are \e identical using isCopyOf().
 
-    QPalette is optimized by the use of \link shclass.html implicit
-    sharing\endlink, so it is very efficient to pass QPalette objects as
-    arguments.
+    QPalette is optimized by the use of \l{implicit sharing},
+    so it is very efficient to pass QPalette objects as arguments.
 
     \sa QApplication::setPalette(), QWidget::setPalette(), QColor
 */
@@ -411,6 +410,8 @@ void QPalette::setColorGroup(ColorGroup cg, const QColorGroup &g)
 
 /*!
     \enum QPalette::ColorRole
+
+    \img palette.png Color Roles
 
     The ColorRole enum defines the different symbolic color roles used
     in current GUIs.
@@ -441,6 +442,17 @@ void QPalette::setColorGroup(ColorGroup cg, const QColorGroup &g)
 
     \value ButtonText  A foreground color used with the \c Button color.
 
+    \value BrightText  A text color that is very different from
+                       \c WindowText, and contrasts well with e.g. \c
+                       Dark. Typically used for text that needs to be
+                       drawn where \c Text or \c WindowText would give
+                       poor contrast, such as on pressed push buttons.
+                       Note that text colors can be used for things
+                       other than just words; text colors are \e
+                       usually used for text, but it's quite common to
+                       use the text color roles for lines, icons, etc.
+
+
     There are some color roles used mostly for 3D bevel and shadow effects.
     All of these are normally derived from \c Window, and used in ways that
     depend on that relationship. For example, buttons depend on it to make the
@@ -466,16 +478,9 @@ void QPalette::setColorGroup(ColorGroup cg, const QColorGroup &g)
                        Qt::darkBlue.
 
     \value HighlightedText  A text color that contrasts with \c Highlight.
-    By default, the highlighted text color is Qt::white.
+                            By default, the highlighted text color is Qt::white.
 
-    Finally, there is a special role for text that needs to be drawn where \c
-    Text or \c Foreground would give poor contrast, such as on pressed push
-    buttons.  Note that text colors can be used for things other than just
-    words; text colors are \e usually used for text, but it's quite common to
-    use the text color roles for lines, icons, etc.
-
-    \value BrightText  A text color that is very different from
-                       \c Foreground, and contrasts well with e.g. \c Dark.
+    There are two color roles related to hyperlinks:
 
     \value Link  A text color used for unvisited hyperlinks.
                  By default, the link color is Qt::blue.
@@ -483,12 +488,17 @@ void QPalette::setColorGroup(ColorGroup cg, const QColorGroup &g)
     \value LinkVisited  A text color used for already visited hyperlinks.
                         By default, the linkvisited color is Qt::magenta.
 
+    Note that we do not use the \c Link and \c LinkVisited roles when
+    rendering rich text in Qt, and that we recommend that you use CSS
+    and the QTextDocument::setDefaultStyleSheet() function to alter
+    the appearance of links. For example:
+
+    \quotefromfile doc/src/snippets/textdocument-css/main.cpp
+    \skipto QTextBrowser
+    \printuntil browser.document
+
     \omitvalue NColorRoles
     \omitvalue NoRole
-
-
-    This image shows most of the color roles in use:
-    \img palette.png Color Roles
 */
 
 /*!
@@ -623,7 +633,7 @@ QPalette::QPalette(const QColor &button, const QColor &window)
 /*!
     Constructs a copy of \a p.
 
-    This constructor is fast because of \link shclass.html implicit sharing\endlink.
+    This constructor is fast thanks to \l{implicit sharing}.
 */
 QPalette::QPalette(const QPalette &p)
 {
@@ -653,7 +663,7 @@ void QPalette::init() {
     Assigns \a p to this palette and returns a reference to this
     palette.
 
-    This operation is fast because of \link shclass.html implicit sharing\endlink.
+    This operation is fast thanks to \l{implicit sharing}.
 */
 QPalette &QPalette::operator=(const QPalette &p)
 {
@@ -738,16 +748,22 @@ void QPalette::setBrush(ColorGroup cg, ColorRole cr, const QBrush &b)
     resolve_mask |= (1<<cr);
 }
 
+/*!
+    \since 4.2
+
+    Returns true if the ColorGroup \a cg and ColorRole \a cr has been
+    set previously on this palette; otherwise returns false.
+
+    \sa setBrush()
+*/
+bool QPalette::isBrushSet(ColorGroup cg, ColorRole cr) const
+{
+    Q_UNUSED(cg);
+    return (resolve_mask & (1<<cr));
+}
 
 /*!
     \internal
-    \fn void QPalette::detach()
-    Detaches this palette from any other QPalette objects with which
-    it might implicitly share QColorGroup objects. In essence, does
-    the copying part of copy-on-write.
-
-    Calling this should generally not be necessary; QPalette calls it
-    itself when necessary.
 */
 void QPalette::detach()
 {
@@ -848,7 +864,7 @@ bool QPalette::isEqual(QPalette::ColorGroup group1, QPalette::ColorGroup group2)
     The serial number is intended for caching. Its value may not be
     used for anything other than equality testing.
 
-    Note that QPalette uses implicit sharing, and the serial number changes
+    Note that QPalette uses \l{implicit sharing}, and the serial number changes
     during the lazy copy operation (when the palette is actually modified), not
     during a shallow copy (copy constructor or assignment).
 
@@ -1027,7 +1043,7 @@ QPalette::setColorGroup(ColorGroup cg, const QBrush &foreground, const QBrush &b
                         const QBrush &link, const QBrush &link_visited)
 {
     detach();
-    setBrush(cg, Foreground, foreground);
+    setBrush(cg, WindowText, foreground);
     setBrush(cg, Button, button);
     setBrush(cg, Light, light);
     setBrush(cg, Dark, dark);
@@ -1036,7 +1052,7 @@ QPalette::setColorGroup(ColorGroup cg, const QBrush &foreground, const QBrush &b
     setBrush(cg, BrightText, bright_text);
     setBrush(cg, Base, base);
     setBrush(cg, AlternateBase, alternate_base);
-    setBrush(cg, Background, background);
+    setBrush(cg, Window, background);
     setBrush(cg, Midlight, midlight);
     setBrush(cg, ButtonText, button_text);
     setBrush(cg, Shadow, shadow);
@@ -1231,4 +1247,3 @@ QPalette::setColorGroup(ColorGroup cg, const QBrush &foreground, const QBrush &b
     Returns true if this color group is not equal to \a other;
     otherwise returns false.
 */
-

@@ -65,8 +65,17 @@ public:
                 && br.row() >= index.row() && br.column() >= index.column());
     }
 
+    inline bool contains(int row, int column, const QModelIndex &parentIndex) const
+    {
+        return (parent() == parentIndex
+                && tl.row() <= row && tl.column() <= column
+                && br.row() >= row && br.column() >= column);
+    }
+
     bool intersects(const QItemSelectionRange &other) const;
-    QItemSelectionRange intersect(const QItemSelectionRange &other) const;
+    QItemSelectionRange intersect(const QItemSelectionRange &other) const; // ### Qt 5: make QT4_SUPPORT
+    inline QItemSelectionRange intersected(const QItemSelectionRange &other) const
+        { return intersect(other); }
 
     inline bool operator==(const QItemSelectionRange &other) const
         { return (tl == other.tl && br == other.br); }
@@ -130,7 +139,11 @@ public:
     bool rowIntersectsSelection(int row, const QModelIndex &parent) const;
     bool columnIntersectsSelection(int column, const QModelIndex &parent) const;
 
+    bool hasSelection() const;
+
     QModelIndexList selectedIndexes() const;
+    QModelIndexList selectedRows(int column = 0) const;
+    QModelIndexList selectedColumns(int row = 0) const;
     const QItemSelection selection() const;
 
     const QAbstractItemModel *model() const;
@@ -141,6 +154,8 @@ public Q_SLOTS:
     virtual void select(const QItemSelection &selection, QItemSelectionModel::SelectionFlags command);
     virtual void clear();
     virtual void reset();
+
+    void clearSelection();
 
 Q_SIGNALS:
     void selectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
@@ -156,6 +171,10 @@ private:
     Q_DISABLE_COPY(QItemSelectionModel)
     Q_PRIVATE_SLOT(d_func(), void _q_columnsAboutToBeRemoved(const QModelIndex&, int, int))
     Q_PRIVATE_SLOT(d_func(), void _q_rowsAboutToBeRemoved(const QModelIndex&, int, int))
+    Q_PRIVATE_SLOT(d_func(), void _q_columnsAboutToBeInserted(const QModelIndex&, int, int))
+    Q_PRIVATE_SLOT(d_func(), void _q_rowsAboutToBeInserted(const QModelIndex&, int, int))
+    Q_PRIVATE_SLOT(d_func(), void _q_layoutAboutToBeChanged())
+    Q_PRIVATE_SLOT(d_func(), void _q_layoutChanged())
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QItemSelectionModel::SelectionFlags)

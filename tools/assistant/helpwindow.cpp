@@ -46,6 +46,7 @@
 #include <QTextObject>
 #include <QTextLayout>
 #include <QtDebug>
+#include <qdesktopservices.h>
 
 #if defined(Q_OS_WIN32)
 #  include <windows.h>
@@ -53,14 +54,11 @@
 
 HelpWindow::HelpWindow(MainWindow *w, QWidget *parent)
     : QTextBrowser(parent), mw(w), blockScroll(false),
-      shiftPressed(false), newWindow(false),
-      fwdAvail(false), backAvail(false)
+      shiftPressed(false), newWindow(false)
 {
     QFont f = font();
     f.setPointSizeF(Config::configuration()->fontPointSize());
     setFont(f);
-    connect(this, SIGNAL(forwardAvailable(bool)), this, SLOT(updateForward(bool)));
-    connect(this, SIGNAL(backwardAvailable(bool)), this, SLOT(updateBackward(bool)));
 }
 
 void HelpWindow::setSource(const QUrl &name)
@@ -88,112 +86,14 @@ void HelpWindow::setSource(const QUrl &name)
         return;
     }
 
-    if (name.scheme() == QLatin1String("http") || name.scheme() == QLatin1String("ftp") || name.scheme() == QLatin1String("mailto")) {
-        QString webbrowser = Config::configuration()->webBrowser();
-
-#if defined(Q_OS_WIN32)
-        if (webbrowser.isEmpty()) {
-            QT_WA({
-                ShellExecute(winId(), 0, (TCHAR*)name.toString().utf16(), 0, 0, SW_SHOWNORMAL);
-            } , {
-                ShellExecuteA(winId(), 0, name.toString().toLocal8Bit(), 0, 0, SW_SHOWNORMAL);
-            });
-            return;
+    if (name.scheme() == QLatin1String("http") || name.scheme() == QLatin1String("ftp") || name.scheme() == QLatin1String("mailto")
+        || name.path().endsWith(QLatin1String("pdf"))) {
+        bool launched = QDesktopServices::openUrl(name);
+        if (!launched) {
+            QMessageBox::information(mw, tr("Help"),
+                         tr("Unable to launch web browser.\n"),
+                         tr("Ok"));
         }
-#endif
-
-        if (webbrowser.isEmpty()) {
-#if defined(Q_OS_MAC)
-            webbrowser = "open";
-#elif defined(Q_WS_X11)
-            if (isKDERunning()) {
-                webbrowser = "kfmclient";
-            }
-#endif
-        }
-
-        if (webbrowser.isEmpty()) {
-            int result = QMessageBox::information(mw, tr("Help"),
-                         tr("Currently no Web browser is selected.\nPlease use the settings dialog to specify one!\n"),
-                         tr("Open"), tr("Cancel"));
-            if (result == 0) {
-                emit chooseWebBrowser();
-                webbrowser = Config::configuration()->webBrowser();
-            }
-
-            if (webbrowser.isEmpty())
-                return;
-        }
-
-        QProcess *proc = new QProcess(this);
-        QObject::connect(proc, SIGNAL(finished(int)), proc, SLOT(deleteLater()));
-
-        QStringList args;
-        if (webbrowser == QLatin1String("kfmclient"))
-            args.append(QLatin1String("exec"));
-        args.append(name.toString());
-
-        proc->start(webbrowser, args);
-        return;
-    }
-
-    if (name.path().right(3) == QLatin1String("pdf")) {
-        QString pdfbrowser = Config::configuration()->pdfReader();
-
-#if defined(Q_OS_WIN32)
-        if (pdfbrowser.isEmpty()) {
-            QT_WA({
-                ShellExecute(winId(), 0, (TCHAR*)name.toString().utf16(), 0, 0, SW_SHOWNORMAL);
-            } , {
-                ShellExecuteA(winId(), 0, name.toString().toLocal8Bit(), 0, 0, SW_SHOWNORMAL);
-            });
-            return;
-        }
-#endif
-
-        if (pdfbrowser.isEmpty()) {
-#if defined(Q_OS_MAC)
-            pdfbrowser = "open";
-#elif defined(Q_WS_X11)
-            if (isKDERunning()) {
-                pdfbrowser = "kfmclient";
-            }
-#endif
-        }
-
-        if (pdfbrowser.isEmpty()) {
-            int result = QMessageBox::information(mw, tr("Help"),
-                         tr("Currently no PDF viewer is selected.\nPlease use the settings dialog to specify one!\n"),
-                         tr("Open"), tr("Cancel"));
-            if (result == 0) {
-                emit choosePDFReader();
-                pdfbrowser = Config::configuration()->pdfReader();
-            }
-
-            if (pdfbrowser.isEmpty())
-                return;
-        }
-
-        QFileInfo info(pdfbrowser);
-        if(!info.exists()) {
-            QMessageBox::information(mw,
-                                      tr("Help"),
-                                      tr("Qt Assistant is unable to start the PDF Viewer\n\n"
-                                          "%1\n\n"
-                                          "Please make sure that the executable exists and is located at\n"
-                                          "the specified location.").arg(pdfbrowser));
-            return;
-        }
-        QProcess *proc = new QProcess(this);
-        QObject::connect(proc, SIGNAL(finished()), proc, SLOT(deleteLater()));
-
-        QStringList args;
-        if (pdfbrowser == QLatin1String("kfmclient"))
-            args.append(QLatin1String("exec"));
-        args.append(name.toLocalFile());
-
-        proc->start(pdfbrowser, args);
-
         return;
     }
 
@@ -252,18 +152,24 @@ void HelpWindow::openLinkInNewPage(const QString &link)
     openLinkInNewPage();
 }
 
+bool HelpWindow::hasAnchorAt(const QPoint& pos)
+{
+    lastAnchor = anchorAt(pos);
+    if (lastAnchor.isEmpty()) 
+        return false;
+    lastAnchor = source().resolved(lastAnchor).toString();
+    if (lastAnchor.at(0) == QLatin1Char('#')) {
+        QString src = source().toString();
+        int hsh = src.indexOf(QLatin1Char('#'));
+        lastAnchor = (hsh>=0 ? src.left(hsh) : src) + lastAnchor;
+    }
+    return true;
+}
+
 void HelpWindow::contextMenuEvent(QContextMenuEvent *e)
 {
-    const QPoint pos = e->pos();
     QMenu *m = new QMenu(0);
-    lastAnchor = anchorAt(pos);
-    if (!lastAnchor.isEmpty()) {
-        lastAnchor = source().resolved(lastAnchor).toString();
-        if (lastAnchor.at(0) == QLatin1Char('#')) {
-            QString src = source().toString();
-            int hsh = src.indexOf(QLatin1Char('#'));
-            lastAnchor = (hsh>=0 ? src.left(hsh) : src) + lastAnchor;
-        }
+    if (hasAnchorAt(e->pos())) {
         m->addAction(tr("Open Link in New Window\tShift+LMB"),
                        this, SLOT(openLinkInNewWindow()));
         m->addAction(tr("Open Link in New Tab"),
@@ -272,6 +178,15 @@ void HelpWindow::contextMenuEvent(QContextMenuEvent *e)
     mw->setupPopupMenu(m);
     m->exec(e->globalPos());
     delete m;
+}
+
+void HelpWindow::mouseReleaseEvent(QMouseEvent *e)
+{
+    if (e->button() == Qt::MidButton && hasAnchorAt(e->pos())) {
+        openLinkInNewPage();
+        return;
+    }
+    QTextBrowser::mouseReleaseEvent(e);
 }
 
 void HelpWindow::blockScrolling(bool b)
@@ -297,17 +212,8 @@ void HelpWindow::keyPressEvent(QKeyEvent *e)
     QTextBrowser::keyPressEvent(e);
 }
 
-void HelpWindow::updateForward(bool fwd)
-{
-    fwdAvail = fwd;
-}
-
-void HelpWindow::updateBackward(bool back)
-{
-    backAvail = back;
-}
-
 bool HelpWindow::isKDERunning() const
 {
     return !qgetenv("KDE_FULL_SESSION").isEmpty();
 }
+

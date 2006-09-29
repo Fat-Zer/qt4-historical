@@ -130,7 +130,7 @@ private:
 bool caseInsensitiveLessThan(const QString &as, const QString &bs)
 {
     const QChar *a = as.unicode();
-    const QChar *b = bs.unicode();    
+    const QChar *b = bs.unicode();
     if (a == 0)
         return true;
     if (b == 0)
@@ -158,7 +158,7 @@ QModelIndex IndexListModel::filter(const QString &s, const QString &real)
     if (s.isEmpty())
         perfectMatch = 0;
 
-    const QRegExp regExp(s);
+    const QRegExp regExp(s, Qt::CaseInsensitive);
     QMultiMap<QString, QString>::iterator it = contents.begin();
     QString lastKey;
     for (; it != contents.end(); ++it) {
@@ -168,12 +168,12 @@ QModelIndex IndexListModel::filter(const QString &s, const QString &real)
         const QString key = it.key();
         if (key.contains(regExp) || key.contains(s, Qt::CaseInsensitive)) {
             list.append(key);
-            //qDebug() << regExp << regExp.indexIn(s) << s << key << regExp.matchedLength();
             if (perfectMatch == -1 && (key.startsWith(real, Qt::CaseInsensitive))) {
                 if (goodMatch == -1)
                     goodMatch = list.count() - 1;
-                if (real.length() == key.length())
+                if (real.length() == key.length()){
                     perfectMatch = list.count() - 1;
+                }
             }  else if (perfectMatch > -1 && s == key) {
                 perfectMatch = list.count() - 1;
             }
@@ -183,9 +183,8 @@ QModelIndex IndexListModel::filter(const QString &s, const QString &real)
     int bestMatch = perfectMatch;
     if (bestMatch == -1)
         bestMatch = goodMatch;
-
     bestMatch = qMax(0, bestMatch);
-    
+
     // sort the new list
     QString match;
     if (bestMatch >= 0 && list.count() > bestMatch)
@@ -219,7 +218,11 @@ HelpDialog::HelpDialog(QWidget *parent, MainWindow *h)
 {
     ui.setupUi(this);
     ui.listContents->setUniformRowHeights(true);
+    ui.listContents->header()->setStretchLastSection(false);
+    ui.listContents->header()->setResizeMode(QHeaderView::ResizeToContents);
     ui.listBookmarks->setUniformRowHeights(true);
+    ui.listBookmarks->header()->setStretchLastSection(false);
+    ui.listBookmarks->header()->setResizeMode(QHeaderView::ResizeToContents);
 
     indexModel = new IndexListModel(this);
     ui.listIndex->setModel(indexModel);
@@ -232,15 +235,15 @@ void HelpDialog::initialize()
 {
     connect(ui.tabWidget, SIGNAL(currentChanged(int)), this, SLOT(currentTabChanged(int)));
 
-    connect(ui.listContents, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(showTopic(QTreeWidgetItem*)));
     connect(ui.listContents, SIGNAL(itemActivated(QTreeWidgetItem*,int)), this, SLOT(showTopic(QTreeWidgetItem*)));
     connect(ui.listContents, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showTreeItemMenu(QPoint)));
+    ui.listContents->viewport()->installEventFilter(this);
 
     connect(ui.editIndex, SIGNAL(returnPressed()), this, SLOT(showTopic()));
     connect(ui.editIndex, SIGNAL(textEdited(QString)), this, SLOT(searchInIndex(QString)));
 
     connect(ui.listIndex, SIGNAL(activated(QModelIndex)), this, SLOT(showTopic()));
-    connect(ui.listIndex, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showListItemMenu(QPoint)));
+    connect(ui.listIndex, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showIndexItemMenu(QPoint)));
 
     connect(ui.listBookmarks, SIGNAL(itemActivated(QTreeWidgetItem*,int)), this, SLOT(showTopic(QTreeWidgetItem*)));
     connect(ui.listBookmarks, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showTreeItemMenu(QPoint)));
@@ -249,7 +252,7 @@ void HelpDialog::initialize()
 
     cacheFilesPath = QDir::homePath() + QLatin1String("/.assistant"); //### Find a better location for the dbs
 
-    ui.editIndex->installEventFilter(this);    
+    ui.editIndex->installEventFilter(this);
 
     ui.framePrepare->hide();
     connect(qApp, SIGNAL(lastWindowClosed()), SLOT(lastWinClosed()));
@@ -270,6 +273,8 @@ void HelpDialog::initialize()
     itemPopup->addAction(actionOpenLinkInNewWindow);
     itemPopup->addAction(actionOpenLinkInNewTab);
 
+    ui.tabWidget->setElideMode(Qt::ElideNone);
+
     contentList.clear();
 
     initDoneMsgShown = false;
@@ -279,8 +284,8 @@ void HelpDialog::initialize()
     contentsInserted = false;
     bookmarksInserted = false;
     setupTitleMap();
-}
 
+}
 
 void HelpDialog::processEvents()
 {
@@ -385,7 +390,7 @@ void HelpDialog::loadIndexFile()
         const IndexKeyword &idx = lst.at(i);
         indexModel->addLink(idx.keyword, idx.link);
 
-        keywordDocuments << HelpDialog::removeAnchorFromLink(idx.link);    
+        keywordDocuments << HelpDialog::removeAnchorFromLink(idx.link);
     }
 
     indexModel->publish();
@@ -398,10 +403,10 @@ void HelpDialog::loadIndexFile()
 quint32 HelpDialog::getFileAges()
 {
     QStringList addDocuFiles = Config::configuration()->docFiles();
-    QStringList::const_iterator i = addDocuFiles.begin();
+    QStringList::const_iterator i = addDocuFiles.constBegin();
 
     quint32 fileAges = 0;
-    for(; i != addDocuFiles.end(); ++i) {
+    for(; i != addDocuFiles.constEnd(); ++i) {
         QFileInfo fi(*i);
         if (fi.exists())
             fileAges += fi.lastModified().toTime_t();
@@ -500,7 +505,7 @@ void HelpDialog::setupTitleMap()
     }
     if (contentList.isEmpty())
         getAllContents();
-    
+
     titleMapDone = true;
     titleMap.clear();
     for(QList<QPair<QString, ContentList> >::Iterator it = contentList.begin(); it != contentList.end(); ++it) {
@@ -527,7 +532,7 @@ void HelpDialog::getAllContents()
     ds >> fileAges;
     if (fileAges != getFileAges()) {
         contentFile.close();
-        removeOldCacheFiles(true);        
+        removeOldCacheFiles(true);
         buildContentDict();
         return;
     }
@@ -587,7 +592,7 @@ void HelpDialog::buildContentDict()
             s << *it;
         }
         contentOut.close();
-    }    
+    }
 }
 
 void HelpDialog::currentTabChanged(int index)
@@ -707,6 +712,14 @@ bool HelpDialog::eventFilter(QObject * o, QEvent * e)
 
             default:
                 break;
+        }
+    } else if (o == ui.listContents->viewport())
+        if (e->type() == QEvent::MouseButtonRelease) {
+        QMouseEvent *me = static_cast<QMouseEvent*>(e);
+        if (me->button() == Qt::LeftButton) {
+            QTreeWidgetItem *item = ui.listContents->itemAt(me->pos());
+            if (item)
+                showTopic(item);
         }
     }
 
@@ -840,7 +853,7 @@ void HelpDialog::insertContents()
             lastItem[j] = 0;
 
         ContentList lst = (*it).second;
-        for (ContentList::ConstIterator it = lst.begin(); it != lst.end(); ++it) {
+        for (ContentList::ConstIterator it = lst.constBegin(); it != lst.constEnd(); ++it) {
             ContentItem item = *it;
             if (item.depth == 0) {
                 newEntry = new QTreeWidgetItem(ui.listContents, 0);
@@ -881,6 +894,74 @@ void HelpDialog::showContentsTopic()
     if (!i)
         return;
     emit showLink(i->data(0, LinkRole).toString());
+}
+
+QTreeWidgetItem * HelpDialog::locateLink(QTreeWidgetItem *item, const QString &link)
+{
+    QTreeWidgetItem *child = 0;
+#ifdef Q_OS_WIN
+    Qt::CaseSensitivity checkCase = Qt::CaseInsensitive;
+#else
+    Qt::CaseSensitivity checkCase = Qt::CaseSensitive;
+#endif
+    for(int i = 0, childCount = item->childCount(); i<childCount; i++) {
+        child = item->child(i);
+        ///check whether it is this item
+        if (link.startsWith(child->data(0, LinkRole).toString(), checkCase))
+            break;
+        //check if the link is a child of this item
+        else if(child->childCount()) {
+            child = locateLink(child, link);
+            if (child)
+                break;
+        }
+        child = 0;
+    }
+    return child;
+}
+
+void HelpDialog::locateContents(const QString &link)
+{
+    //ensure the TOC is filled
+    if (!contentsInserted)
+        insertContents();
+#ifdef Q_OS_WIN
+    Qt::CaseSensitivity checkCase = Qt::CaseInsensitive;
+#else
+    Qt::CaseSensitivity checkCase = Qt::CaseSensitive;
+#endif
+    QString findLink(link);
+    //Installations on a windows local drive will give the 'link' as <file:///C:/xxx>
+    //and the contents in the TOC will be <file:C:/xxx>.
+    //But on others the 'link' of format <file:///root/xxx>
+    //and the contents in the TOC will be <file:/root/xxx>.
+    if (findLink.contains("file:///")) {
+        if (findLink[9] == QChar(':')) //on windows drives
+            findLink.replace(0, 8, "file:");
+        else
+            findLink.replace(0, 8, "file:/");
+    }
+    QTreeWidgetItem *item = 0;
+    int i = 0, totalItems = ui.listContents->topLevelItemCount();
+    for (i = 0; i < totalItems; i++ ) {
+        item = (QTreeWidgetItem*)ui.listContents->topLevelItem(i);
+        if (findLink.startsWith(item->data(0, LinkRole).toString(), checkCase))
+            break;
+        item = locateLink(item, findLink);
+        if (item)
+            break;
+    }
+    if ( i!= totalItems){
+        //remove the old selection
+        QList<QTreeWidgetItem *> selected = ui.listContents->selectedItems();
+        QTreeWidgetItem *sel;
+        foreach(sel, selected)
+            ui.listContents->setItemSelected(sel, false);
+        //set the TOC item and show.
+        ui.listContents->setItemSelected(item, true);
+        ui.listContents->scrollToItem(item);
+        ui.tabWidget->setCurrentIndex(0);
+    }
 }
 
 void HelpDialog::toggleContents()
@@ -947,16 +1028,16 @@ void HelpDialog::setupFullTextIndex()
     if (!f.exists()) {
         QString doc;
         QSet<QString> documentSet;
-        QMap<QString, QString>::ConstIterator it = titleMap.begin();
-        for (; it != titleMap.end(); ++it) {
+        QMap<QString, QString>::ConstIterator it = titleMap.constBegin();
+        for (; it != titleMap.constEnd(); ++it) {
             doc = HelpDialog::removeAnchorFromLink(it.key());
             if (!doc.isEmpty())
-                documentSet.insert(doc);            
-        }        
+                documentSet.insert(doc);
+        }
         loadIndexFile();
         for ( QStringList::Iterator it = keywordDocuments.begin(); it != keywordDocuments.end(); ++it ) {
             if (!(*it).isEmpty())
-                documentSet.insert(*it);          
+                documentSet.insert(*it);
         }
         fullTextIndex->setDocList( documentSet.toList() );
 
@@ -974,7 +1055,7 @@ void HelpDialog::setupFullTextIndex()
         ui.progressPrepare->setValue(100);
         ui.framePrepare->hide();
         setCursor(Qt::ArrowCursor);
-        showInitDoneMessage();        
+        showInitDoneMessage();
     } else {
         setCursor(Qt::WaitCursor);
         help->statusBar()->showMessage(tr("Reading dictionary..."));
@@ -1088,62 +1169,67 @@ void HelpDialog::showResultPage(QListWidgetItem *item)
         emit showSearchLink(foundDocs[ui.resultBox->row(item)], terms);
 }
 
+void HelpDialog::showIndexItemMenu(const QPoint &pos)
+{
+    QListView *listView = qobject_cast<QListView*>(sender());
+    if (!listView)
+        return;
+
+    QModelIndex idx = listView->indexAt(pos);
+    if (!idx.isValid())
+        return;
+
+    QAction *action = itemPopup->exec(listView->viewport()->mapToGlobal(pos));
+    if (action == actionOpenCurrentTab) {
+        showTopic();
+    } else if (action) {
+        HelpWindow *hw = help->browsers()->currentBrowser();
+        QString itemName = idx.data().toString();
+        ui.editIndex->setText(itemName);
+        QStringList links = indexModel->links(idx.row());
+        if (links.count() == 1) {
+            if (action == actionOpenLinkInNewWindow)
+                hw->openLinkInNewWindow(links.first());
+            else
+                hw->openLinkInNewPage(links.first());
+        } else {
+            QStringList::Iterator it = links.begin();
+            QStringList linkList;
+            QStringList linkNames;
+            for (; it != links.end(); ++it) {
+                linkList << *it;
+                linkNames << titleOfLink(*it);
+            }
+            QString link = TopicChooser::getLink(this, linkNames, linkList, itemName);
+            if (!link.isEmpty()) {
+                if (action == actionOpenLinkInNewWindow)
+                    hw->openLinkInNewWindow(link);
+                else
+                    hw->openLinkInNewPage(link);
+            }
+        }
+    }
+}
+
 void HelpDialog::showListItemMenu(const QPoint &pos)
 {
     QListWidget *listWidget = qobject_cast<QListWidget*>(sender());
-
     if (!listWidget)
         return;
-
     QListWidgetItem *item = listWidget->itemAt(pos);
     if (!item)
         return;
 
-    QString currentTabText = ui.tabWidget->tabText(ui.tabWidget->currentIndex());
-
     QAction *action = itemPopup->exec(listWidget->viewport()->mapToGlobal(pos));
     if (action == actionOpenCurrentTab) {
-        if (stripAmpersand(currentTabText).contains(tr("Index")))
-            showTopic();
-        else {
-            showResultPage(item);
-        }
+        showResultPage(item);
     } else if (action) {
         HelpWindow *hw = help->browsers()->currentBrowser();
-        if (stripAmpersand(currentTabText).contains(tr("Index"))) {
-            ui.editIndex->setText(item->text());
-
-            HelpNavigationListItem *hi = (HelpNavigationListItem*)item;
-
-            QStringList links = hi->links();
-            if (links.count() == 1) {
-                if (action == actionOpenLinkInNewWindow)
-                    hw->openLinkInNewWindow(links.first());
-                else
-                    hw->openLinkInNewPage(links.first());
-            } else {
-                QStringList::Iterator it = links.begin();
-                QStringList linkList;
-                QStringList linkNames;
-                for (; it != links.end(); ++it) {
-                    linkList << *it;
-                    linkNames << titleOfLink(*it);
-                }
-                QString link = TopicChooser::getLink(this, linkNames, linkList, item->text());
-                if (!link.isEmpty()) {
-                    if (action == actionOpenLinkInNewWindow)
-                        hw->openLinkInNewWindow(link);
-                    else
-                        hw->openLinkInNewPage(link);
-                }
-            }
-        } else {
-            QString link = foundDocs[ ui.resultBox->row(item) ];
-            if (action == actionOpenLinkInNewWindow)
-                hw->openLinkInNewWindow(link);
-            else
-                hw->openLinkInNewPage(link);
-        }
+        QString link = foundDocs[ui.resultBox->row(item)];
+        if (action == actionOpenLinkInNewWindow)
+            hw->openLinkInNewWindow(link);
+        else
+            hw->openLinkInNewPage(link);
     }
 }
 

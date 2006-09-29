@@ -52,6 +52,7 @@ private:
     QLabel *penCapLabel;
     QLabel *penJoinLabel;
     QLabel *brushStyleLabel;
+    QLabel *otherOptionsLabel;
     QComboBox *shapeComboBox;
     QSpinBox *penWidthSpinBox;
     QComboBox *penStyleComboBox;

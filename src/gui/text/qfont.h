@@ -58,7 +58,8 @@ public:
         PreferQuality    = 0x0040,
         PreferAntialias  = 0x0080,
         NoAntialias      = 0x0100,
-        OpenGLCompatible = 0x0200
+        OpenGLCompatible = 0x0200,
+        NoFontMerging    = 0x8000
     };
 
     enum Weight {
@@ -205,7 +206,6 @@ private:
 
 #if defined(Q_WS_MAC)
     void macSetFont(QPaintDevice *);
-    friend class QQuickDrawPaintEngine;
 #elif defined(Q_WS_X11)
     void x11SetScreen(int screen = -1);
     int x11Screen() const;
@@ -222,11 +222,13 @@ private:
     friend class Q3TextFormatCollection;
     friend class QTextLayout;
     friend class QTextEngine;
+    friend class QStackTextEngine;
     friend class QTextLine;
     friend struct QScriptLine;
     friend class QGLContext;
     friend class QWin32PaintEngine;
     friend class QPainterPath;
+    friend class QTextItemInt;
 
 #ifndef QT_NO_DATASTREAM
     friend Q_GUI_EXPORT QDataStream &operator<<(QDataStream &, const QFont &);

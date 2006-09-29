@@ -31,7 +31,7 @@
 #include <qhash.h>
 
 /*!
-    \class QTextLength qtextformat.h
+    \class QTextLength
     \brief The QTextLength class encapsulates the different types of length
     used in a QTextDocument.
 
@@ -138,8 +138,19 @@ class QTextFormatPrivate : public QSharedData
 public:
     QTextFormatPrivate() : hashDirty(true), fontDirty(true), hashValue(0) {}
 
-    // keep qint* types here, so we can safely stream to a datastream
-    typedef QMap<qint32, QVariant> PropertyMap;
+    struct Property
+    {
+        inline Property(qint32 k, const QVariant &v) : key(k), value(v) {}
+        inline Property() {}
+
+        qint32 key;
+        QVariant value;
+
+        inline bool operator==(const Property &other) const
+        { return key == other.key && value == other.value; }
+        inline bool operator!=(const Property &other) const
+        { return key != other.key || value != other.value; }
+    };
 
     inline uint hash() const
     {
@@ -159,19 +170,45 @@ public:
     {
         hashDirty = true;
         fontDirty = true;
-        props.insert(key, value);
+        for (int i = 0; i < props.count(); ++i)
+            if (props.at(i).key == key) {
+                props[i].value = value;
+                return;
+            }
+        props.append(Property(key, value));
     }
 
     inline void clearProperty(qint32 key)
     {
         hashDirty = true;
         fontDirty = true;
-        props.remove(key);
+        for (int i = 0; i < props.count(); ++i)
+            if (props.at(i).key == key) {
+                props.remove(i);
+                return;
+            }
     }
 
-    void resolveFont(const QFont &defaultFont);
+    inline int propertyIndex(qint32 key) const
+    {
+        for (int i = 0; i < props.count(); ++i)
+            if (props.at(i).key == key)
+                return i;
+        return -1;
+    }
 
-    const PropertyMap &properties() const { return props; }
+    inline QVariant property(qint32 key) const
+    {
+        const int idx = propertyIndex(key);
+        if (idx < 0)
+            return QVariant();
+        return props.at(idx).value;
+    }
+
+    inline bool hasProperty(qint32 key) const
+    { return propertyIndex(key) != -1; }
+
+    void resolveFont(const QFont &defaultFont);
 
     inline const QFont &font() const {
         if (fontDirty)
@@ -179,8 +216,8 @@ public:
         return fnt;
     }
 
+    QVector<Property> props;
 private:
-    PropertyMap props;
 
     uint recalcHash() const;
     void recalcFont() const;
@@ -211,8 +248,8 @@ static uint variantHash(const QVariant &variant)
 uint QTextFormatPrivate::recalcHash() const
 {
     hashValue = 0;
-    for (PropertyMap::ConstIterator it = props.begin(); it != props.end(); ++it)
-        hashValue += (it.key() << 16) + variantHash(*it);
+    for (QVector<Property>::ConstIterator it = props.constBegin(); it != props.constEnd(); ++it)
+        hashValue += (it->key << 16) + variantHash(it->value);
 
     hashDirty = false;
 
@@ -225,10 +262,10 @@ void QTextFormatPrivate::resolveFont(const QFont &defaultFont)
     const uint oldMask = fnt.resolve();
     fnt = fnt.resolve(defaultFont);
 
-    if (props.contains(QTextFormat::FontSizeAdjustment)) {
+    if (hasProperty(QTextFormat::FontSizeAdjustment)) {
         const qreal scaleFactors[7] = {0.7, 0.8, 1.0, 1.2, 1.5, 2, 2.4};
 
-        const int htmlFontSize = qBound(0, props.value(QTextFormat::FontSizeAdjustment).toInt() + 3 - 1, 6);
+        const int htmlFontSize = qBound(0, property(QTextFormat::FontSizeAdjustment).toInt() + 3 - 1, 6);
 
 
         if (defaultFont.pointSize() <= 0) {
@@ -248,53 +285,69 @@ void QTextFormatPrivate::recalcFont() const
     // update cached font as well
     QFont f;
 
-    if (props.contains(QTextFormat::FontFamily))
-        f.setFamily(props.value(QTextFormat::FontFamily).toString());
-
-    if (props.contains(QTextFormat::FontPointSize))
-        f.setPointSizeF(props.value(QTextFormat::FontPointSize).toDouble());
-    else if (props.contains(QTextFormat::FontPixelSize))
-        f.setPixelSize(props.value(QTextFormat::FontPixelSize).toInt());
-
-    if (props.contains(QTextFormat::FontWeight))
-        f.setWeight(props.value(QTextFormat::FontWeight).toInt());
-
-    if (props.contains(QTextFormat::FontItalic))
-        f.setItalic(props.value(QTextFormat::FontItalic).toBool());
-
-    if (props.contains(QTextFormat::FontUnderline))
-        f.setUnderline(props.value(QTextFormat::FontUnderline).toBool());
-
-    if (props.contains(QTextFormat::FontOverline))
-        f.setOverline(props.value(QTextFormat::FontOverline).toBool());
-
-    if (props.contains(QTextFormat::FontStrikeOut))
-        f.setStrikeOut(props.value(QTextFormat::FontStrikeOut).toBool());
-
-    if (props.contains(QTextFormat::FontFixedPitch))
-        f.setFixedPitch(props.value(QTextFormat::FontFixedPitch).toBool());
+    for (int i = 0; i < props.count(); ++i) {
+        switch (props.at(i).key) {
+            case QTextFormat::FontFamily:
+                f.setFamily(props.at(i).value.toString());
+                break;
+            case QTextFormat::FontPointSize:
+                f.setPointSizeF(props.at(i).value.toDouble());
+                break;
+            case  QTextFormat::FontPixelSize:
+                f.setPixelSize(props.at(i).value.toInt());
+                break;
+            case QTextFormat::FontWeight:
+                f.setWeight(props.at(i).value.toInt());
+                break;
+            case QTextFormat::FontItalic:
+                f.setItalic(props.at(i).value.toBool());
+                break;
+            case QTextFormat::FontUnderline:
+                f.setUnderline(props.at(i).value.toBool());
+                break;
+            case QTextFormat::TextUnderlineStyle:
+                f.setUnderline(static_cast<QTextCharFormat::UnderlineStyle>(props.at(i).value.toInt()) == QTextCharFormat::SingleUnderline);
+                break;
+            case QTextFormat::FontOverline:
+                f.setOverline(props.at(i).value.toBool());
+                break;
+            case QTextFormat::FontStrikeOut:
+                f.setStrikeOut(props.at(i).value.toBool());
+                break;
+            case QTextFormat::FontFixedPitch:
+                f.setFixedPitch(props.at(i).value.toBool());
+                break;
+            default:
+                break;
+            }
+    }
     fnt = f;
     fontDirty = false;
 }
 
 Q_GUI_EXPORT QDataStream &operator<<(QDataStream &stream, const QTextFormat &fmt)
 {
-    stream << fmt.format_type << fmt.d->props;
+    stream << fmt.format_type << fmt.properties();
     return stream;
 }
 
 Q_GUI_EXPORT QDataStream &operator>>(QDataStream &stream, QTextFormat &fmt)
 {
-    stream >> fmt.format_type >> fmt.d->props;
+    QMap<qint32, QVariant> properties;
+    stream >> fmt.format_type >> properties;
+    for (QMap<qint32, QVariant>::ConstIterator it = properties.constBegin();
+         it != properties.constEnd(); ++it)
+        fmt.d->insertProperty(it.key(), it.value());
     return stream;
 }
 
 /*!
-    \class QTextFormat qtextformat.h
+    \class QTextFormat
     \brief The QTextFormat class provides formatting information for a
     QTextDocument.
 
     \ingroup text
+    \ingroup shared
 
     A QTextFormat is a generic class used for describing the format of
     parts of a QTextDocument. The derived classes QTextCharFormat,
@@ -386,6 +439,7 @@ Q_GUI_EXPORT QDataStream &operator>>(QDataStream &stream, QTextFormat &fmt)
     \value TextUnderlineColor
     \value TextVerticalAlignment
     \value TextOutline
+    \value TextUnderlineStyle
 
     \value IsAnchor
     \value AnchorHref
@@ -409,6 +463,7 @@ Q_GUI_EXPORT QDataStream &operator>>(QDataStream &stream, QTextFormat &fmt)
     \value TableColumnWidthConstraints
     \value TableCellSpacing
     \value TableCellPadding
+    \value TableHeaderRowCount
 
     Table cell properties
 
@@ -421,6 +476,14 @@ Q_GUI_EXPORT QDataStream &operator>>(QDataStream &stream, QTextFormat &fmt)
     \value ImageWidth
     \value ImageHeight
 
+    Selection properties
+
+    \value FullWidthSelection
+
+    Page break properties
+
+    \value PageBreakPolicy
+
     \value UserProperty
 */
 
@@ -431,6 +494,16 @@ Q_GUI_EXPORT QDataStream &operator>>(QDataStream &stream, QTextFormat &fmt)
     \value ImageObject
     \value TableObject
     \value UserObject The first object that can be used for application-specific purposes.
+*/
+
+/*!
+    \enum QTextFormat::PageBreakFlag
+    \since 4.2
+
+    \value PageBreak_Auto The page break is determined automatically depending on the
+                          available space on the current page
+    \value PageBreak_AlwaysBefore The page is always broken before the paragraph/table
+    \value PageBreak_AlwaysAfter  A new page is always started after the paragraph/table
 */
 
 /*!
@@ -566,10 +639,13 @@ void QTextFormat::merge(const QTextFormat &other)
     if (!other.d)
         return;
 
-    // don't use QMap's += operator, as it uses insertMulti!
-    for (QTextFormatPrivate::PropertyMap::ConstIterator it = other.d->properties().begin();
-         it != other.d->properties().end(); ++it) {
-        d->insertProperty(it.key(), it.value());
+    QTextFormatPrivate *d = this->d;
+
+    const QVector<QTextFormatPrivate::Property> &otherProps = other.d->props;
+    d->props.reserve(d->props.size() + otherProps.size());
+    for (int i = 0; i < otherProps.count(); ++i) {
+        const QTextFormatPrivate::Property &p = otherProps.at(i);
+        d->insertProperty(p.key, p.value);
     }
 }
 
@@ -653,7 +729,7 @@ bool QTextFormat::boolProperty(int propertyId) const
 {
     if (!d)
         return false;
-    const QVariant prop = d->properties().value(propertyId);
+    const QVariant prop = d->property(propertyId);
     if (prop.type() != QVariant::Bool)
         return false;
     return prop.toBool();
@@ -669,7 +745,7 @@ int QTextFormat::intProperty(int propertyId) const
 {
     if (!d)
         return 0;
-    const QVariant prop = d->properties().value(propertyId);
+    const QVariant prop = d->property(propertyId);
     if (prop.type() != QVariant::Int)
         return 0;
     return prop.toInt();
@@ -685,7 +761,7 @@ qreal QTextFormat::doubleProperty(int propertyId) const
 {
     if (!d)
         return 0.;
-    const QVariant prop = d->properties().value(propertyId);
+    const QVariant prop = d->property(propertyId);
     if (prop.type() != QVariant::Double)
         return 0.;
     return prop.toDouble(); // ####
@@ -702,7 +778,7 @@ QString QTextFormat::stringProperty(int propertyId) const
 {
     if (!d)
         return QString();
-    const QVariant prop = d->properties().value(propertyId);
+    const QVariant prop = d->property(propertyId);
     if (prop.type() != QVariant::String)
         return QString();
     return prop.toString();
@@ -720,7 +796,7 @@ QColor QTextFormat::colorProperty(int propertyId) const
 {
     if (!d)
         return QColor();
-    const QVariant prop = d->properties().value(propertyId);
+    const QVariant prop = d->property(propertyId);
     if (prop.type() != QVariant::Color)
         return QColor();
     return qvariant_cast<QColor>(prop);
@@ -737,7 +813,7 @@ QPen QTextFormat::penProperty(int propertyId) const
 {
     if (!d)
         return QPen(Qt::NoPen);
-    const QVariant prop = d->properties().value(propertyId);
+    const QVariant prop = d->property(propertyId);
     if (prop.type() != QVariant::Pen)
         return QPen(Qt::NoPen);
     return qvariant_cast<QPen>(prop);
@@ -754,7 +830,7 @@ QBrush QTextFormat::brushProperty(int propertyId) const
 {
     if (!d)
         return QBrush(Qt::NoBrush);
-    const QVariant prop = d->properties().value(propertyId);
+    const QVariant prop = d->property(propertyId);
     if (prop.type() != QVariant::Brush)
         return QBrush(Qt::NoBrush);
     return qvariant_cast<QBrush>(prop);
@@ -769,7 +845,7 @@ QTextLength QTextFormat::lengthProperty(int propertyId) const
 {
     if (!d)
         return QTextLength();
-    return qvariant_cast<QTextLength>(d->properties().value(propertyId));
+    return qvariant_cast<QTextLength>(d->property(propertyId));
 }
 
 /*!
@@ -784,7 +860,7 @@ QVector<QTextLength> QTextFormat::lengthVectorProperty(int propertyId) const
     QVector<QTextLength> vector;
     if (!d)
         return vector;
-    const QVariant prop = d->properties().value(propertyId);
+    const QVariant prop = d->property(propertyId);
     if (prop.type() != QVariant::List)
         return vector;
 
@@ -803,7 +879,7 @@ QVector<QTextLength> QTextFormat::lengthVectorProperty(int propertyId) const
 */
 QVariant QTextFormat::property(int propertyId) const
 {
-    return d ? d->properties().value(propertyId) : QVariant();
+    return d ? d->property(propertyId) : QVariant();
 }
 
 /*!
@@ -868,7 +944,7 @@ int QTextFormat::objectIndex() const
 {
     if (!d)
         return -1;
-    const QVariant prop = d->properties().value(ObjectIndex);
+    const QVariant prop = d->property(ObjectIndex);
     if (prop.type() != QVariant::Int) // ####
         return -1;
     return prop.toInt();
@@ -902,7 +978,7 @@ void QTextFormat::setObjectIndex(int o)
 */
 bool QTextFormat::hasProperty(int propertyId) const
 {
-    return d ? d->properties().contains(propertyId) : false;
+    return d ? d->hasProperty(propertyId) : false;
 }
 
 /*
@@ -916,7 +992,12 @@ bool QTextFormat::hasProperty(int propertyId) const
 */
 QMap<int, QVariant> QTextFormat::properties() const
 {
-    return d ? d->properties() : QMap<int, QVariant>();
+    QMap<int, QVariant> map;
+    if (d) {
+        for (int i = 0; i < d->props.count(); ++i)
+            map.insert(d->props.at(i).key, d->props.at(i).value);
+    }
+    return map;
 }
 
 
@@ -942,10 +1023,10 @@ bool QTextFormat::operator==(const QTextFormat &rhs) const
     if (d == rhs.d)
         return true;
 
-    if (d && d->properties().isEmpty() && !rhs.d)
+    if (d && d->props.isEmpty() && !rhs.d)
         return true;
 
-    if (!d && rhs.d && rhs.d->properties().isEmpty())
+    if (!d && rhs.d && rhs.d->props.isEmpty())
         return true;
 
     if (!d || !rhs.d)
@@ -955,7 +1036,7 @@ bool QTextFormat::operator==(const QTextFormat &rhs) const
 }
 
 /*!
-    \class QTextCharFormat qtextformat.h
+    \class QTextCharFormat
     \brief The QTextCharFormat class provides formatting information for
     characters in a QTextDocument.
 
@@ -996,6 +1077,25 @@ bool QTextFormat::operator==(const QTextFormat &rhs) const
                             normal text.
     \value AlignSubScript   Characters are placed below the baseline for
                             normal text.
+*/
+
+/*!
+    \enum QTextCharFormat::UnderlineStyle
+
+    This enum describes the different ways drawing underlined text.
+
+    \value NoUnderline          Text is draw without any underlining decoration.
+    \value SingleUnderline      A line is drawn using Qt::SolidLine.
+    \value DashUnderline        Dashes are drawn using Qt::DashLine.
+    \value DotLine              Dots are drawn using Qt::DotLine;
+    \value DashDotLine          Dashs and dots are drawn using Qt::DashDotLine.
+    \value DashDotDotLine       Underlines draw drawn using Qt::DashDotDotLine.
+    \value WaveUnderline        The text is underlined using a wave shaped line.
+    \value SpellCheckUnderline  The underline is drawn depending on the QStyle::SH_SpellCeckUnderlineStyle
+                                style hint of the QApplication style. By default this is mapped to
+                                WaveUnderline, on Mac OS X it is mapped to DashDotLine.
+
+    \sa Qt::PenStyle
 */
 
 /*!
@@ -1106,7 +1206,32 @@ QTextCharFormat::QTextCharFormat() : QTextFormat(CharFormat) {}
 
     \sa font()
 */
+bool QTextCharFormat::fontUnderline() const
+{
+    if (hasProperty(TextUnderlineStyle))
+        return underlineStyle() == SingleUnderline;
+    return boolProperty(FontUnderline);
+}
 
+/*!
+    \fn UnderlineStyle QTextCharFormat::underlineStyle() const
+    \since 4.2
+
+    Returns the style of underlining the text.
+*/
+
+/*!
+    \fn void QTextCharFormat::setUnderlineStyle(UnderlineStyle style)
+    \since 4.2
+
+    Sets the style of underlining the text to \a style.
+*/
+void QTextCharFormat::setUnderlineStyle(UnderlineStyle style)
+{
+    setProperty(TextUnderlineStyle, style);
+    // for compatibility
+    setProperty(FontUnderline, style == SingleUnderline);
+}
 
 /*!
     \fn void QTextCharFormat::setFontOverline(bool overline)
@@ -1362,7 +1487,7 @@ void QTextCharFormat::setFont(const QFont &font)
 
     setFontWeight(font.weight());
     setFontItalic(font.italic());
-    setFontUnderline(font.underline());
+    setUnderlineStyle(font.underline() ? SingleUnderline : NoUnderline);
     setFontOverline(font.overline());
     setFontStrikeOut(font.strikeOut());
     setFontFixedPitch(font.fixedPitch());
@@ -1377,16 +1502,16 @@ QFont QTextCharFormat::font() const
 }
 
 /*!
-    \class QTextBlockFormat qtextformat.h
+    \class QTextBlockFormat
     \brief The QTextBlockFormat class provides formatting information for
     blocks of text in a QTextDocument.
 
     \ingroup text
 
-    A document is composed of a list of blocks. Each block can contain an item
-    of some kind, such as a paragraph of text, a table, a list, or an image.
-    Every block has an associated QTextBlockFormat that specifies its
-    characteristics.
+    A document is composed of a list of blocks, represented by QTextBlock
+    objects. Each block can contain an item of some kind, such as a
+    paragraph of text, a table, a list, or an image. Every block has an
+    associated QTextBlockFormat that specifies its characteristics.
 
     To cater for left-to-right and right-to-left languages you can set
     a block's direction with setDirection(). Paragraph alignment is
@@ -1407,7 +1532,7 @@ QFont QTextCharFormat::font() const
     If a text block is part of a list, it can also have a list format that
     is accessible with the listFormat() function.
 
-    \sa QTextCharFormat
+    \sa QTextBlock, QTextCharFormat
 */
 
 /*!
@@ -1591,10 +1716,27 @@ QTextBlockFormat::QTextBlockFormat() : QTextFormat(BlockFormat) {}
     \sa setNonBreakableLines()
 */
 
+/*!
+    \fn QTextFormat::PageBreakFlags QTextBlockFormat::pageBreakPolicy() const
+    \since 4.2
 
+    Returns the currently set page break policy for the paragraph. The default is
+    QTextFormat::PageBreak_Auto.
+
+    \sa setPageBreakPolicy()
+*/
 
 /*!
-    \class QTextListFormat qtextformat.h
+    \fn void QTextBlockFormat::setPageBreakPolicy(PageBreakFlags policy)
+    \since 4.2
+
+    Sets the page break policy for the paragraph to \a policy.
+
+    \sa pageBreakPolicy()
+*/
+
+/*!
+    \class QTextListFormat
     \brief The QTextListFormat class provides formatting information for
     lists in a QTextDocument.
 
@@ -1802,6 +1944,25 @@ QTextFrameFormat::QTextFrameFormat() : QTextFormat(FrameFormat) {}
 */
 
 /*!
+    \fn QTextFormat::PageBreakFlags QTextFrameFormat::pageBreakPolicy() const
+    \since 4.2
+
+    Returns the currently set page break policy for the frame/table. The default is
+    QTextFormat::PageBreak_Auto.
+
+    \sa setPageBreakPolicy()
+*/
+
+/*!
+    \fn void QTextFrameFormat::setPageBreakPolicy(PageBreakFlags policy)
+    \since 4.2
+
+    Sets the page break policy for the frame/table to \a policy.
+
+    \sa pageBreakPolicy()
+*/
+
+/*!
     \fn QTextLength QTextFrameFormat::width() const
 
     Returns the width of the frame's border rectangle.
@@ -1829,7 +1990,7 @@ QTextFrameFormat::QTextFrameFormat() : QTextFormat(FrameFormat) {}
 */
 
 /*!
-    \class QTextTableFormat qtextformat.h
+    \class QTextTableFormat
     \brief The QTextTableFormat class provides formatting information for
     tables in a QTextDocument.
 
@@ -1852,8 +2013,8 @@ QTextFrameFormat::QTextFrameFormat() : QTextFormat(FrameFormat) {}
 
     \image qtexttableformat-cell.png
 
-    The table's background color can be read with the backgroundColor() function,
-    and can be specified with setBackgroundColor(). The background color of each
+    The table's background color can be read with the background() function,
+    and can be specified with setBackground(). The background color of each
     cell can be set independently, and will control the color of the cell within
     the padded area.
 
@@ -1979,6 +2140,24 @@ QTextTableFormat::QTextTableFormat()
 */
 
 /*!
+    \fn void QTextTableFormat::setHeaderRowCount(int count)
+    \since 4.2
+
+    Declares the first \a count rows of the table as table header.
+    The table header rows get repeated when a table is broken
+    across a page boundary.
+*/
+
+/*!
+    \fn int QTextTableFormat::headerRowCount() const
+    \since 4.2
+
+    Returns the number of rows in the table that define the header.
+
+    \sa setHeaderRowCount()
+*/
+
+/*!
     \fn void QTextFormat::setBackground(const QBrush &brush)
 
     Sets the brush use to paint the document's background to the
@@ -2006,7 +2185,7 @@ QTextTableFormat::QTextTableFormat()
 
 
 /*!
-    \class QTextImageFormat qtextformat.h
+    \class QTextImageFormat
     \brief The QTextImageFormat class provides formatting information for
     images in a QTextDocument.
 

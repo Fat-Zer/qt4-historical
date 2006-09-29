@@ -101,7 +101,7 @@ int QCDEStyle::pixelMetric(PixelMetric metric, const QStyleOption *option,
                            const QWidget *widget) const
                            */
 {
-    int ret;
+    int ret = 0;
 
     switch(metric) {
     case PM_MenuBarPanelWidth:
@@ -129,7 +129,7 @@ int QCDEStyle::pixelMetric(PixelMetric metric, const QStyleOption *option,
     \reimp
 */
 void QCDEStyle::drawControl(ControlElement element, const QStyleOption *opt, QPainter *p,
-                             const QWidget *widget) const
+                            const QWidget *widget) const
 {
 
     switch(element) {
@@ -154,8 +154,6 @@ void QCDEStyle::drawControl(ControlElement element, const QStyleOption *opt, QPa
         QMotifStyle::drawControl(element, opt, p, widget);
     break;
     }
-
-
 }
 
 /*!
@@ -232,14 +230,13 @@ void QCDEStyle::drawPrimitive(PrimitiveElement pe, const QStyleOption *opt, QPai
             QColor fillColor = on ? opt->palette.dark().color() : opt->palette.background().color();
             p->setPen(fillColor);
             p->setBrush(on ? opt->palette.brush(QPalette::Dark) :
-                         opt->palette.brush(QPalette::Background));
+                         opt->palette.brush(QPalette::Window));
             p->drawPolygon(a);
             if (!(opt->state & State_Enabled) && styleHint(SH_DitherDisabledText))
                 p->fillRect(opt->rect, QBrush(p->background().color(), Qt::Dense5Pattern));
             p->setPen(oldPen);
             p->setBrush(oldBrush);
         } break;
-
     default:
         QMotifStyle::drawPrimitive(pe, opt, p, widget);
     }
@@ -253,11 +250,20 @@ QPalette QCDEStyle::standardPalette() const
     QColor mid = background.dark(150);
     QColor dark = background.dark();
     QPalette palette(Qt::black, background, light, dark, mid, Qt::black, Qt::white);
-    palette.setBrush(QPalette::Disabled, QPalette::Foreground, dark);
+    palette.setBrush(QPalette::Disabled, QPalette::WindowText, dark);
     palette.setBrush(QPalette::Disabled, QPalette::Text, dark);
     palette.setBrush(QPalette::Disabled, QPalette::ButtonText, dark);
     palette.setBrush(QPalette::Disabled, QPalette::Base, background);
     return palette;
+}
+
+/*!
+    \internal
+*/
+QIcon QCDEStyle::standardIconImplementation(StandardPixmap standardIcon, const QStyleOption *opt,
+                                            const QWidget *widget) const
+{
+    return QMotifStyle::standardIconImplementation(standardIcon, opt, widget);
 }
 
 #endif

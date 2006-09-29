@@ -215,9 +215,14 @@ static bool read_dib_body(QDataStream &s, const BMP_INFOHDR &bi, int offset, int
             format = QImage::Format_Mono;
     }
 
-    image = QImage(w, h, format);
-    if (image.isNull())                        // could not create image
-        return false;
+    if (bi.biHeight < 0)
+        h = -h;                  // support images with negative height
+
+    if (image.size() != QSize(w, h) || image.format() != format) {
+        image = QImage(w, h, format);
+        if (image.isNull())                        // could not create image
+            return false;
+    }
 
     if (depth != 32) {
         ncols = bi.biClrUsed ? bi.biClrUsed : 1 << nbits;
@@ -227,7 +232,8 @@ static bool read_dib_body(QDataStream &s, const BMP_INFOHDR &bi, int offset, int
     image.setDotsPerMeterX(bi.biXPelsPerMeter);
     image.setDotsPerMeterY(bi.biYPelsPerMeter);
 
-    d->seek(startpos + BMP_FILEHDR_SIZE + bi.biSize); // goto start of colormap
+    if (!d->isSequential())
+        d->seek(startpos + BMP_FILEHDR_SIZE + bi.biSize); // goto start of colormap
 
     if (ncols > 0) {                                // read color table
         uchar rgb[4];
@@ -273,9 +279,11 @@ static bool read_dib_body(QDataStream &s, const BMP_INFOHDR &bi, int offset, int
     }
 
     // offset can be bogus, be careful
-    if (offset>=0 && startpos + offset > d->pos())
-        d->seek(startpos + offset);                // start of image data
-
+    if (offset>=0 && startpos + offset > d->pos()) {
+        if (!d->isSequential())
+            d->seek(startpos + offset);                // start of image data
+    }
+    
     int             bpl = image.bytesPerLine();
 #ifdef Q_WS_QWS
     //
@@ -294,8 +302,10 @@ static bool read_dib_body(QDataStream &s, const BMP_INFOHDR &bi, int offset, int
             if (d->read((char*)(data + h*bpl), bpl) != bpl)
                 break;
 #ifdef Q_WS_QWS
-            if (pad > 0)
-                d->seek(d->pos()+pad);
+            if (pad > 0) {
+                if (!d->isSequential())
+                    d->seek(d->pos()+pad);
+            }
 #endif
         }
         if (ncols == 2 && qGray(image.color(0)) < qGray(image.color(1)))
@@ -455,8 +465,10 @@ static bool read_dib_body(QDataStream &s, const BMP_INFOHDR &bi, int offset, int
                 if (d->read((char *)data + h*bpl, bpl) != bpl)
                     break;
 #ifdef Q_WS_QWS
-                if (pad > 0)
-                    d->seek(d->pos()+pad);
+                if (pad > 0) {
+                    if (!d->isSequential())
+                        d->seek(d->pos()+pad);
+                }
 #endif
             }
         }
@@ -489,11 +501,23 @@ static bool read_dib_body(QDataStream &s, const BMP_INFOHDR &bi, int offset, int
         delete[] buf24;
     }
 
+    if (bi.biHeight < 0) {
+        // Flip the image
+        uchar *buf = new uchar[bpl];
+        h = -bi.biHeight;
+        for (int y = 0; y < h/2; ++y) {
+            memcpy(buf, data + y*bpl, bpl);
+            memcpy(data + y*bpl, data + (h-y-1)*bpl, bpl);
+            memcpy(data + (h-y-1)*bpl, buf, bpl);
+        }
+        delete [] buf;
+    }
+
     return true;
 }
 
 // this is also used in qmime_win.cpp
-bool Q_GUI_EXPORT qt_write_dib(QDataStream &s, QImage image)
+bool qt_write_dib(QDataStream &s, QImage image)
 {
     int        nbits;
     int        bpl_bmp;
@@ -613,7 +637,7 @@ bool Q_GUI_EXPORT qt_write_dib(QDataStream &s, QImage image)
 }
 
 // this is also used in qmime_win.cpp
-bool Q_GUI_EXPORT qt_read_dib(QDataStream &s, QImage &image)
+bool qt_read_dib(QDataStream &s, QImage &image)
 {
     BMP_INFOHDR bi;
     if (!read_dib_infoheader(s, bi))
@@ -678,7 +702,12 @@ bool QBmpHandler::read(QImage *image)
 {
     if (state == Error)
         return false;
-    
+
+    if (!image) {
+        qWarning("QBmpHandler::read: cannot read into null pointer");
+        return false;
+    }
+
     if (state == Ready && !readHeader()) {
         state = Error;
         return false;
@@ -691,12 +720,8 @@ bool QBmpHandler::read(QImage *image)
     s.setByteOrder(QDataStream::LittleEndian);
 
     // read image
-    QImage tmpImage;
-    if (!read_dib_body(s, infoHeader, fileHeader.bfOffBits, startpos, tmpImage))
+    if (!read_dib_body(s, infoHeader, fileHeader.bfOffBits, startpos, *image))
         return false;
-
-    if (image)
-        *image = tmpImage;
 
     state = Ready;
     return true;
@@ -723,7 +748,7 @@ bool QBmpHandler::write(const QImage &image)
     s.setByteOrder(QDataStream::LittleEndian);
 
     // build file header
-    memcpy(bf.bfType, "BM", sizeof(char)*2);
+    memcpy(bf.bfType, "BM", 2);
 
     // write file header
     bf.bfReserved1 = 0;

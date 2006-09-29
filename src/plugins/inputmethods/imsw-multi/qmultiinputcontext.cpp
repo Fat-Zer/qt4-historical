@@ -75,7 +75,7 @@ QMultiInputContext::QMultiInputContext()
         if (i == current)
             a->setChecked(true);
     }
-    connect(group, SIGNAL(triggered(QAction *)), this, SLOT(changeSlave(QAction *)));
+    connect(group, SIGNAL(triggered(QAction*)), this, SLOT(changeSlave(QAction*)));
 
 
 }

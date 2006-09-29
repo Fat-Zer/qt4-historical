@@ -38,6 +38,7 @@ class QDesignerWidgetDataBaseInterface;
 class QDesignerMetaDataBaseInterface;
 class QDesignerWidgetFactoryInterface;
 class QDesignerObjectInspectorInterface;
+class QDesignerBrushManagerInterface;
 class QDesignerIconCacheInterface;
 class QDesignerActionEditorInterface;
 class QDesignerPluginManager;
@@ -63,6 +64,7 @@ public:
     QDesignerWidgetDataBaseInterface *widgetDataBase() const;
     QDesignerMetaDataBaseInterface *metaDataBase() const;
     QDesignerWidgetFactoryInterface *widgetFactory() const;
+    QDesignerBrushManagerInterface *brushManager() const;
     QDesignerIconCacheInterface *iconCache() const;
     QDesignerActionEditorInterface *actionEditor() const;
     QDesignerPluginManager *pluginManager() const;
@@ -81,6 +83,7 @@ protected:
     void setWidgetDataBase(QDesignerWidgetDataBaseInterface *widgetDataBase);
     void setWidgetFactory(QDesignerWidgetFactoryInterface *widgetFactory);
     void setExtensionManager(QExtensionManager *extensionManager);
+    void setBrushManager(QDesignerBrushManagerInterface *brushManager);
     void setIconCache(QDesignerIconCacheInterface *cache);
 
 private:
@@ -93,6 +96,7 @@ private:
     QPointer<QDesignerWidgetDataBaseInterface> m_widgetDataBase;
     QPointer<QDesignerWidgetFactoryInterface> m_widgetFactory;
     QPointer<QDesignerObjectInspectorInterface> m_objectInspector;
+    QPointer<QDesignerBrushManagerInterface> m_brushManager;
     QPointer<QDesignerIconCacheInterface> m_iconCache;
     QPointer<QDesignerActionEditorInterface> m_actionEditor;
     QDesignerPluginManager *m_pluginManager;

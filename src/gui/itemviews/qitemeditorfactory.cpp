@@ -33,11 +33,34 @@
 #include <qspinbox.h>
 #include <limits.h>
 #include <qcoreapplication.h>
+#include <qdebug.h>
+
+
+#ifndef QT_NO_LINEEDIT
+
+class QExpandingLineEdit : public QLineEdit
+{
+    Q_OBJECT
+
+public:
+    QExpandingLineEdit(QWidget *parent);
+    QExpandingLineEdit(const QString &contents, QWidget *parent);
+
+public Q_SLOTS:
+    void resizeToContents();
+
+private:
+    int originalWidth;
+};
+
+#endif // QT_NO_LINEEDIT
+
 
 /*!
     \class QItemEditorFactory
     \brief The QItemEditorFactory class provides widgets for editing item data
     in views and delegates.
+    \since 4.2
     \ingroup model-view
 
     When editing the data shown by an item delegate, the QItemDelegate responsible
@@ -52,7 +75,6 @@
     types. These are created whenever a delegate needs to provide an editor for
     data supplied by a model. The following table shows the relationship between
     types and the standard editors provided.
-
     \table
     \header \o Type \o Editor Widget
     \row    \o bool \o QComboBox
@@ -79,39 +101,49 @@
 */
 
 /*!
-Creates an editor widget with the given \a parent for the specified \a type of data,
-and returns it as a QWidget.
+    Creates an editor widget with the given \a parent for the specified \a type of data,
+    and returns it as a QWidget.
 
-\sa registerEditor()*/
+    \sa registerEditor()
+*/
 QWidget *QItemEditorFactory::createEditor(QVariant::Type type, QWidget *parent) const
 {
     QItemEditorCreatorBase *creator = creatorMap.value(type, 0);
-    if (!creator)
-        return defaultFactory()->createEditor(type, parent);
+    if (!creator) {
+        const QItemEditorFactory *dfactory = defaultFactory();
+        return dfactory == this ? 0 : dfactory->createEditor(type, parent);
+    }
     return creator->createWidget(parent);
 }
 
 /*!
-Returns the property name used to identify the given \a type of data. */
+    Returns the property name used to access data for the given \a type of data.
+*/
 QByteArray QItemEditorFactory::valuePropertyName(QVariant::Type type) const
 {
     QItemEditorCreatorBase *creator = creatorMap.value(type, 0);
-    if (!creator)
-        return defaultFactory()->valuePropertyName(type);
+    if (!creator) {
+        const QItemEditorFactory *dfactory = defaultFactory();
+        return dfactory == this ? QByteArray() : dfactory->valuePropertyName(type);
+    }
     return creator->valuePropertyName();
 }
 
 /*!
-Destroys the item editor factory.*/
+    Destroys the item editor factory.
+*/
 QItemEditorFactory::~QItemEditorFactory()
 {
-
 }
 
 /*!
-Registers an item editor creator specified by \a creator for the given \a type of data.
+    Registers an item editor creator specified by \a creator for the given \a type of data.
 
-\sa createEditor()*/
+    \bold{Note:} The factory takes ownership of the item editor creator and will destroy
+    it if a new creator for the same type is registered later.
+
+    \sa createEditor()
+*/
 void QItemEditorFactory::registerEditor(QVariant::Type type, QItemEditorCreatorBase *creator)
 {
    delete creatorMap.value(type, 0);
@@ -135,8 +167,8 @@ QWidget *QDefaultItemEditorFactory::createEditor(QVariant::Type type, QWidget *p
     case QVariant::Bool: {
         QComboBox *cb = new QComboBox(parent);
         cb->setFrame(false);
-        cb->addItem(tr("False"));
-        cb->addItem(tr("True"));
+        cb->addItem(QObject::tr("False"));
+        cb->addItem(QObject::tr("True"));
         return cb; }
 #endif
 #ifndef QT_NO_SPINBOX
@@ -178,7 +210,7 @@ QWidget *QDefaultItemEditorFactory::createEditor(QVariant::Type type, QWidget *p
     case QVariant::String:
     default: {
         // the default editor is a lineedit
-        QLineEdit *le = new QLineEdit(parent);
+        QLineEdit *le = new QExpandingLineEdit(parent);
         le->setFrame(false);
         return le; }
 #else
@@ -192,18 +224,24 @@ QWidget *QDefaultItemEditorFactory::createEditor(QVariant::Type type, QWidget *p
 QByteArray QDefaultItemEditorFactory::valuePropertyName(QVariant::Type type) const
 {
     switch (type) {
+#ifndef QT_NO_COMBOBOX
     case QVariant::Bool:
-        return "currentItem";
+        return "currentIndex";
+#endif
+#ifndef QT_NO_SPINBOX
     case QVariant::UInt:
     case QVariant::Int:
     case QVariant::Double:
         return "value";
+#endif
+#ifndef QT_NO_DATETIMEEDIT
     case QVariant::Date:
         return "date";
     case QVariant::Time:
         return "time";
     case QVariant::DateTime:
         return "dateTime";
+#endif
     case QVariant::String:
     default:
         // the default editor is a lineedit
@@ -219,9 +257,10 @@ struct QDefaultFactoryCleaner
 };
 
 /*!
-Returns the default item editor factory.
+    Returns the default item editor factory.
 
-\sa setDefaultFactory()*/
+    \sa setDefaultFactory()
+*/
 const QItemEditorFactory *QItemEditorFactory::defaultFactory()
 {
     static const QDefaultItemEditorFactory factory;
@@ -246,6 +285,7 @@ void QItemEditorFactory::setDefaultFactory(QItemEditorFactory *factory)
     \class QItemEditorCreatorBase
     \brief The QItemEditorCreatorBase class provides an abstract base class that
     must be subclassed when implementing new item editor creators.
+    \since 4.2
     \ingroup model-view
 
     Item editor creators are specialized widget factories that provide editor widgets
@@ -253,7 +293,10 @@ void QItemEditorFactory::setDefaultFactory(QItemEditorFactory *factory)
     for editors using a QVariant-based scheme to associate data types with editor
     creators.
 
-    \sa QItemEditorFactory, {Model/View Programming}
+    QStandardItemEditorCreator is a convenience template class that can be used
+    to register widgets without the need to subclass QItemEditorCreatorBase.
+
+    \sa QStandardItemEditorCreator, QItemEditorFactory, {Model/View Programming}
 */
 
 /*!
@@ -274,11 +317,98 @@ void QItemEditorFactory::setDefaultFactory(QItemEditorFactory *factory)
 /*!
     \fn QByteArray QItemEditorCreatorBase::valuePropertyName() const
 
-    Returns the name of the property associated with the creator's editor
-    widgets.
+    Returns the name of the property used to get and set values in the creator's
+    editor widgets.
 
-    When implementing this function in subclasses, the property name you
-    must return corresponds to the type of value that your editor widgets
-    are designed to edit.
+    When implementing this function in subclasses, you must ensure that the
+    editor widget's property specified by this function can accept the type
+    the creator is registered for. For example, a creator which constructs
+    QCheckBox widgets to edit boolean values would return the
+    \l{QCheckBox::checkable}{checkable} property name from this function,
+    and must be registered in the item editor factory for the QVariant::Bool
+    type.
+
+    Note: Since Qt 4.2 the item delegates query the user property of widgets,
+    and only call this function if the widget has no user property. You can
+    override this behavior by reimplementing QAbstractItemDelegate::setModelData()
+    and QAbstractItemDelegate::setEditorData().
+
+    \sa QMetaObject::userProperty(), QItemEditorFactory::registerEditor()
 */
+
+/*! 
+    \class QStandardItemEditorCreator
+    \since 4.2
+    \ingroup model-view
+
+    This convenience template class makes it possible to register widgets without
+    having to subclass QItemEditorCreatorBase.
+
+    Example:
+
+    \code
+    QItemEditorFactory *editorFactory = new QItemEditorFactory;
+    QItemEditorCreatorBase *creator = new QStandardItemEditorCreator<MyFancyDateTimeEdit>();
+    editorFactory->registerEditor(QVariant::DateType, creator);
+    \endcode
+
+    Setting the \c editorFactory created above in an item delegate via
+    QItemDelegate::setItemEditorFactory() makes sure that all values of type
+    QVariant::DateTime will be edited in \c{MyFancyDateTimeEdit}.
+
+    \sa QItemEditorCreatorBase, QItemEditorFactory, QItemDelegate
+*/
+
+/*!
+    \fn QStandardItemEditorCreator::QStandardItemEditorCreator()
+
+    Constructs an editor creator object.
+*/
+
+/*!
+    \fn QWidget *QStandardItemEditorCreator::createWidget(QWidget *parent) const
+    \reimp
+*/
+
+/*!
+    \fn QByteArray QStandardItemEditorCreator::valuePropertyName() const
+    \reimp
+*/
+
+#ifndef QT_NO_LINEEDIT
+
+QExpandingLineEdit::QExpandingLineEdit(QWidget *parent)
+    : QLineEdit(parent), originalWidth(-1)
+{
+    connect(this, SIGNAL(textChanged(QString)), this, SLOT(resizeToContents()));
+}
+
+QExpandingLineEdit::QExpandingLineEdit(const QString &contents, QWidget *parent)
+    : QLineEdit(contents, parent), originalWidth(-1)
+{
+    connect(this, SIGNAL(textChanged(QString)), this, SLOT(resizeToContents()));
+}
+
+void QExpandingLineEdit::resizeToContents()
+{
+    if (originalWidth == -1)
+        originalWidth = width();
+    if (QWidget *parent = parentWidget()) {
+        QPoint position = pos();
+	QFontMetrics fm(font());
+	int hintWidth = sizeHint().width() - (fm.width(QLatin1Char('x')) * 17) + fm.width(displayText());
+        int parentWidth = parent->width();
+	int maxWidth = isRightToLeft() ? position.x() + width() : parentWidth - position.x();
+	int newWidth = qBound(originalWidth, hintWidth, maxWidth);
+	if (isRightToLeft())
+	    setGeometry(position.x() - newWidth + width(), position.y(), newWidth, height());
+	else
+	    resize(newWidth, height());
+    }
+}
+
+#include "qitemeditorfactory.moc"
+
+#endif // QT_NO_LINEEDIT
+
 #endif // QT_NO_ITEMVIEWS

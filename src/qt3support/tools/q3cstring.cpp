@@ -405,8 +405,6 @@ Q3CString &Q3CString::sprintf(const char *format, ...)
     \fn Q3CString Q3CString::copy() const
 
     Returns a deep copy of this string.
-
-    \sa detach()
 */
 
 

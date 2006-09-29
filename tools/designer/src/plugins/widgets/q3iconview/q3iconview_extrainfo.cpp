@@ -25,7 +25,7 @@
 
 #include <QtDesigner/QDesignerIconCacheInterface>
 #include <QtDesigner/QDesignerFormEditorInterface>
-#include <QtDesigner/ui4.h>
+#include <QtDesigner/private/ui4_p.h>
 
 #include <Qt3Support/Q3IconView>
 
@@ -110,6 +110,7 @@ bool Q3IconViewExtraInfo::loadWidgetExtraInfo(DomWidget *ui_widget)
 {
     Q3IconView *iconView = qobject_cast<Q3IconView*>(widget());
     Q_ASSERT(iconView != 0);
+    Q_UNUSED(iconView);
 
     if (ui_widget->elementItem().size()) {
         initializeQ3IconViewItems(ui_widget->elementItem());

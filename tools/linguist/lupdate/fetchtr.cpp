@@ -128,7 +128,6 @@ static void startTokenizer( const char *fileName, int (*getCharFunc)(), QTextCod
     getChar = getCharFunc;
 
     yyFileName = fileName;
-    yyCh = getChar();
     yySavedBraceDepth.clear();
     yySavedParenDepth.clear();
     yyBraceDepth = 0;
@@ -136,6 +135,7 @@ static void startTokenizer( const char *fileName, int (*getCharFunc)(), QTextCod
     yyCurLineNo = 1;
     yyBraceLineNo = 1;
     yyParenLineNo = 1;
+    yyCh = getChar();
 	yyCodecForTr = codecForTr;
 	if (!yyCodecForTr)
 		yyCodecForTr = QTextCodec::codecForName("ISO-8859-1");
@@ -546,8 +546,15 @@ static bool matchEncoding( bool *utf8 )
             if ( yyTok == Tok_Gulbrandsen )
                 yyTok = getToken();
         }
-        *utf8 = QString( yyIdent ).endsWith( QString("UTF8") );
-        yyTok = getToken();
+        if (strcmp(yyIdent, "UnicodeUTF8") == 0) {
+            *utf8 = true;
+            yyTok = getToken();
+        } else if (strcmp(yyIdent, "DefaultCodec") == 0) {
+            *utf8 = false;
+            yyTok = getToken();
+        } else {
+            return false;
+        }
         return true;
     } else {
         return false;
@@ -572,10 +579,72 @@ static bool matchStringOrNull(QByteArray *s)
     return matches && num == 0;
 }
 
+/*
+ * match any expression that can return a number, which can be
+ * 1. Literal number (e.g. '11')
+ * 2. simple identifier (e.g. 'm_count')
+ * 3. simple function call (e.g. 'size()' )
+ * 4. function call on an object (e.g. 'list.size()')
+ * 5. function call on an object (e.g. 'list->size()')
+ *
+ * Other cases:
+ * size(2,4)
+ * list().size()
+ * list(a,b).size(2,4)
+ * etc...
+ */
+static bool matchExpression()
+{
+    if (match(Tok_Integer)) {
+        return true;
+    }
+
+    int parenlevel = 0;
+    while (match(Tok_Ident) || parenlevel > 0) {
+        if (yyTok == Tok_RightParen) {
+            if (parenlevel == 0) break;
+            --parenlevel;
+            yyTok = getToken();
+        } else if (yyTok == Tok_LeftParen) {
+            yyTok = getToken();
+            if (yyTok == Tok_RightParen) {
+                yyTok = getToken();
+            } else {
+                ++parenlevel;
+            }
+        } else if (yyTok == Tok_Ident) {
+            continue;
+        } else if (yyTok == Tok_Arrow) {
+            yyTok = getToken();
+        } else if (parenlevel == 0) {
+            return false;
+        }
+    }
+    return true;
+}
+
+static QByteArray getFullyQualifiedClassName(const QList<QByteArray> &classes, const QStringList &namespaces, const QByteArray &ident)
+{
+    QByteArray context = ident;
+    for (int n = namespaces.count() - 1; n >= 0; --n) {
+        QByteArray ns;
+        for (int i = 0; i <= n; ++i) {
+            ns+=namespaces[i] + "::";
+        }
+        if (classes.indexOf(ns + context) != -1) {
+            context = ns + context;
+            break;
+        }
+    }
+    return context;
+}
+
+
 static void parse( MetaTranslator *tor, const char *initialContext, const char *defaultContext )
 {
     QMap<QByteArray, QByteArray> qualifiedContexts;
     QStringList namespaces;
+    QList<QByteArray> classes;
     QByteArray context;
     QByteArray text;
     QByteArray com;
@@ -611,6 +680,10 @@ static void parse( MetaTranslator *tor, const char *initialContext, const char *
                     functionContext += yyIdent;
                     yyTok = getToken();
                 }
+                if (namespaces.count() > 0) {
+                    functionContext.prepend( namespaces.join(QLatin1String("::")).toAscii().append("::") );
+                }
+                classes.append( functionContext );
 
                 if ( yyTok == Tok_Colon ) {
                     missing_Q_OBJECT = true;
@@ -635,31 +708,36 @@ static void parse( MetaTranslator *tor, const char *initialContext, const char *
             yyTok = getToken();
             if ( match(Tok_LeftParen) && matchString(&text) ) {
                 com = "";
-                if ( match(Tok_RightParen) || (match(Tok_Comma) &&
-                        matchStringOrNull(&com) && match(Tok_RightParen)) ) {
-                    if ( prefix.isNull() ) {
-                        context = functionContext;
-                        if ( !namespaces.isEmpty() )
-                            context.prepend( ((namespaces.join(QString("::")) +
-                                              QString("::"))).toAscii() );
-                    } else {
-                        context = prefix;
-                    }
-                    prefix = (const char *) 0;
+                bool plural = false;
 
-                    if ( qualifiedContexts.contains(context) )
-                        context = qualifiedContexts[context];
-                    tor->insert( MetaTranslatorMessage(context, text, com,
-                                                       QString(), utf8) );
 
-                    if ( lacks_Q_OBJECT.contains(context) ) {
-                        qWarning( "%s:%d: Class '%s' lacks Q_OBJECT macro",
-                                  (const char *) yyFileName, yyLineNo,
-                                  (const char *) context );
-                        lacks_Q_OBJECT.remove( context );
-                    } else {
-                        needs_Q_OBJECT.insert( context, 0 );
+                if ( match(Tok_RightParen) ) {
+                    // no comment
+                } else if (match(Tok_Comma) && matchStringOrNull(&com)) {   //comment
+                    if ( match(Tok_RightParen)) {
+                        // ok, 
+                    } else if (match(Tok_Comma)) {
+                        plural = true;
                     }
+                }
+                if ( prefix.isNull() ) {
+                    context = functionContext;
+                } else {
+                    context = getFullyQualifiedClassName(classes, namespaces, prefix);
+                }
+                prefix = (const char *) 0;
+                if ( qualifiedContexts.contains(context) )
+                    context = qualifiedContexts[context];
+                tor->insert( MetaTranslatorMessage(context, text, com, yyFileName, yyLineNo,
+                    QStringList(), utf8, MetaTranslatorMessage::Unfinished, plural) );
+
+                if ( lacks_Q_OBJECT.contains(context) ) {
+                    qWarning( "%s:%d: Class '%s' lacks Q_OBJECT macro",
+                              (const char *) yyFileName, yyLineNo,
+                              (const char *) context );
+                    lacks_Q_OBJECT.remove( context );
+                } else {
+                    needs_Q_OBJECT.insert( context, 0 );
                 }
             }
             break;
@@ -671,15 +749,39 @@ static void parse( MetaTranslator *tor, const char *initialContext, const char *
                  match(Tok_Comma) &&
                  matchString(&text) ) {
                  com = "";
-                 if ( match(Tok_RightParen) ||
-                     (match(Tok_Comma) &&
-                      matchStringOrNull(&com) &&
-                      (match(Tok_RightParen) ||
-                       match(Tok_Comma) &&
-                       matchEncoding(&utf8) &&
-                       match(Tok_RightParen))) )
-                    tor->insert( MetaTranslatorMessage(context, text, com,
-                                                       QString(), utf8) );
+                 bool plural = false;
+                 if (!match(Tok_RightParen)) {
+                    // look for comment
+                    if ( match(Tok_Comma) && matchStringOrNull(&com)) {
+                        if (!match(Tok_RightParen)) {
+                            // look for encoding
+                            if (match(Tok_Comma)) {
+                                if (matchEncoding(&utf8)) {
+                                    if (!match(Tok_RightParen)) {
+                                        // look for the plural quantifier,
+                                        // this can be a number, an identifier or a function call,
+                                        // so for simplicity we mark it as plural if we know we have a comma instead of an
+                                        // right parentheses.
+                                        plural = match(Tok_Comma);
+                                    }
+                                } else {
+                                    // This can be a QTranslator::translate("context", "source", "comment", n) plural translation
+                                    if (matchExpression() && match(Tok_RightParen)) {
+                                        plural = true;
+                                    } else {
+                                        break;
+                                    }
+                                }
+                            } else {
+                                break;
+                            }
+                        }
+                    } else {
+                        break;
+                    }
+                 }
+                tor->insert( MetaTranslatorMessage(context, text, com, yyFileName, yyLineNo,
+                                                   QStringList(), utf8, MetaTranslatorMessage::Unfinished, plural) );
             }
             break;
         case Tok_Q_OBJECT:
@@ -705,8 +807,8 @@ static void parse( MetaTranslator *tor, const char *initialContext, const char *
                 } else {
                     context = com.left( k );
                     com.remove( 0, k + 1 );
-                    tor->insert( MetaTranslatorMessage(context, "", com,
-                                                       QString(), false) );
+                    tor->insert( MetaTranslatorMessage(context, "", com, yyFileName, yyLineNo,
+                                                       QStringList(), false) );
                 }
 
                 /*
@@ -730,7 +832,7 @@ static void parse( MetaTranslator *tor, const char *initialContext, const char *
         case Tok_Gulbrandsen:
             // at top level?
             if ( yyBraceDepth == (int) namespaces.count() && yyParenDepth == 0 )
-                functionContext = prefix;
+                functionContext = ::getFullyQualifiedClassName(classes, namespaces, prefix);
             yyTok = getToken();
             break;
         case Tok_RightBrace:
@@ -784,7 +886,7 @@ void fetchtr_cpp( const char *fileName, MetaTranslator *tor,
 		}
 #else
     yyInFile = fopen( fileName, "r" );
-	if ( yyInFile == 0 ) {
+    if ( yyInFile == 0 ) {
         if ( mustExist )
             fprintf( stderr,
                      "lupdate error: Cannot open C++ source file '%s': %s\n",
@@ -793,7 +895,7 @@ void fetchtr_cpp( const char *fileName, MetaTranslator *tor,
         return;
     }
 
-	startTokenizer( fileName, getCharFromFile, tor->codecForTr(), QTextCodec::codecForName(codecForSource) );
+    startTokenizer( fileName, getCharFromFile, tor->codecForTr(), QTextCodec::codecForName(codecForSource) );
     parse( tor, 0, defaultContext );
     fclose( yyInFile );
 }
@@ -819,7 +921,7 @@ class UiHandler : public QXmlDefaultHandler
 {
 public:
     UiHandler( MetaTranslator *translator, const char *fileName )
-        : tor( translator ), fname( fileName ), comment( "" ) { }
+        : tor( translator ), fname( fileName ), comment( "" ), m_lineNumber(-1)  { }
 
     virtual bool startElement( const QString& namespaceURI,
                                const QString& localName, const QString& qName,
@@ -829,6 +931,11 @@ public:
     virtual bool characters( const QString& ch );
     virtual bool fatalError( const QXmlParseException& exception );
 
+    virtual void setDocumentLocator(QXmlLocator *locator)
+    {
+        m_locator = locator;
+    }
+    QXmlLocator *m_locator;
 private:
     void flush();
 
@@ -839,7 +946,7 @@ private:
     QString comment;
 
     QString accum;
-
+    int m_lineNumber;
     bool trString;
 };
 
@@ -862,6 +969,7 @@ bool UiHandler::startElement( const QString& /* namespaceURI */,
             trString = false;
         }
     }
+    if (trString) m_lineNumber = m_locator->lineNumber();
     accum.truncate( 0 );
     return true;
 }
@@ -909,8 +1017,8 @@ void UiHandler::flush()
 {
     if ( !context.isEmpty() && !source.isEmpty() )
         tor->insert( MetaTranslatorMessage(context.toUtf8(), source.toUtf8(),
-                                           comment.toUtf8(), QString(),
-                                           true) );
+                                           comment.toUtf8(), QString(fname), m_lineNumber,
+                                           QStringList(), true) );
     source.truncate( 0 );
     comment.truncate( 0 );
 }

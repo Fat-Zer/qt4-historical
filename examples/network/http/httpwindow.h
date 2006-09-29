@@ -26,6 +26,7 @@
 
 #include <QDialog>
 
+class QDialogButtonBox;
 class QFile;
 class QHttp;
 class QHttpResponseHeader;
@@ -54,8 +55,9 @@ private:
     QLabel *urlLabel;
     QLineEdit *urlLineEdit;
     QProgressDialog *progressDialog;
-    QPushButton *quitButton;
     QPushButton *downloadButton;
+    QPushButton *quitButton;
+    QDialogButtonBox *buttonBox;
 
     QHttp *http;
     QFile *file;

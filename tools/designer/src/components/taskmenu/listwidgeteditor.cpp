@@ -21,6 +21,10 @@
 **
 ****************************************************************************/
 
+/*
+TRANSLATOR qdesigner_internal::ListWidgetEditor
+*/
+
 #include "listwidgeteditor.h"
 #include <findicondialog_p.h>
 #include <iconloader_p.h>
@@ -141,8 +145,6 @@ void ListWidgetEditor::on_moveItemDownButton_clicked()
 void ListWidgetEditor::on_listWidget_currentRowChanged(int)
 {
     updateEditor();
-    ui.itemTextLineEdit->selectAll();
-    ui.itemTextLineEdit->setFocus();
 }
 
 void ListWidgetEditor::on_listWidget_itemChanged(QListWidgetItem *)

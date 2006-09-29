@@ -52,7 +52,7 @@ int applySameTextHeuristic( MetaTranslator *tor )
 
     for ( it = all.begin(); it != all.end(); ++it ) {
         if ( (*it).type() == MetaTranslatorMessage::Unfinished ) {
-            if ( (*it).translation().isEmpty() )
+            if ( !(*it).isTranslated() )
                 untranslated.append( *it );
         } else {
             QByteArray key = (*it).sourceText();
@@ -62,12 +62,11 @@ int applySameTextHeuristic( MetaTranslator *tor )
                   The same source text is translated at least two
                   different ways. Do nothing then.
                 */
-                if ( (*t).translation() != (*it).translation() ) {
+                if ( (*t).translations() != (*it).translations() ) {
                     translated.remove( key );
                     avoid.insert( key, *it );
                 }
-            } else if ( !avoid.contains(key) &&
-                        !(*it).translation().isEmpty() ) {
+            } else if ( !avoid.contains(key) && (*it).isTranslated() ) {
                 translated.insert( key, *it );
             }
         }
@@ -78,7 +77,7 @@ int applySameTextHeuristic( MetaTranslator *tor )
         t = translated.find( key );
         if ( t != translated.end() ) {
             MetaTranslatorMessage m( *u );
-            m.setTranslation( (*t).translation() );
+            m.setTranslations( (*t).translations() );
             tor->insert( m );
             inserted++;
         }

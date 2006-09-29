@@ -33,19 +33,12 @@ class QPrintDialogPrivate : public QAbstractPrintDialogPrivate
 public:
     QPrintDialogPrivate() : ep(0) { }
 
-    inline void _q_browseClicked() {}
-    inline void _q_okClicked() {}
-    inline void _q_printerOrFileSelected(QAbstractButton *) {}
-    inline void _q_landscapeSelected(int) {}
-    inline void _q_paperSizeSelected(int) {}
-    inline void _q_orientSelected(int) {}
-    inline void _q_pageOrderSelected(QAbstractButton *) {}
-    inline void _q_colorModeSelected(QAbstractButton *) {}
-    inline void _q_setNumCopies(int) {}
-    inline void _q_printRangeSelected(QAbstractButton *) {}
-    inline void _q_setFirstPage(int) {}
-    inline void _q_setLastPage(int) {}
-    inline void _q_fileNameEditChanged(const QString & /*text*/) {}
+    inline void _q_printToFileChanged(int) {}
+    inline void _q_rbPrintRangeToggled(bool) {}
+    inline void _q_printerChanged(int) {}
+    inline void _q_paperSizeChanged(int) {}
+    inline void _q_btnBrowseClicked() {}
+    inline void _q_btnPropertiesClicked() {}
 
     QMacPrintEnginePrivate *ep;
 };
@@ -67,6 +60,12 @@ int QPrintDialog::exec()
     Q_D(QPrintDialog);
     QMacBlockingFunction func;
     Boolean result;
+
+    // If someone is reusing a QPrinter object, the end released all our old
+    // information. In this case, we must reinitialize.
+    if (d->ep->session == 0)
+        d->ep->initialize();
+
     // Carbon's documentation lies.
     // It seems the only way that Carbon lets you use all is if the minimum
     // for the page range is 1. This _kind of_ makes sense if you think about

@@ -107,6 +107,12 @@ bool QGLContext::chooseContext(const QGLContext* shareContext)
         d->glFormat.setDepthBufferSize(res);
     aglDescribePixelFormat(fmt, AGL_RGBA, &res);
     d->glFormat.setRgba(res);
+    aglDescribePixelFormat(fmt, AGL_RED_SIZE, &res);
+    d->glFormat.setRedBufferSize(res);
+    aglDescribePixelFormat(fmt, AGL_GREEN_SIZE, &res);
+    d->glFormat.setGreenBufferSize(res);
+    aglDescribePixelFormat(fmt, AGL_BLUE_SIZE, &res);
+    d->glFormat.setBlueBufferSize(res);
     aglDescribePixelFormat(fmt, AGL_ALPHA_SIZE, &res);
     d->glFormat.setAlpha(res);
     if (d->glFormat.alpha())
@@ -141,30 +147,37 @@ bool QGLContext::chooseContext(const QGLContext* shareContext)
         GLenum err = aglGetError();
         if(err == AGL_BAD_MATCH || err == AGL_BAD_CONTEXT) {
             if(shareContext && shareContext->d_func()->cx) {
-                qWarning("QOpenGL: context sharing mismatch!");
+                qWarning("QGLContext::chooseContext(): Context sharing mismatch!");
                 if(!(ctx = aglCreateContext(fmt, 0)))
                     return false;
                 shareContext = 0;
             }
         }
         if(!ctx) {
-            qWarning("QOpenGL: unable to create QGLContext");
+            qWarning("QGLContext::chooseContext(): Unable to create QGLContext");
             return false;
         }
     }
     d->cx = ctx;
     if (shareContext && shareContext->d_func()->cx) {
+        QGLContext *share = const_cast<QGLContext *>(shareContext);
         d->sharing = true;
-        const_cast<QGLContext *>(shareContext)->d_func()->sharing = true;
+        share->d_func()->sharing = true;
     }
     if(deviceIsPixmap())
         updatePaintDevice();
-    { //sync the vrefresh
-        const GLint sync = 1;
-        aglSetInteger((AGLContext)d->cx, AGL_SWAP_INTERVAL, &sync);
-        if(!aglIsEnabled((AGLContext)d->cx, AGL_SWAP_INTERVAL))
+
+    // vblank syncing
+    GLint interval = d->reqFormat.swapInterval();
+    if (interval != -1) {
+        aglSetInteger((AGLContext)d->cx, AGL_SWAP_INTERVAL, &interval);
+        if (interval != 0)
             aglEnable((AGLContext)d->cx, AGL_SWAP_INTERVAL);
+        else
+            aglDisable((AGLContext)d->cx, AGL_SWAP_INTERVAL);
     }
+    aglGetInteger((AGLContext)d->cx, AGL_SWAP_INTERVAL, &interval);
+    d->glFormat.setSwapInterval(interval);
     return true;
 }
 
@@ -192,12 +205,26 @@ AGLPixelFormat QGLContextPrivate::tryFormat(const QGLFormat &format)
     attribs[cnt++] = AGL_LEVEL;
     attribs[cnt++] = format.plane();
 
+    if (format.redBufferSize() != -1) {
+        attribs[cnt++] = AGL_RED_SIZE;
+        attribs[cnt++] = format.redBufferSize();
+    }
+    if (format.greenBufferSize() != -1) {
+        attribs[cnt++] = AGL_GREEN_SIZE;
+        attribs[cnt++] = format.greenBufferSize();
+    }
+    if (format.blueBufferSize() != -1) {
+        attribs[cnt++] = AGL_BLUE_SIZE;
+        attribs[cnt++] = format.blueBufferSize();
+    }
     if (device_is_pixmap) {
         attribs[cnt++] = AGL_PIXEL_SIZE;
         attribs[cnt++] = static_cast<QPixmap *>(paintDevice)->depth();
-    }
-    if (device_is_pixmap) {
         attribs[cnt++] = AGL_OFFSCREEN;
+        if(!format.alpha()) {
+            attribs[cnt++] = AGL_ALPHA_SIZE;
+            attribs[cnt++] = 8;
+        }
     } else {
         if(format.doubleBuffer())
             attribs[cnt++] = AGL_DOUBLEBUFFER;
@@ -239,6 +266,20 @@ AGLPixelFormat QGLContextPrivate::tryFormat(const QGLFormat &format)
     return aglChoosePixelFormat(0, 0, attribs);
 }
 
+/*!
+    \bold{Mac OS X only:} This virtual function tries to find a visual that
+    matches the format, reducing the demands if the original request
+    cannot be met.
+
+    The algorithm for reducing the demands of the format is quite
+    simple-minded, so override this method in your subclass if your
+    application has spcific requirements on visual selection.
+
+    \a device is currently ignored.
+
+    \sa chooseContext()
+*/
+
 void *QGLContext::chooseMacVisual(GDHandle /* device */)
 {
     Q_D(QGLContext);
@@ -254,7 +295,7 @@ void *QGLContext::chooseMacVisual(GDHandle /* device */)
         fmt = d->tryFormat(d->glFormat);
     }
     if(!fmt)
-        qWarning("QGLContext::chooseMacVisual(): unable to choose a pixel format (error: %d).",
+        qWarning("QGLContext::chooseMacVisual: Unable to choose a pixel format (error: %d)",
                  (int)aglGetError());
     return fmt;
 }
@@ -275,13 +316,14 @@ void QGLContext::reset()
     d->valid = false;
     d->transpColor = QColor();
     d->initDone = false;
+    qgl_share_reg()->removeShare(this);
 }
 
 void QGLContext::makeCurrent()
 {
     Q_D(QGLContext);
     if(!d->valid) {
-        qWarning("QGLContext::makeCurrent(): Cannot make invalid context current.");
+        qWarning("QGLContext::makeCurrent(): Cannot make invalid context current");
         return;
     }
     aglSetCurrentContext((AGLContext)d->cx);
@@ -401,7 +443,7 @@ void QGLContext::updatePaintDevice()
         aglSetOffScreen((AGLContext)d->cx, pm->width(), pm->height(),
                         GetPixRowBytes(mac_pm), GetPixBaseAddr(mac_pm));
     } else {
-        qWarning("not sure how to render opengl on this device!!");
+        qWarning("QGLContext::updatePaintDevice(): Not sure how to render OpenGL on this device!");
     }
     aglUpdateContext((AGLContext)d->cx);
 }
@@ -455,7 +497,7 @@ uint QGLContext::colorIndex(const QColor&c) const
                 break;
         if(ret == 256) {
             ret = -1;
-            qWarning("whoa, that's no good..");
+            qWarning("QGLContext::colorIndex(): Internal error!");
         } else {
             cmap[ret] = c;
 
@@ -677,6 +719,8 @@ void QGLWidgetPrivate::init(QGLContext *context, const QGLWidget* shareWidget)
     glcx = olcx = 0;
     autoSwap = true;
 
+    if (!context->device())
+        context->setDevice(q);
     q->setAttribute(Qt::WA_NoSystemBackground);
     q->setContext(context, shareWidget ? shareWidget->context() : 0);
 
@@ -730,12 +774,12 @@ void QGLExtensions::init()
     GLint attribs[] = { AGL_RGBA, AGL_NONE };
     AGLPixelFormat fmt = aglChoosePixelFormat(0, 0, attribs);
     if (!fmt) {
-        qDebug("QGLExtensions: couldn't find any RGB visuals.");
+        qDebug("QGLExtensions: Couldn't find any RGB visuals");
         return;
     }
     AGLContext ctx = aglCreateContext(fmt, 0);
     if (!ctx) {
-        qDebug("QGLExtensions: unable to create context.");
+        qDebug("QGLExtensions: Unable to create context");
     } else {
         aglSetCurrentContext(ctx);
         init_extensions();

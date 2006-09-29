@@ -35,6 +35,10 @@ QMacPrintEngine::QMacPrintEngine(QPrinter::PrinterMode mode) : QPaintEngine(*(ne
 bool QMacPrintEngine::begin(QPaintDevice *dev)
 {
     Q_D(QMacPrintEngine);
+
+    if (d->state == QPrinter::Idle && d->session == 0) // Need to reinitialize
+        d->initialize();
+
     d->paintEngine->state = state;
     d->paintEngine->begin(dev);
     Q_ASSERT_X(d->state == QPrinter::Idle, "QMacPrintEngine", "printer already active");
@@ -52,7 +56,7 @@ bool QMacPrintEngine::begin(QPaintDevice *dev)
                                                                   false);
         if (PMSessionSetDestination(d->session, d->settings, kPMDestinationFile,
                                     kPMDocumentFormatPDF, outFile) != noErr) {
-            qWarning("problem setting file [%s]", d->outputFilename.toUtf8().constData());
+            qWarning("QMacPrintEngine::begin: Problem setting file [%s]", d->outputFilename.toUtf8().constData());
             return false;
         }
     }
@@ -87,6 +91,7 @@ bool QMacPrintEngine::end()
             PMSessionEndDocument(d->session);
         }
         PMRelease(d->session);
+        d->session = 0;
     }
     d->state  = QPrinter::Idle;
     return true;
@@ -100,7 +105,8 @@ QMacPrintEngine::paintEngine() const
 
 Qt::HANDLE QMacPrintEngine::handle() const
 {
-    return d_func()->qdHandle;
+    QCoreGraphicsPaintEngine *cgEngine = static_cast<QCoreGraphicsPaintEngine*>(paintEngine());
+    return cgEngine->d_func()->hd;
 }
 
 struct PaperSize
@@ -219,7 +225,7 @@ QList<QVariant> QMacPrintEnginePrivate::supportedResolutions() const
                     resolutions.append(QVariant(int(res.hRes)));
             }
         } else {
-            qWarning("QMacPrintEngine::supportedResolutions() unexpected error: %ld", status);
+            qWarning("QMacPrintEngine::supportedResolutions: Unexpected error: %ld", status);
         }
     }
     return resolutions;
@@ -340,23 +346,12 @@ int QMacPrintEngine::metric(QPaintDevice::PaintDeviceMetric m) const
 
 void QMacPrintEnginePrivate::initialize()
 {
-    Q_ASSERT(!format);
-    Q_ASSERT(!settings);
     Q_ASSERT(!session);
 
     Q_Q(QMacPrintEngine);
 
-#if 0 //always use coregraphics for now until the bugs are kicked out
-#if !defined(QMAC_NO_COREGRAPHICS)
-    if(!qgetenv("QT_MAC_USE_QUICKDRAW"))
+    if (!paintEngine)
         paintEngine = new QCoreGraphicsPaintEngine();
-    else
-#endif
-        paintEngine = new QQuickDrawPaintEngine();
-#else
-    paintEngine = new QCoreGraphicsPaintEngine();
-#endif
-    suppressStatus = false;
 
     q->gccaps = paintEngine->gccaps;
 
@@ -377,15 +372,19 @@ void QMacPrintEnginePrivate::initialize()
             qWarning("QPrinter::initialize: Cannot get printer resolution");
     }
 
-    bool settingsOK = PMCreatePrintSettings(&settings) == noErr;
-    if (settingsOK)
+    bool settingsInitialized = (settings != 0);
+    bool settingsOK = !settingsInitialized ? PMCreatePrintSettings(&settings) == noErr : true;
+    if (settingsOK && !settingsInitialized)
         settingsOK = PMSessionDefaultPrintSettings(session, settings) == noErr;
 
 
-    bool formatOK = PMCreatePageFormat(&format) == noErr;
+    bool formatInitialized = (format != 0);
+    bool formatOK = !formatInitialized ? PMCreatePageFormat(&format) == noErr : true;
     if (formatOK) {
-        formatOK = PMSessionDefaultPageFormat(session, format) == noErr;
-        formatOK = PMSetResolution(format, &resolution) == noErr;
+        if (!formatInitialized) {
+            formatOK = PMSessionDefaultPageFormat(session, format) == noErr;
+            formatOK = PMSetResolution(format, &resolution) == noErr;
+        }
         formatOK = PMSessionValidatePageFormat(session, format, kPMDontWantBoolean) == noErr;
     }
 
@@ -426,34 +425,22 @@ bool QMacPrintEnginePrivate::newPage_helper()
 
     QRect page = q->property(QPrintEngine::PPK_PageRect).toRect();
     QRect paper = q->property(QPrintEngine::PPK_PaperRect).toRect();
-    if(paintEngine->type() == QPaintEngine::CoreGraphics) {
-        CGContextRef cgContext;
-        OSStatus err = PMSessionGetGraphicsContext(session, kPMGraphicsContextCoreGraphics,
-                                                   reinterpret_cast<void **>(&cgContext));
-        if(err != noErr) {
-            qWarning("QMacPrintEngine::newPage: Cannot retrieve CoreGraphics context. %ld", err);
-            state = QPrinter::Error;
-            return false;
-        }
-        QCoreGraphicsPaintEngine *cgEngine = static_cast<QCoreGraphicsPaintEngine*>(paintEngine);
-        cgEngine->d_func()->hd = cgContext;
-        CGContextScaleCTM(cgContext, 1, -1);
-        CGContextTranslateCTM(cgContext, 0, -paper.height());
-        if (!fullPage)
-            CGContextTranslateCTM(cgContext, page.x() - paper.x(), page.y() - paper.y());
-        cgEngine->d_func()->orig_xform = CGContextGetCTM(cgContext);
-        cgEngine->d_func()->setClip(0);
-    } else {
-        OSStatus err = PMSessionGetGraphicsContext(session, kPMGraphicsContextQuickdraw,
-                                                   reinterpret_cast<void **>(&qdHandle));
-        if(err != noErr) {
-            qWarning("QMacPrintEngine::newPage: Cannot retrieve QuickDraw context. %ld", err);
-            state = QPrinter::Error;
-            return false;
-        }
-        QMacSavedPortInfo mp(pdev);
-        SetOrigin(page.x() - paper.x(), page.y() - paper.y());
+    CGContextRef cgContext;
+    OSStatus err = PMSessionGetGraphicsContext(session, kPMGraphicsContextCoreGraphics,
+                                               reinterpret_cast<void **>(&cgContext));
+    if(err != noErr) {
+        qWarning("QMacPrintEngine::newPage: Cannot retrieve CoreGraphics context: %ld", err);
+        state = QPrinter::Error;
+        return false;
     }
+    QCoreGraphicsPaintEngine *cgEngine = static_cast<QCoreGraphicsPaintEngine*>(paintEngine);
+    cgEngine->d_func()->hd = cgContext;
+    CGContextScaleCTM(cgContext, 1, -1);
+    CGContextTranslateCTM(cgContext, 0, -paper.height());
+    if (!fullPage)
+        CGContextTranslateCTM(cgContext, page.x() - paper.x(), page.y() - paper.y());
+    cgEngine->d_func()->orig_xform = CGContextGetCTM(cgContext);
+    cgEngine->d_func()->setClip(0);
     return true;
 }
 
@@ -596,7 +583,7 @@ void QMacPrintEngine::setProperty(PrintEnginePropertyKey key, const QVariant &va
     case PPK_PrinterName: {
         OSStatus status = PMSessionSetCurrentPrinter(d->session, QCFString(value.toString()));
         if (status == noErr)
-            qWarning("QMacPrintEngine::setPrinterName: Error setting printer %ld", status);
+            qWarning("QMacPrintEngine::setPrinterName: Error setting printer: %ld", status);
         break; }
     case PPK_SuppressSystemPrintStatus:
         d->suppressStatus = value.toBool();
@@ -629,13 +616,9 @@ QVariant QMacPrintEngine::property(PrintEnginePropertyKey key) const
         ret = 1;
         break;
     case PPK_Orientation:
-        if (d->state == QPrinter::Idle) {
-            ret = d->orient;
-        } else {
-            PMOrientation orientation;
-            PMGetOrientation(d->format, &orientation);
-            ret = orientation == kPMPortrait ? QPrinter::Portrait : QPrinter::Landscape;
-        }
+        PMOrientation orientation;
+        PMGetOrientation(d->format, &orientation);
+        ret = orientation == kPMPortrait ? QPrinter::Portrait : QPrinter::Landscape;
         break;
     case PPK_OutputFileName:
         ret = d->outputFilename;
@@ -672,7 +655,7 @@ QVariant QMacPrintEngine::property(PrintEnginePropertyKey key) const
         QCFType<CFArrayRef> printerList;
         OSStatus status = PMSessionCreatePrinterList(d->session, &printerList, &currIndex, &unused);
         if (status != noErr)
-            qWarning("QMacPrintEngine::printerName: Problem getting list of printers %ld", status);
+            qWarning("QMacPrintEngine::printerName: Problem getting list of printers: %ld", status);
         if (printerList && currIndex < CFArrayGetCount(printerList)) {
             const CFStringRef name = static_cast<CFStringRef>(CFArrayGetValueAtIndex(printerList, currIndex));
             if (name)

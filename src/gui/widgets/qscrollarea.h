@@ -38,12 +38,14 @@ class Q_GUI_EXPORT QScrollArea : public QAbstractScrollArea
 {
     Q_OBJECT
     Q_PROPERTY(bool widgetResizable READ widgetResizable WRITE setWidgetResizable)
+    Q_PROPERTY(Qt::Alignment alignment READ alignment WRITE setAlignment)
+
 public:
     explicit QScrollArea(QWidget* parent=0);
     ~QScrollArea();
 
     QWidget *widget() const;
-    void setWidget(QWidget *w);
+    void setWidget(QWidget *widget);
     QWidget *takeWidget();
 
     bool widgetResizable() const;
@@ -52,9 +54,14 @@ public:
     QSize sizeHint() const;
     bool focusNextPrevChild(bool next);
 
+    Qt::Alignment alignment() const;
+    void setAlignment(Qt::Alignment);
+
     void ensureVisible(int x, int y, int xmargin = 50, int ymargin = 50);
+    void ensureWidgetVisible(QWidget *childWidget, int xmargin = 50, int ymargin = 50);
 
 protected:
+    QScrollArea(QScrollAreaPrivate &dd, QWidget *parent = 0);
     bool event(QEvent *);
     bool eventFilter(QObject *, QEvent *);
     void resizeEvent(QResizeEvent *);

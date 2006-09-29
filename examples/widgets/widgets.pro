@@ -8,16 +8,17 @@ SUBDIRS       = analogclock \
                 imageviewer \
                 lineedits \
                 movie \
-                screenshot \
                 scribble \
                 shapedclock \
                 sliders \
                 spinboxes \
                 styles \
+                stylesheet \
                 tetrix \
                 tooltips \
                 wiggly \
                 windowflags
+
 
 # install
 target.path = $$[QT_INSTALL_EXAMPLES]/widgets

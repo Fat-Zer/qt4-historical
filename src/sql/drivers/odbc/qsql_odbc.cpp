@@ -62,7 +62,7 @@
 # define QSQLULEN SQLUINTEGER
 #endif
 
-static const int COLNAMESIZE = 255;
+static const int COLNAMESIZE = 256;
 //Map Qt parameter types to ODBC types
 static const SQLSMALLINT qParamType[4] = { SQL_PARAM_INPUT, SQL_PARAM_INPUT, SQL_PARAM_OUTPUT, SQL_PARAM_INPUT_OUTPUT };
 
@@ -596,7 +596,7 @@ bool QODBCDriverPrivate::setConnectionOptions(const QString& connOpts)
                          opt.toLocal8Bit().constData());
         }
         if (r != SQL_SUCCESS && r != SQL_SUCCESS_WITH_INFO)
-            qSqlWarning(QString::fromAscii("QODBCDriver::open: Unable to set connection attribute'%1'").arg(
+            qSqlWarning(QString::fromLatin1("QODBCDriver::open: Unable to set connection attribute'%1'").arg(
                         opt), this);
     }
     return true;
@@ -702,7 +702,9 @@ bool QODBCResult::reset (const QString& query)
                             SQL_IS_UINTEGER);
     }
     if (r != SQL_SUCCESS && r != SQL_SUCCESS_WITH_INFO) {
-        qSqlWarning(QLatin1String("QODBCResult::reset: Unable to set 'SQL_CURSOR_STATIC' as statement attribute. Please check your ODBC driver configuration"), d);
+        setLastError(qMakeError(QCoreApplication::translate("QODBCResult",
+            "QODBCResult::reset: Unable to set 'SQL_CURSOR_STATIC' as statement attribute. "
+            "Please check your ODBC driver configuration"), QSqlError::StatementError, d));
         return false;
     }
 
@@ -1002,7 +1004,9 @@ bool QODBCResult::prepare(const QString& query)
                             SQL_IS_UINTEGER);
     }
     if (r != SQL_SUCCESS && r != SQL_SUCCESS_WITH_INFO) {
-        qSqlWarning(QLatin1String("QODBCResult::prepare: Unable to set 'SQL_CURSOR_STATIC' as statement attribute. Please check your ODBC driver configuration"), d);
+        setLastError(qMakeError(QCoreApplication::translate("QODBCResult",
+            "QODBCResult::reset: Unable to set 'SQL_CURSOR_STATIC' as statement attribute. "
+            "Please check your ODBC driver configuration"), QSqlError::StatementError, d));
         return false;
     }
 

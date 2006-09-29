@@ -47,6 +47,14 @@ Q_OPENGL_EXPORT inline QT3_SUPPORT const char *qGLVersion() {
 #if defined(Q_WS_MAC)
 # include <OpenGL/gl.h>
 # include <OpenGL/glu.h>
+#elif defined(Q_WS_QWS)
+# include <GLES/gl.h>
+#ifndef GL_DOUBLE
+# define GL_DOUBLE GL_FLOAT
+#endif
+#ifndef GLdouble
+typedef GLfloat GLdouble;
+#endif
 #else
 # include <GL/gl.h>
 # include <GL/glu.h>
@@ -111,6 +119,15 @@ public:
     void setAccumBufferSize(int size);
     int  accumBufferSize() const;
 
+    void setRedBufferSize(int size);
+    int  redBufferSize() const;
+
+    void setGreenBufferSize(int size);
+    int  greenBufferSize() const;
+
+    void setBlueBufferSize(int size);
+    int  blueBufferSize() const;
+
     void setAlphaBufferSize(int size);
     int  alphaBufferSize() const;
 
@@ -122,6 +139,9 @@ public:
 
     void setSamples(int numSamples);
     int  samples() const;
+
+    void setSwapInterval(int interval);
+    int  swapInterval() const;
 
     bool doubleBuffer() const;
     void setDoubleBuffer(bool enable);
@@ -156,6 +176,26 @@ public:
 
     static bool hasOpenGL();
     static bool hasOpenGLOverlays();
+
+    enum  OpenGLVersionFlag {
+        OpenGL_Version_None               = 0x00000000,
+        OpenGL_Version_1_1                = 0x00000001,
+        OpenGL_Version_1_2                = 0x00000002,
+        OpenGL_Version_1_3                = 0x00000004,
+        OpenGL_Version_1_4                = 0x00000008,
+        OpenGL_Version_1_5                = 0x00000010,
+        OpenGL_Version_2_0                = 0x00000020,
+        OpenGL_Version_2_1                = 0x00000040,
+        OpenGL_ES_Common_Version_1_0      = 0x00000080,
+        OpenGL_ES_CommonLite_Version_1_0  = 0x00000100,
+        OpenGL_ES_Common_Version_1_1      = 0x00000200,
+        OpenGL_ES_CommonLite_Version_1_1  = 0x00000400,
+        OpenGL_ES_Version_2_0             = 0x00000800
+    };
+    Q_DECLARE_FLAGS(OpenGLVersionFlags, OpenGLVersionFlag)
+
+    static OpenGLVersionFlags openGLVersionFlags();
+
 private:
     QGLFormatPrivate *d;
 
@@ -163,6 +203,7 @@ private:
     friend Q_OPENGL_EXPORT bool operator!=(const QGLFormat&, const QGLFormat&);
 };
 
+Q_DECLARE_OPERATORS_FOR_FLAGS(QGLFormat::OpenGLVersionFlags)
 
 Q_OPENGL_EXPORT bool operator==(const QGLFormat&, const QGLFormat&);
 Q_OPENGL_EXPORT bool operator!=(const QGLFormat&, const QGLFormat&);
@@ -191,9 +232,9 @@ public:
     virtual void swapBuffers() const;
 
     GLuint bindTexture(const QImage &image, GLenum target = GL_TEXTURE_2D,
-		       GLint format = GL_RGBA8);
+                       GLint format = GL_RGBA);
     GLuint bindTexture(const QPixmap &pixmap, GLenum target = GL_TEXTURE_2D,
-		       GLint format = GL_RGBA8);
+                       GLint format = GL_RGBA);
     GLuint bindTexture(const QString &fileName);
 
     void deleteTexture(GLuint tx_id);
@@ -239,14 +280,25 @@ private:
     QGLContextPrivate* d_ptr;
 
     friend class QGLPixelBuffer;
+    friend class QGLPixelBufferPrivate;
     friend class QGLWidget;
     friend class QGLDrawable;
     friend class QGLWidgetPrivate;
+    friend class QGLGlyphCache;
+    friend class QOpenGLPaintEngine;
+    friend class QOpenGLPaintEnginePrivate;
 #ifdef Q_WS_MAC
     friend class QMacGLWindowChangeEvent;
     void updatePaintDevice();
 #endif
-
+#ifdef Q_WS_WIN
+    friend class QGLFramebufferObject;
+    friend class QGLFramebufferObjectPrivate;
+    friend bool qt_resolve_frag_program_extensions(QGLContext *);
+    friend bool qt_resolve_framebufferobject_extensions(QGLContext *);
+    friend bool qt_resolve_GLSL_functions(QGLContext *ctx);
+    friend bool qt_createGLSLProgram(QGLContext *ctx, GLuint &program, const char *shader_src, GLuint &shader);
+#endif
 private:
     Q_DISABLE_COPY(QGLContext)
 };
@@ -258,18 +310,18 @@ class Q_OPENGL_EXPORT QGLWidget : public QWidget
     Q_DECLARE_PRIVATE(QGLWidget)
 public:
     explicit QGLWidget(QWidget* parent=0,
-                       const QGLWidget* shareWidget = 0, Qt::WFlags f=0);
+                       const QGLWidget* shareWidget = 0, Qt::WindowFlags f=0);
     explicit QGLWidget(QGLContext *context, QWidget* parent=0,
-                       const QGLWidget* shareWidget = 0, Qt::WFlags f=0);
+                       const QGLWidget* shareWidget = 0, Qt::WindowFlags f=0);
     explicit QGLWidget(const QGLFormat& format, QWidget* parent=0,
-                       const QGLWidget* shareWidget = 0, Qt::WFlags f=0);
+                       const QGLWidget* shareWidget = 0, Qt::WindowFlags f=0);
 #ifdef QT3_SUPPORT
     QT3_SUPPORT_CONSTRUCTOR QGLWidget(QWidget* parent, const char* name,
-                                    const QGLWidget* shareWidget = 0, Qt::WFlags f=0);
+                                    const QGLWidget* shareWidget = 0, Qt::WindowFlags f=0);
     QT3_SUPPORT_CONSTRUCTOR QGLWidget(QGLContext *context, QWidget* parent, const char* name,
-                                    const QGLWidget* shareWidget = 0, Qt::WFlags f=0);
+                                    const QGLWidget* shareWidget = 0, Qt::WindowFlags f=0);
     QT3_SUPPORT_CONSTRUCTOR QGLWidget(const QGLFormat& format, QWidget* parent, const char* name,
-                                    const QGLWidget* shareWidget = 0, Qt::WFlags f=0);
+                                    const QGLWidget* shareWidget = 0, Qt::WindowFlags f=0);
 #endif
     ~QGLWidget();
 
@@ -313,9 +365,9 @@ public:
     QPaintEngine *paintEngine() const;
 
     GLuint bindTexture(const QImage &image, GLenum target = GL_TEXTURE_2D,
-		       GLint format = GL_RGBA8);
+                       GLint format = GL_RGBA);
     GLuint bindTexture(const QPixmap &pixmap, GLenum target = GL_TEXTURE_2D,
-		       GLint format = GL_RGBA8);
+                       GLint format = GL_RGBA);
     GLuint bindTexture(const QString &fileName);
     void deleteTexture(GLuint tx_id);
 
@@ -351,6 +403,7 @@ private:
 #endif
     friend class QGLDrawable;
     friend class QGLPixelBuffer;
+    friend class QGLPixelBufferPrivate;
     friend class QGLContext;
     friend class QGLOverlayWidget;
     friend class QOpenGLPaintEngine;

@@ -30,6 +30,10 @@
 #include <QtDesigner/abstractformeditor.h>
 #include <QtDesigner/abstractformwindowmanager.h>
 
+#ifdef Q_OS_WIN
+#include <Windows.h>
+#endif
+
 #include <QtCore/QFileInfo>
 #include <QtCore/QDir>
 #include <QtCore/QMetaObject>
@@ -41,6 +45,7 @@
 #include <QtGui/QLabel>
 #include <QtGui/QComboBox>
 #include <QtGui/QLineEdit>
+#include <QtGui/QPushButton>
 
 namespace qdesigner_internal {
 
@@ -55,6 +60,20 @@ static QStringList extensionList()
     }
 
     return extension_list;
+}
+
+static bool isIconValid(const QString &file)
+{
+    bool enabled = !file.isEmpty();
+    if (enabled) {
+        QStringList ext_list = extensionList();
+        foreach (QString ext, ext_list) {
+            if (file.endsWith(ext.remove(0, 2), Qt::CaseInsensitive)) {
+                return true;
+            }
+        }
+    }
+    return false;
 }
 
 static const int g_file_item_id = 0;
@@ -114,8 +133,8 @@ FindIconDialog::FindIconDialog(QDesignerFormWindowInterface *form, QWidget *pare
     layout->addWidget(m_resource_editor);
     m_resource_editor->layout()->setMargin(0);
 
-    connect(ui->m_ok_button, SIGNAL(clicked()), this, SLOT(accept()));
-    connect(ui->m_cancel_button, SIGNAL(clicked()), this, SLOT(reject()));
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
+
     connect(ui->m_specify_file_input, SIGNAL(clicked()), this, SLOT(setActiveBox()));
     connect(ui->m_specify_resource_input, SIGNAL(clicked()), this, SLOT(setActiveBox()));
     connect(ui->m_icon_view, SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),
@@ -129,6 +148,13 @@ FindIconDialog::FindIconDialog(QDesignerFormWindowInterface *form, QWidget *pare
             this, SLOT(itemActivated(QString, QString)));
     connect(m_resource_editor, SIGNAL(currentFileChanged(QString, QString)),
             this, SLOT(itemChanged(QString, QString)));
+
+#ifdef Q_OS_WIN
+    isRoot = false;
+    
+    QSettings myComputer("HKEY_CLASSES_ROOT\\CLSID\\{20D04FE0-3AEA-1069-A2D8-08002B30309D}", QSettings::NativeFormat);
+    rootDir = myComputer.value(".").toString();
+#endif
 
     updateButtons();
 }
@@ -158,9 +184,17 @@ void FindIconDialog::accept()
 void FindIconDialog::cdUp()
 {
     QDir dir = m_view_dir;
+
+#ifdef Q_OS_WIN
+    if (dir.cdUp() && !isRoot) {
+        setFile(dir.canonicalPath());
+    } else if (!isRoot)
+        setFile(rootDir);
+#else
     if (dir.cdUp())
         setFile(dir.path());
-
+#endif
+  
     updateButtons();
 }
 
@@ -168,7 +202,7 @@ void FindIconDialog::itemActivated(const QString&, const QString &file_name)
 {
     if (activeBox() != ResourceBox)
         return;
-    if (!file_name.isEmpty())
+    if (isIconValid(file_name))
         accept();
 
     updateButtons();
@@ -181,9 +215,12 @@ void FindIconDialog::itemActivated(QListWidgetItem *item)
     QString file = item->text();
     QString path = m_view_dir.filePath(file);
 
-    if (dirItem(item))
+    if (dirItem(item)) {
+#ifdef Q_OS_WIN
+        isRoot = false;
+#endif
         QMetaObject::invokeMethod(this, "setFile", Qt::QueuedConnection, Q_ARG(QString, path));
-    else
+    } else
         accept();
 
     updateButtons();
@@ -207,6 +244,7 @@ void FindIconDialog::currentItemChanged(QListWidgetItem *item)
 
     if (item == 0)
         return;
+
     QString path = m_view_dir.filePath(item->text());
     ui->m_file_input->lineEdit()->setText(path);
 
@@ -220,18 +258,37 @@ void FindIconDialog::currentItemChanged(QListWidgetItem *item)
 
 void FindIconDialog::setViewDir(const QString &path)
 {
-
     static const QIcon dir_icon(style()->standardPixmap(QStyle::SP_DirClosedIcon));
+#ifdef Q_OS_WIN
+    static const QIcon drive_icon(style()->standardPixmap(QStyle::SP_DriveHDIcon));
+    if(!isRoot)
+#endif
+    {
+        if (path == m_view_dir.path() || !QFile::exists(path))
+            return;
+    } 
 
-    if (path == m_view_dir.path())
-        return;
     m_view_dir.setPath(path);
     ui->m_icon_view->clear();
-    QStringList subdir_list = m_view_dir.entryList(QStringList() << "*", QDir::Dirs | QDir::NoDotAndDotDot);
-    QStringList icon_file_list = m_view_dir.entryList(extensionList(), QDir::Files);
+
+    QStringList subdir_list;
+#ifdef Q_OS_WIN
+    if (isRoot) {
+        QFileInfoList qFIL = QDir::drives();
+        foreach(const QFileInfo &info, qFIL) 
+            subdir_list.append(info.path());
+    } else
+        subdir_list = m_view_dir.entryList(QStringList() << "*", QDir::Dirs | QDir::NoDotAndDotDot);
 
     foreach (const QString &subdir, subdir_list)
+        createListWidgetItem((isRoot ? drive_icon : dir_icon), subdir, g_dir_item_id, ui->m_icon_view);
+#else
+    subdir_list = m_view_dir.entryList(QStringList() << "*", QDir::Dirs | QDir::NoDotAndDotDot);
+    foreach (const QString &subdir, subdir_list)
         createListWidgetItem(dir_icon, subdir, g_dir_item_id, ui->m_icon_view);
+#endif
+
+    QStringList icon_file_list = m_view_dir.entryList(extensionList(), QDir::Files);
     foreach (const QString &icon_file, icon_file_list) {
         QIcon icon(m_view_dir.filePath(icon_file));
         if (!icon.isNull())
@@ -241,14 +298,22 @@ void FindIconDialog::setViewDir(const QString &path)
 
 void FindIconDialog::setFile(const QString &path)
 {
-    QFileInfo info(path);
+    QString file;
+    QString dir = path;
+#ifdef Q_OS_WIN
+    isRoot = false;
+    if (dir.contains(rootDir, Qt::CaseInsensitive))
+        isRoot = true;
 
-    QString file, dir;
-    if (info.isDir()) {
-        dir = path;
-    } else {
-        dir = info.path();
-        file = info.fileName();
+    if (!isRoot)
+#endif
+    {     
+        QFileInfo info(path);
+
+        if (info.isFile()) {
+            dir = info.path();
+            file = info.fileName();
+        }
     }
 
     setViewDir(dir);
@@ -307,7 +372,7 @@ void FindIconDialog::setPaths(const QString &qrcPath, const QString &filePath)
 
 void FindIconDialog::updateButtons()
 {
-    ui->m_ok_button->setEnabled(!filePath().isEmpty());
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(isIconValid(filePath()));
 }
 
 void FindIconDialog::setActiveBox()

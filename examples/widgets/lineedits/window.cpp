@@ -33,6 +33,7 @@ Window::Window()
     QComboBox *echoComboBox = new QComboBox;
     echoComboBox->addItem(tr("Normal"));
     echoComboBox->addItem(tr("Password"));
+    echoComboBox->addItem(tr("PasswordEchoOnEdit"));
     echoComboBox->addItem(tr("No Echo"));
 
     echoLineEdit = new QLineEdit;
@@ -79,15 +80,15 @@ Window::Window()
     accessLineEdit = new QLineEdit;
 
     connect(echoComboBox, SIGNAL(activated(int)),
-            this, SLOT(slotEchoChanged(int)));
+            this, SLOT(echoChanged(int)));
     connect(validatorComboBox, SIGNAL(activated(int)),
-            this, SLOT(slotValidatorChanged(int)));
+            this, SLOT(validatorChanged(int)));
     connect(alignmentComboBox, SIGNAL(activated(int)),
-            this, SLOT(slotAlignmentChanged(int)));
+            this, SLOT(alignmentChanged(int)));
     connect(inputMaskComboBox, SIGNAL(activated(int)),
-            this, SLOT(slotInputMaskChanged(int)));
+            this, SLOT(inputMaskChanged(int)));
     connect(accessComboBox, SIGNAL(activated(int)),
-            this, SLOT(slotAccessChanged(int)));
+            this, SLOT(accessChanged(int)));
 
     QGridLayout *echoLayout = new QGridLayout;
     echoLayout->addWidget(echoLabel, 0, 0);
@@ -119,18 +120,18 @@ Window::Window()
     accessLayout->addWidget(accessLineEdit, 1, 0, 1, 2);
     accessGroup->setLayout(accessLayout);
 
-    QVBoxLayout *layout = new QVBoxLayout;
-    layout->addWidget(echoGroup);
-    layout->addWidget(validatorGroup);
-    layout->addWidget(alignmentGroup);
-    layout->addWidget(inputMaskGroup);
-    layout->addWidget(accessGroup);
+    QGridLayout *layout = new QGridLayout;
+    layout->addWidget(echoGroup, 0, 0);
+    layout->addWidget(validatorGroup, 1, 0);
+    layout->addWidget(alignmentGroup, 2, 0);
+    layout->addWidget(inputMaskGroup, 0, 1);
+    layout->addWidget(accessGroup, 1, 1);
     setLayout(layout);
 
     setWindowTitle(tr("Line Edits"));
 }
 
-void Window::slotEchoChanged(int index)
+void Window::echoChanged(int index)
 {
     switch (index) {
     case 0:
@@ -140,11 +141,14 @@ void Window::slotEchoChanged(int index)
         echoLineEdit->setEchoMode(QLineEdit::Password);
         break;
     case 2:
-    	echoLineEdit->setEchoMode(QLineEdit::NoEcho);
+    	echoLineEdit->setEchoMode(QLineEdit::PasswordEchoOnEdit);
+        break;
+    case 3:
+        echoLineEdit->setEchoMode(QLineEdit::NoEcho);
     }
 }
 
-void Window::slotValidatorChanged(int index)
+void Window::validatorChanged(int index)
 {
     switch (index) {
     case 0:
@@ -159,10 +163,10 @@ void Window::slotValidatorChanged(int index)
             999.0, 2, validatorLineEdit));
     }
 
-    validatorLineEdit->setText("");
+    validatorLineEdit->clear();
 }
 
-void Window::slotAlignmentChanged(int index)
+void Window::alignmentChanged(int index)
 {
     switch (index) {
     case 0:
@@ -176,7 +180,7 @@ void Window::slotAlignmentChanged(int index)
     }
 }
 
-void Window::slotInputMaskChanged(int index)
+void Window::inputMaskChanged(int index)
 {
     switch (index) {
     case 0:
@@ -195,7 +199,7 @@ void Window::slotInputMaskChanged(int index)
     }
 }
 
-void Window::slotAccessChanged(int index)
+void Window::accessChanged(int index)
 {
     switch (index) {
     case 0:

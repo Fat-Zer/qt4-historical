@@ -42,70 +42,9 @@
 #include "private/qpaintengine_p.h"
 #include "private/qpolygonclipper_p.h"
 
-/*****************************************************************************
-  QuickDraw Private data
- *****************************************************************************/
-struct qt_float_point
-{
-    float x, y;
-};
-
-class QQuickDrawPaintEnginePrivate;
-class QCoreGraphicsPaintEnginePrivate;
-class QQuickDrawPaintEngine : public QPaintEngine
-{
-    Q_DECLARE_PRIVATE(QQuickDrawPaintEngine)
-
-public:
-    QQuickDrawPaintEngine();
-    ~QQuickDrawPaintEngine();
-
-    bool begin(QPaintDevice *pdev);
-    bool end();
-
-    void updateState(const QPaintEngineState &state);
-
-    void updatePen(const QPen &pen);
-    void updateBrush(const QBrush &brush, const QPointF &pt);
-    void updateFont(const QFont &font);
-    void updateBackground(Qt::BGMode bgmode, const QBrush &bgBrush);
-    void updateMatrix(const QMatrix &matrix);
-    void updateClipRegion(const QRegion &region, Qt::ClipOperation op);
-
-    void drawLines(const QLineF *lines, int lineCount);
-    void drawRects(const QRectF *rects, int rectCount);
-    void drawPoints(const QPointF *p, int pointCount);
-    void drawEllipse(const QRectF &r);
-
-    void drawPolygon(const QPointF *points, int pointCount, PolygonDrawMode mode);
-
-    void drawPixmap(const QRectF &r, const QPixmap &pm, const QRectF &sr);
-    void drawTiledPixmap(const QRectF &r, const QPixmap &pixmap, const QPointF &s);
-
-    void drawTextItem(const QPointF &pos, const QTextItem &item);
-
-    Type type() const { return QPaintEngine::QuickDraw; }
-    static void initialize();
-    static void cleanup();
-
-    void setupQDPort(bool force=false, QPoint *off=NULL, QRegion *rgn=NULL);
-
-protected:
-    QQuickDrawPaintEngine(QPaintEnginePrivate &dptr, PaintEngineFeatures devcaps=0);
-    void setClippedRegionInternal(QRegion *);
-
-    void setupQDFont();
-    void setupQDBrush();
-    void setupQDPen();
-
-    friend class QFontEngineMac;
-
-private:
-    Q_DISABLE_COPY(QQuickDrawPaintEngine)
-};
 
 class QCoreGraphicsPaintEnginePrivate;
-class QCoreGraphicsPaintEngine : public QQuickDrawPaintEngine
+class QCoreGraphicsPaintEngine : public QPaintEngine
 {
     Q_DECLARE_PRIVATE(QCoreGraphicsPaintEngine)
 
@@ -121,7 +60,7 @@ public:
     void updatePen(const QPen &pen);
     void updateBrush(const QBrush &brush, const QPointF &pt);
     void updateFont(const QFont &font);
-    void updateBackground(Qt::BGMode bgmode, const QBrush &bgBrush);
+    void updateOpacity(qreal opacity);
     void updateMatrix(const QMatrix &matrix);
     void updateClipRegion(const QRegion &region, Qt::ClipOperation op);
     void updateClipPath(const QPainterPath &path, Qt::ClipOperation op);
@@ -131,12 +70,12 @@ public:
     void drawRects(const QRectF *rects, int rectCount);
     void drawPoints(const QPointF *p, int pointCount);
     void drawEllipse(const QRectF &r);
-
     void drawPath(const QPainterPath &path);
 
     void drawPolygon(const QPointF *points, int pointCount, PolygonDrawMode mode);
     void drawPixmap(const QRectF &r, const QPixmap &pm, const QRectF &sr);
     void drawTiledPixmap(const QRectF &r, const QPixmap &pixmap, const QPointF &s);
+
     void drawTextItem(const QPointF &pos, const QTextItem &item);
     void drawImage(const QRectF &r, const QImage &pm, const QRectF &sr,
                    Qt::ImageConversionFlags flags = Qt::AutoColor);
@@ -150,6 +89,14 @@ public:
 
     QPainter::RenderHints supportedRenderHints() const;
 
+    //avoid partial shadowed overload warnings...
+    void drawLines(const QLine *lines, int lineCount) { QPaintEngine::drawLines(lines, lineCount); }
+    void drawRects(const QRect *rects, int rectCount) { QPaintEngine::drawRects(rects, rectCount); }
+    void drawPoints(const QPoint *p, int pointCount) { QPaintEngine::drawPoints(p, pointCount); }
+    void drawEllipse(const QRect &r) { QPaintEngine::drawEllipse(r); }
+    void drawPolygon(const QPoint *points, int pointCount, PolygonDrawMode mode)
+    { QPaintEngine::drawPolygon(points, pointCount, mode); }
+
 protected:
     friend class QMacPrintEngine;
     friend class QMacPrintEnginePrivate;
@@ -159,49 +106,10 @@ private:
     Q_DISABLE_COPY(QCoreGraphicsPaintEngine)
 };
 
-class QQuickDrawPaintEnginePrivate : public QPaintEnginePrivate
-{
-    Q_DECLARE_PUBLIC(QQuickDrawPaintEngine)
-public:
-    QQuickDrawPaintEnginePrivate()
-        : QPaintEnginePrivate()
-    {
-        saved = 0;
-        clip.serial = 0;
-        clip.dirty = locked = unclipped = false;
-        clip.pdev = clip.paintable = QRegion();
-        brush_style_pix = 0;
-        offx = offy = 0;
-    }
-
-    struct {
-        QPen pen;
-        QBrush brush;
-        QRegion clip;
-        QMatrix matrix;
-        struct {
-            QPointF origin;
-            Qt::BGMode mode;
-            QBrush brush;
-        } bg;
-    } current;
-
-    int offx, offy;
-    QPixmap *brush_style_pix;
-    uint unclipped : 1, locked : 1, has_clipping : 1;
-    QMacSavedPortInfo *saved;
-    QPolygonClipper<qt_float_point, qt_float_point, float> polygonClipper;
-
-    struct {
-        QRegion pdev, paintable;
-        uint dirty : 1, serial : 15;
-    } clip;
-};
-
 /*****************************************************************************
   Private data
  *****************************************************************************/
-class QCoreGraphicsPaintEnginePrivate : public QQuickDrawPaintEnginePrivate
+class QCoreGraphicsPaintEnginePrivate : public QPaintEnginePrivate
 {
     Q_DECLARE_PUBLIC(QCoreGraphicsPaintEngine)
 public:
@@ -211,7 +119,18 @@ public:
         shading = 0;
         complexXForm = false;
         cosmeticPen = true;
+        pixelSize = QPoint(1,1);
+        cosmeticPenSize = 1;
     }
+
+
+    struct {
+        QPen pen;
+        QBrush brush;
+        uint clipEnabled : 1;
+        QRegion clip;
+        QMatrix matrix;
+   } current;
 
     //state info (shared with QD)
     CGAffineTransform orig_xform;
@@ -222,6 +141,10 @@ public:
     bool complexXForm;
     bool cosmeticPen;
 
+    // pixel and cosmetic pen size in user coordinates.
+    QPointF pixelSize;
+    float cosmeticPenSize;
+
     //internal functions
     enum { CGStroke=0x01, CGEOFill=0x02, CGFill=0x04 };
     void drawPath(uchar ops, CGMutablePathRef path = 0);
@@ -229,6 +152,8 @@ public:
     void setFillBrush(const QBrush &brush, const QPointF &origin=QPoint());
     void setStrokePen(const QPen &pen);
     float penOffset();
+    QPointF devicePixelSize(CGContextRef context);
+    float adjustPenWidth(float penWidth);
     inline void setTransform(const QMatrix *matrix=0)
     {
         CGContextConcatCTM(hd, CGAffineTransformInvert(CGContextGetCTM(hd)));

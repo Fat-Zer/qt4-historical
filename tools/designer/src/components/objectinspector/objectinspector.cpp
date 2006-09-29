@@ -21,6 +21,10 @@
 **
 ****************************************************************************/
 
+/*
+TRANSLATOR qdesigner_internal::ObjectInspector
+*/
+
 #include "objectinspector.h"
 
 // sdk
@@ -263,6 +267,7 @@ void ObjectInspector::slotSelectionChanged()
             core()->propertyEditor()->setObject(object);
         }
     }
+    QMetaObject::invokeMethod(m_formWindow->core()->formWindowManager(), "slotUpdateActions");
 }
 
 void ObjectInspector::showEvent(QShowEvent *event)

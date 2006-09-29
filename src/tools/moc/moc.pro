@@ -11,7 +11,7 @@ mac:CONFIG     -= app_bundle incremental
 DEFINES	       += QT_BOOTSTRAPPED QT_MOC QT_NO_CODECS QT_LITE_UNICODE QT_NO_LIBRARY \
 		  QT_NO_STL QT_NO_COMPRESS QT_NO_DATASTREAM QT_NO_TEXTSTREAM \
 		  QT_NO_TEXTCODEC QT_NO_UNICODETABLES QT_NO_THREAD \
-		  QT_NO_REGEXP QT_NO_QOBJECT
+		  QT_NO_REGEXP QT_NO_QOBJECT QT_NO_SYSTEMLOCALE
 win32:DEFINES  += QT_NODLL
 DESTDIR         = ../../../bin
 
@@ -23,13 +23,14 @@ LIBS	        =
 OBJECTS_DIR	= .
 
 
-HEADERS = moc.h preprocessor.h scanner.h symbols.h token.h utils.h \
+HEADERS = moc.h preprocessor.h parser.h symbols.h token.h utils.h \
            generator.h outputrevision.h qdatetime_p.h
 SOURCES =  moc.cpp \
            preprocessor.cpp \
            main.cpp \
            generator.cpp \
-           scanner.cpp
+           parser.cpp \
+           token.cpp
 
 # Qt tools needed to link moc
 SOURCES	+= ../../corelib/global/qglobal.cpp \
@@ -41,7 +42,7 @@ SOURCES	+= ../../corelib/global/qglobal.cpp \
 	   ../../corelib/io/qiodevice.cpp	\
 	   ../../corelib/io/qtemporaryfile.cpp \
 	   ../../corelib/io/qtextstream.cpp \
-	   ../../corelib/kernel/qinternal.cpp \
+           ../../corelib/kernel/qmetatype.cpp    \
 	   ../../corelib/tools/qbytearraymatcher.cpp \
 	   ../../corelib/tools/qchar.cpp		\
 	   ../../corelib/tools/qdatetime.cpp	\

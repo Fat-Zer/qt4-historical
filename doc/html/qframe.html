@@ -2,25 +2,20 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-mac-opensource-src-4.1.5/src/gui/widgets/qframe.cpp -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-mac-opensource-src-4.1.5/src/gui/widgets/qframe.cpp -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-mac-opensource-src-4.2.0/src/gui/widgets/qframe.cpp -->
 <head>
-    <title>Qt 4.1: QFrame Class Reference</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
+  <title>Qt 4.2: QFrame Class Reference</title>
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
+<a name="//apple_ref/cpp/cl//QFrame" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QFrame Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">QFrame Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QFrame class is the base class of widgets that can have a frame. <a href="#details">More...</a></p>
-<pre>#include &lt;QFrame&gt;</pre><p>Inherits <a href="qwidget.html">QWidget</a>.</p>
+<pre> #include &lt;QFrame&gt;</pre><p>Inherits <a href="qwidget.html">QWidget</a>.</p>
 <p>Inherited by <a href="q3frame.html">Q3Frame</a>, <a href="q3progressbar.html">Q3ProgressBar</a>, <a href="qabstractscrollarea.html">QAbstractScrollArea</a>, <a href="qlabel.html">QLabel</a>, <a href="qlcdnumber.html">QLCDNumber</a>, <a href="qsplitter.html">QSplitter</a>, <a href="qstackedwidget.html">QStackedWidget</a>, and <a href="qtoolbox.html">QToolBox</a>.</p>
 <ul>
 <li><a href="qframe-members.html">List of all members, including inherited members</a></li>
@@ -31,6 +26,7 @@ body { background: #ffffff; color: black; }</style>
 <ul>
 <li><div class="fn"/>enum <b><a href="qframe.html#Shadow-enum">Shadow</a></b> { Plain, Raised, Sunken }</li>
 <li><div class="fn"/>enum <b><a href="qframe.html#Shape-enum">Shape</a></b> { NoFrame, Box, Panel, StyledPanel, ..., WinPanel }</li>
+<li><div class="fn"/>enum <b><a href="qframe.html#StyleMask-enum">StyleMask</a></b> { Shadow_Mask, Shape_Mask }</li>
 </ul>
 <a name="properties"></a>
 <h3>Properties</h3>
@@ -47,13 +43,13 @@ body { background: #ffffff; color: black; }</style>
 </td></tr>
 </table></p>
 <ul>
-<li><div class="fn"/>54 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
+<li><div class="fn"/>55 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
 <li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
 </ul>
 <a name="public-functions"></a>
 <h3>Public Functions</h3>
 <ul>
-<li><div class="fn"/><b><a href="qframe.html#QFrame">QFrame</a></b> ( QWidget * <i>parent</i> = 0, Qt::WFlags <i>f</i> = 0 )</li>
+<li><div class="fn"/><b><a href="qframe.html#QFrame">QFrame</a></b> ( QWidget * <i>parent</i> = 0, Qt::WindowFlags <i>f</i> = 0 )</li>
 <li><div class="fn"/><b><a href="qframe.html#dtor.QFrame">~QFrame</a></b> ()</li>
 <li><div class="fn"/>QRect <b><a href="qframe.html#frameRect-prop">frameRect</a></b> () const</li>
 <li><div class="fn"/>Shadow <b><a href="qframe.html#frameShadow-prop">frameShadow</a></b> () const</li>
@@ -70,41 +66,34 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>void <b><a href="qframe.html#midLineWidth-prop">setMidLineWidth</a></b> ( int )</li>
 </ul>
 <ul>
-<li><div class="fn"/>190 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
-<li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
+<li><div class="fn"/>195 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>29 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
-</ul>
-<a name="static-public-members"></a>
-<h3>Static Public Members</h3>
-<ul>
-<li><div class="fn"/>const int <b><a href="qframe.html#Shadow_Mask-var">Shadow_Mask</a></b></li>
-<li><div class="fn"/>const int <b><a href="qframe.html#Shape_Mask-var">Shape_Mask</a></b></li>
-</ul>
-<ul>
-<li><div class="fn"/>4 static public members inherited from <a href="qwidget.html#static-public-members">QWidget</a></li>
-<li><div class="fn"/>4 static public members inherited from <a href="qobject.html#static-public-members">QObject</a></li>
 </ul>
 <h3>Additional Inherited Members</h3>
 <ul>
-<li><div class="fn"/>17 public slots inherited from <a href="qwidget.html#public-slots">QWidget</a></li>
+<li><div class="fn"/>19 public slots inherited from <a href="qwidget.html#public-slots">QWidget</a></li>
 <li><div class="fn"/>1 public slot inherited from <a href="qobject.html#public-slots">QObject</a></li>
 <li><div class="fn"/>1 signal inherited from <a href="qwidget.html#signals">QWidget</a></li>
 <li><div class="fn"/>1 signal inherited from <a href="qobject.html#signals">QObject</a></li>
-<li><div class="fn"/>39 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
+<li><div class="fn"/>4 static public members inherited from <a href="qwidget.html#static-public-members">QWidget</a></li>
+<li><div class="fn"/>5 static public members inherited from <a href="qobject.html#static-public-members">QObject</a></li>
+<li><div class="fn"/>38 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
 <li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
+<li><div class="fn"/>1 protected slot inherited from <a href="qwidget.html#protected-slots">QWidget</a></li>
 </ul>
 <a name="details"></a>
 <hr />
 <h2>Detailed Description</h2>
 <p>The QFrame class is the base class of widgets that can have a frame.</p>
 <p><a href="qmenu.html">QMenu</a> uses this to &quot;raise&quot; the menu above the surrounding screen. <a href="qprogressbar.html">QProgressBar</a> has a &quot;sunken&quot; look. <a href="qlabel.html">QLabel</a> has a flat look. The frames of widgets like these can be changed.</p>
-<pre>&nbsp;   QLabel label(...);
-    label.setFrameStyle(QFrame::Panel | QFrame::Raised);
-    label.setLineWidth(2);
+<pre> QLabel label(...);
+ label.setFrameStyle(QFrame::Panel | QFrame::Raised);
+ label.setLineWidth(2);
 
-    QProgressBar pbar(...);
-    label.setFrameStyle(QFrame::NoFrame);</pre>
+ QProgressBar pbar(...);
+ label.setFrameStyle(QFrame::NoFrame);</pre>
 <p>The QFrame class can also be used directly for creating simple placeholder frames without any contents.</p>
 <p>The frame style is specified by a <a href="qframe.html#Shape-enum">frame shape</a> and a <a href="qframe.html#Shadow-enum">shadow style</a> that is used to visually separate the frame from surrounding widgets. These properties can be set together using the <a href="qframe.html#setFrameStyle">setFrameStyle</a>() function and read with <a href="qframe.html#frameStyle">frameStyle</a>().</p>
 <p>The frame shapes are <a href="qframe.html#Shape-enum">NoFrame</a>, <a href="qframe.html#Shape-enum">Box</a>, <a href="qframe.html#Shape-enum">Panel</a>, <a href="qframe.html#Shape-enum">StyledPanel</a>, <a href="qframe.html#Shape-enum">HLine</a> and <a href="qframe.html#Shape-enum">VLine</a>; the shadow styles are <a href="qframe.html#Shadow-enum">Plain</a>, <a href="qframe.html#Shadow-enum">Raised</a> and <a href="qframe.html#Shadow-enum">Sunken</a>.</p>
@@ -118,6 +107,10 @@ body { background: #ffffff; color: black; }</style>
 <a name="picture"></a><p>This table shows some of the combinations of styles and line widths:</p>
 <p align="center"><img src="images/frames.png" alt="Table of frame styles" /></p><hr />
 <h2>Member Type Documentation</h2>
+<a name="//apple_ref/cpp/tag/QFrame/Shadow" />
+<a name="//apple_ref/cpp/econst/QFrame/Plain" />
+<a name="//apple_ref/cpp/econst/QFrame/Raised" />
+<a name="//apple_ref/cpp/econst/QFrame/Sunken" />
 <h3 class="fn"><a name="Shadow-enum"></a>enum QFrame::Shadow</h3>
 <p>This enum type defines the types of shadow that are used to give a 3D effect to frames.</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
@@ -128,6 +121,20 @@ body { background: #ffffff; color: black; }</style>
 </table></p>
 <p>Shadow interacts with <a href="qframe.html#Shape-enum">QFrame::Shape</a>, the <a href="qframe.html#lineWidth-prop">lineWidth</a>() and the <a href="qframe.html#midLineWidth-prop">midLineWidth</a>(). See the picture of the frames in the main class documentation.</p>
 <p>See also <a href="qframe.html#Shape-enum">QFrame::Shape</a>, <a href="qframe.html#lineWidth-prop">lineWidth</a>(), and <a href="qframe.html#midLineWidth-prop">midLineWidth</a>().</p>
+<a name="//apple_ref/cpp/tag/QFrame/Shape" />
+<a name="//apple_ref/cpp/econst/QFrame/NoFrame" />
+<a name="//apple_ref/cpp/econst/QFrame/Box" />
+<a name="//apple_ref/cpp/econst/QFrame/Panel" />
+<a name="//apple_ref/cpp/econst/QFrame/StyledPanel" />
+<a name="//apple_ref/cpp/econst/QFrame/HLine" />
+<a name="//apple_ref/cpp/econst/QFrame/VLine" />
+<a name="//apple_ref/cpp/econst/QFrame/WinPanel" />
+<a name="//apple_ref/cpp/econst/QFrame/GroupBoxPanel" />
+<a name="//apple_ref/cpp/econst/QFrame/ToolBarPanel" />
+<a name="//apple_ref/cpp/econst/QFrame/MenuBarPanel" />
+<a name="//apple_ref/cpp/econst/QFrame/PopupPanel" />
+<a name="//apple_ref/cpp/econst/QFrame/LineEditPanel" />
+<a name="//apple_ref/cpp/econst/QFrame/TabWidgetPanel" />
 <h3 class="fn"><a name="Shape-enum"></a>enum QFrame::Shape</h3>
 <p>This enum type defines the shapes of frame available.</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
@@ -142,8 +149,24 @@ body { background: #ffffff; color: black; }</style>
 </table></p>
 <p>When it does not call <a href="qstyle.html">QStyle</a>, Shape interacts with <a href="qframe.html#Shadow-enum">QFrame::Shadow</a>, the <a href="qframe.html#lineWidth-prop">lineWidth</a>() and the <a href="qframe.html#midLineWidth-prop">midLineWidth</a>() to create the total result. See the picture of the frames in the main class documentation.</p>
 <p>See also <a href="qframe.html#Shadow-enum">QFrame::Shadow</a>, <a href="qwidget.html#style">QFrame::style</a>(), and <a href="qstyle.html#drawPrimitive">QStyle::drawPrimitive</a>().</p>
+<a name="//apple_ref/cpp/tag/QFrame/StyleMask" />
+<a name="//apple_ref/cpp/econst/QFrame/Shadow_Mask" />
+<a name="//apple_ref/cpp/econst/QFrame/Shape_Mask" />
+<a name="//apple_ref/cpp/econst/QFrame/MShadow" />
+<a name="//apple_ref/cpp/econst/QFrame/MShape" />
+<h3 class="fn"><a name="StyleMask-enum"></a>enum QFrame::StyleMask</h3>
+<p>This enum defines two constants that can be used to extract the two components of <a href="qframe.html#frameStyle">frameStyle</a>():</p>
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
+<tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
+<tr><td valign="top"><tt>QFrame::Shadow_Mask</tt></td><td align="center" valign="top"><tt>0x00f0</tt></td><td valign="top">The <a href="qframe.html#Shadow-enum">Shadow</a> part of <a href="qframe.html#frameStyle">frameStyle</a>()</td></tr>
+<tr><td valign="top"><tt>QFrame::Shape_Mask</tt></td><td align="center" valign="top"><tt>0x000f</tt></td><td valign="top">The <a href="qframe.html#Shape-enum">Shape</a> part of <a href="qframe.html#frameStyle">frameStyle</a>()</td></tr>
+</table></p>
+<p>Normally, you don't need to use these, since <a href="qframe.html#frameShadow-prop">frameShadow</a>() and <a href="qframe.html#frameShape-prop">frameShape</a>() already extract the <a href="qframe.html#Shadow-enum">Shadow</a> and the <a href="qframe.html#Shape-enum">Shape</a> parts of <a href="qframe.html#frameStyle">frameStyle</a>().</p>
+<p>See also <a href="qframe.html#frameStyle">frameStyle</a>() and <a href="qframe.html#setFrameStyle">setFrameStyle</a>().</p>
 <hr />
 <h2>Property Documentation</h2>
+<a name="//apple_ref/cpp/instm/QFrame/frameRect" />
+<a name="//apple_ref/cpp/instm/QFrame/setFrameRect" />
 <h3 class="fn"><a name="frameRect-prop"></a>frameRect : <a href="qrect.html">QRect</a></h3>
 <p>This property holds the frame's rectangle.</p>
 <p>The frame's rectangle is the rectangle the frame is drawn in. By default, this is the entire widget. Setting the rectangle does does <i>not</i> cause a widget update. The frame rectangle is automatically adjusted when the widget changes size.</p>
@@ -153,6 +176,8 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b>QRect frameRect () const</b></li>
 <li><div class="fn"/><b>void setFrameRect ( const QRect &amp; )</b></li>
 </ul>
+<a name="//apple_ref/cpp/instm/QFrame/frameShadow" />
+<a name="//apple_ref/cpp/instm/QFrame/setFrameShadow" />
 <h3 class="fn"><a name="frameShadow-prop"></a>frameShadow : <a href="qframe.html#Shadow-enum">Shadow</a></h3>
 <p>This property holds the frame shadow value from the frame style.</p>
 <p>Access functions:</p>
@@ -161,6 +186,8 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b>void setFrameShadow ( Shadow )</b></li>
 </ul>
 <p>See also <a href="qframe.html#frameStyle">frameStyle</a>() and <a href="qframe.html#frameShape-prop">frameShape</a>().</p>
+<a name="//apple_ref/cpp/instm/QFrame/frameShape" />
+<a name="//apple_ref/cpp/instm/QFrame/setFrameShape" />
 <h3 class="fn"><a name="frameShape-prop"></a>frameShape : <a href="qframe.html#Shape-enum">Shape</a></h3>
 <p>This property holds the frame shape value from the frame style.</p>
 <p>Access functions:</p>
@@ -169,6 +196,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b>void setFrameShape ( Shape )</b></li>
 </ul>
 <p>See also <a href="qframe.html#frameStyle">frameStyle</a>() and <a href="qframe.html#frameShadow-prop">frameShadow</a>().</p>
+<a name="//apple_ref/cpp/instm/QFrame/frameWidth" />
 <h3 class="fn"><a name="frameWidth-prop"></a>frameWidth : const int</h3>
 <p>This property holds the width of the frame that is drawn.</p>
 <p>Note that the frame width depends on the <a href="qframe.html#setFrameStyle">frame style</a>, not only the line width and the mid-line width. For example, the style specified by <a href="qframe.html#Shape-enum">NoFrame</a> always has a frame width of 0, whereas the style <a href="qframe.html#Shape-enum">Panel</a> has a frame width equivalent to the line width.</p>
@@ -177,6 +205,8 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b>int frameWidth () const</b></li>
 </ul>
 <p>See also <a href="qframe.html#lineWidth-prop">lineWidth</a>(), <a href="qframe.html#midLineWidth-prop">midLineWidth</a>(), and <a href="qframe.html#frameStyle">frameStyle</a>().</p>
+<a name="//apple_ref/cpp/instm/QFrame/lineWidth" />
+<a name="//apple_ref/cpp/instm/QFrame/setLineWidth" />
 <h3 class="fn"><a name="lineWidth-prop"></a>lineWidth : int</h3>
 <p>This property holds the line width.</p>
 <p>Note that the <i>total</i> line width for frames used as separators (<a href="qframe.html#Shape-enum">HLine</a> and <a href="qframe.html#Shape-enum">VLine</a>) is specified by <a href="qframe.html#frameWidth-prop">frameWidth</a>.</p>
@@ -187,6 +217,8 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b>void setLineWidth ( int )</b></li>
 </ul>
 <p>See also <a href="qframe.html#midLineWidth-prop">midLineWidth</a> and <a href="qframe.html#frameWidth-prop">frameWidth</a>.</p>
+<a name="//apple_ref/cpp/instm/QFrame/midLineWidth" />
+<a name="//apple_ref/cpp/instm/QFrame/setMidLineWidth" />
 <h3 class="fn"><a name="midLineWidth-prop"></a>midLineWidth : int</h3>
 <p>This property holds the width of the mid-line.</p>
 <p>The default value is 0.</p>
@@ -198,15 +230,19 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qframe.html#lineWidth-prop">lineWidth</a> and <a href="qframe.html#frameWidth-prop">frameWidth</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<h3 class="fn"><a name="QFrame"></a>QFrame::QFrame ( <a href="qwidget.html">QWidget</a> * <i>parent</i> = 0, <a href="qt.html#WFlags-typedef">Qt::WFlags</a> <i>f</i> = 0 )</h3>
+<a name="//apple_ref/cpp/instm/QFrame/QFrame" />
+<h3 class="fn"><a name="QFrame"></a>QFrame::QFrame ( <a href="qwidget.html">QWidget</a> * <i>parent</i> = 0, <a href="qt.html#WindowType-enum">Qt::WindowFlags</a> <i>f</i> = 0 )</h3>
 <p>Constructs a frame widget with frame style <a href="qframe.html#Shape-enum">NoFrame</a> and a 1-pixel frame width.</p>
 <p>The <i>parent</i> and <i>f</i> arguments are passed to the <a href="qwidget.html">QWidget</a> constructor.</p>
+<a name="//apple_ref/cpp/instm/QFrame/~QFrame" />
 <h3 class="fn"><a name="dtor.QFrame"></a>QFrame::~QFrame ()</h3>
 <p>Destroys the frame.</p>
+<a name="//apple_ref/cpp/instm/QFrame/frameStyle" />
 <h3 class="fn"><a name="frameStyle"></a>int QFrame::frameStyle () const</h3>
 <p>Returns the frame style.</p>
 <p>The default value is <a href="qframe.html#Shape-enum">QFrame::NoFrame</a>.</p>
 <p>See also <a href="qframe.html#setFrameStyle">setFrameStyle</a>(), <a href="qframe.html#frameShape-prop">frameShape</a>(), and <a href="qframe.html#frameShadow-prop">frameShadow</a>().</p>
+<a name="//apple_ref/cpp/instm/QFrame/setFrameStyle" />
 <h3 class="fn"><a name="setFrameStyle"></a>void QFrame::setFrameStyle ( int <i>style</i> )</h3>
 <p>Sets the frame style to <i>style</i>.</p>
 <p>The <i>style</i> is the bitwise OR between a frame shape and a frame shadow style. See the picture of the frames in the main class documentation.</p>
@@ -214,17 +250,13 @@ body { background: #ffffff; color: black; }</style>
 <p>If a mid-line width greater than 0 is specified, an additional line is drawn for <a href="qframe.html#Shadow-enum">Raised</a> or <a href="qframe.html#Shadow-enum">Sunken</a> <a href="qframe.html#Shape-enum">Box</a>, <a href="qframe.html#Shape-enum">HLine</a>, and <a href="qframe.html#Shape-enum">VLine</a> frames. The mid-color of the current color group is used for drawing middle lines.</p>
 <p>See also <a href="qframe.html#frameStyle">frameStyle</a>().</p>
 <hr />
-<h2>Member Variable Documentation</h2>
-<h3 class="fn"><a name="Shadow_Mask-var"></a>const int QFrame::Shadow_Mask</h3>
-<p>The mask of the <a href="qframe.html">QFrame</a>'s shadow.</p>
-<p>See also <a href="qframe.html#frameShadow-prop">QFrame::frameShadow</a>.</p>
-<h3 class="fn"><a name="Shape_Mask-var"></a>const int QFrame::Shape_Mask</h3>
-<p>The mask of the <a href="qframe.html">QFrame</a>'s shape.</p>
-<p>See also <a href="qframe.html#frameShape-prop">QFrame::frameShape</a>.</p>
+<h2>Member Function Documentation</h2>
+<h3 class="fn"><a name="QFrame-2"></a>QFrame::QFrame ( <a href="qwidget.html">QWidget</a> * <i>parent</i>, const char * <i>name</i>, <a href="qt.html#WindowType-enum">Qt::WindowFlags</a> <i>f</i> = 0 )</h3>
+<p>Use one of the constructors that doesn't take the <i>name</i> argument and then use <a href="qobject.html#objectName-prop">setObjectName</a>() instead.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

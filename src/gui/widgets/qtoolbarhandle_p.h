@@ -21,8 +21,8 @@
 **
 ****************************************************************************/
 
-#ifndef QTOOLBARHANDLE_P_H
-#define QTOOLBARHANDLE_P_H
+#ifndef QDYNAMICTOOLBARHANDLE_P_H
+#define QDYNAMICTOOLBARHANDLE_P_H
 
 //
 //  W A R N I N G
@@ -69,4 +69,4 @@ public Q_SLOTS:
 
 #endif // QT_NO_TOOLBAR
 
-#endif // QTOOLBARHANDLE_P_H
+#endif // QDYNAMICTOOLBARHANDLE_P_H

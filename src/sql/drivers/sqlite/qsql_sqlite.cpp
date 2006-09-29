@@ -44,8 +44,10 @@
 Q_DECLARE_METATYPE(sqlite3*)
 Q_DECLARE_METATYPE(sqlite3_stmt*)
 
-static QVariant::Type qGetColumnType(const QString &typeName)
+static QVariant::Type qGetColumnType(const QString &tpName)
 {
+    const QString typeName = tpName.toLower();
+
     if (typeName == QLatin1String("integer")
         || typeName == QLatin1String("int"))
         return QVariant::Int;
@@ -81,7 +83,6 @@ public:
     QSQLiteResultPrivate(QSQLiteResult *res);
     void cleanup();
     bool fetchNext(QSqlCachedResult::ValueCache &values, int idx, bool initialFetch);
-    bool isSelect();
     // initializes the recordInfo and the cache
     void initColumns(bool emptyResultset);
     void finalize();
@@ -204,6 +205,7 @@ bool QSQLiteResultPrivate::fetchNext(QSqlCachedResult::ValueCache &values, int i
             // must be first call.
             initColumns(true);
         q->setAt(QSql::AfterLastRow);
+        sqlite3_reset(stmt);
         return false;
     case SQLITE_ERROR:
     case SQLITE_MISUSE:
@@ -524,14 +526,19 @@ QStringList QSQLiteDriver::tables(QSql::TableType type) const
 
     QSqlQuery q(createResult());
     q.setForwardOnly(true);
-    if ((type & QSql::Tables) && (type & QSql::Views))
-        q.exec(QLatin1String("SELECT name FROM sqlite_master WHERE type='table' OR type='view'"));
-    else if (type & QSql::Tables)
-        q.exec(QLatin1String("SELECT name FROM sqlite_master WHERE type='table'"));
-    else if (type & QSql::Views)
-        q.exec(QLatin1String("SELECT name FROM sqlite_master WHERE type='view'"));
 
-    if (q.isActive()) {
+    QString sql = QLatin1String("SELECT name FROM sqlite_master WHERE %1 "
+                                "UNION ALL SELECT name FROM sqlite_temp_master WHERE %1");
+    if ((type & QSql::Tables) && (type & QSql::Views))
+        sql = sql.arg(QLatin1String("type='table' OR type='view'"));
+    else if (type & QSql::Tables)
+        sql = sql.arg(QLatin1String("type='table'"));
+    else if (type & QSql::Views)
+        sql = sql.arg(QLatin1String("type='view'"));
+    else
+        sql.clear();
+
+    if (!sql.isEmpty() && q.exec(sql)) {
         while(q.next())
             res.append(q.value(0).toString());
     }

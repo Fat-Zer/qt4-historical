@@ -465,9 +465,9 @@ QString Q3Process::readLineStdout()
     // get rid of terminating \n or \r\n
     if ( size>0 && a.at( size - 1 ) == '\n' ) {
       if ( size>1 && a.at( size - 2 ) == '\r' )
-	a[size - 2] = '\0';
+	a.chop(2);
       else
-	a[size - 1] = '\0';
+	a.chop(1);
     }
     return QString( a );
 }
@@ -501,9 +501,9 @@ QString Q3Process::readLineStderr()
     // get rid of terminating \n or \r\n
     if ( size>0 && a.at( size - 1 ) == '\n' ) {
       if ( size>1 && a.at( size - 2 ) == '\r' )
-	a[size - 2] = '\0';
+	a.chop(2);
       else
-	a[size - 1] = '\0';
+	a.chop(1);
     }
     return QString( a );
 }

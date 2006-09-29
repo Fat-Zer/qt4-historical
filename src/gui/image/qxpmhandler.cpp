@@ -763,9 +763,9 @@ static QString fbname(const QString &fileName) // get file basename (sort of)
     QString s = fileName;
     if (!s.isEmpty()) {
         int i;
-        if ((i = s.lastIndexOf('/')) >= 0)
+        if ((i = s.lastIndexOf(QLatin1Char('/'))) >= 0)
             s = s.mid(i);
-        if ((i = s.lastIndexOf('\\')) >= 0)
+        if ((i = s.lastIndexOf(QLatin1Char('\\'))) >= 0)
             s = s.mid(i);
         QRegExp r(QLatin1String("[a-zA-Z][a-zA-Z0-9_]*"));
         int p = r.indexIn(s);
@@ -866,10 +866,12 @@ static bool read_xpm_body(
     // create it in correct format (Format_RGB32 vs Format_ARGB32,
     // depending on absence or presence of "c none", respectively)
     if (ncols <= 256) {
-        image = QImage(w, h, QImage::Format_Indexed8);
+        if (image.size() != QSize(w, h) || image.format() != QImage::Format_Indexed8) {
+            image = QImage(w, h, QImage::Format_Indexed8);
+            if (image.isNull())
+                return false;
+        }
         image.setNumColors(ncols);
-        if (image.isNull())
-            return false;
     }
 
     QMap<quint64, int> colorMap;
@@ -910,9 +912,9 @@ static bool read_xpm_body(
             int transparentColor = currentColor;
             if (ncols <= 256) {
                 image.setColor(transparentColor, 0);
-                colorMap.insert(xpmHash((const char *)index.constData()), transparentColor);
+                colorMap.insert(xpmHash(QLatin1String(index.constData())), transparentColor);
             } else {
-                colorMap.insert(xpmHash((const char *)index.constData()), 0);
+                colorMap.insert(xpmHash(QLatin1String(index.constData())), 0);
             }
         } else {
             QRgb c_rgb;
@@ -926,9 +928,9 @@ static bool read_xpm_body(
             }
             if (ncols <= 256) {
                 image.setColor(currentColor, 0xff000000 | c_rgb);
-                colorMap.insert(xpmHash((const char *)index.constData()), currentColor);
+                colorMap.insert(xpmHash(QLatin1String(index.constData())), currentColor);
             } else {
-                colorMap.insert(xpmHash((const char *)index.constData()), 0xff000000 | c_rgb);
+                colorMap.insert(xpmHash(QLatin1String(index.constData())), 0xff000000 | c_rgb);
             }
         }
     }
@@ -937,9 +939,11 @@ static bool read_xpm_body(
         // Now we can create 32-bit image of appropriate format
         QImage::Format format = hasTransparency ?
                                 QImage::Format_ARGB32 : QImage::Format_RGB32;
-        image = QImage(w, h, format);
-        if (image.isNull())
-            return false;
+        if (image.size() != QSize(w, h) || image.format() != format) {
+            image = QImage(w, h, format);
+            if (image.isNull())
+                return false;
+        }
     }
 
     // Read pixels
@@ -964,7 +968,7 @@ static bool read_xpm_body(
                 char b[16];
                 b[cpp] = '\0';
                 for (x=0; x<w && d<end; x++) {
-                    memcpy(b, (char *)d, sizeof(char)*cpp);
+                    memcpy(b, (char *)d, cpp);
                     *p++ = (uchar)colorMap[xpmHash(b)];
                     d += cpp;
                 }
@@ -977,11 +981,20 @@ static bool read_xpm_body(
             char b[16];
             b[cpp] = '\0';
             for (x=0; x<w && d<end; x++) {
-                memcpy(b, (char *)d, sizeof(char)*cpp);
+                memcpy(b, (char *)d, cpp);
                 *p++ = (QRgb)colorMap[xpmHash(b)];
                 d += cpp;
             }
         }
+    }
+
+    if (device) {
+        // Rewind unused characters, and skip to the end of the XPM struct.
+        for (int i = state.size() - 1; i >= 0; --i)
+            device->ungetChar(state[i]);
+        char c;
+        while (device->getChar(&c) && c != ';');
+        while (device->getChar(&c) && c != '\n');
     }
     return true;
 }
@@ -1123,13 +1136,13 @@ static bool write_xpm_image(const QImage &sourceImage, QIODevice *device, const 
         for(x=0; x<w; x++) {
             int color = (int)(*(yp + x));
             QByteArray chars(xpm_color_name(cpp, colorMap[color]));
-            line[cc++] = chars[0];
+            line[cc++] = QLatin1Char(chars[0]);
             if (cpp > 1) {
-                line[cc++] = chars[1];
+                line[cc++] = QLatin1Char(chars[1]);
                 if (cpp > 2) {
-                    line[cc++] = chars[2];
+                    line[cc++] = QLatin1Char(chars[2]);
                     if (cpp > 3) {
-                        line[cc++] = chars[3];
+                        line[cc++] = QLatin1Char(chars[3]);
                     }
                 }
             }

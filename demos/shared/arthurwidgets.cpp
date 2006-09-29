@@ -22,6 +22,7 @@
 ****************************************************************************/
 
 #include "arthurwidgets.h"
+#include <QApplication>
 #include <QPainter>
 #include <QPainterPath>
 #include <QPixmapCache>
@@ -35,8 +36,19 @@
 extern QPixmap cached(const QString &img);
 
 ArthurFrame::ArthurFrame(QWidget *parent)
-    : QWidget(parent), m_prefer_image(false)
+    : QWidget(parent)
+    , m_prefer_image(false)
 {
+#ifdef QT_OPENGL_SUPPORT
+    glw = 0;
+    m_use_opengl = false;
+    QGLFormat f = QGLFormat::defaultFormat();
+    f.setSampleBuffers(true);
+    f.setStencil(true);
+    f.setAlpha(true);
+    f.setAlphaBufferSize(8);
+    QGLFormat::setDefaultFormat(f);
+#endif
     m_document = 0;
     m_show_doc = false;
 
@@ -59,12 +71,35 @@ ArthurFrame::ArthurFrame(QWidget *parent)
 }
 
 
+#ifdef QT_OPENGL_SUPPORT
+void ArthurFrame::enableOpenGL(bool use_opengl)
+{
+    m_use_opengl = use_opengl;
+
+    if (!glw) {
+        glw = new GLWidget(this);
+        glw->setAutoFillBackground(false);
+        glw->disableAutoBufferSwap();
+        QApplication::postEvent(this, new QResizeEvent(size(), size()));
+    }
+
+    if (use_opengl) {
+        glw->show();
+    } else {
+        glw->hide();
+    }
+}
+#endif
+
 void ArthurFrame::paintEvent(QPaintEvent *e)
 {
-
     static QImage *static_image = 0;
     QPainter painter;
-    if (preferImage()) {
+    if (preferImage()
+#ifdef QT_OPENGL_SUPPORT
+        && !m_use_opengl
+#endif
+        ) {
         if (!static_image) {
             static_image = new QImage(size(), QImage::Format_RGB32);
         } else if (static_image->size() != size()) {
@@ -81,7 +116,16 @@ void ArthurFrame::paintEvent(QPaintEvent *e)
         painter.fillRect(0, height() - o, o, o, bg);
         painter.fillRect(width() - o, height() - o, o, o, bg);
     } else {
+#ifdef QT_OPENGL_SUPPORT
+        if (m_use_opengl) {
+            painter.begin(glw);
+            painter.fillRect(QRectF(0, 0, glw->width(), glw->height()), palette().color(backgroundRole()));
+        } else {
+            painter.begin(this);
+        }
+#else
         painter.begin(this);
+#endif
     }
 
     painter.setClipRect(e->rect());
@@ -125,11 +169,29 @@ void ArthurFrame::paintEvent(QPaintEvent *e)
     painter.setBrush(Qt::NoBrush);
     painter.drawPath(clipPath);
 
-    if (preferImage()) {
+    if (preferImage()
+#ifdef QT_OPENGL_SUPPORT
+        && !m_use_opengl
+#endif
+        ) {
         painter.end();
         painter.begin(this);
         painter.drawImage(e->rect(), *static_image, e->rect());
     }
+
+#ifdef QT_OPENGL_SUPPORT
+    if (m_use_opengl && (inherits("PathDeformRenderer") || inherits("PathStrokeRenderer") || inherits("CompositionRenderer") || m_show_doc))
+        glw->swapBuffers();
+#endif
+}
+
+void ArthurFrame::resizeEvent(QResizeEvent *e)
+{
+#ifdef QT_OPENGL_SUPPORT
+    if (glw)
+        glw->setGeometry(0, 0, e->size().width()-1, e->size().height()-1);
+#endif
+    QWidget::resizeEvent(e);
 }
 
 void ArthurFrame::setDescriptionEnabled(bool enabled)
@@ -270,6 +332,7 @@ void ArthurFrame::showSource()
     sourceViewer->setWindowTitle("Source: " + m_sourceFileName.mid(5));
     sourceViewer->setParent(this, Qt::Dialog);
     sourceViewer->setAttribute(Qt::WA_DeleteOnClose);
+    sourceViewer->setLineWrapMode(QTextEdit::NoWrap);
     sourceViewer->setHtml(html);
     sourceViewer->resize(600, 600);
     sourceViewer->show();

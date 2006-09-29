@@ -50,8 +50,8 @@ void MainWindow::openImage(const QString &path)
         QPixmap newImage;
         if (!newImage.load(fileName)) {
             QMessageBox::warning(this, tr("Open Image"),
-                                 tr("The image file could not be loaded."),
-                                 QMessageBox::Cancel, QMessageBox::NoButton);
+                                  tr("The image file could not be loaded."),
+                                  QMessageBox::Cancel);
             return;
         }
         puzzleImage = newImage;
@@ -85,10 +85,10 @@ void MainWindow::setupPuzzle()
         }
     }
 
-    srand(QCursor::pos().x() ^ QCursor::pos().y());
+    qsrand(QCursor::pos().x() ^ QCursor::pos().y());
 
     for (int i = 0; i < piecesList->count(); ++i) {
-        if (int(2.0*rand()/(RAND_MAX+1.0)) == 1) {
+        if (int(2.0*qrand()/(RAND_MAX+1.0)) == 1) {
             QListWidgetItem *item = piecesList->takeItem(i);
             piecesList->insertItem(0, item);
         }

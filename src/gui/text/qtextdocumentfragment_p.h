@@ -99,7 +99,7 @@ class QTextHtmlImporter : public QTextHtmlParser
 {
     struct Table;
 public:
-    QTextHtmlImporter(QTextDocument *_doc, const QString &html);
+    QTextHtmlImporter(QTextDocument *_doc, const QString &html, const QTextDocument *resourceProvider = 0);
 
     void import();
 

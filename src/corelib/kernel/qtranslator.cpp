@@ -30,12 +30,13 @@
 #include "qfileinfo.h"
 #include "qstring.h"
 #include "qcoreapplication.h"
+#include "qcoreapplication_p.h"
 #include "qdatastream.h"
 #include "qfile.h"
 #include "qmap.h"
 #include "qalgorithms.h"
 #include "qhash.h"
-#include "qglobal.h"
+#include "qtranslator_p.h"
 
 #if defined(Q_OS_UNIX)
 #define QT_USE_MMAP
@@ -53,9 +54,8 @@
 
 #include "qobject_p.h"
 
-enum Tag { Tag_End = 1, Tag_SourceText16, Tag_Translation, Tag_Context16,
-           Tag_Hash, Tag_SourceText, Tag_Context, Tag_Comment,
-           Tag_Obsolete1 };
+enum Tag { Tag_End = 1, Tag_SourceText16, Tag_Translation, Tag_Context16, Tag_Obsolete1,
+           Tag_SourceText, Tag_Context, Tag_Comment, Tag_Obsolete2 };
 /*
 $ mcookie
 3cb86418caef9c95cd211cbf60a1bddd
@@ -75,7 +75,7 @@ static bool match(const uchar* found, const char* target, uint len)
     return !found || qstrncmp((const char *)found, target, len) == 0 && target[len] == '\0';
 }
 
-static uint elfHash(const char * name)
+static uint elfHash(const char *name)
 {
     const uchar *k;
     uint h = 0;
@@ -95,17 +95,106 @@ static uint elfHash(const char * name)
     return h;
 }
 
+static int numerus(int n, const uchar *rules, int rulesSize)
+{
+#define CHECK_RANGE \
+    do { \
+        if (i >= rulesSize) \
+            return -1; \
+    } while (0)
+
+    int result = 0;
+    int i = 0;
+
+    if (rulesSize == 0)
+        return 0;
+
+    for (;;) {
+        bool orExprTruthValue = false;
+
+        for (;;) {
+            bool andExprTruthValue = true;
+
+            for (;;) {
+                bool truthValue = true;
+
+                CHECK_RANGE;
+                int opcode = rules[i++];
+
+                int leftOperand = n;
+                if (opcode & MOD_10) {
+                    leftOperand %= 10;
+                } else if (opcode & MOD_100) {
+                    leftOperand %= 100;
+                }
+
+                int op = opcode & OP_MASK;
+
+                CHECK_RANGE;
+                int rightOperand = rules[i++];
+
+                switch (op) {
+                default:
+                    return -1;
+                case EQ:
+                    truthValue = (leftOperand == rightOperand);
+                    break;
+                case LT:
+                    truthValue = (leftOperand < rightOperand);
+                    break;
+                case LEQ:
+                    truthValue = (leftOperand <= rightOperand);
+                    break;
+		case BETWEEN:
+                    int bottom = rightOperand;
+                    CHECK_RANGE;
+                    int top = rules[i++];
+                    truthValue = (leftOperand >= bottom && leftOperand <= top);
+                }
+
+                if (opcode & NOT)
+                    truthValue = !truthValue;
+
+                andExprTruthValue = andExprTruthValue && truthValue;
+
+                if (i == rulesSize || rules[i] != AND)
+                    break;
+                ++i;
+            }
+
+            orExprTruthValue = orExprTruthValue || andExprTruthValue;
+
+            if (i == rulesSize || rules[i] != OR)
+                break;
+            ++i;
+        }
+
+        if (orExprTruthValue)
+            return result;
+
+        ++result;
+
+        if (i == rulesSize)
+            return result;
+
+        if (rules[i++] != NEWRULE)
+            break;
+    }
+    return -1;
+}
+
 extern bool qt_detectRTLLanguage();
 
 class QTranslatorPrivate : public QObjectPrivate
 {
     Q_DECLARE_PUBLIC(QTranslator)
 public:
-    enum { Contexts = 0x2f, Hashes = 0x42, Messages = 0x69 };
+    enum { Contexts = 0x2f, Hashes = 0x42, Messages = 0x69, NumerusRules = 0x88 };
 
-    QTranslatorPrivate() : used_mmap(0), unmapPointer(0), unmapLength(0),
-       messageArray(0), offsetArray(0), contextArray(0), messageLength(0),
-       offsetLength(0), contextLength(0) {}
+    QTranslatorPrivate()
+        : used_mmap(0), unmapPointer(0), unmapLength(0), messageArray(0), offsetArray(0),
+          contextArray(0), numerusRulesArray(0), messageLength(0), offsetLength(0),
+          contextLength(0), numerusRulesLength(0) {}
 
     // for mmap'ed files, this is what needs to be unmapped.
     uint used_mmap : 1;
@@ -116,15 +205,17 @@ public:
     const uchar *messageArray;
     const uchar *offsetArray;
     const uchar *contextArray;
+    const uchar *numerusRulesArray;
     uint messageLength;
     uint offsetLength;
     uint contextLength;
+    uint numerusRulesLength;
 
     bool do_load(const uchar *data, int len);
-
+    QString do_translate(const char *context, const char *sourceText, const char *comment,
+                         int n) const;
     void clear();
 };
-
 
 /*!
     \class QTranslator
@@ -186,7 +277,8 @@ public:
     translations.
 
     \sa QApplication::installTranslator(), QApplication::removeTranslator(),
-        QObject::tr(), QApplication::translate()
+        QObject::tr(), QApplication::translate(), {I18N Example},
+	{Hello tr() Example}, {Arrow Pad Example}, {Troll Print Example}
 */
 
 /*!
@@ -356,9 +448,9 @@ bool QTranslator::load(const QString & filename, const QString & directory,
 
     if (!ok) {
         QFile file(realname);
-        if (!file.exists())
-            return false;
         d->unmapLength = file.size();
+        if (!d->unmapLength)
+            return false;
         d->unmapPointer = new char[d->unmapLength];
 
         if (file.open(QIODevice::ReadOnly))
@@ -412,10 +504,8 @@ static quint32 read32(const uchar *data)
 
 bool QTranslatorPrivate::do_load(const uchar *data, int len)
 {
-    if (len < MagicLength || memcmp(data, magic, MagicLength) != 0) {
-        clear();
+    if (!data || len < MagicLength || memcmp(data, magic, MagicLength) != 0)
         return false;
-    }
 
     bool ok = true;
     const uchar *end = data + len;
@@ -442,6 +532,9 @@ bool QTranslatorPrivate::do_load(const uchar *data, int len)
         } else if (tag == QTranslatorPrivate::Messages) {
             messageArray = data;
             messageLength = blockLen;
+        } else if (tag == QTranslatorPrivate::NumerusRules) {
+            numerusRulesArray = data;
+            numerusRulesLength = blockLen;
         }
 
         data += blockLen;
@@ -450,45 +543,12 @@ bool QTranslatorPrivate::do_load(const uchar *data, int len)
     return ok;
 }
 
-/*!
-    Empties this translator of all contents.
-
-    This function works with stripped translator files.
-*/
-
-void QTranslatorPrivate::clear()
-{
-    if (unmapPointer && unmapLength) {
-#if defined(QT_USE_MMAP)
-        if(used_mmap)
-            munmap(unmapPointer, unmapLength);
-        else
-#else
-            delete [] unmapPointer;
-#endif
-        unmapPointer = 0;
-        unmapLength = 0;
-    }
-
-    messageArray = 0;
-    contextArray = 0;
-    offsetArray = 0;
-    messageLength = 0;
-    contextLength = 0;
-    offsetLength = 0;
-
-    QCoreApplication * const application = QCoreApplication::instance();
-    if (application) {
-        QEvent * const event = new QEvent(QEvent::LanguageChange);
-        QCoreApplication::postEvent(application, event);
-    }
-}
-
-
-static QString getMessage(const uchar *m, const uchar *end, const char *context, const char *sourceText, const char *comment)
+static QString getMessage(const uchar *m, const uchar *end, const char *context,
+                          const char *sourceText, const char *comment, int numerus)
 {
     const uchar *tn = 0;
     uint tn_length = 0;
+    int currentNumerus = -1;
 
     for (;;) {
         uchar tag = 0;
@@ -497,17 +557,19 @@ static QString getMessage(const uchar *m, const uchar *end, const char *context,
         switch((Tag)tag) {
         case Tag_End:
             goto end;
-        case Tag_Translation:
-            tn_length = read32(m);
-            if (tn_length % 1)
+        case Tag_Translation: {
+            int len = read32(m);
+            if (len % 1)
                 return QString();
             m += 4;
-            if (tn_length == 0xffffffff)
-                return QString();
-            tn = m;
-            m += tn_length;
+            if (++currentNumerus == numerus) {
+                tn_length = len;
+                tn = m;
+            }
+            m += len;
             break;
-        case Tag_Hash:
+        }
+        case Tag_Obsolete1:
             m += 4;
             break;
         case Tag_SourceText: {
@@ -549,17 +611,9 @@ end:
     return str;
 }
 
-
-/*!
-    Returns the translation for the key (\a context, \a sourceText,
-    \a comment). If none is found, also tries (\a context, \a
-    sourceText, ""). If that still fails, returns an empty string.
-
-    \sa load()
-*/
-QString QTranslator::translate(const char *context, const char *sourceText, const char *comment) const
+QString QTranslatorPrivate::do_translate(const char *context, const char *sourceText,
+                                         const char *comment, int n) const
 {
-    Q_D(const QTranslator);
     if (context == 0)
         context = "";
     if (sourceText == 0)
@@ -567,22 +621,22 @@ QString QTranslator::translate(const char *context, const char *sourceText, cons
     if (comment == 0)
         comment = "";
 
-    if (!d->offsetLength)
+    if (!offsetLength)
         return QString();
 
     /*
         Check if the context belongs to this QTranslator. If many
         translators are installed, this step is necessary.
     */
-    if (d->contextLength) {
-        quint16 hTableSize = read16(d->contextArray);
+    if (contextLength) {
+        quint16 hTableSize = read16(contextArray);
         uint g = elfHash(context) % hTableSize;
-        const uchar *c = d->contextArray + 2 + (g << 1);
+        const uchar *c = contextArray + 2 + (g << 1);
         quint16 off = read16(c);
         c += 2;
         if (off == 0)
             return QString();
-        c = d->contextArray + (2 + (hTableSize << 1) + (off << 1));
+        c = contextArray + (2 + (hTableSize << 1) + (off << 1));
 
         for (;;) {
             quint8 len = read8(c++);
@@ -594,14 +648,18 @@ QString QTranslator::translate(const char *context, const char *sourceText, cons
         }
     }
 
-    size_t numItems = d->offsetLength / (2 * sizeof(quint32));
+    size_t numItems = offsetLength / (2 * sizeof(quint32));
     if (!numItems)
         return QString();
+
+    int numerus = 0;
+    if (n >= 0)
+        numerus = ::numerus(n, numerusRulesArray, numerusRulesLength);
 
     for (;;) {
         quint32 h = elfHash(QByteArray(sourceText) + comment);
 
-        const uchar *start = d->offsetArray;
+        const uchar *start = offsetArray;
         const uchar *end = start + ((numItems-1) << 3);
         while (start <= end) {
             const uchar *middle = start + (((end - start) >> 4) << 3);
@@ -618,17 +676,18 @@ QString QTranslator::translate(const char *context, const char *sourceText, cons
 
         if (start <= end) {
             // go back on equal key
-            while (start != d->offsetArray && read32(start) == read32(start-8))
+            while (start != offsetArray && read32(start) == read32(start-8))
                 start -= 8;
 
-            while (start < d->offsetArray + d->offsetLength) {
+            while (start < offsetArray + offsetLength) {
                 quint32 rh = read32(start);
                 start += 4;
                 if (rh != h)
                     break;
                 quint32 ro = read32(start);
                 start += 4;
-                QString tn = getMessage(d->messageArray + ro, d->messageArray + d->messageLength, context, sourceText, comment);
+                QString tn = getMessage(messageArray + ro, messageArray + messageLength, context,
+                                        sourceText, comment, numerus);
                 if (!tn.isNull())
                     return tn;
             }
@@ -641,6 +700,76 @@ QString QTranslator::translate(const char *context, const char *sourceText, cons
 }
 
 /*!
+    Empties this translator of all contents.
+
+    This function works with stripped translator files.
+*/
+
+void QTranslatorPrivate::clear()
+{
+    Q_Q(QTranslator);
+    if (unmapPointer && unmapLength) {
+#if defined(QT_USE_MMAP)
+        if (used_mmap)
+            munmap(unmapPointer, unmapLength);
+        else
+#endif
+            delete [] unmapPointer;
+    }
+
+    unmapPointer = 0;
+    unmapLength = 0;
+    messageArray = 0;
+    contextArray = 0;
+    offsetArray = 0;
+    numerusRulesArray = 0;
+    messageLength = 0;
+    contextLength = 0;
+    offsetLength = 0;
+    numerusRulesLength = 0;
+
+    if (QCoreApplicationPrivate::isTranslatorInstalled(q))
+        QCoreApplication::postEvent(QCoreApplication::instance(),
+                                    new QEvent(QEvent::LanguageChange));
+}
+
+/*!
+    Returns the translation for the key (\a context, \a sourceText,
+    \a comment). If none is found, also tries (\a context, \a
+    sourceText, ""). If that still fails, returns an empty string.
+
+    \sa load()
+*/
+QString QTranslator::translate(const char *context, const char *sourceText, const char *comment) const
+{
+    Q_D(const QTranslator);
+    return d->do_translate(context, sourceText, comment, -1);
+}
+
+
+/*!
+    \overload
+
+    Returns the translation for the key (\a context, \a sourceText,
+    \a comment). If none is found, also tries (\a context, \a
+    sourceText, ""). If that still fails, returns an empty string.
+
+    If \a n is not -1, it is used to choose an appropriate form for
+    the translation (e.g. "%n file found" vs. "%n files found").
+
+    \sa load()
+*/
+QString QTranslator::translate(const char *context, const char *sourceText, const char *comment,
+                               int n) const
+{
+    Q_D(const QTranslator);
+    // this step is necessary because the 3-parameter translate() overload is virtual
+    if (n == -1)
+        return translate(context, sourceText, comment);
+    return d->do_translate(context, sourceText, comment, n);
+}
+
+/*!
     Returns true if this translator is empty, otherwise returns false.
     This function works with stripped and unstripped translation files.
 */
@@ -650,7 +779,6 @@ bool QTranslator::isEmpty() const
     return !d->unmapPointer && !d->unmapLength && !d->messageArray &&
            !d->offsetArray && !d->contextArray;
 }
-
 
 /*!
     \fn QString QTranslator::find(const char *context, const char *sourceText, const char * comment = 0) const

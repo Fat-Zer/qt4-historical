@@ -219,7 +219,7 @@ QPoint SortingBox::initialItemPosition(const QPainterPath &path)
 
 QPoint SortingBox::randomItemPosition()
 {
-    return QPoint(rand() % (width() - 120), rand() % (height() - 120));
+    return QPoint(qrand() % (width() - 120), qrand() % (height() - 120));
 }
 
 QColor SortingBox::initialItemColor()
@@ -229,5 +229,5 @@ QColor SortingBox::initialItemColor()
 
 QColor SortingBox::randomItemColor()
 {
-    return QColor::fromHsv(rand() % 256, 255, 190);
+    return QColor::fromHsv(qrand() % 256, 255, 190);
 }

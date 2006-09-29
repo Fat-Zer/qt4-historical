@@ -7,6 +7,7 @@ HEADERS +=  \
 	tools/qbytearraymatcher.h \
 	tools/qcache.h \
 	tools/qchar.h \
+	tools/qcontainerfwd.h \
 	tools/qdatetime.h \
 	tools/qdatetime_p.h \
 	tools/qhash.h \
@@ -21,6 +22,7 @@ HEADERS +=  \
 	tools/qqueue.h \
         tools/qrect.h \
 	tools/qregexp.h \
+	tools/qringbuffer_p.h \
 	tools/qshareddata.h \
 	tools/qset.h \
         tools/qsize.h \
@@ -28,6 +30,7 @@ HEADERS +=  \
 	tools/qstring.h \
 	tools/qstringlist.h \
 	tools/qstringmatcher.h \
+	tools/qtimeline.h \
 	tools/qunicodetables_p.h \
 	tools/qvarlengtharray.h \
 	tools/qvector.h
@@ -53,6 +56,7 @@ SOURCES += \
 	tools/qstring.cpp \
 	tools/qstringlist.cpp \
 	tools/qstringmatcher.cpp \
+	tools/qtimeline.cpp \
 	tools/qunicodetables.cpp \
 	tools/qvector.cpp \
         tools/qvsnprintf.cpp
@@ -78,4 +82,4 @@ contains(QT_CONFIG, zlib) {
 #  win32:LIBS += libz.lib
 }
 
-unix:LIBS += -lm
+!macx-icc:unix:LIBS += -lm

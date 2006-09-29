@@ -34,24 +34,32 @@
 # include "private/qfactoryloader_p.h"
 #endif
 #include "qstringlist.h"
+
+#ifdef Q_OS_UNIX
+#  include "qiconvcodec_p.h"
+#endif
+
 #include "qutfcodec_p.h"
 #include "qsimplecodec_p.h"
 #include "qlatincodec_p.h"
 #ifndef QT_NO_CODECS
-#include "qtsciicodec_p.h"
-#include "qisciicodec_p.h"
-#include "../../plugins/codecs/cn/qgb18030codec.h"
-#include "../../plugins/codecs/jp/qeucjpcodec.h"
-#include "../../plugins/codecs/jp/qjiscodec.h"
-#include "../../plugins/codecs/jp/qsjiscodec.h"
-#include "../../plugins/codecs/kr/qeuckrcodec.h"
-#include "../../plugins/codecs/tw/qbig5codec.h"
+#  include "qtsciicodec_p.h"
+#  include "qisciicodec_p.h"
+#  if defined(QT_NO_ICONV) && !defined(QT_BOOTSTRAPPED)
+// no iconv(3) support, must build all codecs into the library
+#    include "../../plugins/codecs/cn/qgb18030codec.h"
+#    include "../../plugins/codecs/jp/qeucjpcodec.h"
+#    include "../../plugins/codecs/jp/qjiscodec.h"
+#    include "../../plugins/codecs/jp/qsjiscodec.h"
+#    include "../../plugins/codecs/kr/qeuckrcodec.h"
+#    include "../../plugins/codecs/tw/qbig5codec.h"
+#  endif // QT_NO_ICONV
+#  if defined(Q_WS_X11) && !defined(QT_BOOTSTRAPPED)
+#    include "qfontlaocodec_p.h"
+#    include "../../plugins/codecs/jp/qfontjpcodec.h"
+#  endif
 #endif // QT_NO_CODECS
-#ifdef Q_WS_X11
-#include "qfontlaocodec_p.h"
-#include "../../plugins/codecs/jp/qfontjpcodec.h"
-#endif
-#include "private/qlocale_p.h"
+#include "qlocale.h"
 #include "private/qmutexpool_p.h"
 
 #include <stdlib.h>
@@ -59,7 +67,7 @@
 #ifndef Q_OS_TEMP
 #include <locale.h>
 #endif
-#if defined(_XOPEN_UNIX) && !defined(Q_OS_QNX6)
+#if defined (_XOPEN_UNIX) && !defined(Q_OS_QNX6) && !defined(Q_OS_OSF)
 #include <langinfo.h>
 #endif
 
@@ -108,7 +116,7 @@ static QTextCodec *createForName(const QByteArray &name)
     QStringList keys = l->keys();
     for (int i = 0; i < keys.size(); ++i) {
         if (nameMatch(name, keys.at(i).toLatin1())) {
-            QByteArray realName = keys.at(i).toLatin1();
+            QString realName = keys.at(i);
             if (QTextCodecFactoryInterface *factory
                 = qobject_cast<QTextCodecFactoryInterface*>(l->instance(realName))) {
                 return factory->create(realName);
@@ -163,6 +171,7 @@ QTextCodecCleanup::~QTextCodecCleanup()
         delete all->takeFirst();
     delete all;
     all = 0;
+    localeMapper = 0;
 
     destroying_is_ok = false;
 }
@@ -193,7 +202,7 @@ QWindowsLocalCodec::~QWindowsLocalCodec()
 }
 
 
-QString QWindowsLocalCodec::convertToUnicode(const char* chars, int len, ConverterState * /*state*/) const
+QString QWindowsLocalCodec::convertToUnicode(const char *chars, int len, ConverterState * /*state*/) const
 {
     return qt_winMB2QString(chars, len);
 }
@@ -309,7 +318,7 @@ static QTextCodec * ru_RU_hack(const char * i) {
     } else {
         // something else again... let's assume... *throws dice*
         ru_RU_codec = QTextCodec::codecForName("KOI8-R");
-        qWarning("QTextCodec: using KOI8-R, probe failed (%02x %02x %s)",
+        qWarning("QTextCodec: Using KOI8-R, probe failed (%02x %02x %s)",
                   koi8r, latin5, i);
     }
     setlocale(LC_CTYPE, origlocale);
@@ -340,15 +349,23 @@ static void setupLocaleMapper()
     localeMapper = QTextCodec::codecForName("System");
 #else
 
-#if defined (_XOPEN_UNIX) && !defined(Q_OS_QNX6) && !defined(Q_OS_OSF) && !defined(Q_OS_MAC)
-    char *charset = nl_langinfo (CODESET);
-    if (charset)
-      localeMapper = QTextCodec::codecForName(charset);
+#ifndef QT_NO_ICONV
+    localeMapper = QTextCodec::codecForName("System");
+#endif
+
+#if defined (_XOPEN_UNIX) && !defined(Q_OS_QNX6) && !defined(Q_OS_OSF)
+    if (!localeMapper) {
+        char *charset = nl_langinfo (CODESET);
+        if (charset)
+            localeMapper = QTextCodec::codecForName(charset);
+    }
 #endif
 
     if (!localeMapper) {
-        // Very poorly defined and followed standards causes lots of code
-        // to try to get all the cases...
+        // Very poorly defined and followed standards causes lots of
+        // code to try to get all the cases... This logic is
+        // duplicated in QIconvCodec, so if you change it here, change
+        // it there too.
 
         // Try to determine locale codeset from locale name assigned to
         // LC_CTYPE category.
@@ -469,9 +486,12 @@ static void setup()
     // create the cleanup object to cleanup all codecs on exit
     (void) createQTextCodecCleanup();
 
-#ifdef Q_WS_X11
+#ifndef QT_NO_CODECS
+#  if defined(Q_WS_X11) && !defined(QT_BOOTSTRAPPED)
+    // no font codecs when bootstrapping
     (void)new QFontLaoCodec;
-#ifndef QT_BOOTSTRAPPED
+#    if defined(QT_NO_ICONV)
+    // no iconv(3) support, must build all codecs into the library
     (void)new QFontGb2312Codec;
     (void)new QFontGbkCodec;
     (void)new QFontGb18030_0Codec;
@@ -480,9 +500,9 @@ static void setup()
     (void)new QFontKsc5601Codec;
     (void)new QFontBig5hkscsCodec;
     (void)new QFontBig5Codec;
-#endif
-#endif
-#ifndef QT_NO_CODECS
+#    endif // QT_NO_ICONV && !QT_BOOTSTRAPPED
+#  endif // Q_WS_X11
+
     (void)new QTsciiCodec;
 
     for (int i = 0; i < 9; ++i)
@@ -491,7 +511,8 @@ static void setup()
     for (int i = 0; i < QSimpleTextCodec::numSimpleCodecs; ++i)
         (void)new QSimpleTextCodec(i);
 
-#ifndef QT_BOOTSTRAPPED
+#  if defined(QT_NO_ICONV) && !defined(QT_BOOTSTRAPPED)
+    // no asian codecs when bootstrapping, sorry
     (void)new QGb18030Codec;
     (void)new QGbkCodec;
     (void)new QGb2312Codec;
@@ -501,7 +522,7 @@ static void setup()
     (void)new QEucKrCodec;
     (void)new QBig5Codec;
     (void)new QBig5hkscsCodec;
-#endif
+#  endif // QT_NO_ICONV && !QT_BOOTSTRAPPED
 #endif // QT_NO_CODECS
 
 #ifdef Q_OS_WIN32
@@ -514,6 +535,11 @@ static void setup()
     (void)new QLatin15Codec;
     (void)new QLatin1Codec;
     (void)new QUtf8Codec;
+
+#if defined(Q_OS_UNIX) && !defined(QT_NO_ICONV) && !defined(QT_BOOTSTRAPPED)
+    // QIconvCodec depends on the UTF-16 codec, so it needs to be created last
+    (void) new QIconvCodec();
+#endif
 
     if (!localeMapper)
         setupLocaleMapper();
@@ -666,7 +692,7 @@ static void setup()
     available as a plugin; see \l{How to Create Qt Plugins} for
     details.
 
-    \sa QTextStream, QTextDecoder, QTextEncoder
+    \sa QTextStream, QTextDecoder, QTextEncoder, {Codecs Example}
 */
 
 /*!
@@ -714,7 +740,7 @@ QTextCodec::QTextCodec()
 QTextCodec::~QTextCodec()
 {
     if (!destroying_is_ok)
-        qWarning("QTextCodec::~QTextCodec() called by application");
+        qWarning("QTextCodec::~QTextCodec: Called by application");
     if (all)
         all->removeAll(this);
 }
@@ -798,10 +824,10 @@ QList<QByteArray> QTextCodec::availableCodecs()
     QFactoryLoader *l = loader();
     QStringList keys = l->keys();
     for (int i = 0; i < keys.size(); ++i) {
-        if (!keys.at(i).startsWith("MIB: ")) {
+        if (!keys.at(i).startsWith(QLatin1String("MIB: "))) {
             QByteArray name = keys.at(i).toLatin1();
             if (!codecs.contains(name))
-                codecs += keys.at(i).toLatin1();
+                codecs += name;
         }
     }
 #endif
@@ -826,7 +852,7 @@ QList<int> QTextCodec::availableMibs()
     QFactoryLoader *l = loader();
     QStringList keys = l->keys();
     for (int i = 0; i < keys.size(); ++i) {
-        if (keys.at(i).startsWith("MIB: ")) {
+        if (keys.at(i).startsWith(QLatin1String("MIB: "))) {
             int mib = keys.at(i).mid(5).toInt();
             if (!codecs.contains(mib))
                 codecs += mib;
@@ -855,7 +881,14 @@ void QTextCodec::setCodecForLocale(QTextCodec *c)
     localeMapper = c;
 }
 
-/*! Returns a pointer to the codec most suitable for this locale. */
+/*!
+    Returns a pointer to the codec most suitable for this locale.
+
+    On Windows, the codec will be based on a system locale. On Unix
+    systems, starting with Qt 4.2, the codec will be using the \e
+    iconv library. Note that in both cases the codec's name will be
+    "System".
+*/
 
 QTextCodec* QTextCodec::codecForLocale()
 {
@@ -937,7 +970,7 @@ QList<QByteArray> QTextCodec::aliases() const
 
 /*!
     Creates a QTextDecoder which stores enough state to decode chunks
-    of char* data to create chunks of Unicode data.
+    of \c{char *} data to create chunks of Unicode data.
 
     The caller is responsible for deleting the returned object.
 */
@@ -949,7 +982,7 @@ QTextDecoder* QTextCodec::makeDecoder() const
 
 /*!
     Creates a QTextEncoder which stores enough state to encode chunks
-    of Unicode data as char* data.
+    of Unicode data as \c{char *} data.
 
     The caller is responsible for deleting the returned object.
 */
@@ -1033,7 +1066,13 @@ bool QTextCodec::canEncode(const QString& s) const
 */
 const char *QTextCodec::locale()
 {
-    return QLocalePrivate::systemLocaleName();
+    static char locale[6];
+    QByteArray l = QLocale::system().name().toLatin1();
+    int len = qMin(l.length(), 5);
+    memcpy(locale, l.constData(), len);
+    locale[len+1] = '\0';
+
+    return locale;
 }
 
 /*!
@@ -1065,7 +1104,7 @@ QString QTextCodec::toUnicode(const QByteArray& a, int len) const
 
     \a chars contains the source characters.
 */
-QString QTextCodec::toUnicode(const char* chars) const
+QString QTextCodec::toUnicode(const char *chars) const
 {
     int len = qstrlen(chars);
     return convertToUnicode(chars, len, 0);
@@ -1166,7 +1205,7 @@ QTextDecoder::~QTextDecoder()
 }
 
 /*!
-    \fn QString QTextDecoder::toUnicode(const char* chars, int len)
+    \fn QString QTextDecoder::toUnicode(const char *chars, int len)
 
     Converts the first \a len bytes in \a chars to Unicode, returning
     the result.
@@ -1175,7 +1214,7 @@ QTextDecoder::~QTextDecoder()
     encoding is at the end of the characters), the decoder remembers
     enough state to continue with the next call to this function.
 */
-QString QTextDecoder::toUnicode(const char* chars, int len)
+QString QTextDecoder::toUnicode(const char *chars, int len)
 {
     return c->toUnicode(chars, len, &state);
 }
@@ -1196,7 +1235,7 @@ QString QTextDecoder::toUnicode(const QByteArray &ba)
     \fn QTextCodec* QTextCodec::codecForTr()
 
     Returns the codec used by QObject::tr() on its argument. If this
-    function returns 0 (the default), tr() assumes Latin1.
+    function returns 0 (the default), tr() assumes Latin-1.
 
     \sa setCodecForTr()
 */
@@ -1206,19 +1245,18 @@ QString QTextDecoder::toUnicode(const QByteArray &ba)
     \nonreentrant
 
     Sets the codec used by QObject::tr() on its argument to \a c. If
-    \a c is 0 (the default), tr() assumes Latin1.
+    \a c is 0 (the default), tr() assumes Latin-1.
 
-    If the literal quoted text in the program is not in the Latin1
+    If the literal quoted text in the program is not in the Latin-1
     encoding, this function can be used to set the appropriate
     encoding. For example, software developed by Korean programmers
     might use eucKR for all the text in the program, in which case the
     main() function might look like this:
 
     \code
-        int main(int argc, char** argv)
+        int main(int argc, char *argv[])
         {
             QApplication app(argc, argv);
-            ... install any additional codecs ...
             QTextCodec::setCodecForTr(QTextCodec::codecForName("eucKR"));
             ...
         }
@@ -1239,27 +1277,25 @@ QString QTextDecoder::toUnicode(const QByteArray &ba)
     \fn QTextCodec* QTextCodec::codecForCStrings()
 
     Returns the codec used by QString to convert to and from \c{const
-    char*} and QByteArrays. If this function returns 0 (the default),
-    QString assumes Latin1.
+    char *} and QByteArrays. If this function returns 0 (the default),
+    QString assumes Latin-1.
 
     \sa setCodecForCStrings()
 */
 
 /*!
-    \fn void QTextCodec::setCodecForCStrings(QTextCodec *c)
+    \fn void QTextCodec::setCodecForCStrings(QTextCodec *codec)
     \nonreentrant
 
     Sets the codec used by QString to convert to and from \c{const
-    char*} and QByteArrays. If \a c is 0 (the default), QString
-    assumes Latin1.
+    char *} and QByteArrays. If the \a codec is 0 (the default),
+    QString assumes Latin-1.
 
     \warning Some codecs do not preserve the characters in the ASCII
-    range (0x00 to 0x7f).  For example, the Japanese Shift-JIS
-    encoding maps the backslash character (0x5a) to the Yen character.
-    This leads to unexpected results when using the backslash
-    character to escape characters in strings used in e.g. regular
-    expressions. Use QString::fromLatin1() to preserve characters in
-    the ASCII range when needed.
+    range (0x00 to 0x7F). For example, the Japanese Shift-JIS
+    encoding maps the backslash character (0x5A) to the Yen
+    character. To avoid undesirable side-effects, we recommend
+    avoiding such codecs with setCodecsForCString().
 
     \sa codecForCStrings(), setCodecForTr()
 */
@@ -1270,7 +1306,7 @@ QString QTextDecoder::toUnicode(const QByteArray &ba)
 QTextCodec *QTextCodec::codecForHtml(const QByteArray &ba)
 {
     // determine charset
-    int mib = 4; // Latin1
+    int mib = 4; // Latin-1
     int pos;
     QTextCodec *c = 0;
 

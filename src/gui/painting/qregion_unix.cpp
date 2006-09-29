@@ -26,6 +26,7 @@
 #include "qpolygon.h"
 #include "qbuffer.h"
 #include "qimage.h"
+#include <qdebug.h>
 #include "qbitmap.h"
 #include <stdlib.h>
 
@@ -1137,7 +1138,7 @@ static bool RectInRegion(register QRegionPrivate *region, int rx, int ry, uint r
     register QRect *prect = &rect;
     int partIn, partOut;
 
-    if (region->numRects == 0 || !EXTENTCHECK(&region->extents, prect))
+    if (!region || region->numRects == 0 || !EXTENTCHECK(&region->extents, prect))
         return RectangleOut;
 
     partOut = false;
@@ -1880,11 +1881,10 @@ static void PtsToRegion(register int numFullPtBlocks, register int iCurPtBlock,
                 if (pts->x() == pts[1].x())
                     continue;
                 if (numRects && pts->x() == rects->left() && pts->y() == rects->bottom() + 1
-                    && pts[1].x() == rects->right()
-                    && (numRects == 1 || rects[-1].top() != rects->top())
-                    && (i && pts[2].y() > pts[1].y())) {
-                    rects->setBottom(pts[1].y());
-                    continue;
+                    && pts[1].x() == rects->right()+1 && (numRects == 1 || rects[-1].top() != rects->top())
+                                                          && (i && pts[2].y() > pts[1].y())) {
+                        rects->setBottom(pts[1].y());
+                        continue;
                 }
                 ++numRects;
                 ++rects;
@@ -2092,7 +2092,7 @@ QRegionPrivate *qt_bitmapToRegion(const QBitmap& bitmap)
             UnionRectWithRegion(&xr, region, *region); \
         }
 
-    const uint zero = 0;
+    const uchar zero = 0;
     bool little = image.format() == QImage::Format_MonoLSB;
 
     int x,
@@ -2100,7 +2100,7 @@ QRegionPrivate *qt_bitmapToRegion(const QBitmap& bitmap)
     for (y = 0; y < image.height(); ++y) {
         uchar *line = image.scanLine(y);
         int w = image.width();
-        uchar all=zero;
+        uchar all = zero;
         int prev1 = -1;
         for (x = 0; x < w;) {
             uchar byte = line[x / 8];
@@ -2313,9 +2313,7 @@ QRegion &QRegion::operator=(const QRegion &r)
 
 
 /*!
-    Returns a \link shclass.html deep copy\endlink of the region.
-
-    \sa detach()
+    \internal
 */
 
 QRegion QRegion::copy() const
@@ -2346,18 +2344,21 @@ QRegion QRegion::copy() const
     Example:
     \code
         QRegion r1(10, 10, 20, 20);
+        r1.isNull();                // false
+        r1.isEmpty();               // false
+
         QRegion r2(40, 40, 20, 20);
         QRegion r3;
-        r1.isNull();             // false
-        r1.isEmpty();            // false
-        r3.isNull();             // true
-        r3.isEmpty();            // true
-        r3 = r1.intersect(r2); // r3 = intersection of r1 and r2
-        r3.isNull();             // false
-        r3.isEmpty();            // true
-        r3 = r1.unite(r2);     // r3 = union of r1 and r2
-        r3.isNull();             // false
-        r3.isEmpty();            // false
+        r3.isNull();                // true
+        r3.isEmpty();               // true
+
+        r3 = r1.intersected(r2);    // r3: intersection of r1 and r2
+        r3.isNull();                // false
+        r3.isEmpty();               // true
+
+        r3 = r1.united(r2);         // r3: union of r1 and r2
+        r3.isNull();                // false
+        r3.isEmpty();               // false
     \endcode
 */
 
@@ -2413,13 +2414,24 @@ void QRegion::translate(int dx, int dy)
 #endif
 }
 
+/*!
+    \fn QRegion QRegion::unite(const QRegion &r) const
+    \obsolete
+
+    Use united(\a r) instead.
+*/
 
 /*!
+    \fn QRegion QRegion::united(const QRegion &r) const
+    \since 4.2
+
     Returns a region which is the union of this region and \a r.
 
     \img runion.png Region Union
 
     The figure shows the union of two elliptical regions.
+
+    \sa intersected(), subtracted(), xored()
 */
 
 QRegion QRegion::unite(const QRegion &r) const
@@ -2431,6 +2443,16 @@ QRegion QRegion::unite(const QRegion &r) const
 }
 
 /*!
+    \fn QRegion QRegion::intersect(const QRegion &r) const
+    \obsolete
+
+    Use intersected(\a r) instead.
+*/
+
+/*!
+    \fn QRegion QRegion::intersected(const QRegion &r) const
+    \since 4.2
+
     Returns a region which is the intersection of this region and \a r.
 
     \img rintersect.png Region Intersection
@@ -2460,12 +2482,24 @@ QRegion QRegion::intersect(const QRegion &r) const
 }
 
 /*!
+    \fn QRegion QRegion::subtract(const QRegion &r) const
+    \obsolete
+
+    Use subtracted(\a r) instead.
+*/
+
+/*!
+    \fn QRegion QRegion::subtracted(const QRegion &r) const
+    \since 4.2
+
     Returns a region which is \a r subtracted from this region.
 
     \img rsubtract.png Region Subtraction
 
     The figure shows the result when the ellipse on the right is
-    subtracted from the ellipse on the left. (\c left-right)
+    subtracted from the ellipse on the left (\c {left - right}).
+
+    \sa intersected(), united(), xored()
 */
 
 QRegion QRegion::subtract(const QRegion &r) const
@@ -2477,12 +2511,24 @@ QRegion QRegion::subtract(const QRegion &r) const
 }
 
 /*!
+    \fn QRegion QRegion::eor(const QRegion &r) const
+    \obsolete
+
+    Use xored(\a r) instead.
+*/
+
+/*!
+    \fn QRegion QRegion::xored(const QRegion &r) const
+    \since 4.2
+
     Returns a region which is the exclusive or (XOR) of this region
     and \a r.
 
     \img rxor.png Region XORed
 
     The figure shows the exclusive or of two elliptical regions.
+
+    \sa intersected(), united(), subtracted()
 */
 
 QRegion QRegion::eor(const QRegion &r) const
@@ -2523,18 +2569,20 @@ QVector<QRect> QRegion::rects() const
 }
 
 /*!
-  Sets the region to be the given set of rectangles.  The rectangles
-  \e must be optimal Y-X sorted bands as follows:
-   <ul>
-    <li> The rectangles must not intersect
-    <li> All rectangles with a given top coordinate must have the same height.
-    <li> No two rectangles may abut horizontally (they should be combined
-                into a single wider rectangle in that case).
-    <li> The rectangles must be sorted ascendingly by Y as the major sort key
-                and X as the minor sort key.
-   </ul>
-  \internal
+  Sets the region using the array of rectangles specified by \a rects.
+  The rectangles \e must be optimally Y-X sorted and follow these restrictions:
+
+  \list
+  \o The rectangles must not intersect.
+  \o All rectangles with a given top coordinate must have the same height.
+  \o No two rectangles may abut horizontally (they should be combined
+     into a single wider rectangle in that case).
+  \o The rectangles must be sorted in ascending order, with Y as the major
+     sort key and X as the minor sort key.
+  \endlist
+  \omit
   Only some platforms have that restriction (QWS and X11 and Mac OS X).
+  \endomit
 */
 void QRegion::setRects(const QRect *rects, int num)
 {

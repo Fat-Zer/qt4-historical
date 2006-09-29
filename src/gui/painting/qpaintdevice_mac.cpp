@@ -52,8 +52,10 @@ QPaintDevice::QPaintDevice()
 QPaintDevice::~QPaintDevice()
 {
     if(paintingActive())
-        qWarning("Qt: QPaintDevice: Cannot destroy paint device that is being "
-                 "painted.  Be sure to QPainter::end() painters!");
+        qWarning("QPaintDevice: Cannot destroy paint device that is being "
+                 "painted, be sure to QPainter::end() painters");
+    extern void qt_painter_removePaintDevice(QPaintDevice *); //qpainter.cpp
+    qt_painter_removePaintDevice(this);
 }
 
 int QPaintDevice::metric(PaintDeviceMetric) const
@@ -108,7 +110,7 @@ Q_GUI_EXPORT CGContextRef qt_mac_cg_context(const QPaintDevice *pdev)
                                                  flags);
         CGColorSpaceRelease(colorspace);
         if(!ret)
-            qWarning("Unable to create context for pixmap (%d/%d/%d)",
+            qWarning("QPaintDevice: Unable to create context for pixmap (%d/%d/%d)",
                      pm->data->w, pm->data->h, pm->data->nbytes);
         CGContextTranslateCTM(ret, 0, pm->data->h);
         CGContextScaleCTM(ret, 1, -1);
@@ -120,7 +122,7 @@ Q_GUI_EXPORT CGContextRef qt_mac_cg_context(const QPaintDevice *pdev)
             return 0;
 
         if(OSStatus err = CreateCGContextForPort(port, &ret)) {
-            qWarning("Unable to create CGContext for port %p [%ld]", port, err);
+            qWarning("QPaintDevice: Unable to create CGContext for port %p [%ld]", port, err);
             return 0;
         }
         SyncCGContextOriginWithPort(ret, port);

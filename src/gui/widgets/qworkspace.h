@@ -52,7 +52,7 @@ public:
     QWidget* activeWindow() const;
     QWidgetList windowList(WindowOrder order = CreationOrder) const;
 
-    QWidget * addWindow(QWidget *w, Qt::WFlags flags = 0);
+    QWidget * addWindow(QWidget *w, Qt::WindowFlags flags = 0);
 
     QSize sizeHint() const;
 

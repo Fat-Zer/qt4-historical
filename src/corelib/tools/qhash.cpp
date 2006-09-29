@@ -284,6 +284,54 @@ void QHashData::destroyAndFree()
     delete this;
 }
 
+#ifdef QT_QHASH_DEBUG
+#include <qstring.h>
+
+void QHashData::dump()
+{
+    qDebug("Hash data (ref = %d, size = %d, nodeSize = %d, userNumBits = %d, numBits = %d, numBuckets = %d)",
+            int(ref), size, nodeSize, userNumBits, numBits,
+            numBuckets);
+    qDebug("    %p (fakeNode = %p)", this, fakeNext);
+    for (int i = 0; i < numBuckets; ++i) {
+        QString line;
+        Node *n = buckets[i];
+        if (n != reinterpret_cast<Node *>(this)) {
+            line.sprintf("%d:", i);
+            while (n != reinterpret_cast<Node *>(this)) {
+                line += QString().sprintf(" -> [%p]", n);
+                if (!n) {
+                    line += " (CORRUPT)";
+                    break;
+                }
+                n = n->next;
+            }
+            qDebug(qPrintable(line));
+        }
+    }
+}
+
+void QHashData::checkSanity()
+{
+    if (fakeNext)
+        qFatal("Fake next isn't 0");
+
+    for (int i = 0; i < numBuckets; ++i) {
+        Node *n = buckets[i];
+        Node *p = n;
+        if (!n)
+            qFatal("%d: Bucket entry is 0", i);
+        if (n != reinterpret_cast<Node *>(this)) {
+            while (n != reinterpret_cast<Node *>(this)) {
+                if (!n->next)
+                    qFatal("%d: Next of %p is 0, should be %p", i, n, this);
+                n = n->next;
+            }
+        }
+    }
+}
+#endif
+
 /*!
     \class QHash
     \brief The QHash class is a template class that provides a hash-table-based dictionary.
@@ -754,16 +802,30 @@ void QHashData::destroyAndFree()
     Same as value().
 */
 
+/*! \fn QList<Key> QHash::uniqueKeys() const
+    \since 4.2
+
+    Returns a list containing all the keys in the map in ascending
+    order. Keys that occur multiple times in the map (because items
+    were inserted with insertMulti(), or unite() was used) occur only
+    once in the returned list.
+
+    \sa keys(), values()
+*/
+
 /*! \fn QList<Key> QHash::keys() const
 
     Returns a list containing all the keys in the hash, in an
     arbitrary order. Keys that occur multiple times in the hash
     (because items were inserted with insertMulti(), or unite() was
-    used), also occur multiple times in the list.
+    used) also occur multiple times in the list.
+
+    To obtain a list of unique keys, where each key from the map only
+    occurs once, use uniqueKeys().
 
     The order is guaranteed to be the same as that used by values().
 
-    \sa values(), key()
+    \sa uniqueKeys(), values(), key()
 */
 
 /*! \fn QList<Key> QHash::keys(const T &value) const
@@ -831,7 +893,7 @@ void QHashData::destroyAndFree()
 
 /*! \fn QHash::iterator QHash::begin()
 
-    Returns a \l{STL-style iterator} pointing to the first item in
+    Returns an \l{STL-style iterator} pointing to the first item in
     the hash.
 
     \sa constBegin(), end()
@@ -852,7 +914,7 @@ void QHashData::destroyAndFree()
 
 /*! \fn QHash::iterator QHash::end()
 
-    Returns a \l{STL-style iterator} pointing to the imaginary item
+    Returns an \l{STL-style iterator} pointing to the imaginary item
     after the last item in the hash.
 
     \sa begin(), constEnd()
@@ -990,6 +1052,26 @@ void QHashData::destroyAndFree()
 /*! \typedef QHash::Iterator
 
     Qt-style synonym for QHash::iterator.
+*/
+
+/*! \typedef QHash::difference_type
+
+    Typedef for ptrdiff_t. Provided for STL compatibility.
+*/
+
+/*! \typedef QHash::key_type
+
+    Typedef for Key. Provided for STL compatibility.
+*/
+
+/*! \typedef QHash::mapped_type
+
+    Typedef for T. Provided for STL compatibility.
+*/
+
+/*! \typedef QHash::size_type
+
+    Typedef for int. Provided for STL compatibility.
 */
 
 /*! \typedef QHash::iterator::difference_type

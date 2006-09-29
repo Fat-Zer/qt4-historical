@@ -82,12 +82,17 @@ void MainWindow::changeStyle(bool checked)
             .arg(style->pixelMetric(QStyle::PM_ListViewIconSize)));
     iconViewRadioButton->setText(tr("Icon views (%1 x %1)")
             .arg(style->pixelMetric(QStyle::PM_IconViewIconSize)));
+    tabBarRadioButton->setText(tr("Tab bars (%1 x %1)")
+            .arg(style->pixelMetric(QStyle::PM_TabBarIconSize)));
 
     changeSize();
 }
 
-void MainWindow::changeSize()
+void MainWindow::changeSize(bool checked)
 {
+    if (!checked)
+        return;
+
     int extent;
 
     if (otherRadioButton->isChecked()) {
@@ -103,8 +108,10 @@ void MainWindow::changeSize()
             metric = QStyle::PM_ToolBarIconSize;
         } else if (listViewRadioButton->isChecked()) {
             metric = QStyle::PM_ListViewIconSize;
-        } else {
+        } else if (iconViewRadioButton->isChecked()) {
             metric = QStyle::PM_IconViewIconSize;
+        } else {
+            metric = QStyle::PM_TabBarIconSize;
         }
         extent = QApplication::style()->pixelMetric(metric);
     }
@@ -127,8 +134,10 @@ void MainWindow::changeIcon()
                 mode = QIcon::Normal;
             } else if (item1->text() == tr("Active")) {
                 mode = QIcon::Active;
-            } else {
+            } else if (item1->text() == tr("Disabled")) {
                 mode = QIcon::Disabled;
+            } else {
+                mode = QIcon::Selected;
             }
 
             QIcon::State state;
@@ -172,6 +181,8 @@ void MainWindow::addImage()
                     item1->setText(tr("Active"));
                 } else if (fileName.contains("_dis")) {
                     item1->setText(tr("Disabled"));
+                } else if (fileName.contains("_sel")) {
+                    item1->setText(tr("Selected"));
                 }
 
                 if (fileName.contains("_on"))
@@ -244,26 +255,33 @@ void MainWindow::createIconSizeGroupBox()
     toolBarRadioButton = new QRadioButton;
     listViewRadioButton = new QRadioButton;
     iconViewRadioButton = new QRadioButton;
+    tabBarRadioButton = new QRadioButton;
     otherRadioButton = new QRadioButton(tr("Other:"));
 
     otherSpinBox = new IconSizeSpinBox;
     otherSpinBox->setRange(8, 128);
     otherSpinBox->setValue(64);
 
+    connect(smallRadioButton, SIGNAL(toggled(bool)),
+            this, SLOT(changeSize(bool)));
+    connect(largeRadioButton, SIGNAL(toggled(bool)),
+            this, SLOT(changeSize(bool)));
     connect(toolBarRadioButton, SIGNAL(toggled(bool)),
-            this, SLOT(changeSize()));
+            this, SLOT(changeSize(bool)));
     connect(listViewRadioButton, SIGNAL(toggled(bool)),
-            this, SLOT(changeSize()));
+            this, SLOT(changeSize(bool)));
     connect(iconViewRadioButton, SIGNAL(toggled(bool)),
-            this, SLOT(changeSize()));
-    connect(smallRadioButton, SIGNAL(toggled(bool)), this, SLOT(changeSize()));
-    connect(largeRadioButton, SIGNAL(toggled(bool)), this, SLOT(changeSize()));
-    connect(otherRadioButton, SIGNAL(toggled(bool)), this, SLOT(changeSize()));
+            this, SLOT(changeSize(bool)));
+    connect(tabBarRadioButton, SIGNAL(toggled(bool)),
+            this, SLOT(changeSize(bool)));
+    connect(otherRadioButton, SIGNAL(toggled(bool)),
+            this, SLOT(changeSize(bool)));
     connect(otherSpinBox, SIGNAL(valueChanged(int)), this, SLOT(changeSize()));
 
     QHBoxLayout *otherSizeLayout = new QHBoxLayout;
     otherSizeLayout->addWidget(otherRadioButton);
     otherSizeLayout->addWidget(otherSpinBox);
+    otherSizeLayout->addStretch();
 
     QGridLayout *layout = new QGridLayout;
     layout->addWidget(smallRadioButton, 0, 0);
@@ -271,7 +289,8 @@ void MainWindow::createIconSizeGroupBox()
     layout->addWidget(toolBarRadioButton, 2, 0);
     layout->addWidget(listViewRadioButton, 0, 1);
     layout->addWidget(iconViewRadioButton, 1, 1);
-    layout->addLayout(otherSizeLayout, 2, 1);
+    layout->addWidget(tabBarRadioButton, 2, 1);
+    layout->addLayout(otherSizeLayout, 3, 0, 1, 2);
     iconSizeGroupBox->setLayout(layout);
 }
 

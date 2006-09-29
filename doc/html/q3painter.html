@@ -2,25 +2,20 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-mac-opensource-src-4.1.5/src/qt3support/painting/q3painter.cpp -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-mac-opensource-src-4.1.5/src/qt3support/painting/q3painter.cpp -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-mac-opensource-src-4.2.0/src/qt3support/painting/q3painter.cpp -->
 <head>
-    <title>Qt 4.1: Q3Painter Class Reference</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
+  <title>Qt 4.2: Q3Painter Class Reference</title>
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
+<a name="//apple_ref/cpp/cl//Q3Painter" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Q3Painter Class Reference<br /><sup><sup>[<a href="qt3support.html">Qt3Support</a> module]</sup></sup></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">Q3Painter Class Reference<br /><sup><sup>[<a href="qt3support.html">Qt3Support</a> module]</sup></sup></h1>
 <p>The Q3Painter class is a Qt 3 compatibility wrapper for <a href="qpainter.html">QPainter</a>. <a href="#details">More...</a></p>
-<pre>#include &lt;Q3Painter&gt;</pre><p><b>This class is part of the Qt 3 support library.</b> It is provided to keep old source code working. We strongly advise against using it in new code. See <a href="porting4.html#qpainter">Porting to Qt 4</a> for more information.</p>
+<pre> #include &lt;Q3Painter&gt;</pre><p><b>This class is part of the Qt 3 support library.</b> It is provided to keep old source code working. We strongly advise against using it in new code. See <a href="porting4.html#qpainter">Porting to Qt 4</a> for more information.</p>
 <p>Inherits <a href="qpainter.html">QPainter</a>.</p>
 <ul>
 <li><a href="q3painter-members.html">List of all members, including inherited members</a></li>
@@ -44,7 +39,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>void <b><a href="q3painter.html#drawRoundRect-2">drawRoundRect</a></b> ( int <i>x</i>, int <i>y</i>, int <i>w</i>, int <i>h</i>, int <i>xrnd</i> = 25, int <i>yrnd</i> = 25 )</li>
 </ul>
 <ul>
-<li><div class="fn"/>162 public functions inherited from <a href="qpainter.html#public-functions">QPainter</a></li>
+<li><div class="fn"/>166 public functions inherited from <a href="qpainter.html#public-functions">QPainter</a></li>
 </ul>
 <h3>Additional Inherited Members</h3>
 <ul>
@@ -61,20 +56,23 @@ body { background: #ffffff; color: black; }</style>
 <p>The reason for the change in Qt 4 is so that we provide consistency for all drawing functions even with complex transformations.</p>
 <hr />
 <h2>Member Function Documentation</h2>
+<a name="//apple_ref/cpp/instm/Q3Painter/Q3Painter" />
 <h3 class="fn"><a name="Q3Painter"></a>Q3Painter::Q3Painter ()</h3>
 <p>Constructs a <a href="q3painter.html">Q3Painter</a>.</p>
 <h3 class="fn"><a name="Q3Painter-2"></a>Q3Painter::Q3Painter ( <a href="qpaintdevice.html">QPaintDevice</a> * <i>pdev</i> )</h3>
 <p>Constructs a <a href="q3painter.html">Q3Painter</a> that operates on device <i>pdev</i>.</p>
+<a name="//apple_ref/cpp/instm/Q3Painter/drawArc" />
 <h3 class="fn"><a name="drawArc"></a>void Q3Painter::drawArc ( const <a href="qrect.html">QRect</a> &amp; <i>r</i>, int <i>a</i>, int <i>alen</i> )</h3>
 <p>Draws an arc defined by the rectangle <i>r</i>, the start angle <i>a</i> and the arc length <i>alen</i>.</p>
 <p>The angles <i>a</i> and <i>alen</i> are 1/16th of a degree, i.e. a full circle equals 5760 (16*360). Positive values of <i>a</i> and <i>alen</i> mean counter-clockwise while negative values mean the clockwise direction. Zero degrees is at the 3 o'clock position.</p>
 <p>Example:</p>
-<pre>&nbsp;   QPainter p(myWidget);
-    p.drawArc(QRect(10,10, 70,100), 100*16, 160*16); // draws a &quot;(&quot; arc</pre>
+<pre> QPainter p(myWidget);
+ p.drawArc(QRect(10,10, 70,100), 100*16, 160*16); <span class="comment">// draws a &quot;(&quot; arc</span></pre>
 <p>See also <a href="q3painter.html#drawPie">drawPie</a>() and <a href="q3painter.html#drawChord">drawChord</a>().</p>
 <h3 class="fn"><a name="drawArc-2"></a>void Q3Painter::drawArc ( int <i>x</i>, int <i>y</i>, int <i>w</i>, int <i>h</i>, int <i>startAngle</i>, int <i>spanAngle</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Draws the arc that fits inside the rectangle (<i>x</i>, <i>y</i>, <i>w</i>, <i>h</i>), with the given <i>startAngle</i> and <i>spanAngle</i>.</p>
+<a name="//apple_ref/cpp/instm/Q3Painter/drawChord" />
 <h3 class="fn"><a name="drawChord"></a>void Q3Painter::drawChord ( const <a href="qrect.html">QRect</a> &amp; <i>r</i>, int <i>a</i>, int <i>alen</i> )</h3>
 <p>Draws a chord defined by the rectangle <i>r</i>, the start angle <i>a</i> and the arc length <i>alen</i>.</p>
 <p>The chord is filled with the current <a href="qpainter.html#brush">brush</a>().</p>
@@ -83,11 +81,13 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="drawChord-2"></a>void Q3Painter::drawChord ( int <i>x</i>, int <i>y</i>, int <i>w</i>, int <i>h</i>, int <i>startAngle</i>, int <i>spanAngle</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Draws a chord that fits inside the rectangle (<i>x</i>, <i>y</i>, <i>w</i>, <i>h</i>) with the given <i>startAngle</i> and <i>spanAngle</i>.</p>
+<a name="//apple_ref/cpp/instm/Q3Painter/drawEllipse" />
 <h3 class="fn"><a name="drawEllipse"></a>void Q3Painter::drawEllipse ( const <a href="qrect.html">QRect</a> &amp; <i>r</i> )</h3>
 <p>Draws the ellipse that fits inside the bounds <i>r</i> using the current pen and brush.</p>
 <h3 class="fn"><a name="drawEllipse-2"></a>void Q3Painter::drawEllipse ( int <i>x</i>, int <i>y</i>, int <i>width</i>, int <i>height</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Draws an ellipse that fits inside the bounds specified by <i>x</i>, <i>y</i>, <i>width</i> and <i>height</i> using the current pen and brush.</p>
+<a name="//apple_ref/cpp/instm/Q3Painter/drawPie" />
 <h3 class="fn"><a name="drawPie"></a>void Q3Painter::drawPie ( const <a href="qrect.html">QRect</a> &amp; <i>r</i>, int <i>a</i>, int <i>alen</i> )</h3>
 <p>Draws a pie defined by the rectangle <i>r</i>, the start angle <i>a</i> and the arc length <i>alen</i>.</p>
 <p>The pie is filled with the current <a href="qpainter.html#brush">brush</a>().</p>
@@ -96,11 +96,13 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="drawPie-2"></a>void Q3Painter::drawPie ( int <i>x</i>, int <i>y</i>, int <i>w</i>, int <i>h</i>, int <i>startAngle</i>, int <i>spanAngle</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Draws a pie segment that fits inside the bounds (<i>x</i>, <i>y</i>, <i>w</i>, <i>h</i>) with the given <i>startAngle</i> and <i>spanAngle</i>.</p>
+<a name="//apple_ref/cpp/instm/Q3Painter/drawRect" />
 <h3 class="fn"><a name="drawRect"></a>void Q3Painter::drawRect ( const <a href="qrect.html">QRect</a> &amp; <i>r</i> )</h3>
 <p>Draws a rectangle that fits inside the rectangle <i>r</i> using the current pen and brush.</p>
 <h3 class="fn"><a name="drawRect-2"></a>void Q3Painter::drawRect ( int <i>x</i>, int <i>y</i>, int <i>w</i>, int <i>h</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Draws the rectangle that fits inside the bounds specified by <i>x</i>, <i>y</i>, <i>w</i> and <i>h</i> using the current pen and brush.</p>
+<a name="//apple_ref/cpp/instm/Q3Painter/drawRoundRect" />
 <h3 class="fn"><a name="drawRoundRect"></a>void Q3Painter::drawRoundRect ( const <a href="qrect.html">QRect</a> &amp; <i>r</i>, int <i>xrnd</i> = 25, int <i>yrnd</i> = 25 )</h3>
 <p>Draws a rounded rect that fits into the bounds <i>r</i> using the current pen and brush. The parameters <i>xrnd</i> and <i>yrnd</i> specifies the roundness in x and y direction.</p>
 <h3 class="fn"><a name="drawRoundRect-2"></a>void Q3Painter::drawRoundRect ( int <i>x</i>, int <i>y</i>, int <i>w</i>, int <i>h</i>, int <i>xrnd</i> = 25, int <i>yrnd</i> = 25 )</h3>
@@ -110,6 +112,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

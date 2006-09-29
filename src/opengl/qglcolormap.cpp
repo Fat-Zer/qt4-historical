@@ -28,6 +28,7 @@
 
     \module OpenGL
     \ingroup multimedia
+    \ingroup shared
 
     QGLColormap provides a platform independent way of specifying and
     installing indexed colormaps into QGLWidgets. QGLColormap is
@@ -46,19 +47,19 @@
     colors. Note that under Windows you can also install colormaps
     in child widgets.
 
-    This class uses explicit sharing (see \link shclass.html Shared
-    Classes\endlink).
+    This class uses \l{implicit sharing} as a memory and speed
+    optimization.
 
     Example of use:
     \code
-    #include <qapplication.h>
-    #include <qglcolormap.h>
+    #include <QApplication>
+    #include <QGLColormap>
 
     int main()
     {
-        QApplication a(argc, argv);
+        QApplication app(argc, argv);
 
-        MySuperGLWidget widget(0); // A QGLWidget in color-index mode
+        MySuperGLWidget widget;     // a QGLWidget in color-index mode
         QGLColormap colormap;
 
         // This will fill the colormap with colors ranging from
@@ -68,7 +69,7 @@
 
         widget.setColormap(colormap);
         widget.show();
-        return a.exec();
+        return app.exec();
     }
     \endcode
 

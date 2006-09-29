@@ -45,6 +45,7 @@ class Q_GUI_EXPORT QAction : public QObject
     Q_OBJECT
     Q_DECLARE_PRIVATE(QAction)
 
+    Q_ENUMS(MenuRole)
     Q_PROPERTY(bool checkable READ isCheckable WRITE setCheckable)
     Q_PROPERTY(bool checked READ isChecked WRITE setChecked NOTIFY toggled)
     Q_PROPERTY(bool enabled READ isEnabled WRITE setEnabled)
@@ -58,10 +59,14 @@ class Q_GUI_EXPORT QAction : public QObject
 #ifndef QT_NO_SHORTCUT
     Q_PROPERTY(QKeySequence shortcut READ shortcut WRITE setShortcut)
     Q_PROPERTY(Qt::ShortcutContext shortcutContext READ shortcutContext WRITE setShortcutContext)
+    Q_PROPERTY(bool autoRepeat READ autoRepeat WRITE setAutoRepeat)
 #endif
     Q_PROPERTY(bool visible READ isVisible WRITE setVisible)
+    Q_PROPERTY(MenuRole menuRole READ menuRole WRITE setMenuRole)
 
 public:
+    enum MenuRole { NoRole, TextHeuristicRole, ApplicationSpecificRole, AboutQtRole,
+                    AboutRole, PreferencesRole, QuitRole };
     explicit QAction(QObject* parent);
     QAction(const QString &text, QObject* parent);
     QAction(const QIcon &icon, const QString &text, QObject* parent);
@@ -100,18 +105,25 @@ public:
     QMenu *menu() const;
     void setMenu(QMenu *menu);
 #endif
-    
+
     void setSeparator(bool b);
     bool isSeparator() const;
 
 #ifndef QT_NO_SHORTCUT
     void setShortcut(const QKeySequence &shortcut);
     QKeySequence shortcut() const;
-    
+
+    void setShortcuts(const QList<QKeySequence> &shortcuts);
+    void setShortcuts(QKeySequence::StandardKey);
+    QList<QKeySequence> shortcuts() const;
+
     void setShortcutContext(Qt::ShortcutContext context);
     Qt::ShortcutContext shortcutContext() const;
+
+    void setAutoRepeat(bool);
+    bool autoRepeat() const;
 #endif
-    
+
     void setFont(const QFont &font);
     QFont font() const;
 
@@ -131,6 +143,9 @@ public:
     void activate(ActionEvent event);
     bool showStatusText(QWidget *widget=0);
 
+    void setMenuRole(MenuRole menuRole);
+    MenuRole menuRole() const;
+
 #ifdef QT3_SUPPORT
     inline QT3_SUPPORT void setMenuText(const QString &text) { setText(text); }
     inline QT3_SUPPORT QString menuText() const { return text(); }
@@ -147,8 +162,11 @@ public:
 
     QWidget *parentWidget() const;
 
+    QList<QWidget *> associatedWidgets() const;
+
 protected:
     bool event(QEvent *);
+    QAction(QActionPrivate &dd, QObject *parent);
 
 public Q_SLOTS:
 #ifdef QT3_SUPPORT

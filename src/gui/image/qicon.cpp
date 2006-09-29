@@ -52,6 +52,9 @@
         functionality represented by the icon is available and
         the user is interacting with the icon, for example, moving the
         mouse over it or clicking it.
+   \value Selected
+        Display the pixmap when the item represented by the icon is
+        selected.
 */
 
 /*!
@@ -63,6 +66,8 @@
   \value Off  Display the pixmap when the widget is in an "off" state
   \value On  Display the pixmap when the widget is in an "on" state
 */
+
+extern Q_GUI_EXPORT qint64 qt_pixmap_id(const QPixmap &pixmap);
 
 static int serialNumCounter = 0;
 
@@ -92,7 +97,7 @@ struct QPixmapIconEngineEntry
     bool isNull() const {return (fileName.isEmpty() && pixmap.isNull()); }
 };
 
-class QPixmapIconEngine : public QIconEngine{
+class QPixmapIconEngine : public QIconEngine {
 public:
     QPixmapIconEngine();
     ~QPixmapIconEngine();
@@ -105,6 +110,8 @@ public:
 private:
     QPixmapIconEngineEntry *tryMatch(const QSize &size, QIcon::Mode mode, QIcon::State state);
     QVector<QPixmapIconEngineEntry> pixmaps;
+
+    friend QDataStream &operator<<(QDataStream &s, const QIcon &icon);
 };
 
 QPixmapIconEngine::QPixmapIconEngine()
@@ -165,16 +172,21 @@ QPixmapIconEngineEntry *QPixmapIconEngine::bestMatch(const QSize &size, QIcon::M
     QPixmapIconEngineEntry *pe = tryMatch(size, mode, state);
     while (!pe){
         QIcon::State oppositeState = (state == QIcon::On) ? QIcon::Off : QIcon::On;
-        if (mode == QIcon::Disabled) {
+        if (mode == QIcon::Disabled || mode == QIcon::Selected) {
+            QIcon::Mode oppositeMode = (mode == QIcon::Disabled) ? QIcon::Selected : QIcon::Disabled;
             if ((pe = tryMatch(size, QIcon::Normal, state)))
                 break;
             if ((pe = tryMatch(size, QIcon::Active, state)))
                 break;
-            if ((pe = tryMatch(size, QIcon::Disabled, oppositeState)))
+            if ((pe = tryMatch(size, mode, oppositeState)))
                 break;
             if ((pe = tryMatch(size, QIcon::Normal, oppositeState)))
                 break;
             if ((pe = tryMatch(size, QIcon::Active, oppositeState)))
+                break;
+            if ((pe = tryMatch(size, oppositeMode, state)))
+                break;
+            if ((pe = tryMatch(size, oppositeMode, oppositeState)))
                 break;
         } else {
             QIcon::Mode oppositeMode = (mode == QIcon::Normal) ? QIcon::Active : QIcon::Normal;
@@ -186,7 +198,11 @@ QPixmapIconEngineEntry *QPixmapIconEngine::bestMatch(const QSize &size, QIcon::M
                 break;
             if ((pe = tryMatch(size, QIcon::Disabled, state)))
                 break;
+            if ((pe = tryMatch(size, QIcon::Selected, state)))
+                break;
             if ((pe = tryMatch(size, QIcon::Disabled, oppositeState)))
+                break;
+            if ((pe = tryMatch(size, QIcon::Selected, oppositeState)))
                 break;
         }
 
@@ -214,11 +230,11 @@ QPixmap QPixmapIconEngine::pixmap(const QSize &size, QIcon::Mode mode, QIcon::St
         return pm;
 
     QSize actualSize = pm.size();
-    if (!actualSize.isNull() && (actualSize.width() > size.width() && actualSize.height() > size.height()))
+    if (!actualSize.isNull() && (actualSize.width() > size.width() || actualSize.height() > size.height()))
         actualSize.scale(size, Qt::KeepAspectRatio);
 
     QString key = QLatin1String("$qt_icon_")
-                  + QString::number(pm.serialNumber())
+                  + QString::number(qt_pixmap_id(pm))
                   + QString::number(actualSize.width())
                   + QLatin1Char('_')
                   + QString::number(actualSize.height())
@@ -232,13 +248,13 @@ QPixmap QPixmapIconEngine::pixmap(const QSize &size, QIcon::Mode mode, QIcon::St
             QStyleOption opt(0);
             opt.palette = QApplication::palette();
             QPixmap active = QApplication::style()->generatedIconPixmap(QIcon::Active, pm, &opt);
-            if (pm.serialNumber() == active.serialNumber())
+            if (qt_pixmap_id(pm) == qt_pixmap_id(active))
                 return pm;
         }
     }
 
     if (!QPixmapCache::find(key + QString::number(mode), pm)) {
-        if (pe->mode != mode && mode != QIcon::Normal && pe->mode != QIcon::Disabled) {
+        if (pe->mode != mode && mode != QIcon::Normal) {
             QStyleOption opt(0);
             opt.palette = QApplication::palette();
             QPixmap generated = QApplication::style()->generatedIconPixmap(mode, pm, &opt);
@@ -261,7 +277,7 @@ QSize QPixmapIconEngine::actualSize(const QSize &size, QIcon::Mode mode, QIcon::
     if (actualSize.isNull())
         return actualSize;
 
-    if (!actualSize.isNull() && (actualSize.width() > size.width() && actualSize.height() > size.height()))
+    if (!actualSize.isNull() && (actualSize.width() > size.width() || actualSize.height() > size.height()))
         actualSize.scale(size, Qt::KeepAspectRatio);
     return actualSize;
 }
@@ -286,7 +302,7 @@ void QPixmapIconEngine::addFile(const QString &fileName, const QSize &size, QIco
 
 #ifndef QT_NO_LIBRARY
 Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader,
-    (QIconEngineFactoryInterface_iid, QCoreApplication::libraryPaths(), "/iconengines", Qt::CaseInsensitive))
+    (QIconEngineFactoryInterface_iid, QCoreApplication::libraryPaths(), QLatin1String("/iconengines"), Qt::CaseInsensitive))
 #endif
 
 
@@ -359,7 +375,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader,
 
   \img icon.png QIcon
 
-  \sa {fowler}{GUI Design Handbook: Iconic Label}
+  \sa {fowler}{GUI Design Handbook: Iconic Label}, {Icons Example}
 */
 
 
@@ -469,11 +485,15 @@ QIcon::operator QVariant() const
 }
 
 /*!
-    Returns a number that uniquely identifies the contents of this
-    QIcon object. This means that multiple QIcon objects can have
-    the same serial number as long as they refer to the same contents.
+    Returns a number that identifies the contents of this
+    QIcon object. Distinct QIcon objects can have
+    the same serial number if they refer to the same contents
+    (but they don't have to). Also, the serial number of
+    a QIcon object may change during its lifetime.
 
     A null icon always has a serial number of 0.
+
+    Serial numbers are mostly useful in conjunction with cacheing.
 
     \sa QPixmap::serialNumber()
 */
@@ -623,6 +643,83 @@ void QIcon::addFile(const QString &fileName, const QSize &size, Mode mode, State
     d->engine->addFile(fileName, size, mode, state);
 }
 
+/*****************************************************************************
+  QIcon stream functions
+ *****************************************************************************/
+#if !defined(QT_NO_DATASTREAM)
+/*!
+    \fn QDataStream &operator<<(QDataStream &stream, const QIcon &icon)
+    \relates QIcon
+
+    Writes the given \a icon to the the given \a stream as a PNG
+    image. If the icon contains more than one image, all images will
+    be written to the stream. Note that writing the stream to a file
+    will not produce a valid image file.
+*/
+
+QDataStream &operator<<(QDataStream &s, const QIcon &icon)
+{
+    if (s.version() >= QDataStream::Qt_4_2) {
+        if (icon.isNull()) {
+            s << 0;
+        } else {
+            QPixmapIconEngine *engine = static_cast<QPixmapIconEngine *>(icon.d->engine);
+            int num_entries = engine->pixmaps.size();
+            s << num_entries;
+            for (int i=0; i < num_entries; ++i) {
+                s << engine->pixmaps.at(i).pixmap;
+                s << engine->pixmaps.at(i).fileName;
+                s << engine->pixmaps.at(i).size;
+                s << (uint) engine->pixmaps.at(i).mode;
+                s << (uint) engine->pixmaps.at(i).state;
+            }
+        }
+    } else {
+        s << QPixmap(icon.pixmap(22,22));
+    }
+    return s;
+}
+
+/*!
+    \fn QDataStream &operator>>(QDataStream &stream, QIcon &icon)
+    \relates QIcon
+
+    Reads an image, or a set of images, from the given \a stream into
+    the given \a icon.
+*/
+
+QDataStream &operator>>(QDataStream &s, QIcon &icon)
+{
+    if (s.version() >= QDataStream::Qt_4_2) {
+        icon = QIcon();
+        int num_entries;
+        QPixmap pm;
+        QString fileName;
+        QSize sz;
+        uint mode;
+        uint state;
+
+        s >> num_entries;
+        for (int i=0; i < num_entries; ++i) {
+            s >> pm;
+            s >> fileName;
+            s >> sz;
+            s >> mode;
+            s >> state;
+            if (pm.isNull())
+                icon.addFile(fileName, sz, QIcon::Mode(mode), QIcon::State(state));
+            else
+                icon.addPixmap(pm, QIcon::Mode(mode), QIcon::State(state));
+        }
+    } else {
+        QPixmap pm;
+        s >> pm;
+        icon.addPixmap(pm);
+    }
+    return s;
+}
+
+#endif //QT_NO_DATASTREAM
 
 
 #ifdef QT3_SUPPORT

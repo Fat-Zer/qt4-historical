@@ -27,6 +27,7 @@
 #include "qmatrix.h"
 #include "qregion.h"
 #include "qpainterpath.h"
+#include "qvariant.h"
 
 #include <limits.h>
 
@@ -161,7 +162,7 @@
     \endtable
 
     \sa QPainter, {The Coordinate System}, {demos/affine}{Affine
-    Transformations Demo}
+    Transformations Demo}, {Transformations Example}
 */
 
 
@@ -1119,6 +1120,16 @@ QMatrix &QMatrix::operator=(const QMatrix &matrix)
     _dx  = matrix._dx;
     _dy  = matrix._dy;
     return *this;
+}
+
+/*!
+    \since 4.2
+
+    Returns the matrix as a QVariant.
+*/
+QMatrix::operator QVariant() const
+{
+    return QVariant(QVariant::Matrix, this);
 }
 
 Q_GUI_EXPORT QPainterPath operator *(const QPainterPath &p, const QMatrix &m)

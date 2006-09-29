@@ -45,7 +45,7 @@ public:
     QToolBoxButton(QWidget *parent)
         : QAbstractButton(parent), selected(false)
     {
-        setBackgroundRole(QPalette::Background);
+        setBackgroundRole(QPalette::Window);
         setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
         setFocusPolicy(Qt::NoFocus);
     }
@@ -145,8 +145,8 @@ void QToolBoxPrivate::updateTabs()
             p.setColor(tB->backgroundRole(), tW->palette().color(tW->backgroundRole()));
             tB->setPalette(p);
             tB->update();
-        } else if (tB->backgroundRole() != QPalette::Background) {
-            tB->setBackgroundRole(QPalette::Background);
+        } else if (tB->backgroundRole() != QPalette::Window) {
+            tB->setBackgroundRole(QPalette::Window);
             tB->update();
         }
         after = (*i).button == lastButton;
@@ -211,18 +211,7 @@ void QToolBoxButton::paintEvent(QPaintEvent *)
         p->setFont(f);
     }
 
-    QString txt;
-    if (p->fontMetrics().width(text) < tr.width()) {
-        txt = text;
-    } else {
-        txt = text.left(1);
-        int ew = p->fontMetrics().width("...");
-        int i = 1;
-        while (p->fontMetrics().width(txt) + ew +
-                p->fontMetrics().width(text[i])  < tr.width())
-            txt += text[i++];
-        txt += "...";
-    }
+    QString txt = fontMetrics().elidedText(text, Qt::ElideRight, tr.width());
 
     if (ih)
         p->drawPixmap(ir.left(), (height() - ih) / 2, pm);
@@ -289,7 +278,7 @@ void QToolBoxButton::paintEvent(QPaintEvent *)
 /*!
     Constructs a toolbox called \a name with parent \a parent and flags \a f.
 */
-QToolBox::QToolBox(QWidget *parent, const char *name, Qt::WFlags f)
+QToolBox::QToolBox(QWidget *parent, const char *name, Qt::WindowFlags f)
     :  QFrame(*new QToolBoxPrivate, parent, f)
 {
     Q_D(QToolBox);
@@ -303,7 +292,7 @@ QToolBox::QToolBox(QWidget *parent, const char *name, Qt::WFlags f)
 /*!
     Constructs a new toolbox with the given \a parent and the flags, \a f.
 */
-QToolBox::QToolBox(QWidget *parent, Qt::WFlags f)
+QToolBox::QToolBox(QWidget *parent, Qt::WindowFlags f)
     :  QFrame(*new QToolBoxPrivate, parent, f)
 {
     Q_D(QToolBox);
@@ -763,6 +752,22 @@ void QToolBox::itemRemoved(int index)
     \fn QWidget *QToolBox::item(int index) const
 
     Use widget() instead.
+*/
+
+/*!
+    \fn void QToolBox::setMargin(int margin)
+    Sets the width of the margin around the contents of the widget to \a margin.
+    
+    Use QWidget::setContentsMargins() instead.
+    \sa margin(), QWidget::setContentsMargins()
+*/
+
+/*!
+    \fn int QToolBox::margin() const
+    Returns the with of the the margin around the contents of the widget.
+    
+    Use QWidget::getContentsMargins() instead.
+    \sa setMargin(), QWidget::getContentsMargins()
 */
 
 /*! \reimp */

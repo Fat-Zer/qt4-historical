@@ -48,10 +48,75 @@ class QKeySequencePrivate;
 class Q_GUI_EXPORT QKeySequence
 {
 public:
+    enum StandardKey {
+        UnknownKey,
+        HelpContents,
+        WhatsThis,
+        Open,
+        Close,
+        Save,
+        New,
+        Delete,
+        Cut,
+        Copy,
+        Paste,
+        Undo,
+        Redo,
+        Back,
+        Forward,
+        Refresh,
+        ZoomIn,
+        ZoomOut,
+        Print,
+        AddTab,
+        NextChild,
+        PreviousChild,
+        Find,
+        FindNext,
+        FindPrevious,
+        Replace,
+        SelectAll,
+        Bold,
+        Italic,
+        Underline,
+        MoveToNextChar,
+        MoveToPreviousChar,
+        MoveToNextWord,
+        MoveToPreviousWord,
+        MoveToNextLine,
+        MoveToPreviousLine,
+        MoveToNextPage,
+        MoveToPreviousPage,
+        MoveToStartOfLine,
+        MoveToEndOfLine,
+        MoveToStartOfBlock,
+        MoveToEndOfBlock,
+        MoveToStartOfDocument,
+        MoveToEndOfDocument,
+        SelectNextChar,
+        SelectPreviousChar,
+        SelectNextWord,
+        SelectPreviousWord,
+        SelectNextLine,
+        SelectPreviousLine,
+        SelectNextPage,
+        SelectPreviousPage,
+        SelectStartOfLine,
+        SelectEndOfLine,
+        SelectStartOfBlock,
+        SelectEndOfBlock,
+        SelectStartOfDocument,
+        SelectEndOfDocument,
+        DeleteStartOfWord,
+        DeleteEndOfWord,
+        DeleteEndOfLine
+     };
+
     QKeySequence();
     QKeySequence(const QString &key);
     QKeySequence(int k1, int k2 = 0, int k3 = 0, int k4 = 0);
     QKeySequence(const QKeySequence &ks);
+    QKeySequence(StandardKey key);
     ~QKeySequence();
 
     uint count() const;
@@ -76,8 +141,9 @@ public:
 
     SequenceMatch matches(const QKeySequence &seq) const;
     static QKeySequence mnemonic(const QString &text);
+    static QList<QKeySequence> keyBindings(StandardKey key);
 
-    // ### Qt 5: kill 'operator QString' - it's evil (ask Trenton or Jasmin if you need more reasons)
+    // ### Qt 5: kill 'operator QString' - it's evil
     operator QString() const;
     operator QVariant() const;
     operator int() const;

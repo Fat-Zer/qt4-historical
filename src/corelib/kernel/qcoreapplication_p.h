@@ -46,6 +46,7 @@ class QAbstractEventDispatcher;
 class Q_CORE_EXPORT QCoreApplicationPrivate : public QObjectPrivate
 {
     Q_DECLARE_PUBLIC(QCoreApplication)
+
 public:
     QCoreApplicationPrivate(int &aargc,  char **aargv);
     ~QCoreApplicationPrivate();
@@ -54,12 +55,12 @@ public:
 
     virtual QString appName() const;
     virtual void createEventDispatcher();
-    static void moveToMainThread(QObject *o);
     static void removePostedEvent(QEvent *);
 #ifdef Q_OS_WIN
     static void removePostedTimerEvent(QObject *object, int timerId);
 #endif
 
+    static QThread *theMainThread;
     static QThread *mainThread();
     static bool checkInstance(const char *method);
 
@@ -81,9 +82,14 @@ public:
 
     bool in_exec;
 
+    static bool isTranslatorInstalled(QTranslator *translator);
+
     static QAbstractEventDispatcher *eventDispatcher;
     static bool is_app_running;
     static bool is_app_closing;
+
+    static uint attribs;
+    static inline bool testAttribute(uint flag) { return attribs & (1 << flag); }
 };
 
 #endif // QCOREAPPLICATION_P_H

@@ -41,7 +41,6 @@
 extern void qt_event_request_timer(MacTimerInfo *); //qapplication_mac.cpp
 extern MacTimerInfo *qt_event_get_timer(EventRef); //qapplication_mac.cpp
 extern void qt_event_request_select(QEventDispatcherMac *); //qapplication_mac.cpp
-extern void qt_event_request_sockact(QEventDispatcherMac *); //qapplication_mac.cpp
 extern void qt_event_request_updates(); //qapplication_mac.cpp
 extern bool qt_mac_send_event(QEventLoop::ProcessEventsFlags, EventRef, WindowPtr =0); //qapplication_mac.cpp
 extern WindowPtr qt_mac_window_for(const QWidget *); //qwidget_mac.cpp
@@ -307,7 +306,7 @@ bool qt_mac_add_socket_to_runloop(const CFSocketRef socket)
     if (!loopSource)
         return false;
 
-    CFRunLoopAddSource(CFRunLoopGetCurrent(), loopSource, kCFRunLoopDefaultMode);
+    CFRunLoopAddSource(CFRunLoopGetCurrent(), loopSource, kCFRunLoopCommonModes);
     CFRelease(loopSource);
     return true;
 }
@@ -321,7 +320,7 @@ bool qt_mac_remove_socket_from_runloop(const CFSocketRef socket)
     if (!loopSource)
         return false;
 
-    CFRunLoopRemoveSource(CFRunLoopGetCurrent(), loopSource, kCFRunLoopDefaultMode);
+    CFRunLoopRemoveSource(CFRunLoopGetCurrent(), loopSource, kCFRunLoopCommonModes);
     CFRelease(loopSource);
     return true;
 }
@@ -490,8 +489,7 @@ bool QEventDispatcherMac::processEvents(QEventLoop::ProcessEventsFlags flags)
 
     bool retVal = false;
     for (;;) {
-        QThreadData *threadData = QThreadData::get(thread());
-        if (threadData->postEventList.size() > 0)
+        if (d->threadData->postEventList.size() > 0)
             retVal = true;
 
         QApplication::sendPostedEvents(0, (flags & QEventLoop::DeferredDeletion) ? -1 : 0);
@@ -531,7 +529,7 @@ bool QEventDispatcherMac::processEvents(QEventLoop::ProcessEventsFlags flags)
         } while(!d->interrupt && GetNumEventsInQueue(GetMainEventQueue()) > 0);
 
         bool canWait = (!retVal
-                        && threadData->canWait
+                        && d->threadData->canWait
                         && !d->interrupt
                         && (flags & QEventLoop::WaitForMoreEvents)
                         && !d->zero_timer_count);
@@ -554,10 +552,16 @@ int QEventDispatcherMacPrivate::activateTimers()
     int ret = 0;
     for (int i = 0; i < macTimerList->size(); ++i) {
         const MacTimerInfo &t = macTimerList->at(i);
-        if(!t.interval) {
+        if(!t.interval && !t.pending) {
             ret++;
+            const_cast<MacTimerInfo &>(t).pending = true;
+            MacTimerInfo tcopy = macTimerList->at(i);
             QTimerEvent e(t.id);
             QApplication::sendEvent(t.obj, &e);
+
+            if (macTimerList->contains(tcopy))
+                const_cast<MacTimerInfo &>(t).pending = false;
+
             if(ret == zero_timer_count)
                 break;
         }
@@ -574,21 +578,14 @@ void QEventDispatcherMac::flush()
 {
     QMacWindowChangeEvent::exec(true);
 
-//    sendPostedEvents();
     if(qApp) {
+        qApp->sendPostedEvents();
         QWidgetList tlws = QApplication::topLevelWidgets();
         for(int i = 0; i < tlws.size(); i++) {
             QWidget *tlw = tlws.at(i);
-            if(tlw->isVisible()) {
-#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3
-                if (QSysInfo::MacintoshVersion >= QSysInfo::MV_10_3) {
-                    HIWindowFlush(qt_mac_window_for(tlw));
-                } else
-#endif
-                {
-                    QDFlushPortBuffer(GetWindowPort(qt_mac_window_for(tlw)), 0);
-                }
-            }
+            if(tlw->isVisible())
+                HIWindowFlush(qt_mac_window_for(tlw));
+
         }
     }
 }

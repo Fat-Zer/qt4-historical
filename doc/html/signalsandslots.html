@@ -2,23 +2,17 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-mac-opensource-src-4.1.5/doc/src/signalsandslots.qdoc -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-mac-opensource-src-4.1.5/doc/src/signalsandslots.qdoc -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-mac-opensource-src-4.2.0/doc/src/signalsandslots.qdoc -->
 <head>
-    <title>Qt 4.1: Signals and Slots</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
+  <title>Qt 4.2: Signals and Slots</title>
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Signals and Slots<br /><small></small></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">Signals and Slots<br /><small></small></h1>
 <p>Signals and slots are used for communication between objects. The signals and slots mechanism is a central feature of Qt and probably the part that differs most from the features provided by other frameworks.</p>
 <ul><li><a href="#introduction">Introduction</a></li>
 <li><a href="#signals-and-slots">Signals and Slots</a></li>
@@ -44,56 +38,56 @@ body { background: #ffffff; color: black; }</style>
 <a name="a-small-example"></a>
 <h2>A Small Example</h2>
 <p>A minimal C++ class declaration might read:</p>
-<pre>&nbsp;   class Counter
-    {
-    public:
-        Counter() { m_value = 0; }
+<pre> class Counter
+ {
+ public:
+     Counter() { m_value = 0; }
 
-        int value() const { return m_value; }
-        void setValue(int value);
+     int value() const { return m_value; }
+     void setValue(int value);
 
-    private:
-        int m_value;
-    };</pre>
+ private:
+     int m_value;
+ };</pre>
 <p>A small <a href="qobject.html">QObject</a>-based class might read:</p>
-<pre>&nbsp;   #include &lt;QObject&gt;
+<pre> #include &lt;QObject&gt;
 
-    class Counter : public QObject
-    {
-        Q_OBJECT
+ class Counter : public QObject
+ {
+     Q_OBJECT
 
-    public:
-        Counter() { m_value = 0; }
+ public:
+     Counter() { m_value = 0; }
 
-        int value() const { return m_value; }
+     int value() const { return m_value; }
 
-    public slots:
-        void setValue(int value);
+ public slots:
+     void setValue(int value);
 
-    signals:
-        void valueChanged(int newValue);
+ signals:
+     void valueChanged(int newValue);
 
-    private:
-        int m_value;
-    };</pre>
+ private:
+     int m_value;
+ };</pre>
 <p>The <a href="qobject.html">QObject</a>-based version has the same internal state, and provides public methods to access the state, but in addition it has support for component programming using signals and slots. This class can tell the outside world that its state has changed by emitting a signal, <tt>valueChanged()</tt>, and it has a slot which other objects can send signals to.</p>
 <p>All classes that contain signals or slots must mention <a href="qobject.html#Q_OBJECT">Q_OBJECT</a> at the top of their declaration. They must also derive (directly or indirectly) from <a href="qobject.html">QObject</a>.</p>
 <p>Slots are implemented by the application programmer. Here is a possible implementation of the <tt>Counter::setValue()</tt> slot:</p>
-<pre>&nbsp;   void Counter::setValue(int value)
-    {
-        if (value != m_value) {
-            m_value = value;
-            emit valueChanged(value);
-        }
-    }</pre>
+<pre> void Counter::setValue(int value)
+ {
+     if (value != m_value) {
+         m_value = value;
+         emit valueChanged(value);
+     }
+ }</pre>
 <p>The <tt>emit</tt> line emits the signal <tt>valueChanged()</tt> from the object, with the new value as argument.</p>
 <p>In the following code snippet, we create two <tt>Counter</tt> objects and connect the first object's <tt>valueChanged()</tt> signal to the second object's <tt>setValue()</tt> slot using <a href="qobject.html#connect">QObject::connect</a>():</p>
-<pre>&nbsp;       Counter a, b;
-        QObject::connect(&amp;a, SIGNAL(valueChanged(int)),
-                         &amp;b, SLOT(setValue(int)));
+<pre>     Counter a, b;
+     QObject::connect(&amp;a, SIGNAL(valueChanged(int)),
+                      &amp;b, SLOT(setValue(int)));
 
-        a.setValue(12);     // a.value() == 12, b.value() == 12
-        b.setValue(48);     // a.value() == 12, b.value() == 48</pre>
+     a.setValue(12);     <span class="comment">// a.value() == 12, b.value() == 12</span>
+     b.setValue(48);     <span class="comment">// a.value() == 12, b.value() == 48</span></pre>
 <p>Calling <tt>a.setValue(12)</tt> makes <tt>a</tt> emit a <tt>valueChanged(12)</tt> signal, which <tt>b</tt> will receive in its <tt>setValue()</tt> slot, i.e. <tt>b.setValue(12)</tt> is called. Then <tt>b</tt> emits the same <tt>valueChanged()</tt> signal, but since no slot has been connected to <tt>b</tt>'s <tt>valueChanged()</tt> signal, the signal is ignored.</p>
 <p>Note that the <tt>setValue()</tt> function sets the value and emits the signal only if <tt>value != m_value</tt>. This prevents infinite looping in the case of cyclic connections (e.g., if <tt>b.valueChanged()</tt> were connected to <tt>a.setValue()</tt>).</p>
 <p>A signal is emitted for every connection you make; if you duplicate a connection, two signals will be emitted. You can always break a connection using <a href="qobject.html#disconnect">QObject::disconnect</a>().</p>
@@ -121,48 +115,48 @@ body { background: #ffffff; color: black; }</style>
 <h2>Meta-Object Information</h2>
 <p>The meta-object compiler (<a href="moc.html#moc">moc</a>) parses the class declaration in a C++ file and generates C++ code that initializes the meta-object. The meta-object contains the names of all the signal and slot members, as well as pointers to these functions.</p>
 <p>The meta-object contains additional information such as the object's <a href="qobject-qt3.html#className">class name</a>. You can also check if an object <a href="qobject.html#inherits">inherits</a> a specific class, for example:</p>
-<pre>&nbsp;       if (widget-&gt;inherits(&quot;QAbstractButton&quot;)) {
-            QAbstractButton *button = static_cast&lt;QAbstractButton *&gt;(widget);
-            button-&gt;toggle();
-        }</pre>
+<pre>     if (widget-&gt;inherits(&quot;QAbstractButton&quot;)) {
+         QAbstractButton *button = static_cast&lt;QAbstractButton *&gt;(widget);
+         button-&gt;toggle();
+     }</pre>
 <p>The meta-object information is also used by qobject_cast&lt;T&gt;(), which is similar to <a href="qobject.html#inherits">QObject::inherits</a>() but is less error-prone:</p>
-<pre>&nbsp;       if (QAbstractButton *button = qobject_cast&lt;QAbstractButton *&gt;(widget))
-            button-&gt;toggle();</pre>
+<pre>     if (QAbstractButton *button = qobject_cast&lt;QAbstractButton *&gt;(widget))
+         button-&gt;toggle();</pre>
 <p>See <a href="metaobjects.html">Meta-Object System</a> for more information.</p>
 <a name="a-real-example"></a>
 <h2>A Real Example</h2>
 <p>Here is a simple commented example of a widget.</p>
-<pre>&nbsp;   #ifndef LCDNUMBER_H
-    #define LCDNUMBER_H
+<pre> #ifndef LCDNUMBER_H
+ #define LCDNUMBER_H
 
-    #include &lt;QFrame&gt;
+ #include &lt;QFrame&gt;
 
-    class LcdNumber : public QFrame
-    {
-        Q_OBJECT</pre>
+ class LcdNumber : public QFrame
+ {
+     Q_OBJECT</pre>
 <p><tt>LcdNumber</tt> inherits <a href="qobject.html">QObject</a>, which has most of the signal-slot knowledge, via <a href="qframe.html">QFrame</a> and <a href="qwidget.html">QWidget</a>. It is somewhat similar to the built-in <a href="qlcdnumber.html">QLCDNumber</a> widget.</p>
 <p>The <a href="qobject.html#Q_OBJECT">Q_OBJECT</a> macro is expanded by the preprocessor to declare several member functions that are implemented by the <tt>moc</tt>; if you get compiler errors along the lines of &quot;undefined reference to vtable for <tt>LcdNumber</tt>&quot;, you have probably forgotten to <a href="moc.html#moc">run the moc</a> or to include the moc output in the link command.</p>
-<pre>&nbsp;   public:
-        LcdNumber(QWidget *parent = 0);</pre>
+<pre> public:
+     LcdNumber(QWidget *parent = 0);</pre>
 <p>It's not obviously relevant to the moc, but if you inherit <a href="qwidget.html">QWidget</a> you almost certainly want to have the <tt>parent</tt> argument in your constructor and pass it to the base class's constructor.</p>
 <p>Some destructors and member functions are omitted here; the <tt>moc</tt> ignores member functions.</p>
-<pre>&nbsp;   signals:
-        void overflow();</pre>
+<pre> signals:
+     void overflow();</pre>
 <p><tt>LcdNumber</tt> emits a signal when it is asked to show an impossible value.</p>
 <p>If you don't care about overflow, or you know that overflow cannot occur, you can ignore the <tt>overflow()</tt> signal, i.e. don't connect it to any slot.</p>
 <p>If on the other hand you want to call two different error functions when the number overflows, simply connect the signal to two different slots. Qt will call both (in arbitrary order).</p>
-<pre>&nbsp;   public slots:
-        void display(int num);
-        void display(double num);
-        void display(const QString &amp;str);
-        void setHexMode();
-        void setDecMode();
-        void setOctMode();
-        void setBinMode();
-        void setSmallDecimalPoint(bool point);
-    };
+<pre> public slots:
+     void display(int num);
+     void display(double num);
+     void display(const QString &amp;str);
+     void setHexMode();
+     void setDecMode();
+     void setOctMode();
+     void setBinMode();
+     void setSmallDecimalPoint(bool point);
+ };
 
-    #endif</pre>
+ #endif</pre>
 <p>A slot is a receiving function used to get information about state changes in other widgets. <tt>LcdNumber</tt> uses it, as the code above indicates, to set the displayed number. Since <tt>display()</tt> is part of the class's interface with the rest of the program, the slot is public.</p>
 <p>Several of the example programs connect the <a href="qabstractslider.html#valueChanged">valueChanged()</a> signal of a <a href="qscrollbar.html">QScrollBar</a> to the <tt>display()</tt> slot, so the LCD number continuously shows the value of the scroll bar.</p>
 <p>Note that <tt>display()</tt> is overloaded; Qt will select the appropriate version when you connect a signal to the slot. With callbacks, you'd have to find five different names and keep track of the types yourself.</p>
@@ -172,6 +166,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

@@ -40,7 +40,7 @@
 
 class QNativeSocketEnginePrivate;
 
-class Q_INTERNAL_EXPORT QNativeSocketEngine : public QAbstractSocketEngine
+class Q_AUTOTEST_EXPORT QNativeSocketEngine : public QAbstractSocketEngine
 {
     Q_OBJECT
 public:
@@ -97,9 +97,6 @@ public:
 private:
     Q_DECLARE_PRIVATE(QNativeSocketEngine)
     Q_DISABLE_COPY(QNativeSocketEngine)
-#ifdef Q_OS_WIN
-    Q_PRIVATE_SLOT(d_func(), void _q_systemReadNotification())
-#endif
 };
 
 #ifdef Q_OS_WIN
@@ -152,7 +149,10 @@ public:
         ReceiveDatagramErrorString,
         WriteErrorString,
         ReadErrorString,
-        PortInuseErrorString
+        PortInuseErrorString,
+        NotSocketErrorString,
+
+        UnknownSocketErrorString = -1
     };
 
     void setError(QAbstractSocket::SocketError error, ErrorString errorString) const;
@@ -184,10 +184,6 @@ public:
     void nativeClose();
 
     bool fetchConnectionParameters();
-
-#ifdef Q_OS_WIN
-    void _q_systemReadNotification();
-#endif
 };
 
 #endif // QNATIVESOCKETENGINE_P_H

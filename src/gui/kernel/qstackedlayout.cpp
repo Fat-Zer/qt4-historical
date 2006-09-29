@@ -26,6 +26,7 @@
 
 #include <qlist.h>
 #include <qwidget.h>
+#include "private/qlayoutengine_p.h"
 
 class QStackedLayoutPrivate : public QLayoutPrivate
 {
@@ -83,7 +84,7 @@ public:
     The widget() function returns the widget at a given index
     position. The index of the widget that is shown on screen is given
     by currentIndex() and can be changed using setCurrentIndex(). In a
-    similar manor, the currently shown widget can be retrieved using
+    similar manner, the currently shown widget can be retrieved using
     the currentWidget() function, and altered using the
     setCurrentWidget() function.
 
@@ -330,8 +331,12 @@ int QStackedLayout::currentIndex() const
  */
 void QStackedLayout::setCurrentWidget(QWidget *widget)
 {
-    Q_ASSERT_X(indexOf(widget) >= 0, "QStackedLayout::setCurrentWidget", "widget not contained in stack");
-    setCurrentIndex(indexOf(widget));
+    int index = indexOf(widget);
+	if (index == -1) {
+		qWarning("QStackedLayout::setCurrentWidget: widget %p not contained in stack", widget);
+		return;
+	}
+    setCurrentIndex(index);
 }
 
 
@@ -414,7 +419,7 @@ QSize QStackedLayout::minimumSize() const
 
     for (int i = 0; i < n; ++i)
         if (QWidget *widget = d->list.at(i)->widget())
-            s = s.expandedTo(widget->minimumSizeHint());
+            s = s.expandedTo(qSmartMinSize(widget));
     return s;
 }
 

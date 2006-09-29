@@ -73,8 +73,8 @@
     The contains() function tells whether a given point is inside the
     rectangle or not, and the intersects() function returns true if
     this rectangle intersects with a given rectangle. The QRect class
-    also provides the intersect() function which returns the
-    intersection rectangle, and the unite function() which returns the
+    also provides the intersected() function which returns the
+    intersection rectangle, and the united() function which returns the
     rectangle that encloses the given rectangle and this:
 
     \table
@@ -82,8 +82,8 @@
     \o \inlineimage qrect-intersect.png
     \o \inlineimage qrect-unite.png
     \row
-    \o intersect()
-    \o unite()
+    \o intersected()
+    \o united()
     \endtable
 
     The isEmpty() function returns true if left() > right() or top() >
@@ -945,7 +945,7 @@ bool QRect::contains(const QRect &r, bool proper) const
 
     Unites this rectangle with the given \a rectangle.
 
-    \sa unite(), operator|()
+    \sa united(), operator|()
 */
 
 /*!
@@ -953,7 +953,7 @@ bool QRect::contains(const QRect &r, bool proper) const
 
     Intersects this rectangle with the given \a rectangle.
 
-    \sa intersect(), operator&()
+    \sa intersected(), operator&()
 */
 
 
@@ -963,7 +963,7 @@ bool QRect::contains(const QRect &r, bool proper) const
     Returns the bounding rectangle of this rectangle and the given \a
     rectangle.
 
-    \sa operator|=(),  unite()
+    \sa operator|=(), united()
 */
 
 QRect QRect::operator|(const QRect &r) const
@@ -984,12 +984,20 @@ QRect QRect::operator|(const QRect &r) const
 
 /*!
     \fn QRect QRect::unite(const QRect &rectangle) const
+    \obsolete
+
+    Use united(\a rectangle) instead.
+*/
+
+/*!
+    \fn QRect QRect::united(const QRect &rectangle) const
+    \since 4.2
 
     Returns the bounding rectangle of this rectangle and the given \a rectangle.
 
     \image qrect-unite.png
 
-    \sa intersect()
+    \sa intersected()
 */
 
 
@@ -999,7 +1007,7 @@ QRect QRect::operator|(const QRect &r) const
     Returns the intersection of this rectangle and the given \a
     rectangle. Returns an empty rectangle if there is no intersection.
 
-    \sa operator&=(), intersect()
+    \sa operator&=(), intersected()
 */
 
 QRect QRect::operator&(const QRect &r) const
@@ -1013,18 +1021,26 @@ QRect QRect::operator&(const QRect &r) const
     tmp.x2 = qMin(r1.x2, r2.x2);
     tmp.y1 = qMax(r1.y1, r2.y1);
     tmp.y2 = qMin(r1.y2, r2.y2);
-    return tmp;
+    return tmp.isEmpty() ? QRect() : tmp;
 }
 
 /*!
     \fn QRect QRect::intersect(const QRect &rectangle) const
+    \obsolete
+
+    Use intersected(\a rectangle) instead.
+*/
+
+/*!
+    \fn QRect QRect::intersected(const QRect &rectangle) const
+    \since 4.2
 
     Returns the intersection of this rectangle and the given \a
-    rectangle. Note that \c{r.intersect(s)} is equivalent to \c{r&s}.
+    rectangle. Note that \c{r.intersected(s)} is equivalent to \c{r & s}.
 
     \image qrect-intersect.png
 
-    \sa intersects(), unite(), operator&=()
+    \sa intersects(), united(), operator&=()
 */
 
 /*!
@@ -1034,7 +1050,7 @@ QRect QRect::operator&(const QRect &r) const
     rectangle (i.e. there is at least one pixel that is within both
     rectangles), otherwise returns false.
 
-    The intersection rectangle can be retrieved using the intersect()
+    The intersection rectangle can be retrieved using the intersected()
     function.
 
     \sa  contains()
@@ -1177,8 +1193,8 @@ QDebug operator<<(QDebug dbg, const QRect &r) {
     The contains() function tells whether a given point is inside the
     rectangle or not, and the intersects() function returns true if
     this rectangle intersects with a given rectangle (otherwise
-    false). The QRectF class also provides the intersect() function
-    which returns the intersection rectangle, and the unite function()
+    false). The QRectF class also provides the intersected() function
+    which returns the intersection rectangle, and the united() function
     which returns the rectangle that encloses the given rectangle and
     this:
 
@@ -1187,8 +1203,8 @@ QDebug operator<<(QDebug dbg, const QRect &r) {
     \o \inlineimage qrect-intersect.png
     \o \inlineimage qrect-unite.png
     \row
-    \o intersect()
-    \o unite()
+    \o intersected()
+    \o united()
     \endtable
 
     The isEmpty() function returns true if the rectangle's width or
@@ -1874,7 +1890,7 @@ bool QRectF::contains(const QRectF &r) const
 
     Unites this rectangle with the given \a rectangle.
 
-    \sa unite(), operator|()
+    \sa united(), operator|()
 */
 
 /*!
@@ -1882,7 +1898,7 @@ bool QRectF::contains(const QRectF &r) const
 
     Intersects this rectangle with the given \a rectangle.
 
-    \sa intersect(), operator|=()
+    \sa intersected(), operator|=()
 */
 
 
@@ -1891,7 +1907,7 @@ bool QRectF::contains(const QRectF &r) const
 
     Returns the bounding rectangle of this rectangle and the given \a rectangle.
 
-    \sa unite(), operator|=()
+    \sa united(), operator|=()
 */
 
 QRectF QRectF::operator|(const QRectF &r) const
@@ -1912,13 +1928,21 @@ QRectF QRectF::operator|(const QRectF &r) const
 
 /*!
     \fn QRectF QRectF::unite(const QRectF &rectangle) const
+    \obsolete
+
+    Use united(\a rectangle) instead.
+*/
+
+/*!
+    \fn QRectF QRectF::united(const QRectF &rectangle) const
+    \since 4.2
 
     Returns the bounding rectangle of this rectangle and the given \a
     rectangle.
 
     \image qrect-unite.png
 
-    \sa intersect()
+    \sa intersected()
 */
 
 
@@ -1928,7 +1952,7 @@ QRectF QRectF::operator|(const QRectF &r) const
     Returns the intersection of this rectangle and the given \a
     rectangle. Returns an empty rectangle if there is no intersection.
 
-    \sa operator&=(), intersect()
+    \sa operator&=(), intersected()
 */
 
 QRectF QRectF::operator&(const QRectF &r) const
@@ -1942,19 +1966,27 @@ QRectF QRectF::operator&(const QRectF &r) const
     tmp.yp = qMax(r1.yp, r2.yp);
     tmp.w = qMin(r1.xp + r1.w, r2.xp + r2.w) - tmp.xp;
     tmp.h = qMin(r1.yp + r1.h, r2.yp + r2.h) - tmp.yp;
-    return tmp;
+    return tmp.isEmpty() ? QRectF() : tmp;
 }
 
 /*!
     \fn QRectF QRectF::intersect(const QRectF &rectangle) const
+    \obsolete
+
+    Use intersected(\a rectangle) instead.
+*/
+
+/*!
+    \fn QRectF QRectF::intersected(const QRectF &rectangle) const
+    \since 4.2
 
     Returns the intersection of this rectangle and the given \a
-    rectangle. Note that \c {r.intersect(s)} is equivalent to \c
-    {r&s}.
+    rectangle. Note that \c {r.intersected(s)} is equivalent to \c
+    {r & s}.
 
     \image qrect-intersect.png
 
-    \sa intersects(), unite(), operator&=()
+    \sa intersects(), united(), operator&=()
 */
 
 /*!
@@ -1964,7 +1996,7 @@ QRectF QRectF::operator&(const QRectF &r) const
     rectangle (i.e. there is at least one pixel that is within both
     rectangles), otherwise returns false.
 
-    The intersection rectangle can be retrieved using the intersect()
+    The intersection rectangle can be retrieved using the intersected()
     function.
 
     \sa contains()
@@ -2063,8 +2095,8 @@ QDataStream &operator>>(QDataStream &s, QRectF &r)
 
 #ifndef QT_NO_DEBUG_STREAM
 QDebug operator<<(QDebug dbg, const QRectF &r) {
-    dbg.nospace() << "QRectF(" << r.x() << ',' << r.y() << ','
-                  << r.width() << ',' << r.height() << ')';
+    dbg.nospace() << "QRectF(" << r.x() << ',' << r.y() << ' '
+                  << r.width() << 'x' << r.height() << ')';
     return dbg.space();
 }
 #endif

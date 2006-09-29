@@ -51,15 +51,19 @@ class ColorSwatch : public QDockWidget
     QAction *topAction;
     QAction *bottomAction;
 
+    QAction *changeSizeHintsAction;
+
+    QMenu *tabMenu;
+    QMenu *splitHMenu;
+    QMenu *splitVMenu;
+
 public:
-    ColorSwatch(const QString &colorName, QWidget *parent = 0, Qt::WFlags flags = 0);
+    ColorSwatch(const QString &colorName, QWidget *parent = 0, Qt::WindowFlags flags = 0);
 
     QMenu *menu;
 
 protected:
     virtual void contextMenuEvent(QContextMenuEvent *event);
-    virtual bool event(QEvent *);
-
 
 private:
     void allow(Qt::DockWidgetArea area, bool allow);
@@ -70,6 +74,7 @@ private slots:
     void changeMovable(bool on);
     void changeFloatable(bool on);
     void changeFloating(bool on);
+    void updateContextMenu();
 
     void allowLeft(bool a);
     void allowRight(bool a);
@@ -80,6 +85,9 @@ private slots:
     void placeRight(bool p);
     void placeTop(bool p);
     void placeBottom(bool p);
+
+    void splitInto(QAction *action);
+    void tabInto(QAction *action);
 };
 
 #endif

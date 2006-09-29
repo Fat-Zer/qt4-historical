@@ -26,7 +26,7 @@
 
 #include "trwindow.h"
 #include "phrase.h"
-
+#include "messagemodel.h"
 #include <QString>
 #include <QPixmap>
 #include <QBitmap>
@@ -48,6 +48,34 @@ class EditorPage;
 class MetaTranslator;
 class QMenu;
 class MessageEditor;
+
+
+class TransEditor : public QWidget
+{
+    Q_OBJECT
+public:
+    TransEditor(QWidget *parent = 0);
+
+    void setLabel(const QString &text);
+    QTextEdit *editor() const { return m_editor; }
+    QLabel *label() const { return m_label; }
+
+    void calculateFieldHeight();
+    QString translation() const;
+
+    void gotFocusInEvent( QFocusEvent * e);
+
+public slots:
+    void handleTranslationChanges();
+
+signals:
+    void heightUpdated(int height);
+    void gotFocusIn();
+
+private:
+    QTextEdit *m_editor;
+    QLabel *m_label;
+};
 
 class SourceTextEdit : public QTextEdit
 {
@@ -177,6 +205,11 @@ class EditorPage : public QFrame
     Q_OBJECT
 public:
     EditorPage(MessageEditor *parent = 0, const char *name = 0);
+    QTextEdit *activeTransText() const;
+    int activeTranslationNumerus() const;
+    QStringList translations() const;
+    void setNumerusForms(const QString &invariantForm, const QStringList &numerusForms);
+    int currentTranslationEditor();
 
 protected:
     void resizeEvent(QResizeEvent *);
@@ -186,46 +219,50 @@ protected:
     void fontChange(const QFont &);
 
 private:
+    void addPluralForm(const QString &label);
+    void adjustTranslationFieldHeights();
+
     PageCurl *pageCurl;
     QLabel *srcTextLbl;
-    QLabel *transLbl;
     SourceTextEdit *srcText;
     QTextEdit *cmtText;
-    QTextEdit *transText;
-
+    QStringList m_numerusForms;
+    QString     m_invariantForm;
+    bool        m_pluralEditMode;
+    QList<TransEditor*> m_transTexts;
     friend class MessageEditor;
 
 private slots:
-    void handleTranslationChanges();
     void handleSourceChanges();
     void handleCommentChanges();
     void sourceSelectionChanged();
     void translationSelectionChanged();
+    void updateHeight(int h);
 
 signals:
     void pageHeightUpdated(int height);
     void selectionChanged();
+    void currentTranslationEditorChanged();
 };
 
 class MessageEditor : public QScrollArea
 {
     Q_OBJECT
 public:
-    MessageEditor(MetaTranslator *t, QMainWindow *parent = 0);
-    QTreeView *sourceTextView() const;
+    MessageEditor(MessageModel *model, QMainWindow *parent = 0);
     QTreeView *phraseView() const;
-    inline QDockWidget *sourceDockWnd() const {return topDockWnd;}
     inline QDockWidget *phraseDockWnd() const {return bottomDockWnd;}
 
     void showNothing();
     void showMessage(const QString &text, const QString &comment,
-        const QString &fullContext, const QString &translation,
+        const QString &fullContext, const QStringList &translation,
         MetaTranslatorMessage::Type type,
         const QList<Phrase> &phrases);
+    void setNumerusForms(const QString &invariantForm, const QStringList &numerusForms);
     bool eventFilter(QObject *, QEvent *);
 
 signals:
-    void translationChanged(const QString &translation);
+    void translationChanged(const QStringList &translations);
     void finished(bool finished);
     void prevUnfinished();
     void nextUnfinished();
@@ -250,6 +287,7 @@ public slots:
     void beginFromSource();
     void toggleGuessing();
     void setEditorFocus();
+    void checkUndoRedo();
 
 private slots:
     void emitTranslationChanged();
@@ -265,17 +303,18 @@ private slots:
 protected:
     void resizeEvent(QResizeEvent *);
 
-private:
+public:
     static const char backTab[];
     static const char * const friendlyBackTab[];
 
+private:
+
     void visualizeBackTabs(const QString &text, QTextEdit *te);
-    void setTranslation(const QString &translation, bool emitt);
+    void setTranslation(const QString &translation, int numerus, bool emitt);
     void setEditionEnabled(bool enabled);
 
-    QTreeView *srcTextView;
     MessageModel *srcMdl;
-    QDockWidget *topDockWnd, *bottomDockWnd;
+    QDockWidget *bottomDockWnd;
     EditorPage *editorPage;
 
     QLabel * phraseLbl;
@@ -285,7 +324,7 @@ private:
 
     ShadowWidget *sw;
 
-    MetaTranslator *tor;
+    MessageModel *m_contextModel;
     QString sourceText;
 
     bool cutAvail;

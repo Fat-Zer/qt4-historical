@@ -38,7 +38,7 @@ class QIconEngine;
 class Q_GUI_EXPORT QIcon
 {
 public:
-    enum Mode { Normal, Disabled, Active };
+    enum Mode { Normal, Disabled, Active, Selected };
     enum State { On, Off };
 
     QIcon();
@@ -88,10 +88,18 @@ public:
 
 private:
     QIconPrivate *d;
+#if !defined(QT_NO_DATASTREAM)
+    friend Q_GUI_EXPORT QDataStream &operator<<(QDataStream &, const QIcon &);
+#endif
 };
 
 Q_DECLARE_SHARED(QIcon)
 Q_DECLARE_TYPEINFO(QIcon, Q_MOVABLE_TYPE);
+
+#if !defined(QT_NO_DATASTREAM)
+Q_GUI_EXPORT QDataStream &operator<<(QDataStream &, const QIcon &);
+Q_GUI_EXPORT QDataStream &operator>>(QDataStream &, QIcon &);
+#endif
 
 #ifdef QT3_SUPPORT
 typedef QIcon QIconSet;

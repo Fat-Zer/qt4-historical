@@ -36,9 +36,9 @@
 //
 
 #include "QtCore/qglobal.h"
+#include "QtCore/qvariant.h"
 #include "private/qcore_mac_p.h"
-
-//#define QMAC_NO_COREGRAPHICS
+#include <ApplicationServices/ApplicationServices.h>
 
 #include "QtGui/qpainter.h"
 #include "QtGui/qwidget.h"
@@ -78,6 +78,17 @@ public:
     QMacBlockingFunction();
     ~QMacBlockingFunction();
     static bool blocking() { return block != 0; }
+};
+
+class QMacCocoaAutoReleasePool
+{
+private:
+    void *pool;
+public:
+    QMacCocoaAutoReleasePool();
+    ~QMacCocoaAutoReleasePool();
+
+    inline void *handle() const { return pool; }
 };
 
 class Q_GUI_EXPORT QMacWindowChangeEvent
@@ -153,6 +164,45 @@ public:
         CGContextRetain(context); //we do not take ownership
         return *this;
     }
+};
+
+class QMacPasteboardMime;
+class QMimeData;
+
+class QMacPasteboard
+{
+    struct Promise {
+        Promise(QMacPasteboardMime *c, QString m, QVariant d) : convertor(c), mime(m), data(d) { }
+        QMacPasteboardMime *convertor;
+        QString mime;
+        QVariant data;
+    };
+    QList<Promise> promises;
+
+    PasteboardRef paste;
+    uchar mime_type;
+    mutable QPointer<QMimeData> mime;
+    mutable bool mac_mime_source;
+    static OSStatus promiseKeeper(PasteboardRef, PasteboardItemID, CFStringRef, void *);
+public:
+    QMacPasteboard(PasteboardRef p, uchar mime_type=0);
+    QMacPasteboard(uchar mime_type);
+    QMacPasteboard(CFStringRef name=0, uchar mime_type=0);
+    ~QMacPasteboard();
+
+    bool hasFlavor(QString flavor) const;
+    bool hasOSType(int c_flavor) const;
+
+    PasteboardRef pasteBoard() const;
+    QMimeData *mimeData() const;
+    void setMimeData(QMimeData *mime);
+
+    QStringList formats() const;
+    bool hasFormat(const QString &format) const;
+    QVariant retrieveData(const QString &format, QVariant::Type) const;
+
+    void clear();
+    bool sync() const;
 };
 
 #include "qpaintdevice.h"

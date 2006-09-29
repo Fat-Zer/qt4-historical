@@ -6,7 +6,13 @@ contains(sql-drivers, psql) {
     HEADERS +=      drivers/psql/qsql_psql.h
     SOURCES +=      drivers/psql/qsql_psql.cpp
 
-    unix:!contains( LIBS, .*pq.* ):LIBS *= -lpq
+    unix {
+        !isEmpty(QT_LFLAGS_PSQL) {
+            LIBS *= $$QT_LFLAGS_PSQL
+            QMAKE_CXXFLAGS *= $$QT_CFLAGS_PSQL
+        }
+        !contains(LIBS, .*pq.*):LIBS *= -lpq
+    }
 
     win32 {
 	!win32-g++:!contains( LIBS, .*pq.* ):LIBS *= -llibpq
@@ -19,12 +25,18 @@ contains(sql-drivers, mysql) {
     HEADERS +=      drivers/mysql/qsql_mysql.h
     SOURCES +=      drivers/mysql/qsql_mysql.cpp
 
-    unix:use_mysqlclient_r {
-        !contains( LIBS, .*mysqlclient_r.* ):LIBS    *= -lmysqlclient_r
-    } else:unix {
-        !contains( LIBS, .*mysqlclient.* ):LIBS    *= -lmysqlclient
+    unix {
+        isEmpty(QT_LFLAGS_MYSQL) {
+            !contains(LIBS, .*mysqlclient.*):!contains(LIBS, .*mysqld.*) {
+                use_libmysqlclient_r:LIBS *= -lmysqlclient_r
+                else:LIBS *= -lmysqlclient
+            }
+        } else {
+            LIBS *= $$QT_LFLAGS_MYSQL
+            QMAKE_CXXFLAGS *= $$QT_CFLAGS_MYSQL
+        }
     }
-    
+
     win32:!contains(LIBS, .*mysql.*):!contains(LIBS, .*mysqld.*) {
         !win32-g++:LIBS     *= -llibmysql    
 	win32-g++:LIBS	    *= -lmysql
@@ -96,7 +108,7 @@ contains(sql-drivers, sqlite2) {
 }
 
 contains(sql-drivers, sqlite) {
-    !contains( LIBS, .*sqlite3.* ) {
+    !system-sqlite:!contains( LIBS, .*sqlite3.* ) {
         CONFIG(release, debug|release):DEFINES *= NDEBUG
         INCLUDEPATH +=  ../3rdparty/sqlite
 
@@ -116,6 +128,7 @@ contains(sql-drivers, sqlite) {
                         ../3rdparty/sqlite/legacy.c \
                         ../3rdparty/sqlite/main.c \
                         ../3rdparty/sqlite/opcodes.c \
+                        ../3rdparty/sqlite/os.c \
                         ../3rdparty/sqlite/pager.c \
                         ../3rdparty/sqlite/parse.c \
                         ../3rdparty/sqlite/pragma.c \
@@ -138,6 +151,9 @@ contains(sql-drivers, sqlite) {
                         ../3rdparty/sqlite/where.c
         unix:SOURCES += ../3rdparty/sqlite/os_unix.c
         win32:SOURCES +=  ../3rdparty/sqlite/os_win.c
+    } else {
+        LIBS *= $$QT_LFLAGS_SQLITE
+        QMAKE_CXXFLAGS *= $$QT_CFLAGS_SQLITE
     }
 
     HEADERS +=      drivers/sqlite/qsql_sqlite.h

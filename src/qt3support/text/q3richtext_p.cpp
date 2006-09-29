@@ -424,8 +424,8 @@ QString Q3TextString::toString(const QVector<Q3TextStringChar> &data)
 
 void Q3TextParagraph::setSelection(int id, int start, int end)
 {
-    QMap<int, Q3TextParagraphSelection>::ConstIterator it = selections().find(id);
-    if (it != mSelections->end()) {
+    QMap<int, Q3TextParagraphSelection>::ConstIterator it = selections().constFind(id);
+    if (it != mSelections->constEnd()) {
         if (start == (*it).start && end == (*it).end)
             return;
     }
@@ -450,8 +450,8 @@ int Q3TextParagraph::selectionStart(int id) const
 {
     if (!mSelections)
         return -1;
-    QMap<int, Q3TextParagraphSelection>::ConstIterator it = mSelections->find(id);
-    if (it == mSelections->end())
+    QMap<int, Q3TextParagraphSelection>::ConstIterator it = mSelections->constFind(id);
+    if (it == mSelections->constEnd())
         return -1;
     return (*it).start;
 }
@@ -460,8 +460,8 @@ int Q3TextParagraph::selectionEnd(int id) const
 {
     if (!mSelections)
         return -1;
-    QMap<int, Q3TextParagraphSelection>::ConstIterator it = mSelections->find(id);
-    if (it == mSelections->end())
+    QMap<int, Q3TextParagraphSelection>::ConstIterator it = mSelections->constFind(id);
+    if (it == mSelections->constEnd())
         return -1;
     return (*it).end;
 }
@@ -475,8 +475,8 @@ bool Q3TextParagraph::fullSelected(int id) const
 {
     if (!mSelections)
         return false;
-    QMap<int, Q3TextParagraphSelection>::ConstIterator it = mSelections->find(id);
-    if (it == mSelections->end())
+    QMap<int, Q3TextParagraphSelection>::ConstIterator it = mSelections->constFind(id);
+    if (it == mSelections->constEnd())
         return false;
     return (*it).start == 0 && (*it).end == str->length() - 1;
 }

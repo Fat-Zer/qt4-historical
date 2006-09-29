@@ -51,7 +51,7 @@ public:
     quint32 size : 31;
 };
 
-class QFragmentMapData
+class Q_AUTOTEST_EXPORT QFragmentMapData
 {
     enum Color { Red, Black };
 public:

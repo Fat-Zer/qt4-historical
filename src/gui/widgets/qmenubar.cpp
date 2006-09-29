@@ -116,16 +116,20 @@ void QMenuBarPrivate::updateGeometries()
                       + q->style()->pixelMetric(QStyle::PM_MenuBarPanelWidth, 0, q);
         int hmargin = q->style()->pixelMetric(QStyle::PM_MenuBarHMargin, 0, q)
                       + q->style()->pixelMetric(QStyle::PM_MenuBarPanelWidth, 0, q);
-        if(leftWidget && leftWidget->isVisible()) {
+        if (leftWidget && leftWidget->isVisible()) {
             QSize sz = leftWidget->sizeHint();
             q_width -= sz.width();
             q_start = sz.width();
-            leftWidget->setGeometry(QRect(QPoint(hmargin, vmargin), sz));
+            QPoint pos(hmargin, vmargin);
+            QRect vRect = QStyle::visualRect(q->layoutDirection(), q->rect(), QRect(pos, sz));
+            leftWidget->setGeometry(vRect);
         }
-        if(rightWidget && rightWidget->isVisible()) {
+        if (rightWidget && rightWidget->isVisible()) {
             QSize sz = rightWidget->sizeHint();
             q_width -= sz.width();
-            rightWidget->setGeometry(QRect(QPoint(q->width() - sz.width() - hmargin, vmargin), sz));
+            QPoint pos(q->width() - sz.width() - hmargin, vmargin);
+            QRect vRect = QStyle::visualRect(q->layoutDirection(), q->rect(), QRect(pos, sz));
+            rightWidget->setGeometry(vRect);
         }
     }
 
@@ -284,17 +288,21 @@ void QMenuBarPrivate::setCurrentAction(QAction *action, bool popup, bool activat
         q->update(actionRect(currentAction));
 
     popupState = popup;
+#ifndef QT_NO_STATUSTIP
     QAction *previousAction = currentAction;
+#endif
     currentAction = action;
     if(action) {
         activateAction(action, QAction::Hover);
         if(popup)
             popupAction(action, activateFirst);
         q->update(actionRect(action));
+#ifndef QT_NO_STATUSTIP
     }  else if (previousAction) {
         QString empty;
         QStatusTipEvent tip(empty);
         QApplication::sendEvent(q, &tip);
+#endif
     }
 
 
@@ -338,8 +346,8 @@ void QMenuBarPrivate::calcActionRects(int max_width, int start, QMap<QAction*, Q
             QString s = action->text();
             if(!s.isEmpty()) {
                 int w = fm.width(s);
-                w -= s.count('&') * fm.width('&');
-                w += s.count("&&") * fm.width('&');
+                w -= s.count(QLatin1Char('&')) * fm.width(QLatin1Char('&'));
+                w += s.count(QLatin1String("&&")) * fm.width(QLatin1Char('&'));
                 sz = QSize(w, fm.height());
             }
 
@@ -515,8 +523,23 @@ QStyleOptionMenuItem QMenuBarPrivate::getStyleOption(const QAction *action) cons
 
     Menu items may be removed with removeAction().
 
-    \image motif-menubar.png A menubar shown in the Motif widget style.
-    \image plastique-menubar.png A menubar shown in the Plastique widget style.
+    \section1 Platform Dependent Look and Feel
+
+    Different platforms have different requirements for the appearance
+    of menu bars and their behavior when the user interacts with them.
+    For example, Windows systems are often configured so that the
+    underlined character mnemonics that indicate keyboard shortcuts for
+    items in the menu bar are only shown when the \gui{Alt} key is
+    pressed.
+
+    \table
+    \row \o \inlineimage plastique-menubar.png A menubar shown in the Plastique widget style.
+    \o The \l{QPlastiqueStyle}{Plastique widget style}, like most other styles,
+    handles the \gui{Help} menu in the same way as it handles any other menu.
+    \row \o \inlineimage motif-menubar.png A menubar shown in the Motif widget style.
+    \o The \l{QMotifStyle}{Motif widget style} treats \gui{Help} menus in a
+    special way, placing them at right-hand end of the menu bar.
+    \endtable
 
     \section1 QMenuBar on Qt/Mac
 
@@ -548,12 +571,21 @@ QStyleOptionMenuItem QMenuBarPrivate::getStyleOption(const QAction *action) cons
             created to call QApplication::quit()
     \endtable
 
-    The \l{mainwindows/menus}{Menus} example shows how to use
-    QMenuBar and QMenu.
+    You can override this behavior by using the QAction::menuRole() property.
+
+    \bold{Note:} The text used for the application name in the menu bar is
+    obtained from the value set in the \c{Info.plist} file in the application's
+    bundle. See \l{Deploying an Application on Qt/Mac} for more information.
+
+    \section1 Examples
+
+    The \l{mainwindows/menus}{Menus} example shows how to use QMenuBar and QMenu.
+    The other \l{Qt Examples#Main Window Examples}{main window application examples}
+    also provide menus using these classes.
 
     \sa QMenu, QShortcut, QAction,
-        {http://developer.apple.com/documentation/UserExperience/Conceptual/OSXHIGuidelines/index.html}{Introduction to Apple Human Interface Guidelines}
-        {fowler}{GUI Design Handbook: Menu Bar}
+        {http://developer.apple.com/documentation/UserExperience/Conceptual/OSXHIGuidelines/index.html}{Introduction to Apple Human Interface Guidelines},
+        {fowler}{GUI Design Handbook: Menu Bar}, {Menus Example}
 */
 
 
@@ -696,6 +728,22 @@ QAction *QMenuBar::addSeparator()
     ret->setSeparator(true);
     addAction(ret);
     return ret;
+}
+
+/*!
+    This convenience function creates a new separator action, i.e. an
+    action with QAction::isSeparator() returning true. The function inserts
+    the newly created action into this menubar's list of actions before
+    action \a before and returns it.
+
+    \sa QWidget::insertAction(), addSeparator()
+*/
+QAction *QMenuBar::insertSeparator(QAction *before)
+{
+    QAction *action = new QAction(this);
+    action->setSeparator(true);
+    insertAction(before, action);
+    return action;
 }
 
 /*!
@@ -965,7 +1013,7 @@ void QMenuBar::keyPressEvent(QKeyEvent *e)
                 register QAction *act = d->actionList.at(i);
                 QString s = act->text();
                 if(!s.isEmpty()) {
-                    int ampersand = s.indexOf('&');
+                    int ampersand = s.indexOf(QLatin1Char('&'));
                     if(ampersand >= 0) {
                         if(s[ampersand+1].toUpper() == c) {
                             clashCount++;
@@ -1147,8 +1195,14 @@ void QMenuBar::changeEvent(QEvent *e)
         setMouseTracking(style()->styleHint(QStyle::SH_MenuBar_MouseTracking, 0, this));
         if(parentWidget())
             resize(parentWidget()->width(), heightForWidth(parentWidget()->width()));
-    } else if (e->type() == QEvent::ParentChange)
+        d->updateGeometries();
+    } else if (e->type() == QEvent::ParentChange) {
         d->handleReparent();
+    } else if (e->type() == QEvent::FontChange
+               || e->type() == QEvent::ApplicationFontChange) {
+        d->itemsDirty = true;
+        d->updateGeometries();
+    }
     QWidget::changeEvent(e);
 }
 
@@ -1388,7 +1442,7 @@ QSize QMenuBar::sizeHint() const
         QList<QAction*> actionList;
         const int w = parentWidget() ? parentWidget()->width() : QApplication::desktop()->width();
         d->calcActionRects(w - (2 * fw), 0, actionRects, actionList);
-        for (QMap<QAction*, QRect>::const_iterator i = actionRects.begin();
+        for (QMap<QAction*, QRect>::const_iterator i = actionRects.constBegin();
              i != actionRects.constEnd(); ++i) {
             QRect actionRect(i.value());
             if(actionRect.x() + actionRect.width() > ret.width())
@@ -1480,8 +1534,10 @@ void QMenuBarPrivate::_q_updateLayout()
 {
     Q_Q(QMenuBar);
     itemsDirty = true;
-    updateGeometries();
-    q->update();
+    if (q->isVisible()) {
+        updateGeometries();
+        q->update();
+    }
 }
 
 /*!
@@ -1600,13 +1656,14 @@ int QMenuBar::insertAny(const QIcon *icon, const QString *text, const QObject *r
 }
 
 /*!
-    Use insertAction() instead, using a separator action. For example,
-    to add a separator after the previously added action use code like
-    this:
-    \code
-    QAction *action = new QAction(this);
-    action->setSeparator(true);
-    menubar->addAction(action);
+    \since 4.2
+
+    Use addSeparator() or insertAction() instead.
+
+    \oldcode
+        menuBar->insertSeparator();
+    \newcode
+        menuBar->addSeparator();
     \endcode
 */
 int QMenuBar::insertSeparator(int index)
@@ -1904,7 +1961,7 @@ int QMenuBar::findIdForAction(QAction *act) const
 /*!
     \fn int QMenuBar::itemAtPos(const QPoint &p)
 
-    Use actionAt() instead.
+    There is no equivalent way to achieve this in Qt 4.
 */
 
 /*!
@@ -1917,6 +1974,105 @@ int QMenuBar::findIdForAction(QAction *act) const
     \fn void QMenuBar::highlighted(int itemId);
 
     Use hovered() instead.
+*/
+
+/*!
+    \fn void QMenuBar::setFrameRect(QRect)
+    \internal
+*/
+
+/*!
+    \fn QRect QMenuBar::frameRect() const
+    \internal
+*/
+/*!
+    \enum QMenuBar::DummyFrame
+    \internal
+
+    \value Box
+    \value Sunken
+    \value Plain
+    \value Raised
+    \value MShadow
+    \value NoFrame
+    \value Panel 
+    \value StyledPanel
+    \value HLine 
+    \value VLine 
+    \value GroupBoxPanel
+    \value WinPanel 
+    \value ToolBarPanel 
+    \value MenuBarPanel 
+    \value PopupPanel 
+    \value LineEditPanel 
+    \value TabWidgetPanel 
+    \value MShape
+*/
+
+/*!
+    \fn void QMenuBar::setFrameShadow(DummyFrame)
+    \internal
+*/
+
+/*!
+    \fn DummyFrame QMenuBar::frameShadow() const
+    \internal
+*/
+
+/*!
+    \fn void QMenuBar::setFrameShape(DummyFrame)
+    \internal
+*/
+
+/*!
+    \fn DummyFrame QMenuBar::frameShape() const
+    \internal
+*/
+
+/*!
+    \fn void QMenuBar::setFrameStyle(int)
+    \internal
+*/
+
+/*!
+    \fn int QMenuBar::frameStyle() const
+    \internal
+*/
+
+/*!
+    \fn void QMenuBar::setLineWidth(int)
+    \internal
+*/
+
+/*!
+    \fn int QMenuBar::lineWidth() const
+    \internal
+*/
+
+/*!
+    \fn void QMenuBar::setMargin(int margin)
+    Sets the width of the margin around the contents of the widget to \a margin.
+    
+    Use QWidget::setContentsMargins() instead.
+    \sa margin(), QWidget::setContentsMargins()
+*/
+
+/*!
+    \fn int QMenuBar::margin() const 
+    Returns the with of the the margin around the contents of the widget.
+    
+    Use QWidget::getContentsMargins() instead.
+    \sa setMargin(), QWidget::getContentsMargins()
+*/
+
+/*!
+    \fn void QMenuBar::setMidLineWidth(int)
+    \internal
+*/
+
+/*!
+    \fn int QMenuBar::midLineWidth() const
+    \internal
 */
 
 // for private slots

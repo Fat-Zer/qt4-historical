@@ -3,203 +3,209 @@
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-    <title>Qt 4.1: peerwireclient.h Example File (network/torrent/peerwireclient.h)</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
+  <title>Qt 4.2: peerwireclient.h Example File (network/torrent/peerwireclient.h)</title>
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">peerwireclient.h Example File<br /><sup><sup>network/torrent/peerwireclient.h</sup></sup></h1>
-<pre>&nbsp;   /****************************************************************************
-    **
-    ** Copyright (C) 2004-2006 Trolltech ASA. All rights reserved.
-    **
-    ** This file is part of the documentation of the Qt Toolkit.
-    **
-    ** This file may be used under the terms of the GNU General Public
-    ** License version 2.0 as published by the Free Software Foundation
-    ** and appearing in the file LICENSE.GPL included in the packaging of
-    ** this file.  Please review the following information to ensure GNU
-    ** General Public Licensing requirements will be met:
-    ** http://www.trolltech.com/products/qt/opensource.html
-    **
-    ** If you are unsure which license is appropriate for your use, please
-    ** review the following information:
-    ** http://www.trolltech.com/products/qt/licensing.html or contact the
-    ** sales department at sales@trolltech.com.
-    **
-    ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
-    ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
-    **
-    ****************************************************************************/
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">peerwireclient.h Example File<br /><sup><sup>network/torrent/peerwireclient.h</sup></sup></h1>
+<pre> /****************************************************************************
+ **
+ ** Copyright (C) 2004-2006 Trolltech ASA. All rights reserved.
+ **
+ ** This file is part of the example classes of the Qt Toolkit.
+ **
+ ** This file may be used under the terms of the GNU General Public
+ ** License version 2.0 as published by the Free Software Foundation
+ ** and appearing in the file LICENSE.GPL included in the packaging of
+ ** this file.  Please review the following information to ensure GNU
+ ** General Public Licensing requirements will be met:
+ ** http:<span class="comment">//www.trolltech.com/products/qt/opensource.html</span>
+ **
+ ** If you are unsure which license is appropriate for your use, please
+ ** review the following information:
+ ** http:<span class="comment">//www.trolltech.com/products/qt/licensing.html or contact the</span>
+ ** sales department at sales@trolltech.com.
+ **
+ ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+ ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ **
+ ****************************************************************************/
 
-    #ifndef PEERWIRECLIENT_H
-    #define PEERWIRECLIENT_H
+ #ifndef PEERWIRECLIENT_H
+ #define PEERWIRECLIENT_H
 
-    class QHostAddress;
-    class QTimerEvent;
-    class TorrentPeer;
+ class QHostAddress;
+ class QTimerEvent;
+ class TorrentPeer;
 
-    #include &lt;QBitArray&gt;
-    #include &lt;QList&gt;
-    #include &lt;QTcpSocket&gt;
+ #include &lt;QBitArray&gt;
+ #include &lt;QList&gt;
+ #include &lt;QTcpSocket&gt;
 
-    struct TorrentBlock
-    {
-        inline TorrentBlock(int p, int o, int l)
-            : pieceIndex(p), offset(o), length(l)
-        {
-        }
-        inline bool operator==(const TorrentBlock &amp;other) const
-        {
-            return pieceIndex == other.pieceIndex
-                    &amp;&amp; offset == other.offset
-                    &amp;&amp; length == other.length;
-        }
+ struct TorrentBlock
+ {
+     inline TorrentBlock(int p, int o, int l)
+         : pieceIndex(p), offset(o), length(l)
+     {
+     }
+     inline bool operator==(const TorrentBlock &amp;other) const
+     {
+         return pieceIndex == other.pieceIndex
+                 &amp;&amp; offset == other.offset
+                 &amp;&amp; length == other.length;
+     }
 
-        int pieceIndex;
-        int offset;
-        int length;
-    };
+     int pieceIndex;
+     int offset;
+     int length;
+ };
 
-    class PeerWireClient : public QTcpSocket
-    {
-        Q_OBJECT
-    public:
-        enum PeerWireStateFlag {
-            ChokingPeer = 0x1,
-            InterestedInPeer = 0x2,
-            ChokedByPeer = 0x4,
-            PeerIsInterested = 0x8
-        };
-        Q_DECLARE_FLAGS(PeerWireState, PeerWireStateFlag)
+ class PeerWireClient : public QTcpSocket
+ {
+     Q_OBJECT
 
-        PeerWireClient(const QByteArray &amp;peerId, QObject *parent = 0);
-        void initialize(const QByteArray &amp;infoHash, int pieceCount);
+ public:
+     enum PeerWireStateFlag {
+         ChokingPeer = 0x1,
+         InterestedInPeer = 0x2,
+         ChokedByPeer = 0x4,
+         PeerIsInterested = 0x8
+     };
+     Q_DECLARE_FLAGS(PeerWireState, PeerWireStateFlag)
 
-        void setPeer(TorrentPeer *peer);
-        TorrentPeer *peer() const;
+     PeerWireClient(const QByteArray &amp;peerId, QObject *parent = 0);
+     void initialize(const QByteArray &amp;infoHash, int pieceCount);
 
-        // State
-        inline PeerWireState peerWireState() const { return pwState; }
-        QBitArray availablePieces() const;
-        QList&lt;TorrentBlock&gt; incomingBlocks() const;
+     void setPeer(TorrentPeer *peer);
+     TorrentPeer *peer() const;
 
-        // Protocol
-        void chokePeer();
-        void unchokePeer();
-        void sendInterested();
-        void sendKeepAlive();
-        void sendNotInterested();
-        void sendPieceNotification(int piece);
-        void sendPieceList(const QBitArray &amp;bitField);
-        void requestBlock(int piece, int offset, int length);
-        void cancelRequest(int piece, int offset, int length);
-        void sendBlock(int piece, int offset, const QByteArray &amp;data);
+     <span class="comment">// State</span>
+     inline PeerWireState peerWireState() const { return pwState; }
+     QBitArray availablePieces() const;
+     QList&lt;TorrentBlock&gt; incomingBlocks() const;
 
-        // Rate control
-        qint64 writeToSocket(qint64 bytes);
-        qint64 readFromSocket(qint64 bytes);
-        qint64 downloadSpeed() const;
-        qint64 uploadSpeed() const;
+     <span class="comment">// Protocol</span>
+     void chokePeer();
+     void unchokePeer();
+     void sendInterested();
+     void sendKeepAlive();
+     void sendNotInterested();
+     void sendPieceNotification(int piece);
+     void sendPieceList(const QBitArray &amp;bitField);
+     void requestBlock(int piece, int offset, int length);
+     void cancelRequest(int piece, int offset, int length);
+     void sendBlock(int piece, int offset, const QByteArray &amp;data);
 
-        bool canTransferMore() const;
-        qint64 bytesAvailable() const { return incomingBuffer.size(); }
-        qint64 socketBytesAvailable() const { return QTcpSocket::bytesAvailable(); }
+     <span class="comment">// Rate control</span>
+     qint64 writeToSocket(qint64 bytes);
+     qint64 readFromSocket(qint64 bytes);
+     qint64 downloadSpeed() const;
+     qint64 uploadSpeed() const;
 
-    signals:
-        void infoHashReceived(const QByteArray &amp;infoHash);
-        void readyToTransfer();
+     bool canTransferMore() const;
+     qint64 bytesAvailable() const { return incomingBuffer.size() + QTcpSocket::bytesAvailable(); }
+     qint64 socketBytesAvailable() const { return socket.bytesAvailable(); }
+     qint64 socketBytesToWrite() const { return socket.bytesToWrite(); }
 
-        void choked();
-        void unchoked();
-        void interested();
-        void notInterested();
+     void setReadBufferSize(int size);
 
-        void piecesAvailable(const QBitArray &amp;pieces);
-        void blockRequested(int pieceIndex, int begin, int length);
-        void blockReceived(int pieceIndex, int begin, const QByteArray &amp;data);
+ signals:
+     void infoHashReceived(const QByteArray &amp;infoHash);
+     void readyToTransfer();
 
-        void bytesReceived(qint64 size);
+     void choked();
+     void unchoked();
+     void interested();
+     void notInterested();
 
-    protected slots:
-        void timerEvent(QTimerEvent *event);
+     void piecesAvailable(const QBitArray &amp;pieces);
+     void blockRequested(int pieceIndex, int begin, int length);
+     void blockReceived(int pieceIndex, int begin, const QByteArray &amp;data);
 
-    protected:
-        qint64 readData(char *data, qint64 maxlen);
-        qint64 readLineData(char *data, qint64 maxlen);
-        qint64 writeData(const char *data, qint64 len);
+     void bytesReceived(qint64 size);
 
-    private slots:
-        void sendHandShake();
-        void processIncomingData();
+ protected slots:
+     void connectToHostImplementation(const QString &amp;hostName,
+                                      quint16 port, OpenMode openMode = ReadWrite);
+     void diconnectFromHostImplementation();
 
-    private:
-        // Data waiting to be read/written
-        QByteArray incomingBuffer;
-        QByteArray outgoingBuffer;
+ protected:
+     void timerEvent(QTimerEvent *event);
 
-        struct BlockInfo {
-            int pieceIndex;
-            int offset;
-            int length;
-            QByteArray block;
-        };
-        QList&lt;BlockInfo&gt; pendingBlocks;
-        int pendingBlockSizes;
-        QList&lt;TorrentBlock&gt; incoming;
+     qint64 readData(char *data, qint64 maxlen);
+     qint64 readLineData(char *data, qint64 maxlen);
+     qint64 writeData(const char *data, qint64 len);
 
-        enum PacketType {
-            ChokePacket = 0,
-            UnchokePacket = 1,
-            InterestedPacket = 2,
-            NotInterestedPacket = 3,
-            HavePacket = 4,
-            BitFieldPacket = 5,
-            RequestPacket = 6,
-            PiecePacket = 7,
-            CancelPacket = 8
-        };
+ private slots:
+     void sendHandShake();
+     void processIncomingData();
+     void socketStateChanged(QAbstractSocket::SocketState state);
 
-        // State
-        PeerWireState pwState;
-        bool receivedHandShake;
-        bool gotPeerId;
-        bool sentHandShake;
-        int nextPacketLength;
+ private:
+     <span class="comment">// Data waiting to be read/written</span>
+     QByteArray incomingBuffer;
+     QByteArray outgoingBuffer;
 
-        // Upload/download speed records
-        qint64 uploadSpeedData[8];
-        qint64 downloadSpeedData[8];
-        int transferSpeedTimer;
+     struct BlockInfo {
+         int pieceIndex;
+         int offset;
+         int length;
+         QByteArray block;
+     };
+     QList&lt;BlockInfo&gt; pendingBlocks;
+     int pendingBlockSizes;
+     QList&lt;TorrentBlock&gt; incoming;
 
-        // Timeout handling
-        int timeoutTimer;
-        int pendingRequestTimer;
-        bool invalidateTimeout;
-        int keepAliveTimer;
+     enum PacketType {
+         ChokePacket = 0,
+         UnchokePacket = 1,
+         InterestedPacket = 2,
+         NotInterestedPacket = 3,
+         HavePacket = 4,
+         BitFieldPacket = 5,
+         RequestPacket = 6,
+         PiecePacket = 7,
+         CancelPacket = 8
+     };
 
-        // Checksum, peer ID and set of available pieces
-        QByteArray infoHash;
-        QByteArray peerIdString;
-        QBitArray peerPieces;
-        TorrentPeer *torrentPeer;
-    };
+     <span class="comment">// State</span>
+     PeerWireState pwState;
+     bool receivedHandShake;
+     bool gotPeerId;
+     bool sentHandShake;
+     int nextPacketLength;
 
-    Q_DECLARE_OPERATORS_FOR_FLAGS(PeerWireClient::PeerWireState)
+     <span class="comment">// Upload/download speed records</span>
+     qint64 uploadSpeedData[8];
+     qint64 downloadSpeedData[8];
+     int transferSpeedTimer;
 
-    #endif</pre>
+     <span class="comment">// Timeout handling</span>
+     int timeoutTimer;
+     int pendingRequestTimer;
+     bool invalidateTimeout;
+     int keepAliveTimer;
+
+     <span class="comment">// Checksum, peer ID and set of available pieces</span>
+     QByteArray infoHash;
+     QByteArray peerIdString;
+     QBitArray peerPieces;
+     TorrentPeer *torrentPeer;
+
+     QTcpSocket socket;
+ };
+
+ Q_DECLARE_OPERATORS_FOR_FLAGS(PeerWireClient::PeerWireState)
+
+ #endif</pre>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

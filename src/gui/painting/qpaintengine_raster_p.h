@@ -52,7 +52,11 @@ class QClipData;
 /*******************************************************************************
  * QRasterPaintEngine
  */
-class QRasterPaintEngine : public QPaintEngine
+class
+#ifdef Q_WS_QWS
+Q_GUI_EXPORT
+#endif
+QRasterPaintEngine : public QPaintEngine
 {
     Q_DECLARE_PRIVATE(QRasterPaintEngine)
 public:
@@ -108,9 +112,15 @@ public:
     void saveBuffer(const QString &s) const;
 #endif
 
+#ifdef Q_WS_MAC
+    CGContextRef macCGContext() const;
+#endif
+
 #ifdef Q_WS_WIN
     HDC getDC() const;
     void releaseDC(HDC hdc) const;
+
+    void disableClearType();
 #endif
 #ifdef Q_WS_QWS
     //QWS hack
@@ -122,6 +132,12 @@ public:
 
     QPoint coordinateOffset() const;
 
+#ifdef Q_WS_QWS
+    virtual void drawColorSpans(const QSpan *spans, int count, uint color);
+    virtual void drawBufferSpan(const uint *buffer, int bufsize,
+                                int x, int y, int length, uint const_alpha);
+#endif
+
 protected:
     QRasterPaintEngine(QRasterPaintEnginePrivate &d);
 private:
@@ -129,7 +145,8 @@ private:
 
 #if defined(Q_WS_WIN)
     bool drawTextInFontBuffer(const QRect &devRect, int xmin, int ymin, int xmax,
-        int ymax, const QTextItem &textItem, bool clearType, qreal leftBearingReserve);
+        int ymax, const QTextItem &textItem, bool clearType, qreal leftBearingReserve,
+        const QPointF &topLeft);
 #endif
 };
 
@@ -158,6 +175,7 @@ public:
     QBrush brush;
     QPen pen;
     QMatrix matrix;
+    int opacity;
 
     QPaintDevice *device;
     QFTOutlineMapper *outlineMapper;
@@ -244,6 +262,33 @@ inline void QClipData::appendSpans(const QSpan *s, int num)
     count += num;
 }
 
+#ifdef Q_WS_QWS
+class Q_GUI_EXPORT QCustomRasterPaintDevice : public QPaintDevice
+{
+public:
+    QCustomRasterPaintDevice(QWidget *w) : widget(w) {}
+
+    int devType() const { return QInternal::CustomRaster; }
+
+    virtual int metric(PaintDeviceMetric m) const;
+
+    virtual void* memory() const { return 0; }
+
+    virtual QImage::Format format() const {
+        return QImage::Format_ARGB32_Premultiplied;
+    }
+
+    virtual int bytesPerLine() const;
+
+    virtual QSize size() const {
+        return static_cast<QRasterPaintEngine*>(paintEngine())->size();
+    }
+
+private:
+    QWidget *widget;
+};
+#endif // Q_WS_QWS
+
 /*******************************************************************************
  * QRasterBuffer
  */
@@ -268,12 +313,10 @@ public:
 #elif defined(Q_WS_QWS)
     QRasterBuffer() : clip(0), m_width(0), m_height(0), m_buffer(0) { init(); }
 #elif defined(Q_WS_MAC)
-    QRasterBuffer() : m_data(0), clip(0), m_width(0), m_height(0), m_buffer(0) { init(); }
-# if defined(QMAC_NO_COREGRAPHICS)
-    GWorldPtr m_data;
-# else
+    QRasterBuffer() : m_ctx(0), m_data(0), clip(0), m_width(0), m_height(0), m_buffer(0) { init(); }
+    CGContextRef macCGContext() const;
+    mutable CGContextRef m_ctx;
     CGImageRef m_data;
-#endif
 #endif
     ~QRasterBuffer();
 
@@ -281,6 +324,9 @@ public:
 
     void prepare(QImage *image);
 #ifdef Q_WS_QWS
+void prepare(QCustomRasterPaintDevice *device);
+#endif
+#if defined(Q_WS_QWS) || defined(Q_WS_MAC)
     void prepare(QPixmap *pix);
 #endif
     void prepare(int w, int h);
@@ -310,13 +356,10 @@ public:
     QClipData *clip;
     QClipData *disabled_clip;
     bool clipEnabled;
-    bool opaqueBackground;
 
     QPainter::CompositionMode compositionMode;
     QImage::Format format;
     DrawHelper *drawHelper;
-    QImage tempImage;
-    QBrush bgBrush;
     QImage colorizeBitmap(const QImage &image, const QColor &color);
 
     void resetClip() { delete clip; clip = 0; }

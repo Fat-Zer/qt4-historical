@@ -13,11 +13,15 @@ HEADERS += \
 	painting/qpainter_p.h \
 	painting/qpainterpath.h \
 	painting/qpainterpath_p.h \
+	painting/qpdf_p.h \
 	painting/qpen.h \
 	painting/qpolygon.h \
 	painting/qpolygonclipper_p.h \
+	painting/qprintengine_pdf_p.h \
+	painting/qprintengine_ps_p.h \
 	painting/qprinter.h \
 	painting/qprinter_p.h \
+	painting/qprintengine.h \
 	painting/qregion.h \
 	painting/qstroker_p.h \
         painting/qstylepainter.h \
@@ -34,8 +38,11 @@ SOURCES += \
 	painting/qpaintengine.cpp \
 	painting/qpainter.cpp \
 	painting/qpainterpath.cpp \
+	painting/qpdf.cpp \
 	painting/qpen.cpp \
 	painting/qpolygon.cpp \
+	painting/qprintengine_pdf.cpp \
+	painting/qprintengine_ps.cpp \
 	painting/qprinter.cpp \
 	painting/qstroker.cpp \
         painting/qstylepainter.cpp \
@@ -96,12 +103,6 @@ unix:x11 {
 		painting/qpaintdevice_mac.cpp \
 		painting/qpaintengine_mac.cpp \
 		painting/qprintengine_mac.cpp
-} else:unix {
-	HEADERS	+= \
-		painting/qprintengine_ps_p.h
-
-	SOURCES += \
-		painting/qprintengine_ps.cpp
 }
 
 unix:SOURCES += painting/qregion_unix.cpp
@@ -111,9 +112,26 @@ win32|x11|embedded {
 }
 
 embedded {
+        contains(QT_CONFIG,qtopia) {
+		DEFINES += QTOPIA_PRINTENGINE
+		HEADERS += painting/qprintengine_qws_p.h
+		SOURCES += painting/qprintengine_qws.cpp
+        }
+                
 	SOURCES += \
 		painting/qcolormap_qws.cpp \
 		painting/qpaintdevice_qws.cpp
+} 
+
+x11|embedded {
+        contains(QT_CONFIG,qtopia) {
+            DEFINES += QT_NO_CUPS QT_NO_LPR
+        } else {
+            SOURCES += painting\qcups.cpp
+            HEADERS += painting\qcups_p.h
+        }
+} else {
+	DEFINES += QT_NO_CUPS QT_NO_LPR
 }
 
 mac {
@@ -139,9 +157,19 @@ mac {
     DEFINES += QT_HAVE_SSE
 }
 
-CONFIG += pdf
-pdf {
-    DEFINES += QT_PDF_SUPPORT
-    SOURCES += painting/qprintengine_pdf.cpp painting/qpdf.cpp
-    HEADERS += painting/qprintengine_pdf_p.h painting/qpdf_p.h
+win32|x11|embedded {
+	HEADERS += painting/qwindowsurface_p.h \
+		   painting/qwindowsurface_raster_p.h
+	SOURCES += painting/qwindowsurface_raster.cpp
+
+	x11 {
+		HEADERS += painting/qwindowsurface_x11_p.h
+		SOURCES += painting/qwindowsurface_x11.cpp
+	}
+
+	embedded {
+		HEADERS += painting/qwindowsurface_qws_p.h 
+		SOURCES += painting/qwindowsurface_qws.cpp
+	}
 }
+

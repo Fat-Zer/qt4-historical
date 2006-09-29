@@ -2,25 +2,20 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-mac-opensource-src-4.1.5/src/gui/text/qtextobject.cpp -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-mac-opensource-src-4.1.5/src/gui/text/qtextobject.cpp -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-mac-opensource-src-4.2.0/src/gui/text/qtextobject.cpp -->
 <head>
-    <title>Qt 4.1: QTextObject Class Reference</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
+  <title>Qt 4.2: QTextObject Class Reference</title>
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
+<a name="//apple_ref/cpp/cl//QTextObject" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QTextObject Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">QTextObject Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QTextObject class is a base class for different kinds of objects that can group parts of a <a href="qtextdocument.html">QTextDocument</a> together. <a href="#details">More...</a></p>
-<pre>#include &lt;QTextObject&gt;</pre><p>Inherits <a href="qobject.html">QObject</a>.</p>
+<pre> #include &lt;QTextObject&gt;</pre><p>Inherits <a href="qobject.html">QObject</a>.</p>
 <p>Inherited by <a href="qtextblockgroup.html">QTextBlockGroup</a> and <a href="qtextframe.html">QTextFrame</a>.</p>
 <ul>
 <li><a href="qtextobject-members.html">List of all members, including inherited members</a></li>
@@ -34,7 +29,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>int <b><a href="qtextobject.html#objectIndex">objectIndex</a></b> () const</li>
 </ul>
 <ul>
-<li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
+<li><div class="fn"/>29 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 </ul>
 <a name="protected-functions"></a>
 <h3>Protected Functions</h3>
@@ -51,7 +46,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
 <li><div class="fn"/>1 public slot inherited from <a href="qobject.html#public-slots">QObject</a></li>
 <li><div class="fn"/>1 signal inherited from <a href="qobject.html#signals">QObject</a></li>
-<li><div class="fn"/>4 static public members inherited from <a href="qobject.html#static-public-members">QObject</a></li>
+<li><div class="fn"/>5 static public members inherited from <a href="qobject.html#static-public-members">QObject</a></li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -63,23 +58,30 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qtextdocument.html">QTextDocument</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
+<a name="//apple_ref/cpp/instm/QTextObject/QTextObject" />
 <h3 class="fn"><a name="QTextObject"></a>QTextObject::QTextObject ( <a href="qtextdocument.html">QTextDocument</a> * <i>document</i> )&nbsp;&nbsp;<tt> [protected]</tt></h3>
 <p>Creates a new <a href="qtextobject.html">QTextObject</a> for the given <i>document</i>.</p>
 <p><b>Warning:</b> This function should never be called directly, but only from <a href="qtextdocument.html#createObject">QTextDocument::createObject</a>().</p>
+<a name="//apple_ref/cpp/instm/QTextObject/~QTextObject" />
 <h3 class="fn"><a name="dtor.QTextObject"></a>QTextObject::~QTextObject ()&nbsp;&nbsp;<tt> [protected]</tt></h3>
 <p>Destroys the text object.</p>
 <p><b>Warning:</b> Text objects are owned by the document, so you should never destroy them yourself.</p>
+<a name="//apple_ref/cpp/instm/QTextObject/document" />
 <h3 class="fn"><a name="document"></a><a href="qtextdocument.html">QTextDocument</a> * QTextObject::document () const</h3>
 <p>Returns the document this object belongs to.</p>
 <p>See also <a href="qtextobject.html#format">format</a>().</p>
+<a name="//apple_ref/cpp/instm/QTextObject/format" />
 <h3 class="fn"><a name="format"></a><a href="qtextformat.html">QTextFormat</a> QTextObject::format () const</h3>
 <p>Returns the text object's format.</p>
 <p>See also <a href="qtextobject.html#setFormat">setFormat</a>() and <a href="qtextobject.html#document">document</a>().</p>
+<a name="//apple_ref/cpp/instm/QTextObject/formatIndex" />
 <h3 class="fn"><a name="formatIndex"></a>int QTextObject::formatIndex () const</h3>
 <p>Returns the index of the object's format in the document's internal list of formats.</p>
 <p>See also <a href="qtextdocument.html#object">QTextDocument::object</a>().</p>
+<a name="//apple_ref/cpp/instm/QTextObject/objectIndex" />
 <h3 class="fn"><a name="objectIndex"></a>int QTextObject::objectIndex () const</h3>
 <p>Returns the object index of this object. This can be used together with <a href="qtextformat.html#setObjectIndex">QTextFormat::setObjectIndex</a>().</p>
+<a name="//apple_ref/cpp/instm/QTextObject/setFormat" />
 <h3 class="fn"><a name="setFormat"></a>void QTextObject::setFormat ( const <a href="qtextformat.html">QTextFormat</a> &amp; <i>format</i> )&nbsp;&nbsp;<tt> [protected]</tt></h3>
 <p>Sets the text object's <i>format</i>.</p>
 <p>See also <a href="qtextobject.html#format">format</a>().</p>
@@ -87,6 +89,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

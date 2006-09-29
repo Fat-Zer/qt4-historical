@@ -17,7 +17,6 @@ HEADERS += \
     $$PWD/layoutinfo_p.h \
     $$PWD/layout_p.h \
     $$PWD/connectionedit_p.h \
-    $$PWD/qtundo_p.h \
     $$PWD/pluginmanager_p.h \
     $$PWD/metadatabase_p.h \
     $$PWD/qdesigner_command_p.h \
@@ -36,6 +35,7 @@ HEADERS += \
     $$PWD/qdesigner_dockwidget_p.h \
     $$PWD/qdesigner_toolbox_p.h \
     $$PWD/qdesigner_dnditem_p.h \
+    $$PWD/qsimpleresource_p.h \
     $$PWD/widgetfactory_p.h \
     $$PWD/widgetdatabase_p.h \
     $$PWD/promotetocustomwidgetdialog_p.h \
@@ -51,14 +51,14 @@ HEADERS += \
     $$PWD/actionprovider_p.h \
     $$PWD/orderdialog_p.h \
     $$PWD/newactiondialog_p.h \
-    $$PWD/resourceeditor_p.h
+    $$PWD/resourceeditor_p.h \
+    $$PWD/stylesheeteditor_p.h
 
 SOURCES += \
     $$PWD/spacer_widget.cpp \
     $$PWD/layoutinfo.cpp \
     $$PWD/layout.cpp \
     $$PWD/connectionedit.cpp \
-    $$PWD/qtundo.cpp \
     $$PWD/pluginmanager.cpp \
     $$PWD/qdesigner_command.cpp \
     $$PWD/qdesigner_formbuilder.cpp \
@@ -68,6 +68,7 @@ SOURCES += \
     $$PWD/qdesigner_propertysheet.cpp \
     $$PWD/qdesigner_integration.cpp \
     $$PWD/qdesigner_dnditem.cpp \
+    $$PWD/qsimpleresource.cpp \
     $$PWD/invisible_widget.cpp \
     $$PWD/qlayout_widget.cpp \
     $$PWD/tree_widget.cpp \
@@ -90,5 +91,6 @@ SOURCES += \
     $$PWD/qdesigner_menu.cpp \
     $$PWD/orderdialog.cpp \
     $$PWD/newactiondialog.cpp \
-    $$PWD/resourceeditor.cpp
+    $$PWD/resourceeditor.cpp \
+    $$PWD/stylesheeteditor.cpp
 

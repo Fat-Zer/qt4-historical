@@ -47,6 +47,16 @@ Q_CORE_EXPORT char *qstrdup(const char *);
 inline uint qstrlen(const char *str)
 { return str ? uint(strlen(str)) : 0; }
 
+inline uint qstrnlen(const char *str, uint maxlen)
+{
+    uint length = 0;
+    if (str) {
+        while (length < maxlen && *str++)
+            length++;
+    }
+    return length;
+}
+
 Q_CORE_EXPORT char *qstrcpy(char *dst, const char *src);
 Q_CORE_EXPORT char *qstrncpy(char *dst, const char *src, uint len);
 
@@ -194,23 +204,23 @@ public:
     QList<QByteArray> split(char sep) const;
 
 #ifndef QT_NO_CAST_TO_ASCII
-    QByteArray &append(const QString &s);
-    QByteArray &insert(int i, const QString &s);
-    QByteArray &replace(const QString &before, const char *after);
-    QByteArray &replace(char c, const QString &after);
-    QByteArray &replace(const QString &before, const QByteArray &after);
+    QT_ASCII_CAST_WARN QByteArray &append(const QString &s);
+    QT_ASCII_CAST_WARN QByteArray &insert(int i, const QString &s);
+    QT_ASCII_CAST_WARN QByteArray &replace(const QString &before, const char *after);
+    QT_ASCII_CAST_WARN QByteArray &replace(char c, const QString &after);
+    QT_ASCII_CAST_WARN QByteArray &replace(const QString &before, const QByteArray &after);
 
-    QByteArray &operator+=(const QString &s);
-    int indexOf(const QString &s, int from = 0) const;
-    int lastIndexOf(const QString &s, int from = -1) const;
+    QT_ASCII_CAST_WARN QByteArray &operator+=(const QString &s);
+    QT_ASCII_CAST_WARN int indexOf(const QString &s, int from = 0) const;
+    QT_ASCII_CAST_WARN int lastIndexOf(const QString &s, int from = -1) const;
 #endif
 #ifndef QT_NO_CAST_FROM_ASCII
-    inline bool operator==(const QString &s2) const;
-    inline bool operator!=(const QString &s2) const;
-    inline bool operator<(const QString &s2) const;
-    inline bool operator>(const QString &s2) const;
-    inline bool operator<=(const QString &s2) const;
-    inline bool operator>=(const QString &s2) const;
+    inline QT_ASCII_CAST_WARN bool operator==(const QString &s2) const;
+    inline QT_ASCII_CAST_WARN bool operator!=(const QString &s2) const;
+    inline QT_ASCII_CAST_WARN bool operator<(const QString &s2) const;
+    inline QT_ASCII_CAST_WARN bool operator>(const QString &s2) const;
+    inline QT_ASCII_CAST_WARN bool operator<=(const QString &s2) const;
+    inline QT_ASCII_CAST_WARN bool operator>=(const QString &s2) const;
 #endif
 
     short toShort(bool *ok = 0, int base = 10) const;

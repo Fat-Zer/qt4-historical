@@ -39,11 +39,21 @@ RegExpDialog::RegExpDialog(QWidget *parent)
     escapedPatternLineEdit = new QLineEdit;
     escapedPatternLineEdit->setReadOnly(true);
     QPalette palette = escapedPatternLineEdit->palette();
-    palette.setBrush(QPalette::Base, palette.brush(QPalette::Disabled, QPalette::Base));
+    palette.setBrush(QPalette::Base,
+                     palette.brush(QPalette::Disabled, QPalette::Base));
     escapedPatternLineEdit->setPalette(palette);
 
     escapedPatternLabel = new QLabel(tr("&Escaped Pattern:"));
     escapedPatternLabel->setBuddy(escapedPatternLineEdit);
+
+    syntaxComboBox = new QComboBox;
+    syntaxComboBox->addItem(tr("Regular expression v1"), QRegExp::RegExp);
+    syntaxComboBox->addItem(tr("Regular expression v2"), QRegExp::RegExp2);
+    syntaxComboBox->addItem(tr("Wildcard"), QRegExp::Wildcard);
+    syntaxComboBox->addItem(tr("Fixed string"), QRegExp::FixedString);
+
+    syntaxLabel = new QLabel(tr("&Pattern Syntax:"));
+    syntaxLabel->setBuddy(syntaxComboBox);
 
     textComboBox = new QComboBox;
     textComboBox->setEditable(true);
@@ -55,7 +65,6 @@ RegExpDialog::RegExpDialog(QWidget *parent)
     caseSensitiveCheckBox = new QCheckBox(tr("Case &Sensitive"));
     caseSensitiveCheckBox->setChecked(true);
     minimalCheckBox = new QCheckBox(tr("&Minimal"));
-    wildcardCheckBox = new QCheckBox(tr("&Wildcard"));
 
     indexLabel = new QLabel(tr("Index of Match:"));
     indexEdit = new QLineEdit;
@@ -75,7 +84,6 @@ RegExpDialog::RegExpDialog(QWidget *parent)
     QHBoxLayout *checkBoxLayout = new QHBoxLayout;
     checkBoxLayout->addWidget(caseSensitiveCheckBox);
     checkBoxLayout->addWidget(minimalCheckBox);
-    checkBoxLayout->addWidget(wildcardCheckBox);
     checkBoxLayout->addStretch(1);
 
     QGridLayout *mainLayout = new QGridLayout;
@@ -83,17 +91,19 @@ RegExpDialog::RegExpDialog(QWidget *parent)
     mainLayout->addWidget(patternComboBox, 0, 1);
     mainLayout->addWidget(escapedPatternLabel, 1, 0);
     mainLayout->addWidget(escapedPatternLineEdit, 1, 1);
-    mainLayout->addWidget(textLabel, 2, 0);
-    mainLayout->addWidget(textComboBox, 2, 1);
+    mainLayout->addWidget(syntaxLabel, 2, 0);
+    mainLayout->addWidget(syntaxComboBox, 2, 1);
     mainLayout->addLayout(checkBoxLayout, 3, 0, 1, 2);
-    mainLayout->addWidget(indexLabel, 4, 0);
-    mainLayout->addWidget(indexEdit, 4, 1);
-    mainLayout->addWidget(matchedLengthLabel, 5, 0);
-    mainLayout->addWidget(matchedLengthEdit, 5, 1);
+    mainLayout->addWidget(textLabel, 4, 0);
+    mainLayout->addWidget(textComboBox, 4, 1);
+    mainLayout->addWidget(indexLabel, 5, 0);
+    mainLayout->addWidget(indexEdit, 5, 1);
+    mainLayout->addWidget(matchedLengthLabel, 6, 0);
+    mainLayout->addWidget(matchedLengthEdit, 6, 1);
 
     for (int j = 0; j < MaxCaptures; ++j) {
-        mainLayout->addWidget(captureLabels[j], 6 + j, 0);
-        mainLayout->addWidget(captureEdits[j], 6 + j, 1);
+        mainLayout->addWidget(captureLabels[j], 7 + j, 0);
+        mainLayout->addWidget(captureEdits[j], 7 + j, 1);
     }
     setLayout(mainLayout);
 
@@ -104,9 +114,10 @@ RegExpDialog::RegExpDialog(QWidget *parent)
     connect(caseSensitiveCheckBox, SIGNAL(toggled(bool)),
             this, SLOT(refresh()));
     connect(minimalCheckBox, SIGNAL(toggled(bool)), this, SLOT(refresh()));
-    connect(wildcardCheckBox, SIGNAL(toggled(bool)), this, SLOT(refresh()));
+    connect(syntaxComboBox, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(refresh()));
 
-    patternComboBox->addItem(tr("([A-Za-z_])([A-Za-z_0-9]*)"));
+    patternComboBox->addItem(tr("[A-Za-z_]+([A-Za-z_0-9]*)"));
     textComboBox->addItem(tr("(10 + delta4) * 32"));
 
     setWindowTitle(tr("RegExp"));
@@ -116,13 +127,16 @@ RegExpDialog::RegExpDialog(QWidget *parent)
 
 void RegExpDialog::refresh()
 {
+    setUpdatesEnabled(false);
+
     QString pattern = patternComboBox->currentText();
     QString text = textComboBox->currentText();
 
-    QString escaped = patternComboBox->currentText();
+    QString escaped = pattern;
     escaped.replace("\\", "\\\\");
     escaped.replace("\"", "\\\"");
-    escaped = "\"" + escaped + "\"";
+    escaped.prepend("\"");
+    escaped.append("\"");
     escapedPatternLineEdit->setText(escaped);
 
     QRegExp rx(pattern);
@@ -131,8 +145,8 @@ void RegExpDialog::refresh()
         cs = Qt::CaseSensitive;
     rx.setCaseSensitivity(cs);
     rx.setMinimal(minimalCheckBox->isChecked());
-    QRegExp::PatternSyntax syntax =
-            wildcardCheckBox->isChecked() ? QRegExp::Wildcard : QRegExp::RegExp;
+    QRegExp::PatternSyntax syntax = QRegExp::PatternSyntax(
+            syntaxComboBox->itemData(syntaxComboBox->currentIndex()).toInt());
     rx.setPatternSyntax(syntax);
 
     QPalette palette = patternComboBox->palette();
@@ -151,4 +165,6 @@ void RegExpDialog::refresh()
         captureEdits[i]->setEnabled(i <= rx.numCaptures());
         captureEdits[i]->setText(rx.cap(i));
     }
+
+    setUpdatesEnabled(true);
 }

@@ -26,41 +26,31 @@
 
 #include <QtGui/qaccessiblewidget.h>
 
-#ifndef QT_NO_ACCESSIBILITY
+#if !defined(QT_NO_ACCESSIBILITY) && !defined(QT_NO_TEXTEDIT)
 
-class QListBox;
+class QTextEdit;
 
-class QAccessibleScrollView : public QAccessibleWidget
+class QAccessibleTextEdit : public QAccessibleWidgetEx
 {
 public:
-    QAccessibleScrollView(QWidget *w, Role role);
+    explicit QAccessibleTextEdit(QWidget *o);
 
-    virtual int itemAt(int x, int y) const;
-    virtual QRect itemRect(int item) const;
-    virtual int itemCount() const;
-};
+    QString text(Text t, int child) const;
+    void setText(Text t, int control, const QString &text);
+    Role role(int child) const;
 
-class QAccessibleViewport : public QAccessibleWidget
-{
-public:
-    QAccessibleViewport(QWidget *o, QWidget *sv);
-    ~QAccessibleViewport();
-
-    int childAt(int x, int y) const;
-    int childCount() const;
+    QVariant invokeMethodEx(QAccessible::Method method, int child, const QVariantList &params);
 
     QRect rect(int child) const;
-    QString text(Text t, int child) const;
-    Role role(int child) const;
-    State state(int child) const;
+    int childAt(int x, int y) const;
 
-    bool doAction(int action, int child, const QVariantList &params);
-    bool setSelected(int child, bool on, bool extend);
-    void clearSelection();
-    QVector<int> selection() const;
+    int childCount() const;
 
 protected:
-    QAccessibleScrollView *scrollview;
+    QTextEdit *textEdit() const;
+
+private:
+    int childOffset;
 };
 
 #endif // QT_NO_ACCESSIBILITY

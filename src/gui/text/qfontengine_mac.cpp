@@ -28,6 +28,7 @@
 #include <qbitmap.h>
 #include <private/qpaintengine_mac_p.h>
 #include <private/qprintengine_mac_p.h>
+#include <private/qpdf_p.h>
 #include <qglobal.h>
 #include <qpixmap.h>
 #include <qpixmapcache.h>
@@ -42,6 +43,7 @@
  *****************************************************************************/
 //#define DEBUG_ADVANCES
 
+extern int qt_antialiasing_threshold; // QApplication.cpp
 
 #ifndef FixedToQFixed
 #define FixedToQFixed(a) QFixed::fromFixed((a) >> 10)
@@ -343,7 +345,9 @@ bool QFontEngineMacMulti::stringToCMap(const QChar *str, int len, QGlyphLayout *
     }
     //qDebug() << "stringToCMap" << QString(str, len);
 
-    OSStatus e = ATSUSetTextPointerLocation(textLayout, (UniChar *)(str), 0, len, len);
+    OSStatus e = noErr;
+
+    e = ATSUSetTextPointerLocation(textLayout, (UniChar *)(str), 0, len, len);
     if (e != noErr) {
         qWarning("Qt: internal: %ld: Error ATSUSetTextPointerLocation %s: %d", e, __FILE__, __LINE__);
         return false;
@@ -430,7 +434,7 @@ bool QFontEngineMacMulti::stringToCMap(const QChar *str, int len, QGlyphLayout *
         return false;
     }
 
-    {
+    if (!(fontDef.styleStrategy & QFont::NoFontMerging)) {
         int pos = 0;
         do {
             FMFont substFont = 0;
@@ -589,11 +593,12 @@ QFontEngineMac::QFontEngineMac(ATSUStyle baseStyle, FMFont fmFont, const QFontDe
     status = ATSUSetAttributes(style, attributeCount, tags, sizes, values);
     Q_ASSERT(status == noErr);
 
+    int tmpFsType;
     if (ATSFontGetTable(FMGetATSFontRefFromFont(fmFont),
                         MAKE_TAG('O', 'S', '/', '2'),
                         /*offset = */8,
-                        /*size = */2, &fsType, 0) == noErr) {
-       fsType = qFromBigEndian<quint16>(fsType);
+                        /*size = */2, &tmpFsType, 0) == noErr) {
+       fsType = qFromBigEndian<quint16>(tmpFsType);
     } else {
         fsType = 0;
     }
@@ -878,6 +883,14 @@ QFixed QFontEngineMac::xHeight() const
     return QFixed::fromReal(metrics.xHeight * fontDef.pointSize);
 }
 
+QFixed QFontEngineMac::averageCharWidth() const
+{
+    ATSFontRef atsFont = FMGetATSFontRefFromFont(fmFont);
+    ATSFontMetrics metrics;
+    ATSFontGetHorizontalMetrics(atsFont, kATSOptionFlagsDefault, &metrics);
+    return QFixed::fromReal(metrics.avgAdvanceWidth * fontDef.pointSize);
+}
+
 void QFontEngineMac::addGlyphsToPath(glyph_t *glyphs, QFixedPoint *positions, int numGlyphs, QPainterPath *path,
                                            QTextItem::RenderFlags)
 {
@@ -906,22 +919,76 @@ void QFontEngineMac::addGlyphsToPath(glyph_t *glyphs, QFixedPoint *positions, in
     DisposeATSCubicClosePathUPP(closePath);
 }
 
+QImage QFontEngineMac::alphaMapForGlyph(glyph_t glyph)
+{
+    const glyph_metrics_t br = boundingBox(glyph);
+    QImage im(qRound(br.width)+2, qRound(br.height)+2, QImage::Format_RGB32);
+    im.fill(0);    
+
+    CGColorSpaceRef colorspace = CGColorSpaceCreateDeviceRGB();
+#if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4)
+    uint cgflags = kCGImageAlphaNoneSkipFirst;
+#ifdef kCGBitmapByteOrder32Host //only needed because CGImage.h added symbols in the minor version
+    if(QSysInfo::MacintoshVersion >= QSysInfo::MV_10_4)
+        cgflags |= kCGBitmapByteOrder32Host;
+#endif
+#else
+    CGImageAlphaInfo cgflags = kCGImageAlphaNoneSkipFirst;
+#endif
+    CGContextRef ctx = CGBitmapContextCreate(im.bits(), im.width(), im.height(),
+                                             8, im.bytesPerLine(), colorspace,
+                                             cgflags);
+    CGColorSpaceRelease(colorspace);
+    CGContextSetFontSize(ctx, fontDef.pixelSize);
+    CGContextSetShouldAntialias(ctx, fontDef.pointSize > qt_antialiasing_threshold);
+    CGAffineTransform oldTextMatrix = CGContextGetTextMatrix(ctx);
+    CGAffineTransform cgMatrix = CGAffineTransformMake(1, 0, 0, 1, 0, 0);
+    CGAffineTransformConcat(cgMatrix, oldTextMatrix);
+
+    if (synthesisFlags & QFontEngine::SynthesizedItalic)
+        cgMatrix = CGAffineTransformConcat(cgMatrix, CGAffineTransformMake(1, 0, tanf(14 * acosf(0) / 90), 1, 0, 0));
+
+    CGContextSetTextMatrix(ctx, cgMatrix);
+    CGContextSetRGBFillColor(ctx, 1, 1, 1, 1);
+    CGContextSetTextDrawingMode(ctx, kCGTextFill);
+    CGContextSetFont(ctx, cgFont);
+
+    qreal pos_x = -br.x.toReal()+1, pos_y = im.height()+br.y.toReal();
+    CGContextSetTextPosition(ctx, pos_x, pos_y);
+
+    CGSize advance;
+    advance.width = 0;
+    advance.height = 0;
+    CGGlyph cgGlyph = glyph;    
+    CGContextShowGlyphsWithAdvances(ctx, &cgGlyph, &advance, 1);
+
+    if (synthesisFlags & QFontEngine::SynthesizedBold) {
+        CGContextSetTextPosition(ctx, pos_x + 0.5 * lineThickness().toReal(), pos_y);
+        CGContextShowGlyphsWithAdvances(ctx, &cgGlyph, &advance, 1);
+    }
+
+    CGContextRelease(ctx);
+
+    QImage indexed(im.width(), im.height(), QImage::Format_Indexed8);    
+    for (int y=0; y<im.height(); ++y) {
+        uint *src = (uint*) im.scanLine(y);
+        uchar *dst = indexed.scanLine(y);
+        for (int x=0; x<im.width(); ++x) {
+            *dst = qGray(*src);
+            ++dst;
+            ++src;
+        }
+    }
+    
+    return indexed;
+}
+
 bool QFontEngineMac::canRender(const QChar *string, int len)
 {
     Q_ASSERT(false);
     Q_UNUSED(string);
     Q_UNUSED(len);
     return false;
-}
-
-static void drawGlyphsWithAdvances(CGContextRef ctx, qreal x, qreal y, const CGGlyph glyphs[],
-                                   const CGSize advances[], int count)
-{
-    for (int i = 0; i < count; ++i) {
-       CGContextShowGlyphsAtPoint(ctx, x, y, &glyphs[i], 1);
-       x += advances[i].width;
-       y += advances[i].height;
-    }
 }
 
 void QFontEngineMac::draw(CGContextRef ctx, qreal x, qreal y, const QTextItemInt &ti, int paintDeviceHeight)
@@ -943,7 +1010,7 @@ void QFontEngineMac::draw(CGContextRef ctx, qreal x, qreal y, const QTextItemInt
     CGAffineTransformConcat(cgMatrix, oldTextMatrix);
 
     if (synthesisFlags & QFontEngine::SynthesizedItalic)
-        cgMatrix = CGAffineTransformConcat(cgMatrix, CGAffineTransformMake(1, 0, -tan(14 * acos(0) / 90), 1, 0, 0));
+        cgMatrix = CGAffineTransformConcat(cgMatrix, CGAffineTransformMake(1, 0, -tanf(14 * acosf(0) / 90), 1, 0, 0));
 
     CGContextSetTextMatrix(ctx, cgMatrix);
 
@@ -964,16 +1031,6 @@ void QFontEngineMac::draw(CGContextRef ctx, qreal x, qreal y, const QTextItemInt
 
     CGContextSetFont(ctx, cgFont);
 
-#if (MAC_OS_X_VERSION_MAX_ALLOWED == MAC_OS_X_VERSION_10_2)
-    drawGlyphsWithAdvances(ctx, positions[0].x.toReal(), positions[0].y.toReal(),
-                           cgGlyphs.data(), advances.data(), glyphs.size());
-
-    if (synthesisFlags & QFontEngine::SynthesizedBold) {
-        drawGlyphsWithAdvances(ctx, positions[0].x.toReal() + 0.5 * lineThickness().toReal(),
-                               positions[0].y.toReal(), cgGlyphs.data(),
-                               advances.data(), glyphs.size());
-    }
-#else
     CGContextSetTextPosition(ctx, positions[0].x.toReal(), positions[0].y.toReal());
 
     CGContextShowGlyphsWithAdvances(ctx, cgGlyphs.data(), advances.data(), glyphs.size());
@@ -984,7 +1041,6 @@ void QFontEngineMac::draw(CGContextRef ctx, qreal x, qreal y, const QTextItemInt
 
         CGContextShowGlyphsWithAdvances(ctx, cgGlyphs.data(), advances.data(), glyphs.size());
     }
-#endif
 
     CGContextSetTextMatrix(ctx, oldTextMatrix);
 }
@@ -1030,6 +1086,7 @@ QFontEngine::Properties QFontEngineMac::properties() const
     QCFString psName;
     if (ATSFontGetPostScriptName(atsFont, kATSOptionFlagsDefault, &psName) == noErr)
         props.postscriptName = QString(psName).toUtf8();
+    props.postscriptName = QPdf::stripSpecialCharacters(props.postscriptName);
     return props;
 }
 

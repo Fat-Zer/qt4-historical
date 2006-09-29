@@ -48,6 +48,7 @@
 #include "qdebug.h"
 #include "qpainterpath.h"
 #include "qmotifstyle_p.h"
+#include "qdialogbuttonbox.h"
 #include <limits.h>
 
 #ifdef Q_WS_X11
@@ -122,9 +123,9 @@ QMotifStyle::~QMotifStyle()
     delete focus;
 }
 
-/*
-  \internal
-  Animate indeterminate progressbars only when visible
+/*!
+    \internal
+    Animate indeterminate progressbars only when visible
 */
 bool QMotifStyle::eventFilter(QObject *o, QEvent *e)
 {
@@ -142,12 +143,12 @@ bool QMotifStyle::eventFilter(QObject *o, QEvent *e)
         }
         break;
     case QEvent::Destroy:
-        d->bars.removeAll(reinterpret_cast<QProgressBar *>(o));
-        break;
     case QEvent::Hide:
-        if (QProgressBar *bar = qobject_cast<QProgressBar *>(o)) {
+        // reinterpret_cast because there is no type info when getting
+        // the destroy event. We know that it is a QProgressBar.
+        if (QProgressBar *bar = reinterpret_cast<QProgressBar *>(o)) {
             d->bars.removeAll(bar);
-            if (d->bars.isEmpty()) {
+            if (d->bars.isEmpty() && d->animateTimer) {
                 killTimer(d->animateTimer);
                 d->animateTimer = 0;
             }
@@ -159,7 +160,14 @@ bool QMotifStyle::eventFilter(QObject *o, QEvent *e)
     return QStyle::eventFilter(o, e);
 }
 
-
+/*!
+    \internal
+*/
+QIcon QMotifStyle::standardIconImplementation(StandardPixmap standardIcon, const QStyleOption *opt,
+                                              const QWidget *widget) const
+{
+    return QCommonStyle::standardIconImplementation(standardIcon, opt, widget);
+}
 
 /*!
     \reimp
@@ -718,22 +726,22 @@ void QMotifStyle::drawPrimitive(PrimitiveElement pe, const QStyleOption *opt, QP
         int sw = pixelMetric(PM_SplitterWidth);
         if (opt->state & State_Horizontal) {
             int yPos = opt->rect.y() + opt->rect.height() / 2;
-            int kPos = opt->rect.width() - motifOffset - sw;
+            int kPos = opt->rect.right() - motifOffset - sw;
             int kSize = sw - 2;
 
-            qDrawShadeLine(p, 0, yPos, kPos, yPos, opt->palette);
+            qDrawShadeLine(p, opt->rect.left(), yPos, kPos, yPos, opt->palette);
             qDrawShadePanel(p, kPos, yPos - sw / 2 + 1, kSize, kSize,
                             opt->palette, false, 1, &opt->palette.brush(QPalette::Button));
-            qDrawShadeLine(p, kPos + kSize - 1, yPos, opt->rect.width(), yPos, opt->palette);
+            qDrawShadeLine(p, kPos + kSize - 1, yPos, opt->rect.right(), yPos, opt->palette);
         } else {
             int xPos = opt->rect.x() + opt->rect.width() / 2;
             int kPos = motifOffset;
             int kSize = sw - 2;
 
-            qDrawShadeLine(p, xPos, kPos + kSize - 1, xPos, opt->rect.height(), opt->palette);
-            qDrawShadePanel(p, xPos - sw / 2 + 1, kPos, kSize, kSize, opt->palette,
+            qDrawShadeLine(p, xPos, opt->rect.top() + kPos + kSize - 1, xPos, opt->rect.bottom(), opt->palette);
+            qDrawShadePanel(p, xPos - sw / 2 + 1, opt->rect.top() + kPos, kSize, kSize, opt->palette,
                             false, 1, &opt->palette.brush(QPalette::Button));
-            qDrawShadeLine(p, xPos, 0, xPos, kPos, opt->palette);
+            qDrawShadeLine(p, xPos, opt->rect.top(), xPos, opt->rect.top() + kPos, opt->palette);
         }
         break; }
 
@@ -837,7 +845,7 @@ void QMotifStyle::drawControl(ControlElement element, const QStyleOption *opt, Q
 
     case CE_ScrollBarSubPage:
     case CE_ScrollBarAddPage:
-        p->fillRect(opt->rect, opt->palette.brush((opt->state & State_Enabled) ? QPalette::Mid : QPalette::Background));
+        p->fillRect(opt->rect, opt->palette.brush((opt->state & State_Enabled) ? QPalette::Mid : QPalette::Window));
         break;
 
     case CE_ScrollBarSlider: {
@@ -943,6 +951,11 @@ void QMotifStyle::drawControl(ControlElement element, const QStyleOption *opt, Q
                 QRect tabRect = opt->rect;
                 QColor tabLight = opt->palette.light().color();
                 QColor tabDark = opt->palette.dark().color();
+
+                p->fillRect(opt->rect.adjusted(default_frame, default_frame,
+                                               -default_frame, -default_frame),
+                                               tab->palette.background());
+
                 if(tab->shape == QTabBar::RoundedWest) {
                     tabDark = opt->palette.light().color();
                     tabLight = opt->palette.dark().color();
@@ -1113,12 +1126,15 @@ void QMotifStyle::drawControl(ControlElement element, const QStyleOption *opt, Q
             if (menuitem->menuItemType == QStyleOptionMenuItem::Separator) {  // draw separator
                 int textWidth = 0;
                 if (!menuitem->text.isEmpty()) {
+                    QFont oldFont = p->font();
+                    p->setFont(menuitem->font);
                     p->fillRect(x, y, w, h, opt->palette.brush(QPalette::Button));
                     drawItemText(p, menuitem->rect.adjusted(10, 0, -5, 0), Qt::AlignLeft | Qt::AlignVCenter,
                                  menuitem->palette, menuitem->state & State_Enabled, menuitem->text,
                                  QPalette::Text);
                     textWidth = menuitem->fontMetrics.width(menuitem->text) + 10;
                     y += menuitem->fontMetrics.lineSpacing() / 2;
+                    p->setFont(oldFont);
                 }
                 p->setPen(opt->palette.dark().color());
                 p->drawLine(x, y, x + 5, y);
@@ -1176,10 +1192,11 @@ void QMotifStyle::drawControl(ControlElement element, const QStyleOption *opt, Q
 
                 QStyleOptionButton newMenuItem;
                 newMenuItem.state = menuitem->checked ? State_On : State_None;
-                if (menuitem->state & State_Sunken)
-                    newMenuItem.state |= State_Sunken;
-                if ((opt->state & State_Enabled))
+                if (opt->state & State_Enabled) {
                     newMenuItem.state |= State_Enabled;
+                    if (menuitem->state & State_Sunken)
+                        newMenuItem.state |= State_Sunken;
+                }
                 if (menuitem->checkType & QStyleOptionMenuItem::Exclusive) {
                     newMenuItem.rect.setRect(xvis + 2, y + motifItemFrame + mh / 4, 11, 11);
                     drawPrimitive(PE_IndicatorRadioButton, &newMenuItem, p, widget);
@@ -1206,11 +1223,12 @@ void QMotifStyle::drawControl(ControlElement element, const QStyleOption *opt, Q
 
             QString s = menuitem->text;
             if (!s.isNull()) {                        // draw text
-                int t = s.indexOf('\t');
+                int t = s.indexOf(QLatin1Char('\t'));
                 int m = motifItemVMargin;
                 int text_flags = Qt::AlignVCenter|Qt::TextShowMnemonic | Qt::TextDontClip | Qt::TextSingleLine;
                 text_flags |= Qt::AlignLeft;
                 QFont oldFont = p->font();
+                p->setFont(menuitem->font);
                 if (t >= 0) {                         // draw tab text
                     QRect vr = visualRect(opt->direction, opt->rect,
                                           QRect(x+w-menuitem->tabWidth-motifItemHMargin-motifItemFrame,
@@ -1218,7 +1236,6 @@ void QMotifStyle::drawControl(ControlElement element, const QStyleOption *opt, Q
                                                 h-2*motifItemVMargin));
                     int xv = vr.x();
                     QRect tr(xv, y+m, menuitem->tabWidth, h-2*m);
-                    p->setFont(menuitem->font);
                     p->drawText(tr, text_flags, s.mid(t+1));
                     if (!(opt->state & State_Enabled) && styleHint(SH_DitherDisabledText))
                         p->fillRect(tr, QBrush(p->background().color(), Qt::Dense5Pattern));
@@ -1520,7 +1537,7 @@ void QMotifStyle::drawComplexControl(ComplexControl cc, const QStyleOptionComple
 
             if ((opt->subControls & SC_SliderGroove) && groove.isValid()) {
                 qDrawShadePanel(p, groove, opt->palette, true, pixelMetric(PM_DefaultFrameWidth),
-                                &opt->palette.brush((opt->state & State_Enabled) ? QPalette::Mid : QPalette::Background));
+                                &opt->palette.brush((opt->state & State_Enabled) ? QPalette::Mid : QPalette::Window));
                 if ((opt->state & State_HasFocus) && (!focus || !focus->isVisible())) {
                     QStyleOption focusOpt = *opt;
                     focusOpt.rect = subElementRect(SE_SliderFocusRect, opt, widget);
@@ -1618,7 +1635,7 @@ void QMotifStyle::drawComplexControl(ComplexControl cc, const QStyleOptionComple
         if (opt->subControls & SC_ScrollBarGroove)
             qDrawShadePanel(p, opt->rect, opt->palette, true,
                             pixelMetric(PM_DefaultFrameWidth, opt, widget),
-                            &opt->palette.brush((opt->state & State_Enabled) ? QPalette::Mid : QPalette::Background));
+                            &opt->palette.brush((opt->state & State_Enabled) ? QPalette::Mid : QPalette::Window));
 
         QCommonStyle::drawComplexControl(cc, opt, p, widget);
         break; }
@@ -1999,7 +2016,7 @@ QMotifStyle::sizeFromContents(ContentsType ct, const QStyleOption *opt,
             // a little bit of border can never harm
             w += 2*motifItemHMargin + 2*motifItemFrame;
 
-            if (!mi->text.isNull() && mi->text.indexOf('\t') >= 0)
+            if (!mi->text.isNull() && mi->text.indexOf(QLatin1Char('\t')) >= 0)
                 // string contains tab
                 w += motifTabSpacing;
             else if (mi->menuItemType == QStyleOptionMenuItem::SubMenu)
@@ -2081,7 +2098,7 @@ QMotifStyle::subElementRect(SubElement sr, const QStyleOption *opt, const QWidge
         if (const QStyleOptionProgressBar *pb = qstyleoption_cast<const QStyleOptionProgressBar *>(opt)) {
             int textw = 0;
             if (pb->textVisible)
-                textw = pb->fontMetrics.width("100%") + 6;
+                textw = pb->fontMetrics.width(QLatin1String("100%")) + 6;
 
             if (pb->textAlignment == Qt::AlignLeft || pb->textAlignment == Qt::AlignCenter) {
                 rect = opt->rect;
@@ -2460,21 +2477,21 @@ QMotifStyle::standardPixmap(StandardPixmap standardPixmap, const QStyleOption *o
 #ifndef QT_NO_IMAGEFORMAT_XPM
     switch (standardPixmap) {
     case SP_TitleBarMenuButton:
-        return QPixmap((const char **)qt_menu_xpm);
+        return QPixmap(qt_menu_xpm);
     case SP_TitleBarShadeButton:
-        return QPixmap((const char **)qt_shade_xpm);
+        return QPixmap(qt_shade_xpm);
     case SP_TitleBarUnshadeButton:
-        return QPixmap((const char **)qt_unshade_xpm);
+        return QPixmap(qt_unshade_xpm);
     case SP_TitleBarNormalButton:
-        return QPixmap((const char **)qt_normalizeup_xpm);
+        return QPixmap(qt_normalizeup_xpm);
     case SP_TitleBarMinButton:
-        return QPixmap((const char **)qt_minimize_xpm);
+        return QPixmap(qt_minimize_xpm);
     case SP_TitleBarMaxButton:
-        return QPixmap((const char **)qt_maximize_xpm);
+        return QPixmap(qt_maximize_xpm);
     case SP_TitleBarCloseButton:
-        return QPixmap((const char **)qt_close_xpm);
+        return QPixmap(qt_close_xpm);
     case SP_DockWidgetCloseButton:
-        return QPixmap((const char **)dock_window_close_xpm);
+        return QPixmap(dock_window_close_xpm);
 
     case SP_MessageBoxInformation:
     case SP_MessageBoxWarning:
@@ -2616,6 +2633,9 @@ QMotifStyle::styleHint(StyleHint hint, const QStyleOption *opt, const QWidget *w
         ret = QPalette::Mid;
         break;
 
+    case SH_DialogButtonLayout:
+        ret = QDialogButtonBox::KdeLayout;
+        break;
     default:
         ret = QCommonStyle::styleHint(hint, opt, widget, returnData);
         break;
@@ -2639,7 +2659,7 @@ QPalette QMotifStyle::standardPalette() const
     QColor mid = QColor(0xa6, 0xa6, 0xa6);
     QColor dark = QColor(0x79, 0x7d, 0x79);
     QPalette palette(Qt::black, background, light, dark, mid, Qt::black, Qt::white);
-    palette.setBrush(QPalette::Disabled, QPalette::Foreground, dark);
+    palette.setBrush(QPalette::Disabled, QPalette::WindowText, dark);
     palette.setBrush(QPalette::Disabled, QPalette::Text, dark);
     palette.setBrush(QPalette::Disabled, QPalette::ButtonText, dark);
     palette.setBrush(QPalette::Disabled, QPalette::Base, background);

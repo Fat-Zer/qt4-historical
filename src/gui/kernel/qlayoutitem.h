@@ -116,6 +116,7 @@ public:
 
 private:
     QWidget *wid;
+    Q_DISABLE_COPY(QWidgetItem)
 };
 
 QT_END_HEADER

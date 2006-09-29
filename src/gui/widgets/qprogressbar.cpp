@@ -49,6 +49,7 @@ public:
     Qt::Orientation orientation;
     bool invertedAppearance;
     QProgressBar::Direction textDirection;
+    QString format;
     QStyleOptionProgressBarV2 getStyleOption() const;
     inline int bound(int val) const { return qMax(minimum-1, qMin(maximum, val)); }
     bool repaintRequired() const;
@@ -56,7 +57,8 @@ public:
 
 QProgressBarPrivate::QProgressBarPrivate()
     : minimum(0), maximum(100), value(-1), alignment(Qt::AlignLeft), textVisible(true),
-      lastPaintedValue(-1), orientation(Qt::Horizontal), invertedAppearance(false), textDirection(QProgressBar::TopToBottom)
+      lastPaintedValue(-1), orientation(Qt::Horizontal), invertedAppearance(false),
+      textDirection(QProgressBar::TopToBottom), format(QLatin1String("%p%"))
 {
 }
 
@@ -148,7 +150,7 @@ bool QProgressBarPrivate::repaintRequired() const
          \o A progress bar shown in the Plastique widget style.
     \endtable
 
-    \sa QProgressDialog, {fowler}{GUI Design Handbook: Progress Indicator}
+    \sa QTimeLine, QProgressDialog, {fowler}{GUI Design Handbook: Progress Indicator}
 */
 
 /*!
@@ -342,7 +344,7 @@ QSize QProgressBar::sizeHint() const
     QFontMetrics fm = fontMetrics();
     QStyleOptionProgressBarV2 opt = d_func()->getStyleOption();
     int cw = style()->pixelMetric(QStyle::PM_ProgressBarChunkWidth, &opt, this);
-    QSize size = QSize(cw * 7 + fm.width('0') * 4, fm.height() + 8);
+    QSize size = QSize(cw * 7 + fm.width(QLatin1Char('0')) * 4, fm.height() + 8);
     if (opt.orientation == Qt::Vertical)
         size.transpose();
     return style()->sizeFromContents(QStyle::CT_ProgressBar, &opt, size, this);
@@ -385,11 +387,17 @@ QString QProgressBar::text() const
 
     int totalSteps = d->maximum - d->minimum;
 
+    QString result = d->format;
+    result.replace(QLatin1String("%m"), QString::fromLatin1("%1").arg(totalSteps));
+    result.replace(QLatin1String("%v"), QString::fromLatin1("%1").arg(d->value));
+
     // If max and min are equal and we get this far, it means that the
     // progress bar has one step and that we are on that step. Return
     // 100% here in order to avoid division by zero further down.
-    if (totalSteps == 0)
-        return tr("%1%").arg(100);
+    if (totalSteps == 0) {
+        result.replace(QLatin1String("%p"), QString::fromLatin1("%1").arg(100));
+        return result;
+    }
 
     int progress = d->value - d->minimum;
     // Get the values down to something usable.
@@ -397,7 +405,9 @@ QString QProgressBar::text() const
         progress /= 1000;
         totalSteps /= 1000;
     }
-    return tr("%1%").arg(progress * 100 / totalSteps);
+
+    result.replace(QLatin1String("%p"), QString::fromLatin1("%1").arg((progress * 100) / totalSteps));
+    return result;
 }
 
 /*!
@@ -485,6 +495,31 @@ QProgressBar::Direction QProgressBar::textDirection()
 bool QProgressBar::event(QEvent *e)
 {
     return QWidget::event(e);
+}
+
+/*!
+    \since 4.2
+    \property QProgressBar::format
+    \brief the string used to generate the current text
+
+    %p - is replaced by the percentage completed.
+    %v - is replaced by the current value.
+    %m - is replaced by the total number of steps.
+
+    The default value is "%p%".
+
+    \sa text()
+*/
+void QProgressBar::setFormat(const QString &format)
+{
+    Q_D(QProgressBar);
+    d->format = format;
+}
+
+QString QProgressBar::format() const
+{
+    Q_D(const QProgressBar);
+    return d->format;
 }
 
 #endif // QT_NO_PROGRESSBAR

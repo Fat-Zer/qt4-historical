@@ -6,10 +6,14 @@ SHARED_FOLDER = ../shared
 include($$SHARED_FOLDER/shared.pri)
 
 RESOURCES += composition.qrc
+contains(QT_CONFIG, opengl) {
+	DEFINES += QT_OPENGL_SUPPORT
+	QT += opengl
+}
 
 # install
 target.path = $$[QT_INSTALL_DEMOS]/composition
-sources.files = $$SOURCES $$HEADERS $$RESOURCES *.pro *.html
+sources.files = $$SOURCES $$HEADERS $$RESOURCES *.png *.pro *.html
 sources.path = $$[QT_INSTALL_DEMOS]/composition
 INSTALLS += target sources
 

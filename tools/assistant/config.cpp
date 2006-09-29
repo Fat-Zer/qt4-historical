@@ -46,7 +46,7 @@ inline QString getVersionString()
 }
 
 Config::Config()
-    : profil( 0 ), maximized(false), hideSidebar( false ), rebuildDocs(true)
+    : profil( 0 ), hideSidebar( false ), rebuildDocs(true)
 {
     if( !static_configuration ) {
         static_configuration = this;
@@ -60,9 +60,14 @@ Config *Config::loadConfig(const QString &profileFileName)
     Config *config = new Config();
 
     if (profileFileName.isEmpty()) { // no profile
-        config->profil = Profile::createDefaultProfile();
-        config->load();
+        if (!config->defaultProfileExists()) {
+            config->profil = Profile::createDefaultProfile();
+            config->saveProfile(config->profil);
+        } else {
+            config->profil = new Profile();
+        }
         config->loadDefaultProfile();
+        config->load();
         return config;
     }
 
@@ -111,20 +116,13 @@ void Config::load()
 
     QSettings settings;
 
-    webBrows = settings.value( key + QLatin1String("Webbrowser") ).toString();
-    home = settings.value( profkey + QLatin1String("Homepage") ).toString();
-    pdfApp = settings.value( key + QLatin1String("PDFApplication") ).toString();
+    home = settings.value( profkey + QLatin1String("Homepage"),
+                           QLibraryInfo::location(QLibraryInfo::DocumentationPath) + QLatin1String("/html/index.html") ).toString();
     src = settings.value( profkey + QLatin1String("Source") ).toStringList();
     sideBar = settings.value( key + QLatin1String("SideBarPage") ).toInt();
-    if (qApp->type() != QApplication::Tty) {
-        geom.setRect( settings.value( key + QLatin1String("GeometryX"), QApplication::desktop()->availableGeometry().x() + 10).toInt(),
-                      settings.value( key + QLatin1String("GeometryY"), QApplication::desktop()->availableGeometry().y() + 40).toInt(),
-                      settings.value( key + QLatin1String("GeometryWidth"), 800 ).toInt(),
-                      settings.value( key + QLatin1String("GeometryHeight"), 600 ).toInt() );
-        if (!geom.intersects(QApplication::desktop()->geometry()))
-            geom.moveTopLeft(QApplication::desktop()->availableGeometry().topLeft() + QPoint(10,40));
-        maximized = settings.value( key + QLatin1String("GeometryMaximized"), false ).toBool();
-    }
+    if (qApp->type() != QApplication::Tty)
+        winGeometry = settings.value(key + QLatin1String("windowGeometry")).toByteArray();
+
     mainWinState = settings.value(key + QLatin1String("MainWindowState")).toByteArray();
     pointFntSize = settings.value(key + QLatin1String("FontSize"), qApp->font().pointSizeF()).toDouble();
     rebuildDocs = settings.value( key + QLatin1String("RebuildDocDB"), true ).toBool();
@@ -150,18 +148,12 @@ void Config::saveSettings()
 
     QSettings settings;
 
-    settings.setValue( key + QLatin1String("Webbrowser"), webBrows );
-    settings.setValue( profkey + QLatin1String("Homepage"), home );
-    settings.setValue( key + QLatin1String("PDFApplication"), pdfApp );
+    settings.setValue( profkey + QLatin1String("Homepage"), homePage() );
     settings.setValue( profkey + QLatin1String("Source"), src );
     settings.setValue( key + QLatin1String("SideBarPage"), sideBarPage() );
-    if (qApp->type() != QApplication::Tty) {
-        settings.setValue( key + QLatin1String("GeometryX"), geom.x() );
-        settings.setValue( key + QLatin1String("GeometryY"), geom.y() );
-        settings.setValue( key + QLatin1String("GeometryWidth"), geom.width() );
-        settings.setValue( key + QLatin1String("GeometryHeight"), geom.height() );
-        settings.setValue( key + QLatin1String("GeometryMaximized"), maximized );
-    }
+    if (qApp->type() != QApplication::Tty)
+        settings.setValue(key + QLatin1String("windowGeometry"), winGeometry);
+
     settings.setValue( key + QLatin1String("MainWindowState"), mainWinState );
     settings.setValue( key + QLatin1String("FontSize"), pointFntSize);
     settings.setValue( key + QLatin1String("RebuildDocDB"), rebuildDocs );
@@ -179,12 +171,29 @@ static void dumpmap( const QMap<QString,QString> &m, const QString &header )
 }
 #endif
 
+bool Config::defaultProfileExists()
+{
+    QSettings settings;
+    const QString profKey = QLatin1String(QT_VERSION_STR) + QLatin1String("/Profile/default/");
+
+    if (settings.contains(profKey + QLatin1String("DocFiles"))
+        && settings.contains(profKey + QLatin1String("Titles"))
+        && settings.contains(profKey + QLatin1String("ImageDirs"))) {
+        QStringList dcfs = settings.value(profKey + QLatin1String("DocFiles") ).toStringList();
+        foreach (QString file, dcfs) {
+            if (file == Profile::storableFilePath(file))
+                return true;
+        }
+    }
+    return false;
+}
+
 void Config::loadDefaultProfile()
 {
     QSettings settings;
     const QString profKey = QLatin1String(QT_VERSION_STR) + QLatin1String("/Profile/default/");
 
-    if (!settings.contains(profKey + QLatin1String("DocFiles")))
+    if (!defaultProfileExists())
         return;
 
     // Override the defaults with settings in registry.
@@ -199,19 +208,24 @@ void Config::loadDefaultProfile()
     QStringList indexLst = settings.value( profKey + QLatin1String("IndexPages") ).toStringList();
     QStringList imgDirLst = settings.value( profKey + QLatin1String("ImageDirs") ).toStringList();
     QStringList dcfs = settings.value( profKey + QLatin1String("DocFiles") ).toStringList();
+    profil->props[QLatin1String("name")] = QLatin1String("default");
 
-    QStringList::ConstIterator it = titles.begin();
-    QStringList::ConstIterator iconIt = iconLst.begin();
-    QStringList::ConstIterator indexIt = indexLst.begin();
-    QStringList::ConstIterator imageIt = imgDirLst.begin();
-    QStringList::ConstIterator dcfIt = dcfs.begin();
-    for( ; it != titles.end();
-        ++it, ++iconIt, ++indexIt, ++imageIt, ++dcfIt )
-    {
+    QString filePath;
+    QStringList::ConstIterator it = titles.constBegin();
+    QStringList::ConstIterator iconIt = iconLst.constBegin();
+    QStringList::ConstIterator indexIt = indexLst.constBegin();
+    QStringList::ConstIterator imageIt = imgDirLst.constBegin();
+    QStringList::ConstIterator dcfIt = dcfs.constBegin();
+    while((it != titles.constEnd())
+          && (iconIt != iconLst.constEnd())
+          && (indexIt != indexLst.constEnd())
+          && (imageIt != imgDirLst.constEnd())
+          && (dcfIt != dcfs.constEnd())) {
         profil->addDCFIcon( *it, *iconIt );
-        profil->addDCFIndexPage( *it, *indexIt );
+        profil->addDCFIndexPage(*it, Profile::loadableFilePath(*indexIt));
         profil->addDCFImageDir( *it, *imageIt );
-        profil->addDCFTitle( *dcfIt, *it );
+        profil->addDCFTitle(Profile::loadableFilePath(*dcfIt), *it);
+        ++it, ++iconIt, ++indexIt, ++imageIt, ++dcfIt;
     }
 #if ASSISTANT_DEBUG
     dumpmap( profil->icons, QLatin1String("Icons") );
@@ -226,7 +240,6 @@ void Config::saveProfile( Profile *profile )
 {
     if (profil->profileType() == Profile::UserProfile)
         return;
-    QSettings settings;
 
     const QString key = (profile->props[QLatin1String("name")] == QLatin1String("default"))
         ? QString::fromLatin1(QT_VERSION_STR)
@@ -234,16 +247,20 @@ void Config::saveProfile( Profile *profile )
 
     const QString profKey = key + QLatin1String("/Profile/") + profile->props[QLatin1String("name")] + QLatin1String("/");
 
+    QString path = QLibraryInfo::location(QLibraryInfo::DocumentationPath).replace("\\", "/");
     QStringList indexes, icons, imgDirs, dcfs;
     QStringList titles = profile->dcfTitles.keys();
-    QStringList::ConstIterator it = titles.begin();
-    for ( ; it != titles.end(); ++it ) {
-        indexes << profile->indexPages[*it];
+    QStringList::ConstIterator it = titles.constBegin();
+    QString filePath;
+    for ( ; it != titles.constEnd(); ++it ) {
+
+        indexes << Profile::storableFilePath(profile->indexPages[*it]);
         icons << profile->icons[*it];
         imgDirs << profile->imageDirs[*it];
-        dcfs << profile->dcfTitles[*it];
+        dcfs << Profile::storableFilePath(profile->dcfTitles[*it]);
     }
 
+    QSettings settings;
     settings.setValue( profKey + QLatin1String("Titles"), titles );
     settings.setValue( profKey + QLatin1String("DocFiles"), dcfs );
     settings.setValue( profKey + QLatin1String("IndexPages"), indexes );
@@ -251,11 +268,11 @@ void Config::saveProfile( Profile *profile )
     settings.setValue( profKey + QLatin1String("ImageDirs"), imgDirs );
 
 #if ASSISTANT_DEBUG
-    qDebug( "Titles:\n  - " + ( (QStringList*) &titles )->join( "\n  - " ) );
-    qDebug( "Docfiles:\n  - " + dcfs.join( "\n  - " ) );
-    qDebug( "IndexPages:\n  - " + indexes.join( "\n  - " ) );
-    qDebug( "DocIcons:\n  - " + icons.join( "\n  - " ) );
-    qDebug( "ImageDirs:\n  - " + imgDirs.join( "\n  - " ) );
+    qDebug() << "Titles:\n  - " << ((QStringList*)&titles)->join("\n  - ");
+    qDebug() << "Docfiles:\n  - " << dcfs.join("\n  - " );
+    qDebug() << "IndexPages:\n  - " << indexes.join("\n  - ");
+    qDebug() << "DocIcons:\n  - " << icons.join("\n  - " );
+    qDebug() << "ImageDirs:\n  - " << imgDirs.join("\n  - " );
 #endif
 }
 
@@ -266,8 +283,8 @@ QStringList Config::mimePaths()
     if( lst.count() > 0 )
         return lst;
 
-    for (QMap<QString,QString>::ConstIterator it = profil->dcfTitles.begin();
-         it != profil->dcfTitles.end(); ++it ) {
+    for (QMap<QString,QString>::ConstIterator it = profil->dcfTitles.constBegin();
+         it != profil->dcfTitles.constEnd(); ++it ) {
 
         // Mime source for .dcf file path
         QFileInfo info( *it );
@@ -276,7 +293,7 @@ QStringList Config::mimePaths()
             lst << dcfPath;
 
         // Image dir for .dcf
-        QString imgDir = QDir::convertSeparators( dcfPath + QDir::separator()
+        QString imgDir = QDir::toNativeSeparators( dcfPath + QDir::separator()
                                                   + profil->imageDirs[it.key()] );
         if (!lst.contains(imgDir))
             lst << imgDir;
@@ -291,7 +308,10 @@ QStringList Config::profiles() const
 
 QString Config::title() const
 {
-    return profil->props[QLatin1String("title")];
+    QString s = profil->props[QLatin1String("title")];
+    if (s.isEmpty())
+        s = QObject::tr("Qt Assistant by Trolltech");
+    return s;
 }
 
 QString Config::aboutApplicationMenuText() const
@@ -358,8 +378,7 @@ QString Config::docImageDir( const QString &docfile ) const
 
 QString Config::indexPage( const QString &title ) const
 {
-    return profil->indexPages
-        [title];
+    return profil->indexPages[title];
 }
 
 void Config::hideSideBar( bool b )

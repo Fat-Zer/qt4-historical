@@ -59,6 +59,8 @@ public:
     Qt::ArrowType arrowType;
     Qt::ToolButtonStyle toolButtonStyle;
     QToolButton::ToolButtonPopupMode popupMode;
+    enum { NoButtonPressed=0, MenuButtonPressed=1, ToolButtonPressed=2 };
+    uint buttonPressed : 2;
     uint menuButtonDown          : 1;
     uint autoRaise             : 1;
     uint repeat                : 1;
@@ -125,7 +127,7 @@ bool QToolButtonPrivate::hasMenu() const
     menu set. The default mode is DelayedPopupMode which is sometimes
     used with the "Back" button in a web browser.  After pressing and
     holding the button down for a while, a menu pops up showing a list
-    of possible pages to jump to. The default delay is 600ms; you can
+    of possible pages to jump to. The default delay is 600 ms; you can
     adjust it with setPopupDelay().
 
     \table 100%
@@ -243,7 +245,7 @@ void QToolButtonPrivate::init()
     arrowType = Qt::NoArrow;
     menuButtonDown = false;
     popupMode = QToolButton::DelayedPopup;
-
+    buttonPressed = QToolButtonPrivate::NoButtonPressed;
 
     toolButtonStyle = Qt::ToolButtonIconOnly;
 
@@ -358,7 +360,7 @@ QSize QToolButton::sizeHint() const
 
     if (opt.toolButtonStyle != Qt::ToolButtonIconOnly) {
         QSize textSize = fm.size(Qt::TextShowMnemonic, text());
-        textSize.setWidth(textSize.width() + fm.width(' ')*2);
+        textSize.setWidth(textSize.width() + fm.width(QLatin1Char(' '))*2);
         if (opt.toolButtonStyle == Qt::ToolButtonTextUnderIcon) {
             h += 4 + textSize.height();
             if (textSize.width() > w)
@@ -570,22 +572,43 @@ void QToolButton::changeEvent(QEvent *e)
 */
 void QToolButton::mousePressEvent(QMouseEvent *e)
 {
-#ifndef QT_NO_MENU
     Q_D(QToolButton);
+#ifndef QT_NO_MENU
     QStyleOptionToolButton opt = d->getStyleOption();
     if (e->button() == Qt::LeftButton && d->popupMode == MenuButtonPopup) {
         QRect popupr = style()->subControlRect(QStyle::CC_ToolButton, &opt,
                                                QStyle::SC_ToolButtonMenu, this);
         if (popupr.isValid() && popupr.contains(e->pos())) {
+            d->buttonPressed = QToolButtonPrivate::MenuButtonPressed;
             showMenu();
             return;
         }
     }
 #endif
+    d->buttonPressed = QToolButtonPrivate::ToolButtonPressed;
     QAbstractButton::mousePressEvent(e);
 }
 
+/*!
+    \reimp
+*/
+void QToolButton::mouseReleaseEvent(QMouseEvent *e)
+{
+    Q_D(QToolButton);
+    QAbstractButton::mouseReleaseEvent(e);
+    d->buttonPressed = QToolButtonPrivate::NoButtonPressed;
+}
 
+/*!
+    \reimp
+*/
+bool QToolButton::hitButton(const QPoint &pos) const
+{
+    Q_D(const QToolButton);
+    if(QAbstractButton::hitButton(pos))
+        return (d->buttonPressed != QToolButtonPrivate::MenuButtonPressed);
+    return false;
+}
 
 #ifdef QT3_SUPPORT
 
@@ -610,7 +633,6 @@ QIcon QToolButton::offIconSet() const
   \obsolete
 
   Use setIcon() instead.
-
 */
 void QToolButton::setOnIconSet(const QIcon& set)
 {
@@ -621,7 +643,6 @@ void QToolButton::setOnIconSet(const QIcon& set)
   \obsolete
 
   Use setIcon() instead.
-
 */
 void QToolButton::setOffIconSet(const QIcon& set)
 {
@@ -684,6 +705,8 @@ void QToolButton::setMenu(QMenu* menu)
     if (menu) {
         d->menuAction = menu->menuAction();
         addAction(d->menuAction);
+    } else {
+        d->menuAction = 0;
     }
     update();
 }
@@ -745,7 +768,7 @@ void QToolButtonPrivate::popupTimerDone()
     if(menuAction) {
         actualMenu = menuAction->menu();
         if (q->actions().size() > 1)
-            qWarning("QToolButton: menu in setMenu() overriding actions set in addAction!");
+            qWarning("QToolButton: Menu in setMenu() overriding actions set in addAction!");
     } else if (defaultAction && defaultAction->menu()) {
         actualMenu = defaultAction->menu();
     } else {
@@ -889,6 +912,8 @@ QToolButton::ToolButtonPopupMode QToolButton::popupMode() const
     \brief whether auto-raising is enabled or not.
 
     The default is disabled (i.e. false).
+
+    This property is currently ignored on Mac OS X when using QMacStyle.
 */
 void QToolButton::setAutoRaise(bool enable)
 {
