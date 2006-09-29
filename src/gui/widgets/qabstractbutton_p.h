@@ -58,11 +58,13 @@ public:
     uint down :1;
     uint blockRefresh :1;
 
-#ifndef QT_NO_BUTTONGROUP    
+#ifndef QT_NO_BUTTONGROUP
     QButtonGroup* group;
 #endif
     QBasicTimer repeatTimer;
     QBasicTimer animateTimer;
+
+    int autoRepeatDelay, autoRepeatInterval;
 
     void init();
     void click();
@@ -73,6 +75,10 @@ public:
     void notifyChecked();
     void moveFocus(int key);
     void fixFocusPolicy();
+
+    void emitPressed();
+    void emitReleased();
+    void emitClicked();
 };
 
 #endif // QABSTRACTBUTTON_P_H

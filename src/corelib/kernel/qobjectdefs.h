@@ -41,7 +41,7 @@ class QByteArray;
 // The following macros are our "extensions" to C++
 // They are used, strictly speaking, only by the moc.
 
-#ifndef QT_MOC_CPP
+#ifndef Q_MOC_RUN
 # if defined(QT_NO_KEYWORDS)
 #  define QT_NO_EMIT
 # else
@@ -69,16 +69,24 @@ class QByteArray;
 #ifndef QT_NO_TRANSLATION
 # ifndef QT_NO_TEXTCODEC
 // full set of tr functions
+// ### Qt 5: merge overloads
 #  define QT_TR_FUNCTIONS \
     static inline QString tr(const char *s, const char *c = 0) \
         { return staticMetaObject.tr(s, c); } \
     static inline QString trUtf8(const char *s, const char *c = 0) \
-        { return staticMetaObject.trUtf8(s, c); }
+        { return staticMetaObject.trUtf8(s, c); } \
+    static inline QString tr(const char *s, const char *c, int n) \
+        { return staticMetaObject.tr(s, c, n); } \
+    static inline QString trUtf8(const char *s, const char *c, int n) \
+        { return staticMetaObject.trUtf8(s, c, n); }
 # else
 // no QTextCodec, no utf8
+// ### Qt 5: merge overloads
 #  define QT_TR_FUNCTIONS \
     static inline QString tr(const char *s, const char *c = 0) \
-        { return staticMetaObject.tr(s, c); }
+        { return staticMetaObject.tr(s, c); } \
+    static inline QString tr(const char *s, const char *c, int n) \
+        { return staticMetaObject.tr(s, c, n); }
 # endif
 #else
 // inherit the ones from QObject
@@ -101,12 +109,13 @@ private:
 public: \
     static const QMetaObject staticMetaObject; \
 private:
-#else // QT_MOC_CPP
+#else // Q_MOC_RUN
 #define slots slots
 #define signals signals
 #define Q_SLOTS Q_SLOTS
 #define Q_SIGNALS Q_SIGNALS
 #define Q_CLASSINFO(name, value) Q_CLASSINFO(name, value)
+#define Q_INTERFACES(x) Q_INTERFACES(x)
 #define Q_PROPERTY(text) Q_PROPERTY(text)
 #define Q_OVERRIDE(text) Q_OVERRIDE(text)
 #define Q_ENUMS(x) Q_ENUMS(x)
@@ -122,7 +131,7 @@ private:
 #define Q_GADGET Q_GADGET
 #define Q_SCRIPTABLE Q_SCRIPTABLE
 #define Q_INVOKABLE Q_INVOKABLE
-#endif //QT_MOC_CPP
+#endif //Q_MOC_RUN
 
 // macro for onaming members
 #ifdef METHOD
@@ -190,7 +199,7 @@ public:
 };
 
 
-template<class T>
+template <typename T>
 class QReturnArgument: public QGenericReturnArgument
 {
 public:
@@ -207,8 +216,11 @@ struct Q_CORE_EXPORT QMetaObject
     QObject *cast(QObject *obj) const;
 
 #ifndef QT_NO_TRANSLATION
+    // ### Qt 4: Merge overloads
     QString tr(const char *s, const char *c) const;
     QString trUtf8(const char *s, const char *c) const;
+    QString tr(const char *s, const char *c, int n) const;
+    QString trUtf8(const char *s, const char *c, int n) const;
 #endif // QT_NO_TRANSLATION
 
     int methodOffset() const;
@@ -232,9 +244,11 @@ struct Q_CORE_EXPORT QMetaObject
     QMetaEnum enumerator(int index) const;
     QMetaProperty property(int index) const;
     QMetaClassInfo classInfo(int index) const;
+    QMetaProperty userProperty() const;
 
     static bool checkConnectArgs(const char *signal, const char *method);
     static QByteArray normalizedSignature(const char *method);
+    static QByteArray normalizedType(const char *type);
 
     // internal index-based connect
     static bool connect(const QObject *sender, int signal_index,

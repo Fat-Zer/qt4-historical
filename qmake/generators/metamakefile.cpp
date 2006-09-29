@@ -24,6 +24,7 @@
 #include "metamakefile.h"
 #include "qregexp.h"
 #include "qdir.h"
+#include "qdebug.h"
 #include "makefile.h"
 #include "project.h"
 #include "cachekeys.h"
@@ -257,8 +258,8 @@ SubdirsMetaMakefileGenerator::init()
     init_flag = true;
 
     if(Option::recursive) {
-        const QString old_output_dir = Option::output_dir;
-        const QString oldpwd = qmake_getpwd();
+        const QString old_output_dir = QDir::cleanPath(Option::output_dir);
+        const QString oldpwd = QDir::cleanPath(qmake_getpwd());
         const QStringList &subdirs = project->values("SUBDIRS");
         static int recurseDepth = -1;
         ++recurseDepth;
@@ -267,17 +268,26 @@ SubdirsMetaMakefileGenerator::init()
             sub->indent = recurseDepth;
 
             QFileInfo subdir(subdirs.at(i));
+            if(!project->isEmpty(subdirs.at(i) + ".file"))
+                subdir = project->first(subdirs.at(i) + ".file");
+            else if(!project->isEmpty(subdirs.at(i) + ".subdir"))
+                subdir = project->first(subdirs.at(i) + ".subdir");
             if(subdir.isDir())
-                subdir = QFileInfo(subdirs.at(i) + "/" + subdir.fileName() + Option::pro_ext);
+                subdir = QFileInfo(subdir.filePath() + "/" + subdir.fileName() + Option::pro_ext);
 
             //handle sub project
             QMakeProject *sub_proj = new QMakeProject(project->properities());
             for (int ind = 0; ind < sub->indent; ++ind)
                 printf(" ");
-            printf("Reading %s\n", subdir.absoluteFilePath().toLatin1().constData());
             sub->input_dir = subdir.absolutePath();
+            if(subdir.isRelative() && old_output_dir != oldpwd) {
+                sub->output_dir = old_output_dir + "/" + subdir.path();
+                printf("Reading %s [%s]\n", subdir.absoluteFilePath().toLatin1().constData(), sub->output_dir.toLatin1().constData());
+            } else { //what about shadow builds?
+                sub->output_dir = sub->input_dir;
+                printf("Reading %s\n", subdir.absoluteFilePath().toLatin1().constData());
+            }
             qmake_setpwd(sub->input_dir);
-            sub->output_dir = qmake_getpwd(); //this is not going to work for shadow builds ### --Sam
             Option::output_dir = sub->output_dir;
             if(Option::output_dir.at(Option::output_dir.length()-1) != QLatin1Char('/'))
                 Option::output_dir += QLatin1Char('/');
@@ -369,7 +379,6 @@ SubdirsMetaMakefileGenerator::~SubdirsMetaMakefileGenerator()
 #ifndef QMAKE_OPENSOURCE_EDITION
 # include "msvc_nmake.h"
 # include "borland_bmake.h"
-# include "metrowerks_xml.h"
 # include "msvc_dsp.h"
 # include "msvc_vcproj.h"
 #endif
@@ -409,8 +418,6 @@ MetaMakefileGenerator::createMakefileGenerator(QMakeProject *proj, bool noIO)
             mkfile = new NmakeMakefileGenerator;
     } else if(gen == "BMAKE") {
         mkfile = new BorlandMakefileGenerator;
-    } else if(gen == "METROWERKS") {
-        mkfile = new MetrowerksMakefileGenerator;
 #endif
     } else {
         fprintf(stderr, "Unknown generator specified: %s\n", gen.toLatin1().constData());

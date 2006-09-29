@@ -50,6 +50,7 @@ class Q_GUI_EXPORT QDateTimeEdit : public QAbstractSpinBox
     Q_PROPERTY(Section currentSection READ currentSection WRITE setCurrentSection)
     Q_PROPERTY(Sections displayedSections READ displayedSections)
     Q_PROPERTY(QString displayFormat READ displayFormat WRITE setDisplayFormat)
+    Q_PROPERTY(bool calendarPopup READ calendarPopup WRITE setCalendarPopup)
 
 public:
     enum Section {
@@ -101,17 +102,22 @@ public:
     Section currentSection() const;
     void setCurrentSection(Section section);
 
-    QString sectionText(Section s) const;
+    void setSelectedSection(Section section);
+
+    QString sectionText(Section section) const;
 
     QString displayFormat() const;
     void setDisplayFormat(const QString &format);
+
+    bool calendarPopup() const;
+    void setCalendarPopup(bool enable);
 
     QSize sizeHint() const;
 
     virtual void clear();
     virtual void stepBy(int steps);
 
-    bool event(QEvent *e);
+    bool event(QEvent *event);
 Q_SIGNALS:
     void dateTimeChanged(const QDateTime &date);
     void timeChanged(const QTime &date);
@@ -123,11 +129,11 @@ public Q_SLOTS:
     void setTime(const QTime &time);
 
 protected:
-    virtual void keyPressEvent(QKeyEvent *e);
+    virtual void keyPressEvent(QKeyEvent *event);
 #ifndef QT_NO_WHEELEVENT
-    virtual void wheelEvent(QWheelEvent *e);
+    virtual void wheelEvent(QWheelEvent *event);
 #endif
-    virtual void focusInEvent(QFocusEvent *e);
+    virtual void focusInEvent(QFocusEvent *event);
     virtual bool focusNextPrevChild(bool next);
     virtual QValidator::State validate(QString &input, int &pos) const;
     virtual void fixup(QString &input) const;
@@ -135,10 +141,14 @@ protected:
     virtual QDateTime dateTimeFromText(const QString &text) const;
     virtual QString textFromDateTime(const QDateTime &dt) const;
     virtual StepEnabled stepEnabled() const;
+    virtual void mousePressEvent(QMouseEvent *event);
+    virtual void paintEvent(QPaintEvent *event);
 
 private:
     Q_DECLARE_PRIVATE(QDateTimeEdit)
     Q_DISABLE_COPY(QDateTimeEdit)
+
+    Q_PRIVATE_SLOT(d_func(), void _q_resetButton())
 };
 
 class Q_GUI_EXPORT QTimeEdit : public QDateTimeEdit
@@ -146,7 +156,7 @@ class Q_GUI_EXPORT QTimeEdit : public QDateTimeEdit
     Q_OBJECT
 public:
     QTimeEdit(QWidget *parent = 0);
-    QTimeEdit(const QTime &t, QWidget *parent = 0);
+    QTimeEdit(const QTime &time, QWidget *parent = 0);
 };
 
 class Q_GUI_EXPORT QDateEdit : public QDateTimeEdit
@@ -154,7 +164,7 @@ class Q_GUI_EXPORT QDateEdit : public QDateTimeEdit
     Q_OBJECT
 public:
     QDateEdit(QWidget *parent = 0);
-    QDateEdit(const QDate &t, QWidget *parent = 0);
+    QDateEdit(const QDate &date, QWidget *parent = 0);
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QDateTimeEdit::Sections)

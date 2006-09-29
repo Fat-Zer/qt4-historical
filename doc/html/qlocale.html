@@ -2,25 +2,19 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/src/corelib/tools/qlocale.cpp -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/src/corelib/tools/qlocale.cpp -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-x11-opensource-src-4.2.0/src/corelib/tools/qlocale.cpp -->
 <head>
-    <title>Qt 4.1: QLocale Class Reference</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
+  <title>Qt 4.2: QLocale Class Reference</title>
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QLocale Class Reference<br /><sup><sup>[<a href="qtcore.html">QtCore</a> module]</sup></sup></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">QLocale Class Reference<br /><sup><sup>[<a href="qtcore.html">QtCore</a> module]</sup></sup></h1>
 <p>The QLocale class converts between numbers and their string representations in various languages. <a href="#details">More...</a></p>
-<pre>#include &lt;QLocale&gt;</pre><p><b>Note:</b> All the functions in this class are <a href="threads.html#reentrant">reentrant</a>, except <a href="qlocale.html#setDefault">setDefault</a>().</p>
+<pre> #include &lt;QLocale&gt;</pre><p><b>Note:</b> All the functions in this class are <a href="threads.html#reentrant">reentrant</a>, except <a href="qlocale.html#setDefault">setDefault</a>().</p>
 <ul>
 <li><a href="qlocale-members.html">List of all members, including inherited members</a></li>
 </ul>
@@ -30,6 +24,8 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>enum <b><a href="qlocale.html#Country-enum">Country</a></b> { AnyCountry, Afghanistan, Albania, Algeria, ..., Zimbabwe }</li>
 <li><div class="fn"/>enum <b><a href="qlocale.html#FormatType-enum">FormatType</a></b> { LongFormat, ShortFormat }</li>
 <li><div class="fn"/>enum <b><a href="qlocale.html#Language-enum">Language</a></b> { C, Abkhazian, Afan, Afar, ..., Zulu }</li>
+<li><div class="fn"/>enum <b><a href="qlocale.html#NumberOption-enum">NumberOption</a></b> { OmitGroupSeparator, RejectGroupSeparator }</li>
+<li><div class="fn"/>flags <b><a href="qlocale.html#NumberOption-enum">NumberOptions</a></b></li>
 </ul>
 <a name="public-functions"></a>
 <h3>Public Functions</h3>
@@ -40,13 +36,17 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="qlocale.html#QLocale-4">QLocale</a></b> ( const QLocale &amp; <i>other</i> )</li>
 <li><div class="fn"/>Country <b><a href="qlocale.html#country">country</a></b> () const</li>
 <li><div class="fn"/>QString <b><a href="qlocale.html#dateFormat">dateFormat</a></b> ( FormatType <i>format</i> = LongFormat ) const</li>
+<li><div class="fn"/>QString <b><a href="qlocale.html#dayName">dayName</a></b> ( int <i>day</i>, FormatType <i>type</i> = LongFormat ) const</li>
 <li><div class="fn"/>QChar <b><a href="qlocale.html#decimalPoint">decimalPoint</a></b> () const</li>
 <li><div class="fn"/>QChar <b><a href="qlocale.html#exponential">exponential</a></b> () const</li>
 <li><div class="fn"/>QChar <b><a href="qlocale.html#groupSeparator">groupSeparator</a></b> () const</li>
 <li><div class="fn"/>Language <b><a href="qlocale.html#language">language</a></b> () const</li>
+<li><div class="fn"/>QString <b><a href="qlocale.html#monthName">monthName</a></b> ( int <i>month</i>, FormatType <i>type</i> = LongFormat ) const</li>
 <li><div class="fn"/>QString <b><a href="qlocale.html#name">name</a></b> () const</li>
 <li><div class="fn"/>QChar <b><a href="qlocale.html#negativeSign">negativeSign</a></b> () const</li>
+<li><div class="fn"/>NumberOptions <b><a href="qlocale.html#numberOptions">numberOptions</a></b> () const</li>
 <li><div class="fn"/>QChar <b><a href="qlocale.html#percent">percent</a></b> () const</li>
+<li><div class="fn"/>void <b><a href="qlocale.html#setNumberOptions">setNumberOptions</a></b> ( NumberOptions <i>options</i> )</li>
 <li><div class="fn"/>QString <b><a href="qlocale.html#timeFormat">timeFormat</a></b> ( FormatType <i>format</i> = LongFormat ) const</li>
 <li><div class="fn"/>double <b><a href="qlocale.html#toDouble">toDouble</a></b> ( const QString &amp; <i>s</i>, bool * <i>ok</i> = 0 ) const</li>
 <li><div class="fn"/>float <b><a href="qlocale.html#toFloat">toFloat</a></b> ( const QString &amp; <i>s</i>, bool * <i>ok</i> = 0 ) const</li>
@@ -88,12 +88,12 @@ body { background: #ffffff; color: black; }</style>
 <p>The QLocale class converts between numbers and their string representations in various languages.</p>
 <p>QLocale is initialized with a language/country pair in its constructor and offers number-to-string and string-to-number conversion functions similar to those in <a href="qstring.html">QString</a>.</p>
 <p>Example:</p>
-<pre>&nbsp;   QLocale egyptian(QLocale::Arabic, QLocale::Egypt);
-    QString s1 = egyptian.toString(1.571429E+07, 'e');
-    QString s2 = egyptian.toString(10);
+<pre> QLocale egyptian(QLocale::Arabic, QLocale::Egypt);
+ QString s1 = egyptian.toString(1.571429E+07, 'e');
+ QString s2 = egyptian.toString(10);
 
-    double d = egyptian.toDouble(s1);
-    int i = egyptian.toInt(s2);</pre>
+ double d = egyptian.toDouble(s1);
+ int i = egyptian.toInt(s2);</pre>
 <p>QLocale supports the concept of a default locale, which is determined from the system's locale settings at application startup. The default locale can be changed by calling the static member <a href="qlocale.html#setDefault">setDefault</a>(). Setting the default locale has the following effects:</p>
 <ul>
 <li>If a QLocale object is constructed with the default constructor, it will use the default locale's settings.</li>
@@ -101,25 +101,25 @@ body { background: #ffffff; color: black; }</style>
 <li><a href="qstring.html#arg">QString::arg</a>() uses the default locale to format a number when its position specifier in the format string contains an 'L', e.g. &quot;%L1&quot;.</li>
 </ul>
 <p>The following example illustrates how to use QLocale directly:</p>
-<pre>&nbsp;   QLocale::setDefault(QLocale::Hebrew, QLocale::Israel);
-    QLocale hebrew; // Constructs a default QLocale
-    QString s1 = hebrew.toString(15714.3, 'e');
+<pre> QLocale::setDefault(QLocale(QLocale::Hebrew, QLocale::Israel));
+ QLocale hebrew; <span class="comment">// Constructs a default QLocale</span>
+ QString s1 = hebrew.toString(15714.3, 'e');
 
-    bool ok;
-    double d;
+ bool ok;
+ double d;
 
-    QLocale::setDefault(QLocale::C);
-    d = QString(&quot;1234,56&quot;).toDouble(&amp;ok);   // ok == false
-    d = QString(&quot;1234.56&quot;).toDouble(&amp;ok);   // ok == true, d == 1234.56
+ QLocale::setDefault(QLocale::C);
+ d = QString(&quot;1234,56&quot;).toDouble(&amp;ok);   <span class="comment">// ok == false</span>
+ d = QString(&quot;1234.56&quot;).toDouble(&amp;ok);   <span class="comment">// ok == true, d == 1234.56</span>
 
-    QLocale::setDefault(QLocale::German);
-    d = QString(&quot;1234,56&quot;).toDouble(&amp;ok);   // ok == true, d == 1234.56
-    d = QString(&quot;1234.56&quot;).toDouble(&amp;ok);   // ok == true, d == 1234.56
+ QLocale::setDefault(QLocale::German);
+ d = QString(&quot;1234,56&quot;).toDouble(&amp;ok);   <span class="comment">// ok == true, d == 1234.56</span>
+ d = QString(&quot;1234.56&quot;).toDouble(&amp;ok);   <span class="comment">// ok == true, d == 1234.56</span>
 
-    QLocale::setDefault(QLocale::English, QLocale::UnitedStates);
-    str = QString(&quot;%1 %L2 %L3&quot;)
-          .arg(12345).arg(12345).arg(12345, 0, 16);
-    // str == &quot;12345 12,345 3039&quot;</pre>
+ QLocale::setDefault(QLocale(QLocale::English, QLocale::UnitedStates));
+ str = QString(&quot;%1 %L2 %L3&quot;)
+       .arg(12345).arg(12345).arg(12345, 0, 16);
+<span class="comment"> // str == &quot;12345 12,345 3039&quot;</span></pre>
 <p>When a language/country pair is specified in the constructor, one of three things can happen:</p>
 <ul>
 <li>If the language/country pair is found in the database, it is used.</li>
@@ -129,15 +129,15 @@ body { background: #ffffff; color: black; }</style>
 <p>The &quot;C&quot; locale is identical to <a href="qlocale.html#Language-enum">English</a>/<a href="qlocale.html#Country-enum">UnitedStates</a>.</p>
 <p>Use <a href="qlocale.html#language">language</a>() and <a href="qlocale.html#country">country</a>() to determine the actual language and country values used.</p>
 <p>An alternative method for constructing a QLocale object is by specifying the locale name.</p>
-<pre>&nbsp;   QLocale korean(&quot;ko&quot;);
-    QLocale swiss(&quot;de_CH&quot;);</pre>
+<pre> QLocale korean(&quot;ko&quot;);
+ QLocale swiss(&quot;de_CH&quot;);</pre>
 <p>This constructor converts the locale name to a language/country pair; it does not use the system locale database.</p>
 <p>The double-to-string and string-to-double conversion functions are covered by the following licenses:</p>
-<p>Copyright (c) 1991 by AT&amp;T.</p>
+<div style="padding: 0.5em; background: #e0e0e0; color: black"><p>Copyright (c) 1991 by AT&amp;T.</p>
 <p>Permission to use, copy, modify, and distribute this software for any purpose without fee is hereby granted, provided that this entire notice is included in all copies of any software which is or includes a copy or modification of this software and in all copies of the supporting documentation for such software.</p>
 <p>THIS SOFTWARE IS BEING PROVIDED &quot;AS IS&quot;, WITHOUT ANY EXPRESS OR IMPLIED WARRANTY. IN PARTICULAR, NEITHER THE AUTHOR NOR AT&amp;T MAKES ANY REPRESENTATION OR WARRANTY OF ANY KIND CONCERNING THE MERCHANTABILITY OF THIS SOFTWARE OR ITS FITNESS FOR ANY PARTICULAR PURPOSE.</p>
 <p>This product includes software developed by the University of California, Berkeley and its contributors.</p>
-<p>See also <a href="qstring.html#arg">QString::arg</a>(), <a href="qstring.html#toInt">QString::toInt</a>(), and <a href="qstring.html#toDouble">QString::toDouble</a>().</p>
+</div><p>See also <a href="qstring.html#arg">QString::arg</a>(), <a href="qstring.html#toInt">QString::toInt</a>(), and <a href="qstring.html#toDouble">QString::toDouble</a>().</p>
 <hr />
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="Country-enum"></a>enum QLocale::Country</h3>
@@ -546,6 +546,15 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QLocale::Zulu</tt></td><td align="center" valign="top"><tt>140</tt></td></tr>
 </table></p>
 <p>See also <a href="qlocale.html#language">language</a>().</p>
+<h3 class="flags"><a name="NumberOption-enum"></a>enum QLocale::NumberOption<br />flags QLocale::NumberOptions</h3>
+<p>This enum defines a set of options for number-to-string and string-to-number conversions. They can be retrieved with <a href="qlocale.html#numberOptions">numberOptions</a>() and set with <a href="qlocale.html#setNumberOptions">setNumberOptions</a>().</p>
+<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
+<tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
+<tr><td valign="top"><tt>QLocale::OmitGroupSeparator</tt></td><td align="center" valign="top"><tt>0x01</tt></td><td valign="top">If this option is set, the number-to-string functions will not insert group separators in their return values. The default is to insert group seperators.</td></tr>
+<tr><td valign="top"><tt>QLocale::RejectGroupSeparator</tt></td><td align="center" valign="top"><tt>0x02</tt></td><td valign="top">If this option is set, the string-to-number functions will fail if they encounter group separators in their input. The default is to accept numbers containing correctly placed group separators.</td></tr>
+</table></p>
+<p>The NumberOptions type is a typedef for <a href="qflags.html">QFlags</a>&lt;NumberOption&gt;. It stores an OR combination of NumberOption values.</p>
+<p>See also <a href="qlocale.html#setNumberOptions">setNumberOptions</a>() and <a href="qlocale.html#numberOptions">numberOptions</a>().</p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QLocale"></a>QLocale::QLocale ()</h3>
@@ -587,6 +596,10 @@ body { background: #ffffff; color: black; }</style>
 <p>If <i>format</i> is <a href="qlocale.html#FormatType-enum">ShortFormat</a> the format will be a short version. Otherwise it uses a longer version.</p>
 <p>This function was introduced in Qt 4.1.</p>
 <p>See also <a href="qdate.html#toString">QDate::toString</a>() and <a href="qdate.html#fromString">QDate::fromString</a>().</p>
+<h3 class="fn"><a name="dayName"></a><a href="qstring.html">QString</a> QLocale::dayName ( int <i>day</i>, <a href="qlocale.html#FormatType-enum">FormatType</a> <i>type</i> = LongFormat ) const</h3>
+<p>Returns the localized name of <i>day</i>, in the format specified by <i>type</i>.</p>
+<p>This function was introduced in Qt 4.2.</p>
+<p>See also <a href="qlocale.html#monthName">monthName</a>().</p>
 <h3 class="fn"><a name="decimalPoint"></a><a href="qchar.html">QChar</a> QLocale::decimalPoint () const</h3>
 <p>Returns the decimal point character of this locale.</p>
 <p>This function was introduced in Qt 4.1.</p>
@@ -602,12 +615,21 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="languageToString"></a><a href="qstring.html">QString</a> QLocale::languageToString ( <a href="qlocale.html#Language-enum">Language</a> <i>language</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns a <a href="qstring.html">QString</a> containing the name of <i>language</i>.</p>
 <p>See also <a href="qlocale.html#countryToString">countryToString</a>() and <a href="qlocale.html#name">name</a>().</p>
+<h3 class="fn"><a name="monthName"></a><a href="qstring.html">QString</a> QLocale::monthName ( int <i>month</i>, <a href="qlocale.html#FormatType-enum">FormatType</a> <i>type</i> = LongFormat ) const</h3>
+<p>Returns the localized name of <i>month</i>, in the format specified by <i>type</i>.</p>
+<p>This function was introduced in Qt 4.2.</p>
+<p>See also <a href="qlocale.html#dayName">dayName</a>().</p>
 <h3 class="fn"><a name="name"></a><a href="qstring.html">QString</a> QLocale::name () const</h3>
 <p>Returns the language and country of this locale as a string of the form &quot;language_country&quot;, where language is a lowercase, two-letter ISO 639 language code, and country is an uppercase, two-letter ISO 3166 country code.</p>
 <p>See also <a href="qlocale.html#language">language</a>() and <a href="qlocale.html#country">country</a>().</p>
 <h3 class="fn"><a name="negativeSign"></a><a href="qchar.html">QChar</a> QLocale::negativeSign () const</h3>
 <p>Returns the negative sign character of this locale.</p>
 <p>This function was introduced in Qt 4.1.</p>
+<h3 class="fn"><a name="numberOptions"></a><a href="qlocale.html#NumberOption-enum">NumberOptions</a> QLocale::numberOptions () const</h3>
+<p>Returns the options related to number conversions for this <a href="qlocale.html">QLocale</a> instance.</p>
+<p>By default, no options are set for the standard locales.</p>
+<p>This function was introduced in Qt 4.2.</p>
+<p>See also <a href="qlocale.html#setNumberOptions">setNumberOptions</a>().</p>
 <h3 class="fn"><a name="percent"></a><a href="qchar.html">QChar</a> QLocale::percent () const</h3>
 <p>Returns the percent character of this locale.</p>
 <p>This function was introduced in Qt 4.1.</p>
@@ -616,6 +638,10 @@ body { background: #ffffff; color: black; }</style>
 <p><b>Warning:</b> In a multithreaded application, the default locale should be set at application startup, before any non-GUI threads are created.</p>
 <p><b>Warning:</b> This function is not <a href="threads.html#reentrant">reentrant</a>.</p>
 <p>See also <a href="qlocale.html#system">system</a>() and <a href="qlocale.html#c">c</a>().</p>
+<h3 class="fn"><a name="setNumberOptions"></a>void QLocale::setNumberOptions ( <a href="qlocale.html#NumberOption-enum">NumberOptions</a> <i>options</i> )</h3>
+<p>Sets the <i>options</i> related to number conversions for this <a href="qlocale.html">QLocale</a> instance.</p>
+<p>This function was introduced in Qt 4.2.</p>
+<p>See also <a href="qlocale.html#numberOptions">numberOptions</a>().</p>
 <h3 class="fn"><a name="system"></a>QLocale QLocale::system ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns a <a href="qlocale.html">QLocale</a> object initialized to the system locale.</p>
 <p>On Windows and Mac, this locale will use system functions to format dates and strings. It will therefore reflect customizations made by the user in the control panel.</p>
@@ -629,20 +655,20 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the double represented by the localized string <i>s</i>, or 0.0 if the conversion failed.</p>
 <p>If <i>ok</i> is not 0, reports failure by setting *ok to false and success by setting *ok to true.</p>
 <p>Unlike <a href="qstring.html#toDouble">QString::toDouble</a>(), this function does not fall back to the &quot;C&quot; locale if the string cannot be interpreted in this locale.</p>
-<pre>&nbsp;   bool ok;
-    double d;
+<pre> bool ok;
+ double d;
 
-    QLocale c(QLocale::C);
-    d = c.toDouble( &quot;1234.56&quot;, &amp;ok );  // ok == true, d == 1234.56
-    d = c.toDouble( &quot;1,234.56&quot;, &amp;ok ); // ok == true, d == 1234.56
-    d = c.toDouble( &quot;1234,56&quot;, &amp;ok );  // ok == false
+ QLocale c(QLocale::C);
+ d = c.toDouble( &quot;1234.56&quot;, &amp;ok );  <span class="comment">// ok == true, d == 1234.56</span>
+ d = c.toDouble( &quot;1,234.56&quot;, &amp;ok ); <span class="comment">// ok == true, d == 1234.56</span>
+ d = c.toDouble( &quot;1234,56&quot;, &amp;ok );  <span class="comment">// ok == false</span>
 
-    QLocale german(QLocale::German);
-    d = german.toDouble( &quot;1234,56&quot;, &amp;ok );  // ok == true, d == 1234.56
-    d = german.toDouble( &quot;1.234,56&quot;, &amp;ok ); // ok == true, d == 1234.56
-    d = german.toDouble( &quot;1234.56&quot;, &amp;ok );  // ok == false
+ QLocale german(QLocale::German);
+ d = german.toDouble( &quot;1234,56&quot;, &amp;ok );  <span class="comment">// ok == true, d == 1234.56</span>
+ d = german.toDouble( &quot;1.234,56&quot;, &amp;ok ); <span class="comment">// ok == true, d == 1234.56</span>
+ d = german.toDouble( &quot;1234.56&quot;, &amp;ok );  <span class="comment">// ok == false</span>
 
-    d = german.toDouble( &quot;1.234&quot;, &amp;ok );    // ok == true, d == 1234.0</pre>
+ d = german.toDouble( &quot;1.234&quot;, &amp;ok );    <span class="comment">// ok == true, d == 1234.0</span></pre>
 <p>Notice that the last conversion returns 1234.0, because '.' is the thousands group separator in the German locale.</p>
 <p>This function ignores leading and trailing whitespace.</p>
 <p>See also <a href="qlocale.html#toFloat">toFloat</a>(), <a href="qlocale.html#toInt">toInt</a>(), and <a href="qlocale.html#toString">toString</a>().</p>
@@ -738,6 +764,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

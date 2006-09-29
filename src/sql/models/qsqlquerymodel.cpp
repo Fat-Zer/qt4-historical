@@ -120,7 +120,7 @@ QSqlQueryModelPrivate::~QSqlQueryModelPrivate()
     See fetchMore() for more information.
 
     \sa QSqlTableModel, QSqlRelationalTableModel, QSqlQuery,
-        {Model/View Programming}
+        {Model/View Programming}, {Query Model Example}
 */
 
 /*!
@@ -210,10 +210,10 @@ int QSqlQueryModel::rowCount(const QModelIndex &index) const
 
 /*! \reimp
  */
-int QSqlQueryModel::columnCount(const QModelIndex &) const
+int QSqlQueryModel::columnCount(const QModelIndex &index) const
 {
     Q_D(const QSqlQueryModel);
-    return d->rec.count();
+    return index.isValid() ? 0 : d->rec.count();
 }
 
 /*!

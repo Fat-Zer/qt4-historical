@@ -1,6 +1,8 @@
 TEMPLATE = app
 
 CONFIG += qt warn_on
+unix:contains(QT_CONFIG, qdbus):CONFIG += qdbus
+
 SOURCES += main.cpp
 RESOURCES += spreadsheet.qrc
 

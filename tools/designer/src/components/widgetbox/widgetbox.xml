@@ -21,7 +21,7 @@
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 **
 **************************************************************************-->
-<widgetbox version="4.0">
+<widgetbox version="4.2">
     <category name="Layouts">
         <widget class="QWidget"  name="Vertical Layout" icon="win/editvlayout.png">
             <property name="objectName">
@@ -140,6 +140,14 @@
             </property>
             <property name="objectName">
                 <string notr="true">checkBox</string>
+            </property>
+        </widget>
+        <widget class="QDialogButtonBox" name="Button Box" icon="widgets/dialogbuttonbox.png">
+            <property name="standardButtons" >
+                <set>QDialogButtonBox::Ok|QDialogButtonBox::Cancel</set>
+            </property>
+            <property name="objectName">
+                <string notr="true">buttonBox</string>
             </property>
         </widget>
     </category>
@@ -328,6 +336,23 @@
             </property>
         </widget>
 
+        <widget class="QWidget" name="Widget" icon="widgets/widget.png">
+            <property name="title" >
+                <string>Widget</string>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>0</x>
+                    <y>0</y>
+                    <width>120</width>
+                    <height>80</height>
+                </rect>
+            </property>
+            <property name="objectName">
+                <string notr="true">widget</string>
+            </property>
+        </widget>
+
         <widget class="QDockWidget" name="Dock Widget" icon="widgets/frame.png">
             <property name="geometry">
                 <rect>
@@ -346,7 +371,6 @@
 
     <category name="Input Widgets">
 
-
         <widget class="QComboBox" name="Combo Box" icon="widgets/combobox.png">
             <property name="geometry" >
                 <rect>
@@ -358,6 +382,20 @@
             </property>
             <property name="objectName">
                 <string notr="true">comboBox</string>
+            </property>
+        </widget>
+
+        <widget class="QFontComboBox" name="Font Combo Box" icon="widgets/fontcombobox.png">
+            <property name="geometry" >
+                <rect>
+                    <x>119</x>
+                    <y>28</y>
+                    <width>41</width>
+                    <height>22</height>
+                </rect>
+            </property>
+            <property name="objectName">
+                <string notr="true">fontComboBox</string>
             </property>
         </widget>
 
@@ -558,6 +596,26 @@
         <widget class="QTextBrowser" name="Text Browser" icon="widgets/textedit.png">
             <property name="objectName">
                 <string notr="true">textBrowser</string>
+            </property>
+        </widget>
+
+        <widget class="QGraphicsView" name="Graphics View" icon="widgets/graphicsview.png">
+            <property name="objectName">
+                <string notr="true">graphicsView</string>
+            </property>
+            <property name="geometry" >
+                <rect>
+                    <x>0</x>
+                    <y>0</y>
+                    <width>104</width>
+                    <height>64</height>
+                </rect>
+            </property>
+        </widget>
+
+        <widget class="QCalendarWidget" name="Calendar" icon="widgets/calendarwidget.png">
+            <property name="objectName">
+                <string notr="true">calendarWidget</string>
             </property>
         </widget>
 

@@ -36,12 +36,13 @@ using namespace qdesigner_internal;
 Q_GLOBAL_STATIC_WITH_ARGS(PropertyCollection, dummy_collection, (QLatin1String("<empty>")))
 
 QPropertyEditor::QPropertyEditor(QWidget *parent)
-    : QTreeView(parent)
+    : QTreeView(parent), contentsResized(false)
 {
     m_model = new QPropertyEditorModel(this);
     setModel(m_model);
     m_itemDelegate = new QPropertyEditorDelegate(this);
     setItemDelegate(m_itemDelegate);
+    connect(m_itemDelegate, SIGNAL(resetProperty(const QString &)), m_model, SIGNAL(resetProperty(const QString &)));
     setInitialInput(0);
 
     setAlternatingRowColors(true);
@@ -71,6 +72,12 @@ void QPropertyEditor::setReadOnly(bool readOnly)
 
 void QPropertyEditor::setInitialInput(IProperty *initialInput)
 {
+    bool needResize = false;
+    if (!m_model->initialInput() || m_model->initialInput() == dummy_collection()) {
+        if (initialInput)
+            needResize = true;
+    }
+
     if (!initialInput)
         initialInput = dummy_collection();
 
@@ -83,7 +90,10 @@ void QPropertyEditor::setInitialInput(IProperty *initialInput)
     setEditTriggers(QAbstractItemView::CurrentChanged|QAbstractItemView::SelectedClicked);
     setRootIndex(m_model->indexOf(initialInput));
 
-    resizeColumnToContents(0);
+    if (needResize && !contentsResized) {
+        contentsResized = true;
+        resizeColumnToContents(0);
+    }
 }
 
 
@@ -108,8 +118,6 @@ void QPropertyEditor::drawBranches(QPainter *painter, const QRect &rect, const Q
 
     if (property && property->isSeparator()) {
         painter->fillRect(rect, opt.palette.dark());
-    } else if (selectionModel()->isSelected(index)) {
-        painter->fillRect(rect, opt.palette.brush(QPalette::Highlight));
     }
 
     if (model()->hasChildren(index)) {
@@ -148,4 +156,10 @@ QStyleOptionViewItem QPropertyEditor::viewOptions() const
     QStyleOptionViewItem option = QTreeView::viewOptions();
     option.showDecorationSelected = true;
     return option;
+}
+
+void QPropertyEditor::focusInEvent(QFocusEvent *event)
+{
+    QAbstractScrollArea::focusInEvent(event);
+    viewport()->update();
 }

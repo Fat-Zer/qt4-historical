@@ -1,6 +1,10 @@
 TEMPLATE        = app
 CONFIG          += qt warn_on uic
 TARGET          = qvfb
+DESTDIR         = ../../bin
+
+target.path=$$[QT_INSTALL_BINS]
+INSTALLS += target
 
 DEPENDPATH      = ../../include
 
@@ -13,7 +17,10 @@ HEADERS         = qvfb.h \
 		  skin.h \
                   qvfbprotocol.h \
                   qvfbshmem.h \
-                  qvfbmmap.h
+                  qvfbmmap.h \
+		  qvfbhdr.h \
+		  qlock_p.h \
+		  qwssignalhandler_p.h
 
 SOURCES         = qvfb.cpp \
 		  qvfbview.cpp \
@@ -23,7 +30,13 @@ SOURCES         = qvfb.cpp \
 		  skin.cpp \
                   qvfbprotocol.cpp \
                   qvfbshmem.cpp \
-                  qvfbmmap.cpp
+                  qvfbmmap.cpp \
+		  qlock.cpp \
+ 	          qwssignalhandler.cpp
+
+contains(QT_CONFIG, opengl) {
+	QT += opengl
+}
 
 contains(QT_CONFIG, system-png) {
 	LIBS += -lpng
@@ -36,4 +49,15 @@ contains(QT_CONFIG, system-zlib) {
 	INCLUDEPATH     += $$QT_SOURCE_TREE/src/3rdparty/zlib
 }
 
-RESOURCES	+= qvfb.qrc
+RESOURCES	+= qvfb.qrc \
+                   ClamshellPhone.qrc \
+                   PDAPhone.qrc \
+                   pda.qrc \
+                   SmartPhone2.qrc \
+                   SmartPhone.qrc \
+                   SmartPhoneWithButtons.qrc \
+                   TouchscreenPhone.qrc \
+                   Trolltech-Keypad.qrc \
+                   Trolltech-Touchscreen.qrc \
+                   PortableMedia.qrc
+

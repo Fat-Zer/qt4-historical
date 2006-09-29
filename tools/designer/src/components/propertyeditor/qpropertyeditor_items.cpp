@@ -23,8 +23,9 @@
 
 #include "qpropertyeditor_items_p.h"
 #include "flagbox_p.h"
-#include "paletteeditorbutton.h"
+#include "stringlisteditorbutton.h"
 #include "defs.h"
+#include "qlonglongvalidator.h"
 
 #include <QtDesigner/propertysheet.h>
 
@@ -38,11 +39,15 @@
 #include <QtGui/QFontDatabase>
 #include <QtGui/QPainter>
 #include <QtGui/QDateTimeEdit>
+#include <QtGui/QApplication>
 #include <QtGui/QBitmap>
 #include <QtGui/QLabel>
+#include <QtCore/QUrl>
+#include <private/qfont_p.h>
 
 #include <QtCore/qdebug.h>
 #include <limits.h>
+#include <math.h>
 
 using namespace qdesigner_internal;
 
@@ -166,6 +171,34 @@ QVariant PointProperty::value() const
 void PointProperty::setValue(const QVariant &value)
 {
     QPoint pt = value.toPoint();
+    propertyAt(0)->setValue(pt.x());
+    propertyAt(1)->setValue(pt.y());
+}
+
+// -------------------------------------------------------------------------
+PointFProperty::PointFProperty(const QPointF &value, const QString &name)
+    : AbstractPropertyGroup(name)
+{
+    DoubleProperty *px = new DoubleProperty(value.x(), QLatin1String("x"));
+    px->setFake(true);
+    px->setParent(this);
+
+    DoubleProperty *py = new DoubleProperty(value.y(), QLatin1String("y"));
+    py->setFake(true);
+    py->setParent(this);
+
+    m_properties << px << py;
+}
+
+QVariant PointFProperty::value() const
+{
+    return QPointF(propertyAt(0)->value().toDouble(),
+                  propertyAt(1)->value().toDouble());
+}
+
+void PointFProperty::setValue(const QVariant &value)
+{
+    QPointF pt = value.toPointF();
     propertyAt(0)->setValue(pt.x());
     propertyAt(1)->setValue(pt.y());
 }
@@ -412,6 +445,15 @@ SizeProperty::SizeProperty(const QSize &value, const QString &name)
     ph->setParent(this);
     ph->setRange(0, INT_MAX);
 
+    if (name == QLatin1String("maximumSize")) {
+        pw->setRange(0, 0xFFFFFF);
+        ph->setRange(0, 0xFFFFFF);
+    }
+    if (name == QLatin1String("minimumSize")) {
+        pw->setRange(0, 0xFFF);
+        ph->setRange(0, 0xFFF);
+    }
+
     m_properties << pw << ph;
 }
 
@@ -424,6 +466,36 @@ QVariant SizeProperty::value() const
 void SizeProperty::setValue(const QVariant &value)
 {
     QSize pt = value.toSize();
+    propertyAt(0)->setValue(pt.width());
+    propertyAt(1)->setValue(pt.height());
+}
+
+// -------------------------------------------------------------------------
+SizeFProperty::SizeFProperty(const QSizeF &value, const QString &name)
+    : AbstractPropertyGroup(name)
+{
+    SpinBoxDoubleProperty *pw = new SpinBoxDoubleProperty(value.width(), QLatin1String("width"));
+    pw->setFake(true);
+    pw->setParent(this);
+    pw->setRange(0.0, HUGE_VAL);
+
+    SpinBoxDoubleProperty *ph = new SpinBoxDoubleProperty(value.height(), QLatin1String("height"));
+    ph->setFake(true);
+    ph->setParent(this);
+    ph->setRange(0.0, HUGE_VAL);
+
+    m_properties << pw << ph;
+}
+
+QVariant SizeFProperty::value() const
+{
+    return QSizeF(propertyAt(0)->value().toDouble(),
+                 propertyAt(1)->value().toDouble());
+}
+
+void SizeFProperty::setValue(const QVariant &value)
+{
+    QSizeF pt = value.toSizeF();
     propertyAt(0)->setValue(pt.width());
     propertyAt(1)->setValue(pt.height());
 }
@@ -529,6 +601,11 @@ RectProperty::RectProperty(const QRect &value, const QString &name)
     ph->setParent(this);
     ph->setRange(0, INT_MAX);
 
+    if (name == QLatin1String("geometry")) {
+        pw->setRange(0, 0xFFF);
+        ph->setRange(0, 0xFFF);
+    }
+
     m_properties << px << py << pw << ph;
 }
 
@@ -549,6 +626,47 @@ void RectProperty::setValue(const QVariant &value)
     propertyAt(3)->setValue(pt.height());
 }
 
+// -------------------------------------------------------------------------
+RectFProperty::RectFProperty(const QRectF &value, const QString &name)
+    : AbstractPropertyGroup(name)
+{
+    DoubleProperty *px = new DoubleProperty(value.x(), QLatin1String("x"));
+    px->setFake(true);
+    px->setParent(this);
+
+    DoubleProperty *py = new DoubleProperty(value.y(), QLatin1String("y"));
+    py->setFake(true);
+    py->setParent(this);
+
+    SpinBoxDoubleProperty *pw = new SpinBoxDoubleProperty(value.width(), QLatin1String("width"));
+    pw->setFake(true);
+    pw->setParent(this);
+    pw->setRange(0.0, HUGE_VAL);
+
+    SpinBoxDoubleProperty *ph = new SpinBoxDoubleProperty(value.height(), QLatin1String("height"));
+    ph->setFake(true);
+    ph->setParent(this);
+    ph->setRange(0.0, HUGE_VAL);
+
+    m_properties << px << py << pw << ph;
+}
+
+QVariant RectFProperty::value() const
+{
+    return QRectF(propertyAt(0)->value().toDouble(),
+                 propertyAt(1)->value().toDouble(),
+                 propertyAt(2)->value().toDouble(),
+                 propertyAt(3)->value().toDouble());
+}
+
+void RectFProperty::setValue(const QVariant &value)
+{
+    QRectF pt = value.toRectF();
+    propertyAt(0)->setValue(pt.x());
+    propertyAt(1)->setValue(pt.y());
+    propertyAt(2)->setValue(pt.width());
+    propertyAt(3)->setValue(pt.height());
+}
 
 // -------------------------------------------------------------------------
 ColorProperty::ColorProperty(const QColor &value, const QString &name)
@@ -595,9 +713,11 @@ QVariant ColorProperty::decoration() const
 }
 
 // -------------------------------------------------------------------------
-FontProperty::FontProperty(const QFont &value, const QString &name)
+FontProperty::FontProperty(const QFont &value, const QString &name, QWidget *selectedWidget)
     : AbstractPropertyGroup(name)
 {
+    m_selectedWidget = selectedWidget;
+
     QStringList fonts = fontDatabase()->families();
     int index = fonts.indexOf(value.family());
     if (index == -1)
@@ -606,6 +726,7 @@ FontProperty::FontProperty(const QFont &value, const QString &name)
     IProperty *i = 0;
     i = new ListProperty(fonts, index, QLatin1String("Family"));
     i->setFake(true);
+    i->setHasReset(true);
     i->setParent(this);
     m_properties << i;
 
@@ -617,64 +738,91 @@ FontProperty::FontProperty(const QFont &value, const QString &name)
     }
     IntProperty *ii = new IntProperty(pointSize, QLatin1String("Point Size"));
     ii->setFake(true);
+    ii->setHasReset(true);
     ii->setRange(1, INT_MAX); // ### check
     ii->setParent(this);
     m_properties << ii;
 
     i = new BoolProperty(value.bold(), QLatin1String("Bold"));
     i->setFake(true);
+    i->setHasReset(true);
     i->setParent(this);
     m_properties << i;
 
     i = new BoolProperty(value.italic(), QLatin1String("Italic"));
     i->setFake(true);
+    i->setHasReset(true);
     i->setParent(this);
     m_properties << i;
 
     i = new BoolProperty(value.underline(), QLatin1String("Underline"));
     i->setFake(true);
+    i->setHasReset(true);
     i->setParent(this);
     m_properties << i;
 
     i = new BoolProperty(value.strikeOut(), QLatin1String("Strikeout"));
     i->setFake(true);
+    i->setHasReset(true);
     i->setParent(this);
     m_properties << i;
+
+    i = new BoolProperty(value.kerning(), QLatin1String("Kerning"));
+    i->setFake(true);
+    i->setHasReset(true);
+    i->setParent(this);
+    m_properties << i;
+
+    i = new BoolProperty(value.styleStrategy() == QFont::PreferDefault, QLatin1String("Antialiasing"));
+    i->setFake(true);
+    i->setHasReset(true);
+    i->setParent(this);
+    m_properties << i;
+
+    m_font = value;
 }
 
 QVariant FontProperty::value() const
 {
-    QFont fnt;
-    fnt.setFamily(propertyAt(0)->toString());
-    fnt.setPointSize(propertyAt(1)->value().toInt());
-    fnt.setBold(propertyAt(2)->value().toBool());
-    fnt.setItalic(propertyAt(3)->value().toBool());
-    fnt.setUnderline(propertyAt(4)->value().toBool());
-    fnt.setStrikeOut(propertyAt(5)->value().toBool());
-
-    return qVariantFromValue(fnt);
+    return m_font;
 }
 
 void FontProperty::setValue(const QVariant &value)
 {
-    QFont fnt = qvariant_cast<QFont>(value);
+    m_font = qvariant_cast<QFont>(value);
+    QFont parentFont = QFont();
+    if (m_selectedWidget) {
+        if (m_selectedWidget->isWindow())
+            parentFont = QApplication::font(m_selectedWidget);
+        else {
+            if (m_selectedWidget->parentWidget())
+                parentFont = m_selectedWidget->parentWidget()->font();
+        }
+    }
 
-    int family = fontDatabase()->families().indexOf(fnt.family());
+    uint mask = m_font.resolve();
+    m_font = m_font.resolve(parentFont);
+    m_font.resolve(mask);
 
-    propertyAt(0)->setValue(family);
+    m_changed = mask != 0;
 
-    int pointSize = fnt.pointSize();
+    int family = fontDatabase()->families().indexOf(m_font.family());
+    int pointSize = m_font.pointSize();
+
     if (pointSize < 1) {
         // try to convert from pixel size and resolved font
         // see also code in FontProperty constructor
-        pointSize = QFontInfo(fnt).pointSize();
+        pointSize = QFontInfo(m_font).pointSize();
     }
-    propertyAt(1)->setValue(pointSize);
 
-    propertyAt(2)->setValue(fnt.bold());
-    propertyAt(3)->setValue(fnt.italic());
-    propertyAt(4)->setValue(fnt.underline());
-    propertyAt(5)->setValue(fnt.strikeOut());
+    propertyAt(0)->setValue(family);
+    propertyAt(1)->setValue(pointSize);
+    propertyAt(2)->setValue(m_font.bold());
+    propertyAt(3)->setValue(m_font.italic());
+    propertyAt(4)->setValue(m_font.underline());
+    propertyAt(5)->setValue(m_font.strikeOut());
+    propertyAt(6)->setValue(m_font.kerning());
+    propertyAt(7)->setValue(m_font.styleStrategy() == QFont::PreferDefault);
 }
 
 QVariant FontProperty::decoration() const
@@ -702,10 +850,12 @@ QString FontProperty::toString() const
 // -------------------------------------------------------------------------
 MapProperty::MapProperty(const QMap<QString, QVariant> &items,
                          const QVariant &value,
-                         const QString &name)
+                         const QString &name,
+                         const QStringList &okeys)
     : AbstractProperty<QVariant>(value, name),
       m_items(items),
-      m_keys(m_items.keys())
+      m_keys(items.keys()),
+      comboKeys(okeys.isEmpty() ? m_keys : okeys)
 {
 }
 
@@ -745,7 +895,7 @@ QString MapProperty::toString() const
 int MapProperty::indexOf(const QVariant &value) const
 {
     QString key = m_items.key(value);
-    return m_keys.indexOf(key);
+    return comboKeys.indexOf(key);
 }
 
 QWidget *MapProperty::createEditor(QWidget *parent, const QObject *target, const char *receiver) const
@@ -754,7 +904,7 @@ QWidget *MapProperty::createEditor(QWidget *parent, const QObject *target, const
     combo->view()->setTextElideMode(Qt::ElideLeft);
     combo->setFrame(0);
 
-    combo->addItems(m_keys);
+    combo->addItems(comboKeys);
     QObject::connect(combo, SIGNAL(activated(int)), target, receiver);
 
     return combo;
@@ -1306,46 +1456,182 @@ void DoubleProperty::updateValue(QWidget *editor)
 }
 
 // -------------------------------------------------------------------------
-PaletteProperty::PaletteProperty(const QPalette &value, QWidget *selectedWidget,
-                const QString &name)
-    : AbstractProperty<QPalette>(value, name)
+// QDoublePropertySpinBox also emits editingFinished when the spinbox is used
+class QDoublePropertySpinBox: public QDoubleSpinBox
 {
-    m_selectedWidget = selectedWidget;
+public:
+    QDoublePropertySpinBox(QWidget *parent = 0)
+        : QDoubleSpinBox(parent) { }
+
+    void stepBy(int steps)
+    {
+        QDoubleSpinBox::stepBy(steps);
+        emit editingFinished();
+    }
+};
+
+SpinBoxDoubleProperty::SpinBoxDoubleProperty(double value, const QString &name)
+    : AbstractProperty<double>(value, name), m_low(-HUGE_VAL), m_hi(HUGE_VAL)
+{
 }
 
-void PaletteProperty::setValue(const QVariant &value)
+void SpinBoxDoubleProperty::setRange(double low, double hi)
 {
-    m_value = qvariant_cast<QPalette>(value);
+    m_low = low;
+    m_hi = hi;
 }
 
-QString PaletteProperty::toString() const
+QString SpinBoxDoubleProperty::specialValue() const
 {
-    return QString(); // ### implement me
+    return m_specialValue;
 }
 
-QWidget *PaletteProperty::createEditor(QWidget *parent, const QObject *target, const char *receiver) const
+void SpinBoxDoubleProperty::setSpecialValue(const QString &specialValue)
 {
-    PaletteEditorButton *btn = new PaletteEditorButton(m_value, m_selectedWidget, parent);
-    QObject::connect(btn, SIGNAL(changed()), target, receiver);
-    return btn;
+    m_specialValue = specialValue;
 }
 
-void PaletteProperty::updateEditorContents(QWidget *editor)
+void SpinBoxDoubleProperty::setValue(const QVariant &value)
 {
-    if (PaletteEditorButton *btn = qobject_cast<PaletteEditorButton*>(editor)) {
-        btn->setPalette(m_value);
+    m_value = value.toDouble();
+}
+
+QString SpinBoxDoubleProperty::toString() const
+{
+    return QString::number(m_value);
+}
+
+QWidget *SpinBoxDoubleProperty::createEditor(QWidget *parent, const QObject *target, const char *receiver) const
+{
+    QDoubleSpinBox *spinBox = new QDoublePropertySpinBox(parent);
+    spinBox->setFrame(0);
+    spinBox->setSpecialValueText(m_specialValue);
+    spinBox->setDecimals(6);
+    spinBox->setRange(m_low, m_hi);
+    spinBox->setValue(m_value);
+    spinBox->selectAll();
+
+    QObject::connect(spinBox, SIGNAL(editingFinished()), target, receiver);
+
+    return spinBox;
+}
+
+void SpinBoxDoubleProperty::updateEditorContents(QWidget *editor)
+{
+    if (QDoubleSpinBox *spinBox = qobject_cast<QDoubleSpinBox*>(editor)) {
+        spinBox->setValue(m_value);
     }
 }
 
-void PaletteProperty::updateValue(QWidget *editor)
+void SpinBoxDoubleProperty::updateValue(QWidget *editor)
 {
-    if (PaletteEditorButton *btn = qobject_cast<PaletteEditorButton*>(editor)) {
-        QPalette newValue = btn->palette();
+    if (QDoubleSpinBox *spinBox = qobject_cast<QDoubleSpinBox*>(editor)) {
+        double newValue = spinBox->value();
 
-        if (newValue.resolve() != m_value.resolve() || newValue != m_value) {
+        if (newValue != m_value) {
             m_value = newValue;
             setChanged(true);
         }
+    }
+}
+
+// -------------------------------------------------------------------------
+CharProperty::CharProperty(QChar value, const QString &name)
+    : AbstractProperty<QChar>(value, name)
+{
+}
+
+void CharProperty::setValue(const QVariant &value)
+{
+    m_value = value.toChar();
+}
+
+QString CharProperty::toString() const
+{
+    return QString(m_value);
+}
+
+QWidget *CharProperty::createEditor(QWidget *parent, const QObject *target, const char *receiver) const
+{
+    QLineEdit *lineEdit = new QLineEdit(parent);
+    lineEdit->setFrame(0);
+    lineEdit->setInputMask("X; ");
+    QObject::connect(lineEdit, SIGNAL(textChanged(QString)), target, receiver);
+
+    return lineEdit;
+}
+
+void CharProperty::updateEditorContents(QWidget *editor)
+{
+    if (QLineEdit *lineEdit = qobject_cast<QLineEdit*>(editor)) {
+        if (lineEdit->text() != QString(m_value)) {
+            lineEdit->setText(QString(m_value));
+            lineEdit->setCursorPosition(0);
+        }
+    }
+}
+
+void CharProperty::updateValue(QWidget *editor)
+{
+    if (QLineEdit *lineEdit = qobject_cast<QLineEdit*>(editor)) {
+        lineEdit->setCursorPosition(0);
+        QChar newValue = QLatin1Char(' ');
+        if (lineEdit->text().size() > 0)
+            newValue = lineEdit->text().at(0);
+
+        if (newValue != m_value) {
+            m_value = newValue;
+            setChanged(true);
+        }
+    }
+}
+
+// -------------------------------------------------------------------------
+
+LongLongProperty::LongLongProperty(qlonglong value, const QString &name)
+    : AbstractProperty<qlonglong>(value, name)
+{
+}
+
+void LongLongProperty::setValue(const QVariant &value)
+{
+    m_value = value.toLongLong();
+}
+
+QString LongLongProperty::toString() const
+{
+    return QString::number(m_value);
+}
+
+QWidget *LongLongProperty::createEditor(QWidget *parent, const QObject *target, const char *receiver) const
+{
+    QLineEdit *lineEdit = new QLineEdit(parent);
+    lineEdit->setFrame(0);
+    lineEdit->setValidator(new QLongLongValidator(lineEdit));
+
+    QObject::connect(lineEdit, SIGNAL(textChanged(QString)), target, receiver);
+    return lineEdit;
+}
+
+void LongLongProperty::updateEditorContents(QWidget *editor)
+{
+    if (QLineEdit *lineEdit = qobject_cast<QLineEdit*>(editor)) {
+        qlonglong v = lineEdit->text().toLongLong();
+        if (v != m_value)
+            lineEdit->setText(QString::number(m_value));
+    }
+}
+
+void LongLongProperty::updateValue(QWidget *editor)
+{
+    if (QLineEdit *lineEdit = qobject_cast<QLineEdit*>(editor)) {
+        qlonglong newValue = lineEdit->text().toLongLong();
+
+        if (newValue != m_value) {
+            m_value = newValue;
+            setChanged(true);
+        }
+
     }
 }
 
@@ -1371,3 +1657,96 @@ void SeparatorProperty::updateEditorContents(QWidget *editor)
 
 void SeparatorProperty::updateValue(QWidget *editor)
 { Q_UNUSED(editor); }
+
+// -------------------------------------------------------------------------
+UrlProperty::UrlProperty(const QUrl &value, const QString &name)
+    : AbstractPropertyGroup(name),
+      m_value(value)
+{
+}
+
+QVariant UrlProperty::value() const
+{
+    return m_value;
+}
+
+void UrlProperty::setValue(const QVariant &value)
+{
+    m_value = value.toUrl();
+}
+
+QString UrlProperty::toString() const
+{
+    return m_value.toString();
+}
+
+QWidget *UrlProperty::createEditor(QWidget *parent, const QObject *target, const char *receiver) const
+{
+    QLineEdit *lineEdit = new QLineEdit(parent);
+    lineEdit->setFrame(0);
+
+    QObject::connect(lineEdit, SIGNAL(textChanged(QString)), target, receiver);
+    return lineEdit;
+}
+
+void UrlProperty::updateEditorContents(QWidget *editor)
+{
+    if (QLineEdit *lineEdit = qobject_cast<QLineEdit*>(editor)) {
+        if (QUrl(lineEdit->text()) != m_value)
+            lineEdit->setText(m_value.toString());
+    }
+}
+
+void UrlProperty::updateValue(QWidget *editor)
+{
+    if (QLineEdit *lineEdit = qobject_cast<QLineEdit*>(editor)) {
+        QUrl newValue = QUrl(lineEdit->text());
+
+        if (newValue != m_value) {
+            m_value = newValue;
+            setChanged(true);
+        }
+
+    }
+}
+
+// -------------------------------------------------------------------------
+StringListProperty::StringListProperty(const QStringList &value, const QString &name)
+    : AbstractProperty<QStringList>(value, name)
+{
+}
+
+void StringListProperty::setValue(const QVariant &value)
+{
+    m_value = qvariant_cast<QStringList>(value);
+}
+
+QString StringListProperty::toString() const
+{
+    return m_value.join(QLatin1String(", "));
+}
+
+QWidget *StringListProperty::createEditor(QWidget *parent, const QObject *target, const char *receiver) const
+{
+    StringListEditorButton *btn = new StringListEditorButton(m_value, parent);
+    QObject::connect(btn, SIGNAL(changed()), target, receiver);
+    return btn;
+}
+
+void StringListProperty::updateEditorContents(QWidget *editor)
+{
+    if (StringListEditorButton *btn = qobject_cast<StringListEditorButton*>(editor)) {
+        btn->setStringList(m_value);
+    }
+}
+
+void StringListProperty::updateValue(QWidget *editor)
+{
+    if (StringListEditorButton *btn = qobject_cast<StringListEditorButton*>(editor)) {
+        QStringList newValue = btn->stringList();
+        if (newValue != m_value) {
+            m_value = newValue;
+            setChanged(true);
+        }
+    }
+}

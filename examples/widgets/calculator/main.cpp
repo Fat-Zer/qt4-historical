@@ -29,5 +29,6 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
     Calculator calc;
-    return calc.exec();
+    calc.show();
+    return app.exec();
 }

@@ -2,25 +2,19 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/src/corelib/tools/qmap.cpp -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/src/corelib/tools/qmap.cpp -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-x11-opensource-src-4.2.0/src/corelib/tools/qmap.cpp -->
 <head>
-    <title>Qt 4.1: QMultiMap Class Reference</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
+  <title>Qt 4.2: QMultiMap Class Reference</title>
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QMultiMap Class Reference<br /><sup><sup>[<a href="qtcore.html">QtCore</a> module]</sup></sup></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">QMultiMap Class Reference<br /><sup><sup>[<a href="qtcore.html">QtCore</a> module]</sup></sup></h1>
 <p>The QMultiMap class is a convenience <a href="qmap.html">QMap</a> subclass that provides multi-valued maps. <a href="#details">More...</a></p>
-<pre>#include &lt;QMultiMap&gt;</pre><p>Inherits <a href="qmap.html">QMap&lt;Key, T&gt;</a>.</p>
+<pre> #include &lt;QMultiMap&gt;</pre><p>Inherits <a href="qmap.html">QMap&lt;Key, T&gt;</a>.</p>
 <p><b>Note:</b> All the functions in this class are <a href="threads.html#reentrant">reentrant</a>.</p>
 <ul>
 <li><a href="qmultimap-members.html">List of all members, including inherited members</a></li>
@@ -36,7 +30,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>QMultiMap &amp; <b><a href="qmultimap.html#operator-2b-eq">operator+=</a></b> ( const QMultiMap &amp; <i>other</i> )</li>
 </ul>
 <ul>
-<li><div class="fn"/>39 public functions inherited from <a href="qmap.html#public-functions">QMap</a></li>
+<li><div class="fn"/>40 public functions inherited from <a href="qmap.html#public-functions">QMap</a></li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -45,29 +39,29 @@ body { background: #ffffff; color: black; }</style>
 <p>QMultiMap&lt;Key, T&gt; is one of Qt's generic <a href="containers.html#container-classes">container classes</a>. It inherits <a href="qmap.html">QMap</a> and extends it with a few convenience functions that make it more suitable than <a href="qmap.html">QMap</a> for storing multi-valued maps. A multi-valued map is a map that allows multiple values with the same key; <a href="qmap.html">QMap</a> normally doesn't allow that, unless you call <a href="qmap.html#insertMulti">QMap::insertMulti</a>().</p>
 <p>Because QMultiMap inherits <a href="qmap.html">QMap</a>, all of <a href="qmap.html">QMap</a>'s functionality also applies to QMultiMap. For example, you can use <a href="qmap.html#isEmpty">isEmpty</a>() to test whether the map is empty, and you can traverse a QMultiMap using <a href="qmap.html">QMap</a>'s iterator classes (for example, <a href="qmapiterator.html">QMapIterator</a>). But in addition, it provides an <a href="qmultimap.html#insert">insert</a>() function that corresponds to <a href="qmap.html#insertMulti">QMap::insertMulti</a>(), and a <a href="qmultimap.html#replace">replace</a>() function that corresponds to <a href="qmap.html#insert">QMap::insert</a>(). It also provides convenient operator+() and operator+=().</p>
 <p>Example:</p>
-<pre>&nbsp;   QMultiMap&lt;QString, int&gt; map1, map2, map3;
+<pre> QMultiMap&lt;QString, int&gt; map1, map2, map3;
 
-    map1.insert(&quot;plenty&quot;, 100);
-    map1.insert(&quot;plenty&quot;, 2000);
-    // map1.size() == 2
+ map1.insert(&quot;plenty&quot;, 100);
+ map1.insert(&quot;plenty&quot;, 2000);
+<span class="comment"> // map1.size() == 2</span>
 
-    map2.insert(&quot;plenty&quot;, 5000);
-    // map2.size() == 1
+ map2.insert(&quot;plenty&quot;, 5000);
+<span class="comment"> // map2.size() == 1</span>
 
-    map3 = map1 + map2;
-    // map3.size() == 3</pre>
+ map3 = map1 + map2;
+<span class="comment"> // map3.size() == 3</span></pre>
 <p>Unlike <a href="qmap.html">QMap</a>, QMultiMap provides no operator[]. Use <a href="qmap.html#value">value</a>() or <a href="qmultimap.html#replace">replace</a>() if you want to access the most recently inserted item with a certain key.</p>
 <p>If you want to retrieve all the values for a single key, you can use values(const Key &amp;key), which returns a <a href="qlist.html">QList</a>&lt;T&gt;:</p>
-<pre>&nbsp;   QList&lt;int&gt; values = map.values(&quot;plenty&quot;);
-    for (int i = 0; i &lt; values.size(); ++i)
-        cout &lt;&lt; values.at(i) &lt;&lt; endl;</pre>
+<pre> QList&lt;int&gt; values = map.values(&quot;plenty&quot;);
+ for (int i = 0; i &lt; values.size(); ++i)
+     cout &lt;&lt; values.at(i) &lt;&lt; endl;</pre>
 <p>The items that share the same key are available from most recently to least recently inserted.</p>
 <p>If you prefer the STL-style iterators, you can call <a href="qmap.html#find">find</a>() to get the iterator for the first item with a key and iterate from there:</p>
-<pre>&nbsp;   QMultiMap&lt;QString, int&gt;::iterator i = map.find(&quot;plenty&quot;);
-    while (i != map.end() &amp;&amp; i.key() == &quot;plenty&quot;) {
-        cout &lt;&lt; i.value() &lt;&lt; endl;
-        ++i;
-    }</pre>
+<pre> QMultiMap&lt;QString, int&gt;::iterator i = map.find(&quot;plenty&quot;);
+ while (i != map.end() &amp;&amp; i.key() == &quot;plenty&quot;) {
+     cout &lt;&lt; i.value() &lt;&lt; endl;
+     ++i;
+ }</pre>
 <p>QMultiMap's key and value data types must be <a href="containers.html#assignable-data-types">assignable data types</a>. This covers most data types you are likely to encounter, but the compiler won't let you, for example, store a <a href="qwidget.html">QWidget</a> as a value; instead, store a <a href="qwidget.html">QWidget</a> *. In addition, QMultiMap's key type must provide operator&lt;(). See the <a href="qmap.html">QMap</a> documentation for details.</p>
 <p>See also <a href="qmap.html">QMap</a>, <a href="qmapiterator.html">QMapIterator</a>, <a href="qmutablemapiterator.html">QMutableMapIterator</a>, and <a href="qmultihash.html">QMultiHash</a>.</p>
 <hr />
@@ -96,6 +90,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

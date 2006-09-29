@@ -60,7 +60,7 @@
         serverSocket->setProxy(QNetworkProxy::NoProxy);
     \endcode
 
-    Network proxy is used if the address used in \l
+    Network proxy is not used if the address used in \l
     {QAbstractSocket::connectToHost()}{connectToHost()}, \l
     {QUdpSocket::bind()}{bind()} or \l
     {QTcpServer::listen()}{listen()} is equivalent to
@@ -77,7 +77,7 @@
     username/password authentication.  Both IPv4 and IPv6 are
     supported, but domain name resolution via the SOCKS server is not
     supported; i.e. all domain names are resolved locally. There are
-    several things to remmber when using SOCKS5 with QUdpSocket and
+    several things to remember when using SOCKS5 with QUdpSocket and
     QTcpServer:
 
     With QUdpSocket, a call to \l {QUdpSocket::bind()}{bind()} may fail
@@ -183,7 +183,10 @@ public:
 };
 
 /*!
-    Constructs a QNetworkProxy with QNetworkProxy::DefaultProxy type.
+    Constructs a QNetworkProxy with DefaultProxy type; the proxy type is
+    determined by applicationProxy(), which defaults to NoProxy.
+
+    \sa setType(), setApplicationProxy()
 */
 QNetworkProxy::QNetworkProxy()
  : d_ptr(new QNetworkProxyPrivate)
@@ -226,6 +229,8 @@ QNetworkProxy::~QNetworkProxy()
 }
 
 /*!
+    \since 4.2
+
     Assigns the value of the network proxy \a other to this network proxy.
 */
 QNetworkProxy &QNetworkProxy::operator=(const QNetworkProxy &other)

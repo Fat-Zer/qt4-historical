@@ -2,25 +2,19 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/doc/src/q3asciidict.qdoc -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/doc/src/q3asciidict.qdoc -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-x11-opensource-src-4.2.0/doc/src/q3asciidict.qdoc -->
 <head>
-    <title>Qt 4.1: Q3AsciiDict Class Reference</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
+  <title>Qt 4.2: Q3AsciiDict Class Reference</title>
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Q3AsciiDict Class Reference<br /><sup><sup>[<a href="qt3support.html">Qt3Support</a> module]</sup></sup></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">Q3AsciiDict Class Reference<br /><sup><sup>[<a href="qt3support.html">Qt3Support</a> module]</sup></sup></h1>
 <p>The Q3AsciiDict class is a template class that provides a dictionary based on char* keys. <a href="#details">More...</a></p>
-<pre>#include &lt;Q3AsciiDict&gt;</pre><p><b>This class is part of the Qt 3 support library.</b> It is provided to keep old source code working. We strongly advise against using it in new code. See <a href="porting4.html">Porting to Qt 4</a> for more information.</p>
+<pre> #include &lt;Q3AsciiDict&gt;</pre><p><b>This class is part of the Qt 3 support library.</b> It is provided to keep old source code working. We strongly advise against using it in new code. See <a href="porting4.html">Porting to Qt 4</a> for more information.</p>
 <p>Inherits <a href="q3ptrcollection.html">Q3PtrCollection</a>.</p>
 <ul>
 <li><a href="q3asciidict-members.html">List of all members, including inherited members</a></li>
@@ -65,25 +59,25 @@ body { background: #ffffff; color: black; }</style>
 <p>A dictionary is a collection of key-value pairs. The key is a char* used for insertion, removal and lookup. The value is a pointer. Dictionaries provide very fast insertion and lookup.</p>
 <p>Q3AsciiDict cannot handle Unicode keys; use the <a href="q3dict.html">Q3Dict</a> template instead, which uses <a href="qstring.html">QString</a> keys. A <a href="q3dict.html">Q3Dict</a> has the same performace as a Q3AsciiDict.</p>
 <p>Example:</p>
-<pre>&nbsp;   Q3AsciiDict&lt;QLineEdit&gt; fields; // char* keys, QLineEdit* values
-    fields.insert( &quot;forename&quot;, new QLineEdit( this ) );
-    fields.insert( &quot;surname&quot;, new QLineEdit( this ) );
+<pre> Q3AsciiDict&lt;QLineEdit&gt; fields; <span class="comment">// char* keys, QLineEdit* values</span>
+ fields.insert( &quot;forename&quot;, new QLineEdit( this ) );
+ fields.insert( &quot;surname&quot;, new QLineEdit( this ) );
 
-    fields[&quot;forename&quot;]-&gt;setText( &quot;Homer&quot; );
-    fields[&quot;surname&quot;]-&gt;setText( &quot;Simpson&quot; );
+ fields[&quot;forename&quot;]-&gt;setText( &quot;Homer&quot; );
+ fields[&quot;surname&quot;]-&gt;setText( &quot;Simpson&quot; );
 
-    Q3AsciiDictIterator&lt;QLineEdit&gt; it( fields ); // See Q3AsciiDictIterator
-    for( ; it.current(); ++it )
-        cout &lt;&lt; it.currentKey() &lt;&lt; &quot;: &quot; &lt;&lt; it.current()-&gt;text() &lt;&lt; endl;
-    cout &lt;&lt; endl;
+ Q3AsciiDictIterator&lt;QLineEdit&gt; it( fields ); <span class="comment">// See Q3AsciiDictIterator</span>
+ for( ; it.current(); ++it )
+     cout &lt;&lt; it.currentKey() &lt;&lt; &quot;: &quot; &lt;&lt; it.current()-&gt;text() &lt;&lt; endl;
+ cout &lt;&lt; endl;
 
-    if ( fields[&quot;forename&quot;] &amp;&amp; fields[&quot;surname&quot;] )
-        cout &lt;&lt; fields[&quot;forename&quot;]-&gt;text() &lt;&lt; &quot; &quot;
-            &lt;&lt; fields[&quot;surname&quot;]-&gt;text() &lt;&lt; endl;  // Prints &quot;Homer Simpson&quot;
+ if ( fields[&quot;forename&quot;] &amp;&amp; fields[&quot;surname&quot;] )
+     cout &lt;&lt; fields[&quot;forename&quot;]-&gt;text() &lt;&lt; &quot; &quot;
+         &lt;&lt; fields[&quot;surname&quot;]-&gt;text() &lt;&lt; endl;  <span class="comment">// Prints &quot;Homer Simpson&quot;</span>
 
-    fields.remove( &quot;forename&quot; ); // Does not delete the line edit
-    if ( ! fields[&quot;forename&quot;] )
-        cout &lt;&lt; &quot;forename is not in the dictionary&quot; &lt;&lt; endl;</pre>
+ fields.remove( &quot;forename&quot; ); <span class="comment">// Does not delete the line edit</span>
+ if ( ! fields[&quot;forename&quot;] )
+     cout &lt;&lt; &quot;forename is not in the dictionary&quot; &lt;&lt; endl;</pre>
 <p>In this example we use a dictionary to keep track of the line edits we're using. We insert each line edit into the dictionary with a unique name and then access the line edits via the dictionary. See <a href="q3ptrdict.html">Q3PtrDict</a>, <a href="q3intdict.html">Q3IntDict</a> and <a href="q3dict.html">Q3Dict</a>.</p>
 <p>See <a href="q3dict.html">Q3Dict</a> for full details, including the choice of dictionary size, and how deletions are handled.</p>
 <p>See also <a href="q3asciidictiterator.html">Q3AsciiDictIterator</a>, <a href="q3dict.html">Q3Dict</a>, <a href="q3intdict.html">Q3IntDict</a>, and <a href="q3ptrdict.html">Q3PtrDict</a>.</p>
@@ -141,11 +135,11 @@ body { background: #ffffff; color: black; }</style>
 <p>If the item does not already exist, it will be inserted.</p>
 <p><i>item</i> may not be 0.</p>
 <p>Equivalent to:</p>
-<pre>&nbsp;   Q3AsciiDict&lt;char&gt; dict;
-        ...
-    if ( dict.find(key) )
-        dict.remove( key );
-    dict.insert( key, item );</pre>
+<pre> Q3AsciiDict&lt;char&gt; dict;
+     ...
+ if ( dict.find(key) )
+     dict.remove( key );
+ dict.insert( key, item );</pre>
 <p>If there are two or more items with equal keys, then the most recently inserted item will be replaced.</p>
 <p>See also <a href="q3asciidict.html#insert">insert</a>().</p>
 <h3 class="fn"><a name="resize"></a>void Q3AsciiDict::resize ( <a href="qtglobal.html#uint-typedef">uint</a> <i>newsize</i> )</h3>
@@ -177,6 +171,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

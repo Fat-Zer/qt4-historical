@@ -2,25 +2,19 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/src/gui/widgets/qlineedit.cpp -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/src/gui/widgets/qlineedit.cpp -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-x11-opensource-src-4.2.0/src/gui/widgets/qlineedit.cpp -->
 <head>
-    <title>Qt 4.1: QLineEdit Class Reference</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
+  <title>Qt 4.2: QLineEdit Class Reference</title>
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QLineEdit Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">QLineEdit Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QLineEdit widget is a one-line text editor. <a href="#details">More...</a></p>
-<pre>#include &lt;QLineEdit&gt;</pre><p>Inherits <a href="qwidget.html">QWidget</a>.</p>
+<pre> #include &lt;QLineEdit&gt;</pre><p>Inherits <a href="qwidget.html">QWidget</a>.</p>
 <ul>
 <li><a href="qlineedit-members.html">List of all members, including inherited members</a></li>
 <li><a href="qlineedit-qt3.html">Qt 3 support members</a></li>
@@ -28,7 +22,7 @@ body { background: #ffffff; color: black; }</style>
 <a name="public-types"></a>
 <h3>Public Types</h3>
 <ul>
-<li><div class="fn"/>enum <b><a href="qlineedit.html#EchoMode-enum">EchoMode</a></b> { Normal, NoEcho, Password }</li>
+<li><div class="fn"/>enum <b><a href="qlineedit.html#EchoMode-enum">EchoMode</a></b> { Normal, NoEcho, Password, PasswordEchoOnEdit }</li>
 </ul>
 <a name="properties"></a>
 <h3>Properties</h3>
@@ -55,7 +49,7 @@ body { background: #ffffff; color: black; }</style>
 </td></tr>
 </table></p>
 <ul>
-<li><div class="fn"/>54 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
+<li><div class="fn"/>55 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
 <li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
 </ul>
 <a name="public-functions"></a>
@@ -66,6 +60,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><b><a href="qlineedit.html#dtor.QLineEdit">~QLineEdit</a></b> ()</li>
 <li><div class="fn"/>Qt::Alignment <b><a href="qlineedit.html#alignment-prop">alignment</a></b> () const</li>
 <li><div class="fn"/>void <b><a href="qlineedit.html#backspace">backspace</a></b> ()</li>
+<li><div class="fn"/>QCompleter * <b><a href="qlineedit.html#completer">completer</a></b> () const</li>
 <li><div class="fn"/>QMenu * <b><a href="qlineedit.html#createStandardContextMenu">createStandardContextMenu</a></b> ()</li>
 <li><div class="fn"/>void <b><a href="qlineedit.html#cursorBackward">cursorBackward</a></b> ( bool <i>mark</i>, int <i>steps</i> = 1 )</li>
 <li><div class="fn"/>void <b><a href="qlineedit.html#cursorForward">cursorForward</a></b> ( bool <i>mark</i>, int <i>steps</i> = 1 )</li>
@@ -94,6 +89,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>QString <b><a href="qlineedit.html#selectedText-prop">selectedText</a></b> () const</li>
 <li><div class="fn"/>int <b><a href="qlineedit.html#selectionStart">selectionStart</a></b> () const</li>
 <li><div class="fn"/>void <b><a href="qlineedit.html#alignment-prop">setAlignment</a></b> ( Qt::Alignment <i>flag</i> )</li>
+<li><div class="fn"/>void <b><a href="qlineedit.html#setCompleter">setCompleter</a></b> ( QCompleter * <i>c</i> )</li>
 <li><div class="fn"/>void <b><a href="qlineedit.html#cursorPosition-prop">setCursorPosition</a></b> ( int )</li>
 <li><div class="fn"/>void <b><a href="qlineedit.html#dragEnabled-prop">setDragEnabled</a></b> ( bool <i>b</i> )</li>
 <li><div class="fn"/>void <b><a href="qlineedit.html#echoMode-prop">setEchoMode</a></b> ( EchoMode )</li>
@@ -109,8 +105,8 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>const QValidator * <b><a href="qlineedit.html#validator">validator</a></b> () const</li>
 </ul>
 <ul>
-<li><div class="fn"/>190 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
-<li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
+<li><div class="fn"/>195 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>29 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <a name="public-slots"></a>
@@ -126,7 +122,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>void <b><a href="qlineedit.html#undo">undo</a></b> ()</li>
 </ul>
 <ul>
-<li><div class="fn"/>17 public slots inherited from <a href="qwidget.html#public-slots">QWidget</a></li>
+<li><div class="fn"/>19 public slots inherited from <a href="qwidget.html#public-slots">QWidget</a></li>
 <li><div class="fn"/>1 public slot inherited from <a href="qobject.html#public-slots">QObject</a></li>
 </ul>
 <a name="signals"></a>
@@ -150,14 +146,15 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>virtual void <b><a href="qlineedit.html#keyPressEvent">keyPressEvent</a></b> ( QKeyEvent * <i>event</i> )</li>
 </ul>
 <ul>
-<li><div class="fn"/>39 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
+<li><div class="fn"/>38 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
 <li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
 </ul>
 <h3>Additional Inherited Members</h3>
 <ul>
 <li><div class="fn"/>4 static public members inherited from <a href="qwidget.html#static-public-members">QWidget</a></li>
-<li><div class="fn"/>4 static public members inherited from <a href="qobject.html#static-public-members">QObject</a></li>
+<li><div class="fn"/>5 static public members inherited from <a href="qobject.html#static-public-members">QObject</a></li>
+<li><div class="fn"/>1 protected slot inherited from <a href="qwidget.html#protected-slots">QWidget</a></li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -174,40 +171,35 @@ body { background: #ffffff; color: black; }</style>
 <p>By default, QLineEdits have a frame as specified by the Windows and Motif style guides; you can turn it off by calling setFrame(false).</p>
 <p>The default key bindings are described below. The line edit also provides a context menu (usually invoked by a right mouse click) that presents some of these editing options. <a name="desc"></a></p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" bgcolor="#a2c511"><th>Keypress</th><th>Action</th></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>Left Arrow</td><td>Moves the cursor one character to the left.</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>Shift+Left Arrow</td><td>Moves and selects text one character to the left.</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>Right Arrow</td><td>Moves the cursor one character to the right.</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>Shift+Right Arrow</td><td>Moves and selects text one character to the right.</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>Home</td><td>Moves the cursor to the beginning of the line.</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>End</td><td>Moves the cursor to the end of the line.</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>Backspace</td><td>Deletes the character to the left of the cursor.</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>Ctrl+Backspace</td><td>Deletes the word to the left of the cursor.</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>Delete</td><td>Deletes the character to the right of the cursor.</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>Ctrl+Delete</td><td>Deletes the word to the right of the cursor.</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>Ctrl+A</td><td>Moves the cursor to the beginning of the line.</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>Ctrl+B</td><td>Moves the cursor one character to the left.</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>Ctrl+C</td><td>Copies the selected text to the clipboard.</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>Ctrl+Insert</td><td>Copies the selected text to the clipboard.</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>Ctrl+D</td><td>Deletes the character to the right of the cursor.</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>Ctrl+E</td><td>Moves the cursor to the end of the line.</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>Ctrl+F</td><td>Moves the cursor one character to the right.</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>Ctrl+H</td><td>Deletes the character to the left of the cursor.</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>Ctrl+K</td><td>Deletes to the end of the line.</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>Ctrl+V</td><td>Pastes the clipboard text into line edit.</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>Shift+Insert</td><td>Pastes the clipboard text into line edit.</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>Ctrl+X</td><td>Deletes the selected text and copies it to the clipboard.</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>Shift+Delete</td><td>Deletes the selected text and copies it to the clipboard.</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>Ctrl+Z</td><td>Undoes the last operation.</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>Ctrl+Y</td><td>Redoes the last undone operation.</td></tr>
+<thead><tr valign="top" class="qt-style"><th>Keypress</th><th>Action</th></tr></thead>
+<tr valign="top" class="odd"><td>Left Arrow</td><td>Moves the cursor one character to the left.</td></tr>
+<tr valign="top" class="even"><td>Shift+Left Arrow</td><td>Moves and selects text one character to the left.</td></tr>
+<tr valign="top" class="odd"><td>Right Arrow</td><td>Moves the cursor one character to the right.</td></tr>
+<tr valign="top" class="even"><td>Shift+Right Arrow</td><td>Moves and selects text one character to the right.</td></tr>
+<tr valign="top" class="odd"><td>Home</td><td>Moves the cursor to the beginning of the line.</td></tr>
+<tr valign="top" class="even"><td>End</td><td>Moves the cursor to the end of the line.</td></tr>
+<tr valign="top" class="odd"><td>Backspace</td><td>Deletes the character to the left of the cursor.</td></tr>
+<tr valign="top" class="even"><td>Ctrl+Backspace</td><td>Deletes the word to the left of the cursor.</td></tr>
+<tr valign="top" class="odd"><td>Delete</td><td>Deletes the character to the right of the cursor.</td></tr>
+<tr valign="top" class="even"><td>Ctrl+Delete</td><td>Deletes the word to the right of the cursor.</td></tr>
+<tr valign="top" class="odd"><td>Ctrl+A</td><td>Select all.</td></tr>
+<tr valign="top" class="even"><td>Ctrl+C</td><td>Copies the selected text to the clipboard.</td></tr>
+<tr valign="top" class="odd"><td>Ctrl+Insert</td><td>Copies the selected text to the clipboard.</td></tr>
+<tr valign="top" class="even"><td>Ctrl+K</td><td>Deletes to the end of the line.</td></tr>
+<tr valign="top" class="odd"><td>Ctrl+V</td><td>Pastes the clipboard text into line edit.</td></tr>
+<tr valign="top" class="even"><td>Shift+Insert</td><td>Pastes the clipboard text into line edit.</td></tr>
+<tr valign="top" class="odd"><td>Ctrl+X</td><td>Deletes the selected text and copies it to the clipboard.</td></tr>
+<tr valign="top" class="even"><td>Shift+Delete</td><td>Deletes the selected text and copies it to the clipboard.</td></tr>
+<tr valign="top" class="odd"><td>Ctrl+Z</td><td>Undoes the last operation.</td></tr>
+<tr valign="top" class="even"><td>Ctrl+Y</td><td>Redoes the last undone operation.</td></tr>
 </table></p>
 <p>Any other key sequence that represents a valid character, will cause the character to be inserted into the line edit.</p>
 <p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" bgcolor="#f0f0f0"><td><img src="images/macintosh-lineedit.png" alt="Screenshot of a Macintosh style line edit" /></td><td>A line edit shown in the <a href="gallery-macintosh.html">Macintosh widget style</a>.</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><img src="images/windows-lineedit.png" alt="Screenshot of a Windows XP style line edit" /></td><td>A line edit shown in the <a href="gallery-windowsxp.html">Windows XP widget style</a>.</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><img src="images/plastique-lineedit.png" alt="Screenshot of a Plastique style line edit" /></td><td>A line edit shown in the <a href="gallery-plastique.html">Plastique widget style</a>.</td></tr>
+<tr valign="top" class="odd"><td><img src="images/macintosh-lineedit.png" alt="Screenshot of a Macintosh style line edit" /></td><td>A line edit shown in the <a href="gallery-macintosh.html">Macintosh widget style</a>.</td></tr>
+<tr valign="top" class="even"><td><img src="images/windows-lineedit.png" alt="Screenshot of a Windows XP style line edit" /></td><td>A line edit shown in the <a href="gallery-windowsxp.html">Windows XP widget style</a>.</td></tr>
+<tr valign="top" class="odd"><td><img src="images/plastique-lineedit.png" alt="Screenshot of a Plastique style line edit" /></td><td>A line edit shown in the <a href="gallery-plastique.html">Plastique widget style</a>.</td></tr>
 </table></p>
-<p>See also <a href="qtextedit.html">QTextEdit</a>, <a href="qlabel.html">QLabel</a>, <a href="qcombobox.html">QComboBox</a>, and <a href="guibooks.html#fowler">GUI Design Handbook: Field, Entry</a>.</p>
+<p>See also <a href="qtextedit.html">QTextEdit</a>, <a href="qlabel.html">QLabel</a>, <a href="qcombobox.html">QComboBox</a>, <a href="guibooks.html#fowler">GUI Design Handbook: Field, Entry</a>, and <a href="widgets-lineedits.html">Line Edits Example</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="EchoMode-enum"></a>enum QLineEdit::EchoMode</h3>
@@ -217,6 +209,7 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QLineEdit::Normal</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">Display characters as they are entered. This is the default.</td></tr>
 <tr><td valign="top"><tt>QLineEdit::NoEcho</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Do not display anything. This may be appropriate for passwords where even the length of the password should be kept secret.</td></tr>
 <tr><td valign="top"><tt>QLineEdit::Password</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">Display asterisks instead of the characters actually entered.</td></tr>
+<tr><td valign="top"><tt>QLineEdit::PasswordEchoOnEdit</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">Display characters as they are entered while editing otherwise display asterisks.</td></tr>
 </table></p>
 <p>See also <a href="qlineedit.html#echoMode-prop">setEchoMode</a>() and <a href="qlineedit.html#echoMode-prop">echoMode</a>().</p>
 <hr />
@@ -247,7 +240,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <h3 class="fn"><a name="displayText-prop"></a>displayText : const <a href="qstring.html">QString</a></h3>
 <p>This property holds the displayed text.</p>
-<p>If <a href="qlineedit.html#echoMode-prop">echoMode</a> is <a href="qlineedit.html#EchoMode-enum">Normal</a> this returns the same as <a href="qlineedit.html#text-prop">text</a>(); if <a href="qlineedit.html#EchoMode-enum">EchoMode</a> is <a href="qlineedit.html#EchoMode-enum">Password</a> it returns a string of asterisks <a href="qlineedit.html#text-prop">text</a>().length() characters long, e.g. &quot;******&quot;; if <a href="qlineedit.html#EchoMode-enum">EchoMode</a> is <a href="qlineedit.html#EchoMode-enum">NoEcho</a> returns an empty string, &quot;&quot;.</p>
+<p>If <a href="qlineedit.html#echoMode-prop">echoMode</a> is <a href="qlineedit.html#EchoMode-enum">Normal</a> this returns the same as <a href="qlineedit.html#text-prop">text</a>(); if <a href="qlineedit.html#EchoMode-enum">EchoMode</a> is <a href="qlineedit.html#EchoMode-enum">Password</a> or <a href="qlineedit.html#EchoMode-enum">PasswordEchoOnEdit</a> it returns a string of asterisks <a href="qlineedit.html#text-prop">text</a>().length() characters long, e.g. &quot;******&quot;; if <a href="qlineedit.html#EchoMode-enum">EchoMode</a> is <a href="qlineedit.html#EchoMode-enum">NoEcho</a> returns an empty string, &quot;&quot;.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>QString displayText () const</b></li>
@@ -263,7 +256,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <h3 class="fn"><a name="echoMode-prop"></a>echoMode : <a href="qlineedit.html#EchoMode-enum">EchoMode</a></h3>
 <p>This property holds the line edit's echo mode.</p>
-<p>The initial setting is <a href="qlineedit.html#EchoMode-enum">Normal</a>, but <a href="qlineedit.html">QLineEdit</a> also supports <a href="qlineedit.html#EchoMode-enum">NoEcho</a> and <a href="qlineedit.html#EchoMode-enum">Password</a> modes.</p>
+<p>The initial setting is <a href="qlineedit.html#EchoMode-enum">Normal</a>, but <a href="qlineedit.html">QLineEdit</a> also supports <a href="qlineedit.html#EchoMode-enum">NoEcho</a>, <a href="qlineedit.html#EchoMode-enum">Password</a> and <a href="qlineedit.html#EchoMode-enum">PasswordEchoOnEdit</a> modes.</p>
 <p>The widget's display and the ability to copy or drag the text is affected by this setting.</p>
 <p>Access functions:</p>
 <ul>
@@ -294,35 +287,35 @@ body { background: #ffffff; color: black; }</style>
 <p>Unset the mask and return to normal <a href="qlineedit.html">QLineEdit</a> operation by passing an empty string (&quot;&quot;) or just calling setInputMask() with no arguments.</p>
 <p>The mask format understands these mask characters:</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" bgcolor="#a2c511"><th>Character</th><th>Meaning</th></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><tt>A</tt></td><td>ASCII alphabetic character required. A-Z, a-z.</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><tt>a</tt></td><td>ASCII alphabetic character permitted but not required.</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><tt>N</tt></td><td>ASCII alphanumeric character required. A-Z, a-z, 0-9.</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><tt>n</tt></td><td>ASCII alphanumeric character permitted but not required.</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><tt>X</tt></td><td>Any character required.</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><tt>x</tt></td><td>Any character permitted but not required.</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><tt>9</tt></td><td>ASCII digit required. 0-9.</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><tt>0</tt></td><td>ASCII digit permitted but not required.</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><tt>D</tt></td><td>ASCII digit required. 1-9.</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><tt>d</tt></td><td>ASCII digit permitted but not required (1-9).</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><tt>#</tt></td><td>ASCII digit or plus/minus sign permitted but not required.</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><tt>H</tt></td><td>Hexadecimal character required. A-F, a-f, 0-9.</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><tt>h</tt></td><td>Hexadecimal character permitted but not required.</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><tt>B</tt></td><td>Binary character required. 0-1.</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><tt>b</tt></td><td>Binary character permitted but not required.</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><tt>&gt;</tt></td><td>All following alphabetic characters are uppercased.</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><tt>&lt;</tt></td><td>All following alphabetic characters are lowercased.</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><tt>!</tt></td><td>Switch off case conversion.</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><tt>\</tt></td><td>Use <tt>\</tt> to escape the special characters listed above to use them as separators.</td></tr>
+<thead><tr valign="top" class="qt-style"><th>Character</th><th>Meaning</th></tr></thead>
+<tr valign="top" class="odd"><td><tt>A</tt></td><td>ASCII alphabetic character required. A-Z, a-z.</td></tr>
+<tr valign="top" class="even"><td><tt>a</tt></td><td>ASCII alphabetic character permitted but not required.</td></tr>
+<tr valign="top" class="odd"><td><tt>N</tt></td><td>ASCII alphanumeric character required. A-Z, a-z, 0-9.</td></tr>
+<tr valign="top" class="even"><td><tt>n</tt></td><td>ASCII alphanumeric character permitted but not required.</td></tr>
+<tr valign="top" class="odd"><td><tt>X</tt></td><td>Any character required.</td></tr>
+<tr valign="top" class="even"><td><tt>x</tt></td><td>Any character permitted but not required.</td></tr>
+<tr valign="top" class="odd"><td><tt>9</tt></td><td>ASCII digit required. 0-9.</td></tr>
+<tr valign="top" class="even"><td><tt>0</tt></td><td>ASCII digit permitted but not required.</td></tr>
+<tr valign="top" class="odd"><td><tt>D</tt></td><td>ASCII digit required. 1-9.</td></tr>
+<tr valign="top" class="even"><td><tt>d</tt></td><td>ASCII digit permitted but not required (1-9).</td></tr>
+<tr valign="top" class="odd"><td><tt>#</tt></td><td>ASCII digit or plus/minus sign permitted but not required.</td></tr>
+<tr valign="top" class="even"><td><tt>H</tt></td><td>Hexadecimal character required. A-F, a-f, 0-9.</td></tr>
+<tr valign="top" class="odd"><td><tt>h</tt></td><td>Hexadecimal character permitted but not required.</td></tr>
+<tr valign="top" class="even"><td><tt>B</tt></td><td>Binary character required. 0-1.</td></tr>
+<tr valign="top" class="odd"><td><tt>b</tt></td><td>Binary character permitted but not required.</td></tr>
+<tr valign="top" class="even"><td><tt>&gt;</tt></td><td>All following alphabetic characters are uppercased.</td></tr>
+<tr valign="top" class="odd"><td><tt>&lt;</tt></td><td>All following alphabetic characters are lowercased.</td></tr>
+<tr valign="top" class="even"><td><tt>!</tt></td><td>Switch off case conversion.</td></tr>
+<tr valign="top" class="odd"><td><tt>\</tt></td><td>Use <tt>\</tt> to escape the special characters listed above to use them as separators.</td></tr>
 </table></p>
 <p>The mask consists of a string of mask characters and separators, optionally followed by a semicolon and the character used for blanks: the blank characters are always removed from the text after editing. The default blank character is space.</p>
 <p>Examples:</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" bgcolor="#a2c511"><th>Mask</th><th>Notes</th></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><tt>000.000.000.000;_</tt></td><td>IP address; blanks are <tt>_</tt>.</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><tt>HH:HH:HH:HH:HH:HH;_</tt></td><td>MAC address</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><tt>0000-00-00</tt></td><td>ISO Date; blanks are <tt>space</tt></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><tt>&gt;AAAAA-AAAAA-AAAAA-AAAAA-AAAAA;#</tt></td><td>License number; blanks are <tt>-</tt> and all (alphabetic) characters are converted to uppercase.</td></tr>
+<thead><tr valign="top" class="qt-style"><th>Mask</th><th>Notes</th></tr></thead>
+<tr valign="top" class="odd"><td><tt>000.000.000.000;_</tt></td><td>IP address; blanks are <tt>_</tt>.</td></tr>
+<tr valign="top" class="even"><td><tt>HH:HH:HH:HH:HH:HH;_</tt></td><td>MAC address</td></tr>
+<tr valign="top" class="odd"><td><tt>0000-00-00</tt></td><td>ISO Date; blanks are <tt>space</tt></td></tr>
+<tr valign="top" class="even"><td><tt>&gt;AAAAA-AAAAA-AAAAA-AAAAA-AAAAA;#</tt></td><td>License number; blanks are <tt>-</tt> and all (alphabetic) characters are converted to uppercase.</td></tr>
 </table></p>
 <p>To get range control (e.g. for an IP address) use masks together with <a href="qlineedit.html#setValidator">validators</a>.</p>
 <p>Access functions:</p>
@@ -412,17 +405,21 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="clear"></a>void QLineEdit::clear ()&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Clears the contents of the line edit.</p>
 <p>See also <a href="qlineedit.html#text-prop">setText</a>() and <a href="qlineedit.html#insert">insert</a>().</p>
+<h3 class="fn"><a name="completer"></a><a href="qcompleter.html">QCompleter</a> * QLineEdit::completer () const</h3>
+<p>Returns the current <a href="qcompleter.html">QCompleter</a> that provides completions.</p>
+<p>This function was introduced in Qt 4.2.</p>
+<p>See also <a href="qlineedit.html#setCompleter">setCompleter</a>().</p>
 <h3 class="fn"><a name="contextMenuEvent"></a>void QLineEdit::contextMenuEvent ( <a href="qcontextmenuevent.html">QContextMenuEvent</a> * <i>event</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>Shows the standard context menu created with <a href="qlineedit.html#createStandardContextMenu">createStandardContextMenu</a>().</p>
 <p>If you do not want the line edit to have a context menu, you can set its <a href="qwidget.html#contextMenuPolicy-prop">contextMenuPolicy</a> to <a href="qt.html#ContextMenuPolicy-enum">Qt::NoContextMenu</a>. If you want to customize the context menu, reimplement this function. If you want to extend the standard context menu, reimplement this function, call <a href="qlineedit.html#createStandardContextMenu">createStandardContextMenu</a>() and extend the menu returned.</p>
-<pre>&nbsp;   void LineEdit::contextMenuEvent(QContextMenuEvent *event)
-    {
-        QMenu *menu = createStandardContextMenu();
-        menu-&gt;addAction(tr(&quot;My Menu Item&quot;));
-        //...
-        menu-&gt;exec(event-&gt;globalPos());
-        delete menu;
-    }</pre>
+<pre> void LineEdit::contextMenuEvent(QContextMenuEvent *event)
+ {
+     QMenu *menu = createStandardContextMenu();
+     menu-&gt;addAction(tr(&quot;My Menu Item&quot;));
+     <span class="comment">//...</span>
+     menu-&gt;exec(event-&gt;globalPos());
+     delete menu;
+ }</pre>
 <p>The <i>event</i> parameter is used to obtain the position where the mouse cursor was when the event was generated.</p>
 <p>Reimplemented from <a href="qwidget.html#contextMenuEvent">QWidget</a>.</p>
 <p>See also <a href="qwidget.html#contextMenuPolicy-prop">setContextMenuPolicy</a>().</p>
@@ -495,6 +492,12 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="selectionStart"></a>int QLineEdit::selectionStart () const</h3>
 <p>selectionStart() returns the index of the first selected character in the line edit or -1 if no text is selected.</p>
 <p>See also <a href="qlineedit.html#selectedText-prop">selectedText</a>().</p>
+<h3 class="fn"><a name="setCompleter"></a>void QLineEdit::setCompleter ( <a href="qcompleter.html">QCompleter</a> * <i>c</i> )</h3>
+<p>Sets this line edit to provide auto completions from the completer, <i>c</i>. The completion mode is set using <a href="qcompleter.html#completionMode-prop">QCompleter::setCompletionMode</a>().</p>
+<p>Using a <a href="qcompleter.html">QCompleter</a> with a <a href="qvalidator.html">QValidator</a> or <a href="qlineedit.html#inputMask-prop">QLineEdit::inputMask</a> is not supported.</p>
+<p>If <i>c</i> == 0, setCompleter() removes the current completer, effectively disabling auto completion.</p>
+<p>This function was introduced in Qt 4.2.</p>
+<p>See also <a href="qlineedit.html#completer">completer</a>() and <a href="qcompleter.html">QCompleter</a>.</p>
 <h3 class="fn"><a name="setSelection"></a>void QLineEdit::setSelection ( int <i>start</i>, int <i>length</i> )</h3>
 <p>Selects text from position <i>start</i> and for <i>length</i> characters. Negative lengths are allowed.</p>
 <p>See also <a href="qlineedit.html#deselect">deselect</a>(), <a href="qlineedit.html#selectAll">selectAll</a>(), and <a href="qlineedit.html#selectedText-prop">selectedText</a>().</p>
@@ -517,10 +520,69 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="validator"></a>const <a href="qvalidator.html">QValidator</a> * QLineEdit::validator () const</h3>
 <p>Returns a pointer to the current input validator, or 0 if no validator has been set.</p>
 <p>See also <a href="qlineedit.html#setValidator">setValidator</a>().</p>
+<hr />
+<h2>Member Function Documentation</h2>
+<h3 class="fn"><a name="QLineEdit-3"></a>QLineEdit::QLineEdit ( <a href="qwidget.html">QWidget</a> * <i>parent</i>, const char * <i>name</i> )</h3>
+<p>Constructs a line edit with no text.</p>
+<p>The maximum text length is set to 32767 characters.</p>
+<p>The <i>parent</i> and <i>name</i> arguments are sent to the <a href="qwidget.html">QWidget</a> constructor.</p>
+<p>See also <a href="qlineedit.html#text-prop">setText</a>() and <a href="qlineedit.html#maxLength-prop">setMaxLength</a>().</p>
+<h3 class="fn"><a name="QLineEdit-4"></a>QLineEdit::QLineEdit ( const <a href="qstring.html">QString</a> &amp; <i>contents</i>, <a href="qwidget.html">QWidget</a> * <i>parent</i>, const char * <i>name</i> )</h3>
+<p>Constructs a line edit containing the text <i>contents</i>.</p>
+<p>The cursor position is set to the end of the line and the maximum text length to 32767 characters.</p>
+<p>The <i>parent</i> and <i>name</i> arguments are sent to the <a href="qwidget.html">QWidget</a> constructor.</p>
+<p>See also <a href="qlineedit.html#text-prop">text</a>() and <a href="qlineedit.html#maxLength-prop">setMaxLength</a>().</p>
+<h3 class="fn"><a name="QLineEdit-5"></a>QLineEdit::QLineEdit ( const <a href="qstring.html">QString</a> &amp; <i>contents</i>, const <a href="qstring.html">QString</a> &amp; <i>inputMask</i>, <a href="qwidget.html">QWidget</a> * <i>parent</i> = 0, const char * <i>name</i> = 0 )</h3>
+<p>Constructs a line edit with an input <i>inputMask</i> and the text <i>contents</i>.</p>
+<p>The cursor position is set to the end of the line and the maximum text length is set to the length of the mask (the number of mask characters and separators).</p>
+<p>The <i>parent</i> and <i>name</i> arguments are sent to the <a href="qwidget.html">QWidget</a> constructor.</p>
+<p>See also <a href="qwidget.html#setMask">setMask</a>() and <a href="qlineedit.html#text-prop">text</a>().</p>
+<h3 class="fn"><a name="characterAt"></a>int QLineEdit::characterAt ( int <i>xpos</i>, <a href="qchar.html">QChar</a> * <i>chr</i> ) const</h3>
+<p>There exists no equivalent functionality in Qt 4.</p>
+<h3 class="fn"><a name="clearModified"></a>void QLineEdit::clearModified ()</h3>
+<p>Use setModified(false) instead.</p>
+<p>See also <a href="qlineedit.html#modified-prop">isModified</a>().</p>
+<h3 class="fn"><a name="clearValidator"></a>void QLineEdit::clearValidator ()</h3>
+<p>Use setValidator(0) instead.</p>
+<h3 class="fn"><a name="cursorLeft"></a>void QLineEdit::cursorLeft ( bool <i>mark</i>, int <i>steps</i> = 1 )</h3>
+<p>Use <a href="qlineedit.html#cursorForward">cursorForward</a>() with a negative number of steps instead. For example, cursorForward(mark, -steps).</p>
+<h3 class="fn"><a name="cursorRight"></a>void QLineEdit::cursorRight ( bool <i>mark</i>, int <i>steps</i> = 1 )</h3>
+<p>Use <a href="qlineedit.html#cursorForward">cursorForward</a>() instead.</p>
+<h3 class="fn"><a name="edited"></a>bool QLineEdit::edited () const</h3>
+<p>Use <a href="qlineedit.html#modified-prop">isModified</a>() instead.</p>
+<p>See also <a href="qlineedit-qt3.html#setEdited">setEdited</a>().</p>
+<h3 class="fn"><a name="frame"></a>bool QLineEdit::frame () const</h3>
+<p>Use <a href="qlineedit.html#frame-prop">hasFrame</a>() instead.</p>
+<p>See also <a href="qlineedit.html#frame-prop">setFrame</a>().</p>
+<h3 class="fn"><a name="getSelection"></a>bool QLineEdit::getSelection ( int * <i>start</i>, int * <i>end</i> )</h3>
+<p>Use <a href="qlineedit.html#selectedText-prop">selectedText</a>() and <a href="qlineedit.html#selectionStart">selectionStart</a>() instead.</p>
+<h3 class="fn"><a name="hasMarkedText"></a>bool QLineEdit::hasMarkedText () const</h3>
+<p>Use <a href="qlineedit.html#hasSelectedText-prop">hasSelectedText</a>() instead.</p>
+<h3 class="fn"><a name="lostFocus"></a>void QLineEdit::lostFocus ()&nbsp;&nbsp;<tt> [signal]</tt></h3>
+<p>This signal is emitted when the line edit has lost focus.</p>
+<p>Use <a href="qlineedit.html#editingFinished">editingFinished</a>() instead</p>
+<p>See also <a href="qlineedit.html#editingFinished">editingFinished</a>() and <a href="qlineedit.html#returnPressed">returnPressed</a>().</p>
+<h3 class="fn"><a name="margin"></a>int QLineEdit::margin () const</h3>
+<p>Returns the with of the the margin around the contents of the widget.</p>
+<p>Use <a href="qwidget.html#getContentsMargins">QWidget::getContentsMargins</a>() instead.</p>
+<p>See also <a href="qlineedit-qt3.html#setMargin">setMargin</a>() and <a href="qwidget.html#getContentsMargins">QWidget::getContentsMargins</a>().</p>
+<h3 class="fn"><a name="markedText"></a><a href="qstring.html">QString</a> QLineEdit::markedText () const</h3>
+<p>Use <a href="qlineedit.html#selectedText-prop">selectedText</a>() instead.</p>
+<h3 class="fn"><a name="repaintArea"></a>void QLineEdit::repaintArea ( int <i>a</i>, int <i>b</i> )&nbsp;&nbsp;<tt> [protected]</tt></h3>
+<p>Use <a href="qwidget.html#update">update</a>() instead.</p>
+<h3 class="fn"><a name="setEdited"></a>void QLineEdit::setEdited ( bool <i>on</i> )</h3>
+<p>Use <a href="qlineedit.html#modified-prop">setModified</a>() or <a href="qlineedit.html#text-prop">setText</a>().</p>
+<p>See also <a href="qlineedit-qt3.html#edited">edited</a>().</p>
+<h3 class="fn"><a name="setMargin"></a>void QLineEdit::setMargin ( int <i>margin</i> )</h3>
+<p>Sets the width of the margin around the contents of the widget to <i>margin</i>.</p>
+<p>Use <a href="qwidget.html#setContentsMargins">QWidget::setContentsMargins</a>() instead.</p>
+<p>See also <a href="qlineedit-qt3.html#margin">margin</a>() and <a href="qwidget.html#setContentsMargins">QWidget::setContentsMargins</a>().</p>
+<h3 class="fn"><a name="validateAndSet"></a>bool QLineEdit::validateAndSet ( const <a href="qstring.html">QString</a> &amp; <i>newText</i>, int <i>newPos</i>, int <i>newMarkAnchor</i>, int <i>newMarkDrag</i> )</h3>
+<p>Use <a href="qlineedit.html#text-prop">setText</a>(), <a href="qlineedit.html#cursorPosition-prop">setCursorPosition</a>() and <a href="qlineedit.html#setSelection">setSelection</a>() instead.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

@@ -1,21 +1,49 @@
-// All feature and their dependencies
-//
-// This list is generated from $QTDIR/src/corelib/global/qfeatures.txt
-//
+/****************************************************************************
+**
+** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+**
+** This file is part of the QtCore module of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
+**
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+/*
+ * All features and their dependencies.
+ *
+ * This list is generated from $QTDIR/src/corelib/global/qfeatures.txt
+ */
+
 // QAction
 //#define QT_NO_ACTION
 
-// Big Codecs (eg. CJK)
+// Big Codecs
 //#define QT_NO_BIG_CODECS
 
-// Named colors
+// Color Names
 //#define QT_NO_COLORNAMES
 
-// QCop IPC
+// QCopChannel
 //#define QT_NO_COP
 
-// Cursors
+// QCursor
 //#define QT_NO_CURSOR
+
+// QDesktopServices
+//#define QT_NO_DESKTOPSERVICES
 
 // QDirectPainter
 //#define QT_NO_DIRECTPAINTER
@@ -23,49 +51,52 @@
 // Document Object Model
 //#define QT_NO_DOM
 
-// Special widget effects (fading, scrolling)
+// Effects
 //#define QT_NO_EFFECTS
 
-// Freetype font engine
+// Freetype Font Engine
 //#define QT_NO_FREETYPE
 
-// Group boxes
+// QGroupBox
 //#define QT_NO_GROUPBOX
 
-// QImageFormatPlugin
+// QIcon
+//#define QT_NO_ICON
+
+// QImageIOPlugin
 //#define QT_NO_IMAGEFORMATPLUGIN
 
-// BMP image I/O
+// BMP Image Format
 //#define QT_NO_IMAGEFORMAT_BMP
 
-// JPEG image I/O
+// JPEG Image Format
 //#define QT_NO_IMAGEFORMAT_JPEG
 
-// PNG image I/O
+// PNG Image Format
 //#define QT_NO_IMAGEFORMAT_PNG
 
-// PPM image I/O
+// PPM Image Format
 //#define QT_NO_IMAGEFORMAT_PPM
 
-// XBM image I/O
+// XBM Image Format
 //#define QT_NO_IMAGEFORMAT_XBM
 
 // QImage::createHeuristicMask()
 //#define QT_NO_IMAGE_HEURISTIC_MASK
 
-// Image file text strings
+// Image Text
 //#define QT_NO_IMAGE_TEXT
 
 // QLCDNumber
 //#define QT_NO_LCDNUMBER
 
-// Single-line edits
+// QLineEdit
 //#define QT_NO_LINEEDIT
 
 // QMessageBox
 //#define QT_NO_MESSAGEBOX
 
-// Animated images
+// QMovie
 //#define QT_NO_MOVIE
 
 // QNetworkProxy
@@ -74,55 +105,58 @@
 // QPicture
 //#define QT_NO_PICTURE
 
-// Progress bars
+// QProgressBar
 //#define QT_NO_PROGRESSBAR
 
 // Properties
 //#define QT_NO_PROPERTIES
 
-// Convert UUID to/from string
+//  Universally Unique Identifier Convertion
 //#define QT_NO_QUUID_STRING
 
-// Alpha-blended cursor
+// QWSEmbedWidget
+//#define QT_NO_QWSEMBEDWIDGET
+
+// Alpha Cursor
 //#define QT_NO_QWS_ALPHA_CURSOR
 
-// 
+// Decoration
 //#define QT_NO_QWS_DECORATION_DEFAULT
 
-// Input methods
+// QWSInputMethod
 //#define QT_NO_QWS_INPUTMETHODS
 
-// Console keyboard
+// Keyboard
 //#define QT_NO_QWS_KEYBOARD
 
 // Mouse
 //#define QT_NO_QWS_MOUSE
 
-// Autodetecting mouse driver
+// Mouse (Auto)
 //#define QT_NO_QWS_MOUSE_AUTO
 
-// Non-autodetecting mouse driver
+// Mouse (Non-Auto)
 //#define QT_NO_QWS_MOUSE_MANUAL
 
-// Multi-process architecture
+// Multi-Process
 //#define QT_NO_QWS_MULTIPROCESS
 
-// Qtopia Core window system properties.
+// Properties
 //#define QT_NO_QWS_PROPERTIES
 
-// Pre-rendered fonts
+// Qt Prerendered Font Format
 //#define QT_NO_QWS_QPF
 
-// Internal resize handler
+// Resize Handler
 //#define QT_NO_RESIZEHANDLER
 
 // QRubberBand
 //#define QT_NO_RUBBERBAND
 
-// Session management
+// Session Manager
 //#define QT_NO_SESSIONMANAGER
 
-// Keyboard accelerators and shortcuts
+// QShortcut
 //#define QT_NO_SHORTCUT
 
 // QSignalMapper
@@ -131,13 +165,13 @@
 // QSizeGrip
 //#define QT_NO_SIZEGRIP
 
-// Sliders
+// QSlider
 //#define QT_NO_SLIDER
 
-// Playing sounds
+// Sounds
 //#define QT_NO_SOUND
 
-// Spinbox control widget
+// Spin Widget
 //#define QT_NO_SPINWIDGET
 
 // Splash screen widget
@@ -146,74 +180,85 @@
 // QStackedWidget
 //#define QT_NO_STACKEDWIDGET
 
-// Status bars
+// QStatusBar
 //#define QT_NO_STATUSBAR
 
-// QStatusTip
+// Status Tip
 //#define QT_NO_STATUSTIP
 
-// Standard template library compatiblity
+// Standard Template Library
 //#define QT_NO_STL
 
-// Motif style
+// QMotifStyle
 //#define QT_NO_STYLE_MOTIF
 
-// Windows style
+// QWindowsStyle
 //#define QT_NO_STYLE_WINDOWS
 
-// Character set conversions
+// QTabletEvent
+//#define QT_NO_TABLETEVENT
+
+// QTextCodec
 //#define QT_NO_TEXTCODEC
 
-// Month and day names in dates
+// Text Date
 //#define QT_NO_TEXTDATE
 
 // QTextStream
 //#define QT_NO_TEXTSTREAM
 
-// Thread support
+// QThread
 //#define QT_NO_THREAD
 
-// Tool tips
+// QToolTip
 //#define QT_NO_TOOLTIP
 
-// Translations via QObject::tr()
+// Translation
 //#define QT_NO_TRANSLATION
 
 // QUdpSocket
 //#define QT_NO_UDPSOCKET
 
+// QUndoCommand
+//#define QT_NO_UNDOCOMMAND
+
 // QUrlInfo
 //#define QT_NO_URLINFO
 
-// Input validators
+// QValidator
 //#define QT_NO_VALIDATOR
 
-// Wheel-mouse events
+// QWheelEvent
 //#define QT_NO_WHEELEVENT
 
-// Button groups
+// QButtonGroup
 #if !defined(QT_NO_BUTTONGROUP) && (defined(QT_NO_GROUPBOX))
 #define QT_NO_BUTTONGROUP
 #endif
 
-// Cut and paste
+// QClipboard
 #if !defined(QT_NO_CLIPBOARD) && (defined(QT_NO_QWS_PROPERTIES))
 #define QT_NO_CLIPBOARD
 #endif
 
-// Non-Unicode text conversions
+// Codecs
 #if !defined(QT_NO_CODECS) && (defined(QT_NO_TEXTCODEC))
 #define QT_NO_CODECS
 #endif
 
-// QDate/QTime/QDateTime toString() and fromString()
+// QDate/QTime/QDateTime
 #if !defined(QT_NO_DATESTRING) && (defined(QT_NO_TEXTDATE))
 #define QT_NO_DATESTRING
 #endif
 
-// Dials
+// QDial
 #if !defined(QT_NO_DIAL) && (defined(QT_NO_SLIDER))
 #define QT_NO_DIAL
+#endif
+
+// QFileSystemWatcher
+#if !defined(QT_NO_FILESYSTEMWATCHER) && (defined(QT_NO_THREAD))
+#define QT_NO_FILESYSTEMWATCHER
 #endif
 
 // QHostInfo
@@ -221,22 +266,22 @@
 #define QT_NO_HOSTINFO
 #endif
 
-// QIcon
-#if !defined(QT_NO_ICON) && (defined(QT_NO_IMAGE_HEURISTIC_MASK))
-#define QT_NO_ICON
-#endif
-
-// XPM image I/O
+// XPM Image Format
 #if !defined(QT_NO_IMAGEFORMAT_XPM) && (defined(QT_NO_TEXTSTREAM))
 #define QT_NO_IMAGEFORMAT_XPM
 #endif
 
-// Popup-menus
+// QMenu
 #if !defined(QT_NO_MENU) && (defined(QT_NO_ACTION))
 #define QT_NO_MENU
 #endif
 
-// External process invocation.
+// QPrinter
+#if !defined(QT_NO_PRINTER) && (defined(QT_NO_TEXTSTREAM))
+#define QT_NO_PRINTER
+#endif
+
+// QProcess
 #if !defined(QT_NO_PROCESS) && (defined(QT_NO_THREAD))
 #define QT_NO_PROCESS
 #endif
@@ -246,72 +291,87 @@
 #define QT_NO_PROGRESSDIALOG
 #endif
 
-// Visible cursor
+// Cursor
 #if !defined(QT_NO_QWS_CURSOR) && (defined(QT_NO_CURSOR))
 #define QT_NO_QWS_CURSOR
 #endif
 
-// 
+// Decoration (Styled)
 #if !defined(QT_NO_QWS_DECORATION_STYLED) && (defined(QT_NO_QWS_DECORATION_DEFAULT))
 #define QT_NO_QWS_DECORATION_STYLED
 #endif
 
-// The "Windows" style
+// Decoration (Windows Style)
 #if !defined(QT_NO_QWS_DECORATION_WINDOWS) && (defined(QT_NO_QWS_DECORATION_DEFAULT))
 #define QT_NO_QWS_DECORATION_WINDOWS
 #endif
 
-// Window Manager
+// Manager
 #if !defined(QT_NO_QWS_MANAGER) && (defined(QT_NO_QWS_DECORATION_DEFAULT))
 #define QT_NO_QWS_MANAGER
 #endif
 
-// Scroll bars
+// QScrollBar
 #if !defined(QT_NO_SCROLLBAR) && (defined(QT_NO_SLIDER))
 #define QT_NO_SCROLLBAR
 #endif
 
-// Persistent application settings
+// QSettings
 #if !defined(QT_NO_SETTINGS) && (defined(QT_NO_TEXTSTREAM))
 #define QT_NO_SETTINGS
 #endif
 
-// SOCKS v5 network proxy
+//  SOCKS5
 #if !defined(QT_NO_SOCKS5) && (defined(QT_NO_NETWORKPROXY))
 #define QT_NO_SOCKS5
 #endif
 
-// Splitters
+// QSplitter
 #if !defined(QT_NO_SPLITTER) && (defined(QT_NO_RUBBERBAND))
 #define QT_NO_SPLITTER
 #endif
 
-// CDE style
+// QCDEStyle
 #if !defined(QT_NO_STYLE_CDE) && (defined(QT_NO_STYLE_MOTIF))
 #define QT_NO_STYLE_CDE
 #endif
 
-// WindowsXP style
+// QWindowsXPStyle
 #if !defined(QT_NO_STYLE_WINDOWSXP) && (defined(QT_NO_STYLE_WINDOWS))
 #define QT_NO_STYLE_WINDOWSXP
 #endif
 
-// Safe Execution Environment (experimental)
+// SXE
 #if !defined(QT_NO_SXE) && (defined(QT_NO_QWS_MULTIPROCESS))
 #define QT_NO_SXE
 #endif
 
-// FTP file access
+// QSystemTrayIcon
+#if !defined(QT_NO_SYSTEMTRAYICON) && (defined(QT_NO_ICON))
+#define QT_NO_SYSTEMTRAYICON
+#endif
+
+// QUndoStack
+#if !defined(QT_NO_UNDOSTACK) && (defined(QT_NO_UNDOCOMMAND))
+#define QT_NO_UNDOSTACK
+#endif
+
+// Context menu
+#if !defined(QT_NO_CONTEXTMENU) && (defined(QT_NO_MENU))
+#define QT_NO_CONTEXTMENU
+#endif
+
+// File Transfer Protocol
 #if !defined(QT_NO_FTP) && (defined(QT_NO_URLINFO) || defined(QT_NO_TEXTDATE))
 #define QT_NO_FTP
 #endif
 
-// HTTP file access
+// Hyper Text Transfer Protocol
 #if !defined(QT_NO_HTTP) && (defined(QT_NO_HOSTINFO))
 #define QT_NO_HTTP
 #endif
 
-// Shared library wrapper
+// QLibrary
 #if !defined(QT_NO_LIBRARY) && (defined(QT_NO_SETTINGS))
 #define QT_NO_LIBRARY
 #endif
@@ -321,7 +381,17 @@
 #define QT_NO_SCROLLAREA
 #endif
 
-// Translations via QObject::trUtf8()
+// QStyleSheetStyle
+#if !defined(QT_NO_STYLE_STYLESHEET) && (defined(QT_NO_STYLE_WINDOWS) || defined(QT_NO_PROPERTIES))
+#define QT_NO_STYLE_STYLESHEET
+#endif
+
+// QToolButton
+#if !defined(QT_NO_TOOLBUTTON) && (defined(QT_NO_ICON) || defined(QT_NO_ACTION))
+#define QT_NO_TOOLBUTTON
+#endif
+
+// Translation (UTF-8 representation)
 #if !defined(QT_NO_TRANSLATION_UTF8) && (defined(QT_NO_TRANSLATION) || defined(QT_NO_TEXTCODEC))
 #define QT_NO_TRANSLATION_UTF8
 #endif
@@ -331,24 +401,39 @@
 #define QT_NO_DRAGANDDROP
 #endif
 
-// Spin boxes
+// QGraphicsView
+#if !defined(QT_NO_GRAPHICSVIEW) && (defined(QT_NO_SCROLLAREA))
+#define QT_NO_GRAPHICSVIEW
+#endif
+
+// QSpinBox
 #if !defined(QT_NO_SPINBOX) && (defined(QT_NO_SPINWIDGET) || defined(QT_NO_LINEEDIT) || defined(QT_NO_VALIDATOR))
 #define QT_NO_SPINBOX
 #endif
 
-// Plastique style
+// QCleanLooksStyle
+#if !defined(QT_NO_STYLE_CLEANLOOKS) && (defined(QT_NO_STYLE_WINDOWS) || defined(QT_NO_IMAGEFORMAT_XPM))
+#define QT_NO_STYLE_CLEANLOOKS
+#endif
+
+// QPlastiqueStyle
 #if !defined(QT_NO_STYLE_PLASTIQUE) && (defined(QT_NO_STYLE_WINDOWS) || defined(QT_NO_IMAGEFORMAT_XPM))
 #define QT_NO_STYLE_PLASTIQUE
 #endif
 
-// Rich text edit
+// QTabBar
+#if !defined(QT_NO_TABBAR) && (defined(QT_NO_TOOLBUTTON))
+#define QT_NO_TABBAR
+#endif
+
+// QTextEdit
 #if !defined(QT_NO_TEXTEDIT) && (defined(QT_NO_SCROLLAREA))
 #define QT_NO_TEXTEDIT
 #endif
 
-// Tool-buttons
-#if !defined(QT_NO_TOOLBUTTON) && (defined(QT_NO_ICON) || defined(QT_NO_ACTION))
-#define QT_NO_TOOLBUTTON
+// QUndoGroup
+#if !defined(QT_NO_UNDOGROUP) && (defined(QT_NO_UNDOCOMMAND) || defined(QT_NO_UNDOSTACK))
+#define QT_NO_UNDOGROUP
 #endif
 
 // QErrorMessage
@@ -361,7 +446,7 @@
 #define QT_NO_ITEMVIEWS
 #endif
 
-// Server to play sound
+// Sound Server
 #if !defined(QT_NO_QWS_SOUNDSERVER) && (defined(QT_NO_SOUND) || defined(QT_NO_HOSTINFO) || defined(QT_NO_QWS_MULTIPROCESS))
 #define QT_NO_QWS_SOUNDSERVER
 #endif
@@ -371,9 +456,9 @@
 #define QT_NO_SYNTAXHIGHLIGHTER
 #endif
 
-// Tab-bars
-#if !defined(QT_NO_TABBAR) && (defined(QT_NO_TOOLBUTTON))
-#define QT_NO_TABBAR
+// Q3TabDialog
+#if !defined(QT_NO_TABDIALOG) && (defined(QT_NO_TABBAR))
+#define QT_NO_TABDIALOG
 #endif
 
 // QTextBrowser
@@ -386,6 +471,21 @@
 #define QT_NO_TEXTCODECPLUGIN
 #endif
 
+// QWhatsThis
+#if !defined(QT_NO_WHATSTHIS) && (defined(QT_NO_TOOLBUTTON) || defined(QT_NO_ACTION))
+#define QT_NO_WHATSTHIS
+#endif
+
+// Common UNIX Printing System
+#if !defined(QT_NO_CUPS) && (defined(QT_NO_PRINTER) || defined(QT_NO_LIBRARY))
+#define QT_NO_CUPS
+#endif
+
+// QDataWidgetMapper
+#if !defined(QT_NO_DATAWIDGETMAPPER) && (defined(QT_NO_ITEMVIEWS))
+#define QT_NO_DATAWIDGETMAPPER
+#endif
+
 // QDirModel
 #if !defined(QT_NO_DIRMODEL) && (defined(QT_NO_ITEMVIEWS))
 #define QT_NO_DIRMODEL
@@ -394,6 +494,11 @@
 // QListView
 #if !defined(QT_NO_LISTVIEW) && (defined(QT_NO_ITEMVIEWS))
 #define QT_NO_LISTVIEW
+#endif
+
+// QMenuBar
+#if !defined(QT_NO_MENUBAR) && (defined(QT_NO_MENU) || defined(QT_NO_TOOLBUTTON))
+#define QT_NO_MENUBAR
 #endif
 
 // QAbstractProxyModel
@@ -411,14 +516,14 @@
 #define QT_NO_STRINGLISTMODEL
 #endif
 
-// Q3TabDialog
-#if !defined(QT_NO_TABDIALOG) && (defined(QT_NO_TABBAR))
-#define QT_NO_TABDIALOG
-#endif
-
 // QTableView
 #if !defined(QT_NO_TABLEVIEW) && (defined(QT_NO_ITEMVIEWS))
 #define QT_NO_TABLEVIEW
+#endif
+
+// QTabWidget
+#if !defined(QT_NO_TABWIDGET) && (defined(QT_NO_TABBAR) || defined(QT_NO_STACKEDWIDGET))
+#define QT_NO_TABWIDGET
 #endif
 
 // QTreeView
@@ -426,19 +531,14 @@
 #define QT_NO_TREEVIEW
 #endif
 
-// "What's this" help
-#if !defined(QT_NO_WHATSTHIS) && (defined(QT_NO_TOOLBUTTON) || defined(QT_NO_ACTION))
-#define QT_NO_WHATSTHIS
-#endif
-
 // QColorDialog
 #if !defined(QT_NO_COLORDIALOG) && (defined(QT_NO_LINEEDIT) || defined(QT_NO_VALIDATOR) || defined(QT_NO_SPINBOX))
 #define QT_NO_COLORDIALOG
 #endif
 
-// QDateTimeEdit
-#if !defined(QT_NO_DATETIMEEDIT) && (defined(QT_NO_SPINBOX) || defined(QT_NO_DATESTRING))
-#define QT_NO_DATETIMEEDIT
+// QCompleter
+#if !defined(QT_NO_COMPLETER) && (defined(QT_NO_PROXYMODEL))
+#define QT_NO_COMPLETER
 #endif
 
 // QListWidget
@@ -446,9 +546,9 @@
 #define QT_NO_LISTWIDGET
 #endif
 
-// Menu bars
-#if !defined(QT_NO_MENUBAR) && (defined(QT_NO_MENU) || defined(QT_NO_TOOLBUTTON))
-#define QT_NO_MENUBAR
+// QMainWindow
+#if !defined(QT_NO_MAINWINDOW) && (defined(QT_NO_MENU) || defined(QT_NO_RESIZEHANDLER) || defined(QT_NO_TOOLBUTTON))
+#define QT_NO_MAINWINDOW
 #endif
 
 // QSortFilterProxyModel
@@ -461,34 +561,29 @@
 #define QT_NO_TABLEWIDGET
 #endif
 
-// Tab widgets
-#if !defined(QT_NO_TABWIDGET) && (defined(QT_NO_TABBAR) || defined(QT_NO_STACKEDWIDGET))
-#define QT_NO_TABWIDGET
-#endif
-
 // QTreeWidget
 #if !defined(QT_NO_TREEWIDGET) && (defined(QT_NO_TREEVIEW))
 #define QT_NO_TREEWIDGET
 #endif
 
-// Main-windows
-#if !defined(QT_NO_MAINWINDOW) && (defined(QT_NO_MENU) || defined(QT_NO_RESIZEHANDLER) || defined(QT_NO_TOOLBUTTON))
-#define QT_NO_MAINWINDOW
-#endif
-
-// Toolbars
+// QToolBar
 #if !defined(QT_NO_TOOLBAR) && (defined(QT_NO_MAINWINDOW))
 #define QT_NO_TOOLBAR
 #endif
 
-// Main-windows
+// QDockwidget
 #if !defined(QT_NO_DOCKWIDGET) && (defined(QT_NO_RUBBERBAND) || defined(QT_NO_MAINWINDOW))
 #define QT_NO_DOCKWIDGET
 #endif
 
-// Tool box
+// QToolBox
 #if !defined(QT_NO_TOOLBOX) && (defined(QT_NO_ICON) || defined(QT_NO_TOOLTIP) || defined(QT_NO_TOOLBUTTON) || defined(QT_NO_SCROLLAREA))
 #define QT_NO_TOOLBOX
+#endif
+
+// QUndoView
+#if !defined(QT_NO_UNDOVIEW) && (defined(QT_NO_UNDOSTACK) || defined(QT_NO_LISTVIEW))
+#define QT_NO_UNDOVIEW
 #endif
 
 // QComboBox
@@ -496,9 +591,24 @@
 #define QT_NO_COMBOBOX
 #endif
 
+// QCalendarWidget
+#if !defined(QT_NO_CALENDARWIDGET) && (defined(QT_NO_TABLEVIEW) || defined(QT_NO_MENU) || defined(QT_NO_TEXTDATE) || defined(QT_NO_SPINBOX) || defined(QT_NO_TOOLBUTTON))
+#define QT_NO_CALENDARWIDGET
+#endif
+
+// QDateTimeEdit
+#if !defined(QT_NO_DATETIMEEDIT) && (defined(QT_NO_CALENDARWIDGET) || defined(QT_NO_DATESTRING))
+#define QT_NO_DATETIMEEDIT
+#endif
+
 // QInputDialog
 #if !defined(QT_NO_INPUTDIALOG) && (defined(QT_NO_COMBOBOX) || defined(QT_NO_SPINBOX) || defined(QT_NO_STACKEDWIDGET))
 #define QT_NO_INPUTDIALOG
+#endif
+
+// QFontComboBox
+#if !defined(QT_NO_FONTCOMBOBOX) && (defined(QT_NO_COMBOBOX) || defined(QT_NO_STRINGLISTMODEL))
+#define QT_NO_FONTCOMBOBOX
 #endif
 
 // QFontDialog
@@ -506,9 +616,9 @@
 #define QT_NO_FONTDIALOG
 #endif
 
-// QFileDialog
-#if !defined(QT_NO_FILEDIALOG) && (defined(QT_NO_DIRMODEL) || defined(QT_NO_TREEVIEW) || defined(QT_NO_MESSAGEBOX) || defined(QT_NO_COMBOBOX) || defined(QT_NO_TOOLBUTTON) || defined(QT_NO_BUTTONGROUP))
-#define QT_NO_FILEDIALOG
+// QPrintDialog
+#if !defined(QT_NO_PRINTDIALOG) && (defined(QT_NO_PRINTER) || defined(QT_NO_COMBOBOX) || defined(QT_NO_BUTTONGROUP) || defined(QT_NO_SPINBOX) || defined(QT_NO_TREEVIEW) || defined(QT_NO_STACKEDWIDGET))
+#define QT_NO_PRINTDIALOG
 #endif
 
 // QWorkSpace
@@ -516,13 +626,8 @@
 #define QT_NO_WORKSPACE
 #endif
 
-// Printing
-#if !defined(QT_NO_PRINTER) && (defined(QT_NO_TEXTSTREAM) || defined(QT_NO_FILEDIALOG))
-#define QT_NO_PRINTER
-#endif
-
-// QPrintDialog
-#if !defined(QT_NO_PRINTDIALOG) && (defined(QT_NO_PRINTER) || defined(QT_NO_COMBOBOX) || defined(QT_NO_BUTTONGROUP) || defined(QT_NO_SPINBOX) || defined(QT_NO_TREEVIEW))
-#define QT_NO_PRINTDIALOG
+// QFileDialog
+#if !defined(QT_NO_FILEDIALOG) && (defined(QT_NO_DIRMODEL) || defined(QT_NO_TREEVIEW) || defined(QT_NO_COMBOBOX) || defined(QT_NO_TOOLBUTTON) || defined(QT_NO_BUTTONGROUP))
+#define QT_NO_FILEDIALOG
 #endif
 

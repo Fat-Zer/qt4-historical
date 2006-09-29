@@ -71,7 +71,7 @@ namespace QTest {
 
 # define COLORED_MSG(prefix, color, msg) colored ? qWinColoredMsg(prefix, color, msg) : msg
 #else
-# define COLORED_MSG(prefix, color, msg) colored ? "\033["#prefix";"#color"m" msg "\033[0m" : msg
+# define COLORED_MSG(prefix, color, msg) colored && QAbstractTestLogger::isTtyOutput() ? "\033["#prefix";"#color"m" msg "\033[0m" : msg
 #endif
 
     static const char *incidentType2String(QAbstractTestLogger::IncidentTypes type)
@@ -186,21 +186,32 @@ void QPlainTestLogger::startLogging()
     QAbstractTestLogger::startLogging();
 
     char buf[1024];
-    QTest::qt_snprintf(buf, sizeof(buf),
+    if (QTestLog::verboseLevel() < 0) {
+        QTest::qt_snprintf(buf, sizeof(buf), "Testing %s\n",
+                           QTestResult::currentTestObjectName());
+    } else {
+        QTest::qt_snprintf(buf, sizeof(buf),
                          "********* Start testing of %s *********\n"
                          "Config: Using QTest library " QTEST_VERSION_STR
                          ", Qt %s\n", QTestResult::currentTestObjectName(), qVersion());
+    }
     QTest::outputMessage(buf);
 }
 
 void QPlainTestLogger::stopLogging()
 {
     char buf[1024];
-    QTest::qt_snprintf(buf, sizeof(buf),
+    if (QTestLog::verboseLevel() < 0) {
+        QTest::qt_snprintf(buf, sizeof(buf), "Totals: %d passed, %d failed, %d skipped\n",
+                           QTestResult::passCount(), QTestResult::failCount(),
+                           QTestResult::skipCount());
+    } else {
+        QTest::qt_snprintf(buf, sizeof(buf),
                          "Totals: %d passed, %d failed, %d skipped\n"
                          "********* Finished testing of %s *********\n",
                          QTestResult::passCount(), QTestResult::failCount(),
                          QTestResult::skipCount(), QTestResult::currentTestObjectName());
+    }
     QTest::outputMessage(buf);
 
     QAbstractTestLogger::stopLogging();
@@ -220,6 +231,10 @@ void QPlainTestLogger::leaveTestFunction()
 void QPlainTestLogger::addIncident(IncidentTypes type, const char *description,
                                    const char *file, int line)
 {
+    // suppress PASS in silent mode
+    if (type == QAbstractTestLogger::Pass && QTestLog::verboseLevel() < 0)
+        return;
+
     QTest::printMessage(QTest::incidentType2String(type), description, file, line);
 }
 
@@ -227,8 +242,11 @@ void QPlainTestLogger::addIncident(IncidentTypes type, const char *description,
 void QPlainTestLogger::addMessage(MessageTypes type, const char *message,
                                   const char *file, int line)
 {
+    // suppress PASS in silent mode
+    if ((type == QAbstractTestLogger::Skip || type == QAbstractTestLogger::Info)
+       && QTestLog::verboseLevel() < 0)
+        return;
+
     QTest::printMessage(QTest::messageType2String(type), message, file, line);
 }
-
-
 

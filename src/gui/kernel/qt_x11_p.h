@@ -133,11 +133,6 @@ extern "C" {
 // #define QT_NO_XRENDER
 #ifndef QT_NO_XRENDER
 #  include <X11/extensions/Xrender.h>
-#if defined(RENDER_MAJOR) && RENDER_MAJOR == 0
-# if RENDER_MINOR < 5
-#  define QT_NO_XRENDER
-# endif
-#endif
 #endif // QT_NO_XRENDER
 
 // #define QT_NO_XKB
@@ -236,6 +231,7 @@ extern "C" char *XSetIMValues(XIM /* im */, ...);
 
 
 #ifdef QT_MITSHM
+
 #  include <X11/extensions/XShm.h>
 #endif // QT_MITSHM
 
@@ -262,15 +258,27 @@ struct QXdndDropTransaction
     Time timestamp;
     Window target;
     Window proxy_target;
+    QWidget *targetWidget;
     QWidget *embedding_widget;
     QDrag *object;
 };
 
+class QMimeData;
+
 struct QX11Data;
 extern QX11Data *qt_x11Data;
 
+enum DesktopEnvironment {
+    DE_UNKNOWN,
+    DE_KDE,
+    DE_GNOME,
+    DE_CDE
+};
+
 struct QX11Data
 {
+    static Qt::KeyboardModifiers translateModifiers(int s);
+
     Window findClientWindow(Window, Atom, bool);
 
     // from qclipboard_x11.cpp
@@ -292,6 +300,14 @@ struct QX11Data
     static bool xdndHandleBadwindow();
     QByteArray xdndAtomToString(Atom a);
     Atom xdndStringToAtom(const char *);
+
+    QString xdndMimeAtomToString(Atom a);
+    Atom xdndMimeStringToAtom(const QString &mimeType);
+    QStringList xdndMimeFormatsForAtom(Atom a);
+    bool xdndMimeDataForAtom(Atom a, QMimeData *mimeData, QByteArray *data, Atom *atomFormat, int *dataFormat);
+    QList<Atom> xdndMimeAtomsForFormat(const QString &format);
+    QByteArray xdndMimeConvertToFormat(Atom a, const QByteArray &data, const QString &format);
+    Atom xdndMimeAtomForFormat(const QString &format, const QList<Atom> &atoms);
 
     QList<QXdndDropTransaction> dndDropTransactions;
 
@@ -322,8 +338,13 @@ struct QX11Data
     // true if Qt is compiled w/ RENDER support and RENDER is supported on the connected Display
     bool use_xrender;
     int xrender_major;
-    int xrender_eventbase;
-    int xrender_errorbase;
+    int xrender_version;
+
+    // true if Qt is compiled w/ XFIXES support and XFIXES is supported on the connected Display
+    bool use_xfixes;
+    int xfixes_major;
+    int xfixes_eventbase;
+    int xfixes_errorbase;
 
     // true if Qt is compiled w/ Tablet support and we have a tablet.
     bool use_xinput;
@@ -408,6 +429,8 @@ struct QX11Data
 
     char *startupId;
 
+    DesktopEnvironment desktopEnvironment;
+
     /* Warning: if you modify this list, modify the names of atoms in qapplication_x11.cpp as well! */
     enum X11Atom {
         // window-manager <-> client protocols
@@ -443,11 +466,11 @@ struct QX11Data
 
         _QT_SCROLL_DONE,
         _QT_INPUT_ENCODING,
-        _QT_SIZEGRIP,
 
         _MOTIF_WM_HINTS,
 
         DTWM_IS_RUNNING,
+        KDE_FULL_SESSION,
         KWIN_RUNNING,
         KWM_RUNNING,
         GNOME_BACKGROUND_PROPERTIES,
@@ -476,6 +499,7 @@ struct QX11Data
         _NET_WM_STATE_STAYS_ON_TOP,
 
         _NET_WM_USER_TIME,
+        _NET_WM_FULL_PLACEMENT,
 
         _NET_WM_WINDOW_TYPE,
         _NET_WM_WINDOW_TYPE_DIALOG,
@@ -490,6 +514,8 @@ struct QX11Data
 
         _NET_STARTUP_INFO,
         _NET_STARTUP_INFO_BEGIN,
+
+        _NET_SUPPORTING_WM_CHECK,
 
         // Property formats
         COMPOUND_TEXT,
@@ -525,6 +551,9 @@ struct QX11Data
 
         XmTRANSFER_SUCCESS,
         XmTRANSFER_FAILURE,
+
+        // Xkb
+        _XKB_RULES_NAMES,
 
         NPredefinedAtoms,
 

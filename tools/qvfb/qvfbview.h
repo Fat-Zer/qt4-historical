@@ -24,7 +24,12 @@
 #ifndef QVFBVIEW_H
 #define QVFBVIEW_H
 
+//#ifdef QT_NO_OPENGL
 #include <QWidget>
+//#else
+//#define QVFB_USE_GLWIDGET
+//#include <QGLWidget>
+//#endif
 
 class QImage;
 class QTimer;
@@ -32,7 +37,12 @@ class QAnimationWriter;
 struct QVFbHeader;
 class QVFbViewProtocol;
 
-class QVFbView : public QWidget
+class QVFbView :
+#ifdef QVFB_USE_GLWIDGET
+    public QGLWidget
+#else
+    public QWidget
+#endif
 {
     Q_OBJECT
 public:

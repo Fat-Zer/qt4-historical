@@ -34,6 +34,7 @@
 #include "qt_windows.h"
 #endif
 #include "qdebug.h"
+#include "private/qlayoutengine_p.h"
 
 #define RANGE 4
 
@@ -115,6 +116,7 @@ bool QWidgetResizeHandler::eventFilter(QObject *o, QEvent *ee)
                 widget->grabMouse();
 #  endif // QT_NO_CURSOR
 #endif // Q_WS_X11
+            buttonDown = false;
             emit activate();
             bool me = movingEnabled;
             movingEnabled = (me && o == widget);
@@ -150,8 +152,9 @@ bool QWidgetResizeHandler::eventFilter(QObject *o, QEvent *ee)
     case QEvent::MouseMove: {
         if (w->isMaximized())
             break;
+        buttonDown = buttonDown && (e->buttons() & Qt::LeftButton); // safety, state machine broken!
         bool me = movingEnabled;
-        movingEnabled = (me && o == widget && buttonDown);
+        movingEnabled = (me && o == widget && (buttonDown || moveResizeMode));
         mouseMoveEvent(e);
         movingEnabled = me;
         if (mode == Center) {
@@ -173,6 +176,7 @@ bool QWidgetResizeHandler::eventFilter(QObject *o, QEvent *ee)
     default:
         break;
     }
+
     return false;
 }
 
@@ -196,8 +200,10 @@ void QWidgetResizeHandler::mouseMoveEvent(QMouseEvent *e)
             mode = Left;
         else if ( pos.x() >= widget->width()-range)
             mode = Right;
-        else
+        else if (widget->rect().contains(pos))
             mode = Center;
+        else
+            mode = Nowhere;
 
         if (widget->isMinimized() || !isActive(Resize))
             mode = Center;
@@ -230,10 +236,9 @@ void QWidgetResizeHandler::mouseMoveEvent(QMouseEvent *e)
     QPoint p = globalPos + invertedMoveOffset;
     QPoint pp = globalPos - moveOffset;
 
-    int mw = qMax(childWidget->minimumSizeHint().width(),
-                   childWidget->minimumWidth());
-    int mh = qMax(childWidget->minimumSizeHint().height(),
-                   childWidget->minimumHeight());
+    QSize ms = qSmartMinSize(childWidget);
+    int mw = ms.width();
+    int mh = ms.height();
     if (childWidget != widget) {
         mw += 2 * fw;
         mh += 2 * fw + extrahei;
@@ -273,8 +278,7 @@ void QWidgetResizeHandler::mouseMoveEvent(QMouseEvent *e)
         geom = QRect(widget->geometry().topLeft(), QPoint(p.x(), widget->geometry().bottom())) ;
         break;
     case Center:
-        if (moveResizeMode)
-            geom.moveTopLeft(pp);
+        geom.moveTopLeft(pp);
         break;
     default:
         break;
@@ -291,7 +295,7 @@ void QWidgetResizeHandler::mouseMoveEvent(QMouseEvent *e)
 
     if (geom != widget->geometry() &&
         (widget->isWindow() || widget->parentWidget()->rect().intersects(geom))) {
-        if (widget->isMinimized())
+        if (mode == Center)
             widget->move(geom.topLeft());
         else
             widget->setGeometry(geom);
@@ -468,7 +472,6 @@ void QWidgetResizeHandler::doResize()
         return;
 
     moveResizeMode = true;
-    buttonDown = true;
     moveOffset = widget->mapFromGlobal(QCursor::pos());
     if (moveOffset.x() < widget->width()/2) {
         if (moveOffset.y() < widget->height()/2)
@@ -500,7 +503,6 @@ void QWidgetResizeHandler::doMove()
 
     mode = Center;
     moveResizeMode = true;
-    buttonDown = true;
     moveOffset = widget->mapFromGlobal(QCursor::pos());
     invertedMoveOffset = widget->rect().bottomRight() - moveOffset;
 #ifndef QT_NO_CURSOR

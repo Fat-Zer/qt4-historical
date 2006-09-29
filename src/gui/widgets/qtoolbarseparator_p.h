@@ -21,8 +21,8 @@
 **
 ****************************************************************************/
 
-#ifndef QTOOLBARSEPARATOR_P_H
-#define QTOOLBARSEPARATOR_P_H
+#ifndef QDYNAMICTOOLBARSEPARATOR_P_H
+#define QDYNAMICTOOLBARSEPARATOR_P_H
 
 //
 //  W A R N I N G
@@ -61,4 +61,4 @@ public Q_SLOTS:
 
 #endif // QT_NO_TOOLBAR
 
-#endif // QTOOLBARSEPARATOR_P_H
+#endif // QDYNAMICTOOLBARSEPARATOR_P_H

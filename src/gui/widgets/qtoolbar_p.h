@@ -21,8 +21,8 @@
 **
 ****************************************************************************/
 
-#ifndef QTOOLBAR_P_H
-#define QTOOLBAR_P_H
+#ifndef QDYNAMICTOOLBAR_P_H
+#define QDYNAMICTOOLBAR_P_H
 
 //
 //  W A R N I N G
@@ -35,39 +35,17 @@
 // We mean it.
 //
 
-#include "QtGui/qtoolbar.h"
+#include "qtoolbar.h"
 #include "QtGui/qaction.h"
 #include "private/qwidget_p.h"
 
 #ifndef QT_NO_TOOLBAR
 
-/*
-    internal class to associate a widget with an action
-*/
-class QToolBarWidgetAction : public QAction
-{
-    Q_OBJECT
-
-    QWidget *_widget;
-
-public:
-    inline QToolBarWidgetAction(QWidget *widget, QWidget *parent)
-        : QAction(parent), _widget(widget)
-    {
-        setText(_widget->objectName().isEmpty()
-            ? QString::fromLatin1(_widget->metaObject()->className())
-                : _widget->objectName());
-        setVisible(!(widget->isHidden() && widget->testAttribute(Qt::WA_WState_ExplicitShowHide)));
-    }
-
-    inline QWidget *widget() const
-    { return _widget; }
-};
-
 struct QToolBarItem {
     QAction *action;
     QWidget *widget;
     uint hidden : 1; // toolbar too small to show this item
+    uint hasCustomWidget : 1;
 };
 
 class QToolBarExtension;
@@ -112,12 +90,6 @@ public:
     bool inResizeEvent;
 };
 
-static inline int pick(Qt::Orientation o, const QPoint &p)
-{ return o == Qt::Horizontal ? p.x() : p.y(); }
-
-static inline int pick(Qt::Orientation o, const QSize &s)
-{ return o == Qt::Horizontal ? s.width() : s.height(); }
-
 #endif // QT_NO_TOOLBAR
 
-#endif // QTOOLBAR_P_H
+#endif // QDYNAMICTOOLBAR_P_H

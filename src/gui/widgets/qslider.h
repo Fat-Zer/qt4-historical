@@ -33,7 +33,7 @@ QT_MODULE(Gui)
 #ifndef QT_NO_SLIDER
 
 class QSliderPrivate;
-
+class QStyleOptionSlider;
 class Q_GUI_EXPORT QSlider : public QAbstractSlider
 {
     Q_OBJECT
@@ -98,6 +98,8 @@ public Q_SLOTS:
 #endif
 
 private:
+    friend Q_GUI_EXPORT QStyleOptionSlider qt_qsliderStyleOption(QSlider *slider);
+    
     Q_DISABLE_COPY(QSlider)
     Q_DECLARE_PRIVATE(QSlider)
 };

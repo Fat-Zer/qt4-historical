@@ -63,8 +63,8 @@ public:
 #ifdef Q_OS_UNIX
     mutable uint need_lstat : 1;
     mutable uint is_link : 1;
-    mutable uint is_readonly : 1;
 #endif
+    mutable uint is_readonly : 1;
 #ifdef Q_WS_WIN
     mutable DWORD fileAttrib;
 #else
@@ -72,6 +72,9 @@ public:
 #endif
     bool doStat() const;
     bool isSymlink() const;
+#if defined (Q_WS_MAC)
+    bool isMacHidden(const QString &path) const;
+#endif
 
     int sysOpen(const QString &, int flags);
 

@@ -132,7 +132,7 @@ static Colormap choose_cmap(Display *dpy, XVisualInfo *vi)
     }
 
     CMapEntryHash *hash = cmap_handler()->cmap_hash;
-    CMapEntryHash::ConstIterator it = hash->find((long) vi->visualid + (vi->screen * 256));
+    CMapEntryHash::ConstIterator it = hash->constFind((long) vi->visualid + (vi->screen * 256));
     if (it != hash->constEnd())
         return it.value()->cmap; // found colormap for visual
 
@@ -327,6 +327,12 @@ bool QGLContext::chooseContext(const QGLContext* shareContext)
         d->glFormat.setDepthBufferSize(res);
     glXGetConfig(disp, (XVisualInfo*)d->vi, GLX_RGBA, &res);
     d->glFormat.setRgba(res);
+    glXGetConfig(disp, (XVisualInfo*)d->vi, GLX_RED_SIZE, &res);
+    d->glFormat.setRedBufferSize(res);
+    glXGetConfig(disp, (XVisualInfo*)d->vi, GLX_GREEN_SIZE, &res);
+    d->glFormat.setGreenBufferSize(res);
+    glXGetConfig(disp, (XVisualInfo*)d->vi, GLX_BLUE_SIZE, &res);
+    d->glFormat.setBlueBufferSize(res);
     glXGetConfig(disp, (XVisualInfo*)d->vi, GLX_ALPHA_SIZE, &res);
     d->glFormat.setAlpha(res);
     if (d->glFormat.alpha())
@@ -369,8 +375,9 @@ bool QGLContext::chooseContext(const QGLContext* shareContext)
         d->cx = glXCreateContext(disp, (XVisualInfo *)d->vi,
                                (GLXContext)shareContext->d_func()->cx, direct);
         if (d->cx) {
+            QGLContext *share = const_cast<QGLContext *>(shareContext);
             d->sharing = true;
-            const_cast<QGLContext *>(shareContext)->d_func()->sharing = true;
+            share->d_func()->sharing = true;
         }
     }
     if (!d->cx)
@@ -395,7 +402,7 @@ bool QGLContext::chooseContext(const QGLContext* shareContext)
 
 
 /*!
-  <strong>X11 only</strong>: This virtual function tries to find a
+  \bold{X11 only:} This virtual function tries to find a
   visual that matches the format, reducing the demands if the original
   request cannot be met.
 
@@ -474,7 +481,7 @@ void *QGLContext::chooseVisual()
 
   \internal
 
-  <strong>X11 only</strong>: This virtual function chooses a visual
+  \bold{X11 only:} This virtual function chooses a visual
   that matches the OpenGL \link format() format\endlink. Reimplement this
   function in a subclass if you need a custom visual.
 
@@ -539,11 +546,11 @@ void *QGLContext::tryVisual(const QGLFormat& f, int bufDepth)
     if (f.rgba()) {
         spec[i++] = GLX_RGBA;
         spec[i++] = GLX_RED_SIZE;
-        spec[i++] = 1;
+        spec[i++] = f.redBufferSize() == -1 ? 1 : f.redBufferSize();
         spec[i++] = GLX_GREEN_SIZE;
-        spec[i++] = 1;
+        spec[i++] = f.greenBufferSize() == -1 ? 1 : f.greenBufferSize();
         spec[i++] = GLX_BLUE_SIZE;
-        spec[i++] = 1;
+        spec[i++] = f.blueBufferSize() == -1 ? 1 : f.blueBufferSize();
         if (f.alpha()) {
             spec[i++] = GLX_ALPHA_SIZE;
             spec[i++] = f.alphaBufferSize() == -1 ? 1 : f.alphaBufferSize();
@@ -597,6 +604,7 @@ void QGLContext::reset()
     d->valid = false;
     d->transpColor = QColor();
     d->initDone = false;
+    qgl_share_reg()->removeShare(this);
 }
 
 
@@ -694,7 +702,8 @@ uint QGLContext::colorIndex(const QColor& c) const
 
         XVisualInfo *info = (XVisualInfo *) d->vi;
         CMapEntryHash *hash = cmap_handler()->cmap_hash;
-        CMapEntryHash::ConstIterator it = hash->find((long) info->visualid + (info->screen * 256));
+        CMapEntryHash::ConstIterator it = hash->constFind(long(info->visualid)
+                + (info->screen * 256));
         QCMapEntry *x = 0;
         if (it != hash->constEnd())
             x = it.value();
@@ -876,16 +885,20 @@ void *QGLContext::getProcAddress(const QString &proc) const
 {
     typedef void *(*qt_glXGetProcAddressARB)(const GLubyte *);
     static qt_glXGetProcAddressARB glXGetProcAddressARB = 0;
+    static bool resolved = false;
 
+    if (resolved && !glXGetProcAddressARB)
+        return 0;
     if (!glXGetProcAddressARB) {
-        QString glxExt(glXGetClientString(QX11Info::display(), GLX_EXTENSIONS));
-        if (glxExt.contains("GLX_ARB_get_proc_address")) {
-            QLibrary lib("GL");
+        QString glxExt = QString(QLatin1String(glXGetClientString(QX11Info::display(), GLX_EXTENSIONS)));
+        if (glxExt.contains(QLatin1String("GLX_ARB_get_proc_address"))) {
+            QLibrary lib(QLatin1String("GL"));
             glXGetProcAddressARB = (qt_glXGetProcAddressARB) lib.resolve("glXGetProcAddressARB");
-            if (!glXGetProcAddressARB)
-                return 0;
         }
+        resolved = true;
     }
+    if (!glXGetProcAddressARB)
+        return 0;
     return glXGetProcAddressARB(reinterpret_cast<const GLubyte *>(proc.toLatin1().data()));
 }
 
@@ -969,7 +982,7 @@ void QGLWidgetPrivate::init(QGLContext *context, const QGLWidget *shareWidget)
 
     if (q->isValid() && context->format().hasOverlay()) {
         QString olwName = q->objectName();
-        olwName += "-QGL_internal_overlay_widget";
+        olwName += QLatin1String("-QGL_internal_overlay_widget");
         olw = new QGLOverlayWidget(QGLFormat::defaultOverlayFormat(), q, shareWidget);
         olw->setObjectName(olwName);
         if (olw->isValid()) {
@@ -1037,6 +1050,14 @@ void QGLWidgetPrivate::cleanupColormaps()
 /*! \reimp */
 bool QGLWidget::event(QEvent *e)
 {
+    // prevents X errors on some systems, where we get a flush to a
+    // hidden widget
+    if (e->type() == QEvent::Hide) {
+        makeCurrent();
+        glFinish();
+        doneCurrent();
+    }
+
     return QWidget::event(e);
 }
 
@@ -1144,8 +1165,9 @@ void QGLWidget::setContext(QGLContext *context,
     a.background_pixel = colmap.pixel(palette().color(backgroundRole()));
     a.border_pixel = colmap.pixel(Qt::black);
     Window p = RootWindow(X11->display, vi->screen);
-    if (parentWidget())
+    if (parentWidget()) {
         p = parentWidget()->winId();
+    }
 
     Window w = XCreateWindow(X11->display, p, x(), y(), width(), height(),
                               0, vi->depth, InputOutput, vi->visual,
@@ -1332,50 +1354,7 @@ void QGLExtensions::init()
         return;
     init_done = true;
 
-    Window win;
-    int attribs[] = { GLX_RGBA, XNone };
-    int attribs_dbl[] = { GLX_RGBA, GLX_DOUBLEBUFFER, XNone };
-
-    XSetWindowAttributes attr;
-    unsigned long mask;
-    Window root;
-    GLXContext ctx;
-    XVisualInfo *visinfo;
-    int width = 10, height = 10;
-
-    root = RootWindow(X11->display, 0);
-
-    visinfo = glXChooseVisual(X11->display, 0, attribs);
-    if (!visinfo) {
-        visinfo = glXChooseVisual(X11->display, 0, attribs_dbl);
-        if (!visinfo) {
-            qDebug("QGLExtensions: couldn't find any RGB visuals.");
-            return;
-        }
-    }
-
-    attr.background_pixel = 0;
-    attr.border_pixel = 0;
-    attr.colormap = XCreateColormap(X11->display, root, visinfo->visual, AllocNone);
-    attr.event_mask = StructureNotifyMask | ExposureMask;
-    mask = CWBackPixel | CWBorderPixel | CWColormap | CWEventMask;
-    win = XCreateWindow(X11->display, root, 0, 0, width, height, 0,
-                        visinfo->depth, InputOutput, visinfo->visual, mask, &attr);
-
-    ctx = glXCreateContext(X11->display, visinfo, NULL, true);
-
-    if (visinfo)
-        XFree(visinfo);
-
-    if (ctx) {
-        if (glXMakeCurrent(X11->display, win, ctx))
-            init_extensions();
-        else
-            qDebug("QGLExtensions: glXMakeCurrent() failed.");
-        glXDestroyContext(X11->display, ctx);
-    } else {
-        qDebug("QGLExtensions: glXCreateContext failed.");
-    }
-    XDestroyWindow(X11->display, win);
-    XFreeColormap(X11->display, attr.colormap);
+    QGLWidget dmy;
+    dmy.makeCurrent();
+    init_extensions();
 }

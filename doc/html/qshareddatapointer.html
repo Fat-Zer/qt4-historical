@@ -2,25 +2,19 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/src/corelib/tools/qshareddata.cpp -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/src/corelib/tools/qshareddata.cpp -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-x11-opensource-src-4.2.0/src/corelib/tools/qshareddata.cpp -->
 <head>
-    <title>Qt 4.1: QSharedDataPointer Class Reference</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
+  <title>Qt 4.2: QSharedDataPointer Class Reference</title>
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QSharedDataPointer Class Reference<br /><sup><sup>[<a href="qtcore.html">QtCore</a> module]</sup></sup></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">QSharedDataPointer Class Reference<br /><sup><sup>[<a href="qtcore.html">QtCore</a> module]</sup></sup></h1>
 <p>The QSharedDataPointer class provides a pointer to a shared data object. <a href="#details">More...</a></p>
-<pre>#include &lt;QSharedDataPointer&gt;</pre><p><b>Note:</b> All the functions in this class are <a href="threads.html#reentrant">reentrant</a>.</p>
+<pre> #include &lt;QSharedDataPointer&gt;</pre><p><b>Note:</b> All the functions in this class are <a href="threads.html#reentrant">reentrant</a>.</p>
 <ul>
 <li><a href="qshareddatapointer-members.html">List of all members, including inherited members</a></li>
 </ul>
@@ -52,61 +46,100 @@ body { background: #ffffff; color: black; }</style>
 <h2>Detailed Description</h2>
 <p>The QSharedDataPointer class provides a pointer to a shared data object.</p>
 <p>QSharedDataPointer&lt;T&gt; makes it easier to write your own implicitly shared classes. It handles reference counting behind the scenes in a thread-safe manner, ensuring that classes that use it can be <a href="threads.html#reentrant">reentrant</a>.</p>
-<p>Implicit sharing is used throughout Qt to combine the memory and speed efficiency of pointers with the ease of use of value types. See the <a href="shclass.html#shared-classes">Shared Classes</a> page for more information.</p>
+<p>Implicit sharing is used throughout Qt to combine the memory and speed efficiency of pointers with the ease of use of value types. See the <a href="shared.html#shared-classes">Shared Classes</a> page for more information.</p>
 <p>Let's suppose that you want to make an <tt>Employee</tt> class implicitly shared. The procedure is:</p>
 <ul>
 <li>Define the <tt>Employee</tt> class with a single data member variable of type QSharedDataPointer&lt;<tt>EmployeeData</tt>&gt;.</li>
 <li>Define an <tt>EmployeeData</tt> class that derives from <a href="qshareddata.html">QSharedData</a> and that contains all the variables that you would normally put in <tt>Employee</tt>.</li>
 </ul>
 <p>To show how this works in practice, we will review the entire source code for an implicitly shared <tt>Employee</tt> class. Here's the header file that defines the <tt>Employee</tt> class:</p>
-<pre>&nbsp;   #ifndef EMPLOYEE_H
-    #define EMPLOYEE_H
+<pre> #ifndef EMPLOYEE_H
+ #define EMPLOYEE_H
 
-    #include &lt;QSharedData&gt;
-    #include &lt;QString&gt;
+ #include &lt;QSharedData&gt;
+ #include &lt;QString&gt;
 
-    class EmployeeData : public QSharedData
-    {
-    public:
-        int id;
-        QString name;
-    };
+ class EmployeeData : public QSharedData
+ {
+ public:
+     EmployeeData();
+     EmployeeData(const EmployeeData &amp;other);
+     ~EmployeeData();
 
-    class Employee
-    {
-    public:
-        Employee();
-        Employee(int id, const QString &amp;name);
+     int id;
+     QString *name;
+ };
 
-        void setId(int id) { d-&gt;id = id; }
-        void setName(const QString &amp;name) { d-&gt;name = name; }
+ class Employee
+ {
+ public:
+     Employee();
+     Employee(int id, const QString &amp;name);
 
-        int id() const { return d-&gt;id; }
-        QString name() const { return d-&gt;name; }
+     void setId(int id) { d-&gt;id = id; }
+     void setName(const QString &amp;name);
 
-    private:
-        QSharedDataPointer&lt;EmployeeData&gt; d;
-    };
+     int id() const { return d-&gt;id; }
+     QString name() const;
 
-    #endif</pre>
+ private:
+     QSharedDataPointer&lt;EmployeeData&gt; d;
+ };
+
+ #endif</pre>
 <p>All accesses to the data in the setter and getter functions are made through the QSharedDataPointer object <tt>d</tt>. For non-const functions, operator-&gt;() automatically calls <a href="qshareddatapointer.html#detach">detach</a>(), ensuring that modifications to one <tt>Employee</tt> object don't affect other <tt>Employee</tt> objects.</p>
-<p>In this example, the <tt>EmployeeData</tt> type is a simple class with a default constructor and a copy constructor provided by C++. If member-per-member copy isn't sufficient for your own data type, you must implement your own copy constructor.</p>
+<p>The <tt>EmployeeData</tt> type is a simple class that inherits <a href="qshareddata.html">QSharedData</a> and that provides a default constructor, a copy constructor, and a destructor. Normally, this is all you need in the &quot;data&quot; class.</p>
+<p>Here's the implementation of the <tt>EmployeeData</tt> members:</p>
+<pre> EmployeeData::EmployeeData()
+ {
+     id = -1;
+     name = 0;
+ }
+
+ EmployeeData::EmployeeData(const EmployeeData &amp;other)
+     : QSharedData(other)
+ {
+     id = other.id;
+     if (other.name) {
+         name = new QString(*other.name);
+     } else {
+         name = 0;
+     }
+ }
+
+ EmployeeData::~EmployeeData()
+ {
+     delete name;
+ }</pre>
 <p>Let's now see how to implement the <tt>Employee</tt> constructors:</p>
-<pre>&nbsp;   Employee::Employee()
-    {
-        d = new EmployeeData;
-        d-&gt;id = 0;
-    }</pre>
+<pre> Employee::Employee()
+ {
+     d = new EmployeeData;
+ }</pre>
 <p>In the default constructor, we create an object of type <tt>EmployeeData</tt> and assign it to the <tt>d</tt> pointer using operator=().</p>
-<pre>&nbsp;   Employee::Employee(int id, const QString &amp;name)
-    {
-        d = new EmployeeData;
-        d-&gt;id = id;
-        d-&gt;name = name;
-    }</pre>
-<p>In the constructor that takes an ID and an employee's name, we also create an object of type <tt>EmployeeData</tt> and assign it to the <tt>d</tt> pointer.</p>
-<p>In this example, we don't need to provide a copy constructor, an assignment operator, or a destructor for <tt>Employee</tt>. The default implementations provided by C++, which invoke QSharedDataPointer's copy constructor, assignment operator, or destructor, are sufficient. And this is true in general, i.e. for any <a href="qshareddata.html">QSharedData</a> subclass which only stores values (or implicitly shared classes), such as int, double, <a href="qstring.html">QString</a>, <a href="qstringlist.html">QStringList</a>, <a href="qlist.html">QList</a>&lt;<a href="qwidget.html">QWidget</a>*&gt;, and so on.</p>
 <p>Behind the scenes, QSharedDataPointer automatically increments or decrements the reference count of the shared data object pointed to by <tt>d</tt>, and deletes shared objects when the reference count reaches 0.</p>
+<pre> Employee::Employee(int id, const QString &amp;name)
+ {
+     d = new EmployeeData;
+     setId(id);
+     setName(name);
+ }</pre>
+<p>In the constructor that takes an ID and an employee's name, we also create an object of type <tt>EmployeeData</tt> and assign it to the <tt>d</tt> pointer.</p>
+<pre> void Employee::setName(const QString &amp;name)
+ {
+     if (!d-&gt;name)
+         d-&gt;name = new QString;
+     *d-&gt;name = name;
+ }</pre>
+<p>When we use the <tt>d</tt> pointer from a non-const function, <a href="qshareddatapointer.html#detach">detach</a>() is automatically called to ensure that we work on our own copy of the data.</p>
+<pre> QString Employee::name() const
+ {
+     if (!d-&gt;name)
+         return QString();
+     return *d-&gt;name;
+ }</pre>
+<p>When we use the <tt>d</tt> pointer in a const function, <a href="qshareddatapointer.html#detach">detach</a>() is <i>not</i> called.</p>
+<p>Notice that there is no need to implement a copy constructor or assignment operator in the <tt>Employee</tt> class. This is because the C++ compiler provides default implementations that simply perform member-by-member copy. Here, the only member is <tt>d</tt>, and its operator=() simply increments a reference count (which is precisely what we want).</p>
 <p>See also <a href="qshareddata.html">QSharedData</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
@@ -173,6 +206,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

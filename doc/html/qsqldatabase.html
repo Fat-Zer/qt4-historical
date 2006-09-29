@@ -2,25 +2,19 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/src/sql/kernel/qsqldatabase.cpp -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/src/sql/kernel/qsqldatabase.cpp -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-x11-opensource-src-4.2.0/src/sql/kernel/qsqldatabase.cpp -->
 <head>
-    <title>Qt 4.1: QSqlDatabase Class Reference</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
+  <title>Qt 4.2: QSqlDatabase Class Reference</title>
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QSqlDatabase Class Reference<br /><sup><sup>[<a href="qtsql.html">QtSql</a> module]</sup></sup></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">QSqlDatabase Class Reference<br /><sup><sup>[<a href="qtsql.html">QtSql</a> module]</sup></sup></h1>
 <p>The QSqlDatabase class represents a connection to a database. <a href="#details">More...</a></p>
-<pre>#include &lt;QSqlDatabase&gt;</pre><ul>
+<pre> #include &lt;QSqlDatabase&gt;</pre><ul>
 <li><a href="qsqldatabase-members.html">List of all members, including inherited members</a></li>
 <li><a href="qsqldatabase-qt3.html">Qt 3 support members</a></li>
 </ul>
@@ -86,22 +80,22 @@ body { background: #ffffff; color: black; }</style>
 <p>The QSqlDatabase class represents a connection to a database.</p>
 <p>The QSqlDatabase class provides an abstract interface for accessing database backends. It relies on database-specific <a href="qsqldriver.html">QSqlDriver</a>s to actually access and manipulate data.</p>
 <p>The following code shows how to initialize a connection:</p>
-<pre>&nbsp;       QSqlDatabase db = QSqlDatabase::addDatabase(&quot;QPSQL&quot;);
-        db.setHostName(&quot;acidalia&quot;);
-        db.setDatabaseName(&quot;customdb&quot;);
-        db.setUserName(&quot;mojito&quot;);
-        db.setPassword(&quot;J0a1m8&quot;);
-        bool ok = db.open();</pre>
+<pre>     QSqlDatabase db = QSqlDatabase::addDatabase(&quot;QPSQL&quot;);
+     db.setHostName(&quot;acidalia&quot;);
+     db.setDatabaseName(&quot;customdb&quot;);
+     db.setUserName(&quot;mojito&quot;);
+     db.setPassword(&quot;J0a1m8&quot;);
+     bool ok = db.open();</pre>
 <p>Once a QSqlDatabase object has been created you can set the connection parameters with <a href="qsqldatabase.html#setDatabaseName">setDatabaseName</a>(), <a href="qsqldatabase.html#setUserName">setUserName</a>(), <a href="qsqldatabase.html#setPassword">setPassword</a>(), <a href="qsqldatabase.html#setHostName">setHostName</a>(), <a href="qsqldatabase.html#setPort">setPort</a>(), and <a href="qsqldatabase.html#setConnectOptions">setConnectOptions</a>(). Once the parameters have been set up you can call <a href="qsqldatabase.html#open">open</a>() to open the connection.</p>
 <p>The connection defined above is a nameless connection. If is the default connection and can be accessed using <a href="qsqldatabase.html#database">database</a>() later on:</p>
-<pre>&nbsp;       QSqlDatabase db = QSqlDatabase::database();</pre>
+<pre>     QSqlDatabase db = QSqlDatabase::database();</pre>
 <p>To make programming more convenient, QSqlDatabase is a value class. Any changes done to a database connection through one QSqlDatabase object will affect other QSqlDatabase objects representing the same connection. Call cloneConnection() if you want to create an independent database connection based on an existing one.</p>
 <p>If you need multiple database connections simultaneously, specify an arbitrary name to <a href="qsqldatabase.html#addDatabase">addDatabase</a>() and <a href="qsqldatabase.html#database">database</a>(). Call <a href="qsqldatabase.html#removeDatabase">removeDatabase</a>() to remove connections. QSqlDatabase will output a warning if you try to remove a connection referenced by other QSqlDatabase objects. Use <a href="qsqldatabase.html#contains">contains</a>() to see if a given connection name is in the list of connections.</p>
 <p>Once a connection is established you can see what tables the database offers with <a href="qsqldatabase.html#tables">tables</a>(), find the primary index for a table with <a href="qsqldatabase.html#primaryIndex">primaryIndex</a>(), get meta-information about a table's fields (e.g., their names) with <a href="qsqldatabase.html#record">record</a>(), and execute a query with <a href="qsqldatabase.html#exec">exec</a>().</p>
 <p>If transactions are supported, you can use <a href="qsqldatabase.html#transaction">transaction</a>() to start a transaction, and then <a href="qsqldatabase.html#commit">commit</a>() or <a href="qsqldatabase.html#rollback">rollback</a>() to complete it. You can find out whether transactions are supported using <a href="qsqldriver.html#hasFeature">QSqlDriver::hasFeature</a>().</p>
 <p>If an error occurred, it is given by <a href="qsqldatabase.html#lastError">lastError</a>().</p>
 <p>The names of the underlying SQL drivers are available from <a href="qsqldatabase.html#drivers">drivers</a>(); you can check for a particular driver with <a href="qsqldatabase.html#isDriverAvailable">isDriverAvailable</a>(). If you have created your own custom driver, you can register it with <a href="qsqldatabase.html#registerSqlDriver">registerSqlDriver</a>().</p>
-<p>See also <a href="qsqldriver.html">QSqlDriver</a> and <a href="qsqlquery.html">QSqlQuery</a>.</p>
+<p>See also <a href="qsqldriver.html">QSqlDriver</a>, <a href="qsqlquery.html">QSqlQuery</a>, and <a href="qtsql.html">QtSql Module</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QSqlDatabase"></a>QSqlDatabase::QSqlDatabase ()</h3>
@@ -112,16 +106,16 @@ body { background: #ffffff; color: black; }</style>
 <p>Creates a <a href="qsqldatabase.html">QSqlDatabase</a> connection that uses the driver referred to by <i>type</i>. If the <i>type</i> is not recognized, the database connection will have no functionality.</p>
 <p>The currently available driver types are:</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" bgcolor="#a2c511"><th>Driver Type</th><th>Description</th></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>QDB2</td><td>IBM DB2</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>QIBASE</td><td>Borland InterBase Driver</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>QMYSQL</td><td>MySQL Driver</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>QOCI</td><td>Oracle Call Interface Driver</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>QODBC</td><td>ODBC Driver (includes Microsoft SQL Server)</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>QPSQL</td><td>PostgreSQL Driver</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>QSQLITE</td><td><a href="3rdparty.html#sqlite">SQLite</a> version 3 or above</td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>QSQLITE2</td><td><a href="3rdparty.html#sqlite">SQLite</a> version 2</td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>QTDS</td><td>Sybase Adaptive Server</td></tr>
+<thead><tr valign="top" class="qt-style"><th>Driver Type</th><th>Description</th></tr></thead>
+<tr valign="top" class="odd"><td>QDB2</td><td>IBM DB2</td></tr>
+<tr valign="top" class="even"><td>QIBASE</td><td>Borland InterBase Driver</td></tr>
+<tr valign="top" class="odd"><td>QMYSQL</td><td>MySQL Driver</td></tr>
+<tr valign="top" class="even"><td>QOCI</td><td>Oracle Call Interface Driver</td></tr>
+<tr valign="top" class="odd"><td>QODBC</td><td>ODBC Driver (includes Microsoft SQL Server)</td></tr>
+<tr valign="top" class="even"><td>QPSQL</td><td>PostgreSQL Driver</td></tr>
+<tr valign="top" class="odd"><td>QSQLITE</td><td><a href="3rdparty.html#sqlite">SQLite</a> version 3 or above</td></tr>
+<tr valign="top" class="even"><td>QSQLITE2</td><td><a href="3rdparty.html#sqlite">SQLite</a> version 2</td></tr>
+<tr valign="top" class="odd"><td>QTDS</td><td>Sybase Adaptive Server</td></tr>
 </table></p>
 <p>Additional third party drivers, including your own custom drivers, can be loaded dynamically.</p>
 <p>See also <a href="sql-driver.html">SQL Database Drivers</a>, <a href="qsqldatabase.html#registerSqlDriver">registerSqlDriver</a>(), and <a href="qsqldatabase.html#drivers">drivers</a>().</p>
@@ -142,30 +136,30 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="addDatabase-2"></a>QSqlDatabase QSqlDatabase::addDatabase ( <a href="qsqldriver.html">QSqlDriver</a> * <i>driver</i>, const <a href="qstring.html">QString</a> &amp; <i>connectionName</i> = QLatin1String( defaultConnection ) )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>This function is useful if you need to set up the database connection and instantiate the driver yourself. If you do this, it is recommended that you include the driver code in your own application. For example, setting up a custom PostgreSQL connection and instantiating the QPSQL driver can be done like this:</p>
-<pre>&nbsp;   #include &quot;qtdir/src/sql/drivers/psql/qsql_psql.cpp&quot;</pre>
+<pre> #include &quot;qtdir/src/sql/drivers/psql/qsql_psql.cpp&quot;</pre>
 <p>(We assume that <tt>qtdir</tt> is the directory where Qt is installed.) This will pull in the code that is needed to use the PostgreSQL client library and to instantiate a QPSQLDriver object, assuming that you have the PostgreSQL headers somewhere in your include search path.</p>
-<pre>&nbsp;   PGconn *con = PQconnectdb(&quot;host=server user=bart password=simpson dbname=springfield&quot;);
-    QPSQLDriver *drv =  new QPSQLDriver(con);
-    QSqlDatabase db = QSqlDatabase::addDatabase(drv); // becomes the new default connection
-    QSqlQuery query;
-    query.exec(&quot;SELECT NAME, ID FROM STAFF&quot;);
-    ...</pre>
+<pre> PGconn *con = PQconnectdb(&quot;host=server user=bart password=simpson dbname=springfield&quot;);
+ QPSQLDriver *drv =  new QPSQLDriver(con);
+ QSqlDatabase db = QSqlDatabase::addDatabase(drv); <span class="comment">// becomes the new default connection</span>
+ QSqlQuery query;
+ query.exec(&quot;SELECT NAME, ID FROM STAFF&quot;);
+ ...</pre>
 <p>The above code sets up a PostgreSQL connection and instantiates a QPSQLDriver object. Next, <a href="qsqldatabase.html#addDatabase">addDatabase</a>() is called to add the connection to the known connections so that it can be used by the Qt SQL classes. When a driver is instantiated with a connection handle (or set of handles), Qt assumes that you have already opened the database connection.</p>
 <p>Remember that you must link your application against the database client library as well. The simplest way to do this is to add lines like the ones below to your <tt>.pro</tt> file:</p>
-<pre>&nbsp;   unix:LIBS += -lpq
-    win32:LIBS += libpqdll.lib</pre>
+<pre> unix:LIBS += -lpq
+ win32:LIBS += libpqdll.lib</pre>
 <p>You will need to have the client library in your linker's search path.</p>
 <p>The method described above will work for all the drivers, the only difference is the arguments the driver constructors take. Below is an overview of the drivers and their constructor arguments.</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" bgcolor="#a2c511"><th>Driver</th><th>Class name</th><th>Constructor arguments</th><th>File to include</th></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>QPSQL</td><td>QPSQLDriver</td><td>PGconn *connection</td><td><tt>qsql_psql.cpp</tt></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>QMYSQL</td><td>QMYSQLDriver</td><td>MYSQL *connection</td><td><tt>qsql_mysql.cpp</tt></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>QOCI</td><td>QOCIDriver</td><td>OCIEnv *environment, OCISvcCtx *serviceContext</td><td><tt>qsql_oci.cpp</tt></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>QODBC</td><td>QODBCDriver</td><td>SQLHANDLE environment, SQLHANDLE connection</td><td><tt>qsql_odbc.cpp</tt></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>QDB2</td><td>QDB2</td><td>SQLHANDLE environment, SQLHANDLE connection</td><td><tt>qsql_db2.cpp</tt></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>QTDS</td><td>QTDSDriver</td><td>LOGINREC *loginRecord, DBPROCESS *dbProcess, const <a href="qstring.html">QString</a> &amp;hostName</td><td><tt>qsql_tds.cpp</tt></td></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>QSQLITE</td><td>QSQLiteDriver</td><td>sqlite *connection</td><td><tt>qsql_sqlite.cpp</tt></td></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td>QIBASE</td><td>QIBaseDriver</td><td>isc_db_handle connection</td><td><tt>qsql_ibase.cpp</tt></td></tr>
+<thead><tr valign="top" class="qt-style"><th>Driver</th><th>Class name</th><th>Constructor arguments</th><th>File to include</th></tr></thead>
+<tr valign="top" class="odd"><td>QPSQL</td><td>QPSQLDriver</td><td>PGconn *connection</td><td><tt>qsql_psql.cpp</tt></td></tr>
+<tr valign="top" class="even"><td>QMYSQL</td><td>QMYSQLDriver</td><td>MYSQL *connection</td><td><tt>qsql_mysql.cpp</tt></td></tr>
+<tr valign="top" class="odd"><td>QOCI</td><td>QOCIDriver</td><td>OCIEnv *environment, OCISvcCtx *serviceContext</td><td><tt>qsql_oci.cpp</tt></td></tr>
+<tr valign="top" class="even"><td>QODBC</td><td>QODBCDriver</td><td>SQLHANDLE environment, SQLHANDLE connection</td><td><tt>qsql_odbc.cpp</tt></td></tr>
+<tr valign="top" class="odd"><td>QDB2</td><td>QDB2</td><td>SQLHANDLE environment, SQLHANDLE connection</td><td><tt>qsql_db2.cpp</tt></td></tr>
+<tr valign="top" class="even"><td>QTDS</td><td>QTDSDriver</td><td>LOGINREC *loginRecord, DBPROCESS *dbProcess, const <a href="qstring.html">QString</a> &amp;hostName</td><td><tt>qsql_tds.cpp</tt></td></tr>
+<tr valign="top" class="odd"><td>QSQLITE</td><td>QSQLiteDriver</td><td>sqlite *connection</td><td><tt>qsql_sqlite.cpp</tt></td></tr>
+<tr valign="top" class="even"><td>QIBASE</td><td>QIBaseDriver</td><td>isc_db_handle connection</td><td><tt>qsql_ibase.cpp</tt></td></tr>
 </table></p>
 <p>The host name (or service name) is needed when constructing the QTDSDriver for creating new connections for internal queries. This is to prevent the simultaneous usage of several <a href="qsqlquery.html">QSqlQuery</a>/<a href="porting4.html#qsqlcursor">QSqlCursor</a> objects from blocking each other.</p>
 <p><b>Warning:</b> If you add a database with the same name as an existing database, the new database will replace the old one.</p>
@@ -224,14 +218,14 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="isValid"></a>bool QSqlDatabase::isValid () const</h3>
 <p>Returns true if the <a href="qsqldatabase.html">QSqlDatabase</a> has a valid driver.</p>
 <p>Example:</p>
-<pre>&nbsp;   QSqlDatabase db;
-    qDebug() &lt;&lt; db.isValid();    // Returns false
+<pre> QSqlDatabase db;
+ qDebug() &lt;&lt; db.isValid();    <span class="comment">// Returns false</span>
 
-    db = QSqlDatabase::database(&quot;sales&quot;);
-    qDebug() &lt;&lt; db.isValid();    // Returns true if &quot;sales&quot; connection exists
+ db = QSqlDatabase::database(&quot;sales&quot;);
+ qDebug() &lt;&lt; db.isValid();    <span class="comment">// Returns true if &quot;sales&quot; connection exists</span>
 
-    QSqlDatabase::removeDatabase(&quot;sales&quot;);
-    qDebug() &lt;&lt; db.isValid();    // Returns false</pre>
+ QSqlDatabase::removeDatabase(&quot;sales&quot;);
+ qDebug() &lt;&lt; db.isValid();    <span class="comment">// Returns false</span></pre>
 <h3 class="fn"><a name="lastError"></a><a href="qsqlerror.html">QSqlError</a> QSqlDatabase::lastError () const</h3>
 <p>Returns information about the last error that occurred on the database.</p>
 <p>Failures that occur in conjunction with an individual query are reported by <a href="qsqlquery.html#lastError">QSqlQuery::lastError</a>().</p>
@@ -258,29 +252,29 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="registerSqlDriver"></a>void QSqlDatabase::registerSqlDriver ( const <a href="qstring.html">QString</a> &amp; <i>name</i>, <a href="qsqldrivercreatorbase.html">QSqlDriverCreatorBase</a> * <i>creator</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>This function registers a new SQL driver called <i>name</i>, within the SQL framework. This is useful if you have a custom SQL driver and don't want to compile it as a plugin.</p>
 <p>Example:</p>
-<pre>&nbsp;   QSqlDatabase::registerSqlDriver(&quot;MYDRIVER&quot;,
-                                    new QSqlDriverCreator&lt;MyDatabaseDriver&gt;);
-    QSqlDatabase db = QSqlDatabase::addDatabase(&quot;MYDRIVER&quot;);</pre>
+<pre> QSqlDatabase::registerSqlDriver(&quot;MYDRIVER&quot;,
+                                 new QSqlDriverCreator&lt;MyDatabaseDriver&gt;);
+ QSqlDatabase db = QSqlDatabase::addDatabase(&quot;MYDRIVER&quot;);</pre>
 <p><a href="qsqldatabase.html">QSqlDatabase</a> takes ownership of the <i>creator</i> pointer, so you mustn't delete it yourself.</p>
 <p>See also <a href="qsqldatabase.html#drivers">drivers</a>().</p>
 <h3 class="fn"><a name="removeDatabase"></a>void QSqlDatabase::removeDatabase ( const <a href="qstring.html">QString</a> &amp; <i>connectionName</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Removes the database connection <i>connectionName</i> from the list of database connections.</p>
 <p><b>Warning:</b> There should be no open queries on the database connection when this function is called, otherwise a resource leak will occur.</p>
 <p>Example:</p>
-<pre>&nbsp;   // WRONG
-    QSqlDatabase db = QSqlDatabase::database(&quot;sales&quot;);
-    QSqlQuery query(&quot;SELECT NAME, DOB FROM EMPLOYEES&quot;, db);
-    QSqlDatabase::removeDatabase(&quot;sales&quot;); // will output a warning
+<pre><span class="comment"> // WRONG</span>
+ QSqlDatabase db = QSqlDatabase::database(&quot;sales&quot;);
+ QSqlQuery query(&quot;SELECT NAME, DOB FROM EMPLOYEES&quot;, db);
+ QSqlDatabase::removeDatabase(&quot;sales&quot;); <span class="comment">// will output a warning</span>
 
-    // &quot;db&quot; is now a dangling invalid database connection,
-    // &quot;query&quot; contains an invalid result set</pre>
+<span class="comment"> // &quot;db&quot; is now a dangling invalid database connection,</span>
+<span class="comment"> // &quot;query&quot; contains an invalid result set</span></pre>
 <p>The correct way to do it:</p>
-<pre>&nbsp;   {
-        QSqlDatabase db = QSqlDatabase::database(&quot;sales&quot;);
-        QSqlQuery query(&quot;SELECT NAME, DOB FROM EMPLOYEES&quot;, db);
-    }
-    // Both &quot;db&quot; and &quot;query&quot; are destroyed because they are out of scope
-    QSqlDatabase::removeDatabase(&quot;sales&quot;); // correct</pre>
+<pre> {
+     QSqlDatabase db = QSqlDatabase::database(&quot;sales&quot;);
+     QSqlQuery query(&quot;SELECT NAME, DOB FROM EMPLOYEES&quot;, db);
+ }
+<span class="comment"> // Both &quot;db&quot; and &quot;query&quot; are destroyed because they are out of scope</span>
+ QSqlDatabase::removeDatabase(&quot;sales&quot;); <span class="comment">// correct</span></pre>
 <p><b>Note:</b> This function is <a href="threads.html#thread-safe">thread-safe</a>.</p>
 <p>See also <a href="qsqldatabase.html#database">database</a>().</p>
 <h3 class="fn"><a name="rollback"></a>bool QSqlDatabase::rollback ()</h3>
@@ -290,8 +284,8 @@ body { background: #ffffff; color: black; }</style>
 <p>Sets database-specific <i>options</i>. This must be done before the connection is opened or it has no effect (or you can <a href="qsqldatabase.html#close">close</a>() the connection, call this function and <a href="qsqldatabase.html#open">open</a>() the connection again).</p>
 <p>The format of the <i>options</i> string is a semicolon separated list of option names or option=value pairs. The options depend on the database client used:</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" bgcolor="#a2c511"><th>ODBC</th><th>MySQL</th><th>PostgreSQL</th></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><ul>
+<thead><tr valign="top" class="qt-style"><th>ODBC</th><th>MySQL</th><th>PostgreSQL</th></tr></thead>
+<tr valign="top" class="odd"><td><ul>
 <li>SQL_ATTR_ACCESS_MODE</li>
 <li>SQL_ATTR_LOGIN_TIMEOUT</li>
 <li>SQL_ATTR_CONNECTION_TIMEOUT</li>
@@ -310,6 +304,7 @@ body { background: #ffffff; color: black; }</style>
 <li>CLIENT_ODBC</li>
 <li>CLIENT_NO_SCHEMA</li>
 <li>CLIENT_INTERACTIVE</li>
+<li>UNIX_SOCKET</li>
 </ul>
 </td><td><ul>
 <li>connect_timeout</li>
@@ -319,8 +314,8 @@ body { background: #ffffff; color: black; }</style>
 <li>service</li>
 </ul>
 </td></tr>
-<tr valign="top" bgcolor="#a2c511"><th>DB2</th><th>OCI</th><th>TDS</th></tr>
-<tr valign="top" bgcolor="#e0e0e0"><td><ul>
+<thead><tr valign="top" class="qt-style"><th>DB2</th><th>OCI</th><th>TDS</th></tr></thead>
+<tr valign="top" class="even"><td><ul>
 <li>SQL_ATTR_ACCESS_MODE</li>
 <li>SQL_ATTR_LOGIN_TIMEOUT</li>
 </ul>
@@ -329,34 +324,34 @@ body { background: #ffffff; color: black; }</style>
 <li>OCI_ATTR_PREFETCH_MEMORY</li>
 </ul>
 </td><td><i>none</i></td></tr>
-<tr valign="top" bgcolor="#a2c511"><th><a href="3rdparty.html#sqlite">SQLite</a></th></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td><ul>
+<thead><tr valign="top" class="qt-style"><th><a href="3rdparty.html#sqlite">SQLite</a></th></tr></thead>
+<tr valign="top" class="odd"><td><ul>
 <li>QSQLITE_BUSY_TIMEOUT</li>
 </ul>
 </td></tr>
 </table></p>
 <p>Examples:</p>
-<pre>&nbsp;   ...
-    // MySQL connection
-    db.setConnectOptions(&quot;CLIENT_SSL;CLIENT_IGNORE_SPACE&quot;); // use an SSL connection to the server
-    if (!db.open()) {
-        db.setConnectOptions(); // clears the connect option string
-        ...
-    }
-    ...
-    // PostgreSQL connection
-    db.setConnectOptions(&quot;requiressl=1&quot;); // enable PostgreSQL SSL connections
-    if (!db.open()) {
-        db.setConnectOptions(); // clear options
-        ...
-    }
-    ...
-    // ODBC connection
-    db.setConnectOptions(&quot;SQL_ATTR_ACCESS_MODE=SQL_MODE_READ_ONLY;SQL_ATTR_TRACE=SQL_OPT_TRACE_ON&quot;); // set ODBC options
-    if (!db.open()) {
-        db.setConnectOptions(); // don't try to set this option
-        ...
-    }</pre>
+<pre> ...
+<span class="comment"> // MySQL connection</span>
+ db.setConnectOptions(&quot;CLIENT_SSL=1;CLIENT_IGNORE_SPACE=1&quot;); <span class="comment">// use an SSL connection to the server</span>
+ if (!db.open()) {
+     db.setConnectOptions(); <span class="comment">// clears the connect option string</span>
+     ...
+ }
+ ...
+<span class="comment"> // PostgreSQL connection</span>
+ db.setConnectOptions(&quot;requiressl=1&quot;); <span class="comment">// enable PostgreSQL SSL connections</span>
+ if (!db.open()) {
+     db.setConnectOptions(); <span class="comment">// clear options</span>
+     ...
+ }
+ ...
+<span class="comment"> // ODBC connection</span>
+ db.setConnectOptions(&quot;SQL_ATTR_ACCESS_MODE=SQL_MODE_READ_ONLY;SQL_ATTR_TRACE=SQL_OPT_TRACE_ON&quot;); <span class="comment">// set ODBC options</span>
+ if (!db.open()) {
+     db.setConnectOptions(); <span class="comment">// don't try to set this option</span>
+     ...
+ }</pre>
 <p>Refer to the client library documentation for more information about the different options.</p>
 <p>See also <a href="qsqldatabase.html#connectOptions">connectOptions</a>().</p>
 <h3 class="fn"><a name="setDatabaseName"></a>void QSqlDatabase::setDatabaseName ( const <a href="qstring.html">QString</a> &amp; <i>name</i> )</h3>
@@ -364,13 +359,13 @@ body { background: #ffffff; color: black; }</style>
 <p>For the QOCI (Oracle) driver, the database name is the TNS Service Name.</p>
 <p>For the QODBC driver, the <i>name</i> can either be a DSN, a DSN filename (in which case the file must have a <tt>.dsn</tt> extension), or a connection string.</p>
 <p>For example, Microsoft Access users can use the following connection string to open an <tt>.mdb</tt> file directly, instead of having to create a DSN entry in the ODBC manager:</p>
-<pre>&nbsp;   ...
-    db = QSqlDatabase::addDatabase(&quot;QODBC&quot;);
-    db.setDatabaseName(&quot;DRIVER={Microsoft Access Driver (*.mdb)};FIL={MS Access};DBQ=myaccessfile.mdb&quot;);
-    if (db.open()) {
-        // success!
-    }
-    ...</pre>
+<pre> ...
+ db = QSqlDatabase::addDatabase(&quot;QODBC&quot;);
+ db.setDatabaseName(&quot;DRIVER={Microsoft Access Driver (*.mdb)};FIL={MS Access};DBQ=myaccessfile.mdb&quot;);
+ if (db.open()) {
+     <span class="comment">// success!</span>
+ }
+ ...</pre>
 <p>There is no default value.</p>
 <p>See also <a href="qsqldatabase.html#databaseName">databaseName</a>(), <a href="qsqldatabase.html#setUserName">setUserName</a>(), <a href="qsqldatabase.html#setPassword">setPassword</a>(), <a href="qsqldatabase.html#setHostName">setHostName</a>(), <a href="qsqldatabase.html#setPort">setPort</a>(), <a href="qsqldatabase.html#setConnectOptions">setConnectOptions</a>(), and <a href="qsqldatabase.html#open">open</a>().</p>
 <h3 class="fn"><a name="setHostName"></a>void QSqlDatabase::setHostName ( const <a href="qstring.html">QString</a> &amp; <i>host</i> )</h3>
@@ -403,10 +398,20 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qsqldatabase.html#setUserName">setUserName</a>().</p>
 <h3 class="fn"><a name="operator-eq"></a>QSqlDatabase &amp; QSqlDatabase::operator= ( const QSqlDatabase &amp; <i>other</i> )</h3>
 <p>Assigns <i>other</i> to this object.</p>
+<hr />
+<h2>Member Function Documentation</h2>
+<h3 class="fn"><a name="record-2"></a><a href="qsqlrecord.html">QSqlRecord</a> QSqlDatabase::record ( const <a href="qsqlquery.html">QSqlQuery</a> &amp; <i>query</i> ) const</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p>Use query.<a href="qsqldatabase.html#record">record</a>() instead.</p>
+<h3 class="fn"><a name="recordInfo"></a><a href="qsqlrecord.html">QSqlRecord</a> QSqlDatabase::recordInfo ( const <a href="qstring.html">QString</a> &amp; <i>tablename</i> ) const</h3>
+<p>Use <a href="qsqldatabase.html#record">record</a>() instead.</p>
+<h3 class="fn"><a name="recordInfo-2"></a><a href="qsqlrecord.html">QSqlRecord</a> QSqlDatabase::recordInfo ( const <a href="qsqlquery.html">QSqlQuery</a> &amp; <i>query</i> ) const</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p>Use query.<a href="qsqldatabase.html#record">record</a>() instead.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

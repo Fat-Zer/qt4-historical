@@ -21,8 +21,8 @@
 **
 ****************************************************************************/
 
-#ifndef QMAINWINDOW_H
-#define QMAINWINDOW_H
+#ifndef QDYNAMICMAINWINDOW_H
+#define QDYNAMICMAINWINDOW_H
 
 #include <QtGui/qwidget.h>
 
@@ -45,9 +45,13 @@ class Q_GUI_EXPORT QMainWindow : public QWidget
 
     Q_PROPERTY(QSize iconSize READ iconSize WRITE setIconSize)
     Q_PROPERTY(Qt::ToolButtonStyle toolButtonStyle READ toolButtonStyle WRITE setToolButtonStyle)
+#ifndef QT_NO_DOCKWIDGET
+    Q_PROPERTY(bool animated READ isAnimated WRITE setAnimated)
+    Q_PROPERTY(bool dockNestingEnabled READ isDockNestingEnabled WRITE setDockNestingEnabled)
+#endif
 
 public:
-    explicit QMainWindow(QWidget *parent = 0, Qt::WFlags flags = 0);
+    explicit QMainWindow(QWidget *parent = 0, Qt::WindowFlags flags = 0);
     ~QMainWindow();
 
     QSize iconSize() const;
@@ -56,9 +60,17 @@ public:
     Qt::ToolButtonStyle toolButtonStyle() const;
     void setToolButtonStyle(Qt::ToolButtonStyle toolButtonStyle);
 
+    bool isAnimated() const;
+    bool isDockNestingEnabled() const;
+
+    bool isSeparator(const QPoint &pos) const;
+
 #ifndef QT_NO_MENUBAR
     QMenuBar *menuBar() const;
     void setMenuBar(QMenuBar *menubar);
+
+    QWidget  *menuWidget() const;
+    void setMenuWidget(QWidget *menubar);
 #endif
 
 #ifndef QT_NO_STATUSBAR
@@ -69,8 +81,10 @@ public:
     QWidget *centralWidget() const;
     void setCentralWidget(QWidget *widget);
 
+#ifndef QT_NO_DOCKWIDGET
     void setCorner(Qt::Corner corner, Qt::DockWidgetArea area);
     Qt::DockWidgetArea corner(Qt::Corner corner) const;
+#endif
 
 #ifndef QT_NO_TOOLBAR
     void addToolBarBreak(Qt::ToolBarArea area = Qt::TopToolBarArea);
@@ -84,16 +98,17 @@ public:
 
     Qt::ToolBarArea toolBarArea(QToolBar *toolbar) const;
 #endif
-#ifndef QT_NO_DOCKWIDGET    
+#ifndef QT_NO_DOCKWIDGET
     void addDockWidget(Qt::DockWidgetArea area, QDockWidget *dockwidget);
     void addDockWidget(Qt::DockWidgetArea area, QDockWidget *dockwidget,
                        Qt::Orientation orientation);
     void splitDockWidget(QDockWidget *after, QDockWidget *dockwidget,
                          Qt::Orientation orientation);
+    void tabifyDockWidget(QDockWidget *first, QDockWidget *second);
     void removeDockWidget(QDockWidget *dockwidget);
 
     Qt::DockWidgetArea dockWidgetArea(QDockWidget *dockwidget) const;
-#endif // QT_NO_DOCKWIDGET    
+#endif // QT_NO_DOCKWIDGET
 
     QByteArray saveState(int version = 0) const;
     bool restoreState(const QByteArray &state, int version = 0);
@@ -103,7 +118,13 @@ public:
 #endif
 
 #ifdef QT3_SUPPORT
-    QT3_SUPPORT_CONSTRUCTOR QMainWindow(QWidget *parent, const char *name, Qt::WFlags flags = 0);
+    QT3_SUPPORT_CONSTRUCTOR QMainWindow(QWidget *parent, const char *name, Qt::WindowFlags flags = 0);
+#endif
+
+#ifndef QT_NO_DOCKWIDGET
+public Q_SLOTS:
+    void setAnimated(bool enabled);
+    void setDockNestingEnabled(bool enabled);
 #endif
 
 Q_SIGNALS:
@@ -123,4 +144,4 @@ private:
 
 QT_END_HEADER
 
-#endif // QMAINWINDOW_H
+#endif // QDYNAMICMAINWINDOW_H

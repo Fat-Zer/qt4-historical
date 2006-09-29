@@ -2,25 +2,19 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/doc/src/model-view-programming.qdoc -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/doc/src/model-view-programming.qdoc -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-x11-opensource-src-4.2.0/doc/src/model-view-programming.qdoc -->
 <head>
-    <title>Qt 4.1: Model/View Programming</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
-    <link rel="next" href="model-view-using.html" />
-    <link rel="start" href="index.html" />
+  <title>Qt 4.2: Model/View Programming</title>
+  <link rel="next" href="model-view-using.html" />
+  <link rel="start" href="index.html" />
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><p>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><p>
 [Next: <a href="model-view-using.html">Using Models and Views</a>]
 </p>
 <h1 align="center">Model/View Programming<br /><small></small></h1>
@@ -44,7 +38,7 @@ body { background: #ffffff; color: black; }</style>
 </blockquote>
 <p>If the view and the controller objects are combined, the result is the model/view architecture. This still separates the way that data is stored from the way that it is presented to the user, but provides a simpler framework based on the same principles. This separation makes it possible to display the same data in several different views, and to implement new types of views, without changing the underlying data structures. To allow flexible handling of user input, we introduce the concept of the <i>delegate</i>. The advantage of having a delegate in this framework is that it allows the way items of data are rendered and edited to be customized.</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" bgcolor="#f0f0f0"><td><img src="images/modelview-overview.png" /></td><td><b>The model/view architecture</b><p>The model communicates with a source of data, providing an <i>interface</i> for the other components in the architecture. The nature of the communication depends on the type of data source, and the way the model is implemented.</p>
+<tr valign="top" class="odd"><td><img src="images/modelview-overview.png" /></td><td><b>The model/view architecture</b><p>The model communicates with a source of data, providing an <i>interface</i> for the other components in the architecture. The nature of the communication depends on the type of data source, and the way the model is implemented.</p>
 <p>The view obtains <i>model indexes</i> from the model; these are references to items of data. By supplying model indexes to the model, the view can retrieve items of data from the data source.</p>
 <p>In standard views, a <i>delegate</i> renders the items of data. When an item is edited, the delegate communicates with the model directly using model indexes.</p>
 </td></tr>
@@ -177,6 +171,7 @@ body { background: #ffffff; color: black; }</style>
 <ul><li><a href="model-view-model-subclassing.html#read-only-access">Read-Only Access</a></li>
 <li><a href="model-view-model-subclassing.html#editable-items">Editable Items</a></li>
 <li><a href="model-view-model-subclassing.html#resizable-models">Resizable Models</a></li>
+<li><a href="model-view-model-subclassing.html#lazy-population-of-model-data">Lazy Population of Model Data</a></li>
 </ul>
 <li><a href="model-view-model-subclassing.html#navigation-and-model-index-creation">Navigation and Model Index Creation</a></li>
 <ul><li><a href="model-view-model-subclassing.html#parents-and-children">Parents and Children</a></li>
@@ -206,6 +201,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

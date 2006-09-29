@@ -2,31 +2,25 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/src/gui/painting/qprinter.cpp -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/src/gui/painting/qprinter.cpp -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-x11-opensource-src-4.2.0/src/gui/painting/qprinter.cpp -->
 <head>
-    <title>Qt 4.1: QPrintEngine Class Reference</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
+  <title>Qt 4.2: QPrintEngine Class Reference</title>
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QPrintEngine Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">QPrintEngine Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QPrintEngine class defines an interface for how <a href="qprinter.html">QPrinter</a> interacts with a given printing subsystem. <a href="#details">More...</a></p>
-<pre>#include &lt;QPrintEngine&gt;</pre><ul>
+<pre> #include &lt;QPrintEngine&gt;</pre><ul>
 <li><a href="qprintengine-members.html">List of all members, including inherited members</a></li>
 </ul>
 <a name="public-types"></a>
 <h3>Public Types</h3>
 <ul>
-<li><div class="fn"/>enum <b><a href="qprintengine.html#PrintEnginePropertyKey-enum">PrintEnginePropertyKey</a></b> { PPK_CollateCopies, PPK_ColorMode, PPK_Creator, PPK_DocumentName, ..., PPK_CustomBase }</li>
+<li><div class="fn"/>enum <b><a href="qprintengine.html#PrintEnginePropertyKey-enum">PrintEnginePropertyKey</a></b> { PPK_CollateCopies, PPK_ColorMode, PPK_Creator, PPK_Duplex, ..., PPK_CustomBase }</li>
 </ul>
 <a name="public-functions"></a>
 <h3>Public Functions</h3>
@@ -51,10 +45,12 @@ body { background: #ffffff; color: black; }</style>
 <p>This enum is used to communicate properties between the print engine and <a href="qprinter.html">QPrinter</a>. A property may or may not be supported by a given print engine.</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
-<tr><td valign="top"><tt>QPrintEngine::PPK_CollateCopies</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">A bool value describing wether the printout should be collated or not.</td></tr>
+<tr><td valign="top"><tt>QPrintEngine::PPK_CollateCopies</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">A boolean value indicating whether the printout should be collated or not.</td></tr>
 <tr><td valign="top"><tt>QPrintEngine::PPK_ColorMode</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Refers to <a href="qprinter.html#ColorMode-enum">QPrinter::ColorMode</a>, either color or monochrome.</td></tr>
-<tr><td valign="top"><tt>QPrintEngine::PPK_Creator</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">&nbsp;</td></tr>
+<tr><td valign="top"><tt>QPrintEngine::PPK_Creator</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">A string describing the document's creator.</td></tr>
+<tr><td valign="top"><tt>QPrintEngine::PPK_Duplex</tt></td><td align="center" valign="top"><tt>21</tt></td><td valign="top">A boolean value indicating whether both sides of the printer paper should be used for the printout.</td></tr>
 <tr><td valign="top"><tt>QPrintEngine::PPK_DocumentName</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">A string describing the document name in the spooler.</td></tr>
+<tr><td valign="top"><tt>QPrintEngine::PPK_FontEmbedding</tt></td><td align="center" valign="top"><tt>19</tt></td><td valign="top">A boolean value indicating whether data for the document's fonts should be embedded in the data sent to the printer.</td></tr>
 <tr><td valign="top"><tt>QPrintEngine::PPK_FullPage</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">A boolean describing if the printer should be full page or not.</td></tr>
 <tr><td valign="top"><tt>QPrintEngine::PPK_NumberOfCopies</tt></td><td align="center" valign="top"><tt>5</tt></td><td valign="top">An integer specifying the number of copies</td></tr>
 <tr><td valign="top"><tt>QPrintEngine::PPK_Orientation</tt></td><td align="center" valign="top"><tt>6</tt></td><td valign="top">Specifies a <a href="qprinter.html#Orientation-enum">QPrinter::Orientation</a> value.</td></tr>
@@ -69,8 +65,8 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QPrintEngine::PPK_Resolution</tt></td><td align="center" valign="top"><tt>15</tt></td><td valign="top">An integer describing the dots per inch for this printer.</td></tr>
 <tr><td valign="top"><tt>QPrintEngine::PPK_SelectionOption</tt></td><td align="center" valign="top"><tt>16</tt></td><td valign="top">&nbsp;</td></tr>
 <tr><td valign="top"><tt>QPrintEngine::PPK_SupportedResolutions</tt></td><td align="center" valign="top"><tt>17</tt></td><td valign="top">A list of integer QVariants describing the set of supported resolutions that the printer has.</td></tr>
-<tr><td valign="top"><tt>QPrintEngine::PPK_WindowsPageSize</tt></td><td align="center" valign="top"><tt>18</tt></td><td valign="top">An integer specifying a DM_PAPER entry on Windows.</td></tr>
 <tr><td valign="top"><tt>QPrintEngine::PPK_SuppressSystemPrintStatus</tt></td><td align="center" valign="top"><tt>20</tt></td><td valign="top">Suppress the built-in dialog for showing printing progress. As of 4.1 this only has effect on Mac OS X where, by default, a status dialog is shown.</td></tr>
+<tr><td valign="top"><tt>QPrintEngine::PPK_WindowsPageSize</tt></td><td align="center" valign="top"><tt>18</tt></td><td valign="top">An integer specifying a DM_PAPER entry on Windows.</td></tr>
 <tr><td valign="top"><tt>QPrintEngine::PPK_CustomBase</tt></td><td align="center" valign="top"><tt>0xff00</tt></td><td valign="top">Basis for extension.</td></tr>
 </table></p>
 <hr />
@@ -95,6 +91,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

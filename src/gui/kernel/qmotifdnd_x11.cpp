@@ -55,6 +55,8 @@ in doc/dnd.doc, where the documentation system can see it. */
 
 #ifndef QT_NO_DRAGANDDROP
 
+#include "qdebug.h"
+#include "qtextcodec.h"
 #include "qwidget.h"
 #include "qevent.h"
 #include "qt_x11_p.h"
@@ -64,9 +66,14 @@ in doc/dnd.doc, where the documentation system can see it. */
 
 #include <stdlib.h>
 
-static bool in_drop_site = false;
-static Window cur_window = 0;
-static QWidget *drop_widget = 0L;
+static Window sourceWindow = XNone;
+static QWidget *dropWidget = 0;
+static Qt::DropAction lastAcceptedAction = Qt::IgnoreAction;
+
+
+
+
+
 
 static Atom Dnd_selection = 0;
 static Time Dnd_selection_time;
@@ -100,6 +107,32 @@ static ushort num_src_targets ;
 #define DND_MOVE         (1L << 0)
 #define DND_COPY        (1L << 1)
 #define DND_LINK        (1L << 2)
+
+Qt::DropActions DndOperationsToQtDropActions(uchar op)
+{
+    Qt::DropActions actions = Qt::IgnoreAction;
+    if (op | DND_MOVE)
+        actions |= Qt::MoveAction;
+    if (op | DND_COPY)
+        actions |= Qt::CopyAction;
+    if (op | DND_LINK)
+        actions |= Qt::LinkAction;
+    return actions;
+}
+
+uchar QtDropActionToDndOperation(Qt::DropAction action)
+{
+    switch (action & Qt::ActionMask) {
+    case Qt::CopyAction:
+    default:
+        return DND_COPY;
+    case Qt::MoveAction:
+        return DND_MOVE;
+    case Qt::LinkAction:
+        return DND_LINK;
+    }
+}
+
 
 /* status */
 #define DND_NO_DROP_SITE        1
@@ -545,12 +578,12 @@ static DndTargetsTable TargetsTable(Display *display)
                              &type, &format, &size, &bytes_after,
                              (unsigned char **) &target_prop) != Success) ||
         type == XNone) {
-        qWarning("QMotifDND: cannot get property on motif window");
+        qWarning("QMotifDND: Cannot get property on Motif window");
         return 0;
     }
 
     if (target_prop->protocol_version != DND_PROTOCOL_VERSION) {
-        qWarning("QMotifDND: protocol mismatch");
+        qWarning("QMotifDND: Protocol mismatch");
     }
 
     if (target_prop->byte_order != DndByteOrder()) {
@@ -643,12 +676,6 @@ QByteArray QX11Data::motifdndFormat(int n)
     if (!motifdnd_active)
         return 0; // should not happen
 
-    if (n == 0)
-        return "text/plain";
-    if (n == 1)
-        return "text/uri-list";
-    n -= 2;
-
     if (n >= num_src_targets)
         return 0;
 
@@ -658,11 +685,12 @@ QByteArray QX11Data::motifdndFormat(int n)
         return "text/plain;charset=ISO-8859-1";
     if (target == ATOM(UTF8_STRING))
         return "text/plain;charset=UTF-8";
-    if (target == ATOM(TEXT) ||
-         target == ATOM(COMPOUND_TEXT))
+    if (target == ATOM(COMPOUND_TEXT))
+        return QByteArray("text/plain;charset=") + QTextCodec::codecForLocale()->name();
+    if (target == ATOM(TEXT))
         return "text/plain";
 
-    return X11->xdndAtomToString(target);
+    return ("x-motif-dnd/" + X11->xdndAtomToString(target));
 }
 
 
@@ -670,7 +698,7 @@ QByteArray QX11Data::motifdndObtainData(const char *mimeType)
 {
     QByteArray result;
 
-    if (Dnd_selection == 0)
+    if (Dnd_selection == 0 || !dropWidget)
         return result;
 
     // try to convert the selection to the requested property
@@ -685,52 +713,52 @@ QByteArray QX11Data::motifdndObtainData(const char *mimeType)
         n++;
     } while(qstricmp(mimeType, f.data()));
 
-    // found one
-    Atom conversion_type;
-
-    if (qstrnicmp(f, "text/", 5) == 0) {
-        // always convert text to XA_STRING for compatibility with
-        // prior Qt versions
+    Atom conversion_type = XNone;
+    if (f == "text/plain;charset=ISO-8859-1") {
         conversion_type = XA_STRING;
-    } else {
-        conversion_type = X11->xdndStringToAtom(f);
-        // qDebug("found format '%s' 0x%lx '%s'", f, conversion_type,
-        // X11->xdndAtomToString(conversion_type));
+    } else if (f == "text/plain;charset=UTF-8") {
+        conversion_type = ATOM(UTF8_STRING);
+    } else if (f == (QByteArray("text/plain;charset=") + QTextCodec::codecForLocale()->name())) {
+        conversion_type = ATOM(COMPOUND_TEXT);
+    } else if (f == "text/plain") {
+        conversion_type = ATOM(TEXT);
+    } else if (f.startsWith("x-motif-dnd/")) {
+        // strip off the "x-motif-dnd/" prefix
+        conversion_type = X11->xdndStringToAtom(f.remove(0, 12));
     }
 
-    if (XGetSelectionOwner(X11->display,
-                             Dnd_selection) == XNone) {
+    if (XGetSelectionOwner(X11->display, Dnd_selection) == XNone) {
         return result; // should never happen?
     }
 
-    QWidget* tw = drop_widget;
-    if ((drop_widget->windowType() == Qt::Desktop)) {
+    QWidget* tw = dropWidget;
+    if ((dropWidget->windowType() == Qt::Desktop)) {
         tw = new QWidget;
     }
 
     // convert selection to the appropriate type
     XConvertSelection (X11->display, Dnd_selection, conversion_type,
-                       Dnd_selection, tw->winId(), Dnd_selection_time);
+                       Dnd_selection, tw->internalWinId(), Dnd_selection_time);
 
     XFlush(X11->display);
 
     XEvent xevent;
-    bool got=X11->clipboardWaitForEvent(tw->winId(), SelectionNotify, &xevent, 5000);
+    bool got=X11->clipboardWaitForEvent(tw->internalWinId(), SelectionNotify, &xevent, 5000);
     if (got) {
         Atom type;
 
-        if (X11->clipboardReadProperty(tw->winId(), Dnd_selection, true, &result, 0, &type, 0, true)) {
+        if (X11->clipboardReadProperty(tw->internalWinId(), Dnd_selection, true, &result, 0, &type, 0, false)) {
         }
     }
 
     //   we have to convert selection in order to indicate success to the initiator
     XConvertSelection (X11->display, Dnd_selection, ATOM(XmTRANSFER_SUCCESS),
-                       Dnd_selection, tw->winId(), Dnd_selection_time);
+                       Dnd_selection, tw->internalWinId(), Dnd_selection_time);
 
     // wait again for SelectionNotify event
-    X11->clipboardWaitForEvent(tw->winId(), SelectionNotify, &xevent, 5000);
+    X11->clipboardWaitForEvent(tw->internalWinId(), SelectionNotify, &xevent, 5000);
 
-    if ((drop_widget->windowType() == Qt::Desktop)) {
+    if ((dropWidget->windowType() == Qt::Desktop)) {
         delete tw;
     }
 
@@ -740,13 +768,12 @@ QByteArray QX11Data::motifdndObtainData(const char *mimeType)
 
 void QX11Data::motifdndEnable(QWidget *widget, bool)
 {
-    DndWriteReceiverProperty(display, widget->winId(), DND_DRAG_DYNAMIC);
+    DndWriteReceiverProperty(display, widget->internalWinId(), DND_DRAG_DYNAMIC);
 }
 
 
-void QX11Data::motifdndHandle(QWidget * /* w */ , const XEvent * xe, bool /* passive */)
+void QX11Data::motifdndHandle(QWidget *widget, const XEvent * xe, bool /* passive */)
 {
-
     XEvent event = *xe;
     XClientMessageEvent cm ;
     DndData dnd_data ;
@@ -760,158 +787,219 @@ void QX11Data::motifdndHandle(QWidget * /* w */ , const XEvent * xe, bool /* pas
     switch (dnd_data.reason) {
 
     case DND_DRAG_MOTION:
-
         {
-            /* check if in drop site, and depending on the state,
-               send a drop site enter or drop site leave or echo */
+            QPoint p = widget->mapFromGlobal(QPoint(dnd_data.x, dnd_data.y));
+            QWidget *c = widget->childAt(p);
 
-            QPoint p(dnd_data.x, dnd_data.y);
-            QWidget *c = QApplication::widgetAt(p);
-            if (c)
-                p = c->mapFromGlobal(p);
+            if (!c || !c->acceptDrops()) {
+                // not over a drop site
+                if (dropWidget) {
+                    QDragLeaveEvent dragLeaveEvent;
+                    QApplication::sendEvent(dropWidget, &dragLeaveEvent);
 
-            while (c && !c->acceptDrops() && !c->isWindow()) {
-                p = c->mapToParent(p);
-                c = c->parentWidget();
-            }
+                    dropWidget = 0;
+                    lastAcceptedAction = Qt::IgnoreAction;
 
-            QDragMoveEvent me(p, Qt::CopyAction, QDragManager::self()->dropData, QApplication::mouseButtons(), QApplication::keyboardModifiers());
-
-            if (c != 0L && c->acceptDrops()) {
-
-                if (drop_widget != 0L && drop_widget->acceptDrops() &&
-                     drop_widget != c) {
-                    QDragLeaveEvent e;
-                    QApplication::sendEvent(drop_widget, &e);
-                    QDragEnterEvent de(p, Qt::CopyAction, QDragManager::self()->dropData, QApplication::mouseButtons(), QApplication::keyboardModifiers());
-                    QApplication::sendEvent(c, &de);
-                }
-
-                drop_widget = c;
-
-                if (!in_drop_site) {
-                    in_drop_site = True ;
-
-                    dnd_data.reason = DND_DROP_SITE_ENTER ;
-                    dnd_data.time = CurrentTime ;
-                    dnd_data.operation = DND_MOVE|DND_COPY;
-                    dnd_data.operations = DND_MOVE|DND_COPY;
-
-                    DndFillClientMessage (event.xclient.display,
-                                          cur_window,
-                                          &cm, &dnd_data, 0);
-
-                    XSendEvent(event.xbutton.display,
-                               cur_window, False, 0,
-                               (XEvent *)&cm) ;
-
-                    QDragEnterEvent de(p, Qt::CopyAction, QDragManager::self()->dropData, QApplication::mouseButtons(), QApplication::keyboardModifiers());
-                    QApplication::sendEvent(drop_widget, &de);
-                    if (de.isAccepted()) {
-                        me.accept(de.answerRect());
-                    } else {
-                        me.ignore(de.answerRect());
-                    }
-
+                    dnd_data.reason = DND_DROP_SITE_LEAVE;
+                    dnd_data.time = X11->time;
+                    DndFillClientMessage (event.xclient.display, sourceWindow, &cm, &dnd_data, receiver);
+                    XSendEvent(event.xbutton.display, sourceWindow, False, 0, (XEvent *)&cm) ;
                 } else {
-                    dnd_data.reason = DND_DRAG_MOTION ;
-                    dnd_data.time = CurrentTime ;
-                    dnd_data.operation = DND_MOVE|DND_COPY;
-                    dnd_data.operations = DND_MOVE|DND_COPY;
-
-                    DndFillClientMessage (event.xclient.display,
-                                          cur_window,
-                                          &cm, &dnd_data, 0);
-
-                    XSendEvent(event.xbutton.display,
-                               cur_window, False, 0,
-                               (XEvent *)&cm) ;
-
-                    QApplication::sendEvent(drop_widget, &me);
+                    dnd_data.reason = DND_DRAG_MOTION;
+                    dnd_data.status = DND_NO_DROP_SITE;
+                    dnd_data.time = X11->time;
+                    dnd_data.operation = DND_NOOP;
+                    dnd_data.operations = DND_NOOP;
+                    DndFillClientMessage (event.xclient.display, sourceWindow, &cm, &dnd_data, receiver);
+                    XSendEvent(event.xbutton.display, sourceWindow, False, 0, (XEvent *)&cm) ;
                 }
             } else {
-                if (in_drop_site) {
-                    in_drop_site = False ;
+                Q_ASSERT(c != 0);
+                p = c->mapFrom(widget, p);
 
-                    dnd_data.reason = DND_DROP_SITE_LEAVE ;
-                    dnd_data.time = CurrentTime ;
+                if (dropWidget != c) {
+                    if (dropWidget) {
+                        QDragLeaveEvent le;
+                        QApplication::sendEvent(dropWidget, &le);
+                    }
 
-                    DndFillClientMessage (event.xclient.display,
-                                          cur_window,
-                                          &cm, &dnd_data, 0);
+                    dropWidget = c;
+                    lastAcceptedAction = Qt::IgnoreAction;
 
-                    XSendEvent(event.xbutton.display,
-                               cur_window, False, 0,
-                               (XEvent *)&cm) ;
+                    const Qt::DropActions possibleActions =
+                        DndOperationsToQtDropActions(dnd_data.operations);
+                    QDragEnterEvent de(p, possibleActions, QDragManager::self()->dropData,
+                                       QApplication::mouseButtons(), QApplication::keyboardModifiers());
+                    QApplication::sendEvent(dropWidget, &de);
 
-                    QDragLeaveEvent e;
-                    QApplication::sendEvent(drop_widget, &e);
+                    dnd_data.reason = DND_DROP_SITE_ENTER;
+                    dnd_data.time = X11->time;
+                    if (de.isAccepted()) {
+                        lastAcceptedAction = de.dropAction();
+
+                        dnd_data.status = DND_VALID_DROP_SITE;
+                        dnd_data.operation = QtDropActionToDndOperation(lastAcceptedAction);
+                    } else {
+                        dnd_data.status = DND_INVALID_DROP_SITE;
+                        dnd_data.operation = DND_NOOP;
+                        dnd_data.operations = DND_NOOP;
+                    }
+                    DndFillClientMessage (event.xclient.display, sourceWindow, &cm, &dnd_data, receiver);
+                    XSendEvent(event.xbutton.display, sourceWindow, False, 0, (XEvent *)&cm);
+                } else {
+                    const Qt::DropActions possibleActions =
+                        DndOperationsToQtDropActions(dnd_data.operations);
+                    QDragMoveEvent me(p, possibleActions, QDragManager::self()->dropData,
+                                      QApplication::mouseButtons(), QApplication::keyboardModifiers());
+                    if (lastAcceptedAction != Qt::IgnoreAction) {
+                        me.setDropAction(lastAcceptedAction);
+                        me.accept();
+                    }
+                    QApplication::sendEvent(dropWidget, &me);
+
+                    dnd_data.reason = DND_DRAG_MOTION;
+                    dnd_data.time = X11->time;
+
+                    if (me.isAccepted()) {
+                        lastAcceptedAction = me.dropAction();
+
+                        dnd_data.status = DND_VALID_DROP_SITE;
+                        dnd_data.operation = QtDropActionToDndOperation(lastAcceptedAction);
+                    } else {
+                        dnd_data.status = DND_INVALID_DROP_SITE;
+                        dnd_data.operation = DND_NOOP;
+                        dnd_data.operations = DND_NOOP;
+                    }
+
+                    DndFillClientMessage (event.xclient.display, sourceWindow, &cm, &dnd_data, receiver);
+                    XSendEvent(event.xbutton.display, sourceWindow, False, 0, (XEvent *)&cm);
                 }
             }
+
+            break;
         }
-        break;
 
     case DND_TOP_LEVEL_ENTER:
+        {
+            /* get the size of our drop site for later use */
 
-        /* get the size of our drop site for later use */
+            motifdnd_active = true;
+            sourceWindow = dnd_data.src_window;
 
-        cur_window = dnd_data.src_window ;
-        motifdnd_active = true;
+            /* no answer needed, just read source property */
+            DndReadSourceProperty (event.xclient.display,
+                                   sourceWindow,
+                                   dnd_data.property,
+                                   &src_targets, &num_src_targets);
 
-        /* no answer needed, just read source property */
-        DndReadSourceProperty (event.xclient.display,
-                               cur_window,
-                               dnd_data.property,
-                               &src_targets, &num_src_targets);
-        break;
+            break;
+        }
 
     case DND_TOP_LEVEL_LEAVE:
-        /* no need to do anything */
-        break;
+        {
+            XEvent nextEvent;
+            if (XCheckTypedWindowEvent(X11->display, widget->winId(), ClientMessage, &nextEvent)) {
+                // we just want to check, not eat (should use XPeekIfEvent)
+                XPutBackEvent(X11->display, &nextEvent);
+
+                if (DndParseClientMessage (&nextEvent.xclient, &dnd_data, &receiver)
+                    && dnd_data.reason == DND_DROP_START) {
+                    // expecting drop next, keeping DnD alive
+                    break;
+                }
+            }
+
+            // not expecting drop, need to send drag leave events and such here
+            if (dropWidget) {
+                QDragLeaveEvent le;
+                QApplication::sendEvent(dropWidget, &le);
+            }
+
+            sourceWindow = XNone;
+            dropWidget = 0;
+            lastAcceptedAction = Qt::IgnoreAction;
+
+            motifdnd_active = false;
+
+            break;
+        }
 
     case DND_OPERATION_CHANGED:
-        /* need to echo */
+        // ### need to echo
         break;
 
     case DND_DROP_START:
-        if (!in_drop_site) {
-            // we have to convert selection in order to indicate failure to the initiator
-            XConvertSelection (X11->display, dnd_data.property, ATOM(XmTRANSFER_FAILURE),
-                               dnd_data.property, cur_window, dnd_data.time);
+        {
+            Q_ASSERT(motifdnd_active);
+            Q_ASSERT(sourceWindow == dnd_data.src_window);
 
-            if (drop_widget) {
-                QDragLeaveEvent e;
-                QApplication::sendEvent(drop_widget, &e);
-                drop_widget = 0;
+            if (!dropWidget || lastAcceptedAction == Qt::IgnoreAction) {
+                // echo DROP_START
+                dnd_data.reason = DND_DROP_START;
+                dnd_data.status = DND_NO_DROP_SITE;
+                dnd_data.operation = DND_NOOP;
+                dnd_data.operations = DND_NOOP;
+                DndFillClientMessage (event.xclient.display, sourceWindow, &cm, &dnd_data, 0);
+                XSendEvent(event.xbutton.display, sourceWindow, False, 0, (XEvent *)&cm);
+
+                // we have to convert selection in order to indicate failure to the initiator
+                XConvertSelection (X11->display, dnd_data.property, ATOM(XmTRANSFER_FAILURE),
+                                   dnd_data.property, dnd_data.src_window, dnd_data.time);
+
+                if (dropWidget) {
+                    QDragLeaveEvent e;
+                    QApplication::sendEvent(dropWidget, &e);
+                }
+
+                motifdnd_active = false;
+                sourceWindow = XNone;
+                dropWidget = 0;
+                lastAcceptedAction = Qt::IgnoreAction;
+
+                return;
             }
 
-            return;
+            // store selection and its time
+            Dnd_selection = dnd_data.property;
+            Dnd_selection_time = dnd_data.time;
+
+            QPoint p(dnd_data.x, dnd_data.y);
+            QDropEvent de(dropWidget->mapFromGlobal(p), Qt::CopyAction, QDragManager::self()->dropData,
+                          QApplication::mouseButtons(), QApplication::keyboardModifiers());
+            if (lastAcceptedAction != Qt::IgnoreAction) {
+                de.setDropAction(lastAcceptedAction);
+                de.accept();
+            }
+            QApplication::sendEvent(dropWidget, &de);
+
+            // reset
+            Dnd_selection = XNone;
+            Dnd_selection_time = 0;
+
+            // echo DROP_START depending on the result of the dropEvent
+            if (de.isAccepted()) {
+                dnd_data.reason = DND_DROP_START;
+                dnd_data.status = DND_VALID_DROP_SITE;
+                dnd_data.operation = QtDropActionToDndOperation(de.dropAction());
+            } else {
+                dnd_data.reason = DND_DROP_START;
+                dnd_data.status = DND_NO_DROP_SITE;
+                dnd_data.operation = DND_NOOP;
+                dnd_data.operations = DND_NOOP;
+            }
+            DndFillClientMessage (event.xclient.display, sourceWindow, &cm, &dnd_data, 0);
+            XSendEvent(event.xbutton.display, sourceWindow, False, 0, (XEvent *)&cm);
+
+            sourceWindow = XNone;
+            dropWidget = 0;
+            lastAcceptedAction = Qt::IgnoreAction;
+
+            motifdnd_active = false;
+
+            break;
         }
 
-        /* need to echo and then request a convert */
-        dnd_data.reason = DND_DROP_START ;
-
-        DndFillClientMessage (event.xclient.display,
-                              drop_widget->winId(),
-                              &cm, &dnd_data, 0);
-
-        XSendEvent(event.xbutton.display,
-                   cur_window, False, 0,
-                   (XEvent *)&cm) ;
-
-        // store selection and its time
-        Dnd_selection = dnd_data.property;
-        Dnd_selection_time = dnd_data.time;
-
-        QPoint p(dnd_data.x, dnd_data.y);
-        QDropEvent de(drop_widget->mapFromGlobal(p), Qt::CopyAction, QDragManager::self()->dropData, QApplication::mouseButtons(), QApplication::keyboardModifiers());
-        QApplication::sendEvent(drop_widget, &de);
-
-        if (in_drop_site)
-            in_drop_site = False ;
-
-        drop_widget = 0;
-        cur_window = 0;
+    default:
         break;
     }   //  end of switch (dnd_data.reason)
 }

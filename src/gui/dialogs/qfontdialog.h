@@ -43,6 +43,8 @@ class Q_GUI_EXPORT QFontDialog: public QDialog
     Q_DECLARE_PRIVATE(QFontDialog)
 
 public:
+    // ### Qt5: merge overloads
+    static QFont getFont(bool *ok, const QFont &def, QWidget* parent, const QString &caption);
     static QFont getFont(bool *ok, const QFont &def, QWidget* parent=0);
     static QFont getFont(bool *ok, QWidget* parent=0);
 
@@ -56,7 +58,7 @@ public:
 private:
     static QFont getFont(bool *ok, const QFont *def, QWidget* parent=0);
 
-    explicit QFontDialog(QWidget* parent=0, bool modal=false, Qt::WFlags f=0);
+    explicit QFontDialog(QWidget* parent=0, bool modal=false, Qt::WindowFlags f=0);
     ~QFontDialog();
 
     QFont font() const;

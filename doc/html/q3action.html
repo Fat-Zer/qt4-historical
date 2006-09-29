@@ -2,25 +2,19 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/src/qt3support/widgets/q3action.cpp -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/src/qt3support/widgets/q3action.cpp -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-x11-opensource-src-4.2.0/src/qt3support/widgets/q3action.cpp -->
 <head>
-    <title>Qt 4.1: Q3Action Class Reference</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
+  <title>Qt 4.2: Q3Action Class Reference</title>
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Q3Action Class Reference<br /><sup><sup>[<a href="qt3support.html">Qt3Support</a> module]</sup></sup></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">Q3Action Class Reference<br /><sup><sup>[<a href="qt3support.html">Qt3Support</a> module]</sup></sup></h1>
 <p>The Q3Action class provides an abstract user interface action that can appear both in menus and tool bars. <a href="#details">More...</a></p>
-<pre>#include &lt;Q3Action&gt;</pre><p><b>This class is part of the Qt 3 support library.</b> It is provided to keep old source code working. We strongly advise against using it in new code. See <a href="porting4.html#qaction">Porting to Qt 4</a> for more information.</p>
+<pre> #include &lt;Q3Action&gt;</pre><p><b>This class is part of the Qt 3 support library.</b> It is provided to keep old source code working. We strongly advise against using it in new code. See <a href="porting4.html#qaction">Porting to Qt 4</a> for more information.</p>
 <p>Inherits <a href="qobject.html">QObject</a>.</p>
 <p>Inherited by <a href="q3actiongroup.html">Q3ActionGroup</a>.</p>
 <ul>
@@ -81,7 +75,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>QString <b><a href="q3action.html#whatsThis-prop">whatsThis</a></b> () const</li>
 </ul>
 <ul>
-<li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
+<li><div class="fn"/>29 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 </ul>
 <a name="public-slots"></a>
 <h3>Public Slots</h3>
@@ -116,7 +110,7 @@ body { background: #ffffff; color: black; }</style>
 </ul>
 <h3>Additional Inherited Members</h3>
 <ul>
-<li><div class="fn"/>4 static public members inherited from <a href="qobject.html#static-public-members">QObject</a></li>
+<li><div class="fn"/>5 static public members inherited from <a href="qobject.html#static-public-members">QObject</a></li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -125,7 +119,7 @@ body { background: #ffffff; color: black; }</style>
 <p>In GUI applications many commands can be invoked via a menu option, a toolbar button and a keyboard accelerator. Since the same action must be performed regardless of how the action was invoked, and since the menu and toolbar should be kept in sync, it is useful to represent a command as an <i>action</i>. An action can be added to a menu and a toolbar and will automatically keep them in sync. For example, if the user presses a Bold toolbar button the Bold menu item will automatically be checked.</p>
 <p>A Q3Action may contain an icon, a menu text, an accelerator, a status text, a &quot;What's This?&quot; text and a tool tip. Most of these can be set in the constructor. They can also be set independently with <a href="q3action.html#iconSet-prop">setIconSet</a>(), <a href="q3action.html#text-prop">setText</a>(), <a href="q3action.html#menuText-prop">setMenuText</a>(), <a href="q3action.html#toolTip-prop">setToolTip</a>(), <a href="q3action.html#statusTip-prop">setStatusTip</a>(), <a href="q3action.html#whatsThis-prop">setWhatsThis</a>() and <a href="q3action.html#accel-prop">setAccel</a>().</p>
 <p>An action may be a toggle action e.g. a Bold toolbar button, or a command action, e.g. 'Open File' to invoke an open file dialog. Toggle actions emit the <a href="q3action.html#toggled">toggled</a>() signal when their state changes. Both command and toggle actions emit the <a href="q3action.html#activated">activated</a>() signal when they are invoked. Use <a href="q3action.html#toggleAction-prop">setToggleAction</a>() to set an action's toggled status. To see if an action is a toggle action use <a href="q3action.html#toggleAction-prop">isToggleAction</a>(). A toggle action may be &quot;on&quot;, <a href="q3action.html#on-prop">isOn</a>() returns true, or &quot;off&quot;, <a href="q3action.html#on-prop">isOn</a>() returns false.</p>
-<p>Actions are added to widgets (menus or toolbars) using <a href="q3action.html#addTo">addTo</a>(), and removed using <a href="q3action.html#removeFrom">removeFrom</a>().</p>
+<p>Actions are added to widgets (menus or toolbars) using <a href="q3action.html#addTo">addTo</a>(), and removed using <a href="q3action.html#removeFrom">removeFrom</a>(). Note that when using <a href="q3toolbar.html">Q3ToolBar</a> and <a href="q3popupmenu.html">Q3PopupMenu</a>, their actions must be Q3Actions.</p>
 <p>Once a Q3Action has been created it should be added to the relevant menu and toolbar and then connected to the slot which will perform the action.</p>
 <p>We recommend that actions are created as children of the window that they are used in. In most cases actions will be children of the application's main window.</p>
 <p>To prevent recursion, don't create an action as a child of a widget that the action is later added to.</p>
@@ -307,6 +301,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

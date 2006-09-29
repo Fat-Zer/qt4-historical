@@ -50,11 +50,13 @@ class QWidget;
 class QLayout;
 class QDesignerFormEditorInterface;
 class QDesignerCustomWidgetInterface;
+class QDesignerFormWindowInterface;
 
 namespace qdesigner_internal {
 
 class QDESIGNER_SHARED_EXPORT WidgetFactory: public QDesignerWidgetFactoryInterface
 {
+    Q_OBJECT
 public:
     WidgetFactory(QDesignerFormEditorInterface *core, QObject *parent = 0);
     ~WidgetFactory();
@@ -72,12 +74,15 @@ public:
 
     static const char* classNameOf(QObject* o);
 
+    QDesignerFormWindowInterface *currentFormWindow(QDesignerFormWindowInterface *fw);
+
 public slots:
     void loadPlugins();
 
 private:
     QDesignerFormEditorInterface *m_core;
     QMap<QString, QDesignerCustomWidgetInterface*> m_customFactory;
+    QDesignerFormWindowInterface *m_formWindow;
 
     static QPointer<QWidget> *m_lastPassiveInteractor;
     static bool m_lastWasAPassiveInteractor;

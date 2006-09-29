@@ -49,6 +49,8 @@ class Q_GUI_EXPORT QAbstractButton : public QWidget
     Q_PROPERTY(bool checked READ isChecked WRITE setChecked NOTIFY toggled USER true)
     Q_PROPERTY(bool autoRepeat READ autoRepeat WRITE setAutoRepeat)
     Q_PROPERTY(bool autoExclusive READ autoExclusive WRITE setAutoExclusive)
+    Q_PROPERTY(int autoRepeatDelay READ autoRepeatDelay WRITE setAutoRepeatDelay)
+    Q_PROPERTY(int autoRepeatInterval READ autoRepeatInterval WRITE setAutoRepeatInterval)
     Q_PROPERTY(bool down READ isDown WRITE setDown DESIGNABLE false)
 
 public:
@@ -78,6 +80,12 @@ public:
 
     void setAutoRepeat(bool);
     bool autoRepeat() const;
+
+    void setAutoRepeatDelay(int);
+    int autoRepeatDelay() const;
+
+    void setAutoRepeatInterval(int);
+    int autoRepeatInterval() const;
 
     void setAutoExclusive(bool);
     bool autoExclusive() const;
@@ -118,11 +126,11 @@ protected:
 
 #ifdef QT3_SUPPORT
 public:
-    QT3_SUPPORT_CONSTRUCTOR QAbstractButton(QWidget *parent, const char *name, Qt::WFlags f=0);
+    QT3_SUPPORT_CONSTRUCTOR QAbstractButton(QWidget *parent, const char *name, Qt::WindowFlags f=0);
     inline QT3_SUPPORT bool isOn() const { return isChecked(); }
     inline QT3_SUPPORT const QPixmap *pixmap() const { return 0; } // help styles compile
-    inline QT3_SUPPORT void setPixmap( const QPixmap &p ) { 
-        setIcon(QIcon(p)); 
+    inline QT3_SUPPORT void setPixmap( const QPixmap &p ) {
+        setIcon(QIcon(p));
         setIconSize(p.size());
     }
     QT3_SUPPORT QIcon *iconSet() const;

@@ -62,9 +62,6 @@ public:
 
     QMenu *menu;
 
-protected:
-    virtual void polishEvent(QEvent *);
-
 private:
     void allow(Qt::ToolBarArea area, bool allow);
     void place(Qt::ToolBarArea area, bool place);
@@ -86,6 +83,8 @@ private slots:
     void placeRight(bool p);
     void placeTop(bool p);
     void placeBottom(bool p);
+
+    void updateMenu();
 
 };
 

@@ -53,8 +53,9 @@ class QPainterPath;
 class QTextEngine;
 struct QGlyphLayout;
 
-class QFontEngine
+class Q_GUI_EXPORT QFontEngine : public QObject
 {
+    Q_OBJECT
 public:
     enum Type {
         Box,
@@ -75,7 +76,7 @@ public:
         TestFontEngine = 0x1000
     };
 
-    inline QFontEngine() {
+    inline QFontEngine() : QObject(0) {
         ref = 0;
         cache_count = 0;
         fsType = 0;
@@ -83,6 +84,7 @@ public:
         script_cache = 0;
         cmap = 0;
 #endif
+        symbol = false;
     }
     virtual ~QFontEngine();
 
@@ -135,6 +137,7 @@ public:
 
     virtual void addOutlineToPath(qreal, qreal, const QGlyphLayout *, int, QPainterPath *, QTextItem::RenderFlags flags);
     void addBitmapFontToPath(qreal x, qreal y, const QGlyphLayout *, int, QPainterPath *, QTextItem::RenderFlags);
+    virtual QImage alphaMapForGlyph(glyph_t);
 
     virtual glyph_metrics_t boundingBox(const QGlyphLayout *glyphs, int numGlyphs) = 0;
     virtual glyph_metrics_t boundingBox(glyph_t glyph) = 0;
@@ -143,6 +146,7 @@ public:
     virtual QFixed descent() const = 0;
     virtual QFixed leading() const = 0;
     virtual QFixed xHeight() const;
+    virtual QFixed averageCharWidth() const;
 
     virtual QFixed lineThickness() const;
     virtual QFixed underlinePosition() const;
@@ -161,7 +165,8 @@ public:
     QFontDef fontDef;
     uint cache_cost; // amount of mem used in kb by the font
     int cache_count;
-    uint fsType;
+    uint fsType : 16;
+    uint symbol : 1;
 
 #ifdef Q_WS_WIN
     int getGlyphIndexes(const QChar *ch, int numChars, QGlyphLayout *glyphs, bool mirrored) const;
@@ -173,7 +178,6 @@ public:
     uint        stockFont   : 1;
     uint        useTextOutA : 1;
     uint        ttf         : 1;
-    uint        symbol      : 1;
     union {
         TEXTMETRICW        w;
         TEXTMETRICA        a;
@@ -190,6 +194,7 @@ public:
     QVector<KernPair> kerning_pairs;
     QFixed designToDevice;
     int unitsPerEm;
+    QFixed x_height;
     FaceId _faceId;
     mutable int synthesized_flags;
     mutable QFixed lineWidth;
@@ -372,6 +377,7 @@ public:
     QFixed descent() const;
     QFixed leading() const;
     QFixed xHeight() const;
+    QFixed averageCharWidth() const;
 
     QFixed lineThickness() const;
     QFixed underlinePosition() const;
@@ -422,6 +428,7 @@ public:
     virtual QFixed leading() const;
     virtual QFixed xHeight() const;
     virtual qreal maxCharWidth() const;
+    virtual QFixed averageCharWidth() const;
 
     virtual void addGlyphsToPath(glyph_t *glyphs, QFixedPoint *positions, int numGlyphs,
                                  QPainterPath *path, QTextItem::RenderFlags);
@@ -440,6 +447,7 @@ public:
     virtual QByteArray getSfntTable(uint tag) const;
     virtual Properties properties() const;
     virtual void getUnscaledGlyph(glyph_t glyph, QPainterPath *path, glyph_metrics_t *metrics);
+    virtual QImage alphaMapForGlyph(glyph_t);
 
 private:
     FMFont fmFont;

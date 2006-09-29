@@ -58,6 +58,14 @@
     \skipto singleShot
     \printline singleShot
 
+    In multithreaded applications, you can use QTimer in any thread
+    that has an event loop. To start an event loop from a non-GUI
+    thread, use QThread::exec(). Qt uses the the timer's
+    \l{QObject::thread()}{thread affinity} to determine which thread
+    will emit the \l{QTimer::}{timeout()} signal. Because of this, you
+    must start and stop the timer in its thread; it is not possible to
+    start a timer from another thread.
+
     As a special case, a QTimer with a timeout of 0 will time out as
     soon as all the events in the window system's event queue have
     been processed. This can be used to do heavy work while providing
@@ -78,14 +86,6 @@
     more and more platforms, and we expect that zero-millisecond
     QTimers will gradually be replaced by \l{QThread}s.
 
-    In multithreaded applications, you can use QTimer in any thread
-    that has an event loop. To start an event loop from a non-GUI
-    thread, use QThread::exec(). Qt uses the the timer's
-    \l{QObject::thread()}{thread affinity} to determine which thread
-    will emit the \l{QTimer::}{timeout()} signal. Because of this, you
-    must start and stop the timer in its thread; it is not possible to
-    start a timer from another thread.
-
     Note that QTimer's accuracy depends on the underlying operating
     system and hardware. Most platforms support an accuracy of
     1 millisecond, but Windows 98 supports only 55. If Qt is
@@ -100,13 +100,13 @@
 
     Another alternative to using QTimer is to use QBasicTimer. It is
     typically less cumbersome than using QObject::startTimer()
-    directly. See \l{timers.html}{Timers} for an overview of all
-    three approaches.
+    directly. See \l{Timers} for an overview of all three approaches.
 
     Some operating systems limit the number of timers that may be
     used; Qt tries to work around these limitations.
 
-    \sa QBasicTimer, QTimerEvent, QObject::timerEvent(), Timers
+    \sa QBasicTimer, QTimerEvent, QObject::timerEvent(), Timers,
+        {Analog Clock Example}, {Wiggly Example}
 */
 
 

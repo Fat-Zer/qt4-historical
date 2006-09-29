@@ -2,26 +2,20 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/doc/src/qt4-network.qdoc -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/doc/src/qt4-network.qdoc -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-x11-opensource-src-4.2.0/doc/src/qt4-network.qdoc -->
 <head>
-    <title>Qt 4.1: The Network Module in Qt 4</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
-    <link rel="prev" href="qt4-sql.html" />
-    <link rel="contents" href="qt4-intro.html" />
-    <link rel="next" href="qt4-styles.html" />
+  <title>Qt 4.2: The Network Module in Qt 4</title>
+  <link rel="prev" href="qt4-sql.html" />
+  <link rel="contents" href="qt4-intro.html" />
+  <link rel="next" href="qt4-styles.html" />
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><p>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><p>
 [Previous: <a href="qt4-sql.html">The Qt 4 Database GUI Layer</a>]
 [<a href="qt4-intro.html">Home</a>]
 [Next: <a href="qt4-styles.html">The Qt 4 Style API</a>]
@@ -65,121 +59,122 @@ body { background: #ffffff; color: black; }</style>
 <a name="tcp-client"></a>
 <h3>TCP Client</h3>
 <p>The first example illustrates how to write a TCP client using <a href="qtcpsocket.html">QTcpSocket</a>. The client talks to a fortune server that provides fortune to the user. Here's how to set up the socket:</p>
-<pre>&nbsp;       tcpSocket = new QTcpSocket(this);
+<pre>     tcpSocket = new QTcpSocket(this);
 
-        connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(readFortune()));
-        connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(displayError(QAbstractSocket::SocketError)));</pre>
+     connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(readFortune()));
+     connect(tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)),
+             this, SLOT(displayError(QAbstractSocket::SocketError)));</pre>
 <p>When the user requests a new fortune, the client establishes a connection to the server:</p>
-<pre>&nbsp;       tcpSocket-&gt;connectToHost(hostLineEdit-&gt;text(),
-                                 portLineEdit-&gt;text().toInt());</pre>
+<pre>     tcpSocket-&gt;connectToHost(hostLineEdit-&gt;text(),
+                              portLineEdit-&gt;text().toInt());</pre>
 <p>When the server answers, the following code is executed to read the data from the socket:</p>
-<pre>&nbsp;       QDataStream in(tcpSocket);
-        in.setVersion(QDataStream::Qt_4_0);
+<pre>     QDataStream in(tcpSocket);
+     in.setVersion(QDataStream::Qt_4_0);
 
-        if (blockSize == 0) {
-            if (tcpSocket-&gt;bytesAvailable() &lt; (int)sizeof(quint16))
-                return;
+     if (blockSize == 0) {
+         if (tcpSocket-&gt;bytesAvailable() &lt; (int)sizeof(quint16))
+             return;
 
-            in &gt;&gt; blockSize;
-        }
+         in &gt;&gt; blockSize;
+     }
 
-        if (tcpSocket-&gt;bytesAvailable() &lt; blockSize)
-            return;
+     if (tcpSocket-&gt;bytesAvailable() &lt; blockSize)
+         return;
 
-        QString nextFortune;
-        in &gt;&gt; nextFortune;
+     QString nextFortune;
+     in &gt;&gt; nextFortune;
 
-        if (nextFortune == currentFortune) {
-            QTimer::singleShot(0, this, SLOT(requestNewFortune()));
-            return;
-        }
+     if (nextFortune == currentFortune) {
+         QTimer::singleShot(0, this, SLOT(requestNewFortune()));
+         return;
+     }
 
-        currentFortune = nextFortune;</pre>
+     currentFortune = nextFortune;</pre>
 <p>The server's answer starts with a <i>size</i> field (which we store in <tt>blockSize</tt>), followed by <i>size</i> bytes of data. If the client hasn't received all the data yet, it waits for the server to send more.</p>
 <p>An alternative approach is to use a blocking socket. The code can then be concentrated in one function:</p>
-<pre>&nbsp;           const int Timeout = 5 * 1000;
+<pre>         const int Timeout = 5 * 1000;
 
-            QTcpSocket socket;
-            socket.connectToHost(serverName, serverPort);
+         QTcpSocket socket;
+         socket.connectToHost(serverName, serverPort);
 
-            if (!socket.waitForConnected(Timeout)) {
-                emit error(socket.error(), socket.errorString());
-                return;
-            }
+         if (!socket.waitForConnected(Timeout)) {
+             emit error(socket.error(), socket.errorString());
+             return;
+         }
 
-            while (socket.bytesAvailable() &lt; (int)sizeof(quint16)) {
-                if (!socket.waitForReadyRead(Timeout)) {
-                    emit error(socket.error(), socket.errorString());
-                    return;
-                }
-            }
+         while (socket.bytesAvailable() &lt; (int)sizeof(quint16)) {
+             if (!socket.waitForReadyRead(Timeout)) {
+                 emit error(socket.error(), socket.errorString());
+                 return;
+             }
+         }
 
-            quint16 blockSize;
-            QDataStream in(&amp;socket);
-            in.setVersion(QDataStream::Qt_4_0);
-            in &gt;&gt; blockSize;
+         quint16 blockSize;
+         QDataStream in(&amp;socket);
+         in.setVersion(QDataStream::Qt_4_0);
+         in &gt;&gt; blockSize;
 
-            while (socket.bytesAvailable() &lt; blockSize) {
-                if (!socket.waitForReadyRead(Timeout)) {
-                    emit error(socket.error(), socket.errorString());
-                    return;
-                }
-            }
+         while (socket.bytesAvailable() &lt; blockSize) {
+             if (!socket.waitForReadyRead(Timeout)) {
+                 emit error(socket.error(), socket.errorString());
+                 return;
+             }
+         }
 
-            QMutexLocker locker(&amp;mutex);
+         QMutexLocker locker(&amp;mutex);
 
-            QString fortune;
-            in &gt;&gt; fortune;
-            emit newFortune(fortune);</pre>
+         QString fortune;
+         in &gt;&gt; fortune;
+         emit newFortune(fortune);</pre>
 <a name="tcp-server"></a>
 <h3>TCP Server</h3>
 <p>The following code snippets illustrate how to write a TCP server using <a href="qtcpserver.html">QTcpServer</a> and <a href="qtcpsocket.html">QTcpSocket</a>. Here's how to set up a TCP server:</p>
-<pre>&nbsp;       tcpServer = new QTcpServer(this);
-        if (!tcpServer-&gt;listen()) {
-            QMessageBox::critical(this, tr(&quot;Fortune Server&quot;),
-                                  tr(&quot;Unable to start the server: %1.&quot;)
-                                  .arg(tcpServer-&gt;errorString()));
-            close();
-            return;
-        }
+<pre>     tcpServer = new QTcpServer(this);
+     if (!tcpServer-&gt;listen()) {
+         QMessageBox::critical(this, tr(&quot;Fortune Server&quot;),
+                               tr(&quot;Unable to start the server: %1.&quot;)
+                               .arg(tcpServer-&gt;errorString()));
+         close();
+         return;
+     }
 
-        connect(tcpServer, SIGNAL(newConnection()), this, SLOT(sendFortune()));</pre>
+     connect(tcpServer, SIGNAL(newConnection()), this, SLOT(sendFortune()));</pre>
 <p>When a client tries to connect to the server, the following code in the sendFortune() slot is executed:</p>
-<pre>&nbsp;       QByteArray block;
-        QDataStream out(&amp;block, QIODevice::WriteOnly);
-        out.setVersion(QDataStream::Qt_4_0);
-        out &lt;&lt; (quint16)0;
-        out &lt;&lt; fortunes.at(rand() % fortunes.size());
-        out.device()-&gt;seek(0);
-        out &lt;&lt; (quint16)(block.size() - sizeof(quint16));
+<pre>     QByteArray block;
+     QDataStream out(&amp;block, QIODevice::WriteOnly);
+     out.setVersion(QDataStream::Qt_4_0);
+     out &lt;&lt; (quint16)0;
+     out &lt;&lt; fortunes.at(qrand() % fortunes.size());
+     out.device()-&gt;seek(0);
+     out &lt;&lt; (quint16)(block.size() - sizeof(quint16));
 
-        QTcpSocket *clientConnection = tcpServer-&gt;nextPendingConnection();
-        connect(clientConnection, SIGNAL(disconnected()),
-                clientConnection, SLOT(deleteLater()));
+     QTcpSocket *clientConnection = tcpServer-&gt;nextPendingConnection();
+     connect(clientConnection, SIGNAL(disconnected()),
+             clientConnection, SLOT(deleteLater()));
 
-        clientConnection-&gt;write(block);
-        clientConnection-&gt;disconnectFromHost();</pre>
+     clientConnection-&gt;write(block);
+     clientConnection-&gt;disconnectFromHost();</pre>
 <a name="udp-senders-and-receivers"></a>
 <h3>UDP Senders and Receivers</h3>
 <p>Here's how to broadcast a UDP datagram:</p>
-<pre>&nbsp;       udpSocket = new QUdpSocket(this);
-        QByteArray datagram = &quot;Broadcast message &quot; + QByteArray::number(messageNo);
-        udpSocket-&gt;writeDatagram(datagram.data(), datagram.size(),
-                                 QHostAddress::Broadcast, 45454);</pre>
+<pre>     udpSocket = new QUdpSocket(this);
+     QByteArray datagram = &quot;Broadcast message &quot; + QByteArray::number(messageNo);
+     udpSocket-&gt;writeDatagram(datagram.data(), datagram.size(),
+                              QHostAddress::Broadcast, 45454);</pre>
 <p>Here's how to receive a UDP datagram:</p>
-<pre>&nbsp;       udpSocket = new QUdpSocket(this);
-        udpSocket-&gt;bind(45454);
+<pre>     udpSocket = new QUdpSocket(this);
+     udpSocket-&gt;bind(45454);
 
-        connect(udpSocket, SIGNAL(readyRead()),
-                this, SLOT(processPendingDatagrams()));</pre>
+     connect(udpSocket, SIGNAL(readyRead()),
+             this, SLOT(processPendingDatagrams()));</pre>
 <p>Then in the processPendingDatagrams() slot:</p>
-<pre>&nbsp;       while (udpSocket-&gt;hasPendingDatagrams()) {
-            QByteArray datagram;
-            datagram.resize(udpSocket-&gt;pendingDatagramSize());
-            udpSocket-&gt;readDatagram(datagram.data(), datagram.size());
-            statusLabel-&gt;setText(tr(&quot;Received datagram: \&quot;%1\&quot;&quot;)
-                                 .arg(datagram.data()));
-        }</pre>
+<pre>     while (udpSocket-&gt;hasPendingDatagrams()) {
+         QByteArray datagram;
+         datagram.resize(udpSocket-&gt;pendingDatagramSize());
+         udpSocket-&gt;readDatagram(datagram.data(), datagram.size());
+         statusLabel-&gt;setText(tr(&quot;Received datagram: \&quot;%1\&quot;&quot;)
+                              .arg(datagram.data()));
+     }</pre>
 <a name="comparison-with-qt-3"></a>
 <h2>Comparison with Qt 3</h2>
 <p>The main difference between Qt 3 and Qt 4 is that the very high level <a href="porting4.html#qnetworkprotocol">QNetworkProtocol</a> and <a href="porting4.html#qurloperator">QUrlOperator</a> abstraction has been eliminated. These classes attempted the impossible (unify FTP and HTTP under one roof), and unsurprisingly failed at that. Qt 4 still provides <a href="qftp.html">QFtp</a> and <a href="qhttp.html">QHttp</a> classes, but only with the more mature API that appeared in Qt 3.1.</p>
@@ -198,6 +193,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

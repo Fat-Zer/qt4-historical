@@ -981,7 +981,7 @@ void Q3IconViewItem::setText(const QString &text)
 
     QRect oR = rect();
     calcRect();
-    oR = oR.unite(rect());
+    oR = oR.united(rect());
 
     if (view) {
         if (QRect(view->contentsX(), view->contentsY(),
@@ -1024,7 +1024,7 @@ void Q3IconViewItem::setPixmap(const QPixmap &icon)
         itemIcon = new QPixmap(icon);
     QRect oR = rect();
     calcRect();
-    oR = oR.unite(rect());
+    oR = oR.united(rect());
 
     if (view) {
         if (QRect(view->contentsX(), view->contentsY(),
@@ -1059,7 +1059,7 @@ void Q3IconViewItem::setPicture(const QPicture &icon)
 
     QRect oR = rect();
     calcRect();
-    oR = oR.unite(rect());
+    oR = oR.united(rect());
 
     if (view) {
         if (QRect(view->contentsX(), view->contentsY(),
@@ -1118,7 +1118,7 @@ void Q3IconViewItem::setPixmap(const QPixmap &icon, bool recalc, bool redraw)
         if (recalc) {
             QRect oR = rect();
             calcRect();
-            oR = oR.unite(rect());
+            oR = oR.united(rect());
 
             if (view) {
                 if (QRect(view->contentsX(), view->contentsY(),
@@ -1933,16 +1933,7 @@ void Q3IconViewItem::paintItem(QPainter *p, const QColorGroup &cg)
             p2.end();
 
             p2.begin(buffer);
-#if defined(Q_WS_X11)
             p2.fillRect(pix->rect(), QBrush(cg.highlight(), Qt::Dense4Pattern));
-#else // in WIN32 Qt::Dense4Pattern doesn't work correctly (transparency problem), so work around it
-            if (iconView()->d->drawActiveSelection) {
-                if (!qiv_selection)
-                    createSelectionPixmap(cg);
-                p2.drawTiledPixmap(0, 0, pix->width(), pix->height(),
-                                    *qiv_selection);
-            }
-#endif
             p2.end();
             buffer->setMask(mask);
 
@@ -2630,7 +2621,7 @@ void Q3IconViewItem::checkRect()
     parent and using the widget flags \a f.
 */
 
-Q3IconView::Q3IconView(QWidget *parent, const char *name, Qt::WFlags f)
+Q3IconView::Q3IconView(QWidget *parent, const char *name, Qt::WindowFlags f)
     : Q3ScrollView(parent, name, Qt::WStaticContents | Qt::WNoAutoErase  | f)
 {
     if (!unknown_icon) {
@@ -3187,7 +3178,7 @@ void Q3IconView::doAutoScroll()
     viewport()->setUpdatesEnabled(false);
     bool alreadyIntersected = false;
     QRect nr = d->rubber->normalized();
-    QRect rubberUnion = nr.unite(oldRubber.normalized());
+    QRect rubberUnion = nr.united(oldRubber.normalized());
     Q3IconViewPrivate::ItemContainer *c = d->firstContainer;
     for (; c; c = c->n) {
         if (c->rect.intersects(rubberUnion)) {
@@ -3200,15 +3191,15 @@ void Q3IconView::doAutoScroll()
                     if (item->isSelected()) {
                         item->setSelected(false);
                         changed = true;
-                        rr = rr.unite(item->rect());
+                        rr = rr.united(item->rect());
                     }
                 } else if (item->intersects(nr)) {
                     if (!item->isSelected() && item->isSelectable()) {
                         item->setSelected(true, true);
                         changed = true;
-                        rr = rr.unite(item->rect());
+                        rr = rr.united(item->rect());
                     } else {
-                        region = region.subtract(QRect(contentsToViewport(item->pos()),
+                        region = region.subtracted(QRect(contentsToViewport(item->pos()),
                                                          item->size()));
                     }
 
@@ -3282,16 +3273,16 @@ void Q3IconView::drawContents(QPainter *p, int cx, int cy, int cw, int ch)
             p->save();
             p->resetXForm();
             QRect r2 = c->rect;
-            r2 = r2.intersect(r);
+            r2 = r2.intersected(r);
             QRect r3(contentsToViewport(QPoint(r2.x(), r2.y())), QSize(r2.width(), r2.height()));
             if (d->drawAllBack) {
                 p->setClipRect(r3);
             } else {
-                QRegion reg = d->clipRegion.intersect(r3);
+                QRegion reg = d->clipRegion.intersected(r3);
                 p->setClipRegion(reg);
             }
             drawBackground(p, r3);
-            remaining = remaining.subtract(r3);
+            remaining = remaining.subtracted(r3);
             p->restore();
 
             QPalette pal = palette();
@@ -3330,7 +3321,7 @@ void Q3IconView::drawContents(QPainter *p, int cx, int cy, int cw, int ch)
         if (d->drawAllBack) {
             p->setClipRegion(remaining);
         } else {
-            remaining = d->clipRegion.intersect(remaining);
+            remaining = d->clipRegion.intersected(remaining);
             p->setClipRegion(remaining);
         }
         drawBackground(p, remaining.boundingRect());
@@ -3664,7 +3655,7 @@ void Q3IconView::selectAll(bool select)
     for (; item; item = item->next) {
         if (select != item->isSelected()) {
             item->setSelected(select, true);
-            rr = rr.unite(item->rect());
+            rr = rr.united(item->rect());
             changed = true;
         }
     }
@@ -4340,7 +4331,7 @@ void Q3IconView::contentsMousePressEventEx(QMouseEvent *e)
                             for (int i = 0; i < c->items.size(); ++i) {
                                 Q3IconViewItem *item = c->items.at(i);
                                 if (r.intersects(item->rect())) {
-                                    redraw = redraw.unite(item->rect());
+                                    redraw = redraw.united(item->rect());
                                     item->setSelected(select, true);
                                 }
                             }
@@ -4349,7 +4340,7 @@ void Q3IconView::contentsMousePressEventEx(QMouseEvent *e)
                                 break;
                         }
                     }
-                    redraw = redraw.unite(item->rect());
+                    redraw = redraw.united(item->rect());
                     viewport()->setUpdatesEnabled(true);
                     repaintContents(redraw);
                 }
@@ -4460,7 +4451,7 @@ void Q3IconView::contentsMouseReleaseEvent(QMouseEvent *e)
 
     if ((d->selectionMode == Extended || d->selectionMode == Multi) &&
          d->currentItem == d->pressedItem &&
-	 d->pressedSelected && d->currentItem) {
+         d->pressedSelected && d->currentItem) {
         if (d->selectionMode == Extended) {
             bool block = signalsBlocked();
             blockSignals(true);
@@ -4663,9 +4654,9 @@ void Q3IconView::contentsDropEvent(QDropEvent *e)
         QRect rr;
         for (; item; item = item->next) {
             if (item->isSelected() && item != d->currentItem) {
-                rr = rr.unite(item->rect());
+                rr = rr.united(item->rect());
                 item->moveBy(dx, dy);
-                rr = rr.unite(item->rect());
+                rr = rr.united(item->rect());
             }
             w = qMax(w, item->x() + item->width() + 1);
             h = qMax(h, item->y() + item->height() + 1);
@@ -5312,7 +5303,7 @@ void Q3IconView::insertInGrid(Q3IconViewItem *item)
 
         int y = -1;
         for (Q3IconViewItem *i = d->firstItem; i; i = i->next) {
-            r = r.subtract(i->rect());
+            r = r.subtracted(i->rect());
             y = qMax(y, i->y() + i->height());
         }
 
@@ -6113,7 +6104,7 @@ void Q3IconView::handleItemChange(Q3IconViewItem *old, bool shift,
                 // finding the rectangles
                 QRect topRect, bottomRect, midRect;
                 if (!spanning) {
-                    midRect = from->rect().unite(to->rect());
+                    midRect = from->rect().united(to->rect());
                 } else {
                     if (downwards) {
                         topRect = from->rect();
@@ -6159,11 +6150,11 @@ void Q3IconView::handleItemChange(Q3IconViewItem *old, bool shift,
                         if (!item->selected && item->isSelectable()) {
                             changed = true;
                             item->selected = true;
-                            selectedRect = selectedRect.unite(item->rect());
+                            selectedRect = selectedRect.united(item->rect());
                         }
                     } else if (item->selected && !control) {
                         item->selected = false;
-                        unselectedRect = unselectedRect.unite(item->rect());
+                        unselectedRect = unselectedRect.united(item->rect());
                         changed = true;
                     }
                 }
@@ -6173,15 +6164,15 @@ void Q3IconView::handleItemChange(Q3IconViewItem *old, bool shift,
 
                 if (viewRect.intersects(selectedRect)) {
                     if (homeend)
-                        Q3ScrollView::updateContents(viewRect.intersect(selectedRect));
+                        Q3ScrollView::updateContents(viewRect.intersected(selectedRect));
                     else
-                        repaintContents(viewRect.intersect(selectedRect));
+                        repaintContents(viewRect.intersected(selectedRect));
                 }
                 if (viewRect.intersects(unselectedRect)) {
                     if (homeend)
-                        Q3ScrollView::updateContents(viewRect.intersect(unselectedRect));
+                        Q3ScrollView::updateContents(viewRect.intersected(unselectedRect));
                     else
-                        repaintContents(viewRect.intersect(unselectedRect));
+                        repaintContents(viewRect.intersected(unselectedRect));
                 }
 
                 if (changed)

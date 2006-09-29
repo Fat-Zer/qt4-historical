@@ -32,7 +32,7 @@
 #include <QGroupBox>
 
 PaletteEditorAdvanced::PaletteEditorAdvanced( QWidget * parent,
-                                              const char * name, bool modal, Qt::WFlags f )
+                                              const char * name, bool modal, Qt::WindowFlags f )
     : PaletteEditorAdvancedBase( parent, name, modal, f ), selectedPalette(0)
 {
     // work around buggy ui file
@@ -139,9 +139,9 @@ QColorGroup::ColorRole PaletteEditorAdvanced::centralFromItem( int item )
 {
     switch( item ) {
         case 0:
-            return QColorGroup::Background;
+            return QColorGroup::Window;
         case 1:
-            return QColorGroup::Foreground;
+            return QColorGroup::WindowText;
         case 2:
             return QColorGroup::Button;
         case 3:
@@ -156,10 +156,6 @@ QColorGroup::ColorRole PaletteEditorAdvanced::centralFromItem( int item )
             return QColorGroup::Highlight;
         case 8:
             return QColorGroup::HighlightedText;
-        case 9:
-            return QColorGroup::Link;
-        case 10:
-            return QColorGroup::LinkVisited;
         default:
             return QColorGroup::NColorRoles;
     }
@@ -393,7 +389,7 @@ void PaletteEditorAdvanced::buildDisabled()
 {
     QColorGroup cg = editPalette.active();
     cg.setColor( QColorGroup::ButtonText, Qt::darkGray );
-    cg.setColor( QColorGroup::Foreground, Qt::darkGray );
+    cg.setColor( QColorGroup::WindowText, Qt::darkGray );
     cg.setColor( QColorGroup::Text, Qt::darkGray );
     cg.setColor( QColorGroup::HighlightedText, Qt::darkGray );
     editPalette.setDisabled( cg );

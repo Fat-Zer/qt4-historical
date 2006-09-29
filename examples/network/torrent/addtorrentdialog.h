@@ -31,6 +31,7 @@
 class AddTorrentDialog : public QDialog
 {
     Q_OBJECT
+
 public:
     AddTorrentDialog(QWidget *parent = 0);
 

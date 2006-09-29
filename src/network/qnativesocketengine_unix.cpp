@@ -32,7 +32,9 @@
 #include <time.h>
 #include <errno.h>
 #include <fcntl.h>
-
+#ifndef QT_NO_IPV6IFNAME
+#include <net/if.h>
+#endif
 #ifndef QT_NO_IPV6IFNAME
 #include <net/if.h>
 #endif
@@ -127,7 +129,7 @@ static inline void qt_socket_getPortAndAddress(struct sockaddr *sa, quint16 *por
 #ifndef QT_NO_IPV6IFNAME
             char scopeid[IFNAMSIZ];
             if (::if_indextoname(sa6->sin6_scope_id, scopeid) > 0) {
-                addr->setScopeId(scopeid);
+                addr->setScopeId(QLatin1String(scopeid));
             } else
 #endif
             addr->setScopeId(QString::number(sa6->sin6_scope_id));
@@ -192,7 +194,6 @@ bool QNativeSocketEnginePrivate::createNewSocket(QAbstractSocket::SocketType soc
     socketDescriptor = socket;
     return true;
 }
-
 
 /*
     Returns the value of the socket option \a opt.
@@ -815,20 +816,26 @@ qint64 QNativeSocketEnginePrivate::nativeRead(char *data, qint64 maxSize)
     } while (r == -1 && errno == EINTR);
 
     if (r < 0) {
+        r = -1;
         switch (errno) {
+#if EWOULDBLOCK-0 && EWOULDBLOCK != EAGAIN
+        case EWOULDBLOCK:
+#endif
         case EAGAIN:
             // No data was available for reading
-            return 0;
+            r = -2;
+            break;
         case EBADF:
         case EINVAL:
         case EIO:
             setError(QAbstractSocket::NetworkError, ReadErrorString);
             break;
+        case ECONNRESET:
+            r = 0;
+            break;
         default:
             break;
         }
-
-        r = -1;
     }
 
 #if defined (QNATIVESOCKETENGINE_DEBUG)

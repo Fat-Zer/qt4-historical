@@ -53,9 +53,12 @@ public:
 
     void setFileName(const QString &fileName);
     QString fileName() const;
+
+    QString errorString() const;
 private:
     QLibraryPrivate *d;
     bool did_load;
+    Q_DISABLE_COPY(QPluginLoader)
 };
 
 

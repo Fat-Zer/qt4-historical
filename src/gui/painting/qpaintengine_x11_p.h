@@ -69,7 +69,6 @@ public:
     void updateBrush(const QBrush &brush, const QPointF &pt);
     void updateRenderHints(QPainter::RenderHints hints);
     void updateFont(const QFont &font);
-    void updateBackground(Qt::BGMode bgmode, const QBrush &bgBrush);
     void updateMatrix(const QMatrix &matrix);
     void updateClipRegion_dev(const QRegion &region, Qt::ClipOperation op);
 
@@ -93,6 +92,8 @@ public:
     void drawTiledPixmap(const QRectF &r, const QPixmap &pixmap, const QPointF &s);
     void drawPath(const QPainterPath &path);
     void drawTextItem(const QPointF &p, const QTextItem &textItem);
+    void drawImage(const QRectF &r, const QImage &img, const QRectF &sr,
+                   Qt::ImageConversionFlags flags = Qt::AutoColor);
 
     virtual Qt::HANDLE handle() const;
     inline Type type() const { return QPaintEngine::X11; }
@@ -109,11 +110,10 @@ protected:
     void core_render_glyph(QFontEngineFT *fe, int xp, int yp, uint glyph);
 #endif
 
-    friend void qt_cleanup();
-    friend void qt_draw_transformed_rect(QPaintEngine *pp, int x, int y, int w, int h, bool fill);
-    friend void qt_draw_background(QPaintEngine *pp, int x, int y, int w, int h);
     friend class QPixmap;
     friend class QFontEngineBox;
+    friend Q_GUI_EXPORT GC qt_x11_get_pen_gc(QPainter *);
+    friend Q_GUI_EXPORT GC qt_x11_get_brush_gc(QPainter *);
 
 private:
     Q_DISABLE_COPY(QX11PaintEngine)
@@ -125,12 +125,9 @@ class QX11PaintEnginePrivate : public QPaintEnginePrivate
 public:
     QX11PaintEnginePrivate()
     {
-        dpy = 0;
         scrn = -1;
         hd = 0;
         picture = 0;
-        bg_col = Qt::white;                             // default background color
-        bg_mode = Qt::TransparentMode;                  // default background mode
         gc = gc_brush = 0;
         dpy  = 0;
         xinfo = 0;
@@ -178,13 +175,11 @@ public:
     GC gc;
     GC gc_brush;
 
-    QColor bg_col;
-    uchar bg_mode;
     QPen cpen;
     QBrush cbrush;
-    QBrush bg_brush;
     QRegion crgn;
     QMatrix matrix;
+    qreal opacity;
 
     uint has_complex_xform : 1;
     uint has_custom_pen : 1;

@@ -24,6 +24,7 @@
 #ifndef QVARLENGTHARRAY_H
 #define QVARLENGTHARRAY_H
 
+#include <QtCore/qcontainerfwd.h>
 #include <QtCore/qglobal.h>
 #include <new>
 
@@ -31,7 +32,8 @@ QT_BEGIN_HEADER
 
 QT_MODULE(Core)
 
-template<class T, int Prealloc = 256>
+// Prealloc = 256 by default, specified in qcontainerfwd.h
+template<class T, int Prealloc>
 class QVarLengthArray
 {
 public:
@@ -96,7 +98,12 @@ private:
     int a;
     int s;
     T *ptr;
-    qint64 array[((Prealloc * sizeof(T)) / sizeof(qint64)) + 1];
+    union {
+        // ### Qt 5: Use 'Prealloc * sizeof(T)' as array size
+        char array[sizeof(qint64) * (((Prealloc * sizeof(T)) / sizeof(qint64)) + 1)];
+        qint64 q_for_alignment_1;
+        double q_for_alignment_2;
+    };
 };
 
 template <class T, int Prealloc>

@@ -46,8 +46,8 @@ public:
     {
         enum Type { None = 0, VerticalPlane = 1, HorizontalPlane = 2, Both = 3 };
         inline Node() : pos(0), type(None) {}
-        uint pos : 30;
-        uint type : 2;
+        int pos;
+        Type type;
     };
     typedef Node::Type NodeType;
 
@@ -65,7 +65,7 @@ public:
 
     QBspTree();
 
-    void create(int n);
+    void create(int n, int d = -1);
     void destroy();
 
     inline void init(const QRect &area, NodeType type) { init(area, depth, type, 0); }

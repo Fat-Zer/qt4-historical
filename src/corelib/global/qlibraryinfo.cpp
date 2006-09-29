@@ -27,7 +27,11 @@
 #include "qsettings.h"
 #include "qlibraryinfo.h"
 #include "qpointer.h"
-#include "qcoreapplication.h"
+#ifdef QT_BUILD_QMAKE
+extern QString qmake_libraryInfoFile();
+#else
+# include "qcoreapplication.h"
+#endif
 #ifdef Q_OS_MAC
 #  include "private/qcore_mac_p.h"
 #endif
@@ -35,6 +39,8 @@
 #include "qconfig.cpp"
 
 #ifndef QT_NO_SETTINGS
+
+
 
 struct QLibrarySettings
 {
@@ -78,12 +84,18 @@ public:
 QLibrarySettings::QLibrarySettings()
 {
     settings = QLibraryInfoPrivate::findConfiguration();
+#ifndef QT_BUILD_QMAKE
     qAddPostRoutine(QLibraryInfoPrivate::cleanup);
+#endif
 }
 
 QSettings *QLibraryInfoPrivate::findConfiguration()
 {
     QString qtconfig = QLatin1String(":/qt/etc/qt.conf");
+#ifdef QT_BUILD_QMAKE
+    if(!QFile::exists(qtconfig))
+        qtconfig = qmake_libraryInfoFile();
+#else
     if (!QFile::exists(qtconfig) && QCoreApplication::instance()) {
 #ifdef Q_OS_MAC
 	CFBundleRef bundleRef = CFBundleGetMainBundle();
@@ -100,10 +112,11 @@ QSettings *QLibraryInfoPrivate::findConfiguration()
 	if (qtconfig.isEmpty())
 #endif
             {
-                QDir pwd(QCoreApplication::instance()->applicationDirPath());
+                QDir pwd(QCoreApplication::applicationDirPath());
                 qtconfig = pwd.filePath(QLatin1String("qt.conf"));
 	    }
     }
+#endif
     if (QFile::exists(qtconfig))
         return new QSettings(qtconfig, QSettings::IniFormat);
     return 0;     //no luck
@@ -386,7 +399,7 @@ QLibraryInfo::location(LibraryLocation loc)
             while((rep = reg_var.indexIn(ret)) != -1) {
                 ret.replace(rep, reg_var.matchedLength(),
                             QString::fromLocal8Bit(qgetenv(ret.mid(rep + 2,
-                                                                   reg_var.matchedLength() - 3).toLatin1().constData())));
+                                reg_var.matchedLength() - 3).toLatin1().constData()).constData()));
             }
             config->endGroup();
         }
@@ -395,7 +408,10 @@ QLibraryInfo::location(LibraryLocation loc)
     if (QDir::isRelativePath(ret)) {
         if (loc == PrefixPath) {
             // we make the prefix path absolute to the executable's directory
-            if (QCoreApplication *app = QCoreApplication::instance()) {
+#ifdef QT_BUILD_QMAKE
+            return QFileInfo(qmake_libraryInfoFile()).absolutePath();
+#else
+            if (QCoreApplication::instance()) {
 #ifdef Q_OS_MAC
 	        CFBundleRef bundleRef = CFBundleGetMainBundle();
 		if (bundleRef) {
@@ -406,10 +422,11 @@ QLibraryInfo::location(LibraryLocation loc)
 		    }
 		}
 #endif
-                return QDir(app->applicationDirPath()).absoluteFilePath(ret);
+                return QDir(QCoreApplication::applicationDirPath()).absoluteFilePath(ret);
             } else {
                 return QDir::current().absoluteFilePath(ret);
             }
+#endif
         } else {
             // we make any other path absolute to the prefix directory
             return QDir(location(PrefixPath)).absoluteFilePath(ret);

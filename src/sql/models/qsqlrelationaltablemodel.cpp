@@ -45,7 +45,8 @@
     QSqlRelationalTableModel::setRelation() and
     QSqlRelationalTableModel::relation() for details.
 
-    \sa QSqlRelationalTableModel, QSqlRelationalDelegate
+    \sa QSqlRelationalTableModel, QSqlRelationalDelegate,
+        {Relational Table Model Example}
 */
 
 /*!
@@ -122,7 +123,6 @@ public:
     void clearEditBuffer();
 
     void translateFieldNames(int row, QSqlRecord &values) const;
-    void removeColumnWorkaround(int column, int count);
 };
 
 static void qAppendWhereClause(QString &query, const QString &clause1, const QString &clause2)
@@ -224,7 +224,8 @@ void QSqlRelationalTableModelPrivate::clearEditBuffer()
        database is responsible for keeping referential integrity.
     \endlist
 
-    \sa QSqlRelation, QSqlRelationalDelegate
+    \sa QSqlRelation, QSqlRelationalDelegate,
+        {Relational Table Model Example}
 */
 
 
@@ -468,6 +469,8 @@ void QSqlRelationalTableModel::setTable(const QString &table)
     QSqlTableModel::setTable(table);
 }
 
+/*! \internal
+ */
 void QSqlRelationalTableModelPrivate::translateFieldNames(int row, QSqlRecord &values) const
 {
     Q_Q(const QSqlRelationalTableModel);
@@ -498,6 +501,19 @@ bool QSqlRelationalTableModel::updateRowInTable(int row, const QSqlRecord &value
 /*!
     \reimp
 */
+bool QSqlRelationalTableModel::insertRowIntoTable(const QSqlRecord &values)
+{
+    Q_D(QSqlRelationalTableModel);
+
+    QSqlRecord rec = values;
+    d->translateFieldNames(0, rec);
+
+    return QSqlTableModel::insertRowIntoTable(rec);
+}
+
+/*!
+    \reimp
+*/
 QString QSqlRelationalTableModel::orderByClause() const
 {
     Q_D(const QSqlRelationalTableModel);
@@ -507,17 +523,27 @@ QString QSqlRelationalTableModel::orderByClause() const
         return QSqlTableModel::orderByClause();
 
     QString s = QLatin1String("ORDER BY ");
-    s.append(QString::fromLatin1("relTblAl_%1").arg(d->sortColumn)).append(QLatin1Char('.')).append(rel.displayColumn());
+    s.append(d->escapedRelationField(QLatin1String("relTblAl_") + QString::number(d->sortColumn),
+                    rel.displayColumn()));
     s += d->sortOrder == Qt::AscendingOrder ? QLatin1String(" ASC") : QLatin1String(" DESC");
     return s;
 }
 
-void QSqlRelationalTableModelPrivate::removeColumnWorkaround(int column, int count)
+/*!
+    \reimp
+*/
+bool QSqlRelationalTableModel::removeColumns(int column, int count, const QModelIndex &parent)
 {
+    Q_D(QSqlRelationalTableModel);
+
+    if (parent.isValid() || column < 0 || column + count > d->rec.count())
+        return false;
+
     for (int i = 0; i < count; ++i) {
-        baseRec.remove(column);
-        if (relations.count() > column)
-            relations.remove(column);
+        d->baseRec.remove(column);
+        if (d->relations.count() > column)
+            d->relations.remove(column);
     }
+    return QSqlTableModel::removeColumns(column, count, parent);
 }
 

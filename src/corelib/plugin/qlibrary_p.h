@@ -45,6 +45,8 @@
 
 #ifndef QT_NO_LIBRARY
 
+bool qt_debug_component();
+
 class QLibraryPrivate
 {
 public:
@@ -70,6 +72,9 @@ public:
     QtPluginInstanceFunction instance;
     uint qt_version;
     QString lastModified;
+
+    QString errorString;
+    QLibrary::LoadHints loadHints;
 
     bool isPlugin();
 

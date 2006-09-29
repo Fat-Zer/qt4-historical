@@ -21,6 +21,10 @@
 **
 ****************************************************************************/
 
+/*
+TRANSLATOR qdesigner_internal::WidgetFactory
+*/
+
 #include "widgetfactory_p.h"
 #include "widgetdatabase_p.h"
 #include "qlayout_widget_p.h"
@@ -54,12 +58,20 @@ bool WidgetFactory::m_lastWasAPassiveInteractor = false;
 
 WidgetFactory::WidgetFactory(QDesignerFormEditorInterface *core, QObject *parent)
     : QDesignerWidgetFactoryInterface(parent),
-      m_core(core)
+      m_core(core),
+      m_formWindow(0)
 {
 }
 
 WidgetFactory::~WidgetFactory()
 {
+}
+
+QDesignerFormWindowInterface *WidgetFactory::currentFormWindow(QDesignerFormWindowInterface *fw)
+{
+    QDesignerFormWindowInterface *was = m_formWindow;
+    m_formWindow = fw;
+    return was;
 }
 
 void WidgetFactory::loadPlugins()
@@ -79,11 +91,13 @@ QWidget *WidgetFactory::createWidget(const QString &widgetName, QWidget *parentW
     if (QDesignerPromotedWidget *promoted = qobject_cast<QDesignerPromotedWidget*>(parentWidget))
         parentWidget = promoted->child();
 
-    QDesignerFormWindowInterface *fw = QDesignerFormWindowInterface::findFormWindow(parentWidget);
+    QDesignerFormWindowInterface *fw = m_formWindow;
+    if (! fw)
+        fw = QDesignerFormWindowInterface::findFormWindow(parentWidget);
 
     QWidget *w = 0;
 
-    // ### cleanup
+// ### cleanup
     if (QDesignerCustomWidgetInterface *f = m_customFactory.value(widgetName)) {
         w = f->createWidget(parentWidget);
     } else if (widgetName == QLatin1String("Line")) {
@@ -112,7 +126,7 @@ QWidget *WidgetFactory::createWidget(const QString &widgetName, QWidget *parentW
         w = fw ? new QLayoutWidget(fw, parentWidget) : new QWidget(parentWidget);
     } else if (widgetName == QLatin1String("QDialog")) {
         if (fw) {
-             w = new QDesignerDialog(fw, parentWidget);
+            w = new QDesignerDialog(fw, parentWidget);
         } else {
             w = new QDialog(parentWidget);
         }
@@ -128,12 +142,14 @@ QWidget *WidgetFactory::createWidget(const QString &widgetName, QWidget *parentW
 #define DECLARE_LAYOUT(L, C)
 #define DECLARE_COMPAT_WIDGET(W, C) /*DECLARE_WIDGET(W, C)*/
 #define DECLARE_WIDGET(W, C) else if (widgetName == QLatin1String(#W)) { Q_ASSERT(w == 0); w = new W(parentWidget); }
+#define DECLARE_WIDGET_1(W, C) else if (widgetName == QLatin1String(#W)) { Q_ASSERT(w == 0); w = new W(0, parentWidget); }
 
 #include "widgets.table"
 
 #undef DECLARE_COMPAT_WIDGET
 #undef DECLARE_LAYOUT
 #undef DECLARE_WIDGET
+#undef DECLARE_WIDGET_1
 
     if (w == 0) {
         QDesignerWidgetDataBaseInterface *db = core()->widgetDataBase();
@@ -341,7 +357,8 @@ void WidgetFactory::initialize(QObject *object) const
 
     if (QWidget *widget = qobject_cast<QWidget*>(object)) {
         QSize sz = widget->sizeHint();
-        if (sz.width() <= 0 && sz.height() <= 0)
+
+        if (qobject_cast<QFrame*>(object) && sz.width() <= 0 && sz.height() <= 0)
             widget->setMinimumSize(QSize(16, 16));
 
         widget->setAttribute(Qt::WA_TransparentForMouseEvents, false);
@@ -392,10 +409,6 @@ bool WidgetFactory::isPassiveInteractor(QWidget *widget)
     else if (qobject_cast<QAbstractButton*>(widget) && (qobject_cast<QTabBar*>(widget->parent()) || qobject_cast<QToolBox*>(widget->parent())))
         return (m_lastWasAPassiveInteractor = true);
     else if (qobject_cast<QMenuBar*>(widget))
-        return (m_lastWasAPassiveInteractor = true);
-    else if (qstrcmp(widget->metaObject()->className(), "QDockSeparator") == 0)
-        return (m_lastWasAPassiveInteractor = true);
-    else if (qstrcmp(widget->metaObject()->className(), "QDockWidgetSeparator") == 0)
         return (m_lastWasAPassiveInteractor = true);
     else if (qstrcmp(widget->metaObject()->className(), "QDockWidgetTitle") == 0)
         return (m_lastWasAPassiveInteractor = true);

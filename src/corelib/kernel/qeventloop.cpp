@@ -90,10 +90,12 @@ public:
 QEventLoop::QEventLoop(QObject *parent)
     : QObject(*new QEventLoopPrivate, parent)
 {
-    if (!QCoreApplication::instance())
-        qWarning("QEventLoop cannot be used without QApplication");
-    else if (!thread())
-        qWarning("QEventLoop can only be used with threads started with QThread");
+    Q_D(QEventLoop);
+    if (!QCoreApplication::instance()) {
+        qWarning("QEventLoop: Cannot be used without QApplication");
+    } else if (!d->threadData->eventDispatcher) {
+        QThreadPrivate::createEventDispatcher(d->threadData);
+    }
 }
 
 /*!
@@ -117,11 +119,10 @@ QEventLoop::~QEventLoop()
 */
 bool QEventLoop::processEvents(ProcessEventsFlags flags)
 {
-    QThread *thr = thread();
-    if (!thr)
+    Q_D(QEventLoop);
+    if (!d->threadData->eventDispatcher)
         return false;
-
-    return QAbstractEventDispatcher::instance(thr)->processEvents(flags);
+    return d->threadData->eventDispatcher->processEvents(flags);
 }
 
 /*!
@@ -137,7 +138,7 @@ bool QEventLoop::processEvents(ProcessEventsFlags flags)
 
     Generally speaking, no user interaction can take place before
     calling exec(). As a special case, modal widgets like QMessageBox
-    can be used before calling exec(), because modal widgets call
+    can be used before calling exec(), because modal widgets 
     use their own local event loop.
 
     To make your application perform idle processing (i.e. executing a
@@ -149,26 +150,34 @@ bool QEventLoop::processEvents(ProcessEventsFlags flags)
 */
 int QEventLoop::exec(ProcessEventsFlags flags)
 {
-    QThread *thr = thread();
-    if (!thr)
-        return -1;
-    QThreadData *data = QThreadData::get(thr);
-    if (data->quitNow)
+    Q_D(QEventLoop);
+    if (d->threadData->quitNow)
         return -1;
 
-    Q_D(QEventLoop);
     if (d->inExec) {
         qWarning("QEventLoop::exec: instance %p has already called exec()", this);
         return -1;
     }
     d->inExec = true;
     d->exit = false;
-    data->eventLoops.push(this);
+    d->threadData->eventLoops.push(this);
 
+#if defined(QT_NO_EXCEPTIONS)
     while (!d->exit)
         processEvents(flags | WaitForMoreEvents | ProcessEventsFlag(QEventLoop::DeferredDeletion));
+#else
+    try {
+        while (!d->exit)
+            processEvents(flags | WaitForMoreEvents | ProcessEventsFlag(QEventLoop::DeferredDeletion));
+    } catch (...) {
+        qWarning("Qt has caught an exception thrown from an event handler. Throwing\n"
+                 "exceptions from an event handler is not supported in Qt. You must\n"
+                 "reimplement QApplication::notify() and catch all exceptions there.\n");
+        throw;
+    }
+#endif
 
-    QEventLoop *eventLoop = data->eventLoops.pop();
+    QEventLoop *eventLoop = d->threadData->eventLoops.pop();
     Q_ASSERT_X(eventLoop == this, "QEventLoop::exec()", "internal error");
     Q_UNUSED(eventLoop); // --release warning
 
@@ -181,7 +190,6 @@ int QEventLoop::exec(ProcessEventsFlags flags)
     Process pending events that match \a flags for a maximum of \a
     maxTime milliseconds, or until there are no more events to
     process, whichever is shorter.
-
     This function is especially useful if you have a long running
     operation and want to show its progress without allowing user
     input, i.e. by using the \l ExcludeUserInputEvents flag.
@@ -196,8 +204,8 @@ int QEventLoop::exec(ProcessEventsFlags flags)
 */
 void QEventLoop::processEvents(ProcessEventsFlags flags, int maxTime)
 {
-    QThread *thr = thread();
-    if (!thr)
+    Q_D(QEventLoop);
+    if (!d->threadData->eventDispatcher)
         return;
 
     QTime start;
@@ -225,16 +233,13 @@ void QEventLoop::processEvents(ProcessEventsFlags flags, int maxTime)
 */
 void QEventLoop::exit(int returnCode)
 {
-    QThread *thr = thread();
-    if (!thr)
+    Q_D(QEventLoop);
+    if (!d->threadData->eventDispatcher)
         return;
 
-    Q_D(QEventLoop);
     d->returnCode = returnCode;
     d->exit = true;
-    QAbstractEventDispatcher *eventDispatcher = QAbstractEventDispatcher::instance(thr);
-    if (eventDispatcher)
-        eventDispatcher->interrupt();
+    d->threadData->eventDispatcher->interrupt();
 }
 
 /*!
@@ -257,13 +262,10 @@ bool QEventLoop::isRunning() const
 */
 void QEventLoop::wakeUp()
 {
-    QThread *thr = thread();
-    if (!thr)
+    Q_D(QEventLoop);
+    if (!d->threadData->eventDispatcher)
         return;
-
-    QAbstractEventDispatcher *eventDispatcher = QAbstractEventDispatcher::instance(thr);
-    if (eventDispatcher)
-        eventDispatcher->wakeUp();
+    d->threadData->eventDispatcher->wakeUp();
 }
 
 /*!

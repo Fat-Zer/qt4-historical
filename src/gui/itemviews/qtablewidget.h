@@ -62,9 +62,10 @@ class Q_GUI_EXPORT QTableWidgetItem
     friend class QTableWidget;
     friend class QTableModel;
 public:
-    enum { Type = 0, UserType = 1000 };
+    enum ItemType { Type = 0, UserType = 1000 };
     QTableWidgetItem(int type = Type);
     explicit QTableWidgetItem(const QString &text, int type = Type);
+    explicit QTableWidgetItem(const QIcon &icon, const QString &text, int type = Type);
     QTableWidgetItem(const QTableWidgetItem &other);
     virtual ~QTableWidgetItem();
 
@@ -72,8 +73,14 @@ public:
 
     inline QTableWidget *tableWidget() const { return view; }
 
+    inline int row() const;
+    inline int column() const;
+
+    inline void setSelected(bool select);
+    inline bool isSelected() const;
+
     inline Qt::ItemFlags flags() const { return itemFlags; }
-    inline void setFlags(Qt::ItemFlags flags);
+    void setFlags(Qt::ItemFlags flags);
 
     inline QString text() const
         { return data(Qt::DisplayRole).toString(); }
@@ -113,10 +120,20 @@ public:
     inline void setBackgroundColor(const QColor &color)
         { setData(Qt::BackgroundColorRole, color); }
 
+    inline QBrush background() const
+        { return qvariant_cast<QBrush>(data(Qt::BackgroundRole)); }
+    inline void setBackground(const QBrush &brush)
+        { setData(Qt::BackgroundRole, brush); }
+
     inline QColor textColor() const
         { return qvariant_cast<QColor>(data(Qt::TextColorRole)); }
     inline void setTextColor(const QColor &color)
         { setData(Qt::TextColorRole, color); }
+
+    inline QBrush foreground() const
+        { return qvariant_cast<QBrush>(data(Qt::ForegroundRole)); }
+    inline void setForeground(const QBrush &brush)
+        { setData(Qt::ForegroundRole, brush); }
 
     inline Qt::CheckState checkState() const
         { return static_cast<Qt::CheckState>(data(Qt::CheckStateRole).toInt()); }
@@ -148,9 +165,6 @@ private:
     QTableModel *model;
     Qt::ItemFlags itemFlags;
 };
-
-inline void QTableWidgetItem::setFlags(Qt::ItemFlags aflags)
-{ itemFlags = aflags; }
 
 inline void QTableWidgetItem::setText(const QString &atext)
 { setData(Qt::DisplayRole, atext); }
@@ -186,7 +200,6 @@ class Q_GUI_EXPORT QTableWidget : public QTableView
     Q_OBJECT
     Q_PROPERTY(int rowCount READ rowCount WRITE setRowCount)
     Q_PROPERTY(int columnCount READ columnCount WRITE setColumnCount)
-    Q_PROPERTY(bool sortingEnabled READ isSortingEnabled WRITE setSortingEnabled)
 
     friend class QTableModel;
 public:
@@ -259,6 +272,7 @@ public Q_SLOTS:
     void removeRow(int row);
     void removeColumn(int column);
     void clear();
+    void clearContents();
 
 Q_SIGNALS:
     void itemPressed(QTableWidgetItem *item);
@@ -292,6 +306,7 @@ protected:
 
     QModelIndex indexFromItem(QTableWidgetItem *item) const;
     QTableWidgetItem *itemFromIndex(const QModelIndex &index) const;
+    void dropEvent(QDropEvent *event);
 
 private:
     void setModel(QAbstractItemModel *model);
@@ -306,10 +321,24 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_emitItemEntered(const QModelIndex &index))
     Q_PRIVATE_SLOT(d_func(), void _q_emitItemChanged(const QModelIndex &index))
     Q_PRIVATE_SLOT(d_func(), void _q_emitCurrentItemChanged(const QModelIndex &previous, const QModelIndex &current))
+    Q_PRIVATE_SLOT(d_func(), void _q_sort())
+    Q_PRIVATE_SLOT(d_func(), void _q_dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight))
 };
 
 inline QTableWidgetItem *QTableWidget::itemAt(int ax, int ay) const
 { return itemAt(QPoint(ax, ay)); }
+
+inline int QTableWidgetItem::row() const
+{ return (view ? view->row(this) : -1); }
+
+inline int QTableWidgetItem::column() const
+{ return (view ? view->column(this) : -1); }
+
+inline void QTableWidgetItem::setSelected(bool aselect)
+{ if (view) view->setItemSelected(this, aselect); }
+
+inline bool QTableWidgetItem::isSelected() const
+{ return (view ? view->isItemSelected(this) : false); }
 
 #endif // QT_NO_TABLEWIDGET
 

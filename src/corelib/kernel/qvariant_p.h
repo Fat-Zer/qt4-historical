@@ -45,9 +45,8 @@ inline T *v_cast(const QVariant::Private *nd, T * = 0)
 {
     QVariant::Private *d = const_cast<QVariant::Private *>(nd);
     return ((sizeof(T) > sizeof(QVariant::Private::Data))
-            // this is really a static_cast, but gcc 2.95 complains about it.
-            ? reinterpret_cast<T*>(d->data.shared->ptr)
-            : reinterpret_cast<T*>(&d->data.ptr));
+            ? static_cast<T *>(d->data.shared->ptr)
+            : static_cast<T *>(static_cast<void *>(&d->data.c)));
 }
 
 #else // every other compiler in this world
@@ -56,18 +55,16 @@ template <typename T>
 inline const T *v_cast(const QVariant::Private *d, T * = 0)
 {
     return ((sizeof(T) > sizeof(QVariant::Private::Data))
-            // this is really a static_cast, but gcc 2.95 complains about it.
-            ? reinterpret_cast<const T*>(d->data.shared->ptr)
-            : reinterpret_cast<const T*>(&d->data.ptr));
+            ? static_cast<const T *>(d->data.shared->ptr)
+            : static_cast<const T *>(static_cast<const void *>(&d->data.c)));
 }
 
 template <typename T>
 inline T *v_cast(QVariant::Private *d, T * = 0)
 {
     return ((sizeof(T) > sizeof(QVariant::Private::Data))
-            // this is really a static_cast, but gcc 2.95 complains about it.
-            ? reinterpret_cast<T*>(d->data.shared->ptr)
-            : reinterpret_cast<T*>(&d->data.ptr));
+            ? static_cast<T *>(d->data.shared->ptr)
+            : static_cast<T *>(static_cast<void *>(&d->data.c)));
 }
 
 #endif
@@ -96,7 +93,7 @@ inline void v_clear(QVariant::Private *d, T* = 0)
         delete v_cast<T>(d);
         delete d->data.shared;
     } else {
-        reinterpret_cast<T *>(&d->data.ptr)->~T();
+        v_cast<T>(d)->~T();
     }
 }
 

@@ -46,15 +46,13 @@ public:
     void mousePressEvent(QMouseEvent *e);
     void keyPressEvent(QKeyEvent *);
 
-    bool isBackwardAvailable() const { return backAvail; }
-    bool isForwardAvailable() const { return fwdAvail; }
-
 signals:
     void chooseWebBrowser();
     void choosePDFReader();
 
 protected:
     virtual void contextMenuEvent(QContextMenuEvent *e);
+    virtual void mouseReleaseEvent(QMouseEvent *e);
 
 protected slots:
     void ensureCursorVisible();
@@ -62,12 +60,12 @@ protected slots:
 private slots:
     void openLinkInNewWindow();
     void openLinkInNewPage();
-    void updateForward(bool);
-    void updateBackward(bool);
 
     bool isKDERunning() const;
 
 private:
+    bool hasAnchorAt(const QPoint& pos);
+
     MainWindow *mw;
     QString lastAnchor;
     bool blockScroll;

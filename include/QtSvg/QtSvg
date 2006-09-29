@@ -3,3 +3,4 @@
 #include <QtXml/QtXml>
 #include "qsvgrenderer.h"
 #include "qsvgwidget.h"
+#include "qgraphicssvgitem.h"

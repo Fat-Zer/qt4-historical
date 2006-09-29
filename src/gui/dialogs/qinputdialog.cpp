@@ -25,15 +25,16 @@
 
 #ifndef QT_NO_INPUTDIALOG
 
-#include "qlayout.h"
+#include "qapplication.h"
+#include "qcombobox.h"
+#include "qdialogbuttonbox.h"
 #include "qlabel.h"
+#include "qlayout.h"
 #include "qlineedit.h"
 #include "qpushbutton.h"
 #include "qspinbox.h"
-#include "qcombobox.h"
 #include "qstackedlayout.h"
 #include "qvalidator.h"
-#include "qapplication.h"
 
 #include "qdialog_p.h"
 
@@ -90,29 +91,15 @@ void QInputDialogPrivate::init(const QString &lbl, QInputDialog::Type type)
 #ifndef QT_NO_SHORTCUT
     label->setBuddy(input);
 #endif
-    
-    QHBoxLayout *hbox = new QHBoxLayout;
-    vbox->addLayout(hbox, Qt::AlignRight);
 
-    ok = new QPushButton(QInputDialog::tr("OK"), q);
-    ok->setDefault(true);
-    QPushButton *cancel = new QPushButton(QInputDialog::tr("Cancel"), q);
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Cancel,
+                                                        Qt::Horizontal, q);
+    QPushButton *okButton = static_cast<QPushButton *>(buttonBox->addButton(QDialogButtonBox::Ok));
+    okButton->setDefault(true);
+    vbox->addWidget(buttonBox);
 
-    QSize bs = ok->sizeHint().expandedTo(cancel->sizeHint());
-    ok->setFixedSize(bs);
-    cancel->setFixedSize(bs);
-
-    hbox->addStretch();
-#ifdef Q_WS_MAC
-    hbox->addWidget(cancel);
-    hbox->addWidget(ok);
-#else
-    hbox->addWidget(ok);
-    hbox->addWidget(cancel);
-#endif
-
-    QObject::connect(ok, SIGNAL(clicked()), q, SLOT(accept()));
-    QObject::connect(cancel, SIGNAL(clicked()), q, SLOT(reject()));
+    QObject::connect(buttonBox, SIGNAL(accepted()), q, SLOT(accept()));
+    QObject::connect(buttonBox, SIGNAL(rejected()), q, SLOT(reject()));
 
     q->resize(q->sizeHint());
 }
@@ -144,7 +131,7 @@ void QInputDialogPrivate::init(const QString &lbl, QInputDialog::Type type)
     The \l{dialogs/standarddialogs}{Standard Dialogs} example shows
     how to use QInputDialog as well as other built-in Qt dialogs.
 
-    \sa QMessageBox
+    \sa QMessageBox, {Standard Dialogs Example}
 */
 
 /*!
@@ -180,7 +167,7 @@ void QInputDialogPrivate::init(const QString &lbl, QInputDialog::Type type)
   \sa getText(), getInteger(), getDouble(), getItem()
 */
 
-QInputDialog::QInputDialog(const QString &label, QWidget* parent, Type type, Qt::WFlags f)
+QInputDialog::QInputDialog(const QString &label, QWidget* parent, Type type, Qt::WindowFlags f)
     : QDialog(*new QInputDialogPrivate, parent, f)
 {
     Q_D(QInputDialog);
@@ -221,7 +208,7 @@ QInputDialog::~QInputDialog()
 
 QString QInputDialog::getText(QWidget *parent, const QString &title, const QString &label,
                                QLineEdit::EchoMode mode, const QString &text,
-                               bool *ok, Qt::WFlags f)
+                               bool *ok, Qt::WindowFlags f)
 {
     QInputDialog dlg(label, parent, LineEdit, f);
 
@@ -271,7 +258,7 @@ QString QInputDialog::getText(QWidget *parent, const QString &title, const QStri
 
 int QInputDialog::getInteger(QWidget *parent, const QString &title, const QString &label,
                              int value, int minValue, int maxValue, int step, bool *ok,
-                             Qt::WFlags f)
+                             Qt::WindowFlags f)
 {
     QInputDialog dlg(label, parent, SpinBox, f);
 
@@ -280,6 +267,7 @@ int QInputDialog::getInteger(QWidget *parent, const QString &title, const QStrin
     sb->setRange(minValue, maxValue);
     sb->setSingleStep(step);
     sb->setValue(value);
+    sb->selectAll();
 
     bool accepted = (dlg.exec() == QDialog::Accepted);
     if (ok)
@@ -317,7 +305,7 @@ int QInputDialog::getInteger(QWidget *parent, const QString &title, const QStrin
 
 double QInputDialog::getDouble( QWidget *parent, const QString &title, const QString &label,
                                 double value, double minValue, double maxValue,
-                                int decimals, bool *ok, Qt::WFlags f)
+                                int decimals, bool *ok, Qt::WindowFlags f)
 {
     QInputDialog dlg(label, parent, DoubleSpinBox, f);
     dlg.setWindowTitle(title);
@@ -361,7 +349,7 @@ double QInputDialog::getDouble( QWidget *parent, const QString &title, const QSt
 */
 
 QString QInputDialog::getItem(QWidget *parent, const QString &title, const QString &label, const QStringList &list,
-                              int current, bool editable, bool *ok, Qt::WFlags f)
+                              int current, bool editable, bool *ok, Qt::WindowFlags f)
 {
     QInputDialog dlg(label, parent, editable ? EditableComboBox : ComboBox, f);
     dlg.setWindowTitle(title);
@@ -381,7 +369,7 @@ QString QInputDialog::getItem(QWidget *parent, const QString &title, const QStri
     \fn QString QInputDialog::getText(const QString &title, const QString &label,
                                       QLineEdit::EchoMode echo = QLineEdit::Normal,
                                       const QString &text = QString(), bool *ok = 0,
-                                      QWidget *parent = 0, const char *name = 0, Qt::WFlags f = 0)
+                                      QWidget *parent = 0, const char *name = 0, Qt::WindowFlags f = 0)
 
     Call getText(\a parent, \a title, \a label, \a echo, \a text, \a
     ok, \a f) instead.
@@ -393,7 +381,7 @@ QString QInputDialog::getItem(QWidget *parent, const QString &title, const QStri
     \fn int QInputDialog::getInteger(const QString &title, const QString &label, int value = 0,
                                      int minValue = -2147483647, int maxValue = 2147483647,
                                      int step = 1, bool *ok = 0,
-                                     QWidget *parent = 0, const char *name = 0, Qt::WFlags f = 0)
+                                     QWidget *parent = 0, const char *name = 0, Qt::WindowFlags f = 0)
 
 
     Call getInteger(\a parent, \a title, \a label, \a value, \a
@@ -406,7 +394,7 @@ QString QInputDialog::getItem(QWidget *parent, const QString &title, const QStri
     \fn double QInputDialog::getDouble(const QString &title, const QString &label, double value = 0,
                                        double minValue = -2147483647, double maxValue = 2147483647,
                                        int decimals = 1, bool *ok = 0,
-                                       QWidget *parent = 0, const char *name = 0, Qt::WFlags f = 0)
+                                       QWidget *parent = 0, const char *name = 0, Qt::WindowFlags f = 0)
 
     Call getDouble(\a parent, \a title, \a label, \a value, \a
     minValue, \a maxValue, \a decimals, \a ok, \a f).
@@ -417,7 +405,7 @@ QString QInputDialog::getItem(QWidget *parent, const QString &title, const QStri
 /*!
     \fn QString QInputDialog::getItem(const QString &title, const QString &label, const QStringList &list,
                                       int current = 0, bool editable = true, bool *ok = 0,
-                                      QWidget *parent = 0, const char *name = 0, Qt::WFlags f = 0)
+                                      QWidget *parent = 0, const char *name = 0, Qt::WindowFlags f = 0)
 
     Call getItem(\a parent, \a title, \a label, \a list, \a current,
     \a editable, \a ok, \a f) instead.

@@ -122,7 +122,7 @@ void Q3SpinWidget::mousePressEvent(QMouseEvent *e)
         d->stopTimer();
         d->buttonDown = 0;
         d->theButton = 0;
-        repaint(d->down.unite(d->up));
+        repaint(d->down.united(d->up));
         return;
     }
 
@@ -138,7 +138,7 @@ void Q3SpinWidget::mousePressEvent(QMouseEvent *e)
     d->theButton = d->buttonDown;
     if (oldButtonDown != d->buttonDown) {
         if (!d->buttonDown) {
-            repaint(d->down.unite(d->up));
+            repaint(d->down.united(d->up));
         } else if (d->buttonDown & 1) {
             repaint(d->down);
             stepDown();

@@ -2,25 +2,19 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/src/gui/accessible/qaccessible.cpp -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/src/gui/accessible/qaccessible.cpp -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-x11-opensource-src-4.2.0/src/gui/accessible/qaccessible.cpp -->
 <head>
-    <title>Qt 4.1: QAccessibleInterface Class Reference</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
+  <title>Qt 4.2: QAccessibleInterface Class Reference</title>
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QAccessibleInterface Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">QAccessibleInterface Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QAccessibleInterface class defines an interface that exposes information about accessible objects. <a href="#details">More...</a></p>
-<pre>#include &lt;QAccessibleInterface&gt;</pre><p>Inherits <a href="qaccessible.html">QAccessible</a>.</p>
+<pre> #include &lt;QAccessibleInterface&gt;</pre><p>Inherits <a href="qaccessible.html">QAccessible</a>.</p>
 <p>Inherited by <a href="qaccessibleobject.html">QAccessibleObject</a>.</p>
 <ul>
 <li><a href="qaccessibleinterface-members.html">List of all members, including inherited members</a></li>
@@ -34,6 +28,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>virtual int <b><a href="qaccessibleinterface.html#childCount">childCount</a></b> () const = 0</li>
 <li><div class="fn"/>virtual bool <b><a href="qaccessibleinterface.html#doAction">doAction</a></b> ( int <i>action</i>, int <i>child</i>, const QVariantList &amp; <i>params</i> = QVariantList() ) = 0</li>
 <li><div class="fn"/>virtual int <b><a href="qaccessibleinterface.html#indexOfChild">indexOfChild</a></b> ( const QAccessibleInterface * <i>child</i> ) const = 0</li>
+<li><div class="fn"/>QVariant <b><a href="qaccessibleinterface.html#invokeMethod">invokeMethod</a></b> ( Method <i>method</i>, int <i>child</i> = 0, const QVariantList &amp; <i>params</i> = QVariantList() )</li>
 <li><div class="fn"/>virtual bool <b><a href="qaccessibleinterface.html#isValid">isValid</a></b> () const = 0</li>
 <li><div class="fn"/>virtual int <b><a href="qaccessibleinterface.html#navigate">navigate</a></b> ( RelationFlag <i>relation</i>, int <i>entry</i>, QAccessibleInterface ** <i>target</i> ) const = 0</li>
 <li><div class="fn"/>virtual QObject * <b><a href="qaccessibleinterface.html#object">object</a></b> () const = 0</li>
@@ -106,6 +101,11 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns the 1-based index of the object <i>child</i> in this object's children list, or -1 if <i>child</i> is not a child of this object. 0 is not a possible return value.</p>
 <p>All objects provide this information about their children.</p>
 <p>See also <a href="qaccessibleinterface.html#childCount">childCount</a>().</p>
+<h3 class="fn"><a name="invokeMethod"></a><a href="qvariant.html">QVariant</a> QAccessibleInterface::invokeMethod ( <a href="qaccessible.html#Method-enum">Method</a> <i>method</i>, int <i>child</i> = 0, const <a href="qvariant.html#QVariantList-typedef">QVariantList</a> &amp; <i>params</i> = QVariantList() )</h3>
+<p>Invokes a <i>method</i> on <i>child</i> with the given parameters <i>params</i> and returns the result of the operation as <a href="qvariant.html">QVariant</a>.</p>
+<p>Note that the type of the returned <a href="qvariant.html">QVariant</a> depends on the action.</p>
+<p>Returns an invalid <a href="qvariant.html">QVariant</a> if the object doesn't support the action.</p>
+<p>This function was introduced in Qt 4.2.</p>
 <h3 class="fn"><a name="isValid"></a>bool QAccessibleInterface::isValid () const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Returns true if all the data necessary to use this interface implementation is valid (e.g. all pointers are non-null); otherwise returns false.</p>
 <p>See also <a href="qaccessibleinterface.html#object">object</a>().</p>
@@ -116,12 +116,12 @@ body { background: #ffffff; color: black; }</style>
 <p>The <i>entry</i> parameter has two different meanings:</p>
 <ul>
 <li><i>Hierarchical and Logical relationships</i> -- if multiple objects with the requested relationship exist <i>entry</i> specifies which one to return. <i>entry</i> is 1-based, e.g. use 1 to get the first (and possibly only) object with the requested relationship.<p>The following code demonstrates how to use this function to navigate to the first child of an object:</p>
-<pre>&nbsp;   QAccessibleInterface *child = 0;
-    int targetChild = object-&gt;navigate(Child, 1, &amp;child);
-    if (child) {
-        // ...
-        delete child;
-    }</pre>
+<pre> QAccessibleInterface *child = 0;
+ int targetChild = object-&gt;navigate(Child, 1, &amp;child);
+ if (child) {
+     <span class="comment">// ...</span>
+     delete child;
+ }</pre>
 </li>
 <li><i>Geometric relationships</i> -- the index of the child from which to start navigating in the specified direction. <i>entry</i> can be 0 to navigate to a sibling of this object, or non-null to navigate within contained children that don't provide their own accessible information.</li>
 </ul>
@@ -171,6 +171,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

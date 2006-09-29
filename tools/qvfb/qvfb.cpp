@@ -49,6 +49,7 @@
 #include <QPushButton>
 #include <QTextStream>
 #include <QFile>
+#include <QDebug>
 
 #include <unistd.h>
 #include <stdlib.h>
@@ -162,10 +163,11 @@ void Zoomer::zoom(int z)
 
 // =====================================================================
 
-QVFb::QVFb( int display_id, int w, int h, int d, int r, const QString &skin, QWidget *parent, Qt::WFlags flags )
+QVFb::QVFb( int display_id, int w, int h, int d, int r, const QString &skin, QWidget *parent, Qt::WindowFlags flags )
     : QMainWindow( parent, flags )
 {
     view = 0;
+    secondaryView = 0;
     scroller = 0;
     this->skin = 0;
     currentSkinIndex = -1;
@@ -202,6 +204,8 @@ void QVFb::init( int display_id, int pw, int ph, int d, int r, const QString& sk
 {
     delete view;
     view = 0;
+    delete secondaryView;
+    secondaryView = 0;
     delete scroller;
     scroller = 0;
     delete skin;
@@ -226,6 +230,7 @@ void QVFb::init( int display_id, int pw, int ph, int d, int r, const QString& sk
 	    skin->setView( view );
 	    view->setContentsMargins( 0, 0, 0, 0 );
 	    view->setFixedSize( sw, sh );
+
 	    setCentralWidget( skin );
 	    adjustSize();
 	    skinscaleH = (double)sw/pw;
@@ -233,6 +238,15 @@ void QVFb::init( int display_id, int pw, int ph, int d, int r, const QString& sk
 	    if ( skinscaleH != 1.0 || skinscaleH != 1.0 )
 		setZoom(skinscaleH);
 	    view->show();
+
+            if (Skin::hasSecondaryScreen(skin_name)) {
+                QSize ssize = Skin::secondaryScreenSize(skin_name);
+                // assumes same depth and rotation
+                secondaryView = new QVFbView( display_id+1, ssize.width(), ssize.height(), d, rot, skin );
+                skin->setSecondaryView(secondaryView);
+                secondaryView->show();
+            }
+
 	    if ( vis ) show();
 	} else {
 	    delete skin;
@@ -269,8 +283,13 @@ void QVFb::init( int display_id, int pw, int ph, int d, int r, const QString& sk
 	scroller->show();
 	// delete defaultbuttons.conf if it was left behind...
 	unlink(QFileInfo(QString("/tmp/qtembedded-%1/defaultbuttons.conf").arg(view->displayId())).absoluteFilePath().toLatin1().constData());
+        if (secondaryView)
+            unlink(QFileInfo(QString("/tmp/qtembedded-%1/defaultbuttons.conf").arg(view->displayId()+1)).absoluteFilePath().toLatin1().constData());
     }
     view->setRate(refreshRate);
+    if (secondaryView) {
+        secondaryView->setRate(refreshRate);
+    }
     // Resize QVFb to the new size
     QSize newSize = view->sizeHint();
 
@@ -288,8 +307,12 @@ void QVFb::enableCursor( bool e )
 {
     if ( skin && skin->hasCursor() ) {
 	view->setCursor( Qt::BlankCursor );
+        if (secondaryView)
+            secondaryView->setCursor( Qt::BlankCursor );
     } else {
 	view->setCursor( e ? Qt::ArrowCursor : Qt::BlankCursor );
+        if (secondaryView)
+            secondaryView->setCursor( e ? Qt::ArrowCursor : Qt::BlankCursor );
     }
     cursorAction->setChecked( e );
 }
@@ -306,12 +329,12 @@ void QVFb::createMenu(T *menu)
 QMenu* QVFb::createFileMenu()
 {
     QMenu *file = new QMenu( "&File", this );
-    file->addAction( "&Configure...", this, SLOT(configure()), Qt::ALT+Qt::CTRL+Qt::Key_C );
+    file->addAction( "Configure...", this, SLOT(configure()), 0 );
     file->addSeparator();
-    file->addAction( "&Save image...", this, SLOT(saveImage()), Qt::ALT+Qt::CTRL+Qt::Key_S );
-    file->addAction( "&Animation...", this, SLOT(toggleAnimation()), Qt::ALT+Qt::CTRL+Qt::Key_A );
+    file->addAction( "Save image...", this, SLOT(saveImage()), 0 );
+    file->addAction( "Animation...", this, SLOT(toggleAnimation()), 0 );
     file->addSeparator();
-    file->addAction( "&Quit", qApp, SLOT(quit()) );
+    file->addAction( "Quit", qApp, SLOT(quit()) );
     return file;
 }
 
@@ -347,11 +370,18 @@ QMenu* QVFb::createHelpMenu()
 void QVFb::setZoom(double z)
 {
     view->setZoom(z,z*skinscaleV/skinscaleH);
+    if (secondaryView)
+        secondaryView->setZoom(z,z*skinscaleV/skinscaleH);
+
     if (skin) {
 	skin->setZoom(z/skinscaleH);
 	view->setFixedSize(
 	    int(view->displayWidth()*z),
 	    int(view->displayHeight()*z*skinscaleV/skinscaleH));
+        if (secondaryView)
+            secondaryView->setFixedSize(
+                    int(secondaryView->displayWidth()*z),
+                    int(secondaryView->displayHeight()*z*skinscaleV/skinscaleH));
     }
 }
 
@@ -395,9 +425,15 @@ void QVFb::setZoom4()
 void QVFb::saveImage()
 {
     QImage img = view->image();
-    QString filename = QFileDialog::getSaveFileName(this, "Save image", "snapshot.png", "Portable Network Graphics (*.png)");
+    QString filename = QFileDialog::getSaveFileName(this, "Save Main Screen image", "snapshot.png", "Portable Network Graphics (*.png)");
     if (!filename.isEmpty())
         img.save(filename,"PNG");
+    if (secondaryView) {
+        QImage img = view->image();
+        QString filename = QFileDialog::getSaveFileName(this, "Save Second Screen image", "snapshot.png", "Portable Network Graphics (*.png)");
+        if (!filename.isEmpty())
+            img.save(filename,"PNG");
+    }
 }
 
 void QVFb::toggleAnimation()
@@ -430,6 +466,8 @@ void QVFb::setRate(int i)
 {
     refreshRate = i;
     view->setRate(i);
+    if (secondaryView)
+        secondaryView->setRate(i);
 }
 
 
@@ -451,7 +489,7 @@ void QVFb::findSkins(const QString &currentSkin)
 {
     skinnames.clear();
     skinfiles.clear();
-    QDir dir(".","*.skin");
+    QDir dir(":/skins/","*.skin");
     const QFileInfoList l = dir.entryInfoList();
     int i = 1; // "None" is already in list at index 0
     for (QFileInfoList::const_iterator it = l.begin(); it != l.end(); ++it) {
@@ -490,6 +528,7 @@ void QVFb::configure()
     config->skin->insertItems(config->skin->count(), skinnames);
     if (currentSkinIndex > 0)
 	config->skin->setCurrentIndex(currentSkinIndex);
+    config->skin->addItem(tr("Browse..."));
     config->touchScreen->setChecked(view->touchScreenEmulation());
     config->lcdScreen->setChecked(view->lcdScreenEmulation());
     config->depth_1->setChecked(view->displayDepth()==1);
@@ -497,6 +536,8 @@ void QVFb::configure()
     config->depth_8->setChecked(view->displayDepth()==8);
     config->depth_12->setChecked(view->displayDepth()==12);
     config->depth_16->setChecked(view->displayDepth()==16);
+    config->depth_18->setChecked(view->displayDepth()==18);
+    config->depth_24->setChecked(view->displayDepth()==24);
     config->depth_32->setChecked(view->displayDepth()==32);
     connect(config->skin, SIGNAL(activated(int)), this, SLOT(skinConfigChosen(int)));
     if ( view->gammaRed() == view->gammaGreen() && view->gammaGreen() == view->gammaBlue() ) {
@@ -530,6 +571,10 @@ void QVFb::configure()
 	    w=320; h=240;
 	} else if ( config->size_640_480->isChecked() ) {
 	    w=640; h=480;
+	} else if ( config->size_800_600->isChecked() ) {
+	    w=800; h=600;
+	} else if ( config->size_1024_768->isChecked() ) {
+	    w=1024; h=768;
 	} else {
 	    w=config->size_width->value();
 	    h=config->size_height->value();
@@ -545,6 +590,10 @@ void QVFb::configure()
 	    d=12;
 	else if ( config->depth_16->isChecked() )
 	    d=16;
+	else if ( config->depth_18->isChecked() )
+	    d=18;
+	else if ( config->depth_24->isChecked() )
+	    d=24;
 	else
 	    d=32;
 	int skinIndex = config->skin->currentIndex();
@@ -584,10 +633,27 @@ void QVFb::chooseSize(const QSize& sz)
     config->size_240_320->setChecked(sz == QSize(240,320));
     config->size_320_240->setChecked(sz == QSize(320,240));
     config->size_640_480->setChecked(sz == QSize(640,480));
+    config->size_800_600->setChecked(sz == QSize(800,600));
+    config->size_1024_768->setChecked(sz == QSize(1024,768));
 }
 
 void QVFb::skinConfigChosen(int i)
 {
+    if (i == config->skin->count() - 1) { // Browse... ?
+        QFileDialog dlg(this);
+        dlg.setFileMode(QFileDialog::DirectoryOnly);
+        dlg.setWindowTitle(tr("Load Custom Skin..."));
+        dlg.setFilter(tr("All QVFB Skins (*.skin)"));
+        dlg.setDirectory(QDir::current());
+        if (dlg.exec() && dlg.selectedFiles().count() == 1) {
+            skinfiles.append(dlg.selectedFiles().first());
+            i = skinfiles.count();
+            config->skin->insertItem(i, QFileInfo(skinfiles.last()).baseName());
+            config->skin->setCurrentIndex(i);
+        } else {
+            i = 0;
+        }
+    }
     if ( i ) {
 	chooseSize(Skin::screenSize(skinfiles[i-1]));
     }

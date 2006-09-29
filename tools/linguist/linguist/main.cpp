@@ -30,6 +30,7 @@
 #include <QTranslator>
 #include <QSettings>
 #include <QSplashScreen>
+#include <QLibraryInfo>
 #include <QLocale>
 
 int main(int argc, char **argv)
@@ -39,12 +40,13 @@ int main(int argc, char **argv)
     QApplication app(argc, argv);
     QApplication::setOverrideCursor(Qt::WaitCursor);
 
-    QString lang = QLocale::system().name();
-    lang.chop(3); //remove country
     QTranslator translator(0);
-    translator.load(QString("linguist_") + lang, ".");
-
+    translator.load(QLatin1String("linguist_") + QLocale::system().name(), ".");
     app.installTranslator(&translator);
+
+    QTranslator qtTranslator(0);
+    qtTranslator.load(QLatin1String("qt_") + QLocale::system().name(), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+    app.installTranslator(&qtTranslator);
 
     app.setOrganizationName("Trolltech");
     app.setApplicationName("Linguist");
@@ -52,16 +54,11 @@ int main(int argc, char **argv)
                      "." + QString::number( (QT_VERSION >> 8) & 0xff ) + "/" );
     QSettings config;
 
-    QRect r(QApplication::desktop()->availableGeometry());
-    r.setX(config.value(keybase + "Geometry/MainwindowX", r.x()).toInt());
-    r.setY(config.value(keybase + "Geometry/MainwindowY", r.y()).toInt());
-    r.setWidth(config.value(keybase + "Geometry/MainwindowWidth", r.width()).toInt());
-    r.setHeight(config.value(keybase + "Geometry/MainwindowHeight", r.height()).toInt());
-    if (!r.intersects(QApplication::desktop()->geometry()))
-        r.moveTopLeft(QApplication::desktop()->availableGeometry().topLeft());
-
+    QWidget tmp;
+    tmp.restoreGeometry(config.value(keybase + "Geometry/WindowGeometry").toByteArray());
+    
     QSplashScreen *splash = 0;
-    int screenId = QApplication::desktop()->screenNumber(r.center());
+    int screenId = QApplication::desktop()->screenNumber(tmp.geometry().center());
     splash = new QSplashScreen(QApplication::desktop()->screen(screenId),
         QPixmap(":/images/splash.png"));
     if (QApplication::desktop()->isVirtualDesktop()) {
@@ -72,13 +69,9 @@ int main(int argc, char **argv)
     splash->show();
 
     TrWindow tw;
-
-    if (config.value(keybase + "Geometry/MainwindowMaximized", false).toBool())
-        tw.setWindowState(tw.windowState() | Qt::WindowMaximized);
     tw.show();
 
-    if (splash)
-        splash->finish(&tw);
+    splash->finish(&tw);
 
     if (app.argc() > 1)
         tw.openFile(QString(app.argv()[app.argc() - 1]));

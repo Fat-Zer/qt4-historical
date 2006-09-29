@@ -103,6 +103,20 @@
          </widget>
         </item>
         <item>
+         <widget class="QRadioButton" name="size_800_600" >
+          <property name="text" >
+           <string>800x600</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="size_1024_768" >
+          <property name="text" >
+           <string>1024x768</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <layout class="QHBoxLayout" >
           <property name="margin" >
            <number>0</number>
@@ -206,6 +220,20 @@
          <widget class="QRadioButton" name="depth_16" >
           <property name="text" >
            <string>16 bit</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="depth_18" >
+          <property name="text" >
+           <string>18 bit</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="depth_24" >
+          <property name="text" >
+           <string>24 bit</string>
           </property>
          </widget>
         </item>

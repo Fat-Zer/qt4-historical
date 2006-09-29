@@ -165,7 +165,7 @@ static QVariant::Type qDecodeMYSQLType(int mysqltype, uint flags)
     case FIELD_TYPE_TINY_BLOB :
     case FIELD_TYPE_MEDIUM_BLOB :
     case FIELD_TYPE_LONG_BLOB :
-        type = QVariant::ByteArray;
+        type = (flags & BINARY_FLAG) ? QVariant::ByteArray : QVariant::String;
         break;
     default:
     case FIELD_TYPE_ENUM :
@@ -363,8 +363,8 @@ bool QMYSQLResult::fetch(int i)
         mysql_stmt_data_seek(d->stmt, i);
 
         if (mysql_stmt_fetch(d->stmt)) {
-            setLastError(qMakeStmtError(QCoreApplication::tr("Unable to fetch data",
-                         "QMYSQLResult"), QSqlError::StatementError, d->stmt));
+            setLastError(qMakeStmtError(QCoreApplication::translate("QMYSQLResult",
+                         "Unable to fetch data"), QSqlError::StatementError, d->stmt));
             return false;
         }
 #else
@@ -527,13 +527,13 @@ bool QMYSQLResult::reset (const QString& query)
 
     const QByteArray encQuery(d->tc->fromUnicode(query));
     if (mysql_real_query(d->mysql, encQuery.data(), encQuery.length())) {
-        setLastError(qMakeError(QCoreApplication::tr("Unable to execute query", "QMYSQLResult"),
+        setLastError(qMakeError(QCoreApplication::translate("QMYSQLResult", "Unable to execute query"),
                      QSqlError::StatementError, d));
         return false;
     }
     d->result = mysql_store_result(d->mysql);
     if (!d->result && mysql_field_count(d->mysql) > 0) {
-        setLastError(qMakeError(QCoreApplication::tr("Unable to store result", "QMYSQLResult"),
+        setLastError(qMakeError(QCoreApplication::translate("QMYSQLResult", "Unable to store result"),
                     QSqlError::StatementError, d));
         return false;
     }
@@ -655,7 +655,7 @@ bool QMYSQLResult::prepare(const QString& query)
     if (!d->stmt)
         d->stmt = mysql_stmt_init(d->mysql);
     if (!d->stmt) {
-        setLastError(qMakeError(QCoreApplication::tr("Unable to prepare statement", "QMYSQLResult"),
+        setLastError(qMakeError(QCoreApplication::translate("QMYSQLResult", "Unable to prepare statement"),
                      QSqlError::StatementError, d));
         return false;
     }
@@ -663,8 +663,8 @@ bool QMYSQLResult::prepare(const QString& query)
     const QByteArray encQuery(d->tc->fromUnicode(query));
     r = mysql_stmt_prepare(d->stmt, encQuery.constData(), encQuery.length());
     if (r != 0) {
-        setLastError(qMakeStmtError(QCoreApplication::tr("Unable to prepare statement",
-                        "QMYSQLResult"), QSqlError::StatementError, d->stmt));
+        setLastError(qMakeStmtError(QCoreApplication::translate("QMYSQLResult",
+                     "Unable to prepare statement"), QSqlError::StatementError, d->stmt));
         cleanup();
         return false;
     }
@@ -694,8 +694,8 @@ bool QMYSQLResult::exec()
 
     r = mysql_stmt_reset(d->stmt);
     if (r != 0) {
-        setLastError(qMakeStmtError(QCoreApplication::tr("Unable to reset statement",
-                        "QMYSQLResult"), QSqlError::StatementError, d->stmt));
+        setLastError(qMakeStmtError(QCoreApplication::translate("QMYSQLResult",
+                     "Unable to reset statement"), QSqlError::StatementError, d->stmt));
         return false;
     }
 
@@ -781,8 +781,8 @@ bool QMYSQLResult::exec()
 
         r = mysql_stmt_bind_param(d->stmt, d->outBinds);
         if (r != 0) {
-            setLastError(qMakeStmtError(QCoreApplication::tr("Unable to bind value",
-                            "QMYSQLResult"), QSqlError::StatementError, d->stmt));
+            setLastError(qMakeStmtError(QCoreApplication::translate("QMYSQLResult",
+                         "Unable to bind value"), QSqlError::StatementError, d->stmt));
             qDeleteAll(timeVector);
             return false;
         }
@@ -792,8 +792,8 @@ bool QMYSQLResult::exec()
     qDeleteAll(timeVector);
 
     if (r != 0) {
-        setLastError(qMakeStmtError(QCoreApplication::tr("Unable to execute statement",
-                        "QMYSQLResult"), QSqlError::StatementError, d->stmt));
+        setLastError(qMakeStmtError(QCoreApplication::translate("QMYSQLResult",
+                     "Unable to execute statement"), QSqlError::StatementError, d->stmt));
         return false;
     }
     //if there is meta-data there is also data
@@ -806,8 +806,8 @@ bool QMYSQLResult::exec()
 
         r = mysql_stmt_bind_result(d->stmt, d->inBinds);
         if (r != 0) {
-            setLastError(qMakeStmtError(QCoreApplication::tr("Unable to bind outvalues",
-                          "QMYSQLResult"), QSqlError::StatementError, d->stmt));
+            setLastError(qMakeStmtError(QCoreApplication::translate("QMYSQLResult",
+                         "Unable to bind outvalues"), QSqlError::StatementError, d->stmt));
             return false;
         }
         if (d->hasBlobs)
@@ -815,8 +815,8 @@ bool QMYSQLResult::exec()
 
         r = mysql_stmt_store_result(d->stmt);
         if (r != 0) {
-            setLastError(qMakeStmtError(QCoreApplication::tr("Unable to store statement results",
-                            "QMYSQLResult"), QSqlError::StatementError, d->stmt));
+            setLastError(qMakeStmtError(QCoreApplication::translate("QMYSQLResult",
+                         "Unable to store statement results"), QSqlError::StatementError, d->stmt));
             return false;
         }
 
@@ -827,8 +827,8 @@ bool QMYSQLResult::exec()
             d->bindBlobs();
             r = mysql_stmt_bind_result(d->stmt, d->inBinds);
             if (r != 0) {
-                setLastError(qMakeStmtError(QCoreApplication::tr("Unable to bind outvalues",
-                              "QMYSQLResult"), QSqlError::StatementError, d->stmt));
+                setLastError(qMakeStmtError(QCoreApplication::translate("QMYSQLResult",
+                             "Unable to bind outvalues"), QSqlError::StatementError, d->stmt));
                 return false;
             }
         }
@@ -970,14 +970,18 @@ bool QMYSQLDriver::open(const QString& db,
     */
     unsigned int optionFlags = Q_CLIENT_MULTI_STATEMENTS;
     const QStringList opts(connOpts.split(QLatin1Char(';'), QString::SkipEmptyParts));
+    QString unixSocket;
 
     // extract the real options from the string
     for (int i = 0; i < opts.count(); ++i) {
         QString tmp(opts.at(i).simplified());
         int idx;
         if ((idx = tmp.indexOf(QLatin1Char('='))) != -1) {
-            QString val(tmp.mid(idx + 1).simplified());
-            if (val == QLatin1String("TRUE") || val == QLatin1String("1"))
+            QString val = tmp.mid(idx + 1).simplified();
+            QString opt = tmp.left(idx).simplified();
+            if (opt == QLatin1String("UNIX_SOCKET"))
+                unixSocket = val;
+            else if (val == QLatin1String("TRUE") || val == QLatin1String("1"))
                 setOptionFlag(optionFlags, tmp.left(idx).simplified());
             else
                 qWarning("QMYSQLDriver::open: Illegal connect option value '%s'",
@@ -998,11 +1002,12 @@ bool QMYSQLDriver::open(const QString& db,
                                db.isNull() ? static_cast<const char *>(0)
                                            : db.toLocal8Bit().constData(),
                                (port > -1) ? port : 0,
-                               NULL,
+                               unixSocket.isNull() ? static_cast<const char *>(0)
+                                           : unixSocket.toLocal8Bit().constData(),
                                optionFlags))
     {
         if (!db.isEmpty() && mysql_select_db(d->mysql, db.toLocal8Bit().constData())) {
-            setLastError(qMakeError(tr("Unable open database '") + db +
+            setLastError(qMakeError(tr("Unable to open database '") + db +
                          QLatin1Char('\''), QSqlError::ConnectionError, d));
             mysql_close(d->mysql);
             setOpenError(true);
@@ -1015,6 +1020,10 @@ bool QMYSQLDriver::open(const QString& db,
         setOpenError(true);
         return false;
     }
+#if MYSQL_VERSION_ID >= 50007
+    // force the communication to be utf8
+    mysql_set_character_set(d->mysql, "utf8");
+#endif
     d->tc = codec(d->mysql);
 
 #if MYSQL_VERSION_ID >= 40108
@@ -1181,7 +1190,8 @@ QString QMYSQLDriver::formatValue(const QSqlField &field, bool trimStrings) cons
                 const QByteArray ba = field.value().toByteArray();
                 // buffer has to be at least length*2+1 bytes
                 char* buffer = new char[ba.size() * 2 + 1];
-                int escapedSize = int(mysql_escape_string(buffer, ba.data(), ba.size()));
+                int escapedSize = int(mysql_real_escape_string(d->mysql, buffer,
+                                      ba.data(), ba.size()));
                 r.reserve(escapedSize + 3);
                 r.append(QLatin1Char('\'')).append(d->tc->toUnicode(buffer)).append(QLatin1Char('\''));
                 delete[] buffer;

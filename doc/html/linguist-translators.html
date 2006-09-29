@@ -2,26 +2,20 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/doc/src/linguist-manual.qdoc -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/doc/src/linguist-manual.qdoc -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-x11-opensource-src-4.2.0/doc/src/linguist-manual.qdoc -->
 <head>
-    <title>Qt 4.1: Qt Linguist Manual: Translators</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
-    <link rel="prev" href="linguist-manager.html" />
-    <link rel="contents" href="linguist-manual.html" />
-    <link rel="next" href="linguist-programmers.html" />
+  <title>Qt 4.2: Qt Linguist Manual: Translators</title>
+  <link rel="prev" href="linguist-manager.html" />
+  <link rel="contents" href="linguist-manual.html" />
+  <link rel="next" href="linguist-programmers.html" />
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><p>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><p>
 [Previous: <a href="linguist-manager.html">Qt Linguist Manual: Release Manager</a>]
 [<a href="linguist-manual.html">Contents</a>]
 [Next: <a href="linguist-programmers.html">Qt Linguist Manual: Programmers</a>]
@@ -61,20 +55,20 @@ body { background: #ffffff; color: black; }</style>
 <p>If you wish to leave a translation press <b>Ctrl+L</b> (Next Unfinished) to move to the next unfinished translation. An unfinished translation is one that either has not been translated at all or one which fails validation. To move to the next phrase press <b>Shift+Ctrl+L</b>. You can also navigate using the Translation menu. If you want to go to a different context entirely, click the context you want to work on in the Context list, then click the source text in the Source Text area.</p>
 <a name="phrases-that-require-multiple-translations-depending-on-context"></a>
 <h3>Phrases That Require Multiple Translations Depending on Context</h3>
-<p>The same phrase may occur in two or more contexts without conflict. Once a phrase has been translated in one context, <i>Qt Linguist</i> notes that the translation has been made and when the translator reaches a later occurrence of the same phrase <i>Qt Linguist</i> will provide the previous translation as a possible translation candidate in the phrases and guesses area. If the previous translation is acceptable just click the <i>Done &amp; Next</i> button (press <b>Alt+Enter</b>) to move on to the next unfinished phrase.</p>
+<p>The same phrase may occur in two or more contexts without conflict. Once a phrase has been translated in one context, <i>Qt Linguist</i> notes that the translation has been made and when the translator reaches a later occurrence of the same phrase <i>Qt Linguist</i> will provide the previous translation as a possible translation candidate in the phrases and guesses area. If the previous translation is acceptable just click the <i>Done &amp; Next</i> button (press <b>Ctrl+Return</b>) to move on to the next unfinished phrase.</p>
 <p>If a phrase occurs more than once in a particular context it will only be shown once in <i>Qt Linguist</i>'s context list and the translation will be applied to every occurrence within the context. If the same phrase needs to be translated differently within the same context the programmer must provide a distinguishing comment for each of the phrases concerned. If such comments are used the duplicate phrases will appear in the context list. The programmers comments will appear in the translation area on a light blue background.</p>
 <a name="changing-keyboard-accelerators"></a>
 <h3>Changing Keyboard Accelerators</h3>
 <p>A keyboard accelerator is a key combination that when pressed will cause an application to perform an action. Keyboard accelerators normally come in two forms: Alt key and Ctrl key accelerators.</p>
 <p>Alt key accelerators are used for menus and buttons. The underlining signifies that pressing the Alt key with the underlined letter is the same as clicking the menu item with the mouse. For example, most applications have a <i>File</i> menu with the &quot;F&quot; in the word &quot;file&quot; underlined. In these applications the file menu can be invoked either by clicking the word &quot;File&quot; on the menu bar or by pressing Alt+F. The accelerator key which is underlined is signified by preceeding it with an ampersand, e.g. <i>&amp;File</i>. If a source phrase appears with an ampersand in it then the translation should also contain an ampersand, preferably in front of the same letter. The meaning of Alt key accelerators can be determined from the phrase in which the ampersand is embedded. The translator may need to change the letter used with the Alt key, e.g. if the translated phrase does not contain the original accelerator letter. Conflicts with other keys, i.e. having two Alt key accelerators using the same letter in the same context, must be avoided. Note that some Alt key accelerators, usually those on the menu bar, may apply in other contexts.</p>
-<p>Ctrl key accelerators can exist independently of any visual control. They are often used to invoke actions in menus that would otherwise take several keystrokes or mouse clicks. They may also be used to perform actions that do not appear in any menu or on any button. For example, most applications that have a <i>File</i> menu have a submenu item called <i>New</i>. In many applications this will appear as &quot;<u>N</u>ew Ctrl+N&quot;. This menu option could be invoked by clicking <i>File</i> then clicking <i>New</i> with the mouse. Or you could press Alt+F then press N since these letters are underlined. But the same thing can be achieved simply by pressing <b>Ctrl+Enter</b>. Accelerators that use the Ctrl key are shown literally in the source text, e.g. <b>Ctrl+Enter</b>. Ctrl key accelerators have no phrase so the translator must rely on the programmer to add a &quot;comment&quot; which appears in the top right hand pane. This comment should explain what action the Ctrl key accelerator performs. Ideally Ctrl key accelerators are translated simply by copying them by clicking the <i>Begin from Source</i> button. However in some cases the letter will not make sense in the target language and must be changed. Whatever letter (or digit) is chosen, the translation should always be in the form &quot;Ctrl+&quot; followed by the letter or digit in upper case. As with Alt key accelerators, if the translator changes the key it must not conflict with any other Ctrl key accelerator.</p>
+<p>Ctrl key accelerators can exist independently of any visual control. They are often used to invoke actions in menus that would otherwise take several keystrokes or mouse clicks. They may also be used to perform actions that do not appear in any menu or on any button. For example, most applications that have a <i>File</i> menu have a submenu item called <i>New</i>. In many applications this will appear as &quot;<u>N</u>ew Ctrl+N&quot;. This menu option could be invoked by clicking <i>File</i> then clicking <i>New</i> with the mouse. Or you could press Alt+F then press N since these letters are underlined. But the same thing can be achieved simply by pressing <b>Ctrl+N</b>. Accelerators that use the Ctrl key are shown literally in the source text, e.g. <b>Ctrl+Enter</b>. Ctrl key accelerators have no phrase so the translator must rely on the programmer to add a &quot;comment&quot; which appears in the top right hand pane. This comment should explain what action the Ctrl key accelerator performs. Ideally Ctrl key accelerators are translated simply by copying them by choosing the <i>Begin from Source</i> entry in the <b>Translation</b> menu. However in some cases the letter will not make sense in the target language and must be changed. Whatever letter (or digit) is chosen, the translation should always be in the form &quot;Ctrl+&quot; followed by the letter or digit in upper case. As with Alt key accelerators, if the translator changes the key it must not conflict with any other Ctrl key accelerator.</p>
 <p>Later versions of <i>Qt Linguist</i> are expected to help the translator avoid accelerator conflicts.</p>
 <a name="dealing-with-phrases-that-contain-variables"></a>
 <h3>Dealing with Phrases That Contain Variables</h3>
 <p>Some phrases contain variables. Variables are placeholders for items of text that are filled in at runtime. They are signified in the source text with a percent sign followed by a digit, e.g. <i>After processing file %1, file %2 is next in line</i>. In this example, <tt>%1</tt> will be replaced at runtime with the name of the first file to be processed and <tt>%2</tt> with the name of the next file to be processed. In the translated version the variables must still appear. For example a German translation might reverse the phrases, e.g. <i>Datei %2 wird bearbeitet, wenn Datei %1 fertig ist</i>. Note that both variables are still used but their order has changed. The order in which variables appear does not matter; <tt>%1</tt> will always be replaced by the same text at runtime no matter where it appears in the source text or translation and similarly <tt>%2</tt>, etc.</p>
 <a name="reusing-translations"></a>
 <h3>Reusing Translations</h3>
-<p>If the translated text is similar to the source text, click the <i>Begin from Source</i> button (press <b>Alt+T</b>) which will copy the source text into the translation area.</p>
+<p>If the translated text is similar to the source text, choose the <i>Begin from Source</i> entry in the <b>Translation</b> menu (press <b>Ctrl+B</b>) which will copy the source text into the translation area.</p>
 <p><i>Qt Linguist</i> automatically lists phrases from the open phrase books and similar or identical phrases that have already been translated in the Phrases and guesses area.</p>
 <a name="creating-and-using-phrase-books"></a>
 <h2>Creating and Using Phrase Books</h2>
@@ -204,6 +198,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

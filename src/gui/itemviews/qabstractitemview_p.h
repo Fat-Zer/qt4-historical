@@ -40,16 +40,32 @@
 #include "QtCore/qdatetime.h"
 #include "QtGui/qevent.h"
 #include "QtGui/qmime.h"
+#include "QtGui/qpainter.h"
 #include "QtCore/qpair.h"
 #include "QtCore/qtimer.h"
+#include "QtCore/qtimeline.h"
 #include "QtGui/qregion.h"
 #include "QtCore/qdebug.h"
+#include "QtGui/qpainter.h"
 
 #ifndef QT_NO_ITEMVIEWS
 
 typedef QList<QPair<QPersistentModelIndex, QPointer<QWidget> > > _q_abstractitemview_editor_container;
 typedef _q_abstractitemview_editor_container::const_iterator _q_abstractitemview_editor_const_iterator;
 typedef _q_abstractitemview_editor_container::iterator _q_abstractitemview_editor_iterator;
+
+
+class QEmptyModel : public QAbstractItemModel
+{
+public:
+    explicit QEmptyModel(QObject *parent = 0) : QAbstractItemModel(parent) {}
+    QModelIndex index(int, int, const QModelIndex &) const { return QModelIndex(); }
+    QModelIndex parent(const QModelIndex &) const { return QModelIndex(); }
+    int rowCount(const QModelIndex &) const { return 0; }
+    int columnCount(const QModelIndex &) const { return 0; }
+    bool hasChildren(const QModelIndex &) const { return false; }
+    QVariant data(const QModelIndex &, int) const { return QVariant(); }
+};
 
 class Q_GUI_EXPORT QAbstractItemViewPrivate : public QAbstractScrollAreaPrivate
 {
@@ -64,6 +80,7 @@ public:
     void _q_rowsRemoved(const QModelIndex &parent, int start, int end);
     void _q_columnsAboutToBeRemoved(const QModelIndex &parent, int start, int end);
     void _q_columnsRemoved(const QModelIndex &parent, int start, int end);
+    void _q_modelDestroyed();
 
     void fetchMore();
     bool shouldEdit(QAbstractItemView::EditTrigger trigger, const QModelIndex &index) const;
@@ -71,9 +88,12 @@ public:
     bool shouldAutoScroll(const QPoint &pos) const;
     void doDelayedItemsLayout();
 
+    bool dropOn(QDropEvent *event, int *row, int *col, QModelIndex *index);
+
     QWidget *editor(const QModelIndex &index, const QStyleOptionViewItem &options);
     bool sendDelegateEvent(const QModelIndex &index, QEvent *event) const;
     bool openEditor(const QModelIndex &index, QEvent *event);
+    void updateEditorData(const QModelIndex &topLeft, const QModelIndex &bottomRight);
 
     QItemSelectionModel::SelectionFlags multiSelectionCommand(const QModelIndex &index,
                                                               const QEvent *event) const;
@@ -92,9 +112,8 @@ public:
     }
 
 #ifndef QT_NO_DRAGANDDROP
+    QAbstractItemView::DropIndicatorPosition position(const QPoint &pos, const QRect &rect) const;
     inline bool canDecode(QDropEvent *e) const {
-        if (!model)
-            return false;
         QStringList modelTypes = model->mimeTypes();
         const QMimeData *mime = e->mimeData();
         for (int i = 0; i < modelTypes.count(); ++i)
@@ -111,24 +130,14 @@ public:
                 painter->drawLine(dropIndicatorRect.topLeft(), dropIndicatorRect.topRight());
             else painter->drawRect(dropIndicatorRect);
     }
-
-    inline QAbstractItemView::DropIndicatorPosition position(const QPoint &pos,
-                                                             const QRect &rect,
-                                                             int margin) const {
-        if (pos.y() - rect.top() < margin) return QAbstractItemView::AboveItem;
-        if (rect.bottom() - pos.y() < margin) return QAbstractItemView::BelowItem;
-        if (rect.contains(pos, true)) return QAbstractItemView::OnItem;
-        return QAbstractItemView::OnViewport;
-    }
 #endif
 
     inline void releaseEditor(QWidget *editor) const {
         if (editor) {
             QObject::disconnect(editor, SIGNAL(destroyed(QObject*)),
                                 q_func(), SLOT(editorDestroyed(QObject*)));
-            editor->removeEventFilter(delegate);
-            editor->hide(); // change the focus to the next widget
-            QTimer::singleShot(0, editor, SLOT(deleteLater())); // delete even later
+            editor->removeEventFilter(itemDelegate);
+            editor->deleteLater();
         }
     }
 
@@ -162,11 +171,16 @@ public:
         updateRegion = QRegion();
     }
 
-    void removeSelectedRows();
+    void clearOrRemove();
+    QPixmap renderToPixmap(const QModelIndexList &indexes, QRect *r = 0) const;
+
+    inline bool isIndexValid(const QModelIndex &index) const {
+         return (index.row() >= 0) && (index.column() >= 0) && (index.model() == model);
+    }
 
     virtual bool selectionAllowed(const QModelIndex &index) const {
         // in some views we want to go ahead with selections, even if the index is invalid
-        return index.isValid();
+        return isIndexValid(index);
     }
 
     inline QPoint offset() const {
@@ -185,20 +199,39 @@ public:
     void removeEditor(QWidget *editor);
 
     inline QModelIndex indexForIterator(const _q_abstractitemview_editor_iterator &it) const {
-        return (*it).first;
+        return (*it).first.operator const QModelIndex&();
     }
     inline QWidget *editorForIterator(const _q_abstractitemview_editor_iterator &it) const {
         return (*it).second;
     }
     inline QModelIndex indexForIterator(const _q_abstractitemview_editor_const_iterator &it) const {
-        return (*it).first;
+        return (*it).first.operator const QModelIndex&();
     }
     inline QWidget *editorForIterator(const _q_abstractitemview_editor_const_iterator &it) const {
         return (*it).second;
     }
 
-    QPointer<QAbstractItemModel> model;
-    QPointer<QAbstractItemDelegate> delegate;
+    inline bool isAnimating() const {
+        return state == QAbstractItemView::AnimatingState;
+    }
+
+    inline QAbstractItemDelegate *delegateForIndex(const QModelIndex &index) const {
+	QAbstractItemDelegate *del;
+	if ((del = rowDelegates.value(index.row(), 0))) return del;
+	if ((del = columnDelegates.value(index.column(), 0))) return del;
+	return itemDelegate;
+    }
+
+    // reimplemented from QAbstractScrollAreaPrivate
+    virtual QPoint contentsOffset() const {
+        Q_Q(const QAbstractItemView);
+        return QPoint(q->horizontalOffset(), q->verticalOffset());
+    }
+
+    QAbstractItemModel *model;
+    QPointer<QAbstractItemDelegate> itemDelegate;
+    QMap<int, QPointer<QAbstractItemDelegate> > rowDelegates;
+    QMap<int, QPointer<QAbstractItemDelegate> > columnDelegates;
     QPointer<QItemSelectionModel> selectionModel;
 
     QAbstractItemView::SelectionMode selectionMode;
@@ -211,14 +244,13 @@ public:
     QPersistentModelIndex pressedIndex;
     Qt::KeyboardModifiers pressedModifiers;
     QPoint pressedPosition;
+    bool pressedAlreadySelected;
 
     QAbstractItemView::State state;
     QAbstractItemView::EditTriggers editTriggers;
 
     QPersistentModelIndex root;
     QPersistentModelIndex hover;
-    int horizontalStepsPerItem;
-    int verticalStepsPerItem;
 
     bool tabKeyNavigation;
 
@@ -226,6 +258,8 @@ public:
     bool showDropIndicator;
     QRect dropIndicatorRect;
     bool dragEnabled;
+    QAbstractItemView::DragDropMode dragDropMode;
+    bool overwrite;
     QAbstractItemView::DropIndicatorPosition dropIndicatorPosition;
 #endif
 
@@ -249,6 +283,10 @@ public:
     QBasicTimer updateTimer;
     QBasicTimer delayedEditing;
     mutable QBasicTimer delayedLayout;
+    QTimeLine timeline;
+
+    QAbstractItemView::ScrollMode verticalScrollMode;
+    QAbstractItemView::ScrollMode horizontalScrollMode;
 };
 
 #include <qvector.h>

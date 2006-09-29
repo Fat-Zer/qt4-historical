@@ -33,6 +33,7 @@ QT_MODULE(Core)
 class QDataStream;
 class QDate;
 class QTime;
+class QVariant;
 struct QLocalePrivate;
 
 class Q_CORE_EXPORT QLocale
@@ -437,6 +438,8 @@ public:
     };
 
     enum FormatType { LongFormat, ShortFormat };
+    enum NumberOption { OmitGroupSeparator = 0x01, RejectGroupSeparator = 0x02 };
+    Q_DECLARE_FLAGS(NumberOptions, NumberOption)
 
     QLocale();
     QLocale(const QString &name);
@@ -481,6 +484,9 @@ public:
     QChar negativeSign() const;
     QChar exponential() const;
 
+    QString monthName(int, FormatType format = LongFormat) const;
+    QString dayName(int, FormatType format = LongFormat) const;
+
     inline bool operator==(const QLocale &other) const;
     inline bool operator!=(const QLocale &other) const;
 
@@ -491,11 +497,18 @@ public:
     static QLocale c() { return QLocale(C); }
     static QLocale system();
 
+    void setNumberOptions(NumberOptions options);
+    NumberOptions numberOptions() const;
+
 private:
-    const QLocalePrivate *d;
-    static const QLocalePrivate *default_d;
+    friend struct QLocalePrivate;
+    // ### We now use this field to pack an index into locale_data and NumberOptions.
+    // change to a QLocaleData *d; uint numberOptions; in Qt 5
+    void *v;
+    const QLocalePrivate *d() const;
 };
 Q_DECLARE_TYPEINFO(QLocale, Q_MOVABLE_TYPE);
+Q_DECLARE_OPERATORS_FOR_FLAGS(QLocale::NumberOptions)
 
 inline QString QLocale::toString(short i) const
     { return toString(qlonglong(i)); }
@@ -508,14 +521,47 @@ inline QString QLocale::toString(uint i) const
 inline QString QLocale::toString(float i, char f, int prec) const
     { return toString(double(i), f, prec); }
 inline bool QLocale::operator==(const QLocale &other) const
-    { return d == other.d; }
+    { return d() == other.d(); }
 inline bool QLocale::operator!=(const QLocale &other) const
-    { return d != other.d; }
+    { return d() != other.d(); }
 
 #ifndef QT_NO_DATASTREAM
 Q_CORE_EXPORT QDataStream &operator<<(QDataStream &, const QLocale &);
 Q_CORE_EXPORT QDataStream &operator>>(QDataStream &, QLocale &);
 #endif
+
+#ifndef QT_NO_SYSTEMLOCALE
+class Q_CORE_EXPORT QSystemLocale
+{
+public:
+    QSystemLocale();
+    virtual ~QSystemLocale();
+
+    enum QueryType {
+        LanguageId, // uint
+        CountryId, // uint
+        DecimalPoint, // QString
+        GroupSeparator, // QString
+        ZeroDigit, // QString
+        NegativeSign, // QString
+        DateFormatLong, // QString
+        DateFormatShort, // QString
+        TimeFormatLong, // QString
+        TimeFormatShort, // QString
+        DayNameLong, // QString, in: int
+        DayNameShort, // QString, in: int
+        MonthNameLong, // QString, in: int
+        MonthNameShort, // QString, in: int
+        DateToStringLong, // QString, in: QDate
+        DateToStringShort, // QString in: QDate
+        TimeToStringLong, // QString in: QTime
+        TimeToStringShort // QString in: QTime
+    };
+    virtual QVariant query(QueryType type, QVariant in) const;
+    virtual QLocale fallbackLocale() const;
+};
+#endif
+
 
 QT_END_HEADER
 

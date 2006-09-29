@@ -43,10 +43,11 @@ public:
 
 
 /*!
-    \class Q3SocketDevice q3socketdevice.h
+    \class Q3SocketDevice
     \brief The Q3SocketDevice class provides a platform-independent low-level socket API.
 
     \compat
+    \reentrant
 
     This class provides a low level API for working with sockets.  Users of
     this class are assumed to have networking experience. For most users the
@@ -296,7 +297,7 @@ void Q3SocketDevice::setSocket( int socket, Type type )
     d->protocol = Unknown;
     e = NoError;
     resetStatus();
-    open( IO_ReadWrite );
+    open( ReadWrite );
     fetchConnectionParameters();
 }
 
@@ -308,18 +309,21 @@ void Q3SocketDevice::setSocket( int socket, Type type )
 
     \sa close()
 */
-bool Q3SocketDevice::open( int mode )
+bool Q3SocketDevice::open( OpenMode mode )
 {
     if ( isOpen() || !isValid() )
 	return false;
 #if defined(Q3SOCKETDEVICE_DEBUG)
     qDebug( "Q3SocketDevice::open: mode %x", mode );
 #endif
-    setOpenMode( OpenMode(mode & IO_ReadWrite) );
+    setOpenMode( (mode & ReadWrite) | Unbuffered );
     return true;
 }
 
-
+/*!
+    \fn bool Q3SocketDevice::open(int mode)
+    \overload
+*/
 /*!
     The current Q3SocketDevice implementation does not buffer at all,
     so this is a no-op.

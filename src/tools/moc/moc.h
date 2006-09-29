@@ -24,11 +24,10 @@
 #ifndef MOC_H
 #define MOC_H
 
-#include "scanner.h"
+#include "parser.h"
 #include <QStringList>
 #include <QMap>
 #include <QPair>
-#include <QStack>
 #include <stdio.h>
 #include <ctype.h>
 
@@ -36,11 +35,12 @@ struct Type
 {
     enum ReferenceType { NoReference, Reference, Pointer };
 
-    inline Type() : isVolatile(false), isScoped(false), referenceType(NoReference) {}
-    inline explicit Type(const QByteArray &_name) : name(_name), isVolatile(false), referenceType(NoReference) {}
+    inline Type() : isVolatile(false), isScoped(false), firstToken(NOTOKEN), referenceType(NoReference) {}
+    inline explicit Type(const QByteArray &_name) : name(_name), isVolatile(false), firstToken(NOTOKEN), referenceType(NoReference) {}
     QByteArray name;
-    bool isVolatile;
-    bool isScoped;
+    uint isVolatile : 1;
+    uint isScoped : 1;
+    Token firstToken;
     ReferenceType referenceType;
 };
 
@@ -62,7 +62,7 @@ struct ArgumentDef
 struct FunctionDef
 {
     FunctionDef(): returnTypeIsVolatile(false), access(Private), isConst(false), isVirtual(false),
-                   inlineCode(false), wasCloned(false), isCompat(false), isInvokable(false), 
+                   inlineCode(false), wasCloned(false), isCompat(false), isInvokable(false),
                    isScriptable(false), isSlot(false), isSignal(false) {}
     Type type;
     QByteArray normalizedType;
@@ -144,47 +144,23 @@ struct NamespaceDef {
     int end;
 };
 
-class Moc
+class Moc : public Parser
 {
 public:
     Moc()
-        :index(0),
-         noInclude(false),
-         displayWarnings(true),
-         generatedCode(false)
+        : noInclude(false), generatedCode(false)
         {}
 
     QByteArray filename;
-    QStack<QByteArray> currentFilenames;
-    Symbols symbols;
-
-    int index;
 
     bool noInclude;
-    bool displayWarnings;
     bool generatedCode;
     QByteArray includePath;
     QList<QByteArray> includeFiles;
     QList<ClassDef> classList;
     QMap<QByteArray, QByteArray> interface2IdMap;
+    QList<QByteArray> metaTypes;
 
-    inline bool hasNext() const { return (index < symbols.size()); }
-    inline Token next() { return symbols.at(index++).token; }
-    bool test(Token);
-    void next(Token);
-    void next(Token, const char *msg);
-    bool until(Token);
-    QByteArray lexemUntil(Token);
-    inline void prev() {--index;}
-    Token lookup(int k = 1);
-    inline const Symbol &symbol_lookup(int k = 1) { return symbols.at(index-1+k);}
-    inline Token token() { return symbols.at(index-1).token;}
-    inline QByteArray lexem() { return symbols.at(index-1).lexem();}
-    inline const Symbol &symbol() { return symbols.at(index-1);}
-
-    void error(int rollback);
-    void error(const char *msg = 0);
-    void warning(const char * = 0);
 
     void parse();
     void generate(FILE *out);
@@ -213,41 +189,14 @@ public:
     void parseClassInfo(ClassDef *def);
     void parseInterfaces(ClassDef *def);
     void parseDeclareInterface();
+    void parseDeclareMetatype();
     void parseSlotInPrivate(ClassDef *def, FunctionDef::Access access);
 
     void parseFunctionArguments(FunctionDef *def);
 
+    QByteArray lexemUntil(Token);
+    bool until(Token);
 };
-
-
-inline bool Moc::test(Token token)
-{
-    if (index < symbols.size() && symbols.at(index).token == token) {
-        ++index;
-        return true;
-    }
-    return false;
-}
-
-inline Token Moc::lookup(int k)
-{
-    const int l = index - 1 + k;
-    return l < symbols.size() ? symbols.at(l).token : NOTOKEN;
-}
-
-inline void Moc::next(Token token)
-{
-    if (!test(token))
-        error();
-}
-
-inline void Moc::next(Token token, const char *msg)
-{
-    if (!test(token))
-        error(msg);
-}
-
-QByteArray normalizeType(const char *s, bool fixScope = false);
 
 inline QByteArray noRef(const QByteArray &type)
 {

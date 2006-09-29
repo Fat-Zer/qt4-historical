@@ -49,9 +49,11 @@ public:
 
     QString toPlainText() const;
     QString toHtml() const;
+    QString toHtml(const QByteArray &encoding) const;
 
     static QTextDocumentFragment fromPlainText(const QString &plainText);
     static QTextDocumentFragment fromHtml(const QString &html);
+    static QTextDocumentFragment fromHtml(const QString &html, const QTextDocument *resourceProvider);
 
 private:
     QTextDocumentFragmentPrivate *d;

@@ -94,6 +94,8 @@ public:
                        int sortBy);
 
     bool operator==(const QUrlInfo &i) const;
+    inline bool operator!=(const QUrlInfo &i) const
+    { return !operator==(i); }
 
 private:
     QUrlInfoPrivate *d;

@@ -34,12 +34,19 @@
   \brief The QTreeWidgetItemIterator class provides a way to iterate over the 
   items in a QTreeWidget instance.
 
-  The iterator will walk the items in a pre-order traversal order, thus visiting the parent
-  node \e before it continues to the child nodes.
+  The iterator will walk the items in a pre-order traversal order, thus visiting the
+  parent node \e before it continues to the child nodes.
 
-  It is possible to filter out certain types of node by passing certain
+  For example, the following code examples each item in a tree, checking the
+  text in the first column against a user-specified search string:
+
+  \quotefromfile snippets/qtreewidgetitemiterator-using/mainwindow.cpp
+  \skipto findItems(
+  \skipto QTreeWidgetItemIterator
+  \printuntil }
+
+  It is also possible to filter out certain types of node by passing certain
   \l{IteratorFlag}{flags} to the constructor of QTreeWidgetItemIterator.
-
 
   \sa QTreeWidget, {Model/View Programming}, QTreeWidgetItem
 */
@@ -59,10 +66,10 @@ QTreeWidgetItemIterator::QTreeWidgetItemIterator(const QTreeWidgetItemIterator &
 }
 
 /*!
-    Constructs an iterator for the QTreeWidget \a widget. 
-    The iterator is set to point to the first toplevel 
-    item (QTreeWidgetItem) of \a widget or the next matching item if 
-    the toplevel item doesn't match the flags.
+    Constructs an iterator for the given \a widget that uses the specified \a flags
+    to determine which items are found during iteration.
+    The iterator is set to point to the first top-level item contained in the widget,
+    or the next matching item if the top-level item doesn't match the flags.
 
     \sa QTreeWidgetItemIterator::IteratorFlag
 */
@@ -75,26 +82,28 @@ QTreeWidgetItemIterator::QTreeWidgetItemIterator(QTreeWidget *widget, IteratorFl
     Q_ASSERT(model);
     d_ptr = new QTreeWidgetItemIteratorPrivate(this, model);
     model->iterators.append(this);
-    if (!model->tree.isEmpty()) current = model->tree.first();
+    if (!model->rootItem->children.isEmpty()) current = model->rootItem->children.first();
     if (current && !matchesFlags(current))
         ++(*this);
 }
 
 /*!
-    Constructs an iterator for the QTreeWidget that contains the \a item
-    using the flags \a flags. The iterator is set
-    to point to \a item or the next matching item if \a item doesn't
-    match the flags.
+    Constructs an iterator for the given \a item that uses the specified \a flags
+    to determine which items are found during iteration.
+    The iterator is set to point to \a item, or the next matching item if \a item
+    doesn't match the flags.
 
     \sa QTreeWidgetItemIterator::IteratorFlag
 */
 
 QTreeWidgetItemIterator::QTreeWidgetItemIterator(QTreeWidgetItem *item, IteratorFlags flags)
-    : d_ptr(new QTreeWidgetItemIteratorPrivate(this, item->model)), current(item), flags(flags)
+    : d_ptr(new QTreeWidgetItemIteratorPrivate(
+                this, ::qobject_cast<QTreeModel*>(item->view->model()))),
+      current(item), flags(flags)
 {
     Q_D(QTreeWidgetItemIterator);
     Q_ASSERT(item);
-    QTreeModel *model = item->model;
+    QTreeModel *model = ::qobject_cast<QTreeModel*>(item->view->model());
     Q_ASSERT(model);
     model->iterators.append(this);
 
@@ -102,13 +111,13 @@ QTreeWidgetItemIterator::QTreeWidgetItemIterator(QTreeWidgetItem *item, Iterator
     // the beginning.
     QTreeWidgetItem *parent = item;
     parent = parent->parent();
-    QList<QTreeWidgetItem *> children = parent ? parent->children : d->m_model->tree;
+    QList<QTreeWidgetItem *> children = parent ? parent->children : d->m_model->rootItem->children;
     d->m_currentIndex = children.indexOf(item);
 
     while (parent) {
         QTreeWidgetItem *itm = parent;
         parent = parent->parent();
-        QList<QTreeWidgetItem *> children = parent ? parent->children : d->m_model->tree;
+        QList<QTreeWidgetItem *> children = parent ? parent->children : d->m_model->rootItem->children;
         int index = children.indexOf(itm);
         d->m_parentIndex.prepend(index);
     }
@@ -276,12 +285,14 @@ QTreeWidgetItem *QTreeWidgetItemIteratorPrivate::next(const QTreeWidgetItem *cur
     } else {
         // walk the sibling
         QTreeWidgetItem *parent = current->parent();
-        next = parent ? parent->child(m_currentIndex + 1) : m_model->tree.value(m_currentIndex + 1);
+        next = parent ? parent->child(m_currentIndex + 1)
+                      : m_model->rootItem->child(m_currentIndex + 1);
         while (!next && parent) {
             // if we had no sibling walk up the parent and try the sibling of that
             parent = parent->parent();
             m_currentIndex = m_parentIndex.pop();
-            next = parent ? parent->child(m_currentIndex + 1) : m_model->tree.value(m_currentIndex + 1);
+            next = parent ? parent->child(m_currentIndex + 1)
+                          : m_model->rootItem->child(m_currentIndex + 1);
         }
         if (next) ++(m_currentIndex);
     }
@@ -295,7 +306,8 @@ QTreeWidgetItem *QTreeWidgetItemIteratorPrivate::previous(const QTreeWidgetItem 
     QTreeWidgetItem *prev = 0;
     // walk the previous sibling
     QTreeWidgetItem *parent = current->parent();
-    prev = parent ? parent->child(m_currentIndex - 1) : m_model->tree.value(m_currentIndex - 1);
+    prev = parent ? parent->child(m_currentIndex - 1)
+                  : m_model->rootItem->child(m_currentIndex - 1);
     if (prev) {
         // Yes, we had a previous sibling but we need go down to the last leafnode.
         --m_currentIndex;
@@ -373,7 +385,8 @@ void QTreeWidgetItemIteratorPrivate::ensureValidIterator(const QTreeWidgetItem *
 /*!
   \fn QTreeWidgetItemIterator &QTreeWidgetItemIterator::operator+=(int n)
 
-  Makes the iterator go forward by n matching items. (If n is negative, the iterator goes backward.)
+  Makes the iterator go forward by \a n matching items. (If n is negative, the
+  iterator goes backward.)
 
   If the current item is beyond the last item, the current item pointer is
   set to 0. Returns the resulting iterator.
@@ -388,7 +401,8 @@ void QTreeWidgetItemIteratorPrivate::ensureValidIterator(const QTreeWidgetItem *
 /*!
   \fn QTreeWidgetItemIterator &QTreeWidgetItemIterator::operator-=(int n)
 
-  Makes the iterator go back by n matching items. (If n is negative, the iterator goes forward.)
+  Makes the iterator go backward by \a n matching items. (If n is negative, the
+  iterator goes forward.)
 
   If the current item is ahead of the last item, the current item pointer is
   set to 0. Returns the resulting iterator.

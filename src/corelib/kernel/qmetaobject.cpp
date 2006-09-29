@@ -24,7 +24,7 @@
 #include "qmetaobject.h"
 #include "qmetatype.h"
 #include "qobject.h"
-#include "private/qobject_p.h"
+
 #include <qcoreapplication.h>
 #include <qcoreevent.h>
 #include <qdatastream.h>
@@ -34,6 +34,10 @@
 #include <qvariant.h>
 #include <qhash.h>
 #include <qdebug.h>
+
+#include "private/qobject_p.h"
+#include "private/qmetaobject_p.h"
+
 #include <ctype.h>
 
 /*!
@@ -111,7 +115,7 @@ enum PropertyFlags  {
     Invalid = 0x00000000,
     Readable = 0x00000001,
     Writable = 0x00000002,
-    Resetable = 0x00000004,
+    Resettable = 0x00000004,
     EnumOrFlag = 0x00000008,
     StdCppSet = 0x00000100,
 //    Override = 0x00000200,
@@ -195,31 +199,36 @@ QObject *QMetaObject::cast(QObject *obj) const
 #ifndef QT_NO_TRANSLATION
 /*!
     \internal
-
-    Forwards a tr() call from the Q_OBJECT macro to the QApplication.
 */
 QString QMetaObject::tr(const char *s, const char *c) const
 {
-    if (QCoreApplication::instance())
-        return QCoreApplication::instance()->translate(d.stringdata, s, c, QCoreApplication::DefaultCodec);
-    else
-        return QString::fromLatin1(s);
+    return QCoreApplication::translate(d.stringdata, s, c, QCoreApplication::CodecForTr);
 }
+
 /*!
     \internal
+*/
+QString QMetaObject::tr(const char *s, const char *c, int n) const
+{
+    return QCoreApplication::translate(d.stringdata, s, c, QCoreApplication::CodecForTr, n);
+}
 
-    Forwards a trUtf8() call from the Q_OBJECT macro to the
-    QApplication.
+/*!
+    \internal
 */
 QString QMetaObject::trUtf8(const char *s, const char *c) const
 {
-    if (QCoreApplication::instance())
-        return QCoreApplication::instance()->translate(d.stringdata, s, c, QCoreApplication::UnicodeUTF8);
-    else
-        return QString::fromUtf8(s);
+    return QCoreApplication::translate(d.stringdata, s, c, QCoreApplication::UnicodeUTF8);
+}
+
+/*!
+    \internal
+*/
+QString QMetaObject::trUtf8(const char *s, const char *c, int n) const
+{
+    return QCoreApplication::translate(d.stringdata, s, c, QCoreApplication::UnicodeUTF8, n);
 }
 #endif // QT_NO_TRANSLATION
-
 
 /*!
     Returns the method offset for this class; i.e. the index position
@@ -582,6 +591,7 @@ QMetaEnum QMetaObject::enumerator(int index) const
 
 /*!
     Returns the meta-data for the property with the given \a index.
+    If no such property exists, a null QMetaProperty is returned.
 
     \sa propertyCount(), propertyOffset(), indexOfProperty()
 */
@@ -606,7 +616,7 @@ QMetaProperty QMetaObject::property(int index) const
             if (!result.menum.isValid()) {
                 QByteArray enum_name = type;
                 QByteArray scope_name = d.stringdata;
-                int s = enum_name.indexOf("::");
+                int s = enum_name.lastIndexOf("::");
                 if (s > 0) {
                     scope_name = enum_name.left(s);
                     enum_name = enum_name.mid(s + 2);
@@ -622,6 +632,24 @@ QMetaProperty QMetaObject::property(int index) const
         }
     }
     return result;
+}
+
+/*!
+    \since 4.2
+
+    Returns the property that has the \c USER flag set to true.
+
+    \sa QMetaProperty::isUser()
+*/
+QMetaProperty QMetaObject::userProperty() const
+{
+    const int propCount = propertyCount();
+    for (int i = propCount - 1; i >= 0; --i) {
+        const QMetaProperty prop = property(i);
+        if (prop.isUser())
+            return prop;
+    }
+    return QMetaProperty();
 }
 
 /*!
@@ -682,114 +710,68 @@ bool QMetaObject::checkConnectArgs(const char *signal, const char *method)
     return false;
 }
 
-static inline bool is_ident_char(char s)
+static void qRemoveWhitespace(const char *s, char *d)
 {
-    return ((s >= 'a' && s <= 'z')
-            || (s >= 'A' && s <= 'Z')
-            || (s >= '0' && s <= '9')
-            || s == '_'
-       );
+    char last = 0;
+    while (*s && is_space(*s))
+        s++;
+    while (*s) {
+        while (*s && !is_space(*s))
+            last = *d++ = *s++;
+        while (*s && is_space(*s))
+            s++;
+        if (*s && is_ident_char(*s) && is_ident_char(last))
+            last = *d++ = ' ';
+    }
+    *d = '\0';
 }
 
-static inline bool is_space(char s)
+static char *qNormalizeType(char *d, int &templdepth, QByteArray &result)
 {
-    return (s == ' ' || s == '\t');
+    const char *t = d;
+    while (*d && (templdepth
+                   || (*d != ',' && *d != ')'))) {
+        if (*d == '<')
+            ++templdepth;
+        if (*d == '>')
+            --templdepth;
+        ++d;
+    }
+    if (strncmp("void", t, d - t) != 0)
+        result += normalizeTypeInternal(t, d);
+
+    return d;
 }
 
-// WARNING: a copy of this function is in moc.cpp
-static QByteArray normalizeTypeInternal(const char *t, const char *e, bool fixScope = false, bool adjustConst = true)
+
+/*!
+    \since 4.2
+
+    Normalizes a \a type.
+
+    See QMetaObject::normalizedSignature() for a description on how
+    Qt normalizes.
+
+    Example:
+
+    \code
+    QByteArray normType = QMetaObject::normalizedType(" int    const  *");
+    // normType is now "const int*"
+    \endcode
+
+    \sa normalizedSignature()
+ */
+QByteArray QMetaObject::normalizedType(const char *type)
 {
-    int len = e - t;
-    /*
-      Convert 'char const *' into 'const char *'. Start at index 1,
-      not 0, because 'const char *' is already OK.
-    */
-    QByteArray constbuf;
-    for (int i = 1; i < len; i++) {
-        if ( t[i] == 'c'
-             && strncmp(t + i + 1, "onst", 4) == 0
-             && (i + 5 >= len || !is_ident_char(t[i + 5]))
-             && !is_ident_char(t[i-1])
-            ) {
-            constbuf = QByteArray(t, len);
-            if (is_space(t[i-1]))
-                constbuf.remove(i-1, 6);
-            else
-                constbuf.remove(i, 5);
-            constbuf.prepend("const ");
-            t = constbuf.data();
-            e = constbuf.data() + constbuf.length();
-            break;
-        }
-        /*
-          We musn't convert 'char * const *' into 'const char **'
-          and we must beware of 'Bar<const Bla>'.
-        */
-        if (t[i] == '&' || t[i] == '*' ||t[i] == '<')
-            break;
-    }
-    if (adjustConst && e > t + 6 && strncmp("const ", t, 6) == 0) {
-        if (*(e-1) == '&') { // treat const reference as value
-            t += 6;
-            --e;
-        } else if (is_ident_char(*(e-1))) { // treat const value as value
-            t += 6;
-        }
-    }
     QByteArray result;
-    result.reserve(len);
 
-    // some type substitutions for 'unsigned x'
-    if (strncmp("unsigned ", t, 9) == 0) {
-        if (strncmp("int", t+9, 3) == 0) {
-            t += 9+3;
-            result += "uint";
-        } else if (strncmp("long", t+9, 4) == 0
-                   // preserve '[unsigned] long int'
-                   && (strlen(t + 9 + 4) < 4
-                       || strncmp(t + 9 + 4, " int", 4) != 0
-                      )
-                   // preserve '[unsigned] long long'
-                   && (strlen(t + 9 + 4) < 5
-                       || strncmp(t + 9 + 4, " long", 5) != 0
-                      )
-                  ) {
-            t += 9+4;
-            result += "ulong";
-        }
-    }
+    if (!type || !*type)
+        return result;
 
-    while (t != e) {
-        char c = *t++;
-        if (fixScope && c == ':' && *t == ':' ) {
-            ++t;
-            c = *t++;
-            int i = result.size() - 1;
-            while (i >= 0 && is_ident_char(result.at(i)))
-                   --i;
-            result.resize(i + 1);
-        }
-        result += c;
-        if (c == '<') {
-            //template recursion
-            const char* tt = t;
-            int templdepth = 1;
-            while (t != e) {
-                c = *t++;
-                if (c == '<')
-                    ++templdepth;
-                if (c == '>')
-                    --templdepth;
-                if (templdepth == 0) {
-                    result += normalizeTypeInternal(tt, t-1, fixScope, false);
-                    result += c;
-                    if (*t == '>')
-                        result += ' '; // avoid >>
-                    break;
-                }
-            }
-        }
-    }
+    QVarLengthArray<char> stackbuf(strlen(type));
+    qRemoveWhitespace(type, stackbuf.data());
+    int templdepth = 0;
+    qNormalizeType(stackbuf.data(), templdepth, result);
 
     return result;
 }
@@ -803,50 +785,26 @@ static QByteArray normalizeTypeInternal(const char *t, const char *e, bool fixSc
     'const' from value types and replaces const references with
     values.
 
-    \sa checkConnectArgs()
+    \sa checkConnectArgs(), normalizedType()
  */
 QByteArray QMetaObject::normalizedSignature(const char *method)
 {
-    const char *s = method;
-    if (!s || !*s)
-        return "";
-    int len = qstrlen(s);
+    QByteArray result;
+    if (!method || !*method)
+        return result;
+    int len = strlen(method);
     char stackbuf[64];
     char *buf = (len >= 64 ? new char[len+1] : stackbuf);
+    qRemoveWhitespace(method, buf);
     char *d = buf;
-    char last = 0;
-    while(*s && is_space(*s))
-        s++;
-    while (*s) {
-        while (*s && !is_space(*s))
-            last = *d++ = *s++;
-        while (*s && is_space(*s))
-            s++;
-        if (*s && is_ident_char(*s) && is_ident_char(last))
-            last = *d++ = ' ';
-    }
-    *d = '\0';
-    d = buf;
 
-    QByteArray result;
     result.reserve(len);
 
     int argdepth = 0;
     int templdepth = 0;
     while (*d) {
-        if (argdepth == 1) {
-            const char *t = d;
-            while (*d&& (templdepth
-                           || (*d != ',' && *d != ')'))) {
-                if (*d == '<')
-                    ++templdepth;
-                if (*d == '>')
-                    --templdepth;
-                d++;
-            }
-            if (strncmp("void", t, d - t) != 0)
-                result += normalizeTypeInternal(t, d);
-        }
+        if (argdepth == 1)
+            d = qNormalizeType(d, templdepth, result);
         if (*d == '(')
             ++argdepth;
         if (*d == ')')
@@ -985,8 +943,24 @@ bool QMetaObject::invokeMethod(QObject *obj, const char *member, Qt::ConnectionT
     // check return type
     if (ret.data()) {
         const char *retType = obj->metaObject()->method(idx).typeName();
-        if (qstrcmp(ret.name(), retType) != 0)
-            return false;
+        if (qstrcmp(ret.name(), retType) != 0) {
+            // normalize the return value as well
+            // the trick here is to make a function signature out of the return type
+            // so that we can call normalizedSignature() and avoid duplicating code
+            QByteArray unnormalized;
+            int len = qstrlen(ret.name());
+
+            unnormalized.reserve(len + 3);
+            unnormalized = "_(";        // the function is called "_"
+            unnormalized.append(ret.name());
+            unnormalized.append(')');
+
+            QByteArray normalized = QMetaObject::normalizedSignature(unnormalized.constData());
+            normalized.truncate(normalized.length() - 1); // drop the ending ')'
+
+            if (qstrcmp(normalized.constData() + 2, retType) != 0)
+                return false;
+        }
     }
     void *param[] = {ret.data(), val0.data(), val1.data(), val2.data(), val3.data(), val4.data(),
                      val5.data(), val6.data(), val7.data(), val8.data(), val9.data()};
@@ -1001,7 +975,7 @@ bool QMetaObject::invokeMethod(QObject *obj, const char *member, Qt::ConnectionT
     } else {
         if (ret.data()) {
             qWarning("QMetaObject::invokeMethod: Unable to invoke methods with return values in queued "
-                     "connections.");
+                     "connections");
             return false;
         }
         int nargs = 1; // include return type
@@ -1021,7 +995,7 @@ bool QMetaObject::invokeMethod(QObject *obj, const char *member, Qt::ConnectionT
             }
         }
 
-        QCoreApplication::postEvent(obj, new QMetaCallEvent(idx, 0, nargs, types, args));
+        QCoreApplication::postEvent(obj, new QMetaCallEvent(idx, 0, -1, -1, nargs, types, args));
     }
     return true;
 }
@@ -1428,9 +1402,9 @@ const char* QMetaEnum::valueToKey(int value) const
 }
 
 /*!
-    Returns the value derived from combining together the values of the
-    \a keys using the OR operator. Note that the strings in \a keys
-    must be '|'-separated.
+    Returns the value derived from combining together the values of
+    the \a keys using the OR operator, or -1 if \a keys is not
+    defined. Note that the strings in \a keys must be '|'-separated.
 
     \sa isFlag(), valueToKey(), valueToKeys()
 */
@@ -1503,7 +1477,7 @@ QByteArray QMetaEnum::valueToKeys(int value) const
 
     A property has a name() and a type(), as well as various
     attributes that specify its behavior: isReadable(), isWritable(),
-    isDesignable(), isScriptable(), isStored(), and isEditable().
+    isDesignable(), isScriptable(), and isStored().
 
     If the property is an enumeration, isEnumType() returns true; if the
     property is an enumeration that is also a flag (i.e. its values
@@ -1571,22 +1545,41 @@ const char *QMetaProperty::typeName() const
     Returns this property's type. The return value is one
     of the values of the QVariant::Type enumeration.
 
-    \sa typeName(), name()
+    \sa userType(), typeName(), name()
 */
 QVariant::Type QMetaProperty::type() const
 {
     if (!mobj)
         return QVariant::Invalid;
     int handle = priv(mobj->d.data)->propertyData + 3*idx;
-    int flags = mobj->d.data[handle + 2];
+    uint flags = mobj->d.data[handle + 2];
 
-    QVariant::Type type = QVariant::Type(flags >> 24);
+    uint type = flags >> 24;
+    if (type == 0xff) // special value for QVariant
+        type = QVariant::LastType;
     if (type)
-        return type;
+        return QVariant::Type(type);
     if (isEnumType())
         return QVariant::Int;
 
     return QVariant::UserType;
+}
+
+/*!
+    \since 4.2
+
+    Returns this property's user type. The return value is one
+    of the values that are registered with QMetaType, or 0 if
+    the type is not registered.
+
+    \sa type(), QMetaType, typeName()
+ */
+int QMetaProperty::userType() const
+{
+    QVariant::Type tp = type();
+    if (tp != QVariant::UserType)
+        return tp;
+    return QMetaType::type(typeName());
 }
 
 /*!
@@ -1662,15 +1655,20 @@ QVariant QMetaProperty::read(const QObject *object) const
     int  t = QVariant::Int;
     if (!isEnumType()) {
         int handle = priv(mobj->d.data)->propertyData + 3*idx;
-        int flags = mobj->d.data[handle + 2];
+        uint flags = mobj->d.data[handle + 2];
         const char *typeName = mobj->d.stringdata + mobj->d.data[handle + 1];
         t = (flags >> 24);
+        if (t == 0xff) // special value for QVariant
+            t = QVariant::LastType;
         if (t == QVariant::Invalid)
             t = QMetaType::type(typeName);
         if (t == QVariant::Invalid)
             t = QVariant::nameToType(typeName);
-        if (t == QVariant::Invalid || t == QVariant::UserType)
+        if (t == QVariant::Invalid || t == QVariant::UserType) {
+            if (t == QVariant::Invalid)
+                qWarning("QMetaProperty::read: Unable to handle unregistered datatype '%s' for property '%s::%s'", typeName, mobj->className(), name());
             return QVariant();
+        }
     }
     QVariant value;
     void *argv[1];
@@ -1717,9 +1715,11 @@ bool QMetaProperty::write(QObject *object, const QVariant &value) const
         v.convert(QVariant::Int);
     } else {
         int handle = priv(mobj->d.data)->propertyData + 3*idx;
-        int flags = mobj->d.data[handle + 2];
+        uint flags = mobj->d.data[handle + 2];
         const char *typeName = mobj->d.stringdata + mobj->d.data[handle + 1];
         t = flags >> 24;
+        if (t == 0xff) // special value for QVariant
+            t = QVariant::LastType;
         if (t == QVariant::Invalid) {
             const char *vtypeName = value.typeName();
             if (vtypeName && strcmp(typeName, vtypeName) == 0)
@@ -1729,7 +1729,7 @@ bool QMetaProperty::write(QObject *object, const QVariant &value) const
         }
         if (t == QVariant::Invalid)
             return false;
-        if (t != QVariant::LastType && t != (uint)value.userType() && (t < QVariant::UserType && !v.convert((QVariant::Type)t)))
+        if (t != QVariant::LastType && t != (uint)value.userType() && (t < QMetaType::User && !v.convert((QVariant::Type)t)))
             return false;
     }
 
@@ -1770,7 +1770,7 @@ bool QMetaProperty::isResettable() const
     if (!mobj)
         return false;
     int flags = mobj->d.data[handle + 2];
-    return flags & Resetable;
+    return flags & Resettable;
 }
 
 /*!
@@ -1809,7 +1809,7 @@ bool QMetaProperty::isWritable() const
     \c{Q_PROPERTY()}'s \c DESIGNABLE attribute is false; otherwise
     returns true (if the attribute is true or is a function or expression).
 
-    \sa isScriptable(), isStored(), isEditable()
+    \sa isScriptable(), isStored()
 */
 bool QMetaProperty::isDesignable(const QObject *object) const
 {
@@ -1832,10 +1832,10 @@ bool QMetaProperty::isDesignable(const QObject *object) const
     otherwise returns false.
 
     If no \a object is given, the function returns false if the
-    \c{Q_PROPERTY()}'s \c DESIGNABLE attribute is false; otherwise returns
+    \c{Q_PROPERTY()}'s \c SCRIPTABLE attribute is false; otherwise returns
     true (if the attribute is true or is a function or expression).
 
-    \sa isDesignable(), isStored(), isEditable()
+    \sa isDesignable(), isStored()
 */
 bool QMetaProperty::isScriptable(const QObject *object) const
 {
@@ -1856,10 +1856,10 @@ bool QMetaProperty::isScriptable(const QObject *object) const
     false.
 
     If no \a object is given, the function returns false if the
-    \c{Q_PROPERTY()}'s \c DESIGNABLE attribute is false; otherwise returns
+    \c{Q_PROPERTY()}'s \c STORED attribute is false; otherwise returns
     true (if the attribute is true or is a function or expression).
 
-    \sa isDesignable(), isScriptable(), isEditable()
+    \sa isDesignable(), isScriptable()
 */
 bool QMetaProperty::isStored(const QObject *object) const
 {
@@ -1884,7 +1884,7 @@ bool QMetaProperty::isStored(const QObject *object) const
     \c{Q_PROPERTY()}'s \c USER attribute is false; otherwise returns
     true (if the attribute is true or is a function or expression).
 
-    \sa isDesignable(), isScriptable(), isEditable()
+    \sa QMetaObject::userProperty(), isDesignable(), isScriptable()
 */
 bool QMetaProperty::isUser(const QObject *object) const
 {
@@ -1901,11 +1901,13 @@ bool QMetaProperty::isUser(const QObject *object) const
 }
 
 /*!
+    \obsolete
+
     Returns true if the property is editable for the given \a object;
     otherwise returns false.
 
     If no \a object is given, the function returns false if the
-    \c{Q_PROPERTY()}'s \c DESIGNABLE attribute is false; otherwise returns
+    \c{Q_PROPERTY()}'s \c EDITABLE attribute is false; otherwise returns
     true (if the attribute is true or is a function or expression).
 
     \sa isDesignable(), isScriptable(), isStored()

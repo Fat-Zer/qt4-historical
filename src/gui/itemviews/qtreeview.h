@@ -42,6 +42,9 @@ class Q_GUI_EXPORT QTreeView : public QAbstractItemView
     Q_PROPERTY(bool rootIsDecorated READ rootIsDecorated WRITE setRootIsDecorated)
     Q_PROPERTY(bool uniformRowHeights READ uniformRowHeights WRITE setUniformRowHeights)
     Q_PROPERTY(bool itemsExpandable READ itemsExpandable WRITE setItemsExpandable)
+    Q_PROPERTY(bool sortingEnabled READ isSortingEnabled WRITE setSortingEnabled)
+    Q_PROPERTY(bool animated READ isAnimated WRITE setAnimated)
+    Q_PROPERTY(bool allColumnsShowFocus READ allColumnsShowFocus WRITE setAllColumnsShowFocus)
 
 public:
     explicit QTreeView(QWidget *parent = 0);
@@ -68,6 +71,7 @@ public:
 
     int columnViewportPosition(int column) const;
     int columnWidth(int column) const;
+    void setColumnWidth(int column, int width);
     int columnAt(int x) const;
 
     bool isColumnHidden(int column) const;
@@ -79,6 +83,15 @@ public:
     bool isExpanded(const QModelIndex &index) const;
     void setExpanded(const QModelIndex &index, bool expand);
 
+    void setSortingEnabled(bool enable);
+    bool isSortingEnabled() const;
+
+    void setAnimated(bool enable);
+    bool isAnimated() const;
+
+    void setAllColumnsShowFocus(bool enable);
+    bool allColumnsShowFocus() const;
+
     void keyboardSearch(const QString &search);
 
     QRect visualRect(const QModelIndex &index) const;
@@ -89,6 +102,8 @@ public:
 
     void doItemsLayout();
     void reset();
+
+    void sortByColumn(int column, Qt::SortOrder order);
 
 Q_SIGNALS:
     void expanded(const QModelIndex &index);
@@ -103,6 +118,8 @@ public Q_SLOTS:
     void resizeColumnToContents(int column);
     void sortByColumn(int column);
     void selectAll();
+    void expandAll();
+    void collapseAll();
 
 protected Q_SLOTS:
     void columnResized(int column, int oldSize, int newSize);
@@ -127,6 +144,8 @@ protected:
 
     void timerEvent(QTimerEvent *event);
     void paintEvent(QPaintEvent *event);
+
+    void drawTree(QPainter *painter, const QRegion &region) const;
     virtual void drawRow(QPainter *painter,
                          const QStyleOptionViewItem &options,
                          const QModelIndex &index) const;
@@ -137,6 +156,8 @@ protected:
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
     void mouseDoubleClickEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
+    void keyPressEvent(QKeyEvent *event);
 
     void updateGeometries();
 
@@ -150,6 +171,8 @@ protected:
 private:
     Q_DECLARE_PRIVATE(QTreeView)
     Q_DISABLE_COPY(QTreeView)
+    Q_PRIVATE_SLOT(d_func(), void _q_endAnimatedOperation())
+    Q_PRIVATE_SLOT(d_func(), void _q_currentChanged(const QModelIndex&, const QModelIndex &))
 };
 
 #endif // QT_NO_TREEVIEW

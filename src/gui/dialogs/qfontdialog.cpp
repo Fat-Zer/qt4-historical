@@ -27,23 +27,24 @@
 
 #include "qfontdialog.h"
 
-#include "qdialog_p.h"
-#include "qevent.h"
-#include "qlineedit.h"
-#include "qpushbutton.h"
-#include "qcheckbox.h"
-#include "qcombobox.h"
-#include "qlayout.h"
-#include "qgroupbox.h"
-#include "qlabel.h"
-#include "qapplication.h"
-#include "qfontdatabase.h"
-#include "qstyle.h"
-#include <private/qfont_p.h>
-#include <qvalidator.h>
-#include <qstringlistmodel.h>
-#include <qlistview.h>
+#include <qapplication.h>
+#include <qcheckbox.h>
+#include <qcombobox.h>
+#include <qevent.h>
+#include <qfontdatabase.h>
+#include <qgroupbox.h>
+#include <qlabel.h>
+#include <qlayout.h>
+#include <qlineedit.h>
+#include <qpushbutton.h>
+#include <qstyle.h>
+#include <qdialogbuttonbox.h>
 #include <qheaderview.h>
+#include <qlistview.h>
+#include <qstringlistmodel.h>
+#include <qvalidator.h>
+#include <private/qdialog_p.h>
+#include <private/qfont_p.h>
 
 class QFontListView : public QListView
 {
@@ -86,7 +87,7 @@ QFontListView::QFontListView(QWidget *parent)
 }
 
 /*!
-  \class QFontDialog qfontdialog.h
+  \class QFontDialog
   \ingroup dialogs
   \mainclass
   \brief The QFontDialog class provides a dialog widget for selecting a font.
@@ -117,7 +118,8 @@ QFontListView::QFontListView(QWidget *parent)
 
   \image plastique-fontdialog.png A font dialog in the Plastique widget style.
 
-  \sa QFont, QFontInfo, QFontMetrics
+  \sa QFont, QFontInfo, QFontMetrics, QColorDialog, QFileDialog, QPrintDialog,
+      {Standard Dialogs Example}
 */
 
 class QFontDialogPrivate : public QDialogPrivate
@@ -127,6 +129,8 @@ public:
     inline QFontDialogPrivate()
         : writingSystem(QFontDatabase::Any)
     { }
+
+    static QFont getFont(bool *ok, const QFont *def, QWidget* parent, const QString &caption = QString());
 
     void _q_sizeChanged(const QString &);
     void _q_familyHighlighted(int);
@@ -158,9 +162,6 @@ public:
     QLabel * writingSystemAccel;
     QComboBox * writingSystemCombo;
 
-    QPushButton * ok;
-    QPushButton * cancel;
-
     QBoxLayout * buttonLayout;
     QBoxLayout * effectsLayout;
     QBoxLayout * sampleLayout;
@@ -189,7 +190,7 @@ public:
   \sa getFont()
 */
 
-QFontDialog::QFontDialog(QWidget *parent, bool modal, Qt::WFlags f)
+QFontDialog::QFontDialog(QWidget *parent, bool modal, Qt::WindowFlags f)
     : QDialog(*new QFontDialogPrivate, parent, f)
 {
     Q_D(QFontDialog);
@@ -247,7 +248,7 @@ QFontDialog::QFontDialog(QWidget *parent, bool modal, Qt::WFlags f)
     d->sampleEdit->setAlignment(Qt::AlignCenter);
     // Note that the sample text is *not* translated with tr(), as the
     // characters used depend on the charset encoding.
-    d->sampleEdit->setText("AaBbYyZz");
+    d->sampleEdit->setText(QLatin1String("AaBbYyZz"));
     hbox->addWidget(d->sampleEdit);
 
     d->writingSystemCombo = new QComboBox(this);
@@ -326,19 +327,18 @@ QFontDialog::QFontDialog(QWidget *parent, bool modal, Qt::WFlags f)
 
     mainGrid->setRowMinimumHeight(8, margin);
 
-    QHBoxLayout *buttonBox = new QHBoxLayout;
-    mainGrid->addLayout(buttonBox, 9, 0, 1, 5);
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(this);
+    mainGrid->addWidget(buttonBox, 9, 0, 1, 5);
 
-    buttonBox->addStretch(1);
-    QString okt = modal ? tr("OK") : tr("Apply");
-    d->ok = new QPushButton(okt, this);
+    QPushButton *button
+            = static_cast<QPushButton *>(buttonBox->addButton(modal ? QDialogButtonBox::Ok
+                                                                    : QDialogButtonBox::Apply));
     if (modal)
-        connect(d->ok, SIGNAL(clicked()), SLOT(accept()));
-    d->ok->setDefault(true);
+        connect(buttonBox, SIGNAL(accepted()), SLOT(accept()));
+    button->setDefault(true);
 
-    QString cancelt = modal ? tr("Cancel") : tr("Close");
-    d->cancel = new QPushButton(cancelt, this);
-    connect(d->cancel, SIGNAL(clicked()), SLOT(reject()));
+    buttonBox->addButton(modal ? QDialogButtonBox::Cancel : QDialogButtonBox::Close);
+    connect(buttonBox, SIGNAL(rejected()), SLOT(reject()));
 
     resize(500, 360);
 
@@ -348,15 +348,6 @@ QFontDialog::QFontDialog(QWidget *parent, bool modal, Qt::WFlags f)
     d->sizeList->installEventFilter(this);
 
     d->familyList->setFocus();
-#ifdef Q_WS_MAC
-    buttonBox->addWidget(d->cancel);
-    buttonBox->addSpacing(spacing);
-    buttonBox->addWidget(d->ok);
-#else
-    buttonBox->addWidget(d->ok);
-    buttonBox->addSpacing(spacing);
-    buttonBox->addWidget(d->cancel);
-#endif
 }
 
 /*!
@@ -374,10 +365,11 @@ QFontDialog::~QFontDialog()
   If the user clicks OK, the selected font is returned. If the user
   clicks Cancel, the \a initial font is returned.
 
-  The dialog is constructed with the given \a parent.
-  \a initial is the initially selected font.
-  If the \a ok parameter is not-null, \e *\a ok is set to true if the
-  user clicked OK, and set to false if the user clicked Cancel.
+  The dialog is constructed with the given \a parent.  \a caption is
+  shown as the window title of the dialog and  \a initial is the
+  initially selected font. If the \a ok parameter is not-null, \e *\a
+  ok is set to true if the user clicked OK, and set to false if the
+  user clicked Cancel.
 
   This static function is less flexible than the full QFontDialog
   object, but is convenient and easy to use.
@@ -401,11 +393,20 @@ QFontDialog::~QFontDialog()
   In this example, if the user clicks OK the font they chose will be
   used, and if they click Cancel the original font is used.
 */
+QFont QFontDialog::getFont(bool *ok, const QFont &initial, QWidget* parent, const QString &caption)
+{
+    return QFontDialogPrivate::getFont(ok, &initial, parent, caption);
+}
+
+/*!
+  \overload
+*/
 QFont QFontDialog::getFont(bool *ok, const QFont &initial,
                             QWidget *parent)
 {
-    return getFont(ok, &initial, parent);
+    return QFontDialogPrivate::getFont(ok, &initial, parent);
 }
+
 
 /*!
     \overload
@@ -437,10 +438,11 @@ QFont QFontDialog::getFont(bool *ok, const QFont &initial,
 */
 QFont QFontDialog::getFont(bool *ok, QWidget *parent)
 {
-    return getFont(ok, 0, parent);
+    return QFontDialogPrivate::getFont(ok, 0, parent);
 }
 
-QFont QFontDialog::getFont(bool *ok, const QFont *def, QWidget *parent)
+QFont QFontDialogPrivate::getFont(bool *ok, const QFont *def, QWidget *parent,
+                                  const QString &caption)
 {
     QFont result;
     if (def)
@@ -449,7 +451,7 @@ QFont QFontDialog::getFont(bool *ok, const QFont *def, QWidget *parent)
     QFontDialog *dlg = new QFontDialog(parent, true);
 
     dlg->setFont((def ? *def : QFont()));
-    dlg->setWindowTitle(tr("Select Font"));
+    dlg->setWindowTitle(!caption.isEmpty() ? caption : QFontDialog::tr("Select Font"));
 
     bool res = (dlg->exec() == QDialog::Accepted);
     if (res)
@@ -460,6 +462,14 @@ QFont QFontDialog::getFont(bool *ok, const QFont *def, QWidget *parent)
     return result;
 }
 
+/*!
+  \internal
+  ### Qt5 - remove me
+*/
+QFont QFontDialog::getFont(bool *ok, const QFont *def, QWidget* parent)
+{
+    return getFont(ok, *def, parent, QString());
+}
 
 /*!
     \internal
@@ -520,20 +530,6 @@ void QFontDialog::updateFamilies()
     enum match_t { MATCH_NONE=0, MATCH_LAST_RESORT=1, MATCH_APP=2, MATCH_FALLBACK, MATCH_FAMILY=3 };
 
     QStringList familyNames = d->fdb.families(d->writingSystem);
-#if 0
-    {
-        // merge the unicode/unknown family list with the above list.
-        QStringList l = d->fdb.families(QFont::Unicode) +
-                        d->fdb.families(QFont::UnknownScript);
-        QStringList::ConstIterator it = l.begin(), end = l.end();
-        for (; it != end; ++it) {
-            if (! familyNames.contains(*it))
-                familyNames << *it;
-        }
-    }
-#endif
-
-    familyNames.sort();
 
     d->familyList->model()->setStringList(familyNames);
 
@@ -621,12 +617,12 @@ void QFontDialog::updateStyles()
                  }
             }
             if (!found && first) {
-                if (cstyle.contains("Italic")) {
-                    cstyle.replace("Italic", "Oblique");
+                if (cstyle.contains(QLatin1String("Italic"))) {
+                    cstyle.replace(QLatin1String("Italic"), QLatin1String("Oblique"));
                     first = false;
                     goto redo;
-                } else if (cstyle.contains("Oblique")) {
-                    cstyle.replace("Oblique", "Italic");
+                } else if (cstyle.contains(QLatin1String("Oblique"))) {
+                    cstyle.replace(QLatin1String("Oblique"), QLatin1String("Italic"));
                     first = false;
                     goto redo;
                 }

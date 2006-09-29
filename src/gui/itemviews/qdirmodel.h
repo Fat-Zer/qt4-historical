@@ -51,6 +51,7 @@ public:
 private:
     Q_DECLARE_PRIVATE(QFileIconProvider)
     QFileIconProviderPrivate *d_ptr;
+    Q_DISABLE_COPY(QFileIconProvider)
 };
 
 class Q_GUI_EXPORT QDirModel : public QAbstractItemModel
@@ -59,7 +60,6 @@ class Q_GUI_EXPORT QDirModel : public QAbstractItemModel
     Q_PROPERTY(bool resolveSymlinks READ resolveSymlinks WRITE setResolveSymlinks)
     Q_PROPERTY(bool readOnly READ isReadOnly WRITE setReadOnly)
     Q_PROPERTY(bool lazyChildCount READ lazyChildCount WRITE setLazyChildCount)
-//    Q_PROPERTY(bool ignoreHidden READ ignoreHidden WRITE setIgnoreHidden)
 
 public:
     enum Roles {
@@ -76,18 +76,18 @@ public:
     QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const;
     QModelIndex parent(const QModelIndex &child) const;
 
-    int rowCount(const QModelIndex &parent) const;
-    int columnCount(const QModelIndex &parent) const;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const;
+    int columnCount(const QModelIndex &parent = QModelIndex()) const;
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
-    bool setData(const QModelIndex &index, const QVariant &value, int role);
+    bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole);
 
-    QVariant headerData(int section, Qt::Orientation orientation, int role) const;
+    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
-    bool hasChildren(const QModelIndex &index) const;
+    bool hasChildren(const QModelIndex &index = QModelIndex()) const;
     Qt::ItemFlags flags(const QModelIndex &index) const;
 
-    void sort(int column, Qt::SortOrder order);
+    void sort(int column, Qt::SortOrder order = Qt::AscendingOrder);
 
     QStringList mimeTypes() const;
     QMimeData *mimeData(const QModelIndexList &indexes) const;
@@ -102,7 +102,7 @@ public:
 
     void setNameFilters(const QStringList &filters);
     QStringList nameFilters() const;
- 
+
     void setFilter(QDir::Filters filters);
     QDir::Filters filter() const;
 

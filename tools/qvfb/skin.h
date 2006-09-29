@@ -41,11 +41,14 @@ public:
     Skin( QVFb *p, const QString &skinFile, int &viewW, int &viewH );
     ~Skin( );
     void setView( QVFbView *v );
+    void setSecondaryView( QVFbView *v );
     void setZoom( double );
     bool isValid() {return skinValid;}
 
     bool hasCursor() const;
     static QSize screenSize(const QString &skinFile);
+    static QSize secondaryScreenSize(const QString &skinFile);
+    static bool hasSecondaryScreen(const QString &skinFile);
 
 protected slots:
     void skinKeyRepeat();
@@ -60,6 +63,7 @@ protected:
 private:
     QVFb *parent;
     QVFbView *view;
+    QVFbView *secondaryView;
     QPoint parentpos;
     QPoint clickPos;
     bool buttonPressed;
@@ -68,17 +72,20 @@ private:
     double zoom;
     void calcRegions();
     void flip(bool open);
+    void updateSecondaryScreen();
 
     static QString skinFileName(const QString &skinFile, QString* prefix);
+    static void parseRect(const QString &, QRect *);
     static bool parseSkinFileHeader(QTextStream& ts,
-		    int *viewX1, int *viewY1,
-		    int *viewW, int *viewH,
+                    QRect *screen, QRect *outsideScreen,
+                    QRect *outsideScreenClosed,
 		    int *numberOfAreas,
 		    QString* skinImageUpFileName,
 		    QString* skinImageDownFileName,
 		    QString* skinImageClosedFileName,
 		    QString* skinCursorFileName,
-		    QPoint* cursorHot);
+		    QPoint* cursorHot,
+                    QStringList* closedAreas);
 
     void loadImages();
     QString skinImageUpFileName;
@@ -89,7 +96,9 @@ private:
     QPixmap skinImageDown;
     QPixmap skinImageClosed;
     QPixmap skinCursor;
-    int viewX1, viewY1;
+    QRect screenRect;
+    QRect backScreenRect;
+    QRect closedScreenRect;
     int numberOfAreas;
 
     typedef struct {
@@ -98,6 +107,7 @@ private:
         QPolygon area;
         QRegion region;
 	QString text;
+        bool activeWhenClosed;
     } ButtonAreas;
 
     void startPress(int);

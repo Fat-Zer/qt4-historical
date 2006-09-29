@@ -74,7 +74,8 @@ Launcher::Launcher(QWidget *parent)
     resizeTimer->setSingleShot(true);
     connect(resizeTimer, SIGNAL(timeout()), this, SLOT(redisplayWindow()));
 
-    assistant = new QAssistantClient("assistant", this);
+    assistant = new QAssistantClient(
+        QLibraryInfo::location(QLibraryInfo::BinariesPath), this);
 
     connect(display, SIGNAL(actionRequested(const QString &)),
             this, SLOT(executeAction(const QString &)));
@@ -109,7 +110,7 @@ bool Launcher::setup()
         // We can continue without it.
         QMessageBox::warning(this, tr("No Documentation Found"),
             tr("I could not find the Qt documentation."),
-            QMessageBox::Cancel, QMessageBox::NoButton);
+            QMessageBox::Cancel);
     }
 
     imagesDir = documentationDir;
@@ -118,7 +119,7 @@ bool Launcher::setup()
         // We can continue without them.
         QMessageBox::warning(this, tr("No Images Found"),
             tr("I could not find any images for the Qt documentation."),
-            QMessageBox::Cancel, QMessageBox::NoButton);
+            QMessageBox::Cancel);
     }
 
     maximumLabels = 0;
@@ -134,7 +135,7 @@ bool Launcher::setup()
         QMessageBox::warning(this, tr("No Examples or Demos found"),
             tr("I could not find any Qt examples or demos.\n"
                "Please ensure that Qt is installed correctly."),
-            QMessageBox::Cancel, QMessageBox::NoButton);
+            QMessageBox::Cancel);
         return false;
     }
 
@@ -303,7 +304,8 @@ QString Launcher::findExecutable(const QDir &dir) const
         if (info.fileName().endsWith(".app"))
             return info.absoluteFilePath();
         QDir currentDir(info.absoluteFilePath());
-        if (currentDir != dir && currentDir != parentDir) {
+        if (currentDir != dir && currentDir != parentDir &&
+            currentDir.dirName() != "plugins") {
             QString path = findExecutable(currentDir);
             if (!path.isNull())
                 return path;
@@ -457,7 +459,7 @@ void Launcher::closeEvent(QCloseEvent *event)
     if (runningExamples.size() > 0) {
         if (QMessageBox::warning(this, tr("Examples Running"),
                 tr("There are examples running. Do you really want to exit?"),
-                QMessageBox::Yes, QMessageBox::No) == QMessageBox::No)
+                QMessageBox::Yes|QMessageBox::No) == QMessageBox::No)
             event->ignore();
             return;
     }

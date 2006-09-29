@@ -25,6 +25,7 @@
 #include "qabstractslider.h"
 #include "qevent.h"
 #include "qabstractslider_p.h"
+#include "qdebug.h"
 #ifndef QT_NO_ACCESSIBILITY
 #include "qaccessible.h"
 #endif
@@ -97,6 +98,7 @@
     QStyle::sliderValueFromPosition() help subclasses and styles to map
     screen coordinates to logical range values.
 
+    \sa QAbstractSpinBox, QSlider, QDial, QScrollBar, {Sliders Example}
 */
 
 /*!
@@ -190,7 +192,7 @@
 
 QAbstractSliderPrivate::QAbstractSliderPrivate()
     : minimum(0), maximum(99), singleStep(1), pageStep(10),
-      value(0), position(0), tracking(true), blocktracking(false), pressed(false),
+      value(0), position(0), pressValue(-1), tracking(true), blocktracking(false), pressed(false),
       invertedAppearance(false), invertedControls(false),
       orientation(Qt::Horizontal), repeatAction(QAbstractSlider::SliderNoAction)
 {
@@ -231,7 +233,6 @@ void QAbstractSliderPrivate::setSteps(int single, int page)
     q->sliderChange(QAbstractSlider::SliderStepsChange);
 }
 
-
 /*!
     Constructs an abstract slider.
 
@@ -259,7 +260,6 @@ QAbstractSlider::~QAbstractSlider()
 {
 }
 
-
 /*!
     \property QAbstractSlider::orientation
     \brief the orientation of the slider
@@ -267,7 +267,6 @@ QAbstractSlider::~QAbstractSlider()
     The orientation must be \l Qt::Vertical (the default) or \l
     Qt::Horizontal.
 */
-
 void QAbstractSlider::setOrientation(Qt::Orientation orientation)
 {
     Q_D(QAbstractSlider);
@@ -495,7 +494,7 @@ void QAbstractSlider::setValue(int value)
 {
     Q_D(QAbstractSlider);
     value = d->bound(value);
-    if (d->value == value)
+    if (d->value == value && d->position == value)
         return;
     d->value = value;
     if (d->position != value) {
@@ -630,7 +629,12 @@ void QAbstractSlider::timerEvent(QTimerEvent *e)
             d->repeatActionTimer.start(d->repeatActionTime, this);
             d->repeatActionTime = 0;
         }
-        triggerAction(d->repeatAction);
+        if (d->repeatAction == SliderPageStepAdd)
+            d->setAdjustedSliderPosition(d->value + d->pageStep);
+        else if (d->repeatAction == SliderPageStepSub)
+            d->setAdjustedSliderPosition(d->value - d->pageStep);
+        else
+            triggerAction(d->repeatAction);
     }
 }
 
@@ -654,6 +658,7 @@ void QAbstractSlider::sliderChange(SliderChange)
 void QAbstractSlider::wheelEvent(QWheelEvent * e)
 {
     Q_D(QAbstractSlider);
+    e->ignore();
     if (e->orientation() != d->orientation && !rect().contains(e->pos()))
         return;
 
@@ -670,11 +675,19 @@ void QAbstractSlider::wheelEvent(QWheelEvent * e)
     offset += e->delta() * step / 120;
     if (d->invertedControls)
         offset = -offset;
+
     if (qAbs(offset) < 1)
         return;
-    setValue(d->value + int(offset));
-    offset -= int(offset);
-    e->accept();
+
+    int prevValue = d->value;
+    d->position = d->value + int(offset); // value will be updated by triggerAction()
+    triggerAction(SliderMove);
+    if (prevValue == d->value) {
+        offset = 0;
+    } else {
+        offset -= int(offset);
+        e->accept();
+    }
 }
 #endif
 /*!

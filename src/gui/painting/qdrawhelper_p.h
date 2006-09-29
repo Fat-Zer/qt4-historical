@@ -81,8 +81,12 @@ extern const CompositionFunctionSolid qt_functionForModeSolid_SSE[];
 
 
 void qInitDrawhelperAsm();
+#ifdef Q_WS_QWS
+void qResetDrawhelper();
+#endif
 
 class QRasterBuffer;
+class QRasterPaintEngine;
 
 struct SolidData
 {
@@ -133,7 +137,12 @@ struct GradientData
         ConicalGradientData conical;
     };
 
+#ifdef Q_WS_QWS
+#define GRADIENT_STOPTABLE_SIZE 256
+#else
 #define GRADIENT_STOPTABLE_SIZE 1024
+#endif
+
     uint colorTable[GRADIENT_STOPTABLE_SIZE];
 
     uint alphaColor : 1;
@@ -154,11 +163,15 @@ struct TextureData
         Tiled
     };
     Type type;
+    int const_alpha;
 };
 
 struct QSpanData
 {
     QRasterBuffer *rasterBuffer;
+#ifdef Q_WS_QWS
+    QRasterPaintEngine *rasterEngine;
+#endif
     ProcessSpans blend;
     ProcessSpans unclipped_blend;
     qreal m11, m12, m21, m22, dx, dy;   // inverse xform matrix
@@ -172,16 +185,17 @@ struct QSpanData
     } type : 8;
     int txop : 8;
     bool bilinear;
+    QImage tempImage;
     union {
         SolidData solid;
         GradientData gradient;
         TextureData texture;
     };
-    void init(QRasterBuffer *rb);
-    void setup(const QBrush &brush);
+    void init(QRasterBuffer *rb, QRasterPaintEngine *pe = 0);
+    void setup(const QBrush &brush, int alpha);
     void setupMatrix(const QMatrix &matrix, int txop, int bilinear);
-    void initTexture(const QImage *image, TextureData::Type = TextureData::Plain);
-    void initGradient(const QGradient *g);
+    void initTexture(const QImage *image, int alpha, TextureData::Type = TextureData::Plain);
+    void initGradient(const QGradient *g, int alpha);
     void adjustSpanMethods();
 };
 
@@ -408,5 +422,8 @@ const uint qt_bayer_matrix[16][16] = {
     { 0xaa, 0x6a, 0x9a, 0x5a, 0xa6, 0x66, 0x96, 0x56,
       0xa9, 0x69, 0x99, 0x59, 0xa5, 0x65, 0x95, 0x55}
 };
+
+#define ARGB_COMBINE_ALPHA(argb, alpha) \
+    ((((argb >> 24) * alpha) >> 8) << 24) | (argb & 0x00ffffff)
 
 #endif // QDRAWHELPER_P_H

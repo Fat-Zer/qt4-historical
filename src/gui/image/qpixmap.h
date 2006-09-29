@@ -1,10 +1,10 @@
 /****************************************************************************
- **
- ** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
- **
- ** This file is part of the QtGui module of the Qt Toolkit.
- **
- ** This file may be used under the terms of the GNU General Public
+**
+** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+**
+** This file is part of the QtGui module of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
 ** License version 2.0 as published by the Free Software Foundation
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
@@ -15,11 +15,11 @@
 ** review the following information:
 ** http://www.trolltech.com/products/qt/licensing.html or contact the
 ** sales department at sales@trolltech.com.
- **
- ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
- ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
- **
- ****************************************************************************/
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
 
 #ifndef QPIXMAP_H
 #define QPIXMAP_H
@@ -109,8 +109,8 @@ public:
     bool load(const QString& fileName, const char *format = 0, Qt::ImageConversionFlags flags = Qt::AutoColor);
     bool loadFromData(const uchar *buf, uint len, const char* format = 0, Qt::ImageConversionFlags flags = Qt::AutoColor);
     inline bool loadFromData(const QByteArray &data, const char* format = 0, Qt::ImageConversionFlags flags = Qt::AutoColor);
-    bool save(const QString& fileName, const char* format, int quality = -1) const;
-    bool save(QIODevice* device, const char* format, int quality = -1) const;
+    bool save(const QString& fileName, const char* format = 0, int quality = -1) const;
+    bool save(QIODevice* device, const char* format = 0, int quality = -1) const;
 
 #if defined(Q_WS_WIN)
     enum HBitmapFormat {
@@ -120,6 +120,11 @@ public:
 
     HBITMAP toWinHBITMAP(HBitmapFormat format = NoAlpha) const;
     static QPixmap fromWinHBITMAP(HBITMAP hbitmap, HBitmapFormat format = NoAlpha);
+#endif
+
+#if defined(Q_WS_MAC)
+    CGImageRef toMacCGImageRef() const;
+    static QPixmap fromMacCGImageRef(CGImageRef image);
 #endif
 
     inline QPixmap copy(int x, int y, int width, int height) const;
@@ -187,6 +192,9 @@ private:
     bool doImageIO(QImageWriter *io, int quality) const;
     enum Type { PixmapType, BitmapType };
     QPixmap(const QSize &s, Type);
+#ifdef Q_WS_MAC
+    static void grabWidget_helper(QWidget *widget, QPixmap &res, QPixmap &buf, const QRect &r, const QPoint &offset, bool);
+#endif
 
     void init(int, int, Type = PixmapType);
     void deref();
@@ -196,7 +204,7 @@ private:
     Q_DUMMY_COMPARISON_OPERATOR(QPixmap)
 #ifdef Q_WS_MAC
     friend CGContextRef qt_mac_cg_context(const QPaintDevice *);
-    friend CGImageRef qt_mac_create_imagemask(const QPixmap &);
+    friend CGImageRef qt_mac_create_imagemask(const QPixmap &, const QRectF &rect);
     friend IconRef qt_mac_create_iconref(const QPixmap &);
     friend QPixmap qt_mac_unmultiplyPixmapAlpha(const QPixmap &);
 #endif
@@ -206,10 +214,10 @@ private:
     friend class QPainter;
     friend class QGLWidget;
     friend class QX11PaintEngine;
-    friend class QQuickDrawPaintEngine;
     friend class QCoreGraphicsPaintEngine;
     friend class QWidgetPrivate;
     friend class QRasterPaintEngine;
+    friend class QRasterBuffer;
 #if !defined(QT_NO_DATASTREAM)
     friend Q_GUI_EXPORT QDataStream &operator>>(QDataStream &, QPixmap &);
 #endif

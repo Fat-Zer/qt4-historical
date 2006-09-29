@@ -9,6 +9,9 @@
 <section ref="qmake-running.html" title="Running qmake">
     <keyword ref="qmake-running.html">Running qmake</keyword>
 </section>
+<section ref="qmake-platform-notes.html" title="qmake Platform Notes">
+    <keyword ref="qmake-platform-notes.html">qmake Platform Notes</keyword>
+</section>
 <section ref="qmake-reference.html" title="qmake Reference">
     <keyword ref="qmake-reference.html">qmake Reference</keyword>
 </section>
@@ -33,7 +36,7 @@
 <section ref="qmake-common-projects.html" title="qmake Common Projects">
     <keyword ref="qmake-common-projects.html">qmake Common Projects</keyword>
 </section>
-<section ref="qmake-environment-reference.html" title="Third-Party Code Used in qmake">
-    <keyword ref="qmake-environment-reference.html">Third-Party Code Used in qmake</keyword>
+<section ref="qmake-third-party-code.html" title="Third-Party Code Used in qmake">
+    <keyword ref="qmake-third-party-code.html">Third-Party Code Used in qmake</keyword>
 </section>
 </DCF>

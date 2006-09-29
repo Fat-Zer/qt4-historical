@@ -48,18 +48,30 @@ public:
     Qt::ScrollBarPolicy verticalScrollBarPolicy() const;
     void setVerticalScrollBarPolicy(Qt::ScrollBarPolicy);
     QScrollBar *verticalScrollBar() const;
+    void setVerticalScrollBar(QScrollBar *scrollbar);
 
     Qt::ScrollBarPolicy horizontalScrollBarPolicy() const;
     void setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy);
     QScrollBar *horizontalScrollBar() const;
+    void setHorizontalScrollBar(QScrollBar *scrollbar);
+
+    QWidget *cornerWidget() const;
+    void setCornerWidget(QWidget *widget);
+
+    void addScrollBarWidget(QWidget *widget, Qt::Alignment alignment);
+    QWidgetList scrollBarWidgets(Qt::Alignment alignment);
 
     QWidget *viewport() const;
+    void setViewport(QWidget *widget);
     QSize maximumViewportSize() const;
 
     QSize minimumSizeHint() const;
 
     QSize sizeHint() const;
 
+protected Q_SLOTS:
+    void setupViewport(QWidget *viewport);
+    
 protected:
     QAbstractScrollArea(QAbstractScrollAreaPrivate &dd, QWidget *parent = 0);
     void setViewportMargins(int left, int top, int right, int bottom);
@@ -93,7 +105,7 @@ private:
     Q_DISABLE_COPY(QAbstractScrollArea)
     Q_PRIVATE_SLOT(d_func(), void _q_hslide(int))
     Q_PRIVATE_SLOT(d_func(), void _q_vslide(int))
-    Q_PRIVATE_SLOT(d_func(),void _q_showOrHideScrollBars())
+    Q_PRIVATE_SLOT(d_func(), void _q_showOrHideScrollBars())
 
 };
 

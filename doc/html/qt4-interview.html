@@ -2,26 +2,20 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/doc/src/qt4-interview.qdoc -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/doc/src/qt4-interview.qdoc -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-x11-opensource-src-4.2.0/doc/src/qt4-interview.qdoc -->
 <head>
-    <title>Qt 4.1: The Interview Framework</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
-    <link rel="prev" href="qt4-tulip.html" />
-    <link rel="contents" href="qt4-intro.html" />
-    <link rel="next" href="qt4-arthur.html" />
+  <title>Qt 4.2: The Interview Framework</title>
+  <link rel="prev" href="qt4-tulip.html" />
+  <link rel="contents" href="qt4-intro.html" />
+  <link rel="next" href="qt4-arthur.html" />
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><p>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><p>
 [Previous: <a href="qt4-tulip.html">The Tulip Container Classes</a>]
 [<a href="qt4-intro.html">Home</a>]
 [Next: <a href="qt4-arthur.html">The Arthur Paint System</a>]
@@ -42,7 +36,7 @@ body { background: #ffffff; color: black; }</style>
 <p>In the model/view architecture, the view and the controller objects are combined. This still separates the way that data is stored from the way that it is presented to the user, but provides a simpler framework based on the same principles. This separation makes it possible to display the same data in several different views, and to implement new types of views, without changing the underlying data structures.</p>
 <p>User input is handled by <i>delegates</i>. The advantage of this approach is that it allows rendering and editing of individual items of data to be customized to suit each data type in use.</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" bgcolor="#f0f0f0"><td><img src="images/modelview-overview.png" /></td><td><b>The model/view architecture</b><p>The model communicates with a source of data, providing an <i>interface</i> for the other components in the architecture. The nature of the communication depends on the type of data source, and the way the model is implemented.</p>
+<tr valign="top" class="odd"><td><img src="images/modelview-overview.png" /></td><td><b>The model/view architecture</b><p>The model communicates with a source of data, providing an <i>interface</i> for the other components in the architecture. The nature of the communication depends on the type of data source, and the way the model is implemented.</p>
 <p>The view obtains <i>model indexes</i> from the model; these are references to items of data. By supplying model indexes to the model, the view can retrieve items of data from the data source.</p>
 <p>In standard views, a <i>delegate</i> renders the items of data. When an item is edited, the delegate communicates with the model directly using model indexes.</p>
 </td></tr>
@@ -72,92 +66,92 @@ body { background: #ffffff; color: black; }</style>
 <h3>Sharing a Model Between Views</h3>
 <p>In this example, we display the contents of a model using two different views, and share the user's selection between them. We will use the <a href="qdirmodel.html">QDirModel</a> supplied with Qt because it requires very little configuration, and provides existing data to the views.</p>
 <p>The main() function for this example demonstrates all the principles involved in setting up a model and two views. We also share the selection between the two views:</p>
-<pre>&nbsp;   int main(int argc, char *argv[])
-    {
-        QApplication app(argc, argv);
-        QSplitter *splitter = new QSplitter;
+<pre> int main(int argc, char *argv[])
+ {
+     QApplication app(argc, argv);
+     QSplitter *splitter = new QSplitter;
 
-        QDirModel *model = new QDirModel;
-        QTreeView *tree = new QTreeView(splitter);
-        tree-&gt;setModel(model);
-        tree-&gt;setRootIndex(model-&gt;index(QDir::currentPath()));
+     QDirModel *model = new QDirModel;
+     QTreeView *tree = new QTreeView(splitter);
+     tree-&gt;setModel(model);
+     tree-&gt;setRootIndex(model-&gt;index(QDir::currentPath()));
 
-        QListView *list = new QListView(splitter);
-        list-&gt;setModel(model);
-        list-&gt;setRootIndex(model-&gt;index(QDir::currentPath()));
+     QListView *list = new QListView(splitter);
+     list-&gt;setModel(model);
+     list-&gt;setRootIndex(model-&gt;index(QDir::currentPath()));
 
-        QItemSelectionModel *selection = new QItemSelectionModel(model);
-        tree-&gt;setSelectionModel(selection);
-        list-&gt;setSelectionModel(selection);
+     QItemSelectionModel *selection = new QItemSelectionModel(model);
+     tree-&gt;setSelectionModel(selection);
+     list-&gt;setSelectionModel(selection);
 
-        splitter-&gt;setWindowTitle(&quot;Two views onto the same directory model&quot;);
-        splitter-&gt;show();
-        return app.exec();
-    }</pre>
+     splitter-&gt;setWindowTitle(&quot;Two views onto the same directory model&quot;);
+     splitter-&gt;show();
+     return app.exec();
+ }</pre>
 <p>In the above function, we construct a directory model to display the contents of a default directory. The two views are constructed and given the same model to work with. By default, each view will maintain and display its own selection of items from the model, so we explicitly create a new selection that is shared between the tree view and the list view. As a result, changes to the selection in either of these views will automatically cause the selection in the other to change.</p>
 <p align="center"><img src="images/interview-shareddirmodel.png" /></p><p>The model/view architecture allows us to replace the <a href="qdirmodel.html">QDirModel</a> in this example with a completely different model, one that will perhaps obtain data from a remote server, or from a database.</p>
 <a name="creating-a-custom-model"></a>
 <h3>Creating a Custom Model</h3>
 <p>In this example, we display items of data obtained from a custom list model using a standard view. The custom model is a subclass of <a href="qabstractlistmodel.html">QAbstractListModel</a> and provides implementations of a core set of functions.</p>
 <p>The complete declaration of our model is as follows:</p>
-<pre>&nbsp;   class StringListModel : public QAbstractListModel
-    {
-        Q_OBJECT
+<pre> class StringListModel : public QAbstractListModel
+ {
+     Q_OBJECT
 
-    public:
-        StringListModel(const QStringList &amp;strings, QObject *parent = 0)
-            : QAbstractListModel(parent), stringList(strings) {}
+ public:
+     StringListModel(const QStringList &amp;strings, QObject *parent = 0)
+         : QAbstractListModel(parent), stringList(strings) {}
 
-        int rowCount(const QModelIndex &amp;parent = QModelIndex()) const;
-        QVariant data(const QModelIndex &amp;index, int role) const;
-        QVariant headerData(int section, Qt::Orientation orientation,
-                            int role = Qt::DisplayRole) const;
+     int rowCount(const QModelIndex &amp;parent = QModelIndex()) const;
+     QVariant data(const QModelIndex &amp;index, int role) const;
+     QVariant headerData(int section, Qt::Orientation orientation,
+                         int role = Qt::DisplayRole) const;
 
-    private:
-        QStringList stringList;
-    };</pre>
+ private:
+     QStringList stringList;
+ };</pre>
 <p>The model takes a list of strings when constructed, and supplies these to views as required. Since this is only a simple read-only model, we only need to implement a few functions.</p>
 <p>The underlying data structure used to hold the strings is a <a href="qstringlist.html">QStringList</a>. Since the model maps each item in the list to a row in the model, the rowCount() function is quite simple:</p>
-<pre>&nbsp;   int StringListModel::rowCount(const QModelIndex &amp;parent) const
-    {
-        return stringList.count();
-    }</pre>
+<pre> int StringListModel::rowCount(const QModelIndex &amp;parent) const
+ {
+     return stringList.count();
+ }</pre>
 <p>The data() function returns an item of data for each model index supplied by a view:</p>
-<pre>&nbsp;   QVariant StringListModel::data(const QModelIndex &amp;index, int role) const
-    {
-        if (!index.isValid())
-            return QVariant();
+<pre> QVariant StringListModel::data(const QModelIndex &amp;index, int role) const
+ {
+     if (!index.isValid())
+         return QVariant();
 
-        if (index.row() &gt;= stringList.size())
-            return QVariant();
+     if (index.row() &gt;= stringList.size())
+         return QVariant();
 
-        if (role == Qt::DisplayRole)
-            return stringList.at(index.row());
-        else
-            return QVariant();
-    }</pre>
+     if (role == Qt::DisplayRole)
+         return stringList.at(index.row());
+     else
+         return QVariant();
+ }</pre>
 <p>The data() function returns a <a href="qvariant.html">QVariant</a> containing the information referred to by the model index. Items of data are returned to the view, but only if a number of checks are satisfied; for example, if the view specifies an invalid model index, the model indicates this by returning an invalid <a href="qvariant.html">QVariant</a>.</p>
 <p>Vertical and horizontal headers are supplied by the headerData() function. In this model, the value returned for these items is the row or column number, depending on the header:</p>
-<pre>&nbsp;   QVariant StringListModel::headerData(int section, Qt::Orientation orientation,
-                                         int role) const
-    {
-        if (role != Qt::DisplayRole)
-            return QVariant();
+<pre> QVariant StringListModel::headerData(int section, Qt::Orientation orientation,
+                                      int role) const
+ {
+     if (role != Qt::DisplayRole)
+         return QVariant();
 
-        if (orientation == Qt::Horizontal)
-            return QString(&quot;Column %1&quot;).arg(section);
-        else
-            return QString(&quot;Row %1&quot;).arg(section);
-    }</pre>
+     if (orientation == Qt::Horizontal)
+         return QString(&quot;Column %1&quot;).arg(section);
+     else
+         return QString(&quot;Row %1&quot;).arg(section);
+ }</pre>
 <p>We only include an excerpt from the main() function for this short example:</p>
-<pre>&nbsp;   QStringList numbers;
-    numbers &lt;&lt; &quot;One&quot; &lt;&lt; &quot;Two&quot; &lt;&lt; &quot;Three&quot; &lt;&lt; &quot;Four&quot; &lt;&lt; &quot;Five&quot;;
+<pre> QStringList numbers;
+ numbers &lt;&lt; &quot;One&quot; &lt;&lt; &quot;Two&quot; &lt;&lt; &quot;Three&quot; &lt;&lt; &quot;Four&quot; &lt;&lt; &quot;Five&quot;;
 
-    QAbstractItemModel *model = new StringListModel(numbers);
-        ...
-    QListView *view = new QListView;
-    view-&gt;setWindowTitle(&quot;View onto a string list model&quot;);
-    view-&gt;setModel(model);</pre>
+ QAbstractItemModel *model = new StringListModel(numbers);
+     ...
+ QListView *view = new QListView;
+ view-&gt;setWindowTitle(&quot;View onto a string list model&quot;);
+ view-&gt;setModel(model);</pre>
 <p>We create a string list to use with the model, and we supply it to the model when it is constructed. The information in the string list is made available to the view via the model.</p>
 <p align="center"><img src="images/stringlistmodel.png" /></p><p>This example shows that it can be easy to populate views with data from a simple model. The standard models and views planned for Qt 4 will make the process even easier, and the convenience widgets supplied provide support for the classic item-based approach.</p>
 <a name="what-s-changed-since-qt-3"></a>
@@ -187,6 +181,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

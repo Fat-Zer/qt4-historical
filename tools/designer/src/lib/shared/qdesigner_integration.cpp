@@ -88,9 +88,11 @@ void QDesignerIntegration::updateProperty(const QString &name, const QVariant &v
 
                 } else if (name == QLatin1String("geometry")) {
                     if (QWidget *container = containerWindow(formWindow)) {
-                        QRect r = containerWindow(formWindow)->geometry();
-                        r.setSize(value.toRect().size());
-                        container->setGeometry(r);
+                        SetFormPropertyCommand *cmd = new SetFormPropertyCommand(formWindow);
+                        cmd->init(object, name, value);
+                        cmd->setOldValue(container->geometry());
+                        formWindow->commandHistory()->push(cmd);
+
                         emit propertyChanged(formWindow, name, value);
                     }
 

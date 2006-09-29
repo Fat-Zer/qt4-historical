@@ -2,34 +2,30 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/doc/src/emb-features.qdoc -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/doc/src/emb-features.qdoc -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-x11-opensource-src-4.2.0/doc/src/emb-features.qdoc -->
 <head>
-    <title>Qt 4.1: Fine-Tuning Features</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
-    <link rel="contents" href="qtopiacore.html" />
+  <title>Qt 4.2: Fine-Tuning Features</title>
+  <link rel="contents" href="qtopiacore.html" />
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><p>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><p>
 [<a href="qtopiacore.html">Contents</a>]
 </p>
 <h1 align="center">Fine-Tuning Features<br /><small></small></h1>
-<p>On the Qtopia Core platform the set of applications is often fixed, and reducing the size of Qt is important to save resources. It is possible to optimize the Qt installation by avoiding to compile the features that are not required, i.e by creating a custom configuration file that defines the preferred subset of Qt's functionality.</p>
+<p>On the Qtopia Core platform the set of applications is often fixed, and reducing the size of Qt is important to save resources. It is possible to optimize the Qt installation by avoiding to compile the features that are not required, either by creating a custom configuration file that defines the preferred subset of Qt's functionality, or by using the <tt>configure</tt> script's feature option.</p>
 <p>A custom configuration file uses macros to disable the various features, and can either be created manually or by using the <tt>qconfig</tt> tool located in the <tt>/tools/qconfig</tt> directory.</p>
 <p align="center"><img src="images/qtopiacore-qconfigtool.png" /></p><p>The <tt>qconfig</tt> tool's interface displays all of Qt's functionality, and allows the user to disable or enable the relevant features. The user can open and edit any custom configuration file located in the <tt>/src/corelib/global</tt> directory. When creating a custom configuration file manually, a description of the currently available Qt features can be found in the <tt>/src/corelib/global/qfeatures.txt</tt> file.</p>
 <p>Note that some features depend on others; disabling any feature will automatically disable all features depending on it. The feature dependencies can be explored using the <tt>qconfig</tt> tool, but they are also described in the <tt>/src/corelib/global/qfeatures.h</tt> file.</p>
 <p>To use the custom configuration when running <tt>configure</tt>, it must be saved in a file called <tt>qconfig-myfile.h</tt> in the <tt>/src/corelib/global</tt> directory. Use the <tt>-qconfig</tt> option and pass the configuration's filename without the <tt>qconfig-</tt> prefix and <tt>.h</tt> extension, as argument. For example:</p>
-<pre>&nbsp;   configure -qconfig myfile</pre>
+<pre> configure -qconfig myfile</pre>
 <p>Qt provides several ready-made custom configuration files defining a minimal, small, medium and large installation, respectively, located in the <tt>/src/corelib/global</tt> directory.</p>
+<p>To enable or disable a particular option, it might be easier to just run <tt>configure</tt> with the <tt>-no-feature-&lt;feature&gt;</tt> or <tt>-feature-&lt;feature&gt;</tt> option, respectively. For example:</p>
+<pre> configure -no-feature-thread</pre>
 <p>See also <a href="qtopiacore-performance.html">Performance Tuning</a>.</p>
 <p>
 [<a href="qtopiacore.html">Contents</a>]
@@ -38,6 +34,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

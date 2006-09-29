@@ -48,6 +48,7 @@ protected:
     virtual void writeObjectsPart(QTextStream &t);
     virtual void writeImplicitRulesPart(QTextStream &t);
     virtual void writeBuildRulesPart(QTextStream &);
+    virtual QString escapeFilePath(const QString &path) const;
 
     virtual void writeRcFilePart(QTextStream &t);
 

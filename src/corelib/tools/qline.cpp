@@ -417,9 +417,11 @@ bool QLineF::isNull() const
 /*!
     \fn QLineF::setLength(qreal length)
 
-    Sets the length of the line to the given \a length.
+    Sets the length of the line to the given \a length. If the line is a
+    null line, the length will remain zero regardless of the length
+    specified.
 
-    \sa length()
+    \sa length(), isNull()
 */
 
 /*!
@@ -490,7 +492,7 @@ QLineF QLineF::unitVector() const
 
 #ifndef QT_NO_DEBUG
     if (qAbs(f.length() - 1) >= 0.001)
-        qWarning("QLine::unitVector(), new line does not have length of 1");
+        qWarning("QLine::unitVector: New line does not have unit length");
 #endif
 
     return f;

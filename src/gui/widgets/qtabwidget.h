@@ -44,6 +44,9 @@ class Q_GUI_EXPORT QTabWidget : public QWidget
     Q_PROPERTY(TabShape tabShape READ tabShape WRITE setTabShape)
     Q_PROPERTY(int currentIndex READ currentIndex WRITE setCurrentIndex NOTIFY currentChanged)
     Q_PROPERTY(int count READ count)
+    Q_PROPERTY(QSize iconSize READ iconSize WRITE setIconSize)
+    Q_PROPERTY(Qt::TextElideMode elideMode READ elideMode WRITE setElideMode)
+    Q_PROPERTY(bool usesScrollButtons READ usesScrollButtons WRITE setUsesScrollButtons)
 
 public:
     explicit QTabWidget(QWidget *parent = 0);
@@ -100,6 +103,15 @@ public:
     void setCornerWidget(QWidget * w, Qt::Corner corner = Qt::TopRightCorner);
     QWidget * cornerWidget(Qt::Corner corner = Qt::TopRightCorner) const;
 
+    Qt::TextElideMode elideMode() const;
+    void setElideMode(Qt::TextElideMode);
+
+    QSize iconSize() const;
+    void setIconSize(const QSize &size);
+
+    bool usesScrollButtons() const;
+    void setUsesScrollButtons(bool useButtons);
+
 public Q_SLOTS:
     void setCurrentIndex(int index);
     void setCurrentWidget(QWidget *widget);
@@ -122,7 +134,7 @@ protected:
 
 #ifdef QT3_SUPPORT
 public:
-    QT3_SUPPORT_CONSTRUCTOR QTabWidget(QWidget *parent, const char *name, Qt::WFlags f = 0);
+    QT3_SUPPORT_CONSTRUCTOR QTabWidget(QWidget *parent, const char *name, Qt::WindowFlags f = 0);
 
     inline QT3_SUPPORT void insertTab(QWidget * w, const QString &s, int index = -1) { insertTab(index, w, s); }
     inline QT3_SUPPORT void insertTab(QWidget *child, const QIcon& icon,
@@ -160,6 +172,7 @@ public Q_SLOTS:
 
 Q_SIGNALS:
     QT_MOC_COMPAT void currentChanged(QWidget *);
+    QT_MOC_COMPAT void selected(const QString&);
 #endif // QT3_SUPPORT
 
 private:

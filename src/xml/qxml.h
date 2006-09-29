@@ -87,6 +87,7 @@ private:
     QXmlNamespaceSupportPrivate *d;
 
     friend class QXmlSimpleReaderPrivate;
+    Q_DISABLE_COPY(QXmlNamespaceSupport)
 };
 
 
@@ -157,7 +158,6 @@ protected:
     virtual QString fromRawData(const QByteArray &data, bool beginning = false);
 
 private:
-    Q_DISABLE_COPY(QXmlInputSource)
     void init();
     QXmlInputSourcePrivate *d;
 };
@@ -180,7 +180,6 @@ public:
     QString message() const;
 
 private:
-    Q_DISABLE_COPY(QXmlParseException)
     QXmlParseExceptionPrivate *d;
 };
 
@@ -388,6 +387,7 @@ public:
 
 private:
     QXmlDefaultHandlerPrivate *d;
+    Q_DISABLE_COPY(QXmlDefaultHandler)
 };
 
 // inlines

@@ -50,6 +50,7 @@ protected:
     virtual void processPrlFiles();
 
     virtual bool findLibraries();
+    virtual QString escapeFilePath(const QString &path) const;
     virtual QStringList &findDependencies(const QString &);
     virtual void init();
 

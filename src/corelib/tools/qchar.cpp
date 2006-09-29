@@ -499,7 +499,7 @@ QChar::QChar(uchar ch)
 */
 bool QChar::isPrint() const
 {
-    Category c = ::category(*this);
+    Category c = QUnicodeTables::category(*this);
     return c != Other_Control && c != Other_NotAssigned;
 }
 
@@ -509,7 +509,7 @@ bool QChar::isPrint() const
 */
 bool QChar::isSpace() const
 {
-    return ::isSpace(*this);
+    return QUnicodeTables::isSpace(*this);
 }
 
 /*!
@@ -518,7 +518,7 @@ bool QChar::isSpace() const
 */
 bool QChar::isMark() const
 {
-    Category c = ::category(*this);
+    Category c = QUnicodeTables::category(*this);
     return c >= Mark_NonSpacing && c <= Mark_Enclosing;
 }
 
@@ -528,7 +528,7 @@ bool QChar::isMark() const
 */
 bool QChar::isPunct() const
 {
-    Category c = ::category(*this);
+    Category c = QUnicodeTables::category(*this);
     return (c >= Punctuation_Connector && c <= Punctuation_Other);
 }
 
@@ -538,7 +538,7 @@ bool QChar::isPunct() const
 */
 bool QChar::isLetter() const
 {
-    Category c = ::category(*this);
+    Category c = QUnicodeTables::category(*this);
     return (c >= Letter_Uppercase && c <= Letter_Other);
 }
 
@@ -550,7 +550,7 @@ bool QChar::isLetter() const
 */
 bool QChar::isNumber() const
 {
-    Category c = ::category(*this);
+    Category c = QUnicodeTables::category(*this);
     return c >= Number_DecimalDigit && c <= Number_Other;
 }
 
@@ -560,7 +560,7 @@ bool QChar::isNumber() const
 */
 bool QChar::isLetterOrNumber() const
 {
-    Category c = ::category(*this);
+    Category c = QUnicodeTables::category(*this);
     return (c >= Letter_Uppercase && c <= Letter_Other)
         || (c >= Number_DecimalDigit && c <= Number_Other);
 }
@@ -572,7 +572,7 @@ bool QChar::isLetterOrNumber() const
 */
 bool QChar::isDigit() const
 {
-    return (::category(*this) == Number_DecimalDigit);
+    return (QUnicodeTables::category(*this) == Number_DecimalDigit);
 }
 
 
@@ -582,7 +582,7 @@ bool QChar::isDigit() const
 */
 bool QChar::isSymbol() const
 {
-    Category c = ::category(*this);
+    Category c = QUnicodeTables::category(*this);
     return c >= Symbol_Math && c <= Symbol_Other;
 }
 
@@ -600,7 +600,7 @@ int QChar::digitValue() const
 */
 QChar::Category QChar::category() const
 {
-    return ::category(*this);
+    return QUnicodeTables::category(*this);
 }
 
 /*!
@@ -608,7 +608,7 @@ QChar::Category QChar::category() const
 */
 QChar::Direction QChar::direction() const
 {
-     return ::direction(*this);
+     return QUnicodeTables::direction(*this);
 }
 
 /*!
@@ -619,7 +619,7 @@ QChar::Direction QChar::direction() const
 */
 QChar::Joining QChar::joining() const
 {
-    return ::joining(*this);
+    return QUnicodeTables::joining(*this);
 }
 
 
@@ -631,7 +631,7 @@ QChar::Joining QChar::joining() const
 */
 bool QChar::hasMirrored() const
 {
-    return ::mirrored(*this);
+    return QUnicodeTables::mirrored(*this);
 }
 
 /*!
@@ -660,7 +660,7 @@ bool QChar::hasMirrored() const
 */
 QChar QChar::mirroredChar() const
 {
-    return ::mirroredChar(*this);
+    return QUnicodeTables::mirroredChar(*this);
 }
 
 /*!
@@ -691,7 +691,7 @@ QChar::Decomposition QChar::decompositionTag() const
 */
 unsigned char QChar::combiningClass() const
 {
-    return ::combiningClass(*this);
+    return QUnicodeTables::combiningClass(*this);
 }
 
 
@@ -710,7 +710,7 @@ QChar::UnicodeVersion QChar::unicodeVersion() const
 */
 QChar QChar::toLower() const
 {
-     return ::lower(*this);
+     return QUnicodeTables::lower(*this);
 }
 
 /*!
@@ -719,7 +719,7 @@ QChar QChar::toLower() const
 */
 QChar QChar::toUpper() const
 {
-     return ::upper(*this);
+     return QUnicodeTables::upper(*this);
 }
 
 /*!

@@ -2,25 +2,19 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/src/gui/image/qimageiohandler.cpp -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/src/gui/image/qimageiohandler.cpp -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-x11-opensource-src-4.2.0/src/gui/image/qimageiohandler.cpp -->
 <head>
-    <title>Qt 4.1: QImageIOHandler Class Reference</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
+  <title>Qt 4.2: QImageIOHandler Class Reference</title>
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QImageIOHandler Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">QImageIOHandler Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QImageIOHandler class defines the common image I/O interface for all image formats in Qt. <a href="#details">More...</a></p>
-<pre>#include &lt;QImageIOHandler&gt;</pre><ul>
+<pre> #include &lt;QImageIOHandler&gt;</pre><ul>
 <li><a href="qimageiohandler-members.html">List of all members, including inherited members</a></li>
 <li><a href="qimageiohandler-obsolete.html">Obsolete members</a></li>
 </ul>
@@ -73,7 +67,7 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QImageIOHandler::ClipRect</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The clip rect, or ROI (Region Of Interest). A handler that supports this option is expected to only read the provided <a href="qrect.html">QRect</a> area from the original image in <a href="qimageiohandler.html#read">read</a>(), before any other transformation is applied.</td></tr>
 <tr><td valign="top"><tt>QImageIOHandler::ScaledSize</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">The scaled size of the image. A handler that supports this option is expected to scale the image to the provided size (a <a href="qsize.html">QSize</a>), after applying any clip rect transformation (ClipRect). If the handler does not support this option, <a href="qimagereader.html">QImageReader</a> will perform the scaling after the image has been read.</td></tr>
 <tr><td valign="top"><tt>QImageIOHandler::ScaledClipRect</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">The scaled clip rect (or ROI, Region Of Interest) of the image. A handler that supports this option is expected to apply the provided clip rect (a <a href="qrect.html">QRect</a>), after applying any scaling (ScaleSize) or regular clipping (ClipRect). If the handler does not support this option, <a href="qimagereader.html">QImageReader</a> will apply the scaled clip rect after the image has been read.</td></tr>
-<tr><td valign="top"><tt>QImageIOHandler::Description</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">The image description. Some image formats, such as GIF, PNG and JPEG, allow embedding of text or comments into the image data (e.g., for storing copyright information). It's common that the text is stored in key-value pairs, but some formats store all text in one continuous block. <a href="qimageiohandler.html">QImageIOHandler</a> returns the text as one <a href="qstring.html">QString</a>, where keys and values are separated by a ':', and keys-value pairs are separated by two newlines (\n\n). For example, &quot;Title: Sunset\n\nAuthor: Jim Smith\nSarah Jones\n\n&quot;. Formats that store text in a single block can use &quot;Description&quot; as the key.</td></tr>
+<tr><td valign="top"><tt>QImageIOHandler::Description</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">The image description. Some image formats, such as GIF and PNG, allow embedding of text or comments into the image data (e.g., for storing copyright information). It's common that the text is stored in key-value pairs, but some formats store all text in one continuous block. <a href="qimageiohandler.html">QImageIOHandler</a> returns the text as one <a href="qstring.html">QString</a>, where keys and values are separated by a ':', and keys-value pairs are separated by two newlines (\n\n). For example, &quot;Title: Sunset\n\nAuthor: Jim Smith\nSarah Jones\n\n&quot;. Formats that store text in a single block can use &quot;Description&quot; as the key.</td></tr>
 <tr><td valign="top"><tt>QImageIOHandler::CompressionRatio</tt></td><td align="center" valign="top"><tt>5</tt></td><td valign="top">The compression ratio of the image data. A handler that supports this option is expected to set its compression rate depending on the value of this option (an int) when writing.</td></tr>
 <tr><td valign="top"><tt>QImageIOHandler::Gamma</tt></td><td align="center" valign="top"><tt>6</tt></td><td valign="top">The gamma level of the image. A handler that supports this option is expected to set the image gamma level depending on the value of this option (a float) when writing.</td></tr>
 <tr><td valign="top"><tt>QImageIOHandler::Quality</tt></td><td align="center" valign="top"><tt>7</tt></td><td valign="top">The quality level of the image. A handler that supports this option is expected to set the image quality level depending on the value of this option (an int) when writing.</td></tr>
@@ -149,6 +143,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

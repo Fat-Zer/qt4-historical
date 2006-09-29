@@ -2,25 +2,19 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/src/gui/kernel/qevent.cpp -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/src/gui/kernel/qevent.cpp -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-x11-opensource-src-4.2.0/src/gui/kernel/qevent.cpp -->
 <head>
-    <title>Qt 4.1: QTabletEvent Class Reference</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
+  <title>Qt 4.2: QTabletEvent Class Reference</title>
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QTabletEvent Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">QTabletEvent Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QTabletEvent class contains parameters that describe a Tablet event. <a href="#details">More...</a></p>
-<pre>#include &lt;QTabletEvent&gt;</pre><p>Inherits <a href="qinputevent.html">QInputEvent</a>.</p>
+<pre> #include &lt;QTabletEvent&gt;</pre><p>Inherits <a href="qinputevent.html">QInputEvent</a>.</p>
 <ul>
 <li><a href="qtabletevent-members.html">List of all members, including inherited members</a></li>
 </ul>
@@ -66,7 +60,7 @@ body { background: #ffffff; color: black; }</style>
 <h2>Detailed Description</h2>
 <p>The QTabletEvent class contains parameters that describe a Tablet event.</p>
 <p>Tablet Events are generated from a Wacom tablet. Most of the time you will want to deal with events from the tablet as if they were events from a mouse; for example, you would retrieve the cursor position with <a href="qtabletevent.html#x">x</a>(), <a href="qtabletevent.html#y">y</a>(), <a href="qtabletevent.html#pos">pos</a>(), <a href="qtabletevent.html#globalX">globalX</a>(), <a href="qtabletevent.html#globalY">globalY</a>(), and <a href="qtabletevent.html#globalPos">globalPos</a>(). In some situations you may wish to retrieve the extra information provided by the tablet device driver; for example, you might want to do subpixeling with higher resolution coordinates or you may want to adjust color brightness based on pressure. QTabletEvent allows you to read the <a href="qtabletevent.html#pressure">pressure</a>(), the <a href="qtabletevent.html#xTilt">xTilt</a>(), and <a href="qtabletevent.html#yTilt">yTilt</a>(), as well as the type of device being used with <a href="qtabletevent.html#device">device</a>() (see <a href="qtabletevent.html#TabletDevice-enum">TabletDevice</a>). It can also give you the minimum and maximum values for each device's pressure and high resolution coordinates.</p>
-<p>A tablet event contains a special accept flag that indicates whether the receiver wants the event. You should call <a href="qevent.html#accept">QTabletEvent::accept</a>() if you handle the tablet event; otherwise it will be sent to the parent widget.</p>
+<p>A tablet event contains a special accept flag that indicates whether the receiver wants the event. You should call <a href="qevent.html#accept">QTabletEvent::accept</a>() if you handle the tablet event; otherwise it will be sent to the parent widget. The exception are <a href="qevent.html#Type-enum">TabletEnterProximity</a> and <a href="qevent.html#Type-enum">TabletLeaveProximity</a> events, these are only sent to <a href="qapplication.html">QApplication</a> and don't check whether or not they are accepted.</p>
 <p>The <a href="qwidget.html#enabled-prop">QWidget::setEnabled</a>() function can be used to enable or disable mouse and keyboard events for a widget.</p>
 <p>The event handler <a href="qwidget.html#tabletEvent">QWidget::tabletEvent</a>() receives all three types of tablet events. Qt will first send a tabletEvent then, if it is not accepted, it will send a mouse event. This allows applications that don't utilize tablets to use a tablet like a mouse, while also enabling those who want to use both tablets and mouses differently.</p>
 <hr />
@@ -143,8 +137,11 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qtabletevent.html#pressure">pressure</a>().</p>
 <h3 class="fn"><a name="uniqueId"></a><a href="qtglobal.html#qint64-typedef">qint64</a> QTabletEvent::uniqueId () const</h3>
 <p>Returns a unique ID for the current device, making it possible to differentiate between multiple devices being used at the same time on the tablet.</p>
+<p>Support of this feature is dependent on the tablet.</p>
 <p>Values for the same device may vary from OS to OS.</p>
-<p>It is possible to generate a unique ID for any Wacom device.</p>
+<p>Later versions of the Wacom driver for Linux will now report the ID information. If you have a tablet that supports unique ID and are not getting the information on Linux, consider upgrading your driver.</p>
+<p>As of Qt 4.2, the unique ID is the same regardless of the orientation of the pen. Earlier versions would report a different value when using the eraser-end versus the pen-end of the stylus on some OS's.</p>
+<p>See also <a href="qtabletevent.html#pointerType">pointerType</a>().</p>
 <h3 class="fn"><a name="x"></a>int QTabletEvent::x () const</h3>
 <p>Returns the x position of the device, relative to the widget that received the event.</p>
 <p>See also <a href="qtabletevent.html#y">y</a>() and <a href="qtabletevent.html#pos">pos</a>().</p>
@@ -164,6 +161,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

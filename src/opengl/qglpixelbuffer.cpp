@@ -64,10 +64,21 @@
 #include <qimage.h>
 
 
-/*! \fn QGLPixelBuffer::QGLPixelBuffer(const QSize &size,
-                                       const QGLFormat &format,
-                                       QGLWidget *shareWidget)
+void QGLPixelBufferPrivate::common_init(const QSize &size, const QGLFormat &format, QGLWidget *shareWidget)
+{
+    Q_Q(QGLPixelBuffer);
+    if(init(size, format, shareWidget)) {
+        req_size = size;
+        req_format = format;
+        req_shareWidget = shareWidget;
+        invalid = false;
+        qctx = new QGLContext(format);
+        qctx->d_func()->sharing = (shareWidget != 0);
+        qctx->d_func()->paintDevice = q;
+    }
+}
 
+/*!
     Constructs an OpenGL pbuffer of the given \a size. If no \a
     format is specified, the \l{QGLFormat::defaultFormat()}{default
     format} is used. If the \a shareWidget parameter points to a
@@ -76,15 +87,51 @@
 
     If you intend to bind this pbuffer as a dynamic texture, the width
     and height components of \c size must be powers of two (e.g., 512
-    x 128). On Mac OS X, the size must be a power of two.
+    x 128).
 
     \sa size(), format()
 */
+QGLPixelBuffer::QGLPixelBuffer(const QSize &size, const QGLFormat &format, QGLWidget *shareWidget)
+    : d_ptr(new QGLPixelBufferPrivate)
+{
+    Q_D(QGLPixelBuffer);
+    d->common_init(size, format, shareWidget);
+}
+
+
+/*! \overload
+
+    Constructs an OpenGL pbuffer with the \a width and \a height. If
+    no \a format is specified, the
+    \l{QGLFormat::defaultFormat()}{default format} is used. If the \a
+    shareWidget parameter points to a valid QGLWidget, the pbuffer
+    will share its context with \a shareWidget.
+
+    If you intend to bind this pbuffer as a dynamic texture, the width
+    and height components of \c size must be powers of two (e.g., 512
+    x 128).
+
+    \sa size(), format()
+*/
+QGLPixelBuffer::QGLPixelBuffer(int width, int height, const QGLFormat &format, QGLWidget *shareWidget)
+    : d_ptr(new QGLPixelBufferPrivate)
+{
+    Q_D(QGLPixelBuffer);
+    d->common_init(QSize(width, height), format, shareWidget);
+}
+
 
 /*! \fn QGLPixelBuffer::~QGLPixelBuffer()
 
     Destroys the pbuffer and frees any allocated resources.
 */
+QGLPixelBuffer::~QGLPixelBuffer()
+{
+    Q_D(QGLPixelBuffer);
+    d->cleanup();
+    delete d->qctx;
+    delete d_ptr;
+}
 
 /*! \fn bool QGLPixelBuffer::makeCurrent()
 
@@ -116,7 +163,7 @@ GLuint QGLPixelBuffer::generateDynamicTexture() const
     GLuint texture;
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, d->size.width(), d->size.height(), 0, GL_RGBA, GL_FLOAT, 0);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, d->req_size.width(), d->req_size.height(), 0, GL_RGBA, GL_FLOAT, 0);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     return texture;
@@ -202,7 +249,11 @@ void QGLPixelBuffer::updateDynamicTexture(GLuint texture_id) const
     if (d->invalid)
         return;
     glBindTexture(GL_TEXTURE_2D, texture_id);
-    glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 0, 0, d->size.width(), d->size.height(), 0);
+#ifndef Q_WS_QWS
+    glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 0, 0, d->req_size.width(), d->req_size.height(), 0);
+#else
+    glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 0, 0, d->req_size.width(), d->req_size.height(), 0);
+#endif
 }
 
 /*!
@@ -211,7 +262,7 @@ void QGLPixelBuffer::updateDynamicTexture(GLuint texture_id) const
 QSize QGLPixelBuffer::size() const
 {
     Q_D(const QGLPixelBuffer);
-    return d->size;
+    return d->req_size;
 }
 
 /*!
@@ -224,10 +275,13 @@ QImage QGLPixelBuffer::toImage() const
         return QImage();
 
     const_cast<QGLPixelBuffer *>(this)->makeCurrent();
-    QImage img(d->size, QImage::Format_ARGB32);
-    int w = d->size.width();
-    int h = d->size.height();
-    glReadPixels(0, 0, d->size.width(), d->size.height(), GL_RGBA, GL_UNSIGNED_BYTE, img.bits());
+    QImage::Format image_format = QImage::Format_RGB32;
+    if (format().alpha())
+        image_format = QImage::Format_ARGB32_Premultiplied;
+    QImage img(d->req_size, image_format);
+    int w = d->req_size.width();
+    int h = d->req_size.height();
+    glReadPixels(0, 0, d->req_size.width(), d->req_size.height(), GL_RGBA, GL_UNSIGNED_BYTE, img.bits());
     if (QSysInfo::ByteOrder == QSysInfo::BigEndian) {
 	// OpenGL gives RGBA; Qt wants ARGB
 	uint *p = (uint*)img.bits();
@@ -288,8 +342,8 @@ int QGLPixelBuffer::metric(PaintDeviceMetric metric) const
 
     float dpmx = qt_defaultDpi()*100./2.54;
     float dpmy = qt_defaultDpi()*100./2.54;
-    int w = d->size.width();
-    int h = d->size.height();
+    int w = d->req_size.width();
+    int h = d->req_size.height();
     switch (metric) {
     case PdmWidth:
         return w;
@@ -342,7 +396,11 @@ int QGLPixelBuffer::metric(PaintDeviceMetric metric) const
 GLuint QGLPixelBuffer::bindTexture(const QImage &image, GLenum target)
 {
     Q_D(QGLPixelBuffer);
+#ifndef Q_WS_QWS
     return d->qctx->bindTexture(image, target, GL_RGBA8);
+#else
+    return d->qctx->bindTexture(image, target, GL_RGBA);
+#endif
 }
 
 
@@ -357,7 +415,11 @@ GLuint QGLPixelBuffer::bindTexture(const QImage &image, GLenum target)
 GLuint QGLPixelBuffer::bindTexture(const QPixmap &pixmap, GLenum target)
 {
     Q_D(QGLPixelBuffer);
+#ifndef Q_WS_QWS
     return d->qctx->bindTexture(pixmap, target, GL_RGBA8);
+#else
+    return d->qctx->bindTexture(pixmap, target, GL_RGBA);
+#endif
 }
 
 /*! \overload

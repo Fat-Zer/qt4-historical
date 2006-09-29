@@ -48,6 +48,7 @@
 #include "QtCore/qmap.h"
 #include "QtCore/qvariant.h"
 #include "QtCore/qurl.h"
+#include "private/qcssparser_p.h"
 
 // #define QT_QMAP_DEBUG
 
@@ -66,11 +67,6 @@ class QTextFrame;
 #define QTextBeginningOfFrame QChar(0xfdd0)
 #define QTextEndOfFrame QChar(0xfdd1)
 
-struct QTextDocumentConfig
-{
-    QString title;
-};
-
 class QTextFragmentData : public QFragment
 {
 public:
@@ -88,7 +84,7 @@ public:
     { layout = 0; userData = 0; userState = -1; }
     void invalidate() const;
     inline void free()
-    { delete layout; delete userData; }
+    { delete layout; layout = 0; delete userData; userData = 0; }
 
     mutable int format;
     // ##### probably store a QTextEngine * here!
@@ -136,7 +132,7 @@ public:
 };
 Q_DECLARE_TYPEINFO(QTextUndoCommand, Q_PRIMITIVE_TYPE);
 
-class QTextDocumentPrivate : public QObjectPrivate
+class Q_AUTOTEST_EXPORT QTextDocumentPrivate : public QObjectPrivate
 {
     Q_DECLARE_PUBLIC(QTextDocument)
 public:
@@ -154,8 +150,8 @@ public:
 
     void insert(int pos, const QString &text, int format);
     void insert(int pos, int strPos, int strLength, int format);
-    void insertBlock(int pos, int blockFormat, int charFormat, QTextUndoCommand::Operation = QTextUndoCommand::MoveCursor);
-    void insertBlock(const QChar &blockSeparator, int pos, int blockFormat, int charFormat,
+    int insertBlock(int pos, int blockFormat, int charFormat, QTextUndoCommand::Operation = QTextUndoCommand::MoveCursor);
+    int insertBlock(const QChar &blockSeparator, int pos, int blockFormat, int charFormat,
                      QTextUndoCommand::Operation op = QTextUndoCommand::MoveCursor);
 
     void remove(int pos, int length, QTextUndoCommand::Operation = QTextUndoCommand::MoveCursor);
@@ -163,13 +159,13 @@ public:
     QTextFrame *insertFrame(int start, int end, const QTextFrameFormat &format);
     void removeFrame(QTextFrame *frame);
 
-    enum FormatChangeMode { MergeFormat, SetFormat };
+    enum FormatChangeMode { MergeFormat, SetFormat, SetFormatAndPreserveObjectIndices };
 
     void setCharFormat(int pos, int length, const QTextCharFormat &newFormat, FormatChangeMode mode = SetFormat);
     void setBlockFormat(const QTextBlock &from, const QTextBlock &to,
 			const QTextBlockFormat &newFormat, FormatChangeMode mode = SetFormat);
 
-    void undoRedo(bool undo);
+    int undoRedo(bool undo);
     inline void undo() { undoRedo(true); }
     inline void redo() { undoRedo(false); }
     void appendUndoItem(QAbstractUndoItem *);
@@ -206,9 +202,6 @@ public:
 
     static const QTextBlockData *block(const QTextBlock &it) { return it.p->blocks.fragment(it.n); }
 
-    inline QTextDocumentConfig *config() { return &docConfig; }
-    inline const QTextDocumentConfig *config() const { return &docConfig; }
-
     int nextCursorPosition(int position, QTextLayout::CursorMode mode) const;
     int previousCursorPosition(int position, QTextLayout::CursorMode mode) const;
 
@@ -226,7 +219,7 @@ private:
     void truncateUndoStack();
 
     void insert_string(int pos, uint strPos, uint length, int format, QTextUndoCommand::Operation op);
-    void insert_block(int pos, uint strPos, int format, int blockformat, QTextUndoCommand::Operation op, int command);
+    int insert_block(int pos, uint strPos, int format, int blockformat, QTextUndoCommand::Operation op, int command);
     int remove_string(int pos, uint length, QTextUndoCommand::Operation op);
     int remove_block(int pos, int *blockformat, int command, QTextUndoCommand::Operation op);
 
@@ -243,7 +236,7 @@ public:
     inline void removeCursor(QTextCursorPrivate *c) { cursors.removeAll(c); changedCursors.removeAll(c); }
 
     QTextFrame *frameAt(int pos) const;
-    QTextFrame *rootFrame() const { return frame; }
+    QTextFrame *rootFrame() const;
 
     QTextObject *objectForIndex(int objectIndex) const;
     QTextObject *objectForFormat(int formatIndex) const;
@@ -254,6 +247,8 @@ public:
 
     QTextDocument *document() { return q_func(); }
     const QTextDocument *document() const { return q_func(); }
+
+    void ensureMaximumBlockCount();
 
 private:
     QTextDocumentPrivate(const QTextDocumentPrivate& m);
@@ -279,7 +274,7 @@ private:
     bool framesDirty;
 
     QTextFormatCollection formats;
-    QTextFrame *frame;
+    mutable QTextFrame *rtFrame;
     QAbstractTextDocumentLayout *lout;
     FragmentMap fragments;
     BlockMap blocks;
@@ -290,13 +285,16 @@ private:
     QMap<int, QTextObject *> objects;
     QMap<QUrl, QVariant> resources;
     QMap<QUrl, QVariant> cachedResources;
+    QString defaultStyleSheet;
 
-    QTextDocumentConfig docConfig;
     bool useDesignMetrics;
 
 public:
+    QCss::StyleSheet parsedDefaultStyleSheet;
+    int maximumBlockCount;
     bool inContentsChange;
     QSizeF pageSize;
+    QString title;
 };
 
 class QTextTable;
@@ -319,7 +317,6 @@ private:
 
     void emitBlockAttributes(const QTextBlock &block);
     bool emitCharFormatStyle(const QTextCharFormat &format);
-    bool emitLogicalFontSize(const QTextCharFormat &format);
     void emitTextLength(const char *attribute, const QTextLength &length);
     void emitAlignment(Qt::Alignment alignment);
     void emitFloatStyle(QTextFrameFormat::Position pos, StyleMode mode = EmitStyleTag);

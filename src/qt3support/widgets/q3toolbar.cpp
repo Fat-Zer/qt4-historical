@@ -75,10 +75,11 @@ class Q3ToolBarExtensionWidget;
 class Q3ToolBarPrivate
 {
 public:
-    Q3ToolBarPrivate() : moving(false) {
+    Q3ToolBarPrivate() : moving(false), checkingExtension(false) {
     }
 
     bool moving;
+    bool checkingExtension;
     Q3ToolBarExtensionWidget *extension;
     Q3PopupMenu *extensionPopup;
 
@@ -231,7 +232,8 @@ void Q3ToolBarSeparator::paintEvent(QPaintEvent *)
     call. This can be changed with setLabel().
 
     You may use most widgets within a toolbar, with QToolButton and
-    QComboBox being the most common.
+    QComboBox being the most common. But note that the toolbar's
+    actions must be \l {Q3Action}s.
 
     If you create a new widget on an already visible Q3ToolBar, this
     widget will automatically become visible without needing a show()
@@ -313,7 +315,7 @@ Q3ToolBar::Q3ToolBar(const QString &label,
 
 Q3ToolBar::Q3ToolBar(const QString &label, Q3MainWindow * mainWindow,
                     QWidget * parent, bool newLine, const char * name,
-                    Qt::WFlags f)
+                    Qt::WindowFlags f)
     : Q3DockWindow(InDock, parent, name, f, true)
 {
     mw = mainWindow;
@@ -714,6 +716,10 @@ void Q3ToolBar::checkForExtension(const QSize &sz)
     if (!isVisible())
         return;
 
+    if (d->checkingExtension)
+        return;
+    d->checkingExtension = true;
+
     bool tooSmall;
     if (orientation() == Qt::Horizontal)
         tooSmall = sz.width() < sizeHint().width();
@@ -745,6 +751,7 @@ void Q3ToolBar::checkForExtension(const QSize &sz)
         delete d->extensionPopup;
         d->extensionPopup = 0;
     }
+    d->checkingExtension = false;
 }
 
 

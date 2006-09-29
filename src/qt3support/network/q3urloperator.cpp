@@ -104,7 +104,7 @@ public:
     \code
     Q3UrlOperator *op = new Q3UrlOperator();
     op->copy( QString("ftp://ftp.trolltech.com/qt/source/qt-2.1.0.tar.gz"),
-	     "file:/tmp" );
+	     "file:///tmp" );
     \endcode
 
     If you want to be notified about success/failure, progress, etc.,
@@ -575,23 +575,23 @@ Q3PtrList<Q3NetworkOperation> Q3UrlOperator::copy( const QString &from, const QS
     if ( gProt && (gProt->supportedOperations()&Q3NetworkProtocol::OpGet) &&
 	 pProt && (pProt->supportedOperations()&Q3NetworkProtocol::OpPut) ) {
 
-	connect( gProt, SIGNAL( data(const QByteArray&,Q3NetworkOperation*) ),
-		 this, SLOT( copyGotData(const QByteArray&,Q3NetworkOperation*) ) );
-	connect( gProt, SIGNAL( dataTransferProgress(int,int,Q3NetworkOperation*) ),
-		 this, SIGNAL( dataTransferProgress(int,int,Q3NetworkOperation*) ) );
-	connect( gProt, SIGNAL( finished(Q3NetworkOperation*) ),
-		 this, SLOT( continueCopy(Q3NetworkOperation*) ) );
-	connect( gProt, SIGNAL( finished(Q3NetworkOperation*) ),
-		 this, SIGNAL( finished(Q3NetworkOperation*) ) );
-	connect( gProt, SIGNAL( connectionStateChanged(int,const QString&) ),
-		 this, SIGNAL( connectionStateChanged(int,const QString&) ) );
+	connect( gProt, SIGNAL(data(QByteArray,Q3NetworkOperation*)),
+		 this, SLOT(copyGotData(QByteArray,Q3NetworkOperation*)) );
+	connect( gProt, SIGNAL(dataTransferProgress(int,int,Q3NetworkOperation*)),
+		 this, SIGNAL(dataTransferProgress(int,int,Q3NetworkOperation*)) );
+	connect( gProt, SIGNAL(finished(Q3NetworkOperation*)),
+		 this, SLOT(continueCopy(Q3NetworkOperation*)) );
+	connect( gProt, SIGNAL(finished(Q3NetworkOperation*)),
+		 this, SIGNAL(finished(Q3NetworkOperation*)) );
+	connect( gProt, SIGNAL(connectionStateChanged(int,QString)),
+		 this, SIGNAL(connectionStateChanged(int,QString)) );
 
-	connect( pProt, SIGNAL( dataTransferProgress(int,int,Q3NetworkOperation*) ),
-		 this, SIGNAL( dataTransferProgress(int,int,Q3NetworkOperation*) ) );
-	connect( pProt, SIGNAL( finished(Q3NetworkOperation*) ),
-		 this, SIGNAL( finished(Q3NetworkOperation*) ) );
-	connect( pProt, SIGNAL( finished(Q3NetworkOperation*) ),
-		 this, SLOT( finishedCopy() ) );
+	connect( pProt, SIGNAL(dataTransferProgress(int,int,Q3NetworkOperation*)),
+		 this, SIGNAL(dataTransferProgress(int,int,Q3NetworkOperation*)) );
+	connect( pProt, SIGNAL(finished(Q3NetworkOperation*)),
+		 this, SIGNAL(finished(Q3NetworkOperation*)) );
+	connect( pProt, SIGNAL(finished(Q3NetworkOperation*)),
+		 this, SLOT(finishedCopy()) );
 
 	Q3NetworkOperation *opGet = new Q3NetworkOperation( Q3NetworkProtocol::OpGet, frm, QString(), QString() );
 	ops.append( opGet );
@@ -910,8 +910,8 @@ void Q3UrlOperator::getNetworkProtocol()
 
     d->networkProtocol = (Q3NetworkProtocol *)p;
     d->networkProtocol->setUrl( this );
-    connect( d->networkProtocol, SIGNAL( itemChanged(Q3NetworkOperation*) ),
-	     this, SLOT( slotItemChanged(Q3NetworkOperation*) ) );
+    connect( d->networkProtocol, SIGNAL(itemChanged(Q3NetworkOperation*)),
+	     this, SLOT(slotItemChanged(Q3NetworkOperation*)) );
 }
 
 /*!
@@ -1096,10 +1096,10 @@ void Q3UrlOperator::continueCopy( Q3NetworkOperation *op )
 	    deleteOperation( rm );
 	}
     }
-    disconnect( gProt, SIGNAL( data(const QByteArray&,Q3NetworkOperation*) ),
-		this, SLOT( copyGotData(const QByteArray&,Q3NetworkOperation*) ) );
-    disconnect( gProt, SIGNAL( finished(Q3NetworkOperation*) ),
-		this, SLOT( continueCopy(Q3NetworkOperation*) ) );
+    disconnect( gProt, SIGNAL(data(QByteArray,Q3NetworkOperation*)),
+		this, SLOT(copyGotData(QByteArray,Q3NetworkOperation*)) );
+    disconnect( gProt, SIGNAL(finished(Q3NetworkOperation*)),
+		this, SLOT(continueCopy(Q3NetworkOperation*)) );
 }
 
 /*!

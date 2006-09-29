@@ -177,7 +177,7 @@ extern "C" {
 		delete [] str;
 
 	    if (drawstruct->chg_length < 0)
-		data->text.replace(drawstruct->chg_first, UINT_MAX, s);
+		data->text.replace(drawstruct->chg_first, INT_MAX, s);
 	    else
 		data->text.replace(drawstruct->chg_first, drawstruct->chg_length, s);
 
@@ -431,7 +431,7 @@ void QXIMInputContext::create_xim()
 */
 void QXIMInputContext::close_xim()
 {
-    QString errMsg("QXIMInputContext::close_xim() has been called");
+    QString errMsg(QLatin1String("QXIMInputContext::close_xim() has been called"));
 
     // ###clean up ximData!
     ximData.clear();
@@ -465,7 +465,7 @@ QString QXIMInputContext::identifierName()
 {
     // the name should be "xim" rather than "XIM" to be consistent
     // with corresponding immodule of GTK+
-    return "xim";
+    return QLatin1String("xim");
 }
 
 
@@ -477,10 +477,10 @@ QString QXIMInputContext::language()
 
         if (locale.startsWith("zh")) {
             // Chinese language should be formed as "zh_CN", "zh_TW", "zh_HK"
-            language = locale.left(5);
+            language = QLatin1String(locale.left(5));
         } else {
             // other languages should be two-letter ISO 639 language code
-            language = locale.left(2);
+            language = QLatin1String(locale.left(2));
         }
     }
     return language;
@@ -583,6 +583,8 @@ void QXIMInputContext::setFocusWidget(QWidget *w)
 bool QXIMInputContext::x11FilterEvent(QWidget *keywidget, XEvent *event)
 {
     int xkey_keycode = event->xkey.keycode;
+    if (!keywidget->testAttribute(Qt::WA_WState_Created))
+        return false;
     if (XFilterEvent(event, keywidget->winId())) {
         qt_ximComposingKeycode = xkey_keycode; // ### not documented in xlib
 
@@ -676,6 +678,7 @@ QXIMInputContext::ICData *QXIMInputContext::createICData(QWidget *w)
                                            (char *) 0);
     }
 
+    Q_ASSERT(w->testAttribute(Qt::WA_WState_Created));
     if (preedit_attr) {
         data->ic = XCreateIC(xim,
                              XNInputStyle, xim_style,

@@ -34,12 +34,12 @@ class QColormapPrivate
 {
 public:
     QColormapPrivate()
-        : mode(QColormap::Direct), depth(0),
+        : ref(1), mode(QColormap::Direct), depth(0),
           colormap(0), defaultColormap(true),
           visual(0), defaultVisual(true),
           r_max(0), g_max(0), b_max(0),
           r_shift(0), g_shift(0), b_shift(0)
-    { ref = 0; }
+    {}
 
     QAtomic ref;
 
@@ -115,7 +115,8 @@ static Visual *find_visual(Display *display,
     if (visual_class != -1) {
         rvi.c_class = visual_class;
         mask |= VisualClassMask;
-    } else if (visual_id != -1) {
+    }
+    if (visual_id != -1) {
         rvi.visualid = visual_id;
         mask |= VisualIDMask;
     }
@@ -321,6 +322,7 @@ void QColormap::initialize()
         QColormapPrivate * const d = cmaps[i]->d;
 
         bool use_stdcmap = false;
+        int color_count = X11->color_count;
 
         // defaults
         d->depth = DefaultDepth(display, i);
@@ -339,6 +341,14 @@ void QColormap::initialize()
             // look for a specific visual or type of visual
             d->visual = find_visual(display, i, X11->visual_class, X11->visual_id,
                                     &d->depth, &d->defaultVisual);
+        } else if (QApplication::colorSpec() == QApplication::ManyColor) {
+            // look for a TrueColor w/ a depth higher than 8bpp
+            d->visual = find_visual(display, i, TrueColor, -1, &d->depth, &d->defaultVisual);
+            if (d->depth <= 8) {
+                d->visual = DefaultVisual(display, i);
+                d->defaultVisual = true;
+                color_count = 216;
+            }
         } else if (!X11->custom_cmap) {
             XStandardColormap *stdcmap = 0;
             int ncmaps = 0;
@@ -413,7 +423,9 @@ void QColormap::initialize()
                 d->mode = Gray;
 
                 // follow precedent set in libXmu...
-                if (d->visual->map_entries > 65000)
+                if (color_count != 0)
+                    d->r_max = d->g_max = d->b_max = color_count;
+                else if (d->visual->map_entries > 65000)
                     d->r_max = d->g_max = d->b_max = 4096;
                 else if (d->visual->map_entries > 4000)
                     d->r_max = d->g_max = d->b_max = 512;
@@ -435,7 +447,9 @@ void QColormap::initialize()
                 d->mode = Indexed;
 
                 // follow precedent set in libXmu...
-                if (d->visual->map_entries > 65000)
+                if (color_count != 0)
+                    d->r_max = d->g_max = d->b_max = cube_root(color_count);
+                else if (d->visual->map_entries > 65000)
                     d->r_max = d->g_max = d->b_max = 27;
                 else if (d->visual->map_entries > 4000)
                     d->r_max = d->g_max = d->b_max = 12;
@@ -532,7 +546,7 @@ QColormap QColormap::instance(int screen)
 */
 QColormap::QColormap()
     : d(new QColormapPrivate)
-{ d->ref = 1; }
+{}
 
 /*!
     Constructs a copy of another \a colormap.
@@ -640,10 +654,15 @@ const QVector<QColor> QColormap::colormap() const
 */
 
 
-/* \internal
+/*! \since 4.2
     \fn QColormap &QColormap::operator=(const QColormap &colormap)
 
     Assigns the given \a colormap to \e this color map and returns
     a reference to \e this color map.
 */
+QColormap &QColormap::operator=(const QColormap &colormap)
+{
+    qAtomicAssign(d, colormap.d);
+    return *this;
+}
 

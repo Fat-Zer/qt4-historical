@@ -24,6 +24,14 @@
 #ifndef BUBBLE_H
 #define BUBBLE_H
 
+#include <QBrush>
+#include <QColor>
+#include <QPointF>
+#include <QRect>
+#include <QRectF>
+
+class QPainter;
+
 class Bubble
 {
 public:

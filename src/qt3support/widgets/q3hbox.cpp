@@ -53,7 +53,7 @@
     The parent, name and widget flags, \a f, are passed to the Q3Frame
     constructor.
 */
-Q3HBox::Q3HBox(QWidget *parent, const char *name, Qt::WFlags f)
+Q3HBox::Q3HBox(QWidget *parent, const char *name, Qt::WindowFlags f)
     :Q3Frame(parent, name, f)
 {
     (new QHBoxLayout(this, frameWidth(), frameWidth(), name))->setAutoAdd(true);
@@ -71,7 +71,7 @@ Q3HBox::Q3HBox(QWidget *parent, const char *name, Qt::WFlags f)
     Q3Frame constructor.
 */
 
-Q3HBox::Q3HBox(bool horizontal, QWidget *parent , const char *name, Qt::WFlags f)
+Q3HBox::Q3HBox(bool horizontal, QWidget *parent , const char *name, Qt::WindowFlags f)
     :Q3Frame(parent, name, f)
 {
     (new QBoxLayout(this, horizontal ? QBoxLayout::LeftToRight : QBoxLayout::Down,

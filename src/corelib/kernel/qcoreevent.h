@@ -25,6 +25,7 @@
 #define QCOREEVENT_H
 
 #include <QtCore/qnamespace.h>
+#include <QtCore/qbytearray.h>
 
 QT_BEGIN_HEADER
 
@@ -187,11 +188,32 @@ public:
 #endif
         AcceptDropsChange = 152,
 
-        MenubarUpdated = 153,                    // Support event for Q3MainWindow, which needs to 
+        MenubarUpdated = 153,                    // Support event for Q3MainWindow, which needs to
                                                  // knwow when QMenubar is updated.
 
         ZeroTimerEvent = 154,                   // Used for Windows Zero timer events
 
+        GraphicsSceneMouseMove = 155,           // GraphicsView
+        GraphicsSceneMousePress = 156,
+        GraphicsSceneMouseRelease = 157,
+        GraphicsSceneMouseDoubleClick = 158,
+        GraphicsSceneContextMenu = 159,
+        GraphicsSceneHoverEnter = 160,
+        GraphicsSceneHoverMove = 161,
+        GraphicsSceneHoverLeave = 162,
+        GraphicsSceneHelp = 163,
+        GraphicsSceneDragEnter = 164,
+        GraphicsSceneDragMove = 165,
+        GraphicsSceneDragLeave = 166,
+        GraphicsSceneDrop = 167,
+        GraphicsSceneWheel = 168,
+
+        KeyboardLayoutChange = 169,             // keyboard layout changed
+
+        DynamicPropertyChange = 170,            // A dynamic property was changed through setProperty/property
+
+        TabletEnterProximity = 171,
+        TabletLeaveProximity = 172,
         User = 1000,                            // first user event id
         MaxUser = 65535                         // last user event id
     };
@@ -265,6 +287,18 @@ public:
     QT3_SUPPORT void setData(void* data) { d = reinterpret_cast<QEventPrivate *>(data); }
 };
 #endif
+
+class Q_CORE_EXPORT QDynamicPropertyChangeEvent : public QEvent
+{
+public:
+    QDynamicPropertyChangeEvent(const QByteArray &name);
+    ~QDynamicPropertyChangeEvent();
+
+    inline QByteArray propertyName() const { return n; }
+
+private:
+    QByteArray n;
+};
 
 QT_END_HEADER
 

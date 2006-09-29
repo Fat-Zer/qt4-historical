@@ -2,25 +2,19 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/src/corelib/plugin/quuid.cpp -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/src/corelib/plugin/quuid.cpp -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-x11-opensource-src-4.2.0/src/corelib/plugin/quuid.cpp -->
 <head>
-    <title>Qt 4.1: QUuid Class Reference</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
+  <title>Qt 4.2: QUuid Class Reference</title>
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QUuid Class Reference<br /><sup><sup>[<a href="qtcore.html">QtCore</a> module]</sup></sup></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">QUuid Class Reference<br /><sup><sup>[<a href="qtcore.html">QtCore</a> module]</sup></sup></h1>
 <p>The QUuid class stores a Universally Unique Identifier (UUID). <a href="#details">More...</a></p>
-<pre>#include &lt;QUuid&gt;</pre><p><b>Note:</b> All the functions in this class are <a href="threads.html#reentrant">reentrant</a>.</p>
+<pre> #include &lt;QUuid&gt;</pre><p><b>Note:</b> All the functions in this class are <a href="threads.html#reentrant">reentrant</a>.</p>
 <ul>
 <li><a href="quuid-members.html">List of all members, including inherited members</a></li>
 </ul>
@@ -59,8 +53,8 @@ body { background: #ffffff; color: black; }</style>
 <a name="related-non-members"></a>
 <h3>Related Non-Members</h3>
 <ul>
-<li><div class="fn"/>QDataStream &amp; <b><a href="quuid.html#operator-lt-lt-30">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>s</i>, const QUuid &amp; <i>id</i> )</li>
-<li><div class="fn"/>QDataStream &amp; <b><a href="quuid.html#operator-gt-gt-16">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>s</i>, QUuid &amp; <i>id</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="quuid.html#operator-lt-lt-33">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>s</i>, const QUuid &amp; <i>id</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="quuid.html#operator-gt-gt-15">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>s</i>, QUuid &amp; <i>id</i> )</li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -99,8 +93,8 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="QUuid-2"></a>QUuid::QUuid ( <a href="qtglobal.html#uint-typedef">uint</a> <i>l</i>, <a href="qtglobal.html#ushort-typedef">ushort</a> <i>w1</i>, <a href="qtglobal.html#ushort-typedef">ushort</a> <i>w2</i>, <a href="qtglobal.html#uchar-typedef">uchar</a> <i>b1</i>, <a href="qtglobal.html#uchar-typedef">uchar</a> <i>b2</i>, <a href="qtglobal.html#uchar-typedef">uchar</a> <i>b3</i>, <a href="qtglobal.html#uchar-typedef">uchar</a> <i>b4</i>, <a href="qtglobal.html#uchar-typedef">uchar</a> <i>b5</i>, <a href="qtglobal.html#uchar-typedef">uchar</a> <i>b6</i>, <a href="qtglobal.html#uchar-typedef">uchar</a> <i>b7</i>, <a href="qtglobal.html#uchar-typedef">uchar</a> <i>b8</i> )</h3>
 <p>Creates a UUID with the value specified by the parameters, <i>l</i>, <i>w1</i>, <i>w2</i>, <i>b1</i>, <i>b2</i>, <i>b3</i>, <i>b4</i>, <i>b5</i>, <i>b6</i>, <i>b7</i>, <i>b8</i>.</p>
 <p>Example:</p>
-<pre>&nbsp;   // {67C8770B-44F1-410A-AB9A-F9B5446F13EE}
-    QUuid IID_MyInterface(0x67c8770b, 0x44f1, 0x410a, 0xab, 0x9a, 0xf9, 0xb5, 0x44, 0x6f, 0x13, 0xee)</pre>
+<pre><span class="comment"> // {67C8770B-44F1-410A-AB9A-F9B5446F13EE}</span>
+ QUuid IID_MyInterface(0x67c8770b, 0x44f1, 0x410a, 0xab, 0x9a, 0xf9, 0xb5, 0x44, 0x6f, 0x13, 0xee)</pre>
 <h3 class="fn"><a name="QUuid-3"></a>QUuid::QUuid ( const <a href="qstring.html">QString</a> &amp; <i>text</i> )</h3>
 <p>Creates a <a href="quuid.html">QUuid</a> object from the string <i>text</i>. The function can only convert a string in the format {HHHHHHHH-HHHH-HHHH-HHHH-HHHHHHHHHHHH} (where 'H' stands for a hex digit). If the conversion fails a null UUID is created.</p>
 <h3 class="fn"><a name="QUuid-5"></a>QUuid::QUuid ( const GUID &amp; <i>guid</i> )</h3>
@@ -147,16 +141,16 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="quuid.html#variant">variant</a>().</p>
 <hr />
 <h2>Related Non-Members</h2>
-<h3 class="fn"><a name="operator-lt-lt-30"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>s</i>, const QUuid &amp; <i>id</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-33"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>s</i>, const QUuid &amp; <i>id</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes the uuid <i>id</i> to the datastream <i>s</i>.</p>
-<h3 class="fn"><a name="operator-gt-gt-16"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>s</i>, QUuid &amp; <i>id</i> )</h3>
+<h3 class="fn"><a name="operator-gt-gt-15"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>s</i>, QUuid &amp; <i>id</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads uuid from from the stream <i>s</i> into <i>id</i>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

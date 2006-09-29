@@ -23,11 +23,14 @@
 
 #include "qthread.h"
 
-#ifndef QT_NO_THREAD
-
 #include "qplatformdefs.h"
 
+#include <private/qcoreapplication_p.h>
+#if !defined(QT_NO_GLIB)
+#  include "../kernel/qeventdispatcher_glib_p.h"
+#endif
 #include <private/qeventdispatcher_unix_p.h>
+
 #include "qthreadstorage.h"
 
 #include "qthread_p.h"
@@ -36,6 +39,60 @@
 #include <errno.h>
 #include <string.h>
 
+#ifndef QT_NO_THREAD
+
+static pthread_once_t current_thread_data_once = PTHREAD_ONCE_INIT;
+static pthread_key_t current_thread_data_key;
+
+static void destroy_current_thread_data(void *p)
+{
+    // POSIX says the value in our key is set to zero before calling
+    // this destructor function, so we need to set it back to the
+    // right value...
+    pthread_setspecific(current_thread_data_key, p);
+    reinterpret_cast<QThreadData *>(p)->deref();
+    // ... but we must reset it to zero before returning so we aren't
+    // called again (POSIX allows implementations to call destructor
+    // functions repeatedly until all values are zero)
+    pthread_setspecific(current_thread_data_key, 0);
+}
+
+static void create_current_thread_data_key()
+{
+    pthread_key_create(&current_thread_data_key, destroy_current_thread_data);
+}
+
+QThreadData *QThreadData::current()
+{
+    pthread_once(&current_thread_data_once, create_current_thread_data_key);
+
+    QThreadData *data = 0;
+    QThread *adopted = 0;
+    if (QInternal::activateCallbacks(QInternal::AdoptCurrentThread, (void **) &adopted)) {
+        Q_ASSERT(adopted);
+        data = QThreadData::get2(adopted);
+        pthread_setspecific(current_thread_data_key, data);
+        adopted->d_func()->running = true;
+        adopted->d_func()->finished = false;
+        static_cast<QAdoptedThread *>(adopted)->init();
+    } else {
+        data = reinterpret_cast<QThreadData *>(pthread_getspecific(current_thread_data_key));
+        if (!data) {
+            data = new QThreadData;
+            pthread_setspecific(current_thread_data_key, data);
+            data->thread = new QAdoptedThread(data);
+            data->deref();
+            (void) q_atomic_test_and_set_ptr(&QCoreApplicationPrivate::theMainThread, 0, data->thread);
+        }
+    }
+    return data;
+}
+
+
+void QAdoptedThread::init()
+{
+    d_func()->thread_id = pthread_self();
+}
 
 /*
    QThreadPrivate
@@ -51,35 +108,35 @@ typedef void*(*QtThreadCallback)(void*);
 }
 #endif
 
-static pthread_once_t current_thread_key_once = PTHREAD_ONCE_INIT;
-static pthread_key_t current_thread_key;
-static void create_current_thread_key()
-{ pthread_key_create(&current_thread_key, NULL); }
-
+#endif // QT_NO_THREAD
 
 void QThreadPrivate::createEventDispatcher(QThreadData *data)
 {
-    data->eventDispatcher = new QEventDispatcherUNIX;
+#if !defined(QT_NO_GLIB)
+    if (qgetenv("QT_NO_GLIB").isEmpty())
+        data->eventDispatcher = new QEventDispatcherGlib;
+    else
+#endif
+        data->eventDispatcher = new QEventDispatcherUNIX;
     data->eventDispatcher->startingUp();
 }
 
-void QThreadPrivate::setCurrentThread(QThread *thread)
-{
-    pthread_once(&current_thread_key_once, create_current_thread_key);
-    pthread_setspecific(current_thread_key, thread);
-}
+#ifndef QT_NO_THREAD
 
 void *QThreadPrivate::start(void *arg)
 {
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
-
-    QThread *thr = reinterpret_cast<QThread *>(arg);
-    setCurrentThread(thr);
-
     pthread_cleanup_push(QThreadPrivate::finish, arg);
 
-    QThreadData *data = QThreadData::get(thr);
+    QThread *thr = reinterpret_cast<QThread *>(arg);
+    QThreadData *data = QThreadData::get2(thr);
+
+    pthread_once(&current_thread_data_once, create_current_thread_data_key);
+    pthread_setspecific(current_thread_data_key, data);
+
+    data->ref();
     data->quitNow = false;
+
     // ### TODO: allow the user to create a custom event dispatcher
     createEventDispatcher(data);
 
@@ -96,7 +153,6 @@ void QThreadPrivate::finish(void *arg)
 {
     QThread *thr = reinterpret_cast<QThread *>(arg);
     QThreadPrivate *d = thr->d_func();
-    QThreadData *data = &d->data;
     QMutexLocker locker(&d->mutex);
 
     d->priority = QThread::InheritPriority;
@@ -107,13 +163,15 @@ void QThreadPrivate::finish(void *arg)
     d->terminated = false;
     emit thr->finished();
 
-    data->eventDispatcher->closingDown();
-    QAbstractEventDispatcher *eventDispatcher = data->eventDispatcher;
-    data->eventDispatcher = 0;
-    delete eventDispatcher;
+    if (d->data->eventDispatcher) {
+        d->data->eventDispatcher->closingDown();
+        QAbstractEventDispatcher *eventDispatcher = d->data->eventDispatcher;
+        d->data->eventDispatcher = 0;
+        delete eventDispatcher;
+    }
 
-    QThreadStorageData::finish(data->tls);
-    data->tls = 0;
+    QThreadStorageData::finish(d->data->tls);
+    d->data->tls = 0;
 
     d->thread_id = 0;
     d->thread_done.wakeAll();
@@ -138,26 +196,6 @@ Qt::HANDLE QThread::currentThreadId()
 {
     // requires a C cast here otherwise we run into trouble on AIX
     return (Qt::HANDLE)pthread_self();
-}
-
-/*!
-    Returns a pointer to the currently executing QThread.  If the
-    current thread was not started using the QThread API, this
-    function returns zero.
-
-    Note that QApplication creates a QThread object to represent the
-    main thread; calling this function from main() after creating
-    QApplication will return a valid pointer.
-*/
-QThread *QThread::currentThread()
-{
-    pthread_once(&current_thread_key_once, create_current_thread_key);
-    QThread *current = reinterpret_cast<QThread *>(pthread_getspecific(current_thread_key));
-    if (!current && QThreadPrivate::adoptCurrentThreadEnabled) {
-        current = QThreadPrivate::adoptCurrentThread();
-    }
-    return current;
-
 }
 
 /*  \internal
@@ -230,8 +268,6 @@ void QThread::usleep(unsigned long usecs)
 }
 
 /*!
-    \fn void QThread::start(Priority priority)
-
     Begins execution of the thread by calling run(), which should be
     reimplemented in a QThread subclass to contain your code. The
     operating system will schedule the thread according to the \a
@@ -271,7 +307,7 @@ void QThread::start(Priority priority)
             if (pthread_attr_getschedpolicy(&attr, &sched_policy) != 0) {
                 // failed to get the scheduling policy, don't bother
                 // setting the priority
-                qWarning("QThread: cannot determine default scheduler policy");
+                qWarning("QThread::start: Cannot determine default scheduler policy");
                 break;
             }
 
@@ -280,7 +316,7 @@ void QThread::start(Priority priority)
             if (prio_min == -1 || prio_max == -1) {
                 // failed to get the scheduling parameters, don't
                 // bother setting the priority
-                qWarning("QThread: cannot determine scheduler priority range");
+                qWarning("QThread::start: Cannot determine scheduler priority range");
                 break;
             }
 
@@ -319,7 +355,7 @@ void QThread::start(Priority priority)
 #endif // _POSIX_THREAD_ATTR_STACKSIZE
 
         if (code) {
-            qWarning("QThread::start: thread stack size error: %s",
+            qWarning("QThread::start: Thread stack size error: %s",
                      qPrintable(qt_error_string(code)));
 
             // we failed to set the stacksize, and as the documentation states,
@@ -343,7 +379,7 @@ void QThread::start(Priority priority)
     pthread_attr_destroy(&attr);
 
     if (code) {
-        qWarning("QThread::start: thread creation error: %s", qPrintable(qt_error_string(code)));
+        qWarning("QThread::start: Thread creation error: %s", qPrintable(qt_error_string(code)));
 
         d->running = false;
         d->finished = false;
@@ -385,7 +421,7 @@ void QThread::terminate()
 
     int code = pthread_cancel(d->thread_id);
     if (code) {
-        qWarning("QThread::start: thread termination error: %s",
+        qWarning("QThread::start: Thread termination error: %s",
                  qPrintable(qt_error_string((code))));
     } else {
         d->terminated = true;
@@ -417,7 +453,7 @@ bool QThread::wait(unsigned long time)
     QMutexLocker locker(&d->mutex);
 
     if (d->thread_id == pthread_self()) {
-        qWarning("QThread::wait: thread tried to wait on itself");
+        qWarning("QThread::wait: Thread tried to wait on itself");
         return false;
     }
 
@@ -463,7 +499,7 @@ void QThread::setPriority(Priority priority)
     Q_D(QThread);
     QMutexLocker locker(&d->mutex);
     if (!d->running) {
-        qWarning("QThread::setPriority(): cannot set priority, thread is not running");
+        qWarning("QThread::setPriority: Cannot set priority, thread is not running");
         return;
     }
 
@@ -478,7 +514,7 @@ void QThread::setPriority(Priority priority)
     if (pthread_getschedparam(d->thread_id, &sched_policy, &param) != 0) {
         // failed to get the scheduling policy, don't bother setting
         // the priority
-        qWarning("QThread::setPriority(): cannot get scheduler parameters");
+        qWarning("QThread::setPriority: Cannot get scheduler parameters");
         return;
     }
 
@@ -487,14 +523,14 @@ void QThread::setPriority(Priority priority)
     if (prio_min == -1 || prio_max == -1) {
         // failed to get the scheduling parameters, don't
         // bother setting the priority
-        qWarning("QThread: cannot determine scheduler priority range");
+        qWarning("QThread::setPriority: Cannot determine scheduler priority range");
         return;
     }
 
     int prio;
     switch (priority) {
     case InheritPriority:
-        qWarning("QThread::setPriority(): argument cannot be InheritPriority");
+        qWarning("QThread::setPriority: Argument cannot be InheritPriority");
         return;
 
     case IdlePriority:

@@ -25,6 +25,7 @@
 #include "qsvgnode_p.h"
 #include "qsvgstyle_p.h"
 
+#include "qpainter.h"
 #include "qlocale.h"
 #include "qdebug.h"
 
@@ -43,6 +44,7 @@ void QSvgG::draw(QPainter *p)
 {
     QList<QSvgNode*>::iterator itr = m_renderers.begin();
     applyStyle(p);
+    
     while (itr != m_renderers.end()) {
         QSvgNode *node = *itr;
         if (node->isVisible())
@@ -74,7 +76,7 @@ QSvgNode * QSvgStructureNode::scopeNode(const QString &id) const
     return 0;
 }
 
-void QSvgStructureNode::addChild(QSvgNode *child, const QString &id, bool def )
+void QSvgStructureNode::addChild(QSvgNode *child, const QString &id, bool def)
 {
     if (!def)
         m_renderers.append(child);
@@ -210,30 +212,70 @@ QSvgNode::Type QSvgSwitch::type() const
 void QSvgSwitch::init()
 {
     if (m_features.isEmpty()) {
-        m_features.insert("http://www.w3.org/Graphics/SVG/feature/1.2/#SVG", true);
-        m_features.insert("http://www.w3.org/Graphics/SVG/feature/1.2/#SVG-static", true);
-        m_features.insert("http://www.w3.org/Graphics/SVG/feature/1.2/#CoreAttribute", true);
-        m_features.insert("http://www.w3.org/Graphics/SVG/feature/1.2/#Structure", true);
-        m_features.insert("http://www.w3.org/Graphics/SVG/feature/1.2/#ConditionalProcessing", true);
-        m_features.insert("http://www.w3.org/Graphics/SVG/feature/1.2/#ConditionalProcessingAttribute", true);
-        m_features.insert("http://www.w3.org/Graphics/SVG/feature/1.2/#Image", true);
-        m_features.insert("http://www.w3.org/Graphics/SVG/feature/1.2/#Prefetch", true);
-        m_features.insert("http://www.w3.org/Graphics/SVG/feature/1.2/#Shape", true);
-        m_features.insert("http://www.w3.org/Graphics/SVG/feature/1.2/#Text", true);
-        m_features.insert("http://www.w3.org/Graphics/SVG/feature/1.2/#PaintAttribute", true);
-        m_features.insert("http://www.w3.org/Graphics/SVG/feature/1.2/#OpacityAttribute", true);
-        m_features.insert("http://www.w3.org/Graphics/SVG/feature/1.2/#GraphicsAttribute", true);
-        m_features.insert("http://www.w3.org/Graphics/SVG/feature/1.2/#Gradient", true);
-        m_features.insert("http://www.w3.org/Graphics/SVG/feature/1.2/#SolidColor", true);
-        m_features.insert("http://www.w3.org/Graphics/SVG/feature/1.2/#XlinkAttribute", true);
-        m_features.insert("http://www.w3.org/Graphics/SVG/feature/1.2/#ExternalResourcesRequiredAttribute", true);
-        m_features.insert("http://www.w3.org/Graphics/SVG/feature/1.2/#Font", true);
-        m_features.insert("http://www.w3.org/Graphics/SVG/feature/1.2/#Hyperlinking", true);
-        m_features.insert("http://www.w3.org/Graphics/SVG/feature/1.2/#Extensibility", true);
+        m_features.insert(QLatin1String("http://www.w3.org/Graphics/SVG/feature/1.2/#SVG"), true);
+        m_features.insert(QLatin1String("http://www.w3.org/Graphics/SVG/feature/1.2/#SVG-static"), true);
+        m_features.insert(QLatin1String("http://www.w3.org/Graphics/SVG/feature/1.2/#CoreAttribute"), true);
+        m_features.insert(QLatin1String("http://www.w3.org/Graphics/SVG/feature/1.2/#Structure"), true);
+        m_features.insert(QLatin1String("http://www.w3.org/Graphics/SVG/feature/1.2/#ConditionalProcessing"), true);
+        m_features.insert(QLatin1String("http://www.w3.org/Graphics/SVG/feature/1.2/#ConditionalProcessingAttribute"), true);
+        m_features.insert(QLatin1String("http://www.w3.org/Graphics/SVG/feature/1.2/#Image"), true);
+        m_features.insert(QLatin1String("http://www.w3.org/Graphics/SVG/feature/1.2/#Prefetch"), true);
+        m_features.insert(QLatin1String("http://www.w3.org/Graphics/SVG/feature/1.2/#Shape"), true);
+        m_features.insert(QLatin1String("http://www.w3.org/Graphics/SVG/feature/1.2/#Text"), true);
+        m_features.insert(QLatin1String("http://www.w3.org/Graphics/SVG/feature/1.2/#PaintAttribute"), true);
+        m_features.insert(QLatin1String("http://www.w3.org/Graphics/SVG/feature/1.2/#OpacityAttribute"), true);
+        m_features.insert(QLatin1String("http://www.w3.org/Graphics/SVG/feature/1.2/#GraphicsAttribute"), true);
+        m_features.insert(QLatin1String("http://www.w3.org/Graphics/SVG/feature/1.2/#Gradient"), true);
+        m_features.insert(QLatin1String("http://www.w3.org/Graphics/SVG/feature/1.2/#SolidColor"), true);
+        m_features.insert(QLatin1String("http://www.w3.org/Graphics/SVG/feature/1.2/#XlinkAttribute"), true);
+        m_features.insert(QLatin1String("http://www.w3.org/Graphics/SVG/feature/1.2/#ExternalResourcesRequiredAttribute"), true);
+        m_features.insert(QLatin1String("http://www.w3.org/Graphics/SVG/feature/1.2/#Font"), true);
+        m_features.insert(QLatin1String("http://www.w3.org/Graphics/SVG/feature/1.2/#Hyperlinking"), true);
+        m_features.insert(QLatin1String("http://www.w3.org/Graphics/SVG/feature/1.2/#Extensibility"), true);
     }
 
     QLocale locale;
-    m_systemLanguage = locale.name().replace("_", "-");
-    int idx = m_systemLanguage.indexOf('-');
+    m_systemLanguage = locale.name().replace(QLatin1Char('_'), QLatin1Char('-'));
+    int idx = m_systemLanguage.indexOf(QLatin1Char('-'));
     m_systemLanguagePrefix = m_systemLanguage.mid(0, idx);
+}
+
+QRectF QSvgStructureNode::bounds() const
+{   
+    if (m_bounds.isEmpty()) {
+        foreach(QSvgNode *node, m_renderers) {
+            m_bounds |= node->bounds();
+        }
+    }
+
+    return m_bounds;
+}
+
+QRectF QSvgStructureNode::transformedBounds(const QMatrix &mat) const
+{
+    QMatrix m = mat;
+    QSvgTransformStyle *trans = m_style.transform;
+    if (trans) {
+        m = trans->qmatrix() * m;
+    }
+    
+    QRectF bounds;
+    foreach(QSvgNode *node, m_renderers) {
+        bounds |= node->transformedBounds(m);
+    }
+    
+    return bounds;
+}
+
+QSvgNode * QSvgStructureNode::previousSiblingNode(QSvgNode *n) const
+{
+    QSvgNode *prev = 0;
+    QList<QSvgNode*>::const_iterator itr = m_renderers.constBegin();
+    while (itr != m_renderers.constEnd()) {
+        QSvgNode *node = *itr;
+        if (node == n)
+            return prev;
+        prev = node;
+    }
+    return prev;
 }

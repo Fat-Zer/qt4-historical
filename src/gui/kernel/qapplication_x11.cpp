@@ -52,6 +52,7 @@
 #include "qfileinfo.h"
 #include "qhash.h"
 #include "qevent.h"
+#include "qevent_p.h"
 #include "qvarlengtharray.h"
 #include "qdebug.h"
 #include <private/qunicodetables_p.h>
@@ -61,17 +62,30 @@
 #include "qstyle.h"
 #include "qmetaobject.h"
 
+#if !defined(QT_NO_GLIB)
+#  include "qguieventdispatcher_glib_p.h"
+#endif
 #include "qeventdispatcher_x11_p.h"
 #include <private/qpaintengine_x11_p.h>
 
-// Input method stuff - UNFINISHED
+#include <private/qkeymapper_p.h>
+
+// Input method stuff
 #ifndef QT_NO_IM
 #include "qinputcontext.h"
 #include "qinputcontextfactory.h"
 #endif // QT_NO_IM
 
+#ifndef QT_NO_XFIXES
+#include <X11/extensions/Xfixes.h>
+#endif // QT_NO_XFIXES
+
 #include "qt_x11_p.h"
 #include "qx11info_x11.h"
+
+#define XK_MISCELLANY
+#include <X11/keysymdef.h>
+#include <X11/extensions/XI.h>
 
 #include <stdlib.h>
 #include <string.h>
@@ -137,11 +151,11 @@ static const char * x11_atomnames = {
 
     "_QT_SCROLL_DONE\0"
     "_QT_INPUT_ENCODING\0"
-    "_QT_SIZEGRIP\0"
 
     "_MOTIF_WM_HINTS\0"
 
     "DTWM_IS_RUNNING\0"
+    "KDE_FULL_SESSION\0"
     "KWIN_RUNNING\0"
     "KWM_RUNNING\0"
     "GNOME_BACKGROUND_PROPERTIES\0"
@@ -170,6 +184,7 @@ static const char * x11_atomnames = {
     "_NET_WM_STATE_STAYS_ON_TOP\0"
 
     "_NET_WM_USER_TIME\0"
+    "_NET_WM_FULL_PLACEMENT\0"
 
     "_NET_WM_WINDOW_TYPE\0"
     "_NET_WM_WINDOW_TYPE_DIALOG\0"
@@ -184,6 +199,8 @@ static const char * x11_atomnames = {
 
     "_NET_STARTUP_INFO\0"
     "_NET_STARTUP_INFO_BEGIN\0"
+
+    "_NET_SUPPORTING_WM_CHECK\0"
 
     // Property formats
     "COMPOUND_TEXT\0"
@@ -219,6 +236,9 @@ static const char * x11_atomnames = {
 
     "XmTRANSFER_SUCCESS\0"
     "XmTRANSFER_FAILURE\0"
+
+    // Xkb
+    "_XKB_RULES_NAMES\0"
 };
 
 Q_GUI_EXPORT QX11Data *qt_x11Data = 0;
@@ -235,7 +255,6 @@ static const char *appBTNCol        = 0;                // application btn color
 static const char *mwGeometry        = 0;                // main widget geometry
 static const char *mwTitle        = 0;                // main widget title
 char    *qt_ximServer        = 0;                // XIM Server will connect to
-static bool        mwIconic        = false;        // main widget iconified
 #if 0
 static bool        noxim                = false;        // connect to xim or not
 #endif
@@ -257,18 +276,16 @@ static void qt_detect_broken_window_manager();
 extern void qt_desktopwidget_update_workarea();
 
 
-// modifier masks for alt/meta - detected when the application starts
-static long qt_alt_mask = 0;
-static long qt_meta_mask = 0;
-static long qt_super_mask = 0;
-static long qt_hyper_mask = 0;
-// modifier mask to remove mode switch from modifiers that have alt/meta set
-// this problem manifests itself on HP/UX 10.20 at least, and without it
-// modifiers do not work at all...
-static long qt_mode_switch_remove_mask = 0;
+// modifier masks for alt, meta, super, hyper, and mode_switch - detected when the application starts
+// and/or keyboard layout changes
+uchar qt_alt_mask = 0;
+uchar qt_meta_mask = 0;
+uchar qt_super_mask = 0;
+uchar qt_hyper_mask = 0;
+uchar qt_mode_switch_mask = 0;
 
 // flags for extensions for special Languages, currently only for RTL languages
-static bool         qt_use_rtl_extensions = false;
+bool         qt_use_rtl_extensions = false;
 
 static Window        mouseActWindow             = 0;        // window where mouse is
 static Qt::MouseButton  mouseButtonPressed   = Qt::NoButton; // last mouse button pressed
@@ -286,7 +303,7 @@ static Window pressed_window = XNone;
 static bool replayPopupMouseEvent = false;
 static bool popupGrabOk;
 
-static bool sm_blockUserInput = false;                // session management
+bool qt_sm_blockUserInput = false;                // session management
 
 bool qt_reuse_double_buffer = true;
 
@@ -335,11 +352,6 @@ class QETWidget : public QWidget                // event translator widget
 {
 public:
     bool translateMouseEvent(const XEvent *);
-    bool translateKeyEventInternal(const XEvent *, int& count, QString& text,
-                                   Qt::KeyboardModifiers& modifiers, int &code,
-                                   QEvent::Type &type, bool /*willRepeat*/=false,
-                                   bool statefulTranslation=true);
-    bool translateKeyEvent(const XEvent *, bool grab);
     void translatePaintEvent(const XEvent *);
     bool translateConfigEvent(const XEvent *);
     bool translateCloseEvent(const XEvent *);
@@ -356,9 +368,16 @@ public:
 void QApplicationPrivate::createEventDispatcher()
 {
     Q_Q(QApplication);
-    eventDispatcher = (q->type() != QApplication::Tty
-                       ? new QEventDispatcherX11(q)
-                       : new QEventDispatcherUNIX(q));
+#if !defined(QT_NO_GLIB)
+    if (qgetenv("QT_NO_GLIB").isEmpty())
+        eventDispatcher = (q->type() != QApplication::Tty
+                           ? new QGuiEventDispatcherGlib(q)
+                           : new QEventDispatcherGlib(q));
+    else
+#endif
+        eventDispatcher = (q->type() != QApplication::Tty
+                           ? new QEventDispatcherX11(q)
+                           : new QEventDispatcherUNIX(q));
 }
 
 /*****************************************************************************
@@ -380,6 +399,10 @@ static int qt_x_errhandler(Display *dpy, XErrorEvent *err)
             return 0;
         if (X11->ignore_badwindow)
             return 0;
+    } else if (err->request_code == X11->xinput_major
+                && err->error_code == (X11->xinput_errorbase + XI_BadDevice)
+                && err->minor_code == 3 /* X_OpenDevice */) {
+        return 0;
     } else if (err->error_code == BadMatch && err->request_code == 42 /* X_SetInputFocus */) {
         return 0;
     }
@@ -565,8 +588,8 @@ bool QApplicationPrivate::x11_apply_settings()
         .arg((QT_VERSION & 0xff00) >> 8);
     QStringList pathlist = settings.value(libpathkey).toString().split(QLatin1Char(':'));
     if (! pathlist.isEmpty()) {
-        QStringList::ConstIterator it = pathlist.begin();
-        while (it != pathlist.end())
+        QStringList::ConstIterator it = pathlist.constBegin();
+        while (it != pathlist.constEnd())
             QApplication::addLibraryPath(*it++);
     }
 
@@ -731,7 +754,7 @@ static void qt_set_x11_resources(const char* font = 0, const char* fg = 0,
                                  const char* bg = 0, const char* button = 0)
 {
 
-    QString resFont, resFG, resBG, resEF, sysFont;
+    QString resFont, resFG, resBG, resEF, sysFont, selectBackground, selectForeground;
 
     QApplication::setEffectEnabled(Qt::UI_General, false);
     QApplication::setEffectEnabled(Qt::UI_AnimateMenu, false);
@@ -751,98 +774,96 @@ static void qt_set_x11_resources(const char* font = 0, const char* fg = 0,
         // loop... so I have to save this value to be able to use it later
         paletteAlreadySet = (QApplicationPrivate::sys_pal != 0);
 
-        QString style = QApplication::style()->metaObject()->className();
-        if (style == QLatin1String("QWindowsStyle")
-            || style == QLatin1String("QMotifStyle")
-            || style == QLatin1String("QCDEStyle")) {
-            // ### Only plain styles currently work fine with RESOURCE_MANAGER
-            // provided palette entries. For now, we apply this code to only
-            // our own plain styles, until we can get complex styles to work
-            // properly. We might also introduce a style hint for this.
+        // second, parse the RESOURCE_MANAGER property
+        int format;
+        ulong  nitems, after = 1;
+        QString res;
+        long offset = 0;
+        Atom type = XNone;
 
-            // second, parse the RESOURCE_MANAGER property
-            int format;
-            ulong  nitems, after = 1;
-            QString res;
-            long offset = 0;
-            Atom type = XNone;
+        while (after > 0) {
+            uchar *data = 0;
+            XGetWindowProperty(X11->display, QX11Info::appRootWindow(0),
+                               ATOM(RESOURCE_MANAGER),
+                               offset, 8192, False, AnyPropertyType,
+                               &type, &format, &nitems, &after,
+                               &data);
+            if (type == XA_STRING)
+                res += QString::fromLatin1((char*)data);
+            else
+                res += QString::fromLocal8Bit((char*)data);
+            offset += 2048; // offset is in 32bit quantities... 8192/4 == 2048
+            if (data)
+                XFree((char *)data);
+        }
 
-            while (after > 0) {
-                uchar *data = 0;
-                XGetWindowProperty(X11->display, QX11Info::appRootWindow(0),
-                                   ATOM(RESOURCE_MANAGER),
-                                   offset, 8192, False, AnyPropertyType,
-                                   &type, &format, &nitems, &after,
-                                   &data);
-                if (type == XA_STRING)
-                    res += QString::fromLatin1((char*)data);
-                else
-                    res += QString::fromLocal8Bit((char*)data);
-                offset += 2048; // offset is in 32bit quantities... 8192/4 == 2048
-                if (data)
-                    XFree((char *)data);
-            }
+        QString key, value;
+        int l = 0, r;
+        QString apn = QString::fromLocal8Bit(appName);
+        QString apc = QString::fromLocal8Bit(appClass);
+        int apnl = apn.length();
+        int apcl = apc.length();
+        int resl = res.length();
 
-            QString key, value;
-            int l = 0, r;
-            QString apn = QString::fromLocal8Bit(appName);
-            QString apc = QString::fromLocal8Bit(appClass);
-            int apnl = apn.length();
-            int apcl = apc.length();
-            int resl = res.length();
-
-            while (l < resl) {
-                r = res.indexOf(QLatin1Char('\n'), l);
-                if (r < 0)
-                    r = resl;
-                while (::isSpace(res.at(l)))
-                    l++;
-                bool mine = false;
-                QChar sc = res.at(l + 1);
-                if (res.at(l) == QLatin1Char('*') &&
-                    (sc == QLatin1Char('f') || sc == QLatin1Char('b') || sc == QLatin1Char('g') ||
-                     sc == QLatin1Char('F') || sc == QLatin1Char('B') || sc == QLatin1Char('G') ||
-                     sc == QLatin1Char('s') || sc == QLatin1Char('S'))) {
-                    // OPTIMIZED, since we only want "*[fbgs].."
+        while (l < resl) {
+            r = res.indexOf(QLatin1Char('\n'), l);
+            if (r < 0)
+                r = resl;
+            while (QUnicodeTables::isSpace(res.at(l)))
+                l++;
+            bool mine = false;
+            QChar sc = res.at(l + 1);
+            if (res.at(l) == QLatin1Char('*') &&
+                (sc == QLatin1Char('f') || sc == QLatin1Char('b') || sc == QLatin1Char('g') ||
+                 sc == QLatin1Char('F') || sc == QLatin1Char('B') || sc == QLatin1Char('G') ||
+                 sc == QLatin1Char('s') || sc == QLatin1Char('S')
+                 // capital T only, since we're looking for "Text.selectSomething"
+                 || sc == QLatin1Char('T'))) {
+                // OPTIMIZED, since we only want "*[fbgsT].."
+                QString item = res.mid(l, r - l).simplified();
+                int i = item.indexOf(QLatin1Char(':'));
+                key = item.left(i).trimmed().mid(1).toLower();
+                value = item.right(item.length() - i - 1).trimmed();
+                mine = true;
+            } else if (apnl && res.at(l) == apn.at(0) || (appClass && apcl && res.at(l) == apc.at(0))) {
+                if (res.mid(l,apnl) == apn && (res.at(l+apnl) == QLatin1Char('.')
+                                               || res.at(l+apnl) == QLatin1Char('*'))) {
                     QString item = res.mid(l, r - l).simplified();
                     int i = item.indexOf(QLatin1Char(':'));
-                    key = item.left(i).trimmed().mid(1).toLower();
+                    key = item.left(i).trimmed().mid(apnl+1).toLower();
                     value = item.right(item.length() - i - 1).trimmed();
                     mine = true;
-                } else if (apnl && res.at(l) == apn.at(0) || (appClass && apcl && res.at(l) == apc.at(0))) {
-                    if (res.mid(l,apnl) == apn && (res.at(l+apnl) == QLatin1Char('.')
-                                                   || res.at(l+apnl) == QLatin1Char('*'))) {
-                        QString item = res.mid(l, r - l).simplified();
-                        int i = item.indexOf(QLatin1Char(':'));
-                        key = item.left(i).trimmed().mid(apnl+1).toLower();
-                        value = item.right(item.length() - i - 1).trimmed();
-                        mine = true;
-                    } else if (res.mid(l,apcl) == apc && (res.at(l+apcl) == QLatin1Char('.')
-                                                          || res.at(l+apcl) == QLatin1Char('*'))) {
-                        QString item = res.mid(l, r - l).simplified();
-                        int i = item.indexOf(QLatin1Char(':'));
-                        key = item.left(i).trimmed().mid(apcl+1).toLower();
-                        value = item.right(item.length() - i - 1).trimmed();
-                        mine = true;
-                    }
+                } else if (res.mid(l,apcl) == apc && (res.at(l+apcl) == QLatin1Char('.')
+                                                      || res.at(l+apcl) == QLatin1Char('*'))) {
+                    QString item = res.mid(l, r - l).simplified();
+                    int i = item.indexOf(QLatin1Char(':'));
+                    key = item.left(i).trimmed().mid(apcl+1).toLower();
+                    value = item.right(item.length() - i - 1).trimmed();
+                    mine = true;
                 }
-
-                if (mine) {
-                    if (!font && key == QLatin1String("systemfont"))
-                        sysFont = value.left(value.lastIndexOf(QLatin1Char(':')));
-                    if (!font && key == QLatin1String("font"))
-                        resFont = value;
-                    else if  (!paletteAlreadySet && !fg && key == QLatin1String("foreground"))
-                        resFG = value;
-                    else if (!paletteAlreadySet && !bg && key == QLatin1String("background"))
-                        resBG = value;
-                    else if (key == QLatin1String("guieffects"))
-                        resEF = value;
-                    // NOTE: if you add more, change the [fbg] stuff above
-                }
-
-                l = r + 1;
             }
+
+            if (mine) {
+                if (!font && key == QLatin1String("systemfont"))
+                    sysFont = value.left(value.lastIndexOf(QLatin1Char(':')));
+                if (!font && key == QLatin1String("font"))
+                    resFont = value;
+                else if (!fg && !paletteAlreadySet) {
+                    if (key == QLatin1String("foreground"))
+                        resFG = value;
+                    else if (!bg && key == QLatin1String("background"))
+                        resBG = value;
+                    else if (key == QLatin1String("text.selectbackground")) {
+                        selectBackground = value;
+                    } else if (key == QLatin1String("text.selectforeground")) {
+                        selectForeground = value;
+                    }
+                } else if (key == QLatin1String("guieffects"))
+                    resEF = value;
+                // NOTE: if you add more, change the [fbg] stuff above
+            }
+
+            l = r + 1;
         }
     }
     if (!sysFont.isEmpty())
@@ -894,11 +915,11 @@ static void qt_set_x11_resources(const char* font = 0, const char* fg = 0,
         if (!resBG.isEmpty())
             bg = QColor(QString(resBG));
         else
-            bg = QApplicationPrivate::sys_pal->color(QPalette::Active, QPalette::Background);
+            bg = QApplicationPrivate::sys_pal->color(QPalette::Active, QPalette::Window);
         if (!resFG.isEmpty())
             fg = QColor(QString(resFG));
         else
-            fg = QApplicationPrivate::sys_pal->color(QPalette::Active, QPalette::Foreground);
+            fg = QApplicationPrivate::sys_pal->color(QPalette::Active, QPalette::WindowText);
         if (button)
             btn = QColor(button);
         else if (!resBG.isEmpty())
@@ -916,25 +937,36 @@ static void qt_set_x11_resources(const char* font = 0, const char* fg = 0,
         }
 
         QPalette pal(fg, btn, btn.light(), btn.dark(), btn.dark(150), fg, Qt::white, base, bg);
-        if (bright_mode) {
-            pal.setColor(QPalette::HighlightedText, base);
-            pal.setColor(QPalette::Highlight, Qt::white);
-        } else {
-            pal.setColor(QPalette::HighlightedText, Qt::white);
-            pal.setColor(QPalette::Highlight, Qt::darkBlue);
-        }
         QColor disabled((fg.red()   + btn.red())  / 2,
                         (fg.green() + btn.green())/ 2,
                         (fg.blue()  + btn.blue()) / 2);
         pal.setColorGroup(QPalette::Disabled, disabled, btn, btn.light(125),
                           btn.dark(), btn.dark(150), disabled, Qt::white, Qt::white, bg);
-        if (bright_mode) {
+
+        if (!selectBackground.isEmpty() && !selectForeground.isEmpty()) {
+            QColor highlight = QColor(selectBackground);
+            QColor highlightText = QColor(selectForeground);
+
+            pal.setColor(QPalette::Highlight, highlight);
+            pal.setColor(QPalette::HighlightedText, highlightText);
+
+            // calculate disabled colors by removing saturation
+            highlight.setHsv(highlight.hue(), 0, highlight.value(), highlight.alpha());
+            highlightText.setHsv(highlightText.hue(), 0, highlightText.value(), highlightText.alpha());
+            pal.setColor(QPalette::Disabled, QPalette::Highlight, highlight);
+            pal.setColor(QPalette::Disabled, QPalette::HighlightedText, highlightText);
+        } else if (bright_mode) {
+            pal.setColor(QPalette::HighlightedText, base);
+            pal.setColor(QPalette::Highlight, Qt::white);
             pal.setColor(QPalette::Disabled, QPalette::HighlightedText, base);
             pal.setColor(QPalette::Disabled, QPalette::Highlight, Qt::white);
         } else {
+            pal.setColor(QPalette::HighlightedText, Qt::white);
+            pal.setColor(QPalette::Highlight, Qt::darkBlue);
             pal.setColor(QPalette::Disabled, QPalette::HighlightedText, Qt::white);
             pal.setColor(QPalette::Disabled, QPalette::Highlight, Qt::darkBlue);
         }
+
         QApplicationPrivate::setSystemPalette(pal);
     }
 
@@ -1100,7 +1132,8 @@ static void qt_get_net_virtual_roots()
 
 static void qt_net_update_user_time(QWidget *tlw)
 {
-    XChangeProperty(X11->display, tlw->winId(), ATOM(_NET_WM_USER_TIME),
+    Q_ASSERT(tlw->testAttribute(Qt::WA_WState_Created));
+    XChangeProperty(X11->display, tlw->internalWinId(), ATOM(_NET_WM_USER_TIME),
                     XA_CARDINAL, 32, PropModeReplace, (unsigned char *) &X11->userTime, 1);
 }
 
@@ -1136,12 +1169,6 @@ static bool isXInputSupported(Display *dpy)
 /*****************************************************************************
   qt_init() - initializes Qt for X11
  *****************************************************************************/
-
-#define XK_MISCELLANY
-#define XK_LATIN1
-#define XK_KOREAN
-#define XK_XKB_KEYS
-#include <X11/keysymdef.h>
 
 #if !defined(QT_NO_FONTCONFIG)
 static void getXDefault(const char *group, const char *key, int *val)
@@ -1197,9 +1224,6 @@ static void getXDefault(const char *group, const char *key, bool *val)
 void qt_init(QApplicationPrivate *priv, int,
 	     Display *display, Qt::HANDLE visual, Qt::HANDLE colormap)
 {
-    setlocale(LC_ALL, "");                // use correct char set mapping
-    setlocale(LC_NUMERIC, "C");        // make sprintf()/scanf() work
-
     X11 = new QX11Data;
     X11->display = display;
     X11->displayName = 0;
@@ -1215,8 +1239,13 @@ void qt_init(QApplicationPrivate *priv, int,
     // RENDER
     X11->use_xrender = false;
     X11->xrender_major = 0;
-    X11->xrender_eventbase = 0;
-    X11->xrender_errorbase = 0;
+    X11->xrender_version = 0;
+
+    // XFIXES
+    X11->use_xfixes = false;
+    X11->xfixes_major = 0;
+    X11->xfixes_eventbase = 0;
+    X11->xfixes_errorbase = 0;
 
     // XInputExtension
     X11->use_xinput = false;
@@ -1335,8 +1364,6 @@ void qt_init(QApplicationPrivate *priv, int,
         } else if (arg == "-noxim") {
             noxim=true;
 #endif
-        } else if (arg == "-iconic") {
-            mwIconic = !mwIconic;
         } else if (arg == "-ncols") {   // xv and netscape use this name
             if (++i < argc)
                 X11->color_count = qMax(0,atoi(argv[i]));
@@ -1359,7 +1386,7 @@ void qt_init(QApplicationPrivate *priv, int,
                     X11->visual_id = static_cast<int>(strtol(argv[i], 0, 0));
             }
 #ifndef QT_NO_XIM
-        } else if (arg == "-inputstyle/") {
+        } else if (arg == "-inputstyle") {
             if (++i < argc) {
                 QString s = QString::fromLocal8Bit(argv[i]).toLower();
                 if (s == QLatin1String("onthespot"))
@@ -1477,11 +1504,12 @@ void qt_init(QApplicationPrivate *priv, int,
 #endif // QT_NO_XRANDR
 
 #ifndef QT_NO_XRENDER
+        int xrender_eventbase,  xrender_errorbase;
         // See if XRender is supported on the connected display
         if (XQueryExtension(X11->display, "RENDER", &X11->xrender_major,
-                            &X11->xrender_eventbase, &X11->xrender_errorbase)
-            && XRenderQueryExtension(X11->display, &X11->xrender_eventbase,
-                                     &X11->xrender_errorbase)) {
+                            &xrender_eventbase, &xrender_errorbase)
+            && XRenderQueryExtension(X11->display, &xrender_eventbase,
+                                     &xrender_errorbase)) {
             // XRender is supported, let's see if we have a PictFormat for the
             // default visual
             XRenderPictFormat *format =
@@ -1491,17 +1519,39 @@ void qt_init(QApplicationPrivate *priv, int,
             int major = 0;
             int minor = 0;
             XRenderQueryVersion(X11->display, &major, &minor);
-            if (qgetenv("QT_X11_NO_XRENDER").isNull())
-                X11->use_xrender = (major >= 0 && minor >= 5) && (format != 0);
+            if (qgetenv("QT_X11_NO_XRENDER").isNull() && format != 0) {
+                X11->use_xrender = (major >= 0 && minor >= 5);
+                X11->xrender_version = major*100+minor;
+                // workaround for broken XServer on Ubuntu Breezy (6.8 compiled with 7.0
+                // protocol headers)
+                if (X11->xrender_version == 10
+                    && VendorRelease(X11->display) < 60900000
+                    && QByteArray(ServerVendor(X11->display)).contains("X.Org"))
+                    X11->xrender_version = 9;
+            }
         }
 #endif // QT_NO_XRENDER
 
-#ifndef QT_NO_XKB
-        // If XKB is detected, set the GrabsUseXKBState option so input method
-        // compositions continue to work (ie. deadkeys)
-        unsigned int state = XkbPCF_GrabsUseXKBStateMask;
-        (void) XkbSetPerClientControls(X11->display, state, &state);
-#endif
+#ifndef QT_NO_XFIXES
+        // See if Xfixes is supported on the connected display
+        if (XQueryExtension(X11->display, "XFIXES", &X11->xfixes_major,
+                            &X11->xfixes_eventbase, &X11->xfixes_errorbase)
+            && XFixesQueryExtension(X11->display, &X11->xfixes_eventbase,
+                                    &X11->xfixes_errorbase)) {
+            // Xfixes is supported.
+            // Note: the XFixes protocol version is negotiated using QueryVersion.
+            // We supply the highest version we support, the X server replies with
+            // the highest version it supports, but no higher than the version we
+            // asked for. The version sent back is the protocol version the X server
+            // will use to talk us. If this call is removed, the behavior of the
+            // X server when it receives an XFixes request is undefined.
+            int major = 3;
+            int minor = 0;
+            XFixesQueryVersion(X11->display, &major, &minor);
+            X11->use_xfixes = (major >= 2);
+            X11->xfixes_major = major;
+        }
+#endif // QT_NO_XFIXES
 
         X11->has_fontconfig = false;
 #if !defined(QT_NO_FONTCONFIG)
@@ -1562,110 +1612,17 @@ void qt_init(QApplicationPrivate *priv, int,
 #endif
 #endif // QT_NO_XRENDER
 
-        // look at the modifier mapping, and get the correct masks for alt/meta
-        // find the alt/meta masks
-        XModifierKeymap *map = XGetModifierMapping(X11->display);
+        // initialize key mapper
+        QKeyMapper::changeKeyboard();
 
-        // get the first and last keycode
-        int first_keycode = 8, last_keycode = 255;
-        XDisplayKeycodes(X11->display, &first_keycode, &last_keycode);
-        // only need keysyms_per_keycode
-        int keysyms_per_keycode = 1;
-        KeySym *keys = XGetKeyboardMapping(X11->display,
-                                  first_keycode,
-                                  last_keycode - first_keycode,
-                                  &keysyms_per_keycode);
-        if (keys)
-            XFree(keys);
-
-        if (map) {
-            int i, maskIndex = 0, mapIndex = 0;
-            for (maskIndex = 0; maskIndex < 8; maskIndex++) {
-                for (i = 0; i < map->max_keypermod; i++) {
-                    if (map->modifiermap[mapIndex]) {
-                        KeySym sym;
-                        int x = 0;
-                        do {
-                            sym = XKeycodeToKeysym(X11->display, map->modifiermap[mapIndex], x++);
-                        } while (sym == NoSymbol && x < keysyms_per_keycode);
-                        const long mask = 1 << maskIndex;
-                        if (qt_alt_mask == 0
-                            && qt_meta_mask != mask
-                            && qt_super_mask != mask
-                            && qt_hyper_mask != mask
-                            && (sym == XK_Alt_L || sym == XK_Alt_R)) {
-                            qt_alt_mask = mask;
-                        }
-                        if (qt_meta_mask == 0
-                            && qt_alt_mask != mask
-                            && qt_super_mask != mask
-                            && qt_hyper_mask != mask
-                            && (sym == XK_Meta_L || sym == XK_Meta_R)) {
-                            qt_meta_mask = mask;
-                        }
-                        if (qt_super_mask == 0
-                            && qt_alt_mask != mask
-                            && qt_meta_mask != mask
-                            && qt_hyper_mask != mask
-                            && (sym == XK_Super_L || sym == XK_Super_R)) {
-                            qt_super_mask = mask;
-                        }
-                        if (qt_hyper_mask == 0
-                            && qt_alt_mask != mask
-                            && qt_meta_mask != mask
-                            && qt_super_mask != mask
-                            && (sym == XK_Hyper_L || sym == XK_Hyper_R)) {
-                            qt_hyper_mask = mask;
-                        }
-                    }
-                    mapIndex++;
-                }
-            }
-            // if we don't have a meta key (or it's hidden behind alt), use super or hyper to generate
-            // Qt::Key_Meta and Qt::MetaModifier, since most newer XFree86/Xorg installations map the Windows
-            // key to Super
-            if (qt_meta_mask == 0 || qt_meta_mask == qt_alt_mask) {
-                // no meta keys... s,meta,super,
-                qt_meta_mask = qt_super_mask;
-                if (qt_meta_mask == 0 || qt_meta_mask == qt_alt_mask) {
-                    // no super keys either? guess we'll use hyper then
-                    qt_meta_mask = qt_hyper_mask;
-                }
-            }
-
-            // now look for mode_switch in qt_alt_mask and qt_meta_mask - if it is
-            // present in one or both, then we set qt_mode_switch_remove_mask.
-            // see QETWidget::translateKeyEventInternal for an explanation
-            // of why this is needed
-            mapIndex = 0;
-            for (maskIndex = 0; maskIndex < 8; maskIndex++) {
-                if (qt_alt_mask  != (1 << maskIndex) &&
-                    qt_meta_mask != (1 << maskIndex)) {
-                    for (i = 0; i < map->max_keypermod; i++)
-                        mapIndex++;
-                    continue;
-                }
-
-                for (i = 0; i < map->max_keypermod; i++) {
-                    if (map->modifiermap[mapIndex]) {
-                        KeySym sym =
-                            XKeycodeToKeysym(X11->display, map->modifiermap[mapIndex], 0);
-                        if (sym == XK_Mode_switch) {
-                            qt_mode_switch_remove_mask |= 1 << maskIndex;
-                        }
-                    }
-                    mapIndex++;
-                }
-            }
-
-            XFreeModifiermap(map);
-        } else {
-            // assume defaults
-            qt_alt_mask = Mod1Mask;
-            qt_meta_mask = Mod4Mask;
-            // leave qt_super_mask and qt_hyper_mask set to zero
-            qt_mode_switch_remove_mask = 0;
+#ifndef QT_NO_XKB
+        if (qt_keymapper_private()->useXKB) {
+            // If XKB is detected, set the GrabsUseXKBState option so input method
+            // compositions continue to work (ie. deadkeys)
+            unsigned int state = XkbPCF_GrabsUseXKBStateMask;
+            (void) XkbSetPerClientControls(X11->display, state, &state);
         }
+#endif // QT_NO_XKB
 
         // Misc. initialization
 #if 0 //disabled for now..
@@ -1691,6 +1648,79 @@ void qt_init(QApplicationPrivate *priv, int,
     }
 
     if (qt_is_gui_used) {
+        // Attempt to determine the current running X11 Desktop Enviornment
+        // Use dbus if/when we can, but fall back to using windowManagerName() for now
+
+        X11->desktopEnvironment = DE_UNKNOWN;
+
+        // See if the current window manager is using the freedesktop.org spec to give its name
+        Window windowManagerWindow = XNone;
+        Atom typeReturned;
+        int formatReturned;
+        unsigned long nitemsReturned;
+        unsigned long unused;
+        unsigned char *data = 0;
+        if (XGetWindowProperty(QX11Info::display(), QX11Info::appRootWindow(),
+                           ATOM(_NET_SUPPORTING_WM_CHECK),
+                           0, 1024, False, XA_WINDOW, &typeReturned,
+                           &formatReturned, &nitemsReturned, &unused, &data)
+              == Success) {
+            if (typeReturned == XA_WINDOW && formatReturned == 32)
+                windowManagerWindow = *((Window*) data);
+            if (data)
+                XFree(data);
+
+            if (windowManagerWindow != XNone) {
+                QString wmName;
+                Atom utf8atom = ATOM(UTF8_STRING);
+                if (XGetWindowProperty(QX11Info::display(), windowManagerWindow, ATOM(_NET_WM_NAME),
+                                       0, 1024, False, utf8atom, &typeReturned,
+                                       &formatReturned, &nitemsReturned, &unused, &data)
+                    == Success) {
+                    if (typeReturned == utf8atom && formatReturned == 8)
+                        wmName = QString::fromUtf8((const char*)data);
+                    if (data)
+                        XFree(data);
+                    if (wmName == QLatin1String("KWin"))
+                        X11->desktopEnvironment = DE_KDE;
+                    if (wmName == QLatin1String("Metacity"))
+                        X11->desktopEnvironment = DE_GNOME;
+                }
+            }
+        }
+
+        // Running a different/newer/older window manager?  Try some other things
+        if (X11->desktopEnvironment == DE_UNKNOWN){
+            Atom type;
+            int format;
+            unsigned long length, after;
+            uchar *data = 0;
+
+            if (XGetWindowProperty(X11->display, QX11Info::appRootWindow(), ATOM(DTWM_IS_RUNNING),
+                                   0, 1, False, AnyPropertyType, &type, &format, &length,
+                                   &after, &data) == Success && length) {
+                // DTWM is running, meaning most likely CDE is running...
+                X11->desktopEnvironment = DE_CDE;
+            } else if (XGetWindowProperty(X11->display, QX11Info::appRootWindow(),
+                                          ATOM(GNOME_BACKGROUND_PROPERTIES), 0, 1, False, AnyPropertyType,
+                                          &type, &format, &length, &after, &data) == Success && length) {
+                X11->desktopEnvironment = DE_GNOME;
+            } else if ((XGetWindowProperty(X11->display, QX11Info::appRootWindow(), ATOM(KDE_FULL_SESSION),
+                                           0, 1, False, AnyPropertyType, &type, &format, &length, &after, &data) == Success
+                        && length)
+                       || (XGetWindowProperty(X11->display, QX11Info::appRootWindow(), ATOM(KWIN_RUNNING),
+                                              0, 1, False, AnyPropertyType, &type, &format, &length,
+                                              &after, &data) == Success
+                           && length)
+                       || (XGetWindowProperty(X11->display, QX11Info::appRootWindow(), ATOM(KWM_RUNNING),
+                                              0, 1, False, AnyPropertyType, &type, &format, &length,
+                                              &after, &data) == Success && length)) {
+                X11->desktopEnvironment = DE_KDE;
+            }
+            if (data)
+                XFree((char *)data);
+        }
+
         qt_set_input_encoding();
 
         qt_set_x11_resources(appFont, appFGCol, appBGCol, appBTNCol);
@@ -1734,7 +1764,7 @@ void qt_init(QApplicationPrivate *priv, int,
 
             devices = XListInputDevices(X11->display, &ndev);
             if (!devices) {
-                qWarning("Failed to get list of devices");
+                qWarning("QApplication: Failed to get list of devices");
                 ndev = -1;
             }
             QTabletEvent::TabletDevice deviceType;
@@ -1763,10 +1793,8 @@ void qt_init(QApplicationPrivate *priv, int,
                 if (gotStylus || gotEraser) {
                     dev = XOpenDevice(X11->display, devs->id);
 
-                    if (!dev) {
-                        qWarning("Failed to open device");
+                    if (!dev)
                         continue;
-                    }
 
                     QTabletDeviceData device_data;
                     device_data.deviceType = deviceType;
@@ -1777,6 +1805,8 @@ void qt_init(QApplicationPrivate *priv, int,
                     device_data.xinput_key_release = -1;
                     device_data.xinput_button_press = -1;
                     device_data.xinput_button_release = -1;
+                    device_data.xinput_proximity_in = -1;
+                    device_data.xinput_proximity_out = -1;
 
                     if (dev->num_classes > 0) {
                         for (ip = dev->classes, j = 0; j < devs->num_classes;
@@ -1785,26 +1815,36 @@ void qt_init(QApplicationPrivate *priv, int,
                             case KeyClass:
                                 DeviceKeyPress(dev, device_data.xinput_key_press,
                                                device_data.eventList[device_data.eventCount]);
-                                ++device_data.eventCount;
+                                if (device_data.eventList[device_data.eventCount])
+                                    ++device_data.eventCount;
                                 DeviceKeyRelease(dev, device_data.xinput_key_release,
                                                  device_data.eventList[device_data.eventCount]);
-                                ++device_data.eventCount;
+                                if (device_data.eventList[device_data.eventCount])
+                                    ++device_data.eventCount;
                                 break;
                             case ButtonClass:
                                 DeviceButtonPress(dev, device_data.xinput_button_press,
                                                   device_data.eventList[device_data.eventCount]);
-                                ++device_data.eventCount;
+                                if (device_data.eventList[device_data.eventCount])
+                                    ++device_data.eventCount;
                                 DeviceButtonRelease(dev, device_data.xinput_button_release,
                                                     device_data.eventList[device_data.eventCount]);
-                                ++device_data.eventCount;
+                                if (device_data.eventList[device_data.eventCount])
+                                    ++device_data.eventCount;
                                 break;
                             case ValuatorClass:
                                 // I'm only going to be interested in motion when the
                                 // stylus is already down anyway!
                                 DeviceMotionNotify(dev, device_data.xinput_motion,
                                                    device_data.eventList[device_data.eventCount]);
-                                ++device_data.eventCount;
-                                break;
+                                if (device_data.eventList[device_data.eventCount])
+                                    ++device_data.eventCount;
+                                ProximityIn(dev, device_data.xinput_proximity_in, device_data.eventList[device_data.eventCount]);
+                                if (device_data.eventList[device_data.eventCount])
+                                    ++device_data.eventCount;
+                                ProximityOut(dev, device_data.xinput_proximity_out, device_data.eventList[device_data.eventCount]);
+                                if (device_data.eventList[device_data.eventCount])
+                                    ++device_data.eventCount;
                             default:
                                 break;
                             }
@@ -1877,7 +1917,7 @@ void qt_init(QApplicationPrivate *priv, int,
         X11->startupId = getenv("DESKTOP_STARTUP_ID");
         putenv(strdup("DESKTOP_STARTUP_ID="));
 
-    } else {
+   } else {
         // read some non-GUI settings when not using the X server...
 
         if (QApplication::desktopSettingsAware()) {
@@ -1891,8 +1931,8 @@ void qt_init(QApplicationPrivate *priv, int,
             QStringList pathlist =
                 settings.value(libpathkey).toString().split(QLatin1Char(':'));
             if (! pathlist.isEmpty()) {
-                QStringList::ConstIterator it = pathlist.begin();
-                while (it != pathlist.end())
+                QStringList::ConstIterator it = pathlist.constBegin();
+                while (it != pathlist.constEnd())
                     QApplication::addLibraryPath(*it++);
             }
 
@@ -1916,43 +1956,22 @@ void qt_init(QApplicationPrivate *priv, int,
 */
 void QApplicationPrivate::x11_initialize_style()
 {
-    Atom type;
-    int format;
-    unsigned long length, after;
-    uchar *data;
-    if (!QApplicationPrivate::app_style &&
-         XGetWindowProperty(X11->display, QX11Info::appRootWindow(), ATOM(KWIN_RUNNING),
-                             0, 1, False, AnyPropertyType, &type, &format, &length,
-                             &after, &data) == Success && length) {
-        if (data) XFree((char *)data);
-        // kwin is there. check if KDE's styles are available,
-        // otherwise use windows style
-        QApplicationPrivate::app_style = QStyleFactory::create(QLatin1String("plastique"));
-    }
-    if (!QApplicationPrivate::app_style &&
-         XGetWindowProperty(X11->display, QX11Info::appRootWindow(), ATOM(KWM_RUNNING),
-                             0, 1, False, AnyPropertyType, &type, &format, &length,
-                             &after, &data) == Success && length) {
-        if (data) XFree((char *)data);
-        QApplicationPrivate::app_style = QStyleFactory::create(QLatin1String("plastique"));
-    }
-    if (!QApplicationPrivate::app_style &&
-         XGetWindowProperty(X11->display, QX11Info::appRootWindow(), ATOM(DTWM_IS_RUNNING),
-                             0, 1, False, AnyPropertyType, &type, &format, &length,
-                             &after, &data) == Success && length) {
-        // DTWM is running, meaning most likely CDE is running...
-        if (data) XFree((char *) data);
-        QApplicationPrivate::app_style = QStyleFactory::create(QLatin1String("cde"));
-    }
-    // maybe another desktop?
-    if (!QApplicationPrivate::app_style &&
-         XGetWindowProperty(X11->display, QX11Info::appRootWindow(),
-                             ATOM(GNOME_BACKGROUND_PROPERTIES), 0, 1, False, AnyPropertyType,
-                             &type, &format, &length, &after, &data) == Success &&
-         length) {
-        if (data) XFree((char *)data);
-        // default to MotifPlus with hovering
-        QApplicationPrivate::app_style = QStyleFactory::create(QLatin1String("plastique"));
+    if (QApplicationPrivate::app_style)
+        return;
+
+    switch(X11->desktopEnvironment) {
+        case DE_KDE:
+            QApplicationPrivate::app_style = QStyleFactory::create(QLatin1String("plastique"));
+            break;
+        case DE_GNOME:
+            QApplicationPrivate::app_style = QStyleFactory::create(QLatin1String("cleanlooks"));
+            break;
+        case DE_CDE:
+            QApplicationPrivate::app_style = QStyleFactory::create(QLatin1String("cde"));
+            break;
+        default:
+            // Don't do anything
+            break;
     }
 }
 
@@ -2140,10 +2159,11 @@ void QApplication::setMainWidget(QWidget *mainWidget)
 {
 #ifndef QT_NO_DEBUG
     if (mainWidget && mainWidget->parentWidget() && mainWidget->isWindow())
-        qWarning("QApplication::setMainWidget(): New main widget (%s/%s) "
-                  "has a parent!",
+        qWarning("QApplication::setMainWidget: New main widget (%s/%s) "
+                  "has a parent",
                   mainWidget->metaObject()->className(), mainWidget->objectName().toLocal8Bit().constData());
 #endif
+    mainWidget->d_func()->createWinId();
     QApplicationPrivate::main_widget = mainWidget;
     if (QApplicationPrivate::main_widget) // give WM command line
         QApplicationPrivate::applyX11SpecificCommandLineArguments(QApplicationPrivate::main_widget);
@@ -2156,11 +2176,12 @@ void QApplicationPrivate::applyX11SpecificCommandLineArguments(QWidget *main_wid
     if (beenHereDoneThat)
         return;
     beenHereDoneThat = true;
-    XSetWMProperties(X11->display, main_widget->winId(), 0, 0, qApp->d_func()->argv, qApp->d_func()->argc, 0, 0, 0);
+    Q_ASSERT(main_widget->testAttribute(Qt::WA_WState_Created));
+    XSetWMProperties(X11->display, main_widget->internalWinId(), 0, 0, qApp->d_func()->argv, qApp->d_func()->argc, 0, 0, 0);
     if (mwTitle) {
-        XStoreName(X11->display, main_widget->winId(), (char*)mwTitle);
+        XStoreName(X11->display, main_widget->internalWinId(), (char*)mwTitle);
         QByteArray net_wm_name = QString::fromLocal8Bit(mwTitle).toUtf8();
-        XChangeProperty(X11->display, main_widget->winId(), ATOM(_NET_WM_NAME), ATOM(UTF8_STRING), 8,
+        XChangeProperty(X11->display, main_widget->internalWinId(), ATOM(_NET_WM_NAME), ATOM(UTF8_STRING), 8,
                         PropModeReplace, (unsigned char *)net_wm_name.data(), net_wm_name.size());
     }
     if (mwGeometry) { // parse geometry
@@ -2232,7 +2253,8 @@ void QApplication::setOverrideCursor(const QCursor &cursor)
 {
     qApp->d_func()->cursor_list.prepend(cursor);
 
-    for (QWidgetMapper::ConstIterator it = QWidgetPrivate::mapper->constBegin(); it != QWidgetPrivate::mapper->constEnd(); ++it) {
+    QWidgetList all = allWidgets();
+    for (QWidgetList::ConstIterator it = all.constBegin(); it != all.constEnd(); ++it) {
         register QWidget *w = *it;
         if (w->testAttribute(Qt::WA_SetCursor))
             qt_x11_enforce_cursor(w);
@@ -2258,8 +2280,8 @@ void QApplication::restoreOverrideCursor()
     qApp->d_func()->cursor_list.removeFirst();
 
     if (QWidgetPrivate::mapper != 0 && !closingDown()) {
-        for (QWidgetMapper::ConstIterator it = QWidgetPrivate::mapper->constBegin();
-             it != QWidgetPrivate::mapper->constEnd(); ++it) {
+        QWidgetList all = allWidgets();
+        for (QWidgetList::ConstIterator it = all.constBegin(); it != all.constEnd(); ++it) {
             register QWidget *w = *it;
             if (w->testAttribute(Qt::WA_SetCursor))
                 qt_x11_enforce_cursor(w);
@@ -2335,7 +2357,8 @@ QWidget *QApplication::topLevelAt(const QPoint &p)
                 QWidget *widget = list.at(i);
                 Window ctarget = target;
                 if (widget->isVisible() && !(widget->windowType() == Qt::Desktop)) {
-                    Window wid = widget->winId();
+                    Q_ASSERT(widget->testAttribute(Qt::WA_WState_Created));
+                    Window wid = widget->internalWinId();
                     while (ctarget && !w) {
                         XTranslateCoordinates(X11->display,
                                               QX11Info::appRootWindow(screen),
@@ -2576,7 +2599,7 @@ int QApplication::x11ProcessEvent(XEvent* event)
 
     if(keywidget && keywidget->isEnabled() && keywidget->testAttribute(Qt::WA_InputMethodEnabled)) {
         // block user interaction during session management
-	if((event->type==XKeyPress || event->type==XKeyRelease) && sm_blockUserInput)
+	if((event->type==XKeyPress || event->type==XKeyRelease) && qt_sm_blockUserInput)
 	    return true;
 
         // for XIM handling
@@ -2595,26 +2618,35 @@ int QApplication::x11ProcessEvent(XEvent* event)
 	    Qt::KeyboardModifiers modifiers;
 	    QEvent::Type type;
 	    QString text;
+            KeySym keySym;
 
-	    keywidget->translateKeyEventInternal(event, count, text,
-                                                 modifiers, code, type,
-                                                 false, false);
+            qt_keymapper_private()->translateKeyEventInternal(keywidget, event, keySym, count,
+                                                              text, modifiers, code, type, false);
 
 	    // both key press/release is required for some complex
 	    // input methods. don't eliminate anything.
-	    QKeyEvent keyevent(type, code, modifiers, text, false, count);
+	    QKeyEventEx keyevent(type, code, modifiers, text, false, qMax(qMax(count, 1), text.length()),
+                                 event->xkey.keycode, keySym, event->xkey.state);
 	    if(qic && qic->filterEvent(&keyevent))
 		return true;
 	}
     } else
 #endif // QT_NO_IM
-    {
-        if (XFilterEvent(event, XNone))
-            return true;
-    }
+        {
+            if (XFilterEvent(event, XNone))
+                return true;
+        }
 
     if (qt_x11EventFilter(event))                // send through app filter
         return 1;
+
+    if (event->type == MappingNotify) {
+        // keyboard mapping changed
+        XRefreshKeyboardMapping(&event->xmapping);
+
+        QKeyMapper::changeKeyboard();
+        return 0;
+    }
 
     if (!widget) {                                // don't know this windows
         QWidget* popup = QApplication::activePopupWidget();
@@ -2649,7 +2681,7 @@ int QApplication::x11ProcessEvent(XEvent* event)
 
     if (app_do_modal)                                // modal event handling
         if (!qt_try_modal(widget, event)) {
-            if (event->type == ClientMessage)
+            if (event->type == ClientMessage && !widget->x11Event(event))
                 x11ClientMessage(widget, event, true);
             return 1;
         }
@@ -2661,9 +2693,11 @@ int QApplication::x11ProcessEvent(XEvent* event)
     QTabletDeviceDataList *tablets = qt_tablet_devices();
     for (int i = 0; i < tablets->size(); ++i) {
         const QTabletDeviceData &tab = tablets->at(i);
-        if (event->type == tab.xinput_motion ||
-            event->type == tab.xinput_button_release ||
-            event->type == tab.xinput_button_press) {
+        if (event->type == tab.xinput_motion
+            || event->type == tab.xinput_button_release
+            || event->type == tab.xinput_button_press
+            || event->type == tab.xinput_proximity_in
+            || event->type == tab.xinput_proximity_out) {
             widget->translateXinputEvent(event, &tab);
             return 0;
         }
@@ -2692,8 +2726,8 @@ int QApplication::x11ProcessEvent(XEvent* event)
     switch (event->type) {
 
     case ButtonRelease:                        // mouse event
-        if (!d->inPopupMode() && !QWidget::mouseGrabber() && pressed_window != widget->winId()
-                && (widget = (QETWidget*) QWidget::find((WId)pressed_window)) == 0)
+        if (!d->inPopupMode() && !QWidget::mouseGrabber() && pressed_window != widget->internalWinId()
+            && (widget = (QETWidget*) QWidget::find((WId)pressed_window)) == 0)
             break;
         // fall through intended
     case ButtonPress:
@@ -2737,7 +2771,7 @@ int QApplication::x11ProcessEvent(XEvent* event)
         {
             if (keywidget && keywidget->isEnabled()) { // should always exist
                 // qDebug("sending key event");
-                keywidget->translateKeyEvent(event, grabbed);
+                qt_keymapper_private()->translateKeyEvent(keywidget, event, grabbed);
             }
             break;
         }
@@ -2807,7 +2841,7 @@ int QApplication::x11ProcessEvent(XEvent* event)
                 setActiveWindow(widget);
         }
         QApplicationPrivate::dispatchEnterLeave(widget, QWidget::find(curWin));
-        curWin = widget->winId();
+        curWin = widget->internalWinId();
         widget->translateMouseEvent(event); //we don't get MotionNotify, emulate it
     }
         break;
@@ -2815,7 +2849,7 @@ int QApplication::x11ProcessEvent(XEvent* event)
     case LeaveNotify: {                        // leave window
         if (QWidget::mouseGrabber()  && widget != QWidget::mouseGrabber())
             break;
-        if (curWin && widget->winId() != curWin)
+        if (curWin && widget->internalWinId() != curWin)
             break;
         if (event->xcrossing.mode != NotifyNormal)
             break;
@@ -2857,7 +2891,7 @@ int QApplication::x11ProcessEvent(XEvent* event)
 
         QApplicationPrivate::dispatchEnterLeave(enter, widget);
         if (enter && QApplicationPrivate::tryModalHelper(enter, 0)) {
-            curWin = enter->winId();
+            curWin = enter->internalWinId();
             static_cast<QETWidget *>(enter)->translateMouseEvent(&ev); //we don't get MotionNotify, emulate it
         } else {
             curWin = 0;
@@ -2867,6 +2901,7 @@ int QApplication::x11ProcessEvent(XEvent* event)
 
     case UnmapNotify:                                // window hidden
         if (widget->isWindow()) {
+            Q_ASSERT(widget->testAttribute(Qt::WA_WState_Created));
             widget->d_func()->topData()->waitingForMapNotify = 0;
 
             if (widget->windowType() != Qt::Popup) {
@@ -2883,7 +2918,8 @@ int QApplication::x11ProcessEvent(XEvent* event)
                 int idx = X11->deferred_map.indexOf(widget);
                 if (idx != -1) {
                     X11->deferred_map.removeAt(idx);
-                    XMapWindow(X11->display, widget->winId());
+                    Q_ASSERT(widget->testAttribute(Qt::WA_WState_Created));
+                    XMapWindow(X11->display, widget->internalWinId());
                 }
             }
         }
@@ -2918,7 +2954,7 @@ int QApplication::x11ProcessEvent(XEvent* event)
 
     case ReparentNotify:                        // window manager reparents
         while (XCheckTypedWindowEvent(X11->display,
-                                      widget->winId(),
+                                      widget->internalWinId(),
                                       ReparentNotify,
                                       event))
             ;        // skip old reparent events
@@ -2929,7 +2965,7 @@ int QApplication::x11ProcessEvent(XEvent* event)
             topData->parentWinId = event->xreparent.parent;
 
             // the widget frame strut should also be invalidated
-            topData->fleft = topData->fright = topData->ftop = topData->fbottom = 0;
+            topData->frameStrut.setCoords(0, 0, 0, 0);
 
             // work around broken window managers... if we get a
             // ReparentNotify before the MapNotify, we assume that
@@ -2997,11 +3033,6 @@ int QApplication::x11ProcessEvent(XEvent* event)
         }
         break;
     }
-
-    case MappingNotify:
-        // keyboard mapping changed
-        XRefreshKeyboardMapping(&event->xmapping);
-        break;
 
     case PropertyNotify:
         // some properties changed
@@ -3111,7 +3142,7 @@ void QApplicationPrivate::leaveModal_sys(QWidget *widget)
             QPoint p(QCursor::pos());
             QWidget* w = QApplication::widgetAt(p.x(), p.y());
             QApplicationPrivate::dispatchEnterLeave(w, QWidget::find(curWin)); // send synthetic enter event
-            curWin = w? w->winId() : 0;
+            curWin = w? w->internalWinId() : 0;
         }
     }
     app_do_modal = qt_modal_stack != 0;
@@ -3183,10 +3214,11 @@ void QApplicationPrivate::openPopup(QWidget *popup)
     QApplicationPrivate::popupWidgets->append(popup);                // add to end of list
     Display *dpy = X11->display;
     if (QApplicationPrivate::popupWidgets->count() == 1 && !qt_nograb()){ // grab mouse/keyboard
-        int r = XGrabKeyboard(dpy, popup->winId(), false,
+        Q_ASSERT(popup->testAttribute(Qt::WA_WState_Created));
+        int r = XGrabKeyboard(dpy, popup->internalWinId(), false,
                               GrabModeAsync, GrabModeAsync, X11->time);
         if ((popupGrabOk = (r == GrabSuccess))) {
-            r = XGrabPointer(dpy, popup->winId(), true,
+            r = XGrabPointer(dpy, popup->internalWinId(), true,
                              (ButtonPressMask | ButtonReleaseMask | ButtonMotionMask
                               | EnterWindowMask | LeaveWindowMask | PointerMotionMask),
                              GrabModeAsync, GrabModeAsync, XNone, XNone, X11->time);
@@ -3257,10 +3289,11 @@ void QApplicationPrivate::closePopup(QWidget *popup)
         // regrab the keyboard and mouse in case 'popup' lost the grab
         if (QApplicationPrivate::popupWidgets->count() == 1 && !qt_nograb()){ // grab mouse/keyboard
             Display *dpy = X11->display;
-            int r = XGrabKeyboard(dpy, aw->winId(), false,
+            Q_ASSERT(aw->testAttribute(Qt::WA_WState_Created));
+            int r = XGrabKeyboard(dpy, aw->internalWinId(), false,
                                   GrabModeAsync, GrabModeAsync, X11->time);
             if ((popupGrabOk = (r == GrabSuccess))) {
-                r = XGrabPointer(dpy, aw->winId(), true,
+                r = XGrabPointer(dpy, aw->internalWinId(), true,
                                  (ButtonPressMask | ButtonReleaseMask | ButtonMotionMask
                                   | EnterWindowMask | LeaveWindowMask | PointerMotionMask),
                                  GrabModeAsync, GrabModeAsync, XNone, XNone, X11->time);
@@ -3294,7 +3327,7 @@ static Qt::MouseButtons translateMouseButtons(int s)
     return ret;
 }
 
-static Qt::KeyboardModifiers translateModifiers(int s)
+Qt::KeyboardModifiers QX11Data::translateModifiers(int s)
 {
     Qt::KeyboardModifiers ret = 0;
     if (s & ShiftMask)
@@ -3305,6 +3338,8 @@ static Qt::KeyboardModifiers translateModifiers(int s)
         ret |= Qt::AltModifier;
     if (s & qt_meta_mask)
         ret |= Qt::MetaModifier;
+    if (s & qt_mode_switch_mask)
+        ret |= Qt::GroupSwitchModifier;
     return ret;
 }
 
@@ -3320,7 +3355,7 @@ bool QETWidget::translateMouseEvent(const XEvent *event)
     Qt::KeyboardModifiers modifiers;
     XEvent nextEvent;
 
-    if (sm_blockUserInput) // block user interaction during session management
+    if (qt_sm_blockUserInput) // block user interaction during session management
         return true;
 
     if (event->type == MotionNotify) { // mouse move
@@ -3362,7 +3397,7 @@ bool QETWidget::translateMouseEvent(const XEvent *event)
         globalPos.rx() = lastMotion.x_root;
         globalPos.ry() = lastMotion.y_root;
         buttons = translateMouseButtons(lastMotion.state);
-        modifiers = translateModifiers(lastMotion.state);
+        modifiers = X11->translateModifiers(lastMotion.state);
         if (qt_button_down && !buttons)
             qt_button_down = 0;
     } else if (event->type == EnterNotify || event->type == LeaveNotify) {
@@ -3375,7 +3410,7 @@ bool QETWidget::translateMouseEvent(const XEvent *event)
         globalPos.rx() = xevent->xcrossing.x_root;
         globalPos.ry() = xevent->xcrossing.y_root;
         buttons = translateMouseButtons(xevent->xcrossing.state);
-        modifiers = translateModifiers(xevent->xcrossing.state);
+        modifiers = X11->translateModifiers(xevent->xcrossing.state);
         if (qt_button_down && !buttons)
             qt_button_down = 0;
         if (qt_button_down)
@@ -3387,7 +3422,7 @@ bool QETWidget::translateMouseEvent(const XEvent *event)
         globalPos.rx() = event->xbutton.x_root;
         globalPos.ry() = event->xbutton.y_root;
         buttons = translateMouseButtons(event->xbutton.state);
-        modifiers = translateModifiers(event->xbutton.state);
+        modifiers = X11->translateModifiers(event->xbutton.state);
         switch (event->xbutton.button) {
         case Button1: button = Qt::LeftButton; break;
         case Button2: button = Qt::MidButton; break;
@@ -3406,7 +3441,7 @@ bool QETWidget::translateMouseEvent(const XEvent *event)
                 // or not)
                 int delta = 1;
                 XEvent xevent;
-                while (XCheckTypedWindowEvent(X11->display, winId(), ButtonPress, &xevent)){
+                while (XCheckTypedWindowEvent(X11->display, internalWinId(), ButtonPress, &xevent)){
                     if (xevent.xbutton.button != event->xbutton.button){
                         XPutBackEvent(X11->display, &xevent);
                         break;
@@ -3495,7 +3530,7 @@ bool QETWidget::translateMouseEvent(const XEvent *event)
             type = QEvent::MouseButtonRelease;
         }
     }
-    mouseActWindow = winId();                        // save some event params
+    mouseActWindow = internalWinId();                        // save some event params
     mouseButtonState = buttons;
     if (type == 0)                                // don't send event
         return false;
@@ -3553,6 +3588,8 @@ bool QETWidget::translateMouseEvent(const XEvent *event)
             && replayPopupMouseEvent) {
             // the active popup was closed, replay the mouse event
             if (!(windowType() == Qt::Popup)) {
+                if (buttons == button)
+                    qt_button_down = this;
                 QMouseEvent e(type, mapFromGlobal(globalPos), globalPos, button,
                               buttons, modifiers);
                 QApplication::sendSpontaneousEvent(this, &e);
@@ -3597,12 +3634,21 @@ bool QETWidget::translateMouseEvent(const XEvent *event)
     } else {
         QWidget *widget = this;
         QWidget *w = QWidget::mouseGrabber();
+
+        if (((type == QEvent::MouseMove && buttons)
+             || (type == QEvent::MouseButtonRelease))
+            && !qt_button_down && !w)
+            return false; // don't send event
+
+
         if (!w)
             w = qt_button_down;
+
         if (w && w != this) {
             widget = w;
             pos = w->mapFromGlobal(globalPos);
         }
+
 
         if (type == QEvent::MouseButtonRelease && !buttons) {
             // no more buttons pressed on the widget
@@ -3692,15 +3738,19 @@ bool QETWidget::translateXinputEvent(const XEvent *ev, const QTabletDeviceData *
     XEvent mouseMotionEvent;
     const XDeviceMotionEvent *motion = 0;
     XDeviceButtonEvent *button = 0;
+    const XProximityNotifyEvent *proximity = 0;
     QEvent::Type t;
     Qt::KeyboardModifiers modifiers = 0;
+#if !defined (Q_OS_IRIX)
+    XID device_id;
+#endif
 
     if (ev->type == tablet->xinput_motion) {
         motion = reinterpret_cast<const XDeviceMotionEvent*>(ev);
         for (;;) {
-            if (!XCheckTypedWindowEvent(X11->display, winId(), MotionNotify, &mouseMotionEvent))
+            if (!XCheckTypedWindowEvent(X11->display, internalWinId(), MotionNotify, &mouseMotionEvent))
                 break;
-            if (!XCheckTypedWindowEvent(X11->display, winId(), tablet->xinput_motion, &xinputMotionEvent)) {
+            if (!XCheckTypedWindowEvent(X11->display, internalWinId(), tablet->xinput_motion, &xinputMotionEvent)) {
                 XPutBackEvent(X11->display, &mouseMotionEvent);
                 break;
             }
@@ -3715,7 +3765,10 @@ bool QETWidget::translateXinputEvent(const XEvent *ev, const QTabletDeviceData *
         t = QEvent::TabletMove;
         global = QPoint(motion->x_root, motion->y_root);
         curr = QPoint(motion->x, motion->y);
-    } else {
+#if !defined (Q_OS_IRIX)
+        device_id = motion->deviceid;
+#endif
+    } else if (ev->type == tablet->xinput_button_press || ev->type == tablet->xinput_button_release) {
         if (ev->type == tablet->xinput_button_press) {
             t = QEvent::TabletPress;
         } else {
@@ -3725,10 +3778,22 @@ bool QETWidget::translateXinputEvent(const XEvent *ev, const QTabletDeviceData *
 
         global = QPoint(button->x_root, button->y_root);
         curr = QPoint(button->x, button->y);
+#if !defined (Q_OS_IRIX)
+        device_id = button->deviceid;
+#endif
+    } else { // Proximity
+        if (ev->type == tablet->xinput_proximity_in)
+            t = QEvent::TabletEnterProximity;
+        else
+            t = QEvent::TabletLeaveProximity;
+        proximity = (const XProximityNotifyEvent*)ev;
+#if !defined (Q_OS_IRIX)
+        device_id = proximity->deviceid;
+#endif
     }
 
     qint64 uid;
-    QRect screenArea = qApp->desktop()->screenGeometry(global);
+    QRect screenArea = qApp->desktop()->screenGeometry(this);
 #if defined (Q_OS_IRIX)
     s = XQueryDeviceState(X11->display, static_cast<XDevice *>(tablet->device));
     if (!s)
@@ -3778,23 +3843,25 @@ bool QETWidget::translateXinputEvent(const XEvent *ev, const QTabletDeviceData *
                 uid = 0;
             }
 
-            // apparently Wacom needs a cast for the +/- values to make sense
-            xTilt = short(vs->valuators[WAC_XTILT_I]);
-            yTilt = short(vs->valuators[WAC_YTILT_I]);
-            pressure = vs->valuators[WAC_PRESSURE_I];
-            if (deviceType == QTabletEvent::FourDMouse
-                    || deviceType == QTabletEvent::RotationStylus) {
-                rotation = vs->valuators[WAC_ROTATION_I] / 64.0;
-                if (deviceType == QTabletEvent::FourDMouse)
-                    z = vs->valuators[WAC_ZCOORD_I];
-            } else if (deviceType == QTabletEvent::Airbrush) {
-                tangentialPressure = vs->valuators[WAC_TAN_PRESSURE_I]
-                                        / qreal(tablet->maxTanPressure - tablet->minTanPressure);
-            }
+            if (!proximity) {
+                // apparently Wacom needs a cast for the +/- values to make sense
+                xTilt = short(vs->valuators[WAC_XTILT_I]);
+                yTilt = short(vs->valuators[WAC_YTILT_I]);
+                pressure = vs->valuators[WAC_PRESSURE_I];
+                if (deviceType == QTabletEvent::FourDMouse
+                        || deviceType == QTabletEvent::RotationStylus) {
+                    rotation = vs->valuators[WAC_ROTATION_I] / 64.0;
+                    if (deviceType == QTabletEvent::FourDMouse)
+                        z = vs->valuators[WAC_ZCOORD_I];
+                } else if (deviceType == QTabletEvent::Airbrush) {
+                    tangentialPressure = vs->valuators[WAC_TAN_PRESSURE_I]
+                                            / qreal(tablet->maxTanPressure - tablet->minTanPressure);
+                }
 
-            hiRes = tablet->scaleCoord(vs->valuators[WAC_XCOORD_I], vs->valuators[WAC_YCOORD_I],
-                                       screenArea.x(), screenArea.width(),
-                                       screenArea.y(), screenArea.height());
+                hiRes = tablet->scaleCoord(vs->valuators[WAC_XCOORD_I], vs->valuators[WAC_YCOORD_I],
+                                           screenArea.x(), screenArea.width(),
+                                           screenArea.y(), screenArea.height());
+            }
             break;
         }
         iClass = reinterpret_cast<XInputClass*>(reinterpret_cast<char*>(iClass) + iClass->length);
@@ -3802,7 +3869,6 @@ bool QETWidget::translateXinputEvent(const XEvent *ev, const QTabletDeviceData *
     XFreeDeviceState(s);
 #else
     QTabletDeviceDataList *tablet_list = qt_tablet_devices();
-    XID device_id = ev->type == tablet->xinput_motion ? motion->deviceid : button->deviceid;
     for (int i = 0; i < tablet_list->size(); ++i) {
         const QTabletDeviceData &t = tablet_list->at(i);
         if (device_id == static_cast<XDevice *>(t.device)->device_id) {
@@ -3810,37 +3876,63 @@ bool QETWidget::translateXinputEvent(const XEvent *ev, const QTabletDeviceData *
             if (deviceType == QTabletEvent::XFreeEraser) {
                 deviceType = QTabletEvent::Stylus;
                 pointerType = QTabletEvent::Eraser;
+            } else if (deviceType == QTabletEvent::Stylus) {
+                pointerType = QTabletEvent::Pen;
             }
             // qDebug() << ((XDevice*)t.device)->device_id;
             break;
         }
     }
 
+    uint hibyte1 = 0;  // ID
+    uint hibyte2 = 0;  // Serial # part 1
+    uint hibyte3 = 0;  // Serial # part 2
     if (motion) {
-        xTilt = short(motion->axis_data[3]);
-        yTilt = short(motion->axis_data[4]);
+        hibyte1 = (motion->axis_data[3] & 0xffff0000) >> 16;
+        hibyte2 = (motion->axis_data[4] & 0xffff0000) >> 16;
+        hibyte3 = (motion->axis_data[5] & 0xffff0000) >> 16;
+        xTilt = short(motion->axis_data[3] & 0xffff);
+        yTilt = short(motion->axis_data[4] & 0xffff);
         pressure = motion->axis_data[2];
-        modifiers = translateModifiers(motion->state);
+        modifiers = X11->translateModifiers(motion->state);
         hiRes = tablet->scaleCoord(motion->axis_data[0], motion->axis_data[1],
                                     screenArea.x(), screenArea.width(),
                                     screenArea.y(), screenArea.height());
-    } else {
-        xTilt = short(button->axis_data[3]);
-        yTilt = short(button->axis_data[4]);
+    } else if (button) {
+        hibyte1 = (button->axis_data[3] & 0xffff0000) >> 16;
+        hibyte2 = (button->axis_data[4] & 0xffff0000) >> 16;
+        hibyte3 = (button->axis_data[5] & 0xffff0000) >> 16;
+        xTilt = short(button->axis_data[3] & 0xffff);
+        yTilt = short(button->axis_data[4] & 0xffff);
         pressure = button->axis_data[2];
         hiRes = tablet->scaleCoord(button->axis_data[0], button->axis_data[1],
                                     screenArea.x(), screenArea.width(),
                                     screenArea.y(), screenArea.height());
-        modifiers = translateModifiers(button->state);
+        modifiers = X11->translateModifiers(button->state);
+    } else if (proximity) {
+        hibyte1 = (proximity->axis_data[3] & 0xffff0000) >> 16;
+        hibyte2 = (proximity->axis_data[4] & 0xffff0000) >> 16;
+        hibyte3 = (proximity->axis_data[5] & 0xffff0000) >> 16;
+        pressure = 0;
+        modifiers = 0;
     }
-    // The only way to get these Ids is to scan the XFree86 log, which I'm not going to do.
-    uid = -1;
+    // There are newer drivers out that do report the serial number.
+    // But the older ones  will have values of 0xffff or 0;
+    if (hibyte1 == 0 || hibyte1 == 0xffff) {
+        uid = -1;
+    } else {
+        uid = hibyte1 & 0x0f06;
+        uid = (uid << 24) | ((hibyte2 << 16) | hibyte3);
+    }
 #endif
     QTabletEvent e(t, curr, global, hiRes,
                    deviceType, pointerType,
                    qreal(pressure / qreal(tablet->maxPressure - tablet->minPressure)),
                    xTilt, yTilt, tangentialPressure, rotation, z, modifiers, uid);
-    QApplication::sendSpontaneousEvent(w, &e);
+    if (proximity)
+        QApplication::sendSpontaneousEvent(qApp, &e);
+    else
+        QApplication::sendSpontaneousEvent(w, &e);
     return true;
 }
 #endif
@@ -3856,7 +3948,8 @@ bool QETWidget::translatePropertyEvent(const XEvent *event)
     unsigned long nitems, after;
 
     if (event->xproperty.atom == ATOM(_KDE_NET_WM_FRAME_STRUT)) {
-        d->topData()->fleft = d->topData()->fright = d->topData()->ftop = d->topData()->fbottom = 0;
+        QTLWExtra *topData = d->topData();
+        topData->frameStrut.setCoords(0, 0, 0, 0);
         this->data->fstrut_dirty = 1;
 
         if (event->xproperty.state == PropertyNewValue) {
@@ -3867,10 +3960,7 @@ bool QETWidget::translatePropertyEvent(const XEvent *event)
             if (e == Success && ret == XA_CARDINAL &&
                 format == 32 && nitems == 4) {
                 long *strut = (long *) data;
-                d->topData()->fleft   = strut[0];
-                d->topData()->fright  = strut[1];
-                d->topData()->ftop    = strut[2];
-                d->topData()->fbottom = strut[3];
+                topData->frameStrut.setCoords(strut[0], strut[1], strut[2], strut[3]);
                 this->data->fstrut_dirty = 0;
             }
         }
@@ -3928,7 +4018,7 @@ bool QETWidget::translatePropertyEvent(const XEvent *event)
         }
     } else if (event->xproperty.atom == ATOM(WM_STATE)) {
         // the widget frame strut should also be invalidated
-        d->topData()->fleft = d->topData()->fright = d->topData()->ftop = d->topData()->fbottom = 0;
+        d->topData()->frameStrut.setCoords(0, 0, 0, 0);
         this->data->fstrut_dirty = 1;
 
         if (event->xproperty.state == PropertyDelete) {
@@ -3940,7 +4030,7 @@ bool QETWidget::translatePropertyEvent(const XEvent *event)
             // map the window if we were waiting for a transition to
             // withdrawn
             if (X11->deferred_map.removeAll(this)) {
-                XMapWindow(X11->display, winId());
+                XMapWindow(X11->display, internalWinId());
             } else if (isVisible() && !testAttribute(Qt::WA_Mapped)) {
                 // so that show() will work again. As stated in the
                 // ICCCM section 4.1.4: "Only the client can effect a
@@ -3954,7 +4044,7 @@ bool QETWidget::translatePropertyEvent(const XEvent *event)
             // the window manager has changed the WM State property...
             // we are wanting to see if we are withdrawn so that we
             // can reuse this window...
-            e = XGetWindowProperty(X11->display, winId(), ATOM(WM_STATE), 0, 2, False,
+            e = XGetWindowProperty(X11->display, internalWinId(), ATOM(WM_STATE), 0, 2, False,
                                    ATOM(WM_STATE), &ret, &format, &nitems, &after, &data);
 
             if (e == Success && ret == ATOM(WM_STATE) && format == 32 && nitems > 0) {
@@ -3964,7 +4054,7 @@ bool QETWidget::translatePropertyEvent(const XEvent *event)
                     // if we are in the withdrawn state, we are free
                     // to reuse this window provided we remove the
                     // WM_STATE property (ICCCM 4.1.3.1)
-                    XDeleteProperty(X11->display, winId(), ATOM(WM_STATE));
+                    XDeleteProperty(X11->display, internalWinId(), ATOM(WM_STATE));
 
                     // set the parent id to zero, so that show() will
                     // work again
@@ -3973,7 +4063,7 @@ bool QETWidget::translatePropertyEvent(const XEvent *event)
                     // map the window if we were waiting for a
                     // transition to withdrawn
                     if (X11->deferred_map.removeAll(this)) {
-                        XMapWindow(X11->display, winId());
+                        XMapWindow(X11->display, internalWinId());
                     } else if (isVisible() && !testAttribute(Qt::WA_Mapped)) {
                         // so that show() will work again. As stated
                         // in the ICCCM section 4.1.4: "Only the
@@ -4031,946 +4121,6 @@ bool QETWidget::translatePropertyEvent(const XEvent *event)
 
     return true;
 }
-
-//
-// Keyboard event translation
-//
-
-#ifndef XK_ISO_Left_Tab
-#define        XK_ISO_Left_Tab                                        0xFE20
-#endif
-
-#ifndef XK_dead_hook
-#define XK_dead_hook 0xFE61
-#endif
-
-#ifndef XK_dead_horn
-#define XK_dead_horn 0xFE62
-#endif
-
-#ifndef XK_Codeinput
-#define XK_Codeinput 0xFF37
-#endif
-
-#ifndef XK_Kanji_Bangou
-#define XK_Kanji_Bangou 0xFF37 /* same as codeinput */
-#endif
-
-// Fix old X libraries
-#ifndef XK_KP_Home
-#define XK_KP_Home              0xFF95
-#endif
-#ifndef XK_KP_Left
-#define XK_KP_Left              0xFF96
-#endif
-#ifndef XK_KP_Up
-#define XK_KP_Up                0xFF97
-#endif
-#ifndef XK_KP_Right
-#define XK_KP_Right             0xFF98
-#endif
-#ifndef XK_KP_Down
-#define XK_KP_Down              0xFF99
-#endif
-#ifndef XK_KP_Prior
-#define XK_KP_Prior             0xFF9A
-#endif
-#ifndef XK_KP_Next
-#define XK_KP_Next              0xFF9B
-#endif
-#ifndef XK_KP_End
-#define XK_KP_End               0xFF9C
-#endif
-#ifndef XK_KP_Insert
-#define XK_KP_Insert            0xFF9E
-#endif
-#ifndef XK_KP_Delete
-#define XK_KP_Delete            0xFF9F
-#endif
-
-// the next lines are taken from XFree > 4.0 (X11/XF86keysyms.h), defining some special
-// multimedia keys. They are included here as not every system has them.
-#define XF86XK_Standby                0x1008FF10
-#define XF86XK_AudioLowerVolume        0x1008FF11
-#define XF86XK_AudioMute        0x1008FF12
-#define XF86XK_AudioRaiseVolume        0x1008FF13
-#define XF86XK_AudioPlay        0x1008FF14
-#define XF86XK_AudioStop        0x1008FF15
-#define XF86XK_AudioPrev        0x1008FF16
-#define XF86XK_AudioNext        0x1008FF17
-#define XF86XK_HomePage                0x1008FF18
-#define XF86XK_Calculator        0x1008FF1D
-#define XF86XK_Mail                0x1008FF19
-#define XF86XK_Start                0x1008FF1A
-#define XF86XK_Search                0x1008FF1B
-#define XF86XK_AudioRecord        0x1008FF1C
-#define XF86XK_Back                0x1008FF26
-#define XF86XK_Forward                0x1008FF27
-#define XF86XK_Stop                0x1008FF28
-#define XF86XK_Refresh                0x1008FF29
-#define XF86XK_Favorites        0x1008FF30
-#define XF86XK_AudioPause        0x1008FF31
-#define XF86XK_AudioMedia        0x1008FF32
-#define XF86XK_MyComputer        0x1008FF33
-#define XF86XK_OpenURL                0x1008FF38
-#define XF86XK_Launch0                0x1008FF40
-#define XF86XK_Launch1                0x1008FF41
-#define XF86XK_Launch2                0x1008FF42
-#define XF86XK_Launch3                0x1008FF43
-#define XF86XK_Launch4                0x1008FF44
-#define XF86XK_Launch5                0x1008FF45
-#define XF86XK_Launch6                0x1008FF46
-#define XF86XK_Launch7                0x1008FF47
-#define XF86XK_Launch8                0x1008FF48
-#define XF86XK_Launch9                0x1008FF49
-#define XF86XK_LaunchA                0x1008FF4A
-#define XF86XK_LaunchB                0x1008FF4B
-#define XF86XK_LaunchC                0x1008FF4C
-#define XF86XK_LaunchD                0x1008FF4D
-#define XF86XK_LaunchE                0x1008FF4E
-#define XF86XK_LaunchF                0x1008FF4F
-// end of XF86keysyms.h
-
-
-
-static const unsigned int KeyTbl[] = {                // keyboard mapping table
-    XK_Escape,                Qt::Key_Escape,                // misc keys
-    XK_Tab,                Qt::Key_Tab,
-    XK_ISO_Left_Tab,    Qt::Key_Backtab,
-    XK_BackSpace,        Qt::Key_Backspace,
-    XK_Return,                Qt::Key_Return,
-    XK_Insert,                Qt::Key_Insert,
-    XK_Delete,                Qt::Key_Delete,
-    XK_Clear,                Qt::Key_Delete,
-    XK_Pause,                Qt::Key_Pause,
-    XK_Print,                Qt::Key_Print,
-    0x1005FF60,                Qt::Key_SysReq,                // hardcoded Sun SysReq
-    0x1007ff00,                Qt::Key_SysReq,                // hardcoded X386 SysReq
-    XK_Home,                Qt::Key_Home,                // cursor movement
-    XK_End,                Qt::Key_End,
-    XK_Left,                Qt::Key_Left,
-    XK_Up,                Qt::Key_Up,
-    XK_Right,                Qt::Key_Right,
-    XK_Down,                Qt::Key_Down,
-    XK_Prior,                Qt::Key_PageUp,
-    XK_Next,                Qt::Key_PageDown,
-    XK_Shift_L,                Qt::Key_Shift,                // modifiers
-    XK_Shift_R,                Qt::Key_Shift,
-    XK_Shift_Lock,        Qt::Key_Shift,
-    XK_Control_L,        Qt::Key_Control,
-    XK_Control_R,        Qt::Key_Control,
-    XK_Meta_L,                Qt::Key_Meta,
-    XK_Meta_R,                Qt::Key_Meta,
-    XK_Alt_L,                Qt::Key_Alt,
-    XK_Alt_R,                Qt::Key_Alt,
-    XK_Caps_Lock,        Qt::Key_CapsLock,
-    XK_Num_Lock,        Qt::Key_NumLock,
-    XK_Scroll_Lock,        Qt::Key_ScrollLock,
-    XK_Super_L,                Qt::Key_Super_L,
-    XK_Super_R,                Qt::Key_Super_R,
-    XK_Menu,                Qt::Key_Menu,
-    XK_Hyper_L,                Qt::Key_Hyper_L,
-    XK_Hyper_R,                Qt::Key_Hyper_R,
-    XK_Help,                Qt::Key_Help,
-    0x1000FF74,         Qt::Key_Backtab,     // hardcoded HP backtab
-    0x1005FF10,         Qt::Key_F11,         // hardcoded Sun F36 (labeled F11)
-    0x1005FF11,         Qt::Key_F12,         // hardcoded Sun F37 (labeled F12)
-
-    // numeric and function keypad keys
-
-    XK_KP_Space,        Qt::Key_Space,
-    XK_KP_Tab,          Qt::Key_Tab,
-    XK_KP_Enter,        Qt::Key_Enter,
-    //XK_KP_F1,         Qt::Key_F1,
-    //XK_KP_F2,         Qt::Key_F2,
-    //XK_KP_F3,         Qt::Key_F3,
-    //XK_KP_F4,         Qt::Key_F4,
-    XK_KP_Home,         Qt::Key_Home,
-    XK_KP_Left,         Qt::Key_Left,
-    XK_KP_Up,           Qt::Key_Up,
-    XK_KP_Right,        Qt::Key_Right,
-    XK_KP_Down,         Qt::Key_Down,
-    XK_KP_Prior,        Qt::Key_PageUp,
-    XK_KP_Next,         Qt::Key_PageDown,
-    XK_KP_End,          Qt::Key_End,
-    XK_KP_Begin,        Qt::Key_Clear,
-    XK_KP_Insert,       Qt::Key_Insert,
-    XK_KP_Delete,       Qt::Key_Delete,
-    XK_KP_Equal,        Qt::Key_Equal,
-    XK_KP_Multiply,     Qt::Key_Asterisk,
-    XK_KP_Add,          Qt::Key_Plus,
-    XK_KP_Separator,    Qt::Key_Comma,
-    XK_KP_Subtract,     Qt::Key_Minus,
-    XK_KP_Decimal,      Qt::Key_Period,
-    XK_KP_Divide,       Qt::Key_Slash,
-
-    // International input method support keys
-
-    // International & multi-key character composition
-    XK_ISO_Level3_Shift,        Qt::Key_AltGr,
-    XK_Multi_key,		Qt::Key_Multi_key,
-    XK_Codeinput,		Qt::Key_Codeinput,
-    XK_SingleCandidate,		Qt::Key_SingleCandidate,
-    XK_MultipleCandidate,	Qt::Key_MultipleCandidate,
-    XK_PreviousCandidate,	Qt::Key_PreviousCandidate,
-
-    // Misc Functions
-    XK_Mode_switch,		Qt::Key_Mode_switch,
-    //XK_script_switch,		Qt::Key_script_switch,
-    XK_script_switch,		Qt::Key_Mode_switch,
-
-    // Japanese keyboard support
-    XK_Kanji,			Qt::Key_Kanji,
-    XK_Muhenkan,		Qt::Key_Muhenkan,
-    //XK_Henkan_Mode,		Qt::Key_Henkan_Mode,
-    XK_Henkan_Mode,		Qt::Key_Henkan,
-    XK_Henkan,			Qt::Key_Henkan,
-    XK_Romaji,			Qt::Key_Romaji,
-    XK_Hiragana,		Qt::Key_Hiragana,
-    XK_Katakana,		Qt::Key_Katakana,
-    XK_Hiragana_Katakana,	Qt::Key_Hiragana_Katakana,
-    XK_Zenkaku,			Qt::Key_Zenkaku,
-    XK_Hankaku,			Qt::Key_Hankaku,
-    XK_Zenkaku_Hankaku,		Qt::Key_Zenkaku_Hankaku,
-    XK_Touroku,			Qt::Key_Touroku,
-    XK_Massyo,			Qt::Key_Massyo,
-    XK_Kana_Lock,		Qt::Key_Kana_Lock,
-    XK_Kana_Shift,		Qt::Key_Kana_Shift,
-    XK_Eisu_Shift,		Qt::Key_Eisu_Shift,
-    XK_Eisu_toggle,		Qt::Key_Eisu_toggle,
-    //XK_Kanji_Bangou,		Qt::Key_Kanji_Bangou,
-    //XK_Zen_Koho,		Qt::Key_Zen_Koho,
-    //XK_Mae_Koho,		Qt::Key_Mae_Koho,
-    XK_Kanji_Bangou,		Qt::Key_Codeinput,
-    XK_Zen_Koho,		Qt::Key_MultipleCandidate,
-    XK_Mae_Koho,		Qt::Key_PreviousCandidate,
-
-#ifdef XK_KOREAN
-    // Korean keyboard support
-    XK_Hangul,			Qt::Key_Hangul,
-    XK_Hangul_Start,		Qt::Key_Hangul_Start,
-    XK_Hangul_End,		Qt::Key_Hangul_End,
-    XK_Hangul_Hanja,		Qt::Key_Hangul_Hanja,
-    XK_Hangul_Jamo,		Qt::Key_Hangul_Jamo,
-    XK_Hangul_Romaja,		Qt::Key_Hangul_Romaja,
-    //XK_Hangul_Codeinput,	Qt::Key_Hangul_Codeinput,
-    XK_Hangul_Codeinput,	Qt::Key_Codeinput,
-    XK_Hangul_Jeonja,		Qt::Key_Hangul_Jeonja,
-    XK_Hangul_Banja,		Qt::Key_Hangul_Banja,
-    XK_Hangul_PreHanja,		Qt::Key_Hangul_PreHanja,
-    XK_Hangul_PostHanja,	Qt::Key_Hangul_PostHanja,
-    //XK_Hangul_SingleCandidate,	Qt::Key_Hangul_SingleCandidate,
-    //XK_Hangul_MultipleCandidate, Qt::Key_Hangul_MultipleCandidate,
-    //XK_Hangul_PreviousCandidate, Qt::Key_Hangul_PreviousCandidate,
-    XK_Hangul_SingleCandidate,	Qt::Key_SingleCandidate,
-    XK_Hangul_MultipleCandidate, Qt::Key_MultipleCandidate,
-    XK_Hangul_PreviousCandidate, Qt::Key_PreviousCandidate,
-    XK_Hangul_Special,		Qt::Key_Hangul_Special,
-    //XK_Hangul_switch,		Qt::Key_Hangul_switch,
-    XK_Hangul_switch,		Qt::Key_Mode_switch,
-#endif  // XK_KOREAN
-
-    // dead keys
-    XK_dead_grave,              Qt::Key_Dead_Grave,
-    XK_dead_acute,              Qt::Key_Dead_Acute,
-    XK_dead_circumflex,         Qt::Key_Dead_Circumflex,
-    XK_dead_tilde,              Qt::Key_Dead_Tilde,
-    XK_dead_macron,             Qt::Key_Dead_Macron,
-    XK_dead_breve,              Qt::Key_Dead_Breve,
-    XK_dead_abovedot,           Qt::Key_Dead_Abovedot,
-    XK_dead_diaeresis,          Qt::Key_Dead_Diaeresis,
-    XK_dead_abovering,          Qt::Key_Dead_Abovering,
-    XK_dead_doubleacute,        Qt::Key_Dead_Doubleacute,
-    XK_dead_caron,              Qt::Key_Dead_Caron,
-    XK_dead_cedilla,            Qt::Key_Dead_Cedilla,
-    XK_dead_ogonek,             Qt::Key_Dead_Ogonek,
-    XK_dead_iota,               Qt::Key_Dead_Iota,
-    XK_dead_voiced_sound,       Qt::Key_Dead_Voiced_Sound,
-    XK_dead_semivoiced_sound,   Qt::Key_Dead_Semivoiced_Sound,
-    XK_dead_belowdot,           Qt::Key_Dead_Belowdot,
-    XK_dead_hook,               Qt::Key_Dead_Hook,
-    XK_dead_horn,               Qt::Key_Dead_Horn,
-
-    // Special multimedia keys
-    // currently only tested with MS internet keyboard
-
-    // browsing keys
-    XF86XK_Back,        Qt::Key_Back,
-    XF86XK_Forward,        Qt::Key_Forward,
-    XF86XK_Stop,        Qt::Key_Stop,
-    XF86XK_Refresh,        Qt::Key_Refresh,
-    XF86XK_Favorites,        Qt::Key_Favorites,
-    XF86XK_AudioMedia,        Qt::Key_LaunchMedia,
-    XF86XK_OpenURL,        Qt::Key_OpenUrl,
-    XF86XK_HomePage,        Qt::Key_HomePage,
-    XF86XK_Search,        Qt::Key_Search,
-
-    // media keys
-    XF86XK_AudioLowerVolume, Qt::Key_VolumeDown,
-    XF86XK_AudioMute,        Qt::Key_VolumeMute,
-    XF86XK_AudioRaiseVolume, Qt::Key_VolumeUp,
-    XF86XK_AudioPlay,        Qt::Key_MediaPlay,
-    XF86XK_AudioStop,        Qt::Key_MediaStop,
-    XF86XK_AudioPrev,        Qt::Key_MediaPrevious,
-    XF86XK_AudioNext,        Qt::Key_MediaNext,
-    XF86XK_AudioRecord,        Qt::Key_MediaRecord,
-
-    // launch keys
-    XF86XK_Mail,        Qt::Key_LaunchMail,
-    XF86XK_MyComputer,        Qt::Key_Launch0,
-    XF86XK_Calculator,        Qt::Key_Launch1,
-    XF86XK_Standby,         Qt::Key_Standby,
-
-    XF86XK_Launch0,        Qt::Key_Launch2,
-    XF86XK_Launch1,        Qt::Key_Launch3,
-    XF86XK_Launch2,        Qt::Key_Launch4,
-    XF86XK_Launch3,        Qt::Key_Launch5,
-    XF86XK_Launch4,        Qt::Key_Launch6,
-    XF86XK_Launch5,        Qt::Key_Launch7,
-    XF86XK_Launch6,        Qt::Key_Launch8,
-    XF86XK_Launch7,        Qt::Key_Launch9,
-    XF86XK_Launch8,        Qt::Key_LaunchA,
-    XF86XK_Launch9,        Qt::Key_LaunchB,
-    XF86XK_LaunchA,        Qt::Key_LaunchC,
-    XF86XK_LaunchB,        Qt::Key_LaunchD,
-    XF86XK_LaunchC,        Qt::Key_LaunchE,
-    XF86XK_LaunchD,        Qt::Key_LaunchF,
-
-    0,                        0
-};
-
-static int translateKeySym(uint key)
-{
-    int code = -1;
-    int i = 0;                                // any other keys
-    while (KeyTbl[i]) {
-        if (key == KeyTbl[i]) {
-            code = (int)KeyTbl[i+1];
-            break;
-        }
-        i += 2;
-    }
-    if (qt_meta_mask) {
-        // translate Super/Hyper keys to Meta if we're using them as the MetaModifier
-        if (qt_meta_mask == qt_super_mask && (code == Qt::Key_Super_L || code == Qt::Key_Super_R)) {
-            code = Qt::Key_Meta;
-        } else if (qt_meta_mask == qt_hyper_mask && (code == Qt::Key_Hyper_L || code == Qt::Key_Hyper_R)) {
-            code = Qt::Key_Meta;
-        }
-    }
-    return code;
-}
-
-
-#if !defined(QT_NO_XIM)
-static const unsigned short katakanaKeysymsToUnicode[] = {
-    0x0000, 0x3002, 0x300C, 0x300D, 0x3001, 0x30FB, 0x30F2, 0x30A1,
-    0x30A3, 0x30A5, 0x30A7, 0x30A9, 0x30E3, 0x30E5, 0x30E7, 0x30C3,
-    0x30FC, 0x30A2, 0x30A4, 0x30A6, 0x30A8, 0x30AA, 0x30AB, 0x30AD,
-    0x30AF, 0x30B1, 0x30B3, 0x30B5, 0x30B7, 0x30B9, 0x30BB, 0x30BD,
-    0x30BF, 0x30C1, 0x30C4, 0x30C6, 0x30C8, 0x30CA, 0x30CB, 0x30CC,
-    0x30CD, 0x30CE, 0x30CF, 0x30D2, 0x30D5, 0x30D8, 0x30DB, 0x30DE,
-    0x30DF, 0x30E0, 0x30E1, 0x30E2, 0x30E4, 0x30E6, 0x30E8, 0x30E9,
-    0x30EA, 0x30EB, 0x30EC, 0x30ED, 0x30EF, 0x30F3, 0x309B, 0x309C
-};
-
-static const unsigned short cyrillicKeysymsToUnicode[] = {
-    0x0000, 0x0452, 0x0453, 0x0451, 0x0454, 0x0455, 0x0456, 0x0457,
-    0x0458, 0x0459, 0x045a, 0x045b, 0x045c, 0x0000, 0x045e, 0x045f,
-    0x2116, 0x0402, 0x0403, 0x0401, 0x0404, 0x0405, 0x0406, 0x0407,
-    0x0408, 0x0409, 0x040a, 0x040b, 0x040c, 0x0000, 0x040e, 0x040f,
-    0x044e, 0x0430, 0x0431, 0x0446, 0x0434, 0x0435, 0x0444, 0x0433,
-    0x0445, 0x0438, 0x0439, 0x043a, 0x043b, 0x043c, 0x043d, 0x043e,
-    0x043f, 0x044f, 0x0440, 0x0441, 0x0442, 0x0443, 0x0436, 0x0432,
-    0x044c, 0x044b, 0x0437, 0x0448, 0x044d, 0x0449, 0x0447, 0x044a,
-    0x042e, 0x0410, 0x0411, 0x0426, 0x0414, 0x0415, 0x0424, 0x0413,
-    0x0425, 0x0418, 0x0419, 0x041a, 0x041b, 0x041c, 0x041d, 0x041e,
-    0x041f, 0x042f, 0x0420, 0x0421, 0x0422, 0x0423, 0x0416, 0x0412,
-    0x042c, 0x042b, 0x0417, 0x0428, 0x042d, 0x0429, 0x0427, 0x042a
-};
-
-static const unsigned short greekKeysymsToUnicode[] = {
-    0x0000, 0x0386, 0x0388, 0x0389, 0x038a, 0x03aa, 0x0000, 0x038c,
-    0x038e, 0x03ab, 0x0000, 0x038f, 0x0000, 0x0000, 0x0385, 0x2015,
-    0x0000, 0x03ac, 0x03ad, 0x03ae, 0x03af, 0x03ca, 0x0390, 0x03cc,
-    0x03cd, 0x03cb, 0x03b0, 0x03ce, 0x0000, 0x0000, 0x0000, 0x0000,
-    0x0000, 0x0391, 0x0392, 0x0393, 0x0394, 0x0395, 0x0396, 0x0397,
-    0x0398, 0x0399, 0x039a, 0x039b, 0x039c, 0x039d, 0x039e, 0x039f,
-    0x03a0, 0x03a1, 0x03a3, 0x0000, 0x03a4, 0x03a5, 0x03a6, 0x03a7,
-    0x03a8, 0x03a9, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
-    0x0000, 0x03b1, 0x03b2, 0x03b3, 0x03b4, 0x03b5, 0x03b6, 0x03b7,
-    0x03b8, 0x03b9, 0x03ba, 0x03bb, 0x03bc, 0x03bd, 0x03be, 0x03bf,
-    0x03c0, 0x03c1, 0x03c3, 0x03c2, 0x03c4, 0x03c5, 0x03c6, 0x03c7,
-    0x03c8, 0x03c9, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000
-};
-
-static const unsigned short technicalKeysymsToUnicode[] = {
-    0x0000, 0x23B7, 0x250C, 0x2500, 0x2320, 0x2321, 0x2502, 0x23A1,
-    0x23A3, 0x23A4, 0x23A6, 0x239B, 0x239D, 0x239E, 0x23A0, 0x23A8,
-    0x23AC, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
-    0x0000, 0x0000, 0x0000, 0x0000, 0x2264, 0x2260, 0x2265, 0x222B,
-    0x2234, 0x221D, 0x221E, 0x0000, 0x0000, 0x2207, 0x0000, 0x0000,
-    0x223C, 0x2243, 0x0000, 0x0000, 0x0000, 0x21D4, 0x21D2, 0x2261,
-    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x221A, 0x0000,
-    0x0000, 0x0000, 0x2282, 0x2283, 0x2229, 0x222A, 0x2227, 0x2228,
-    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
-    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x2202,
-    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0192, 0x0000,
-    0x0000, 0x0000, 0x0000, 0x2190, 0x2191, 0x2192, 0x2193, 0x0000
-};
-
-static const unsigned short specialKeysymsToUnicode[] = {
-    0x25C6, 0x2592, 0x2409, 0x240C, 0x240D, 0x240A, 0x0000, 0x0000,
-    0x2424, 0x240B, 0x2518, 0x2510, 0x250C, 0x2514, 0x253C, 0x23BA,
-    0x23BB, 0x2500, 0x23BC, 0x23BD, 0x251C, 0x2524, 0x2534, 0x252C,
-    0x2502, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000
-};
-
-static const unsigned short publishingKeysymsToUnicode[] = {
-    0x0000, 0x2003, 0x2002, 0x2004, 0x2005, 0x2007, 0x2008, 0x2009,
-    0x200a, 0x2014, 0x2013, 0x0000, 0x0000, 0x0000, 0x2026, 0x2025,
-    0x2153, 0x2154, 0x2155, 0x2156, 0x2157, 0x2158, 0x2159, 0x215a,
-    0x2105, 0x0000, 0x0000, 0x2012, 0x2329, 0x0000, 0x232a, 0x0000,
-    0x0000, 0x0000, 0x0000, 0x215b, 0x215c, 0x215d, 0x215e, 0x0000,
-    0x0000, 0x2122, 0x2613, 0x0000, 0x25c1, 0x25b7, 0x25cb, 0x25af,
-    0x2018, 0x2019, 0x201c, 0x201d, 0x211e, 0x0000, 0x2032, 0x2033,
-    0x0000, 0x271d, 0x0000, 0x25ac, 0x25c0, 0x25b6, 0x25cf, 0x25ae,
-    0x25e6, 0x25ab, 0x25ad, 0x25b3, 0x25bd, 0x2606, 0x2022, 0x25aa,
-    0x25b2, 0x25bc, 0x261c, 0x261e, 0x2663, 0x2666, 0x2665, 0x0000,
-    0x2720, 0x2020, 0x2021, 0x2713, 0x2717, 0x266f, 0x266d, 0x2642,
-    0x2640, 0x260e, 0x2315, 0x2117, 0x2038, 0x201a, 0x201e, 0x0000
-};
-
-static const unsigned short aplKeysymsToUnicode[] = {
-    0x0000, 0x0000, 0x0000, 0x003c, 0x0000, 0x0000, 0x003e, 0x0000,
-    0x2228, 0x2227, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
-    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
-    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
-    0x00af, 0x0000, 0x22a5, 0x2229, 0x230a, 0x0000, 0x005f, 0x0000,
-    0x0000, 0x0000, 0x2218, 0x0000, 0x2395, 0x0000, 0x22a4, 0x25cb,
-    0x0000, 0x0000, 0x0000, 0x2308, 0x0000, 0x0000, 0x222a, 0x0000,
-    0x2283, 0x0000, 0x2282, 0x0000, 0x22a2, 0x0000, 0x0000, 0x0000,
-    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
-    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
-    0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
-    0x0000, 0x0000, 0x0000, 0x0000, 0x22a3, 0x0000, 0x0000, 0x0000
-};
-
-static const unsigned short koreanKeysymsToUnicode[] = {
-    0x0000, 0x3131, 0x3132, 0x3133, 0x3134, 0x3135, 0x3136, 0x3137,
-    0x3138, 0x3139, 0x313a, 0x313b, 0x313c, 0x313d, 0x313e, 0x313f,
-    0x3140, 0x3141, 0x3142, 0x3143, 0x3144, 0x3145, 0x3146, 0x3147,
-    0x3148, 0x3149, 0x314a, 0x314b, 0x314c, 0x314d, 0x314e, 0x314f,
-    0x3150, 0x3151, 0x3152, 0x3153, 0x3154, 0x3155, 0x3156, 0x3157,
-    0x3158, 0x3159, 0x315a, 0x315b, 0x315c, 0x315d, 0x315e, 0x315f,
-    0x3160, 0x3161, 0x3162, 0x3163, 0x11a8, 0x11a9, 0x11aa, 0x11ab,
-    0x11ac, 0x11ad, 0x11ae, 0x11af, 0x11b0, 0x11b1, 0x11b2, 0x11b3,
-    0x11b4, 0x11b5, 0x11b6, 0x11b7, 0x11b8, 0x11b9, 0x11ba, 0x11bb,
-    0x11bc, 0x11bd, 0x11be, 0x11bf, 0x11c0, 0x11c1, 0x11c2, 0x316d,
-    0x3171, 0x3178, 0x317f, 0x3181, 0x3184, 0x3186, 0x318d, 0x318e,
-    0x11eb, 0x11f0, 0x11f9, 0x0000, 0x0000, 0x0000, 0x0000, 0x20a9
-};
-
-
-static QChar keysymToUnicode(unsigned char byte3, unsigned char byte4)
-{
-    if (byte3 == 0x04) {
-        // katakana
-        if (byte4 > 0xa0 && byte4 < 0xe0)
-           return QChar(katakanaKeysymsToUnicode[byte4 - 0xa0]);
-        else if (byte4 == 0x7e)
-            return QChar(0x203e); // Overline
-    } else if (byte3 == 0x06) {
-        // russian, use lookup table
-        if (byte4 > 0xa0)
-            return QChar(cyrillicKeysymsToUnicode[byte4 - 0xa0]);
-    } else if (byte3 == 0x07) {
-        // greek
-        if (byte4 > 0xa0)
-            return QChar(greekKeysymsToUnicode[byte4 - 0xa0]);
-    } else if (byte3 == 0x08) {
-       // technical
-       if (byte4 > 0xa0)
-           return QChar(technicalKeysymsToUnicode[byte4 - 0xa0]);
-    } else if (byte3 == 0x09) {
-       // special
-       if (byte4 >= 0xe0)
-           return QChar(specialKeysymsToUnicode[byte4 - 0xe0]);
-    } else if (byte3 == 0x0a) {
-       // publishing
-       if (byte4 > 0xa0)
-           return QChar(publishingKeysymsToUnicode[byte4 - 0xa0]);
-    } else if (byte3 == 0x0b) {
-       // APL
-       if (byte4 > 0xa0)
-           return QChar(aplKeysymsToUnicode[byte4 - 0xa0]);
-    } else if (byte3 == 0x0e) {
-       // Korean
-       if (byte4 > 0xa0)
-           return QChar(koreanKeysymsToUnicode[byte4 - 0xa0]);
-    }
-    return QChar(0x0);
-}
-#endif
-
-bool QETWidget::translateKeyEventInternal(const XEvent *event, int& count, QString& text,
-                                          Qt::KeyboardModifiers &modifiers, int& code, QEvent::Type &type,
-                                          bool /*willRepeat*/, bool statefulTranslation)
-{
-    QTextCodec *mapper = qt_input_mapper;
-    // some XmbLookupString implementations don't return buffer overflow correctly,
-    // so we increase the input buffer to allow for long strings...
-    // 256 chars * 2 bytes + 1 null-term == 513 bytes
-    QByteArray chars;
-    chars.resize(513);
-    QChar converted;
-    KeySym key = 0;
-
-    // ###
-    // QWidget* tlw = window();
-
-    XKeyEvent xkeyevent = event->xkey;
-
-    // save the modifier state, we will use the keystate uint later by passing
-    // it to translateButtonState
-    uint keystate = event->xkey.state;
-    // remove the modifiers where mode_switch exists... HPUX machines seem
-    // to have alt *AND* mode_switch both in Mod1Mask, which causes
-    // XLookupString to return things like (aring) for Qt::ALT-A.  This
-    // completely breaks modifiers.  If we remove the modifier for Mode_switch,
-    // then things work correctly...
-    xkeyevent.state &= ~qt_mode_switch_remove_mask;
-
-    type = (event->type == XKeyPress)
-           ? QEvent::KeyPress : QEvent::KeyRelease;
-#if defined(QT_NO_XIM)
-
-    count = XLookupString(&xkeyevent, chars.data(), chars.size(), &key, 0);
-
-#else
-    // Implementation for X11R5 and newer, using XIM
-
-    int               keycode = event->xkey.keycode;
-//    Status     status;
-
-    bool mb=false;
-    if (!mb) {
-        count = XLookupString(&xkeyevent,
-                              chars.data(), chars.size(), &key, 0);
-    }
-    if (count && !keycode) {
-        keycode = qt_ximComposingKeycode;
-        qt_ximComposingKeycode = 0;
-    }
-    // all keysyms smaller than that are actally keys that can be mapped
-    // to unicode chars
-    if (count == 0 && key < 0xff00) {
-        unsigned char byte3 = (unsigned char)(key >> 8);
-        int mib = -1;
-        switch(byte3) {
-        case 0: // Latin 1
-        case 1: // Latin 2
-        case 2: //latin 3
-        case 3: // latin4
-            mib = byte3 + 4; break;
-        case 5: // arabic
-            mib = 82; break;
-        case 12: // Hebrew
-            mib = 85; break;
-        case 13: // Thai
-            mib = 2259; break;
-        case 4: // kana
-        case 6: // cyrillic
-        case 7: // greek
-        case 8: // technical, no mapping here at the moment
-        case 9: // Special
-        case 10: // Publishing
-        case 11: // APL
-        case 14: // Korean, no mapping
-            mib = -1; // manual conversion
-            mapper = 0;
-            converted = keysymToUnicode(byte3, key & 0xff);
-        case 0x20:
-            // currency symbols
-            if (key >= 0x20a0 && key <= 0x20ac) {
-                mib = -1; // manual conversion
-                mapper = 0;
-                converted = (uint)key;
-            }
-            break;
-        default:
-            break;
-        }
-        if (mib != -1) {
-            mapper = QTextCodec::codecForMib(mib);
-            chars[0] = (unsigned char) (key & 0xff); // get only the fourth bit for conversion later
-            count++;
-        }
-    } else if (key >= 0x1000000 && key <= 0x100ffff) {
-        converted = (ushort) (key - 0x1000000);
-        mapper = 0;
-    }
-    if (count < (int)chars.size()-1)
-        chars[count] = '\0';
-    // tlw = 0;
-#endif // !QT_NO_XIM
-
-    // convert chars (8bit) to text (unicode).
-    if (mapper)
-        text = mapper->toUnicode(chars.data(), count, 0);
-    else if (!mapper && converted.unicode() != 0x0)
-        text = converted;
-    else
-        text = QString::fromLatin1(chars);
-
-    modifiers = translateModifiers(keystate);
-
-    static int directionKeyEvent = 0;
-    static unsigned int lastWinId = 0;
-    if (statefulTranslation && qt_use_rtl_extensions && type == QEvent::KeyRelease) {
-        if (directionKeyEvent == Qt::Key_Direction_R || directionKeyEvent == Qt::Key_Direction_L) {
-            type = QEvent::KeyPress;
-            code = directionKeyEvent;
-            text = QString();
-            directionKeyEvent = 0;
-	    lastWinId = 0;
-            return true;
-        } else {
-            directionKeyEvent = 0;
-	    lastWinId = 0;
-        }
-    }
-
-    // Watch for keypresses and if its a key belonging to the Ctrl-Shift
-    // direction-changing accel, remember it.
-    // We keep track of those keys instead of using the event's state
-    // (to figure out whether the Ctrl modifier is held while Shift is pressed,
-    // or Shift is held while Ctrl is pressed) since the 'state' doesn't tell
-    // us whether the modifier held is Left or Right.
-    if (statefulTranslation && qt_use_rtl_extensions && type  == QEvent::KeyPress)
-        if (key == XK_Control_L || key == XK_Control_R || key == XK_Shift_L || key == XK_Shift_R) {
-	    if (!directionKeyEvent) {
-		directionKeyEvent = key;
-		// This code exists in order to check that
-		// the event is occurred in the same widget.
-		lastWinId = winId();
-	    }
-        } else {
-            // this can no longer be a direction-changing accel.
-            // if any other key was pressed.
-            directionKeyEvent = Qt::Key_Space;
-        }
-
-    // Commentary in X11/keysymdef says that X codes match ASCII, so it
-    // is safe to use the locale functions to process X codes in ISO8859-1.
-    //
-    // This is mainly for compatibility - applications should not use the
-    // Qt keycodes between 128 and 255, but should rather use the
-    // QKeyEvent::text().
-    //
-    if (key < 128 || (key < 256 && (!qt_input_mapper || qt_input_mapper->mibEnum()==4))) {
-        code = isprint((int)key) ? toupper((int)key) : 0; // upper-case key, if known
-    } else if (key >= XK_F1 && key <= XK_F35) {
-        code = Qt::Key_F1 + ((int)key - XK_F1);        // function keys
-    } else if (key >= XK_KP_Space && key <= XK_KP_9) {
-        if (key >= XK_KP_0) {
-            // numeric keypad keys
-            code = Qt::Key_0 + ((int)key - XK_KP_0);
-        } else {
-            code = translateKeySym(key);
-        }
-        modifiers |= Qt::KeypadModifier;
-    } else if (text.length() == 1 && text.unicode()->unicode() > 0x1f && text.unicode()->unicode() != 0x7f && !(key >= XK_dead_grave && key <= XK_dead_horn)) {
-        code = text.unicode()->toUpper().unicode();
-    } else {
-        // any other keys
-        code = translateKeySym(key);
-
-        if (code == Qt::Key_Tab && (modifiers & Qt::ShiftModifier)) {
-            // map shift+tab to shift+backtab, QShortcutMap knows about it
-            // and will handle it.
-            code = Qt::Key_Backtab;
-            text = QString();
-        }
-
-        if (statefulTranslation && qt_use_rtl_extensions && type  == QEvent::KeyPress) {
-            if (directionKeyEvent && lastWinId == winId()) {
-                if (key == XK_Shift_L && directionKeyEvent == XK_Control_L ||
-                    key == XK_Control_L && directionKeyEvent == XK_Shift_L) {
-                    directionKeyEvent = Qt::Key_Direction_L;
-                } else if (key == XK_Shift_R && directionKeyEvent == XK_Control_R ||
-                           key == XK_Control_R && directionKeyEvent == XK_Shift_R) {
-                    directionKeyEvent = Qt::Key_Direction_R;
-                }
-            }
-            else if (directionKeyEvent == Qt::Key_Direction_L || directionKeyEvent == Qt::Key_Direction_R) {
-                directionKeyEvent = Qt::Key_Space; // invalid
-            }
-        }
-    }
-
-    return true;
-}
-
-
-struct qt_auto_repeat_data
-{
-    // match the window and keycode with timestamp delta of 10ms
-    Window window;
-    KeyCode keycode;
-    Time timestamp;
-
-    // queue scanner state
-    bool release;
-    bool error;
-};
-
-#if defined(Q_C_CALLBACKS)
-extern "C" {
-#endif
-
-static Bool qt_keypress_scanner(Display *, XEvent *event, XPointer arg)
-{
-    if (event->type != XKeyPress && event->type != XKeyRelease)
-        return false;
-
-    qt_auto_repeat_data *data = (qt_auto_repeat_data *) arg;
-    if (data->error ||
-        event->xkey.window  != data->window ||
-        event->xkey.keycode != data->keycode)
-        return false;
-
-    if (event->type == XKeyPress) {
-        data->error = (! data->release || event->xkey.time - data->timestamp > 10);
-        return (! data->error);
-    }
-
-    // must be XKeyRelease event
-    if (data->release) {
-        // found a second release
-        data->error = true;
-        return false;
-    }
-
-    // found a single release
-    data->release = true;
-    data->timestamp = event->xkey.time;
-
-    return false;
-}
-
-static Bool qt_keyrelease_scanner(Display *, XEvent *event, XPointer arg)
-{
-    const qt_auto_repeat_data *data = (const qt_auto_repeat_data *) arg;
-    return (event->type == XKeyRelease &&
-            event->xkey.window  == data->window &&
-            event->xkey.keycode == data->keycode);
-}
-
-#if defined(Q_C_CALLBACKS)
-}
-#endif
-
-bool QETWidget::translateKeyEvent(const XEvent *event, bool grab)
-{
-    int           code = -1;
-    int           count = 0;
-    Qt::KeyboardModifiers modifiers;
-
-    if (sm_blockUserInput) // block user interaction during session management
-        return true;
-
-    Display *dpy = X11->display;
-
-    if (!isEnabled())
-        return true;
-
-    QEvent::Type type;
-    bool    autor = false;
-    QString text;
-
-    translateKeyEventInternal(event, count, text, modifiers, code, type,
-                               qt_mode_switch_remove_mask != 0);
-
-    // was this the last auto-repeater?
-    qt_auto_repeat_data auto_repeat_data;
-    auto_repeat_data.window = event->xkey.window;
-    auto_repeat_data.keycode = event->xkey.keycode;
-    auto_repeat_data.timestamp = event->xkey.time;
-
-    static uint curr_autorep = 0;
-    if (event->type == XKeyPress) {
-        if (curr_autorep == event->xkey.keycode) {
-            autor = true;
-            curr_autorep = 0;
-        }
-    } else {
-        // look ahead for auto-repeat
-        XEvent nextpress;
-
-        auto_repeat_data.release = true;
-        auto_repeat_data.error = false;
-        if (XCheckIfEvent(dpy, &nextpress, &qt_keypress_scanner,
-                          (XPointer) &auto_repeat_data)) {
-            autor = true;
-
-            // Put it back... we COULD send the event now and not need
-            // the static curr_autorep variable.
-            XPutBackEvent(dpy,&nextpress);
-        }
-        curr_autorep = autor ? event->xkey.keycode : 0;
-    }
-
-#if defined QT3_SUPPORT && !defined(QT_NO_SHORTCUT)
-    // process accelerators before doing key compression
-    if (type == QEvent::KeyPress && !grab
-        && static_cast<QApplicationPrivate*>(qApp->d_ptr)->use_compat()) {
-        // send accel events if the keyboard is not grabbed
-        QKeyEvent a(type, code, modifiers, text, autor, qMax(qMax(count,1), int(text.length())));
-        if (static_cast<QApplicationPrivate*>(qApp->d_ptr)->qt_tryAccelEvent(this, &a))
-            return true;
-    }
-#endif
-
-    long save = 0;
-    if (qt_mode_switch_remove_mask != 0) {
-        save = qt_mode_switch_remove_mask;
-        qt_mode_switch_remove_mask = 0;
-
-        // translate the key event again, but this time apply any Mode_switch
-        // modifiers
-        translateKeyEventInternal(event, count, text, modifiers, code, type);
-    }
-
-#ifndef QT_NO_IM
-    QInputContext *qic = inputContext();
-#endif
-
-    // compress keys
-    if (!text.isEmpty() && testAttribute(Qt::WA_KeyCompression) &&
-#ifndef QT_NO_IM
-	 // Ordinary input methods require discrete key events to work
-	 // properly, so key compression has to be disabled when input
-	 // context exists.
-	 //
-	 // And further consideration, some complex input method
-	 // require all key press/release events discretely even if
-	 // the input method awares of key compression and compressed
-	 // keys are ordinary alphabets. For example, the uim project
-	 // is planning to implement "combinational shift" feature for
-	 // a Japanese input method, uim-skk. It will work as follows.
-	 //
-	 // 1. press "r"
-	 // 2. press "u"
-	 // 3. release both "r" and "u" in arbitrary order
-	 // 4. above key sequence generates "Ru"
-	 //
-	 // Of course further consideration about other participants
-	 // such as key repeat mechanism is required to implement such
-	 // feature.
-	 !qic &&
-#endif // QT_NO_IM
-         // do not compress keys if the key event we just got above matches
-         // one of the key ranges used to compute stopCompression
-         !((code >= Qt::Key_Escape && code <= Qt::Key_SysReq)
-            || (code >= Qt::Key_Home && code <= Qt::Key_PageDown)
-            || (code >= Qt::Key_Super_L && code <= Qt::Key_Direction_R)
-            || (code == 0)
-            || (text.length() == 1 && text.unicode()->unicode() == '\n'))) {
-        // the widget wants key compression so it gets it
-
-        // sync the event queue, this makes key compress work better
-        XSync(dpy, false);
-
-        for (;;) {
-            XEvent        evRelease;
-            XEvent        evPress;
-            if (!XCheckTypedWindowEvent(dpy,event->xkey.window,
-                                         XKeyRelease,&evRelease))
-                break;
-            if (!XCheckTypedWindowEvent(dpy,event->xkey.window,
-                                         XKeyPress,&evPress)) {
-                XPutBackEvent(dpy, &evRelease);
-                break;
-            }
-            QString textIntern;
-            int codeIntern = -1;
-            int countIntern = 0;
-            Qt::KeyboardModifiers modifiersIntern;
-            QEvent::Type t;
-            translateKeyEventInternal(&evPress, countIntern, textIntern,
-                                       modifiersIntern, codeIntern, t);
-            // use stopCompression to stop key compression for the following
-            // key event ranges:
-            bool stopCompression =
-                // 1) misc keys
-                (codeIntern >= Qt::Key_Escape && codeIntern <= Qt::Key_SysReq)
-                // 2) cursor movement
-                || (codeIntern >= Qt::Key_Home && codeIntern <= Qt::Key_PageDown)
-                // 3) extra keys
-                || (codeIntern >= Qt::Key_Super_L && codeIntern <= Qt::Key_Direction_R)
-                // 4) something that a) doesn't translate to text or b) translates
-                //    to newline text
-                || (codeIntern == 0)
-                || (textIntern.length() == 1 && textIntern.unicode()->unicode() == '\n');
-            if (modifiersIntern == modifiers && !textIntern.isEmpty() && !stopCompression) {
-                text += textIntern;
-                count += countIntern;
-            } else {
-                XPutBackEvent(dpy, &evPress);
-                XPutBackEvent(dpy, &evRelease);
-                break;
-            }
-        }
-    }
-
-    if (save != 0)
-        qt_mode_switch_remove_mask = save;
-
-    // autorepeat compression makes sense for all widgets (Windows
-    // does it automatically ....)
-    if (event->type == XKeyPress && text.length() <= 1
-#ifndef QT_NO_IM
-	 // input methods need discrete key events
-	 && !qic
-#endif// QT_NO_IM
-	) {
-        XEvent dummy;
-
-        for (;;) {
-            auto_repeat_data.release = false;
-            auto_repeat_data.error = false;
-            if (! XCheckIfEvent(dpy, &dummy, &qt_keypress_scanner,
-                                (XPointer) &auto_repeat_data))
-                break;
-            if (! XCheckIfEvent(dpy, &dummy, &qt_keyrelease_scanner,
-                                (XPointer) &auto_repeat_data))
-                break;
-
-            count++;
-            if (!text.isEmpty())
-                text += text[0];
-        }
-    }
-
-    if (text.length() == 1 && text.unicode()->unicode() == '\n') {
-        code = Qt::Key_Return;
-        text = QLatin1Char('\r');
-    }
-
-    // try the menukey first
-    if (type == QEvent::KeyPress && code == Qt::Key_Menu) {
-        QPoint pos = inputMethodQuery(Qt::ImMicroFocus).toRect().center();
-        QContextMenuEvent e(QContextMenuEvent::Keyboard, pos, mapToGlobal(pos));
-        QApplication::sendSpontaneousEvent(this, &e);
-        if(e.isAccepted())
-            return true;
-    }
-
-    QKeyEvent e(type, code, modifiers, text, autor, qMax(qMax(count,1), int(text.length())));
-    return QApplication::sendSpontaneousEvent(this, &e);
-}
-
 
 //
 // Paint event translation
@@ -5039,11 +4189,10 @@ void QETWidget::translatePaintEvent(const XEvent *event)
                      event->xexpose.width, event->xexpose.height);
     XEvent xevent;
     PaintEventInfo info;
-    info.window = winId();
+    info.window = internalWinId();
     translateBySips(this, paintRect);
     paintRect = d->mapFromWS(paintRect);
 
-    QRect clipRect = d->clipRect();
     QRegion paintRegion = paintRect;
 
     // WARNING: this is O(number_of_events * number_of_matching_events)
@@ -5120,7 +4269,7 @@ bool QETWidget::translateConfigEvent(const XEvent *event)
         if (d->extra->compress_events) {
             // ConfigureNotify compression for faster opaque resizing
             XEvent otherEvent;
-            while (XCheckTypedWindowEvent(X11->display, winId(), ConfigureNotify,
+            while (XCheckTypedWindowEvent(X11->display, internalWinId(), ConfigureNotify,
                                           &otherEvent)) {
                 if (qt_x11EventFilter(&otherEvent))
                     continue;
@@ -5183,7 +4332,7 @@ bool QETWidget::translateConfigEvent(const XEvent *event)
 
     } else {
         XEvent xevent;
-        while (XCheckTypedWindowEvent(X11->display,winId(), ConfigureNotify,&xevent) &&
+        while (XCheckTypedWindowEvent(X11->display,internalWinId(), ConfigureNotify,&xevent) &&
                !qt_x11EventFilter(&xevent)  &&
                !x11Event(&xevent)) // send event through filter
             ;
@@ -5192,7 +4341,7 @@ bool QETWidget::translateConfigEvent(const XEvent *event)
     if (wasResize && !testAttribute(Qt::WA_StaticContents)) {
         XEvent xevent;
         PaintEventInfo info;
-        info.window = winId();
+        info.window = internalWinId();
         while (XCheckIfEvent(X11->display,&xevent,isPaintOrScrollDoneEvent,
                              (XPointer)&info) &&
                !qt_x11EventFilter(&xevent)  &&
@@ -5272,6 +4421,7 @@ int QApplication::doubleClickInterval()
     \property QApplication::keyboardInputInterval
     \brief the time limit in milliseconds that distinguishes a key press
     from two consecutive key presses
+    \since 4.2
 
     The default value on X11 is 400 milliseconds. On Windows and Mac OS X, the
     operating system's value is used.
@@ -5453,7 +4603,7 @@ static void resetSmState()
     sm_interactionActive = false;
     sm_interactStyle = SmInteractStyleNone;
     sm_smActive = false;
-    sm_blockUserInput = false;
+    qt_sm_blockUserInput = false;
     sm_isshutdown = false;
 //    sm_shouldbefast = false; ### never used?!?
     sm_phase2 = false;
@@ -5541,7 +4691,7 @@ static void sm_saveYourselfCallback(SmcConn smcConn, SmPointer clientData,
 static void sm_performSaveYourself(QSessionManagerPrivate* smd)
 {
     if (sm_isshutdown)
-        sm_blockUserInput = true;
+        qt_sm_blockUserInput = true;
 
     QSessionManager* sm = smd->sm;
 
@@ -5550,8 +4700,11 @@ static void sm_performSaveYourself(QSessionManagerPrivate* smd)
     gettimeofday(&tv, 0);
     smd->sessionKey  = QString::number(qulonglong(tv.tv_sec)) + QLatin1Char('_') + QString::number(qulonglong(tv.tv_usec));
 
+    QStringList arguments = qApp->arguments();
+    QString argument0 = arguments.isEmpty() ? qApp->applicationFilePath() : arguments.at(0);
+
     // tell the session manager about our program in best POSIX style
-    sm_setProperty(QString::fromLatin1(SmProgram), QString::fromLocal8Bit(qApp->argv()[0]));
+    sm_setProperty(QString::fromLatin1(SmProgram), argument0);
     // tell the session manager about our user as well.
     struct passwd *entryPtr = 0;
 #if !defined(QT_NO_THREAD) && defined(_POSIX_THREAD_SAFE_FUNCTIONS)
@@ -5566,7 +4719,7 @@ static void sm_performSaveYourself(QSessionManagerPrivate* smd)
 
     // generate a restart and discard command that makes sense
     QStringList restart;
-    restart  << QString::fromLocal8Bit(qApp->argv()[0]) << QLatin1String("-session")
+    restart  << argument0 << QLatin1String("-session")
              << smd->sessionId + QLatin1Char('_') + smd->sessionKey;
     if (qstricmp(appName, QX11Info::appClass()) != 0)
         restart << QLatin1String("-name") << qAppName();
@@ -5592,7 +4745,7 @@ static void sm_performSaveYourself(QSessionManagerPrivate* smd)
 
     if (sm_phase2 && !sm_in_phase2) {
         SmcRequestSaveYourselfPhase2(smcConnection, sm_saveYourselfPhase2Callback, (SmPointer*) smd);
-        sm_blockUserInput = false;
+        qt_sm_blockUserInput = false;
     }
     else {
         // close eventual interaction monitors and cancel the
@@ -5717,7 +4870,7 @@ QSessionManager::QSessionManager(QApplication * app, QString &id, QString& key)
 
     QString error = QString::fromLocal8Bit(cerror);
     if (!smcConnection) {
-        qWarning("Session management error: %s", qPrintable(error));
+        qWarning("Qt: Session management error: %s", qPrintable(error));
     }
     else {
         sm_receiver = new QSmSocketReceiver(IceConnectionNumber(SmcGetIceConnection(smcConnection)));
@@ -5773,7 +4926,7 @@ bool QSessionManager::allowsInteraction()
         sm_waitingForInteraction = false;
         if (sm_smActive) { // not cancelled
             sm_interactionActive = true;
-            sm_blockUserInput = false;
+            qt_sm_blockUserInput = false;
             return true;
         }
     }
@@ -5802,7 +4955,7 @@ bool QSessionManager::allowsErrorInteraction()
         sm_waitingForInteraction = false;
         if (sm_smActive) { // not cancelled
             sm_interactionActive = true;
-            sm_blockUserInput = false;
+            qt_sm_blockUserInput = false;
             return true;
         }
     }
@@ -5815,7 +4968,7 @@ void QSessionManager::release()
         SmcInteractDone(smcConnection, False);
         sm_interactionActive = false;
         if (sm_smActive && sm_isshutdown)
-            sm_blockUserInput = true;
+            qt_sm_blockUserInput = true;
     }
 }
 

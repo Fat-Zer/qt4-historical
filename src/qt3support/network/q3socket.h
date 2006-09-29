@@ -64,7 +64,8 @@ public:
     QString	 peerName() const;
 
     // Implementation of QIODevice abstract virtual functions
-    bool	 open( int mode );
+    bool	 open( OpenMode mode );
+    bool      open(int mode) { return open((OpenMode)mode); }
     void	 close();
     bool	 flush();
     Offset	 size() const;
@@ -92,7 +93,7 @@ public:
     void	 setReadBufferSize( Q_ULONG );
     Q_ULONG	 readBufferSize() const;
 
-    inline bool  isSequential() const { return !isOpen(); }
+    inline bool  isSequential() const { return true; }
 
 Q_SIGNALS:
     void	 hostFound();

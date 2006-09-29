@@ -104,7 +104,8 @@ const QMetaObject *WidgetInfo::metaObject(const QString &widgetName)
         return &QSpinBox::staticMetaObject;
     else if (widgetName == QLatin1String("QSplitter"))
         return &QSplitter::staticMetaObject;
-    else if (widgetName == QLatin1String("QTextEdit"))
+    else if (widgetName == QLatin1String("QTextEdit") ||
+             widgetName == QLatin1String("Q3TextEdit"))
         return &Q3TextEdit::staticMetaObject;
     else if (widgetName == QLatin1String("QLabel"))
         return &QLabel::staticMetaObject;
@@ -241,14 +242,17 @@ QString WidgetInfo::resolveEnumerator(const QMetaEnum &metaEnum, const QString &
 {
     QString scope = QLatin1String(metaEnum.scope());
 
-    int idx = metaEnum.keyToValue(name.toLatin1());
-    if (idx != -1) {
-        QString enumerator = name;
-        int i = enumerator.indexOf(QLatin1String("::"));
-        if (i != -1)
-            enumerator = enumerator.mid(i + 2);
-
-        return scope + QLatin1String("::") + enumerator;
+    QString enumerator = name;
+    int i = enumerator.indexOf(QLatin1String("::"));
+    if (i != -1) {
+        if (scope != enumerator.left(i))
+            return QString();
+        enumerator = enumerator.mid(i + 2);
+    }
+    QByteArray key = enumerator.toLatin1();
+    for (int idx = 0; idx < metaEnum.keyCount(); ++idx) {
+        if (metaEnum.key(idx) == key)
+            return scope + QLatin1String("::") + enumerator;
     }
 
     return QString();

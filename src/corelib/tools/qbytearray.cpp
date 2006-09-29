@@ -108,7 +108,7 @@ char *qstrcpy(char *dst, const char *src)
 
 /*! \relates QByteArray
 
-    A safe strncpy() function.
+    A safe \c strncpy() function.
 
     Copies at most \a len bytes from \a src (stopping at \a len or the
     terminating '\\0' whichever comes first) into \a dst and returns a
@@ -135,19 +135,32 @@ char *qstrncpy(char *dst, const char *src, uint len)
     return dst;
 }
 
-/*! \fn uint qstrlen(const char *str);
-
+/*! \fn uint qstrlen(const char *str)
     \relates QByteArray
 
-    A safe strlen() function.
+    A safe \c strlen() function.
 
     Returns the number of characters that precede the terminating '\\0',
     or 0 if \a str is 0.
+
+    \sa qstrnlen()
+*/
+
+/*! \fn uint qstrnlen(const char *str, uint maxlen)
+    \relates QByteArray
+    \since 4.2
+
+    A safe \c strnlen() function.
+
+    Returns the number of characters that precede the terminating '\\0', but
+    at most \a maxlen. If \a str is 0, returns 0.
+
+    \sa qstrlen()
 */
 
 /*! \relates QByteArray
 
-    A safe strcmp() function.
+    A safe \c strcmp() function.
 
     Compares \a str1 and \a str2. Returns a negative value if \a str1
     is less than \a str2, 0 if \a str1 is equal to \a str2 or a
@@ -158,8 +171,7 @@ char *qstrncpy(char *dst, const char *src, uint len)
     Special case 2: Returns a random non-zero value if \a str1 is 0
     or \a str2 is 0 (but not both).
 
-    \sa qstrncmp(), qstricmp(), qstrnicmp(),
-        {Note on 8-bit character comparisons}
+    \sa qstrncmp(), qstricmp(), qstrnicmp(), {Note on 8-bit character comparisons}
 */
 int qstrcmp(const char *str1, const char *str2)
 {
@@ -171,7 +183,7 @@ int qstrcmp(const char *str1, const char *str2)
 
     \relates QByteArray
 
-    A safe strncmp() function.
+    A safe \c strncmp() function.
 
     Compares at most \a len bytes of \a str1 and \a str2.
 
@@ -190,7 +202,7 @@ int qstrcmp(const char *str1, const char *str2)
 
 /*! \relates QByteArray
 
-    A safe stricmp() function.
+    A safe \c stricmp() function.
 
     Compares \a str1 and \a str2 ignoring the case of the
     characters. The encoding of the strings is assumed to be Latin-1.
@@ -224,7 +236,7 @@ int qstricmp(const char *str1, const char *str2)
 
 /*! \relates QByteArray
 
-    A safe strnicmp() function.
+    A safe \c strnicmp() function.
 
     Compares at most \a len bytes of \a str1 and \a str2 ignoring the
     case of the characters. The encoding of the strings is assumed to
@@ -394,7 +406,8 @@ QByteArray qCompress(const uchar* data, int nbytes, int compressionLevel)
 }
 #endif
 
-/*! \fn QByteArray qUncompress(const QByteArray& data)
+/*!
+    \fn QByteArray qUncompress(const QByteArray& data)
 
     \relates QByteArray
 
@@ -406,6 +419,11 @@ QByteArray qCompress(const uchar* data, int nbytes, int compressionLevel)
     This function will uncompress data compressed with qCompress()
     from this and any earlier Qt version, back to Qt 3.1 when this
     feature was added.
+
+    \bold{Note:} If you want to use this function to uncompress external
+    data compressed using zlib, you first need to prepend four bytes to the
+    byte array that contain the expected length of the uncompressed data
+    encoded in big-endian order (most significant byte first).
 
     \sa qCompress()
 */
@@ -925,7 +943,8 @@ QByteArray &QByteArray::operator=(const char *str)
     \endcode
 
     The pointer remains valid as long as the byte array isn't
-    reallocated.
+    reallocated. For read-only access, constData() is faster
+    because it never causes a \l{deep copy} to occur.
 
     This function is mostly useful to pass a byte array to a function
     that accepts a \c{const char *}.
@@ -1279,13 +1298,30 @@ void QByteArray::resize(int size)
         x = qAtomicSetPtr(&d, x);
         if (!x->ref.deref())
             qFree(x);
+    } else if ( d == &shared_null ) {
+        //
+        // Optimize the idiom:
+        //    QByteArray a;
+        //    a.resize(sz);
+        //    ...
+        // which is used in place of the Qt 3 idiom:
+        //    QByteArray a(sz);
+        //
+        Data *x = static_cast<Data *>(qMalloc(sizeof(Data)+size));
+        x->ref.init(1);
+        x->alloc = x->size = size;
+        x->data = x->array;
+        x->array[size] = '\0';
+        x = qAtomicSetPtr(&d, x);
+        (void) x->ref.deref(); // cannot be 0, x points to shared_null
     } else {
         if (d->ref != 1 || size > d->alloc || (size < d->size && size < d->alloc >> 1))
             realloc(qAllocMore(size, sizeof(Data)));
         if (d->alloc >= size) {
             d->size = size;
-            d->data = d->array;
-            d->array[size] = '\0';
+            if (d->data == d->array) {
+                d->array[size] = '\0';
+            }
         }
     }
 }
@@ -1514,9 +1550,8 @@ static inline QByteArray &qbytearray_insert(QByteArray *ba,
     if (pos > oldsize)
         ::memset(dst + oldsize, 0x20, pos - oldsize);
     else
-        ::memmove(dst + pos + len, dst + pos,
-                  (oldsize - pos) * sizeof(char));
-    memcpy(dst + pos, arr, len * sizeof(char));
+        ::memmove(dst + pos + len, dst + pos, oldsize - pos);
+    memcpy(dst + pos, arr, len);
     return *ba;
 }
 
@@ -2926,7 +2961,7 @@ QByteArray QByteArray::leftJustified(int width, char fill, bool truncate) const
     if (padlen > 0) {
         result.resize(len+padlen);
         if (len)
-            memcpy(result.d->data, d->data, sizeof(char)*len);
+            memcpy(result.d->data, d->data, len);
         memset(result.d->data+len, fill, padlen);
     } else {
         if (truncate)
@@ -3361,7 +3396,7 @@ QByteArray &QByteArray::setNum(qlonglong n, int base)
     }
 #endif
     QLocale locale(QLocale::C);
-    *this = locale.d->longLongToString(n, -1, base).toLatin1();
+    *this = locale.d()->longLongToString(n, -1, base).toLatin1();
     return *this;
 }
 
@@ -3380,7 +3415,7 @@ QByteArray &QByteArray::setNum(qulonglong n, int base)
     }
 #endif
     QLocale locale(QLocale::C);
-    *this = locale.d->unsLongLongToString(n, -1, base).toLatin1();
+    *this = locale.d()->unsLongLongToString(n, -1, base).toLatin1();
     return *this;
 }
 
@@ -3435,7 +3470,7 @@ QByteArray &QByteArray::setNum(double n, char f, int prec)
     }
 
     QLocale locale(QLocale::C);
-    *this = locale.d->doubleToString(n, prec, form, -1, flags).toLatin1();
+    *this = locale.d()->doubleToString(n, prec, form, -1, flags).toLatin1();
     return *this;
 }
 

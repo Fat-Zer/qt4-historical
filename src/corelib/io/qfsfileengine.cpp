@@ -69,8 +69,8 @@ QFSFileEnginePrivate::QFSFileEnginePrivate() : QAbstractFileEnginePrivate()
 #ifdef Q_OS_UNIX
     need_lstat = 1;
     is_link = 0;
-    is_readonly = 0;
 #endif
+    is_readonly = 0;
     fd = -1;
     fh = 0;
     lastIOCommand = IOFlushCommand;
@@ -111,9 +111,15 @@ QFSFileEngine::~QFSFileEngine()
     Q_D(QFSFileEngine);
     if (d->closeFileHandle) {
         if (d->fh) {
-            fclose(d->fh);
+            int ret;
+            do {
+                ret = fclose(d->fh);
+            } while (ret == EOF && errno == EINTR);
         } else if (d->fd != -1) {
-            QT_CLOSE(d->fd);
+            int ret;
+            do {
+                ret = QT_CLOSE(d->fd);
+            } while (ret == -1 && errno == EINTR);
         }
     }
 }
@@ -168,11 +174,21 @@ bool QFSFileEngine::open(QIODevice::OpenMode flags)
 
     if (flags & QFile::Append)
         flags |= QFile::WriteOnly;
-#ifdef Q_OS_UNIX
-    d->fh = QT_FOPEN(QFile::encodeName(d->file).constData(),
-                     openModeToFopenMode(flags, d->file).constData());
+
+#ifdef Q_OS_WIN
+    if (d->file.startsWith("//./")) {
+#endif
+    do {
+#if defined(Q_OS_WIN) && defined(_MSC_VER) && _MSC_VER >= 1400
+        d->fh = 0;
+        fopen_s(&d->fh, QFile::encodeName(QDir::toNativeSeparators(d->file)).constData(),
+                         openModeToFopenMode(flags, d->file).constData());
+#else
+        d->fh = QT_FOPEN(QFile::encodeName(QDir::toNativeSeparators(d->file)).constData(),
+                         openModeToFopenMode(flags, d->file).constData());
+#endif
+    } while (!d->fh && errno == EINTR);
     if (!d->fh) {
-        QString errString = QT_TRANSLATE_NOOP(QFSFileEngine, "Unknown error");
         setError(errno == EMFILE ? QFile::ResourceError : QFile::OpenError,
                  qt_error_string(int(errno)));
         return false;
@@ -184,18 +200,28 @@ bool QFSFileEngine::open(QIODevice::OpenMode flags)
     if (flags & QIODevice::Unbuffered)
         setvbuf(d->fh, 0, _IONBF, 0);
 
-    if (flags & QIODevice::Append)
-        QT_FSEEK(d->fh, 0, SEEK_END);
+    if (flags & QIODevice::Append) {
+        int ret;
+        do {
+            ret = QT_FSEEK(d->fh, 0, SEEK_END);
+        } while (ret == -1 && errno == EINTR);
+    }
 
     d->closeFileHandle = true;
     d->fd = QT_FILENO(d->fh);
 
     QT_STATBUF st;
     if (QT_FSTAT(QT_FILENO(d->fh), &st) != 0)
+#ifdef Q_OS_UNIX
         return false;
+#endif
     d->sequential = S_ISCHR(st.st_mode) || S_ISFIFO(st.st_mode) || S_ISSOCK(st.st_mode);
     return true;
-#else
+
+#ifdef Q_OS_WIN
+    } else {
+#endif
+
     int oflags = QT_OPEN_RDONLY;
     if ((flags & QFile::ReadWrite) == QFile::ReadWrite) {
         oflags = QT_OPEN_RDWR | QT_OPEN_CREAT;
@@ -232,6 +258,9 @@ bool QFSFileEngine::open(QIODevice::OpenMode flags)
     }
     setError(errno == EMFILE ? QFile::ResourceError : QFile::OpenError, qt_error_string(errno));
     return false;
+
+#ifdef Q_OS_WIN
+    }
 #endif
 }
 
@@ -248,7 +277,6 @@ bool QFSFileEngine::open(QIODevice::OpenMode flags, int fd)
 #ifdef Q_OS_UNIX
     d->fh = fdopen(fd, openModeToFopenMode(flags).constData());
     if (!d->fh) {
-        QString errString = QT_TRANSLATE_NOOP(QFSFileEngine, "Unknown error");
         setError(errno == EMFILE ? QFile::ResourceError : QFile::OpenError,
                  qt_error_string(int(errno)));
         return false;
@@ -260,8 +288,12 @@ bool QFSFileEngine::open(QIODevice::OpenMode flags, int fd)
     if (flags & QIODevice::Unbuffered)
         setvbuf(d->fh, 0, _IONBF, 0);
 
-    if (flags & QIODevice::Append)
-        QT_FSEEK(d->fh, 0, SEEK_END);
+    if (flags & QIODevice::Append) {
+        int ret;
+        do {
+            ret = QT_FSEEK(d->fh, 0, SEEK_END);
+        } while (ret == -1 && errno == EINTR);
+    }
 
     d->fd = QT_FILENO(d->fh);
 
@@ -329,8 +361,13 @@ bool QFSFileEngine::close()
     d->tried_stat = 0;
     if (d->fh) {
         bool closed = true;
-        if (d->closeFileHandle)
-            closed = fclose(d->fh) == 0;
+        if (d->closeFileHandle) {
+            int ret;
+            do {
+                ret = fclose(d->fh);
+            } while (ret == EOF && errno == EINTR);
+            closed = (ret == 0);
+        }
         d->fh = 0;
         d->fd = -1;
         return flushed && closed;
@@ -339,9 +376,16 @@ bool QFSFileEngine::close()
     if (d->fd == -1)
         return false;
 
-    int ret = d->closeFileHandle ? QT_CLOSE(d->fd) : 0;
+    int ret;
+    if (d->closeFileHandle) {
+        do {
+            ret = QT_CLOSE(d->fd);
+        } while (ret == -1 && errno == EINTR);
+    } else {
+        ret = 0;
+    }
     d->fd = -1;
-    if(ret == -1) {
+    if (ret == -1) {
         setError(QFile::UnspecifiedError, qt_error_string(errno));
         return false;
     }
@@ -376,8 +420,12 @@ bool QFSFileEngine::flush()
     d->lastFlushFailed = (ret != 0);
 
 #ifdef Q_OS_WIN
-    if (gotPos == 0)
-        QT_FSETPOS(d->fh, &pos);
+    if (gotPos == 0) {
+        int ret;
+        do {
+            ret = QT_FSETPOS(d->fh, &pos);
+        } while (ret == -1 && errno == EINTR);
+    }
 #endif
     d->lastIOCommand = QFSFileEnginePrivate::IOFlushCommand;
     if (ret != 0) {
@@ -415,7 +463,10 @@ qint64 QFSFileEngine::read(char *data, qint64 len)
                 if ((oldFlags & O_NONBLOCK) == 0)
                     fcntl(fileno(d->fh), F_SETFL, oldFlags | O_NONBLOCK, &v, sizeof(v));
 
-                size_t read = fread(data + readBytes, 1, size_t(len - readBytes), d->fh);
+                size_t read = 0;
+                do {
+                    read = fread(data + readBytes, 1, size_t(len - readBytes), d->fh);
+                } while (read == 0 && !feof(d->fh) && errno == EINTR);
                 if (read > 0) {
                     readBytes += read;
                     break;
@@ -430,10 +481,15 @@ qint64 QFSFileEngine::read(char *data, qint64 len)
                     int v = 1;
                     fcntl(fileno(d->fh), F_SETFL, oldFlags, &v, sizeof(v));
                     if (readBytes == 0) {
-                        int readByte = fgetc(d->fh);
+                        int readByte = 0;
+                        do {
+                            readByte = fgetc(d->fh);
+                        } while (readByte == -1 && errno == EINTR);
                         if (readByte != -1) {
                             *data = uchar(readByte);
                             readBytes += 1;
+                        } else {
+                            break;
                         }
                     }
                 }
@@ -444,9 +500,9 @@ qint64 QFSFileEngine::read(char *data, qint64 len)
             }
         } else
 #endif
-        {
+        do {
             readBytes = fread(data, 1, size_t(len), d->fh);
-        }
+        } while (readBytes == 0 && !feof(d->fh) && errno == EINTR);
         qint64 ret = qint64(readBytes);
         if (ret == 0) {
             setError(QFile::ReadError, qt_error_string(int(errno)));
@@ -479,7 +535,9 @@ qint64 QFSFileEngine::read(char *data, qint64 len)
             const qint64 MaxBlockSize = 32 * 1024 * 1024;
             bytesToRead = qMin(bytesToRead, MaxBlockSize);
 #endif
-            result = QT_READ(d->fd, data + read, int(bytesToRead));
+            do {
+                result = QT_READ(d->fd, data + read, int(bytesToRead));
+            } while (result == -1 && errno == EINTR);
             if (result > 0)
                 read += result;
         } while (result > 0 && read < len);
@@ -537,6 +595,16 @@ qint64 QFSFileEngine::write(const char *data, qint64 len)
 
     qint64 result;
     qint64 written = 0;
+#ifdef Q_OS_WIN
+    qint64 posbefore;
+    if (!d->sequential) {
+        posbefore = pos();
+        if (posbefore == -1) {
+            setError(QFile::WriteError, qt_error_string(errno));
+            return qint64(-1);
+        }
+    }
+#endif
     do {
         qint64 bytesToWrite = len - written;
 #ifdef Q_OS_WIN
@@ -547,16 +615,30 @@ qint64 QFSFileEngine::write(const char *data, qint64 len)
         bytesToWrite = qMin<qint64>(bytesToWrite, MaxChunkSize);
 #endif
         if (d->fh) {
-            result = qint64(fwrite(data + written, 1, size_t(bytesToWrite), d->fh));
+            do {
+                result = qint64(fwrite(data + written, 1, size_t(bytesToWrite), d->fh));
+            } while (result == 0 && errno == EINTR);
             if (bytesToWrite > 0 && result == 0)
                 result = -1;
         } else {
-            result = QT_WRITE(d->fd, data + written, bytesToWrite);
+            do {
+                result = QT_WRITE(d->fd, data + written, bytesToWrite);
+            } while (result == -1 && errno == EINTR);
         }
         if (result > 0)
             written += qint64(result);
     } while (written < len && ((result > 0 || (result == 0 && errno == EINTR))));
 
+#ifdef Q_OS_WIN
+    if (!d->sequential) {
+        qint64 currentpos = pos();
+        if (currentpos == -1) {
+            result = -1;
+        } else {
+            written = currentpos - posbefore;
+        }
+    }
+#endif
     if (result > 0)
         return written;
     setError(errno == ENOSPC ? QFile::ResourceError : QFile::WriteError, qt_error_string(errno));
@@ -607,8 +689,15 @@ QAbstractFileEngine::Iterator *QFSFileEngine::endEntryList()
 bool QFSFileEngine::seek(qint64 pos)
 {
     Q_D(QFSFileEngine);
+    if (d->lastIOCommand != QFSFileEnginePrivate::IOFlushCommand && !flush())
+        return false;
+
     if (d->fh) {
-        if (QT_FSEEK(d->fh, QT_OFF_T(pos), SEEK_SET) == -1) {
+        int ret;
+        do {
+            ret = QT_FSEEK(d->fh, QT_OFF_T(pos), SEEK_SET);
+        } while (ret == -1 && errno == EINTR);
+        if (ret == -1) {
             setError(QFile::ReadError, qt_error_string(int(errno)));
             return false;
         }

@@ -2,25 +2,19 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/src/corelib/tools/qqueue.cpp -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/src/corelib/tools/qqueue.cpp -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-x11-opensource-src-4.2.0/src/corelib/tools/qqueue.cpp -->
 <head>
-    <title>Qt 4.1: QQueue Class Reference</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
+  <title>Qt 4.2: QQueue Class Reference</title>
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QQueue Class Reference<br /><sup><sup>[<a href="qtcore.html">QtCore</a> module]</sup></sup></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">QQueue Class Reference<br /><sup><sup>[<a href="qtcore.html">QtCore</a> module]</sup></sup></h1>
 <p>The QQueue class is a generic container that provides a queue. <a href="#details">More...</a></p>
-<pre>#include &lt;QQueue&gt;</pre><p>Inherits <a href="qlist.html">QList&lt;T&gt;</a>.</p>
+<pre> #include &lt;QQueue&gt;</pre><p>Inherits <a href="qlist.html">QList&lt;T&gt;</a>.</p>
 <p><b>Note:</b> All the functions in this class are <a href="threads.html#reentrant">reentrant</a>.</p>
 <ul>
 <li><a href="qqueue-members.html">List of all members, including inherited members</a></li>
@@ -49,12 +43,12 @@ body { background: #ffffff; color: black; }</style>
 <p>QQueue&lt;T&gt; is one of Qt's generic <a href="containers.html#container-classes">container classes</a>. It implements a queue data structure for items of a same type.</p>
 <p>A queue is a first in, first out (FIFO) structure. Items are added to the tail of the queue using <a href="qqueue.html#enqueue">enqueue</a>() and retrieved from the head using <a href="qqueue.html#dequeue">dequeue</a>(). The <a href="qqueue.html#head">head</a>() function provides access to the head item without removing it.</p>
 <p>Example:</p>
-<pre>&nbsp;   QQueue&lt;int&gt; queue;
-    queue.enqueue(1);
-    queue.enqueue(2);
-    queue.enqueue(3);
-    while (!queue.isEmpty())
-        cout &lt;&lt; queue.dequeue() &lt;&lt; endl;</pre>
+<pre> QQueue&lt;int&gt; queue;
+ queue.enqueue(1);
+ queue.enqueue(2);
+ queue.enqueue(3);
+ while (!queue.isEmpty())
+     cout &lt;&lt; queue.dequeue() &lt;&lt; endl;</pre>
 <p>The example will output 1, 2, 3 in that order.</p>
 <p>QQueue inherits from <a href="qlist.html">QList</a>. All of <a href="qlist.html">QList</a>'s functionality also applies to QQueue. For example, you can use <a href="qlist.html#isEmpty">isEmpty</a>() to test whether the queue is empty, and you can traverse a QQueue using <a href="qlist.html">QList</a>'s iterator classes (for example, <a href="qlistiterator.html">QListIterator</a>). But in addition, QQueue provides three convenience functions that make it easy to implement FIFO semantics: <a href="qqueue.html#enqueue">enqueue</a>(), <a href="qqueue.html#dequeue">dequeue</a>(), and <a href="qqueue.html#head">head</a>().</p>
 <p>QQueue's value type must be an <a href="containers.html#assignable-data-types">assignable data type</a>. This covers most data types that are commonly used, but the compiler won't let you, for example, store a <a href="qwidget.html">QWidget</a> as a value; instead, store a <a href="qwidget.html">QWidget</a> *.</p>
@@ -83,6 +77,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

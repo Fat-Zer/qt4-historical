@@ -34,8 +34,7 @@ int main(int argc, char **argv)
     QGLFormat::setDefaultFormat(f);
     if (!QGLFormat::hasOpenGL()) {
 	QMessageBox::information(0, "OpenGL samplebuffers",
-				 "This system does not support OpenGL.",
-				 QMessageBox::Ok);
+				 "This system does not support OpenGL.");
         return 0;
     }
 
@@ -43,8 +42,7 @@ int main(int argc, char **argv)
 
     if (!widget.format().sampleBuffers()) {
 	QMessageBox::information(0, "OpenGL samplebuffers",
-				 "This system does not have sample buffer support.",
-				 QMessageBox::Ok);
+				 "This system does not have sample buffer support.");
         return 0;
     }
 

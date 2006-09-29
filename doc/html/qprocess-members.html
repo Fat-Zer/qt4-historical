@@ -2,23 +2,17 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/src/corelib/io/qprocess.cpp -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/src/corelib/io/qprocess.cpp -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-x11-opensource-src-4.2.0/src/corelib/io/qprocess.cpp -->
 <head>
-    <title>Qt 4.1: List of All Members for QProcess</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
+  <title>Qt 4.2: List of All Members for QProcess</title>
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">List of All Members for QProcess</h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">List of All Members for QProcess</h1>
 <p>This is the complete list of members for <a href="qprocess.html">QProcess</a>, including inherited members.</p>
 <p><table width="100%" border="0" cellpadding="0" cellspacing="0">
 <tr><td width="45%" valign="top"><ul>
@@ -55,6 +49,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qobject.html#disconnectNotify">disconnectNotify</a> ( const char * )</li>
 <li><div class="fn"/><a href="qobject.html#dumpObjectInfo">dumpObjectInfo</a> ()</li>
 <li><div class="fn"/><a href="qobject.html#dumpObjectTree">dumpObjectTree</a> ()</li>
+<li><div class="fn"/><a href="qobject.html#dynamicPropertyNames">dynamicPropertyNames</a> () const : QList&lt;QByteArray&gt;</li>
 <li><div class="fn"/><a href="qprocess.html#environment">environment</a> () const : QStringList</li>
 <li><div class="fn"/><a href="qprocess.html#error">error</a> () const : QProcess::ProcessError</li>
 <li><div class="fn"/><a href="qprocess.html#error-2">error</a> ( QProcess::ProcessError )</li>
@@ -86,11 +81,12 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qiodevice.html#open">open</a> ( OpenMode ) : bool</li>
 <li><div class="fn"/><a href="qiodevice.html#openMode">openMode</a> () const : OpenMode</li>
 <li><div class="fn"/><a href="qobject.html#parent">parent</a> () const : QObject *</li>
-</ul></td><td valign="top"><ul>
 <li><div class="fn"/><a href="qiodevice.html#peek">peek</a> ( char *, qint64 ) : qint64</li>
 <li><div class="fn"/><a href="qiodevice.html#peek-2">peek</a> ( qint64 ) : QByteArray</li>
+</ul></td><td valign="top"><ul>
 <li><div class="fn"/><a href="qprocess.html#pid">pid</a> () const : Q_PID</li>
 <li><div class="fn"/><a href="qiodevice.html#pos">pos</a> () const : qint64</li>
+<li><div class="fn"/><a href="qprocess.html#processChannelMode">processChannelMode</a> () const : ProcessChannelMode</li>
 <li><div class="fn"/><a href="qobject.html#property">property</a> ( const char * ) const : QVariant</li>
 <li><div class="fn"/><a href="qiodevice.html#putChar">putChar</a> ( char ) : bool</li>
 <li><div class="fn"/><a href="qiodevice.html#read">read</a> ( char *, qint64 ) : qint64</li>
@@ -99,7 +95,6 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qprocess.html#readAllStandardError">readAllStandardError</a> () : QByteArray</li>
 <li><div class="fn"/><a href="qprocess.html#readAllStandardOutput">readAllStandardOutput</a> () : QByteArray</li>
 <li><div class="fn"/><a href="qprocess.html#readChannel">readChannel</a> () const : ProcessChannel</li>
-<li><div class="fn"/><a href="qprocess.html#readChannelMode">readChannelMode</a> () const : ProcessChannelMode</li>
 <li><div class="fn"/><a href="qiodevice.html#readData">readData</a> ( char *, qint64 ) : qint64</li>
 <li><div class="fn"/><a href="qiodevice.html#readLine">readLine</a> ( char *, qint64 ) : qint64</li>
 <li><div class="fn"/><a href="qiodevice.html#readLine-2">readLine</a> ( qint64 ) : QByteArray</li>
@@ -117,10 +112,14 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qobject.html#objectName-prop">setObjectName</a> ( const QString &amp; )</li>
 <li><div class="fn"/><a href="qiodevice.html#setOpenMode">setOpenMode</a> ( OpenMode )</li>
 <li><div class="fn"/><a href="qobject.html#setParent">setParent</a> ( QObject * )</li>
+<li><div class="fn"/><a href="qprocess.html#setProcessChannelMode">setProcessChannelMode</a> ( ProcessChannelMode )</li>
 <li><div class="fn"/><a href="qprocess.html#setProcessState">setProcessState</a> ( ProcessState )</li>
 <li><div class="fn"/><a href="qobject.html#setProperty">setProperty</a> ( const char *, const QVariant &amp; ) : bool</li>
 <li><div class="fn"/><a href="qprocess.html#setReadChannel">setReadChannel</a> ( ProcessChannel )</li>
-<li><div class="fn"/><a href="qprocess.html#setReadChannelMode">setReadChannelMode</a> ( ProcessChannelMode )</li>
+<li><div class="fn"/><a href="qprocess.html#setStandardErrorFile">setStandardErrorFile</a> ( const QString &amp;, OpenMode )</li>
+<li><div class="fn"/><a href="qprocess.html#setStandardInputFile">setStandardInputFile</a> ( const QString &amp; )</li>
+<li><div class="fn"/><a href="qprocess.html#setStandardOutputFile">setStandardOutputFile</a> ( const QString &amp;, OpenMode )</li>
+<li><div class="fn"/><a href="qprocess.html#setStandardOutputProcess">setStandardOutputProcess</a> ( QProcess * )</li>
 <li><div class="fn"/><a href="qiodevice.html#setTextModeEnabled">setTextModeEnabled</a> ( bool )</li>
 <li><div class="fn"/><a href="qprocess.html#setWorkingDirectory">setWorkingDirectory</a> ( const QString &amp; )</li>
 <li><div class="fn"/><a href="qprocess.html#setupChildProcess">setupChildProcess</a> ()</li>
@@ -134,12 +133,13 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/><a href="qprocess.html#started">started</a> ()</li>
 <li><div class="fn"/><a href="qprocess.html#state">state</a> () const : QProcess::ProcessState</li>
 <li><div class="fn"/><a href="qprocess.html#stateChanged">stateChanged</a> ( QProcess::ProcessState )</li>
+<li><div class="fn"/><a href="qobject.html#staticMetaObject-var">staticMetaObject</a> : const QMetaObject</li>
 <li><div class="fn"/><a href="qprocess.html#systemEnvironment">systemEnvironment</a> () : QStringList</li>
 <li><div class="fn"/><a href="qprocess.html#terminate">terminate</a> ()</li>
 <li><div class="fn"/><a href="qobject.html#thread">thread</a> () const : QThread *</li>
 <li><div class="fn"/><a href="qobject.html#timerEvent">timerEvent</a> ( QTimerEvent * )</li>
-<li><div class="fn"/><a href="qobject.html#tr">tr</a> ( const char *, const char * ) : QString</li>
-<li><div class="fn"/><a href="qobject.html#trUtf8">trUtf8</a> ( const char *, const char * ) : QString</li>
+<li><div class="fn"/><a href="qobject.html#tr">tr</a> ( const char *, const char *, int ) : QString</li>
+<li><div class="fn"/><a href="qobject.html#trUtf8">trUtf8</a> ( const char *, const char *, int ) : QString</li>
 <li><div class="fn"/><a href="qiodevice.html#ungetChar">ungetChar</a> ( char )</li>
 <li><div class="fn"/><a href="qiodevice.html#waitForBytesWritten">waitForBytesWritten</a> ( int ) : bool</li>
 <li><div class="fn"/><a href="qprocess.html#waitForFinished">waitForFinished</a> ( int ) : bool</li>
@@ -156,6 +156,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

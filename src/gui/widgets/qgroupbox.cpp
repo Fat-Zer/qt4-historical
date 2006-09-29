@@ -51,8 +51,9 @@ public:
     int shortcutId;
 #endif
 
-    void _q_fixFocus();
+    void _q_fixFocus(Qt::FocusReason reason);
     void _q_setChildrenEnabled(bool b);
+    void click();
     bool flat;
     bool checkable;
     bool checked;
@@ -98,8 +99,19 @@ QStyleOptionGroupBox QGroupBoxPrivate::getStyleOption() const
     return option;
 }
 
+void QGroupBoxPrivate::click()
+{
+    Q_Q(QGroupBox);
+
+    QPointer<QGroupBox> guard(q);
+    q->setChecked(!checked);
+    if (!guard)
+        return;
+    emit q->clicked(checked);
+}
+
 /*!
-    \class QGroupBox qgroupbox.h
+    \class QGroupBox
     \brief The QGroupBox widget provides a group box frame with a title.
 
     \ingroup organizers
@@ -113,24 +125,40 @@ QStyleOptionGroupBox QGroupBoxPrivate::getStyleOption() const
     box's child widgets.
 
     QGroupBox also lets you set the \l title (normally set in the
-    constructor) and the title's alignment(). If setCheckable(true) is
-    called then the group box is isCheckable(), and it can be
-    setChecked(). Checkable group boxes child widgets are enabled or
-    disabled depending on whether or not the group box is isChecked().
+    constructor) and the title's \l alignment. Group boxes can be
+    \l checkable; child widgets in checkable group boxes are enabled or
+    disabled depending on whether or not the group box is \l checked.
 
-    To minimize space consumption, you can remove the right, left and
-    bottom edges of the frame with setFlat().
+    You can minimize the space consumption of a group box by enabling
+    the \l flat property. In most \l{QStyle}{styles}, enabling this
+    property results in the removal of the left, right and bottom
+    edges of the frame.
 
-    \inlineimage plastique-groupbox.png Screenshot in Plastique style
-    \inlineimage windows-groupbox.png Screenshot in Windows style
+    QGroupBox doesn't automatically lay out the child widgets (which
+    are often \l{QCheckBox}es or \l{QRadioButton}s but can be any
+    widgets). The following example shows how we can set up a
+    QGroupBox with a layout:
 
-    \sa QButtonGroup
+    \quotefromfile widgets/groupbox/window.cpp
+    \skipto = new QGroupBox
+    \printuntil setLayout(
+
+    \table 100%
+    \row \o \inlineimage windowsxp-groupbox.png Screenshot of a Windows XP style group box
+         \o \inlineimage macintosh-groupbox.png Screenshot of a Macintosh style group box
+         \o \inlineimage plastique-groupbox.png Screenshot of a Plastique style group box
+    \row \o A \l{Windows XP Style Widget Gallery}{Windows XP style} group box.
+         \o A \l{Macintosh Style Widget Gallery}{Macintosh style} group box.
+         \o A \l{Plastique Style Widget Gallery}{Plastique style} group box.
+    \endtable
+
+    \sa QButtonGroup, {Group Box Example}
 */
 
 
 
 /*!
-    Constructs a group box widget with no title and parent \a parent.
+    Constructs a group box widget with the given \a parent but with no title.
 */
 
 QGroupBox::QGroupBox(QWidget *parent)
@@ -141,8 +169,7 @@ QGroupBox::QGroupBox(QWidget *parent)
 }
 
 /*!
-    Constructs a group box with the title \a title and parent \a
-    parent.
+    Constructs a group box with the given \a title and \a parent.
 */
 
 QGroupBox::QGroupBox(const QString &title, QWidget *parent)
@@ -197,18 +224,21 @@ void QGroupBox::setTitle(const QString &title)
 
 /*!
     \property QGroupBox::title
-    \brief the group box title text.
+    \brief the group box title text
 
-    The group box title text will have a focus-change keyboard
-    shortcut if the title contains \&, followed by a letter.
+    The group box title text will have a keyboard shortcut if the title
+    contains an ampersand (\&) followed by a letter.
 
     \code
         g->setTitle("&User information");
     \endcode
+
     This produces "\underline{U}ser information"; \key Alt+U moves the keyboard
     focus to the group box.
 
     There is no default title text.
+
+    \sa alignment
 */
 
 QString QGroupBox::title() const
@@ -221,14 +251,14 @@ QString QGroupBox::title() const
     \property QGroupBox::alignment
     \brief the alignment of the group box title.
 
-    The title is always placed on the upper frame line. The horizontal
-    alignment can be specified by the alignment parameter.
+    Most styles place the title at the top of the frame. The horizontal
+    alignment of the title can be specified using single values from
+    the following list:
 
-    The alignment is one of the following flags:
     \list
-    \i Qt::AlignLeft aligns the title text to the left.
-    \i Qt::AlignRight aligns the title text to the right.
-    \i Qt::AlignHCenter aligns the title text centered.
+    \i Qt::AlignLeft aligns the title text with the left-hand side of the group box.
+    \i Qt::AlignRight aligns the title text with the right-hand side of the group box.
+    \i Qt::AlignHCenter aligns the title text with the horizontal center of the group box.
     \endlist
 
     The default alignment is Qt::AlignLeft.
@@ -276,9 +306,9 @@ bool QGroupBox::event(QEvent *e)
         QShortcutEvent *se = static_cast<QShortcutEvent *>(e);
         if (se->shortcutId() == d->shortcutId) {
             if (!isCheckable()) {
-                d->_q_fixFocus();
+                d->_q_fixFocus(Qt::ShortcutFocusReason);
             } else {
-                setChecked(!d->checked);
+                d->click();
                 setFocus(Qt::ShortcutFocusReason);
             }
             return true;
@@ -292,7 +322,7 @@ bool QGroupBox::event(QEvent *e)
         QStyle::SubControl control = style()->hitTestComplexControl(QStyle::CC_GroupBox, &box,
                                                                     static_cast<QHoverEvent *>(e)->pos(),
                                                                     this);
-        bool oldHover = d->hover;        
+        bool oldHover = d->hover;
         d->hover = d->checkable && (control == QStyle::SC_GroupBoxLabel || control == QStyle::SC_GroupBoxCheckBox);
         if (oldHover != d->hover) {
             QRect rect = style()->subControlRect(QStyle::CC_GroupBox, &box, QStyle::SC_GroupBoxCheckBox, this)
@@ -325,7 +355,7 @@ bool QGroupBox::event(QEvent *e)
                            || d->pressedControl == QStyle::SC_GroupBoxCheckBox);
             d->pressedControl = QStyle::SC_None;
             if (toggle)
-                setChecked(!d->checked);
+                d->click();
             return true;
         }
         break;
@@ -364,7 +394,7 @@ void QGroupBox::childEvent(QChildEvent *c)
     focus, and gives the focus to that widget.
 */
 
-void QGroupBoxPrivate::_q_fixFocus()
+void QGroupBoxPrivate::_q_fixFocus(Qt::FocusReason reason)
 {
     Q_Q(QGroupBox);
     QWidget *fw = q->focusWidget();
@@ -391,7 +421,7 @@ void QGroupBoxPrivate::_q_fixFocus()
                 fw = candidate;
     }
     if (fw)
-        fw->setFocus();
+        fw->setFocus(reason);
 }
 
 
@@ -403,20 +433,19 @@ void QGroupBoxPrivate::calculateFrame()
     Q_Q(QGroupBox);
     QStyleOptionGroupBox box = getStyleOption();
     QRect contentsRect = q->style()->subControlRect(QStyle::CC_GroupBox, &box, QStyle::SC_GroupBoxContents, q);
-    QRect frameRect = q->style()->subControlRect(QStyle::CC_GroupBox, &box, QStyle::SC_GroupBoxFrame, q);
-    q->setContentsMargins(contentsRect.left() - frameRect.left(), contentsRect.top() - frameRect.top(),
-                          frameRect.right() - contentsRect.right(), frameRect.bottom() - contentsRect.bottom());
+    q->setContentsMargins(contentsRect.left() - box.rect.left(), contentsRect.top() - box.rect.top(),
+                          box.rect.right() - contentsRect.right(), box.rect.bottom() - contentsRect.bottom());
 }
 
 
 
 /*! \reimp
  */
-void QGroupBox::focusInEvent(QFocusEvent *)
+void QGroupBox::focusInEvent(QFocusEvent *fe)
 { // note no call to super
     Q_D(QGroupBox);
     if (focusPolicy() == Qt::NoFocus) {
-        d->_q_fixFocus();
+        d->_q_fixFocus(fe->reason());
     } else {
         QStyleOptionGroupBox box = d->getStyleOption();
         QRect rect = style()->subControlRect(QStyle::CC_GroupBox, &box, QStyle::SC_GroupBoxCheckBox, this)
@@ -450,10 +479,16 @@ QSize QGroupBox::minimumSizeHint() const
     \property QGroupBox::flat
     \brief whether the group box is painted flat or has a frame
 
-    By default a group box has a surrounding frame, with the title
-    being placed on the upper frame line. In flat mode the right, left
-    and bottom frame lines are omitted, and only the thin line at the
-    top is drawn.
+    A group box usually consists of a surrounding frame with a title
+    at the top. If this property is enabled, only the top part of the frame is
+    drawn in most styles; otherwise the whole frame is drawn.
+
+    By default, this property is disabled; i.e. group boxes are not flat unless
+    explicitly specified.
+
+    \bold{Note:} In some styles, flat and non-flat group boxes have similar
+    representations and may not be as distinguishable as they are in other
+    styles.
 
     \sa title
 */
@@ -476,15 +511,19 @@ void QGroupBox::setFlat(bool b)
 
 /*!
     \property QGroupBox::checkable
-    \brief Whether the group box has a checkbox in its title.
+    \brief whether the group box has a checkbox in its title
 
-    If this property is true, the group box has a checkbox. If the
-    checkbox is checked (which is the default), the group box's
-    children are enabled.
+    If this property is true, the group box displays its title using
+    a checkbox in place of an ordinary label. If the checkbox is checked,
+    the group box's children are enabled; otherwise they are disabled and
+    inaccessible.
 
-    setCheckable() controls whether or not the group box has a
-    checkbox, and isCheckable() controls whether the checkbox is
-    checked or not.
+    By default, group boxes are not checkable.
+
+    If this property is enabled for a group box, it will also be initially
+    checked to ensure that its contents are enabled.
+
+    \sa checked
 */
 void QGroupBox::setCheckable(bool checkable)
 {
@@ -530,19 +569,39 @@ bool QGroupBox::isChecked() const
 /*!
     \fn void QGroupBox::toggled(bool on)
 
-    If the group box has a check box (see \l isCheckable()) this signal
-    is emitted when the check box is toggled. \a on is true if the check
-    box is checked; otherwise it is false.
+    If the group box is checkable, this signal is emitted when the check box
+    is toggled. \a on is true if the check box is checked; otherwise it is false.
+
+    \sa checkable
+*/
+
+
+/*!
+    \fn void QGroupBox::clicked(bool checked)
+    \since 4.2
+
+    This signal is emitted when the check box is activated (i.e. pressed down
+    then released while the mouse cursor is inside the button), or when the
+    shortcut key is typed, Notably, this signal is \e not emitted if you call
+    setChecked().
+
+    If the check box is checked \a checked is true; it is false if the check
+    box is unchecked.
+
+    \sa checkable, toggled(), checked
 */
 
 /*!
     \property QGroupBox::checked
-    \brief Whether the group box's checkbox is checked.
+    \brief whether the group box is checked
 
-    If the group box has a check box (see \l isCheckable()), and the
-    check box is checked, the group box's children
-    are enabled. If the checkbox is unchecked the children are
-    disabled.
+    If the group box is checkable, it is displayed with a check box.
+    If the check box is checked, the group box's children are enabled;
+    otherwise the children are disabled and are inaccessible to the user.
+
+    By default, checkable group boxes are also checked.
+
+    \sa checkable
 */
 void QGroupBox::setChecked(bool b)
 {
@@ -610,7 +669,7 @@ void QGroupBox::mousePressEvent(QMouseEvent *event)
     QStyleOptionGroupBox box = d->getStyleOption();
     d->pressedControl = style()->hitTestComplexControl(QStyle::CC_GroupBox, &box,
                                                        event->pos(), this);
-    if (d->pressedControl & (QStyle::SC_GroupBoxCheckBox | QStyle::SC_GroupBoxLabel))
+    if (d->checkable && (d->pressedControl & (QStyle::SC_GroupBoxCheckBox | QStyle::SC_GroupBoxLabel)))
         update(style()->subControlRect(QStyle::CC_GroupBox, &box, QStyle::SC_GroupBoxCheckBox, this));
 }
 
@@ -630,11 +689,11 @@ void QGroupBox::mouseReleaseEvent(QMouseEvent *)
 {
     Q_D(QGroupBox);
     QStyleOptionGroupBox box = d->getStyleOption();
-    bool toggle = (d->pressedControl == QStyle::SC_GroupBoxLabel
+    bool toggle = d->checkable && (d->pressedControl == QStyle::SC_GroupBoxLabel
                    || d->pressedControl == QStyle::SC_GroupBoxCheckBox);
     d->pressedControl = QStyle::SC_None;
     if (toggle)
-        setChecked(!d->checked);
+        d->click();
 }
 
 #ifdef QT3_SUPPORT

@@ -2,25 +2,19 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/src/qt3support/other/q3mimefactory.cpp -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/src/qt3support/other/q3mimefactory.cpp -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-x11-opensource-src-4.2.0/src/qt3support/other/q3mimefactory.cpp -->
 <head>
-    <title>Qt 4.1: Q3MimeSourceFactory Class Reference</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
+  <title>Qt 4.2: Q3MimeSourceFactory Class Reference</title>
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Q3MimeSourceFactory Class Reference<br /><sup><sup>[<a href="qt3support.html">Qt3Support</a> module]</sup></sup></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">Q3MimeSourceFactory Class Reference<br /><sup><sup>[<a href="qt3support.html">Qt3Support</a> module]</sup></sup></h1>
 <p>The Q3MimeSourceFactory class is an extensible provider of mime-typed data. <a href="#details">More...</a></p>
-<pre>#include &lt;Q3MimeSourceFactory&gt;</pre><p><b>This class is part of the Qt 3 support library.</b> It is provided to keep old source code working. We strongly advise against using it in new code. See <a href="porting4.html#qmimesourcefactory">Porting to Qt 4</a> for more information.</p>
+<pre> #include &lt;Q3MimeSourceFactory&gt;</pre><p><b>This class is part of the Qt 3 support library.</b> It is provided to keep old source code working. We strongly advise against using it in new code. See <a href="porting4.html#qmimesourcefactory">Porting to Qt 4</a> for more information.</p>
 <ul>
 <li><a href="q3mimesourcefactory-members.html">List of all members, including inherited members</a></li>
 </ul>
@@ -59,19 +53,19 @@ body { background: #ffffff; color: black; }</style>
 <p>The base Q3MimeSourceFactory can be used in two ways: as an abstraction of a collection of files or as specifically stored data. For it to access files, call <a href="q3mimesourcefactory.html#setFilePath">setFilePath</a>() before accessing data. For stored data, call <a href="q3mimesourcefactory.html#setData">setData</a>() for each item (there are also convenience functions, e.g. <a href="q3mimesourcefactory.html#setText">setText</a>(), <a href="q3mimesourcefactory.html#setImage">setImage</a>() and <a href="q3mimesourcefactory.html#setPixmap">setPixmap</a>(), that simply call <a href="q3mimesourcefactory.html#setData">setData</a>() with appropriate parameters).</p>
 <p>The rich text widgets, <a href="qtextedit.html">QTextEdit</a> and <a href="qtextbrowser.html">QTextBrowser</a>, use Q3MimeSourceFactory to resolve references such as images or links within rich text documents. They either access the default factory (see <a href="q3mimesourcefactory.html#defaultFactory">defaultFactory</a>()) or their own. Other classes that are capable of displaying rich text (such as <a href="qlabel.html">QLabel</a>, <a href="qwhatsthis.html">QWhatsThis</a> or <a href="qmessagebox.html">QMessageBox</a>) always use the default factory.</p>
 <p>A factory can also be used as a container to store data associated with a name. This technique is useful whenever rich text contains images that are stored in the program itself, not loaded from the hard disk. Your program may, for example, define some image data as:</p>
-<pre>&nbsp;   static const char* myimage_data[]={
-    &quot;...&quot;,
-    ...
-    &quot;...&quot;};</pre>
+<pre> static const char* myimage_data[]={
+ &quot;...&quot;,
+ ...
+ &quot;...&quot;};</pre>
 <p>To be able to use this image within some rich text, for example inside a <a href="qlabel.html">QLabel</a>, you must create a <a href="qimage.html">QImage</a> from the raw data and insert it into the factory with a unique name:</p>
-<pre>&nbsp;   Q3MimeSourceFactory::defaultFactory()-&gt;setImage(&quot;myimage&quot;, QImage(myimage_data));</pre>
+<pre> Q3MimeSourceFactory::defaultFactory()-&gt;setImage(&quot;myimage&quot;, QImage(myimage_data));</pre>
 <p>Now you can create a rich text <a href="qlabel.html">QLabel</a> with</p>
-<pre>&nbsp;   QLabel* label = new QLabel(
-        &quot;Rich text with embedded image:&lt;img source=\&quot;myimage\&quot;&gt;&quot;
-        &quot;Isn't that &lt;em&gt;cute&lt;/em&gt;?&quot;);</pre>
+<pre> QLabel* label = new QLabel(
+     &quot;Rich text with embedded image:&lt;img source=\&quot;myimage\&quot;&gt;&quot;
+     &quot;Isn't that &lt;em&gt;cute&lt;/em&gt;?&quot;);</pre>
 <p>When no longer needed, you can clear the data from the factory:</p>
-<pre>&nbsp;   delete label;
-    Q3MimeSourceFactory::defaultFactory()-&gt;setData(&quot;myimage&quot;, 0);</pre>
+<pre> delete label;
+ Q3MimeSourceFactory::defaultFactory()-&gt;setData(&quot;myimage&quot;, 0);</pre>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="Q3MimeSourceFactory"></a>Q3MimeSourceFactory::Q3MimeSourceFactory ()</h3>
@@ -88,10 +82,10 @@ body { background: #ffffff; color: black; }</style>
 <p>Returns a reference to the data associated with <i>abs_name</i>. The return value remains valid only until the next data() or <a href="q3mimesourcefactory.html#setData">setData</a>() call, so you should immediately decode the result.</p>
 <p>If there is no data associated with <i>abs_name</i> in the factory's store, the factory tries to access the local filesystem. If <i>abs_name</i> isn't an absolute file name, the factory will search for it in all defined paths (see <a href="q3mimesourcefactory.html#setFilePath">setFilePath</a>()).</p>
 <p>The factory understands all the image formats supported by <a href="qimagereader.html">QImageReader</a>. Any other mime types are determined by the file name extension. The default settings are</p>
-<pre>&nbsp;   setExtensionType(&quot;html&quot;, &quot;text/html;charset=iso8859-1&quot;);
-    setExtensionType(&quot;htm&quot;, &quot;text/html;charset=iso8859-1&quot;);
-    setExtensionType(&quot;txt&quot;, &quot;text/plain&quot;);
-    setExtensionType(&quot;xml&quot;, &quot;text/xml;charset=UTF-8&quot;);</pre>
+<pre> setExtensionType(&quot;html&quot;, &quot;text/html;charset=iso8859-1&quot;);
+ setExtensionType(&quot;htm&quot;, &quot;text/html;charset=iso8859-1&quot;);
+ setExtensionType(&quot;txt&quot;, &quot;text/plain&quot;);
+ setExtensionType(&quot;xml&quot;, &quot;text/xml;charset=UTF-8&quot;);</pre>
 <p>The effect of these is that file names ending in &quot;txt&quot; will be treated as text encoded in the local encoding; those ending in &quot;xml&quot; will be treated as text encoded in Unicode UTF-8 encoding. The text/html type is treated specially, since the encoding can be specified in the html file itself. &quot;html&quot; or &quot;htm&quot; will be treated as text encoded in the encoding specified by the html meta tag, if none could be found, the charset of the mime type will be used. The text subtype (&quot;html&quot;, &quot;plain&quot;, or &quot;xml&quot;) does not affect the factory, but users of the factory may behave differently. We recommend creating &quot;xml&quot; files where practical. These files can be viewed regardless of the runtime encoding and can encode any Unicode characters without resorting to encoding definitions inside the file.</p>
 <p>Any file data that is not recognized will be retrieved as a <a href="qmimesource.html">QMimeSource</a> providing the &quot;application/octet-stream&quot; mime type, meaning uninterpreted binary data.</p>
 <p>You can add further extensions or change existing ones with subsequent calls to <a href="q3mimesourcefactory.html#setExtensionType">setExtensionType</a>(). If the extension mechanism is not sufficient for your problem domain, you can inherit <a href="q3mimesourcefactory.html">Q3MimeSourceFactory</a> and reimplement this function to perform some more specialized mime-type detection. The same applies if you want to use the mime source factory to access URL referenced data over a network.</p>
@@ -140,6 +134,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

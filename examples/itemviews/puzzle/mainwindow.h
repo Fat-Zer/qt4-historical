@@ -29,6 +29,7 @@
 
 class PuzzleWidget;
 class QListView;
+class PiecesModel;
 
 class MainWindow : public QMainWindow
 {
@@ -51,6 +52,7 @@ private:
     QPixmap puzzleImage;
     QListView *piecesList;
     PuzzleWidget *puzzleWidget;
+    PiecesModel *model;
 };
 
 #endif

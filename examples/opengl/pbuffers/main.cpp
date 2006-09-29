@@ -30,8 +30,7 @@ int main(int argc, char **argv)
     QApplication a(argc, argv);
     if (!QGLFormat::hasOpenGL() || !QGLPixelBuffer::hasOpenGLPbuffers()) {
 	QMessageBox::information(0, "OpenGL pbuffers",
-				 "This system does not support OpenGL/pbuffers.",
-				 QMessageBox::Ok);
+				 "This system does not support OpenGL/pbuffers.");
         return -1;
     }
 

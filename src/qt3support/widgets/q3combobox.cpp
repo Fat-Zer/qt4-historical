@@ -243,12 +243,13 @@
     non-editable comboboxes it has no effect. It is false by default.
 */
 
-/*! \property Q3ComboBox::autoResize
-    \brief whether auto resize is enabled
+/*!
+    \property Q3ComboBox::autoResize
+    \brief whether auto-resize is enabled
     \obsolete
 
-  If this property is set to true then the combobox will resize itself
-  whenever its contents change. The default is false.
+    If this property is set to true then the combobox will resize
+    itself whenever its contents change. The default is false.
 */
 
 /*!
@@ -564,7 +565,6 @@ Q3ComboBox::Q3ComboBox( bool rw, QWidget *parent, const char *name )
     QStyleOptionComboBox opt = d->getStyleOption();
     if(d->popup() && style()->styleHint(QStyle::SH_ComboBox_Popup, &opt, this))
 	d->popup()->setItemChecked(d->current, false);
-    d->current = 0;
     d->maxCount = INT_MAX;
     setSizeLimit(10);
     d->p = AtBottom;
@@ -1078,10 +1078,22 @@ void Q3ComboBox::setCurrentItem( int index )
     currentChanged();
 }
 
+/*!
+    Returns true if auto-resize is enabled; otherwise returns false.
+
+    \sa autoResize
+*/
+
 bool Q3ComboBox::autoResize() const
 {
     return d->autoresize;
 }
+
+/*!
+    If \a enable is true, enable auto-resize; disable it otherwise.
+
+    \sa autoResize
+*/
 
 void Q3ComboBox::setAutoResize( bool enable )
 {
@@ -2289,8 +2301,8 @@ void Q3ComboBox::setLineEdit( QLineEdit *edit )
     if ( edit->parent() != this )
 	edit->reparent( this, QPoint(0,0), false );
 
-    connect (edit, SIGNAL( textChanged(const QString&) ),
-	     this, SIGNAL( textChanged(const QString&) ) );
+    connect (edit, SIGNAL(textChanged(QString)),
+	     this, SIGNAL(textChanged(QString)) );
     connect( edit, SIGNAL(returnPressed()), SLOT(returnPressed()) );
 
     edit->setFrame( false );

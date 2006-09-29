@@ -1,21 +1,22 @@
 TEMPLATE = app
 LANGUAGE = C++
-TARGET         = assistant
+TARGET = assistant
 
-CONFIG        += qt warn_on
+CONFIG += qt warn_on
+
+unix:contains(QT_CONFIG, qdbus):CONFIG += qdbus
+
 build_all:!build_pass {
     CONFIG -= build_all
     CONFIG += release
 }
-QT            += xml network
+QT += xml network
 
-PROJECTNAME        = Assistant
-DESTDIR            = ../../bin
+PROJECTNAME = Assistant
+DESTDIR = ../../bin
 
-FORMS += finddialog.ui \
-        helpdialog.ui \
+FORMS += helpdialog.ui \
         mainwindow.ui \
-        settingsdialog.ui \
         tabbedbrowser.ui \
         topicchooser.ui
 
@@ -23,22 +24,18 @@ SOURCES += main.cpp \
         helpwindow.cpp \
         topicchooser.cpp \
         docuparser.cpp \
-        settingsdialog.cpp \
         index.cpp \
         profile.cpp \
         config.cpp \
-        finddialog.cpp \
         helpdialog.cpp \
         mainwindow.cpp \
         tabbedbrowser.cpp
 
-HEADERS        += helpwindow.h \
+HEADERS += helpwindow.h \
         topicchooser.h \
         docuparser.h \
-        settingsdialog.h \
         index.h \
         profile.h \
-        finddialog.h \
         helpdialog.h \
         mainwindow.h \
         tabbedbrowser.h \
@@ -73,3 +70,17 @@ TRANSLATIONS        = assistant_de.ts \
 
 
 unix:!contains(QT_CONFIG, zlib):LIBS += -lz
+
+contains(CONFIG, static): {
+    win32 {
+        exists($$[QT_INSTALL_PLUGINS]/imageformats/qjpeg.lib) {
+            QTPLUGIN += qjpeg
+            DEFINES += USE_STATIC_JPEG_PLUGIN            
+        }
+    } else {
+        exists($$[QT_INSTALL_PLUGINS]/imageformats/qjpeg.a) {
+            QTPLUGIN += qjpeg
+            DEFINES += USE_STATIC_JPEG_PLUGIN            
+        }        
+    }
+}

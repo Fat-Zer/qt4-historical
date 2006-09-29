@@ -21,6 +21,10 @@
 **
 ****************************************************************************/
 
+/*
+TRANSLATOR qdesigner_internal::FormWindowManager
+*/
+
 #include "formwindowmanager.h"
 #include "formwindow_dnditem.h"
 #include "widgetdatabase_p.h"
@@ -30,11 +34,13 @@
 #include "connectionedit_p.h"
 
 #include <QtDesigner/QtDesigner>
-#include <QtDesigner/private/qtundo_p.h>
 #include <qdesigner_promotedwidget_p.h>
 #include <qdesigner_command_p.h>
 #include <layoutinfo_p.h>
+#include <qlayout_widget_p.h>
 
+#include <QtGui/QUndoGroup>
+#include <QtGui/QUndoStack>
 #include <QtGui/QAction>
 #include <QtGui/QLayout>
 #include <QtGui/QSplitter>
@@ -111,11 +117,20 @@ static bool isMouseMoveOrRelease(QEvent *e)
 
 bool FormWindowManager::eventFilter(QObject *o, QEvent *e)
 {
-    if (
+    bool inDragMode =
 #ifdef Q_WS_X11
         o == m_core->topLevel() &&
 #endif
-        !m_drag_item_list.isEmpty() && isMouseMoveOrRelease(e)) {
+        ! m_drag_item_list.isEmpty();
+
+
+    if (inDragMode && e->type() == QEvent::ShortcutOverride) {
+        e->accept();
+        endDrag(QPoint());
+        return true;
+    }
+
+    else if (inDragMode && isMouseMoveOrRelease(e)) {
         // We're dragging
         QMouseEvent *me = static_cast<QMouseEvent*>(e);
         me->accept();
@@ -155,7 +170,8 @@ bool FormWindowManager::eventFilter(QObject *o, QEvent *e)
         } break;
 
         case QEvent::WindowDeactivate: {
-            fw->repaintSelection();
+            if (o == fw && o == activeFormWindow())
+                fw->repaintSelection();
         } break;
 
         case QEvent::KeyPress: {
@@ -186,7 +202,7 @@ void FormWindowManager::addFormWindow(QDesignerFormWindowInterface *w)
         return;
 
     connect(formWindow, SIGNAL(selectionChanged()), this, SLOT(slotUpdateActions()));
-    connect(formWindow->commandHistory(), SIGNAL(commandExecuted()), this, SLOT(slotUpdateActions()));
+    connect(formWindow->commandHistory(), SIGNAL(indexChanged(int)), this, SLOT(slotUpdateActions()));
     connect(formWindow, SIGNAL(toolChanged(int)), this, SLOT(slotUpdateActions()));
 
     m_formWindows.append(formWindow);
@@ -232,7 +248,7 @@ void FormWindowManager::setActiveFormWindow(QDesignerFormWindowInterface *w)
 
     if (m_activeFormWindow) {
         m_activeFormWindow->emitSelectionChanged();
-        m_activeFormWindow->commandHistory()->setCurrent();
+        m_activeFormWindow->commandHistory()->setActive();
 
         QWidget *parent = m_activeFormWindow->parentWidget();
         QWorkspace *workspace = 0;
@@ -298,12 +314,14 @@ void FormWindowManager::setupActions()
     m_actionSelectAll->setEnabled(false);
 
     m_actionRaise = new QAction(createIconSet(QLatin1String("editraise.png")), tr("Bring to &Front"), this);
+    m_actionRaise->setShortcut(Qt::CTRL + Qt::Key_L);
     m_actionRaise->setStatusTip(tr("Raises the selected widgets"));
     m_actionRaise->setWhatsThis(tr("Raises the selected widgets"));
     connect(m_actionRaise, SIGNAL(triggered()), this, SLOT(slotActionRaiseActivated()));
     m_actionRaise->setEnabled(false);
 
     m_actionLower = new QAction(createIconSet(QLatin1String("editlower.png")), tr("Send to &Back"), this);
+    m_actionLower->setShortcut(Qt::CTRL + Qt::Key_K);
     m_actionLower->setStatusTip(tr("Lowers the selected widgets"));
     m_actionLower->setWhatsThis(tr("Lowers the selected widgets"));
     connect(m_actionLower, SIGNAL(triggered()), this, SLOT(slotActionLowerActivated()));
@@ -361,9 +379,11 @@ void FormWindowManager::setupActions()
     connect(m_actionBreakLayout, SIGNAL(triggered()), this, SLOT(slotActionBreakLayoutActivated()));
     m_actionBreakLayout->setEnabled(false);
 
-    m_actionUndo = QtUndoManager::manager()->createUndoAction(this);
+    m_undoGroup = new QUndoGroup(this);
+
+    m_actionUndo = m_undoGroup->createUndoAction(this);
     m_actionUndo->setEnabled(false);
-    m_actionRedo = QtUndoManager::manager()->createRedoAction(this);
+    m_actionRedo = m_undoGroup->createRedoAction(this);
     m_actionRedo->setEnabled(false);
 }
 
@@ -455,8 +475,9 @@ void FormWindowManager::slotActionBreakLayoutActivated()
         while (currentWidget && currentWidget != m_activeFormWindow) {
             if (QLayout *layout = LayoutInfo::managedLayout(core(), currentWidget)) {
                 // ### generalize (put in function)
-                if ((!layout->isEmpty() || qobject_cast<QSplitter*>(currentWidget))
-                     && !layoutBaseList.contains(layout->parentWidget())) {
+                QLayoutWidget* layoutWidget = qobject_cast<QLayoutWidget*>(widget);
+                if (((layoutWidget ? !layout->isEmpty() : layout != 0) || qobject_cast<QSplitter*>(currentWidget)) 
+                    && !layoutBaseList.contains(layout->parentWidget())) {
                     layoutBaseList.prepend(layout->parentWidget());
                 }
             }
@@ -554,10 +575,14 @@ void FormWindowManager::slotUpdateActions()
 
                 breakAvailable = LayoutInfo::isWidgetLaidout(m_core, widget);
 
-                if (! breakAvailable && layout != 0)
-                    breakAvailable = ! layout->isEmpty();
+                if (!breakAvailable && layout != 0) {
+                    if(qobject_cast<QLayoutWidget*>(widget))
+                        breakAvailable = !layout->isEmpty();
+                    else
+                        breakAvailable = true;  // we have a *hidden* layout
+                }
 
-                if (! breakAvailable && qobject_cast<QSplitter*>(widget))
+                if (!breakAvailable && qobject_cast<QSplitter*>(widget))
                     breakAvailable = qobject_cast<QSplitter*>(widget)->count() != 0;
             }
         } else {
@@ -591,7 +616,8 @@ void FormWindowManager::layoutContainerHorizontal()
 {
     QWidget *w = m_activeFormWindow->mainContainer();
     QList<QWidget*> l(m_activeFormWindow->selectedWidgets());
-    if (l.count() == 1)
+    m_activeFormWindow->simplifySelection(&l);
+    if (l.count() > 0)
         w = l.first();
 
     if (w != 0)
@@ -602,7 +628,8 @@ void FormWindowManager::layoutContainerVertical()
 {
     QWidget *w = m_activeFormWindow->mainContainer();
     QList<QWidget*> l(m_activeFormWindow->selectedWidgets());
-    if (l.count() == 1)
+    m_activeFormWindow->simplifySelection(&l);
+    if (l.count() > 0)
         w = l.first();
 
     if (w)
@@ -613,7 +640,8 @@ void FormWindowManager::layoutContainerGrid()
 {
     QWidget *w = m_activeFormWindow->mainContainer();
     QList<QWidget*> l(m_activeFormWindow->selectedWidgets());
-    if (l.count() == 1)
+    m_activeFormWindow->simplifySelection(&l);
+    if (l.count() > 0)
         w = l.first();
 
     if (w)
@@ -710,6 +738,9 @@ void FormWindowManager::setItemsPos(const QPoint &globalPos)
         widget_under_mouse
             = form_under_mouse->widgetAt(form_under_mouse->mapFromGlobal(globalPos));
 
+        if (QDesignerContainerExtension *c = qt_extension<QDesignerContainerExtension*>(core()->extensionManager(), form_under_mouse->findContainer(widget_under_mouse, false))) {
+            widget_under_mouse = c->widget(c->currentIndex());
+        }
         Q_ASSERT(!qobject_cast<ConnectionEdit*>(widget_under_mouse));
     }
 
@@ -791,3 +822,7 @@ bool FormWindowManager::isDecoration(QWidget *widget) const
     return false;
 }
 
+QUndoGroup *FormWindowManager::undoGroup() const
+{
+    return m_undoGroup;
+}

@@ -89,7 +89,7 @@ class QAbstractScrollAreaWidget : public QWidget
     Q_OBJECT
 
 public:
-    QAbstractScrollAreaWidget(Q3ScrollView* parent=0, const char* name=0, Qt::WFlags f = 0)
+    QAbstractScrollAreaWidget(Q3ScrollView* parent=0, const char* name=0, Qt::WindowFlags f = 0)
         : QWidget(parent, name, f)
     {
         setAutoFillBackground(true);
@@ -101,7 +101,7 @@ class QClipperWidget : public QWidget
     Q_OBJECT
 
 public:
-    QClipperWidget(QWidget * parent=0, const char * name=0, Qt::WFlags f=0)
+    QClipperWidget(QWidget * parent=0, const char * name=0, Qt::WindowFlags f=0)
         : QWidget (parent,name,f) {}
 };
 
@@ -555,10 +555,10 @@ void Q3ScrollViewData::viewportResized(int w, int h)
     widget flags are propagated to the parent constructor as usual.
 */
 
-Q3ScrollView::Q3ScrollView(QWidget *parent, const char *name, Qt::WFlags f) :
+Q3ScrollView::Q3ScrollView(QWidget *parent, const char *name, Qt::WindowFlags f) :
     Q3Frame(parent, name, f & (~WStaticContents) & (~WNoAutoErase) & (~WResizeNoErase))
 {
-    WFlags flags = WResizeNoErase | (f&WPaintClever) | (f&WRepaintNoErase) | (f&WStaticContents);
+    WindowFlags flags = WResizeNoErase | (f&WPaintClever) | (f&WRepaintNoErase) | (f&WStaticContents);
     d = new Q3ScrollViewData(this, flags);
 
 #ifndef QT_NO_DRAGANDDROP
@@ -1123,7 +1123,7 @@ void Q3ScrollView::resizeEvent(QResizeEvent* event)
 /*!
     \reimp
 */
-void  Q3ScrollView::mousePressEvent(QMouseEvent * e) //#### remove for 4.0
+void  Q3ScrollView::mousePressEvent(QMouseEvent * e)
 {
     e->ignore();
 }
@@ -1131,7 +1131,7 @@ void  Q3ScrollView::mousePressEvent(QMouseEvent * e) //#### remove for 4.0
 /*!
     \reimp
 */
-void  Q3ScrollView::mouseReleaseEvent(QMouseEvent *e) //#### remove for 4.0
+void  Q3ScrollView::mouseReleaseEvent(QMouseEvent *e)
 {
     e->ignore();
 }
@@ -1140,7 +1140,7 @@ void  Q3ScrollView::mouseReleaseEvent(QMouseEvent *e) //#### remove for 4.0
 /*!
     \reimp
 */
-void  Q3ScrollView::mouseDoubleClickEvent(QMouseEvent *e) //#### remove for 4.0
+void  Q3ScrollView::mouseDoubleClickEvent(QMouseEvent *e)
 {
     e->ignore();
 }
@@ -1148,7 +1148,7 @@ void  Q3ScrollView::mouseDoubleClickEvent(QMouseEvent *e) //#### remove for 4.0
 /*!
     \reimp
 */
-void  Q3ScrollView::mouseMoveEvent(QMouseEvent *e) //#### remove for 4.0
+void  Q3ScrollView::mouseMoveEvent(QMouseEvent *e)
 {
     e->ignore();
 }
@@ -1164,9 +1164,9 @@ void Q3ScrollView::wheelEvent(QWheelEvent *e)
     viewportWheelEvent(&ce);
     if (!ce.isAccepted()) {
         if (e->orientation() == Horizontal && horizontalScrollBar())
-            QApplication::sendEvent(horizontalScrollBar(), e);
+            horizontalScrollBar()->event(e);
         else  if (e->orientation() == Vertical && verticalScrollBar())
-            QApplication::sendEvent(verticalScrollBar(), e);
+            verticalScrollBar()->event(e);
     } else {
         e->accept();
     }
@@ -2417,12 +2417,12 @@ void Q3ScrollView::changeFrameRect(const QRect& r)
     if (oldr != r) {
         QRect cr = contentsRect();
         QRegion fr(frameRect());
-        fr = fr.subtract(contentsRect());
+        fr = fr.subtracted(contentsRect());
         setFrameRect(r);
         if (isVisible()) {
-            cr = cr.intersect(contentsRect());
-            fr = fr.unite(frameRect());
-            fr = fr.subtract(cr);
+            cr = cr.intersected(contentsRect());
+            fr = fr.united(frameRect());
+            fr = fr.subtracted(cr);
             if (!fr.isEmpty())
                 update(fr);
         }

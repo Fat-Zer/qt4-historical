@@ -2,25 +2,19 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/src/gui/embedded/qwindowsystem_qws.cpp -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/src/gui/embedded/qwindowsystem_qws.cpp -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-x11-opensource-src-4.2.0/src/gui/embedded/qwindowsystem_qws.cpp -->
 <head>
-    <title>Qt 4.1: QWSInputMethod Class Reference</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
+  <title>Qt 4.2: QWSInputMethod Class Reference</title>
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QWSInputMethod Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">QWSInputMethod Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QWSInputMethod class provides international input methods in Qtopia Core. <a href="#details">More...</a></p>
-<pre>#include &lt;QWSInputMethod&gt;</pre><p>Inherits <a href="qobject.html">QObject</a>.</p>
+<pre> #include &lt;QWSInputMethod&gt;</pre><p>Inherits <a href="qobject.html">QObject</a>.</p>
 <ul>
 <li><a href="qwsinputmethod-members.html">List of all members, including inherited members</a></li>
 <li><a href="qwsinputmethod-obsolete.html">Obsolete members</a></li>
@@ -43,14 +37,14 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>virtual void <b><a href="qwsinputmethod.html#updateHandler">updateHandler</a></b> ( int <i>type</i> )</li>
 </ul>
 <ul>
-<li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
+<li><div class="fn"/>29 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 </ul>
 <a name="protected-functions"></a>
 <h3>Protected Functions</h3>
 <ul>
 <li><div class="fn"/>uint <b><a href="qwsinputmethod.html#inputResolutionShift">inputResolutionShift</a></b> () const</li>
 <li><div class="fn"/>void <b><a href="qwsinputmethod.html#sendCommitString">sendCommitString</a></b> ( const QString &amp; <i>commitString</i>, int <i>replaceFromPosition</i> = 0, int <i>replaceLength</i> = 0 )</li>
-<li><div class="fn"/>void <b><a href="qwsinputmethod.html#sendEvent">sendEvent</a></b> ( const QInputMethodEvent * )</li>
+<li><div class="fn"/>void <b><a href="qwsinputmethod.html#sendEvent">sendEvent</a></b> ( const QInputMethodEvent * <i>event</i> )</li>
 <li><div class="fn"/>void <b><a href="qwsinputmethod.html#sendMouseEvent">sendMouseEvent</a></b> ( const QPoint &amp; <i>position</i>, int <i>state</i>, int <i>wheel</i> )</li>
 <li><div class="fn"/>void <b><a href="qwsinputmethod.html#sendPreeditString">sendPreeditString</a></b> ( const QString &amp; <i>preeditString</i>, int <i>cursorPosition</i>, int <i>selectionLength</i> = 0 )</li>
 <li><div class="fn"/>void <b><a href="qwsinputmethod.html#sendQuery">sendQuery</a></b> ( int <i>property</i> )</li>
@@ -64,7 +58,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
 <li><div class="fn"/>1 public slot inherited from <a href="qobject.html#public-slots">QObject</a></li>
 <li><div class="fn"/>1 signal inherited from <a href="qobject.html#signals">QObject</a></li>
-<li><div class="fn"/>4 static public members inherited from <a href="qobject.html#static-public-members">QObject</a></li>
+<li><div class="fn"/>5 static public members inherited from <a href="qobject.html#static-public-members">QObject</a></li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -128,8 +122,8 @@ body { background: #ffffff; color: black; }</style>
 <p>If the specified <i>replaceLength</i> is greater than 0, the commit string will replace the given number of characters of the receiving widget's previous text, starting at the given <i>replaceFromPosition</i> relative to the start of the current preedit string.</p>
 <p>This will cause the input method to leave compose mode, i.e. the input method will no longer be actively composing the preedit string.</p>
 <p>See also <a href="qwsinputmethod.html#sendEvent">sendEvent</a>() and <a href="qwsinputmethod.html#sendPreeditString">sendPreeditString</a>().</p>
-<h3 class="fn"><a name="sendEvent"></a>void QWSInputMethod::sendEvent ( const <a href="qinputmethodevent.html">QInputMethodEvent</a> * )&nbsp;&nbsp;<tt> [protected]</tt></h3>
-<p>Sends a <a href="qinputmethodevent.html">QInputMethodEvent</a> object to the focus widget. a</p>
+<h3 class="fn"><a name="sendEvent"></a>void QWSInputMethod::sendEvent ( const <a href="qinputmethodevent.html">QInputMethodEvent</a> * <i>event</i> )&nbsp;&nbsp;<tt> [protected]</tt></h3>
+<p>Sends the given <i>event</i> to the focus widget.</p>
 <p>See also <a href="qwsinputmethod.html#sendPreeditString">sendPreeditString</a>(), <a href="qwsinputmethod.html#sendCommitString">sendCommitString</a>(), and <a href="qwsinputmethod.html#reset">reset</a>().</p>
 <h3 class="fn"><a name="sendMouseEvent"></a>void QWSInputMethod::sendMouseEvent ( const <a href="qpoint.html">QPoint</a> &amp; <i>position</i>, int <i>state</i>, int <i>wheel</i> )&nbsp;&nbsp;<tt> [protected]</tt></h3>
 <p>Sends a mouse event specified by the given <i>position</i>, <i>state</i> and <i>wheel</i> parameters.</p>
@@ -158,6 +152,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

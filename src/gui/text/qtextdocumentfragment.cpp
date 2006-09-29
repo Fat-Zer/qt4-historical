@@ -21,7 +21,6 @@
 **
 ****************************************************************************/
 
-
 #include "qtextdocumentfragment.h"
 #include "qtextdocumentfragment_p.h"
 #include "qtextcursor_p.h"
@@ -180,7 +179,7 @@ void QTextCopyHelper::copy()
     }
 }
 
-QTextDocumentFragmentPrivate::QTextDocumentFragmentPrivate() 
+QTextDocumentFragmentPrivate::QTextDocumentFragmentPrivate()
     : ref(1), doc(new QTextDocument), containsCompleteDocument(false), importedFromPlainText(false)
 {
     doc->setUndoRedoEnabled(false);
@@ -201,8 +200,8 @@ QTextDocumentFragmentPrivate::QTextDocumentFragmentPrivate(const QTextCursor &_c
         containsCompleteDocument = true;
         doc->rootFrame()->setFrameFormat(_cursor.d->priv->rootFrame()->frameFormat());
         doc->setMetaInformation(QTextDocument::DocumentTitle, _cursor.d->priv->document()->metaInformation(QTextDocument::DocumentTitle));
-        doc->setDefaultFont(_cursor.d->priv->defaultFont());
     }
+    doc->setDefaultFont(_cursor.d->priv->defaultFont());
 
     QTextCursor destCursor(doc);
     QTextCopyHelper(_cursor, destCursor).copy();
@@ -230,11 +229,12 @@ void QTextDocumentFragmentPrivate::insert(QTextCursor &_cursor) const
 }
 
 /*!
-    \class QTextDocumentFragment qtextdocumentfragment.h
+    \class QTextDocumentFragment
     \brief The QTextDocumentFragment class represents a piece of formatted text
     from a QTextDocument.
 
     \ingroup text
+    \ingroup shared
 
     A QTextDocumentFragment is a fragment of rich text, that can be inserted into
     a QTextDocument. A document fragment can be created from a
@@ -353,12 +353,24 @@ QString QTextDocumentFragment::toPlainText() const
     return result;
 }
 
+// #### Qt 5: merge with other overload
 /*!
-    Returns the contents of the document fragment as HTML.
-
-    \sa toPlainText()
+    \overload
 */
 QString QTextDocumentFragment::toHtml() const
+{
+    return toHtml(QByteArray());
+}
+
+/*!
+    \since 4.2
+
+    Returns the contents of the document fragment as HTML,
+    using the specified \a encoding (e.g., "UTF-8", "ISO 8859-1").
+
+    \sa toPlainText(), QTextDocument::toHtml(), QTextCodec
+*/
+QString QTextDocumentFragment::toHtml(const QByteArray &encoding) const
 {
     if (!d)
         return QString();
@@ -366,7 +378,7 @@ QString QTextDocumentFragment::toHtml() const
     QTextHtmlExporter exporter(d->doc);
     if (!d->containsCompleteDocument)
         exporter.setFragmentMarkers(true);
-    return exporter.toHtml(QByteArray());
+    return exporter.toHtml(encoding);
 }
 
 /*!
@@ -386,7 +398,7 @@ QTextDocumentFragment QTextDocumentFragment::fromPlainText(const QString &plainT
     return res;
 }
 
-QTextHtmlImporter::QTextHtmlImporter(QTextDocument *_doc, const QString &_html)
+QTextHtmlImporter::QTextHtmlImporter(QTextDocument *_doc, const QString &_html, const QTextDocument *resourceProvider)
     : indent(0), setNamedAnchorInNextOutput(false), doc(_doc), containsCompleteDoc(false)
 {
     cursor = QTextCursor(doc);
@@ -403,7 +415,7 @@ QTextHtmlImporter::QTextHtmlImporter(QTextDocument *_doc, const QString &_html)
         html.prepend(QLatin1String("<meta name=\"qrichtext\" content=\"1\" />"));
     }
 
-    parse(html);
+    parse(html, resourceProvider ? resourceProvider : doc);
 //    dumpHtml();
 }
 
@@ -471,11 +483,11 @@ void QTextHtmlImporter::import()
             continue;
         } else if (node->id == Html_body) {
             containsCompleteDoc = true;
-            if (node->bgColor.isValid()) {
+            if (node->background.style() != Qt::NoBrush) {
                 QTextFrameFormat fmt = doc->rootFrame()->frameFormat();
-                fmt.setBackground(node->bgColor);
+                fmt.setBackground(node->background);
                 doc->rootFrame()->setFrameFormat(fmt);
-                const_cast<QTextHtmlParserNode *>(node)->bgColor = QColor();
+                const_cast<QTextHtmlParserNode *>(node)->background = QBrush();
             }
         } else if (node->isListStart) {
 
@@ -533,13 +545,7 @@ void QTextHtmlImporter::import()
             if (node->imageHeight >= 0)
                 fmt.setHeight(node->imageHeight);
 
-            QTextFrameFormat::Position f = QTextFrameFormat::Position(node->cssFloat);
-            QTextFrameFormat ffmt;
-            ffmt.setPosition(f);
-            QTextObject *obj = doc->docHandle()->createObject(ffmt);
-            fmt.setObjectIndex(obj->objectIndex());
-
-            cursor.insertImage(fmt);
+            cursor.insertImage(fmt, QTextFrameFormat::Position(node->cssFloat));
             hasBlock = false;
             continue;
         } else if (node->id == Html_hr) {
@@ -563,8 +569,8 @@ void QTextHtmlImporter::import()
                 }
                 hasBlock = true;
 
-                if (node->bgColor.isValid()) {
-                    charFmt.setBackground(QBrush(node->bgColor));
+                if (node->background.style() != Qt::NoBrush) {
+                    charFmt.setBackground(node->background);
                     cursor.mergeBlockCharFormat(charFmt);
                 }
             }
@@ -614,8 +620,8 @@ void QTextHtmlImporter::import()
             if (node->wsm == QTextHtmlParserNode::WhiteSpacePre)
                 block.setNonBreakableLines(true);
 
-            if (node->bgColor.isValid() && !node->isTableCell)
-                block.setBackground(QBrush(node->bgColor));
+            if (node->background.style() != Qt::NoBrush && !node->isTableCell)
+                block.setBackground(node->background);
 
             if (hasBlock && (!node->isEmptyParagraph || forceBlockMerging)) {
                 if (cursor.position() == 0) {
@@ -629,8 +635,6 @@ void QTextHtmlImporter::import()
                     cursor.setBlockFormat(block);
                     cursor.setBlockCharFormat(charFmt);
                 } else {
-                    block.clearProperty(QTextFormat::ObjectIndex);
-                    charFmt.clearProperty(QTextFormat::ObjectIndex);
                     appendBlock(block, charFmt);
                 }
             }
@@ -679,8 +683,34 @@ void QTextHtmlImporter::import()
             setNamedAnchorInNextOutput = false;
         }
 
-        if (!text.isEmpty())
-            cursor.insertText(text, format);
+        int textStart = 0;
+        for (int i = 0; i < text.length(); ++i) {
+            QChar ch = text.at(i);
+
+            const int textEnd = i;
+
+            if (ch == QLatin1Char('\n')
+                || ch == QChar::ParagraphSeparator) {
+
+                if (textEnd > textStart)
+                    cursor.insertText(text.mid(textStart, textEnd - textStart), format);
+
+                textStart = i + 1;
+
+                QTextBlockFormat fmt = cursor.blockFormat();
+
+                if (fmt.hasProperty(QTextFormat::BlockBottomMargin)) {
+                    QTextBlockFormat tmp = fmt;
+                    tmp.clearProperty(QTextFormat::BlockBottomMargin);
+                    cursor.setBlockFormat(tmp);
+                }
+
+                fmt.clearProperty(QTextFormat::BlockTopMargin);
+                cursor.insertBlock(fmt);
+            }
+        }
+        if (textStart < text.length())
+            cursor.insertText(text.mid(textStart, text.length() - textStart), format);
     }
 
     cursor.endEditBlock();
@@ -700,7 +730,7 @@ bool QTextHtmlImporter::closeTag(int i)
 
             if (!t.isTextFrame) {
                 ++t.currentRow;
-                
+
                 // for broken html with rowspans but missing tr tags
                 while (!t.currentCell.atEnd() && t.currentCell.row < t.currentRow)
                     ++t.currentCell;
@@ -716,7 +746,7 @@ bool QTextHtmlImporter::closeTag(int i)
                 Table &t = tables.last();
                 if (t.isTextFrame)
                     cursor = t.frame->lastCursorPosition();
-                else
+                else if (!t.currentCell.atEnd())
                     cursor = t.currentCell.cell().lastCursorPosition();
             }
 
@@ -729,10 +759,7 @@ bool QTextHtmlImporter::closeTag(int i)
             if (!t.isTextFrame)
                 ++tables.last().currentCell;
             blockTagClosed = true;
-        } else if (closedNode->isListStart) {
-
-            Q_ASSERT(!lists.isEmpty());
-
+        } else if (closedNode->isListStart && !lists.isEmpty()) {
             lists.resize(lists.size() - 1);
             --indent;
             blockTagClosed = true;
@@ -746,7 +773,7 @@ bool QTextHtmlImporter::closeTag(int i)
                    || closedNode->id == Html_h6
                   ) {
             blockTagClosed = true;
-        } else if (closedNode->id == Html_p) {
+        } else if (closedNode->id == Html_p || closedNode->id == Html_pre) {
             // blockTagClosed may result in the creation of a
             // new block
             if (!closedNode->text.isEmpty())
@@ -768,6 +795,7 @@ QTextHtmlImporter::Table QTextHtmlImporter::scanTable(int tableNodeIdx)
     QVector<QTextLength> columnWidths;
     QVector<int> rowSpanCellsPerRow;
 
+    int tableHeaderRowCount = 0;
     QVector<int> rowNodes;
     rowNodes.reserve(at(tableNodeIdx).children.count());
     foreach (int row, at(tableNodeIdx).children)
@@ -779,8 +807,11 @@ QTextHtmlImporter::Table QTextHtmlImporter::scanTable(int tableNodeIdx)
             case Html_tbody:
             case Html_tfoot:
                 foreach (int potentialRow, at(row).children)
-                    if (at(potentialRow).id == Html_tr)
+                    if (at(potentialRow).id == Html_tr) {
                         rowNodes += potentialRow;
+                        if (at(row).id == Html_thead)
+                            ++tableHeaderRowCount;
+                    }
                 break;
             default: break;
         }
@@ -823,7 +854,7 @@ QTextHtmlImporter::Table QTextHtmlImporter::scanTable(int tableNodeIdx)
     const QTextHtmlParserNode &node = at(tableNodeIdx);
     if (node.isTextFrame) {
         // for plain text frames we set the frame margin
-        // for all of top/bottom/left/right, so in the import 
+        // for all of top/bottom/left/right, so in the import
         // here it doesn't matter which one we pick
         fmt.setMargin(node.uncollapsedMargin(QTextHtmlParser::MarginTop));
     } else {
@@ -834,17 +865,20 @@ QTextHtmlImporter::Table QTextHtmlImporter::scanTable(int tableNodeIdx)
             tableFmt.setAlignment(node.alignment);
         tableFmt.setColumns(table.columns);
         tableFmt.setColumnWidthConstraints(columnWidths);
+        tableFmt.setHeaderRowCount(tableHeaderRowCount);
         fmt = tableFmt;
     }
 
     fmt.setBorder(node.tableBorder);
     fmt.setWidth(node.width);
     fmt.setHeight(node.height);
+    if (node.pageBreakPolicy != QTextFormat::PageBreak_Auto)
+        fmt.setPageBreakPolicy(node.pageBreakPolicy);
 
     if (node.direction < 2)
         fmt.setLayoutDirection(Qt::LayoutDirection(node.direction));
-    if (node.bgColor.isValid())
-        fmt.setBackground(QBrush(node.bgColor));
+    if (node.background.style() != Qt::NoBrush)
+        fmt.setBackground(node.background);
     else
         fmt.clearBackground();
     fmt.setPosition(QTextFrameFormat::Position(node.cssFloat));
@@ -894,10 +928,27 @@ void QTextHtmlImporter::appendBlock(const QTextBlockFormat &format, QTextCharFor
 */
 QTextDocumentFragment QTextDocumentFragment::fromHtml(const QString &html)
 {
+    return fromHtml(html, 0);
+}
+
+/*!
+    \fn QTextDocumentFragment QTextDocumentFragment::fromHtml(const QString &text, const QTextDocument *resourceProvider)
+    \since 4.2
+
+    Returns a QTextDocumentFragment based on the arbitrary piece of
+    HTML in the given \a text. The formatting is preserved as much as
+    possible; for example, "<b>bold</b>" will become a document
+    fragment with the text "bold" with a bold character format.
+
+    If the provided HTML contains references to external resources such as imported style sheets, then
+    they will be loaded through the \a resourceProvider.
+*/
+QTextDocumentFragment QTextDocumentFragment::fromHtml(const QString &html, const QTextDocument *resourceProvider)
+{
     QTextDocumentFragment res;
     res.d = new QTextDocumentFragmentPrivate;
 
-    QTextHtmlImporter importer(res.d->doc, html);
+    QTextHtmlImporter importer(res.d->doc, html, resourceProvider);
     importer.import();
     res.d->containsCompleteDocument = importer.containsCompleteDocument();
     return res;

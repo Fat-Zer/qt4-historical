@@ -30,6 +30,8 @@
 #include <qlist.h>
 #include <qalgorithms.h>
 
+#include <qdebug.h>
+//#define QLAYOUT_EXTRA_DEBUG
 
 typedef qint64 Fixed;
 static inline Fixed toFixed(int i) { return (Fixed)i * 256; }
@@ -268,6 +270,16 @@ void qGeomCalc(QVector<QLayoutStruct> &chain, int start, int count,
         if (!chain[i].empty)
             p += spacer+extra;
     }
+
+
+#ifdef QLAYOUT_EXTRA_DEBUG
+    qDebug() << "qGeomCalc" << "start" << start <<  "count" << count <<  "pos" << pos <<  "space" << space <<  "spacer" << spacer;
+    for (i = start; i < start + count; i++) {
+        qDebug() << i << ":" << chain[i].minimumSize << chain[i].smartSizeHint() << chain[i].maximumSize
+                 << "stretch" << chain[i].stretch << "empty" << chain[i].empty << "expansive" << chain[i].expansive;
+        qDebug() << "result pos" << chain[i].pos << "size" << chain[i].size;
+    }
+#endif
 }
 
 Q_GUI_EXPORT QSize qSmartMinSize(const QWidgetItem *i)

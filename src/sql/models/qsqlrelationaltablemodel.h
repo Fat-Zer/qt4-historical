@@ -62,6 +62,7 @@ public:
 
     QVariant data(const QModelIndex &item, int role = Qt::DisplayRole) const;
     bool setData(const QModelIndex &item, const QVariant &value, int role = Qt::EditRole);
+    bool removeColumns(int column, int count, const QModelIndex &parent = QModelIndex());
 
     void clear();
     bool select();
@@ -77,6 +78,7 @@ public Q_SLOTS:
 protected:
     QString selectStatement() const;
     bool updateRowInTable(int row, const QSqlRecord &values);
+    bool insertRowIntoTable(const QSqlRecord &values);
     QString orderByClause() const;
 
 private:

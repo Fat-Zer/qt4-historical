@@ -312,9 +312,9 @@ int QGIFFormat::decode(QImage *image, const uchar *buffer, int length,
                 if (sheight <= 0)
                     sheight = newtop + newheight;
 
-                if (image->isNull()) {
-                    (*image) = QImage(swidth, sheight,
-		                      trans_index >= 0 ? QImage::Format_ARGB32 : QImage::Format_RGB32);
+                QImage::Format format = trans_index >= 0 ? QImage::Format_ARGB32 : QImage::Format_RGB32;
+                if (image->isNull() || (image->size() != QSize(swidth, sheight)) || image->format() != format) {
+                    (*image) = QImage(swidth, sheight, format);
                     memset(image->bits(), 0, image->numBytes());
 
                     // ### size of the upcoming frame, should rather
@@ -394,7 +394,7 @@ int QGIFFormat::decode(QImage *image, const uchar *buffer, int length,
                 bitcount = 0;
                 sp = stack;
                 firstcode = oldcode = 0;
-                needfirst = false;
+                needfirst = true;
                 out_of_bounds = left>=swidth || y>=sheight;
             }
             break;

@@ -35,6 +35,8 @@ QT_MODULE(Gui)
 
 class Q_GUI_EXPORT QMenuItem : public QAction
 {
+    Q_OBJECT
+
 public:
     QMenuItem();
 

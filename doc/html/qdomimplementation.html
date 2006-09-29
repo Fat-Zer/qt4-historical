@@ -2,25 +2,19 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/src/xml/qdom.cpp -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/src/xml/qdom.cpp -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-x11-opensource-src-4.2.0/src/xml/qdom.cpp -->
 <head>
-    <title>Qt 4.1: QDomImplementation Class Reference</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
+  <title>Qt 4.2: QDomImplementation Class Reference</title>
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QDomImplementation Class Reference<br /><sup><sup>[<a href="qtxml.html">QtXml</a> module]</sup></sup></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">QDomImplementation Class Reference<br /><sup><sup>[<a href="qtxml.html">QtXml</a> module]</sup></sup></h1>
 <p>The QDomImplementation class provides information about the features of the DOM implementation. <a href="#details">More...</a></p>
-<pre>#include &lt;QDomImplementation&gt;</pre><p><b>Note:</b> All the functions in this class are <a href="threads.html#reentrant">reentrant</a>.</p>
+<pre> #include &lt;QDomImplementation&gt;</pre><p><b>Note:</b> All the functions in this class are <a href="threads.html#reentrant">reentrant</a>.</p>
 <ul>
 <li><a href="qdomimplementation-members.html">List of all members, including inherited members</a></li>
 </ul>
@@ -91,8 +85,8 @@ body { background: #ffffff; color: black; }</style>
 <p>The function returns true if QDom implements the requested <i>version</i> of a <i>feature</i>; otherwise returns false.</p>
 <p>The currently supported features and their versions:</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" bgcolor="#a2c511"><th>Feature</th><th>Version</th></tr>
-<tr valign="top" bgcolor="#f0f0f0"><td>XML</td><td>1.0</td></tr>
+<thead><tr valign="top" class="qt-style"><th>Feature</th><th>Version</th></tr></thead>
+<tr valign="top" class="odd"><td>XML</td><td>1.0</td></tr>
 </table></p>
 <h3 class="fn"><a name="invalidDataPolicy"></a><a href="qdomimplementation.html#InvalidDataPolicy-enum">InvalidDataPolicy</a> QDomImplementation::invalidDataPolicy ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns the invalid data policy, which specifies what should be done when a factory function in <a href="qdomdocument.html">QDomDocument</a> is passed invalid data.</p>
@@ -103,21 +97,21 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="setInvalidDataPolicy"></a>void QDomImplementation::setInvalidDataPolicy ( <a href="qdomimplementation.html#InvalidDataPolicy-enum">InvalidDataPolicy</a> <i>policy</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Sets the invalid data policy, which specifies what should be done when a factory function in <a href="qdomdocument.html">QDomDocument</a> is passed invalid data.</p>
 <p>The <i>policy</i> is set for all instances of <a href="qdomdocument.html">QDomDocument</a> which already exist and which will be created in the future.</p>
-<pre>&nbsp;   QDomDocument doc;
-    QDomImplementation impl;
+<pre> QDomDocument doc;
+ QDomImplementation impl;
 
-    // This will create the element, but the resulting XML document will
-    // be invalid, because '~' is not a valid character in a tag name.
-    impl.setInvalidDataPolicy(QDomImplementation::AcceptInvalidData);
-    QDomElement elt1 = doc.createElement(&quot;foo~bar&quot;);
+<span class="comment"> // This will create the element, but the resulting XML document will</span>
+<span class="comment"> // be invalid, because '~' is not a valid character in a tag name.</span>
+ impl.setInvalidDataPolicy(QDomImplementation::AcceptInvalidData);
+ QDomElement elt1 = doc.createElement(&quot;foo~bar&quot;);
 
-    // This will create an element with the tag name &quot;foobar&quot;.
-    impl.setInvalidDataPolicy(QDomImplementation::DropInvalidData);
-    QDomElement elt2 = doc.createElement(&quot;foo~bar&quot;);
+<span class="comment"> // This will create an element with the tag name &quot;foobar&quot;.</span>
+ impl.setInvalidDataPolicy(QDomImplementation::DropInvalidData);
+ QDomElement elt2 = doc.createElement(&quot;foo~bar&quot;);
 
-    // This will create a null element.
-    impl.setInvalidDataPolicy(QDomImplementation::ReturnNullNode);
-    QDomElement elt3 = doc.createElement(&quot;foo~bar&quot;);</pre>
+<span class="comment"> // This will create a null element.</span>
+ impl.setInvalidDataPolicy(QDomImplementation::ReturnNullNode);
+ QDomElement elt3 = doc.createElement(&quot;foo~bar&quot;);</pre>
 <p>This function was introduced in Qt 4.1.</p>
 <p>See also <a href="qdomimplementation.html#invalidDataPolicy">invalidDataPolicy</a>() and <a href="qdomimplementation.html#InvalidDataPolicy-enum">InvalidDataPolicy</a>.</p>
 <h3 class="fn"><a name="operator-not-eq"></a>bool QDomImplementation::operator!= ( const QDomImplementation &amp; <i>x</i> ) const</h3>
@@ -130,6 +124,6 @@ body { background: #ffffff; color: black; }</style>
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

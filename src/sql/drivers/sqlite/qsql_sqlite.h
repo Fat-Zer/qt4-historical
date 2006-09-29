@@ -59,6 +59,7 @@ private:
 
 class QSQLiteDriver : public QSqlDriver
 {
+    Q_OBJECT 
     friend class QSQLiteResult;
 public:
     explicit QSQLiteDriver(QObject *parent = 0);

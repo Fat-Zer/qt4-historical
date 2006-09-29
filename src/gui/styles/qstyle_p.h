@@ -38,6 +38,7 @@
 //
 
 // Private class
+
 class QStylePrivate: public QObjectPrivate 
 {
     Q_DECLARE_PUBLIC(QStyle)

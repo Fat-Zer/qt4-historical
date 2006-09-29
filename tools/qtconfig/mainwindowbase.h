@@ -35,7 +35,7 @@ class MainWindowBase : public Q3MainWindow, public Ui::MainWindowBase
     Q_OBJECT
 
 public:
-    MainWindowBase(QWidget* parent = 0, const char* name = 0, Qt::WFlags fl = Qt::WType_TopLevel);
+    MainWindowBase(QWidget* parent = 0, const char* name = 0, Qt::WindowFlags fl = Qt::Window);
     ~MainWindowBase();
 
 public slots:

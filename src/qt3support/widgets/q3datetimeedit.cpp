@@ -25,7 +25,6 @@
 
 #ifndef QT_NO_DATETIMEEDIT
 
-#include <private/qinternal_p.h>
 #include <private/q3richtext_p.h>
 #include "qevent.h"
 #include "q3rangecontrol.h"
@@ -539,7 +538,7 @@ void Q3DateTimeEditor::paintEvent(QPaintEvent *)
     }
 
     QPainter p(this);
-    const QBrush &bg = palette().brush(isEnabled() ? QPalette::Base : QPalette::Background);
+    const QBrush &bg = palette().brush(isEnabled() ? QPalette::Base : QPalette::Window);
     p.fillRect(0, 0, width(), height(), bg);
     d->paint(txt, hasFocus(), p, palette(), rect(), style());
 }
@@ -1453,7 +1452,9 @@ void Q3DateEdit::addNumber(int sec, int num)
 {
     if (sec == -1)
         return;
-    killTimer(d->timerId);
+    if (d->timerId)
+        killTimer(d->timerId);
+    d->timerId = 0;
     bool overwrite = false;
     bool accepted = false;
     d->typing = true;
@@ -1548,7 +1549,9 @@ void Q3DateEdit::addNumber(int sec, int num)
 bool Q3DateEdit::setFocusSection(int s)
 {
     if (s != d->ed->focusSection()) {
-        killTimer(d->timerId);
+        if (d->timerId)
+            killTimer(d->timerId);
+        d->timerId = 0;
         d->overwrite = true;
         d->typing = false;
         fix(); // will emit valueChanged if necessary
@@ -2189,7 +2192,9 @@ QString Q3TimeEdit::sectionFormattedText(int sec)
 bool Q3TimeEdit::setFocusSection(int sec)
 {
     if (sec != d->ed->focusSection()) {
-        killTimer(d->timerId);
+        if (d->timerId)
+            killTimer(d->timerId);
+        d->timerId = 0;
         d->overwrite = true;
         d->typing = false;
         QString txt = sectionText(sec);
@@ -2324,7 +2329,9 @@ void Q3TimeEdit::addNumber(int sec, int num)
     if (sec == -1)
         return;
     sec = d->ed->mapSection(sec);
-    killTimer(d->timerId);
+    if (d->timerId)
+        killTimer(d->timerId);
+    d->timerId = 0;
     bool overwrite = false;
     bool accepted = false;
     d->typing = true;
@@ -2556,8 +2563,6 @@ QSize Q3TimeEdit::minimumSizeHint() const
     Enables/disables the push buttons according to the min/max time
     for this widget.
 */
-
-// ### Remove in 4.0?
 
 void Q3TimeEdit::updateButtons()
 {

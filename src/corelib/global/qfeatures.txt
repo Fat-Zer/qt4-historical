@@ -63,6 +63,13 @@ Requires:
 Name: QWheelEvent
 SeeAlso: ???
 
+Feature: TABLETEVENT
+Description: Supports tablet events.
+Section: Kernel
+Requires:
+Name: QTabletEvent
+SeeAlso: ???
+
 Feature: SOUND
 Description: Supports playing audio files.
 Section: Kernel
@@ -144,6 +151,14 @@ Requires:
 Name: Document Object Model
 SeeAlso: ???
 
+Feature: FILESYSTEMWATCHER
+Description: Provides an interface for monitoring files and directories 
+for modications.
+Section: File I/O
+Requires: THREAD
+Name: QFileSystemWatcher
+SeeAlso: ???
+
 # Widgets
 
 Feature: TREEWIDGET
@@ -170,7 +185,7 @@ SeeAlso: ???
 Feature: DATETIMEEDIT
 Description: Supports editing dates and times.
 Section: Widgets
-Requires: SPINBOX DATESTRING
+Requires: CALENDARWIDGET DATESTRING
 Name: QDateTimeEdit
 SeeAlso: ???
 
@@ -251,6 +266,13 @@ Requires: LINEEDIT STANDARDITEMMODEL LISTVIEW
 Name: QComboBox
 SeeAlso: ???
 
+Feature: FONTCOMBOBOX
+Description: Supports a combobox that lets the user select a font family.
+Section: Widgets
+Requires: COMBOBOX STRINGLISTMODEL
+Name: QFontComboBox
+SeeAlso: ???
+
 Feature: TOOLBUTTON
 Description: Supports quick-access buttons to commands and options.
 Section: Widgets
@@ -329,6 +351,13 @@ Requires: MENU TOOLBUTTON
 Name: QMenuBar
 SeeAlso: ???
 
+Feature: CONTEXTMENU
+Description: Supports pop-up menus on right mouse click
+Section: Widgets
+Requires: MENU
+Name: Context menu
+SeeeAlso: ???
+
 Feature: PROGRESSBAR
 Description: Supports presentation of operation progress.
 Section: Widgets
@@ -363,6 +392,13 @@ Description: Supports scrolling views onto widgets.
 Section: Widgets
 Requires: SCROLLBAR
 Name: QScrollArea
+SeeAlso: ???
+
+Feature: GRAPHICSVIEW
+Description: Supports the graphicsview classes.
+Section: Widgets
+Requires: SCROLLAREA
+Name: QGraphicsView
 SeeAlso: ???
 
 Feature: SPINWIDGET
@@ -435,6 +471,14 @@ Requires:
 Name: QSizeGrip
 SeeAlso: ???
 
+Feature: CALENDARWIDGET
+Description: Provides a monthly based calendar widget allowing the user to select 
+a date.
+Section: Widgets
+Requires: TABLEVIEW MENU TEXTDATE SPINBOX TOOLBUTTON
+Name: QCalendarWidget
+SeeAlso: ???
+
 # Dialogs
 
 Feature: MESSAGEBOX
@@ -455,7 +499,7 @@ SeeAlso: ???
 Feature: FILEDIALOG
 Description: Supports a dialog widget for selecting files or directories. 
 Section: Dialogs
-Requires: DIRMODEL TREEVIEW MESSAGEBOX COMBOBOX TOOLBUTTON BUTTONGROUP 
+Requires: DIRMODEL TREEVIEW COMBOBOX TOOLBUTTON BUTTONGROUP 
 Name: QFileDialog
 SeeAlso: ???
 
@@ -469,7 +513,7 @@ SeeAlso: ???
 Feature: PRINTDIALOG
 Description: Supports a dialog widget for specifying printer configuration.
 Section: Dialogs
-Requires: PRINTER COMBOBOX BUTTONGROUP SPINBOX TREEVIEW
+Requires: PRINTER COMBOBOX BUTTONGROUP SPINBOX TREEVIEW STACKEDWIDGET
 Name: QPrintDialog
 SeeAlso: ???
 
@@ -568,6 +612,13 @@ Requires: ITEMVIEWS
 Name: QTreeView
 SeeAlso: ???
 
+Feature: DATAWIDGETMAPPER
+Description: Provides mapping between a section of a data model to widgets.
+Section: ItemViews
+Requires: ITEMVIEWS
+Name: QDataWidgetMapper
+SeeAlso: ???
+
 # Styles
 
 Feature: STYLE_WINDOWS
@@ -605,6 +656,20 @@ Requires: STYLE_WINDOWS
 Name: QWindowsXPStyle
 SeeAlso: ???
 
+Feature: STYLE_CLEANLOOKS
+Description: Supports a Gnome CleanLooks-like look and feel.
+Section: Styles
+Requires: STYLE_WINDOWS IMAGEFORMAT_XPM
+Name: QCleanLooksStyle
+SeeAlso: ???
+
+Feature: STYLE_STYLESHEET
+Description: 
+Section: Styles
+Requires: STYLE_WINDOWS PROPERTIES
+Name: QStyleSheetStyle
+SeeAlso: ???
+
 # Images
 
 Feature: IMAGEFORMATPLUGIN
@@ -617,7 +682,7 @@ SeeAlso: ???
 Feature: ICON
 Description: Supports scalable icons in different modes and states.
 Section: Images
-Requires: IMAGE_HEURISTIC_MASK
+Requires: 
 Name: QIcon
 SeeAlso: ???
 
@@ -711,8 +776,15 @@ SeeAlso: ???
 Feature: PRINTER
 Description: Supports printing 
 Section: Painting
-Requires: TEXTSTREAM FILEDIALOG
+Requires: TEXTSTREAM
 Name: QPrinter
+SeeAlso: ???
+
+Feature: CUPS
+Description Supports the Common UNIX Printing System
+Section: Painting
+Requires: PRINTER LIBRARY
+Name: Common UNIX Printing System
 SeeAlso: ???
 
 # Fonts
@@ -843,6 +915,57 @@ Requires:
 Name: QCopChannel
 SeeAlso: ???
 
+# Utilities
+
+Feature: COMPLETER
+Description: Provides completions based on an item model.
+Section: Utilities
+Requires: PROXYMODEL
+Name: QCompleter
+SeeAlso: ???
+
+Feature: DESKTOPSERVICES
+Description: Provides methods for accessing common desktop services.
+Section: Utilities
+Requires:
+Name: QDesktopServices
+SeeAlso: ???
+
+Feature: SYSTEMTRAYICON
+Description: Provides an icon for an application in the system tray.
+Section: Utilities
+Requires: ICON
+Name: QSystemTrayIcon
+SeeAlso: ???
+
+Feature: UNDOCOMMAND
+Description: Applies (redo or) undo of a single change in a document.
+Section: Utilities
+Requires:
+Name: QUndoCommand
+SeeAlso: ???
+
+Feature: UNDOSTACK
+Description: Provides the ability to (redo or) undo a list of changes in a document.
+Section: Utilities
+Requires: UNDOCOMMAND
+Name: QUndoStack
+SeeAlso: ???
+
+Feature: UNDOGROUP
+Description: 
+Section: Utilities
+Requires: UNDOCOMMAND UNDOSTACK
+Name: QUndoGroup
+SeeAlso: ???
+
+Feature: UNDOVIEW
+Description: A widget which shows the contents of an undo stack.
+Section: Utilities
+Requires: UNDOSTACK LISTVIEW
+Name: QUndoView
+SeeAlso: ???
+
 # Qtopia Core
 
 Feature: QWS_SOUNDSERVER
@@ -941,4 +1064,11 @@ Description: Supports Safe Execution Environment (experimental).
 Section: Qtopia Core
 Requires: QWS_MULTIPROCESS
 Name: SXE
+SeeAlso: ???
+
+Feature: QWSEMBEDWIDGET
+Description: Provides embedding of a top-level window.
+Section: Qtopia Core
+Requires:
+Name: QWSEmbedWidget
 SeeAlso: ???

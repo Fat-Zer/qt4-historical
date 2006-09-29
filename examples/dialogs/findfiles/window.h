@@ -24,7 +24,7 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
-#include <QWidget>
+#include <QDialog>
 
 class QComboBox;
 class QDir;
@@ -32,7 +32,7 @@ class QLabel;
 class QPushButton;
 class QTableWidget;
 
-class Window : public QWidget
+class Window : public QDialog
 {
     Q_OBJECT
 
@@ -60,7 +60,6 @@ private:
     QLabel *filesFoundLabel;
     QPushButton *browseButton;
     QPushButton *findButton;
-    QPushButton *quitButton;
     QTableWidget *filesTable;
 };
 

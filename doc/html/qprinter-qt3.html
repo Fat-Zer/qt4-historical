@@ -2,23 +2,17 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/src/gui/painting/qprinter.cpp -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/src/gui/painting/qprinter.cpp -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-x11-opensource-src-4.2.0/src/gui/painting/qprinter.cpp -->
 <head>
-    <title>Qt 4.1: Qt 3 Support Members for QPrinter</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
+  <title>Qt 4.2: Qt 3 Support Members for QPrinter</title>
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">Qt 3 Support Members for QPrinter</h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">Qt 3 Support Members for QPrinter</h1>
 <p><b>The following class members are part of the <a href="qt3support.html">Qt 3 support layer</a>.</b> They are provided to help you port old code to Qt 4. We advise against using them in new code.</p>
 <p><ul><li><a href="qprinter.html">QPrinter class reference</a></li></ul></p>
 <h3>Public Types</h3>
@@ -70,23 +64,23 @@ body { background: #ffffff; color: black; }</style>
 <p>Sets *<i>top</i>, *<i>left</i>, *<i>bottom</i>, *<i>right</i> to be the top, left, bottom, and right margins.</p>
 <p>This function has been superseded by <a href="qprinter.html#paperRect">paperRect</a>() and <a href="qprinter.html#pageRect">pageRect</a>(). Use <a href="qprinter.html#paperRect">paperRect</a>().top() - <a href="qprinter.html#pageRect">pageRect</a>().top() for the top margin, <a href="qprinter.html#paperRect">paperRect</a>().<a href="qtextstream.html#left">left</a>() - <a href="qprinter.html#pageRect">pageRect</a>().<a href="qtextstream.html#left">left</a>() for the left margin, <a href="qprinter.html#paperRect">paperRect</a>().bottom() - <a href="qprinter.html#pageRect">pageRect</a>().bottom() for the bottom margin, and papaerRect().<a href="qtextstream.html#right">right</a>() - <a href="qprinter.html#pageRect">pageRect</a>().<a href="qtextstream.html#right">right</a>() for the right margin.</p>
 <p>For example, if you have code like</p>
-<pre><font color="#404040">    uint rightMargin;
-    uint bottomMargin;
-    printer-&gt;margins(0, 0, &amp;bottomMargin, &amp;rightMargin);</font></pre>
+<pre><font color="#404040"> uint rightMargin;
+ uint bottomMargin;
+ printer-&gt;margins(0, 0, &amp;bottomMargin, &amp;rightMargin);</font></pre>
 <p>you can rewrite it as</p>
-<pre>    int rightMargin = printer-&gt;paperRect().right() - printer-&gt;pageRect().right();
-    int bottomMargin = printer-&gt;paperRect().bottom() - printer-&gt;pageRect().bottom();</pre>
+<pre> int rightMargin = printer-&gt;paperRect().right() - printer-&gt;pageRect().right();
+ int bottomMargin = printer-&gt;paperRect().bottom() - printer-&gt;pageRect().bottom();</pre>
 <h3 class="fn"><a name="margins-2"></a><a href="qsize.html">QSize</a> QPrinter::margins () const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns a <a href="qsize.html">QSize</a> containing the left margin and the top margin.</p>
 <p>This function has been superseded by <a href="qprinter.html#paperRect">paperRect</a>() and <a href="qprinter.html#pageRect">pageRect</a>(). Use <a href="qprinter.html#paperRect">paperRect</a>().<a href="qtextstream.html#left">left</a>() - <a href="qprinter.html#pageRect">pageRect</a>().<a href="qtextstream.html#left">left</a>() for the left margin, and <a href="qprinter.html#paperRect">paperRect</a>().top() - <a href="qprinter.html#pageRect">pageRect</a>().top() for the top margin.</p>
 <p>For example, if you have code like</p>
-<pre><font color="#404040">    QSize margins = printer-&gt;margins();
-    int leftMargin = margins.width();
-    int topMargin = margins.height();</font></pre>
+<pre><font color="#404040"> QSize margins = printer-&gt;margins();
+ int leftMargin = margins.width();
+ int topMargin = margins.height();</font></pre>
 <p>you can rewrite it as</p>
-<pre>    int leftMargin = printer-&gt;paperRect().left() - printer-&gt;pageRect().left();
-    int topMargin = printer-&gt;paperRect().top() - printer-&gt;pageRect().top();</pre>
+<pre> int leftMargin = printer-&gt;paperRect().left() - printer-&gt;pageRect().left();
+ int topMargin = printer-&gt;paperRect().top() - printer-&gt;pageRect().top();</pre>
 <h3 class="fn"><a name="maxPage"></a>int QPrinter::maxPage () const</h3>
 <p>Use <a href="qabstractprintdialog.html#maxPage">QPrintDialog::maxPage</a>() instead.</p>
 <h3 class="fn"><a name="minPage"></a>int QPrinter::minPage () const</h3>
@@ -113,16 +107,16 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="setup"></a>bool QPrinter::setup ( <a href="qwidget.html">QWidget</a> * <i>parent</i> = 0 )</h3>
 <p>Use <a href="qprintdialog.html">QPrintDialog</a> instead.</p>
 <p>For example, if you have code like</p>
-<pre><font color="#404040">    if (printer-&gt;setup(parent))
-        ...</font></pre>
+<pre><font color="#404040"> if (printer-&gt;setup(parent))
+     ...</font></pre>
 <p>you can rewrite it as</p>
-<pre>    QPrintDialog dialog(printer, parent);
-    if (dialog.exec())
-        ...</pre>
+<pre> QPrintDialog dialog(printer, parent);
+ if (dialog.exec())
+     ...</pre>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

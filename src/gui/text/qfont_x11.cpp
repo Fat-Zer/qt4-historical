@@ -68,20 +68,6 @@ double qt_pointSize(double pixelSize, int dpi)
     return pixelSize * 72. / ((double) dpi);
 }
 
-static inline double pixelSize(const QFontDef &request, int dpi)
-{
-    return ((request.pointSize != -1)
-            ? qt_pixelSize(request.pointSize, dpi)
-            : (double)request.pixelSize);
-}
-
-static inline double pointSize(const QFontDef &request, int dpi)
-{
-    return ((request.pixelSize != -1)
-            ? qt_pointSize(request.pixelSize, dpi)
-            : (double)request.pointSize);
-}
-
 /*
   Removes wildcards from an XLFD.
 
@@ -237,7 +223,7 @@ Qt::HANDLE QFont::handle() const
 
     On X11, depending on whether Qt was built with FontConfig support, it is an
     XLFD (X Logical Font Description) or a FontConfig pattern. An XLFD may be
-    returned even if FontConfig support is enabled..
+    returned even if FontConfig support is enabled.
 
     Using the return value of this function is usually \e not \e
     portable.
@@ -279,7 +265,7 @@ void QFont::setRawName(const QString &name)
     extern bool qt_fillFontDef(const QByteArray &xlfd, QFontDef *fd, int dpi);
 
     if (!qt_fillFontDef(qt_fixXLFD(name.toLatin1()), &d->request, d->dpi)) {
-        qWarning("QFont::setRawName(): Invalid XLFD: \"%s\"", name.toLatin1().constData());
+        qWarning("QFont::setRawName: Invalid XLFD: \"%s\"", name.toLatin1().constData());
 
         setFamily(name);
         setRawMode(true);

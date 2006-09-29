@@ -21,6 +21,10 @@
 **
 ****************************************************************************/
 
+/*
+TRANSLATOR qdesigner_internal::ComboBoxTaskMenu
+*/
+
 #include "combobox_taskmenu.h"
 #include "inplace_editor.h"
 #include "listwidgeteditor.h"
@@ -30,6 +34,7 @@
 
 #include <QtGui/QAction>
 #include <QtGui/QStyle>
+#include <QtGui/QFontComboBox>
 #include <QtGui/QStyleOption>
 
 #include <QtCore/QEvent>
@@ -83,7 +88,7 @@ void ComboBoxTaskMenu::editItems()
         }
         ChangeListContentsCommand *cmd = new ChangeListContentsCommand(m_formWindow);
         cmd->init(m_comboBox, items);
-        cmd->setDescription(tr("Change Combobox Contents"));
+        cmd->setText(tr("Change Combobox Contents"));
         m_formWindow->commandHistory()->push(cmd);
     }
 }
@@ -95,7 +100,8 @@ ComboBoxTaskMenuFactory::ComboBoxTaskMenuFactory(QExtensionManager *extensionMan
 
 QObject *ComboBoxTaskMenuFactory::createExtension(QObject *object, const QString &iid, QObject *parent) const
 {
-    if (QComboBox *button = qobject_cast<QComboBox*>(object)) {
+    QComboBox *button = qobject_cast<QComboBox*>(object);
+    if (button && !qobject_cast<QFontComboBox*>(object)) {
         if (iid == Q_TYPEID(QDesignerTaskMenuExtension)) {
             return new ComboBoxTaskMenu(button, parent);
         }

@@ -43,6 +43,9 @@
 
 #ifdef Q_OS_UNIX
 
+#  if !defined(QT_NO_GLIB)
+#    include "qeventdispatcher_glib_p.h"
+#  endif
 #  include "qeventdispatcher_unix_p.h"
 #endif
 #ifdef Q_OS_WIN
@@ -50,6 +53,9 @@
 #endif
 
 #include <stdlib.h>
+#ifdef Q_OS_UNIX
+#include <locale.h>
+#endif
 
 #if defined(Q_WS_WIN) || defined(Q_WS_MAC)
 extern QString qAppFileName();
@@ -71,7 +77,7 @@ bool QCoreApplicationPrivate::checkInstance(const char *function)
 {
     bool b = (QCoreApplication::self != 0);
     if (!b)
-        qWarning("QApplication::%s() failed: please instantiate the QApplication object first.", function);
+        qWarning("QApplication::%s: Please instantiate the QApplication object first", function);
     return b;
 }
 
@@ -125,29 +131,16 @@ bool QCoreApplicationPrivate::is_app_closing = false;
 
 Q_CORE_EXPORT uint qGlobalPostedEventsCount()
 {
-    QThread *currentThread = QThread::currentThread();
-    if (!currentThread)
-        return 0;
-    return QThreadData::get(currentThread)->postEventList.size();
+    return QThreadData::current()->postEventList.size();
 }
 
 
 QCoreApplication *QCoreApplication::self = 0;
 QAbstractEventDispatcher *QCoreApplicationPrivate::eventDispatcher = 0;
+uint QCoreApplicationPrivate::attribs;
 
 #ifdef Q_OS_UNIX
 Qt::HANDLE qt_application_thread_id = 0;
-#endif
-
-#ifndef QT_NO_THREAD
-Q_GLOBAL_STATIC(QAdoptedThread, actual_mainThread);
-static QThread *the_mainThread = 0;
-static QThread *mainThread() {
-    return the_mainThread ? the_mainThread : actual_mainThread();
-}
-
-#else
-static QThread* mainThread() { return QThread::currentThread(); }
 #endif
 
 struct QCoreApplicationData {
@@ -186,23 +179,22 @@ QCoreApplicationPrivate::QCoreApplicationPrivate(int &aargc, char **aargv)
     qt_application_thread_id = QThread::currentThreadId();
 #endif
 
-    QThread *thr = mainThread();
-    QThreadPrivate::setCurrentThread(thr);
-    QObjectPrivate::thread = QThreadData::get(thr)->id;
+    // note: this call to QThread::currentThread() may end up setting theMainThread!
+    if (QThread::currentThread() != theMainThread)
+        qWarning("WARNING: QApplication was not created in the main() thread.");
 }
 
 QCoreApplicationPrivate::~QCoreApplicationPrivate()
 {
-    QThreadData *data = QThreadData::get(mainThread());
 #ifndef QT_NO_THREAD
-    QThreadStorageData::finish(data->tls);
+    QThreadStorageData::finish(threadData->tls);
+    threadData->tls = 0;
 #endif
-    QThreadPrivate::setCurrentThread(0);
 
     // need to clear the state of the mainData, just in case a new QCoreApplication comes along.
-    QMutexLocker locker(&data->postEventList.mutex);
-    for (int i = 0; i < data->postEventList.size(); ++i) {
-        const QPostEvent &pe = data->postEventList.at(i);
+    QMutexLocker locker(&threadData->postEventList.mutex);
+    for (int i = 0; i < threadData->postEventList.size(); ++i) {
+        const QPostEvent &pe = threadData->postEventList.at(i);
         if (pe.event) {
             --pe.receiver->d_func()->postedEvents;
 #ifdef QT3_SUPPORT
@@ -213,16 +205,21 @@ QCoreApplicationPrivate::~QCoreApplicationPrivate()
             delete pe.event;
         }
     }
-    data->postEventList.clear();
-    data->postEventList.recursion = 0;
-    data->quitNow = false;
+    threadData->postEventList.clear();
+    threadData->postEventList.recursion = 0;
+    threadData->quitNow = false;
 }
 
 void QCoreApplicationPrivate::createEventDispatcher()
 {
     Q_Q(QCoreApplication);
 #if defined(Q_OS_UNIX)
-    eventDispatcher = new QEventDispatcherUNIX(q);
+#  if !defined(QT_NO_GLIB)
+    if (qgetenv("QT_NO_GLIB").isEmpty())
+        eventDispatcher = new QEventDispatcherGlib(q);
+    else
+#  endif
+        eventDispatcher = new QEventDispatcherUNIX(q);
 #elif defined(Q_OS_WIN)
     eventDispatcher = new QEventDispatcherWin32(q);
 #else
@@ -230,48 +227,39 @@ void QCoreApplicationPrivate::createEventDispatcher()
 #endif
 }
 
-void QCoreApplicationPrivate::moveToMainThread(QObject *o)
-{
-    if (!o || o->thread() == mainThread())
-        return;
-    Q_ASSERT(o->parent() == 0);
-    if (o->thread() != 0)
-        QCoreApplication::sendPostedEvents(o, 0);
-    o->d_func()->thread = QThreadData::get(mainThread())->id;
-}
-
+QThread *QCoreApplicationPrivate::theMainThread = 0;
 QThread *QCoreApplicationPrivate::mainThread()
-{ return ::mainThread(); }
+{
+    Q_ASSERT(theMainThread != 0);
+    return theMainThread;
+}
 
 #ifdef QT3_SUPPORT
 void QCoreApplicationPrivate::removePostedChildInsertedEvents(QObject *receiver, QObject *child)
 {
-    QThread *currentThread = QThread::currentThread();
-    if (currentThread) {
-        QThreadData *data = QThreadData::get(currentThread);
-        QMutexLocker locker(&data->postEventList.mutex);
+    QThreadData *data = receiver->d_func()->threadData;
+    QMutexLocker locker(&data->postEventList.mutex);
 
-        // the QObject destructor calls QObject::removeChild, which calls
-        // QCoreApplication::sendEvent() directly.  this can happen while the event
-        // loop is in the middle of posting events, and when we get here, we may
-        // not have any more posted events for this object.
+    // the QObject destructor calls QObject::removeChild, which calls
+    // QCoreApplication::sendEvent() directly.  this can happen while the event
+    // loop is in the middle of posting events, and when we get here, we may
+    // not have any more posted events for this object.
 
-        // if this is a child remove event and the child insert
-        // hasn't been dispatched yet, kill that insert
-        for (int i = 0; i < data->postEventList.size(); ++i) {
-            const QPostEvent &pe = data->postEventList.at(i);
-            if (pe.event && pe.receiver == receiver) {
-                if (pe.event->type() == QEvent::ChildInserted
-                    && ((QChildEvent*)pe.event)->child() == child) {
-                    --receiver->d_func()->postedEvents;
-                    --receiver->d_func()->postedChildInsertedEvents;
-                    Q_ASSERT(receiver->d_func()->postedEvents >= 0);
-                    Q_ASSERT(receiver->d_func()->postedChildInsertedEvents >= 0);
-                    pe.event->posted = false;
-                    delete pe.event;
-                    const_cast<QPostEvent &>(pe).event = 0;
-                    const_cast<QPostEvent &>(pe).receiver = 0;
-                }
+    // if this is a child remove event and the child insert
+    // hasn't been dispatched yet, kill that insert
+    for (int i = 0; i < data->postEventList.size(); ++i) {
+        const QPostEvent &pe = data->postEventList.at(i);
+        if (pe.event && pe.receiver == receiver) {
+            if (pe.event->type() == QEvent::ChildInserted
+                && ((QChildEvent*)pe.event)->child() == child) {
+                --receiver->d_func()->postedEvents;
+                --receiver->d_func()->postedChildInsertedEvents;
+                Q_ASSERT(receiver->d_func()->postedEvents >= 0);
+                Q_ASSERT(receiver->d_func()->postedChildInsertedEvents >= 0);
+                pe.event->posted = false;
+                delete pe.event;
+                const_cast<QPostEvent &>(pe).event = 0;
+                const_cast<QPostEvent &>(pe).receiver = 0;
             }
         }
     }
@@ -335,12 +323,12 @@ QString qAppName()
     system-wide and application-wide settings.
 
     The command line arguments which QCoreApplication's constructor
-    should be called with are accessible using argc() and argv(). The
+    should be called with are accessible using arguments(). The
     event loop is started with a call to exec(). Long running
     operations can call processEvents() to keep the application
     responsive.
 
-    Some Qt classes (e.g., QString) can be used without a
+    Some Qt classes, such as QString, can be used without a
     QCoreApplication object. However, in general, we recommend that
     you create a QCoreApplication or a QApplication object in your \c
     main() function as early as possible.
@@ -421,6 +409,12 @@ extern void set_winapp_name();
 void QCoreApplication::init()
 {
     Q_D(QCoreApplication);
+
+#ifdef Q_OS_UNIX
+    setlocale(LC_ALL, "");                // use correct char set mapping
+    setlocale(LC_NUMERIC, "C");        // make sprintf()/scanf() work
+#endif
+
 #ifdef Q_WS_WIN
     // Get the application name/instance if qWinMain() was not invoked
     set_winapp_name();
@@ -428,6 +422,23 @@ void QCoreApplication::init()
 
     Q_ASSERT_X(!self, "QCoreApplication", "there should be only one application object");
     QCoreApplication::self = this;
+
+#ifndef QT_NO_THREAD
+    QThread::initialize();
+#endif
+
+    // use the event dispatcher created by the app programmer (if any)
+    if (!QCoreApplicationPrivate::eventDispatcher)
+        QCoreApplicationPrivate::eventDispatcher = d->threadData->eventDispatcher;
+    // otherwise we create one
+    if (!QCoreApplicationPrivate::eventDispatcher)
+        d->createEventDispatcher();
+    Q_ASSERT(QCoreApplicationPrivate::eventDispatcher != 0);
+
+    if (!QCoreApplicationPrivate::eventDispatcher->parent())
+        QCoreApplicationPrivate::eventDispatcher->moveToThread(d->threadData->thread);
+
+    d->threadData->eventDispatcher = QCoreApplicationPrivate::eventDispatcher;
 
 #ifndef QT_NO_LIBRARY
     if (!coreappdata()->app_libpaths) {
@@ -437,19 +448,6 @@ void QCoreApplication::init()
         d->appendApplicationPathToLibraryPaths();
     }
 #endif
-
-
-#ifndef QT_NO_THREAD
-    QThread::initialize();
-#endif
-
-    if (!QCoreApplicationPrivate::eventDispatcher)
-        d->createEventDispatcher();
-    Q_ASSERT(QCoreApplicationPrivate::eventDispatcher != 0);
-    QCoreApplicationPrivate::moveToMainThread(QCoreApplicationPrivate::eventDispatcher);
-
-    QThreadData *data = QThreadData::get(mainThread());
-    data->eventDispatcher = QCoreApplicationPrivate::eventDispatcher;
 
 #if defined(Q_OS_UNIX) && !(defined(QT_NO_PROCESS))
     // Make sure the process manager thread object is created in the main
@@ -470,7 +468,6 @@ void QCoreApplication::init()
 */
 QCoreApplication::~QCoreApplication()
 {
-    Q_D(QCoreApplication);
     qt_call_post_routines();
 
     self = 0;
@@ -481,11 +478,39 @@ QCoreApplication::~QCoreApplication()
     QThread::cleanup();
 #endif
 
-    QThreadData::get(mainThread())->eventDispatcher = 0;
-    if (d->eventDispatcher)
-        d->eventDispatcher->closingDown();
-    d->eventDispatcher = 0;
+    d_func()->threadData->eventDispatcher = 0;
+    if (QCoreApplicationPrivate::eventDispatcher)
+        QCoreApplicationPrivate::eventDispatcher->closingDown();
+    QCoreApplicationPrivate::eventDispatcher = 0;
 }
+
+
+/*!
+    Sets the attribute \a attribute  if \a on is true;
+    otherwise clears the attribute.
+
+    \sa testAttribute()
+*/
+void QCoreApplication::setAttribute(Qt::ApplicationAttribute attribute, bool on)
+{
+    if (on)
+        QCoreApplicationPrivate::attribs |= 1 << attribute;
+    else
+        QCoreApplicationPrivate::attribs &= ~(1 << attribute);
+}
+
+/*!
+  Returns true if attribute \a attribute is set;
+  otherwise returns false.
+
+  \sa setAttribute()
+ */
+bool QCoreApplication::testAttribute(Qt::ApplicationAttribute attribute)
+{
+    return QCoreApplicationPrivate::testAttribute(attribute);
+}
+
+
 
 /*!
   Sends \a event to \a receiver: \a {receiver}->event(\a event).
@@ -553,21 +578,37 @@ bool QCoreApplication::notify(QObject *receiver, QEvent *event)
 bool QCoreApplicationPrivate::notify_helper(QObject *receiver, QEvent * event)
 {
     Q_Q(QCoreApplication);
+
+    QReadWriteLock *lock = QObjectPrivate::readWriteLock();
+    if (lock)
+        lock->lockForRead();
+
     // send to all application event filters
     for (int i = 0; i < eventFilters.size(); ++i) {
         register QObject *obj = eventFilters.at(i);
+        if (lock)
+            lock->unlock();
         if (obj && obj->eventFilter(receiver, event))
             return true;
+        if (lock)
+            lock->lockForRead();
     }
 
     // send to all receiver event filters
     if (receiver != q) {
         for (int i = 0; i < receiver->d_func()->eventFilters.size(); ++i) {
             register QObject *obj = receiver->d_func()->eventFilters.at(i);
+            if (lock)
+                lock->unlock();
             if (obj && obj->eventFilter(receiver, event))
                 return true;
+            if (lock)
+                lock->lockForRead();
         }
     }
+
+    if (lock)
+        lock->unlock();
 
     return receiver->event(event);
 }
@@ -608,10 +649,10 @@ bool QCoreApplication::closingDown()
 */
 void QCoreApplication::processEvents(QEventLoop::ProcessEventsFlags flags)
 {
-    QThread *currentThread = QThread::currentThread();
-    if (!currentThread)
+    QThreadData *data = QThreadData::current();
+    if (!data->eventDispatcher)
         return;
-    QThreadData::get(currentThread)->eventDispatcher->processEvents(flags);
+    data->eventDispatcher->processEvents(flags);
 }
 
 /*!
@@ -627,10 +668,9 @@ void QCoreApplication::processEvents(QEventLoop::ProcessEventsFlags flags)
 */
 void QCoreApplication::processEvents(QEventLoop::ProcessEventsFlags flags, int maxtime)
 {
-    QThread *currentThread = QThread::currentThread();
-    if (!currentThread)
+    QThreadData *data = QThreadData::current();
+    if (!data->eventDispatcher)
         return;
-    QThreadData *data = QThreadData::get(currentThread);
     QTime start;
     start.start();
     while (data->eventDispatcher->processEvents(flags & ~QEventLoop::WaitForMoreEvents)) {
@@ -663,21 +703,22 @@ int QCoreApplication::exec()
 {
     if (!QCoreApplicationPrivate::checkInstance("exec"))
         return -1;
-    QThread *currentThread = QThread::currentThread();
-    if (currentThread != self->thread()) {
-        qWarning("QApplication::exec() failed: must be called from the main thread.");
+
+    QThreadData *threadData = self->d_func()->threadData;
+    if (threadData != QThreadData::current()) {
+        qWarning("%s::exec: Must be called from the main thread", self->metaObject()->className());
         return -1;
     }
-    QThreadData *data = QThreadData::get(currentThread);
-    if (!data->eventLoops.isEmpty()) {
-        qWarning("QApplication::exec() failed: the event loop is already running.");
+    if (!threadData->eventLoops.isEmpty()) {
+        qWarning("QCoreApplication::exec: The event loop is already running");
         return -1;
     }
-    data->quitNow = false;
+
+    threadData->quitNow = false;
     QEventLoop eventLoop;
     self->d_func()->in_exec = true;
     int returnCode = eventLoop.exec();
-    data->quitNow = false;
+    threadData->quitNow = false;
     if (self) {
         self->d_func()->in_exec = false;
         emit self->aboutToQuit();
@@ -706,7 +747,7 @@ void QCoreApplication::exit(int returnCode)
 {
     if (!self)
         return;
-    QThreadData *data = QThreadData::get(self->thread());
+    QThreadData *data = self->d_func()->threadData;
     data->quitNow = true;
     for (int i = 0; i < data->eventLoops.size(); ++i) {
         QEventLoop *eventLoop = data->eventLoops.at(i);
@@ -749,7 +790,7 @@ void QCoreApplication::exit(int returnCode)
 
     \threadsafe
 
-    \sa sendEvent(), notify(), sendPostedEvent()
+    \sa sendEvent(), notify(), sendPostedEvents()
 */
 
 void QCoreApplication::postEvent(QObject *receiver, QEvent *event)
@@ -761,21 +802,12 @@ void QCoreApplication::postEvent(QObject *receiver, QEvent *event)
     }
 
 #ifndef QT_NO_THREAD
-    // uberhack for enabling some threading features for (mumble)
+    // uberhack for enabling some threading features for Qt Jambi
     if (receiver == (QObject *) 0xfeedface && event == (QEvent *) 0xc0ffee) {
-        QThreadPrivate::adoptCurrentThreadEnabled = true;
-        if (!the_mainThread)
-            the_mainThread = new QAdoptedThread();
+        QCoreApplicationPrivate::theMainThread = QThread::currentThread();
         return;
     }
 #endif
-
-    /*
-      avoid a deadlock when trying to create the mainThread() when
-      posting the very first event in an application with a
-      QCoreApplication
-    */
-    (void) mainThread();
 
     QReadLocker locker(QObjectPrivate::readWriteLock());
     if (!QObjectPrivate::isValidObject(receiver)) {
@@ -784,15 +816,12 @@ void QCoreApplication::postEvent(QObject *receiver, QEvent *event)
         return;
     }
 
-    QThread *thread = receiver->thread();
-    if (!thread)
-        thread = mainThread();
-    if (!thread) {
+    QThreadData *data = receiver->d_func()->threadData;
+    if (!data) {
         // posting during destruction? just delete the event to prevent a leak
         delete event;
         return;
     }
-    QThreadData *data = QThreadData::get(thread);
 
     {
         QMutexLocker locker(&data->postEventList.mutex);
@@ -890,25 +919,13 @@ void QCoreApplication::sendPostedEvents(QObject *receiver, int event_type)
         event_type = 0;
     }
 
-    QThread *currentThread = QThread::currentThread();
-    if (self) {
-        // allow sendPostedEvents() to be called when QCoreApplication
-        // is not instantiated
-        Q_ASSERT_X(currentThread != 0, "QCoreApplication::sendPostedEvents",
-                   "Posted events can only be send from threads started with QThread");
-        if (!currentThread)
-            return;
-    }
+    QThreadData *data = QThreadData::current();
 
-    if (receiver) {
-        QThread *thr = receiver->thread();
-        Q_ASSERT_X(thr == currentThread || !thr, "QCoreApplication::sendPostedEvents",
-                   "Cannot send posted events for object created in another thread");
-        if (thr == 0 || thr != currentThread)
-            return;
+    if (receiver && receiver->d_func()->threadData != data) {
+        qWarning("QCoreApplication::sendPostedEvents: Cannot send "
+                 "posted events for objects in another thread");
+        return;
     }
-
-    QThreadData *data = QThreadData::get(currentThread);
 
     ++data->postEventList.recursion;
 
@@ -998,7 +1015,26 @@ void QCoreApplication::sendPostedEvents(QObject *receiver, int event_type)
 
         locker.unlock();
         // after all that work, it's time to deliver the event.
+#ifdef QT_NO_EXCEPTIONS
         QCoreApplication::sendEvent(r, e);
+#else
+        try {
+            QCoreApplication::sendEvent(r, e);
+        } catch (...) {
+            locker.relock();
+            delete e;
+
+            // since we were interrupted, we need another pass to make sure we clean everything up
+            data->canWait = false;
+
+            // uglehack: copied from below
+            --data->postEventList.recursion;
+            if (!data->postEventList.recursion && !data->canWait && data->eventDispatcher)
+                data->eventDispatcher->wakeUp();
+            throw;              // rethrow
+        }
+#endif
+
         locker.relock();
 
         delete e;
@@ -1030,16 +1066,18 @@ void QCoreApplication::sendPostedEvents(QObject *receiver, int event_type)
   \threadsafe
 */
 
+//#define PAUL_TESTING
+
 void QCoreApplication::removePostedEvents(QObject *receiver)
 {
+#ifdef PAUL_TESTING
+    QThreadData *data = receiver ? receiver->d_func()->threadData : self->d_func()->threadData;
+#else
     if (!receiver)
         return;
-    QThread *thr = receiver->thread();
-    if (!thr)
-        thr = mainThread();
-    if (!thr)
-        return;
-    QThreadData *data = QThreadData::get(thr);
+
+    QThreadData *data = receiver->d_func()->threadData;
+#endif
 
     QMutexLocker locker(&data->postEventList.mutex);
 
@@ -1047,10 +1085,34 @@ void QCoreApplication::removePostedEvents(QObject *receiver)
     // happen while the event loop is in the middle of posting events,
     // and when we get here, we may not have any more posted events
     // for this object.
+#ifdef PAUL_TESTING
+    if (receiver && !receiver->d_func()->postedEvents) return;
+#else
     if (!receiver->d_func()->postedEvents) return;
-
+#endif
     int n = data->postEventList.size();
     int j = 0;
+
+#ifdef PAUL_TESTING
+    if (!receiver) {
+        for (int i = 0; i < n; ++i) {
+            const QPostEvent &pe = data->postEventList.at(i);
+            if (pe.event) {
+                --pe.receiver->d_func()->postedEvents;
+#ifdef QT3_SUPPORT
+                if (pe.event->type() == QEvent::ChildInserted)
+                    --pe.receiver->d_func()->postedChildInsertedEvents;
+#endif
+                pe.event->posted = false;
+                delete pe.event;
+                const_cast<QPostEvent &>(pe).event = 0;
+
+            }
+        }
+        data->postEventList.clear();
+        return;
+    }
+#endif
 
     for (int i = 0; i < n; ++i) {
         const QPostEvent &pe = data->postEventList.at(i);
@@ -1098,16 +1160,13 @@ void QCoreApplicationPrivate::removePostedEvent(QEvent * event)
     if (!event || !event->posted)
         return;
 
-    QThread *thread = QThread::currentThread();
-    if (!thread)
-        return;
-    QThreadData *data = QThreadData::get(thread);
+    QThreadData *data = QThreadData::current();
 
     QMutexLocker locker(&data->postEventList.mutex);
 
     if (data->postEventList.size() == 0) {
 #if defined(QT_DEBUG)
-        qDebug("QCoreApplication::removePostedEvent: %p %d is posted: impossible",
+        qDebug("QCoreApplication::removePostedEvent: Internal error: %p %d is posted",
                 (void*)event, event->type());
         return;
 #endif
@@ -1117,7 +1176,7 @@ void QCoreApplicationPrivate::removePostedEvent(QEvent * event)
         const QPostEvent & pe = data->postEventList.at(i);
         if (pe.event == event) {
 #ifndef QT_NO_DEBUG
-            qWarning("QEvent: Warning: event of type %d deleted while posted to %s %s",
+            qWarning("QCoreApplication::removePostedEvent: Event of type %d deleted while posted to %s %s",
                      event->type(),
                      pe.receiver->metaObject()->className(),
                      pe.receiver->objectName().toLocal8Bit().data());
@@ -1149,17 +1208,17 @@ bool QCoreApplication::event(QEvent *e)
 
 /*! \enum QCoreApplication::Encoding
 
-  This enum type defines the 8-bit encoding of character string
-  arguments to translate():
+    This enum type defines the 8-bit encoding of character string
+    arguments to translate():
 
-  \value DefaultCodec  The encoding specified by
-  QTextCodec::codecForTr() (Latin1 if none has been set)
-  \value UnicodeUTF8  UTF-8
+    \value CodecForTr  The encoding specified by
+                       QTextCodec::codecForTr() (Latin-1 if none has
+                       been set).
+    \value UnicodeUTF8  UTF-8.
+    \value DefaultCodec  (Obsolete) Use CodecForTr instead.
 
-  \sa QObject::tr(), QObject::trUtf8(), QString::fromUtf8()
+    \sa QObject::tr(), QObject::trUtf8(), QString::fromUtf8()
 */
-
-
 
 /*!
     Tells the application to exit with return code 0 (success).
@@ -1201,29 +1260,29 @@ void QCoreApplication::quit()
 
 #ifndef QT_NO_TRANSLATION
 /*!
-  Adds the message file \a messageFile to the list of message files to be used
-  for translations.
+    Adds the translation file \a translationFile to the list of
+    translation files to be used for translations.
 
-  Multiple message files can be installed. Translations are searched
-  for in the last installed message file, then the one from last, and
-  so on, back to the first installed message file. The search stops as
-  soon as a matching translation is found.
+    Multiple translation files can be installed. Translations are
+    searched for in the last installed translation file on, back to
+    the first installed translation file. The search stops as soon as
+    a matching translation is found.
 
   \sa removeTranslator() translate() QTranslator::load()
 */
 
-void QCoreApplication::installTranslator(QTranslator * messageFile)
+void QCoreApplication::installTranslator(QTranslator *translationFile)
 {
-    if (!messageFile)
+    if (!translationFile)
         return;
 
     if (!QCoreApplicationPrivate::checkInstance("installTranslator"))
         return;
     QCoreApplicationPrivate *d = self->d_func();
-    d->translators.prepend(messageFile);
+    d->translators.prepend(translationFile);
 
 #ifndef QT_NO_TRANSLATION_BUILDER
-    if (messageFile->isEmpty())
+    if (translationFile->isEmpty())
         return;
 #endif
 
@@ -1232,91 +1291,132 @@ void QCoreApplication::installTranslator(QTranslator * messageFile)
 }
 
 /*!
-  Removes the message file \a messageFile from the list of message files used by
-  this application. (It does not delete the message file from the file
-  system.)
+    Removes the translation file \a translationFile from the list of
+    translation files used by this application. (It does not delete the
+    translation file from the file system.)
 
-  \sa installTranslator() translate(), QObject::tr()
+    \sa installTranslator() translate(), QObject::tr()
 */
 
-void QCoreApplication::removeTranslator(QTranslator * messageFile)
+void QCoreApplication::removeTranslator(QTranslator *translationFile)
 {
-    if (!messageFile)
+    if (!translationFile)
         return;
     if (!QCoreApplicationPrivate::checkInstance("removeTranslator"))
         return;
     QCoreApplicationPrivate *d = self->d_func();
-    if (d->translators.removeAll(messageFile) && !self->closingDown()) {
+    if (d->translators.removeAll(translationFile) && !self->closingDown()) {
         QEvent ev(QEvent::LanguageChange);
         QCoreApplication::sendEvent(self, &ev);
     }
 }
 
-/*! \reentrant
-  Returns the translation text for \a sourceText, by querying the
-  installed messages files. The message files are searched from the most
-  recently installed message file back to the first installed message
-  file.
-
-  QObject::tr() and QObject::trUtf8() provide this functionality more
-  conveniently.
-
-  \a context is typically a class name (e.g., "MyDialog") and
-  \a sourceText is either English text or a short identifying text, if
-  the output text will be very long (as for help texts).
-
-  \a comment is a disambiguating comment, for when the same \a
-  sourceText is used in different roles within the same context. By
-  default, it is null. \a encoding indicates the 8-bit encoding of
-  character stings
-
-  See the \l QTranslator documentation for more information about
-  contexts and comments.
-
-  If none of the message files contain a translation for \a
-  sourceText in \a context, this function returns a QString
-  equivalent of \a sourceText. The encoding of \a sourceText is
-  specified by \e encoding; it defaults to \c DefaultCodec.
-
-  This function is not virtual. You can use alternative translation
-  techniques by subclassing \l QTranslator.
-
-  \warning This method is reentrant only if all translators are
-  installed \e before calling this method. Installing or removing
-  translators while performing translations is not supported. Doing
-  so will most likely result in crashes or other undesirable behavior.
-
-  \sa QObject::tr() installTranslator() QTextCodec::codecForTr()
+/*!
+    \overload
 */
-
 QString QCoreApplication::translate(const char *context, const char *sourceText,
                                     const char *comment, Encoding encoding)
 {
+    return translate(context, sourceText, comment, encoding, -1);
+}
+
+/*!
+    \reentrant
+
+    Returns the translation text for \a sourceText, by querying the
+    installed translation files. The translation files are searched
+    from the most recently installed file back to the first
+    installed file.
+
+    QObject::tr() and QObject::trUtf8() provide this functionality
+    more conveniently.
+
+    \a context is typically a class name (e.g., "MyDialog") and \a
+    sourceText is either English text or a short identifying text.
+
+    \a comment is a disambiguating comment, for when the same \a
+    sourceText is used in different roles within the same context. By
+    default, it is null. \a encoding indicates the 8-bit encoding of
+    character stings See the \l QTranslator documentation for more
+    information about contexts and comments.
+
+    \a n is used in conjunction with \c %n to support plural forms.
+    See QObject::tr() for details.
+
+    If none of the translation files contain a translation for \a
+    sourceText in \a context, this function returns a QString
+    equivalent of \a sourceText. The encoding of \a sourceText is
+    specified by \e encoding; it defaults to CodecForTr.
+
+    This function is not virtual. You can use alternative translation
+    techniques by subclassing \l QTranslator.
+
+    \warning This method is reentrant only if all translators are
+    installed \e before calling this method. Installing or removing
+    translators while performing translations is not supported. Doing
+    so will most likely result in crashes or other undesirable
+    behavior.
+
+    \sa QObject::tr() installTranslator() QTextCodec::codecForTr()
+*/
+
+
+QString QCoreApplication::translate(const char *context, const char *sourceText,
+                                    const char *comment, Encoding encoding, int n)
+{
+    QString result;
+
     if (!sourceText)
-        return QString();
+        return result;
 
     if (self && !self->d_func()->translators.isEmpty()) {
         QList<QTranslator*>::ConstIterator it;
-        QTranslator *messageFile;
-        QString result;
+        QTranslator *translationFile;
         for (it = self->d_func()->translators.constBegin(); it != self->d_func()->translators.constEnd(); ++it) {
-            messageFile = *it;
-            result = messageFile->translate(context, sourceText, comment);
+            translationFile = *it;
+            result = translationFile->translate(context, sourceText, comment, n);
             if (!result.isEmpty())
-                return result;
+                break;
         }
     }
+
+    if (result.isEmpty()) {
 #ifdef QT_NO_TEXTCODEC
-    Q_UNUSED(encoding)
+        Q_UNUSED(encoding)
 #else
-    if (encoding == UnicodeUTF8)
-        return QString::fromUtf8(sourceText);
-    else if (QTextCodec::codecForTr() != 0)
-        return QTextCodec::codecForTr()->toUnicode(sourceText);
-    else
+        if (encoding == UnicodeUTF8)
+            result = QString::fromUtf8(sourceText);
+        else if (QTextCodec::codecForTr() != 0)
+            result = QTextCodec::codecForTr()->toUnicode(sourceText);
+        else
 #endif
-        return QString::fromLatin1(sourceText);
+            result = QString::fromLatin1(sourceText);
+    }
+
+    if (n >= 0) {
+        int percentPos = -1;
+        while ((percentPos = result.indexOf(QLatin1Char('%'), percentPos + 1)) != -1) {
+            int len = 1;
+            QString fmt(QLatin1String("%1"));
+            if (result.mid(percentPos + len, 1).startsWith(QLatin1Char('L'))) {
+                ++len;
+                fmt = QLatin1String("%L1");
+            }
+            if (result.mid(percentPos + len, 1).startsWith(QLatin1Char('n'))) {
+                ++len;
+                result.replace(percentPos, len, fmt.arg(n));
+            }
+        }
+    }
+    return result;
 }
+
+bool QCoreApplicationPrivate::isTranslatorInstalled(QTranslator *translator)
+{
+    return QCoreApplication::self
+           && QCoreApplication::self->d_func()->translators.contains(translator);
+}
+
 #endif //QT_NO_TRANSLATE
 
 /*!
@@ -1339,7 +1439,7 @@ QString QCoreApplication::translate(const char *context, const char *sourceText,
 QString QCoreApplication::applicationDirPath()
 {
     if (!self) {
-        qWarning("QApplication::applicationDirPath() failed: please instantiate the QApplication object first");
+        qWarning("QCoreApplication::applicationDirPath: Please instantiate the QApplication object first");
         return QString();
     }
     return QFileInfo(applicationFilePath()).path();
@@ -1361,7 +1461,7 @@ QString QCoreApplication::applicationDirPath()
 QString QCoreApplication::applicationFilePath()
 {
     if (!self) {
-        qWarning("QApplication::applicationFilePath() failed: please instantiate the QApplication object first");
+        qWarning("QCoreApplication::applicationFilePath: Please instantiate the QApplication object first");
         return QString();
     }
 #if defined( Q_WS_WIN )
@@ -1384,7 +1484,7 @@ QString QCoreApplication::applicationFilePath()
 #  ifdef Q_OS_LINUX
     // Try looking for a /proc/<pid>/exe symlink first which points to
     // the absolute path of the executable
-    QFileInfo pfi(QString("/proc/%1/exe").arg(getpid()));
+    QFileInfo pfi(QString::fromLatin1("/proc/%1/exe").arg(getpid()));
     if (pfi.exists() && pfi.isSymLink())
         return pfi.canonicalFilePath();
 #  endif
@@ -1438,7 +1538,7 @@ QString QCoreApplication::applicationFilePath()
 int QCoreApplication::argc()
 {
     if (!self) {
-        qWarning("QApplication::argc() failed: please instantiate the QApplication object first");
+        qWarning("QCoreApplication::argc: Please instantiate the QApplication object first");
         return 0;
     }
     return self->d_func()->argc;
@@ -1453,7 +1553,7 @@ int QCoreApplication::argc()
 char **QCoreApplication::argv()
 {
     if (!self) {
-        qWarning("QApplication::argv() failed: please instantiate the QApplication object first");
+        qWarning("QCoreApplication::argv: Please instantiate the QApplication object first");
         return 0;
     }
     return self->d_func()->argv;
@@ -1485,7 +1585,7 @@ QStringList QCoreApplication::arguments()
     QStringList list;
 
     if (!self) {
-        qWarning("QApplication::arguments() failed: please instantiate the QApplication object first");
+        qWarning("QCoreApplication::arguments: Please instantiate the QApplication object first");
         return list;
     }
 #ifdef Q_OS_WIN
@@ -1643,12 +1743,12 @@ QStringList QCoreApplication::libraryPaths()
         const QByteArray libPathEnv = qgetenv("QT_PLUGIN_PATH");
         if (!libPathEnv.isEmpty()) {
 #ifdef Q_OS_WIN
-            QChar pathSep(';');
+            QLatin1Char pathSep(';');
 #else
-            QChar pathSep(':');
+            QLatin1Char pathSep(':');
 #endif
             QStringList paths = QString::fromLatin1(libPathEnv).split(pathSep, QString::SkipEmptyParts);
-            for (QStringList::iterator it = paths.begin(); it != paths.end(); ++it) {
+            for (QStringList::const_iterator it = paths.constBegin(); it != paths.constEnd(); ++it) {
                 app_libpaths->append(QDir(*it).canonicalPath());
             }
         }
@@ -1852,9 +1952,10 @@ bool QCoreApplication::hasPendingEvents()
 */
 int QCoreApplication::enter_loop()
 {
-    QThread *currentThread = QThread::currentThread();
-    if (currentThread != mainThread()) {
-        qWarning("QApplication::enter_loop() failed: must be called from the main thread.");
+    if (!QCoreApplicationPrivate::checkInstance("enter_loop"))
+        return -1;
+    if (QThreadData::current() != self->d_func()->threadData) {
+        qWarning("QCoreApplication::enter_loop: Must be called from the main thread");
         return -1;
     }
     QEventLoop eventLoop;
@@ -1869,12 +1970,13 @@ int QCoreApplication::enter_loop()
 */
 void QCoreApplication::exit_loop()
 {
-    QThread *currentThread = QThread::currentThread();
-    if (currentThread != mainThread()) {
-        qWarning("QApplication::exit_loop() failed: must be called from the main thread.");
+    if (!QCoreApplicationPrivate::checkInstance("exit_loop"))
+        return;
+    QThreadData *data = QThreadData::current();
+    if (data != self->d_func()->threadData) {
+        qWarning("QCoreApplication::exit_loop: Must be called from the main thread");
         return;
     }
-    QThreadData *data = QThreadData::get(currentThread);
     if (!data->eventLoops.isEmpty())
         data->eventLoops.top()->exit();
 }
@@ -1885,11 +1987,9 @@ void QCoreApplication::exit_loop()
 */
 int QCoreApplication::loopLevel()
 {
-    QThread *thr = mainThread();
-    if (!thr)
+    if (!QCoreApplicationPrivate::checkInstance("loopLevel"))
         return -1;
-    QThreadData *data = QThreadData::get(thr);
-    return data->eventLoops.size();
+    return self->d_func()->threadData->eventLoops.size();
 }
 #endif
 
@@ -2009,7 +2109,8 @@ int QCoreApplication::loopLevel()
         };
     \endcode
 
-    The \e context parameter is normally the class name.
+    The \a context parameter is normally the class name, but it can
+    be any string.
 
     \sa Q_OBJECT, QObject::tr(), QObject::trUtf8()
 */

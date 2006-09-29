@@ -36,11 +36,13 @@ QT_MODULE(Gui)
 class QLineEdit;
 
 class QAbstractSpinBoxPrivate;
+
 class Q_GUI_EXPORT QAbstractSpinBox : public QWidget
 {
     Q_OBJECT
 
     Q_ENUMS(ButtonSymbols)
+    Q_ENUMS(CorrectionMode)
     Q_PROPERTY(bool wrapping READ wrapping WRITE setWrapping)
     Q_PROPERTY(bool frame READ hasFrame WRITE setFrame)
     Q_PROPERTY(Qt::Alignment alignment READ alignment WRITE setAlignment)
@@ -48,6 +50,9 @@ class Q_GUI_EXPORT QAbstractSpinBox : public QWidget
     Q_PROPERTY(ButtonSymbols buttonSymbols READ buttonSymbols WRITE setButtonSymbols)
     Q_PROPERTY(QString specialValueText READ specialValueText WRITE setSpecialValueText)
     Q_PROPERTY(QString text READ text)
+    Q_PROPERTY(bool accelerated READ isAccelerated WRITE setAccelerated)
+    Q_PROPERTY(CorrectionMode correctionMode READ correctionMode WRITE setCorrectionMode)
+    Q_PROPERTY(bool acceptableInput READ hasAcceptableInput)
 
 public:
     explicit QAbstractSpinBox(QWidget *parent = 0);
@@ -62,10 +67,16 @@ public:
     ButtonSymbols buttonSymbols() const;
     void setButtonSymbols(ButtonSymbols bs);
 
+    enum CorrectionMode  { CorrectToPreviousValue, CorrectToNearestValue };
+
+    void setCorrectionMode(CorrectionMode cm);
+    CorrectionMode correctionMode() const;
+
+    bool hasAcceptableInput() const;
     QString text() const;
 
     QString specialValueText() const;
-    void setSpecialValueText(const QString &s);
+    void setSpecialValueText(const QString &txt);
 
     bool wrapping() const;
     void setWrapping(bool w);
@@ -78,6 +89,9 @@ public:
 
     void setFrame(bool);
     bool hasFrame() const;
+
+    void setAccelerated(bool on);
+    bool isAccelerated() const;
 
     QSize sizeHint() const;
     QSize minimumSizeHint() const;
@@ -96,25 +110,25 @@ public Q_SLOTS:
     virtual void clear();
 
 protected:
-    void resizeEvent(QResizeEvent *e);
-    void keyPressEvent(QKeyEvent *e);
-    void keyReleaseEvent(QKeyEvent *e);
-    void wheelEvent(QWheelEvent *e);
-    void focusInEvent(QFocusEvent *e);
-    void focusOutEvent(QFocusEvent *e);
-    void contextMenuEvent(QContextMenuEvent *e);
-    void changeEvent(QEvent *e);
-    void closeEvent(QCloseEvent *e);
-    void hideEvent(QHideEvent *e);
-    void mousePressEvent(QMouseEvent *e);
-    void mouseReleaseEvent(QMouseEvent *e);
-    void mouseMoveEvent(QMouseEvent *e);
-    void timerEvent(QTimerEvent *e);
-    void paintEvent(QPaintEvent *e);
-    void showEvent(QShowEvent *e);
+    void resizeEvent(QResizeEvent *event);
+    void keyPressEvent(QKeyEvent *event);
+    void keyReleaseEvent(QKeyEvent *event);
+    void wheelEvent(QWheelEvent *event);
+    void focusInEvent(QFocusEvent *event);
+    void focusOutEvent(QFocusEvent *event);
+    void contextMenuEvent(QContextMenuEvent *event);
+    void changeEvent(QEvent *event);
+    void closeEvent(QCloseEvent *event);
+    void hideEvent(QHideEvent *event);
+    void mousePressEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
+    void timerEvent(QTimerEvent *event);
+    void paintEvent(QPaintEvent *event);
+    void showEvent(QShowEvent *event);
 
     QLineEdit *lineEdit() const;
-    void setLineEdit(QLineEdit *e);
+    void setLineEdit(QLineEdit *edit);
 
     virtual StepEnabled stepEnabled() const;
 Q_SIGNALS:

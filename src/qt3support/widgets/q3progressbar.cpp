@@ -28,7 +28,6 @@
 #include "qpixmap.h"
 #include "qstyle.h"
 #include "qstyleoption.h"
-#include <private/qinternal_p.h>
 #ifndef QT_NO_ACCESSIBILITY
 #include "qaccessible.h"
 #endif
@@ -78,7 +77,7 @@
     \sa setTotalSteps()
 */
 
-Q3ProgressBar::Q3ProgressBar(QWidget *parent, const char *name, Qt::WFlags f)
+Q3ProgressBar::Q3ProgressBar(QWidget *parent, const char *name, Qt::WindowFlags f)
     : QFrame(parent, f),
       total_steps(100),
       progress_val(-1),
@@ -108,7 +107,7 @@ Q3ProgressBar::Q3ProgressBar(QWidget *parent, const char *name, Qt::WFlags f)
     \sa setTotalSteps(), setProgress()
 */
 
-Q3ProgressBar::Q3ProgressBar(int totalSteps, QWidget *parent, const char *name, Qt::WFlags f)
+Q3ProgressBar::Q3ProgressBar(int totalSteps, QWidget *parent, const char *name, Qt::WindowFlags f)
     : QFrame(parent, f),
       total_steps(totalSteps),
       progress_val(-1),
@@ -134,7 +133,7 @@ Q3ProgressBar::Q3ProgressBar(int totalSteps, QWidget *parent, const char *name, 
     \sa setTotalSteps()
 */
 
-Q3ProgressBar::Q3ProgressBar(QWidget *parent, Qt::WFlags f)
+Q3ProgressBar::Q3ProgressBar(QWidget *parent, Qt::WindowFlags f)
     : QFrame(parent, f),
       total_steps(100),
       progress_val(-1),
@@ -163,7 +162,7 @@ Q3ProgressBar::Q3ProgressBar(QWidget *parent, Qt::WFlags f)
     \sa setTotalSteps(), setProgress()
 */
 
-Q3ProgressBar::Q3ProgressBar(int totalSteps, QWidget *parent, Qt::WFlags f)
+Q3ProgressBar::Q3ProgressBar(int totalSteps, QWidget *parent, Qt::WindowFlags f)
     : QFrame(parent, f),
       total_steps(totalSteps),
       progress_val(-1),
@@ -421,3 +420,22 @@ void Q3ProgressBar::paintEvent(QPaintEvent *)
     }
 }
 
+/*!
+    \fn void Q3ProgressBar::setMargin(int margin)
+    \since 4.2
+
+    Sets the width of the margin around the contents of the widget to \a margin.
+    
+    This function uses QWidget::setContentsMargins() to set the margin.
+    \sa margin(), QWidget::setContentsMargins()
+*/
+
+/*!
+    \fn int Q3ProgressBar::margin() const
+    \since 4.2
+
+    Returns the with of the the margin around the contents of the widget.
+    
+    This function uses QWidget::getContentsMargins() to get the margin.
+    \sa setMargin(), QWidget::getContentsMargins()
+*/

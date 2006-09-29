@@ -21,6 +21,10 @@
 **
 ****************************************************************************/
 
+/*
+TRANSLATOR qdesigner_internal::PreviewWorkspace
+*/
+
 #include <QtGui/QPainter>
 
 #include "previewframe.h"

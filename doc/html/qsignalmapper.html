@@ -2,25 +2,19 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/src/corelib/kernel/qsignalmapper.cpp -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/src/corelib/kernel/qsignalmapper.cpp -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-x11-opensource-src-4.2.0/src/corelib/kernel/qsignalmapper.cpp -->
 <head>
-    <title>Qt 4.1: QSignalMapper Class Reference</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
+  <title>Qt 4.2: QSignalMapper Class Reference</title>
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QSignalMapper Class Reference<br /><sup><sup>[<a href="qtcore.html">QtCore</a> module]</sup></sup></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">QSignalMapper Class Reference<br /><sup><sup>[<a href="qtcore.html">QtCore</a> module]</sup></sup></h1>
 <p>The QSignalMapper class bundles signals from identifiable senders. <a href="#details">More...</a></p>
-<pre>#include &lt;QSignalMapper&gt;</pre><p>Inherits <a href="qobject.html">QObject</a>.</p>
+<pre> #include &lt;QSignalMapper&gt;</pre><p>Inherits <a href="qobject.html">QObject</a>.</p>
 <ul>
 <li><a href="qsignalmapper-members.html">List of all members, including inherited members</a></li>
 <li><a href="qsignalmapper-qt3.html">Qt 3 support members</a></li>
@@ -41,7 +35,7 @@ body { background: #ffffff; color: black; }</style>
 <li><div class="fn"/>void <b><a href="qsignalmapper.html#setMapping-4">setMapping</a></b> ( QObject * <i>sender</i>, QObject * <i>object</i> )</li>
 </ul>
 <ul>
-<li><div class="fn"/>28 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
+<li><div class="fn"/>29 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 </ul>
 <a name="public-slots"></a>
 <h3>Public Slots</h3>
@@ -66,7 +60,7 @@ body { background: #ffffff; color: black; }</style>
 <h3>Additional Inherited Members</h3>
 <ul>
 <li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
-<li><div class="fn"/>4 static public members inherited from <a href="qobject.html#static-public-members">QObject</a></li>
+<li><div class="fn"/>5 static public members inherited from <a href="qobject.html#static-public-members">QObject</a></li>
 <li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
 </ul>
 <a name="details"></a>
@@ -77,38 +71,38 @@ body { background: #ffffff; color: black; }</style>
 <p>The class supports the mapping of particular strings or integers with particular objects using <a href="qsignalmapper.html#setMapping">setMapping</a>(). The objects' signals can then be connected to the <a href="qsignalmapper.html#map">map</a>() slot which will emit the <a href="qsignalmapper.html#mapped">mapped</a>() signal with the string or integer associated with the original signalling object. Mappings can be removed later using <a href="qsignalmapper.html#removeMappings">removeMappings</a>().</p>
 <p>Example: Suppose we want to create a custom widget that contains a group of buttons (like a tool palette). One approach is to connect each button's <tt>clicked()</tt> signal to its own custom slot; but in this example we want to connect all the buttons to a single slot and parameterize the slot by the button that was clicked.</p>
 <p>Here's the definition of a simple custom widget that has a single signal, <tt>clicked()</tt>, which is emitted with the text of the button that was clicked:</p>
-<pre>&nbsp;   class ButtonWidget : public QWidget
-    {
-        Q_OBJECT
+<pre> class ButtonWidget : public QWidget
+ {
+     Q_OBJECT
 
-    public:
-        ButtonWidget(QStringList texts, QWidget *parent = 0);
+ public:
+     ButtonWidget(QStringList texts, QWidget *parent = 0);
 
-    signals:
-        void clicked(const QString &amp;text);
+ signals:
+     void clicked(const QString &amp;text);
 
-    private:
-        QSignalMapper *signalMapper;
-    };</pre>
+ private:
+     QSignalMapper *signalMapper;
+ };</pre>
 <p>The only function that we need to implement is the constructor:</p>
-<pre>&nbsp;   ButtonWidget::ButtonWidget(QStringList texts, QWidget *parent)
-        : QWidget(parent)
-    {
-        signalMapper = new QSignalMapper(this);
+<pre> ButtonWidget::ButtonWidget(QStringList texts, QWidget *parent)
+     : QWidget(parent)
+ {
+     signalMapper = new QSignalMapper(this);
 
-        QGridLayout *gridLayout = new QGridLayout;
-        for (int i = 0; i &lt; texts.size(); ++i) {
-            QPushButton *button = new QPushButton(texts[i]);
-            connect(button, SIGNAL(clicked()), signalMapper, SLOT(map()));
-            signalMapper-&gt;setMapping(button, texts[i]);
-            gridLayout-&gt;addWidget(button, i / 3, i % 3);
-        }
+     QGridLayout *gridLayout = new QGridLayout;
+     for (int i = 0; i &lt; texts.size(); ++i) {
+         QPushButton *button = new QPushButton(texts[i]);
+         connect(button, SIGNAL(clicked()), signalMapper, SLOT(map()));
+         signalMapper-&gt;setMapping(button, texts[i]);
+         gridLayout-&gt;addWidget(button, i / 3, i % 3);
+     }
 
-        connect(signalMapper, SIGNAL(mapped(const QString &amp;)),
-                this, SIGNAL(clicked(const QString &amp;)));
+     connect(signalMapper, SIGNAL(mapped(const QString &amp;)),
+             this, SIGNAL(clicked(const QString &amp;)));
 
-        setLayout(gridLayout);
-    }</pre>
+     setLayout(gridLayout);
+ }</pre>
 <p>A list of texts is passed to the constructor. A signal mapper is constructed and for each text in the list a <a href="qpushbutton.html">QPushButton</a> is created. We connect each button's <tt>clicked()</tt> signal to the signal mapper's <a href="qsignalmapper.html#map">map</a>() slot, and create a mapping in the signal mapper from each button to the button's text. Finally we connect the signal mapper's <a href="qsignalmapper.html#mapped">mapped</a>() signal to the custom widget's <tt>clicked()</tt> signal. When the user clicks a button, the custom widget will emit a single <tt>clicked()</tt> signal whose argument is the text of the button the user clicked.</p>
 <p>See also <a href="qobject.html">QObject</a>, <a href="qbuttongroup.html">QButtonGroup</a>, and <a href="qactiongroup.html">QActionGroup</a>.</p>
 <hr />
@@ -167,10 +161,13 @@ body { background: #ffffff; color: black; }</style>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Adds a mapping so that when <a href="qsignalmapper.html#map">map</a>() is signalled from the given <i>sender</i>, the signal mapped(<i>object</i> ) is emitted.</p>
 <p>There may be at most one object for each sender.</p>
+<hr />
+<h2>Member Function Documentation</h2>
+<h3 class="fn"><a name="QSignalMapper-2"></a>QSignalMapper::QSignalMapper ( <a href="qobject.html">QObject</a> * <i>parent</i>, const char * <i>name</i> )</h3>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

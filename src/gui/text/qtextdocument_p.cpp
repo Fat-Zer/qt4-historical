@@ -170,16 +170,15 @@ QTextDocumentPrivate::QTextDocumentPrivate()
     inContentsChange = false;
 
     useDesignMetrics = false;
+    maximumBlockCount = 0;
 }
 
 void QTextDocumentPrivate::init()
 {
-    QTextFrameFormat defaultRootFrameFormat;
-    defaultRootFrameFormat.setMargin(4);
-    frame = qobject_cast<QTextFrame *>(createObject(defaultRootFrameFormat));
+    rtFrame = 0;
     framesDirty = false;
 
-    bool undoState = undoEnabled; 
+    bool undoState = undoEnabled;
     undoEnabled = false;
     initialBlockCharFormatIndex = formats.indexForFormat(QTextCharFormat());
     insertBlock(0, formats.indexForFormat(QTextBlockFormat()), formats.indexForFormat(QTextCharFormat()));
@@ -202,7 +201,7 @@ void QTextDocumentPrivate::clear()
 
     QMap<int, QTextObject *>::Iterator objectIt = objects.begin();
     while (objectIt != objects.end()) {
-        if (*objectIt != frame) {
+        if (*objectIt != rtFrame) {
             delete *objectIt;
             objectIt = objects.erase(objectIt);
         } else {
@@ -213,7 +212,7 @@ void QTextDocumentPrivate::clear()
     // (we're going to delete the object further down)
     objects.clear();
 
-    docConfig = QTextDocumentConfig();
+    title.clear();
     undoState = 0;
     truncateUndoStack();
     text = QString();
@@ -227,7 +226,7 @@ void QTextDocumentPrivate::clear()
     q->contentsChange(0, len, 0);
     if (lout)
         lout->documentChanged(0, len, 0);
-    delete frame;
+    delete rtFrame;
     init();
     cursors = oldCursors;
 }
@@ -245,11 +244,17 @@ QTextDocumentPrivate::~QTextDocumentPrivate()
 void QTextDocumentPrivate::setLayout(QAbstractTextDocumentLayout *layout)
 {
     Q_Q(QTextDocument);
-    if (lout)
-        delete lout;
+    if (lout == layout)
+        return;
+    delete lout;
     lout = layout;
+
+    for (BlockMap::Iterator it = blocks.begin(); !it.atEnd(); ++it)
+        it->free();
+
     emit q->contentsChange(0, 0, length());
-    lout->documentChanged(0, 0, length());
+    if (lout)
+        lout->documentChanged(0, 0, length());
 }
 
 
@@ -281,7 +286,7 @@ void QTextDocumentPrivate::insert_string(int pos, uint strPos, uint length, int 
     adjustDocumentChangesAndCursors(pos, length, op);
 }
 
-void QTextDocumentPrivate::insert_block(int pos, uint strPos, int format, int blockFormat, QTextUndoCommand::Operation op, int command)
+int QTextDocumentPrivate::insert_block(int pos, uint strPos, int format, int blockFormat, QTextUndoCommand::Operation op, int command)
 {
     split(pos);
     uint x = fragments.insert_single(pos, 1);
@@ -324,9 +329,10 @@ void QTextDocumentPrivate::insert_block(int pos, uint strPos, int format, int bl
     }
 
     adjustDocumentChangesAndCursors(pos, 1, op);
+    return x;
 }
 
-void QTextDocumentPrivate::insertBlock(const QChar &blockSeparator,
+int QTextDocumentPrivate::insertBlock(const QChar &blockSeparator,
                                   int pos, int blockFormat, int charFormat, QTextUndoCommand::Operation op)
 {
     Q_ASSERT(formats.format(blockFormat).isBlockFormat());
@@ -338,7 +344,7 @@ void QTextDocumentPrivate::insertBlock(const QChar &blockSeparator,
 
     int strPos = text.length();
     text.append(blockSeparator);
-    insert_block(pos, strPos, charFormat, blockFormat, op, QTextUndoCommand::BlockRemoved);
+    const int fragment = insert_block(pos, strPos, charFormat, blockFormat, op, QTextUndoCommand::BlockRemoved);
 
     Q_ASSERT(blocks.length() == fragments.length());
 
@@ -348,12 +354,16 @@ void QTextDocumentPrivate::insertBlock(const QChar &blockSeparator,
     appendUndoItem(c);
     Q_ASSERT(undoState == undoStack.size());
 
+    if (formats.charFormat(charFormat).objectIndex() == -1)
+        ensureMaximumBlockCount();
+
     endEditBlock();
+    return fragment;
 }
 
-void QTextDocumentPrivate::insertBlock(int pos, int blockFormat, int charFormat, QTextUndoCommand::Operation op)
+int QTextDocumentPrivate::insertBlock(int pos, int blockFormat, int charFormat, QTextUndoCommand::Operation op)
 {
-    insertBlock(QChar::ParagraphSeparator, pos, blockFormat, charFormat, op);
+    return insertBlock(QChar::ParagraphSeparator, pos, blockFormat, charFormat, op);
 }
 
 void QTextDocumentPrivate::insert(int pos, int strPos, int strLength, int format)
@@ -537,19 +547,29 @@ void QTextDocumentPrivate::remove(int pos, int length, QTextUndoCommand::Operati
 
 void QTextDocumentPrivate::setCharFormat(int pos, int length, const QTextCharFormat &newFormat, FormatChangeMode mode)
 {
-    Q_ASSERT(newFormat.isValid());
-
     beginEditBlock();
 
+    Q_ASSERT(newFormat.isValid());
+
     int newFormatIdx = -1;
-    if (mode == SetFormat)
+    if (mode == SetFormatAndPreserveObjectIndices) {
+        QTextCharFormat cleanFormat = newFormat;
+        cleanFormat.clearProperty(QTextFormat::ObjectIndex);
+        newFormatIdx = formats.indexForFormat(cleanFormat);
+    } else if (mode == SetFormat) {
         newFormatIdx = formats.indexForFormat(newFormat);
+    }
 
     if (pos == -1) {
         if (mode == MergeFormat) {
             QTextFormat format = formats.format(initialBlockCharFormatIndex);
             format.merge(newFormat);
             initialBlockCharFormatIndex = formats.indexForFormat(format);
+        } else if (mode == SetFormatAndPreserveObjectIndices
+                   && formats.format(initialBlockCharFormatIndex).objectIndex() != -1) {
+            QTextCharFormat f = newFormat;
+            f.setObjectIndex(formats.format(initialBlockCharFormatIndex).objectIndex());
+            initialBlockCharFormatIndex = formats.indexForFormat(f);
         } else {
             initialBlockCharFormatIndex = newFormatIdx;
         }
@@ -580,6 +600,11 @@ void QTextDocumentPrivate::setCharFormat(int pos, int length, const QTextCharFor
             QTextFormat format = formats.format(fragment->format);
             format.merge(newFormat);
             fragment->format = formats.indexForFormat(format);
+        } else if (mode == SetFormatAndPreserveObjectIndices
+                   && formats.format(oldFormat).objectIndex() != -1) {
+            QTextCharFormat f = newFormat;
+            f.setObjectIndex(formats.format(oldFormat).objectIndex());
+            fragment->format = formats.indexForFormat(f);
         } else {
             fragment->format = newFormatIdx;
         }
@@ -616,6 +641,8 @@ void QTextDocumentPrivate::setBlockFormat(const QTextBlock &from, const QTextBlo
 				     const QTextBlockFormat &newFormat, FormatChangeMode mode)
 {
     beginEditBlock();
+
+    Q_ASSERT(mode != SetFormatAndPreserveObjectIndices); // only implemented for setCharFormat
 
     Q_ASSERT(newFormat.isValid());
 
@@ -708,11 +735,11 @@ bool QTextDocumentPrivate::unite(uint f)
 }
 
 
-void QTextDocumentPrivate::undoRedo(bool undo)
+int QTextDocumentPrivate::undoRedo(bool undo)
 {
     PMDEBUG("%s, undoState=%d, undoStack size=%d", undo ? "undo:" : "redo:", undoState, undoStack.size());
     if (!undoEnabled || (undo && undoState == 0) || (!undo && undoState == undoStack.size()))
-        return;
+        return -1;
 
     undoEnabled = false;
     beginEditBlock();
@@ -808,10 +835,15 @@ void QTextDocumentPrivate::undoRedo(bool undo)
         }
     }
     undoEnabled = true;
+    int editPos = -1;
+    if (docChangeFrom >= 0) {
+        editPos = qMin(docChangeFrom + docChangeLength, length() - 1);
+    }
     endEditBlock();
     Q_Q(QTextDocument);
     emit q->undoAvailable(isUndoAvailable());
     emit q->redoAvailable(isRedoAvailable());
+    return editPos;
 }
 
 /*!
@@ -1089,9 +1121,19 @@ static QTextFrame *findChildFrame(QTextFrame *f, int pos)
     return 0;
 }
 
+QTextFrame *QTextDocumentPrivate::rootFrame() const
+{
+    if (!rtFrame) {
+        QTextFrameFormat defaultRootFrameFormat;
+        defaultRootFrameFormat.setMargin(2);
+        rtFrame = qobject_cast<QTextFrame *>(const_cast<QTextDocumentPrivate *>(this)->createObject(defaultRootFrameFormat));
+    }
+    return rtFrame;
+}
+
 QTextFrame *QTextDocumentPrivate::frameAt(int pos) const
 {
-    QTextFrame *f = frame;
+    QTextFrame *f = rootFrame();
 
     while (1) {
         QTextFrame *c = findChildFrame(f, pos);
@@ -1116,7 +1158,7 @@ void QTextDocumentPrivate::scan_frames(int pos, int charsRemoved, int charsAdded
     Q_UNUSED(charsRemoved);
     Q_UNUSED(charsAdded);
 
-    QTextFrame *f = frame;
+    QTextFrame *f = rootFrame();
     clearFrame(f);
 
     for (FragmentIterator it = begin(); it != end(); ++it) {
@@ -1150,7 +1192,7 @@ void QTextDocumentPrivate::scan_frames(int pos, int charsRemoved, int charsAdded
             Q_ASSERT(false);
         }
     }
-    Q_ASSERT(f == frame);
+    Q_ASSERT(f == rtFrame);
     framesDirty = false;
 }
 
@@ -1308,5 +1350,26 @@ void QTextDocumentPrivate::setModified(bool m)
         modifiedState = -1;
 
     emit q->modificationChanged(modified);
+}
+
+void QTextDocumentPrivate::ensureMaximumBlockCount()
+{
+    if (maximumBlockCount <= 0)
+        return;
+    if (blocks.numNodes() <= maximumBlockCount)
+        return;
+
+    beginEditBlock();
+
+    const int blocksToRemove = blocks.numNodes() - maximumBlockCount;
+    QTextCursor cursor(this, 0);
+    cursor.movePosition(QTextCursor::NextBlock, QTextCursor::KeepAnchor, blocksToRemove);
+
+    // preserve the char format of the paragraph that is to become the new first one
+    QTextCharFormat charFmt = cursor.blockCharFormat();
+    cursor.removeSelectedText();
+    cursor.setBlockCharFormat(charFmt);
+
+    endEditBlock();
 }
 

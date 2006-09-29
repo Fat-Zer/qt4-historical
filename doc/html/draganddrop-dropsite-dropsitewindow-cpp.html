@@ -3,141 +3,123 @@
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-    <title>Qt 4.1: dropsitewindow.cpp Example File (draganddrop/dropsite/dropsitewindow.cpp)</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
+  <title>Qt 4.2: dropsitewindow.cpp Example File (draganddrop/dropsite/dropsitewindow.cpp)</title>
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">dropsitewindow.cpp Example File<br /><sup><sup>draganddrop/dropsite/dropsitewindow.cpp</sup></sup></h1>
-<pre>&nbsp;   /****************************************************************************
-    **
-    ** Copyright (C) 2005-2006 Trolltech ASA. All rights reserved.
-    **
-    ** This file is part of the documentation of the Qt Toolkit.
-    **
-    ** This file may be used under the terms of the GNU General Public
-    ** License version 2.0 as published by the Free Software Foundation
-    ** and appearing in the file LICENSE.GPL included in the packaging of
-    ** this file.  Please review the following information to ensure GNU
-    ** General Public Licensing requirements will be met:
-    ** http://www.trolltech.com/products/qt/opensource.html
-    **
-    ** If you are unsure which license is appropriate for your use, please
-    ** review the following information:
-    ** http://www.trolltech.com/products/qt/licensing.html or contact the
-    ** sales department at sales@trolltech.com.
-    **
-    ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
-    ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
-    **
-    ****************************************************************************/
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">dropsitewindow.cpp Example File<br /><sup><sup>draganddrop/dropsite/dropsitewindow.cpp</sup></sup></h1>
+<pre> /****************************************************************************
+ **
+ ** Copyright (C) 2005-2006 Trolltech ASA. All rights reserved.
+ **
+ ** This file is part of the example classes of the Qt Toolkit.
+ **
+ ** This file may be used under the terms of the GNU General Public
+ ** License version 2.0 as published by the Free Software Foundation
+ ** and appearing in the file LICENSE.GPL included in the packaging of
+ ** this file.  Please review the following information to ensure GNU
+ ** General Public Licensing requirements will be met:
+ ** http:<span class="comment">//www.trolltech.com/products/qt/opensource.html</span>
+ **
+ ** If you are unsure which license is appropriate for your use, please
+ ** review the following information:
+ ** http:<span class="comment">//www.trolltech.com/products/qt/licensing.html or contact the</span>
+ ** sales department at sales@trolltech.com.
+ **
+ ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+ ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ **
+ ****************************************************************************/
 
-    #include &lt;QtGui&gt;
+ #include &lt;QtGui&gt;
 
-    #include &quot;dropsitewindow.h&quot;
+ #include &quot;droparea.h&quot;
+ #include &quot;dropsitewindow.h&quot;
 
-    DropSiteWindow::DropSiteWindow(QWidget *parent)
-        : QWidget(parent)
-    {
-        abstractLabel = new QLabel(tr(&quot;The Drop Site example accepts drops from other &quot;
-                                      &quot;applications, and displays the MIME formats &quot;
-                                      &quot;provided by the drag object.&quot;));
-        abstractLabel-&gt;setWordWrap(true);
-        abstractLabel-&gt;adjustSize();
+ DropSiteWindow::DropSiteWindow()
+ {
+     abstractLabel = new QLabel(tr(&quot;This example accepts drags from other &quot;
+                                   &quot;applications and displays the MIME types &quot;
+                                   &quot;provided by the drag object.&quot;));
+     abstractLabel-&gt;setWordWrap(true);
+     abstractLabel-&gt;adjustSize();
 
-        dropSiteWidget = new DropSiteWidget;
-        connect(dropSiteWidget, SIGNAL(changed(const QMimeData*)),
-                this, SLOT(updateSupportedFormats(const QMimeData*)));
+     dropArea = new DropArea;
+     connect(dropArea, SIGNAL(changed(const QMimeData *)),
+             this, SLOT(updateFormatsTable(const QMimeData *)));
 
-        supportedFormats = new QTableWidget(0, 2);
-        QStringList labels;
-        labels &lt;&lt; tr(&quot;Format&quot;) &lt;&lt; tr(&quot;Content&quot;);
-        supportedFormats-&gt;setHorizontalHeaderLabels(labels);
-        supportedFormats-&gt;horizontalHeader()-&gt;setStretchLastSection(true);
+     QStringList labels;
+     labels &lt;&lt; tr(&quot;Format&quot;) &lt;&lt; tr(&quot;Content&quot;);
 
-        quitButton = new QPushButton(tr(&quot;Quit&quot;));
-        connect(quitButton, SIGNAL(pressed()), this, SLOT(close()));
+     formatsTable = new QTableWidget;
+     formatsTable-&gt;setColumnCount(2);
+     formatsTable-&gt;setEditTriggers(QAbstractItemView::NoEditTriggers);
+     formatsTable-&gt;setHorizontalHeaderLabels(labels);
+     formatsTable-&gt;horizontalHeader()-&gt;setStretchLastSection(true);
 
-        clearButton = new QPushButton(tr(&quot;Clear&quot;));
-        connect(clearButton, SIGNAL(pressed()), dropSiteWidget, SLOT(clear()));
+     clearButton = new QPushButton(tr(&quot;Clear&quot;));
+     quitButton = new QPushButton(tr(&quot;Quit&quot;));
 
-        QHBoxLayout *buttonLayout = new QHBoxLayout;
-        buttonLayout-&gt;addStretch();
-        buttonLayout-&gt;addWidget(clearButton);
-        buttonLayout-&gt;addWidget(quitButton);
-        buttonLayout-&gt;addStretch();
+     buttonBox = new QDialogButtonBox;
+     buttonBox-&gt;addButton(clearButton, QDialogButtonBox::ActionRole);
+     buttonBox-&gt;addButton(quitButton, QDialogButtonBox::RejectRole);
 
-        layout = new QVBoxLayout;
-        layout-&gt;addWidget(abstractLabel);
-        layout-&gt;addWidget(dropSiteWidget);
-        layout-&gt;addWidget(supportedFormats);
-        layout-&gt;addLayout(buttonLayout);
+     connect(quitButton, SIGNAL(pressed()), this, SLOT(close()));
+     connect(clearButton, SIGNAL(pressed()), dropArea, SLOT(clear()));
 
-        setLayout(layout);
-        setMinimumSize(350, 500);
-        setWindowTitle(tr(&quot;Drop Site&quot;));
-    }
+     QVBoxLayout *mainLayout = new QVBoxLayout;
+     mainLayout-&gt;addWidget(abstractLabel);
+     mainLayout-&gt;addWidget(dropArea);
+     mainLayout-&gt;addWidget(formatsTable);
+     mainLayout-&gt;addWidget(buttonBox);
+     setLayout(mainLayout);
 
-    void DropSiteWindow::resizeEvent(QResizeEvent *event)
-    {
-        supportedFormats-&gt;resizeColumnToContents(0);
-        QWidget::resizeEvent(event);
-    }
+     setWindowTitle(tr(&quot;Drop Site&quot;));
+     setMinimumSize(350, 500);
+ }
 
-    void DropSiteWindow::updateSupportedFormats(const QMimeData *mimeData)
-    {
-        supportedFormats-&gt;setRowCount(0);
+ void DropSiteWindow::updateFormatsTable(const QMimeData *mimeData)
+ {
+     formatsTable-&gt;setRowCount(0);
+     if (!mimeData)
+         return;
 
-        if (!mimeData)
-            return;
+     foreach (QString format, mimeData-&gt;formats()) {
+         QTableWidgetItem *formatItem = new QTableWidgetItem(format);
+         formatItem-&gt;setFlags(Qt::ItemIsEnabled);
+         formatItem-&gt;setTextAlignment(Qt::AlignTop | Qt::AlignLeft);
 
-        QStringList formats = mimeData-&gt;formats();
+         QString text;
+         if (format == &quot;text/plain&quot;) {
+             text = mimeData-&gt;text().simplified();
+         } else if (format == &quot;text/html&quot;) {
+             text = mimeData-&gt;html().simplified();
+         } else {
+             QByteArray data = mimeData-&gt;data(format);
+             for (int i = 0; i &lt; data.size() &amp;&amp; i &lt; 32; ++i) {
+                 QString hex = QString(&quot;%1&quot;).arg(uchar(data[i]), 2, 16,
+                                                 QChar('0'))
+                                            .toUpper();
+                 text.append(hex + &quot; &quot;);
+             }
+         }
 
-        foreach (QString format, formats)
-        {
-            QTableWidgetItem *formatItem = new QTableWidgetItem(format);
-            formatItem-&gt;setFlags(Qt::ItemIsEnabled);
-            formatItem-&gt;setTextAlignment(Qt::AlignTop | Qt::AlignLeft);
+         int row = formatsTable-&gt;rowCount();
+         formatsTable-&gt;insertRow(row);
+         formatsTable-&gt;setItem(row, 0, new QTableWidgetItem(format));
+         formatsTable-&gt;setItem(row, 1, new QTableWidgetItem(text));
+     }
 
-            QByteArray data = mimeData-&gt;data(format);
-            QTableWidgetItem *dataItem;
-
-            QString text = dropSiteWidget-&gt;createPlainText(data, format);
-            qApp-&gt;processEvents();
-            if (!text.isEmpty()) {
-                dataItem = new QTableWidgetItem(text);
-            } else {
-                QString hexdata = &quot;&quot;;
-                foreach (uint byte, data) {
-                    if (hexdata.length() &lt; 128) {
-                        QString hex = QString(&quot;%1&quot;).arg(byte, 2, 16, QLatin1Char('0')).toUpper();
-                        hexdata.append(hex + &quot; &quot;);
-                    }
-                }
-                dataItem = new QTableWidgetItem(hexdata);
-            }
-            dataItem-&gt;setFlags(Qt::ItemIsEnabled);
-
-            int row = supportedFormats-&gt;rowCount();
-            supportedFormats-&gt;insertRow(row);
-            supportedFormats-&gt;setItem(row, 0, formatItem);
-            supportedFormats-&gt;setItem(row, 1, dataItem);
-        }
-
-        supportedFormats-&gt;resizeColumnToContents(0);
-    }</pre>
+     formatsTable-&gt;resizeColumnToContents(0);
+ }</pre>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

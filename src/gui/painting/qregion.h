@@ -71,10 +71,19 @@ public:
     QRegion translated(int dx, int dy) const;
     inline QRegion translated(const QPoint &p) const { return translated(p.x(), p.y()); }
 
+    // ### Qt 5: make these four functions QT4_SUPPORT
     QRegion unite(const QRegion &r) const;
     QRegion intersect(const QRegion &r) const;
     QRegion subtract(const QRegion &r) const;
     QRegion eor(const QRegion &r) const;
+
+    inline QRegion united(const QRegion &r) const { return unite(r); }
+    inline QRegion intersected(const QRegion &r) const { return intersect(r); }
+    inline QRegion subtracted(const QRegion &r) const { return subtract(r); }
+    inline QRegion xored(const QRegion &r) const { return eor(r); }
+
+    bool intersects(const QRegion &r) const;
+    bool intersects(const QRect &r) const;
 
     QRect boundingRect() const;
     QVector<QRect> rects() const;
@@ -95,9 +104,11 @@ public:
     inline bool operator!=(const QRegion &r) const { return !(operator==(r)); }
     operator QVariant() const;
 
-#if defined(qdoc)
+#ifdef qdoc
     Handle handle() const;
-#elif defined(Q_WS_WIN)
+#endif
+#ifndef qdoc
+#if defined(Q_WS_WIN)
     inline HRGN    handle() const { return d->rgn; }
 #elif defined(Q_WS_X11)
     inline Region handle() const { if(!d->rgn) updateX11Region(); return d->rgn; }
@@ -107,6 +118,7 @@ public:
 #elif defined(Q_WS_QWS)
     // QGfx_QWS needs this for region drawing
     inline void *handle() const { return d->qt_rgn; }
+#endif
 #endif
 
 #ifndef QT_NO_DATASTREAM

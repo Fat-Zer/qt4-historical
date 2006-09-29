@@ -41,6 +41,8 @@
 #include "QtGui/qtextlayout.h"
 #include "QtGui/qstyleoption.h"
 #include "QtCore/qbasictimer.h"
+#include "QtGui/qcompleter.h"
+#include "QtCore/qpointer.h"
 
 class QLineEditPrivate : public QWidgetPrivate
 {
@@ -54,9 +56,9 @@ public:
           echoMode(0), textDirty(0), selDirty(0), validInput(1),
           ascent(0), maxLength(32767), hscroll(0), lastCursorPos(-1), maskData(0),
           modifiedState(0), undoState(0), selstart(0), selend(0), userInput(false),
-          emitingEditingFinished(false)
-#ifdef Q_WS_QWS
-          ,resumePassword(false)
+          emitingEditingFinished(false), resumePassword(false)
+#ifndef QT_NO_COMPLETER
+        , completer(0)
 #endif
         {}
     ~QLineEditPrivate()
@@ -178,6 +180,7 @@ public:
     void setText(const QString& txt, int pos = -1, bool edited = true);
     int xToPos(int x, QTextLine::CursorPosition = QTextLine::CursorBetweenCharacters) const;
     QRect cursorRect() const;
+    bool fixup();
 
 #ifndef QT_NO_DRAGANDDROP
     // drag and drop
@@ -196,10 +199,14 @@ public:
     QString origText;
 #endif
 
-#ifdef Q_WS_QWS
     bool resumePassword;
-#endif
 
+#ifndef QT_NO_COMPLETER
+    QPointer<QCompleter> completer;
+    void complete(int key = -1);
+    void _q_completionHighlighted(QString);
+    bool advanceToNextEnabledItem(int n);
+#endif
 };
 
 #endif // QT_NO_LINEEDIT

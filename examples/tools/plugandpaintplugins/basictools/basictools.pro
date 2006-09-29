@@ -1,16 +1,14 @@
 TEMPLATE      = lib
-CONFIG       += plugin
+CONFIG       += plugin static
 INCLUDEPATH  += ../..
 HEADERS       = basictoolsplugin.h
 SOURCES       = basictoolsplugin.cpp
 TARGET        = pnp_basictools
-DESTDIR       = ../../plugandpaint/plugins
+win32:DESTDIR = ./
 
-contains(TEMPLATE,lib) {
-   CONFIG(debug, debug|release) {
-      unix:TARGET = $$member(TARGET, 0)_debug
-      else:TARGET = $$member(TARGET, 0)d
-   }
+CONFIG(debug, debug|release) {
+   mac:TARGET = $$member(TARGET, 0)_debug
+   win32:TARGET = $$member(TARGET, 0)d
 }
 
 # install

@@ -42,6 +42,7 @@
 #include "QtGui/qtextcursor.h"
 #include "private/qtextformat_p.h"
 #include "private/qtextdocument_p.h"
+#include "private/qcssparser_p.h"
 
 enum QTextHTMLElements {
     Html_qt,
@@ -112,6 +113,7 @@ enum QTextHTMLElements {
     Html_style,
     Html_title,
     Html_meta,
+    Html_link,
 
     Html_NumElements
 };
@@ -124,25 +126,7 @@ struct QTextHtmlElement
 };
 
 class QTextHtmlParser;
-struct QTextHtmlParserAttribute {
-    enum {
-        Add,
-        Attributes,
-        And,
-        Styles,
-        Here,
-        That,
-        The,
-        Parser,
-        Does,
-        Not,
-        Resolve,
-        Eg,
-        Tables
-    } id;
-    QString value;
-};
-Q_DECLARE_TYPEINFO(QTextHtmlParserAttribute, Q_MOVABLE_TYPE);
+
 
 enum QTriState { Off = 0, On = 1, Unspecified = 2 };
 
@@ -158,7 +142,7 @@ struct QTextHtmlParserNode {
     QTextHtmlParserNode();
     QString tag;
     QString text;
-    QVector<QTextHtmlParserAttribute> attributes;
+    QStringList attributes;
     int parent;
     QVector<int> children;
     int id;
@@ -183,13 +167,14 @@ struct QTextHtmlParserNode {
     uint isTextFrame : 1;
     uint direction : 2; // 3 means unset
     uint displayMode : 3; // QTextHtmlElement::DisplayMode
+    QTextFormat::PageBreakFlags pageBreakPolicy;
     QString fontFamily;
     int fontPointSize;
     int fontPixelSize;
     int fontSizeAdjustment;
     int fontWeight;
-    QColor color;
-    QColor bgColor;
+    QBrush foreground;
+    QBrush background;
     Qt::Alignment alignment;
     QTextCharFormat::VerticalAlignment verticalAlignment;
     QTextListFormat::Style listStyle;
@@ -247,6 +232,8 @@ struct QTextHtmlParserNode {
 
     bool isNestedList(const QTextHtmlParser *parser) const;
 
+    void applyCssDeclarations(const QVector<QCss::Declaration> &declarations, const QTextDocument *resrouceProvider);
+
     int margin[4];
     friend class QTextHtmlParser;
 };
@@ -257,10 +244,10 @@ class QTextHtmlParser
 {
 public:
     enum Margin {
-        MarginLeft,
-        MarginRight,
         MarginTop,
-        MarginBottom
+        MarginRight,
+        MarginBottom,
+        MarginLeft
     };
 
     inline const QTextHtmlParserNode &at(int i) const { return nodes.at(i); }
@@ -275,7 +262,7 @@ public:
 
     void dumpHtml();
 
-    void parse(const QString &text);
+    void parse(const QString &text, const QTextDocument *resourceProvider);
 
     static int lookupElement(const QString &element);
 protected:
@@ -294,11 +281,20 @@ protected:
     QString parseWord();
     void resolveParent();
     void resolveNode();
-    void parseAttributes();
+    QStringList parseAttributes();
+    void applyAttributes(const QStringList &attributes);
     void eatSpace();
     inline bool hasPrefix(QChar c, int lookahead = 0) const
         {return pos + lookahead < len && txt.at(pos) == c; }
     int margin(int i, int mar) const;
+
+    QVector<QCss::Declaration> declarationsForNode(int node) const;
+    void resolveStyleSheetImports(const QCss::StyleSheet &sheet);
+    void importStyleSheet(const QString &href);
+
+    QHash<QString, QCss::StyleSheet> externalStyleSheets;
+    QList<QCss::StyleSheet> inlineStyleSheets;
+    const QTextDocument *resourceProvider;
 };
 
 #endif // QTEXTHTMLPARSER_P_H

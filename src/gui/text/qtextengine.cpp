@@ -130,7 +130,7 @@ static void qAppendItems(QTextEngine *engine, int &start, int &stop, QBidiContro
 
     if (start > stop) {
         // #### the algorithm is currently not really safe against this. Still needs fixing.
-//         qWarning("Bidi: appendItems() internal error");
+//         qWarning("QTextEngine: BiDi internal error in qAppendItems()");
         return;
     }
 
@@ -221,7 +221,7 @@ static bool bidiItemize(QTextEngine *engine, bool rightToLeft)
 
     QChar::Direction dir = rightToLeft ? QChar::DirR : QChar::DirL;
     QBidiStatus status;
-    QChar::Direction sdir = direction(*unicode);
+    QChar::Direction sdir = QUnicodeTables::direction(*unicode);
     if (sdir != QChar::DirL && sdir != QChar::DirR && sdir != QChar::DirEN && sdir != QChar::DirAN)
 	sdir = QChar::DirON;
     else
@@ -239,7 +239,7 @@ static bool bidiItemize(QTextEngine *engine, bool rightToLeft)
         if (current == (int)length)
             dirCurrent = control.basicDirection();
         else
-            dirCurrent = direction(unicode[current]);
+            dirCurrent = QUnicodeTables::direction(unicode[current]);
 
 #if (BIDI_DEBUG >= 2)
         cout << "pos=" << current << " dir=" << directions[dir]
@@ -311,7 +311,7 @@ static bool bidiItemize(QTextEngine *engine, bool rightToLeft)
                 case QChar::DirAN:
                     if (!first) {
                         appendItems(engine, sor, eor, control, dir);
-                        dir = eor < length ? direction(unicode[eor]) : control.basicDirection();
+                        dir = eor < length ? QUnicodeTables::direction(unicode[eor]) : control.basicDirection();
                         status.eor = dir;
                     } else {
                         eor = current; status.eor = dir;
@@ -336,7 +336,7 @@ static bool bidiItemize(QTextEngine *engine, bool rightToLeft)
                             }
                             eor = current - 1;
                             appendItems(engine, sor, eor, control, dir);
-                            dir = eor < length ? direction(unicode[eor]) : control.basicDirection();
+                            dir = eor < length ? QUnicodeTables::direction(unicode[eor]) : control.basicDirection();
                             status.eor = dir;
                         } else {
                             if(status.eor != QChar::DirL) {
@@ -771,7 +771,7 @@ static void calcLineBreaks(const QString &str, QCharAttributes *charAttributes)
         int category = prop->category;
         if (category == QChar::Mark_NonSpacing)
             goto nsm;
-        
+
         if (category == QChar::Other_Surrogate) {
             // char stop only on first pair
             if (uc[i].unicode() >= 0xd800 && uc[i].unicode() < 0xdc00 && i < len-1
@@ -882,7 +882,7 @@ const QCharAttributes *QTextEngine::attributes() const
 
     itemize();
     ensureSpace(layoutData->string.length());
-    
+
     calcLineBreaks(layoutData->string, (QCharAttributes *) layoutData->memory);
 
     for (int i = 0; i < layoutData->items.size(); i++) {
@@ -902,7 +902,7 @@ const QCharAttributes *QTextEngine::attributes() const
         int len = length(i);
         attributes(script, layoutData->string, from, len, (QCharAttributes *) layoutData->memory);
     }
-    
+
     layoutData->haveCharAttributes = true;
     return (QCharAttributes *) layoutData->memory;
 }
@@ -997,7 +997,7 @@ QFixed QTextEngine::width(int from, int len) const
         if (pos + ilen > from) {
             if (!si->num_glyphs)
                 shape(i);
-            
+
             if (si->isObject) {
                 w += si->width;
                 continue;
@@ -1005,6 +1005,7 @@ QFixed QTextEngine::width(int from, int len) const
                 w = nextTab(si, w);
                 continue;
             }
+
 
             QGlyphLayout *glyphs = this->glyphs(si);
             unsigned short *logClusters = this->logClusters(si);
@@ -1033,7 +1034,7 @@ QFixed QTextEngine::width(int from, int len) const
 
 //                 qDebug("char: start=%d end=%d / glyph: start = %d, end = %d", charFrom, charEnd, glyphStart, glyphEnd);
                 for (int i = glyphStart; i < glyphEnd; i++)
-                    w += glyphs[i].advance.x;
+                    w += glyphs[i].advance.x * !glyphs[i].attributes.dontPrint;
             }
         }
     }
@@ -1099,7 +1100,7 @@ QFont QTextEngine::font(const QScriptItem &si) const
     QTextCharFormat f = format(&si);
     QFont font = f.font();
 
-    if (block.docHandle()) {
+    if (block.docHandle() && block.docHandle()->layout()) {
         // Make sure we get the right dpi on printers
         QPaintDevice *pdev = block.docHandle()->layout()->paintDevice();
         if (pdev)
@@ -1125,7 +1126,7 @@ QFontEngine *QTextEngine::fontEngine(const QScriptItem &si, QFixed *ascent, QFix
         script = scriptForWinLanguage(script_prop->langid);
     }
 #endif
-    
+
     if (!hasFormats()) {
         engine = fnt.d->engineForScript(script);
 #if defined(Q_WS_WIN)
@@ -1136,7 +1137,7 @@ QFontEngine *QTextEngine::fontEngine(const QScriptItem &si, QFixed *ascent, QFix
         QTextCharFormat f = format(&si);
         QFont font = f.font();
 
-        if (block.docHandle()) {
+        if (block.docHandle() && block.docHandle()->layout()) {
             // Make sure we get the right dpi on printers
             QPaintDevice *pdev = block.docHandle()->layout()->paintDevice();
             if (pdev)
@@ -1163,7 +1164,7 @@ QFontEngine *QTextEngine::fontEngine(const QScriptItem &si, QFixed *ascent, QFix
         *ascent = engine->ascent();
         *descent = engine->descent();
     }
-    
+
     if (scaledEngine)
         return scaledEngine;
     return engine;
@@ -1378,7 +1379,7 @@ void QScriptLine::setDefaultHeight(QTextEngine *eng)
     QFont f;
     QFontEngine *e;
 
-    if (eng->block.docHandle()) {
+    if (eng->block.docHandle() && eng->block.docHandle()->layout()) {
         f = eng->block.charFormat().font();
         // Make sure we get the right dpi on printers
         QPaintDevice *pdev = eng->block.docHandle()->layout()->paintDevice();
@@ -1411,10 +1412,10 @@ QTextEngine::LayoutData::LayoutData(const QString &str, void **stack_memory, int
     : string(str)
 {
     allocated = _allocated;
-    
+
     int space_charAttributes = sizeof(QCharAttributes)*string.length()/sizeof(void*) + 1;
     int space_logClusters = sizeof(unsigned short)*string.length()/sizeof(void*) + 1;
-    available_glyphs = ((int)allocated - space_charAttributes - space_logClusters)*(int)sizeof(void*)/(int)sizeof(QGlyphLayout) - 2;
+    available_glyphs = ((int)allocated - space_charAttributes - space_logClusters)*(int)sizeof(void*)/(int)sizeof(QGlyphLayout);
 
     if (available_glyphs < str.length()) {
         // need to allocate on the heap
@@ -1427,8 +1428,7 @@ QTextEngine::LayoutData::LayoutData(const QString &str, void **stack_memory, int
         glyphPtr = 0;
     } else {
         num_glyphs = str.length();
-        allocated = str.length();
-        
+
         memory_on_stack = true;
         memory = stack_memory;
         logClustersPtr = (unsigned short *)(memory + space_charAttributes);
@@ -1457,12 +1457,13 @@ void QTextEngine::LayoutData::reallocate(int totalGlyphs)
         num_glyphs = totalGlyphs;
         return;
     }
-    
+
     int space_charAttributes = sizeof(QCharAttributes)*string.length()/sizeof(void*) + 1;
     int space_logClusters = sizeof(unsigned short)*string.length()/sizeof(void*) + 1;
     int space_glyphs = sizeof(QGlyphLayout)*totalGlyphs/sizeof(void*) + 2;
 
     int newAllocated = space_charAttributes + space_glyphs + space_logClusters;
+    Q_ASSERT(newAllocated >= allocated);
     void **old_mem = memory;
     memory = (void **)::realloc(memory_on_stack ? 0 : old_mem, newAllocated*sizeof(void *));
     if (memory_on_stack && memory)
@@ -1578,19 +1579,23 @@ void QTextEngine::addRequiredBoundaries() const
 bool QTextEngine::atWordSeparator(int position) const
 {
     const QChar c = layoutData->string.at(position);
-    return c == '.'
-        || c == ','
-        || c == ':'
-        || c == ';'
-        || c == '-'
-        || c == '<'
-        || c == '>'
-        || c == '['
-        || c == ']'
-        || c == '('
-        || c == ')'
-        || c == '{'
-        || c == '}'
+    return c == QLatin1Char('.')
+        || c == QLatin1Char(',')
+        || c == QLatin1Char('?')
+        || c == QLatin1Char('!')
+        || c == QLatin1Char(':')
+        || c == QLatin1Char(';')
+        || c == QLatin1Char('-')
+        || c == QLatin1Char('<')
+        || c == QLatin1Char('>')
+        || c == QLatin1Char('[')
+        || c == QLatin1Char(']')
+        || c == QLatin1Char('(')
+        || c == QLatin1Char(')')
+        || c == QLatin1Char('{')
+        || c == QLatin1Char('}')
+        || c == QLatin1Char('=')
+        || c == QLatin1Char('\t')
         || c == QChar::Nbsp
         ;
 }
@@ -1607,6 +1612,161 @@ void QTextEngine::indexAdditionalFormats()
         specialData->addFormatIndices[i] = formats->indexForFormat(specialData->addFormats.at(i).format);
         specialData->addFormats[i].format = QTextCharFormat();
     }
+}
+
+QString QTextEngine::elidedText(Qt::TextElideMode mode, const QFixed &width, int flags) const
+{
+//    qDebug() << "elidedText; available width" << width.toReal() << "text width:" << this->width(0, layoutData->string.length()).toReal();
+
+    if (flags & Qt::TextShowMnemonic) {
+        itemize();
+        for (int i = 0; i < layoutData->items.size(); ++i) {
+            QScriptItem &si = layoutData->items[i];
+            if (!si.num_glyphs)
+                shape(i);
+
+            unsigned short *logClusters = this->logClusters(&si);
+            QGlyphLayout *glyphs = this->glyphs(&si);
+
+            const int end = si.position + length(&si);
+            for (int i = si.position; i < end - 1; ++i)
+                if (layoutData->string.at(i) == QLatin1Char('&')) {
+                    const int gp = logClusters[i - si.position];
+                    glyphs[gp].attributes.dontPrint = true;
+                    QCharAttributes *attributes = const_cast<QCharAttributes *>(this->attributes());
+                    attributes[i + 1].charStop = false;
+                    attributes[i + 1].whiteSpace = false;
+                    attributes[i + 1].softBreak = false;
+                    if (i < end - 1
+                            && layoutData->string.at(i + 1) == QLatin1Char('&'))
+                        ++i;
+                }
+        }
+    }
+
+    validate();
+
+    if (mode == Qt::ElideNone
+        || this->width(0, layoutData->string.length()) <= width
+        || layoutData->string.length() <= 1)
+        return layoutData->string;
+
+    QFixed ellipsisWidth;
+    QString ellipsisText;
+    {
+        QChar ellipsisChar(0x2026);
+
+        QFontEngine *fe = fnt.d->engineForScript(QUnicodeTables::Common);
+        // the lookup can be really slow when we use XLFD fonts
+        bool isXlfdEngine = (fe->type() == QFontEngine::XLFD)
+                            || (fe->type() == QFontEngine::Multi
+                                && static_cast<QFontEngineMulti*>(fe)->engine(0)->type() == QFontEngine::XLFD);
+        if (!isXlfdEngine && fe->canRender(&ellipsisChar, 1)) {
+            QGlyphLayout glyph;
+            int nGlyphs = 1;
+            fe->stringToCMap(&ellipsisChar, 1, &glyph, &nGlyphs, 0);
+            ellipsisWidth = glyph.advance.x;
+            ellipsisText = ellipsisChar;
+        } else {
+            QString dotDotDot(QLatin1String("..."));
+
+            QGlyphLayout glyphs[3];
+            int nGlyphs = 3;
+            if (!fe->stringToCMap(dotDotDot.constData(), 3, glyphs, &nGlyphs, 0))
+                // should never happen...
+                return layoutData->string;
+            for (int i = 0; i < nGlyphs; ++i)
+                ellipsisWidth += glyphs[i].advance.x;
+            ellipsisText = dotDotDot;
+        }
+    }
+
+    const QFixed availableWidth = width - ellipsisWidth;
+
+    const QCharAttributes *attributes = this->attributes();
+
+    if (mode == Qt::ElideRight) {
+        QFixed currentWidth;
+        int pos = 0;
+        int nextBreak = 0;
+
+        do {
+            pos = nextBreak;
+
+            ++nextBreak;
+            while (nextBreak < layoutData->string.length()
+                   && !attributes[nextBreak].charStop
+                   && !attributes[nextBreak].softBreak
+                   && !attributes[nextBreak].whiteSpace
+                  )
+                ++nextBreak;
+
+            currentWidth += this->width(pos, nextBreak - pos);
+        } while (nextBreak < layoutData->string.length()
+                 && currentWidth < availableWidth);
+
+        return layoutData->string.left(pos) + ellipsisText;
+    } else if (mode == Qt::ElideLeft) {
+        QFixed currentWidth;
+        int pos = layoutData->string.length();
+        int nextBreak = layoutData->string.length();
+
+        do {
+            pos = nextBreak;
+
+            --nextBreak;
+            while (nextBreak > 0
+                   && !attributes[nextBreak].charStop
+                   && !attributes[nextBreak].softBreak
+                   && !attributes[nextBreak].whiteSpace
+                  )
+                --nextBreak;
+
+            currentWidth += this->width(nextBreak, pos - nextBreak);
+        } while (nextBreak > 0
+                 && currentWidth < availableWidth);
+
+        return ellipsisText + layoutData->string.mid(pos);
+    } else if (mode == Qt::ElideMiddle) {
+        QFixed leftWidth;
+        QFixed rightWidth;
+
+        int leftPos = 0;
+        int nextLeftBreak = 0;
+
+        int rightPos = layoutData->string.length();
+        int nextRightBreak = layoutData->string.length();
+
+        do {
+            leftPos = nextLeftBreak;
+            rightPos = nextRightBreak;
+
+            ++nextLeftBreak;
+            while (nextLeftBreak < layoutData->string.length()
+                   && !attributes[nextLeftBreak].charStop
+                   && !attributes[nextLeftBreak].softBreak
+                   && !attributes[nextLeftBreak].whiteSpace
+                  )
+                ++nextLeftBreak;
+
+            --nextRightBreak;
+            while (nextRightBreak > 0
+                   && !attributes[nextRightBreak].charStop
+                   && !attributes[nextRightBreak].softBreak
+                   && !attributes[nextRightBreak].whiteSpace
+                  )
+                --nextRightBreak;
+
+            leftWidth += this->width(leftPos, nextLeftBreak - leftPos);
+            rightWidth += this->width(nextRightBreak, rightPos - nextRightBreak);
+        } while (nextLeftBreak < layoutData->string.length()
+                 && nextRightBreak > 0
+                 && leftWidth + rightWidth < availableWidth);
+
+        return layoutData->string.left(leftPos) + ellipsisText + layoutData->string.mid(rightPos);
+    }
+
+    return layoutData->string;
 }
 
 void QTextEngine::setBoundary(int strPos) const
@@ -1681,7 +1841,8 @@ QFixed QTextEngine::nextTab(const QScriptItem *si, QFixed x) const
 void QTextEngine::resolveAdditionalFormats() const
 {
     if (!specialData || specialData->addFormats.isEmpty()
-        || !block.docHandle())
+        || !block.docHandle()
+        || !specialData->resolvedFormatIndices.isEmpty())
         return;
 
     QTextFormatCollection *collection = this->formats();
@@ -1702,4 +1863,37 @@ QStackTextEngine::QStackTextEngine(const QString &string, const QFont &f)
     text = string;
     stackEngine = true;
     layoutData = &_layoutData;
+}
+
+void QTextItemInt::initFontAttributes(const QScriptItem &si, QFont *font, const QTextCharFormat &format)
+{
+    // explicitly initialize flags so that initFontAttributes can be called
+    // multiple times on the same TextItem
+    flags = 0;
+    if (si.analysis.bidiLevel %2)
+        flags |= QTextItem::RightToLeft;
+    ascent = si.ascent;
+    descent = si.descent;
+    f = font;
+    fontEngine = f->d->engineForScript(si.analysis.script);
+    Q_ASSERT(fontEngine);
+
+    underlineColor = format.underlineColor();
+    underlineStyle = QTextCharFormat::NoUnderline;
+
+    if (format.hasProperty(QTextFormat::TextUnderlineStyle)) {
+        underlineStyle = format.underlineStyle();
+    } else if (format.boolProperty(QTextFormat::FontUnderline)
+               || f->d->underline) {
+        underlineStyle = QTextCharFormat::SingleUnderline;
+    }
+
+    // compat
+    if (underlineStyle == QTextCharFormat::SingleUnderline)
+        flags |= QTextItem::Underline;
+
+    if (f->d->overline || format.fontOverline())
+        flags |= QTextItem::Overline;
+    if (f->d->strikeOut || format.fontStrikeOut())
+        flags |= QTextItem::StrikeOut;
 }

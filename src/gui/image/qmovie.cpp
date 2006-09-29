@@ -77,7 +77,7 @@
 
     Call supportedFormats() for a list of formats that QMovie supports.
 
-    \sa QLabel, QImageReader
+    \sa QLabel, QImageReader, {Movie Example}
 */
 
 /*! \enum QMovie::MovieState
@@ -1034,9 +1034,9 @@ QList<QByteArray> QMovie::supportedFormats()
     \sa QMovie::CacheMode
 */
 
-QMovie::CacheMode QMovie::cacheMode()
+QMovie::CacheMode QMovie::cacheMode() const
 {
-    Q_D(QMovie);
+    Q_D(const QMovie);
     return d->cacheMode;
 }
 
@@ -1044,6 +1044,15 @@ void QMovie::setCacheMode(CacheMode cacheMode)
 {
     Q_D(QMovie);
     d->cacheMode = cacheMode;
+}
+
+/*!
+  \internal
+*/
+QMovie::CacheMode QMovie::cacheMode()
+{
+    Q_D(QMovie);
+    return d->cacheMode;
 }
 
 #include "moc_qmovie.cpp"

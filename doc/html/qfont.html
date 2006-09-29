@@ -2,25 +2,19 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/src/gui/text/qfont.cpp -->
-<!-- /tmp/qt-4.1.5-harald-1161337959444/qt-x11-opensource-src-4.1.5/src/gui/text/qfont.cpp -->
+<!-- /tmp/qt-4.2.0-qt-1159540607313/qt-x11-opensource-src-4.2.0/src/gui/text/qfont.cpp -->
 <head>
-    <title>Qt 4.1: QFont Class Reference</title>
-    <style>h3.fn,span.fn { margin-left: 1cm; text-indent: -1cm; }
-a:link { color: #004faf; text-decoration: none }
-a:visited { color: #672967; text-decoration: none }
-td.postheader { font-family: sans-serif }
-tr.address { font-family: sans-serif }
-body { background: #ffffff; color: black; }</style>
+  <title>Qt 4.2: QFont Class Reference</title>
+  <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></td></tr></table><h1 align="center">QFont Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">QFont Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QFont class specifies a font used for drawing text. <a href="#details">More...</a></p>
-<pre>#include &lt;QFont&gt;</pre><ul>
+<pre> #include &lt;QFont&gt;</pre><ul>
 <li><a href="qfont-members.html">List of all members, including inherited members</a></li>
 <li><a href="qfont-qt3.html">Qt 3 support members</a></li>
 </ul>
@@ -106,8 +100,8 @@ body { background: #ffffff; color: black; }</style>
 <a name="related-non-members"></a>
 <h3>Related Non-Members</h3>
 <ul>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qfont.html#operator-lt-lt-93">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>s</i>, const QFont &amp; <i>font</i> )</li>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qfont.html#operator-gt-gt-55">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>s</i>, QFont &amp; <i>font</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qfont.html#operator-lt-lt-100">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>s</i>, const QFont &amp; <i>font</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qfont.html#operator-gt-gt-57">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>s</i>, QFont &amp; <i>font</i> )</li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -117,8 +111,8 @@ body { background: #ffffff; color: black; }</style>
 <p>Use <a href="qapplication.html#setFont">QApplication::setFont</a>() to set the application's default font.</p>
 <p>If a chosen font does not include all the characters that need to be displayed, QFont will try to find the characters in the nearest equivalent fonts. When a <a href="qpainter.html">QPainter</a> draws a character from a font the QFont will report whether or not it has the character; if it does not, <a href="qpainter.html">QPainter</a> will draw an unfilled square.</p>
 <p>Create QFonts like this:</p>
-<pre>&nbsp;   QFont serifFont(&quot;Times&quot;, 10, Bold);
-    QFont sansFont(&quot;Helvetica [Cronyx]&quot;, 12);</pre>
+<pre> QFont serifFont(&quot;Times&quot;, 10, Bold);
+ QFont sansFont(&quot;Helvetica [Cronyx]&quot;, 12);</pre>
 <p>The attributes set in the constructor can also be set later, e.g. <a href="qfont.html#setFamily">setFamily</a>(), <a href="qfont.html#setPointSize">setPointSize</a>(), <a href="qfont-qt3.html#setPointSizeFloat">setPointSizeFloat</a>(), <a href="qfont.html#setWeight">setWeight</a>() and <a href="qfont.html#setItalic">setItalic</a>(). The remaining attributes must be set after contstruction, e.g. <a href="qfont.html#setBold">setBold</a>(), <a href="qfont.html#setUnderline">setUnderline</a>(), <a href="qfont.html#setOverline">setOverline</a>(), <a href="qfont.html#setStrikeOut">setStrikeOut</a>() and <a href="qfont.html#setFixedPitch">setFixedPitch</a>(). <a href="qfontinfo.html">QFontInfo</a> objects should be created <i>after</i> the font's attributes have been set. A <a href="qfontinfo.html">QFontInfo</a> object will not change, even if you change the font's attributes. The corresponding &quot;get&quot; functions, e.g. <a href="qfont.html#family">family</a>(), <a href="qfont.html#pointSize">pointSize</a>(), etc., return the values that were set, even though the values used may differ. The actual values are available from a <a href="qfontinfo.html">QFontInfo</a> object.</p>
 <p>If the requested font family is unavailable you can influence the <a href="#fontmatching">font matching algorithm</a> by choosing a particular <a href="qfont.html#StyleHint-enum">QFont::StyleHint</a> and <a href="qfont.html#StyleStrategy-enum">QFont::StyleStrategy</a> with <a href="qfont.html#setStyleHint">setStyleHint</a>(). The default family (corresponding to the current style hint) is returned by <a href="qfont.html#defaultFamily">defaultFamily</a>().</p>
 <p>The font-matching algorithm has a <a href="qfont.html#lastResortFamily">lastResortFamily</a>() and <a href="qfont.html#lastResortFont">lastResortFont</a>() in cases where a suitable match cannot be found. You can provide substitutions for font family names using <a href="qfont.html#insertSubstitution">insertSubstitution</a>() and <a href="qfont.html#insertSubstitutions">insertSubstitutions</a>(). Substitutions can be removed with <a href="qfont.html#removeSubstitution">removeSubstitution</a>(). Use <a href="qfont.html#substitute">substitute</a>() to retrieve a family's first substitute, or the family name itself if it has no substitutes. Use <a href="qfont.html#substitutes">substitutes</a>() to retrieve a list of a family's substitutes (which may be empty).</p>
@@ -147,20 +141,19 @@ body { background: #ffffff; color: black; }</style>
 <p>The point size is defined to match if it is within 20% of the requested point size. When several fonts match and are only distinguished by point size, the font with the closest point size to the one requested will be chosen.</p>
 <p>The actual family, font size, weight and other font attributes used for drawing text will depend on what's available for the chosen family under the window system. A <a href="qfontinfo.html">QFontInfo</a> object can be used to determine the actual values used for drawing the text.</p>
 <p>Examples:</p>
-<pre>&nbsp;   QFont f(&quot;Helvetica&quot;);</pre>
+<pre> QFont f(&quot;Helvetica&quot;);</pre>
 <p>If you had both an Adobe and a Cronyx Helvetica, you might get either.</p>
-<pre>&nbsp;   QFont f(&quot;Helvetica [Cronyx]&quot;);</pre>
+<pre> QFont f(&quot;Helvetica [Cronyx]&quot;);</pre>
 <p>You can specify the foundry you want in the family name. The font f in the above example will be set to &quot;Helvetica [Cronyx]&quot;.</p>
 <p>To determine the attributes of the font actually used in the window system, use a <a href="qfontinfo.html">QFontInfo</a> object, e.g.</p>
-<pre>&nbsp;   QFontInfo info(f1);
-    QString family = info.family();</pre>
+<pre> QFontInfo info(f1);
+ QString family = info.family();</pre>
 <p>To find out font metrics use a <a href="qfontmetrics.html">QFontMetrics</a> object, e.g.</p>
-<pre>&nbsp;   QFontMetrics fm(f1);
-    int textWidthInPixels = fm.width(&quot;How many pixels wide is this text?&quot;);
-    int textHeightInPixels = fm.height();</pre>
+<pre> QFontMetrics fm(f1);
+ int textWidthInPixels = fm.width(&quot;How many pixels wide is this text?&quot;);
+ int textHeightInPixels = fm.height();</pre>
 <p>For more general information on fonts, see the <a href="http://nwalsh.com/comp.fonts/FAQ/">comp.fonts FAQ.</a> Information on encodings can be found from <a href="http://czyborra.com/">Roman Czyborra's</a> page.</p>
-<p><a href="qwidget.html#font-prop">QWidget::setFont</a>() <a href="qpainter.html#setFont">QPainter::setFont</a>() <a href="qfont.html#StyleHint-enum">QFont::StyleHint</a> <a href="qfont.html#Weight-enum">QFont::Weight</a></p>
-<p>See also <a href="qfontmetrics.html">QFontMetrics</a>, <a href="qfontinfo.html">QFontInfo</a>, <a href="qfontdatabase.html">QFontDatabase</a>, and <a href="qapplication.html#setFont">QApplication::setFont</a>().</p>
+<p>See also <a href="qfontcombobox.html">QFontComboBox</a>, <a href="qfontmetrics.html">QFontMetrics</a>, <a href="qfontinfo.html">QFontInfo</a>, <a href="qfontdatabase.html">QFontDatabase</a>, and <a href="widgets-charactermap.html">Character Map Example</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
 <h3 class="fn"><a name="Stretch-enum"></a>enum QFont::Stretch</h3>
@@ -215,6 +208,7 @@ body { background: #ffffff; color: black; }</style>
 <tr><td valign="top"><tt>QFont::NoAntialias</tt></td><td align="center" valign="top"><tt>0x0100</tt></td><td valign="top">don't antialias the fonts.</td></tr>
 <tr><td valign="top"><tt>QFont::PreferAntialias</tt></td><td align="center" valign="top"><tt>0x0080</tt></td><td valign="top">antialias if possible.</td></tr>
 <tr><td valign="top"><tt>QFont::OpenGLCompatible</tt></td><td align="center" valign="top"><tt>0x0200</tt></td><td valign="top">forces the use of OpenGL compatible fonts.</td></tr>
+<tr><td valign="top"><tt>QFont::NoFontMerging</tt></td><td align="center" valign="top"><tt>0x8000</tt></td><td valign="top">If a font does not contain a character requested to draw then Qt automatically chooses a similar looking for that contains the character. This flag disables this feature.</td></tr>
 </table></p>
 <p>Any of these may be OR-ed with one of these flags:</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
@@ -314,14 +308,14 @@ body { background: #ffffff; color: black; }</style>
 <h3 class="fn"><a name="rawName"></a><a href="qstring.html">QString</a> QFont::rawName () const</h3>
 <p>Returns the name of the font within the underlying window system.</p>
 <p>On Windows and Mac OS X, this is usually just the family name of a TrueType font.</p>
-<p>On X11, depending on whether Qt was built with FontConfig support, it is an XLFD (X Logical Font Description) or a FontConfig pattern. An XLFD may be returned even if FontConfig support is enabled..</p>
+<p>On X11, depending on whether Qt was built with FontConfig support, it is an XLFD (X Logical Font Description) or a FontConfig pattern. An XLFD may be returned even if FontConfig support is enabled.</p>
 <p>Using the return value of this function is usually <i>not</i> <i>portable</i>.</p>
 <p>See also <a href="qfont.html#setRawName">setRawName</a>().</p>
 <h3 class="fn"><a name="removeSubstitution"></a>void QFont::removeSubstitution ( const <a href="qstring.html">QString</a> &amp; <i>familyName</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Removes all the substitutions for <i>familyName</i>.</p>
 <p>See also <a href="qfont.html#insertSubstitutions">insertSubstitutions</a>(), <a href="qfont.html#insertSubstitution">insertSubstitution</a>(), <a href="qfont.html#substitutions">substitutions</a>(), and <a href="qfont.html#substitute">substitute</a>().</p>
 <h3 class="fn"><a name="resolve"></a>QFont QFont::resolve ( const QFont &amp; <i>other</i> ) const</h3>
-<p>Returns a new <a href="qfont.html">QFont</a> that has attributes copied from <i>other</i>.</p>
+<p>Returns a new <a href="qfont.html">QFont</a> that has attributes copied from <i>other</i> that have not been previously set on this font.</p>
 <h3 class="fn"><a name="setBold"></a>void QFont::setBold ( bool <i>enable</i> )</h3>
 <p>If <i>enable</i> is true sets the font's weight to <a href="qfont.html#Weight-enum">QFont::Bold</a>; otherwise sets the weight to <a href="qfont.html#Weight-enum">QFont::Normal</a>.</p>
 <p>For finer boldness control use <a href="qfont.html#setWeight">setWeight</a>().</p>
@@ -446,18 +440,34 @@ body { background: #ffffff; color: black; }</style>
 <p>See also <a href="qfont.html#operator-not-eq">operator!=</a>() and <a href="qfont.html#isCopyOf">isCopyOf</a>().</p>
 <hr />
 <h2>Related Non-Members</h2>
-<h3 class="fn"><a name="operator-lt-lt-93"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>s</i>, const QFont &amp; <i>font</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-100"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>s</i>, const QFont &amp; <i>font</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes the font <i>font</i> to the data stream <i>s</i>. (toString() writes to a text stream.)</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
-<h3 class="fn"><a name="operator-gt-gt-55"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>s</i>, QFont &amp; <i>font</i> )</h3>
+<h3 class="fn"><a name="operator-gt-gt-57"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>s</i>, QFont &amp; <i>font</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads the font <i>font</i> from the data stream <i>s</i>. (fromString() reads from a text stream.)</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
+<hr />
+<h2>Member Function Documentation</h2>
+<h3 class="fn"><a name="defaultFont"></a>QFont QFont::defaultFont ()&nbsp;&nbsp;<tt> [static]</tt></h3>
+<p>Please use <a href="qapplication.html#font">QApplication::font</a>() instead.</p>
+<p>See also <a href="qfont-qt3.html#setDefaultFont">setDefaultFont</a>().</p>
+<h3 class="fn"><a name="pointSizeFloat"></a><a href="qtglobal.html#qreal-typedef">qreal</a> QFont::pointSizeFloat () const</h3>
+<p>Use <a href="qfont.html#pointSizeF">pointSizeF</a>() instead.</p>
+<p>See also <a href="qfont-qt3.html#setPointSizeFloat">setPointSizeFloat</a>().</p>
+<h3 class="fn"><a name="setDefaultFont"></a>void QFont::setDefaultFont ( const QFont &amp; <i>f</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
+<p>Please use <a href="qapplication.html#setFont">QApplication::setFont</a>() instead.</p>
+<p>See also <a href="qfont-qt3.html#defaultFont">defaultFont</a>().</p>
+<h3 class="fn"><a name="setPixelSizeFloat"></a>void QFont::setPixelSizeFloat ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>pixelSize</i> )</h3>
+<p>Sets the logical pixel height of font characters when shown on the screen to <i>pixelSize</i>.</p>
+<h3 class="fn"><a name="setPointSizeFloat"></a>void QFont::setPointSizeFloat ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>size</i> )</h3>
+<p>Use <a href="qfont.html#setPointSizeF">setPointSizeF</a>() instead.</p>
+<p>See also <a href="qfont-qt3.html#pointSizeFloat">pointSizeFloat</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.1.5</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.0</div></td>
 </tr></table></div></address></body>
 </html>

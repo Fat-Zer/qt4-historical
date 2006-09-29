@@ -2,16 +2,19 @@ TEMPLATE = app
 LANGUAGE = C++
 QT += xml network
 
-CONFIG        += qt warn_on assistant
+CONFIG        += qt warn_on assistant uitools
 build_all:!build_pass {
     CONFIG -= build_all
     CONFIG += release
 }
 
+include(previewtool/previewtool.pri)
+
 SOURCES        += finddialog.cpp \
-	about.cpp \
+	translatedialog.cpp \
+        batchtranslationdialog.cpp \
+        translationsettingsdialog.cpp \
 	statistics.cpp \
-	contextmodel.cpp \
 	messagemodel.cpp \
 	phrasemodel.cpp \
 	msgedit.cpp \
@@ -19,22 +22,25 @@ SOURCES        += finddialog.cpp \
         phrase.cpp \
         phrasebookbox.cpp \
         printout.cpp \
-        simtexth.cpp \
         trwindow.cpp \
+        messagestreeview.cpp \
+        ../shared/simtexth.cpp \
 	../shared/metatranslator.cpp \
 	../shared/translator.cpp
 HEADERS        += finddialog.h \
-	about.h \
+	translatedialog.h \
+        batchtranslationdialog.h \
+        translationsettingsdialog.h \
 	statistics.h \
-	contextmodel.h \
 	messagemodel.h \
 	phrasemodel.h \
 	msgedit.h \
         phrase.h \
         phrasebookbox.h \
         printout.h \
-        simtexth.h \
         trwindow.h \
+        messagestreeview.h \
+        ../shared/simtexth.h \
         ../shared/metatranslator.h \
 	../shared/translator.h
 
@@ -62,11 +68,15 @@ linguisttranslations.path = $$[QT_INSTALL_TRANSLATIONS]
 INSTALLS += linguisttranslations
 
 phrasebooks.path=$$[QT_INSTALL_DATA]/phrasebooks
+### will this work on windows?
 phrasebooks.files = $$QT_SOURCE_TREE/tools/linguist/phrasebooks/*
 INSTALLS += phrasebooks
-FORMS     = about.ui \
-            statistics.ui \
+FORMS    += statistics.ui \
             phrasebookbox.ui \
+            batchtranslation.ui \
+            translatedialog.ui \
+            mainwindow.ui \
+            translationsettings.ui \
             finddialog.ui
 INCLUDEPATH        += ../shared ../../assistant/lib
 RESOURCES += linguist.qrc
