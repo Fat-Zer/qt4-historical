@@ -988,6 +988,9 @@ QPixmap QPixmap::fromImage(const QImage &img, Qt::ImageConversionFlags flags)
     const int         dd  = X11->use_xrender && img.hasAlphaChannel() ? 32 : pixmap.data->xinfo.depth();
     bool force_mono = (dd == 1 || (flags & Qt::ColorMode_Mask) == Qt::MonoOnly);
 
+    if (uint(w) >= 32768 || uint(h) >= 32768)
+        return QPixmap();
+
     // must be monochrome
     if (force_mono) {
         if (d != 1) {
@@ -1797,11 +1800,11 @@ QPixmap QPixmap::grabWindow(WId window, int x, int y, int w, int h)
 
 QPixmap QPixmap::transformed(const QMatrix &matrix, Qt::TransformationMode mode) const
 {
-    int           w = 0;
-    int           h = 0;                                // size of target pixmap
-    int           ws, hs;                                // size of source pixmap
+    uint          w = 0;
+    uint          h = 0;                                // size of target pixmap
+    uint          ws, hs;                                // size of source pixmap
     uchar *dptr;                                // data in target pixmap
-    int           dbpl, dbytes;                        // bytes per line/bytes total
+    uint          dbpl, dbytes;                        // bytes per line/bytes total
     uchar *sptr;                                // data in original pixmap
     int           sbpl;                                // bytes per line in original
     int           bpp;                                        // bits per pixel
@@ -1816,20 +1819,24 @@ QPixmap QPixmap::transformed(const QMatrix &matrix, Qt::TransformationMode mode)
 
     QMatrix mat(matrix.m11(), matrix.m12(), matrix.m21(), matrix.m22(), 0., 0.);
     bool complex_xform = false;
+    qreal scaledWidth;
+    qreal scaledHeight;
 
     if (mat.m12() == 0.0F && mat.m21() == 0.0F) {
         if (mat.m11() == 1.0F && mat.m22() == 1.0F) // identity matrix
             return *this;
-        h = int(qAbs(mat.m22()) * hs + 0.9999);
-        w = int(qAbs(mat.m11()) * ws + 0.9999);
-        h = qAbs(h);
-        w = qAbs(w);
+        scaledHeight = qAbs(mat.m22()) * hs + 0.9999;
+        scaledWidth = qAbs(mat.m11()) * ws + 0.9999;
+        h = qAbs(int(scaledHeight));
+        w = qAbs(int(scaledWidth));
     } else {                                        // rotation or shearing
         QPolygonF a(QRectF(0, 0, ws+1, hs+1));
         a = mat.map(a);
         QRectF r = a.boundingRect().normalized();
         w = int(r.width() + 0.9999);
         h = int(r.height() + 0.9999);
+        scaledWidth = w;
+        scaledHeight = h;
         complex_xform = true;
     }
     mat = trueMatrix(mat, ws, hs); // true matrix
@@ -1838,7 +1845,8 @@ QPixmap QPixmap::transformed(const QMatrix &matrix, Qt::TransformationMode mode)
     bool invertible;
     mat = mat.inverted(&invertible);                // invert matrix
 
-    if (h == 0 || w == 0 || !invertible)
+    if (h == 0 || w == 0 || !invertible
+        || qAbs(scaledWidth) >= 32768 || qAbs(scaledHeight) >= 32768 )	// error, return null pixmap
         return QPixmap();
 
     if (mode == Qt::SmoothTransformation) {
