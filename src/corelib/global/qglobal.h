@@ -26,13 +26,13 @@
 
 #include <stddef.h>
 
-#define QT_VERSION_STR   "4.1.4"
+#define QT_VERSION_STR   "4.1.5"
 /*
    QT_VERSION is (major << 16) + (minor << 8) + patch.
 */
-#define QT_VERSION 0x040104
+#define QT_VERSION 0x040105
 
-#define QT_PACKAGEDATE_STR "2006-06-19"
+#define QT_PACKAGEDATE_STR "2006-10-20"
 
 #if !defined(QT_BUILD_MOC)
 #include <QtCore/qconfig.h>
