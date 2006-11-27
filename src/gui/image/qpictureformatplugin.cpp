@@ -26,8 +26,11 @@
 #include "qpicture.h"
 
 /*!
+    \obsolete
+
     \class QPictureFormatPlugin
-    \brief The QPictureFormatPlugin class provides an abstract base for custom picture format plugins.
+    \brief The QPictureFormatPlugin class provides an abstract base
+    for custom picture format plugins.
 
     \ingroup plugins
 

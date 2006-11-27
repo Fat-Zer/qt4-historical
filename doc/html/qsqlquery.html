@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-mac-opensource-src-4.2.1/src/sql/kernel/qsqlquery.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-mac-opensource-src-4.2.2/src/sql/kernel/qsqlquery.cpp -->
 <head>
   <title>Qt 4.2: QSqlQuery Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -236,6 +236,7 @@
 <a name="//apple_ref/cpp/instm/QSqlQuery/execBatch" />
 <h3 class="fn"><a name="execBatch"></a>bool QSqlQuery::execBatch ( <a href="qsqlquery.html#BatchExecutionMode-enum">BatchExecutionMode</a> <i>mode</i> = ValuesAsRows )</h3>
 <p>Executes a previously prepared SQL query in a batch. All the bound parameters have to be lists of variants. If the database doesn't support batch executions, the driver will simulate it using conventional <a href="qsqlquery.html#exec">exec</a>() calls.</p>
+<p>Returns true if the query is executed successfully; otherwise returns false.</p>
 <p>Example:</p>
 <pre> QSqlQuery q;
  q.prepare(&quot;insert into myTable values (?, ?)&quot;);
@@ -319,7 +320,8 @@
 <p>See also <a href="qsqlquery.html#size">size</a>() and <a href="qsqldriver.html#hasFeature">QSqlDriver::hasFeature</a>().</p>
 <a name="//apple_ref/cpp/instm/QSqlQuery/prepare" />
 <h3 class="fn"><a name="prepare"></a>bool QSqlQuery::prepare ( const <a href="qstring.html">QString</a> &amp; <i>query</i> )</h3>
-<p>Prepares the SQL query <i>query</i> for execution. The query may contain placeholders for binding values. Both Oracle style colon-name (e.g., <tt>:surname</tt>), and ODBC style (<tt>?</tt>) placeholders are supported; but they cannot be mixed in the same query. See the <a href="qsqlquery.html#qsqlquery-examples">Detailed Description</a> for examples.</p>
+<p>Prepares the SQL query <i>query</i> for execution. Returns true if the query is prepared successfully; otherwise returns false.</p>
+<p>The query may contain placeholders for binding values. Both Oracle style colon-name (e.g., <tt>:surname</tt>), and ODBC style (<tt>?</tt>) placeholders are supported; but they cannot be mixed in the same query. See the <a href="qsqlquery.html#qsqlquery-examples">Detailed Description</a> for examples.</p>
 <p>Portability note: Some databases choose to delay preparing a query until it is executed the first time. In this case, preparing a syntactically wrong query succeeds, but every consecutive <a href="qsqlquery.html#exec">exec</a>() will fail.</p>
 <p>See also <a href="qsqlquery.html#exec">exec</a>(), <a href="qsqlquery.html#bindValue">bindValue</a>(), and <a href="qsqlquery.html#addBindValue">addBindValue</a>().</p>
 <a name="//apple_ref/cpp/instm/QSqlQuery/previous" />
@@ -396,6 +398,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

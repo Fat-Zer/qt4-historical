@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-mac-opensource-src-4.2.1/src/corelib/io/qabstractfileengine.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-mac-opensource-src-4.2.2/src/corelib/io/qabstractfileengine.cpp -->
 <head>
   <title>Qt 4.2: QAbstractFileEngine Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -82,7 +82,7 @@
 <p>The QAbstractFileEngine class provides an abstraction for accessing the filesystem.</p>
 <p>The <a href="qdir.html">QDir</a>, <a href="qfile.html">QFile</a>, and <a href="qfileinfo.html">QFileInfo</a> classes all make use of a QAbstractFileEngine internally. If you create your own QAbstractFileEngine subclass (and register it with Qt by creating a <a href="qabstractfileenginehandler.html">QAbstractFileEngineHandler</a> subclass), your file engine will be used when the path is one that your file engine handles.</p>
 <p>A QAbstractFileEngine refers to one file or one directory. If the referent is a file, the <a href="qabstractfileengine.html#setFileName">setFileName</a>(), <a href="qabstractfileengine.html#rename">rename</a>(), and <a href="qabstractfileengine.html#remove">remove</a>() functions are applicable. If the referent is a directory the <a href="qabstractfileengine.html#mkdir">mkdir</a>(), <a href="qabstractfileengine.html#rmdir">rmdir</a>(), and <a href="qabstractfileengine.html#entryList">entryList</a>() functions are applicable. In all cases the <a href="qabstractfileengine.html#caseSensitive">caseSensitive</a>(), <a href="qabstractfileengine.html#isRelativePath">isRelativePath</a>(), <a href="qabstractfileengine.html#fileFlags">fileFlags</a>(), <a href="qabstractfileengine.html#ownerId">ownerId</a>(), <a href="qabstractfileengine.html#owner">owner</a>(), and <a href="qabstractfileengine.html#fileTime">fileTime</a>() functions are applicable.</p>
-<p>A QAbstractFileEngine subclass can be created to do syncronous network I/O based file system operations, local file system operations, or to operate as a resource system to access file based resources.</p>
+<p>A QAbstractFileEngine subclass can be created to do synchronous network I/O based file system operations, local file system operations, or to operate as a resource system to access file based resources.</p>
 <p>See also <a href="qabstractfileenginehandler.html">QAbstractFileEngineHandler</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
@@ -198,7 +198,8 @@
 <p>This virtual function must be reimplemented by all subclasses.</p>
 <a name="//apple_ref/cpp/instm/QAbstractFileEngine/close" />
 <h3 class="fn"><a name="close"></a>bool QAbstractFileEngine::close ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>Closes the file.</p>
+<p>Closes the file, returning true if successful; otherwise returns false.</p>
+<p>The default implementation always returns false.</p>
 <a name="//apple_ref/cpp/instm/QAbstractFileEngine/copy" />
 <h3 class="fn"><a name="copy"></a>bool QAbstractFileEngine::copy ( const <a href="qstring.html">QString</a> &amp; <i>newName</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Copies the contents of this file to a file with the name <i>newName</i>. Returns true on success; otherwise, false is returned.</p>
@@ -240,7 +241,8 @@
 <p>See also <a href="qabstractfileengine.html#setFileName">setFileName</a>(), <a href="qdatetime.html">QDateTime</a>, <a href="qdatetime.html#isValid">QDateTime::isValid</a>(), and <a href="qabstractfileengine.html#FileTime-enum">FileTime</a>.</p>
 <a name="//apple_ref/cpp/instm/QAbstractFileEngine/flush" />
 <h3 class="fn"><a name="flush"></a>bool QAbstractFileEngine::flush ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>Flushes the open file.</p>
+<p>Flushes the open file, returning true if successful; otherwise returns false.</p>
+<p>The default implementation always returns false.</p>
 <a name="//apple_ref/cpp/instm/QAbstractFileEngine/handle" />
 <h3 class="fn"><a name="handle"></a>int QAbstractFileEngine::handle () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns the native file handle for this file engine. This handle must be used with care; its value and type are platform specific, and using it will most likely lead to non-portable code.</p>
@@ -336,6 +338,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

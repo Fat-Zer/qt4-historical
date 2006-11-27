@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-mac-opensource-src-4.2.1/src/gui/itemviews/qtablewidget.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-mac-opensource-src-4.2.2/src/gui/itemviews/qtablewidget.cpp -->
 <head>
   <title>Qt 4.2: QTableWidget Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -174,6 +174,7 @@
 <pre>     QTableWidgetItem *newItem = new QTableWidgetItem(tr(&quot;%1&quot;).arg(
          (row+1)*(column+1)));
      tableWidget-&gt;setItem(row, column, newItem);</pre>
+<p>If you want to enable sorting in your table widget, do so after you have populated it with items, otherwise sorting may interfere with the insertion order (see <a href="qtablewidget.html#setItem">setItem</a>() for details).</p>
 <p>Tables can be given both horizontal and vertical headers. The simplest way to create the headers is to supply a list of strings to the <a href="qtablewidget.html#setHorizontalHeaderLabels">setHorizontalHeaderLabels</a>() and <a href="qtablewidget.html#setVerticalHeaderLabels">setVerticalHeaderLabels</a>() functions. These will provide simple textual headers for the table's columns and rows. More sophisticated headers can be created from existing table items that are usually constructed outside the table. For example, we can construct a table item with an icon and aligned text, and use it as the header for a particular column:</p>
 <pre>     QTableWidgetItem *cubesHeaderItem = new QTableWidgetItem(tr(&quot;Cubes&quot;));
      cubesHeaderItem-&gt;setIcon(QIcon(QPixmap(&quot;:/Images/cubed.png&quot;)));
@@ -279,7 +280,7 @@
 <p>See also <a href="qtablewidget.html#currentColumn">currentColumn</a>() and <a href="qtablewidget.html#setCurrentCell">setCurrentCell</a>().</p>
 <a name="//apple_ref/cpp/instm/QTableWidget/dropMimeData" />
 <h3 class="fn"><a name="dropMimeData"></a>bool QTableWidget::dropMimeData ( int <i>row</i>, int <i>column</i>, const <a href="qmimedata.html">QMimeData</a> * <i>data</i>, <a href="qt.html#DropAction-enum">Qt::DropAction</a> <i>action</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
-<p>Handles the <i>data</i> supplied by a drag and drop operation that ended with the given <i>action</i> in the given <i>row</i> and <i>column</i>.</p>
+<p>Handles the <i>data</i> supplied by a drag and drop operation that ended with the given <i>action</i> in the given <i>row</i> and <i>column</i>. Returns true if the data and action can be handled by the model; otherwise returns false.</p>
 <p>See also <a href="qtablewidget.html#supportedDropActions">supportedDropActions</a>().</p>
 <a name="//apple_ref/cpp/instm/QTableWidget/editItem" />
 <h3 class="fn"><a name="editItem"></a>void QTableWidget::editItem ( <a href="qtablewidgetitem.html">QTableWidgetItem</a> * <i>item</i> )</h3>
@@ -372,6 +373,8 @@
 <a name="//apple_ref/cpp/instm/QTableWidget/selectedItems" />
 <h3 class="fn"><a name="selectedItems"></a><a href="qlist.html">QList</a>&lt;<a href="qtablewidgetitem.html">QTableWidgetItem</a> *&gt; QTableWidget::selectedItems ()</h3>
 <p>Returns a list of all selected items.</p>
+<p>This function returns a list of pointers to the contents of the selected cells. Use the <a href="qabstractitemview.html#selectedIndexes">selectedIndexes</a>() function to retrieve the complete selection <i>including</i> empty cells.</p>
+<p>See also <a href="qabstractitemview.html#selectedIndexes">selectedIndexes</a>().</p>
 <a name="//apple_ref/cpp/instm/QTableWidget/selectedRanges" />
 <h3 class="fn"><a name="selectedRanges"></a><a href="qlist.html">QList</a>&lt;<a href="qtablewidgetselectionrange.html">QTableWidgetSelectionRange</a>&gt; QTableWidget::selectedRanges () const</h3>
 <p>Returns a list of all selected ranges.</p>
@@ -403,6 +406,8 @@
 <h3 class="fn"><a name="setItem"></a>void QTableWidget::setItem ( int <i>row</i>, int <i>column</i>, <a href="qtablewidgetitem.html">QTableWidgetItem</a> * <i>item</i> )</h3>
 <p>Sets the item for the given <i>row</i> and <i>column</i> to <i>item</i>.</p>
 <p>The table takes ownership of the item.</p>
+<p>Note that if sorting is enabled (see <a href="qtableview.html#sortingEnabled-prop">sortingEnabled</a>) and <i>column</i> is the current sort column, the <i>row</i> will be moved to the sorted position determined by <i>item</i>.</p>
+<p>If you want to set several items of a particular row (say, by calling setItem() in a loop), you may want to turn off sorting before doing so, and turn it back on afterwards; this will allow you to use the same <i>row</i> argument for all items in the same row (i.e. setItem() will not move the row).</p>
 <p>See also <a href="qtablewidget.html#item">item</a>() and <a href="qtablewidget.html#takeItem">takeItem</a>().</p>
 <a name="//apple_ref/cpp/instm/QTableWidget/setItemPrototype" />
 <h3 class="fn"><a name="setItemPrototype"></a>void QTableWidget::setItemPrototype ( const <a href="qtablewidgetitem.html">QTableWidgetItem</a> * <i>item</i> )</h3>
@@ -455,6 +460,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

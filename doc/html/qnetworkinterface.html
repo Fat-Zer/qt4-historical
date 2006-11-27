@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-mac-opensource-src-4.2.1/src/network/qnetworkinterface.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-mac-opensource-src-4.2.2/src/network/qnetworkinterface.cpp -->
 <head>
   <title>Qt 4.2: QNetworkInterface Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -51,7 +51,7 @@
 <hr />
 <h2>Detailed Description</h2>
 <p>The QNetworkInterface class provides a listing of the host's IP addresses and network interfaces.</p>
-<p>QNetworkInterface represents one network interface attached to the host where the program is being run. Each network interface may contain zero or more IP addresses, each of which is optionally associated with a netmask and/or a broadcast address. The list of such trios can be obtained with entries(). Alternatively, the addresses() convenience function returns only IP addresses, when the netmask or the broadcast addresses aren't necessary.</p>
+<p>QNetworkInterface represents one network interface attached to the host where the program is being run. Each network interface may contain zero or more IP addresses, each of which is optionally associated with a netmask and/or a broadcast address. The list of such trios can be obtained with <a href="qnetworkinterface.html#addressEntries">addressEntries</a>(). Alternatively, when the netmask or the broadcast addresses aren't necessary, use the <a href="qnetworkinterface.html#allAddresses">allAddresses</a>() convenience function to obtain just the IP addresses.</p>
 <p>QNetworkInterface also reports the interface's hardware address with <a href="qnetworkinterface.html#hardwareAddress">hardwareAddress</a>().</p>
 <p>Not all operating systems support reporting all features. Only the IPv4 addresses are guaranteed to be listed by this class in all platforms. In particular, IPv6 address listing is only supported on Windows XP and more recent versions, Linux, MacOS X and the BSDs.</p>
 <p>See also <a href="qnetworkaddressentry.html">QNetworkAddressEntry</a>.</p>
@@ -82,7 +82,7 @@
 <h2>Member Function Documentation</h2>
 <a name="//apple_ref/cpp/instm/QNetworkInterface/QNetworkInterface" />
 <h3 class="fn"><a name="QNetworkInterface"></a>QNetworkInterface::QNetworkInterface ()</h3>
-<p>Constructs an empty <a href="qnetworkinterface.html">QNetworkInterface</a> object.</p>
+<p>Constructs an empty network interface object.</p>
 <h3 class="fn"><a name="QNetworkInterface-2"></a>QNetworkInterface::QNetworkInterface ( const QNetworkInterface &amp; <i>other</i> )</h3>
 <p>Creates a copy of the the <a href="qnetworkinterface.html">QNetworkInterface</a> object contained in <i>other</i>.</p>
 <a name="//apple_ref/cpp/instm/QNetworkInterface/~QNetworkInterface" />
@@ -91,10 +91,10 @@
 <a name="//apple_ref/cpp/instm/QNetworkInterface/addressEntries" />
 <h3 class="fn"><a name="addressEntries"></a><a href="qlist.html">QList</a>&lt;<a href="qnetworkaddressentry.html">QNetworkAddressEntry</a>&gt; QNetworkInterface::addressEntries () const</h3>
 <p>Returns the list of IP addresses that this interface possesses along with their associated netmasks and broadcast addresses.</p>
-<p>If the netmask or broadcast address information is not necessary, you can call the addresses() function to obtain just the IP addresses.</p>
+<p>If the netmask or broadcast address information is not necessary, you can call the <a href="qnetworkinterface.html#allAddresses">allAddresses</a>() function to obtain just the IP addresses.</p>
 <a name="//apple_ref/cpp/clm/QNetworkInterface/allAddresses" />
 <h3 class="fn"><a name="allAddresses"></a><a href="qlist.html">QList</a>&lt;<a href="qhostaddress.html">QHostAddress</a>&gt; QNetworkInterface::allAddresses ()&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>This convenience function returns all IP addresses found on the host machine. It is equivalent to calling addresses() in all the objects returned by <a href="qnetworkinterface.html#allInterfaces">allInterfaces</a>().</p>
+<p>This convenience function returns all IP addresses found on the host machine. It is equivalent to calling <a href="qnetworkinterface.html#addressEntries">addressEntries</a>() on all the objects returned by <a href="qnetworkinterface.html#allInterfaces">allInterfaces</a>() to obtain lists of <a href="qhostaddress.html">QHostAddress</a> objects then calling QHostAddress::ip() on each of these.</p>
 <a name="//apple_ref/cpp/clm/QNetworkInterface/allInterfaces" />
 <h3 class="fn"><a name="allInterfaces"></a><a href="qlist.html">QList</a>&lt;QNetworkInterface&gt; QNetworkInterface::allInterfaces ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns a listing of all the network interfaces found on the host machine.</p>
@@ -126,6 +126,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

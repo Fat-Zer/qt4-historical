@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-mac-opensource-src-4.2.1/src/gui/kernel/qevent.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-mac-opensource-src-4.2.2/src/gui/kernel/qevent.cpp -->
 <head>
   <title>Qt 4.2: QInputMethodEvent Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -86,7 +86,7 @@
 <h3 class="fn"><a name="AttributeType-enum"></a>enum QInputMethodEvent::AttributeType</h3>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
-<tr><td valign="top"><tt>QInputMethodEvent::TextFormat</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">A <a href="qtextcharformat.html">QTextCharFormat</a> for the part of the preedit string specified by start and length. value contains a <a href="qvariant.html">QVariant</a> of type <a href="qtextformat.html">QTextFormat</a> specifying rendering of this part of the preedit string. There should be at most one format for every part of the preedit string. If several are specified for any character in the string the behaviour is undefined. A conforming implementation has to at least honour the backgroundColor, textColor and fontUnderline properties of the format.</td></tr>
+<tr><td valign="top"><tt>QInputMethodEvent::TextFormat</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">A <a href="qtextcharformat.html">QTextCharFormat</a> for the part of the preedit string specified by start and length. value contains a <a href="qvariant.html">QVariant</a> of type <a href="qtextformat.html">QTextFormat</a> specifying rendering of this part of the preedit string. There should be at most one format for every part of the preedit string. If several are specified for any character in the string the behaviour is undefined. A conforming implementation has to at least honor the backgroundColor, textColor and fontUnderline properties of the format.</td></tr>
 <tr><td valign="top"><tt>QInputMethodEvent::Cursor</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">If set, a cursor should be shown inside the preedit string at position start. The length variable determines whether the cursor is visible or not. If the length is 0 the cursor is invisible. If value is a <a href="qvariant.html">QVariant</a> of type <a href="qcolor.html">QColor</a> this color will be used for rendering the cursor, otherwise the color of the surrounding text will be used. There should be at most one Cursor attribute per event. If several are specified the behaviour is undefined.</td></tr>
 <tr><td valign="top"><tt>QInputMethodEvent::Language</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">The variant contains a <a href="qlocale.html">QLocale</a> object specifying the language of a certain part of the preedit string. There should be at most one language set for every part of the preedit string. If several are specified for any character in the string the behaviour is undefined.</td></tr>
 <tr><td valign="top"><tt>QInputMethodEvent::Ruby</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">The ruby text for a part of the preedit string. There should be at most one ruby text set for every part of the preedit string. If several are specified for any character in the string the behaviour is undefined.</td></tr>
@@ -134,6 +134,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

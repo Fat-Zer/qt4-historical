@@ -381,6 +381,10 @@ public:
     int readBufferOffset;
     qint64 readBufferStartDevicePos;
     QString endOfBufferState;
+#ifndef QT_NO_TEXTCODEC
+    QTextCodec::ConverterState readBufferStartReadConverterState;
+#endif
+    QString readBufferStartEndOfBufferState;
 
     // streaming parameters
     int realNumberPrecision;
@@ -421,6 +425,18 @@ static void resetCodecConverterState(QTextCodec::ConverterState *state) {
     if (state->d) qFree(state->d);
     state->d = 0;
 }
+
+static void copyConverterState(QTextCodec::ConverterState *dest, const QTextCodec::ConverterState *src)
+{
+    // ### QTextCodec::ConverterState's copy constructors and assignments are
+    // private. This function copies the structure manually.
+    dest->flags = src->flags;
+    dest->invalidChars = src->invalidChars;
+    dest->state_data[0] = src->state_data[0];
+    dest->state_data[1] = src->state_data[1];
+    dest->state_data[2] = src->state_data[2];
+    dest->d = src->d; // <- ### wrong?
+}
 #endif
 
 /*! \internal
@@ -450,6 +466,7 @@ void QTextStreamPrivate::reset()
     codec = QTextCodec::codecForLocale();
     ::resetCodecConverterState(&readConverterState);
     ::resetCodecConverterState(&writeConverterState);
+    ::resetCodecConverterState(&readBufferStartReadConverterState);
     writeConverterState.flags |= QTextCodec::IgnoreHeader;
     autoDetectUnicode = true;
 #endif
@@ -469,10 +486,26 @@ bool QTextStreamPrivate::fillReadBuffer(qint64 maxBytes)
     if (textModeEnabled)
         device->setTextModeEnabled(false);
 
-    // Record the device position corresponding to the start of the read
-    // buffer.
-    if (readBuffer.isEmpty() && endOfBufferState.isEmpty())
-        readBufferStartDevicePos = device->pos();
+#ifndef QT_NO_TEXTCODEC
+    // codec auto detection, explicitly defaults to locale encoding if
+    // the codec has been set to 0.
+    if (!codec || autoDetectUnicode) {
+        autoDetectUnicode = false;
+
+        char bomBuffer[2];
+        if (device->peek(bomBuffer, 2) == 2 && (uchar(bomBuffer[0]) == 0xff && uchar(bomBuffer[1]) == 0xfe
+                                                || uchar(bomBuffer[0]) == 0xfe && uchar(bomBuffer[1]) == 0xff)) {
+            codec = QTextCodec::codecForName("UTF-16");
+        } else if (!codec) {
+            codec = QTextCodec::codecForLocale();
+            writeConverterState.flags |= QTextCodec::IgnoreHeader;
+        }
+    }
+#if defined (QTEXTSTREAM_DEBUG)
+    qDebug("QTextStreamPrivate::fillReadBuffer(), using %s codec",
+           codec->name().constData());
+#endif
+#endif
 
     // read raw data into a temporary buffer
     char buf[QTEXTSTREAM_BUFFERSIZE];
@@ -508,25 +541,6 @@ bool QTextStreamPrivate::fillReadBuffer(qint64 maxBytes)
     if (bytesRead <= 0)
         return false;
 
-#ifndef QT_NO_TEXTCODEC
-    // codec auto detection, explicitly defaults to locale encoding if
-    // the codec has been set to 0.
-    if (!codec || autoDetectUnicode) {
-        autoDetectUnicode = false;
-        if (bytesRead >= 2 && (uchar(buf[0]) == 0xff && uchar(buf[1]) == 0xfe
-                               || uchar(buf[0]) == 0xfe && uchar(buf[1]) == 0xff)) {
-            codec = QTextCodec::codecForName("UTF-16");
-        } else if (!codec) {
-            codec = QTextCodec::codecForLocale();
-            writeConverterState.flags |= QTextCodec::IgnoreHeader;
-        }
-    }
-#if defined (QTEXTSTREAM_DEBUG)
-    qDebug("QTextStreamPrivate::fillReadBuffer(), using %s codec",
-           codec->name().constData());
-#endif
-#endif
-
     int oldReadBufferSize = readBuffer.size();
     readBuffer += endOfBufferState;
 #ifndef QT_NO_TEXTCODEC
@@ -537,10 +551,11 @@ bool QTextStreamPrivate::fillReadBuffer(qint64 maxBytes)
 #endif
 
     // reset the Text flag.
-    if (readBuffer.size() > oldReadBufferSize && textModeEnabled) {
+    if (textModeEnabled)
         device->setTextModeEnabled(true);
 
-        // remove all '\r\n' in the string.
+    // remove all '\r\n' in the string.
+    if (readBuffer.size() > oldReadBufferSize && textModeEnabled) {
         QChar CR = QLatin1Char('\r');
         QChar LF = QLatin1Char('\n');
         QChar *writePtr = readBuffer.data();
@@ -573,7 +588,8 @@ bool QTextStreamPrivate::fillReadBuffer(qint64 maxBytes)
     }
 
 #if defined (QTEXTSTREAM_DEBUG)
-    qDebug("QTextStreamPrivate::fillReadBuffer() read %d bytes from device", int(bytesRead));
+    qDebug("QTextStreamPrivate::fillReadBuffer() read %d bytes from device. readBuffer = [%s]", int(bytesRead),
+           qt_prettyDebug(readBuffer.toLatin1(), readBuffer.size(), readBuffer.size()).data());
 #endif
     return true;
 }
@@ -770,6 +786,11 @@ inline void QTextStreamPrivate::consume(int size)
         if (readBufferOffset >= readBuffer.size()) {
             readBufferOffset = 0;
             readBuffer.clear();
+            readBufferStartDevicePos = device->pos();
+#ifndef QT_NO_TEXTCODEC
+            copyConverterState(&readBufferStartReadConverterState, &readConverterState);
+#endif
+            readBufferStartEndOfBufferState = endOfBufferState;
         }
     }
 }
@@ -1068,10 +1089,13 @@ bool QTextStream::seek(qint64 pos)
         d->readBuffer.clear();
         d->readBufferOffset = 0;
         d->endOfBufferState.clear();
+        d->readBufferStartDevicePos = d->device->pos();
+        d->readBufferStartEndOfBufferState.clear();
 
 #ifndef QT_NO_TEXTCODEC
         // Reset the codec converter states.
         ::resetCodecConverterState(&d->readConverterState);
+        ::resetCodecConverterState(&d->readBufferStartReadConverterState);
         ::resetCodecConverterState(&d->writeConverterState);
 #endif
         return true;
@@ -1116,11 +1140,25 @@ qint64 QTextStream::pos() const
         QTextStreamPrivate *thatd = const_cast<QTextStreamPrivate *>(d);
         thatd->readBuffer.clear();
 
-        // Rewind the device to get to the current position
-        while (d->readBuffer.size() < d->readBufferOffset) {
+        // Restore the codec converter state and end state to the read buffer
+        // start state.
+#ifndef QT_NO_TEXTCODEC
+        ::copyConverterState(&thatd->readConverterState, &d->readBufferStartReadConverterState);
+#endif
+        thatd->endOfBufferState = d->readBufferStartEndOfBufferState;
+#ifndef QT_NO_TEXTCODEC
+        if (d->readBufferStartDevicePos == 0)
+            thatd->autoDetectUnicode = true;
+#endif
+
+        // Rewind the device to get to the current position Ensure that
+        // readBufferOffset is unaffected by fillReadBuffer()
+        int oldReadBufferOffset = d->readBufferOffset;
+        while (d->readBuffer.size() < oldReadBufferOffset) {
             if (!thatd->fillReadBuffer(1))
                 return qint64(-1);
         }
+        thatd->readBufferOffset = oldReadBufferOffset;
 
         // Return the device position.
         return d->device->pos();
@@ -1316,7 +1354,7 @@ int QTextStream::fieldWidth() const
 
 /*!
     Sets the current number flags to \a flags. \a flags is a set of
-    flags from the NumberFlags enum, and describes options for
+    flags from the NumberFlag enum, and describes options for
     formatting generated code (e.g., whether or not to always write
     the base or sign of a number).
 

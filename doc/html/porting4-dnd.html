@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-mac-opensource-src-4.2.1/doc/src/dnd.qdoc -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-mac-opensource-src-4.2.2/doc/src/dnd.qdoc -->
 <head>
   <title>Qt 4.2: Porting to Qt 4 (Drag and Drop)</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -20,7 +20,7 @@
 </ul>
 <a name="dragging"></a>
 <h2>Dragging</h2>
-<p>In Qt 3, drag operations are encapsulated by <tt>QDragObject</tt> (see <a href="q3dragobject.html">Q3DragObject</a>) and its subclasses. These objects are typically constructed on the heap in response to mouse click or mouse move events, and ownership of them is transferred to Qt so that they can be deleted when the corresponding drag and drop operations have been completed. The drag source has no control over how the drag and drop operation is performed once the object's start() function is called, and it receives no information about how the operation ended.</p>
+<p>In Qt 3, drag operations are encapsulated by <tt>QDragObject</tt> (see <a href="q3dragobject.html">Q3DragObject</a>) and its subclasses. These objects are typically constructed on the heap in response to mouse click or mouse move events, and ownership of them is transferred to Qt so that they can be deleted when the corresponding drag and drop operations have been completed. The drag source has no control over how the drag and drop operation is performed once the object's <a href="q3dragobject.html#drag">drag()</a> function is called, and it receives no information about how the operation ended.</p>
 <pre> void MyQt3Widget::customStartDragFunction()
  {
      QDragObject *d = new QTextDrag( myHighlightedText(), this );
@@ -96,6 +96,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

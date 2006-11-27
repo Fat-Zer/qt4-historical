@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-mac-opensource-src-4.2.1/src/gui/kernel/qpalette.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-mac-opensource-src-4.2.2/src/gui/kernel/qpalette.cpp -->
 <head>
   <title>Qt 4.2: QPalette Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -294,9 +294,9 @@
 <p>Returns a new <a href="qpalette.html">QPalette</a> that has attributes copied from <i>other</i>.</p>
 <a name="//apple_ref/cpp/instm/QPalette/serialNumber" />
 <h3 class="fn"><a name="serialNumber"></a>int QPalette::serialNumber () const</h3>
-<p>Returns a number that uniquely identifies this <a href="qpalette.html">QPalette</a> object. The serial number is intended for caching. Its value may not be used for anything other than equality testing.</p>
-<p>Note that <a href="qpalette.html">QPalette</a> uses <a href="shared.html#implicit-sharing">implicit sharing</a>, and the serial number changes during the lazy copy operation (when the palette is actually modified), not during a shallow copy (copy constructor or assignment).</p>
-<p>See also <a href="qpixmap.html">QPixmap</a>, <a href="qpixmapcache.html">QPixmapCache</a>, and <a href="qcache.html">QCache</a>.</p>
+<p>Returns a number that identifies the contents of this <a href="qpalette.html">QPalette</a> object. Distinct <a href="qpalette.html">QPalette</a> objects can only have the same serial number if they refer to the same contents (but they don't have to). Also, the serial number of a <a href="qpalette.html">QPalette</a> may change during the lifetime of the object.</p>
+<p><b>Warning:</b> The serial number doesn't necessarily change when the palette is altered. This means that it may be dangerous to use it as a cache key.</p>
+<p>See also <a href="qpalette.html#operator-eq-eq">operator==</a>().</p>
 <a name="//apple_ref/cpp/instm/QPalette/setBrush" />
 <h3 class="fn"><a name="setBrush"></a>void QPalette::setBrush ( <a href="qpalette.html#ColorRole-enum">ColorRole</a> <i>cr</i>, const <a href="qbrush.html">QBrush</a> &amp; <i>brush</i> )</h3>
 <p>Sets the brush for color role <i>cr</i> to brush <i>brush</i> for all groups in the palette.</p>
@@ -400,6 +400,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

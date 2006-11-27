@@ -248,6 +248,8 @@ QByteArray &QBuffer::buffer()
 
 /*!
     \overload
+
+    This is the same as data().
 */
 
 const QByteArray &QBuffer::buffer() const

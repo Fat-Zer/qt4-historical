@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-mac-opensource-src-4.2.1/src/corelib/io/qfile.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-mac-opensource-src-4.2.2/src/corelib/io/qfile.cpp -->
 <head>
   <title>Qt 4.2: QFile Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -287,7 +287,7 @@
 <p>See also <a href="qfile.html#setFileName">setFileName</a>() and <a href="qfileinfo.html#fileName">QFileInfo::fileName</a>().</p>
 <a name="//apple_ref/cpp/instm/QFile/flush" />
 <h3 class="fn"><a name="flush"></a>bool QFile::flush ()</h3>
-<p>Flushes any buffered data to the file.</p>
+<p>Flushes any buffered data to the file. Returns true if successful; otherwise returns false.</p>
 <a name="//apple_ref/cpp/instm/QFile/handle" />
 <h3 class="fn"><a name="handle"></a>int QFile::handle () const</h3>
 <p>Returns the file handle of the file.</p>
@@ -398,7 +398,7 @@
 <p>See also <a href="qfile.html#fileName">fileName</a>(), <a href="qfileinfo.html">QFileInfo</a>, and <a href="qdir.html">QDir</a>.</p>
 <a name="//apple_ref/cpp/instm/QFile/setPermissions" />
 <h3 class="fn"><a name="setPermissions"></a>bool QFile::setPermissions ( <a href="qfile.html#Permission-enum">Permissions</a> <i>permissions</i> )</h3>
-<p>Sets the permissions for the file to <i>permissions</i>.</p>
+<p>Sets the permissions for the file to the <i>permissions</i> specified. Returns true if successful, or false if the permissions cannot be modified.</p>
 <p>See also <a href="qfile.html#permissions">permissions</a>() and <a href="qfile.html#setFileName">setFileName</a>().</p>
 <h3 class="fn"><a name="setPermissions-2"></a>bool QFile::setPermissions ( const <a href="qstring.html">QString</a> &amp; <i>fileName</i>, <a href="qfile.html#Permission-enum">Permissions</a> <i>permissions</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>This is an overloaded member function, provided for convenience.</p>
@@ -443,6 +443,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

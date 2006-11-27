@@ -118,6 +118,13 @@
     has an AcceptRole, RejectRole, or HelpRole, the accepted(), rejected(), or
     helpRequested() signals are emitted respectively.
 
+    if you want a specific button to be default you need to call
+    QPushButton::setDefault() on it yourself. However, if there is no default
+    button set and to preserve which button is the default button across
+    platforms when using the QPushButton::autoDefault property, the first push
+    button with the accept role is made the default button when the
+    QDialogButtonBox is shown,
+
     \sa QMessageBox, QPushButton, QDialog
 */
 
@@ -258,7 +265,7 @@ public:
 };
 
 QDialogButtonBoxPrivate::QDialogButtonBoxPrivate(Qt::Orientation orient)
-    : orientation(orient), internalRemove(false), center(false)
+    : orientation(orient), buttonLayout(0), internalRemove(false), center(false)
 {
 }
 
@@ -266,10 +273,16 @@ void QDialogButtonBoxPrivate::initLayout()
 {
     Q_Q(QDialogButtonBox);
     layoutPolicy = QDialogButtonBox::ButtonLayout(q->style()->styleHint(QStyle::SH_DialogButtonLayout, 0, q));
-    if (orientation == Qt::Horizontal)
-        buttonLayout = new QHBoxLayout(q);
-    else
-        buttonLayout = new QVBoxLayout(q);
+    bool createNewLayout = buttonLayout == 0
+        || (orientation == Qt::Horizontal && qobject_cast<QVBoxLayout *>(buttonLayout) != 0)
+        || (orientation == Qt::Vertical && qobject_cast<QHBoxLayout *>(buttonLayout) != 0);
+    if (createNewLayout) {
+        delete buttonLayout;
+        if (orientation == Qt::Horizontal)
+            buttonLayout = new QHBoxLayout(q);
+        else
+            buttonLayout = new QVBoxLayout(q);
+    }
     if (layoutPolicy == QDialogButtonBox::MacLayout)
         buttonLayout->setSpacing(0);
     buttonLayout->setMargin(0);
@@ -285,7 +298,7 @@ void QDialogButtonBoxPrivate::initLayout()
 
 void QDialogButtonBoxPrivate::resetLayout()
 {
-    delete buttonLayout;
+    //delete buttonLayout;
     initLayout();
     layoutButtons();
 }
@@ -997,6 +1010,25 @@ void QDialogButtonBox::changeEvent(QEvent *event)
 */
 bool QDialogButtonBox::event(QEvent *event)
 {
+    Q_D(QDialogButtonBox);
+    if (event->type() == QEvent::Show) {
+        QList<QAbstractButton *> acceptRoleList = d->buttonLists[AcceptRole];
+        QPushButton *firstAcceptButton = acceptRoleList.isEmpty() ? 0 : qobject_cast<QPushButton *>(acceptRoleList.at(0));
+        bool hasDefault = false;
+
+        for (int i = d->buttonLayout->count() - 1; i >= 0; --i) {
+            QLayoutItem *item = d->buttonLayout->itemAt(i);
+            if (QPushButton *pb = qobject_cast<QPushButton *>(item->widget())) {
+                if (pb->isDefault() && pb != firstAcceptButton) {
+                    hasDefault = true;
+                    break;
+                }
+            }
+        }
+        if (!hasDefault && firstAcceptButton)
+            firstAcceptButton->setDefault(true);
+    }
+
     return QWidget::event(event);
 }
 

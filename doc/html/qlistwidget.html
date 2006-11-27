@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-mac-opensource-src-4.2.1/src/gui/itemviews/qlistwidget.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-mac-opensource-src-4.2.2/src/gui/itemviews/qlistwidget.cpp -->
 <head>
   <title>Qt 4.2: QListWidget Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -148,7 +148,7 @@
 <pre>     new QListWidgetItem(tr(&quot;Oak&quot;), listWidget);
      new QListWidgetItem(tr(&quot;Fir&quot;), listWidget);
      new QListWidgetItem(tr(&quot;Pine&quot;), listWidget);</pre>
-<p>If you need to insert a new item into the list at a particular position, it is more convenient to construct the item without a parent widget and use the <a href="qlistwidget.html#insertItem">insertItem</a>() function to place it within the list:</p>
+<p>If you need to insert a new item into the list at a particular position, it is more required to construct the item without a parent widget and use the <a href="qlistwidget.html#insertItem">insertItem</a>() function to place it within the list. The list widget will take ownership of the item.</p>
 <pre>     QListWidgetItem *newItem = new QListWidgetItem;
      newItem-&gt;setText(itemText);
      listWidget-&gt;insertItem(row, newItem);</pre>
@@ -230,7 +230,7 @@
 <p>This signal is emitted whenever the current item changes. The <i>currentText</i> is the text data in the current item. If there is no current item, the <i>currentText</i> is invalid.</p>
 <a name="//apple_ref/cpp/instm/QListWidget/dropMimeData" />
 <h3 class="fn"><a name="dropMimeData"></a>bool QListWidget::dropMimeData ( int <i>index</i>, const <a href="qmimedata.html">QMimeData</a> * <i>data</i>, <a href="qt.html#DropAction-enum">Qt::DropAction</a> <i>action</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
-<p>Handles the <i>data</i> supplied by a drag and drop operation that ended with the given <i>action</i> in the given <i>index</i>.</p>
+<p>Handles the <i>data</i> supplied by a drag and drop operation that ended with the given <i>action</i> in the given <i>index</i>. Returns true if the data and action can be handled by the model; otherwise returns false.</p>
 <p>See also <a href="qlistwidget.html#supportedDropActions">supportedDropActions</a>().</p>
 <a name="//apple_ref/cpp/instm/QListWidget/editItem" />
 <h3 class="fn"><a name="editItem"></a>void QListWidget::editItem ( <a href="qlistwidgetitem.html">QListWidgetItem</a> * <i>item</i> )</h3>
@@ -351,6 +351,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

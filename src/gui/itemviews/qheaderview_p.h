@@ -183,7 +183,7 @@ public:
 
     enum State { NoState, ResizeSection, MoveSection } state;
 
-    int offset;
+    uint offset;
     Qt::Orientation orientation;
     Qt::SortOrder sortIndicatorOrder;
     int sortIndicatorSection;
@@ -207,7 +207,7 @@ public:
     int target;
     int pressed;
     int hover;
-    int length;
+    uint length;
     int sectionCount;
     bool movableSections;
     bool clickableSections;
@@ -227,7 +227,7 @@ public:
     // header section spans
 
     struct SectionSpan {
-        int size;
+        uint size;
         int count;
         QHeaderView::ResizeMode resizeMode;
         inline SectionSpan() : size(0), count(0), resizeMode(QHeaderView::Interactive) {}
@@ -240,7 +240,7 @@ public:
 
     void createSectionSpan(int start, int end, int size, QHeaderView::ResizeMode mode);
     void removeSectionsFromSpans(int start, int end);
-    void resizeSectionSpan(int visualIndex, int oldSize, int newSize);
+    void resizeSectionSpan(int visualIndex, uint oldSize, uint newSize);
 
     inline int headerSectionCount() const { // for debugging
         int count = 0;
@@ -276,7 +276,7 @@ public:
 
     int headerSectionSize(int visual) const;
     int headerSectionPosition(int visual) const;
-    int headerVisualIndexAt(int position) const;
+    int headerVisualIndexAt(uint position) const;
 
     // resize mode
     void setHeaderSectionResizeMode(int visual, QHeaderView::ResizeMode mode);
@@ -285,6 +285,7 @@ public:
 
     // other
     int viewSectionSizeHint(int logical) const;
+    int adjustedVisualIndex(int visualIndex) const;
 
 };
 

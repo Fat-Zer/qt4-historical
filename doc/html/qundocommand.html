@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-mac-opensource-src-4.2.1/src/gui/undo/qundostack.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-mac-opensource-src-4.2.2/src/gui/undo/qundostack.cpp -->
 <head>
   <title>Qt 4.2: QUndoCommand Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -82,7 +82,7 @@
 <h3 class="fn"><a name="id"></a>int QUndoCommand::id () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns the ID of this command.</p>
 <p>A command ID is used in command compression. It must be an integer unique to this command's class, or -1 if the command doesn't support compression.</p>
-<p>If the command supports compression this function must be overriden in the derived class to return the correct ID. The base implementation returns -1.</p>
+<p>If the command supports compression this function must be overridden in the derived class to return the correct ID. The base implementation returns -1.</p>
 <p><a href="qundostack.html">QUndoStack</a> will only try to merge two commands if they have the same ID, and the ID is not -1.</p>
 <p>See also <a href="qundocommand.html#mergeWith">mergeWith</a>() and <a href="qundostack.html#push">QUndoStack::push</a>().</p>
 <a name="//apple_ref/cpp/instm/QUndoCommand/mergeWith" />
@@ -101,7 +101,7 @@
 <p>See also <a href="qundocommand.html#id">id</a>() and <a href="qundostack.html#push">QUndoStack::push</a>().</p>
 <a name="//apple_ref/cpp/instm/QUndoCommand/redo" />
 <h3 class="fn"><a name="redo"></a>void QUndoCommand::redo ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>Applies a change to the document. This function must be implemented in the derived class.</p>
+<p>Applies a change to the document. This function must be implemented in the derived class. Calling <a href="qundostack.html#push">QUndoStack::push</a>(), <a href="qundostack.html#undo">QUndoStack::undo</a>() or <a href="qundostack.html#redo">QUndoStack::redo</a>() from this funciton leads to undefined beahavior.</p>
 <p>The default implementation calls redo() on all child commands.</p>
 <p>See also <a href="qundocommand.html#undo">undo</a>().</p>
 <a name="//apple_ref/cpp/instm/QUndoCommand/setText" />
@@ -116,13 +116,13 @@
 <p>See also <a href="qundocommand.html#setText">setText</a>(), <a href="qundostack.html#createUndoAction">QUndoStack::createUndoAction</a>(), and <a href="qundostack.html#createRedoAction">QUndoStack::createRedoAction</a>().</p>
 <a name="//apple_ref/cpp/instm/QUndoCommand/undo" />
 <h3 class="fn"><a name="undo"></a>void QUndoCommand::undo ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>Reverts a change to the document. After undo() is called, the state of the document should be the same as before <a href="qundocommand.html#redo">redo</a>() was called. This function must be implemented in the derived class.</p>
+<p>Reverts a change to the document. After undo() is called, the state of the document should be the same as before <a href="qundocommand.html#redo">redo</a>() was called. This function must be implemented in the derived class. Calling <a href="qundostack.html#push">QUndoStack::push</a>(), <a href="qundostack.html#undo">QUndoStack::undo</a>() or <a href="qundostack.html#redo">QUndoStack::redo</a>() from this funciton leads to undefined beahavior.</p>
 <p>The default implementation calls undo() on all child commands in reverse order.</p>
 <p>See also <a href="qundocommand.html#redo">redo</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

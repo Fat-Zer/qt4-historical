@@ -246,7 +246,7 @@ OSStatus QMacPasteboard::promiseKeeper(PasteboardRef paste, PasteboardItemID id,
     const QString flavorAsQString = QCFString::toQString(flavor);
 #ifdef DEBUG_PASTEBOARD
     qDebug("PasteBoard: Calling in promise for %s[%d] [%s] (%s)", qPrintable(promise.mime), promise_id,
-           qPrintable(QCFString::toQString(flavorAsQString),
+           qPrintable(flavorAsQString),
            qPrintable(promise.convertor->convertorName()));
 #endif
     if(!promise.convertor->canConvert(promise.mime, flavorAsQString)) {
@@ -465,7 +465,7 @@ QMacPasteboard::formats() const
             qDebug(" -%s [0x%x]", qPrintable(QString(flavor)), qmt);
 #endif
             QString mimeType = QMacPasteboardMime::flavorToMime(qmt, flavor);
-            if(!mimeType.isEmpty()) {
+            if(!mimeType.isEmpty() && !ret.contains(mimeType)) {
 #ifdef DEBUG_PASTEBOARD
                 qDebug("   -<%d> %s [%s]", ret.size(), qPrintable(mimeType), qPrintable(QString(flavor)));
 #endif
@@ -572,6 +572,8 @@ QMacPasteboard::retrieveData(const QString &format, QVariant::Type) const
                && hasFlavor(QLatin1String("public.utf16-plain-text")))
                 c_flavor = QLatin1String("public.utf16-plain-text");
 
+            QVariant ret;
+            QList<QByteArray> retList;
             for(uint index = 1; index <= cnt; ++index) {
                 PasteboardItemID id;
                 if(PasteboardGetItemIdentifier(paste, index, &id) != noErr)
@@ -583,9 +585,8 @@ QMacPasteboard::retrieveData(const QString &format, QVariant::Type) const
 
                 const int type_count = CFArrayGetCount(types);
                 for(int i = 0; i < type_count; ++i) {
-                    CFStringRef flavor = (CFStringRef)CFArrayGetValueAtIndex(types, i);
+                    CFStringRef flavor = static_cast<CFStringRef>(CFArrayGetValueAtIndex(types, i));
                     if(c_flavor == QCFString::toQString(flavor)) {
-                        QVariant ret;
                         QCFType<CFDataRef> macBuffer;
                         if(PasteboardCopyItemFlavorData(paste, id, flavor, &macBuffer) == noErr) {
                             QByteArray buffer((const char *)CFDataGetBytePtr(macBuffer), CFDataGetLength(macBuffer));
@@ -594,14 +595,13 @@ QMacPasteboard::retrieveData(const QString &format, QVariant::Type) const
                                 qDebug("  - %s [%s] (%s)", qPrintable(format), qPrintable(QCFString::toQString(flavor)), qPrintable(c->convertorName()));
 #endif
 
-                                QList<QByteArray> lst;
-                                lst.append(buffer);
-                                ret = c->convertToMime(format, lst, c_flavor);
-                                ret.detach();
-                                return ret;
+                                // Need a copy since we'll be releasing the macBuffer
+                                buffer.detach();
+                                retList.append(buffer);
+                                // We've got the data for this flavor, skip to next element
+                                break;
                             }
                         }
-                        return ret;
                     } else {
 #ifdef DEBUG_PASTEBOARD
                         qDebug("  - NoMatch %s [%s] (%s)", qPrintable(c_flavor), qPrintable(QCFString::toQString(flavor)), qPrintable(c->convertorName()));
@@ -610,10 +610,13 @@ QMacPasteboard::retrieveData(const QString &format, QVariant::Type) const
                 }
             }
 
-
+            if (!retList.isEmpty()) {
+                ret = c->convertToMime(format, retList, c_flavor);
+                return ret;
+            }
         }
     }
-    return QByteArray();
+    return QVariant();
 }
 
 void

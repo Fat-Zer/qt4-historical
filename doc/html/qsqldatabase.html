@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-mac-opensource-src-4.2.1/src/sql/kernel/qsqldatabase.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-mac-opensource-src-4.2.2/src/sql/kernel/qsqldatabase.cpp -->
 <head>
   <title>Qt 4.2: QSqlDatabase Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -90,7 +90,7 @@
 <p>Once a QSqlDatabase object has been created you can set the connection parameters with <a href="qsqldatabase.html#setDatabaseName">setDatabaseName</a>(), <a href="qsqldatabase.html#setUserName">setUserName</a>(), <a href="qsqldatabase.html#setPassword">setPassword</a>(), <a href="qsqldatabase.html#setHostName">setHostName</a>(), <a href="qsqldatabase.html#setPort">setPort</a>(), and <a href="qsqldatabase.html#setConnectOptions">setConnectOptions</a>(). Once the parameters have been set up you can call <a href="qsqldatabase.html#open">open</a>() to open the connection.</p>
 <p>The connection defined above is a nameless connection. If is the default connection and can be accessed using <a href="qsqldatabase.html#database">database</a>() later on:</p>
 <pre>     QSqlDatabase db = QSqlDatabase::database();</pre>
-<p>To make programming more convenient, QSqlDatabase is a value class. Any changes done to a database connection through one QSqlDatabase object will affect other QSqlDatabase objects representing the same connection. Call cloneConnection() if you want to create an independent database connection based on an existing one.</p>
+<p>To make programming more convenient, QSqlDatabase is a value class. Any changes done to a database connection through one QSqlDatabase object will affect other QSqlDatabase objects representing the same connection. Call <a href="qsqldatabase.html#cloneDatabase">cloneDatabase</a>() if you want to create an independent database connection based on an existing one.</p>
 <p>If you need multiple database connections simultaneously, specify an arbitrary name to <a href="qsqldatabase.html#addDatabase">addDatabase</a>() and <a href="qsqldatabase.html#database">database</a>(). Call <a href="qsqldatabase.html#removeDatabase">removeDatabase</a>() to remove connections. QSqlDatabase will output a warning if you try to remove a connection referenced by other QSqlDatabase objects. Use <a href="qsqldatabase.html#contains">contains</a>() to see if a given connection name is in the list of connections.</p>
 <p>Once a connection is established you can see what tables the database offers with <a href="qsqldatabase.html#tables">tables</a>(), find the primary index for a table with <a href="qsqldatabase.html#primaryIndex">primaryIndex</a>(), get meta-information about a table's fields (e.g., their names) with <a href="qsqldatabase.html#record">record</a>(), and execute a query with <a href="qsqldatabase.html#exec">exec</a>().</p>
 <p>If transactions are supported, you can use <a href="qsqldatabase.html#transaction">transaction</a>() to start a transaction, and then <a href="qsqldatabase.html#commit">commit</a>() or <a href="qsqldatabase.html#rollback">rollback</a>() to complete it. You can find out whether transactions are supported using <a href="qsqldriver.html#hasFeature">QSqlDriver::hasFeature</a>().</p>
@@ -172,7 +172,7 @@
 <a name="//apple_ref/cpp/clm/QSqlDatabase/cloneDatabase" />
 <h3 class="fn"><a name="cloneDatabase"></a>QSqlDatabase QSqlDatabase::cloneDatabase ( const QSqlDatabase &amp; <i>other</i>, const <a href="qstring.html">QString</a> &amp; <i>connectionName</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Clones the database connection <i>other</i> and and stores it as <i>connectionName</i>. All the settings from the original database, e.g. <a href="qsqldatabase.html#databaseName">databaseName</a>(), <a href="qsqldatabase.html#hostName">hostName</a>(), etc., are copied across. Does nothing if <i>other</i> is an invalid database. Returns the newly created database connection.</p>
-<p>Note that the connection is not opened, to use it, it is neccessary to call <a href="qsqldatabase.html#open">open</a>() first.</p>
+<p>Note that the connection is not opened, to use it, it is necessary to call <a href="qsqldatabase.html#open">open</a>() first.</p>
 <a name="//apple_ref/cpp/instm/QSqlDatabase/close" />
 <h3 class="fn"><a name="close"></a>void QSqlDatabase::close ()</h3>
 <p>Closes the database connection, freeing any resources acquired. This will also affect copies of this <a href="qsqldatabase.html">QSqlDatabase</a> object.</p>
@@ -453,6 +453,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

@@ -534,10 +534,12 @@ void QApplicationPrivate::initializeWidgetPaletteHash()
                             QColor(c.red / 256, c.green / 256, c.blue / 256));
                 GetThemeTextColor(kThemeTextColorMenuItemSelected, 32, true, &c);
                 pal.setBrush(QPalette::Active, QPalette::HighlightedText, QColor(c.red / 256, c.green / 256, c.blue / 256));
+#if 1
                 pal.setBrush(QPalette::Inactive, QPalette::Text,
                               pal.brush(QPalette::Active, QPalette::Text));
                 pal.setBrush(QPalette::Inactive, QPalette::HighlightedText,
                               pal.brush(QPalette::Active, QPalette::Text));
+#endif
             } else if (!strcmp(mac_widget_colors[i].qt_class, "QTextEdit")
                        || !strcmp(mac_widget_colors[i].qt_class, "QTextControl")) {
                 pal.setBrush(QPalette::Inactive, QPalette::Text,
@@ -1168,8 +1170,9 @@ bool QApplicationPrivate::do_mouse_down(const QPoint &pt, bool *mouse_down_unhan
             if(widget->isWindow() && widget->windowType() != Qt::Desktop
                && widget->windowType() != Qt::Popup && !qt_mac_is_macsheet(widget)
                && (widget->isModal() || !::qobject_cast<QDockWidget *>(widget))) {
+                const bool wasActive = widget->window()->isActiveWindow();
                 widget->activateWindow();
-                if(windowPart == inContent) {
+                if(!wasActive && windowPart == inContent) {
                     HIViewRef child;
                     const HIPoint hiPT = CGPointMake(pt.x() - widget->geometry().x(), pt.y() - widget->geometry().y());
                     Q_ASSERT(widget->testAttribute(Qt::WA_WState_Created));
@@ -2001,8 +2004,12 @@ QApplicationPrivate::globalEventProcessor(EventHandlerCallRef er, EventRef event
 
                 int nw = newRect.width();
                 int nh = newRect.height();
-                if (widget->width() != nw || widget->height() != nh)
+                if (widget->width() != nw || widget->height() != nh) {
+                    extern bool qt_mac_geometry_spontaneous; //qwidget_mac.cpp
+                    qt_mac_geometry_spontaneous = true;
                     widget->resize(nw, nh);
+                    qt_mac_geometry_spontaneous = false;
+                }
             }
         } else if(ekind == kEventWindowHidden) {
         } else if(ekind == kEventWindowShown) {

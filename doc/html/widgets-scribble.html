@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-mac-opensource-src-4.2.1/doc/src/examples/scribble.qdoc -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-mac-opensource-src-4.2.2/doc/src/examples/scribble.qdoc -->
 <head>
   <title>Qt 4.2: Scribble Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -161,7 +161,7 @@
 <p>For mouse press and mouse release events, we use the <a href="qmouseevent.html#button">QMouseEvent::button</a>() function to find out which button caused the event. For mose move events, we use <a href="qmouseevent.html#buttons">QMouseEvent::buttons</a>() to find which buttons are currently held down (as an OR-combination).</p>
 <p>If the users press the left mouse button, we store the position of the mouse cursor in <tt>lastPoint</tt>. We also make a note that the user is currently scribbling. (The <tt>scribbling</tt> variable is necessary because we can't assume that a mouse move and mouse release event is always preceded by a mouse press event on the same widget.)</p>
 <p>If the user moves the mouse with the left button pressed down or releases the button, we call the private <tt>drawLineTo()</tt> function to draw.</p>
-<pre> void ScribbleArea::paintEvent(QPaintEvent * /* event */)
+<pre> void ScribbleArea::paintEvent(QPaintEvent * <span class="comment">/* event */</span>)
  {
      QPainter painter(this);
      painter.drawImage(QPoint(0, 0), image);
@@ -464,6 +464,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

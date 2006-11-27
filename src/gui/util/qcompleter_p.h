@@ -57,7 +57,7 @@ public:
     ~QCompleterPrivate() { delete popup; }
     void init(QAbstractItemModel *model = 0);
 
-    QWidget *widget;
+    QPointer<QWidget> widget;
     QCompletionModel *proxy;
     QAbstractItemView *popup;
     QCompleter::CompletionMode mode;
@@ -73,7 +73,7 @@ public:
     void showPopup(const QRect&);
     void _q_complete(QModelIndex, bool = false);
     void _q_completionSelected(const QItemSelection&);
-    void setCurrentIndex(const QModelIndex&, bool = true);
+    void setCurrentIndex(QModelIndex, bool = true);
 };
 
 class QIndexMapper

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-mac-opensource-src-4.2.1/src/gui/image/qicon.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-mac-opensource-src-4.2.2/src/gui/image/qicon.cpp -->
 <head>
   <title>Qt 4.2: QIcon Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -157,15 +157,15 @@
 <p>See also <a href="qicon-qt3.html#setPixmap">setPixmap</a>(), <a href="qicon.html#actualSize">actualSize</a>(), and <a href="qicon.html#paint">paint</a>().</p>
 <h3 class="fn"><a name="pixmap-5"></a><a href="qpixmap.html">QPixmap</a> QIcon::pixmap ( int <i>w</i>, int <i>h</i>, <a href="qicon.html#Mode-enum">Mode</a> <i>mode</i> = Normal, <a href="qicon.html#State-enum">State</a> <i>state</i> = Off ) const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
-<p>Returns a pixmap of size <a href="qsize.html">QSize</a>(<i>w</i>, <i>h</i>).</p>
+<p>Returns a pixmap of size <a href="qsize.html">QSize</a>(<i>w</i>, <i>h</i>). The pixmap might be smaller than requested, but never larger.</p>
 <h3 class="fn"><a name="pixmap-6"></a><a href="qpixmap.html">QPixmap</a> QIcon::pixmap ( int <i>extent</i>, <a href="qicon.html#Mode-enum">Mode</a> <i>mode</i> = Normal, <a href="qicon.html#State-enum">State</a> <i>state</i> = Off ) const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
-<p>Returns a pixmap of size <a href="qsize.html">QSize</a>(<i>extent</i>, <i>extent</i>).</p>
+<p>Returns a pixmap of size <a href="qsize.html">QSize</a>(<i>extent</i>, <i>extent</i>). The pixmap might be smaller than requested, but never larger.</p>
 <a name="//apple_ref/cpp/instm/QIcon/serialNumber" />
 <h3 class="fn"><a name="serialNumber"></a>int QIcon::serialNumber () const</h3>
 <p>Returns a number that identifies the contents of this <a href="qicon.html">QIcon</a> object. Distinct <a href="qicon.html">QIcon</a> objects can have the same serial number if they refer to the same contents (but they don't have to). Also, the serial number of a <a href="qicon.html">QIcon</a> object may change during its lifetime.</p>
 <p>A null icon always has a serial number of 0.</p>
-<p>Serial numbers are mostly useful in conjunction with cacheing.</p>
+<p>Serial numbers are mostly useful in conjunction with caching.</p>
 <p>See also <a href="qpixmap.html#serialNumber">QPixmap::serialNumber</a>().</p>
 <a name="//apple_ref/cpp/instm/QIcon/operator QVariant" />
 <h3 class="fn"><a name="operator-QVariant"></a>QIcon::operator QVariant () const</h3>
@@ -178,9 +178,11 @@
 <h3 class="fn"><a name="operator-lt-lt-66"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, const QIcon &amp; <i>icon</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes the given <i>icon</i> to the the given <i>stream</i> as a PNG image. If the icon contains more than one image, all images will be written to the stream. Note that writing the stream to a file will not produce a valid image file.</p>
+<p>This function was introduced in Qt 4.2.</p>
 <h3 class="fn"><a name="operator-gt-gt-36"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, QIcon &amp; <i>icon</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads an image, or a set of images, from the given <i>stream</i> into the given <i>icon</i>.</p>
+<p>This function was introduced in Qt 4.2.</p>
 <hr />
 <h2>Member Type Documentation</h2>
 <a name="//apple_ref/cpp/tag/QIcon/Size" />
@@ -229,6 +231,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

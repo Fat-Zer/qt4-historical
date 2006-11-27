@@ -672,7 +672,10 @@ QObject::QObject(QObjectPrivate &dd, QObject *parent)
 /*!
     Destroys the object, deleting all its child objects.
 
-    All signals to and from the object are automatically disconnected.
+    All signals to and from the object are automatically disconnected, and
+    any pending posted events for the object are removed from the event
+    queue. However, it is often safer to use deleteLater() rather than
+    deleting a QObject subclass directly.
 
     \warning All child objects are deleted. If any of these objects
     are on the stack or global, sooner or later your program will
@@ -683,9 +686,9 @@ QObject::QObject(QObjectPrivate &dd, QObject *parent)
     \warning Deleting a QObject while pending events are waiting to
     be delivered can cause a crash. You must not delete the QObject
     directly if it exists in a different thread than the one currently
-    executing. Use the deleteLater() method instead, which will cause
-    the event loop to delete the object after all pending events have
-    been delivered to it.
+    executing. Use deleteLater() instead, which will cause the event
+    loop to delete the object after all pending events have been
+    delivered to it.
 
     \sa deleteLater()
 */
@@ -737,7 +740,7 @@ QObject::~QObject()
           holding the postEventList.mutex for the object's thread,
           but since we hold the QObjectPrivate::readWriteLock(),
           nothing can go into QCoreApplication::postEvent(), which
-          effectively means noone can post new events, which is what
+          effectively means no one can post new events, which is what
           we are trying to prevent. this means we can safely check
           d->postedEvents, since we are fairly sure it will not
           change (it could, but only by decreasing, i.e. removing
@@ -1240,8 +1243,16 @@ QThread *QObject::thread() const
 /*!
     Changes the thread affinity for this object and its children. The
     object cannot be moved if it has a parent. Event processing will
-    continue in the \a targetThread. To move an object to the main
-    thread, pass QCoreApplication::thread() as the \a targetThread.
+    continue in the \a targetThread.
+
+    To move an object to the main thread, use QApplication::instance()
+    to retrieve a pointer to the current application, and then use
+    QApplication::thread() to retrieve the thread in which the
+    application lives. For example:
+
+    \code
+        myObject->moveToThread(QApplication::instance()->thread());
+    \endcode
 
     If \a targetThread is zero, all event processing for this object
     and its children stops.
@@ -1279,7 +1290,7 @@ void QObject::moveToThread(QThread *targetThread)
     }
 
     QThreadData *currentData = QThreadData::current();
-    QThreadData *targetData = targetThread ? QThreadData::get2(targetThread) : new QThreadData();
+    QThreadData *targetData = targetThread ? QThreadData::get2(targetThread) : new QThreadData(0);
     if (d->threadData->thread == 0 && currentData == targetData) {
         // one exception to the rule: we allow moving objects with no thread affinity to the current thread
         currentData = d->threadData;
@@ -1290,6 +1301,7 @@ void QObject::moveToThread(QThread *targetThread)
         return;
     }
 
+    // prepare to move
     d->moveToThread_helper();
 
     QWriteLocker locker(QObjectPrivate::readWriteLock());
@@ -1300,12 +1312,21 @@ void QObject::moveToThread(QThread *targetThread)
             targetData->postEventList.mutex.lock();
         }
     }
+
+    // keep currentData alive (since we've got it locked)
+    currentData->ref();
+
+    // move the object
     d_func()->setThreadData_helper(currentData, targetData);
+
     if (currentData != targetData) {
         targetData->postEventList.mutex.unlock();
         if (currentData)
             currentData->postEventList.mutex.unlock();
     }
+
+    // now currentData can commit suicide if it wants to
+    currentData->deref();
 }
 
 void QObjectPrivate::moveToThread_helper()
@@ -1976,6 +1997,10 @@ void QObject::removeEventFilter(QObject *obj)
     deleted, the control must return to the event loop from which
     deleteLater() was called.
 
+    \bold{Note:} It is safe to call this function more than once; when the
+    first deferred deletion event is delivered, any pending events for the
+    object are removed from the event queue.
+
     \sa destroyed(), QPointer
 */
 void QObject::deleteLater()
@@ -1993,6 +2018,9 @@ void QObject::deleteLater()
     All QObject subclasses using the Q_OBJECT macro automatically have
     a reimplementation of this function with the subclass name as
     context.
+
+    You can set the encoding for \a sourceText by calling QTextCodec::setCodecForTr().
+    By default \a sourceText is assumed to be in Latin-1 encoding.
 
     Example:
 
@@ -2050,7 +2078,7 @@ void QObject::deleteLater()
     translators while performing translations is not supported. Doing
     so will probably result in crashes or other undesirable behavior.
 
-    \sa trUtf8(), QApplication::translate(), {Internationalization with Qt}
+    \sa trUtf8(), QApplication::translate(), QTextCodec::setCodecForTr(), {Internationalization with Qt}
 */
 
 /*!
@@ -2471,7 +2499,8 @@ bool QObject::connect(const QObject *sender, const char *signal,
     \threadsafe
 
     Disconnects \a signal in object \a sender from \a method in object
-    \a receiver.
+    \a receiver. Returns true if the connection is successfully broken;
+    otherwise returns false.
 
     A signal-slot connection is removed when either of the objects
     involved are destroyed.

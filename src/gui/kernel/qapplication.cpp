@@ -1412,7 +1412,6 @@ void QApplication::setGlobalStrut(const QSize& strut)
 */
 QPalette QApplication::palette()
 {
-    QApplicationPrivate::checkInstance("palette");
     if (!QApplicationPrivate::app_pal)
         QApplicationPrivate::app_pal = new QPalette(Qt::black);
     return *QApplicationPrivate::app_pal;
@@ -2577,7 +2576,7 @@ QString QApplication::sessionKey() const
   \fn void QApplication::commitDataRequest(QSessionManager &manager)
 
   This signal deals with \link session.html session
-  management\endlink. It is emited when the QSessionManager wants the
+  management\endlink. It is emitted when the QSessionManager wants the
   application to commit all its data.
 
   Usually this means saving all open files, after getting

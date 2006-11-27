@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-mac-opensource-src-4.2.1/src/gui/widgets/qprogressbar.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-mac-opensource-src-4.2.2/src/gui/widgets/qprogressbar.cpp -->
 <head>
   <title>Qt 4.2: QProgressBar Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -108,7 +108,7 @@
 <h2>Detailed Description</h2>
 <p>The QProgressBar widget provides a horizontal or vertical progress bar.</p>
 <p>A progress bar is used to give the user an indication of the progress of an operation and to reassure them that the application is still running.</p>
-<p>The progress bar uses the concept of <i>steps</i>. You set it up by specifying the minumum and maximum possible step values, and it will display the percentage of steps that have been completed when you later give it the current step value. The percentage is calculated by dividing the progress (<a href="qprogressbar.html#value-prop">value</a>() - <a href="qprogressbar.html#minimum-prop">minimum</a>()) divided by <a href="qprogressbar.html#maximum-prop">maximum</a>() - <a href="qprogressbar.html#minimum-prop">minimum</a>().</p>
+<p>The progress bar uses the concept of <i>steps</i>. You set it up by specifying the minimum and maximum possible step values, and it will display the percentage of steps that have been completed when you later give it the current step value. The percentage is calculated by dividing the progress (<a href="qprogressbar.html#value-prop">value</a>() - <a href="qprogressbar.html#minimum-prop">minimum</a>()) divided by <a href="qprogressbar.html#maximum-prop">maximum</a>() - <a href="qprogressbar.html#minimum-prop">minimum</a>().</p>
 <p>You can specify the minimum and maximum number of steps with <a href="qprogressbar.html#minimum-prop">setMinimum</a>() and setMaximum. The current number of steps is set with <a href="qprogressbar.html#value-prop">setValue</a>(). The progress bar can be rewound to the beginning with <a href="qprogressbar.html#reset">reset</a>().</p>
 <p>If minimum and maximum both are set to 0, the bar shows a busy indicator instead of a percentage of steps. This is useful, for example, when using <a href="qftp.html">QFtp</a> or <a href="qhttp.html">QHttp</a> to download items when they are unable to determine the size of the item being downloaded.</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
@@ -129,6 +129,7 @@
 <tr><td valign="top"><tt>QProgressBar::TopToBottom</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The text is rotated 90 degrees clockwise.</td></tr>
 <tr><td valign="top"><tt>QProgressBar::BottomToTop</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The text is rotated 90 degrees counter-clockwise.</td></tr>
 </table></p>
+<p>Note that whether or not the text is drawn is dependent on the style. Currently CDE, CleanLooks, Motif, and Plastique draw the text. Mac, Windows and WindowsXP style do not.</p>
 <p>This enum was introduced in Qt 4.1.</p>
 <p>See also <a href="qprogressbar.html#textDirection-prop">textDirection</a>.</p>
 <hr />
@@ -264,6 +265,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

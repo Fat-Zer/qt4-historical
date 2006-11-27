@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-mac-opensource-src-4.2.1/doc/src/qmake-manual.qdoc -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-mac-opensource-src-4.2.2/doc/src/qmake-manual.qdoc -->
 <head>
   <title>Qt 4.2: qmake Variable Reference</title>
   <link rel="prev" href="qmake-reference.html" />
@@ -58,6 +58,7 @@
 <li><a href="#qmake-ar-cmd">QMAKE_AR_CMD</a></li>
 <li><a href="#qmake-bundle-data">QMAKE_BUNDLE_DATA</a></li>
 <li><a href="#qmake-bundle-extension">QMAKE_BUNDLE_EXTENSION</a></li>
+<li><a href="#qmake-cc">QMAKE_CC</a></li>
 <li><a href="#qmake-cflags-debug">QMAKE_CFLAGS_DEBUG</a></li>
 <li><a href="#qmake-cflags-mt">QMAKE_CFLAGS_MT</a></li>
 <li><a href="#qmake-cflags-mt-dbg">QMAKE_CFLAGS_MT_DBG</a></li>
@@ -69,12 +70,14 @@
 <li><a href="#qmake-cflags-warn-off">QMAKE_CFLAGS_WARN_OFF</a></li>
 <li><a href="#qmake-cflags-warn-on">QMAKE_CFLAGS_WARN_ON</a></li>
 <li><a href="#qmake-clean">QMAKE_CLEAN</a></li>
+<li><a href="#qmake-cxx">QMAKE_CXX</a></li>
+<li><a href="#qmake-cxxflags">QMAKE_CXXFLAGS</a></li>
 <li><a href="#qmake-cxxflags-debug">QMAKE_CXXFLAGS_DEBUG</a></li>
 <li><a href="#qmake-cxxflags-mt">QMAKE_CXXFLAGS_MT</a></li>
 <li><a href="#qmake-cxxflags-mt-dbg">QMAKE_CXXFLAGS_MT_DBG</a></li>
+</ul></td><td width="34%"><ul>
 <li><a href="#qmake-cxxflags-mt-dll">QMAKE_CXXFLAGS_MT_DLL</a></li>
 <li><a href="#qmake-cxxflags-mt-dlldbg">QMAKE_CXXFLAGS_MT_DLLDBG</a></li>
-</ul></td><td width="34%"><ul>
 <li><a href="#qmake-cxxflags-release">QMAKE_CXXFLAGS_RELEASE</a></li>
 <li><a href="#qmake-cxxflags-shlib">QMAKE_CXXFLAGS_SHLIB</a></li>
 <li><a href="#qmake-cxxflags-thread">QMAKE_CXXFLAGS_THREAD</a></li>
@@ -125,8 +128,8 @@
 <li><a href="#qmake-libs-qt-opengl">QMAKE_LIBS_QT_OPENGL</a></li>
 <li><a href="#qmake-libs-qt-thread">QMAKE_LIBS_QT_THREAD</a></li>
 <li><a href="#qmake-libs-rt">QMAKE_LIBS_RT</a></li>
-<li><a href="#qmake-libs-rtmt">QMAKE_LIBS_RTMT</a></li>
 </ul></td><td width="34%"><ul>
+<li><a href="#qmake-libs-rtmt">QMAKE_LIBS_RTMT</a></li>
 <li><a href="#qmake-libs-thread">QMAKE_LIBS_THREAD</a></li>
 <li><a href="#qmake-libs-windows">QMAKE_LIBS_WINDOWS</a></li>
 <li><a href="#qmake-libs-x11">QMAKE_LIBS_X11</a></li>
@@ -322,7 +325,7 @@
 <pre> LEXSOURCES = lexer.l</pre>
 <a name="libs"></a><a name="libs"></a>
 <h2>LIBS</h2>
-<p>This variable contains a list of libraries to be linked into the project. You can use the Unix <tt>-l</tt> (library) and -L (library path) flags and qmake will to the correct thing thing with these libraries on Windows (namely this means passing the full path of the library to the linker). The only limitation to this is the library must exist, for qmake to find which directory a <tt>-l</tt> lib lives in.</p>
+<p>This variable contains a list of libraries to be linked into the project. You can use the Unix <tt>-l</tt> (library) and -L (library path) flags and qmake will do the correct thing with these libraries on Windows (namely this means passing the full path of the library to the linker). The only limitation to this is the library must exist, for qmake to find which directory a <tt>-l</tt> lib lives in.</p>
 <p>For example:</p>
 <pre> unix:LIBS += -L/usr/local/lib -lmath
  win32:LIBS += c:/mylibs/math.lib</pre>
@@ -410,6 +413,9 @@
 <p>For example, the following definition will result in a framework with the <tt>.myframework</tt> extension:</p>
 <pre> QMAKE_BUNDLE_EXTENSION = .myframework</pre>
 <p><i>This is used on Mac OS X only.</i></p>
+<a name="qmake-cc"></a>
+<h2>QMAKE_CC</h2>
+<p>This variable specifies the C compiler that will be used when building projects containing C source code. Only the file name of the compiler executable needs to be specified as long as it is on a path contained in the <tt>PATH</tt> variable when the Makefile is processed.</p>
 <a name="qmake-cflags-debug"></a><a name="qmake-cflags-debug"></a>
 <h2>QMAKE_CFLAGS_DEBUG</h2>
 <p>This variable contains the flags for the C compiler in debug mode.The value of this variable is typically handled by <tt>qmake</tt> or <a href="#qmakespec">qmake.conf</a> and rarely needs to be modified.</p>
@@ -446,6 +452,12 @@
 <a name="qmake-clean"></a><a name="qmake-clean"></a>
 <h2>QMAKE_CLEAN</h2>
 <p>This variable contains any files which are not generated files (such as moc and uic generated files) and object files that should be removed when using &quot;make clean&quot;.</p>
+<a name="qmake-cxx"></a>
+<h2>QMAKE_CXX</h2>
+<p>This variable specifies the C++ compiler that will be used when building projects containing C++ source code. Only the file name of the compiler executable needs to be specified as long as it is on a path contained in the <tt>PATH</tt> variable when the Makefile is processed.</p>
+<a name="qmake-cxxflags"></a>
+<h2>QMAKE_CXXFLAGS</h2>
+<p>This variable contains the C++ compiler flags that are used when building a project. The value of this variable is typically handled by <tt>qmake</tt> or <a href="#qmakespec">qmake.conf</a> and rarely needs to be modified. The flags specific to debug and release modes can be adjusted by modifying the <tt>QMAKE_CXXFLAGS_DEBUG</tt> and <tt>QMAKE_CXXFLAGS_RELEASE</tt> variables, respectively.</p>
 <a name="qmake-cxxflags-debug"></a><a name="qmake-cxxflags-debug"></a>
 <h2>QMAKE_CXXFLAGS_DEBUG</h2>
 <p>This variable contains the C++ compiler flags for creating a debuggable application. The value of this variable is typically handled by <tt>qmake</tt> or <a href="#qmakespec">qmake.conf</a> and rarely needs to be modified.</p>
@@ -863,6 +875,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

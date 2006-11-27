@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-mac-opensource-src-4.2.1/doc/src/examples/screenshot.qdoc -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-mac-opensource-src-4.2.2/doc/src/examples/screenshot.qdoc -->
 <head>
   <title>Qt 4.2: Screenshot Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -104,7 +104,7 @@
 <p>In the constructor we first create the <a href="qlabel.html">QLabel</a> displaying the screenshot preview.</p>
 <p>We set the <a href="qlabel.html">QLabel</a>'s size policy to be <a href="qsizepolicy.html#Policy-enum">QSizePolicy::Expanding</a> both horizontally and vertically. This means that the <a href="qlabel.html">QLabel</a>'s size hint is a sensible size, but the widget can be shrunk and still be useful. Also, the widget can make use of extra space, so it should get as much space as possible. Then we make sure the <a href="qlabel.html">QLabel</a> is aligned in the center of the <tt>Screenshot</tt> widget, and set its minimum size.</p>
 <p>We create the applications's buttons and the group box containing the application's options, and put it all into a main layout. Finally we take the initial screenshot, and set the inital delay and the window title, before we resize the widget to a suitable size.</p>
-<pre> void Screenshot::resizeEvent(QResizeEvent * /* event */)
+<pre> void Screenshot::resizeEvent(QResizeEvent * <span class="comment">/* event */</span>)
  {
      QSize scaledSize = originalPixmap.size();
      scaledSize.scale(screenshotLabel-&gt;size(), Qt::KeepAspectRatio);
@@ -227,6 +227,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

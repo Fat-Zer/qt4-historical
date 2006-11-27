@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-mac-opensource-src-4.2.1/doc/src/mac-differences.qdoc -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-mac-opensource-src-4.2.2/doc/src/mac-differences.qdoc -->
 <head>
   <title>Qt 4.2: Qt/Mac-Specific Issues</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -19,7 +19,8 @@
 <li><a href="#qcursor">QCursor</a></li>
 <li><a href="#painting">Painting</a></li>
 <li><a href="#library-support">Library Support</a></li>
-<ul><li><a href="#bundle-based-libraries">Bundle-Based Libraries</a></li>
+<ul><li><a href="#qt-libraries-as-frameworks">Qt libraries as frameworks</a></li>
+<li><a href="#bundle-based-libraries">Bundle-Based Libraries</a></li>
 <li><a href="#combining-libraries">Combining Libraries</a></li>
 <li><a href="#initialization-order">Initialization Order</a></li>
 </ul>
@@ -52,6 +53,13 @@
 <p>Mac OS X always double buffers the screen so the <a href="qt.html#WidgetAttribute-enum">Qt::WA_PaintOnScreen</a> attribute has no effect. Also it is impossible to paint outside of a paint event so <a href="qt.html#WidgetAttribute-enum">Qt::WA_PaintOutsidePaintEvent</a> has no effect either.</p>
 <a name="library-support"></a>
 <h2>Library Support</h2>
+<a name="qt-libraries-as-frameworks"></a>
+<h3>Qt libraries as frameworks</h3>
+<p>By default, Qt is built as a set of frameworks. This is the Mac OS X &quot;preferred&quot; way of distributing libraries (and there are some definite advantages to using them) see <a href="http://developer.apple.com/documentation/MacOSX/Conceptual/BPFrameworks/index.html">Apple's Framework Programming Guide</a> for more info.</p>
+<p>In general, this shouldn't be an issue as qmake will take care of the specifics for you. However, there are a couple of things you need to keep in mind when using frameworks over normal dynamic libraries. Most are included in the Framework Programming Guide, but one that you may not be aware of is that:</p>
+<p><b>frameworks will always link with the &quot;release&quot; version of a library</b>.</p>
+<p>This means that if you want to actually use a &quot;debug&quot; version of a Qt framework, you must make sure that the application actually loads the debug version. This is usually done by using the DYLD_IMAGE_SUFFIX environment variables. However, for several reasons, this typically doesn't work so well. Instead, you can temporarily swap your debug and release versions. This is documented in <a href="http://developer.apple.com/technotes/tn2004/tn2124.html#SECJUSTONELIB">Apple's &quot;Debugging Magic&quot; technical note</a>.</p>
+<p>If you do not wish to use frameworks simply configure Qt with <tt>-no-framework</tt>.</p>
 <a name="bundle-based-libraries"></a>
 <h3>Bundle-Based Libraries</h3>
 <p>If you want to incorporate dynamic libraries as part of your Mac OS X application bundle (the application directory), then you place these into a directory called Frameworks, a subdirectory of the application bundle.</p>
@@ -94,8 +102,7 @@
 <p>Do not forget to protect this code with an #if defined(<a href="qtglobal.html#Q_WS_MAC">Q_WS_MAC</a>) macro if you are deploying on more than one platform.</p>
 <a name="translating-the-application-menu-and-native-dialogs"></a>
 <h3>Translating the Application Menu and Native Dialogs</h3>
-<p>The items in the Application Menu will be merged correctly for your localized application, but they will not show up translated until you add a localized resource folder inside the Bundle. See:</p>
-<p>http://developer.apple.com/documentation/CoreFoundation/Conceptual/CFBundles/index.html</p>
+<p>The items in the Application Menu will be merged correctly for your localized application, but they will not show up translated until you add a localized resource folder <a href="http://developer.apple.com/documentation/CoreFoundation/Conceptual/CFBundles/Concepts/BundleAnatomy.html">inside the Bundle</a>:</p>
 <p>And look for the heading: Adding Localized Resources</p>
 <p>The main thing you need to do is create a file called locversion.plist. Here is an example one for Norwegian:</p>
 <pre> &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
@@ -121,13 +128,14 @@
 <p>If you want to provide right-mouse click support for Mac OS X, use the <a href="qcontextmenuevent.html">QContextMenuEvent</a> class. This will map to a context menu event, in other words a menu that will display a popup selection. This is the most common use of right-mouse clicks, and maps to a control-click with the Mac OS X one-button mouse support.</p>
 <a name="menu-bar"></a>
 <h3>Menu Bar</h3>
-<p>Qt/Mac will automatically detect your menu bars for you and turn them into Mac native menubars. Fitting this into your existing Qt application will normally be automatic, however, if you have special needs the Qt/Mac implementation currently selects a menu bar by starting at the active window (i.e. <a href="qapplication.html#activeWindow">QApplication::activeWindow</a>()), and applying:</p>
+<p>Qt/Mac will automatically detect your menu bars for you and turn them into Mac native menu bars. Fitting this into your existing Qt application will normally be automatic, however, if you have special needs the Qt/Mac implementation currently selects a menu bar by starting at the active window (i.e. <a href="qapplication.html#activeWindow">QApplication::activeWindow</a>()), and applying the following tests:</p>
 <ol type="1">
 <li>If the window has a <a href="qmenubar.html">QMenuBar</a> then it is used.</li>
 <li>If the window is a modal then its menu bar is used. If no menu bar is specified then a default menu bar is used (as documented below).</li>
-<li>If the window has no parent then the default menub ar is used (as documented below).</li>
+<li>If the window has no parent then the default menu bar is used (as documented below).</li>
 </ol>
-<p>The above 3 guidelines are followed all the way up the parent window chain until one of the above is satisifed. If all else fails a default menu bar will be created, the default menu bar on Qt/Mac is an empty menu bar, however you can create a different default menu bar by creating a parentless <a href="qmenubar.html">QMenuBar</a>; the first one created will be designated the default menu bar, and will be used whenever a default menu bar is needed.</p>
+<p>These tests are followed all the way up the parent window chain until one of the above is satisifed. If all else fails a default menu bar will be created, the default menu bar on Qt/Mac is an empty menu bar, however you can create a different default menu bar by creating a parentless <a href="qmenubar.html">QMenuBar</a>; the first one created will be designated the default menu bar, and will be used whenever a default menu bar is needed.</p>
+<p>Note that using native menu bars introduces certain limitations on Qt classes. See the <a href="#limitations">list of limitations</a> below for more information about these.</p>
 <a name="special-keys"></a>
 <h3>Special Keys</h3>
 <p>To provide the expected behavior for Qt applications on Mac OS X, the Qt::Meta, <a href="qt.html#KeyboardModifier-enum">Qt::MetaModifier</a>, and <a href="qt.html#Modifier-enum">Qt::META</a> enum values correspond to the Control keys on the standard Macintosh keyboard, and the Qt::Control, <a href="qt.html#KeyboardModifier-enum">Qt::ControlModifier</a>, and <a href="qt.html#Modifier-enum">Qt::CTRL</a> enum values correspond to the Command keys.</p>
@@ -136,7 +144,8 @@
 <a name="menu-actions"></a>
 <h3>Menu Actions</h3>
 <ul>
-<li>Actions in into a <a href="qmenu.html">QMenu</a> with accelerators that have more than one keystroke (<a href="qkeysequence.html">QKeySequence</a>) will not display correctly when the <a href="qmenu.html">QMenu</a> is translated into a Mac native menubar. The first key will be displayed, however the shortcut will still be activated as on all other platforms.</li>
+<li>Actions in into a <a href="qmenu.html">QMenu</a> with accelerators that have more than one keystroke (<a href="qkeysequence.html">QKeySequence</a>) will not display correctly when the <a href="qmenu.html">QMenu</a> is translated into a Mac native menu bar. The first key will be displayed, however the shortcut will still be activated as on all other platforms.</li>
+<li><a href="qmenu.html">QMenu</a> objects used in the native menu bar are not able to handle &quot;show&quot;, &quot;hide&quot;, and &quot;mouse move&quot; events. Reimplementations of <a href="qwidget.html#showEvent">showEvent()</a>, <a href="qwidget.html#hideEvent">hideEvent()</a>, and <a href="qwidget.html#mouseMoveEvent">mouseMoveEvent()</a> in <a href="qmenu.html">QMenu</a> subclasses will not be called for menus used in this way.</li>
 </ul>
 <a name="native-widgets"></a>
 <h3>Native Widgets</h3>
@@ -145,6 +154,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

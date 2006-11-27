@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-mac-opensource-src-4.2.1/src/qt3support/sql/q3databrowser.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-mac-opensource-src-4.2.2/src/qt3support/sql/q3databrowser.cpp -->
 <head>
   <title>Qt 4.2: Q3DataBrowser Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -337,7 +337,7 @@
 <p>All the edit buffer field values are set to their 'zero state', e.g. 0 for numeric fields and &quot;&quot; for string fields. Then the widgets are updated using the property map. For example, a combobox that is property-mapped to integers would scroll to the first item. See the <a href="q3sqlpropertymap.html">Q3SqlPropertyMap</a> constructor for the default mappings of widgets to properties.</p>
 <a name="//apple_ref/cpp/instm/Q3DataBrowser/confirmCancel" />
 <h3 class="fn"><a name="confirmCancel"></a><a href="qsql-qt3.html#Confirm-enum">QSql::Confirm</a> Q3DataBrowser::confirmCancel ( <a href="qsql-qt3.html#Op-enum">QSql::Op</a> <i>m</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
-<p>Protected virtual function which returns a confirmation for cancelling an edit mode <i>m</i>. Derived classes can reimplement this function and provide their own confirmation dialog. The default implementation uses a message box which prompts the user to confirm the edit action.</p>
+<p>Protected virtual function which returns a confirmation for canceling an edit mode <i>m</i>. Derived classes can reimplement this function and provide their own confirmation dialog. The default implementation uses a message box which prompts the user to confirm the edit action.</p>
 <a name="//apple_ref/cpp/instm/Q3DataBrowser/confirmEdit" />
 <h3 class="fn"><a name="confirmEdit"></a><a href="qsql-qt3.html#Confirm-enum">QSql::Confirm</a> Q3DataBrowser::confirmEdit ( <a href="qsql-qt3.html#Op-enum">QSql::Op</a> <i>m</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>Protected virtual function which returns a confirmation for an edit of mode <i>m</i>. Derived classes can reimplement this function and provide their own confirmation dialog. The default implementation uses a message box which prompts the user to confirm the edit action.</p>
@@ -390,7 +390,7 @@
 </ul>
 <a name="//apple_ref/cpp/instm/Q3DataBrowser/insertCurrent" />
 <h3 class="fn"><a name="insertCurrent"></a>bool Q3DataBrowser::insertCurrent ()&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
-<p>Reads the fields from the default form into the default cursor and performs an insert on the default cursor. If there is no default form or no default cursor, nothing happens. If an error occurred during the insert into the database, <a href="q3databrowser.html#handleError">handleError</a>() is called and false is returned. If the insert was successfull, the cursor is refreshed and relocated to the newly inserted record, the <a href="q3databrowser.html#cursorChanged">cursorChanged</a>() signal is emitted, and true is returned.</p>
+<p>Reads the fields from the default form into the default cursor and performs an insert on the default cursor. If there is no default form or no default cursor, nothing happens. If an error occurred during the insert into the database, <a href="q3databrowser.html#handleError">handleError</a>() is called and false is returned. If the insert was successful, the cursor is refreshed and relocated to the newly inserted record, the <a href="q3databrowser.html#cursorChanged">cursorChanged</a>() signal is emitted, and true is returned.</p>
 <p>See also <a href="q3databrowser.html#cursorChanged">cursorChanged</a>(), <a href="q3databrowser.html#sqlCursor">sqlCursor</a>(), <a href="q3databrowser.html#form">form</a>(), and <a href="q3databrowser.html#handleError">handleError</a>().</p>
 <a name="//apple_ref/cpp/instm/Q3DataBrowser/last" />
 <h3 class="fn"><a name="last"></a>void Q3DataBrowser::last ()&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
@@ -458,7 +458,7 @@
 <p>If <a href="q3databrowser.html#boundaryChecking-prop">boundaryChecking</a>() is true, checks the boundary of the current default cursor and emits signals which indicate the position of the cursor.</p>
 <a name="//apple_ref/cpp/instm/Q3DataBrowser/updateCurrent" />
 <h3 class="fn"><a name="updateCurrent"></a>bool Q3DataBrowser::updateCurrent ()&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
-<p>Reads the fields from the default form into the default cursor and performs an update on the default cursor. If there is no default form or no default cursor, nothing happens. If an error occurred during the update on the database, <a href="q3databrowser.html#handleError">handleError</a>() is called and false is returned. If the update was successfull, the cursor is refreshed and relocated to the updated record, the <a href="q3databrowser.html#cursorChanged">cursorChanged</a>() signal is emitted, and true is returned.</p>
+<p>Reads the fields from the default form into the default cursor and performs an update on the default cursor. If there is no default form or no default cursor, nothing happens. If an error occurred during the update on the database, <a href="q3databrowser.html#handleError">handleError</a>() is called and false is returned. If the update was successful, the cursor is refreshed and relocated to the updated record, the <a href="q3databrowser.html#cursorChanged">cursorChanged</a>() signal is emitted, and true is returned.</p>
 <p>See also <a href="qwidget.html#cursor-prop">cursor</a>(), <a href="q3databrowser.html#form">form</a>(), and <a href="q3databrowser.html#handleError">handleError</a>().</p>
 <a name="//apple_ref/cpp/instm/Q3DataBrowser/writeFields" />
 <h3 class="fn"><a name="writeFields"></a>void Q3DataBrowser::writeFields ()&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
@@ -467,6 +467,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

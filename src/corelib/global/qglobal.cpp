@@ -448,13 +448,29 @@
     \typedef qreal
     \relates <QtGlobal>
 
-    Typedef for \c double.
+    Typedef for \c double on all platforms except for those using CPUs with
+    ARM architectures.
+    On ARM-based platforms, \c qreal is a typedef for \c float for performance
+    reasons.
 */
 
 /*! \typedef uchar
     \relates <QtGlobal>
 
     Convenience typedef for \c{unsigned char}.
+*/
+
+/*!
+    \fn qt_set_sequence_auto_mnemonic(bool on)
+    \relates <QtGlobal>
+
+    Enables automatic mnemonics on Mac if \a on is true; otherwise
+    this feature is disabled.
+
+    Note that this function is only available on Mac where mnemonics
+    are disabled by default.
+
+    \sa {QShortcut#mnemonic}{QShortcut}
 */
 
 /*! \typedef ushort
@@ -607,7 +623,7 @@
 
     This enum describes the messages that can be sent to a message
     handler (QtMsgHandler). You can use the enum to identify and
-    associate the various message types with the appropiate
+    associate the various message types with the appropriate
     actions.
 
     \value QtDebugMsg
@@ -2649,7 +2665,7 @@ bool QInternal::activateCallbacks(Callback cb, void **parameters)
 
 bool QInternal::callFunction(InternalFunction func, void **args)
 {
-    Q_ASSERT_X(func >= 0 || func < QInternal::LastInternalFunction,
+    Q_ASSERT_X(func >= 0,
                "QInternal::callFunction()", "Callback id must be a valid id");
 #ifndef QT_NO_QOBJECT
     switch (func) {
@@ -2663,6 +2679,10 @@ bool QInternal::callFunction(InternalFunction func, void **args)
         return true;
     case QInternal::DerefAdoptedThread:
         QThreadData::get2((QThread *) *args)->deref();
+        return true;
+    case QInternal::SetCurrentThreadToMainThread:
+        extern void qt_set_current_thread_to_main_thread();
+        qt_set_current_thread_to_main_thread();
         return true;
     default:
         break;

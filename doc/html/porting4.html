@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-mac-opensource-src-4.2.1/doc/src/porting4.qdoc -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-mac-opensource-src-4.2.2/doc/src/porting4.qdoc -->
 <head>
   <title>Qt 4.2: Porting to Qt 4</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -13,8 +13,8 @@
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">Porting to Qt 4<br /><small></small></h1>
-<p>This document describes porting applications from Qt 3 to Qt 4. If you haven't yet made the decision about porting, or are unsure about whether it is worth it, take a look at the <a href="qt4-intro.html">key features</a> offered by Qt 4. See also <a href="http://www.trolltech.com/products/qt/whatsnew/porting">Moving from Qt 3 to Qt 4</a> for tips on how to write Qt 3 code that is easy to port to Qt 4.</p>
-<p>The Qt 4 series is not binary compatible with the 3 series. This means programs compiled for Qt 3 must be recompiled to work with Qt 4. Qt 4 is also not completely <i>source</i> compatible with 3, however nearly all points of incompatibility cause compiler errors or run-time messages (rather than mysterious results). Qt 4 includes many additional features and discards obsolete functionality. Porting from Qt 3 to Qt 4 is straightforward, and once completed makes the considerable additional power and flexibility of Qt 4 available for use in your applications.</p>
+<p>This document describes the process of porting applications from Qt 3 to Qt 4. If you haven't yet made the decision about porting, or are unsure about whether it is worth it, take a look at the <a href="qt4-intro.html">key features</a> offered by Qt 4. See also <a href="http://www.trolltech.com/products/qt/whatsnew/porting">Moving from Qt 3 to Qt 4</a> for tips on how to write Qt 3 code that is easy to port to Qt 4.</p>
+<p>The Qt 4 series is not binary compatible with the 3 series. This means programs compiled for Qt 3 must be recompiled to work with Qt 4. Qt 4 is also not completely <i>source</i> compatible with 3, however nearly all points of incompatibility cause compiler errors or run-time messages (rather than mysterious results). Qt 4 includes many additional features and discards obsolete functionality. Porting from Qt 3 to Qt 4 requires some effort, but once completed the considerable additional power and flexibility of Qt 4 is available for use in your applications.</p>
 <p>To port code from Qt 3 to Qt 4:</p>
 <ol type="1">
 <li>Briefly read the porting notes below to get an idea of what to expect.</li>
@@ -32,7 +32,8 @@
 <p>Table of contents:</p>
 <p><table width="100%">
 <tr valign="top"><td width="25%">
-<ul><li><a href="#type-names">Type Names</a></li>
+<ul><li><a href="#casting-and-object-types">Casting and Object Types</a></li>
+<li><a href="#type-names">Type Names</a></li>
 <li><a href="#enum-values">Enum Values</a></li>
 <li><a href="#properties">Properties</a></li>
 <li><a href="#explicit-sharing">Explicit Sharing</a></li>
@@ -75,8 +76,8 @@
 <li><a href="#qdns">QDns</a></li>
 <li><a href="#qdockarea">QDockArea</a></li>
 <li><a href="#qdockwindow">QDockWindow</a></li>
-<li><a href="#qdragobject">QDragObject</a></li>
 </ul></td><td width="25%"><ul>
+<li><a href="#qdragobject">QDragObject</a></li>
 <li><a href="#qdropsite">QDropSite</a></li>
 <li><a href="#qeditorfactory">QEditorFactory</a></li>
 <li><a href="#qeventloop">QEventLoop</a></li>
@@ -120,8 +121,8 @@
 <li><a href="#qobject">QObject</a></li>
 <li><a href="#qobjectdictionary">QObjectDictionary</a></li>
 <li><a href="#qobjectlist">QObjectList</a></li>
-<li><a href="#qpaintdevice">QPaintDevice</a></li>
 </ul></td><td width="25%"><ul>
+<li><a href="#qpaintdevice">QPaintDevice</a></li>
 <li><a href="#qpaintdevicemetrics">QPaintDeviceMetrics</a></li>
 <li><a href="#qpainter">QPainter</a></li>
 <li><a href="#qpicture">QPicture</a></li>
@@ -165,8 +166,8 @@
 <li><a href="#qsqlquery">QSqlQuery</a></li>
 <li><a href="#qsqlrecord">QSqlRecord</a></li>
 <li><a href="#qsqlrecordinfo">QSqlRecordInfo</a></li>
-<li><a href="#qsqlselectcursor">QSqlSelectCursor</a></li>
 </ul></td><td width="25%"><ul>
+<li><a href="#qsqlselectcursor">QSqlSelectCursor</a></li>
 <li><a href="#qstoreddrag">QStoredDrag</a></li>
 <li><a href="#qstr-i-list">QStr(I)List</a></li>
 <li><a href="#qstr-i-vec">QStr(I)Vec</a></li>
@@ -210,6 +211,18 @@
 <li><a href="#virtual-functions">Virtual Functions</a></li>
 </ul>
 </td></tr></table></p>
+<a name="casting-and-object-types"></a>
+<h2>Casting and Object Types</h2>
+<p>In Qt 3, it was possible to use the <tt>qt_cast()</tt> function to determine whether instances of <a href="qobject.html">QObject</a> subclasses could be safely cast to derived types of those subclasses. For example, if a <a href="qframe.html">QFrame</a> instance is passed to a function whose signature specifies a <a href="qwidget.html">QWidget</a> pointer as its argument, <tt>qt_cast()</tt> could be used to obtain a <a href="qframe.html">QFrame</a> pointer so that the instance's functions can be accessed.</p>
+<p>In Qt 4, much of this functionality is provided by the <a href="qobject.html#qobject_cast">qobject_cast</a>() function, and additional functions also provide similar functionality for certain non-<a href="qobject.html">QObject</a> types:</p>
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
+<thead><tr valign="top" class="qt-style"><th>Qt 3 function</th><th>Qt 4 function</th></tr></thead>
+<tr valign="top" class="odd"><td>T *qt_cast&lt;T *&gt;(<a href="qobject.html">QObject</a> *)</td><td><a href="qobject.html#qobject_cast">T *qobject_cast&lt;T *&gt;</a>(<a href="qobject.html">QObject</a> *)</td></tr>
+<tr valign="top" class="even"><td></td><td><a href="qgraphicsitem.html#qgraphicsitem_cast">T qgraphicsitem_cast&lt;T&gt;</a>(<a href="qgraphicsitem.html">QGraphicsItem</a> *)</td></tr>
+<tr valign="top" class="odd"><td></td><td><a href="qstyleoption.html#qstyleoption_cast">T qstyleoption_cast&lt;T&gt;</a>(<a href="qstyleoption.html">QStyleOption</a> *)</td></tr>
+<tr valign="top" class="even"><td></td><td><a href="qvariant.html#qvariant_cast">T qvariant_cast&lt;T&gt;</a>(const <a href="qvariant.html">QVariant</a> &amp;)</td></tr>
+<tr valign="top" class="odd"><td></td><td><a href="qdbusargument.html#qdbus_cast">T qdbus_cast(const QDBusArgument &amp;)</a></td></tr>
+</table></p>
 <a name="type-names"></a>
 <h2>Type Names</h2>
 <p>The table below lists the classes that have been renamed in Qt 4. If you compile your applications with <tt>QT3_SUPPORT</tt> defined, the old names will be available.</p>
@@ -221,7 +234,7 @@
 <tr valign="top" class="odd"><td>QGuardedPtr</td><td><a href="qpointer.html">QPointer</a></td></tr>
 </table></p>
 <p>The table below lists the enums and typedefs that have been renamed in Qt 4. If you compile your applications with <tt>QT3_SUPPORT</tt> defined, the old names will be available.</p>
-<p>Whenever you see an occurrence of the name on the left, you can safely replace it with the Qt 4 equivalent in your program. The <a href="qt3to4.html#qt3to4">qt3to4</a> tool handles performs the conversion automatically.</p>
+<p>Whenever you see an occurrence of the name on the left, you can safely replace it with the Qt 4 equivalent in your program. The <a href="qt3to4.html#qt3to4">qt3to4</a> tool performs the conversion automatically.</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <thead><tr valign="top" class="qt-style"><th>Qt 3 type name</th><th>Qt 4 type name</th></tr></thead>
 <tr valign="top" class="odd"><td><a href="qapplication-qt3.html#ColorMode-typedef">QApplication::ColorMode</a></td><td><a href="qapplication.html#ColorSpec-enum">QApplication::ColorSpec</a></td></tr>
@@ -254,7 +267,7 @@
 <a name="enum-values"></a>
 <h2>Enum Values</h2>
 <p>The table below lists the enum values that have been renamed in Qt 4. If you compile your applications with <tt>QT3_SUPPORT</tt> defined, the old names will be available.</p>
-<p>Whenever you see an occurrence of the name on the left, you can safely replace it with the Qt 4 equivalent in your program. The <a href="qt3to4.html#qt3to4">qt3to4</a> tool handles performs the conversion automatically.</p>
+<p>Whenever you see an occurrence of the name on the left, you can safely replace it with the Qt 4 equivalent in your program. The <a href="qt3to4.html#qt3to4">qt3to4</a> tool performs the conversion automatically.</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <thead><tr valign="top" class="qt-style"><th>Qt 3 enum value name</th><th>Qt 4 enum value name</th></tr></thead>
 <tr valign="top" class="odd"><td>IO_Append</td><td><a href="qiodevice.html#OpenModeFlag-enum">QIODevice::Append</a></td></tr>
@@ -938,7 +951,7 @@
 <a name="qcustomevent"></a>
 <h2>QCustomEvent</h2>
 <p>In Qt 3, developers could create a custom event by constructing a new <a href="qcustomevent.html">QCustomEvent</a>, and send relevant data to other components in the application by passing a void pointer, either on construction or using the setData() function. Objects could receive custom events by reimplementing the <a href="qobject.html#customEvent">customEvent()</a> function, and access the stored data using the event's data() function.</p>
-<p>In Qt 4, custom events are created by subclassing <a href="qevent.html">QEvent</a> and reimplementing the <a href="qevent.html#type">type()</a> function to return a value in the range allocated for user events. Event-specific data can be stored in a way that is appropriate for your application. Custom events are still delivered to each object's <a href="qobject.html#customEvent">customEvent()</a> handler function, but as <a href="qevent.html">QEvent</a> objects rather than as deprecated <a href="qcustomevent.html">QCustomEvent</a> objects.</p>
+<p>In Qt 4, custom events are created by subclassing <a href="qevent.html">QEvent</a>. Event-specific data can be stored in a way that is appropriate for your application. Custom events are still delivered to each object's <a href="qobject.html#customEvent">customEvent()</a> handler function, but as <a href="qevent.html">QEvent</a> objects rather than as deprecated <a href="qcustomevent.html">QCustomEvent</a> objects.</p>
 <a name="qdatabrowser"></a>
 <h2>QDataBrowser</h2>
 <p>The <tt>QDataBrowser</tt> class has been renamed <a href="q3databrowser.html">Q3DataBrowser</a> and moved to the <a href="qt3support.html">Qt3Support</a> library. In Qt 4.2, you should use the <a href="qdatawidgetmapper.html">QDataWidgetMapper</a> class to create data-aware forms.</p>
@@ -3098,7 +3111,7 @@
 <tr valign="top" class="odd"><td>void QWidget::imStartEvent(QIMEvent *)</td><td>Reimplement <a href="qwidget.html#inputMethodEvent">QWidget::inputMethodEvent</a>() instead.</td></tr>
 <tr valign="top" class="even"><td>void QWidget::move(int, int)</td><td>Setter.</td></tr>
 <tr valign="top" class="odd"><td>void QWidget::paletteChange(const <a href="qpalette.html">QPalette</a> &amp;)</td><td>Reimplement <a href="qwidget.html#changeEvent">QWidget::changeEvent</a>() and handle <a href="qevent.html#Type-enum">QEvent::PaletteChange</a> and/or <a href="qevent.html#Type-enum">QEvent::ApplicationPaletteChange</a>.</td></tr>
-<tr valign="top" class="even"><td>void <a href="qwidget-qt3.html#polish">QWidget::polish</a>()</td><td>Reimplement QWidget::polishEvent() instead.</td></tr>
+<tr valign="top" class="even"><td>void <a href="qwidget-qt3.html#polish">QWidget::polish</a>()</td><td>Reimplement event() and handle the <a href="qevent.html#Type-enum">QEvent::Polish</a> event type.</td></tr>
 <tr valign="top" class="odd"><td>void QWidget::reparent(<a href="qwidget.html">QWidget</a> *, WFlags, const <a href="qpoint.html">QPoint</a> &amp;, bool)</td><td>Reimplement <a href="qwidget.html#event">QWidget::event</a>() and handle <a href="qevent.html#Type-enum">QEvent::Reparent</a>.</td></tr>
 <tr valign="top" class="even"><td>void QWidget::resize(int, int)</td><td>Reimplement <a href="qwidget.html#resizeEvent">QWidget::resizeEvent</a>() instead.</td></tr>
 <tr valign="top" class="odd"><td>void QWidget::setAcceptDrops(bool)</td><td>Setter.</td></tr>
@@ -3146,6 +3159,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

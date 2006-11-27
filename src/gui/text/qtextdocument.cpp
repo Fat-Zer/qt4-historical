@@ -466,7 +466,7 @@ void QTextDocument::setMaximumBlockCount(int maximum)
     \fn void QTextDocument::markContentsDirty(int position, int length)
 
     Marks the contents specified by the given \a position and \a length
-    as "dirty", informing the document that it needs to be layed out
+    as "dirty", informing the document that it needs to be laid out
     again.
 */
 void QTextDocument::markContentsDirty(int from, int length)
@@ -711,11 +711,13 @@ QString QTextDocument::defaultStyleSheet() const
 
     This signal is emitted whenever the position of a cursor changed
     due to an editing operation. The cursor that changed is passed in
-    \a cursor.
+    \a cursor.  If you need a signal when the cursor is moved with the
+    arrow keys you can use the \l{QTextEdit::}{cursorPositionChanged()} signal in 
+    QTextEdit. 
 */
 
 /*!
-    Returns true is undo is available; otherwise returns false.
+    Returns true if undo is available; otherwise returns false.
 */
 bool QTextDocument::isUndoAvailable() const
 {
@@ -724,7 +726,7 @@ bool QTextDocument::isUndoAvailable() const
 }
 
 /*!
-    Returns true is redo is available; otherwise returns false.
+    Returns true if redo is available; otherwise returns false.
 */
 bool QTextDocument::isRedoAvailable() const
 {
@@ -1121,7 +1123,7 @@ QTextBlock QTextDocument::end() const
 
 /*!
     \property QTextDocument::pageSize
-    \brief the page size that should be used for layouting the document
+    \brief the page size that should be used for laying out the document
 
     \sa modificationChanged()
 */

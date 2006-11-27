@@ -115,6 +115,7 @@ QDesignerPropertySheet::QDesignerPropertySheet(QObject *object, QObject *parent)
         createFakeProperty(QLatin1String("whatsThis"));
         createFakeProperty(QLatin1String("acceptDrops"));
         createFakeProperty(QLatin1String("dragEnabled"));
+        createFakeProperty(QLatin1String("windowModality"));
 
         if (hasLayoutAttributes(object)) {
             int pindex = -1;

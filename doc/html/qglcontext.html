@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-mac-opensource-src-4.2.1/src/opengl/qgl.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-mac-opensource-src-4.2.2/src/opengl/qgl.cpp -->
 <head>
   <title>Qt 4.2: QGLContext Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -17,11 +17,12 @@
 <p>The QGLContext class encapsulates an OpenGL rendering context. <a href="#details">More...</a></p>
 <pre> #include &lt;QGLContext&gt;</pre><ul>
 <li><a href="qglcontext-members.html">List of all members, including inherited members</a></li>
+<li><a href="qglcontext-obsolete.html">Obsolete members</a></li>
 </ul>
 <a name="public-functions"></a>
 <h3>Public Functions</h3>
 <ul>
-<li><div class="fn"/><b><a href="qglcontext.html#QGLContext">QGLContext</a></b> ( const QGLFormat &amp; <i>format</i>, QPaintDevice * <i>device</i> )</li>
+<li><div class="fn"/><b><a href="qglcontext.html#QGLContext-2">QGLContext</a></b> ( const QGLFormat &amp; <i>format</i> )</li>
 <li><div class="fn"/>virtual <b><a href="qglcontext.html#dtor.QGLContext">~QGLContext</a></b> ()</li>
 <li><div class="fn"/>GLuint <b><a href="qglcontext.html#bindTexture">bindTexture</a></b> ( const QImage &amp; <i>image</i>, GLenum <i>target</i> = GL_TEXTURE_2D, GLint <i>format</i> = GL_RGBA )</li>
 <li><div class="fn"/>GLuint <b><a href="qglcontext.html#bindTexture-2">bindTexture</a></b> ( const QString &amp; <i>fileName</i> )</li>
@@ -74,11 +75,10 @@
 <p>Please note that QGLContext is not thread safe.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QGLContext/QGLContext" />
-<h3 class="fn"><a name="QGLContext"></a>QGLContext::QGLContext ( const <a href="qglformat.html">QGLFormat</a> &amp; <i>format</i>, <a href="qpaintdevice.html">QPaintDevice</a> * <i>device</i> )</h3>
-<p>Constructs an OpenGL context for the paint device <i>device</i>, which can be a widget or a pixmap. The <i>format</i> specifies several display options for the context.</p>
+<h3 class="fn"><a name="QGLContext-2"></a>QGLContext::QGLContext ( const <a href="qglformat.html">QGLFormat</a> &amp; <i>format</i> )</h3>
+<p>Constructs an OpenGL context with the given <i>format</i> which specifies several display options for the context.</p>
 <p>If the underlying OpenGL/Window system cannot satisfy all the features requested in <i>format</i>, the nearest subset of features will be used. After creation, the <a href="qglcontext.html#format">format</a>() method will return the actual format obtained.</p>
-<p>Note that after a <a href="qglcontext.html">QGLContext</a> object has been constructed, <a href="qglcontext.html#create">create()</a> must be called explicitly to create the actual OpenGL context. The context will be <a href="qglcontext.html#isValid">invalid</a> if it was not possible to obtain a GL context at all.</p>
+<p>Note that after a <a href="qglcontext.html">QGLContext</a> object has been constructed, <a href="qglcontext.html#create">create</a>() must be called explicitly to create the actual OpenGL context. The context will be <a href="qglcontext.html#isValid">invalid</a> if it was not possible to obtain a GL context at all.</p>
 <p>See also <a href="qglcontext.html#format">format</a>() and <a href="qglcontext.html#isValid">isValid</a>().</p>
 <a name="//apple_ref/cpp/instm/QGLContext/~QGLContext" />
 <h3 class="fn"><a name="dtor.QGLContext"></a>QGLContext::~QGLContext ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
@@ -102,7 +102,7 @@
 <p>Generates and binds a 2D GL texture based on <i>pixmap</i>.</p>
 <a name="//apple_ref/cpp/instm/QGLContext/chooseContext" />
 <h3 class="fn"><a name="chooseContext"></a>bool QGLContext::chooseContext ( const QGLContext * <i>shareContext</i> = 0 )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
-<p>This semi-internal function is called by <a href="qglcontext.html#create">create</a>(). It creates a system-dependent OpenGL handle that matches the <a href="qglcontext.html#format">format</a>() of <i>shareContext</i> as closely as possible.</p>
+<p>This semi-internal function is called by <a href="qglcontext.html#create">create</a>(). It creates a system-dependent OpenGL handle that matches the <a href="qglcontext.html#format">format</a>() of <i>shareContext</i> as closely as possible, returning true if successful or false if a suitable handle could not be found.</p>
 <p>On Windows, it calls the virtual function <a href="qglcontext.html#choosePixelFormat">choosePixelFormat</a>(), which finds a matching pixel format identifier. On X11, it calls the virtual function <a href="qglcontext.html#chooseVisual">chooseVisual</a>() which finds an appropriate X visual. On other platforms it may work differently.</p>
 <a name="//apple_ref/cpp/instm/QGLContext/chooseMacVisual" />
 <h3 class="fn"><a name="chooseMacVisual"></a>void * QGLContext::chooseMacVisual ( GDHandle <i>device</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
@@ -138,7 +138,7 @@
 <a name="//apple_ref/cpp/instm/QGLContext/device" />
 <h3 class="fn"><a name="device"></a><a href="qpaintdevice.html">QPaintDevice</a> * QGLContext::device () const</h3>
 <p>Returns the paint device set for this context.</p>
-<p>See also <a href="qglcontext.html#QGLContext">QGLContext::QGLContext</a>().</p>
+<p>See also <a href="qglcontext-obsolete.html#QGLContext">QGLContext::QGLContext</a>().</p>
 <a name="//apple_ref/cpp/instm/QGLContext/deviceIsPixmap" />
 <h3 class="fn"><a name="deviceIsPixmap"></a>bool QGLContext::deviceIsPixmap () const&nbsp;&nbsp;<tt> [protected]</tt></h3>
 <p>Returns true if the paint device of this context is a pixmap; otherwise returns false.</p>
@@ -226,6 +226,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

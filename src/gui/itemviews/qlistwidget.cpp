@@ -312,8 +312,8 @@ void QListModel::ensureSorted(int column, Qt::SortOrder order, int start, int en
                 else if (oldRow > oldPersistentRow && newRow <= oldPersistentRow)
                     newPersistentRow = oldPersistentRow + 1;
                 if (newPersistentRow != oldPersistentRow)
-                    newPersistentIndexes[k] = index(newPersistentRow,
-                                                    pi.column(), pi.parent());
+                    newPersistentIndexes[k] = createIndex(newPersistentRow,
+                                                          pi.column(), pi.internalPointer());
             }
         }
     }
@@ -427,7 +427,7 @@ Qt::DropActions QListModel::supportedDropActions() const
     List items are typically used to display text() and an icon(). These are
     set with the setText() and setIcon() functions. The appearance of the text
     can be customized with setFont(), setForeground(), and setBackground().
-    List item's text can be aligned using the setTextAlignment() function.
+    Text in list items can be aligned using the setTextAlignment() function.
     Tooltips, status tips and "What's This?" help can be added to list items
     with setToolTip(), setStatusTip(), and setWhatsThis().
 
@@ -1081,8 +1081,9 @@ void QListWidgetPrivate::_q_dataChanged(const QModelIndex &topLeft,
     \printuntil new QListWidgetItem(tr("Pine")
 
     If you need to insert a new item into the list at a particular position,
-    it is more convenient to construct the item without a parent widget and
-    use the insertItem() function to place it within the list:
+    it is more required to construct the item without a parent widget and
+    use the insertItem() function to place it within the list.  The list
+    widget will take ownership of the item.
 
     \skipto QListWidgetItem *newItem
     \printuntil newItem->setText
@@ -1643,6 +1644,8 @@ QMimeData *QListWidget::mimeData(const QList<QListWidgetItem*>) const
 /*!
     Handles the \a data supplied by a drag and drop operation that ended with
     the given \a action in the given \a index.
+    Returns true if the data and action can be handled by the model;
+    otherwise returns false.
 
     \sa supportedDropActions()
 */

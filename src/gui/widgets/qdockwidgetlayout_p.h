@@ -79,6 +79,7 @@ struct QDockAreaLayoutItem
     int pos;
     int size;
     bool gap;
+    bool keep_size;
 };
 
 class QDockAreaLayoutInfo
@@ -280,6 +281,8 @@ public:
                     QVector<QLayoutStruct> *hor_struct_list);
 
     QRect gapRect(QList<int> path);
+
+    void keepSize(QDockWidget *w);
 
     QSet<QTabBar*> usedTabBars() const;
 };

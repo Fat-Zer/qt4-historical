@@ -1,3 +1,6 @@
+#define QSYSTEMTRAY_ICON_MAC_MM
+@class QNSMenu;
+
 #include "qsystemtrayicon_p.h"
 #include <qdebug.h>
 
@@ -38,6 +41,7 @@ extern QString qt_mac_no_ampersands(QString str); //qmenu_mac.cpp
 @interface QNSMenu : NSMenu {
     QMenu *qmenu;
 }
+-(QMenu*)menu;
 -(id)initWithQMenu:(QMenu*)qmenu;
 -(void)menuNeedsUpdate:(QNSMenu*)menu;
 -(void)selectedAction:(id)item;
@@ -271,6 +275,7 @@ void QSystemTrayIconPrivate::showMessage_sys(const QString &, const QString &,
 #endif
         {
             NSMenu *m = [[QNSMenu alloc] initWithQMenu:icon->contextMenu()];
+            [m setAutoenablesItems: NO];
             [[NSNotificationCenter defaultCenter] addObserver:imageCell
                                                   selector:@selector(menuTrackingDone:)
                                                   name:NSMenuDidEndTrackingNotification
@@ -288,6 +293,14 @@ void QSystemTrayIconPrivate::showMessage_sys(const QString &, const QString &,
 }
 @end
 
+class QSystemTrayIconQMenu : public QMenu
+{
+public:
+    void doAboutToShow() { emit aboutToShow(); }
+private:
+    QSystemTrayIconQMenu();
+};
+
 @implementation QNSMenu
 -(id)initWithQMenu:(QMenu*)qm {
     self = [super init];
@@ -297,7 +310,11 @@ void QSystemTrayIconPrivate::showMessage_sys(const QString &, const QString &,
     }
     return self;
 }
+-(QMenu*)menu { 
+    return qmenu; 
+}
 -(void)menuNeedsUpdate:(QNSMenu*)menu {
+    emit static_cast<QSystemTrayIconQMenu*>(menu->qmenu)->doAboutToShow();
     for(int i = [menu numberOfItems]-1; i >= 0; --i)
         [menu removeItemAtIndex:i];
     QList<QAction*> actions = menu->qmenu->actions();;
@@ -325,13 +342,21 @@ void QSystemTrayIconPrivate::showMessage_sys(const QString &, const QString &,
 
             [item setTitle:(NSString*)QCFString::toCFStringRef(qt_mac_no_ampersands(text))];
             [item setEnabled:action->isEnabled()];
-            [item setTarget:self];
-            [item setAction:@selector(selectedAction:)];
             [item setState:action->isChecked() ? NSOnState : NSOffState];
             [item setToolTip:(NSString*)QCFString::toCFStringRef(action->toolTip())];
+            const QIcon icon = action->icon();
+            if(!icon.isNull()) {
+                const short scale = GetMBarHeight()-4;
+                NSImage *nsimage = qt_mac_create_ns_image(icon.pixmap(QSize(scale, scale)));
+                [item setImage: nsimage];
+                [nsimage release];
+            }
             if(action->menu()) {
                 QNSMenu *sub = [[QNSMenu alloc] initWithQMenu:action->menu()];
                 [item setSubmenu:sub];
+            } else {
+                [item setAction:@selector(selectedAction:)];
+                [item setTarget:self];
             }
             if(!accel.isEmpty()) {
                 quint32 modifier, key;

@@ -2116,6 +2116,14 @@ void QDomNodePrivate::setLocation(int lineNumber, int columnNumber)
     which return a QDomNode, e.g. firstChild(). You can make an
     independent (deep) copy of the node with cloneNode().
 
+    A QDomNode can be null, much like a null pointer. Creating a copy 
+    of a null node results in another null node. It is not
+    possible to modify a null node, but it is possible to assign another,
+    possibly non-null node to it. In this case, the copy of the null node
+    will remain null. You can check if a QDomNode is null by calling isNull().
+    The empty constructor of a QDomNode (or any of the derived classes) creates 
+    a null node.
+
     Nodes are inserted with insertBefore(), insertAfter() or
     appendChild(). You can replace one node with another using
     replaceChild() and remove a node with removeChild().
@@ -2226,6 +2234,29 @@ QDomNode& QDomNode::operator=(const QDomNode &n)
 /*!
     Returns true if \a n and this DOM node are equal; otherwise
     returns false.
+
+    Any instance of QDomNode acts as a reference to an underlying data
+    structure in QDomDocument. The test for equality checks if the two
+    references point to the same underlying node. For example:
+
+    \code
+        QDomDocument document;
+        QDomElement element1 = document.documentElement();
+        QDomElement element2 = element1;
+    \endcode
+
+    The two nodes (QDomElement is a QDomNode subclass) both refer to
+    the document's root element, and \c {element1 == element2} will
+    return true. On the other hand:
+
+    \code
+        QDomElement element3 = document.createElement("MyElement");
+        QDomElement element4 = document.createElement("MyElement");
+    \endcode
+
+    Even though both nodes are empty elements carrying the same name,
+    \c {element3 == element4} will return false because they refer to
+    two different nodes in the underlying data structure.
 */
 bool QDomNode::operator== (const QDomNode& n) const
 {
@@ -2291,7 +2322,7 @@ QString QDomNode::nodeName() const
     \row \i QDomAttr \i The attribute value
     \row \i QDomCDATASection \i The content of the CDATA section
     \row \i QDomComment \i The comment
-    \row \i QDomProcessingInstruction \i The data of the processing intruction
+    \row \i QDomProcessingInstruction \i The data of the processing instruction
     \row \i QDomText \i The text
     \endtable
 
@@ -6681,7 +6712,8 @@ QDomDocument::~QDomDocument()
 /*!
     \overload
 
-    This function reads the XML document from the string \a text.
+    This function reads the XML document from the string \a text, returning
+    true if the content was successfully parsed; otherwise returns false.
     Since \a text is already a Unicode string, no encoding detection
     is done.
 */
@@ -6726,10 +6758,10 @@ bool QDomDocument::setContent(const QString& text, bool namespaceProcessing, QSt
 
     Entity references are handled as follows:
     \list
-    \o References to internal general entities and character entities occuring in the
+    \o References to internal general entities and character entities occurring in the
         content are included. The result is a QDomText node with the references replaced
         by their corresponding entity values.
-    \o References to parameter entities occuring in the internal subset are included.
+    \o References to parameter entities occurring in the internal subset are included.
         The result is a QDomDocumentType node which contains entity and notation declarations
         with the references replaced by their corresponding entity values.
     \o Any general parsed entity reference which is not defined in the internal subset and
@@ -6755,7 +6787,8 @@ bool QDomDocument::setContent(const QByteArray &data, bool namespaceProcessing, 
 /*!
     \overload
 
-    This function reads the XML document from the IO device \a dev.
+    This function reads the XML document from the IO device \a dev, returning
+    true if the content was successfully parsed; otherwise returns false.
 */
 bool QDomDocument::setContent(QIODevice* dev, bool namespaceProcessing, QString *errorMsg, int *errorLine, int *errorColumn)
 {
@@ -6768,7 +6801,8 @@ bool QDomDocument::setContent(QIODevice* dev, bool namespaceProcessing, QString 
 /*!
     \overload
 
-    This function reads the XML document from the string \a text.
+    This function reads the XML document from the string \a text, returning
+    true if the content was successfully parsed; otherwise returns false.
     Since \a text is already a Unicode string, no encoding detection
     is performed.
 
@@ -6782,8 +6816,9 @@ bool QDomDocument::setContent(const QString& text, QString *errorMsg, int *error
 /*!
     \overload
 
-    This function reads the XML document from the byte array \a
-    buffer.
+    This function reads the XML document from the byte array \a buffer,
+    returning true if the content was successfully parsed; otherwise returns
+    false.
 
     No namespace processing is performed.
 */
@@ -6795,7 +6830,8 @@ bool QDomDocument::setContent(const QByteArray& buffer, QString *errorMsg, int *
 /*!
     \overload
 
-    This function reads the XML document from the IO device \a dev.
+    This function reads the XML document from the IO device \a dev, returning
+    true if the content was successfully parsed; otherwise returns false.
 
     No namespace processing is performed.
 */
@@ -6808,7 +6844,8 @@ bool QDomDocument::setContent(QIODevice* dev, QString *errorMsg, int *errorLine,
     \overload
 
     This function reads the XML document from the QXmlInputSource \a source and
-    parses it with the QXmlReader \a reader.
+    parses it with the QXmlReader \a reader, returning true if the content was
+    successfully parsed; otherwise returns false.
 
     This function doesn't change the features of the \a reader. If you want to
     use certain features for parsing you can use this function to set up the

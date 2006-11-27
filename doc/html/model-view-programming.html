@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-mac-opensource-src-4.2.1/doc/src/model-view-programming.qdoc -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-mac-opensource-src-4.2.2/doc/src/model-view-programming.qdoc -->
 <head>
   <title>Qt 4.2: Model/View Programming</title>
   <link rel="next" href="model-view-using.html" />
@@ -23,6 +23,7 @@
 <ul><li><a href="#models">Models</a></li>
 <li><a href="#views">Views</a></li>
 <li><a href="#delegates">Delegates</a></li>
+<li><a href="#sorting">Sorting</a></li>
 <li><a href="#convenience-classes">Convenience Classes</a></li>
 </ul>
 <li><a href="#the-model-view-components">The Model/View Components</a></li>
@@ -72,6 +73,11 @@
 <h3>Delegates</h3>
 <p><a href="qabstractitemdelegate.html">QAbstractItemDelegate</a> is the abstract base class for delegates in the model/view framework. A default delegate implementation is provided by the <a href="qitemdelegate.html">QItemDelegate</a> class, and this is used as the default delegate by Qt's standard views.</p>
 <p>Delegates are described in the section on <a href="model-view-delegate.html">Delegate Classes</a>.</p>
+<a name="sorting"></a>
+<h3>Sorting</h3>
+<p>There are two ways of approaching sorting in the model/view architecture; which approach to choose depends on your underlying model.</p>
+<p>If your model is sortable, i.e, if it reimplements the <a href="qabstractitemmodel.html#sort">QAbstractItemModel::sort</a>() function, both <a href="qtableview.html">QTableView</a> and <a href="qtreeview.html">QTreeView</a> provide an API that allows you to sort your model data programmatically. In addition, you can enable interactive sorting (i.e. allowing the users to sort the data by clicking the view's headers), by connecting the <a href="qheaderview.html#sectionClicked">QHeaderView::sectionClicked</a>() signal to the <a href="qtableview.html#sortByColumn">QTableView::sortByColumn</a>() slot or the <a href="qtreeview.html#sortByColumn">QTreeView::sortByColumn</a>() slot, respectively.</p>
+<p>The alternative approach, if your model do not have the required interface or if you want to use a list view to present your data, is to use a proxy model to transform the structure of your model before presenting the data in the view. This is covered in detail in the section on <a href="model-view-proxy-models.html">Proxy Models</a>.</p>
 <a name="convenience-classes"></a>
 <h3>Convenience Classes</h3>
 <p>A number of <i>convenience</i> classes are derived from the standard view classes for the benefit of applications that rely on Qt's item-based item view and table classes. They are not intended to be subclassed, but simply exist to provide a familiar interface to the equivalent classes in Qt 3. Examples of such classes include <a href="qlistwidget.html">QListWidget</a>, <a href="qtreewidget.html">QTreeWidget</a>, and <a href="qtablewidget.html">QTableWidget</a>; these provide similar behavior to the <tt>QListBox</tt>, <tt>QListView</tt>, and <tt>QTable</tt> classes in Qt 3.</p>
@@ -201,6 +207,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

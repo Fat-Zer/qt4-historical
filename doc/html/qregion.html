@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-mac-opensource-src-4.2.1/src/gui/painting/qregion.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-mac-opensource-src-4.2.2/src/gui/painting/qregion.cpp -->
 <head>
   <title>Qt 4.2: QRegion Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -44,7 +44,7 @@
 <li><div class="fn"/>bool <b><a href="qregion.html#intersects-2">intersects</a></b> ( const QRect &amp; <i>rect</i> ) const</li>
 <li><div class="fn"/>bool <b><a href="qregion.html#isEmpty">isEmpty</a></b> () const</li>
 <li><div class="fn"/>QVector&lt;QRect&gt; <b><a href="qregion.html#rects">rects</a></b> () const</li>
-<li><div class="fn"/>void <b><a href="qregion.html#setRects">setRects</a></b> ( const QRect * <i>rects</i>, int <i>num</i> )</li>
+<li><div class="fn"/>void <b><a href="qregion.html#setRects">setRects</a></b> ( const QRect * <i>rects</i>, int <i>number</i> )</li>
 <li><div class="fn"/>QRegion <b><a href="qregion.html#subtracted">subtracted</a></b> ( const QRegion &amp; <i>r</i> ) const</li>
 <li><div class="fn"/>void <b><a href="qregion.html#translate">translate</a></b> ( int <i>dx</i>, int <i>dy</i> )</li>
 <li><div class="fn"/>void <b><a href="qregion.html#translate-2">translate</a></b> ( const QPoint &amp; <i>point</i> )</li>
@@ -199,8 +199,8 @@
 <p>The union of all the rectangles is equal to the original region.</p>
 <p>See also <a href="qregion.html#setRects">setRects</a>().</p>
 <a name="//apple_ref/cpp/instm/QRegion/setRects" />
-<h3 class="fn"><a name="setRects"></a>void QRegion::setRects ( const <a href="qrect.html">QRect</a> * <i>rects</i>, int <i>num</i> )</h3>
-<p>Sets the region using the array of rectangles specified by <i>rects</i>. The rectangles <i>must</i> be optimally Y-X sorted and follow these restrictions:</p>
+<h3 class="fn"><a name="setRects"></a>void QRegion::setRects ( const <a href="qrect.html">QRect</a> * <i>rects</i>, int <i>number</i> )</h3>
+<p>Sets the region using the array of rectangles specified by <i>rects</i> and <i>number</i>. The rectangles <i>must</i> be optimally Y-X sorted and follow these restrictions:</p>
 <ul>
 <li>The rectangles must not intersect.</li>
 <li>All rectangles with a given top coordinate must have the same height.</li>
@@ -316,6 +316,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

@@ -42,13 +42,15 @@
 #include <QtCore/qobject.h>
 #include <QtGui/qabstractprintdialog.h>
 #include <QtGui/qitemdelegate.h>
+#include "qprintengine.h"
 
 #include "ui_qprintdialog.h"
 #include "ui_qprintpropertiesdialog.h"
 
 #if !defined(QT_NO_CUPS) && !defined(QT_NO_LIBRARY)
-#  include <private/qprintengine_ps_p.h>
+#  include <private/qcups_p.h>
 #  include <cups/cups.h>
+#  include <private/qpdf_p.h>
 #endif
 
 #ifndef QT_NO_NIS
@@ -85,6 +87,7 @@ class QPrintDialogPrivate : public QAbstractPrintDialogPrivate
     Q_DECLARE_PUBLIC(QPrintDialog)
 public:
     QPrintDialogPrivate();
+    ~QPrintDialogPrivate();
 
     void init();
     void applyPrinterProperties(QPrinter *p);
@@ -92,7 +95,6 @@ public:
     void _q_printToFileChanged(int);
     void _q_rbPrintRangeToggled(bool);
     void _q_printerChanged(int index);
-    void _q_paperSizeChanged(int index);
 #ifndef QT_NO_FILEDIALOG
     void _q_btnBrowseClicked();
 #endif
@@ -100,6 +102,7 @@ public:
     void refreshPageSizes();
 
     bool setupPrinter();
+    void updateWidgets();
 
     Ui::QPrintDialog ui;
     QList<QPrinterDescription> lprPrinters;
@@ -897,6 +900,13 @@ QPrintDialogPrivate::QPrintDialogPrivate()
 #endif
 {}
 
+QPrintDialogPrivate::~QPrintDialogPrivate()
+{
+#if !defined(QT_NO_CUPS) && !defined(QT_NO_LIBRARY)
+    delete cups;
+#endif
+}
+
 void QPrintDialogPrivate::init()
 {
     Q_Q(QPrintDialog);
@@ -906,9 +916,8 @@ void QPrintDialogPrivate::init()
     ui.stackedWidget->setCurrentIndex(0);
 
 #if !defined(QT_NO_CUPS) && !defined(QT_NO_LIBRARY)
-    cups = (static_cast<QPSPrintEngine*>(printer->printEngine()))->cupsSupport();
-
-    if (QCUPSSupport::isAvailable()) {
+    cups = new QCUPSSupport;
+    if (QCUPSSupport::isAvailable() && cups->availablePrintersCount() > 0) {
         cupsPPD = cups->currentPPD();
         cupsPrinterCount = cups->availablePrintersCount();
         cupsPrinters = cups->availablePrinters();
@@ -956,8 +965,6 @@ void QPrintDialogPrivate::init()
                      q, SLOT(_q_rbPrintRangeToggled(bool)));
     QObject::connect(ui.cbPrinters, SIGNAL(currentIndexChanged(int)),
                      q, SLOT(_q_printerChanged(int)));
-    QObject::connect(ui.cbPaperSize, SIGNAL(currentIndexChanged(int)),
-                     q, SLOT(_q_paperSizeChanged(int)));
 
 #ifndef QT_NO_FILEDIALOG
     QObject::connect(ui.btnBrowse, SIGNAL(clicked()), q, SLOT(_q_btnBrowseClicked()));
@@ -1080,18 +1087,6 @@ void QPrintDialogPrivate::_q_printerChanged(int index)
     refreshPageSizes();
 }
 
-void QPrintDialogPrivate::_q_paperSizeChanged(int index)
-{
-#if !defined(QT_NO_CUPS) && !defined(QT_NO_LIBRARY)
-    const ppd_option_t* pageSizes = cups->pageSizes();
-    if (!pageSizes)
-        return;
-    cups->markOption(pageSizes->keyword, pageSizes->choices[index].choice);
-#else
-    Q_UNUSED(index);
-#endif
-}
-
 void QPrintDialogPrivate::refreshPageSizes()
 {
     ui.cbPaperSize->blockSignals(true);
@@ -1103,10 +1098,9 @@ void QPrintDialogPrivate::refreshPageSizes()
         int numChoices = pageSizes ? pageSizes->num_choices : 0;
 
         for (int i = 0; i < numChoices; ++i) {
-            ui.cbPaperSize->addItem(QString::fromLocal8Bit(pageSizes->choices[i].text), QString::fromLocal8Bit(pageSizes->choices[i].choice));
-            if (static_cast<int>(pageSizes->choices[i].marked) == 1) {
+            ui.cbPaperSize->addItem(QString::fromLocal8Bit(pageSizes->choices[i].text), QByteArray(pageSizes->choices[i].choice));
+            if (static_cast<int>(pageSizes->choices[i].marked) == 1)
                 ui.cbPaperSize->setCurrentIndex(i);
-            }
         }
     } else {
 #endif
@@ -1192,7 +1186,33 @@ bool QPrintDialogPrivate::setupPrinter()
     p->setDoubleSidedPrinting(ui.chbDuplex->isChecked());
 
     // paper format
-    p->setPageSize(static_cast<QPrinter::PageSize>(ui.cbPaperSize->itemData(ui.cbPaperSize->currentIndex()).toInt()));
+    QVariant val = ui.cbPaperSize->itemData(ui.cbPaperSize->currentIndex());
+    int ps = p->pageSize();
+    if (val.type() == QVariant::Int) {
+        ps = val.toInt();
+    }
+#if !defined(QT_NO_CUPS) && !defined(QT_NO_LIBRARY)
+    else if (QCUPSSupport::isAvailable() && ui.chbPrintToFile->checkState() !=  Qt::Checked
+             && cups->currentPPD()) {
+        QByteArray cupsPageSize = val.toByteArray();
+        QPrintEngine *engine = p->printEngine();
+        engine->setProperty(PPK_CupsStringPageSize, QString::fromLatin1(cupsPageSize));
+        engine->setProperty(PPK_CupsOptions, cups->options());
+
+        QRect pageRect = cups->pageRect(cupsPageSize);
+        engine->setProperty(PPK_CupsPageRect, pageRect);
+
+        QRect paperRect = cups->paperRect(cupsPageSize);
+        engine->setProperty(PPK_CupsPaperRect, paperRect);
+
+        for(ps = 0; ps < QPrinter::NPageSize; ++ps) {
+            QPdf::PaperSize size = QPdf::paperSize(QPrinter::PageSize(ps));
+            if (size.width == paperRect.width() && size.height == paperRect.height())
+                break;
+        }
+    }
+#endif
+    p->setPageSize(static_cast<QPrinter::PageSize>(ps));
     p->setOrientation(static_cast<QPrinter::Orientation>(ui.cbPaperLayout->itemData(ui.cbPaperLayout->currentIndex()).toInt()));
 
     // other
@@ -1202,6 +1222,22 @@ bool QPrintDialogPrivate::setupPrinter()
         p->setColorMode(QPrinter::GrayScale);
 
     return true;
+}
+
+void QPrintDialogPrivate::updateWidgets()
+{
+    ui.gbPrintRange->setEnabled(options & QPrintDialog::PrintPageRange);
+    ui.rbPrintSelection->setEnabled(options & QPrintDialog::PrintSelection);
+    ui.chbPrintToFile->setEnabled(options & QPrintDialog::PrintToFile);
+    ui.chbCollate->setEnabled(options & QPrintDialog::PrintCollateCopies);
+
+    ui.sbFrom->setMinimum(minPage);
+    ui.sbTo->setMinimum(minPage);
+    ui.sbFrom->setMaximum(maxPage);
+    ui.sbTo->setMaximum(maxPage);
+
+    ui.sbFrom->setValue(fromPage);
+    ui.sbTo->setValue(toPage);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1218,6 +1254,9 @@ QPrintDialog::~QPrintDialog()
 int QPrintDialog::exec()
 {
     Q_D(QPrintDialog);
+
+    d->updateWidgets();
+
   redo:
     int status = QDialog::exec();
     if (status == QDialog::Accepted)

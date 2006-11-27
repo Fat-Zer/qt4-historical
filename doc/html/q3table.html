@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-mac-opensource-src-4.2.1/src/qt3support/itemviews/q3table.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-mac-opensource-src-4.2.2/src/qt3support/itemviews/q3table.cpp -->
 <head>
   <title>Qt 4.2: Q3Table Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -258,7 +258,7 @@
 <p align="center"><img src="images/qtableitems.png" alt="Table Items" /></p><a name="headers"></a><a name="headers"></a>
 <h3>Headers</h3>
 <p>Q3Table supports a header column, e.g. to display row numbers, and a header row, e.g to display column titles. To set row or column labels use <a href="q3header.html#setLabel">Q3Header::setLabel</a>() on the pointers returned by <a href="q3table.html#verticalHeader">verticalHeader</a>() and <a href="q3table.html#horizontalHeader">horizontalHeader</a>() respectively. The vertical header is displayed within the table's left margin whose width is set with <a href="q3table.html#setLeftMargin">setLeftMargin</a>(). The horizontal header is displayed within the table's top margin whose height is set with <a href="q3table.html#setTopMargin">setTopMargin</a>(). The table's grid can be switched off with <a href="q3table.html#showGrid-prop">setShowGrid</a>(). If you want to hide a horizontal header call <a href="qwidget.html#hide">hide</a>(), and call setTopMargin(0) so that the area the header would have occupied is reduced to zero size.</p>
-<p>Header labels are indexed via their section numbers. Note that the default behavior of <a href="q3header.html">Q3Header</a> regarding section numbers is overriden for Q3Table. See the explanation below in the Rows and Columns section in the discussion of moving columns and rows.</p>
+<p>Header labels are indexed via their section numbers. Note that the default behavior of <a href="q3header.html">Q3Header</a> regarding section numbers is overridden for Q3Table. See the explanation below in the Rows and Columns section in the discussion of moving columns and rows.</p>
 <a name="columnsrows"></a><a name="rows-and-columns"></a>
 <h3>Rows and Columns</h3>
 <p>Row and column sizes are set with <a href="q3table.html#setRowHeight">setRowHeight</a>() and <a href="q3table.html#setColumnWidth">setColumnWidth</a>(). If you want a row high enough to show the tallest item in its entirety, use <a href="q3table.html#adjustRow">adjustRow</a>(). Similarly, to make a column wide enough to show the widest item use <a href="q3table.html#adjustColumn">adjustColumn</a>(). If you want the row height and column width to adjust automatically as the height and width of the table changes use <a href="q3table.html#setRowStretchable">setRowStretchable</a>() and <a href="q3table.html#setColumnStretchable">setColumnStretchable</a>().</p>
@@ -715,7 +715,7 @@
  p-&gt;setClipping(false);</pre>
 <h3 class="fn"><a name="paintCell-2"></a>void Q3Table::paintCell ( <a href="qpainter.html">QPainter</a> * <i>p</i>, int <i>row</i>, int <i>col</i>, const <a href="qrect.html">QRect</a> &amp; <i>cr</i>, bool <i>selected</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>This is an overloaded member function, provided for convenience.</p>
-<p>Use the other <a href="q3table.html#paintCell">paintCell</a>() function. This function is only included for backwards compatibilty.</p>
+<p>Use the other <a href="q3table.html#paintCell">paintCell</a>() function. This function is only included for backwards compatibility.</p>
 <a name="//apple_ref/cpp/instm/Q3Table/paintEmptyArea" />
 <h3 class="fn"><a name="paintEmptyArea"></a>void Q3Table::paintEmptyArea ( <a href="qpainter.html">QPainter</a> * <i>p</i>, int <i>cx</i>, int <i>cy</i>, int <i>cw</i>, int <i>ch</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>This function fills the <i>cw</i> pixels wide and <i>ch</i> pixels high rectangle starting at position <i>cx</i>, <i>cy</i> with the background color using the painter <i>p</i>.</p>
@@ -957,6 +957,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

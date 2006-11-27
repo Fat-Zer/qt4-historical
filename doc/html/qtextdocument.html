@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-mac-opensource-src-4.2.1/src/gui/text/qtextdocument.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-mac-opensource-src-4.2.2/src/gui/text/qtextdocument.cpp -->
 <head>
   <title>Qt 4.2: QTextDocument Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -257,7 +257,7 @@
 <a name="//apple_ref/cpp/instm/QTextDocument/pageSize" />
 <a name="//apple_ref/cpp/instm/QTextDocument/setPageSize" />
 <h3 class="fn"><a name="pageSize-prop"></a>pageSize : <a href="qsizef.html">QSizeF</a></h3>
-<p>This property holds the page size that should be used for layouting the document.</p>
+<p>This property holds the page size that should be used for laying out the document.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>QSizeF pageSize () const</b></li>
@@ -354,7 +354,7 @@
 <p>QTextObjects will always get created through this method, so you must reimplement it if you use custom text objects inside your document.</p>
 <a name="//apple_ref/cpp/instm/QTextDocument/cursorPositionChanged" />
 <h3 class="fn"><a name="cursorPositionChanged"></a>void QTextDocument::cursorPositionChanged ( const <a href="qtextcursor.html">QTextCursor</a> &amp; <i>cursor</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This signal is emitted whenever the position of a cursor changed due to an editing operation. The cursor that changed is passed in <i>cursor</i>.</p>
+<p>This signal is emitted whenever the position of a cursor changed due to an editing operation. The cursor that changed is passed in <i>cursor</i>. If you need a signal when the cursor is moved with the arrow keys you can use the <a href="qtextedit.html#cursorPositionChanged">cursorPositionChanged()</a> signal in <a href="qtextedit.html">QTextEdit</a>.</p>
 <a name="//apple_ref/cpp/instm/QTextDocument/documentLayout" />
 <h3 class="fn"><a name="documentLayout"></a><a href="qabstracttextdocumentlayout.html">QAbstractTextDocumentLayout</a> * QTextDocument::documentLayout () const</h3>
 <p>Returns the document layout for this document.</p>
@@ -401,10 +401,10 @@
 <p>Returns true if the document is empty; otherwise returns false.</p>
 <a name="//apple_ref/cpp/instm/QTextDocument/isRedoAvailable" />
 <h3 class="fn"><a name="isRedoAvailable"></a>bool QTextDocument::isRedoAvailable () const</h3>
-<p>Returns true is redo is available; otherwise returns false.</p>
+<p>Returns true if redo is available; otherwise returns false.</p>
 <a name="//apple_ref/cpp/instm/QTextDocument/isUndoAvailable" />
 <h3 class="fn"><a name="isUndoAvailable"></a>bool QTextDocument::isUndoAvailable () const</h3>
-<p>Returns true is undo is available; otherwise returns false.</p>
+<p>Returns true if undo is available; otherwise returns false.</p>
 <a name="//apple_ref/cpp/instm/QTextDocument/loadResource" />
 <h3 class="fn"><a name="loadResource"></a><a href="qvariant.html">QVariant</a> QTextDocument::loadResource ( int <i>type</i>, const <a href="qurl.html">QUrl</a> &amp; <i>name</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>Loads data of the specified <i>type</i> from the resource with the given <i>name</i>.</p>
@@ -413,7 +413,7 @@
 <p>If the <a href="qtextdocument.html">QTextDocument</a> is a child object of a <a href="qtextedit.html">QTextEdit</a>, <a href="qtextbrowser.html">QTextBrowser</a>, or a <a href="qtextdocument.html">QTextDocument</a> itself then the default implementation tries to retrieve the data from the parent.</p>
 <a name="//apple_ref/cpp/instm/QTextDocument/markContentsDirty" />
 <h3 class="fn"><a name="markContentsDirty"></a>void QTextDocument::markContentsDirty ( int <i>position</i>, int <i>length</i> )</h3>
-<p>Marks the contents specified by the given <i>position</i> and <i>length</i> as &quot;dirty&quot;, informing the document that it needs to be layed out again.</p>
+<p>Marks the contents specified by the given <i>position</i> and <i>length</i> as &quot;dirty&quot;, informing the document that it needs to be laid out again.</p>
 <a name="//apple_ref/cpp/instm/QTextDocument/metaInformation" />
 <h3 class="fn"><a name="metaInformation"></a><a href="qstring.html">QString</a> QTextDocument::metaInformation ( <a href="qtextdocument.html#MetaInformation-enum">MetaInformation</a> <i>info</i> ) const</h3>
 <p>Returns meta information about the document of the type specified by <i>info</i>.</p>
@@ -501,6 +501,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-mac-opensource-src-4.2.1/doc/src/sql-driver.qdoc -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-mac-opensource-src-4.2.2/doc/src/sql-driver.qdoc -->
 <head>
   <title>Qt 4.2: SQL Database Drivers</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -311,14 +311,24 @@
 <a name="how-to-build-the-plugin-on-unix-and-mac-os-x"></a>
 <h4>How to Build the Plugin on Unix and Mac OS X</h4>
 <p>The following assumes InterBase or Firebird is installed in <tt>/opt/interbase</tt>:</p>
+<p>If you are using InterBase:</p>
 <pre>     cd $QTDIR/src/plugins/sqldrivers/ibase
      qmake -o Makefile &quot;INCLUDEPATH+=/opt/interbase/include&quot; &quot;LIBS+=-L/opt/interbase/lib&quot; ibase.pro
+     make</pre>
+<p>If you are using Firebird, the Firebird library has to be set explicitely:</p>
+<pre>     cd $QTDIR/src/plugins/sqldrivers/ibase
+     qmake -o Makefile &quot;INCLUDEPATH+=/opt/interbase/include&quot; &quot;LIBS+=-L/opt/interbase/lib -lfbclient&quot; ibase.pro
      make</pre>
 <a name="how-to-build-the-plugin-on-windows"></a>
 <h4>How to Build the Plugin on Windows</h4>
 <p>The following assumes InterBase or Firebird is installed in <tt>C:\interbase</tt>:</p>
+<p>If you are using InterBase:</p>
 <pre>     cd %QTDIR%\src\plugins\sqldrivers\ibase
      qmake -o Makefile &quot;INCLUDEPATH+=C:\interbase\include&quot; ibase.pro
+     nmake</pre>
+<p>If you are using Firebird, the Firebird library has to be set explicitely:</p>
+<pre>     cd %QTDIR%\src\plugins\sqldrivers\ibase
+     qmake -o Makefile &quot;INCLUDEPATH+=C:\interbase\include&quot; &quot;LIBS+=-lfbclient&quot; ibase.pro
      nmake</pre>
 <p>If you are not using a Microsoft compiler, replace <tt>nmake</tt> with <tt>make</tt> in the line above.</p>
 <p>Note that <tt>C:\interbase\bin</tt> must be in the <tt>PATH</tt>.</p>
@@ -353,7 +363,7 @@
      ~XyzResult() {}
 
  protected:
-     QVariant data(int /* index */) { return QVariant(); }
+     QVariant data(int <span class="comment">/* index */) { return QVariant(); }
      bool isNull(int /* index */) { return false; }
      bool reset(const QString &amp; /* query */) { return false; }
      bool fetch(int /* index */) { return false; }
@@ -373,7 +383,7 @@
      bool hasFeature(DriverFeature /* feature */) const { return false; }
      bool open(const QString &amp; /* db */, const QString &amp; /* user */,
                const QString &amp; /* password */, const QString &amp; /* host */,
-               int /* port */, const QString &amp; /* options */)
+               int /* port */, const QString &amp; /* options */</span>)
          { return false; }
      void close() {}
      QSqlResult *createResult() const { return new XyzResult(this); }
@@ -382,6 +392,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

@@ -89,6 +89,8 @@ public:
             return;
         if (!ownPrintDialog) {
             ownPrintDialog = new QPrintDialog(q_ptr); // printDialog is set here.
+        } else {
+            printDialog = ownPrintDialog;
         }
     }
 #endif

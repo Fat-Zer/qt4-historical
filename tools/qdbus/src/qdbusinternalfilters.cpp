@@ -36,6 +36,24 @@
 #include "qdbusmessage_p.h"
 #include "qdbusutil_p.h"
 
+// ### duplicated code, see QDBusUtil::isValidPartOfObjectPath(const QString &part)
+static bool isValidPartOfObjectPath(const QString &part)
+{
+    if (part.isEmpty())
+        return false;       // can't be valid if it's empty
+
+    const QChar *c = part.unicode();
+    for (int i = 0; i < part.length(); ++i) {
+        register ushort u = c[i].unicode();
+        if (!((u >= 'a' && u <= 'z') ||
+              (u >= 'A' && u <= 'Z') ||
+              (u >= '0' && u <= '9') ||
+              u == '_'))
+            return false;
+    }
+    return true;
+}
+
 // defined in qdbusxmlgenerator.cpp
 extern QString qDBusGenerateMetaObjectXml(QString interface, const QMetaObject *mo,
                                           const QMetaObject *base, int flags);
@@ -69,7 +87,7 @@ static QString generateSubObjectXml(QObject *object)
     QObjectList::ConstIterator end = objs.constEnd();
     for ( ; it != end; ++it) {
         QString name = (*it)->objectName();
-        if (!name.isEmpty())
+        if (!name.isEmpty() && isValidPartOfObjectPath(name))
             retval += QString(QLatin1String("  <node name=\"%1\"/>\n"))
                       .arg(name);
     }
@@ -150,10 +168,10 @@ QString qDBusIntrospectObject(const QDBusConnectionPrivate::ObjectTreeNode *node
 
 static QDBusMessage qDBusPropertyError(const QDBusMessage &msg, const QString &interface_name)
 {
-    return QDBusMessage::createError(QLatin1String(DBUS_ERROR_INVALID_ARGS),
-                         QString::fromLatin1("Interface %1 was not found in object %2")
-                        .arg(interface_name)
-                        .arg(msg.path()));
+    return msg.createErrorReply(QLatin1String(DBUS_ERROR_INVALID_ARGS),
+                                QString::fromLatin1("Interface %1 was not found in object %2")
+                                .arg(interface_name)
+                                .arg(msg.path()));
 }
 
 QDBusMessage qDBusPropertyGet(const QDBusConnectionPrivate::ObjectTreeNode *node,

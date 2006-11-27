@@ -3260,6 +3260,8 @@
     <section ref="qdirectpainter.html" title="QDirectPainter Class Reference">
         <keyword ref="qdirectpainter.html">QDirectPainter</keyword>
         <keyword ref="qdirectpainter.html#SurfaceFlag-enum">SurfaceFlag</keyword>
+        <keyword ref="qdirectpainter.html#SurfaceFlag-enum">QDirectPainter::Reserved</keyword>
+        <keyword ref="qdirectpainter.html#SurfaceFlag-enum">QDirectPainter::NonReserved</keyword>
         <keyword ref="qdirectpainter.html#allocatedRegion">allocatedRegion</keyword>
         <keyword ref="qdirectpainter.html#endPainting">endPainting</keyword>
         <keyword ref="qdirectpainter.html#frameBuffer">frameBuffer</keyword>
@@ -4656,6 +4658,7 @@
         <keyword ref="qglcontext.html#textureCacheLimit">textureCacheLimit</keyword>
         <keyword ref="qglcontext.html#windowCreated">windowCreated</keyword>
         <section ref="qglcontext-members.html" title="List of all members"/>
+        <section ref="qglcontext-obsolete.html" title="Obsolete members"/>
     </section>
     <section ref="qglformat.html" title="QGLFormat Class Reference">
         <keyword ref="qglformat.html">QGLFormat</keyword>
@@ -6476,6 +6479,9 @@
         <keyword ref="qlibrary.html">QLibrary</keyword>
         <keyword ref="qlibrary.html#LoadHint-enum">LoadHint</keyword>
         <keyword ref="qlibrary.html#LoadHint-enum">LoadHints</keyword>
+        <keyword ref="qlibrary.html#LoadHint-enum">QLibrary::ExportExternalSymbolsHint</keyword>
+        <keyword ref="qlibrary.html#LoadHint-enum">QLibrary::LoadArchiveMemberHint</keyword>
+        <keyword ref="qlibrary.html#LoadHint-enum">QLibrary::ResolveAllSymbolsHint</keyword>
         <keyword ref="qlibrary.html#fileName-prop">fileName</keyword>
         <keyword ref="qlibrary.html#fileName-prop">setFileName</keyword>
         <keyword ref="qlibrary.html#loadHints-prop">loadHints</keyword>
@@ -6753,15 +6759,6 @@
         <keyword ref="qlinkedlistiterator.html#toFront">toFront</keyword>
         <keyword ref="qlinkedlistiterator.html#operator-eq">operator=</keyword>
         <section ref="qlinkedlistiterator-members.html" title="List of all members"/>
-    </section>
-    <section ref="qlinuxfbscreen.html" title="QLinuxFbScreen Class Reference">
-        <keyword ref="qlinuxfbscreen.html">QLinuxFbScreen</keyword>
-        <keyword ref="qlinuxfbscreen.html#cache">cache</keyword>
-        <keyword ref="qlinuxfbscreen.html#clearCache">clearCache</keyword>
-        <keyword ref="qlinuxfbscreen.html#deleteEntry">deleteEntry</keyword>
-        <keyword ref="qlinuxfbscreen.html#set">set</keyword>
-        <keyword ref="qlinuxfbscreen.html#uncache">uncache</keyword>
-        <section ref="qlinuxfbscreen-members.html" title="List of all members"/>
     </section>
     <section ref="qlist.html" title="QList Class Reference">
         <keyword ref="qlist.html">QList</keyword>
@@ -7870,6 +7867,7 @@
         <keyword ref="qmessagebox.html#critical">critical</keyword>
         <keyword ref="qmessagebox.html#defaultButton">defaultButton</keyword>
         <keyword ref="qmessagebox.html#escapeButton">escapeButton</keyword>
+        <keyword ref="qmessagebox.html#exec">exec</keyword>
         <keyword ref="qmessagebox.html#information">information</keyword>
         <keyword ref="qmessagebox.html#question">question</keyword>
         <keyword ref="qmessagebox.html#removeButton">removeButton</keyword>
@@ -8958,14 +8956,9 @@
         <keyword ref="qpicture.html">QPicture</keyword>
         <keyword ref="qpicture.html#boundingRect">boundingRect</keyword>
         <keyword ref="qpicture.html#data">data</keyword>
-        <keyword ref="qpicture.html#inputFormatList">inputFormatList</keyword>
-        <keyword ref="qpicture.html#inputFormats">inputFormats</keyword>
         <keyword ref="qpicture.html#isNull">isNull</keyword>
         <keyword ref="qpicture.html#load">load</keyword>
         <keyword ref="qpicture.html#metric">metric</keyword>
-        <keyword ref="qpicture.html#outputFormatList">outputFormatList</keyword>
-        <keyword ref="qpicture.html#outputFormats">outputFormats</keyword>
-        <keyword ref="qpicture.html#pictureFormat">pictureFormat</keyword>
         <keyword ref="qpicture.html#play">play</keyword>
         <keyword ref="qpicture.html#save">save</keyword>
         <keyword ref="qpicture.html#setBoundingRect">setBoundingRect</keyword>
@@ -8974,6 +8967,7 @@
         <keyword ref="qpicture.html#operator-eq">operator=</keyword>
         <keyword ref="qpicture-qt3.html#copy">copy</keyword>
         <section ref="qpicture-members.html" title="List of all members"/>
+        <section ref="qpicture-obsolete.html" title="Obsolete members"/>
         <section ref="qpicture-qt3.html" title="Qt 3 support members"/>
     </section>
     <section ref="qpictureformatplugin.html" title="QPictureFormatPlugin Class Reference">
@@ -9875,7 +9869,16 @@
     </section>
     <section ref="qscreencursor.html" title="QScreenCursor Class Reference">
         <keyword ref="qscreencursor.html">QScreenCursor</keyword>
+        <keyword ref="qscreencursor.html#boundingRect">boundingRect</keyword>
+        <keyword ref="qscreencursor.html#hide">hide</keyword>
+        <keyword ref="qscreencursor.html#image">image</keyword>
+        <keyword ref="qscreencursor.html#initSoftwareCursor">initSoftwareCursor</keyword>
         <keyword ref="qscreencursor.html#instance">instance</keyword>
+        <keyword ref="qscreencursor.html#isAccelerated">isAccelerated</keyword>
+        <keyword ref="qscreencursor.html#isVisible">isVisible</keyword>
+        <keyword ref="qscreencursor.html#move">move</keyword>
+        <keyword ref="qscreencursor.html#set">set</keyword>
+        <keyword ref="qscreencursor.html#show">show</keyword>
         <section ref="qscreencursor-members.html" title="List of all members"/>
     </section>
     <section ref="qscreendriverfactory.html" title="QScreenDriverFactory Class Reference">
@@ -11496,7 +11499,6 @@
         <keyword ref="qstyle.html#StateFlag-enum">QStyle::State_Sibling</keyword>
         <keyword ref="qstyle.html#StateFlag-enum">QStyle::State_Active</keyword>
         <keyword ref="qstyle.html#StateFlag-enum">QStyle::State_HasFocus</keyword>
-        <keyword ref="qstyle.html#StateFlag-enum">QStyle::State_Alternate</keyword>
         <keyword ref="qstyle.html#StateFlag-enum">QStyle::State_FocusAtBorder</keyword>
         <keyword ref="qstyle.html#StateFlag-enum">QStyle::State_None</keyword>
         <keyword ref="qstyle.html#StateFlag-enum">QStyle::State_ReadOnly</keyword>
@@ -13684,6 +13686,7 @@
         <keyword ref="qtest.html#QTEST_APPLESS_MAIN">QTEST_APPLESS_MAIN</keyword>
         <keyword ref="qtest.html#QTEST_MAIN">QTEST_MAIN</keyword>
         <keyword ref="qtest.html#QTEST_NOOP_MAIN">QTEST_NOOP_MAIN</keyword>
+        <keyword ref="qtest.html#QVERIFY2">QVERIFY2</keyword>
         <keyword ref="qtest.html#QVERIFY">QVERIFY</keyword>
         <keyword ref="qtest.html#QWARN">QWARN</keyword>
     </section>
@@ -15079,17 +15082,6 @@
         <section ref="qtooltip-members.html" title="List of all members"/>
         <section ref="qtooltip-qt3.html" title="Qt 3 support members"/>
     </section>
-    <section ref="qtransformedscreen.html" title="QTransformedScreen Class Reference">
-        <keyword ref="qtransformedscreen.html">QTransformedScreen</keyword>
-        <keyword ref="qtransformedscreen.html#Transformation-enum">Transformation</keyword>
-        <keyword ref="qtransformedscreen.html#Transformation-enum">QTransformedScreen::Rot180</keyword>
-        <keyword ref="qtransformedscreen.html#Transformation-enum">QTransformedScreen::None</keyword>
-        <keyword ref="qtransformedscreen.html#Transformation-enum">QTransformedScreen::Rot270</keyword>
-        <keyword ref="qtransformedscreen.html#Transformation-enum">QTransformedScreen::Rot90</keyword>
-        <keyword ref="qtransformedscreen.html#setTransformation">setTransformation</keyword>
-        <keyword ref="qtransformedscreen.html#transformation">transformation</keyword>
-        <section ref="qtransformedscreen-members.html" title="List of all members"/>
-    </section>
     <section ref="qtranslator.html" title="QTranslator Class Reference">
         <keyword ref="qtranslator.html">QTranslator</keyword>
         <keyword ref="qtranslator.html#isEmpty">isEmpty</keyword>
@@ -15826,14 +15818,6 @@
         <keyword ref="qvectoriterator.html#operator-eq">operator=</keyword>
         <section ref="qvectoriterator-members.html" title="List of all members"/>
     </section>
-    <section ref="qvfbscreen.html" title="QVFbScreen Class Reference">
-        <keyword ref="qvfbscreen.html">QVFbScreen</keyword>
-        <section ref="qvfbscreen-members.html" title="List of all members"/>
-    </section>
-    <section ref="qvncscreen.html" title="QVNCScreen Class Reference">
-        <keyword ref="qvncscreen.html">QVNCScreen</keyword>
-        <section ref="qvncscreen-members.html" title="List of all members"/>
-    </section>
     <section ref="qwaitcondition.html" title="QWaitCondition Class Reference">
         <keyword ref="qwaitcondition.html">QWaitCondition</keyword>
         <keyword ref="qwaitcondition.html#wait">wait</keyword>
@@ -16124,6 +16108,7 @@
         <keyword ref="qwidget.html#x11Info">x11Info</keyword>
         <keyword ref="qwidget.html#x11PictureHandle">x11PictureHandle</keyword>
         <keyword ref="qwidget.html#QWidgetList-typedef">QWidgetList</keyword>
+        <keyword ref="qwidget.html#WId-typedef">WId</keyword>
         <keyword ref="qwidget.html#QWIDGETSIZE_MAX">QWIDGETSIZE_MAX</keyword>
         <keyword ref="qwidget-qt3.html#BackgroundOrigin-enum">BackgroundOrigin</keyword>
         <keyword ref="qwidget-qt3.html#BackgroundOrigin-enum">QWidget::WindowOrigin</keyword>
@@ -16422,10 +16407,6 @@
         <keyword ref="qwsserver-keyboardfilter.html">KeyboardFilter</keyword>
         <keyword ref="qwsserver-keyboardfilter.html#filter">filter</keyword>
         <section ref="qwsserver-keyboardfilter-members.html" title="List of all members"/>
-    </section>
-    <section ref="qwstslibmousehandler.html" title="QWSTslibMouseHandler Class Reference">
-        <keyword ref="qwstslibmousehandler.html">QWSTslibMouseHandler</keyword>
-        <section ref="qwstslibmousehandler-members.html" title="List of all members"/>
     </section>
     <section ref="qwswindow.html" title="QWSWindow Class Reference">
         <keyword ref="qwswindow.html">QWSWindow</keyword>
@@ -20392,6 +20373,7 @@
         <keyword ref="qtglobal.html#qRound">qRound</keyword>
         <keyword ref="qtglobal.html#qVersion">qVersion</keyword>
         <keyword ref="qtglobal.html#qWarning">qWarning</keyword>
+        <keyword ref="qtglobal.html#qt_set_sequence_auto_mnemonic">qt_set_sequence_auto_mnemonic</keyword>
         <keyword ref="qtglobal.html#QT_POINTER_SIZE">QT_POINTER_SIZE</keyword>
         <keyword ref="qtglobal.html#QT_TRANSLATE_NOOP">QT_TRANSLATE_NOOP</keyword>
         <keyword ref="qtglobal.html#QT_TR_NOOP">QT_TR_NOOP</keyword>
@@ -20486,8 +20468,8 @@
     <section ref="activeqt.html" title="ActiveQt Framework">
         <keyword ref="activeqt.html">ActiveQt Framework</keyword>
     </section>
-    <section ref="qtopiacore-accel.html" title="Adding an Accelerated Graphics Driver">
-        <keyword ref="qtopiacore-accel.html">Adding an Accelerated Graphics Driver</keyword>
+    <section ref="qtopiacore-accel.html" title="Adding an Accelerated Graphics Driver in Qtopia Core">
+        <keyword ref="qtopiacore-accel.html">Adding an Accelerated Graphics Driver in Qtopia Core</keyword>
     </section>
     <section ref="advanced.html" title="Advanced Widgets">
         <keyword ref="advanced.html">Advanced Widgets</keyword>
@@ -20519,9 +20501,6 @@
     <section ref="gallery-cde.html" title="CDE Style Widget Gallery">
         <keyword ref="gallery-cde.html">CDE Style Widget Gallery</keyword>
     </section>
-    <section ref="qtopiacore-charinput.html" title="Character Input">
-        <keyword ref="qtopiacore-charinput.html">Character Input</keyword>
-    </section>
     <section ref="classlists.html" title="Class and Function Indexes">
         <keyword ref="classlists.html">Class and Function Indexes</keyword>
     </section>
@@ -20546,11 +20525,14 @@
     <section ref="model-view-creating-models.html" title="Creating New Models">
         <keyword ref="model-view-creating-models.html">Creating New Models</keyword>
     </section>
-    <section ref="qtopiacore-crosscompiling.html" title="Cross-Compiling Applications">
-        <keyword ref="qtopiacore-crosscompiling.html">Cross-Compiling Applications</keyword>
+    <section ref="qtopiacore-crosscompiling.html" title="Cross-Compiling Qtopia Core Applications">
+        <keyword ref="qtopiacore-crosscompiling.html">Cross-Compiling Qtopia Core Applications</keyword>
     </section>
     <section ref="qt4-accessibility.html" title="Cross-Platform Accessibility Support in Qt 4">
         <keyword ref="qt4-accessibility.html">Cross-Platform Accessibility Support in Qt 4</keyword>
+    </section>
+    <section ref="qdbusadaptorexample.html" title="D-BUS Adaptor Example">
+        <keyword ref="qdbusadaptorexample.html">D-BUS Adaptor Example</keyword>
     </section>
     <section ref="database.html" title="Database Classes">
         <keyword ref="database.html">Database Classes</keyword>
@@ -20561,11 +20543,11 @@
     <section ref="debug.html" title="Debugging Techniques">
         <keyword ref="debug.html">Debugging Techniques</keyword>
     </section>
-    <section ref="qdbusdeclaringsignals.html" title="Declaring signals">
-        <keyword ref="qdbusdeclaringsignals.html">Declaring signals</keyword>
+    <section ref="qdbusdeclaringsignals.html" title="Declaring Signals in D-BUS Adaptors">
+        <keyword ref="qdbusdeclaringsignals.html">Declaring Signals in D-BUS Adaptors</keyword>
     </section>
-    <section ref="qdbusdeclaringslots.html" title="Declaring slots">
-        <keyword ref="qdbusdeclaringslots.html">Declaring slots</keyword>
+    <section ref="qdbusdeclaringslots.html" title="Declaring Slots in D-BUS Adaptors">
+        <keyword ref="qdbusdeclaringslots.html">Declaring Slots in D-BUS Adaptors</keyword>
     </section>
     <section ref="model-view-delegate.html" title="Delegate Classes">
         <keyword ref="model-view-delegate.html">Delegate Classes</keyword>
@@ -20579,11 +20561,11 @@
     <section ref="deployment-x11.html" title="Deploying an Application on Qt/X11">
         <keyword ref="deployment-x11.html">Deploying an Application on Qt/X11</keyword>
     </section>
-    <section ref="qtopiacore-deployment.html" title="Deploying an Application on Qtopia Core">
-        <keyword ref="qtopiacore-deployment.html">Deploying an Application on Qtopia Core</keyword>
-    </section>
     <section ref="deployment.html" title="Deploying Qt Applications">
         <keyword ref="deployment.html">Deploying Qt Applications</keyword>
+    </section>
+    <section ref="qtopiacore-deployment.html" title="Deploying Qtopia Core Applications">
+        <keyword ref="qtopiacore-deployment.html">Deploying Qtopia Core Applications</keyword>
     </section>
     <section ref="desktop.html" title="Desktop Environment Classes">
         <keyword ref="desktop.html">Desktop Environment Classes</keyword>
@@ -20600,9 +20582,6 @@
     <section ref="environment.html" title="Environment Classes">
         <keyword ref="environment.html">Environment Classes</keyword>
     </section>
-    <section ref="qtopiacore-envvars.html" title="Environment Variables">
-        <keyword ref="qtopiacore-envvars.html">Environment Variables</keyword>
-    </section>
     <section ref="codec-eucjp.html" title="EUC-JP Text Codec">
         <keyword ref="codec-eucjp.html">EUC-JP Text Codec</keyword>
     </section>
@@ -20615,14 +20594,8 @@
     <section ref="eventsandfilters.html" title="Events and Event Filters">
         <keyword ref="eventsandfilters.html">Events and Event Filters</keyword>
     </section>
-    <section ref="adaptorexample.html" title="Example of an interface implemented with an adaptor">
-        <keyword ref="adaptorexample.html">Example of an interface implemented with an adaptor</keyword>
-    </section>
-    <section ref="qtopiacore-features.html" title="Fine-Tuning Features">
-        <keyword ref="qtopiacore-features.html">Fine-Tuning Features</keyword>
-    </section>
-    <section ref="qtopiacore-fonts.html" title="Fonts">
-        <keyword ref="qtopiacore-fonts.html">Fonts</keyword>
+    <section ref="qtopiacore-features.html" title="Fine-Tuning Features in Qtopia Core">
+        <keyword ref="qtopiacore-features.html">Fine-Tuning Features in Qtopia Core</keyword>
     </section>
     <section ref="datastreamformat.html" title="Format of the QDataStream Operators">
         <keyword ref="datastreamformat.html">Format of the QDataStream Operators</keyword>
@@ -20693,17 +20666,14 @@
     <section ref="codecs-jis.html" title="ISO 2022-JP (JIS) Text Codec">
         <keyword ref="codecs-jis.html">ISO 2022-JP (JIS) Text Codec</keyword>
     </section>
-    <section ref="qtopiacore-porting.html" title="Issues to be Aware of When Porting Qtopia Core">
-        <keyword ref="qtopiacore-porting.html">Issues to be Aware of When Porting Qtopia Core</keyword>
-    </section>
     <section ref="model-view-convenience.html" title="Item View Convenience Classes">
         <keyword ref="model-view-convenience.html">Item View Convenience Classes</keyword>
     </section>
     <section ref="focus.html" title="Keyboard Focus">
         <keyword ref="focus.html">Keyboard Focus</keyword>
     </section>
-    <section ref="known-issues.html" title="Known Issues in 4.2.1">
-        <keyword ref="known-issues.html">Known Issues in 4.2.1</keyword>
+    <section ref="known-issues.html" title="Known Issues in 4.2.2">
+        <keyword ref="known-issues.html">Known Issues in 4.2.2</keyword>
     </section>
     <section ref="layout.html" title="Layout Classes">
         <keyword ref="layout.html">Layout Classes</keyword>
@@ -20762,6 +20732,9 @@
     <section ref="tools.html" title="Non-GUI Classes">
         <keyword ref="tools.html">Non-GUI Classes</keyword>
     </section>
+    <section ref="pdf-licensing.html" title="Notes about PDF Licensing">
+        <keyword ref="pdf-licensing.html">Notes about PDF Licensing</keyword>
+    </section>
     <section ref="objectmodel.html" title="Object Model">
         <keyword ref="objectmodel.html">Object Model</keyword>
     </section>
@@ -20777,9 +20750,6 @@
     <section ref="qundo.html" title="Overview of Qt's Undo Framework">
         <keyword ref="qundo.html">Overview of Qt's Undo Framework</keyword>
     </section>
-    <section ref="qtopiacore-performance.html" title="Performance Tuning">
-        <keyword ref="qtopiacore-performance.html">Performance Tuning</keyword>
-    </section>
     <section ref="gallery-plastique.html" title="Plastique Style Widget Gallery">
         <keyword ref="gallery-plastique.html">Plastique Style Widget Gallery</keyword>
     </section>
@@ -20789,17 +20759,20 @@
     <section ref="plugins.html" title="Plugin Classes">
         <keyword ref="plugins.html">Plugin Classes</keyword>
     </section>
-    <section ref="qtopiacore-pointer.html" title="Pointer Handling">
-        <keyword ref="qtopiacore-pointer.html">Pointer Handling</keyword>
-    </section>
     <section ref="porting4-designer.html" title="Porting .ui Files to Qt 4">
         <keyword ref="porting4-designer.html">Porting .ui Files to Qt 4</keyword>
     </section>
-    <section ref="qtopiacore-differences.html" title="Porting Applications to Qtopia Core">
-        <keyword ref="qtopiacore-differences.html">Porting Applications to Qtopia Core</keyword>
-    </section>
     <section ref="porting.html" title="Porting Guides">
         <keyword ref="porting.html">Porting Guides</keyword>
+    </section>
+    <section ref="qtopiacore-differences.html" title="Porting Qt Applications to Qtopia Core">
+        <keyword ref="qtopiacore-differences.html">Porting Qt Applications to Qtopia Core</keyword>
+    </section>
+    <section ref="qtopiacore-porting-device.html" title="Porting Qtopia Core to a New Architecture">
+        <keyword ref="qtopiacore-porting-device.html">Porting Qtopia Core to a New Architecture</keyword>
+    </section>
+    <section ref="qtopiacore-porting-operatingsystem.html" title="Porting Qtopia Core to Another Operating System">
+        <keyword ref="qtopiacore-porting-operatingsystem.html">Porting Qtopia Core to Another Operating System</keyword>
     </section>
     <section ref="graphicsview-porting.html" title="Porting to Graphics View">
         <keyword ref="graphicsview-porting.html">Porting to Graphics View</keyword>
@@ -20809,6 +20782,9 @@
     </section>
     <section ref="porting4-dnd.html" title="Porting to Qt 4 (Drag and Drop)">
         <keyword ref="porting4-dnd.html">Porting to Qt 4 (Drag and Drop)</keyword>
+    </section>
+    <section ref="printing.html" title="Printing with Qt">
+        <keyword ref="printing.html">Printing with Qt</keyword>
     </section>
     <section ref="model-view-proxy-models.html" title="Proxy Models">
         <keyword ref="model-view-proxy-models.html">Proxy Models</keyword>
@@ -20915,8 +20891,8 @@
     <section ref="qtdbus.html" title="QtDBus module">
         <keyword ref="qtdbus.html">QtDBus module</keyword>
     </section>
-    <section ref="dbusxml2cpp.html" title="QtDBus XML compiler (dbusxml2cpp)">
-        <keyword ref="dbusxml2cpp.html">QtDBus XML compiler (dbusxml2cpp)</keyword>
+    <section ref="qdbusxml2cpp.html" title="QtDBus XML compiler (qdbusxml2cpp)">
+        <keyword ref="qdbusxml2cpp.html">QtDBus XML compiler (qdbusxml2cpp)</keyword>
     </section>
     <section ref="qtdesigner.html" title="QtDesigner Module">
         <keyword ref="qtdesigner.html">QtDesigner Module</keyword>
@@ -20939,8 +20915,35 @@
     <section ref="qtopiacore.html" title="Qtopia Core">
         <keyword ref="qtopiacore.html">Qtopia Core</keyword>
     </section>
+    <section ref="qtopiacore-opengl.html" title="Qtopia Core and OpenGL">
+        <keyword ref="qtopiacore-opengl.html">Qtopia Core and OpenGL</keyword>
+    </section>
+    <section ref="qtopiacore-architecture.html" title="Qtopia Core Architecture">
+        <keyword ref="qtopiacore-architecture.html">Qtopia Core Architecture</keyword>
+    </section>
+    <section ref="qtopiacore-charinput.html" title="Qtopia Core Character Input">
+        <keyword ref="qtopiacore-charinput.html">Qtopia Core Character Input</keyword>
+    </section>
     <section ref="qws.html" title="Qtopia Core Classes">
         <keyword ref="qws.html">Qtopia Core Classes</keyword>
+    </section>
+    <section ref="qtopiacore-displaymanagement.html" title="Qtopia Core Display Management">
+        <keyword ref="qtopiacore-displaymanagement.html">Qtopia Core Display Management</keyword>
+    </section>
+    <section ref="qtopiacore-envvars.html" title="Qtopia Core Environment Variables">
+        <keyword ref="qtopiacore-envvars.html">Qtopia Core Environment Variables</keyword>
+    </section>
+    <section ref="qtopiacore-fonts.html" title="Qtopia Core Fonts">
+        <keyword ref="qtopiacore-fonts.html">Qtopia Core Fonts</keyword>
+    </section>
+    <section ref="qtopiacore-performance.html" title="Qtopia Core Performance Tuning">
+        <keyword ref="qtopiacore-performance.html">Qtopia Core Performance Tuning</keyword>
+    </section>
+    <section ref="qtopiacore-pointer.html" title="Qtopia Core Pointer Handling">
+        <keyword ref="qtopiacore-pointer.html">Qtopia Core Pointer Handling</keyword>
+    </section>
+    <section ref="qtopiacore-qvfb.html" title="Qtopia Core's Virtual Framebuffer">
+        <keyword ref="qtopiacore-qvfb.html">Qtopia Core's Virtual Framebuffer</keyword>
     </section>
     <section ref="qtsql.html" title="QtSql Module">
         <keyword ref="qtsql.html">QtSql Module</keyword>
@@ -20966,8 +20969,8 @@
     <section ref="richtext.html" title="Rich Text Processing">
         <keyword ref="richtext.html">Rich Text Processing</keyword>
     </section>
-    <section ref="qtopiacore-running.html" title="Running Applications">
-        <keyword ref="qtopiacore-running.html">Running Applications</keyword>
+    <section ref="qtopiacore-running.html" title="Running Qtopia Core Applications">
+        <keyword ref="qtopiacore-running.html">Running Qtopia Core Applications</keyword>
     </section>
     <section ref="session.html" title="Session Management">
         <keyword ref="session.html">Session Management</keyword>
@@ -21050,8 +21053,8 @@
     <section ref="resources.html" title="The Qt Resource System">
         <keyword ref="resources.html">The Qt Resource System</keyword>
     </section>
-    <section ref="qdbustypesystem.html" title="The QtDBus type system">
-        <keyword ref="qdbustypesystem.html">The QtDBus type system</keyword>
+    <section ref="qdbustypesystem.html" title="The QtDBus Type System">
+        <keyword ref="qdbustypesystem.html">The QtDBus Type System</keyword>
     </section>
     <section ref="richtext-cursor.html" title="The QTextCursor Interface">
         <keyword ref="richtext-cursor.html">The QTextCursor Interface</keyword>
@@ -21062,11 +21065,8 @@
     <section ref="qt4-tulip.html" title="The Tulip Container Classes">
         <keyword ref="qt4-tulip.html">The Tulip Container Classes</keyword>
     </section>
-    <section ref="qtopiacore-qvfb.html" title="The Virtual Framebuffer">
-        <keyword ref="qtopiacore-qvfb.html">The Virtual Framebuffer</keyword>
-    </section>
-    <section ref="qtopiacore-vnc.html" title="The VNC Protocol">
-        <keyword ref="qtopiacore-vnc.html">The VNC Protocol</keyword>
+    <section ref="qtopiacore-vnc.html" title="The VNC Protocol and Qtopia Core">
+        <keyword ref="qtopiacore-vnc.html">The VNC Protocol and Qtopia Core</keyword>
     </section>
     <section ref="3rdparty.html" title="Third-Party Licenses Used in Qt">
         <keyword ref="3rdparty.html">Third-Party Licenses Used in Qt</keyword>

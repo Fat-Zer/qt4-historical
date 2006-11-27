@@ -90,7 +90,7 @@ struct Q3ListViewPrivate
           us to use the physical ordering of columns rather than the
           logical. Microsoft uses the logical ordering, so there is
           some virtue in doing so, although it prevents the user from
-          chosing the secondary key.
+          choosing the secondary key.
         */
         Q3ListViewItem * item;
         int numCols;
@@ -3716,6 +3716,7 @@ bool Q3ListView::eventFilter(QObject * o, QEvent * e)
         case QEvent::FocusOut:
             focusOutEvent(fe);
             return true;
+#ifndef QT_NO_TOOLTIP
         case QEvent::ToolTip:
         {
             if (!showToolTips())
@@ -3739,6 +3740,7 @@ bool Q3ListView::eventFilter(QObject * o, QEvent * e)
                 QToolTip::showText(he->globalPos(), item->text(col), viewport());
             return true;
         }
+#endif
         default:
             // nothing
             break;
@@ -3879,7 +3881,7 @@ Q3ListViewItem * Q3ListViewItem::itemBelow() const
 
 
 /*!
-    \fn bool Q3ListViewItem::isOpen () const
+    \fn bool Q3ListViewItem::isOpen() const
 
     Returns true if this list view item has children \e and they are
     not explicitly hidden; otherwise returns false.
@@ -6765,6 +6767,9 @@ void Q3ListView::setOpen(Q3ListViewItem * item, bool open)
 
 
 /*!
+    Returns true if this list view item has children \e and they are
+    not explicitly hidden; otherwise returns false.
+
     Identical to \a{item}->isOpen(). Provided for completeness.
 
     \sa setOpen()

@@ -1,4 +1,4 @@
-                          INSTALLING Qt/Mac Version 4.2.1
+                          INSTALLING Qt/Mac Version 4.2.2
 
 Note: If you have obtained a binary package for this platform, consult the
 installation instructions provided instead of the ones in this document.
@@ -11,10 +11,10 @@ installation instructions provided instead of the ones in this document.
 2.  Unpack the archive if you have not done so already:
 
         cd /tmp
-        gunzip qt-mac-opensource-src-4.2.1.tar.gz        # uncompress the archive
-        tar xvf qt-mac-opensource-src-4.2.1.tar          # unpack it
+        gunzip qt-mac-opensource-src-4.2.2.tar.gz        # uncompress the archive
+        tar xvf qt-mac-opensource-src-4.2.2.tar          # unpack it
 
-    This creates the directory /tmp/qt-mac-opensource-src-4.2.1 containing the files
+    This creates the directory /tmp/qt-mac-opensource-src-4.2.2 containing the files
     from the archive.
 
 3.  Building
@@ -23,12 +23,12 @@ installation instructions provided instead of the ones in this document.
     ./configure script in the package directory.
 
     By default, Qt is configured for installation in the
-    /usr/local/Trolltech/Qt-4.2.1 directory, but this can be
+    /usr/local/Trolltech/Qt-4.2.2 directory, but this can be
     changed by using the -prefix option. Alternatively, the
     -prefix-install option can be used to specify a "local"
     installation within the source directory.
 
-        cd /tmp/qt-mac-opensource-src-4.2.1
+        cd /tmp/qt-mac-opensource-src-4.2.2
         ./configure
 
     Type "./configure -help" to get a list of all available options.
@@ -77,12 +77,12 @@ installation instructions provided instead of the ones in this document.
 
     In .profile (if your shell is bash), add the following lines:
 
-        PATH=/usr/local/Trolltech/Qt-4.2.1/bin:$PATH
+        PATH=/usr/local/Trolltech/Qt-4.2.2/bin:$PATH
         export PATH
 
     In .login (in case your shell is csh or tcsh), add the following line:
 
-        setenv PATH /usr/local/Trolltech/Qt-4.2.1/bin:$PATH
+        setenv PATH /usr/local/Trolltech/Qt-4.2.2/bin:$PATH
 
     If you use a different shell, please modify your environment
     variables accordingly.
@@ -91,7 +91,7 @@ installation instructions provided instead of the ones in this document.
 
     If you are new to Qt, we suggest that you take a look at the demos and
     examples to see Qt in action. Run the Qt Examples and Demos either by
-    typing 'open /usr/local/Trolltech/Qt-4.2.1/bin/qtdemo.app' on the
+    typing 'open /usr/local/Trolltech/Qt-4.2.2/bin/qtdemo.app' on the
     command line or by double-clicking on the 'qtdemo' icon in the Finder.
 
     You might also want to try the following links:

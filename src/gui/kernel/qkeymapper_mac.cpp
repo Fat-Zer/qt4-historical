@@ -29,6 +29,7 @@
 #include <qapplication.h>
 #include <qinputcontext.h>
 #include <private/qkeymapper_p.h>
+#include <private/qapplication_p.h>
 
 /*****************************************************************************
   QKeyMapper debug facilities
@@ -622,7 +623,7 @@ QKeyMapperPrivate::translateKeyEvent(QWidget *widget, EventHandlerCallRef er, Ev
     switch(eclass)
     {
     case kEventClassKeyboard: {
-        // unfortunatly modifiers changed event looks quite different, so I have a separate
+        // unfortunately modifiers changed event looks quite different, so I have a separate
         // code path
         if(ekind == kEventRawKeyModifiersChanged) {
             //figure out changed modifiers, wish Apple would just send a delta
@@ -805,13 +806,12 @@ QKeyMapper::sendKeyEvent(QWidget *widget, bool grab,
     Q_UNUSED(count);
     if(widget) {
         bool key_event = true;
-#if 1 // ####### Enable Support stuff below
-        Q_UNUSED(grab);
-#elif defined(QT3_SUPPORT) && !defined(QT_NO_SHORTCUT)
-        if(etype == QEvent::KeyPress && !grab
+#if defined(QT3_SUPPORT) && !defined(QT_NO_SHORTCUT)
+        if(type == QEvent::KeyPress && !grab
            && QApplicationPrivate::instance()->use_compat()) {
-            QKeyEventEx accel_ev(Qt::ShortcutOverride, code, modifiers, text, autorepeat, qMax(1, text.length()),
-                                 nativeScanCode, nativeVirtualKey, nativeModifiers);
+               QKeyEventEx accel_ev(type, code, modifiers,
+                                    text, autorepeat, qMax(1, int(text.length())),
+                                    nativeScanCode, nativeVirtualKey, nativeModifiers);
             if(QApplicationPrivate::instance()->qt_tryAccelEvent(widget, &accel_ev)) {
 #if defined(DEBUG_KEY_BINDINGS) || defined(DEBUG_KEY_BINDINGS_MODIFIERS)
                 qDebug("KeyEvent: %s::%s consumed Accel: %s %d",

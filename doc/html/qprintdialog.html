@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-mac-opensource-src-4.2.1/src/gui/dialogs/qabstractprintdialog.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-mac-opensource-src-4.2.2/src/gui/dialogs/qabstractprintdialog.cpp -->
 <head>
   <title>Qt 4.2: QPrintDialog Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -70,7 +70,7 @@
     </td></tr>
     </table>
     <p>The printer dialog (shown above in Plastique style) enables access to common printing properties. On X11 platforms that use the CUPS printing system, the settings for each available printer can be modified via the dialog's <b>Properties</b> push button.</p>
-<p>On Windows and Mac OS X, the native print dialog is used, which means that some <a href="qwidget.html">QWidget</a> and <a href="qdialog.html">QDialog</a> properties set on the dialog won't be respected.</p>
+<p>On Windows and Mac OS X, the native print dialog is used, which means that some <a href="qwidget.html">QWidget</a> and <a href="qdialog.html">QDialog</a> properties set on the dialog won't be respected. In addition, the native print dialog on Mac OS X does not support setting printer options, i.e. <a href="qabstractprintdialog.html#setEnabledOptions">QAbstractPrintDialog::setEnabledOptions</a>() and <a href="qabstractprintdialog.html#addEnabledOption">QAbstractPrintDialog::addEnabledOption</a>() have no effect.</p>
 <p>See also <a href="qpagesetupdialog.html">QPageSetupDialog</a>, <a href="qprinter.html">QPrinter</a>, <a href="itemviews-pixelator.html">Pixelator Example</a>, <a href="richtext-orderform.html">Order Form Example</a>, <a href="widgets-imageviewer.html">Image Viewer Example</a>, and <a href="widgets-scribble.html">Scribble Example</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
@@ -84,6 +84,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

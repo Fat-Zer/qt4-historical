@@ -535,7 +535,7 @@ uint qHash(QAXUIElement element)
     child identifier, and the identity of a AXUIelementRef is determined by its
     HIObjectRef and identifier.
 
-    QAccessibleHierarchyManager recieves QObject::destroyed signals and deletes
+    QAccessibleHierarchyManager receives QObject::destroyed() signals and deletes
     the accessibility objects for destroyed objects.
 */
 class QAccessibleHierarchyManager : public QObject
@@ -665,7 +665,9 @@ QAXUIElement QAccessibleHierarchyManager::createElementForInterface(const QInter
     }
 
     if (hiobj == 0) {
-        HIObjectCreate(kObjectQtAccessibility, 0, &hiobj);
+        const OSStatus err = HIObjectCreate(kObjectQtAccessibility, 0, &hiobj);
+        if (err)
+            qWarning("%s::%d: Qt internal error creating HIObject: %ld", __FILE__, __LINE__, err);
         weCreatedIt = true;
     }
 
@@ -772,7 +774,7 @@ static bool qt_mac_append_cf_uniq(CFMutableArrayRef array, CFTypeRef value)
 }
 
 /*
-    Gets the AccessibleObject paramter from an event.
+    Gets the AccessibleObject parameter from an event.
 */
 static inline AXUIElementRef getAccessibleObjectParameter(EventRef event)
 {
@@ -784,7 +786,7 @@ static inline AXUIElementRef getAccessibleObjectParameter(EventRef event)
 
 /*
     Returns an AXUIElementRef for the given child index of interface. Creates the element
-    if neccesary. Returns 0 if there is no child at that index. childIndex is 1-based.
+    if necessary. Returns 0 if there is no child at that index. childIndex is 1-based.
 */
 static AXUIElementRef lookupCreateChild(const QInterfaceItem interface, const int childIndex)
 {
@@ -1895,10 +1897,6 @@ static void registerQtAccessibilityHIObjectSubclass()
 
 void QAccessible::initialize()
 {
-    // Return if mac accessibility is not enabled.
-    if (!AXAPIEnabled())
-        return;
-
     registerQtAccessibilityHIObjectSubclass();
 }
 

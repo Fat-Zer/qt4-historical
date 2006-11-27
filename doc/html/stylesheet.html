@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-mac-opensource-src-4.2.1/doc/src/stylesheet.qdoc -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-mac-opensource-src-4.2.2/doc/src/stylesheet.qdoc -->
 <head>
   <title>Qt 4.2: Qt Style Sheets</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -48,7 +48,7 @@
 <p>For this kind of customization, style sheets are much more powerful than <a href="qpalette.html">QPalette</a>. For example, it might be tempting to set the <a href="qpalette.html#ColorRole-enum">QPalette::Button</a> role to red for a <a href="qpushbutton.html">QPushButton</a> to obtain a red push button. However, this wasn't guaranteed to work for all styles, because style authors are restricted by the different platforms' guidelines and (on Windows XP and Mac OS X) by the native theme engine.</p>
 <p>Style sheets let you perform all kinds of customizations that are difficult or impossible to perform using <a href="qpalette.html">QPalette</a> alone. If you want yellow backgrounds for mandatory fields, red text for potentially destructive push buttons, or fancy check boxes, style sheets are the answer.</p>
 <p>Style sheets are applied on top of the current <a href="qstyle.html">widget style</a>, meaning that your applications will still look native, but any style sheet constraints will be taken into consideration. Unlike palette fiddling, style sheets offer guarantees: If you set the background color of a <a href="qpushbutton.html">QPushButton</a> to be red, you can be assured that the button will have a red background in all styles, on all platforms. <a href="designer-manual.html#qt-designer">Qt Designer</a> provides style sheet integration, making it easy to view the effects of a style sheet in different <a href="qstyle.html">widget styles</a>.</p>
-<p>In addition, style sheets can be used to provide a distinctive look and feel for your application, without having to subclass <a href="qstyle.html">QStyle</a>. For example, you can specify arbitrary images for radio buttons and check boxes to make them stand out. Using this technique, you can also achieve minor customizations that would normally require subclassing several style classes, such as specifying a <a href="qstyle.html#styleHint">style hint</a>. The Style Sheet example depicted below defines two distinctive style sheets that you can try out and modify at will.</p>
+<p>In addition, style sheets can be used to provide a distinctive look and feel for your application, without having to subclass <a href="qstyle.html">QStyle</a>. For example, you can specify arbitrary images for radio buttons and check boxes to make them stand out. Using this technique, you can also achieve minor customizations that would normally require subclassing several style classes, such as specifying a <a href="qstyle.html#styleHint">style hint</a>. The <a href="widgets-stylesheet.html">Style Sheet</a> example depicted below defines two distinctive style sheets that you can try out and modify at will.</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" class="odd"><td><img src="images/stylesheet-coffee-xp.png" /></td><td><img src="images/stylesheet-pagefold.png" /></td></tr>
 </table></p>
@@ -138,14 +138,14 @@
 </ul>
 <p><i>Concatenating the three numbers a-b-c (in a number system with a large base) gives the specificity.</i></p>
 <p><i>Some examples:</i></p>
-<pre> *             {}  / * a=0 b=0 c=0 -&gt; specificity =   0 * /
- LI            {}  / * a=0 b=0 c=1 -&gt; specificity =   1 * /
- UL LI         {}  / * a=0 b=0 c=2 -&gt; specificity =   2 * /
- UL OL+LI      {}  / * a=0 b=0 c=3 -&gt; specificity =   3 * /
- H1 + *[REL=up]{}  / * a=0 b=1 c=1 -&gt; specificity =  11 * /
- UL OL LI.red  {}  / * a=0 b=1 c=3 -&gt; specificity =  13 * /
- LI.red.level  {}  / * a=0 b=2 c=1 -&gt; specificity =  21 * /
- #x34y         {}  / * a=1 b=0 c=0 -&gt; specificity = 100 * /</pre>
+<pre> *             {}  <span class="comment">/* a=0 b=0 c=0 -&gt; specificity =   0 */</span>
+ LI            {}  <span class="comment">/* a=0 b=0 c=1 -&gt; specificity =   1 */</span>
+ UL LI         {}  <span class="comment">/* a=0 b=0 c=2 -&gt; specificity =   2 */</span>
+ UL OL+LI      {}  <span class="comment">/* a=0 b=0 c=3 -&gt; specificity =   3 */</span>
+ H1 + *[REL=up]{}  <span class="comment">/* a=0 b=1 c=1 -&gt; specificity =  11 */</span>
+ UL OL LI.red  {}  <span class="comment">/* a=0 b=1 c=3 -&gt; specificity =  13 */</span>
+ LI.red.level  {}  <span class="comment">/* a=0 b=2 c=1 -&gt; specificity =  21 */</span>
+ #x34y         {}  <span class="comment">/* a=1 b=0 c=0 -&gt; specificity = 100 */</span></pre>
 </blockquote>
 <a name="cascading"></a>
 <h3>Cascading</h3>
@@ -216,11 +216,11 @@
  QLineEdit { background-color: rgb(255, 0, 0) }</pre>
 </td></tr>
 <tr valign="top" class="even"><td><tt>background-image</tt></td><td><a href="#url">Url</a></td><td>The background image used for the widget. Semi-transparent parts of the image let the <tt>background-color</tt> shine through.<p>Example:</p>
-<pre> QTreeView { background-image: url(:/images/hydro.png) }</pre>
+<pre> QFrame { background-image: url(:/images/hydro.png) }</pre>
 </td></tr>
 <tr valign="top" class="odd"><td><tt>background-repeat</tt></td><td><a href="#repeat">Repeat</a></td><td>Whether and how the background image is repeated to fill the <tt>background-origin</tt> rectangle.<p>If this attribute is not specified, the background image is repeated in both directions (<tt>repeat</tt>).</p>
 <p>Example:</p>
-<pre> QTextEdit {
+<pre> QFrame {
      background: white url(:/images/ring.png);
      background-repeat: repeat-y;
      background-position: left;
@@ -228,7 +228,7 @@
 </td></tr>
 <tr valign="top" class="even"><td><tt>background-position</tt></td><td><a href="#alignment">Alignment</a></td><td>The alignment of the background image within the <tt>background-origin</tt> rectangle.<p>If this attribute is not specified, the alignment is <tt>top</tt> <tt>left</tt>.</p>
 <p>Example:</p>
-<pre> QTextEdit {
+<pre> QFrame {
      background: url(:/images/footer.png);
      background-position: bottom left;
  }</pre>
@@ -481,23 +481,23 @@
 </td></tr>
 <tr valign="top" class="even"><td><b>Border <a name="border-style"></a> Style</b></td><td><tt>dashed</tt> <br /> | <tt>dot-dash</tt> <br /> | <tt>dot-dot-dash</tt> <br /> | <tt>dotted</tt> <br /> | <tt>double</tt> <br /> | <tt>groove</tt> <br /> | <tt>inset</tt> <br /> | <tt>outset</tt> <br /> | <tt>ridge</tt> <br /> | <tt>solid</tt> <br /> | <tt>none</tt></td><td>Specifies the pattern used to draw a border. See the <a href="http://www.w3.org/TR/css3-background/#border-style">CSS3 Draft Specification</a> for details.</td></tr>
 <tr valign="top" class="odd"><td><b>Box <a name="box-colors"></a> Colors</b></td><td><a href="#color">Color</a>{1,4}</td><td>One to four occurrences of <a href="#color">Color</a>, specifying the top, right, bottom, and left edges of a box, respectively. If the left color is not specified, it is taken to be the same as the right color. If the bottom color is not specified, is it taken to be the same as the top color. If the right color is not specified, it is taken to be the same as the top color.<p>Example:</p>
-<pre> QLabel { border-color: red }                    / * red red red red * /
- QLabel { border-color: red blue }               / * red blue red blue * /
- QLabel { border-color: red blue green }         / * red blue green blue * /
- QLabel { border-color: red blue green yellow }  / * red blue green yellow * /</pre>
+<pre> QLabel { border-color: red }                    <span class="comment">/* red red red red */</span>
+ QLabel { border-color: red blue }               <span class="comment">/* red blue red blue */</span>
+ QLabel { border-color: red blue green }         <span class="comment">/* red blue green blue */</span>
+ QLabel { border-color: red blue green yellow }  <span class="comment">/* red blue green yellow */</span></pre>
 </td></tr>
 <tr valign="top" class="even"><td><b>Box <a name="box-lengths"></a> Lengths</b></td><td><a href="#length">Length</a>{1,4}</td><td>One to four occurrences of <a href="#length">Length</a>, specifying the top, right, bottom, and left edges of a box, respectively. If the left length is not specified, it is taken to be the same as the right length. If the bottom length is not specified, is it taken to be the same as the top length. If the right length is not specified, it is taken to be the same as the top length.<p>Examples:</p>
-<pre> QLabel { border-width: 1px }                    / * 1px 1px 1px 1px * /
- QLabel { border-width: 1px 2px }                / * 1px 2px 1px 2px * /
- QLabel { border-width: 1px 2px 3px }            / * 1px 2px 3px 2px * /
- QLabel { border-width: 1px 2px 3px 4px }        / * 1px 2px 3px 4px * /</pre>
+<pre> QLabel { border-width: 1px }                    <span class="comment">/* 1px 1px 1px 1px */</span>
+ QLabel { border-width: 1px 2px }                <span class="comment">/* 1px 2px 1px 2px */</span>
+ QLabel { border-width: 1px 2px 3px }            <span class="comment">/* 1px 2px 3px 2px */</span>
+ QLabel { border-width: 1px 2px 3px 4px }        <span class="comment">/* 1px 2px 3px 4px */</span></pre>
 </td></tr>
-<tr valign="top" class="odd"><td><b>Color</b> <a name="color"></a></td><td><tt>rgb(<i>r</i>, <i>g</i>, <i>b</i>)</tt> <br /> | <tt>#<i>rrggbb</i></tt> <br /> | <tt>#<i>aarrggbb</i></tt> <br /> | <a href="qcolor.html#setNamedColor">Color Name</a></td><td>Specifies a color as RGB (red, green, blue) or ARGB (alpha, red, green, blue). The <tt>rgb()</tt> syntax can be used with integer values between 0 and 255, or with percentages.<p>Examples:</p>
-<pre> QLabel { border-color: red }                    / * opaque red * /
- QLabel { border-color: #FF0000 }                / * opaque red * /
- QLabel { border-color: #3FFF0000 }              / * 75% transparent red * /
- QLabel { border-color: rgb(255, 0, 0) }         / * opaque red * /
- QLabel { border-color: rgb(100%, 0%, 0%) }      / * opaque red * /</pre>
+<tr valign="top" class="odd"><td><b>Color</b> <a name="color"></a></td><td><tt>rgb(<i>r</i>, <i>g</i>, <i>b</i>)</tt> <br /> | <tt>rgba(<i>r</i>, <i>g</i>, <i>b</i>, <i>a</i>)</tt> <br /> | <tt>#<i>rrggbb</i></tt> <br /> | <a href="qcolor.html#setNamedColor">Color Name</a></td><td>Specifies a color as RGB (red, green, blue) or RGBA (red, green, blue, alpha). The <tt>rgb()</tt> or <i>rgba()</i> syntax can be used with integer values between 0 and 255, or with percentages.<p>Examples:</p>
+<pre> QLabel { border-color: red }                    <span class="comment">/* opaque red */</span>
+ QLabel { border-color: #FF0000 }                <span class="comment">/* opaque red */</span>
+ QLabel { border-color: rgba(255, 0, 0, 75%) }   <span class="comment">/* 75% transparent red */</span>
+ QLabel { border-color: rgb(255, 0, 0) }         <span class="comment">/* opaque red */</span>
+ QLabel { border-color: rgb(100%, 0%, 0%) }      <span class="comment">/* opaque red */</span></pre>
 </td></tr>
 <tr valign="top" class="even"><td><b>Font</b> <a name="font"></a></td><td>(<a href="#font-style">Font Style</a> | <a href="#font-weight">Font Weight</a>){0,2} <a href="#font-size">Font Size</a> String</td><td>Shorthand font attribute.</td></tr>
 <tr valign="top" class="odd"><td><b>Font <a name="font-size"></a> Size</b></td><td><tt>xx-small</tt> <br /> | <tt>x-small</tt> <br /> | <tt>small</tt> <br /> | <tt>medium</tt> <br /> | <tt>large</tt> <br /> | <tt>x-large</tt> <br /> | <tt>xx-large</tt> <br /> | <tt>larger</tt> <br /> | <tt>smaller</tt> <br /> | <a href="#length">Length</a></td><td>The size of a font.</td></tr>
@@ -683,6 +683,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

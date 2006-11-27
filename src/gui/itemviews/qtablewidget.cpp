@@ -1453,6 +1453,10 @@ QTableWidgetItem &QTableWidgetItem::operator=(const QTableWidgetItem &other)
     \skipto QTableWidgetItem *newItem
     \printuntil tableWidget->setItem(
 
+    If you want to enable sorting in your table widget, do so after you
+    have populated it with items, otherwise sorting may interfere with
+    the insertion order (see setItem() for details).
+
     Tables can be given both horizontal and vertical headers. The simplest way
     to create the headers is to supply a list of strings to the
     setHorizontalHeaderLabels() and setVerticalHeaderLabels() functions. These
@@ -1553,6 +1557,7 @@ void QTableWidgetPrivate::_q_emitItemEntered(const QModelIndex &index)
     Q_Q(QTableWidget);
     if (QTableWidgetItem *item = model()->item(index))
         emit q->itemEntered(item);
+    emit q->cellEntered(index.row(), index.column());
 }
 
 void QTableWidgetPrivate::_q_emitItemChanged(const QModelIndex &index)
@@ -1861,6 +1866,16 @@ QTableWidgetItem *QTableWidget::item(int row, int column) const
     Sets the item for the given \a row and \a column to \a item.
 
     The table takes ownership of the item.
+
+    Note that if sorting is enabled (see \l{sortingEnabled}) and \a
+    column is the current sort column, the \a row will be moved to the
+    sorted position determined by \a item.
+
+    If you want to set several items of a particular row (say, by
+    calling setItem() in a loop), you may want to turn off sorting
+    before doing so, and turn it back on afterwards; this will allow
+    you to use the same \a row argument for all items in the same row
+    (i.e. setItem() will not move the row).
 
     \sa item() takeItem()
 */
@@ -2211,6 +2226,12 @@ QList<QTableWidgetSelectionRange> QTableWidget::selectedRanges() const
 
 /*!
   Returns a list of all selected items.
+
+  This function returns a list of pointers to the contents of the
+  selected cells. Use the selectedIndexes() function to retrieve the
+  complete selection \e including empty cells.
+
+  \sa selectedIndexes()
 */
 
 QList<QTableWidgetItem*> QTableWidget::selectedItems()
@@ -2428,6 +2449,8 @@ QMimeData *QTableWidget::mimeData(const QList<QTableWidgetItem*>) const
 /*!
     Handles the \a data supplied by a drag and drop operation that ended with
     the given \a action in the given \a row and \a column.
+    Returns true if the data and action can be handled by the model;
+    otherwise returns false.
 
     \sa supportedDropActions()
 */

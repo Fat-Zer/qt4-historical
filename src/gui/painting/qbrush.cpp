@@ -163,7 +163,7 @@ struct QGradientBrushData : public QBrushData
     (depending on how you construct a brush). This style tells the
     painter to not fill shapes. The standard style for filling is
     Qt::SolidPattern. The style can be set when the brush is created
-    using the appropiate constructor, and in addition the setStyle()
+    using the appropriate constructor, and in addition the setStyle()
     function provides means for altering the style once the brush is
     constructed.
 
@@ -179,7 +179,7 @@ struct QGradientBrushData : public QBrushData
     style is either Qt::LinearGradientPattern,
     Qt::RadialGradientPattern or Qt::ConicalGradientPattern. The
     gradient can only be set when constructing the brush, while the
-    texture() can be set using the appropiate constructor or by using
+    texture() can be set using the appropriate constructor or by using
     the setTexture() function. The texture() defines the pixmap used
     when the current style is Qt::TexturePattern.
 
@@ -518,6 +518,7 @@ void QBrush::detach(Qt::BrushStyle newStyle)
     x->ref = 1;
     x->style = newStyle;
     x->color = d->color;
+    x->transform = d->transform;
     x = qAtomicSetPtr(&d, x);
     if (!x->ref.deref())
         cleanUp(x);
@@ -891,8 +892,22 @@ QDataStream &operator<<(QDataStream &s, const QBrush &b)
                || b.style() == Qt::RadialGradientPattern
                || b.style() == Qt::ConicalGradientPattern) {
         const QGradient *gradient = b.gradient();
-        s << gradient->type();
-        s << gradient->stops();
+        int type_as_int = int(gradient->type());
+        s << type_as_int;
+
+        if (sizeof(qreal) == sizeof(double)) {
+            s << gradient->stops();
+        } else {
+            // ensure that we write doubles here instead of streaming the stops
+            // directly; otherwise, platforms that redefine qreal might generate
+            // data that cannot be read on other platforms.
+            QVector<QGradientStop> stops = gradient->stops();
+            s << quint32(stops.size());
+            for (int i = 0; i < stops.size(); ++i) {
+                const QGradientStop &stop = stops.at(i);
+                s << QPair<double, QColor>(double(stop.first), stop.second);
+            }
+        }
 
         if (gradient->type() == QGradient::LinearGradient) {
             s << static_cast<const QLinearGradient *>(gradient)->start();
@@ -900,10 +915,10 @@ QDataStream &operator<<(QDataStream &s, const QBrush &b)
         } else if (gradient->type() == QGradient::RadialGradient) {
             s << static_cast<const QRadialGradient *>(gradient)->center();
             s << static_cast<const QRadialGradient *>(gradient)->focalPoint();
-            s << static_cast<const QRadialGradient *>(gradient)->radius();
+            s << (double) static_cast<const QRadialGradient *>(gradient)->radius();
         } else { // type == Conical
             s << static_cast<const QConicalGradient *>(gradient)->center();
-            s << static_cast<const QConicalGradient *>(gradient)->angle();
+            s << (double) static_cast<const QConicalGradient *>(gradient)->angle();
         }
     }
     return s;
@@ -940,7 +955,19 @@ QDataStream &operator>>(QDataStream &s, QBrush &b)
         s >> type_as_int;
         type = QGradient::Type(type_as_int);
 
-        s >> stops;
+        if (sizeof(qreal) == sizeof(double)) {
+            s >> stops;
+        } else {
+            quint32 numStops;
+            double n;
+            QColor c;
+
+            s >> numStops;
+            for (quint32 i = 0; i < numStops; ++i) {
+                s >> n >> c;
+                stops << QPair<qreal, QColor>(n, c);
+            }
+        }
 
         if (type == QGradient::LinearGradient) {
             QPointF p1, p2;
@@ -1203,7 +1230,7 @@ QGradientStops QGradient::stops() const
     device on which the gradient is used.
 
     \value LogicalMode
-    \value StretchToDeviceMode 
+    \value StretchToDeviceMode
 */
 
 /*!

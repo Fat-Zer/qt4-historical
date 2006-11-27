@@ -365,7 +365,7 @@ public:
         , stroker(0)
         , tessVector(MAX_TESS_POINTS)
 #endif
-        , shader_dev(0)
+        , shader_ctx(0)
         , grad_palette(0)
         , has_glsl(false)
         {}
@@ -462,7 +462,7 @@ public:
     QDataBuffer<GLdouble> tessVector;
 #endif
 
-    QPaintDevice *shader_dev;
+    QGLContext *shader_ctx;
     GLuint grad_palette;
 
     GLuint radial_frag_program;
@@ -1144,10 +1144,11 @@ bool QOpenGLPaintEngine::begin(QPaintDevice *pdev)
     glEnable(GL_BLEND);
 
     if ((QGLExtensions::glExtensions & QGLExtensions::MirroredRepeat)
-        && (pdev != d->shader_dev))
+        && d->drawable.context() != d->shader_ctx
+        && !qgl_share_reg()->checkSharing(d->drawable.context(), d->shader_ctx))
     {
 #ifndef Q_WS_QWS
-        if (d->shader_dev) {
+        if (d->shader_ctx) {
             glBindTexture(GL_TEXTURE_1D, 0);
             glDeleteTextures(1, &d->grad_palette);
 
@@ -1161,7 +1162,7 @@ bool QOpenGLPaintEngine::begin(QPaintDevice *pdev)
                 glDeleteProgramsARB(1, &d->conical_frag_program);
             }
         }
-        d->shader_dev = pdev;
+        d->shader_ctx = d->drawable.context();
         gccaps |= LinearGradientFill;
         glGenTextures(1, &d->grad_palette);
 
@@ -1197,7 +1198,7 @@ bool QOpenGLPaintEngine::begin(QPaintDevice *pdev)
             glGenProgramsARB(1, &d->radial_frag_program);
             glGenProgramsARB(1, &d->conical_frag_program);
 
-            glGetError(); // reset the error state
+            while (glGetError() != GL_NO_ERROR) {} // reset the error state
             glBindProgramARB(GL_FRAGMENT_PROGRAM_ARB, d->radial_frag_program);
             glProgramStringARB(GL_FRAGMENT_PROGRAM_ARB, GL_PROGRAM_FORMAT_ASCII_ARB,
                                strlen(radial_program), (const GLbyte *) radial_program);
@@ -1324,8 +1325,33 @@ void QOpenGLPaintEnginePrivate::updateGradient(const QBrush &brush)
 
     if (has_mirrored_repeat && style == Qt::LinearGradientPattern) {
         const QLinearGradient *g = static_cast<const QLinearGradient *>(brush.gradient());
-        QPointF start = brush.matrix().map(g->start());
-        QPointF stop = brush.matrix().map(g->finalStop());
+        QMatrix m = brush.matrix();
+        QPointF start = m.map(g->start());
+        QPointF stop;
+
+        if (qFuzzyCompare(m.m11(), m.m22()) && m.m12() == 0.0 && m.m21() == 0.0) {
+            // It is a simple uniform scale and/or translation
+            stop = m.map(g->finalStop());
+        } else {
+            // It is not enough to just transform the endpoints.
+            // We have to make sure the _pattern_ is transformed correctly.
+
+            qreal odx = g->finalStop().x() - g->start().x();
+            qreal ody = g->finalStop().y() - g->start().y();
+
+            // nx, ny and dx, dy are normal and gradient direction after transform:
+            qreal nx = m.m11()*ody - m.m21()*odx;
+            qreal ny = m.m12()*ody - m.m22()*odx;
+
+            qreal dx = m.m11()*odx + m.m21()*ody;
+            qreal dy = m.m12()*odx + m.m22()*ody;
+
+            qreal lx = 1.0/(dx - dy*nx/ny);
+            qreal ly = 1.0/(dy - dx*ny/nx);
+            qreal l = 1.0/sqrt(lx*lx+ly*ly);
+
+            stop = start + QPointF(-ny, nx) * l/sqrt(nx*nx+ny*ny);
+        }
 
         float tr[4], f;
         tr[0] = stop.x() - start.x();
@@ -2037,7 +2063,7 @@ void QOpenGLPaintEngine::drawPolygon(const QPointF *points, int pointCount, Poly
         glColor4ubv(d->pen_color);
 #endif
         if (d->has_fast_pen) {
-            QVarLengthArray<float> vertexArray(pointCount*2);
+            QVarLengthArray<float> vertexArray(pointCount*2 + 2);
             glVertexPointer(2, GL_FLOAT, 0, vertexArray.data());
             int i;
             for (i=0; i<pointCount; ++i) {
@@ -2046,8 +2072,8 @@ void QOpenGLPaintEngine::drawPolygon(const QPointF *points, int pointCount, Poly
             }
             glEnableClientState(GL_VERTEX_ARRAY);
             if (mode != PolylineMode) {
-                vertexArray.append(points[0].x());
-                vertexArray.append(points[0].y());
+                vertexArray[i*2] = points[0].x();
+                vertexArray[i*2+1] = points[0].y();
                 glDrawArrays(GL_LINE_STRIP, 0, pointCount+1);
             } else {
                 glDrawArrays(GL_LINE_STRIP, 0, pointCount);
@@ -2399,6 +2425,7 @@ public:
     void cacheGlyphs(QGLContext *, const QTextItemInt &, const QVarLengthArray<glyph_t> &);
     void cleanCache();
     void allocTexture(int width, int height, GLuint texture);
+    void cleanupContext(QGLContext *);
 
 public slots:
     void fontEngineDestroyed(QObject *);
@@ -2448,6 +2475,31 @@ void QGLGlyphCache::widgetDestroyed(QObject *)
 {
 //     qDebug() << "widget destroyed";
     cleanCache(); // ###
+}
+
+void QGLGlyphCache::cleanupContext(QGLContext *ctx)
+{
+//     qDebug() << "==> cleaning for: " << hex << ctx;
+    QGLFontGlyphHash *font_cache = qt_context_cache.take(ctx);
+
+    if (font_cache) {
+        QList<QFontEngine *> keys = font_cache->keys();
+        for (int i=0; i < keys.size(); ++i) {
+            QFontEngine *fe = keys.at(i);
+            delete font_cache->take(fe);
+            quint64 font_key = (reinterpret_cast<quint64>(ctx) << 32) | reinterpret_cast<quint64>(fe);
+            QGLFontTexture *font_tex = qt_font_textures.take(font_key);
+            if (font_tex) {
+#ifdef Q_WS_MAC
+                if (aglGetCurrentContext() != 0)
+#endif
+                    glDeleteTextures(1, &font_tex->texture);
+                delete font_tex;
+            }
+        }
+        delete font_cache;
+    }
+//    qDebug() << "<=== done cleaning, num tex:" << qt_font_textures.size() << "num ctx:" << qt_context_cache.size();
 }
 
 void QGLGlyphCache::cleanCache()
@@ -2558,7 +2610,7 @@ void QGLGlyphCache::cacheGlyphs(QGLContext *context, const QTextItemInt &ti,
         font_tex->width = tex_width;
         font_tex->height = tex_height;
 //         qDebug() << "new font tex - width:" << tex_width << "height:"<< tex_height
-//                  << hex << "tex id:" << font_tex->texture << "key:" << font_key;
+//                  << hex << "tex id:" << font_tex->texture << "key:" << font_key << "num cached:" << qt_font_textures.size();
         qt_font_textures.insert(font_key, font_tex);
     } else {
         font_tex = it.value();
@@ -2667,6 +2719,15 @@ QGLGlyphCoord *QGLGlyphCache::lookup(QFontEngine *, glyph_t g)
 }
 
 Q_GLOBAL_STATIC(QGLGlyphCache, qt_glyph_cache)
+
+//
+// assumption: the context that this is called for has to be the
+// current context
+//
+void qgl_cleanup_glyph_cache(QGLContext *ctx)
+{
+    qt_glyph_cache()->cleanupContext(ctx);
+}
 
 void QOpenGLPaintEngine::drawTextItem(const QPointF &p, const QTextItem &textItem)
 {

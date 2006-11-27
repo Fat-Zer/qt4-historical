@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-mac-opensource-src-4.2.1/src/gui/widgets/qradiobutton.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-mac-opensource-src-4.2.2/src/gui/widgets/qradiobutton.cpp -->
 <head>
   <title>Qt 4.2: QRadioButton Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -58,7 +58,9 @@
 <p>A QRadioButton is an option button that can be switched on (checked) or off (unchecked). Radio buttons typically present the user with a &quot;one of many&quot; choice. In a group of radio buttons only one radio button at a time can be checked; if the user selects another button, the previously selected button is switched off.</p>
 <p>Radio buttons are <a href="qabstractbutton.html#autoExclusive-prop">autoExclusive</a> by default. If auto-exclusive is enabled, radio buttons that belong to the same parent widget behave as if they were part of the same exclusive button group. If you need multiple exclusive button groups for radio buttons that belong to the same parent widget, put them into a <a href="qbuttongroup.html">QButtonGroup</a>.</p>
 <p>Whenever a button is switched on or off it emits the <a href="qabstractbutton.html#toggled">toggled</a>() signal. Connect to this signal if you want to trigger an action each time the button changes state. Use <a href="qabstractbutton.html#checked-prop">isChecked</a>() to see if a particular button is selected.</p>
-<p>Just like <a href="qpushbutton.html">QPushButton</a>, a radio button displays text, and optionally a small icon. The text can be set in the constructor or with <a href="qabstractbutton.html#text-prop">setText</a>(); the icon is set with <a href="qabstractbutton.html#icon-prop">setIcon</a>().</p>
+<p>Just like <a href="qpushbutton.html">QPushButton</a>, a radio button displays text, and optionally a small icon. The icon is set with <a href="qabstractbutton.html#icon-prop">setIcon</a>(). The text can be set in the constructor or with <a href="qabstractbutton.html#text-prop">setText</a>(). A shortcut key can be specified by preceding the preferred character with an ampersand in the text. For example:</p>
+<pre> QRadioButton *button = new QRadioButton(&quot;Search from the &amp;cursor&quot;, this);</pre>
+<p>In this example the shortcut is <i>Alt+c</i>. See the <a href="qshortcut.html#mnemonic">QShortcut</a> documentation for details (to display an actual ampersand, use '&amp;&amp;').</p>
 <p>Important inherited members: <a href="qabstractbutton.html#text-prop">text</a>(), <a href="qabstractbutton.html#text-prop">setText</a>(), <a href="qabstractbutton.html#text-prop">text</a>(), <a href="qabstractbutton.html#down-prop">setDown</a>(), <a href="qabstractbutton.html#down-prop">isDown</a>(), <a href="qabstractbutton.html#autoRepeat-prop">autoRepeat</a>(), <a href="qabstractbutton.html#group">group</a>(), <a href="qabstractbutton.html#autoRepeat-prop">setAutoRepeat</a>(), <a href="qabstractbutton.html#toggle">toggle</a>(), <a href="qabstractbutton.html#pressed">pressed</a>(), <a href="qabstractbutton.html#released">released</a>(), <a href="qabstractbutton.html#clicked">clicked</a>(), and <a href="qabstractbutton.html#toggled">toggled</a>().</p>
 <p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" class="odd"><td><img src="images/plastique-radiobutton.png" alt="Screenshot of a Plastique radio button" /></td><td>A radio button shown in the <a href="gallery-plastique.html">Plastique widget style</a>.</td></tr>
@@ -85,6 +87,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

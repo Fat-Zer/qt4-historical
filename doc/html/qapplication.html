@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-mac-opensource-src-4.2.1/src/gui/kernel/qapplication.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-mac-opensource-src-4.2.2/src/gui/kernel/qapplication.cpp -->
 <head>
   <title>Qt 4.2: QApplication Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -529,7 +529,7 @@
 <p>See also <a href="qapplication.html#isSessionRestored">isSessionRestored</a>(), <a href="qapplication.html#sessionId">sessionId</a>(), <a href="qapplication.html#saveState">saveState</a>(), and <a href="session.html">Session Management</a>.</p>
 <a name="//apple_ref/cpp/instm/QApplication/commitDataRequest" />
 <h3 class="fn"><a name="commitDataRequest"></a>void QApplication::commitDataRequest ( <a href="qsessionmanager.html">QSessionManager</a> &amp; <i>manager</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This signal deals with <a href="session.html">session management</a>. It is emited when the <a href="qsessionmanager.html">QSessionManager</a> wants the application to commit all its data.</p>
+<p>This signal deals with <a href="session.html">session management</a>. It is emitted when the <a href="qsessionmanager.html">QSessionManager</a> wants the application to commit all its data.</p>
 <p>Usually this means saving all open files, after getting permission from the user. Furthermore you may want to provide a means by which the user can cancel the shutdown.</p>
 <p>Note that you should not exit the application when called. Instead, the session manager may or may not do this afterwards, depending on the context.</p>
 <p><b>Warning:</b> Within this signal, no user interaction is possible, <i>unless</i> you ask the <i>manager</i> for explicit permission. See <a href="qsessionmanager.html#allowsInteraction">QSessionManager::allowsInteraction</a>() and <a href="qsessionmanager.html#allowsErrorInteraction">QSessionManager::allowsErrorInteraction</a>() for details and example usage.</p>
@@ -966,6 +966,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

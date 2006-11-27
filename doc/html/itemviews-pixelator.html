@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-mac-opensource-src-4.2.1/doc/src/examples/pixelator.qdoc -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-mac-opensource-src-4.2.2/doc/src/examples/pixelator.qdoc -->
 <head>
   <title>Qt 4.2: Pixelator Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -91,7 +91,7 @@
 <p>This model can be used with <a href="qtableview.html">QTableView</a> to display the integer brightness values for the pixels in the image. However, we will implement a custom delegate to display this information in a more artistic way.</p>
 <p>The <tt>headerData()</tt> function is also reimplemented:</p>
 <pre> QVariant ImageModel::headerData(int /* section */,
-                                 Qt::Orientation /* orientation */,
+                                 Qt::Orientation /* orientation */</span>,
                                  int role) const
  {
      if (role == Qt::SizeHintRole)
@@ -163,7 +163,7 @@
 <p>The <tt>paint()</tt> function does not have to be particularly complicated; it is only necessary to ensure that the state of the painter when the function returns is the same as it was when it was called. This usually means that any transformations applied to the painter must be preceded by a call to <a href="qpainter.html#save">QPainter::save</a>() and followed by a call to <a href="qpainter.html#restore">QPainter::restore</a>().</p>
 <p>The delegate's <a href="qabstractitemdelegate.html#sizeHint">sizeHint()</a> function returns a size for the item based on the predefined pixel size, initially set up in the constructor:</p>
 <pre> QSize PixelDelegate::sizeHint(const QStyleOptionViewItem &amp; /* option */,
-                               const QModelIndex &amp; /* index */) const
+                               const QModelIndex &amp; /* index */</span>) const
  {
      return QSize(pixelSize, pixelSize);
  }</pre>
@@ -216,6 +216,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

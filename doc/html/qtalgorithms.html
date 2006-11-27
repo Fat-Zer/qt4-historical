@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-mac-opensource-src-4.2.1/doc/src/qalgorithms.qdoc -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-mac-opensource-src-4.2.2/doc/src/qalgorithms.qdoc -->
 <head>
   <title>Qt 4.2: &lt;QtAlgorithms&gt; - Generic Algorithms</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -185,7 +185,7 @@
 <p>See also <a href="qtalgorithms.html#qCopy">qCopy</a>() and <a href="qtalgorithms.html#bidirectional-iterators">bidirectional iterators</a>.</p>
 <a name="//apple_ref/cpp/func//qCount" />
 <h3 class="fn"><a name="qCount"></a>void qCount ( InputIterator <i>begin</i>, InputIterator <i>end</i>, const T &amp; <i>value</i>, Size &amp; <i>n</i> )</h3>
-<p>Returns the number of occurrences of <i>value</i> in the range [<i>begin</i>, <i>end</i>).</p>
+<p>Returns the number of occurrences of <i>value</i> in the range [<i>begin</i>, <i>end</i>), which is returned in <i>n</i>.</p>
 <p>Example:</p>
 <pre> QList&lt;int&gt; list;
  list &lt;&lt; 3 &lt;&lt; 3 &lt;&lt; 6 &lt;&lt; 6 &lt;&lt; 6 &lt;&lt; 8;
@@ -201,6 +201,7 @@
 <p>See also <a href="qtalgorithms.html#input-iterators">input iterators</a>.</p>
 <h3 class="fn"><a name="qCount-2"></a>void qCount ( const Container &amp; <i>container</i>, const T &amp; <i>value</i>, Size &amp; <i>n</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
+<p>Instead of operating on iterators, as in the other overload, this function operates on the specified <i>container</i> to obtain the number of instances of <i>value</i> in the variable passed as a reference in argument <i>n</i>.</p>
 <a name="//apple_ref/cpp/func//qDeleteAll" />
 <h3 class="fn"><a name="qDeleteAll"></a>void qDeleteAll ( ForwardIterator <i>begin</i>, ForwardIterator <i>end</i> )</h3>
 <p>Deletes all the items in the range [<i>begin</i>, <i>end</i>) using the C++ <tt>delete</tt> operator. The item type must be a pointer type (for example, <tt>QWidget *</tt>).</p>
@@ -461,6 +462,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

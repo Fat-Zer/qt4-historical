@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-mac-opensource-src-4.2.1/src/gui/itemviews/qabstractitemview.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-mac-opensource-src-4.2.2/src/gui/itemviews/qabstractitemview.cpp -->
 <head>
   <title>Qt 4.2: QAbstractItemView Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -244,7 +244,7 @@
 <p>Several other functions are concerned with selection control; for example <a href="qabstractitemview.html#selectionMode-prop">setSelectionMode</a>(), and <a href="qabstractitemview.html#selectionBehavior-prop">setSelectionBehavior</a>(). This class provides a default selection model to work with (<a href="qabstractitemview.html#selectionModel">selectionModel</a>()), but this can be replaced by using <a href="qabstractitemview.html#setSelectionModel">setSelectionModel</a>() with an instance of <a href="qitemselectionmodel.html">QItemSelectionModel</a>.</p>
 <p>For complete control over the display and editing of items you can specify a delegate with <a href="qabstractitemview.html#setItemDelegate">setItemDelegate</a>().</p>
 <p>QAbstractItemView provides a lot of protected functions. Some are concerned with editing, for example, <a href="qabstractitemview.html#edit">edit</a>(), and <a href="qabstractitemview.html#commitData">commitData</a>(), whilst others are keyboard and mouse event handlers.</p>
-<p>See also <a href="model-view-programming.html">Model/View Programming</a>, <a href="qabstractitemmodel.html">QAbstractItemModel</a>, and <a href="itemviews-chart.html">Chart Example</a>.</p>
+<p>See also <a href="model-view-view.html">View Classes</a>, <a href="model-view-programming.html">Model/View Programming</a>, <a href="qabstractitemmodel.html">QAbstractItemModel</a>, and <a href="itemviews-chart.html">Chart Example</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
 <a name="//apple_ref/cpp/tag/QAbstractItemView/CursorAction" />
@@ -287,7 +287,7 @@
 <tr><td valign="top"><tt>QAbstractItemView::NoDragDrop</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">Does not support dragging or dropping.</td></tr>
 <tr><td valign="top"><tt>QAbstractItemView::DragOnly</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The view supports dragging of its own items</td></tr>
 <tr><td valign="top"><tt>QAbstractItemView::DropOnly</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">The view accepts drops</td></tr>
-<tr><td valign="top"><tt>QAbstractItemView::DragDrop</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">The view supports both draging and dropping</td></tr>
+<tr><td valign="top"><tt>QAbstractItemView::DragDrop</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">The view supports both dragging and dropping</td></tr>
 <tr><td valign="top"><tt>QAbstractItemView::InternalMove</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">only accepts move operations only from itself.</td></tr>
 </table></p>
 <p>This enum was introduced in Qt 4.2.</p>
@@ -594,7 +594,7 @@
 <a name="//apple_ref/cpp/instm/QAbstractItemView/dirtyRegionOffset" />
 <h3 class="fn"><a name="dirtyRegionOffset"></a><a href="qpoint.html">QPoint</a> QAbstractItemView::dirtyRegionOffset () const&nbsp;&nbsp;<tt> [protected]</tt></h3>
 <p>Returns the offset of the dirty regions in the view.</p>
-<p>If you use <a href="qabstractitemview.html#scrollDirtyRegion">scrollDirtyRegion</a>() and implementa <a href="qabstractscrollarea.html#paintEvent">paintEvent</a>() in a subclass of <a href="qabstractitemview.html">QAbstractItemView</a>, you should translate the area given by the paint event with the offset returned from this function.</p>
+<p>If you use <a href="qabstractitemview.html#scrollDirtyRegion">scrollDirtyRegion</a>() and implement a <a href="qabstractscrollarea.html#paintEvent">paintEvent</a>() in a subclass of <a href="qabstractitemview.html">QAbstractItemView</a>, you should translate the area given by the paint event with the offset returned from this function.</p>
 <p>See also <a href="qabstractitemview.html#scrollDirtyRegion">scrollDirtyRegion</a>() and <a href="qabstractitemview.html#setDirtyRegion">setDirtyRegion</a>().</p>
 <a name="//apple_ref/cpp/instm/QAbstractItemView/doubleClicked" />
 <h3 class="fn"><a name="doubleClicked"></a>void QAbstractItemView::doubleClicked ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>index</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
@@ -672,7 +672,7 @@
 <p>See also <a href="qabstractitemview.html#setIndexWidget">setIndexWidget</a>().</p>
 <a name="//apple_ref/cpp/instm/QAbstractItemView/isIndexHidden" />
 <h3 class="fn"><a name="isIndexHidden"></a>bool QAbstractItemView::isIndexHidden ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>index</i> ) const&nbsp;&nbsp;<tt> [pure virtual protected]</tt></h3>
-<p>Returns true if the item refered to by the given <i>index</i> is hidden in the view, otherwise returns false.</p>
+<p>Returns true if the item referred to by the given <i>index</i> is hidden in the view, otherwise returns false.</p>
 <p>Hiding is a view specific feature. For example in TableView a column can be marked as hidden or a row in the TreeView.</p>
 <p>In the base class this is a pure virtual function.</p>
 <a name="//apple_ref/cpp/instm/QAbstractItemView/itemDelegate" />
@@ -912,6 +912,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

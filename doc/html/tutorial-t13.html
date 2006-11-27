@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-mac-opensource-src-4.2.1/doc/src/examples/tutorial.qdoc -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-mac-opensource-src-4.2.2/doc/src/examples/tutorial.qdoc -->
 <head>
   <title>Qt 4.2: Qt Tutorial 13 - Game Over</title>
   <link rel="prev" href="tutorial-t12.html" />
@@ -90,7 +90,7 @@
 <p>This slot starts a new game. If a shot is in the air, we stop shooting. We then reset the <tt>gameEnded</tt> variable and repaint the widget.</p>
 <p><tt>moveShot()</tt> too emits the new <tt>canShoot(true)</tt> signal at the same time as either <tt>hit()</tt> or <tt>miss()</tt>.</p>
 <p>Modifications in CannonField::paintEvent():</p>
-<pre> void CannonField::paintEvent(QPaintEvent * /* event */)
+<pre> void CannonField::paintEvent(QPaintEvent * <span class="comment">/* event */</span>)
  {
      QPainter painter(this);
 
@@ -206,7 +206,7 @@
      cannonField-&gt;restartGame();
      cannonField-&gt;newTarget();
  }</pre>
-<p>This slot is activated when the user clicks the Restart button. It is also called from the constructor. First it sets the number of shots to 15. Note that this is the only place in the program where we set the number of shots. Change it to whatever you like to change the game rules. Next we reset the number of hits, restart the game, and generate a new target.</p>
+<p>This slot is activated when the user clicks the <b>New Game</b> button. It is also called from the constructor. First it sets the number of shots to 15. Note that this is the only place in the program where we set the number of shots. Change it to whatever you like to change the game rules. Next we reset the number of hits, restart the game, and generate a new target.</p>
 <a name="t13-main-cpp"></a>
 <h3><a href="tutorial-t13-main-cpp.html">t13/main.cpp</a></h3>
 <p>This file has just been on a diet. <tt>MyWidget</tt> is gone, and the only thing left is the <tt>main()</tt> function, unchanged except for the name change.</p>
@@ -228,6 +228,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

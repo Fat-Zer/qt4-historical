@@ -129,7 +129,7 @@
          \o A \l{Plastique Style Widget Gallery}{Plastique style} tree view.
     \endtable
 
-    \sa QListView, QTreeWidget, {Model/View Programming}, QAbstractItemModel, QAbstractItemView,
+    \sa QListView, QTreeWidget, {View Classes}, QAbstractItemModel, QAbstractItemView,
         {Dir View Example}
 */
 
@@ -198,6 +198,9 @@ void QTreeView::setModel(QAbstractItemModel *model)
     // QAbstractItemView connects to a private slot
     disconnect(d->model, SIGNAL(rowsRemoved(QModelIndex,int,int)),
                this, SLOT(_q_rowsRemoved(QModelIndex,int,int)));
+    // do header layout after the tree
+    disconnect(d->model, SIGNAL(layoutChanged()),
+               d->header, SLOT(doItemsLayout()));
     // QTreeView has a public slot for this
     connect(d->model, SIGNAL(rowsRemoved(QModelIndex,int,int)),
             this, SLOT(rowsRemoved(QModelIndex,int,int)));
@@ -405,6 +408,8 @@ int QTreeView::columnWidth(int column) const
 }
 
 /*!
+  \since 4.2
+
   Sets the width of the given \a column to the \a width specified.
 
   \sa columnWidth(), resizeColumnToContents()
@@ -490,16 +495,29 @@ void QTreeView::setRowHidden(int row, const QModelIndex &parent, bool hide)
         if (i >= 0) d->hiddenIndexes.remove(i);
     }
 
-    if (isVisible()) {
+    if (hide && isVisible()) {
         int p = d->viewIndex(parent);
         if (p >= 0) {
-            for (uint i = 0; i < d->viewItems.at(p).total; ++i) {
-                if (d->viewItems.at(p + 1 + i).index == index) {
-                    d->viewItems[p].total--;
-                    d->viewItems.remove(p + 1 + i);
+            const int first = p + 1;
+            const int last = first + d->viewItems.at(p).total - 1;
+            for (int i = first; i <= last; ) {
+                const int count = d->viewItems.at(i).total + 1;
+                if (d->viewItems.at(i).index == index) {
+                    // remove child and its children
+                    d->viewItems.remove(i, count);
+                    // update children count of ancestors 
+                    int level = d->viewItems.at(p).level;
+                    do {
+                        for ( ; int(d->viewItems.at(p).level) != level; --p) ;
+                        d->viewItems[p].total -= count;
+                        --level;
+                    } while (level >= 0);
                     break;
+                } else {
+                    i += count;
                 }
             }
+            updateGeometries();
             d->viewport->update();
         }
         else
@@ -980,6 +998,8 @@ void QTreeView::timerEvent(QTimerEvent *event)
 void QTreeView::paintEvent(QPaintEvent *event)
 {
     Q_D(QTreeView);
+    bool layout = d->delayedLayout.isActive();
+    d->delayedLayout.stop();
     QPainter painter(viewport());
     if (d->isAnimating()) {
         drawTree(&painter, event->region() - d->animationRect());
@@ -990,6 +1010,8 @@ void QTreeView::paintEvent(QPaintEvent *event)
         d->paintDropIndicator(&painter);
 #endif
     }
+    if (layout)
+        d->doDelayedItemsLayout();
 }
 
 /*!
@@ -1266,8 +1288,8 @@ void QTreeView::drawBranches(QPainter *painter, const QRect &rect,
         opt.rect = primitive;
 
         const bool expanded = viewItem.expanded;
-        const bool children = (((expanded && viewItem.total > 0)) // already layed out and has children
-                                || d->hasVisibleChildren(index)); // not layed out yet, so we don't know
+        const bool children = (((expanded && viewItem.total > 0)) // already laid out and has children
+                                || d->hasVisibleChildren(index)); // not laid out yet, so we don't know
         bool moreSiblings = false;
         if (d->hiddenIndexes.isEmpty())
             moreSiblings = (d->model->rowCount(parent) - 1 > index.row());
@@ -1511,6 +1533,7 @@ void QTreeView::doItemsLayout()
         d->reexpandChildren(parent);
     }
     QAbstractItemView::doItemsLayout();
+    d->header->doItemsLayout();
 }
 
 /*!
@@ -2047,6 +2070,7 @@ void QTreeView::updateGeometries()
 int QTreeView::sizeHintForColumn(int column) const
 {
     Q_D(const QTreeView);
+    d->executePostedLayout();
     if (d->viewItems.isEmpty())
         return -1;
     int w = 0;
@@ -2081,7 +2105,7 @@ int QTreeView::indexRowSizeHint(const QModelIndex &index) const
         start = d->header->logicalIndexAt(0);
         end = d->header->logicalIndexAt(viewport()->width());
     } else {
-        // If the header has not been layed out yet, we use the model directly
+        // If the header has not been laid out yet, we use the model directly
         count = d->model->columnCount(index.parent());
     }
 
@@ -2338,10 +2362,12 @@ void QTreeViewPrivate::layout(int i)
     if (model->hasChildren(parent))
         count = model->rowCount(parent);
 
-    if (i == -1)
+    if (i == -1) {
         viewItems.resize(count);
-    else
-        viewItems.insert(i + 1, count, QTreeViewItem()); // expand
+    } else {
+        if (viewItems[i].total != (uint)count)
+            viewItems.insert(i + 1, count, QTreeViewItem()); // expand
+    }
 
     int first = i + 1;
     int level = (i >= 0 ? viewItems.at(i).level + 1 : 0);

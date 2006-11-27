@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-mac-opensource-src-4.2.1/src/gui/util/qsystemtrayicon.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-mac-opensource-src-4.2.2/src/gui/util/qsystemtrayicon.cpp -->
 <head>
   <title>Qt 4.2: QSystemTrayIcon Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -208,6 +208,7 @@
 <h3 class="fn"><a name="setContextMenu"></a>void QSystemTrayIcon::setContextMenu ( <a href="qmenu.html">QMenu</a> * <i>menu</i> )</h3>
 <p>Sets the specified <i>menu</i> to be the context menu for the system tray icon.</p>
 <p>The menu will pop up when the user requests the context menu for the system tray icon by clicking the mouse button.</p>
+<p>On Mac OS X, this is currenly converted to a NSMenu, so the aboutToHide() signal is not emitted.</p>
 <p>See also <a href="qsystemtrayicon.html#contextMenu">contextMenu</a>().</p>
 <a name="//apple_ref/cpp/instm/QSystemTrayIcon/show" />
 <h3 class="fn"><a name="show"></a>void QSystemTrayIcon::show ()&nbsp;&nbsp;<tt> [slot]</tt></h3>
@@ -228,6 +229,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>
