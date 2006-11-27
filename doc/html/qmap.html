@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-x11-opensource-src-4.2.1/src/corelib/tools/qmap.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-x11-opensource-src-4.2.2/src/corelib/tools/qmap.cpp -->
 <head>
   <title>Qt 4.2: QMap Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -93,7 +93,7 @@
 <p>QMap&lt;Key, T&gt; is one of Qt's generic <a href="containers.html#container-classes">container classes</a>. It stores (key, value) pairs and provides fast lookup of the value associated with a key.</p>
 <p>QMap and <a href="qhash.html">QHash</a> provide very similar functionality. The differences are:</p>
 <ul>
-<li><a href="qhash.html">QHash</a> provides faster lookups than QMap.</li>
+<li><a href="qhash.html">QHash</a> provides faster lookups than QMap. (See <a href="containers.html#algorithmic-complexity">Algorithmic Complexity</a> for details.)</li>
 <li>When iterating over a <a href="qhash.html">QHash</a>, the items are arbitrarily ordered. With QMap, the items are always sorted by key.</li>
 <li>The key type of a <a href="qhash.html">QHash</a> must provide operator==() and a global qHash(Key) function. The key type of a QMap must provide operator&lt;() specifying a total order.</li>
 </ul>
@@ -424,6 +424,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

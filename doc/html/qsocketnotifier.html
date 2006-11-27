@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-x11-opensource-src-4.2.1/src/corelib/kernel/qsocketnotifier.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-x11-opensource-src-4.2.2/src/corelib/kernel/qsocketnotifier.cpp -->
 <head>
   <title>Qt 4.2: QSocketNotifier Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -67,7 +67,22 @@
 <p>There are three types of socket notifiers: read, write, and exception. The type is described by the <a href="qsocketnotifier.html#Type-enum">Type</a> enum, and must be specified when constructing the socket notifier. After construction it can be determined using the <a href="qsocketnotifier.html#type">type</a>() function. Note that if you need to monitor both reads and writes for the same file descriptor, you must create two socket notifiers. Note also that it is not possible to install two socket notifiers of the same type (<a href="qsocketnotifier.html#Type-enum">Read</a>, <a href="qsocketnotifier.html#Type-enum">Write</a>, <a href="qsocketnotifier.html#Type-enum">Exception</a>) on the same socket.</p>
 <p>The <a href="qsocketnotifier.html#setEnabled">setEnabled</a>() function allows you to disable as well as enable the socket notifier. It is generally advisable to explicitly enable or disable the socket notifier, especially for write notifiers. A disabled notifier ignores socket events (the same effect as not creating the socket notifier). Use the <a href="qsocketnotifier.html#isEnabled">isEnabled</a>() function to determine the notifier's current status.</p>
 <p>Finally, you can use the <a href="qsocketnotifier.html#socket">socket</a>() function to retrieve the socket identifier. Although the class is called QSocketNotifier, it is normally used for other types of devices than sockets. <a href="qtcpsocket.html">QTcpSocket</a> and <a href="qudpsocket.html">QUdpSocket</a> provide notification through signals, so there is normally no need to use a QSocketNotifier on them.</p>
-<p><b>Notes for Windows users:</b> The socket passed to QSocketNotifier will become non-blocking, even if it was created as a blocking socket. The <a href="qsocketnotifier.html#activated">activated</a>() signal is sometimes triggered by high general activity on the host, even if there is nothing to read. A subsequent read from the socket can then fail, the error indicating that there is no data available (e.g., WSAEWOULDBLOCK). This is an operating system limitation, and not a bug in QSocketNotifier.</p>
+<a name="notes-for-windows-users"></a>
+<h3>Notes for Windows Users</h3>
+<p>The socket passed to QSocketNotifier will become non-blocking, even if it was created as a blocking socket. The <a href="qsocketnotifier.html#activated">activated</a>() signal is sometimes triggered by high general activity on the host, even if there is nothing to read. A subsequent read from the socket can then fail, the error indicating that there is no data available (e.g., <tt>WSAEWOULDBLOCK</tt>). This is an operating system limitation, and not a bug in QSocketNotifier.</p>
+<p>To ensure that the socket notifier handles read notifications correctly, follow these steps when you receive a notification:</p>
+<ol type="1">
+<li>Disable the notifier.</li>
+<li>Read data from the socket.</li>
+<li>Re-enable the notifier if you are interested in more data (such as after having written a new command to a remote server).</li>
+</ol>
+<p>To ensure that the socket notifier handles write notifications correctly, follow these steps when you receive a notification:</p>
+<ol type="1">
+<li>Disable the notifier.</li>
+<li>Write as much data as you can (before <tt>EWOULDBLOCK</tt> is returned).</li>
+<li>Re-enable notifier if you have more data to write.</li>
+</ol>
+<p><b>Further information:</b> On Windows, Qt always disables the notifier after getting a notification, and only re-enables it if more data is expected. For example, if data is read from the socket and it can be used to read more, or if reading or writing is not possible because the socket would block, in which case it is necessary to wait before attempting to read or write again.</p>
 <p>See also <a href="qfile.html">QFile</a>, <a href="qprocess.html">QProcess</a>, <a href="qtcpsocket.html">QTcpSocket</a>, and <a href="qudpsocket.html">QUdpSocket</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
@@ -121,6 +136,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

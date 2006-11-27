@@ -268,7 +268,7 @@ static Symbols tokenize(const QByteArray &input, int lineNum = 1, TokenizeMode m
                 case CPP_COMMENT:
                     while (*data && *data != '\n')
                         ++data;
-                    continue; // ignore safly, the newline is a seperator
+                    continue; // ignore safely, the newline is a separator
                 default:
                     continue; //ignore
                 }
@@ -401,7 +401,7 @@ static Symbols tokenize(const QByteArray &input, int lineNum = 1, TokenizeMode m
             case PP_CPP_COMMENT:
                 while (*data && *data != '\n')
                     ++data;
-                continue; // ignore safly, the newline is a seperator
+                continue; // ignore safely, the newline is a separator
             case PP_NEWLINE:
                 ++lineNum;
                 mode = TokenizeCpp;
@@ -735,7 +735,7 @@ void Preprocessor::preprocess(const QByteArray &filename, Symbols &preprocessed)
                 fi.setFile(QFileInfo(QString::fromLocal8Bit(filename)).dir(), QString::fromLocal8Bit(include));
             for (int j = 0; j < Preprocessor::includes.size() && !fi.exists(); ++j)
                 fi.setFile(QString::fromLocal8Bit(Preprocessor::includes.at(j)), QString::fromLocal8Bit(include));
-            if (!fi.exists())
+            if (!fi.exists() || fi.isDir())
                 continue;
             include = fi.filePath().toLocal8Bit();
 

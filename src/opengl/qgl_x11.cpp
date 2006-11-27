@@ -509,7 +509,7 @@ void *QGLContext::tryVisual(const QGLFormat& f, int bufDepth)
             useTranspExt = !cstr.contains("Xi Graphics"); // bug workaround
             if (useTranspExt) {
                 // bug workaround - some systems (eg. FireGL) refuses to return an overlay
-                // visual if the GLX_TRANSPARENT_TYPE_EXT attribute is specfied, even if
+                // visual if the GLX_TRANSPARENT_TYPE_EXT attribute is specified, even if
                 // the implementation supports transparent overlays
                 int tmpSpec[] = { GLX_LEVEL, f.plane(), GLX_TRANSPARENT_TYPE_EXT,
                                   f.rgba() ? GLX_TRANSPARENT_RGB_EXT : GLX_TRANSPARENT_INDEX_EXT,
@@ -967,18 +967,8 @@ void QGLOverlayWidget::paintGL()
 void QGLWidgetPrivate::init(QGLContext *context, const QGLWidget *shareWidget)
 {
     Q_Q(QGLWidget);
-    QGLExtensions::init();
-    glcx = 0;
+    initContext(context, shareWidget);
     olw = 0;
-    autoSwap = true;
-    if (!context->device())
-        context->setDevice(q);
-
-    if (shareWidget)
-        q->setContext(context, shareWidget->context());
-    else
-        q->setContext(context);
-    q->setAttribute(Qt::WA_NoSystemBackground, true);
 
     if (q->isValid() && context->format().hasOverlay()) {
         QString olwName = q->objectName();
@@ -1165,14 +1155,12 @@ void QGLWidget::setContext(QGLContext *context,
     a.background_pixel = colmap.pixel(palette().color(backgroundRole()));
     a.border_pixel = colmap.pixel(Qt::black);
     Window p = RootWindow(X11->display, vi->screen);
-    if (parentWidget()) {
+    if (parentWidget())
         p = parentWidget()->winId();
-    }
 
     Window w = XCreateWindow(X11->display, p, x(), y(), width(), height(),
                               0, vi->depth, InputOutput, vi->visual,
                               CWBackPixel|CWBorderPixel|CWColormap, &a);
-
     Window *cmw;
     Window *cmwret;
     int count;
@@ -1204,10 +1192,11 @@ void QGLWidget::setContext(QGLContext *context,
         delete oldcx;
     oldcx = 0;
 
-    create(w);
-
-    XSetWMColormapWindows(X11->display, window()->winId(), cmw,
-                           count);
+    if (testAttribute(Qt::WA_WState_Created))
+        create(w);
+    else
+        d->createWinId(w);
+    XSetWMColormapWindows(X11->display, window()->winId(), cmw, count);
     delete [] cmw;
 
     // calling QWidget::create() will always result in a new paint

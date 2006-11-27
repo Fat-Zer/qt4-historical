@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-x11-opensource-src-4.2.1/src/corelib/kernel/qabstracteventdispatcher.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-x11-opensource-src-4.2.2/src/corelib/kernel/qabstracteventdispatcher.cpp -->
 <head>
   <title>Qt 4.2: QAbstractEventDispatcher Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -143,9 +143,11 @@
 <h3 class="fn"><a name="unregisterSocketNotifier"></a>void QAbstractEventDispatcher::unregisterSocketNotifier ( <a href="qsocketnotifier.html">QSocketNotifier</a> * <i>notifier</i> )&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Unregisters <i>notifier</i> from the event dispatcher. Subclasses must reimplement this method to tie a socket notifier into another event loop. Reimplementations must call the base implementation.</p>
 <h3 class="fn"><a name="unregisterTimer"></a>bool QAbstractEventDispatcher::unregisterTimer ( int <i>timerId</i> )&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
-<p>Unregisters the timer with the given <i>timerId</i>.</p>
+<p>Unregisters the timer with the given <i>timerId</i>. Returns true if successful; otherwise returns false.</p>
+<p>See also <a href="qabstracteventdispatcher.html#registerTimer">registerTimer</a>() and <a href="qabstracteventdispatcher.html#unregisterTimers">unregisterTimers</a>().</p>
 <h3 class="fn"><a name="unregisterTimers"></a>bool QAbstractEventDispatcher::unregisterTimers ( <a href="qobject.html">QObject</a> * <i>object</i> )&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
-<p>Unregisters all the timers associated with the given <i>object</i>.</p>
+<p>Unregisters all the timers associated with the given <i>object</i>. Returns true if all timers were successful removed; otherwise returns false.</p>
+<p>See also <a href="qabstracteventdispatcher.html#unregisterTimer">unregisterTimer</a>() and <a href="qabstracteventdispatcher.html#registeredTimers">registeredTimers</a>().</p>
 <h3 class="fn"><a name="wakeUp"></a>void QAbstractEventDispatcher::wakeUp ()&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Wakes up the event loop.</p>
 <p><b>Note:</b> This function is <a href="threads.html#thread-safe">thread-safe</a>.</p>
@@ -154,6 +156,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

@@ -1344,6 +1344,7 @@ DomLayout *QAbstractFormBuilder::createDom(QLayout *layout, DomLayout *ui_layout
 
     QList<DomLayoutItem*> ui_items;
 
+
     for (int idx=0; layout->itemAt(idx); ++idx) {
         QLayoutItem *item = layout->itemAt(idx);
 

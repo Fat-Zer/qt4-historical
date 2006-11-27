@@ -1388,7 +1388,9 @@ QGLShareRegister* qgl_share_reg()
 
 
 /*!
-    Constructs an OpenGL context for the paint device \a device, which
+    \obsolete
+
+    Constructs an OpenGL context for the given paint \a device, which
     can be a widget or a pixmap. The \a format specifies several
     display options for the context.
 
@@ -1397,13 +1399,10 @@ QGLShareRegister* qgl_share_reg()
     will be used. After creation, the format() method will return the
     actual format obtained.
 
-    Note that after a QGLContext object has been constructed, \link
-    create() create()\endlink must be called explicitly to create
-    the actual OpenGL context. The context will be \link isValid()
-    invalid\endlink if it was not possible to obtain a GL context at
-    all.
-
-    \sa format(), isValid()
+    Note that after a QGLContext object has been constructed, \l
+    create() must be called explicitly to create the actual OpenGL
+    context. The context will be \l {isValid()}{invalid} if it was not
+    possible to obtain a GL context at all.
 */
 
 QGLContext::QGLContext(const QGLFormat &format, QPaintDevice *device)
@@ -1414,8 +1413,20 @@ QGLContext::QGLContext(const QGLFormat &format, QPaintDevice *device)
 }
 
 /*!
-    \overload
-    \internal
+    Constructs an OpenGL context with the given \a format which
+    specifies several display options for the context.
+
+    If the underlying OpenGL/Window system cannot satisfy all the
+    features requested in \a format, the nearest subset of features
+    will be used. After creation, the format() method will return the
+    actual format obtained.
+
+    Note that after a QGLContext object has been constructed, \l
+    create() must be called explicitly to create the actual OpenGL
+    context. The context will be \l {isValid()}{invalid} if it was not
+    possible to obtain a GL context at all.
+
+    \sa format(), isValid()
 */
 QGLContext::QGLContext(const QGLFormat &format)
 {
@@ -2112,7 +2123,8 @@ const QGLContext* QGLContext::currentContext()
 
     This semi-internal function is called by create(). It creates a
     system-dependent OpenGL handle that matches the format() of \a
-    shareContext as closely as possible.
+    shareContext as closely as possible, returning true if successful
+    or false if a suitable handle could not be found.
 
     On Windows, it calls the virtual function choosePixelFormat(),
     which finds a matching pixel format identifier. On X11, it calls
@@ -2518,7 +2530,7 @@ QGLWidget::~QGLWidget()
 bool QGLWidget::isValid() const
 {
     Q_D(const QGLWidget);
-    return d->glcx->isValid();
+    return d->glcx && d->glcx->isValid();
 }
 
 /*!
@@ -3287,6 +3299,10 @@ static void qt_drawFontLining(double x, double y, const QString &str, const QFon
    lists are deleted when the widget is destroyed.
 
    \warning This function only works reliably with ASCII strings.
+
+   To draw strings with unicode characters, or draw text to a
+   QGLPixelBuffer, open a QPainter and call QPainter::drawText()
+   instead.
 */
 
 void QGLWidget::renderText(int x, int y, const QString & str, const QFont & font, int listBase)
@@ -3333,6 +3349,11 @@ void QGLWidget::renderText(int x, int y, const QString & str, const QFont & font
     relative to the currently set projection and model matrices. This
     can be useful if you want to annotate models with text labels and
     have the labels move with the model as it is rotated etc.
+
+   To draw strings with unicode characters, or draw text to a
+   QGLPixelBuffer, open a QPainter and call QPainter::drawText()
+   instead. Note that you will have to do the screen-coordinate to
+   object-coordinate transform yourself.
 */
 void QGLWidget::renderText(double x, double y, double z, const QString & str, const QFont & font,
                            int listBase)
@@ -3552,4 +3573,25 @@ void QGLExtensions::init_extensions()
     if (glExtensions & TextureCompression) {
         qt_glCompressedTexImage2DARB = (pfn_glCompressedTexImage2DARB) cx.getProcAddress(QLatin1String("glCompressedTexImage2DARB"));
     }
+}
+
+/*
+  This is the shared initialization for all platforms. Called from QGLWidgetPrivate::init()
+*/
+void QGLWidgetPrivate::initContext(QGLContext *context, const QGLWidget* shareWidget)
+{
+    Q_Q(QGLWidget);
+
+    QGLExtensions::init();
+    glcx = 0;
+    autoSwap = true;
+
+    if (context && !context->device())
+        context->setDevice(q);
+    q->setContext(context, shareWidget ? shareWidget->context() : 0);
+
+    if (!glcx)
+        glcx = new QGLContext(QGLFormat::defaultFormat(), q);
+
+    q->setAttribute(Qt::WA_NoSystemBackground);
 }

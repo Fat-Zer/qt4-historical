@@ -215,7 +215,7 @@ static QString fmtDateTime(const QString& f, const QTime* dt = 0, const QDate* d
 /*!
     Constructs a date with year \a y, month \a m and day \a d.
 
-    If the specfied date is invalid, the date is not set and
+    If the specified date is invalid, the date is not set and
     isValid() returns false. Any date before 2 January 4713 B.C. is
     considered invalid.
 
@@ -731,7 +731,7 @@ bool QDate::setYMD(int y, int m, int d)
     Sets the date's \a year, \a month, and \a day. Returns true if
     the date is valid; otherwise returns false.
 
-    If the specfied date is invalid, the QDate object is set to be
+    If the specified date is invalid, the QDate object is set to be
     invalid. Any date before 2 January 4713 B.C. is considered
     invalid.
 
@@ -1379,8 +1379,8 @@ QString QTime::toString(Qt::DateFormat f) const
          \i the hour with a leading zero (00 to 23, even with AM/PM display)
     \row \i m \i the minute without a leading zero (0 to 59)
     \row \i mm \i the minute with a leading zero (00 to 59)
-    \row \i s \i the second whithout a leading zero (0 to 59)
-    \row \i ss \i the second whith a leading zero (00 to 59)
+    \row \i s \i the second without a leading zero (0 to 59)
+    \row \i ss \i the second with a leading zero (00 to 59)
     \row \i z \i the milliseconds without leading zeroes (0 to 999)
     \row \i zzz \i the milliseconds with leading zeroes (000 to 999)
     \row \i AP or A
@@ -1641,8 +1641,8 @@ QTime QTime::fromString(const QString& s, Qt::DateFormat f)
          \i the hour with a leading zero (00 to 23 or 01 to 12 if AM/PM display)
     \row \i m \i the minute without a leading zero (0 to 59)
     \row \i mm \i the minute with a leading zero (00 to 59)
-    \row \i s \i the second whithout a leading zero (0 to 59)
-    \row \i ss \i the second whith a leading zero (00 to 59)
+    \row \i s \i the second without a leading zero (0 to 59)
+    \row \i ss \i the second with a leading zero (00 to 59)
     \row \i z \i the milliseconds without leading zeroes (0 to 999)
     \row \i zzz \i the milliseconds with leading zeroes (000 to 999)
     \row \i AP
@@ -2214,8 +2214,8 @@ QString QDateTime::toString(Qt::DateFormat f) const
          \i the hour with a leading zero (00 to 23 or 01 to 12 if AM/PM display)
     \row \i m \i the minute without a leading zero (0 to 59)
     \row \i mm \i the minute with a leading zero (00 to 59)
-    \row \i s \i the second whithout a leading zero (0 to 59)
-    \row \i ss \i the second whith a leading zero (00 to 59)
+    \row \i s \i the second without a leading zero (0 to 59)
+    \row \i ss \i the second with a leading zero (00 to 59)
     \row \i z \i the milliseconds without leading zeroes (0 to 999)
     \row \i zzz \i the milliseconds with leading zeroes (000 to 999)
     \row \i AP
@@ -2662,8 +2662,8 @@ QDateTime QDateTime::fromString(const QString& s, Qt::DateFormat f)
             \i the hour with a leading zero (00 to 23, even with AM/PM display)
     \row \i m \i the minute without a leading zero (0 to 59)
     \row \i mm \i the minute with a leading zero (00 to 59)
-    \row \i s \i the second whithout a leading zero (0 to 59)
-    \row \i ss \i the second whith a leading zero (00 to 59)
+    \row \i s \i the second without a leading zero (0 to 59)
+    \row \i ss \i the second with a leading zero (00 to 59)
     \row \i z \i the milliseconds without leading zeroes (0 to 999)
     \row \i zzz \i the milliseconds with leading zeroes (000 to 999)
     \row \i AP or A
@@ -3357,7 +3357,7 @@ int QDateTimeParser::absoluteMax(int s) const
     const SectionNode sn = sectionNode(s);
     switch (sn.type) {
     case Hour24Section:
-    case Hour12Section: return 23; // we want to be able to toggle the hour field and change ampm
+    case Hour12Section: return 23; // this is special-cased in parseSection. We want it to be 23 for the stepBy case.
     case MinuteSection:
     case SecondSection: return 59;
     case MSecSection: return 999;
@@ -3499,10 +3499,8 @@ bool QDateTimeParser::parseFormat(const QString &newFormat)
     const QLatin1Char slash('\\');
     const QLatin1Char zero('0');
     if (newFormat == displayFormat && !newFormat.isEmpty()) {
-        //&& layoutDirection == QApplication::layoutDirection()) {
         return true;
     }
-    //layoutDirection = QApplication::layoutDirection();
 
     QDTPDEBUGN("parseFormat: %s", newFormat.toLatin1().constData());
 
@@ -3619,14 +3617,6 @@ bool QDateTimeParser::parseFormat(const QString &newFormat)
     sectionNodes = newSectionNodes;
     display = newDisplay;
     last.pos = -1;
-    reversedFormat.clear();
-    if (isRightToLeft()) {
-        for (int i=newSectionNodes.size() - 1; i>=0; --i) {
-            reversedFormat += newSeparators.at(i + 1);
-            reversedFormat += sectionFormat(i);
-        }
-        reversedFormat += newSeparators.at(0);
-    }
 
 //     for (int i=0; i<sectionNodes.size(); ++i) {
 //         QDTPDEBUG << sectionName(sectionNodes.at(i).type) << sectionNodes.at(i).count;
@@ -3662,7 +3652,7 @@ int QDateTimeParser::sectionMaxSize(Section s, int count) const
 {
 #ifndef QT_NO_TEXTDATE
     int mcount = 12;
-    QString(*nameFunction)(int) = &QDate::longMonthName;
+    QString(*nameFunction)(int) = 0;
 #endif
 
     switch (s) {
@@ -3686,19 +3676,27 @@ int QDateTimeParser::sectionMaxSize(Section s, int count) const
 #ifdef QT_NO_TEXTDATE
         return 2;
 #else
-        nameFunction = &QDate::longDayName;
+        if (count <= 2)
+            return 2;
+        nameFunction = (count == 4 ? &QDate::longDayName : &QDate::shortDayName);
         mcount = 7;
         // fall through
 #endif
     case MonthSection:
+        if (count <= 2)
+            return 2;
+
 #ifdef QT_NO_TEXTDATE
         return 2;
 #else
-        if (count <= 3) {
-            return qMax(2, count);
-        } else {
+        if (s == MonthSection) {
+            nameFunction = count == 4
+                           ? &QDate::longMonthName : &QDate::shortMonthName;
+        }
+        Q_ASSERT(nameFunction);
+        {
             int ret = 0;
-            for (int i=1; i<=mcount; ++i) { // ### optimize? cache results?
+            for (int i=1; i<=mcount; ++i) {
                 ret = qMax(nameFunction(i).size(), ret);
             }
             return ret;
@@ -3844,6 +3842,14 @@ int QDateTimeParser::parseSection(int sectionIndex, QString &text, int index,
                     if (sectiontext.at(digits - 1).isSpace()) // loc.toUInt will allow spaces at the end
                         break;
                     int tmp = (int)loc.toUInt(sectiontext.left(digits), &ok, 10);
+                    if (ok && sn.type == Hour12Section) {
+                        if (tmp > 12) {
+                            tmp = -1;
+                            ok = false;
+                        } else if (tmp == 12) {
+                            tmp = 0;
+                        }
+                    }
                     if (ok && tmp <= absMax) {
                         QDTPDEBUG << sectiontext.left(digits) << tmp << digits;
                         last = tmp;
@@ -3863,7 +3869,7 @@ int QDateTimeParser::parseSection(int sectionIndex, QString &text, int index,
                     }
                 } else {
                     num += last;
-                    const bool done = used == sectionMaxSize(sectionIndex);
+                    const bool done = (used == sectionMaxSize(sectionIndex));
                     if (num < absoluteMin(sectionIndex)) {
                         state = done ? Invalid : Intermediate;
                         if (done)
@@ -4212,7 +4218,7 @@ int QDateTimeParser::findDay(const QString &str1, int startDay, int sectionIndex
                                   : &QDate::longDayName;
 
     for (int day=startDay; day<=7; ++day) {
-        QString str2 = nameFunction(day).toLower();
+        const QString str2 = nameFunction(day).toLower();
 
         if (str1.startsWith(str2)) {
             if (used)
@@ -4240,6 +4246,7 @@ int QDateTimeParser::findDay(const QString &str1, int startDay, int sectionIndex
                 *used = limit;
             if (usedDay)
                 *usedDay = nameFunction(day);
+
             return day;
         }
     }

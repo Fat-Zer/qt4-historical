@@ -27,6 +27,13 @@
 #include <sys/ipc.h>
 #include <sys/sem.h>
 
+union semun {
+    int val;
+    struct semid_ds *buf;
+    unsigned short *array;
+    struct seminfo  *__buf;
+};
+
 QWSSignalHandler::QWSSignalHandler()
 {
     const int signums[] = { SIGHUP, SIGINT, SIGQUIT, SIGILL, SIGABRT, SIGFPE,
@@ -50,7 +57,9 @@ void QWSSignalHandler::removeSemaphore(int semno)
 {
     const int index = semaphores.lastIndexOf(semno);
     if (index != -1) {
-        semctl(semaphores.at(index), 0, IPC_RMID, 0);
+        semun semval;
+        semval.val = 0;
+        semctl(semaphores.at(index), 0, IPC_RMID, semval);
         semaphores.remove(index);
     }
 }
@@ -60,7 +69,10 @@ void QWSSignalHandler::handleSignal(int signum)
     QWSSignalHandler *h = instance();
 
     signal(signum, h->oldHandlers[signum]);
+
+    semun semval;
+    semval.val = 0;
     for (int i = 0; i < h->semaphores.size(); ++i)
-        semctl(h->semaphores.at(i), 0, IPC_RMID, 0);
+        semctl(h->semaphores.at(i), 0, IPC_RMID, semval);
     raise(signum);
 }

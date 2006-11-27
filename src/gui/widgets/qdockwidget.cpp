@@ -255,7 +255,7 @@ void QDockWidgetPrivate::updateButtons()
     relayout();
 }
 
-// ### Qt 4.1: Add subrects to style API, this will cover our styles for now
+// ### Qt 4.3: Add subrects to style API, this will cover our styles for now
 //             Also, add posibilty to get standardIcons
 void QDockWidgetPrivate::relayout()
 {
@@ -266,27 +266,32 @@ void QDockWidgetPrivate::relayout()
     QSize floatSize = floatButton ? floatButton->sizeHint() : QSize(0,0);
 
     int minWidth  = q->fontMetrics().width(q->windowTitle()) + 2 * fw + 2 * mw;
-    int minHeight = qMax(closeSize.width(), closeSize.height()) + 2 * mw;
+    int minHeight = qMax(closeSize.width(), closeSize.height());
     minHeight = qMax(minHeight, qMax(floatSize.width(), floatSize.height()));
-    minHeight += 2; // Allow 1px frame around title area with buttons inside
 #ifdef Q_WS_MAC
     if (qobject_cast<QMacStyle *>(q->style())) {
         extern QHash<QByteArray, QFont> *qt_app_fonts_hash(); // qapplication.cpp
         QFont font = qt_app_fonts_hash()->value("QToolButton", q->font());
         QFontMetrics fm(font);
-        minHeight = qMax(minHeight, fm.lineSpacing() + 2 + 2 * mw) - fw; //Ensure 2 px margin around font
+        minHeight = qMax(minHeight, fm.lineSpacing()); //Ensure 2 px margin around font
     } else
 #endif
     {
-        minHeight = qMax(minHeight, q->fontMetrics().lineSpacing() + 2 + 2 * mw) - fw; //Ensure 2 px margin around font
+        minHeight = qMax(minHeight, q->fontMetrics().lineSpacing()); //Ensure 2 px margin around font
     }
+    minHeight += 2 + 2*mw - fw; // Allow 1px frame around title area with buttons inside
     titleArea = QRect(QPoint(fw, fw),
                       QSize(q->rect().width() - (fw * 2), minHeight));
+
+#ifdef Q_OS_MAC
+    titleArea.adjust(0, 0, -fw, fw);
+#endif
+
     int posX = titleArea.right();
 
     QPoint buttonOffset(0, 0);
 #ifdef Q_OS_WIN
-    // ### Qt 4.2: Fix this properly
+    // ### Qt 4.3: Fix this properly
     if (q->style()->inherits("QWindowsXPStyle")) {
         if(q->isFloating())
             buttonOffset = QPoint(2, -1);
@@ -295,7 +300,7 @@ void QDockWidgetPrivate::relayout()
     }
 #endif
     if (closeButton) {
-        // ### Qt 4.2: Fix this properly
+        // ### Qt 4.3: Fix this properly
         closeButton->setGeometry(QStyle::visualRect(
 				    q->layoutDirection(),
                                     titleArea, QRect(posX - closeSize.width() - mw + buttonOffset.x(),
@@ -305,7 +310,7 @@ void QDockWidgetPrivate::relayout()
     }
 
     if (floatButton) {
-        // ### Qt 4.2: Fix this properly
+        // ### Qt 4.3: Fix this properly
         floatButton->setGeometry(QStyle::visualRect(
 				    q->layoutDirection(),
                                     titleArea, QRect(posX - floatSize.width() - mw + buttonOffset.x(),
@@ -359,10 +364,14 @@ void QDockWidgetPrivate::mousePressEvent(QMouseEvent *event)
     Q_Q(QDockWidget);
     if (event->button() != Qt::LeftButton)
         return;
+
     if (!titleArea.contains(event->pos()))
         return;
     // check if the tool window is movable... do nothing if it is not
     if (!::hasFeature(q, QDockWidget::DockWidgetMovable))
+        return;
+
+    if (!::hasFeature(q, QDockWidget::DockWidgetFloatable))
         return;
 
     if (qobject_cast<QMainWindow*>(q->parentWidget()) == 0)
@@ -474,6 +483,9 @@ void QDockWidgetPrivate::unplug(const QRect &rect)
     q->setWindowFlags(Qt::FramelessWindowHint | Qt::Tool | Qt::X11BypassWindowManagerHint);
     resizer->setActive(QWidgetResizeHandler::Resize, false);
     q->setGeometry(r);
+#ifdef Q_OS_MAC
+    relayout();
+#endif
     q->show();
     updateButtons();
     emit q->topLevelChanged(q->isWindow());
@@ -483,9 +495,15 @@ void QDockWidgetPrivate::plug(const QRect &rect)
 {
     Q_Q(QDockWidget);
     q->hide();
-    q->setFloating(false);
+
+    q->setWindowFlags(Qt::FramelessWindowHint | Qt::Widget);
+
+    updateButtons();
+    resizer->setActive(QWidgetResizeHandler::Resize, false);
     q->setGeometry(rect);
     q->show();
+
+    emit q->topLevelChanged(false);
 }
 
 
@@ -638,6 +656,7 @@ void QDockWidget::setFeatures(QDockWidget::DockWidgetFeatures features)
     d->updateButtons();
     d->toggleViewAction->setEnabled((d->features & DockWidgetClosable) == DockWidgetClosable);
     emit featuresChanged(d->features);
+    update();
 }
 
 QDockWidget::DockWidgetFeatures QDockWidget::features() const
@@ -664,8 +683,14 @@ void QDockWidget::setFloating(bool floating)
 
     const bool visible = isVisible();
 
-    setWindowFlags(Qt::FramelessWindowHint | (floating ? Qt::Tool : Qt::Widget));
+    if (!floating && parentWidget() != 0) {
+        QMainWindowLayout *layout
+            = qobject_cast<QMainWindowLayout*>(parentWidget()->layout());
+        if (layout != 0)
+            layout->keepSize(this);
+    }
 
+    setWindowFlags(Qt::FramelessWindowHint | (floating ? Qt::Tool : Qt::Widget));
 
     d->updateButtons();
     d->resizer->setActive(QWidgetResizeHandler::Resize, floating);
@@ -728,9 +753,7 @@ void QDockWidget::changeEvent(QEvent *event)
 /*! \reimp */
 void QDockWidget::closeEvent(QCloseEvent *event)
 {
-    Q_D(QDockWidget);
-    if (!(d->features & DockWidgetClosable))
-        event->ignore();
+    QWidget::closeEvent(event);
 }
 
 /*! \reimp */
@@ -758,9 +781,16 @@ bool QDockWidget::event(QEvent *event)
 {
     Q_D(QDockWidget);
 
+    QMainWindow *win = qobject_cast<QMainWindow*>(parentWidget());
+    QMainWindowLayout *layout = 0;
+    if (win != 0)
+        layout = qobject_cast<QMainWindowLayout*>(win->layout());
+
     switch (event->type()) {
 #ifndef QT_NO_ACTION
     case QEvent::Hide:
+        if (layout != 0)
+            layout->keepSize(this);
         if (!isHidden())
             break;
         // fallthrough intended
@@ -776,10 +806,6 @@ bool QDockWidget::event(QEvent *event)
     case QEvent::ZOrderChange: {
         if (isFloating())
             break;
-        QMainWindow *win = qobject_cast<QMainWindow*>(parentWidget());
-        if (win == 0)
-            break;
-        QMainWindowLayout *layout = qobject_cast<QMainWindowLayout*>(win->layout());
         if (layout == 0)
             break;
         layout->raise(this);

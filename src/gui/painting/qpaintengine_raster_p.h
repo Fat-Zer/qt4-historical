@@ -164,6 +164,9 @@ public:
     void drawBitmap(const QPointF &pos, const QPixmap &image, QSpanData *fill);
 
     void rasterize(QT_FT_Outline *outline, ProcessSpans callback, void *userData, QRasterBuffer *rasterBuffer);
+#ifdef QT_EXPERIMENTAL_REGIONS
+    void setSimpleClip(const QRect &rect);
+#endif
 
     QMatrix brushMatrix() const {
         QMatrix m(matrix);
@@ -187,6 +190,9 @@ public:
 
     QPainterPath baseClip;
     QRect deviceRect;
+#ifdef QT_EXPERIMENTAL_REGIONS
+    QRegion clipRegion;
+#endif
 
     QSpanData penData;
     QSpanData brushData;
@@ -235,6 +241,9 @@ public:
 
     void appendSpan(int x, int length, int y, int coverage);
     void appendSpans(const QSpan *s, int num);
+#ifdef QT_EXPERIMENTAL_REGIONS
+    void setSimpleClip(const QRect &rect);
+#endif
     void fixup();
 };
 

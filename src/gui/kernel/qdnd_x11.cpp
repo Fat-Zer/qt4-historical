@@ -361,7 +361,7 @@ static bool xdndEnable(QWidget* w, bool on)
             delete xdnd_data.desktop_proxy;
             xdnd_data.desktop_proxy = 0;
         } else {
-            DNDDEBUG << "not deleteing XDndAware";
+            DNDDEBUG << "not deleting XDndAware";
         }
         return true;
     }

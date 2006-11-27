@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-x11-opensource-src-4.2.1/doc/src/examples/syntaxhighlighter.qdoc -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-x11-opensource-src-4.2.2/doc/src/examples/syntaxhighlighter.qdoc -->
 <head>
   <title>Qt 4.2: Syntax Highlighter Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -38,17 +38,17 @@
  ** and appearing in the file LICENSE.GPL included in the packaging of
  ** this file.  Please review the following information to ensure GNU
  ** General Public Licensing requirements will be met:
- ** http:<span class="comment">//www.trolltech.com/products/qt/opensource.html</span>
+ ** http://www.trolltech.com/products/qt/opensource.html
  **
  ** If you are unsure which license is appropriate for your use, please
  ** review the following information:
- ** http:<span class="comment">//www.trolltech.com/products/qt/licensing.html or contact the</span>
+ ** http://www.trolltech.com/products/qt/licensing.html or contact the
  ** sales department at sales@trolltech.com.
  **
  ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
  ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  **
- ****************************************************************************/
+ ****************************************************************************/</span>
 
  #ifndef HIGHLIGHTER_H
  #define HIGHLIGHTER_H
@@ -137,14 +137,14 @@
 <p>Then we create a format that we will apply to Qt class names. The class names will be rendered with a dark magenta color and a bold style. We specify a string pattern that is actually a regular expression capturing all Qt class names. Then we assign the regular expression and the specified format to a HighlightingRule object and append the object to our list of rules.</p>
 <p>We also define highlighting rules for quotations and functions using the same approach: The patterns have the form of regular expressions and are stored in HighlightingRule objects with the associated format.</p>
 <pre>     singleLineCommentFormat.setForeground(Qt::red);
-     rule.pattern = QRegExp(&quot;<span class="comment">//[^\n]*&quot;);</span>
+     rule.pattern = QRegExp(&quot;//[^\n]*&quot;);
      rule.format = singleLineCommentFormat;
      highlightingRules.append(rule);
 
      multiLineCommentFormat.setForeground(Qt::red);
 
      commentStartExpression = QRegExp(&quot;/\\*&quot;);
-     commentEndExpression = QRegExp(&quot;\\*/&quot;);
+     commentEndExpression = QRegExp(&quot;\\*/</span>&quot;);
  }</pre>
 <p>The C++ language has two variations of comments: The single line comment (<tt>\\</tt>) and the multiline comment (<tt>\*...*\</tt>). The single line comment can easily be defined through a highlighting rule similar to the previous ones. But the multiline comment needs special care due to the design of the <a href="qsyntaxhighlighter.html">QSyntaxHighlighter</a> class.</p>
 <p>After a <a href="qsyntaxhighlighter.html">QSyntaxHighlighter</a> object is created, its <a href="qsyntaxhighlighter.html#highlightBlock">highlightBlock()</a> function will be called automatically whenever it is necessary by the rich text engine, highlighting the given text block. The problem appears when a comment spans several text blocks. We will take a closer look at how this problem can be solved when reviewing the implementation of the <tt>Highlighter::highlightBlock()</tt> function. At this point we only specify the multiline comment's color.</p>
@@ -198,17 +198,17 @@
  ** and appearing in the file LICENSE.GPL included in the packaging of
  ** this file.  Please review the following information to ensure GNU
  ** General Public Licensing requirements will be met:
- ** http:<span class="comment">//www.trolltech.com/products/qt/opensource.html</span>
+ ** http://www.trolltech.com/products/qt/opensource.html
  **
  ** If you are unsure which license is appropriate for your use, please
  ** review the following information:
- ** http:<span class="comment">//www.trolltech.com/products/qt/licensing.html or contact the</span>
+ ** http://www.trolltech.com/products/qt/licensing.html or contact the
  ** sales department at sales@trolltech.com.
  **
  ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
  ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  **
- ****************************************************************************/
+ ****************************************************************************/</span>
 
  #ifndef MAINWINDOW_H
  #define MAINWINDOW_H
@@ -276,6 +276,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

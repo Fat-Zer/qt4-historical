@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-x11-opensource-src-4.2.1/src/gui/kernel/qx11embed_x11.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-x11-opensource-src-4.2.2/src/gui/kernel/qx11embed_x11.cpp -->
 <head>
   <title>Qt 4.2: QX11EmbedWidget Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -87,7 +87,7 @@
 
      return app.exec();
  }</pre>
-<p>The problem of obtaining the window IDs is often solved by the container invoking the application that provides the widget as a separate process (as a panel invokes a docked applet), passing its window ID to the new process as a command-line argument. The new process can then call <a href="qx11embedwidget.html#embedInto">embedInto</a>() with the container's window ID, as shown in the example code above. Similarily, the new process can report its window ID to the container through IPC, in which case the container can embed the widget.</p>
+<p>The problem of obtaining the window IDs is often solved by the container invoking the application that provides the widget as a separate process (as a panel invokes a docked applet), passing its window ID to the new process as a command-line argument. The new process can then call <a href="qx11embedwidget.html#embedInto">embedInto</a>() with the container's window ID, as shown in the example code above. Similarly, the new process can report its window ID to the container through IPC, in which case the container can embed the widget.</p>
 <p>When the widget has been embedded, it emits the signal <a href="qx11embedwidget.html#embedded">embedded</a>(). If it is closed by the container, the widget emits <a href="qx11embedwidget.html#containerClosed">containerClosed</a>(). If an error occurs when embedding, <a href="qx11embedwidget.html#error">error</a>() is emitted.</p>
 <p>There are XEmbed widgets available for KDE and GTK+. The GTK+ equivalent of QX11EmbedWidget is GtkPlug. The KDE widget is called QXEmbed.</p>
 <p>See also <a href="qx11embedcontainer.html">QX11EmbedContainer</a> and <a href="http://www.freedesktop.org/Standards/xembed-spec">XEmbed Specification</a>.</p>
@@ -108,9 +108,9 @@
 <h3 class="fn"><a name="containerClosed"></a>void QX11EmbedWidget::containerClosed ()&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted by the client widget when the container closes the widget. This can happen if the container itself closes, or if the widget is rejected.</p>
 <p>The container can reject a widget for any reason, but the most common cause of a rejection is when an attempt is made to embed a widget into a container that already has an embedded widget.</p>
-<h3 class="fn"><a name="containerWinId"></a>WId QX11EmbedWidget::containerWinId () const</h3>
+<h3 class="fn"><a name="containerWinId"></a><a href="qwidget.html#WId-typedef">WId</a> QX11EmbedWidget::containerWinId () const</h3>
 <p>If the widget is embedded, returns the window ID of the container; otherwize returns 0.</p>
-<h3 class="fn"><a name="embedInto"></a>void QX11EmbedWidget::embedInto ( WId <i>id</i> )</h3>
+<h3 class="fn"><a name="embedInto"></a>void QX11EmbedWidget::embedInto ( <a href="qwidget.html#WId-typedef">WId</a> <i>id</i> )</h3>
 <p>When this function is called, the widget embeds itself into the container whose window ID is <i>id</i>.</p>
 <p>If <i>id</i> is <i>not</i> the window ID of a container this function will behave unpredictably.</p>
 <h3 class="fn"><a name="embedded"></a>void QX11EmbedWidget::embedded ()&nbsp;&nbsp;<tt> [signal]</tt></h3>
@@ -125,6 +125,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

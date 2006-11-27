@@ -35,6 +35,7 @@ class DomProperty;
 class QDesignerPropertySheetExtension;
 
 namespace qdesigner_internal {
+    class MetaDataBaseItem;
 
 class QT_PROPERTYEDITOR_EXPORT PropertyEditor: public QDesignerPropertyEditorInterface
 {
@@ -66,6 +67,8 @@ private:
     static IProperty *createSpecialProperty(const QVariant &value, const QString &name);
 
 private:
+    MetaDataBaseItem *metaDataBaseItem() const;
+                
     QDesignerFormEditorInterface *m_core;
     QPropertyEditor *m_editor;
     IPropertyGroup *m_properties;

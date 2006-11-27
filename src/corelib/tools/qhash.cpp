@@ -349,7 +349,8 @@ void QHashData::checkSanity()
     differences are:
 
     \list
-    \i QHash provides faster lookups than QMap.
+    \i QHash provides faster lookups than QMap. (See \l{Algorithmic
+       Complexity} for details.)
     \i When iterating over a QMap, the items are always sorted by
        key. With QHash, the items are arbitrarily ordered.
     \i The key type of a QMap must provide operator<(). The key
@@ -1041,7 +1042,8 @@ void QHashData::checkSanity()
 /*! \fn bool QHash::empty() const
 
     This function is provided for STL compatibility. It is equivalent
-    to isEmpty().
+    to isEmpty(), returning true if the hash is empty; otherwise
+    returns false.
 */
 
 /*! \typedef QHash::ConstIterator

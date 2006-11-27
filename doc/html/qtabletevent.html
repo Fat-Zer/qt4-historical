@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-x11-opensource-src-4.2.1/src/gui/kernel/qevent.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-x11-opensource-src-4.2.2/src/gui/kernel/qevent.cpp -->
 <head>
   <title>Qt 4.2: QTabletEvent Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -103,7 +103,6 @@
 <p>See also <a href="qtabletevent.html#pos">pos</a>(), <a href="qtabletevent.html#globalPos">globalPos</a>(), <a href="qtabletevent.html#device">device</a>(), <a href="qtabletevent.html#pressure">pressure</a>(), <a href="qtabletevent.html#xTilt">xTilt</a>(), <a href="qtabletevent.html#yTilt">yTilt</a>(), <a href="qtabletevent.html#uniqueId">uniqueId</a>(), <a href="qtabletevent.html#rotation">rotation</a>(), <a href="qtabletevent.html#tangentialPressure">tangentialPressure</a>(), and <a href="qtabletevent.html#z">z</a>().</p>
 <h3 class="fn"><a name="device"></a><a href="qtabletevent.html#TabletDevice-enum">TabletDevice</a> QTabletEvent::device () const</h3>
 <p>Returns the type of device that generated the event.</p>
-<p>This is useful if you want to know which end of a pen was used to draw on the tablet.</p>
 <p>See also <a href="qtabletevent.html#TabletDevice-enum">TabletDevice</a>.</p>
 <h3 class="fn"><a name="globalPos"></a>const <a href="qpoint.html">QPoint</a> &amp; QTabletEvent::globalPos () const</h3>
 <p>Returns the global position of the device <i>at the time of the event</i>. This is important on asynchronous windows systems like X11; whenever you move your widgets around in response to mouse events, globalPos() can differ significantly from the current position <a href="qcursor.html#pos">QCursor::pos</a>().</p>
@@ -155,12 +154,12 @@
 <p>Returns the angle between the device (a pen, for example) and the perpendicular in the direction of the y axis. Positive values are towards the bottom of the tablet. The angle is within the range -60 to +60 degrees.</p>
 <p>See also <a href="qtabletevent.html#xTilt">xTilt</a>().</p>
 <h3 class="fn"><a name="z"></a>int QTabletEvent::z () const</h3>
-<p>Returns the z position of the device. Typically this is represented by a wheel on a 4D Mouse. If the device does not support a Z-axis, this value is always zero. This is &lt;em&gt;not&lt;/em&gt; the same as pressure.</p>
+<p>Returns the z position of the device. Typically this is represented by a wheel on a 4D Mouse. If the device does not support a Z-axis, this value is always zero. This is <b>not</b> the same as pressure.</p>
 <p>See also <a href="qtabletevent.html#pressure">pressure</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

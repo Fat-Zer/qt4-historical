@@ -50,6 +50,7 @@ extern int qt_defaultDpi();
 
     \ingroup multimedia
     \ingroup shared
+    \ingroup text
 
     QFontMetrics functions calculate the size of characters and
     strings for a given font. There are three ways you can create a
@@ -831,6 +832,7 @@ int QFontMetrics::lineWidth() const
 
     \ingroup multimedia
     \ingroup shared
+    \ingroup text
 
     QFontMetricsF functions calculate the size of characters and
     strings for a given font. You can construct a QFontMetricsF object

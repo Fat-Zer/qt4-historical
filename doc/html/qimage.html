@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-x11-opensource-src-4.2.1/src/gui/image/qimage.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-x11-opensource-src-4.2.2/src/gui/image/qimage.cpp -->
 <head>
   <title>Qt 4.2: QImage Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -230,7 +230,7 @@
 <a name="image-transformations"></a>
 <h3>Image Transformations</h3>
 <p>QImage supports a number of functions for creating a new image that is a transformed version of the original: The <a href="qimage.html#createAlphaMask">createAlphaMask</a>() function builds and returns a 1-bpp mask from the alpha buffer in this image, and the <a href="qimage.html#createHeuristicMask">createHeuristicMask</a>() function creates and returns a 1-bpp heuristic mask for this image. The latter function works by selecting a color from one of the corners, then chipping away pixels of that color starting at all the edges.</p>
-<p>The <a href="qimage.html#mirrored">mirrored</a>() function returns a mirror of the image in the desired direction, the <a href="qimage.html#scaled">scaled</a>() returns a copy of the image scaled to a rectangle of the desired measures, the <a href="qimage.html#rgbSwapped">rgbSwapped</a>() fucntion constructs a BGR image from a RGB image, and the <a href="qimage.html#alphaChannel">alphaChannel</a>() function constructs an image from this image's alpha channel.</p>
+<p>The <a href="qimage.html#mirrored">mirrored</a>() function returns a mirror of the image in the desired direction, the <a href="qimage.html#scaled">scaled</a>() returns a copy of the image scaled to a rectangle of the desired measures, the <a href="qimage.html#rgbSwapped">rgbSwapped</a>() function constructs a BGR image from a RGB image, and the <a href="qimage.html#alphaChannel">alphaChannel</a>() function constructs an image from this image's alpha channel.</p>
 <p>The <a href="qimage.html#scaledToWidth">scaledToWidth</a>() and <a href="qimage.html#scaledToHeight">scaledToHeight</a>() functions return scaled copies of the image.</p>
 <p>The <a href="qimage.html#transformed">transformed</a>() function returns a copy of the image that is transformed with the given transformation matrix and transformation mode: Internally, the transformation matrix is adjusted to compensate for unwanted translation, i.e. <a href="qimage.html#transformed">transformed</a>() returns the smallest image containing all transformed points of the original image. The static <a href="qimage.html#trueMatrix">trueMatrix</a>() function returns the actual matrix used for transforming the image.</p>
 <p>There are also functions for changing attributes of an image in-place:</p>
@@ -324,8 +324,9 @@
 <p>Note that this function is slow for images without color table.</p>
 <p>See also <a href="qimage.html#isGrayscale">isGrayscale</a>().</p>
 <h3 class="fn"><a name="alphaChannel"></a>QImage QImage::alphaChannel () const</h3>
-<p>Extracts the alpha channel from this image as an 8 bit gray scale image and returns it.</p>
-<p>See also <a href="qimage.html#setAlphaChannel">setAlphaChannel</a>(), <a href="qimage.html#hasAlphaChannel">hasAlphaChannel</a>(), and <a href="qimage.html#image-transformations">Image Transformations</a>.</p>
+<p>Returns the alpha channel of the image as a new grayscale <a href="qpixmap.html">QPixmap</a> in which each pixel's red, green, and blue values are given the alpha value of the original image. The color depth of the returned image is 8-bit.</p>
+<p>You can see an example of use of this function in <a href="qpixmap.html">QPixmap</a>'s <a href="qpixmap.html#alphaChannel">alphaChannel()</a>, which works in the same way as this function on QPixmaps.</p>
+<p>See also <a href="qimage.html#setAlphaChannel">setAlphaChannel</a>() and <a href="qpixmap.html#pixmap-information">Pixmap sa setAlphaChannel</a>(), hasAlphaChannel(), {QImage#Image Transformations}{Image Transformations}.</p>
 <h3 class="fn"><a name="bits"></a><a href="qtglobal.html#uchar-typedef">uchar</a> * QImage::bits ()</h3>
 <p>Returns a pointer to the first pixel data. This is equivalent to scanLine(0).</p>
 <p>See also <a href="qimage.html#scanLine">scanLine</a>() and <a href="qimage.html#numBytes">numBytes</a>().</p>
@@ -510,10 +511,9 @@
 <h3 class="fn"><a name="scanLine-2"></a>const <a href="qtglobal.html#uchar-typedef">uchar</a> * QImage::scanLine ( int <i>i</i> ) const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <h3 class="fn"><a name="serialNumber"></a>int QImage::serialNumber () const</h3>
-<p>Returns a number that identifies the contents of this <a href="qimage.html">QImage</a> object. Distinct <a href="qimage.html">QImage</a> objects can only have the same serial number if they refer to the same contents (but they don't have to). Also, the serial number of a <a href="qimage.html">QImage</a> may change during the lifetime of the object.</p>
-<p>A null image has always a serial number of 0.</p>
-<p>Serial numbers are moslty useful in conjunction with cacheing.</p>
-<p>See also <a href="qimage.html#image-information">Image Information</a> and <a href="qimage.html#operator-eq-eq">operator==</a>().</p>
+<p>Returns a number that identifies the contents of this <a href="qimage.html">QImage</a> object. Distinct <a href="qimage.html">QImage</a> objects can only have the same serial number if they refer to the same contents (but they don't have to).</p>
+<p><b>Warning:</b> The serial number doesn't necessarily change when the image is altered. This means that it may be dangerous to use it as a cache key.</p>
+<p>See also <a href="qimage.html#operator-eq-eq">operator==</a>().</p>
 <h3 class="fn"><a name="setAlphaChannel"></a>void QImage::setAlphaChannel ( const QImage &amp; <i>alphaChannel</i> )</h3>
 <p>Sets the alpha channel of this image to the given <i>alphaChannel</i>.</p>
 <p>If <i>alphaChannel</i> is an 8 bit grayscale image, the intensity values are written into this buffer directly. Otherwise, <i>alphaChannel</i> is converted to 32 bit and the intensity of the RGB pixel values is used.</p>
@@ -783,6 +783,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

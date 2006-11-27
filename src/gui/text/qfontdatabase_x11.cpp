@@ -675,8 +675,6 @@ static void loadXlfds(const char *reqFamily, int encoding_id)
         for (int i = 0; i < QFontDatabase::WritingSystemsCount; ++i) {
             if (writingSystems_for_xlfd_encoding[encoding_id][i])
                 family->writingSystems[i] = QtFontFamily::Supported;
-            else
-                family->writingSystems[i] |= QtFontFamily::UnsupportedXLFD;
         }
     }
     if (!reqFamily) {
@@ -1723,7 +1721,7 @@ QFontEngine *QFontDatabase::loadXlfd(int screen, int script, const QFontDef &req
     }
 
     QFontEngine *fe = 0;
-    if (force_encoding_id != -1 || script != QUnicodeTables::Common
+    if (force_encoding_id != -1
         || (request.styleStrategy & QFont::NoFontMerging)
         || (desc.family && desc.family->writingSystems[QFontDatabase::Symbol] & QtFontFamily::Supported)) {
         if (desc.family) {

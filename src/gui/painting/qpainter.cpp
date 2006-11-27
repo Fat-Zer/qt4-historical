@@ -22,6 +22,7 @@
 ****************************************************************************/
 // QtCore
 #include <qdebug.h>
+#include <qmutex.h>
 
 // QtGui
 #include "qbitmap.h"
@@ -61,7 +62,7 @@ bool qt_show_painter_debug_output = true;
 extern QPixmap qt_pixmapForBrush(int style, bool invert);
 
 void qt_format_text(const QFont &font,
-                    const QRectF &_r, int tf, const QString& str, QRectF *brect,
+                    const QRectF &_r, int tf, const QTextOption *option, const QString& str, QRectF *brect,
                     int tabstops, int* tabarray, int tabarraylen,
                     QPainter *painter);
 
@@ -1358,6 +1359,8 @@ bool QPainter::begin(QPaintDevice *pd)
     don't normally need to call this since it is called by the
     destructor.
 
+    Returns true if the painter is no longer active; otherwise returns false.
+
     \sa begin(), isActive()
 */
 
@@ -1845,6 +1848,27 @@ void QPainter::setClipRect(const QRectF &rect, Qt::ClipOperation op)
     Enables clipping, and sets the clip region to the given \a rectangle using the given
     clip \a operation.
 */
+#ifdef QT_EXPERIMENTAL_REGIONS
+void QPainter::setClipRect(const QRect &rect, Qt::ClipOperation op)
+{
+    if (!isActive())
+        return;
+
+    Q_D(QPainter);
+
+    if (!d->state->clipEnabled && (op == Qt::IntersectClip || op == Qt::UniteClip))
+        op = Qt::ReplaceClip;
+
+    d->state->clipRegion = rect;
+    d->state->clipOperation = op;
+    if (op == Qt::NoClip || op == Qt::ReplaceClip)
+        d->state->clipInfo.clear();
+    d->state->clipInfo << QPainterClipInfo(rect, op, d->state->worldMatrix);
+    d->state->clipEnabled = true;
+    d->state->dirtyFlags |= QPaintEngine::DirtyClipRegion | QPaintEngine::DirtyClipEnabled;
+    d->updateState(d->state);
+}
+#endif // QT_EXPERIMENTAL_REGIONS
 
 /*!
     \fn void QPainter::setClipRect(int x, int y, int width, int height, Qt::ClipOperation operation)
@@ -1856,7 +1880,7 @@ void QPainter::setClipRect(const QRectF &rect, Qt::ClipOperation op)
 /*!
     \fn void QPainter::setClipRegion(const QRegion &region, Qt::ClipOperation operation)
 
-    Sets the clip region to the givne \a region using the given clip
+    Sets the clip region to the given \a region using the specified clip
     \a operation. The default clip operation is to replace the current
     clip region.
 
@@ -4382,7 +4406,7 @@ void QPainter::drawText(const QRect &r, int flags, const QString &str, QRect *br
     d->updateState(d->state);
 
     QRectF bounds;
-    qt_format_text(d->state->font, r, flags, str, br ? &bounds : 0, 0, 0, 0, this);
+    qt_format_text(d->state->font, r, flags, 0, str, br ? &bounds : 0, 0, 0, 0, this);
     if (br)
         *br = bounds.toRect();
 }
@@ -4446,7 +4470,7 @@ void QPainter::drawText(const QRectF &r, int flags, const QString &str, QRectF *
     Q_D(QPainter);
     d->updateState(d->state);
 
-    qt_format_text(d->state->font, r, flags, str, br, 0, 0, 0, this);
+    qt_format_text(d->state->font, r, flags, 0, str, br, 0, 0, 0, this);
 }
 
 /*!
@@ -4529,7 +4553,7 @@ void QPainter::drawText(const QRectF &r, const QString &text, const QTextOption 
     if (o.flags() & QTextOption::IncludeTrailingSpaces)
         flags |= Qt::TextIncludeTrailingSpaces;
 
-    qt_format_text(d->state->font, r, flags, text, 0, 0, 0, 0, this);
+    qt_format_text(d->state->font, r, flags, &o, text, 0, 0, 0, 0, this);
 }
 
 /*!
@@ -4583,9 +4607,8 @@ static QPainterPath generateWavyPath(qreal minWidth, QPaintDevice *device)
         xs = i*(2*radius);
         ys = 0;
 
-        //the way we draw arc's sucks!!! we need to move
-        // to the start of the new arc to not have the path
-        // be implicetly connected for us
+        // we need to move to the start of the new arc to not have the path
+        // be implicitly connected for us
         path.arcMoveTo(xs, ys, 2*radius, 2*radius, 0);
         path.arcTo(xs, ys, 2*radius, 2*radius, 0, endAngle);
         up = !up;
@@ -4928,7 +4951,7 @@ QRectF QPainter::boundingRect(const QRectF &r, const QString &text, const QTextO
         flags |= Qt::TextIncludeTrailingSpaces;
 
     QRectF br;
-    qt_format_text(d->state->font, r, flags, text, &br, 0, 0, 0, this);
+    qt_format_text(d->state->font, r, flags, &o, text, &br, 0, 0, 0, this);
     return br;
 }
 
@@ -5382,7 +5405,7 @@ QRect QPainter::viewport() const
 /*! \fn bool QPainter::hasWorldXForm() const
     \compat
 
-    Use matrixEnabled() instead.
+    Use worldMatrixEnabled() instead.
 */
 
 /*! \fn void QPainter::resetXForm()
@@ -5400,7 +5423,7 @@ QRect QPainter::viewport() const
 /*! \fn void QPainter::setWorldXForm(bool enabled)
     \compat
 
-    Use setMatrixEnabled() instead.
+    Use setWorldMatrixEnabled() instead.
 */
 /*!
     Enables view transformations if \a enable is true, or disables
@@ -5432,14 +5455,14 @@ void QPainter::setViewTransformEnabled(bool enable)
 #ifdef QT3_SUPPORT
 
 /*!
-    Use the world matrix() combined with QMatrix::dx() instead.
+    Use the worldMatrix() combined with QMatrix::dx() instead.
 
     \oldcode
         QPainter painter(this);
         qreal x = painter.translationX();
     \newcode
         QPainter painter(this);
-        qreal x = painter.matrix().dx();
+        qreal x = painter.worldMatrix().dx();
     \endcode
 */
 qreal QPainter::translationX() const
@@ -5449,14 +5472,14 @@ qreal QPainter::translationX() const
 }
 
 /*!
-    Use the world matrix() combined with QMatrix::dy() instead.
+    Use the worldMatrix() combined with QMatrix::dy() instead.
 
     \oldcode
         QPainter painter(this);
         qreal y = painter.translationY();
     \newcode
         QPainter painter(this);
-        qreal y = painter.matrix().dy();
+        qreal y = painter.worldMatrix().dy();
     \endcode
 */
 qreal QPainter::translationY() const
@@ -5475,9 +5498,8 @@ qreal QPainter::translationY() const
 */
 void QPainter::map(int x, int y, int *rx, int *ry) const
 {
-    Q_D(const QPainter);
     QPoint p(x, y);
-    p = p * d->state->matrix;
+    p = p * combinedMatrix();
     *rx = p.x();
     *ry = p.y();
 }
@@ -5485,7 +5507,7 @@ void QPainter::map(int x, int y, int *rx, int *ry) const
 /*!
     \fn QPoint QPainter::xForm(const QPoint &point) const
 
-    Use \a point * matrix() instead.
+    Use \a point * combinedMatrix() instead.
 */
 
 QPoint QPainter::xForm(const QPoint &p) const
@@ -5493,7 +5515,7 @@ QPoint QPainter::xForm(const QPoint &p) const
     Q_D(const QPainter);
     if (d->state->txop == QPainterPrivate::TxNone)
         return p;
-    return p * d->state->matrix;
+    return p * combinedMatrix();
 }
 
 
@@ -5501,7 +5523,7 @@ QPoint QPainter::xForm(const QPoint &p) const
     \fn QRect QPainter::xForm(const QRect &rectangle) const
     \overload
 
-    Use \a rectangle * matrix() instead.
+    Use \a rectangle * combinedMatrix() instead.
 */
 
 QRect QPainter::xForm(const QRect &r) const
@@ -5509,14 +5531,14 @@ QRect QPainter::xForm(const QRect &r) const
     Q_D(const QPainter);
     if (d->state->txop == QPainterPrivate::TxNone)
         return r;
-    return d->state->matrix.mapRect(r);
+    return combinedMatrix().mapRect(r);
 }
 
 /*!
     \fn QPolygon QPainter::xForm(const QPolygon &polygon) const
     \overload
 
-    Use \a polygon * matrix() instead.
+    Use \a polygon * combinedMatrix() instead.
 */
 
 QPolygon QPainter::xForm(const QPolygon &a) const
@@ -5524,45 +5546,44 @@ QPolygon QPainter::xForm(const QPolygon &a) const
     Q_D(const QPainter);
     if (d->state->txop == QPainterPrivate::TxNone)
         return a;
-    return a * d->state->matrix;
+    return a * combinedMatrix();
 }
 
 /*!
     \fn QPolygon QPainter::xForm(const QPolygon &polygon, int index, int count) const
     \overload
 
-    Use matrix() combined with QPolygon::mid() instead.
+    Use combinedMatrix() combined with QPolygon::mid() instead.
 
     \oldcode
         QPainter painter(this);
         QPolygon transformed = painter.xForm(polygon, index, count)
     \newcode
         QPainter painter(this);
-        QPolygon transformed = polygon.mid(index, count) * painter.matrix();
+        QPolygon transformed = polygon.mid(index, count) * painter.combinedMatrix();
     \endcode
 */
 
 QPolygon QPainter::xForm(const QPolygon &av, int index, int npoints) const
 {
-    Q_D(const QPainter);
     int lastPoint = npoints < 0 ? av.size() : index+npoints;
     QPolygon a(lastPoint-index);
     memcpy(a.data(), av.data()+index, (lastPoint-index)*sizeof(QPoint));
-    return a * d->state->matrix;
+    return a * combinedMatrix();
 }
 
 /*!
     \fn QPoint QPainter::xFormDev(const QPoint &point) const
     \overload
 
-    Use  matrix() combined with QMatrix::inverted() instead.
+    Use  combinedMatrix() combined with QMatrix::inverted() instead.
 
     \oldcode
         QPainter painter(this);
         QPoint transformed = painter.xFormDev(point);
     \newcode
         QPainter painter(this);
-        QPoint transformed = point * painter.matrix().inverted();
+        QPoint transformed = point * painter.combinedMatrix().inverted();
     \endcode
 */
 
@@ -5571,25 +5592,21 @@ QPoint QPainter::xFormDev(const QPoint &p) const
     Q_D(const QPainter);
     if(d->state->txop == QPainterPrivate::TxNone)
         return p;
-    if (!d->txinv) {
-        QPainter *that = (QPainter*)this;        // mutable
-        that->d_ptr->updateInvMatrix();
-    }
-    return p * d->invMatrix;
+    return p * combinedMatrix().inverted();
 }
 
 /*!
-    \fn QPoint QPainter::xFormDev(const QRect &rectangle) const
+    \fn QRect QPainter::xFormDev(const QRect &rectangle) const
     \overload
 
-    Use  matrix() combined with QMatrix::inverted() instead.
+    Use  combineMatrix() combined with QMatrix::inverted() instead.
 
     \oldcode
         QPainter painter(this);
         QRect transformed = painter.xFormDev(rectangle);
     \newcode
         QPainter painter(this);
-        QRect transformed = rectangle * painter.matrix().inverted();
+        QRect transformed = rectangle * painter.combinedMatrix().inverted();
     \endcode
 */
 
@@ -5598,11 +5615,7 @@ QRect QPainter::xFormDev(const QRect &r)  const
     Q_D(const QPainter);
     if (d->state->txop == QPainterPrivate::TxNone)
         return r;
-    if (!d->txinv) {
-        QPainter *that = (QPainter*)this;        // mutable
-        that->d_ptr->updateInvMatrix();
-    }
-    return d->invMatrix.mapRect(r);
+    return combinedMatrix().inverted().mapRect(r);
 }
 
 /*!
@@ -5611,14 +5624,14 @@ QRect QPainter::xFormDev(const QRect &r)  const
     \fn QPoint QPainter::xFormDev(const QPolygon &polygon) const
     \overload
 
-    Use  matrix() combined with QMatrix::inverted() instead.
+    Use  combinedMatrix() combined with QMatrix::inverted() instead.
 
     \oldcode
         QPainter painter(this);
         QPolygon transformed = painter.xFormDev(rectangle);
     \newcode
         QPainter painter(this);
-        QPolygon transformed = polygon * painter.matrix().inverted();
+        QPolygon transformed = polygon * painter.combinedMatrix().inverted();
     \endcode
 */
 
@@ -5627,25 +5640,21 @@ QPolygon QPainter::xFormDev(const QPolygon &a) const
     Q_D(const QPainter);
     if (d->state->txop == QPainterPrivate::TxNone)
         return a;
-    if (!d->txinv) {
-        QPainter *that = (QPainter*)this;        // mutable
-        that->d_ptr->updateInvMatrix();
-    }
-    return a * d->invMatrix;
+    return a * combinedMatrix().inverted();
 }
 
 /*!
     \fn QPolygon QPainter::xFormDev(const QPolygon &polygon, int index, int count) const
     \overload
 
-    Use matrix() combined with QPolygon::mid() and QMatrix::inverted() instead.
+    Use combinedMatrix() combined with QPolygon::mid() and QMatrix::inverted() instead.
 
     \oldcode
         QPainter painter(this);
         QPolygon transformed = painter.xFormDev(polygon, index, count);
     \newcode
         QPainter painter(this);
-        QPolygon transformed = polygon.mid(index, count) * painter.matrix().inverted();
+        QPolygon transformed = polygon.mid(index, count) * painter.combinedMatrix().inverted();
     \endcode
 */
 
@@ -5657,11 +5666,7 @@ QPolygon QPainter::xFormDev(const QPolygon &ad, int index, int npoints) const
     memcpy(a.data(), ad.data()+index, (lastPoint-index)*sizeof(QPoint));
     if (d->state->txop == QPainterPrivate::TxNone)
         return a;
-    if (!d->txinv) {
-        QPainter *that = (QPainter*)this;        // mutable
-        that->d_ptr->updateInvMatrix();
-    }
-    return a * d->invMatrix;
+    return a * combinedMatrix().inverted();
 }
 
 /*!
@@ -5723,6 +5728,7 @@ struct QPaintDeviceRedirection
 
 typedef QList<QPaintDeviceRedirection> QPaintDeviceRedirectionList;
 Q_GLOBAL_STATIC(QPaintDeviceRedirectionList, globalRedirections)
+Q_GLOBAL_STATIC(QMutex, globalRedirectionsMutex)
 
 /*!
     Redirects all paint commands for the given paint \a device, to the
@@ -5745,11 +5751,13 @@ void QPainter::setRedirected(const QPaintDevice *device,
                              const QPoint &offset)
 {
     Q_ASSERT(device != 0);
-    QPaintDeviceRedirectionList *redirections = globalRedirections();
-    Q_ASSERT(redirections != 0);
 
     QPoint roffset;
     QPaintDevice *rdev = redirected(replacement, &roffset);
+
+    QMutexLocker locker(globalRedirectionsMutex());
+    QPaintDeviceRedirectionList *redirections = globalRedirections();
+    Q_ASSERT(redirections != 0);
     *redirections += QPaintDeviceRedirection(device, rdev ? rdev : replacement, offset + roffset);
 }
 
@@ -5763,13 +5771,15 @@ void QPainter::setRedirected(const QPaintDevice *device,
 void QPainter::restoreRedirected(const QPaintDevice *device)
 {
     Q_ASSERT(device != 0);
+    QMutexLocker locker(globalRedirectionsMutex());
     QPaintDeviceRedirectionList *redirections = globalRedirections();
     Q_ASSERT(redirections != 0);
-    for (int i = redirections->size()-1; i >= 0; --i)
+    for (int i = redirections->size()-1; i >= 0; --i) {
         if (redirections->at(i) == device) {
             redirections->removeAt(i);
             return;
         }
+    }
 }
 
 /*!
@@ -5781,6 +5791,7 @@ void QPainter::restoreRedirected(const QPaintDevice *device)
 QPaintDevice *QPainter::redirected(const QPaintDevice *device, QPoint *offset)
 {
     Q_ASSERT(device != 0);
+    QMutexLocker locker(globalRedirectionsMutex());
     QPaintDeviceRedirectionList *redirections = globalRedirections();
     Q_ASSERT(redirections != 0);
     for (int i = redirections->size()-1; i >= 0; --i)
@@ -5797,6 +5808,7 @@ QPaintDevice *QPainter::redirected(const QPaintDevice *device, QPoint *offset)
 
 void qt_painter_removePaintDevice(QPaintDevice *dev)
 {
+    QMutexLocker locker(globalRedirectionsMutex());
     if(QPaintDeviceRedirectionList *redirections = globalRedirections()) {
         for (int i = 0; i < redirections->size(); ) {
             if(redirections->at(i) == dev || redirections->at(i).replacement == dev)
@@ -5809,6 +5821,16 @@ void qt_painter_removePaintDevice(QPaintDevice *dev)
 
 void qt_format_text(const QFont &fnt, const QRectF &_r,
                     int tf, const QString& str, QRectF *brect,
+                    int tabstops, int *ta, int tabarraylen,
+                    QPainter *painter)
+{
+    qt_format_text(fnt, _r,
+                    tf, 0, str, brect,
+                    tabstops, ta, tabarraylen,
+                    painter);
+}
+void qt_format_text(const QFont &fnt, const QRectF &_r,
+                    int tf, const QTextOption *option, const QString& str, QRectF *brect,
                     int tabstops, int *, int tabarraylen,
                     QPainter *painter)
 {
@@ -5821,7 +5843,14 @@ void qt_format_text(const QFont &fnt, const QRectF &_r,
     bool showmnemonic = (tf & Qt::TextShowMnemonic);
     bool hidemnmemonic = (tf & Qt::TextHideMnemonic);
 
-    Qt::LayoutDirection layout_direction = painter ? painter->layoutDirection() : Qt::LeftToRight;
+    Qt::LayoutDirection layout_direction;
+    if(option)
+        layout_direction = option->textDirection();
+    else if (painter)
+        layout_direction = painter->layoutDirection();
+    else
+        layout_direction = Qt::LeftToRight;
+
     tf = QStyle::visualAlignment(layout_direction, QFlag(tf));
 
     bool isRightToLeft = layout_direction == Qt::RightToLeft;

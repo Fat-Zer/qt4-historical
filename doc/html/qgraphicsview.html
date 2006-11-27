@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-x11-opensource-src-4.2.1/src/gui/graphicsview/qgraphicsview.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-x11-opensource-src-4.2.2/src/gui/graphicsview/qgraphicsview.cpp -->
 <head>
   <title>Qt 4.2: QGraphicsView Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -235,7 +235,7 @@
 <p>See also <a href="qgraphicsscene.html#backgroundBrush-prop">QGraphicsScene::backgroundBrush</a> and <a href="qgraphicsview.html#foregroundBrush-prop">foregroundBrush</a>.</p>
 <h3 class="fn"><a name="cacheMode-prop"></a>cacheMode : <a href="qgraphicsview.html#CacheModeFlag-enum">CacheMode</a></h3>
 <p>This property holds which parts of the view are cached.</p>
-<p><a href="qgraphicsview.html">QGraphicsView</a> can cache pre-rendered content in a <a href="qpixmap.html">QPixmap</a>, which is then drawn onto the viewport. The purpose of such cacheing is to speed up the total rendering time for areas that are slow to render. Texture, gradient and alpha blended backgrounds, for example, can be notibly slow to render; especially with a transformed view. The <a href="qgraphicsview.html#CacheModeFlag-enum">CacheBackground</a> flag enables cacheing of the view's background. For example:</p>
+<p><a href="qgraphicsview.html">QGraphicsView</a> can cache pre-rendered content in a <a href="qpixmap.html">QPixmap</a>, which is then drawn onto the viewport. The purpose of such caching is to speed up the total rendering time for areas that are slow to render. Texture, gradient and alpha blended backgrounds, for example, can be notibly slow to render; especially with a transformed view. The <a href="qgraphicsview.html#CacheModeFlag-enum">CacheBackground</a> flag enables caching of the view's background. For example:</p>
 <pre> QGraphicsView view;
  view.setBackgroundBrush(&quot;:/images/backgroundtile.png&quot;);
  view.setCacheMode(QGraphicsView::CacheBackground);</pre>
@@ -522,7 +522,7 @@
  QGraphicsView view(&amp;scene);
  view.rotate(90); <span class="comment">// the text is rendered with a 90 degree clockwise rotation</span>
  view.show();</pre>
-<p>To simplify interation with items using a transformed view, <a href="qgraphicsview.html">QGraphicsView</a> provides mapTo... and mapFrom... functions that can translate between scene and view coordinates. For example, you can call <a href="qgraphicsview.html#mapToScene">mapToScene</a>() to map a view coordiate to a floating point scene coordinate, or <a href="qgraphicsview.html#mapFromScene">mapFromScene</a>() to map from floating point scene coordinates to view coordinates.</p>
+<p>To simplify interation with items using a transformed view, <a href="qgraphicsview.html">QGraphicsView</a> provides mapTo... and mapFrom... functions that can translate between scene and view coordinates. For example, you can call <a href="qgraphicsview.html#mapToScene">mapToScene</a>() to map a view coordinate to a floating point scene coordinate, or <a href="qgraphicsview.html#mapFromScene">mapFromScene</a>() to map from floating point scene coordinates to view coordinates.</p>
 <p>See also <a href="qgraphicsview.html#matrix">matrix</a>(), <a href="qgraphicsview.html#rotate">rotate</a>(), <a href="qgraphicsview.html#scale">scale</a>(), <a href="qgraphicsview.html#shear">shear</a>(), and <a href="qgraphicsview.html#translate">translate</a>().</p>
 <h3 class="fn"><a name="setRenderHint"></a>void QGraphicsView::setRenderHint ( <a href="qpainter.html#RenderHint-enum">QPainter::RenderHint</a> <i>hint</i>, bool <i>enabled</i> = true )</h3>
 <p>If <i>enabled</i> is true, the render hint <i>hint</i> is enabled; otherwise it is disabled.</p>
@@ -550,6 +550,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

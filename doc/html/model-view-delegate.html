@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-x11-opensource-src-4.2.1/doc/src/model-view-programming.qdoc -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-x11-opensource-src-4.2.2/doc/src/model-view-programming.qdoc -->
 <head>
   <title>Qt 4.2: Delegate Classes</title>
   <link rel="prev" href="model-view-selection.html" />
@@ -109,7 +109,7 @@
 <h3>Updating the Editor's Geometry</h3>
 <p>It is the responsibility of the delegate to manage the editor's geometry. The geometry must be set when the editor is created, and when the item's size or position in the view is changed. Fortunately, the view provides all the necessary geometry information inside a <a href="qstyleoptionviewitem.html">view option</a> object.</p>
 <pre> void SpinBoxDelegate::updateEditorGeometry(QWidget *editor,
-     const QStyleOptionViewItem &amp;option, const QModelIndex &amp;/* index */) const
+     const QStyleOptionViewItem &amp;option, const QModelIndex &amp;/* index */</span>) const
  {
      editor-&gt;setGeometry(option.rect);
  }</pre>
@@ -129,6 +129,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

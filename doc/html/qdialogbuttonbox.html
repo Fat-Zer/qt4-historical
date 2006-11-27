@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-x11-opensource-src-4.2.1/src/gui/widgets/qdialogbuttonbox.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-x11-opensource-src-4.2.2/src/gui/widgets/qdialogbuttonbox.cpp -->
 <head>
   <title>Qt 4.2: QDialogButtonBox Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -140,6 +140,7 @@
 <tr valign="top" class="even"><td><img src="images/buttonbox-mac-modeless-vertical.png" alt="Screenshot of modeless vertical MacLayout" /></td><td>modeless vertical <a href="qdialogbuttonbox.html#ButtonLayout-enum">MacLayout</a></td></tr>
 </table></p>
 <p>When a button is clicked in the button box, the <a href="qdialogbuttonbox.html#clicked">clicked</a>() signal is emitted for the actual button is that is pressed. For convenience, if the button has an <a href="qdialogbuttonbox.html#ButtonRole-enum">AcceptRole</a>, <a href="qdialogbuttonbox.html#ButtonRole-enum">RejectRole</a>, or <a href="qdialogbuttonbox.html#ButtonRole-enum">HelpRole</a>, the <a href="qdialogbuttonbox.html#accepted">accepted</a>(), <a href="qdialogbuttonbox.html#rejected">rejected</a>(), or <a href="qdialogbuttonbox.html#helpRequested">helpRequested</a>() signals are emitted respectively.</p>
+<p>if you want a specific button to be default you need to call <a href="qpushbutton.html#default-prop">QPushButton::setDefault</a>() on it yourself. However, if there is no default button set and to preserve which button is the default button across platforms when using the <a href="qpushbutton.html#autoDefault-prop">QPushButton::autoDefault</a> property, the first push button with the accept role is made the default button when the QDialogButtonBox is shown,</p>
 <p>See also <a href="qmessagebox.html">QMessageBox</a>, <a href="qpushbutton.html">QPushButton</a>, and <a href="qdialog.html">QDialog</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
@@ -282,6 +283,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-x11-opensource-src-4.2.1/src/corelib/kernel/qtranslator.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-x11-opensource-src-4.2.2/src/corelib/kernel/qtranslator.cpp -->
 <head>
   <title>Qt 4.2: QTranslator Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -81,7 +81,8 @@
 <h3 class="fn"><a name="isEmpty"></a>bool QTranslator::isEmpty () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns true if this translator is empty, otherwise returns false. This function works with stripped and unstripped translation files.</p>
 <h3 class="fn"><a name="load"></a>bool QTranslator::load ( const <a href="qstring.html">QString</a> &amp; <i>filename</i>, const <a href="qstring.html">QString</a> &amp; <i>directory</i> = QString(), const <a href="qstring.html">QString</a> &amp; <i>search_delimiters</i> = QString(), const <a href="qstring.html">QString</a> &amp; <i>suffix</i> = QString() )</h3>
-<p>Loads <i>filename</i> + <i>suffix</i> (&quot;.qm&quot; if the <i>suffix</i> is not specified), which may be an absolute file name or relative to <i>directory</i>. The previous contents of this translator object is discarded.</p>
+<p>Loads <i>filename</i> + <i>suffix</i> (&quot;.qm&quot; if the <i>suffix</i> is not specified), which may be an absolute file name or relative to <i>directory</i>. Returns true if the translation is successfully loaded; otherwise returns false.</p>
+<p>The previous contents of this translator object are discarded.</p>
 <p>If the file name does not exist, other file names are tried in the following order:</p>
 <ol type="1">
 <li>File name without <i>suffix</i> appended.</li>
@@ -119,6 +120,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

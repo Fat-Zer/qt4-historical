@@ -366,7 +366,7 @@ int Q3DockAreaLayout::layoutItems(const QRect &rect, bool testonly)
             tbstrut = -1;
         }
 
-        // remeber first widget of a line
+        // remember first widget of a line
         if (lastLine.isEmpty()) {
             ls.append(dw);
             // try to make the best position

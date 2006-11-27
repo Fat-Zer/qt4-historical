@@ -61,10 +61,10 @@
         class ZipEngineHandler : public QAbstractFileEngineHandler
         {
         public:
-            QAbstractSocketEngine *create(const QString &fileName) const;
+            QAbstractFileEngine *create(const QString &fileName) const;
         };
 
-        QAbstractSocketEngine *ZipEngineHandler::create(const QString &fileName) const
+        QAbstractFileEngine *ZipEngineHandler::create(const QString &fileName) const
         {
             // ZipEngineHandler returns a ZipEngine for all .zip files
             return fileName.toLower().endsWith(".zip") ? new ZipEngine(fileName) : 0;
@@ -209,7 +209,7 @@ QAbstractFileEngine *QAbstractFileEngine::create(const QString &fileName)
     isRelativePath(), fileFlags(), ownerId(), owner(), and fileTime()
     functions are applicable.
 
-    A QAbstractFileEngine subclass can be created to do syncronous network I/O
+    A QAbstractFileEngine subclass can be created to do synchronous network I/O
     based file system operations, local file system operations, or to operate
     as a resource system to access file based resources.
 
@@ -353,7 +353,9 @@ bool QAbstractFileEngine::open(QIODevice::OpenMode openMode)
 }
 
 /*!
-    Closes the file.
+    Closes the file, returning true if successful; otherwise returns false.
+
+    The default implementation always returns false.
 */
 bool QAbstractFileEngine::close()
 {
@@ -361,7 +363,10 @@ bool QAbstractFileEngine::close()
 }
 
 /*!
-    Flushes the open file.
+    Flushes the open file, returning true if successful; otherwise returns
+    false.
+
+    The default implementation always returns false.
 */
 bool QAbstractFileEngine::flush()
 {

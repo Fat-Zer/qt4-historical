@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-x11-opensource-src-4.2.1/src/corelib/kernel/qobject.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-x11-opensource-src-4.2.2/src/corelib/kernel/qobject.cpp -->
 <head>
   <title>Qt 4.2: QObject Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -151,9 +151,9 @@
 <p>See also <a href="qobject.html#parent">parent</a>(), <a href="qobject.html#findChild">findChild</a>(), and <a href="qobject.html#findChildren">findChildren</a>().</p>
 <h3 class="fn"><a name="dtor.QObject"></a>QObject::~QObject ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Destroys the object, deleting all its child objects.</p>
-<p>All signals to and from the object are automatically disconnected.</p>
+<p>All signals to and from the object are automatically disconnected, and any pending posted events for the object are removed from the event queue. However, it is often safer to use <a href="qobject.html#deleteLater">deleteLater</a>() rather than deleting a <a href="qobject.html">QObject</a> subclass directly.</p>
 <p><b>Warning:</b> All child objects are deleted. If any of these objects are on the stack or global, sooner or later your program will crash. We do not recommend holding pointers to child objects from outside the parent. If you still do, the <a href="qobject.html#destroyed">destroyed</a>() signal gives you an opportunity to detect when an object is destroyed.</p>
-<p><b>Warning:</b> Deleting a <a href="qobject.html">QObject</a> while pending events are waiting to be delivered can cause a crash. You must not delete the <a href="qobject.html">QObject</a> directly if it exists in a different thread than the one currently executing. Use the <a href="qobject.html#deleteLater">deleteLater</a>() method instead, which will cause the event loop to delete the object after all pending events have been delivered to it.</p>
+<p><b>Warning:</b> Deleting a <a href="qobject.html">QObject</a> while pending events are waiting to be delivered can cause a crash. You must not delete the <a href="qobject.html">QObject</a> directly if it exists in a different thread than the one currently executing. Use <a href="qobject.html#deleteLater">deleteLater</a>() instead, which will cause the event loop to delete the object after all pending events have been delivered to it.</p>
 <p>See also <a href="qobject.html#deleteLater">deleteLater</a>().</p>
 <h3 class="fn"><a name="blockSignals"></a>bool QObject::blockSignals ( bool <i>block</i> )</h3>
 <p>If <i>block</i> is true, signals emitted by this object is blocked (i.e., emitted signals disappear into hyperspace). If <i>block</i> is false, no such blocking will occur.</p>
@@ -238,13 +238,14 @@
 <p>Schedules this object for deletion.</p>
 <p>The object will be deleted when control returns to the event loop.</p>
 <p>Note that entering and leaving a new event loop (e.g., by opening a modal dialog) will <i>not</i> perform the deferred deletion; for the object to be deleted, the control must return to the event loop from which deleteLater() was called.</p>
+<p><b>Note:</b> It is safe to call this function more than once; when the first deferred deletion event is delivered, any pending events for the object are removed from the event queue.</p>
 <p>See also <a href="qobject.html#destroyed">destroyed</a>() and <a href="qpointer.html">QPointer</a>.</p>
 <h3 class="fn"><a name="destroyed"></a>void QObject::destroyed ( QObject * <i>obj</i> = 0 )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted immediately before the object <i>obj</i> is destroyed, and can not be blocked.</p>
 <p>All the objects's children are destroyed immediately after this signal is emitted.</p>
 <p>See also <a href="qobject.html#deleteLater">deleteLater</a>() and <a href="qpointer.html">QPointer</a>.</p>
 <h3 class="fn"><a name="disconnect"></a>bool QObject::disconnect ( const QObject * <i>sender</i>, const char * <i>signal</i>, const QObject * <i>receiver</i>, const char * <i>method</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Disconnects <i>signal</i> in object <i>sender</i> from <i>method</i> in object <i>receiver</i>.</p>
+<p>Disconnects <i>signal</i> in object <i>sender</i> from <i>method</i> in object <i>receiver</i>. Returns true if the connection is successfully broken; otherwise returns false.</p>
 <p>A signal-slot connection is removed when either of the objects involved are destroyed.</p>
 <p>disconnect() is typically used in three ways, as the following examples demonstrate.</p>
 <ol type="1">
@@ -432,7 +433,9 @@
  QPushButton::staticMetaObject.className();  <span class="comment">// returns &quot;QPushButton&quot;</span></pre>
 <p>See also <a href="qobject.html#staticMetaObject-var">staticMetaObject</a>.</p>
 <h3 class="fn"><a name="moveToThread"></a>void QObject::moveToThread ( <a href="qthread.html">QThread</a> * <i>targetThread</i> )</h3>
-<p>Changes the thread affinity for this object and its children. The object cannot be moved if it has a parent. Event processing will continue in the <i>targetThread</i>. To move an object to the main thread, pass <a href="qobject.html#thread">QCoreApplication::thread</a>() as the <i>targetThread</i>.</p>
+<p>Changes the thread affinity for this object and its children. The object cannot be moved if it has a parent. Event processing will continue in the <i>targetThread</i>.</p>
+<p>To move an object to the main thread, use <a href="qcoreapplication.html#instance">QApplication::instance</a>() to retrieve a pointer to the current application, and then use <a href="qobject.html#thread">QApplication::thread</a>() to retrieve the thread in which the application lives. For example:</p>
+<pre> myObject-&gt;moveToThread(QApplication::instance()-&gt;thread());</pre>
 <p>If <i>targetThread</i> is zero, all event processing for this object and its children stops.</p>
 <p>Note that all active timers for the object will be reset. The timers are first stopped in the current thread and restarted (with the same interval) in the <i>targetThread</i>. As a result, constantly moving an object between threads can postpone timer events indefinitely.</p>
 <p><b>Warning:</b> This function is <i>not</i> thread-safe; the current thread must be same as the current thread affinity. In other words, this function can only &quot;push&quot; an object from the current thread to another thread, it cannot &quot;pull&quot; an object from any arbitrary thread to the current thread.</p>
@@ -521,6 +524,7 @@
 <p>See also <a href="qobject.html#startTimer">startTimer</a>(), <a href="qobject.html#killTimer">killTimer</a>(), and <a href="qobject.html#event">event</a>().</p>
 <h3 class="fn"><a name="tr"></a><a href="qstring.html">QString</a> QObject::tr ( const char * <i>sourceText</i>, const char * <i>comment</i> = 0, int <i>n</i> = -1 )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns a translated version of <i>sourceText</i>, or <i>sourceText</i> itself if there is no appropriate translated version. The translation context is Object with <i>comment</i> (0 by default). All <a href="qobject.html">QObject</a> subclasses using the <a href="qobject.html#Q_OBJECT">Q_OBJECT</a> macro automatically have a reimplementation of this function with the subclass name as context.</p>
+<p>You can set the encoding for <i>sourceText</i> by calling <a href="qtextcodec.html#setCodecForTr">QTextCodec::setCodecForTr</a>(). By default <i>sourceText</i> is assumed to be in Latin-1 encoding.</p>
 <p>Example:</p>
 <pre> MyWindow::MyWindow()
  {
@@ -536,17 +540,17 @@
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <thead><tr valign="top" class="qt-style"><th></th><th colspan="3">Active Translation</th></tr>
 <tr valign="top" class="qt-style"><th><i>n</i></th><th>No Translation</th><th>French</th><th>English</th></tr></thead>
-<tr valign="top" class="odd"><td>0</td><td>&quot;0 message(s) saved&quot;</td><td>&quot;0 message sauvegard&quot;</td><td>&quot;0 message<b>s</b> saved&quot;</td></tr>
-<tr valign="top" class="even"><td>1</td><td>&quot;1 message(s) saved&quot;</td><td>&quot;1 message sauvegard&quot;</td><td>&quot;1 message saved&quot;</td></tr>
-<tr valign="top" class="odd"><td>2</td><td>&quot;2 message(s) saved&quot;</td><td>&quot;2 message<b>s</b> sauvegard<b>s</b>&quot;</td><td>&quot;2 message<b>s</b> saved&quot;</td></tr>
-<tr valign="top" class="even"><td>37</td><td>&quot;37 message(s) saved&quot;</td><td>&quot;37 message<b>s</b> sauvegard<b>s</b>&quot;</td><td>&quot;37 message<b>s</b> saved&quot;</td></tr>
+<tr valign="top" class="odd"><td>0</td><td>&quot;0 message(s) saved&quot;</td><td>&quot;0 message sauvegardé&quot;</td><td>&quot;0 message<b>s</b> saved&quot;</td></tr>
+<tr valign="top" class="even"><td>1</td><td>&quot;1 message(s) saved&quot;</td><td>&quot;1 message sauvegardé&quot;</td><td>&quot;1 message saved&quot;</td></tr>
+<tr valign="top" class="odd"><td>2</td><td>&quot;2 message(s) saved&quot;</td><td>&quot;2 message<b>s</b> sauvegardé<b>s</b>&quot;</td><td>&quot;2 message<b>s</b> saved&quot;</td></tr>
+<tr valign="top" class="even"><td>37</td><td>&quot;37 message(s) saved&quot;</td><td>&quot;37 message<b>s</b> sauvegardé<b>s</b>&quot;</td><td>&quot;37 message<b>s</b> saved&quot;</td></tr>
 </table></p>
 <p>This idiom is more flexible than the traditional approach, i.e.,</p>
 <pre> n == 1 ? tr(&quot;%n message saved&quot;) : tr(&quot;%n messages saved&quot;)</pre>
 <p>because it also works with target languages that have several plural forms (e.g., Irish has a special &quot;dual&quot; form that should be used when <tt>n</tt> is 2), and it handles the <i>n</i> == 0 case correctly for languages such as French that require the singular. See the <a href="linguist-manual.html">Qt Linguist Manual</a> for details.</p>
 <p>Instead of <tt>%n</tt>, you can use <tt>%Ln</tt> to produce a localized representation of <i>n</i>. The conversion uses the default local, set using QLocal::setDefault(). (If no default locale was specified, the &quot;C&quot; locale is used.)</p>
 <p><b>Warning:</b> This method is reentrant only if all translators are installed <i>before</i> calling this method. Installing or removing translators while performing translations is not supported. Doing so will probably result in crashes or other undesirable behavior.</p>
-<p>See also <a href="qobject.html#trUtf8">trUtf8</a>(), <a href="qcoreapplication.html#translate">QApplication::translate</a>(), and <a href="i18n.html">Internationalization with Qt</a>.</p>
+<p>See also <a href="qobject.html#trUtf8">trUtf8</a>(), <a href="qcoreapplication.html#translate">QApplication::translate</a>(), <a href="qtextcodec.html#setCodecForTr">QTextCodec::setCodecForTr</a>(), and <a href="i18n.html">Internationalization with Qt</a>.</p>
 <h3 class="fn"><a name="trUtf8"></a><a href="qstring.html">QString</a> QObject::trUtf8 ( const char * <i>sourceText</i>, const char * <i>comment</i> = 0, int <i>n</i> = -1 )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns a translated version of <i>sourceText</i>, or QString::fromUtf8(<i>sourceText</i>) if there is no appropriate version. It is otherwise identical to tr(<i>sourceText</i>, <i>comment</i>, <i>n</i>).</p>
 <p><b>Warning:</b> This method is reentrant only if all translators are installed <i>before</i> calling this method. Installing or removing translators while performing translations is not supported. Doing so will probably result in crashes or other undesirable behavior.</p>
@@ -721,6 +725,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-x11-opensource-src-4.2.1/src/gui/itemviews/qheaderview.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-x11-opensource-src-4.2.2/src/gui/itemviews/qheaderview.cpp -->
 <head>
   <title>Qt 4.2: QHeaderView Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -178,7 +178,7 @@
 <p>The QHeaderView class provides a header row or header column for item views.</p>
 <p>A QHeaderView displays the headers used in item views such as the <a href="qtableview.html">QTableView</a> and <a href="qtreeview.html">QTreeView</a> classes. It takes the place of the <tt>QHeader</tt> class previously used for the same purpose, but uses the Qt's model/view architecture for consistency with the item view classes.</p>
 <p>The QHeaderView class is one of the <a href="model-view.html">Model/View Classes</a> and is part of Qt's <a href="model-view-programming.html">model/view framework</a>.</p>
-<p>The model gets the data for each section from the model using the getHeaderData() function. You can set the data by using setHeaderData().</p>
+<p>The header gets the data for each section from the model using the <a href="qabstractitemmodel.html#headerData">QAbstractItemModel::headerData</a>() function. You can set the data by using <a href="qabstractitemmodel.html#setHeaderData">QAbstractItemModel::setHeaderData</a>().</p>
 <p>Each header has an <a href="qheaderview.html#orientation">orientation</a>() and a number of sections, given by the <a href="qheaderview.html#count">count</a>() function. Sections can be moved and resized using <a href="qheaderview.html#moveSection">moveSection</a>() and <a href="qheaderview.html#resizeSection">resizeSection</a>(); they can be hidden and shown with <a href="qheaderview.html#hideSection">hideSection</a>() and <a href="qheaderview.html#showSection">showSection</a>().</p>
 <p>Each section of a header is described by a section ID, specified by its section(), and can be located at a particular <a href="qheaderview.html#visualIndex">visualIndex</a>() in the header. A section can have a sort indicator set with <a href="qheaderview.html#setSortIndicator">setSortIndicator</a>(); this indicates whether the items in the associated item view will be sorted in the order given by the section.</p>
 <p>A header can be fixed in place, or made movable with <a href="qheaderview.html#setMovable">setMovable</a>(). It can be made clickable with <a href="qheaderview.html#setClickable">setClickable</a>(), and has resizing behavior in accordance with <a href="qheaderview.html#setResizeMode">setResizeMode</a>().</p>
@@ -456,6 +456,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

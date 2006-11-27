@@ -28,7 +28,7 @@
 ** Copyright (C) 2003-2004 immodule for Qt Project.  All rights reserved.
 **
 ** This file is written to contribute to Trolltech ASA under their own
-** licence. You may use this file under your Qt license. Following
+** license. You may use this file under your Qt license. Following
 ** description is copied from their original file headers. Contact
 ** immodule-qt@freedesktop.org if any conditions of this licensing are
 ** not clear to you.
@@ -614,8 +614,15 @@ bool QXIMInputContext::x11FilterEvent(QWidget *keywidget, XEvent *event)
         count = XmbLookupString(data->ic, &event->xkey, string.data(), string.size(),
                                 &key, &status);
     }
-    if (count > 0)
+    if (count > 0) {
+        // XmbLookupString() gave us some text, convert it to unicode
         text = qt_input_mapper->toUnicode(string.constData() , count);
+        if (text.isEmpty()) {
+            // codec couldn't convert to unicode? this can happen when running in the
+            // C locale (or with no LANG set). try converting from latin-1
+            text = QString::fromLatin1(string.constData(), count);
+        }
+    }
 
 #if 0
     if (!(xim_style & XIMPreeditCallbacks) || !isComposing()) {
@@ -678,7 +685,6 @@ QXIMInputContext::ICData *QXIMInputContext::createICData(QWidget *w)
                                            (char *) 0);
     }
 
-    Q_ASSERT(w->testAttribute(Qt::WA_WState_Created));
     if (preedit_attr) {
         data->ic = XCreateIC(xim,
                              XNInputStyle, xim_style,

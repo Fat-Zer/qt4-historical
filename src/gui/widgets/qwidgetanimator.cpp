@@ -25,6 +25,7 @@
 #include <QtCore/qdatetime.h>
 #include <QtGui/qwidget.h>
 #include <QtGui/qtextedit.h>
+#include <QtGui/private/qwidget_p.h>
 #include <qdebug.h>
 
 #include "qwidgetanimator_p.h"
@@ -68,9 +69,13 @@ QWidgetAnimator::~QWidgetAnimator()
     delete m_time;
 }
 
-void QWidgetAnimator::animate(QWidget *widget, const QRect &final_geometry, bool animate)
+void QWidgetAnimator::animate(QWidget *widget, const QRect &_final_geometry, bool animate)
 {
+    QRect final_geometry = _final_geometry;
+
     QRect r = widget->geometry();
+    if (r.right() < 0 || r.bottom() < 0)
+        r = QRect();
 
     if (r.isNull() || final_geometry.isNull())
         animate = false;
@@ -98,7 +103,13 @@ void QWidgetAnimator::animate(QWidget *widget, const QRect &final_geometry, bool
         if (m_animation_map.isEmpty())
             m_timer->stop();
 
+        if (!final_geometry.isValid() && !widget->isWindow()) {
+            // Make the wigdet go away by sending it to negative space
+            QSize s = widget->size();
+            final_geometry = QRect(-500 - s.width(), -500 - s.height(), s.width(), s.height());
+        }
         widget->setGeometry(final_geometry);
+
         emit finished(widget);
 
         if (m_animation_map.isEmpty())

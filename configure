@@ -1604,7 +1604,7 @@ if [ "$OPT_SHADOW" = "yes" ]; then
 fi
 
 # symlink files from src/gui/embedded neccessary to build qvfb
-if [ "$Edition" = "Trolltech" ]; then
+if [ "$Edition" = "Trolltech" -o "$Edition" = "Qtopia" ]; then
     for f in qvfbhdr.h qlock_p.h qlock.cpp qwssignalhandler_p.h qwssignalhandler.cpp; do
 	dest="${relpath}/tools/qvfb/${f}"
 	rm -f "$dest"
@@ -2200,7 +2200,7 @@ fi
 # embedded
 if [ "$PLATFORM_QWS" = "yes" ]; then
 
-    # No OpenGL for Qtopia Core
+    # No OpenGL by default for Qtopia Core
     if [ "$CFG_OPENGL" = "auto" ]; then
         CFG_OPENGL=no
     fi
@@ -2788,8 +2788,9 @@ Qtopia Core only:
     -feature-<feature> .. Compile in <feature>. The available features
                           are described in src/corelib/global/qfeatures.txt
 
-    -embedded arch....... This will enable the embedded build, you must have a
+    -embedded <arch>..... This will enable the embedded build, you must have a
                           proper license for this switch to work.
+                          Example values for <arch>: arm mips x86 generic
 
     -little-endian ...... Target platform is little endian (LSB first).
     -big-endian ......... Target platform is big endian (MSB first).
@@ -3414,6 +3415,9 @@ for _SQLDR in $CFG_SQL_AVAILABLE; do
                         exit 101
                     else
                         CFG_SQL_mysql="no"
+			QT_LFLAGS_MYSQL=""
+			QT_LFLAGS_MYSQL_R=""
+			QT_CFLAGS_MYSQL=""
                     fi
                 else
                     if "$unixtests/compile.test" "$XQMAKESPEC" $OPT_VERBOSE "$relpath" "$outpath" config.tests/unix/mysql_r "MySQL (thread-safe)" $QT_LFLAGS_MYSQL_R $L_FLAGS $QT_CFLAGS_MYSQL $I_FLAGS $l_FLAGS; then
@@ -4602,6 +4606,10 @@ if [ "$CFG_LARGEFILE" = "yes" ]; then
     echo "#define QT_LARGEFILE_SUPPORT 64" >>"$outpath/src/corelib/global/qconfig.h.new"
 fi
 
+if [ "$CFG_FRAMEWORK" = "yes" ]; then
+    echo "#define QT_MAC_FRAMEWORK_BUILD" >>"$outpath/src/corelib/global/qconfig.h.new"
+fi
+
 "$unixtests/ptrsize.test" "$XQMAKESPEC" $OPT_VERBOSE "$relpath" "$outpath"
 echo "#define QT_POINTER_SIZE $?" >>"$outpath/src/corelib/global/qconfig.h.new"
 echo "" >>"$outpath/src/corelib/global/qconfig.h.new"
@@ -5043,9 +5051,8 @@ if [ "$PLATFORM_QWS" = "yes" ]; then
     CFG_MOUSE_PLUGIN=`echo ${CFG_MOUSE_PLUGIN}`
     echo "Mouse driver (qt) ... $CFG_MOUSE_ON"
     echo "Mouse driver (plugin) $CFG_MOUSE_PLUGIN"
-else
-    echo "OpenGL support ...... $CFG_OPENGL"
 fi
+    echo "OpenGL support ...... $CFG_OPENGL"
 if [ "$PLATFORM_X11" = "yes" ]; then
     echo "NAS sound support ... $CFG_NAS"
     echo "Session management .. $CFG_SM"
@@ -5094,6 +5101,7 @@ EXEC=""
 #-------------------------------------------------------------------------------
 
 echo "Finding project files. Please wait..."
+"$outpath/bin/qmake" -prl -r "${relpath}/projects.pro"
 if [ -z "$QMAKE_PROJECTS" ]; then
     QMAKE_PROJECTS=`find "$relpath/." -name '*.pro' -print | sed 's-/\./-/-'`
 else

@@ -143,7 +143,7 @@ struct GradientData
 #define GRADIENT_STOPTABLE_SIZE 1024
 #endif
 
-    uint colorTable[GRADIENT_STOPTABLE_SIZE];
+    uint* colorTable; //[GRADIENT_STOPTABLE_SIZE];
 
     uint alphaColor : 1;
 };
@@ -195,7 +195,6 @@ struct QSpanData
     void setup(const QBrush &brush, int alpha);
     void setupMatrix(const QMatrix &matrix, int txop, int bilinear);
     void initTexture(const QImage *image, int alpha, TextureData::Type = TextureData::Plain);
-    void initGradient(const QGradient *g, int alpha);
     void adjustSpanMethods();
 };
 

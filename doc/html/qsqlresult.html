@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-x11-opensource-src-4.2.1/src/sql/kernel/qsqlresult.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-x11-opensource-src-4.2.2/src/sql/kernel/qsqlresult.cpp -->
 <head>
   <title>Qt 4.2: QSqlResult Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -144,7 +144,7 @@
 <h3 class="fn"><a name="driver"></a>const <a href="qsqldriver.html">QSqlDriver</a> * QSqlResult::driver () const&nbsp;&nbsp;<tt> [protected]</tt></h3>
 <p>Returns the driver associated with the result. This is the object that was passed to the constructor.</p>
 <h3 class="fn"><a name="exec"></a>bool QSqlResult::exec ()&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
-<p>Executes the query.</p>
+<p>Executes the query, returning true if successful; otherwise returns false.</p>
 <p>See also <a href="qsqlresult.html#prepare">prepare</a>().</p>
 <h3 class="fn"><a name="executedQuery"></a><a href="qstring.html">QString</a> QSqlResult::executedQuery () const&nbsp;&nbsp;<tt> [protected]</tt></h3>
 <p>Returns the query that was actually executed. This may differ from the query that was passed, for example if bound values were used with a prepared query and the underlying database doesn't support prepared queries.</p>
@@ -224,7 +224,7 @@
 <p>Returns the number of rows affected by the last query executed, or -1 if it cannot be determined or if the query is a <tt>SELECT</tt> statement.</p>
 <p>See also <a href="qsqlresult.html#size">size</a>().</p>
 <h3 class="fn"><a name="prepare"></a>bool QSqlResult::prepare ( const <a href="qstring.html">QString</a> &amp; <i>query</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
-<p>Prepares the given <i>query</i> for execution; the query will normally use placeholders so that it can be executed repeatedly.</p>
+<p>Prepares the given <i>query</i> for execution; the query will normally use placeholders so that it can be executed repeatedly. Returns true if the query is prepared successfully; otherwise returns false.</p>
 <p>See also <a href="qsqlresult.html#exec">exec</a>().</p>
 <h3 class="fn"><a name="record"></a><a href="qsqlrecord.html">QSqlRecord</a> QSqlResult::record () const&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>Returns the current record if the query is active; otherwise returns an empty <a href="qsqlrecord.html">QSqlRecord</a>.</p>
@@ -235,7 +235,7 @@
 <p>Derived classes must reimplement this function and apply the <i>query</i> to the database. This function is only called after the result is set to an inactive state and is positioned before the first record of the new result. Derived classes should return true if the query was successful and ready to be used, or false otherwise.</p>
 <p>See also <a href="qsqlresult.html#setQuery">setQuery</a>().</p>
 <h3 class="fn"><a name="savePrepare"></a>bool QSqlResult::savePrepare ( const <a href="qstring.html">QString</a> &amp; <i>query</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
-<p>Prepares the given <i>query</i>, using the underlying database functionality where possible.</p>
+<p>Prepares the given <i>query</i>, using the underlying database functionality where possible. Returns true if the query is prepared successfully; otherwise returns false.</p>
 <p>See also <a href="qsqlresult.html#prepare">prepare</a>().</p>
 <h3 class="fn"><a name="setActive"></a>void QSqlResult::setActive ( bool <i>active</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>This function is provided for derived classes to set the internal active state to <i>active</i>.</p>
@@ -262,6 +262,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

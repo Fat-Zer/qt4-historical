@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-x11-opensource-src-4.2.1/src/gui/image/qpicture.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-x11-opensource-src-4.2.2/src/gui/image/qpicture.cpp -->
 <head>
   <title>Qt 4.2: QPictureIO Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -14,7 +14,8 @@
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">QPictureIO Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QPictureIO class contains parameters for loading and saving pictures. <a href="#details">More...</a></p>
-<pre> #include &lt;QPictureIO&gt;</pre><ul>
+<pre> #include &lt;QPictureIO&gt;</pre><p><b>This class is obsolete.</b> It is provided to keep old source code working. We strongly advise against using it in new code.</p>
+<ul>
 <li><a href="qpictureio-members.html">List of all members, including inherited members</a></li>
 </ul>
 <a name="public-functions"></a>
@@ -89,7 +90,7 @@
 
      <span class="comment">// add the SVG picture handler</span>
      <span class="comment">// ...</span></pre>
-<p>Before the regulare expression test, all the 0 bytes in the file header are converted to 1 bytes. This is done because when Qt was ASCII-based, <a href="qregexp.html">QRegExp</a> could not handle 0 bytes in strings.</p>
+<p>Before the regular expression test, all the 0 bytes in the file header are converted to 1 bytes. This is done because when Qt was ASCII-based, <a href="qregexp.html">QRegExp</a> could not handle 0 bytes in strings.</p>
 <p>The regexp is only applied on the first 14 bytes of the file.</p>
 <p>(Note that if one handlerIO supports writing a format and another supports reading it, Qt supports both reading and writing. If two handlers support the same operation, Qt chooses one arbitrarily.)</p>
 <h3 class="fn"><a name="description"></a><a href="qstring.html">QString</a> QPictureIO::description () const</h3>
@@ -135,7 +136,7 @@
 <p>Example:</p>
 <pre>         QPictureIO iio;
          QPixmap  pixmap;
-         iio.setFileName(&quot;vegeburger.bmp&quot;);
+         iio.setFileName(&quot;vegeburger.pic&quot;);
          if (iio.read()) {        <span class="comment">// OK</span>
              QPicture picture = iio.picture();
              QPainter painter(&amp;pixmap);
@@ -190,8 +191,8 @@
          QPainter painter(&amp;picture);
          painter.drawPixmap(0, 0, pixmap);
          iio.setPicture(picture);
-         iio.setFileName(&quot;vegeburger.bmp&quot;);
-         iio.setFormat(&quot;BMP&quot;);
+         iio.setFileName(&quot;vegeburger.pic&quot;);
+         iio.setFormat(&quot;PIC&quot;);
          if (iio.write())
              return true; <span class="comment">// returned true if written successfully</span></pre>
 <p>See also <a href="qpictureio.html#setIODevice">setIODevice</a>(), <a href="qpictureio.html#setFileName">setFileName</a>(), <a href="qpictureio.html#setFormat">setFormat</a>(), <a href="qpictureio.html#read">read</a>(), and <a href="qpixmap.html#save">QPixmap::save</a>().</p>
@@ -199,6 +200,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

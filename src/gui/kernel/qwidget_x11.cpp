@@ -602,7 +602,9 @@ void QWidgetPrivate::create_sys(WId window, bool initializeWindow, bool destroyO
 
         XSetWMProperties(dpy, id, 0, 0, 0, 0, &size_hints, &wm_hints, &class_hint);
 
-        XResizeWindow(dpy, id, data.crect.width(), data.crect.height());
+        XResizeWindow(dpy, id,
+                      qBound(1, data.crect.width(), XCOORD_MAX),
+                      qBound(1, data.crect.height(), XCOORD_MAX));
         XStoreName(dpy, id, appName.data());
         Atom protocols[4];
         int n = 0;
@@ -734,9 +736,9 @@ void QWidget::destroy(bool destroyWindow, bool destroySubWindows)
     d->deactivateWidgetCleanup();
     if (testAttribute(Qt::WA_WState_Created)) {
         setAttribute(Qt::WA_WState_Created, false);
-        QObjectList childs = children();
-        for (int i = 0; i < childs.size(); ++i) { // destroy all widget children
-            register QObject *obj = childs.at(i);
+        QObjectList childList = children();
+        for (int i = 0; i < childList.size(); ++i) { // destroy all widget children
+            register QObject *obj = childList.at(i);
             if (obj->isWidgetType())
                 static_cast<QWidget*>(obj)->destroy(destroySubWindows,
                                                     destroySubWindows);
@@ -843,52 +845,48 @@ void QWidgetPrivate::setParent_sys(QWidget *parent, Qt::WindowFlags f)
     q->setAttribute(Qt::WA_WState_Visible, false);
     q->setAttribute(Qt::WA_WState_Hidden, false);
     adjustFlags(data.window_flags, q);
-    //### simplify logic after TP
-    if (wasCreated && !q->isWindow() && !parent->testAttribute(Qt::WA_WState_Created))
-        parent->d_func()->createWinId();
-    if (parent && !q->isWindow() && parent->testAttribute(Qt::WA_WState_Created))
-        q->create();
+    // keep compatibility with previous versions, we need to preserve the created state
+    // (but we recreate the winId for the widget being reparented, again for compability)
+    if (wasCreated || (!q->isWindow() && parent->testAttribute(Qt::WA_WState_Created)))
+        createWinId();
     if (q->isWindow() || (!parent || parent->isVisible()) || explicitlyHidden)
         q->setAttribute(Qt::WA_WState_Hidden);
     q->setAttribute(Qt::WA_WState_ExplicitShowHide, explicitlyHidden);
 
     if (wasCreated) {
         QObjectList chlist = q->children();
-        if (q->internalWinId() != 0) {
-            for (int i = 0; i < chlist.size(); ++i) { // reparent children
-                QObject *obj = chlist.at(i);
-                if (obj->isWidgetType()) {
-                    QWidget *w = (QWidget *)obj;
-                    if (!w->testAttribute(Qt::WA_WState_Created))
-                        continue;
-                    if (xinfo.screen() != w->d_func()->xinfo.screen()) {
-                        // ### force setParent() to not shortcut out (because
-                        // ### we're setting the parent to the current parent)
-                        w->d_func()->parent = 0;
-                        w->setParent(q);
-                    } else if (!w->isWindow()) {
-                        w->d_func()->invalidateBuffer(w->rect());
-                        XReparentWindow(X11->display, w->internalWinId(), q->internalWinId(),
-                                        w->geometry().x(), w->geometry().y());
-                    } else if (isTransient(w)) {
-                        /*
-                          when reparenting toplevel windows with toplevel-transient children,
-                          we need to make sure that the window manager gets the updated
-                          WM_TRANSIENT_FOR information... unfortunately, some window managers
-                          don't handle changing WM_TRANSIENT_FOR before the toplevel window is
-                          visible, so we unmap and remap all toplevel-transient children *after*
-                          the toplevel parent has been mapped.  thankfully, this is easy in Qt :)
+        for (int i = 0; i < chlist.size(); ++i) { // reparent children
+            QObject *obj = chlist.at(i);
+            if (obj->isWidgetType()) {
+                QWidget *w = (QWidget *)obj;
+                if (!w->testAttribute(Qt::WA_WState_Created))
+                    continue;
+                if (xinfo.screen() != w->d_func()->xinfo.screen()) {
+                    // ### force setParent() to not shortcut out (because
+                    // ### we're setting the parent to the current parent)
+                    w->d_func()->parent = 0;
+                    w->setParent(q);
+                } else if (!w->isWindow()) {
+                    w->d_func()->invalidateBuffer(w->rect());
+                    XReparentWindow(X11->display, w->internalWinId(), q->internalWinId(),
+                                    w->geometry().x(), w->geometry().y());
+                } else if (isTransient(w)) {
+                    /*
+                      when reparenting toplevel windows with toplevel-transient children,
+                      we need to make sure that the window manager gets the updated
+                      WM_TRANSIENT_FOR information... unfortunately, some window managers
+                      don't handle changing WM_TRANSIENT_FOR before the toplevel window is
+                      visible, so we unmap and remap all toplevel-transient children *after*
+                      the toplevel parent has been mapped.  thankfully, this is easy in Qt :)
 
-                          note that the WM_TRANSIENT_FOR hint is actually updated in
-                          QWidgetPrivate::show_sys()
-                        */
-                        XUnmapWindow(X11->display, w->internalWinId());
-                        QApplication::postEvent(w, new QEvent(QEvent::ShowWindowRequest));
-                    }
+                      note that the WM_TRANSIENT_FOR hint is actually updated in
+                      QWidgetPrivate::show_sys()
+                    */
+                    XUnmapWindow(X11->display, w->internalWinId());
+                    QApplication::postEvent(w, new QEvent(QEvent::ShowWindowRequest));
                 }
             }
-        } else {
-            uncreateRecursively(false);
+
         }
         qPRCreate(q, old_winid);
         updateSystemBackground();

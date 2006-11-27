@@ -172,10 +172,12 @@ QPSPrintEnginePrivate::~QPSPrintEnginePrivate()
 {
 }
 
+#include <QDebug>
+
 static void ps_r7(QPdf::ByteStream& stream, const char * s, int l)
 {
     int i = 0;
-    uchar line[80];
+    uchar line[84];
     int col = 0;
 
     while(i < l) {
@@ -847,15 +849,6 @@ QPrinter::PrinterState QPSPrintEngine::printerState() const
     return d->printerState;
 }
 
-#if !defined(QT_NO_CUPS) && !defined(QT_NO_LIBRARY)
-
-QCUPSSupport* QPSPrintEngine::cupsSupport()
-{
-    Q_D(QPSPrintEngine);
-    return &d->cups;
-}
-
-#endif
 #endif // QT_NO_PRINTER
 
 

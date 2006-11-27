@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-x11-opensource-src-4.2.1/src/gui/embedded/qkbddriverplugin_qws.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-x11-opensource-src-4.2.2/src/gui/embedded/qkbddriverplugin_qws.cpp -->
 <head>
   <title>Qt 4.2: QKbdDriverPlugin Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -42,9 +42,9 @@
 <h2>Detailed Description</h2>
 <p>The QKbdDriverPlugin class is an abstract base class for keyboard driver plugins.</p>
 <p>Note that this class is only available in <a href="qtopiacore.html">Qtopia Core</a>.</p>
-<p>QKbdDriverPlugin is a simple plugin interface that makes it easy to create custom keyboard drivers that can be loaded dynamically into applications using the <a href="qkbddriverfactory.html">QKbdDriverFactory</a> class.</p>
-<p>Writing a custom keyboard driver plugin is achieved by subclassing QKbdDriverPlugin, reimplementing the pure virtual <a href="qkbddriverplugin.html#keys">keys</a>() and <a href="qkbddriverplugin.html#create">create</a>() functions, and exporting the class using the <a href="qtplugin.html#Q_EXPORT_PLUGIN2">Q_EXPORT_PLUGIN2</a>() macro (See <a href="plugins-howto.html">How to Create Qt Plugins</a> for details).</p>
-<p>See also <a href="qkbddriverfactory.html">QKbdDriverFactory</a>, <a href="qwskeyboardhandler.html">QWSKeyboardHandler</a>, and <a href="qtopiacore-charinput.html">Character Input</a>.</p>
+<p><a href="qtopiacore.html">Qtopia Core</a> provides ready-made drivers for several keyboard protocols, see the <a href="qtopiacore-charinput.html">character input</a> documentation for details. Custom keyboard drivers can be implemented by subclassing the <a href="qwskeyboardhandler.html">QWSKeyboardHandler</a> class and creating a keyboard driver plugin.</p>
+<p>A keyboard driver plugin can be created by subclassing QKbdDriverPlugin and reimplementing the pure virtual <a href="qkbddriverplugin.html#keys">keys</a>() and <a href="qkbddriverplugin.html#create">create</a>() functions. By exporting the derived class using the <a href="qtplugin.html#Q_EXPORT_PLUGIN2">Q_EXPORT_PLUGIN2</a>() macro, <a href="qtopiacore.html">Qtopia Core</a>'s implementation of the <a href="qkbddriverfactory.html">QKbdDriverFactory</a> class will automatically detect the plugin and load the driver into the server application at runtime. See <a href="plugins-howto.html">How to Create Qt Plugins</a> for details.</p>
+<p>See also <a href="qkbddriverfactory.html">QKbdDriverFactory</a> and <a href="qwskeyboardhandler.html">QWSKeyboardHandler</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
 <h3 class="fn"><a name="QKbdDriverPlugin"></a>QKbdDriverPlugin::QKbdDriverPlugin ( <a href="qobject.html">QObject</a> * <i>parent</i> = 0 )</h3>
@@ -54,16 +54,16 @@
 <p>Destroys the keyboard driver plugin.</p>
 <p>Note that Qt destroys a plugin automatically when it is no longer used, so there is no need for calling the destructor explicitly.</p>
 <h3 class="fn"><a name="create"></a><a href="qwskeyboardhandler.html">QWSKeyboardHandler</a> * QKbdDriverPlugin::create ( const <a href="qstring.html">QString</a> &amp; <i>key</i>, const <a href="qstring.html">QString</a> &amp; <i>device</i> )&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
-<p>Creates a driver matching the type specified by the given <i>key</i> and <i>device</i> parameters. Keys are case-insensitive.</p>
+<p>Implement this function to create a driver matching the type specified by the given <i>key</i> and <i>device</i> parameters. Note that keys are case-insensitive.</p>
 <p>See also <a href="qkbddriverplugin.html#keys">keys</a>().</p>
 <h3 class="fn"><a name="keys"></a><a href="qstringlist.html">QStringList</a> QKbdDriverPlugin::keys () const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
-<p>Returns the list of valid keys, i.e. the keyboard drivers supported by this plugin.</p>
-<p><a href="qtopiacore.html">Qtopia Core</a> currently supports the following drivers by default: <tt>SL5000</tt>, <tt>Yopy</tt>, <tt>VR41xx</tt>, <tt>TTY</tt> and <tt>USB</tt>.</p>
+<p>Implement this function to return the list of valid keys, i.e. the keyboard drivers supported by this plugin.</p>
+<p><a href="qtopiacore.html">Qtopia Core</a> provides ready-made drivers for several keyboard protocols, see the <a href="qtopiacore-charinput.html">character input</a> documentation for details.</p>
 <p>See also <a href="qkbddriverplugin.html#create">create</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

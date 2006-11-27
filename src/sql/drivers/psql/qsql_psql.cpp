@@ -68,6 +68,11 @@ Q_DECLARE_METATYPE(PGresult*)
 template <typename T>
 inline void PQfreemem(T *t, int = 0) { free(t); }
 
+inline void qPQfreemem(void *buffer)
+{
+    PQfreemem(buffer);
+}
+
 class QPSQLDriverPrivate
 {
 public:
@@ -278,12 +283,12 @@ QVariant QPSQLResult::data(int i)
 #ifndef QT_NO_DATESTRING
             return QVariant(QDate::fromString(QString::fromLatin1(val), Qt::ISODate));
 #else
-            return QVariant(QDate());
+            return QVariant(QString::fromLatin1(val));
 #endif
         }
     case QVariant::Time: {
-#ifndef QT_NO_DATESTRING
         const QString str = QString::fromLatin1(val);
+#ifndef QT_NO_DATESTRING
         if (str.isEmpty())
             return QVariant(QTime());
         if (str.at(str.length() - 3) == QLatin1Char('+'))
@@ -291,12 +296,12 @@ QVariant QPSQLResult::data(int i)
             return QVariant(QTime::fromString(str.left(str.length() - 3), Qt::ISODate));
         return QVariant(QTime::fromString(str, Qt::ISODate));
 #else
-        return QVariant(QTime());
+        return QVariant(str);
 #endif
     }
     case QVariant::DateTime: {
-#ifndef QT_NO_DATESTRING
         QString dtval = QString::fromLatin1(val);
+#ifndef QT_NO_DATESTRING
         if (dtval.length() < 10)
             return QVariant(QDateTime());
         // remove the timezone
@@ -310,14 +315,14 @@ QVariant QPSQLResult::data(int i)
         else
             return QVariant(QDateTime::fromString(dtval, Qt::ISODate));
 #else
-        return QVariant(QDateTime());
+        return QVariant(dtval);
 #endif
     }
     case QVariant::ByteArray: {
         size_t len;
         unsigned char *data = PQunescapeBytea((unsigned char*)val, &len);
         QByteArray ba((const char*)data, len);
-        PQfreemem(data);
+        qPQfreemem(data);
         return QVariant(ba);
     }
     default:
@@ -893,7 +898,7 @@ QString QPSQLDriver::formatValue(const QSqlField &field,
             r += QLatin1Char('\'');
             r += QLatin1String((const char*)data);
             r += QLatin1Char('\'');
-            PQfreemem(data);
+            qPQfreemem(data);
             break;
         }
         default:
@@ -904,15 +909,11 @@ QString QPSQLDriver::formatValue(const QSqlField &field,
     return r;
 }
 
-QString QPSQLDriver::escapeIdentifier(const QString &identifier, IdentifierType type) const
+QString QPSQLDriver::escapeIdentifier(const QString &identifier, IdentifierType) const
 {
     QString res = identifier;
     res.replace(QLatin1Char('"'), QLatin1String("\"\""));
     res.prepend(QLatin1Char('"')).append(QLatin1Char('"'));
-
-    if (type == QSqlDriver::TableName)
-        return res;
-
     res.replace(QLatin1Char('.'), QLatin1String("\".\""));
     return res;
 }

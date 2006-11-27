@@ -88,7 +88,7 @@
     separate process (as a panel invokes a docked applet), passing
     its window ID to the new process as a command-line argument. The
     new process can then call embedInto() with the container's window
-    ID, as shown in the example code above. Similarily, the new
+    ID, as shown in the example code above. Similarly, the new
     process can report its window ID to the container through IPC, in
     which case the container can embed the widget.
 
@@ -499,6 +499,10 @@ void QX11EmbedWidget::embedInto(WId id)
     default:
         break;
     }
+    QTLWExtra* x = d->extra ? d->extra->topextra : 0;
+    if (x)
+        x->frameStrut.setCoords(0, 0, 0, 0);
+    d->data.fstrut_dirty = false;
 }
 
 /*! \internal
@@ -1540,6 +1544,8 @@ void QX11EmbedContainerPrivate::acceptClient(WId window)
 
     // This tells Qt that we wish to forward DnD messages to
     // our client.
+    if (!extra)
+        createExtra();
     extraData()->xDndProxy = client;
 
     unsigned int version = XEmbedVersion();

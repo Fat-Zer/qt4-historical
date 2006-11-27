@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-x11-opensource-src-4.2.1/src/qt3support/network/q3urloperator.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-x11-opensource-src-4.2.2/src/qt3support/network/q3urloperator.cpp -->
 <head>
   <title>Qt 4.2: Q3UrlOperator Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -214,7 +214,7 @@
 <p>Because the operation will not be executed immediately, a pointer to the <a href="q3networkoperation.html">Q3NetworkOperation</a> object created by this function is returned. This object contains all the data about the operation and is used to refer to this operation later (e.g. in the signals that are emitted by the <a href="q3urloperator.html">Q3UrlOperator</a>). The return value can also be 0 if the operation object couldn't be created.</p>
 <p>The path of this <a href="q3urloperator.html">Q3UrlOperator</a> must point to a directory; because if <i>filename</i> is relative, it will try to remove it in this directory.</p>
 <h3 class="fn"><a name="removed"></a>void Q3UrlOperator::removed ( <a href="q3networkoperation.html">Q3NetworkOperation</a> * <i>op</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This signal is emitted when <a href="q3urloperator.html#remove">remove</a>() has been succesful and the file has been removed.</p>
+<p>This signal is emitted when <a href="q3urloperator.html#remove">remove</a>() has been successful and the file has been removed.</p>
 <p><i>op</i> is a pointer to the operation object which contains all the information about the operation, including the state. <tt>op-&gt;arg(0)</tt> holds the name of the file that was removed.</p>
 <p>See also <a href="q3networkoperation.html">Q3NetworkOperation</a> and <a href="q3networkprotocol.html">Q3NetworkProtocol</a>.</p>
 <h3 class="fn"><a name="rename"></a>const <a href="q3networkoperation.html">Q3NetworkOperation</a> * Q3UrlOperator::rename ( const <a href="qstring.html">QString</a> &amp; <i>oldname</i>, const <a href="qstring.html">QString</a> &amp; <i>newname</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
@@ -245,6 +245,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

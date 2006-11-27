@@ -328,8 +328,8 @@ void QSqlQueryModel::setQuery(const QSqlQuery &query)
     }
     QModelIndex newBottom;
     if (hasQuerySize) {
-        beginInsertRows(QModelIndex(), 0, qMax(0, newBottom.row()));
         newBottom = createIndex(d->query.size() - 1, d->rec.count() - 1);
+        beginInsertRows(QModelIndex(), 0, qMax(0, newBottom.row()));
         d->bottom = createIndex(d->query.size() - 1, columnsChanged ? 0 : d->rec.count() - 1);
         d->atEnd = true;
         endInsertRows();
@@ -374,7 +374,7 @@ void QSqlQueryModel::setQuery(const QString &query, const QSqlDatabase &db)
 }
 
 /*!
-    Clears the model and releases any aquired resource.
+    Clears the model and releases any acquired resource.
 */
 void QSqlQueryModel::clear()
 {

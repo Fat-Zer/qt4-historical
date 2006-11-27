@@ -97,7 +97,7 @@ public:
 #include "qmenu.moc"
 
 //Windows and KDE allows menus to cover the taskbar, while GNOME and Mac don't
-const QRect QMenuPrivate::popupGeometry(int screen = -1) const
+QRect QMenuPrivate::popupGeometry(int screen) const
 {
 #ifdef Q_WS_WIN
     return QApplication::desktop()->screenGeometry(screen);
@@ -1444,12 +1444,12 @@ void QMenu::popup(const QPoint &p, QAction *atAction)
             pos.setY(qMin(mouse.y() - (size.height() + desktopFrame), screen.bottom()-desktopFrame-size.height()));
         else
             pos.setY(qMax(p.y() - (size.height() + desktopFrame), screen.bottom()-desktopFrame-size.height()));
-    } else if (pos.y() < screen.top() + desktopFrame) {
-        pos.setY(screen.top() + desktopFrame);
+    } else if (pos.y() < screen.top()) {
+        pos.setY(screen.top());
     }
 
-    if (pos.y() < screen.top() + desktopFrame)
-        pos.setY(screen.top() + desktopFrame);
+    if (pos.y() < screen.top())
+        pos.setY(screen.top());
     if (pos.y()+size.height() > screen.bottom() - desktopFrame) {
         if (d->scroll) {
             d->scroll->scrollFlags |= uint(QMenuPrivate::QMenuScroller::ScrollDown);
@@ -2402,6 +2402,7 @@ void QMenu::actionEvent(QActionEvent *e)
 
     if (isVisible()) {
         d->updateActions();
+	resize(sizeHint());
         update();
     }
 }

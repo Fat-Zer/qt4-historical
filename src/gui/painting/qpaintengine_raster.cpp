@@ -552,7 +552,8 @@ static void qt_debug_path(const QPainterPath &path)
     The painting operations can be accelerated by deriving from the
     QRasterPaintEngine and QCustomRasterPaintDevice classes. Note that
     there are several other issues to be aware of; see the \l {Adding
-    an Accelerated Graphics Driver} documentation for details.
+    an Accelerated Graphics Driver in Qtopia Core} documentation for
+    details.
 
     \sa QCustomRasterPaintDevice, QPaintEngine
 */
@@ -815,7 +816,11 @@ bool QRasterPaintEngine::begin(QPaintDevice *device)
     d->brushData.init(d->rasterBuffer, this);
     d->brushData.setup(d->brush, d->opacity);
 
+#ifdef QT_EXPERIMENTAL_REGIONS
+    updateClipRegion(QRegion(), Qt::NoClip);
+#else
     updateClipPath(QPainterPath(), Qt::NoClip);
+#endif
 
     setDirty(DirtyBrushOrigin);
 
@@ -1032,6 +1037,10 @@ void QRasterPaintEngine::updateState(const QPaintEngineState &state)
     if (flags & DirtyPen) {
         update_fast_pen = true;
         d->pen = state.pen();
+
+        if (d->pen.style() == Qt::CustomDashLine && d->pen.dashPattern().size() == 0)
+            d->pen.setStyle(Qt::SolidLine);
+
         d->basicStroker.setJoinStyle(d->pen.joinStyle());
         d->basicStroker.setCapStyle(d->pen.capStyle());
         d->basicStroker.setMiterLimit(d->pen.miterLimit());
@@ -1081,8 +1090,14 @@ void QRasterPaintEngine::updateState(const QPaintEngineState &state)
     }
 
     if (flags & DirtyClipPath) {
+#ifdef QT_EXPERIMENTAL_REGIONS
+        QPolygon polygon = state.clipPath().toFillPolygon().toPolygon();
+        updateClipRegion(QRegion(polygon, state.clipPath().fillRule()),
+                         state.clipOperation());
+#else
         updateClipPath(state.clipPath(), state.clipOperation());
 
+#endif
     } else if (flags & DirtyClipRegion) {
         updateClipRegion(state.clipRegion(), state.clipOperation());
 
@@ -1101,12 +1116,30 @@ void QRasterPaintEngine::updateState(const QPaintEngineState &state)
                     Q_ASSERT(!d->rasterBuffer->disabled_clip);
                     d->rasterBuffer->disabled_clip = d->rasterBuffer->clip;
                     d->rasterBuffer->clip = 0;
+#ifdef QT_EXPERIMENTAL_REGIONS
+                    updateClipRegion(QRegion(), Qt::NoClip);
+#else
                     updateClipPath(QPainterPath(), Qt::NoClip);
+#endif
                 } else { // re-enable old clip
                     Q_ASSERT(d->rasterBuffer->disabled_clip);
                     d->rasterBuffer->resetClip();
                     d->rasterBuffer->clip = d->rasterBuffer->disabled_clip;
                     d->rasterBuffer->disabled_clip = 0;
+                }
+            } else {
+                if (!state.isClipEnabled()) {
+#ifdef QT_EXPERIMENTAL_REGIONS
+                    updateClipRegion(QRegion(), Qt::NoClip);
+#else
+                    updateClipPath(QPainterPath(), Qt::NoClip);
+#endif
+                } else {
+#ifdef QT_EXPERIMENTAL_REGIONS
+                    updateClipRegion(state.clipRegion(), state.clipOperation());
+#else
+                    updateClipPath(state.clipPath(), state.clipOperation());
+#endif
                 }
             }
             d->penData.adjustSpanMethods();
@@ -1146,10 +1179,57 @@ void QRasterPaintEngine::updateClipRegion(const QRegion &r, Qt::ClipOperation op
 #ifdef QT_DEBUG_DRAW
     qDebug() << " - QRasterPaintEngine::updateClipRegion() op=" << op << r;
 #endif
+
+#ifdef QT_EXPERIMENTAL_REGIONS
+    Q_D(QRasterPaintEngine);
+
+    switch (op) {
+    case Qt::NoClip:
+        d->clipRegion = d->deviceRect;
+        break;
+    case Qt::IntersectClip:
+        d->clipRegion &= d->matrix.map(r);
+        break;
+    case Qt::ReplaceClip:
+        if (r.isEmpty())
+            d->clipRegion = d->deviceRect;
+        else
+            d->clipRegion = d->matrix.map(r);
+        break;
+    case Qt::UniteClip:
+        d->clipRegion |= d->matrix.map(r);
+        break;
+    default:
+        break;
+    }
+
+    const QRegion sysClip = systemClip();
+    if (!sysClip.isEmpty())
+        d->clipRegion &= sysClip;
+
+    if (!d->clipRegion.isEmpty() && d->clipRegion.rects().count() == 1) {
+        d->setSimpleClip(d->clipRegion.boundingRect());
+        return;
+    }
+#endif // QT_EXPERIMENTAL_REGIONS
+
     QPainterPath p;
     p.addRegion(r);
     updateClipPath(p, op);
 }
+
+#ifdef QT_EXPERIMENTAL_REGIONS
+void QRasterPaintEnginePrivate::setSimpleClip(const QRect &rect)
+{
+    if (!rasterBuffer->clip)
+        rasterBuffer->clip = new QClipData(rasterBuffer->height());
+    rasterBuffer->clip->setSimpleClip(rect);
+    rasterBuffer->clipEnabled = true;
+
+    penData.adjustSpanMethods();
+    brushData.adjustSpanMethods();
+}
+#endif // QT_EXPERIMENTAL_REGIONS
 
 /*!
     \internal
@@ -1196,7 +1276,11 @@ void QRasterPaintEngine::fillPath(const QPainterPath &path, QSpanData *fillData)
     d->rasterize(d->outlineMapper->convertPath(path), fillData->blend, fillData, d->rasterBuffer);
 }
 
+#ifdef QT_EXPERIMENTAL_REGIONS
+static void fillRect(const QRect &r, const QRegion &clipRegion, QSpanData *data)
+#else
 static void fillRect(const QRect &r, QSpanData *data)
+#endif
 {
     QRect rect = r.normalized();
     int x1 = qMax(rect.x(), 0);
@@ -1210,6 +1294,11 @@ static void fillRect(const QRect &r, QSpanData *data)
         y1 = qMax(y1, clip->ymin);
         y2 = qMin(y2, clip->ymax);
     }
+
+#ifdef QT_EXPERIMENTAL_REGIONS
+    ProcessSpans blend = qt_region_strictContains(clipRegion, rect) ?
+                         data->unclipped_blend : data->blend;
+#endif
 
     int len = x2 - x1;
 
@@ -1230,7 +1319,11 @@ static void fillRect(const QRect &r, QSpanData *data)
                 ++i;
             }
 
+#ifdef QT_EXPERIMENTAL_REGIONS
+            blend(n, spans, data);
+#else
             data->blend(n, spans, data);
+#endif
             y += n;
         }
     }
@@ -1256,7 +1349,11 @@ void QRasterPaintEngine::drawRects(const QRect *rects, int rectCount)
             QRect rect = rects->normalized();
             if (d->brushData.blend) {
                 QRect r = rect.translated(offset_x, offset_y);
+#ifdef QT_EXPERIMENTAL_REGIONS
+                fillRect(r, d->clipRegion, &d->brushData);
+#else
                 fillRect(r, &d->brushData);
+#endif
             }
 
             if (d->penData.blend) {
@@ -1635,7 +1732,11 @@ void QRasterPaintEngine::drawImage(const QRectF &r, const QImage &img, const QRe
 
         QRectF rr = r;
         rr.translate(d->matrix.dx(), d->matrix.dy());
+#ifdef QT_EXPERIMENTAL_REGIONS
+        fillRect(rr.toRect(), d->clipRegion, &textureData);
+#else
         fillRect(rr.toRect(), &textureData);
+#endif
     }
 }
 
@@ -1679,7 +1780,11 @@ void QRasterPaintEngine::drawTiledPixmap(const QRectF &r, const QPixmap &pixmap,
 
         QRectF rr = r;
         rr.translate(d->matrix.dx(), d->matrix.dy());
+#ifdef QT_EXPERIMENTAL_REGIONS
+        fillRect(rr.toRect(), d->clipRegion, &textureData);
+#else
         fillRect(rr.toRect(), &textureData);
+#endif
     }
 
 }
@@ -1710,6 +1815,24 @@ void QRasterPaintEngine::alphaPenBlt(const void* src, int bpl, bool mono, int rx
     w = qMin(w, rb->width() - rx);
     h = qMin(h, rb->height() - ry);
 
+#ifdef QT_EXPERIMENTAL_REGIONS
+    if (w <= 0 || h <= 0)
+        return;
+
+    const QRect rect(rx, ry, w, h);
+    const QClipData *clip = d->rasterBuffer->clip;
+    if (clip) {
+        const QRect bound = QRect(clip->xmin, clip->ymin,
+                                  clip->xmax - clip->xmin,
+                                  clip->ymax - clip->ymin);
+        if ((bound & rect).isEmpty())
+            return;
+    }
+
+    const bool unclipped = qt_region_strictContains(d->clipRegion, rect);
+    ProcessSpans blend = unclipped ? d->penData.unclipped_blend : d->penData.blend;
+#endif
+
     const int NSPANS = 256;
     QSpan spans[NSPANS];
     int current = 0;
@@ -1724,7 +1847,11 @@ void QRasterPaintEngine::alphaPenBlt(const void* src, int bpl, bool mono, int rx
                 }
 
                 if (current == NSPANS) {
+#ifdef QT_EXPERIMENTAL_REGIONS
+                    blend(current, spans, &d->penData);
+#else
                     d->penData.blend(current, spans, &d->penData);
+#endif
                     current = 0;
                 }
                 spans[current].x = x + rx;
@@ -1752,7 +1879,11 @@ void QRasterPaintEngine::alphaPenBlt(const void* src, int bpl, bool mono, int rx
                 }
 
                 if (current == NSPANS) {
+#ifdef QT_EXPERIMENTAL_REGIONS
+                    blend(current, spans, &d->penData);
+#else
                     d->penData.blend(current, spans, &d->penData);
+#endif
                     current = 0;
                 }
                 int coverage = scanline[x];
@@ -1777,7 +1908,11 @@ void QRasterPaintEngine::alphaPenBlt(const void* src, int bpl, bool mono, int rx
 //              << "span:" << spans->x << spans->y << spans->len << spans->coverage;
         // Call span func for current set of spans.
     if (current != 0)
+#ifdef QT_EXPERIMENTAL_REGIONS
+        blend(current, spans, &d->penData);
+#else
         d->penData.blend(current, spans, &d->penData);
+#endif
 }
 
 /*!
@@ -2227,6 +2362,24 @@ void QRasterPaintEngine::drawLines(const QLine *lines, int lineCount)
                 int x2 = l.x2() * m11 + dx;
                 int y2 = l.y2() * m22 + dy;
 
+#ifdef QT_EXPERIMENTAL_REGIONS
+                const QRect brect(QPoint(x1, y1), QPoint(x2, y2));
+                const bool unclipped = qt_region_strictContains(d->clipRegion,
+                                                                brect);
+                ProcessSpans penBlend;
+                if (unclipped)
+                    penBlend = d->penData.unclipped_blend;
+                else
+                    penBlend = d->penData.blend;
+                if (d->pen.style() == Qt::SolidLine)
+                    drawLine_midpoint_i(x1, y1, x2, y2,
+                                        penBlend, &d->penData, mode, bounds);
+                else
+                    drawLine_midpoint_dashed_i(x1, y1, x2, y2,
+                                               &d->pen, penBlend,
+                                               &d->penData, mode, bounds,
+                                               &dashOffset);
+#else
                 if (d->pen.style() == Qt::SolidLine)
                     drawLine_midpoint_i(x1, y1, x2, y2,
                                         d->penData.blend, &d->penData, mode, bounds);
@@ -2235,8 +2388,30 @@ void QRasterPaintEngine::drawLines(const QLine *lines, int lineCount)
                                                &d->pen, d->penData.blend,
                                                &d->penData, mode, bounds,
                                                &dashOffset);
+#endif
             } else {
                 QLineF line = lines[i] * d->matrix;
+#ifdef QT_EXPERIMENTAL_REGIONS
+                const QRect brect(QPoint(int(line.x1()), int(line.y1())),
+                                  QPoint(int(line.x2()), int(line.y2())));
+                const bool unclipped = qt_region_strictContains(d->clipRegion,
+                                                                brect);
+                ProcessSpans penBlend;
+                if (unclipped)
+                    penBlend = d->penData.unclipped_blend;
+                else
+                    penBlend = d->penData.blend;
+                if (d->pen.style() == Qt::SolidLine)
+                    drawLine_midpoint_i(int(line.x1()), int(line.y1()),
+                                        int(line.x2()), int(line.y2()),
+                                        penBlend, &d->penData, mode, bounds);
+                else
+                    drawLine_midpoint_dashed_i(int(line.x1()), int(line.y1()),
+                                               int(line.x2()), int(line.y2()),
+                                               &d->pen, penBlend,
+                                               &d->penData, mode, bounds,
+                                               &dashOffset);
+#else
                 if (d->pen.style() == Qt::SolidLine)
                     drawLine_midpoint_i(int(line.x1()), int(line.y1()),
                                         int(line.x2()), int(line.y2()),
@@ -2247,6 +2422,7 @@ void QRasterPaintEngine::drawLines(const QLine *lines, int lineCount)
                                                &d->pen, d->penData.blend,
                                                &d->penData, mode, bounds,
                                                &dashOffset);
+#endif
             }
         }
     } else {
@@ -2273,6 +2449,27 @@ void QRasterPaintEngine::drawLines(const QLineF *lines, int lineCount)
         for (int i=0; i<lineCount; ++i) {
             QLineF line = lines[i] * d->matrix;
             int dashOffset = 0;
+#ifdef QT_EXPERIMENTAL_REGIONS
+            const QRect brect(QPoint(int(line.x1()), int(line.y1())),
+                              QPoint(int(line.x2()), int(line.y2())));
+            const bool unclipped = qt_region_strictContains(d->clipRegion,
+                                                            brect);
+            ProcessSpans penBlend;
+            if (unclipped)
+                penBlend = d->penData.unclipped_blend;
+            else
+                penBlend = d->penData.blend;
+            if (d->pen.style() == Qt::SolidLine)
+                drawLine_midpoint_i(brect.left(), brect.top(),
+                                    brect.right(), brect.bottom(),
+                                    penBlend, &d->penData, mode, bounds);
+            else
+                drawLine_midpoint_dashed_i(int(line.x1()), int(line.y1()),
+                                           int(line.x2()), int(line.y2()),
+                                           &d->pen,
+                                           penBlend, &d->penData, mode,
+                                           bounds, &dashOffset);
+#else
             if (d->pen.style() == Qt::SolidLine)
                 drawLine_midpoint_i(int(line.x1()), int(line.y1()),
                                     int(line.x2()), int(line.y2()),
@@ -2283,6 +2480,7 @@ void QRasterPaintEngine::drawLines(const QLineF *lines, int lineCount)
                                            &d->pen,
                                            d->penData.blend, &d->penData, mode,
                                            bounds, &dashOffset);
+#endif
         }
     } else {
         QPaintEngine::drawLines(lines, lineCount);
@@ -2311,11 +2509,29 @@ void QRasterPaintEngine::drawEllipse(const QRectF &rect)
         && d->txop <= QPainterPrivate::TxScale) // no shear
     {
         const QRect devRect(0, 0, d->deviceRect.width(), d->deviceRect.height());
+#ifdef QT_EXPERIMENTAL_REGIONS
+        const QRect brect = QRect(int(r.x()), int(r.y()),
+                                  int_dim(r.x(), r.width()),
+                                  int_dim(r.y(), r.height()));
+        const bool unclipped = qt_region_strictContains(d->clipRegion, brect);
+        ProcessSpans penBlend;
+        ProcessSpans brushBlend;
+        if (unclipped) {
+            penBlend = d->penData.unclipped_blend;
+            brushBlend = d->brushData.unclipped_blend;
+        } else {
+            penBlend = d->penData.blend;
+            brushBlend = d->brushData.blend;
+        }
+        drawEllipse_midpoint_i(brect, devRect, penBlend, brushBlend,
+                               &d->penData, &d->brushData);
+#else
         drawEllipse_midpoint_i(QRect(int(r.x()), int(r.y()),
                                      int_dim(r.x(), r.width()), int_dim(r.y(), r.height())),
                                devRect,
                                d->penData.blend, d->brushData.blend,
                                &d->penData, &d->brushData);
+#endif
         return;
     }
 
@@ -2502,7 +2718,7 @@ void QRasterPaintEnginePrivate::drawBitmap(const QPointF &pos, const QPixmap &pm
                         ++src_x;
                         ++len;
                     }
-                    spans[n].len = len;
+                    spans[n].len = ((len + spans[n].x) > xmax) ? (xmax - spans[n].x) : len;
                     x += len;
                     ++n;
                     if (n == spanCount) {
@@ -2529,7 +2745,7 @@ void QRasterPaintEnginePrivate::drawBitmap(const QPointF &pos, const QPixmap &pm
                         ++src_x;
                         ++len;
                     }
-                    spans[n].len = len;
+                    spans[n].len = ((len + spans[n].x) > xmax) ? (xmax - spans[n].x) : len;
                     x += len;
                     ++n;
                     if (n == spanCount) {
@@ -2722,11 +2938,15 @@ void QRasterPaintEnginePrivate::updateClip_helper(const QPainterPath &path, Qt::
     } else if (path.isEmpty()) {
         if (op == Qt::ReplaceClip || op == Qt::IntersectClip) {
             rasterBuffer->resetClip();
+#ifdef QT_EXPERIMENTAL_REGIONS
+            rasterBuffer->clip = new QClipData(rasterBuffer->height());
+#else
             QClipData *clip = rasterBuffer->clip = new QClipData(rasterBuffer->height());
             for (int i=0; i<clip->clipSpanHeight; ++i) {
                 clip->appendSpan(0, i, 0, 0);
             }
             clip->fixup();
+#endif
         }
     } else if (op == Qt::ReplaceClip) {
         rasterBuffer->resetClip();
@@ -3009,7 +3229,15 @@ public:
 
 int QCustomRasterPaintDevice::metric(PaintDeviceMetric m) const
 {
-    Q_ASSERT(widget);
+    switch (m) {
+    case PdmWidth:
+        return widget->frameGeometry().width();
+    case PdmHeight:
+        return widget->frameGeometry().height();
+    default:
+        break;
+    }
+
     return (static_cast<MetricAccessor*>(widget)->metric(m));
 }
 
@@ -3039,7 +3267,8 @@ int QCustomRasterPaintDevice::bytesPerLine() const
     The painting operations can be accelerated by deriving from the
     QRasterPaintEngine and QCustomRasterPaintDevice classes. Note that
     there are several other issues to be aware of; see the \l {Adding
-    an Accelerated Graphics Driver} documentation for details.
+    an Accelerated Graphics Driver in Qtopia Core} documentation for
+    details.
 
     \sa QRasterPaintEngine, QPaintDevice
 */
@@ -3135,6 +3364,48 @@ void QClipData::fixup()
 //     qDebug("xmin=%d,xmax=%d,ymin=%d,ymax=%d", xmin, xmax, ymin, ymax);
 }
 
+#ifdef QT_EXPERIMENTAL_REGIONS
+void QClipData::setSimpleClip(const QRect &rect)
+{
+//    qDebug() << "setSimpleClip" << clipSpanHeight << count << allocated << rect;
+
+    xmin = rect.x();
+    xmax = rect.x() + rect.width() + 1;
+    ymin = rect.y();
+    ymax = rect.y() + rect.height();
+
+//    qDebug() << xmin << xmax << ymin << ymax;
+
+    int y = 0;
+
+    while (y < ymin) {
+        clipLines[y].spans = 0;
+        clipLines[y].count = 0;
+        ++y;
+    }
+
+    const int len = rect.width() + 1;
+    count = 0;
+    while (y < ymax) {
+        QSpan *span = spans + count;
+        span->x = xmin;
+        span->len = len;
+        span->y = y;
+        span->coverage = 255;
+        ++count;
+
+        clipLines[y].spans = span;
+        clipLines[y].count = 1;
+        ++y;
+    }
+
+    while (y < clipSpanHeight) {
+        clipLines[y].spans = 0;
+        clipLines[y].count = 0;
+        ++y;
+    }
+}
+#endif // QT_EXPERIMENTAL_REGIONS
 
 /*!
     \internal
@@ -3324,6 +3595,131 @@ void QRasterBuffer::flushToARGBImage(QImage *target) const
     }
 }
 
+
+class QGradientCache
+{
+    struct CacheInfo
+    {
+        inline CacheInfo(QGradientStops s, int op) :
+            stops(s), opacity(op) {}
+        uint buffer[GRADIENT_STOPTABLE_SIZE];
+        QGradientStops stops;
+        int opacity;
+    };
+
+    typedef QMultiHash<quint64, CacheInfo> QGradientColorTableHash;
+
+public:
+    inline const uint *getBuffer(const QGradientStops &stops, int opacity) {
+        quint64 hash_val = 0;
+
+        for (int i = 0; i < stops.size() && i <= 2; i++)
+            hash_val += stops[i].second.rgba();
+
+        QGradientColorTableHash::const_iterator it = cache.constFind(hash_val);
+
+        if (it == cache.constEnd())
+            return addCacheElement(hash_val, stops, opacity);
+        else {
+            do {
+                const CacheInfo &cache_info = it.value();
+                if (cache_info.stops == stops && cache_info.opacity == opacity)
+                    return cache_info.buffer;
+                ++it;
+            } while (it != cache.constEnd() && it.key() == hash_val);
+            // an exact match for these stops and opacity was not found, create new cache
+            return addCacheElement(hash_val, stops, opacity);
+        }
+    }
+
+    inline int paletteSize() const { return GRADIENT_STOPTABLE_SIZE; }
+protected:
+    inline int maxCacheSize() const { return 60; }
+    inline void generateGradientColorTable(const QGradientStops& s,
+                                           uint *colorTable,
+                                           int size, int opacity) const;
+    uint *addCacheElement(quint64 hash_val, const QGradientStops &stops, int opacity) {
+        if (cache.size() == maxCacheSize()) {
+            int elem_to_remove = qrand() % maxCacheSize();
+            cache.remove(cache.keys()[elem_to_remove]); // may remove more than 1, but OK
+        }
+        CacheInfo cache_entry(stops, opacity);
+        generateGradientColorTable(stops, cache_entry.buffer, paletteSize(), opacity);
+        return cache.insert(hash_val, cache_entry).value().buffer;
+    }
+
+    QGradientColorTableHash cache;
+};
+
+void QGradientCache::generateGradientColorTable(const QGradientStops& stops, uint *colorTable, int size, int opacity) const
+{
+    int stopCount = stops.count();
+    Q_ASSERT(stopCount > 0);
+
+    // The position where the gradient begins and ends
+    int begin_pos = int(stops[0].first * size);
+    int end_pos = int(stops[stopCount-1].first * size);
+
+    int pos = 0; // The position in the color table.
+
+    uint current_color;
+    uint next_color;
+
+     // Up to first point
+    current_color = PREMUL(ARGB_COMBINE_ALPHA(stops[0].second.rgba(), opacity));
+    while (pos <= begin_pos) {
+        colorTable[pos] = current_color;
+        ++pos;
+    }
+
+    qreal incr = 1 / qreal(size); // the double increment.
+    qreal dpos = incr * pos; // The position in terms of 0-1.
+    qreal diff;
+
+    int current_stop = 0; // We always interpolate between current and current + 1.
+
+    // Gradient area
+    if (pos < end_pos) {
+        next_color = PREMUL(ARGB_COMBINE_ALPHA(stops[1].second.rgba(), opacity));
+        diff = stops[1].first - stops[0].first;
+    }
+    while (pos < end_pos) {
+
+        Q_ASSERT(current_stop < stopCount);
+
+        int dist;
+        if (diff != 0.0)
+            dist = (int)(256*(dpos - stops[current_stop].first) / diff);
+        else
+            dist = 0;
+        int idist = 256 - dist;
+
+        colorTable[pos] = INTERPOLATE_PIXEL_256(current_color, idist, next_color, dist);
+
+        ++pos;
+        dpos += incr;
+
+        if (dpos > stops[current_stop+1].first) {
+            ++current_stop;
+            if (pos >= end_pos)
+                break;
+            current_color = next_color;
+            next_color = PREMUL(ARGB_COMBINE_ALPHA(stops[current_stop+1].second.rgba(), opacity));
+            diff = (stops[current_stop+1].first - stops[current_stop].first);
+        }
+    }
+
+    // After last point
+    current_color = PREMUL(ARGB_COMBINE_ALPHA(stops[stopCount - 1].second.rgba(), opacity));
+    while (pos < size) {
+        colorTable[pos] = current_color;
+        ++pos;
+    }
+}
+
+Q_GLOBAL_STATIC(QGradientCache, qt_gradient_cache)
+
+
 void QSpanData::init(QRasterBuffer *rb, QRasterPaintEngine *pe)
 {
     rasterBuffer = rb;
@@ -3353,7 +3749,8 @@ void QSpanData::setup(const QBrush &brush, int alpha)
             type = LinearGradient;
             const QLinearGradient *g = static_cast<const QLinearGradient *>(brush.gradient());
             gradient.alphaColor = !brush.isOpaque() || alpha != 256;
-            initGradient(g, alpha);
+            gradient.colorTable = const_cast<uint*>(qt_gradient_cache()->getBuffer(g->stops(), alpha));
+            gradient.spread = g->spread();
 
             gradient.linear.origin.x = g->start().x();
             gradient.linear.origin.y = g->start().y();
@@ -3367,7 +3764,8 @@ void QSpanData::setup(const QBrush &brush, int alpha)
             type = RadialGradient;
             const QRadialGradient *g = static_cast<const QRadialGradient *>(brush.gradient());
             gradient.alphaColor = !brush.isOpaque() || alpha != 256;
-            initGradient(g, alpha);
+            gradient.colorTable = const_cast<uint*>(qt_gradient_cache()->getBuffer(g->stops(), alpha));
+            gradient.spread = g->spread();
 
             QPointF center = g->center();
             gradient.radial.center.x = center.x();
@@ -3384,7 +3782,7 @@ void QSpanData::setup(const QBrush &brush, int alpha)
             type = ConicalGradient;
             const QConicalGradient *g = static_cast<const QConicalGradient *>(brush.gradient());
             gradient.alphaColor = !brush.isOpaque() || alpha != 256;
-            initGradient(g, alpha);
+            gradient.colorTable = const_cast<uint*>(qt_gradient_cache()->getBuffer(g->stops(), alpha));
             gradient.spread = QGradient::RepeatSpread;
 
             QPointF center = g->center();
@@ -3489,65 +3887,6 @@ void QSpanData::initTexture(const QImage *image, int alpha, TextureData::Type _t
     texture.type = _type;
 
     adjustSpanMethods();
-}
-
-void QSpanData::initGradient(const QGradient *g, int alpha)
-{
-    const QGradientStops stops = g->stops();
-    int stopCount = stops.count();
-    Q_ASSERT(stopCount > 0);
-
-    // The position where the gradient begins and ends
-    int begin_pos = int(stops[0].first * GRADIENT_STOPTABLE_SIZE);
-    int end_pos = int(stops[stopCount-1].first * GRADIENT_STOPTABLE_SIZE);
-
-    int pos = 0; // The position in the color table.
-
-    // Up to first point
-    while (pos<=begin_pos) {
-        gradient.colorTable[pos] = PREMUL(ARGB_COMBINE_ALPHA(stops[0].second.rgba(), alpha));
-        ++pos;
-    }
-
-    qreal incr = 1 / qreal(GRADIENT_STOPTABLE_SIZE); // the double increment.
-    qreal dpos = incr * pos; // The position in terms of 0-1.
-
-    int current_stop = 0; // We always interpolate between current and current + 1.
-
-    // Gradient area
-    while (pos < end_pos) {
-
-        Q_ASSERT(current_stop < stopCount);
-
-        uint current_color = PREMUL(ARGB_COMBINE_ALPHA(stops[current_stop].second.rgba(), alpha));
-        uint next_color = PREMUL(ARGB_COMBINE_ALPHA(stops[current_stop+1].second.rgba(), alpha));
-
-
-        int dist;
-        qreal diff = (stops[current_stop+1].first - stops[current_stop].first);
-        if (diff != 0.0)
-            dist = (int)(256*(dpos - stops[current_stop].first) / diff);
-        else
-            dist = 0;
-        int idist = 256 - dist;
-
-        gradient.colorTable[pos] = INTERPOLATE_PIXEL_256(current_color, idist, next_color, dist);
-
-        ++pos;
-        dpos += incr;
-
-        if (dpos > stops[current_stop+1].first) {
-            ++current_stop;
-        }
-    }
-
-    // After last point
-    while (pos < GRADIENT_STOPTABLE_SIZE) {
-        gradient.colorTable[pos] = PREMUL(ARGB_COMBINE_ALPHA(stops[stopCount-1].second.rgba(), alpha));
-        ++pos;
-    }
-
-    gradient.spread = g->spread();
 }
 
 #ifdef Q_WS_WIN
@@ -3743,8 +4082,13 @@ static void drawLine_midpoint_i(int x1, int y1, int x2, int y2, ProcessSpans spa
             int len = stop_clipped - start;
             if (style == LineDrawNormal && stop == stop_clipped)
                 len--;
+#ifdef QT_EXPERIMENTAL_REGIONS
+            if (len > 0)
+                fillRect(QRect(x1, start, 1, len), QRegion(), data);
+#else
             if (len > 0)
                 fillRect(QRect(x1, start, 1, len), data);
+#endif
         }
         return;
     }
@@ -3767,7 +4111,7 @@ static void drawLine_midpoint_i(int x1, int y1, int x2, int y2, ProcessSpans spa
         // we need to stop one pixel before
         x2 = qMin(x2, devRect.width() - 1);
 
-        // completly clipped, so abort
+        // completely clipped, so abort
         if (x2 <= x1) {
             return;
         }
@@ -3904,7 +4248,7 @@ static void drawLine_midpoint_i(int x1, int y1, int x2, int y2, ProcessSpans spa
         // we need to stop one pixel before
         y2 = qMin(y2, devRect.height() - 1);
 
-        // completly clipped, so abort
+        // completely clipped, so abort
         if (y2 <= y1) {
             return;
         }
@@ -4158,7 +4502,7 @@ static void drawLine_midpoint_dashed_i(int x1, int y1, int x2, int y2,
         // we need to stop one pixel before
         x2 = qMin(x2, devRect.width() - 1);
 
-        // completly clipped, so abort
+        // completely clipped, so abort
         if (x2 <= x1)
             goto flush_and_return;
 
@@ -4295,7 +4639,7 @@ static void drawLine_midpoint_dashed_i(int x1, int y1, int x2, int y2,
         // we need to stop one pixel before
         y2 = qMin(y2, devRect.height() - 1);
 
-        // completly clipped, so abort
+        // completely clipped, so abort
         if (y2 <= y1)
             goto flush_and_return;
 

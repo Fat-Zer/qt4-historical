@@ -217,7 +217,7 @@ void QDataWidgetMapperPrivate::_q_modelDestroyed()
     if the orientation is horizontal (the default), otherwise a row.
 
     Every time the current index changes, all widgets are updated
-    with the contents from the model. If user edits the contents of
+    with the contents from the model. If the user edits the contents of
     the widget, the changes are written back to the model.
 
     It is possible to set an item delegate to support custom widgets. By default,
@@ -487,10 +487,12 @@ QWidget *QDataWidgetMapper::mappedWidgetAt(int section) const
 {
     Q_D(const QDataWidgetMapper);
 
-    if (section < 0 || section > d->widgetMap.count())
-        return 0;
+    for (int i = 0; i < d->widgetMap.count(); ++i) {
+        if (d->widgetMap.at(i).section == section)
+            return d->widgetMap.at(i).widget;
+    }
 
-    return d->widgetMap.at(section).widget;
+    return 0;
 }
 
 /*!

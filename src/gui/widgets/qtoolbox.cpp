@@ -588,6 +588,14 @@ void QToolBox::setItemEnabled(int index, bool enabled)
 
 /*!
     Sets the text of the item at position \a index to \a text.
+
+    If the provided text contains an ampersand character ('&'), a
+    mnemonic is automatically created for it. The character that
+    follows the '&' will be used as the shortcut key. Any previous
+    mnemonic will be overwritten, or cleared if no mnemonic is defined
+    by the text. See the \l {QShortcut#mnemonic}{QShortcut}
+    documentation for details (to display an actual ampersand, use
+    '&&').
 */
 
 void QToolBox::setItemText(int index, const QString &text)
@@ -757,7 +765,7 @@ void QToolBox::itemRemoved(int index)
 /*!
     \fn void QToolBox::setMargin(int margin)
     Sets the width of the margin around the contents of the widget to \a margin.
-    
+
     Use QWidget::setContentsMargins() instead.
     \sa margin(), QWidget::setContentsMargins()
 */
@@ -765,7 +773,7 @@ void QToolBox::itemRemoved(int index)
 /*!
     \fn int QToolBox::margin() const
     Returns the with of the the margin around the contents of the widget.
-    
+
     Use QWidget::getContentsMargins() instead.
     \sa setMargin(), QWidget::getContentsMargins()
 */

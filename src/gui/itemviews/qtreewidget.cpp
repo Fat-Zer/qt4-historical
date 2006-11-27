@@ -211,8 +211,6 @@ QModelIndex QTreeModel::index(int row, int column, const QModelIndex &parent) co
     if (row < 0 || column < 0 || column >= c)
         return QModelIndex();
 
-    //executePendingSort();
-
     QTreeWidgetItem *parentItem = parent.isValid() ? item(parent) : rootItem;
     if (parentItem && row < parentItem->childCount()) {
         QTreeWidgetItem *itm = parentItem->child(row);
@@ -463,7 +461,7 @@ bool QTreeModel::setHeaderData(int section, Qt::Orientation orientation,
 /*!
   \reimp
 
-  Returns the flags for the item refered to the given \a index.
+  Returns the flags for the item referred to the given \a index.
 
 */
 
@@ -553,8 +551,8 @@ void QTreeModel::ensureSorted(int column, Qt::SortOrder order,
                 else if (oldRow > oldPersistentRow && newRow <= oldPersistentRow)
                     newPersistentRow = oldPersistentRow + 1;
                 if (newPersistentRow != oldPersistentRow)
-                    newPersistentIndexes[k] = index(newPersistentRow,
-                                                    pi.column(), pi.parent());
+                    newPersistentIndexes[k] = createIndex(newPersistentRow,
+                                                          pi.column(), pi.internalPointer());
             }
         }
     }
@@ -663,7 +661,10 @@ bool QTreeModel::executePendingSort() const
         int column = view()->header()->sortIndicatorSection();
         Qt::SortOrder order = view()->header()->sortIndicatorOrder();
         QTreeModel *that = const_cast<QTreeModel*>(this);
-        that->sort(column, order); // will emit layoutChanged
+        const bool blocked = that->signalsBlocked();
+        that->blockSignals(true);
+        that->sort(column, order);
+        that->blockSignals(blocked);
         return true;
     }
     return false;
@@ -927,7 +928,7 @@ void QTreeModel::sortItems(QList<QTreeWidgetItem*> *items, int column, Qt::SortO
     \fn void QTreeWidgetItem::setFlags(Qt::ItemFlags flags)
 
     Sets the flags for the item to the given \a flags. These determine whether
-    the item can be selected or modified.
+    the item can be selected or modified.  This is often used to disable an item.
 
     \sa flags()
 */
@@ -1552,7 +1553,23 @@ bool QTreeWidgetItem::operator<(const QTreeWidgetItem &other) const
 */
 void QTreeWidgetItem::read(QDataStream &in)
 {
-    in >> values >> display;
+    // convert from streams written before we introduced display (4.2.0)
+    if (in.version() < QDataStream::Qt_4_2) {
+        display.clear();
+        in >> values;
+        // move the display value over to the display string list
+        for (int column = 0; column < values.count(); ++column) {
+            display << QVariant();
+            for (int i = 0; i < values.at(column).count(); ++i) {
+                if (values.at(column).at(i).role == Qt::DisplayRole) {
+                    display[column] = values.at(column).at(i).value;
+                    values[column].remove(i--);
+                }
+            }
+        }
+    } else {
+        in >> values >> display;
+    }
 }
 
 /*!
@@ -1837,6 +1854,15 @@ void QTreeWidgetItem::itemChanged()
         model->itemChanged(this);
 }
 
+/*!
+  \internal
+*/
+void QTreeWidgetItem::executePendingSort() const
+{
+    if (QTreeModel *model = (view ? ::qobject_cast<QTreeModel*>(view->model()) : 0))
+        model->executePendingSort();
+}
+
 
 #ifndef QT_NO_DATASTREAM
 /*!
@@ -2092,7 +2118,7 @@ void QTreeWidgetPrivate::_q_dataChanged(const QModelIndex &topLeft,
     This signal is emitted when the specified \a item is expanded so that
     all of its children are displayed.
 
-    \sa isItemExpanded()
+    \sa isItemExpanded(), itemCollapsed(), expandItem()
 */
 
 /*!
@@ -2101,7 +2127,7 @@ void QTreeWidgetPrivate::_q_dataChanged(const QModelIndex &topLeft,
     This signal is emitted when the specified \a item is collapsed so that
     none of its children are displayed.
 
-    \sa isItemExpanded()
+    \sa isItemExpanded(), itemExpanded(), collapseItem()
 */
 
 /*!

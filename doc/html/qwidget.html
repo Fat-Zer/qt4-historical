@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-x11-opensource-src-4.2.1/src/gui/kernel/qwidget.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-x11-opensource-src-4.2.2/src/gui/kernel/qwidget.cpp -->
 <head>
   <title>Qt 4.2: QWidget Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -392,6 +392,7 @@
 <h3>Related Non-Members</h3>
 <ul>
 <li><div class="fn"/>typedef <b><a href="qwidget.html#QWidgetList-typedef">QWidgetList</a></b></li>
+<li><div class="fn"/>typedef <b><a href="qwidget.html#WId-typedef">WId</a></b></li>
 </ul>
 <a name="macros"></a>
 <h3>Macros</h3>
@@ -976,7 +977,7 @@
 <p>See also <a href="qwidget.html#windowIcon-prop">windowIcon</a> and <a href="qwidget.html#windowTitle-prop">windowTitle</a>.</p>
 <h3 class="fn"><a name="windowModality-prop"></a>windowModality : <a href="qt.html#WindowModality-enum">Qt::WindowModality</a></h3>
 <p>This property holds which windows are blocked by the modal widget.</p>
-<p>This property only makes sense for windows. A modal widget prevents widgets in other windows from getting input. The value of this property controls which windows are blocked when the widget is visible. Changing this property while the window is visible has no effect; you must <a href="qwidget.html#hide">hide</a>() the wiget first, then <a href="qwidget.html#show">show</a>() it again.</p>
+<p>This property only makes sense for windows. A modal widget prevents widgets in other windows from getting input. The value of this property controls which windows are blocked when the widget is visible. Changing this property while the window is visible has no effect; you must <a href="qwidget.html#hide">hide</a>() the widget first, then <a href="qwidget.html#show">show</a>() it again.</p>
 <p>By default, this property is <a href="qt.html#WindowModality-enum">Qt::NonModal</a>.</p>
 <p>This property was introduced in Qt 4.1.</p>
 <p>Access functions:</p>
@@ -1108,7 +1109,7 @@
 <p>The handler is called when the widget's <a href="qwidget.html#contextMenuPolicy-prop">contextMenuPolicy</a> is <a href="qt.html#ContextMenuPolicy-enum">Qt::DefaultContextMenu</a>.</p>
 <p>The default implementation ignores the context event. See the <a href="qcontextmenuevent.html">QContextMenuEvent</a> documentation for more details.</p>
 <p>See also <a href="qwidget.html#event">event</a>(), <a href="qcontextmenuevent.html">QContextMenuEvent</a>, and <a href="qwidget.html#customContextMenuRequested">customContextMenuRequested</a>().</p>
-<h3 class="fn"><a name="create"></a>void QWidget::create ( WId <i>window</i> = 0, bool <i>initializeWindow</i> = true, bool <i>destroyOldWindow</i> = true )&nbsp;&nbsp;<tt> [protected]</tt></h3>
+<h3 class="fn"><a name="create"></a>void QWidget::create ( <a href="qwidget.html#WId-typedef">WId</a> <i>window</i> = 0, bool <i>initializeWindow</i> = true, bool <i>destroyOldWindow</i> = true )&nbsp;&nbsp;<tt> [protected]</tt></h3>
 <p>Creates a new widget window if <i>window</i> is 0, otherwise sets the widget's window to <i>window</i>.</p>
 <p>Initializes the window (sets the geometry etc.) if <i>initializeWindow</i> is true. If <i>initializeWindow</i> is false, no initialization is performed. This parameter only makes sense if <i>window</i> is a valid window.</p>
 <p>Destroys the old window if <i>destroyOldWindow</i> is true. If <i>destroyOldWindow</i> is false, you are responsible for destroying the window yourself (using platform native code).</p>
@@ -1154,7 +1155,7 @@
 <p>This function returns true if the event was recognized, otherwise it returns false. If the recognized event was accepted (see <a href="qevent.html#accepted-prop">QEvent::accepted</a>), any further processing such as event propagation to the parent widget stops.</p>
 <p>Reimplemented from <a href="qobject.html#event">QObject</a>.</p>
 <p>See also <a href="qwidget.html#closeEvent">closeEvent</a>(), <a href="qwidget.html#focusInEvent">focusInEvent</a>(), <a href="qwidget.html#focusOutEvent">focusOutEvent</a>(), <a href="qwidget.html#enterEvent">enterEvent</a>(), <a href="qwidget.html#keyPressEvent">keyPressEvent</a>(), <a href="qwidget.html#keyReleaseEvent">keyReleaseEvent</a>(), <a href="qwidget.html#leaveEvent">leaveEvent</a>(), <a href="qwidget.html#mouseDoubleClickEvent">mouseDoubleClickEvent</a>(), <a href="qwidget.html#mouseMoveEvent">mouseMoveEvent</a>(), <a href="qwidget.html#mousePressEvent">mousePressEvent</a>(), <a href="qwidget.html#mouseReleaseEvent">mouseReleaseEvent</a>(), <a href="qwidget.html#moveEvent">moveEvent</a>(), <a href="qwidget.html#paintEvent">paintEvent</a>(), <a href="qwidget.html#resizeEvent">resizeEvent</a>(), <a href="qobject.html#event">QObject::event</a>(), and <a href="qobject.html#timerEvent">QObject::timerEvent</a>().</p>
-<h3 class="fn"><a name="find"></a>QWidget * QWidget::find ( WId <i>id</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
+<h3 class="fn"><a name="find"></a>QWidget * QWidget::find ( <a href="qwidget.html#WId-typedef">WId</a> <i>id</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns a pointer to the widget with window identifer/handle <i>id</i>.</p>
 <p>The window identifier type depends on the underlying window system, see <tt>qwindowdefs.h</tt> for the actual definition. If there is no widget with this identifier, 0 is returned.</p>
 <h3 class="fn"><a name="focusInEvent"></a>void QWidget::focusInEvent ( <a href="qfocusevent.html">QFocusEvent</a> * <i>event</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
@@ -1201,7 +1202,7 @@
 <p>See also <a href="qwidget.html#setContentsMargins">setContentsMargins</a>() and <a href="qwidget.html#contentsRect">contentsRect</a>().</p>
 <h3 class="fn"><a name="getDC"></a>HDC QWidget::getDC () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns the window system handle of the widget, for low-level access. Using this function is not portable.</p>
-<p>An HDC aquired with getDC() has to be released with <a href="qwidget.html#releaseDC">releaseDC</a>().</p>
+<p>An HDC acquired with getDC() has to be released with <a href="qwidget.html#releaseDC">releaseDC</a>().</p>
 <p><b>Warning:</b> Using this function is not portable.</p>
 <h3 class="fn"><a name="grabKeyboard"></a>void QWidget::grabKeyboard ()</h3>
 <p>Grabs the keyboard input.</p>
@@ -1410,7 +1411,7 @@
 <p>After this call the widget will be visually in front of any overlapping sibling widgets.</p>
 <p>See also <a href="qwidget.html#lower">lower</a>() and <a href="qwidget.html#stackUnder">stackUnder</a>().</p>
 <h3 class="fn"><a name="releaseDC"></a>void QWidget::releaseDC ( HDC <i>hdc</i> ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>Releases the HDC <i>hdc</i> aquired by a previous call to <a href="qwidget.html#getDC">getDC</a>().</p>
+<p>Releases the HDC <i>hdc</i> acquired by a previous call to <a href="qwidget.html#getDC">getDC</a>().</p>
 <p><b>Warning:</b> Using this function is not portable.</p>
 <h3 class="fn"><a name="releaseKeyboard"></a>void QWidget::releaseKeyboard ()</h3>
 <p>Releases the keyboard grab.</p>
@@ -1549,6 +1550,7 @@
      layout-&gt;addWidget(slider);
      setLayout(layout);</pre>
 <p>An alternative to calling this function is to pass this widget to the layout's constructor.</p>
+<p>The <a href="qwidget.html">QWidget</a> will take ownership of <i>layout</i>.</p>
 <p>See also <a href="qwidget.html#layout">layout</a>() and <a href="layout.html">Layout Classes</a>.</p>
 <h3 class="fn"><a name="setMask"></a>void QWidget::setMask ( const <a href="qbitmap.html">QBitmap</a> &amp; <i>bitmap</i> )</h3>
 <p>Causes only the pixels of the widget for which <i>bitmap</i> has a corresponding 1 bit to be visible. If the region includes pixels outside the <a href="qwidget.html#rect-prop">rect</a>() of the widget, window system controls in that area may or may not be visible, depending on the platform.</p>
@@ -1616,6 +1618,7 @@
 <p>See also <a href="qt.html#WindowState-enum">Qt::WindowState</a> and <a href="qwidget.html#windowState">windowState</a>().</p>
 <h3 class="fn"><a name="setWindowSurface"></a>void QWidget::setWindowSurface ( QWindowSurface * <i>surface</i> )</h3>
 <p><b>This function is under development and is subject to change.</b></p>
+<p>Sets the window surface to be the <i>surface</i> specified.</p>
 <p>This function was introduced in Qt 4.2.</p>
 <p>See also <a href="qwidget.html#windowSurface">windowSurface</a>().</p>
 <h3 class="fn"><a name="show"></a>void QWidget::show ()&nbsp;&nbsp;<tt> [slot]</tt></h3>
@@ -1631,7 +1634,7 @@
 <p>Calling this function only affects <a href="qwidget.html#isWindow">windows</a>.</p>
 <p>To return from full-screen mode, call <a href="qwidget.html#showNormal">showNormal</a>().</p>
 <p>Full-screen mode works fine under Windows, but has certain problems under X. These problems are due to limitations of the ICCCM protocol that specifies the communication between X11 clients and the window manager. ICCCM simply does not understand the concept of non-decorated full-screen windows. Therefore, the best we can do is to request a borderless window and place and resize it to fill the entire screen. Depending on the window manager, this may or may not work. The borderless window is requested using MOTIF hints, which are at least partially supported by virtually all modern window managers.</p>
-<p>An alternative would be to bypass the window manager entirely and create a window with the <a href="qt.html#WindowType-enum">Qt::WX11BypassWM</a> flag. This has other severe problems though, like totally broken keyboard focus and very strange effects on desktop changes or when the user raises other windows.</p>
+<p>An alternative would be to bypass the window manager entirely and create a window with the <a href="qt.html#WindowType-enum">Qt::X11BypassWindowManagerHint</a> flag. This has other severe problems though, like totally broken keyboard focus and very strange effects on desktop changes or when the user raises other windows.</p>
 <p>X11 window managers that follow modern post-ICCCM specifications support full-screen mode properly.</p>
 <p>See also <a href="qwidget.html#showNormal">showNormal</a>(), <a href="qwidget.html#showMaximized">showMaximized</a>(), <a href="qwidget.html#show">show</a>(), <a href="qwidget.html#hide">hide</a>(), and <a href="qwidget.html#visible-prop">isVisible</a>().</p>
 <h3 class="fn"><a name="showMaximized"></a>void QWidget::showMaximized ()&nbsp;&nbsp;<tt> [slot]</tt></h3>
@@ -1701,7 +1704,7 @@
 <p>In your reimplementation of this function, if you want to stop the event being handled by Qt, return true and set <i>result</i> to the value that the window procedure should return. If you return false, this native event is passed back to Qt, which translates the event into a Qt event and sends it to the widget.</p>
 <p><b>Warning:</b> This function is not portable.</p>
 <p>See also <a href="qcoreapplication.html#winEventFilter">QApplication::winEventFilter</a>().</p>
-<h3 class="fn"><a name="winId"></a>WId QWidget::winId () const</h3>
+<h3 class="fn"><a name="winId"></a><a href="qwidget.html#WId-typedef">WId</a> QWidget::winId () const</h3>
 <p>Returns the window system identifier of the widget.</p>
 <p>Portable in principle, but if you use it you are probably about to do something non-portable. Be careful.</p>
 <p>See also <a href="qwidget.html#find">find</a>().</p>
@@ -1738,6 +1741,8 @@
 <h2>Related Non-Members</h2>
 <h3 class="fn"><a name="QWidgetList-typedef"></a>typedef QWidgetList</h3>
 <p>Synonym for <a href="qlist.html">QList</a>&lt;<a href="qwidget.html">QWidget</a> *&gt;.</p>
+<h3 class="fn"><a name="WId-typedef"></a>typedef WId</h3>
+<p>Platform dependent window identifier.</p>
 <hr />
 <h2>Macro Documentation</h2>
 <h3 class="fn"><a name="QWIDGETSIZE_MAX"></a>QWIDGETSIZE_MAX</h3>
@@ -1812,10 +1817,10 @@
 <p>Use testAttribute(<a href="qt.html#WidgetAttribute-enum">Qt::WA_UnderMouse</a>) instead.</p>
 <h3 class="fn"><a name="icon"></a>const <a href="qpixmap.html">QPixmap</a> * QWidget::icon () const</h3>
 <p>Return's the widget's icon.</p>
-<p>Use <a href="qwidget.html#windowIcon-prop">windowIcon</a>() instead().</p>
+<p>Use <a href="qwidget.html#windowIcon-prop">windowIcon</a>() instead.</p>
 <p>See also <a href="qwidget-qt3.html#setIcon">setIcon</a>().</p>
 <h3 class="fn"><a name="iconText"></a><a href="qstring.html">QString</a> QWidget::iconText () const</h3>
-<p>Use <a href="qwidget.html#windowIconText-prop">windowIconText</a>() instead().</p>
+<p>Use <a href="qwidget.html#windowIconText-prop">windowIconText</a>() instead.</p>
 <p>See also <a href="qwidget-qt3.html#setIconText">setIconText</a>().</p>
 <h3 class="fn"><a name="iconify"></a>void QWidget::iconify ()</h3>
 <p>Use <a href="qwidget.html#showMinimized">showMinimized</a>() instead.</p>
@@ -1968,6 +1973,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

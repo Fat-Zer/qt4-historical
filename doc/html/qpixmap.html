@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-x11-opensource-src-4.2.1/src/gui/image/qpixmap.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-x11-opensource-src-4.2.2/src/gui/image/qpixmap.cpp -->
 <head>
   <title>Qt 4.2: QPixmap Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -204,8 +204,11 @@
 <h3 class="fn"><a name="dtor.QPixmap"></a>QPixmap::~QPixmap ()</h3>
 <p>Destroys the pixmap.</p>
 <h3 class="fn"><a name="alphaChannel"></a>QPixmap QPixmap::alphaChannel () const</h3>
-<p>Returns the alpha channel of the pixmap. If the pixmap doesn't have an alpha channel (i.e. the alpha channel's value equals 0xff), a null pixmap is returned.</p>
-<p>See also <a href="qpixmap.html#setAlphaChannel">setAlphaChannel</a>() and <a href="qpixmap.html#pixmap-information">Pixmap Information</a>.</p>
+<p>Returns the alpha channel of the pixmap as a new grayscale <a href="qpixmap.html">QPixmap</a> in which each pixel's red, green, and blue values are given the alpha value of the original pixmap. The color depth of the returned pixmap is the system depth on X11 and 8-bit on Windows and Mac OS X.</p>
+<p>You can use this function while debugging to get a visible image of the alpha channel. If the pixmap doesn't have an alpha channel, i.e., the alpha channel's value for all pixels equals 0xff), a null pixmap is returned. You can check this with the <tt>isNull()</tt> function.</p>
+<p>We show an example:</p>
+<pre></pre>
+<p align="center"><font color="red">[Missing image alphachannelimage.png]</font></p><p>See also <a href="qpixmap.html#setAlphaChannel">setAlphaChannel</a>() and <a href="qpixmap.html#pixmap-information">Pixmap Information</a>.</p>
 <h3 class="fn"><a name="copy"></a>QPixmap QPixmap::copy ( const <a href="qrect.html">QRect</a> &amp; <i>rectangle</i> = QRect() ) const</h3>
 <p>Returns a deep copy of the subset of the pixmap that is specified by the given <i>rectangle</i>. For more information on deep copies, see the <a href="shared.html#implicit-data-sharing">Implicit Data Sharing</a> documentation.</p>
 <p>If the given <i>rectangle</i> is empty, the whole image is copied.</p>
@@ -271,7 +274,7 @@
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Creates a pixmap and paints the given <i>widget</i>, restricted by <a href="qrect.html">QRect</a>(<i>x</i>, <i>y</i>, <i>width</i>, <i>height</i>), in it.</p>
 <p><b>Warning:</b> Do not call this function from <a href="qwidget.html#paintEvent">QWidget::paintEvent</a>().</p>
-<h3 class="fn"><a name="grabWindow"></a>QPixmap QPixmap::grabWindow ( WId <i>window</i>, int <i>x</i> = 0, int <i>y</i> = 0, int <i>width</i> = -1, int <i>height</i> = -1 )&nbsp;&nbsp;<tt> [static]</tt></h3>
+<h3 class="fn"><a name="grabWindow"></a>QPixmap QPixmap::grabWindow ( <a href="qwidget.html#WId-typedef">WId</a> <i>window</i>, int <i>x</i> = 0, int <i>y</i> = 0, int <i>width</i> = -1, int <i>height</i> = -1 )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Creates and returns a pixmap constructed by grabbing the contents of the given <i>window</i> restricted by <a href="qrect.html">QRect</a>(<i>x</i>, <i>y</i>, <i>width</i>, <i>height</i>).</p>
 <p>The arguments (<i>x</i>, <i>y</i>) specify the offset in the window, whereas (<i>width</i>, <i>height</i>) specify the area to be copied. If <i>width</i> is negative, the function copies everything to the right border of the window. If <i>height</i> is negative, the function copies everything to the bottom of the window.</p>
 <p>The window system identifier (<tt>WId</tt>) can be retrieved using the <a href="qwidget.html#winId">QWidget::winId</a>() function. The rationale for using a window identifier and not a <a href="qwidget.html">QWidget</a>, is to enable grabbing of windows that are not part of the application, window system frames, and so on.</p>
@@ -353,10 +356,8 @@
 <p>If <i>width</i> is 0 or negative, a null pixmap is returned.</p>
 <p>See also <a href="qpixmap.html#isNull">isNull</a>() and <a href="qpixmap.html#pixmap-transformations">Pixmap Transformations</a>.</p>
 <h3 class="fn"><a name="serialNumber"></a>int QPixmap::serialNumber () const</h3>
-<p>Returns a number that uniquely identifies the contents of this <a href="qpixmap.html">QPixmap</a> object.</p>
-<p>This means that multiple <a href="qpixmap.html">QPixmap</a> objects only can have the same serial number as long as they refer to the same contents. A null pixmap has always a serial number of 0.</p>
-<p>An example of where this is useful is for caching QPixmaps.</p>
-<p>See also <a href="qpixmap.html#pixmap-information">Pixmap Information</a>.</p>
+<p>Returns a number that identifies the contents of this <a href="qpixmap.html">QPixmap</a> object. Distinct <a href="qpixmap.html">QPixmap</a> objects can only have the same serial number if they refer to the same contents (but they don't have to).</p>
+<p><b>Warning:</b> The serial number doesn't necessarily change when the pixmap is altered. This means that it may be dangerous to use it as a cache key. For caching pixmaps, we recommend using the <a href="qpixmapcache.html">QPixmapCache</a> class whenever possible.</p>
 <h3 class="fn"><a name="setAlphaChannel"></a>void QPixmap::setAlphaChannel ( const QPixmap &amp; <i>alphaChannel</i> )</h3>
 <p>Sets the alpha channel of this pixmap to the given <i>alphaChannel</i> by converting the <i>alphaChannel</i> into 32 bit and using the intensity of the RGB pixel values.</p>
 <p>The effect of this function is undefined when the pixmap is being painted on.</p>
@@ -490,6 +491,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

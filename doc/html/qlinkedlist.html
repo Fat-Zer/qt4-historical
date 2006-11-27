@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-x11-opensource-src-4.2.1/src/corelib/tools/qlinkedlist.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-x11-opensource-src-4.2.2/src/corelib/tools/qlinkedlist.cpp -->
 <head>
   <title>Qt 4.2: QLinkedList Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -104,7 +104,7 @@
 <p>QLinkedList&lt;T&gt; is one of Qt's generic <a href="containers.html#container-classes">container classes</a>. It stores a list of values and provides iterator-based access as well as <a href="containers.html#constant-time">constant time</a> insertions and removals.</p>
 <p><a href="qlist.html">QList</a>&lt;T&gt;, QLinkedList&lt;T&gt;, and <a href="qvector.html">QVector</a>&lt;T&gt; provide similar functionality. Here's an overview:</p>
 <ul>
-<li>For most purposes, <a href="qlist.html">QList</a> is the right class to use. Its index-based API is more convenient than QLinkedList's iterator-based API, and it is usually faster than <a href="qvector.html">QVector</a> because of the way it stores its items in memory. It also expands to less code in your executable.</li>
+<li>For most purposes, <a href="qlist.html">QList</a> is the right class to use. Its index-based API is more convenient than QLinkedList's iterator-based API, and it is usually faster than <a href="qvector.html">QVector</a> because of the way it stores its items in memory (see <a href="containers.html#algorithmic-complexity">Algorithmic Complexity</a> for details). It also expands to less code in your executable.</li>
 <li>If you need a real linked list, with guarantees of <a href="containers.html#constant-time">constant time</a> insertions in the middle of the list and iterators to items rather than indexes, use QLinkedList.</li>
 <li>If you want the items to occupy adjacent memory positions, use <a href="qvector.html">QVector</a>.</li>
 </ul>
@@ -386,6 +386,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

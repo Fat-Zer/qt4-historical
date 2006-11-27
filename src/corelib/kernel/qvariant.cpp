@@ -467,7 +467,7 @@ static qlonglong qConvertToNumber(const QVariant::Private *d, bool *ok)
         return qlonglong(qMetaTypeUNumber(d));
     }
 
-    ok = false;
+    *ok = false;
     return Q_INT64_C(0);
 }
 
@@ -2566,10 +2566,12 @@ void* QVariant::data()
  */
 void *QVariant::castOrDetach(Type t)
 {
-    if (d.type != uint(t))
-        convert(t);
-    else
+    if (d.type != uint(t)) {
+        if (!convert(t))
+            create(t, 0);
+    } else {
         detach();
+    }
     return data();
 }
 #endif

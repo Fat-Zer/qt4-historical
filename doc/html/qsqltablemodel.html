@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-x11-opensource-src-4.2.1/src/sql/models/qsqltablemodel.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-x11-opensource-src-4.2.2/src/sql/models/qsqltablemodel.cpp -->
 <head>
   <title>Qt 4.2: QSqlTableModel Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -280,7 +280,7 @@
 <h3 class="fn"><a name="tableName"></a><a href="qstring.html">QString</a> QSqlTableModel::tableName () const</h3>
 <p>Returns the name of the currently selected table.</p>
 <h3 class="fn"><a name="updateRowInTable"></a>bool QSqlTableModel::updateRowInTable ( int <i>row</i>, const <a href="qsqlrecord.html">QSqlRecord</a> &amp; <i>values</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
-<p>Updates the row <i>row</i> in the currently active database table with the values from <i>values</i>.</p>
+<p>Updates the given <i>row</i> in the currently active database table with the specified <i>values</i>. Returns true if successful; otherwise returns false.</p>
 <p>This is a low-level method that operates directly on the database and should not be called directly. Use <a href="qsqltablemodel.html#setData">setData</a>() to update values. The model will decide depending on its edit strategy when to modify the database.</p>
 <p>Note that only values that have the generated-flag set are updated. The generated-flag can be set with <a href="qsqlrecord.html#setGenerated">QSqlRecord::setGenerated</a>() and tested with <a href="qsqlrecord.html#isGenerated">QSqlRecord::isGenerated</a>().</p>
 <p>See also <a href="qsqlrecord.html#isGenerated">QSqlRecord::isGenerated</a>() and <a href="qsqltablemodel.html#setData">setData</a>().</p>
@@ -288,6 +288,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

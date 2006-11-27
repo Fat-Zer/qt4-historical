@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-x11-opensource-src-4.2.1/src/gui/kernel/qx11embed_x11.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-x11-opensource-src-4.2.2/src/gui/kernel/qx11embed_x11.cpp -->
 <head>
   <title>Qt 4.2: QX11EmbedContainer Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -115,11 +115,11 @@
 <p>This signal is emitted by the container when the client widget closes.</p>
 <h3 class="fn"><a name="clientIsEmbedded"></a>void QX11EmbedContainer::clientIsEmbedded ()&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted by the container when a client widget has been embedded.</p>
-<h3 class="fn"><a name="clientWinId"></a>WId QX11EmbedContainer::clientWinId () const</h3>
+<h3 class="fn"><a name="clientWinId"></a><a href="qwidget.html#WId-typedef">WId</a> QX11EmbedContainer::clientWinId () const</h3>
 <p>If the container has an embedded widget, this function returns the X11 window ID of the client; otherwise it returns 0.</p>
 <h3 class="fn"><a name="discardClient"></a>void QX11EmbedContainer::discardClient ()</h3>
 <p>Detaches the client from the embedder. The client will appear as a standalone window on the desktop.</p>
-<h3 class="fn"><a name="embedClient"></a>void QX11EmbedContainer::embedClient ( WId <i>id</i> )</h3>
+<h3 class="fn"><a name="embedClient"></a>void QX11EmbedContainer::embedClient ( <a href="qwidget.html#WId-typedef">WId</a> <i>id</i> )</h3>
 <p>Instructs the container to embed the X11 window with window ID <i>id</i>. The client widget will then move on top of the container window and be resized to fit into the container.</p>
 <p>The <i>id</i> should be the ID of a window controlled by an XEmbed enabled application, but this is not mandatory. If <i>id</i> does not belong to an XEmbed client widget, then focus handling, activation, accelerators and other features will not work properly.</p>
 <h3 class="fn"><a name="error"></a><a href="qx11embedcontainer.html#Error-enum">Error</a> QX11EmbedContainer::error () const</h3>
@@ -132,6 +132,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

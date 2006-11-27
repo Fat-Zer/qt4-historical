@@ -4234,16 +4234,10 @@ void Q3IconView::contentsMousePressEvent(QMouseEvent *e)
 void Q3IconView::contentsMousePressEventEx(QMouseEvent *e)
 {
     if (d->rubber) {
-        QPainter p;
-        p.begin(viewport());
-        p.setPen(QPen(Qt::color0, 1));
-        p.setBrush(Qt::NoBrush);
-
-        drawRubber(&p);
         d->dragging = false;
-        p.end();
         delete d->rubber;
         d->rubber = 0;
+        viewport()->update();
 
         if (d->scrollTimer) {
             disconnect(d->scrollTimer, SIGNAL(timeout()), this, SLOT(doAutoScroll()));
@@ -5481,6 +5475,7 @@ bool Q3IconView::eventFilter(QObject * o, QEvent * e)
                 }
             }
             return true;
+#ifndef QT_NO_TOOLTIP
         case QHelpEvent::ToolTip:
         {
             if (wordWrapIconText() || !showToolTips())
@@ -5496,6 +5491,7 @@ bool Q3IconView::eventFilter(QObject * o, QEvent * e)
             QToolTip::showText(he->globalPos(), item->itemText, viewport());
             return true;
         }
+#endif
         default:
             // nothing
             break;

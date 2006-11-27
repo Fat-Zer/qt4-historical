@@ -681,7 +681,7 @@ QDebug operator<<(QDebug d, const QPointF &p)
 
 QDataStream &operator<<(QDataStream &s, const QPointF &p)
 {
-    s << p.x() << p.y();
+    s << double(p.x()) << double(p.y());
     return s;
 }
 
@@ -700,8 +700,8 @@ QDataStream &operator>>(QDataStream &s, QPointF &p)
     double x, y;
     s >> x;
     s >> y;
-    p.setX(x);
-    p.setY(y);
+    p.setX(qreal(x));
+    p.setY(qreal(y));
     return s;
 }
 #endif // QT_NO_DATASTREAM

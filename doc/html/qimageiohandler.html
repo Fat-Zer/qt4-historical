@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-x11-opensource-src-4.2.1/src/gui/image/qimageiohandler.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-x11-opensource-src-4.2.2/src/gui/image/qimageiohandler.cpp -->
 <head>
   <title>Qt 4.2: QImageIOHandler Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -116,7 +116,8 @@
 <p>Returns the value assigned to <i>option</i> as a <a href="qvariant.html">QVariant</a>. The type of the value depends on the option. For example, option(Size) returns a <a href="qsize.html">QSize</a> variant.</p>
 <p>See also <a href="qimageiohandler.html#setOption">setOption</a>() and <a href="qimageiohandler.html#supportsOption">supportsOption</a>().</p>
 <h3 class="fn"><a name="read"></a>bool QImageIOHandler::read ( <a href="qimage.html">QImage</a> * <i>image</i> )&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
-<p>Read an image from the device, and stores it in <i>image</i>. For image formats that support incremental loading, and for animation formats, the image handler can assume that <i>image</i> points to the previous frame.</p>
+<p>Read an image from the device, and stores it in <i>image</i>. Returns true if the image is successfully read; otherwise returns false.</p>
+<p>For image formats that support incremental loading, and for animation formats, the image handler can assume that <i>image</i> points to the previous frame.</p>
 <p>See also <a href="qimageiohandler.html#canRead">canRead</a>().</p>
 <h3 class="fn"><a name="setDevice"></a>void QImageIOHandler::setDevice ( <a href="qiodevice.html">QIODevice</a> * <i>device</i> )</h3>
 <p>Sets the device of the <a href="qimageiohandler.html">QImageIOHandler</a> to <i>device</i>. The image handler will use this device when reading and writing images.</p>
@@ -143,6 +144,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

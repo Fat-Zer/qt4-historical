@@ -24,6 +24,7 @@
 #include <qdebug.h>
 #include "qpdf_p.h"
 #include <qfile.h>
+#include "private/qcups_p.h"
 
 extern int qt_defaultDpi();
 
@@ -1206,6 +1207,18 @@ void QPdfBaseEngine::setProperty(PrintEnginePropertyKey key, const QVariant &val
     case PPK_Duplex:
         d->duplex = value.toBool();
         break;
+    case PPK_CupsPageRect:
+        d->cupsPageRect = value.toRect();
+        break;
+    case PPK_CupsPaperRect:
+        d->cupsPaperRect = value.toRect();
+        break;
+    case PPK_CupsOptions:
+        d->cupsOptions = value.toStringList();
+        break;
+    case PPK_CupsStringPageSize:
+        d->cupsStringPageSize = value.toString();
+        break;
     default:
         break;
     }
@@ -1214,7 +1227,6 @@ void QPdfBaseEngine::setProperty(PrintEnginePropertyKey key, const QVariant &val
 QVariant QPdfBaseEngine::property(PrintEnginePropertyKey key) const
 {
     Q_D(const QPdfBaseEngine);
-//     qDebug() << "cups page rect" << d->cups.pageRect() << "paperrect" << d->cups.paperRect();
 
     QVariant ret;
     switch (key) {
@@ -1277,6 +1289,18 @@ QVariant QPdfBaseEngine::property(PrintEnginePropertyKey key) const
         break;
     case PPK_Duplex:
         ret = d->duplex;
+        break;
+    case PPK_CupsPageRect:
+        ret = d->cupsPageRect;
+        break;
+    case PPK_CupsPaperRect:
+        ret = d->cupsPaperRect;
+        break;
+    case PPK_CupsOptions:
+        ret = d->cupsOptions;
+        break;
+    case PPK_CupsStringPageSize:
+        ret = d->cupsStringPageSize;
         break;
     default:
         break;
@@ -1400,80 +1424,70 @@ bool QPdfBaseEnginePrivate::openPrintDevice()
                 (void)execlp(printProgram.toLocal8Bit().data(), printProgram.toLocal8Bit().data(),
                              pr.toLocal8Bit().data(), (char *)0);
 #if !defined(QT_NO_CUPS) && !defined(QT_NO_LIBRARY)
-            } else if (cups.isAvailable()) {
+            } else if (QCUPSSupport::isAvailable()) {
 
-                QStringList cupsArgList;
+                QList<QByteArray> cupsArgList;
 
-                cupsArgList << QLatin1String("lpr");
+                cupsArgList << "lpr";
 
                 if (!printerName.isEmpty()) {
-                    cupsArgList << QLatin1String("-P");
-                    cupsArgList << printerName;
+                    cupsArgList << "-P";
+                    cupsArgList << printerName.toLocal8Bit();
                 }
 
-                const ppd_option_t* pageSizes = cups.pageSizes();
-		if (pageSizes) {
-                    cupsArgList << QLatin1String("-o");
-                    cupsArgList << QString::fromLatin1("media=%1").arg(
-                        QString::fromLocal8Bit(pageSizes->choices[pageSize].choice));
-		}
+                if (!cupsStringPageSize.isEmpty()) {
+                    cupsArgList << "-o";
+                    cupsArgList << QByteArray("media=") + cupsStringPageSize.toLocal8Bit();
+                }
 
                 if (copies > 1) {
-                    cupsArgList << QLatin1String("-#");
-                    cupsArgList << QString::number(copies);
+                    cupsArgList << "-#";
+                    cupsArgList << QByteArray::number(copies);
                 }
-
-#if 0 // ##########
-                if (printer->printRange() == QPrinter::PageRange) {
-                    cupsArgList << "-o";
-                    cupsArgList << QString("print-ranges=%1-%2").arg(printer->fromPage()).arg(printer->toPage());
-                }
-#endif
 
                 if (collate) {
-                    cupsArgList << QLatin1String("-o");
-                    cupsArgList << QLatin1String("Collate=True");
+                    cupsArgList << "-o";
+                    cupsArgList << "Collate=True";
                 }
 
                 if (pageOrder == QPrinter::LastPageFirst) {
-                    cupsArgList << QLatin1String("-o");
-                    cupsArgList << QLatin1String("outputorder=reverse");
+                    cupsArgList << "-o";
+                    cupsArgList << "outputorder=reverse";
                 }
 
                 if (duplex) {
-                    cupsArgList << QLatin1String("-o");
+                    cupsArgList << "-o";
                     if (orientation == QPrinter::Portrait)
-                        cupsArgList << QLatin1String("sides=two-sided-long-edge");
+                        cupsArgList << "sides=two-sided-long-edge";
                     else
-                        cupsArgList << QLatin1String("sides=two-sided-short-edge");
+                        cupsArgList << "sides=two-sided-short-edge";
                 }
 
                 if (orientation == QPrinter::Landscape) {
-                    cupsArgList << QLatin1String("-o");
-                    cupsArgList << QLatin1String("landscape");
+                    cupsArgList << "-o";
+                    cupsArgList << "landscape";
                 }
 
                 if (!title.isEmpty()) {
-                    cupsArgList << QLatin1String("-J");
-                    cupsArgList << title;
+                    cupsArgList << "-J";
+                    cupsArgList << title.toLocal8Bit();
                 }
 
-                QStringList list = cups.options();
-                QStringList::const_iterator it = list.constBegin();
-                while (it != list.constEnd()) {
-                    cupsArgList << QLatin1String("-o");
-                    cupsArgList << QString::fromLatin1("%1=%2").arg(*it).arg(*(it+1));
+                QStringList::const_iterator it = cupsOptions.constBegin();
+                while (it != cupsOptions.constEnd()) {
+                    cupsArgList << "-o";
+                    cupsArgList << (*it).toLocal8Bit() + "=" + (*(it+1)).toLocal8Bit();
                     it += 2;
                 }
 
                 char** lprargs = new char*[cupsArgList.count() + 1];
                 int i;
                 for (i = 0; i < cupsArgList.count(); ++i) {
-                    lprargs[i] = cupsArgList.at(i).toLocal8Bit().data();
+                    lprargs[i] = cupsArgList[i].data();
                 }
                 lprargs[i] = 0;
 
-                // if the CUPS is available we expect lpr arround
+                // if the CUPS is available we expect lpr around
                 (void)execvp( "lpr", lprargs );
                 (void)execv( "/bin/lpr", lprargs);
                 (void)execv( "/usr/bin/lpr", lprargs);
@@ -1695,8 +1709,8 @@ QRect QPdfBaseEnginePrivate::paperRect() const
     int w;
     int h;
 #if !defined(QT_NO_CUPS) && !defined(QT_NO_LIBRARY)
-    if (QCUPSSupport::isAvailable() && cups.currentPPD()) {
-        QRect r = cups.paperRect();
+    if (QCUPSSupport::isAvailable() && !cupsPaperRect.isNull()) {
+        QRect r = cupsPaperRect;
         w = r.width();
         h = r.height();
     } else
@@ -1722,9 +1736,9 @@ QRect QPdfBaseEnginePrivate::pageRect() const
     QRect r;
 
 #if !defined(QT_NO_CUPS) && !defined(QT_NO_LIBRARY)
-    if (QCUPSSupport::isAvailable() && cups.currentPPD()) {
-        r = cups.pageRect();
-        if (r == cups.paperRect())
+    if (QCUPSSupport::isAvailable() && !cupsPageRect.isNull()) {
+        r = cupsPageRect;
+        if (r == cupsPaperRect)
             // if cups doesn't define any margins, give it at least approx 3.5 mm
             r = QRect(10, 10, r.width() - 20, r.height() - 20);
     } else

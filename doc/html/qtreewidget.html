@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-x11-opensource-src-4.2.1/src/gui/itemviews/qtreewidget.cpp -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-x11-opensource-src-4.2.2/src/gui/itemviews/qtreewidget.cpp -->
 <head>
   <title>Qt 4.2: QTreeWidget Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -262,7 +262,7 @@
 <p>The specified <i>item</i> is the item that was clicked, or 0 if no item was clicked. The <i>column</i> is the item's column that was clicked, or -1 if no item was clicked.</p>
 <h3 class="fn"><a name="itemCollapsed"></a>void QTreeWidget::itemCollapsed ( <a href="qtreewidgetitem.html">QTreeWidgetItem</a> * <i>item</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when the specified <i>item</i> is collapsed so that none of its children are displayed.</p>
-<p>See also <a href="qtreewidget-obsolete.html#isItemExpanded">isItemExpanded</a>().</p>
+<p>See also <a href="qtreewidget-obsolete.html#isItemExpanded">isItemExpanded</a>(), <a href="qtreewidget.html#itemExpanded">itemExpanded</a>(), and <a href="qtreewidget.html#collapseItem">collapseItem</a>().</p>
 <h3 class="fn"><a name="itemDoubleClicked"></a>void QTreeWidget::itemDoubleClicked ( <a href="qtreewidgetitem.html">QTreeWidgetItem</a> * <i>item</i>, int <i>column</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when the user double clicks inside the widget.</p>
 <p>The specified <i>item</i> is the item that was clicked, or 0 if no item was clicked. The <i>column</i> is the item's column that was clicked, or -1 if no item was clicked.</p>
@@ -270,7 +270,7 @@
 <p>This signal is emitted when the mouse cursor enters an <i>item</i> over the specified <i>column</i>. <a href="qtreewidget.html">QTreeWidget</a> mouse tracking needs to be enabled for this feature to work.</p>
 <h3 class="fn"><a name="itemExpanded"></a>void QTreeWidget::itemExpanded ( <a href="qtreewidgetitem.html">QTreeWidgetItem</a> * <i>item</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when the specified <i>item</i> is expanded so that all of its children are displayed.</p>
-<p>See also <a href="qtreewidget-obsolete.html#setItemExpanded">setItemExpanded</a>() and <a href="qtreewidget-obsolete.html#isItemExpanded">isItemExpanded</a>().</p>
+<p>See also <a href="qtreewidget-obsolete.html#setItemExpanded">setItemExpanded</a>(), <a href="qtreewidget-obsolete.html#isItemExpanded">isItemExpanded</a>(), <a href="qtreewidget.html#itemCollapsed">itemCollapsed</a>(), and <a href="qtreewidget.html#expandItem">expandItem</a>().</p>
 <h3 class="fn"><a name="itemFromIndex"></a><a href="qtreewidgetitem.html">QTreeWidgetItem</a> * QTreeWidget::itemFromIndex ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>index</i> ) const&nbsp;&nbsp;<tt> [protected]</tt></h3>
 <p>Returns a pointer to the <a href="qtreewidgetitem.html">QTreeWidgetItem</a> assocated with the given <i>index</i>.</p>
 <p>See also <a href="qtreewidget.html#indexFromItem">indexFromItem</a>().</p>
@@ -349,6 +349,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>

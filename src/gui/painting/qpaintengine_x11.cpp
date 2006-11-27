@@ -338,7 +338,7 @@ static void qt_tesselate_polygon(QVector<XTrapezoid> *traps, const QPointF *pg, 
         edge.p2.x = XDoubleToFixed(p2.x());
         edge.p2.y = XDoubleToFixed(p2.y());
 
-	edge.m = (p1.y() - p2.y()) / (p1.x() - p2.x()); // line derivative
+	edge.m = (p1.x() == p2.x()) ? 1.e38 : (p1.y() - p2.y()) / (p1.x() - p2.x()); // line derivative
 	edge.b = p1.y() - edge.m * p1.x(); // intersection with y axis
 	edge.m = edge.m != 0.0 ? 1.0 / edge.m : 0.0; // inverted derivative
 	edges.append(edge);
@@ -421,7 +421,7 @@ static void qt_tesselate_polygon(QVector<XTrapezoid> *traps, const QPointF *pg, 
             if (!et.size()) {
                 break;
 	    } else {
- 		y = XFixedToDouble(et.at(0)->p1.y);
+ 		y = currentY = XFixedToDouble(et.at(0)->p1.y);
                 continue;
 	    }
         }
@@ -1799,8 +1799,40 @@ void QX11PaintEngine::drawImage(const QRectF &r, const QImage &image, const QRec
         int w = qRound(r.width());
         int h = qRound(r.height());
         XImage *xi;
+        QImage im(image);
+        // Note: this code assumes either RGB or BGR, 8 bpc server layouts
+        const uint red_mask = (uint) ((Visual *) d->xinfo->visual())->red_mask;
+        bool bgr_layout = (red_mask == 0xff);
+        if ((QSysInfo::ByteOrder == QSysInfo::BigEndian
+             && ((ImageByteOrder(d->dpy) == LSBFirst) || bgr_layout))
+            || (ImageByteOrder(d->dpy) == MSBFirst && QSysInfo::ByteOrder == QSysInfo::LittleEndian))
+        {
+            for (int i=0; i < im.height(); i++) {
+                uint *p = (uint*)im.scanLine(i);
+                uint *end = p + im.width();
+                if (bgr_layout && ImageByteOrder(d->dpy) == MSBFirst && QSysInfo::ByteOrder == QSysInfo::LittleEndian) {
+                    while (p < end) {
+                        *p = ((*p << 8) & 0xffffff00) | ((*p >> 24) & 0x000000ff);
+                        p++;
+                    }
+                } else if ((ImageByteOrder(d->dpy) == LSBFirst && QSysInfo::ByteOrder == QSysInfo::BigEndian)
+                           || (ImageByteOrder(d->dpy) == MSBFirst && QSysInfo::ByteOrder == QSysInfo::LittleEndian)) {
+                    while (p < end) {
+                        *p = ((*p << 24) & 0xff000000) | ((*p << 8) & 0x00ff0000)
+                             | ((*p >> 8) & 0x0000ff00) | ((*p >> 24) & 0x000000ff);
+                        p++;
+                    }
+                } else if (ImageByteOrder(d->dpy) == MSBFirst && QSysInfo::ByteOrder == QSysInfo::BigEndian) {
+                    while (p < end) {
+                        *p = ((*p << 16) & 0x00ff0000) | ((*p >> 16) & 0x000000ff)
+                             | ((*p ) & 0xff00ff00);
+                        p++;
+                    }
+                }
+            }
+        }
         xi = XCreateImage(d->dpy, (Visual *) d->xinfo->visual(), d->pdev_depth, ZPixmap,
-                          0, (char *) image.scanLine(sy)+sx*sizeof(uint), w, h, 32, image.bytesPerLine());
+                          0, (char *) im.scanLine(sy)+sx*sizeof(uint), w, h, 32, im.bytesPerLine());
         XPutImage(d->dpy, d->hd, d->gc, xi, 0, 0, x, y, w, h);
         xi->data = 0; // QImage owns these bits
         XDestroyImage(xi);
@@ -2135,8 +2167,6 @@ void QX11PaintEngine::drawXLFD(const QPointF &p, const QTextItemInt &ti)
 
     XSetFont(d->dpy, d->gc, font_id);
 
-    QVarLengthArray<XChar2b> chars(glyphs.size());
-
     for (int i = 0; i < glyphs.size(); i++) {
         int xp = qRound(positions[i].x);
         int yp = qRound(positions[i].y);
@@ -2250,7 +2280,9 @@ void QX11PaintEngine::drawFreetype(const QPointF &p, const QTextItemInt &ti)
 
         const QColor &pen = d->cpen.color();
         ::Picture src = X11->getSolidFill(d->scrn, pen);
-        XRenderPictFormat *maskFormat = XRenderFindStandardFormat(X11->display, ft->xglyph_format);
+        // XRenderPictFormat *maskFormat = XRenderFindStandardFormat(X11->display, ft->xglyph_format);
+        // using a mask format other than 0 causes bitmap/XLFD fonts to garbled
+        XRenderPictFormat *maskFormat = 0;
 
         enum { t_min = SHRT_MIN >> 1, t_max = SHRT_MAX >> 1};
         QFixed xp = positions[0].x;

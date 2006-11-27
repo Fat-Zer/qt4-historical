@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.1-harald-1161357942206/qt-x11-opensource-src-4.2.1/doc/src/examples/svgalib.qdoc -->
+<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-x11-opensource-src-4.2.2/doc/src/examples/svgalib.qdoc -->
 <head>
   <title>Qt 4.2: Accelerated Screen Driver Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -25,21 +25,24 @@
 <li><a href="qtopiacore-svgalib-svgalibsurface-cpp.html">qtopiacore/svgalib/svgalibsurface.cpp</a></li>
 <li><a href="qtopiacore-svgalib-svgalibsurface-h.html">qtopiacore/svgalib/svgalibsurface.h</a></li>
 </ul>
-<p>The accelerated screen driver example shows how to write an accelerated screen driver for Qtopia Core.</p>
-<p>Painting in Qtopia Core is a pure software implementation and is normally performed in two steps: Each window is rendered onto a <a href="qwswindowsurface.html">QWSWindowSurface</a> using <a href="qpaintengine.html">QPaintEngine</a>, and then the server composes the surface images and copies them to the screen. Qtopia Core uses <a href="qrasterpaintengine.html">QRasterPaintEngine</a> (a raster-based implementation of <a href="qpaintengine.html">QPaintEngine</a>) to implement painting operations and <a href="qscreen.html">QScreen</a> to implement window composition.</p>
-<p>Starting with Qtopia Core 4.2, it is possible to add an accelerated graphics driver to take advantage of available hardware resources, using the following approach:</p>
+<p>The Accelerated Screen Driver example shows how to write an accelerated screen driver for <a href="qtopiacore.html">Qtopia Core</a>.</p>
+<p>In <a href="qtopiacore.html">Qtopia Core</a>, painting is a pure software implementation and is normally performed in two steps: The clients render each window onto a corresponding surface (stored in memory) using a paint engine, and then the server uses the screen driver to compose the surface images and copy them to the screen. (See the <a href="qtopiacore-architecture.html">Qtopia Core Architecture</a> documentation for details.)</p>
+<p>The rendering can be accelerated in two ways: Either by accelerating the copying of pixels to the screen, or by accelerating the explicit painting operations. The first is done in the screen driver implementation, the latter is performed by the paint engine implementation. Typically, both the pixel copying and the painting operations are accelerted using the following approach:</p>
 <ol type="1">
-<li><a href="#step-1-create-a-custom-screen">Create a Custom Screen</a></li>
-<li><a href="#step-2-implement-a-custom-raster-paint-engine">Implement a Custom Raster Paint Engine</a></li>
-<li><a href="#step-3-make-the-widgets-aware-of-your-paint-engine">Make the Widgets Aware of Your Paint Engine</a></li>
+<li><a href="#step-1-creating-a-custom-screen-driver">Creating a Custom Screen Driver</a></li>
+<li><a href="#step-2-implementing-a-custom-raster-paint-engine">Implementing a Custom Paint Engine</a></li>
+<li><a href="#step-3-making-the-widgets-aware-of-the-custom-paint-engine">Making the Widgets Aware of the Custom Paint Engine</a></li>
 </ol>
-<p>Instead of interfacing the graphics hardware directly, this example relies on <a href="http://www.svgalib.org">SVGAlib</a> being installed on your system. <a href="http://www.svgalib.org">SVGAlib</a> is a small graphics library which provides acceleration for many common graphics card used on desktop computers. It should work on most workstations and has a small and simple API.</p>
-<p>The driver implementation in this example can be used as a template when implementing your own driver. After compiling the example you should install the screen driver plugin with the command <tt>make install</tt>. To start an application using the example driver, you can either set the environment variable <tt>QWS_DISPLAY</tt> or start the program using the <tt>-display</tt> switch:</p>
+<p>After compiling the example code, you should install the screen driver plugin with the command <tt>make install</tt>. To start an application using the example's screen driver, you can either set the environment variable <a href="qtopiacore-envvars.html#qws-display">QWS_DISPLAY</a> or start the program using the <tt>-display</tt> switch:</p>
 <pre> myApplication -qws -display svgalib</pre>
 <p>Note that in order to keep the example as simple as possible, our driver only works with screen modes having 32 bits per pixel and does not work with multiple processes.</p>
-<a name="step-1-create-a-custom-screen"></a>
-<h2>Step 1: Create a Custom Screen</h2>
-<p>The custom screen is created by deriving from the <a href="qscreen.html">QScreen</a> class:</p>
+<p><table align="center" cellpadding="2" cellspacing="1" border="0">
+<thead><tr valign="top" class="qt-style"><th>SVGAlib</th></tr></thead>
+<tr valign="top" class="odd"><td>Instead of interfacing the graphics hardware directly, this example relies on <a href="http://www.svgalib.org">SVGAlib</a> being installed on your system. <a href="http://www.svgalib.org">SVGAlib</a> is a small graphics library which provides acceleration for many common graphics cards used on desktop computers. It should work on most workstations and has a small and simple API.</td></tr>
+</table></p>
+<a name="step-1-creating-a-custom-screen-driver"></a>
+<h2>Step 1: Creating a Custom Screen Driver</h2>
+<p>The custom screen driver is created by deriving from the <a href="qscreen.html">QScreen</a> class. <a href="qscreen.html">QScreen</a> is the base class for implementing screen drivers in Qtopia Core.</p>
 <pre> ** This file is part of the example classes of the Qt Toolkit.
  **
  ** This file may be used under the terms of the GNU General Public
@@ -47,17 +50,17 @@
  ** and appearing in the file LICENSE.GPL included in the packaging of
  ** this file.  Please review the following information to ensure GNU
  ** General Public Licensing requirements will be met:
- ** http:<span class="comment">//www.trolltech.com/products/qt/opensource.html</span>
+ ** http://www.trolltech.com/products/qt/opensource.html
  **
  ** If you are unsure which license is appropriate for your use, please
  ** review the following information:
- ** http:<span class="comment">//www.trolltech.com/products/qt/licensing.html or contact the</span>
+ ** http://www.trolltech.com/products/qt/licensing.html or contact the
  ** sales department at sales@trolltech.com.
  **
  ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
  ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  **
- ****************************************************************************/
+ ****************************************************************************/</span>
 
  #ifndef SVGALIBSCREEN_H
  #define SVGALIBSCREEN_H
@@ -88,12 +91,12 @@
  private:
      GraphicsContext *context;
  };</pre>
-<p>The <a href="qscreen.html#connect">connect()</a>, <a href="qscreen.html#disconnect">disconnect()</a>, <a href="qscreen.html#initDevice">initDevice()</a> and <a href="qscreen.html#shutdownDevice">shutdownDevice()</a> functions are declared as pure virtual functions in <a href="qscreen.html">QScreen</a> and must be implemented. The mentioned functions are used to configure the hardware, or query its configuration: The <a href="qscreen.html#connect">connect()</a> and <a href="qscreen.html#disconnect">disconnect()</a> functions are used by both the server and client processes. The <a href="qscreen.html#connect">connect()</a> function must initialize all member variables so that the driver is in a consistent state. The <a href="qscreen.html#initDevice">initDevice()</a> and <a href="qscreen.html#shutdownDevice">shutdownDevice()</a> is only used by the server process and must leave the hardware in a state consistent with the driver configuration.</p>
-<p>The <a href="qscreen.html#setMode">setMode()</a> and <a href="qscreen.html#blank">blank()</a> are also declared as pure virtual functions in <a href="qscreen.html">QScreen</a>, but our driver does nothing in these functions. The last three functions are the ones involved in putting pixels on the screen and is where we will do the actual acceleration.</p>
-<p>The <tt>context</tt> variable is a pointer to a SVGAlib specific type. Note that this example will not try to explain the details of using the SVGAlib library.</p>
+<p>The <a href="qscreen.html#connect">connect()</a>, <a href="qscreen.html#disconnect">disconnect()</a>, <a href="qscreen.html#initDevice">initDevice()</a> and <a href="qscreen.html#shutdownDevice">shutdownDevice()</a> functions are declared as pure virtual functions in <a href="qscreen.html">QScreen</a> and must be implemented. They are used to configure the hardware, or query its configuration: <a href="qscreen.html#connect">connect()</a> and <a href="qscreen.html#disconnect">disconnect()</a> are called by both the server and client processes, while the <a href="qscreen.html#initDevice">initDevice()</a> and <a href="qscreen.html#shutdownDevice">shutdownDevice()</a> functions are only called by the server process.</p>
+<p><a href="qscreen.html">QScreen</a>'s <a href="qscreen.html#setMode">setMode()</a> and <a href="qscreen.html#blank">blank()</a> functions are also pure virtual, but our driver's implementations are trivial. The last three functions (<a href="qscreen.html#exposeRegion">exposeRegion()</a>, <a href="qscreen.html#blit">blit()</a> and <a href="qscreen.html#solidFill">solidFill()</a>) are the ones involved in putting pixels on the screen, i.e., we reimplement these functions to perform the pixel copying acceleration.</p>
+<p>Finally, the <tt>context</tt> variable is a pointer to a <a href="http://www.svgalib.org">SVGAlib</a> specific type. Note that the details of using the <a href="http://www.svgalib.org">SVGAlib</a> library is beyond the scope of this example.</p>
 <a name="svgalibscreen-class-implementation"></a>
 <h3>SvgalibScreen Class Implementation</h3>
-<p>The <a href="qscreen.html#connect">connect()</a> function is the first function that is called after the constructor. It queries <a href="http://www.svgalib.org">SVGAlib</a> about the graphics mode and initializes the variables.</p>
+<p>The <a href="qscreen.html#connect">connect()</a> function is the first function that is called after the constructor returns. It queries <a href="http://www.svgalib.org">SVGAlib</a> about the graphics mode and initializes the variables.</p>
 <pre> bool SvgalibScreen::connect(const QString &amp;displaySpec)
  {
      Q_UNUSED(displaySpec);
@@ -119,7 +122,8 @@
 
      return true;
  }</pre>
-<p>A screen driver <i>must</i> initialize the following variables inherited from <a href="qscreen.html">QScreen</a>: <tt>data</tt>, <tt>lstep</tt>, <tt>w</tt>, <tt>h</tt>, <tt>dw</tt>, <tt>dh</tt>, <tt>d</tt>, <tt>physWidth</tt> and <tt>physHeight</tt>. In this example we do not have any information of the real physical size of the screen, so we set these values with the assumption of a screen with 72 DPI.</p>
+<p>It is important that the <a href="qscreen.html#connect">connect()</a> function initializes the <tt>data</tt>, <tt>lstep</tt>, <tt>w</tt>, <tt>h</tt>, <tt>dw</tt>, <tt>dh</tt>, <tt>d</tt>, <tt>physWidth</tt> and <tt>physHeight</tt> variables (inherited from <a href="qscreen.html">QScreen</a>) to ensure that the driver is in a state consistent with the driver configuration.</p>
+<p>In this particular example we do not have any information of the real physical size of the screen, so we set these values with the assumption of a screen with 72 DPI.</p>
 <pre> bool SvgalibScreen::initDevice()
  {
      if (vga_init() != 0) {
@@ -150,21 +154,26 @@
      QScreenCursor::initSoftwareCursor();
      return true;
  }</pre>
-<p>The <a href="qscreen.html#initDevice">initDevice()</a> function is called after <a href="qscreen.html#connect">connect()</a>, but only on the server process. This function should do the necessary hardware initialization. We have chosen to use the software cursor in this example. If you want to use a hardware cursor, you should create a subclass of <a href="qscreencursor.html">QScreenCursor</a>, create an instance of it, and make the global variable <tt>qt_screencursor</tt> point to this instance.</p>
+<p>When the <a href="qscreen.html#connect">connect()</a> function returns, the server process calls the <a href="qscreen.html#initDevice">initDevice()</a> function which is expected to do the necessary hardware initialization, leaving the hardware in a state consistent with the driver configuration.</p>
+<p>Note that we have chosen to use the software cursor. If you want to use a hardware cursor, you should create a subclass of <a href="qscreencursor.html">QScreenCursor</a>, create an instance of it, and make the global variable <tt>qt_screencursor</tt> point to this instance.</p>
 <pre> void SvgalibScreen::shutdownDevice()
  {
      gl_freecontext(context);
      vga_setmode(TEXT);
+ }
+
+ void SvgalibScreen::disconnect()
+ {
  }</pre>
-<p>The <a href="qscreen.html#shutdownDevice">shutdownDevice()</a> function is only used on the server process and is called before the <a href="qscreen.html#disconnect">disconnect()</a> function. It does whatever hardware releated cleanup that is necessary (the <a href="qscreen.html#disconnect">disconnect()</a> function in this example does nothing).</p>
-<p>Note that you at this point will have a fully working screen driver provided that the <tt>QScreen::data</tt> variable is initialized to point to a valid linear framebuffer. The rest of this example will show where to take advantage of the accelerated capabilities available on the hardware.</p>
+<p>Before exiting, the server process will call the <a href="qscreen.html#shutdownDevice">shutdownDevice()</a> function to do the necessary hardware cleanup. Again, it is important that the function leaves the hardware in a state consistent with the driver configuration. When <a href="qscreen.html#shutdownDevice">shutdownDevice()</a> returns, the <a href="qscreen.html#disconnect">disconnect()</a> function is called. Our implementation of the latter function is trivial.</p>
+<p>Note that, provided that the <tt>QScreen::data</tt> variable points to a valid linear framebuffer, the screen driver is fully functional at this point. The rest of this example will show where to take advantage of the accelerated capabilities available on the hardware.</p>
 <pre> void SvgalibScreen::exposeRegion(QRegion region, int changing)
  {
      QScreen::exposeRegion(region, changing);
      <span class="comment">// flip between buffers if implementing a double buffered driver</span>
  }</pre>
-<p>The next function we implement is <a href="qscreen.html#exposeRegion">exposeRegion()</a>. The default implementation will do the necessary composing of the top-level windows and call <a href="qscreen.html#solidFill">solidFill()</a> and <a href="qscreen.html#blit">blit()</a> whenever it is required. We do not want to change this behavior in this driver so we just call the default implementation. However, if you are implementing a double buffered screen driver, this is where you would like to flip between the buffers.</p>
-<p>Finally, we accelerate the final copying of pixels to the screen by reimplementing the <a href="qscreen.html#solidFill">solidFill()</a> and <a href="qscreen.html#blit">blit()</a> functions:</p>
+<p>The next function we implement is the <a href="qscreen.html#exposeRegion">exposeRegion()</a> function that paints the given region on screen.</p>
+<p>The default implementation will do the necessary composing of the top-level windows and call <a href="qscreen.html#solidFill">solidFill()</a> and <a href="qscreen.html#blit">blit()</a> whenever it is required. We do not want to change this behavior in this driver so we just call the base class implementation. On the other hand, if you are implementing a double buffered screen driver, this is where you would like to flip between the buffers.</p>
 <pre> void SvgalibScreen::solidFill(const QColor &amp;color, const QRegion &amp;reg)
  {
      if (depth() != 32 || depth() != 16) {
@@ -204,9 +213,11 @@
                        r.x() - topLeft.x(), r.y() - topLeft.y());
      }
  }</pre>
-<a name="step-2-implement-a-custom-raster-paint-engine"></a>
-<h2>Step 2: Implement a Custom Raster Paint Engine</h2>
-<p>The acceleration of the painting operations, on the other hand, is done by subclassing the <a href="qrasterpaintengine.html">QRasterPaintEngine</a> class. Subclassing <a href="qrasterpaintengine.html">QRasterPaintEngine</a> is a powerful mechanism for accelerating graphic primitives while getting software fallbacks for all the primitives you do not accelerate. This example will only accelerate one of the <a href="qpaintengine.html#drawRects-2">drawRects()</a> functions:</p>
+<p>Finally, we accelerate the copying of pixels to the screen by reimplementing the <a href="qscreen.html#solidFill">solidFill()</a> and <a href="qscreen.html#blit">blit()</a> functions.</p>
+<a name="step-2-implementing-a-custom-raster-paint-engine"></a>
+<h2>Step 2: Implementing a Custom Raster Paint Engine</h2>
+<p><a href="qtopiacore.html">Qtopia Core</a> uses <a href="qrasterpaintengine.html">QRasterPaintEngine</a> (a raster-based implementation of <a href="qpaintengine.html">QPaintEngine</a>) to implement the painting operations.</p>
+<p>Acceleration of the painting operations is done by deriving from <a href="qrasterpaintengine.html">QRasterPaintEngine</a> class. This is a powerful mechanism for accelerating graphic primitives while getting software fallbacks for all the primitives you do not accelerate.</p>
 <pre> #include &lt;private/qpaintengine_raster_p.h&gt;
 
  class SvgalibPaintEngine : public QRasterPaintEngine
@@ -238,14 +249,15 @@
      bool sourceOver;
      QPaintDevice *device;
  };</pre>
-<p>Only non-rotated, aliased and opaque rectangles will be accelerated. We store this state in the private member variables. The private functions <tt>setClip()</tt> and <tt>updateClip()</tt> are helper functions used when updating the engine's state.</p>
+<p>In this example, we will only accelerate one of the <a href="qpaintengine.html#drawRects-2">drawRects()</a> functions, i.e., only non-rotated, aliased and opaque rectangles will be rendered using accelerated painting. All other primitives are rendered using the base class's unaccelerated implementation.</p>
+<p>The paint engine's state is stored in the private member variables, and we reimplement the <a href="qpaintengine.html#updateState">updateState()</a> function to ensure that our custom paint engine's state is updated properly whenever it is required. The private <tt>setClip()</tt> and <tt>updateClip()</tt> functions are only helper function used to simplify the <a href="qpaintengine.html#updateState">updateState()</a> implementation.</p>
+<p>We also reimplement <a href="qrasterpaintengine.html">QRasterPaintEngine</a>'s <a href="qpaintengine.html#begin">begin()</a> and <a href="qpaintengine.html#end">end()</a> functions to initialize the paint engine and to do the cleanup when we are done rendering, respectively.</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <thead><tr valign="top" class="qt-style"><th>Private Header Files</th></tr></thead>
-<tr valign="top" class="odd"><td>Note the include statement used by this class. The files prefixed with <tt>private/</tt> are so-called private headers file within Qtopia Core. Private header files are not part of a Qtopia Core installation and are only present while compiling Qtopia Core. To be able to compile using private header files you need to use a <tt>qmake</tt> binary within a compiled Qtopia Core package. Also note that private header files may change without notice between releases.</td></tr>
+<tr valign="top" class="odd"><td>Note the <tt>include</tt> statement used by this class. The files prefixed with <tt>private/</tt> are private headers file within <a href="qtopiacore.html">Qtopia Core</a>. Private header files are not part of a <a href="qtopiacore.html">Qtopia Core</a> installation and are only present while compiling <a href="qtopiacore.html">Qtopia Core</a>. To be able to compile using private header files you need to use a <tt>qmake</tt> binary within a compiled <a href="qtopiacore.html">Qtopia Core</a> package.<p><b>Warning:</b> Private header files may change without notice between releases.</p>
+</td></tr>
 </table></p>
-<a name="svgalibpaintengine-class-implementation"></a>
-<h3>SvgalibPaintEngine Class Implementation</h3>
-<p>The <tt>begin()</tt> function should initialize the internal state of the paint engine, and must also call <a href="qpaintengine.html#begin">QRasterPaintEngine::begin</a>() to initialize the state stored in <a href="qrasterpaintengine.html">QRasterPaintEngine</a>:</p>
+<p>The <a href="qpaintengine.html#begin">begin()</a> function initializes the internal state of the paint engine. Note that it also calls the base class implementation to initialize the parts inherited from <a href="qrasterpaintengine.html">QRasterPaintEngine</a>:</p>
 <pre> bool SvgalibPaintEngine::begin(QPaintDevice *dev)
  {
      device = dev;
@@ -256,20 +268,19 @@
      matrix = QMatrix();
      simpleMatrix = true;
      setClip(QRect(0, 0, device-&gt;width(), device-&gt;height()));
-     simpleClip = true;
      opaque = true;
      aliased = true;
      sourceOver = true;
 
      return QRasterPaintEngine::begin(dev);
- }</pre>
-<p>The implementation of <tt>end()</tt> removes the clipping constraints that might have been set in <a href="http://www.svgalib.org">SVGAlib</a>:</p>
-<pre> bool SvgalibPaintEngine::end()
+ }
+
+ bool SvgalibPaintEngine::end()
  {
      gl_setclippingwindow(0, 0, device-&gt;width() - 1, device-&gt;height() - 1);
      return QRasterPaintEngine::end();
  }</pre>
-<p>The <a href="qpaintengine.html#end">QRasterPaintEngine::end</a>() function must be called to allow <a href="qrasterpaintengine.html">QRasterPaintEngine</a> to clean up it's internal state.</p>
+<p>The implementation of the <a href="qpaintengine.html#end">end()</a> function removes the clipping constraints that might have been set in <a href="http://www.svgalib.org">SVGAlib</a>, before calling the corresponding base class implementation.</p>
 <pre> void SvgalibPaintEngine::updateState(const QPaintEngineState &amp;state)
  {
      QPaintEngine::DirtyFlags flags = state.state();
@@ -319,7 +330,8 @@
 
      QRasterPaintEngine::updateState(state);
  }</pre>
-<p>The <a href="qpaintengine.html#updateState">updateState()</a> function updates the paint engine's internal state. We accept its matrix if it doesn't do any shearing, and save the matrix for future usage. The pen is accepted if it is opaque and only one pixel wide. The rest of the engine's properties are updated following the same pattern. Again it is important that the <a href="qpaintengine.html#updateState">QRasterPaintEngine::updateState</a>() function is called.</p>
+<p>The <a href="qpaintengine.html#updateState">updateState()</a> function updates our custom paint engine's state. The <a href="qpaintenginestate.html">QPaintEngineState</a> class provides information about the active paint engine's current state.</p>
+<p>Note that we only accept and save the current matrix if it doesn't do any shearing. The pen is accepted if it is opaque and only one pixel wide. The rest of the engine's properties are updated following the same pattern. Again it is important that the <a href="qpaintengine.html#updateState">QRasterPaintEngine::updateState</a>() function is called to update the parts inherited from the base class.</p>
 <pre> void SvgalibPaintEngine::setClip(const QRegion &amp;region)
  {
      if (region.isEmpty())
@@ -328,9 +340,9 @@
          clip = matrix.map(region) &amp; QRect(0, 0, device-&gt;width(), device-&gt;height());
      clipEnabled = true;
      updateClip();
- }</pre>
-<p>The <tt>setClip()</tt> helper function enables clipping to the given region. Note that an empty region means that clipping is disabled.</p>
-<pre> void SvgalibPaintEngine::updateClip()
+ }
+
+ void SvgalibPaintEngine::updateClip()
  {
      QRegion clipRegion = QRect(0, 0, device-&gt;width(), device-&gt;height());
 
@@ -346,7 +358,8 @@
                           r.x() + r.width(),
                           r.y() + r.height());
  }</pre>
-<p>The <tt>updateClip()</tt> function checks if the clip is &quot;simple&quot;,i.e., that it can be represented by only one rectangle, and updates the clip region in <a href="http://www.svgalib.org">SVGAlib</a>.</p>
+<p>The <tt>setClip()</tt> helper function is called from our custom implementation of <a href="qpaintengine.html#updateState">updateState()</a>, and enables clipping to the given region. An empty region means that clipping is disabled.</p>
+<p>Our custom update function also makes use of the <tt>updateClip()</tt> helper function that checks if the clip is &quot;simple&quot;, i.e., that it can be represented by only one rectangle, and updates the clip region in <a href="http://www.svgalib.org">SVGAlib</a>.</p>
 <pre> void SvgalibPaintEngine::drawRects(const QRect *rects, int rectCount)
  {
      const bool canAccelerate = simplePen &amp;&amp; simpleBrush &amp;&amp; simpleMatrix
@@ -372,13 +385,18 @@
          }
      }
  }</pre>
-<p>Finally, the actual acceleration is implemented in the drawRects() function. The <a href="qrasterpaintengine.html">QRasterPaintEngine</a> fallback is used whenever the rectangle is not simple enough.</p>
-<a name="step-3-make-the-widgets-aware-of-your-paint-engine"></a>
-<h2>Step 3: Make the Widgets Aware of Your Paint Engine</h2>
-<p>To activate your paint engine, two new classes are needed: The <tt>SvgalibPaintDevice</tt> which derives from <a href="qcustomrasterpaintdevice.html">QCustomRasterPaintDevice</a> and the <tt>SvgalibSurface</tt> class which derives from <a href="qwswindowsurface.html">QWSWindowSurface</a>.</p>
-<a name="the-svgalibpaintdevice-class"></a>
-<h3>The SvgalibPaintDevice Class</h3>
-<p>First you must create a subclass of the <a href="qcustomrasterpaintdevice.html">QCustomRasterPaintDevice</a> class and reimplement its <a href="qpaintdevice.html#paintEngine">paintEngine()</a> and <a href="qcustomrasterpaintdevice.html#memory">memory()</a> functions:</p>
+<p>Finally, we accelerated that drawing of non-rotated, aliased and opaque rectangles in our reimplementation of the <a href="qpaintengine.html#drawRects-2">drawRects()</a> function. The <a href="qrasterpaintengine.html">QRasterPaintEngine</a> fallback is used whenever the rectangle is not simple enough.</p>
+<a name="step-3-making-the-widgets-aware-of-the-custom-paint-engine"></a>
+<h2>Step 3: Making the Widgets Aware of the Custom Paint Engine</h2>
+<p>To activate the custom paint engine, we also need to implement a corresponding paint device and window surface and make some minor adjustments of the screen driver.</p>
+<ul>
+<li><a href="#implementing-a-custom-paint-device">Implementing a Custom Paint Device</a></li>
+<li><a href="#implementing-a-custom-window-surface">Implementing a Custom Window Surface</a></li>
+<li><a href="#adjusting-the-screen-driver">Adjusting the Screen Driver</a></li>
+</ul>
+<a name="implementing-a-custom-paint-device"></a>
+<h3>Implementing a Custom Paint Device</h3>
+<p>The custom paint device can be derived from the <a href="qcustomrasterpaintdevice.html">QCustomRasterPaintDevice</a> class. Reimplement its <a href="qpaintdevice.html#paintEngine">paintEngine()</a> and <a href="qcustomrasterpaintdevice.html#memory">memory()</a> functions to activate the accelerated paint engine:</p>
 <pre> class SvgalibPaintDevice : public QCustomRasterPaintDevice
  {
  public:
@@ -393,10 +411,11 @@
  private:
      SvgalibPaintEngine *pengine;
  };</pre>
-<p>The <a href="qpaintdevice.html#paintEngine">paintEngine()</a> function should return an instance of the <tt>SvgalibPaintEngine</tt> class. The <a href="qcustomrasterpaintdevice.html#memory">memory()</a> function should return a pointer to the buffer which should be used when drawing the widget. This driver is drawing directly on the screen without any buffering, and its <a href="qcustomrasterpaintdevice.html#memory">memory()</a> function returns a pointer to the framebuffer. For this reason, the <a href="qpaintdevice.html#metric">metric()</a> function is implemented to reflect the metrics of this buffer:</p>
-<a name="the-svgalibsurface-class"></a>
-<h3>The SvgalibSurface Class</h3>
-<p>Then you must create a custom window surface. The <a href="qwswindowsurface.html">QWSWindowSurface</a> class manages the memory used when drawing a widget.</p>
+<p>The <a href="qpaintdevice.html#paintEngine">paintEngine()</a> function should return an instance of the <tt>SvgalibPaintEngine</tt> class. The <a href="qcustomrasterpaintdevice.html#memory">memory()</a> function should return a pointer to the buffer which should be used when drawing the widget.</p>
+<p>Our example driver is rendering directly on the screen without any buffering, i.e., our custom pain device's <a href="qcustomrasterpaintdevice.html#memory">memory()</a> function returns a pointer to the framebuffer. For this reason, we must also reimplement the <a href="qpaintdevice.html#metric">metric()</a> function to reflect the metrics of framebuffer.</p>
+<a name="implementing-a-custom-window-surface"></a>
+<h3>Implementing a Custom Window Surface</h3>
+<p>The custom window surface can be derived from the <a href="qwswindowsurface.html">QWSWindowSurface</a> class. <a href="qwswindowsurface.html">QWSWindowSurface</a> manages the memory used when drawing a window.</p>
 <pre> class SvgalibSurface : public QWSWindowSurface
  {
  public:
@@ -425,7 +444,7 @@
      QRect brect;
      SvgalibPaintDevice *pdevice;
  };</pre>
-<p>Most of the pure virtual functions inherited from <a href="qwswindowsurface.html">QWSWindowSurface</a> is trivially implemented as inline functions. However the <a href="qwswindowsurface.html#scroll">scroll()</a> function actually makes use of some hardware acceleration:</p>
+<p>We can implement most of the pure virtual functions inherited from <a href="qwswindowsurface.html">QWSWindowSurface</a> as trivial inline functions, except the <a href="qwswindowsurface.html#scroll">scroll()</a> function that actually makes use of some hardware acceleration:</p>
 <pre> void SvgalibSurface::scroll(const QRegion &amp;region, int dx, int dy)
  {
      const QVector&lt;QRect&gt; rects = region.rects();
@@ -435,9 +454,9 @@
                     r.left() + dx, r.top() + dy);
      }
  }</pre>
-<a name="enable-the-screen-to-create-an-instance-of-your-window-surface"></a>
-<h3>Enable the Screen to Create an Instance of Your Window Surface</h3>
-<p>Finally, you must make a minor modification to your <tt>SvgalibScreen</tt> class:</p>
+<a name="adjusting-the-screen-driver"></a>
+<h3>Adjusting the Screen Driver</h3>
+<p>Finally, we enable the screen driver to recognize an instance of our custom window surface:</p>
 <pre> QWSWindowSurface* SvgalibScreen::createSurface(QWidget *widget) const
  {
      static int onScreenPaint = -1;
@@ -456,11 +475,11 @@
          return new SvgalibSurface;
      return QScreen::createSurface(key);
  }</pre>
-<p>The <a href="qscreen.html#createSurface">createSurface()</a> functions are factory functions that decides what kind of surface a top-level window is using. In this example we only use the <tt>SvgalibSurface</tt> class if the window has the <a href="qt.html#WidgetAttribute-enum">Qt::WA_PaintOnScreen</a> attribute or the environment variable <tt>QT_ONSCREEN_PAINT</tt> is set.</p>
+<p>The <a href="qscreen.html#createSurface">createSurface()</a> functions are factory functions that determines what kind of surface a top-level window is using. In our example we only use the custom surface if the given window has the <a href="qt.html#WidgetAttribute-enum">Qt::WA_PaintOnScreen</a> attribute or the <a href="qtopiacore-envvars.html#qt-onscreen-paint">QT_ONSCREEN_PAINT</a> environment variable is set.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
 </tr></table></div></address></body>
 </html>
