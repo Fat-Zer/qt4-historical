@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the tools applications of the Qt Toolkit.
 **
@@ -39,10 +39,12 @@
 #include <QtCore/qvector.h>
 #include <signal.h>
 
+class QWSSignalHandlerPrivate;
+
 class QWSSignalHandler
 {
 public:
-    Q_GLOBAL_STATIC(QWSSignalHandler, instance);
+    static QWSSignalHandler* instance();
 
     ~QWSSignalHandler();
 
@@ -54,6 +56,8 @@ private:
     static void handleSignal(int signal);
     QMap<int, sighandler_t> oldHandlers;
     QVector<int> semaphores;
+
+    friend class QWSSignalHandlerPrivate;
 };
 
 #endif // QWSSIGNALHANDLER_P_H

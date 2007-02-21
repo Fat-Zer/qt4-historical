@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-x11-opensource-src-4.2.2/src/gui/styles/qstyle.cpp -->
+<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-x11-opensource-src-4.2.3/src/gui/styles/qstyle.cpp -->
 <head>
   <title>Qt 4.2: QStyle Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -38,7 +38,7 @@
 <a name="public-functions"></a>
 <h3>Public Functions</h3>
 <ul>
-<li><div class="fn"/><b><a href="qstyle.html#QStyle-2">QStyle</a></b> ()</li>
+<li><div class="fn"/><b><a href="qstyle.html#QStyle">QStyle</a></b> ()</li>
 <li><div class="fn"/>virtual <b><a href="qstyle.html#dtor.QStyle">~QStyle</a></b> ()</li>
 <li><div class="fn"/>virtual void <b><a href="qstyle.html#drawComplexControl">drawComplexControl</a></b> ( ComplexControl <i>control</i>, const QStyleOptionComplex * <i>option</i>, QPainter * <i>painter</i>, const QWidget * <i>widget</i> = 0 ) const = 0</li>
 <li><div class="fn"/>virtual void <b><a href="qstyle.html#drawControl">drawControl</a></b> ( ControlElement <i>element</i>, const QStyleOption * <i>option</i>, QPainter * <i>painter</i>, const QWidget * <i>widget</i> = 0 ) const = 0</li>
@@ -244,7 +244,7 @@
 <tr><td valign="top"><tt>QStyle::CC_ScrollBar</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">A scroll bar, like <a href="qscrollbar.html">QScrollBar</a>.</td></tr>
 <tr><td valign="top"><tt>QStyle::CC_Slider</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">A slider, like <a href="qslider.html">QSlider</a>.</td></tr>
 <tr><td valign="top"><tt>QStyle::CC_ToolButton</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">A tool button, like <a href="qtoolbutton.html">QToolButton</a>.</td></tr>
-<tr><td valign="top"><tt>QStyle::CC_TitleBar</tt></td><td align="center" valign="top"><tt>5</tt></td><td valign="top">A Title bar, like what is used in <a href="qworkspace.html">QWorkspace</a>.</td></tr>
+<tr><td valign="top"><tt>QStyle::CC_TitleBar</tt></td><td align="center" valign="top"><tt>5</tt></td><td valign="top">A Title bar, like those used in <a href="qworkspace.html">QWorkspace</a>.</td></tr>
 <tr><td valign="top"><tt>QStyle::CC_Q3ListView</tt></td><td align="center" valign="top"><tt>6</tt></td><td valign="top">Used for drawing the <a href="q3listview.html">Q3ListView</a> class.</td></tr>
 <tr><td valign="top"><tt>QStyle::CC_GroupBox</tt></td><td align="center" valign="top"><tt>8</tt></td><td valign="top">A group box, like <a href="qgroupbox.html">QGroupBox</a>.</td></tr>
 <tr><td valign="top"><tt>QStyle::CC_Dial</tt></td><td align="center" valign="top"><tt>7</tt></td><td valign="top">A dial, like <a href="qdial.html">QDial</a>.</td></tr>
@@ -383,7 +383,6 @@
 <tr><td valign="top"><tt>QStyle::PM_MenuPanelWidth</tt></td><td align="center" valign="top"><tt>30</tt></td><td valign="top">Border width (applied on all sides) for a <a href="qmenu.html">QMenu</a>.</td></tr>
 <tr><td valign="top"><tt>QStyle::PM_MenuHMargin</tt></td><td align="center" valign="top"><tt>28</tt></td><td valign="top">Additional border (used on left and right) for a <a href="qmenu.html">QMenu</a>.</td></tr>
 <tr><td valign="top"><tt>QStyle::PM_MenuVMargin</tt></td><td align="center" valign="top"><tt>29</tt></td><td valign="top">Additional border (used for bottom and top) for a <a href="qmenu.html">QMenu</a>.</td></tr>
-<tr><td valign="top"><tt>QStyle::PM_MenuScrollerHeight</tt></td><td align="center" valign="top"><tt>27</tt></td><td valign="top">Height of the scroller area in a <a href="qmenu.html">QMenu</a>.</td></tr>
 <tr><td valign="top"><tt>QStyle::PM_MenuScrollerHeight</tt></td><td align="center" valign="top"><tt>27</tt></td><td valign="top">Height of the scroller area in a <a href="qmenu.html">QMenu</a>.</td></tr>
 <tr><td valign="top"><tt>QStyle::PM_MenuTearoffHeight</tt></td><td align="center" valign="top"><tt>31</tt></td><td valign="top">Height of a tear off area in a <a href="qmenu.html">QMenu</a>.</td></tr>
 <tr><td valign="top"><tt>QStyle::PM_MenuDesktopFrameWidth</tt></td><td align="center" valign="top"><tt>32</tt></td><td valign="top">The frame width for the menu on the desktop.</td></tr>
@@ -747,7 +746,7 @@
 <p>See also <a href="qstyle.html#subElementRect">subElementRect</a>().</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<h3 class="fn"><a name="QStyle-2"></a>QStyle::QStyle ()</h3>
+<h3 class="fn"><a name="QStyle"></a>QStyle::QStyle ()</h3>
 <p>Constructs a style object.</p>
 <h3 class="fn"><a name="dtor.QStyle"></a>QStyle::~QStyle ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Destroys the style object.</p>
@@ -894,7 +893,7 @@
 <p>Late initialization of the given <i>application</i> object.</p>
 <h3 class="fn"><a name="polish-3"></a>void QStyle::polish ( <a href="qpalette.html">QPalette</a> &amp; <i>palette</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>This is an overloaded member function, provided for convenience.</p>
-<p>Changes the <i>palette</i> acoording to style specific requirements for color palettes (if any).</p>
+<p>Changes the <i>palette</i> according to style specific requirements for color palettes (if any).</p>
 <p>See also <a href="qpalette.html">QPalette</a> and <a href="qapplication.html#setPalette">QApplication::setPalette</a>().</p>
 <h3 class="fn"><a name="sizeFromContents"></a><a href="qsize.html">QSize</a> QStyle::sizeFromContents ( <a href="qstyle.html#ContentsType-enum">ContentsType</a> <i>type</i>, const <a href="qstyleoption.html">QStyleOption</a> * <i>option</i>, const <a href="qsize.html">QSize</a> &amp; <i>contentsSize</i>, const <a href="qwidget.html">QWidget</a> * <i>widget</i> = 0 ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Returns the size of the element described by the specified <i>option</i> and <i>type</i>, based on the provided <i>contentsSize</i>.</p>
@@ -988,8 +987,8 @@
 <p>See also <a href="qwidget.html#layoutDirection-prop">QWidget::layoutDirection</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
 </tr></table></div></address></body>
 </html>

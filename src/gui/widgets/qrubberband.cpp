@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -232,15 +232,8 @@ void QRubberBand::changeEvent(QEvent *e)
         break;
     }
 
-    // calling raise() on LayoutDirectionChange breaks
-    // QWidgetPrivate::setLayoutDirection_helper()
-    // calling raise() on PaletteChange breaks
-    // QWidgetPrivate::propagatePaletteChange()
-    if (e->type() != QEvent::LayoutDirectionChange
-            && e->type() != QEvent::PaletteChange)
+    if (e->type() == QEvent::ZOrderChange)
         raise();
-
-    // ### The raise should probably only be called on the ZOrderChange event
 }
 
 /*!

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -134,7 +134,8 @@ QMimeData *QDrag::mimeData() const
 
 /*!
     Sets \a pixmap as the pixmap used to represent the data in a drag
-    and drop operation.
+    and drop operation. You can only set a pixmap before the drag is
+    started.
 */
 void QDrag::setPixmap(const QPixmap &pixmap)
 {

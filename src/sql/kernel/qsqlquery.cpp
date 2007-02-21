@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtSql module of the Qt Toolkit.
 **
@@ -110,14 +110,14 @@ QSqlQueryPrivate::~QSqlQueryPrivate()
     \o seek()
     \endlist
 
-    These functions allow the programmer to move forward, backward or
-    arbitrarily through the records returned by the query. If you only
-    need to move forward through the results, e.g. using next() or
-    using seek() with a positive offset, you can use setForwardOnly()
-    and save a significant amount of memory overhead. Once an active
-    query is positioned on a valid record, data can be retrieved using
-    value(). All data is transferred from the SQL backend using
-    QVariants.
+    These functions allow the programmer to move forward, backward
+    or arbitrarily through the records returned by the query. If you
+    only need to move forward through the results (e.g., by using
+    next()), you can use setForwardOnly(), which will save a
+    significant amount of memory overhead and improve performance on
+    some databases. Once an active query is positioned on a valid
+    record, data can be retrieved using value(). All data is
+    transferred from the SQL backend using QVariants.
 
     For example:
 
@@ -201,6 +201,10 @@ QSqlQueryPrivate::~QSqlQueryPrivate()
     \printuntil boundValue(
 
     Note that unbound parameters will retain their values.
+
+    Stored procedures that uses the return statement to return values,
+    or return multiple result sets, are not fully supported. For specific 
+    details see \l{SQL Database Drivers}.
 
     \sa QSqlDatabase, QSqlQueryModel, QSqlTableModel, QVariant
 */
@@ -763,10 +767,16 @@ bool QSqlQuery::isForwardOnly() const
 }
 
 /*!
-    Sets forward only mode to \a forward. If \a forward is true, only
-    next() and seek() with positive values, are allowed for
-    navigating the results. Forward only mode needs far less memory
-    since results do not need to be cached.
+    Sets forward only mode to \a forward. If \a forward is true,
+    only next() and seek() with positive values, are allowed for
+    navigating the results.
+
+    Forward only mode can be (depending on the driver) more memory
+    efficient since results do not need to be cached. It will also
+    improve performance on some databases. For this to be true, you
+    must call \c setForwardMode() before the query is prepared or
+    executed. Note that the constructor that takes a query and a
+    database may execute the query.
 
     Forward only mode is off by default.
 

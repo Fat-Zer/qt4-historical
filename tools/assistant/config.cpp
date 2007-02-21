@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the Qt Assistant of the Qt Toolkit.
 **
@@ -116,8 +116,9 @@ void Config::load()
 
     QSettings settings;
 
-    home = settings.value( profkey + QLatin1String("Homepage"),
-                           QLibraryInfo::location(QLibraryInfo::DocumentationPath) + QLatin1String("/html/index.html") ).toString();
+    home = profil->props[QLatin1String("startpage")];
+    if (home.isEmpty())
+        home = QLibraryInfo::location(QLibraryInfo::DocumentationPath) + QLatin1String("/html/index.html");
     src = settings.value( profkey + QLatin1String("Source") ).toStringList();
     sideBar = settings.value( key + QLatin1String("SideBarPage") ).toInt();
     if (qApp->type() != QApplication::Tty)
@@ -148,7 +149,6 @@ void Config::saveSettings()
 
     QSettings settings;
 
-    settings.setValue( profkey + QLatin1String("Homepage"), homePage() );
     settings.setValue( profkey + QLatin1String("Source"), src );
     settings.setValue( key + QLatin1String("SideBarPage"), sideBarPage() );
     if (qApp->type() != QApplication::Tty)

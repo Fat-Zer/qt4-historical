@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -68,10 +68,11 @@ inline static void qSafeXDestroyImage(XImage *x)
     XDestroyImage(x);
 }
 
-QBitmap QPixmapData::mask_to_bitmap() const
+QBitmap QPixmapData::mask_to_bitmap(int screen) const
 {
     if (!x11_mask)
         return QBitmap();
+    QPixmap::x11SetDefaultScreen(screen);
     QBitmap bm(w, h);
     GC gc = XCreateGC(X11->display, bm.data->hd, 0, 0);
     XCopyArea(X11->display, x11_mask, bm.data->hd, gc, 0, 0, bm.data->w, bm.data->h, 0, 0);
@@ -453,15 +454,15 @@ void QPixmap::fill(const QColor &fillColor)
 }
 
 /*!
-    Returns the alpha channel of the pixmap as a new grayscale QPixmap in which 
-    each pixel's red, green, and blue values are given the alpha value of the 
-    original pixmap. The color depth of the returned pixmap is the system depth 
+    Returns the alpha channel of the pixmap as a new grayscale QPixmap in which
+    each pixel's red, green, and blue values are given the alpha value of the
+    original pixmap. The color depth of the returned pixmap is the system depth
     on X11 and 8-bit on Windows and Mac OS X.
 
-    You can use this function while debugging 
-    to get a visible image of the alpha channel. If the pixmap doesn't have an 
+    You can use this function while debugging
+    to get a visible image of the alpha channel. If the pixmap doesn't have an
     alpha channel, i.e., the alpha channel's value for all pixels equals
-    0xff), a null pixmap is returned. You can check this with the \c isNull() 
+    0xff), a null pixmap is returned. You can check this with the \c isNull()
     function.
 
     We show an example:
@@ -535,7 +536,7 @@ QBitmap QPixmap::mask() const
     if (depth() == 1) {
         mask = *this;
     } else {
-        mask = data->mask_to_bitmap();
+        mask = data->mask_to_bitmap(data->xinfo.screen());
     }
     return mask;
 }
@@ -2013,7 +2014,7 @@ QPixmap QPixmap::transformed(const QMatrix &matrix, Qt::TransformationMode mode)
         XFreeGC(X11->display, gc);
 
         if (data->x11_mask) { // xform mask, too
-            pm.setMask(data->mask_to_bitmap().transformed(matrix));
+            pm.setMask(data->mask_to_bitmap(data->xinfo.screen()).transformed(matrix));
         } else if (data->d != 32 && complex_xform) { // need a mask!
             QBitmap mask(data->w, data->h);
             mask.fill(Qt::color1);

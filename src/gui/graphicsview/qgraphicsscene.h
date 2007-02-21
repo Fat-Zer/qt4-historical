@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -190,6 +190,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_generateBspTree())
     Q_PRIVATE_SLOT(d_func(), void _q_emitUpdated())
     Q_PRIVATE_SLOT(d_func(), void _q_removeItemLater(QGraphicsItem *item))
+    Q_PRIVATE_SLOT(d_func(), void _q_updateLater())
     friend class QGraphicsItem;
     friend class QGraphicsView;
     friend class QGraphicsViewPrivate;

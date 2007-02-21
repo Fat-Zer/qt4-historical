@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -125,7 +125,8 @@ QSystemTrayIconSys::~QSystemTrayIconSys()
         Display *display = QX11Info::display();
         if (sysTrayWindow == None)
             return;
-        XSelectInput(display, sysTrayWindow, 0); // stop tracking the tray
+        if (display)
+            XSelectInput(display, sysTrayWindow, 0); // stop tracking the tray
         sysTrayWindow = None;
     }
 }

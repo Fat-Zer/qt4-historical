@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -1744,7 +1744,7 @@ void QVariant::load(QDataStream &s)
     qint8 is_null = false;
     if (s.version() >= QDataStream::Qt_4_2)
         s >> is_null;
-    if (u >= QVariant::UserType) {
+    if (u == QVariant::UserType) {
         QByteArray name;
         s >> name;
         u = QMetaType::type(name);

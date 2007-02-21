@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2005-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 2005-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtSVG module of the Qt Toolkit.
 **

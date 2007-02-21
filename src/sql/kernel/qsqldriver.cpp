@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtSql module of the Qt Toolkit.
 **
@@ -515,8 +515,8 @@ QString QSqlDriver::formatValue(const QSqlField &field, bool trimStrings) const
         {
             QString result = field.value().toString();
             if (trimStrings) {
-                int end = result.length() - 1;
-                while (end && result.at(end).isSpace()) /* skip white space from end */
+                int end = result.length();
+                while (end && result.at(end-1).isSpace()) /* skip white space from end */
                     end--;
                 result.truncate(end);
             }

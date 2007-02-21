@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -589,8 +589,11 @@ void **QListData::erase(void **xi)
 
     \overload
 
-    Inserts \a value in front of the item pointed to by the iterator
-    \a before. Returns an iterator pointing at the inserted item.
+    Inserts \a value in front of the item pointed to by the
+    iterator \a before. Returns an iterator pointing at the inserted
+    item. Note that the iterator passed to the function will be
+    invalid after the call; the returned iterator should be used
+    instead.
 */
 
 /*! \fn void QList::replace(int i, const T &value)

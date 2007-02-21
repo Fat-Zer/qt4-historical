@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the Qt Assistant of the Qt Toolkit.
 **
@@ -67,6 +67,7 @@ DocuParser *DocuParser::createParser(const QString &fileName)
             majVer = re.cap(1).toInt();
             minVer = re.cap(2).toInt();
             serVer = re.cap(3).toInt();
+            break;
         }
     }
 

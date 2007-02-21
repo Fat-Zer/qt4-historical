@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the tools applications of the Qt Toolkit.
 **
@@ -33,6 +33,18 @@ union semun {
     unsigned short *array;
     struct seminfo  *__buf;
 };
+
+class QWSSignalHandlerPrivate
+{
+public:
+    Q_GLOBAL_STATIC(QWSSignalHandler, instance);
+};
+
+
+QWSSignalHandler* QWSSignalHandler::instance()
+{
+    return QWSSignalHandlerPrivate::instance();
+}
 
 QWSSignalHandler::QWSSignalHandler()
 {

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -1249,6 +1249,11 @@ QFontEngineFT::QFontEngineFT(FcPattern *pattern, const QFontDef &fd, int screen)
         freetype->charset = FcCharSetCopy(cs);
     }
     symbol = freetype->symbol_map != 0;
+    PS_FontInfoRec psrec;
+    // don't assume that type1 fonts are symbol fonts by default
+    if (FT_Get_PS_Font_Info(freetype->face, &psrec) == FT_Err_Ok) {
+        symbol = bool(fontDef.family.contains("symbol", Qt::CaseInsensitive));
+    }
 
     lbearing = rbearing = SHRT_MIN;
     freetype->computeSize(fontDef, &xsize, &ysize, &outline_drawing);

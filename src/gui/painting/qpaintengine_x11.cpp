@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -342,10 +342,10 @@ static void qt_tesselate_polygon(QVector<XTrapezoid> *traps, const QPointF *pg, 
 	edge.b = p1.y() - edge.m * p1.x(); // intersection with y axis
 	edge.m = edge.m != 0.0 ? 1.0 / edge.m : 0.0; // inverted derivative
 	edges.append(edge);
-        xmin = qMin(xmin, XFixedToDouble(edge.p1.x));
-        xmax = qMax(xmax, XFixedToDouble(edge.p2.x));
-        ymin = qMin(ymin, XFixedToDouble(edge.p1.y));
-        ymax = qMax(ymax, XFixedToDouble(edge.p2.y));
+        xmin = qMin(xmin, qreal(XFixedToDouble(edge.p1.x)));
+        xmax = qMax(xmax, qreal(XFixedToDouble(edge.p2.x)));
+        ymin = qMin(ymin, qreal(XFixedToDouble(edge.p1.y)));
+        ymax = qMax(ymax, qreal(XFixedToDouble(edge.p2.y)));
     }
     br->setX(qRound(xmin));
     br->setY(qRound(ymin));
@@ -1921,7 +1921,7 @@ void QX11PaintEngine::drawPixmap(const QRectF &r, const QPixmap &pixmap, const Q
             XFreePixmap(d->dpy, comb);
         } else {
             XSetClipMask(d->dpy, d->gc, pixmap.handle());
-            XSetClipOrigin(d->dpy, d->gc, x, y);
+            XSetClipOrigin(d->dpy, d->gc, x - sx, y - sy);
         }
 
         if (mono_dst) {
@@ -2242,6 +2242,7 @@ void QX11PaintEngine::drawFreetype(const QPointF &p, const QTextItemInt &ti)
 
     if (!d->cpen.isSolid() || ft->drawAsOutline()) {
         QPaintEngine::drawTextItem(p, ti);
+        return;
     }
 
     QFixed xpos = QFixed::fromReal(p.x() + d->matrix.dx());

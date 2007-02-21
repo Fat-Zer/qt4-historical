@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -178,6 +178,12 @@ QAbstractItemDelegate::~QAbstractItemDelegate()
 
     The base implementation returns 0. If you want custom editing you
     will need to reimplement this function.
+
+    The returned editor widget should have Qt::StrongFocus;
+    otherwise, \l{QMouseEvent}s received by the widget will propagate
+    to the view. The view's background will shine through unless the
+    editor paints its own background (e.g., with
+    \l{QWidget::}{setAutoFillBackground()}). 
 
     \sa setModelData() setEditorData()
 */

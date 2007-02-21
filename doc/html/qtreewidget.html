@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-x11-opensource-src-4.2.2/src/gui/itemviews/qtreewidget.cpp -->
+<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-x11-opensource-src-4.2.3/src/gui/itemviews/qtreewidget.cpp -->
 <head>
   <title>Qt 4.2: QTreeWidget Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -47,7 +47,7 @@
 <li><div class="fn"/>void <b><a href="qtreewidget.html#editItem">editItem</a></b> ( QTreeWidgetItem * <i>item</i>, int <i>column</i> = 0 )</li>
 <li><div class="fn"/>QList&lt;QTreeWidgetItem *&gt; <b><a href="qtreewidget.html#findItems">findItems</a></b> ( const QString &amp; <i>text</i>, Qt::MatchFlags <i>flags</i>, int <i>column</i> = 0 ) const</li>
 <li><div class="fn"/>QTreeWidgetItem * <b><a href="qtreewidget.html#headerItem">headerItem</a></b> () const</li>
-<li><div class="fn"/>int <b><a href="qtreewidget.html#indexOfTopLevelItem-2">indexOfTopLevelItem</a></b> ( QTreeWidgetItem * <i>item</i> ) const</li>
+<li><div class="fn"/>int <b><a href="qtreewidget.html#indexOfTopLevelItem">indexOfTopLevelItem</a></b> ( QTreeWidgetItem * <i>item</i> ) const</li>
 <li><div class="fn"/>void <b><a href="qtreewidget.html#insertTopLevelItem">insertTopLevelItem</a></b> ( int <i>index</i>, QTreeWidgetItem * <i>item</i> )</li>
 <li><div class="fn"/>void <b><a href="qtreewidget.html#insertTopLevelItems">insertTopLevelItems</a></b> ( int <i>index</i>, const QList&lt;QTreeWidgetItem *&gt; &amp; <i>items</i> )</li>
 <li><div class="fn"/>QTreeWidgetItem * <b><a href="qtreewidget.html#invisibleRootItem">invisibleRootItem</a></b> () const</li>
@@ -229,8 +229,7 @@
 <h3 class="fn"><a name="indexFromItem"></a><a href="qmodelindex.html">QModelIndex</a> QTreeWidget::indexFromItem ( <a href="qtreewidgetitem.html">QTreeWidgetItem</a> * <i>item</i>, int <i>column</i> = 0 ) const&nbsp;&nbsp;<tt> [protected]</tt></h3>
 <p>Returns the <a href="qmodelindex.html">QModelIndex</a> assocated with the given <i>item</i> in the given <i>column</i>.</p>
 <p>See also <a href="qtreewidget.html#itemFromIndex">itemFromIndex</a>() and <a href="qtreewidget.html#topLevelItem">topLevelItem</a>().</p>
-<h3 class="fn"><a name="indexOfTopLevelItem-2"></a>int QTreeWidget::indexOfTopLevelItem ( <a href="qtreewidgetitem.html">QTreeWidgetItem</a> * <i>item</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience.</p>
+<h3 class="fn"><a name="indexOfTopLevelItem"></a>int QTreeWidget::indexOfTopLevelItem ( <a href="qtreewidgetitem.html">QTreeWidgetItem</a> * <i>item</i> ) const</h3>
 <p>Returns the index of the given top-level <i>item</i>, or -1 if the item cannot be found.</p>
 <p>See also <a href="qtreewidget.html#sortItems">sortItems</a>() and <a href="qtreewidget.html#topLevelItemCount-prop">topLevelItemCount</a>().</p>
 <h3 class="fn"><a name="insertTopLevelItem"></a>void QTreeWidget::insertTopLevelItem ( int <i>index</i>, <a href="qtreewidgetitem.html">QTreeWidgetItem</a> * <i>item</i> )</h3>
@@ -347,8 +346,8 @@
 <p>See also <a href="qtreewidget.html#itemAt">itemAt</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
 </tr></table></div></address></body>
 </html>

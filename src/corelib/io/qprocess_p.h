@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -147,6 +147,7 @@ public:
     Q_PID pid;
     int sequenceNumber;
 
+    bool dying;
     bool emittedReadyRead;
     bool emittedBytesWritten;
 
@@ -187,6 +188,7 @@ public:
 #endif
 #ifdef Q_OS_WIN
     void flushPipeWriter();
+    qint64 pipeWriterBytesToWrite() const;
 #endif
 
     static bool startDetached(const QString &program, const QStringList &arguments);

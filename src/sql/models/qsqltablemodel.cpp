@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtSql module of the Qt Toolkit.
 **
@@ -114,6 +114,11 @@ void QSqlTableModelPrivate::revertInsertedRow()
 void QSqlTableModelPrivate::clearEditBuffer()
 {
     editBuffer = rec;
+}
+
+void QSqlTableModelPrivate::clearCache()
+{
+    cache.clear();
 }
 
 void QSqlTableModelPrivate::revertCachedRow(int row)
@@ -664,6 +669,7 @@ bool QSqlTableModel::submitAll()
         if (d->insertIndex != -1) {
             if (!insertRowIntoTable(d->editBuffer))
                 return false;
+            d->bottom = d->bottom.sibling(d->bottom.row() + 1, d->bottom.column());
         } else {
             if (!updateRowInTable(d->editIndex, d->editBuffer))
                 return false;
@@ -679,6 +685,7 @@ bool QSqlTableModel::submitAll()
             case QSqlTableModelPrivate::Insert:
                 if (!insertRowIntoTable(it.value().rec))
                     return false;
+                d->bottom = d->bottom.sibling(d->bottom.row() + 1, d->bottom.column());
                 break;
             case QSqlTableModelPrivate::Update:
                 if (!updateRowInTable(it.key(), it.value().rec))
@@ -693,7 +700,7 @@ bool QSqlTableModel::submitAll()
                 break;
             }
         }
-        d->cache.clear();
+        d->clearCache();
         return select();
     }
     return false;

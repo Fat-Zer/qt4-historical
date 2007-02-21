@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -341,7 +341,7 @@ void QStyle::unpolish(QApplication * /* app */)
     \fn void QStyle::polish(QPalette & palette)
     \overload
 
-    Changes the \a palette acoording to style specific requirements
+    Changes the \a palette according to style specific requirements
     for color palettes (if any).
 
     \sa QPalette, QApplication::setPalette()
@@ -932,7 +932,7 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
     \value CC_ScrollBar         A scroll bar, like QScrollBar.
     \value CC_Slider            A slider, like QSlider.
     \value CC_ToolButton        A tool button, like QToolButton.
-    \value CC_TitleBar          A Title bar, like what is used in QWorkspace.
+    \value CC_TitleBar          A Title bar, like those used in QWorkspace.
     \value CC_Q3ListView        Used for drawing the Q3ListView class.
     \value CC_GroupBox          A group box, like QGroupBox.
     \value CC_Dial              A dial, like QDial.
@@ -1212,7 +1212,6 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
     \value PM_MenuPanelWidth  Border width (applied on all sides) for a QMenu.
     \value PM_MenuHMargin  Additional border (used on left and right) for a QMenu.
     \value PM_MenuVMargin  Additional border (used for bottom and top) for a QMenu.
-    \value PM_MenuScrollerHeight  Height of the scroller area in a QMenu.
     \value PM_MenuScrollerHeight  Height of the scroller area in a QMenu.
     \value PM_MenuTearoffHeight  Height of a tear off area in a QMenu.
     \value PM_MenuDesktopFrameWidth The frame width for the menu on the desktop.

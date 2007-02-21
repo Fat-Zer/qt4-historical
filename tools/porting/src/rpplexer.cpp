@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2004-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 2004-2007 Trolltech ASA. All rights reserved.
 ** Copyright (C) 2001-2004 Roberto Raggi
 **
 ** This file is part of the qt3to4 porting application of the Qt Toolkit.

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-x11-opensource-src-4.2.2/src/gui/widgets/qtoolbar.cpp -->
+<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-x11-opensource-src-4.2.3/src/gui/widgets/qtoolbar.cpp -->
 <head>
   <title>Qt 4.2: QToolBar Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -125,7 +125,7 @@
 <p>See also <a href="qtoolbar.html#movable-prop">movable</a>.</p>
 <h3 class="fn"><a name="iconSize-prop"></a>iconSize : <a href="qsize.html">QSize</a></h3>
 <p>This property holds size of icons in the toolbar.</p>
-<p>The default is Qt::AutomaticIconSize.</p>
+<p>The default size is determined by the application's style and is derived from the <a href="qstyle.html#PixelMetric-enum">QStyle::PM_ToolBarIconSize</a> pixel metric.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>QSize iconSize () const</b></li>
@@ -144,7 +144,7 @@
 <h3 class="fn"><a name="orientation-prop"></a>orientation : <a href="qt.html#Orientation-enum">Qt::Orientation</a></h3>
 <p>This property holds orientation of the toolbar.</p>
 <p>The default is <a href="qt.html#Orientation-enum">Qt::Horizontal</a>.</p>
-<p>The orientation is updated automatically when the toolbar is managed by <a href="qmainwindow.html">QMainWindow</a>.</p>
+<p>This function should not be used when the toolbar is managed by <a href="qmainwindow.html">QMainWindow</a>. You can use <a href="qmainwindow.html#addToolBar">QMainWindow::addToolBar</a>() or <a href="qmainwindow.html#insertToolBar">QMainWindow::insertToolBar</a>() if you wish to move a toolbar (that is already added to a main window) to another <a href="qt.html#ToolBarArea-enum">Qt::ToolBarArea</a>.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>Qt::Orientation orientation () const</b></li>
@@ -241,8 +241,8 @@
 <p>See also <a href="qtoolbar-qt3.html#label">label</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
 </tr></table></div></address></body>
 </html>

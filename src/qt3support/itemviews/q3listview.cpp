@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the Qt3Support module of the Qt Toolkit.
 **
@@ -6327,7 +6327,8 @@ void Q3CheckListItem::activate()
             setState(Off);
             break;
         case Off:
-            if (!isTristate() && myType == CheckBox) {
+	    if ( (!isTristate() && myType == CheckBox) ||
+                 (myType == CheckBoxController && !childCount()) ) {
                 setState(On);
             } else {
                 setState(NoChange);

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -121,7 +121,7 @@ void QActionPrivate::redoGrabAlternate(QShortcutMap &map)
     }
     if (!autorepeat) {
         foreach (int id, alternateShortcutIds)
-            map.setShortcutEnabled(false, id, q);
+            map.setShortcutAutoRepeat(false, id, q);
     }
 }
 
@@ -243,7 +243,7 @@ QAction::QAction(QObject* parent)
     Option..." becomes "Menu Option") as descriptive text for
     toolbuttons. You can override this by setting a specific
     description with setText(). The same text will be used for
-    tooltips unless you specify a different test using
+    tooltips unless you specify a different text using
     setToolTip().
 
 */
@@ -266,7 +266,7 @@ QAction::QAction(const QString &text, QObject* parent)
     Option..." becomes "Menu Option") as descriptive text for
     toolbuttons. You can override this by setting a specific
     description with setText(). The same text will be used for
-    tooltips unless you specify a different test using
+    tooltips unless you specify a different text using
     setToolTip().
 */
 QAction::QAction(const QIcon &icon, const QString &text, QObject* parent)
@@ -551,8 +551,11 @@ QAction::~QAction()
     if (d->group)
         d->group->removeAction(this);
 #ifndef QT_NO_SHORTCUT
-    if (d->shortcutId && qApp)
+    if (d->shortcutId && qApp) {
         qApp->d_func()->shortcutMap.removeShortcut(d->shortcutId, this);
+        foreach (int id, d->alternateShortcutIds)
+            qApp->d_func()->shortcutMap.removeShortcut(id, this);
+    }
 #endif
 }
 
@@ -1024,11 +1027,13 @@ QAction::setData(const QVariant &data)
 
 
 /*!
-  Updates the status bar for \a widget. If widget is an appropriate
-  QStatusBar found for for this action based on the parent heirarchy will be used.
+  Updates the relevant status bar for the \a widget specified by sending a
+  QStatusTipEvent to its parent widget. Returns true if an event was sent;
+  otherwise returns false.
+
+  If a null widget is specified, the event is sent to the action's parent.
 
   \sa statusTip
-
 */
 bool
 QAction::showStatusText(QWidget *widget)

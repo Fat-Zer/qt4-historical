@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -92,7 +92,8 @@ public:
     mutable uint fstrut_dirty : 1;
     uint context_menu_policy : 3;
     uint window_modality : 2;
-    uint unused : 14;
+    uint in_destructor : 1;
+    uint unused : 13;
     QRect crect;
     mutable QPalette pal;
     QFont fnt;

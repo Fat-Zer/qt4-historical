@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the tools applications of the Qt Toolkit.
 **
@@ -34,7 +34,6 @@
 #include <sys/stat.h>
 #include <sys/sem.h>
 #include <sys/mman.h>
-#include <asm/page.h>
 #include <fcntl.h>
 #include <errno.h>
 #include <math.h>
@@ -83,8 +82,9 @@ QMMapViewProtocol::QMMapViewProtocol(int displayid, const QSize &s,
 
     unsigned char *data;
     uint data_offset_value = sizeof(QVFbHeader);
-    if (data_offset_value % PAGE_SIZE)
-        data_offset_value += PAGE_SIZE - (data_offset_value % PAGE_SIZE);
+    const int page_size = getpagesize();
+    if (data_offset_value % page_size)
+        data_offset_value += page_size - (data_offset_value % page_size);
 
     dataSize = bpl * h + data_offset_value;
 

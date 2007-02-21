@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -829,7 +829,7 @@ QDataStream &operator>>(QDataStream &in, QChar &chr)
 /*!
     \fn ushort & QChar::unicode()
 
-    Returns a reference to the numberic Unicode value of the QChar.
+    Returns a reference to the numeric Unicode value of the QChar.
 */
 
 /*!

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-x11-opensource-src-4.2.2/src/corelib/io/qfile.cpp -->
+<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-x11-opensource-src-4.2.3/src/corelib/io/qfile.cpp -->
 <head>
   <title>Qt 4.2: QFile Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -35,7 +35,7 @@
 <a name="public-functions"></a>
 <h3>Public Functions</h3>
 <ul>
-<li><div class="fn"/><b><a href="qfile.html#QFile-2">QFile</a></b> ( const QString &amp; <i>name</i> )</li>
+<li><div class="fn"/><b><a href="qfile.html#QFile">QFile</a></b> ( const QString &amp; <i>name</i> )</li>
 <li><div class="fn"/><b><a href="qfile.html#QFile-3">QFile</a></b> ( QObject * <i>parent</i> )</li>
 <li><div class="fn"/><b><a href="qfile.html#QFile-4">QFile</a></b> ( const QString &amp; <i>name</i>, QObject * <i>parent</i> )</li>
 <li><div class="fn"/><b><a href="qfile.html#dtor.QFile">~QFile</a></b> ()</li>
@@ -198,7 +198,7 @@
 <p>Use <a href="qfile.html#Permission-enum">QFile::Permission</a> instead.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<h3 class="fn"><a name="QFile-2"></a>QFile::QFile ( const <a href="qstring.html">QString</a> &amp; <i>name</i> )</h3>
+<h3 class="fn"><a name="QFile"></a>QFile::QFile ( const <a href="qstring.html">QString</a> &amp; <i>name</i> )</h3>
 <p>Constructs a new file object to represent the file with the given <i>name</i>.</p>
 <h3 class="fn"><a name="QFile-3"></a>QFile::QFile ( <a href="qobject.html">QObject</a> * <i>parent</i> )</h3>
 <p>Constructs a new file object with the given <i>parent</i>.</p>
@@ -281,7 +281,9 @@
  }</pre>
 <p>When a <a href="qfile.html">QFile</a> is opened using this function, <a href="qiodevice.html#close">close</a>() does not actually close the file, but only flushes it.</p>
 <p><b>Warning:</b> If <i>fh</i> is <tt>stdin</tt>, <tt>stdout</tt>, or <tt>stderr</tt>, you may not be able to <a href="qiodevice.html#seek">seek</a>(). See <a href="qiodevice-qt3.html#isSequentialAccess">QIODevice::isSequentialAccess</a>() for more information.</p>
-<p>See also <a href="qiodevice.html#close">close</a>().</p>
+<p><b>Note:</b> On Windows, you need to enable support for console applications in order to use the stdin, stdout and stderr streams at the console. To do this, add the following declaration to your application's project file:</p>
+<pre> CONFIG += console</pre>
+<p>See also <a href="qiodevice.html#close">close</a>() and <a href="qmake-variable-reference.html#config">qmake Variable Reference</a>.</p>
 <h3 class="fn"><a name="open-5"></a>bool QFile::open ( int <i>fd</i>, <a href="qiodevice.html#OpenModeFlag-enum">OpenMode</a> <i>mode</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Opens the existing file descripter <i>fd</i> in the given <i>mode</i>. Returns true if successful; otherwise returns false.</p>
@@ -380,8 +382,8 @@
 <p>See also <a href="qfile-qt3.html#name">name</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
 </tr></table></div></address></body>
 </html>

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the Qt Designer of the Qt Toolkit.
 **
@@ -758,13 +758,21 @@ DomConnections *SignalSlotEditor::toUi() const
     return result;
 }
 
-QObject *SignalSlotEditor::objectByName(QWidget *topLevel, const QString &name)
+QObject *SignalSlotEditor::objectByName(QWidget *topLevel, const QString &name) const
 {
-    Q_ASSERT(topLevel);
-    if (topLevel->objectName() == name)
-        return topLevel;
+    if (name.isEmpty())
+        return 0;
 
-    return qFindChild<QObject*>(topLevel, name);
+    Q_ASSERT(topLevel);
+    QObject *object = 0;
+    if (topLevel->objectName() == name)
+        object = topLevel;
+    else
+        object = qFindChild<QObject*>(topLevel, name);
+    const QDesignerMetaDataBaseInterface *mdb = formWindow()->core()->metaDataBase();
+    if (mdb->item(object))
+        return object;
+    return 0;
 }
 
 void SignalSlotEditor::fromUi(DomConnections *connections, QWidget *parent)
@@ -874,15 +882,13 @@ void SignalSlotEditor::setSource(Connection *_con, const QString &obj_name)
 {
     SignalSlotConnection *con = static_cast<SignalSlotConnection*>(_con);
 
-    if (con->sender() == obj_name)
+   if (con->sender() == obj_name)
         return;
 
     m_form_window->beginCommand(QApplication::translate("Command", "Change sender"));
     ConnectionEdit::setSource(con, obj_name);
 
     QObject *sourceObject = con->object(EndPoint::Source);
-    Q_ASSERT(sourceObject != 0);
-
     QStringList member_list = memberList(m_form_window, sourceObject, SignalMember);
 
     if (!member_list.contains(con->signal()))
@@ -901,8 +907,8 @@ void SignalSlotEditor::setTarget(Connection *_con, const QString &obj_name)
     m_form_window->beginCommand(QApplication::translate("Command", "Change receiver"));
     ConnectionEdit::setTarget(con, obj_name);
 
-    QWidget *w = con->widget(EndPoint::Target);
-    QStringList member_list = memberList(m_form_window, w, SlotMember);
+    QObject *targetObject = con->object(EndPoint::Target);
+    QStringList member_list = memberList(m_form_window, targetObject, SlotMember);
 
     if (!member_list.contains(con->slot()))
         undoStack()->push(new SetMemberCommand(con, EndPoint::Target, QString(), this));

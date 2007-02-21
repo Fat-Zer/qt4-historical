@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -256,10 +256,12 @@ QList<int> QKeyMapperPrivate::possibleKeysXKB(QKeyEvent *event)
     const int xkeycode = event->nativeScanCode();
     const uint xmodifiers = event->nativeModifiers();
 
-    // translate key without any modifiers first
+    // first, translate key only using lock modifiers (there are no Qt equivalents for these, so we must
+    // always use them when determining the baseKeySym)
     KeySym baseKeySym;
     uint consumedModifiers;
-    if (!XkbLookupKeySym(X11->display, xkeycode, 0, &consumedModifiers, &baseKeySym))
+    if (!XkbLookupKeySym(X11->display, xkeycode, (xmodifiers & (LockMask | qt_num_lock_mask)),
+                         &consumedModifiers, &baseKeySym))
         return QList<int>();
 
     QList<int> result;
@@ -342,10 +344,12 @@ QList<int> QKeyMapperPrivate::possibleKeysCore(QKeyEvent *event)
     const int xkeycode = event->nativeScanCode();
     const uint xmodifiers = event->nativeModifiers();
 
-    // translate key without any modifiers first
+    // first, translate key only using lock modifiers (there are no Qt equivalents for these, so we must
+    // always use them when determining the baseKeySym)
     KeySym baseKeySym;
     uint consumedModifiers;
-    if (!qt_XTranslateKey(&coreDesc, xkeycode, 0, &consumedModifiers, &baseKeySym))
+    if (!qt_XTranslateKey(&coreDesc, xkeycode, (xmodifiers & (LockMask | qt_num_lock_mask)),
+                          &consumedModifiers, &baseKeySym))
         return QList<int>();
 
     QList<int> result;
@@ -1181,8 +1185,12 @@ static QString translateKeySym(KeySym keysym, uint xmodifiers,
         // convert chars (8bit) to text (unicode).
         if (mapper)
             text = mapper->toUnicode(chars.data(), count, 0);
-        else
+        if (text.isEmpty()) {
+            // no mapper, or codec couldn't convert to unicode (this
+            // can happen when running in the C locale or with no LANG
+            // set). try converting from latin-1
             text = QString::fromLatin1(chars);
+        }
     }
 
     modifiers = X11->translateModifiers(xmodifiers);

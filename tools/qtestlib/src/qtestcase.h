@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the tools applications of the Qt Toolkit.
 **
@@ -193,6 +193,23 @@ namespace QTest
 #ifndef QTEST_NO_SPECIALIZATIONS
     template <typename T1, typename T2>
     bool qCompare(T1 const &, T2 const &, const char *, const char *, const char *, int);
+
+#if defined(QT_COORD_TYPE) || defined(__arm__)
+    template <>
+    inline bool qCompare<qreal, double>(qreal const &t1, double const &t2, const char *actual,
+                                 const char *expected, const char *file, int line)
+    {
+        return qCompare<float>(float(t1), float(t2), actual, expected, file, line);
+    }
+
+    template <>
+    inline bool qCompare<double, qreal>(double const &t1, qreal const &t2, const char *actual,
+                                 const char *expected, const char *file, int line)
+    {
+        return qCompare<float>(float(t1), float(t2), actual, expected, file, line);
+    }
+
+#endif
 
     template <typename T>
     inline bool qCompare(const T *t1, const T *t2, const char *actual, const char *expected,

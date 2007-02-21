@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the tools applications of the Qt Toolkit.
 **
@@ -381,6 +381,17 @@ void WriteInitialization::acceptLayout(DomLayout *node)
 
     if (isGroupBox) {
         output << option.indent << varName << "->setAlignment(Qt::AlignTop);\n";
+        if (properties.contains(QLatin1String("margin"))) {
+            DomProperty *p = properties.value(QLatin1String("margin"));
+            Q_ASSERT(p != 0);
+            layoutProperties.removeAt(layoutProperties.indexOf(p));
+        }
+
+        if (properties.contains(QLatin1String("spacing"))) {
+            DomProperty *p = properties.value(QLatin1String("spacing"));
+            Q_ASSERT(p != 0);
+            layoutProperties.removeAt(layoutProperties.indexOf(p));
+        }
     } else {
         int margin = m_defaultMargin;
         int spacing = m_defaultSpacing;
@@ -607,7 +618,7 @@ void WriteInitialization::writeProperties(const QString &varName,
 			resizeOut << option.indent << "QSize " << tempName << "(" << w << ", " << h << ");\n"
                       << option.indent << tempName << " = " << tempName << ".expandedTo("
                       << varName << "->minimumSizeHint());\n"
-                      << option.indent << varName << "->resize(" << tempName << ");\n";                
+                      << option.indent << varName << "->resize(" << tempName << ");\n";
             continue;
         } else if (propertyName == QLatin1String("buttonGroupId") && buttonGroupWidget) { // Q3ButtonGroup support
             output << option.indent << driver->findOrInsertWidget(buttonGroupWidget) << "->insert("

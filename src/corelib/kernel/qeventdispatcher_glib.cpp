@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -263,6 +263,9 @@ static GSourceFuncs postEventSourceFuncs = {
 
 QEventDispatcherGlibPrivate::QEventDispatcherGlibPrivate()
 {
+    if (!g_thread_supported())
+        g_thread_init(NULL);
+
     QCoreApplication *app = QCoreApplication::instance();
     if (app && QThread::currentThread() == app->thread()) {
         mainContext = g_main_context_default();

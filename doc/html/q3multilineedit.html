@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-x11-opensource-src-4.2.2/src/qt3support/text/q3multilineedit.cpp -->
+<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-x11-opensource-src-4.2.3/src/qt3support/text/q3multilineedit.cpp -->
 <head>
   <title>Qt 4.2: Q3MultiLineEdit Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -53,14 +53,14 @@
 <li><div class="fn"/>void <b><a href="q3multilineedit.html#cursorWordForward">cursorWordForward</a></b> ( bool <i>mark</i> )</li>
 <li><div class="fn"/>bool <b><a href="q3multilineedit.html#edited-prop">edited</a></b> () const</li>
 <li><div class="fn"/>bool <b><a href="q3multilineedit.html#hasMarkedText">hasMarkedText</a></b> () const</li>
-<li><div class="fn"/>virtual void <b><a href="q3multilineedit.html#insertAt-2">insertAt</a></b> ( const QString &amp; <i>s</i>, int <i>line</i>, int <i>col</i>, bool <i>mark</i> )</li>
+<li><div class="fn"/>virtual void <b><a href="q3multilineedit.html#insertAt">insertAt</a></b> ( const QString &amp; <i>s</i>, int <i>line</i>, int <i>col</i>, bool <i>mark</i> )</li>
 <li><div class="fn"/>virtual void <b><a href="q3multilineedit.html#insertLine">insertLine</a></b> ( const QString &amp; <i>txt</i>, int <i>line</i> = -1 )</li>
 <li><div class="fn"/>QString <b><a href="q3multilineedit.html#markedText">markedText</a></b> () const</li>
 <li><div class="fn"/>int <b><a href="q3multilineedit.html#maxLines">maxLines</a></b> () const</li>
 <li><div class="fn"/>int <b><a href="q3multilineedit.html#numLines-prop">numLines</a></b> () const</li>
 <li><div class="fn"/>virtual void <b><a href="q3multilineedit.html#removeLine">removeLine</a></b> ( int <i>paragraph</i> )</li>
 <li><div class="fn"/>void <b><a href="q3multilineedit.html#alignment-prop">setAlignment</a></b> ( Qt::Alignment <i>flags</i> )</li>
-<li><div class="fn"/>virtual void <b><a href="q3multilineedit.html#setCursorPosition-2">setCursorPosition</a></b> ( int <i>line</i>, int <i>col</i>, bool <i>mark</i> )</li>
+<li><div class="fn"/>virtual void <b><a href="q3multilineedit.html#setCursorPosition">setCursorPosition</a></b> ( int <i>line</i>, int <i>col</i>, bool <i>mark</i> )</li>
 <li><div class="fn"/>void <b><a href="q3multilineedit.html#edited-prop">setEdited</a></b> ( bool )</li>
 <li><div class="fn"/>void <b><a href="q3multilineedit.html#setMaxLines">setMaxLines</a></b> ( int <i>max</i> )</li>
 <li><div class="fn"/>QString <b><a href="q3multilineedit.html#textLine">textLine</a></b> ( int <i>line</i> ) const</li>
@@ -216,8 +216,7 @@
 <p>See also <a href="q3multilineedit.html#end">end</a>().</p>
 <h3 class="fn"><a name="insertAndMark"></a>void Q3MultiLineEdit::insertAndMark ( const <a href="qstring.html">QString</a> &amp; <i>str</i>, bool <i>mark</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>Inserts <i>str</i> at the current cursor position and selects the text if <i>mark</i> is true.</p>
-<h3 class="fn"><a name="insertAt-2"></a>void Q3MultiLineEdit::insertAt ( const <a href="qstring.html">QString</a> &amp; <i>s</i>, int <i>line</i>, int <i>col</i>, bool <i>mark</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>This is an overloaded member function, provided for convenience.</p>
+<h3 class="fn"><a name="insertAt"></a>void Q3MultiLineEdit::insertAt ( const <a href="qstring.html">QString</a> &amp; <i>s</i>, int <i>line</i>, int <i>col</i>, bool <i>mark</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Inserts string <i>s</i> at paragraph number <i>line</i>, after character number <i>col</i> in the paragraph. If <i>s</i> contains newline characters, new lines are inserted. If <i>mark</i> is true the inserted string will be selected.</p>
 <p>The cursor position is adjusted.</p>
 <h3 class="fn"><a name="insertLine"></a>void Q3MultiLineEdit::insertLine ( const <a href="qstring.html">QString</a> &amp; <i>txt</i>, int <i>line</i> = -1 )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
@@ -239,8 +238,7 @@
 <p>Moves the cursor one page up. If <i>mark</i> is true, the text is selected.</p>
 <h3 class="fn"><a name="removeLine"></a>void Q3MultiLineEdit::removeLine ( int <i>paragraph</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Deletes the paragraph at paragraph number <i>paragraph</i>. If <i>paragraph</i> is less than zero or larger than the number of paragraphs, nothing is deleted.</p>
-<h3 class="fn"><a name="setCursorPosition-2"></a>void Q3MultiLineEdit::setCursorPosition ( int <i>line</i>, int <i>col</i>, bool <i>mark</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>This is an overloaded member function, provided for convenience.</p>
+<h3 class="fn"><a name="setCursorPosition"></a>void Q3MultiLineEdit::setCursorPosition ( int <i>line</i>, int <i>col</i>, bool <i>mark</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Sets the cursor position to character number <i>col</i> in paragraph number <i>line</i>. The parameters are adjusted to lie within the legal range.</p>
 <p>If <i>mark</i> is false, the selection is cleared. otherwise it is extended.</p>
 <h3 class="fn"><a name="setMaxLines"></a>void Q3MultiLineEdit::setMaxLines ( int <i>max</i> )</h3>
@@ -252,8 +250,8 @@
 <h3 class="fn"><a name="totalWidth"></a>int Q3MultiLineEdit::totalWidth () const</h3>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
 </tr></table></div></address></body>
 </html>

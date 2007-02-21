@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the qmake application of the Qt Toolkit.
 **
@@ -173,6 +173,8 @@ void MingwMakefileGenerator::init()
             project->values("QMAKE_COPY_DIR").append("xcopy /s /q /y /i");
         if(project->isEmpty("QMAKE_INSTALL_FILE"))
             project->values("QMAKE_INSTALL_FILE").append("$(COPY_FILE)");
+        if(project->isEmpty("QMAKE_INSTALL_PROGRAM"))
+            project->values("QMAKE_INSTALL_PROGRAM").append("$(COPY_FILE)");
         if(project->isEmpty("QMAKE_INSTALL_DIR"))
             project->values("QMAKE_INSTALL_DIR").append("$(COPY_DIR)");
         if(project->values("MAKEFILE").isEmpty())

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-x11-opensource-src-4.2.2/src/qt3support/text/q3textedit.cpp -->
+<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-x11-opensource-src-4.2.3/src/qt3support/text/q3textedit.cpp -->
 <head>
   <title>Qt 4.2: Q3TextEdit Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -209,7 +209,7 @@
 <li><div class="fn"/>void <b><a href="q3textedit.html#currentColorChanged">currentColorChanged</a></b> ( const QColor &amp; <i>c</i> )</li>
 <li><div class="fn"/>void <b><a href="q3textedit.html#currentFontChanged">currentFontChanged</a></b> ( const QFont &amp; <i>f</i> )</li>
 <li><div class="fn"/>void <b><a href="q3textedit.html#currentVerticalAlignmentChanged">currentVerticalAlignmentChanged</a></b> ( Q3TextEdit::VerticalAlignment <i>a</i> )</li>
-<li><div class="fn"/>void <b><a href="q3textedit.html#cursorPositionChanged-2">cursorPositionChanged</a></b> ( int <i>para</i>, int <i>pos</i> )</li>
+<li><div class="fn"/>void <b><a href="q3textedit.html#cursorPositionChanged">cursorPositionChanged</a></b> ( int <i>para</i>, int <i>pos</i> )</li>
 <li><div class="fn"/>void <b><a href="q3textedit.html#doubleClicked">doubleClicked</a></b> ( int <i>para</i>, int <i>pos</i> )</li>
 <li><div class="fn"/>void <b><a href="q3textedit.html#modificationChanged">modificationChanged</a></b> ( bool <i>m</i> )</li>
 <li><div class="fn"/>void <b><a href="q3textedit.html#redoAvailable">redoAvailable</a></b> ( bool <i>yes</i> )</li>
@@ -694,8 +694,7 @@
 <h3 class="fn"><a name="currentVerticalAlignmentChanged"></a>void Q3TextEdit::currentVerticalAlignmentChanged ( <a href="q3textedit.html#VerticalAlignment-enum">Q3TextEdit::VerticalAlignment</a> <i>a</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted if the vertical alignment of the current format has changed.</p>
 <p>The new vertical alignment is <i>a</i>.</p>
-<h3 class="fn"><a name="cursorPositionChanged-2"></a>void Q3TextEdit::cursorPositionChanged ( int <i>para</i>, int <i>pos</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This is an overloaded member function, provided for convenience.</p>
+<h3 class="fn"><a name="cursorPositionChanged"></a>void Q3TextEdit::cursorPositionChanged ( int <i>para</i>, int <i>pos</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted if the position of the cursor has changed. <i>para</i> contains the paragraph index and <i>pos</i> contains the character position within the paragraph.</p>
 <p>See also <a href="q3textedit.html#setCursorPosition">setCursorPosition</a>().</p>
 <h3 class="fn"><a name="cut"></a>void Q3TextEdit::cut ()&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
@@ -914,25 +913,25 @@
 <p>Returns the vertical alignment of the current format.</p>
 <p>See also <a href="q3textedit.html#setVerticalAlignment">setVerticalAlignment</a>().</p>
 <h3 class="fn"><a name="zoomIn"></a>void Q3TextEdit::zoomIn ( int <i>range</i> )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
-<p>Zooms in on the text by by making the base font size <i>range</i> points larger and recalculating all font sizes to be the new size. This does not change the size of any images.</p>
+<p>Zooms in on the text by making the base font size <i>range</i> points larger and recalculating all font sizes to be the new size. This does not change the size of any images.</p>
 <p>See also <a href="q3textedit.html#zoomOut">zoomOut</a>().</p>
 <h3 class="fn"><a name="zoomIn-2"></a>void Q3TextEdit::zoomIn ()&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>This is an overloaded member function, provided for convenience.</p>
-<p>Zooms in on the text by by making the base font size one point larger and recalculating all font sizes to be the new size. This does not change the size of any images.</p>
+<p>Zooms in on the text by making the base font size one point larger and recalculating all font sizes to be the new size. This does not change the size of any images.</p>
 <p>See also <a href="q3textedit.html#zoomOut">zoomOut</a>().</p>
 <h3 class="fn"><a name="zoomOut"></a>void Q3TextEdit::zoomOut ( int <i>range</i> )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Zooms out on the text by making the base font size <i>range</i> points smaller and recalculating all font sizes to be the new size. This does not change the size of any images.</p>
 <p>See also <a href="q3textedit.html#zoomIn">zoomIn</a>().</p>
 <h3 class="fn"><a name="zoomOut-2"></a>void Q3TextEdit::zoomOut ()&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>This is an overloaded member function, provided for convenience.</p>
-<p>Zooms out on the text by by making the base font size one point smaller and recalculating all font sizes to be the new size. This does not change the size of any images.</p>
+<p>Zooms out on the text by making the base font size one point smaller and recalculating all font sizes to be the new size. This does not change the size of any images.</p>
 <p>See also <a href="q3textedit.html#zoomIn">zoomIn</a>().</p>
 <h3 class="fn"><a name="zoomTo"></a>void Q3TextEdit::zoomTo ( int <i>size</i> )&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Zooms the text by making the base font size <i>size</i> points and recalculating all font sizes to be the new size. This does not change the size of any images.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
 </tr></table></div></address></body>
 </html>

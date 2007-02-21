@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -522,16 +522,7 @@ void QPSPrintEnginePrivate::emitHeader(bool finished)
           << " mm (landscape)\n 90 rotate " << scale << "-" << scale << "scale } def\n";
     }
     s << "%%EndProlog\n";
-
-
-    s << "%%BeginSetup\n";
-    if (copies > 1) {
-        s << "/#copies " << copies << " def\n";
-        s << "/NumCopies " << copies << " SPD\n";
-        s << "/Collate " << (collate ? "true" : "false") << " SPD\n";
-    }
-    s << "%%EndSetup\n";
-
+    
     outDevice->write(header);
     headerDone = true;
 }

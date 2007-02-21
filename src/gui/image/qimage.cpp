@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -3652,8 +3652,6 @@ QImage QImage::transformed(const QMatrix &matrix, Qt::TransformationMode mode) c
 
         hd = int(qAbs(mat.m22()) * hs + 0.9999);
         wd = int(qAbs(mat.m11()) * ws + 0.9999);
-        hd = qAbs(hd);
-        wd = qAbs(wd);
         scale_xform = true;
     } else if (mat.m11() == 0. && mat.m22() == 0.
                && ((mat.m12() == 1. && mat.m21() == -1.)        // 90 degrees
@@ -3676,7 +3674,15 @@ QImage QImage::transformed(const QMatrix &matrix, Qt::TransformationMode mode) c
 
     // Make use of the pnmscale algorithm when we're scaling down
     if (scale_xform && mode == Qt::SmoothTransformation && (wd < ws || hd < hs)) {
-        return ::smoothScaled(*this, wd, hd);
+        if (mat.m11() < 0.0F && mat.m22() < 0.0F) { // horizontal/vertical flip
+            return ::smoothScaled(mirrored(true, true), wd, hd);
+        } else if (mat.m11() < 0.0F) { // horizontal flip
+            return ::smoothScaled(mirrored(true, false), wd, hd);
+        } else if (mat.m22() < 0.0F) { // vertical flip
+            return ::smoothScaled(mirrored(false, true), wd, hd);
+        } else { // no flipping
+            return ::smoothScaled(*this, wd, hd);
+        }
     }
 
     int bpp = depth();
@@ -4579,6 +4585,17 @@ QString QImage::text(const QString &key) const
     The image text is embedded into the image data when you
     call save() or QImageWriter::write().
 
+    Not all image formats support embedded text. You can find out
+    if a specific image or format supports embedding text
+    by using QImageWriter::supportsOption(). We give an example:
+     
+    \quotefromfile snippets/image/supportedformat.cpp
+    \skipto QImageWriter
+    \printuntil qDebug
+
+    You can use QImageWriter::supportedImageFormats() to find out
+    which image formats are available to you.
+
     \sa text(), textKeys()
 */
 void QImage::setText(const QString &key, const QString &value)
@@ -5100,8 +5117,8 @@ void QImage::setAlphaChannel(const QImage &alphaChannel)
     each pixel's red, green, and blue values are given the alpha value of the
     original image. The color depth of the returned image is 8-bit.
 
-    You can see an example of use of this function in QPixmap's 
-    \l{QPixmap::}{alphaChannel()}, which works in the same way as 
+    You can see an example of use of this function in QPixmap's
+    \l{QPixmap::}{alphaChannel()}, which works in the same way as
     this function on QPixmaps.
 
     \sa setAlphaChannel(), {QPixmap#Pixmap Information}{Pixmap
@@ -5523,10 +5540,11 @@ static QImage rotated90(const QImage &image) {
     case QImage::Format_Indexed8:
         {
             uchar *dst = out.bits();
+            int bytes_per_line = out.bytesPerLine();
             for (int y=0; y<h; ++y) {
                 const uchar *src = image.scanLine(y);
                 for (int x=0; x<w; ++x) {
-                    dst[x*h + h-y-1] = *src++;
+                    dst[x*bytes_per_line + h-y-1] = *src++;
                 }
             }
         }
@@ -5573,10 +5591,11 @@ static QImage rotated270(const QImage &image) {
     case QImage::Format_Indexed8:
         {
             uchar *dst = out.bits();
+            int bytes_per_line = out.bytesPerLine();
             for (int y=0; y<h; ++y) {
                 const uchar *src = image.scanLine(y);
                 for (int x=0; x<w; ++x) {
-                    dst[y + (w-x-1)*h] = *src++;
+                    dst[y + (w-x-1)*bytes_per_line] = *src++;
                 }
             }
         }

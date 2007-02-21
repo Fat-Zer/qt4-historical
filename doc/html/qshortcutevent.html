@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-x11-opensource-src-4.2.2/src/gui/kernel/qevent.cpp -->
+<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-x11-opensource-src-4.2.3/src/gui/kernel/qevent.cpp -->
 <head>
   <title>Qt 4.2: QShortcutEvent Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -23,8 +23,8 @@
 <ul>
 <li><div class="fn"/><b><a href="qshortcutevent.html#QShortcutEvent">QShortcutEvent</a></b> ( const QKeySequence &amp; <i>key</i>, int <i>id</i>, bool <i>ambiguous</i> = false )</li>
 <li><div class="fn"/><b><a href="qshortcutevent.html#dtor.QShortcutEvent">~QShortcutEvent</a></b> ()</li>
-<li><div class="fn"/>bool <b><a href="qshortcutevent.html#isAmbiguous-2">isAmbiguous</a></b> () const</li>
-<li><div class="fn"/>const QKeySequence &amp; <b><a href="qshortcutevent.html#key-2">key</a></b> () const</li>
+<li><div class="fn"/>bool <b><a href="qshortcutevent.html#isAmbiguous">isAmbiguous</a></b> () const</li>
+<li><div class="fn"/>const QKeySequence &amp; <b><a href="qshortcutevent.html#key">key</a></b> () const</li>
 <li><div class="fn"/>int <b><a href="qshortcutevent.html#shortcutId">shortcutId</a></b> () const</li>
 </ul>
 <ul>
@@ -47,20 +47,18 @@
 <p><i>ambiguous</i> specifies whether there is more than one <a href="qshortcut.html">QShortcut</a> for the same key sequence.</p>
 <h3 class="fn"><a name="dtor.QShortcutEvent"></a>QShortcutEvent::~QShortcutEvent ()</h3>
 <p>Destroys the event object.</p>
-<h3 class="fn"><a name="isAmbiguous-2"></a>bool QShortcutEvent::isAmbiguous () const</h3>
-<p>This is an overloaded member function, provided for convenience.</p>
+<h3 class="fn"><a name="isAmbiguous"></a>bool QShortcutEvent::isAmbiguous () const</h3>
 <p>Returns true if the key sequence that triggered the event is ambiguous.</p>
 <p>See also <a href="qshortcut.html#activatedAmbiguously">QShortcut::activatedAmbiguously</a>().</p>
-<h3 class="fn"><a name="key-2"></a>const <a href="qkeysequence.html">QKeySequence</a> &amp; QShortcutEvent::key () const</h3>
-<p>This is an overloaded member function, provided for convenience.</p>
+<h3 class="fn"><a name="key"></a>const <a href="qkeysequence.html">QKeySequence</a> &amp; QShortcutEvent::key () const</h3>
 <p>Returns the key sequence that triggered the event.</p>
 <h3 class="fn"><a name="shortcutId"></a>int QShortcutEvent::shortcutId () const</h3>
 <p>Returns the ID of the <a href="qshortcut.html">QShortcut</a> object for which this event was generated.</p>
 <p>See also <a href="qshortcut.html#id">QShortcut::id</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
 </tr></table></div></address></body>
 </html>

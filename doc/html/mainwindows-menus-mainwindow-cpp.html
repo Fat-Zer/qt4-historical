@@ -14,7 +14,7 @@
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">mainwindow.cpp Example File<br /><sup><sup>mainwindows/menus/mainwindow.cpp</sup></sup></h1>
 <pre><span class="comment"> /****************************************************************************
  **
- ** Copyright (C) 2004-2006 Trolltech ASA. All rights reserved.
+ ** Copyright (C) 2004-2007 Trolltech ASA. All rights reserved.
  **
  ** This file is part of the example classes of the Qt Toolkit.
  **
@@ -41,8 +41,8 @@
 
  MainWindow::MainWindow()
  {
-     QWidget *w = new QWidget;
-     setCentralWidget(w);
+     QWidget *widget = new QWidget;
+     setCentralWidget(widget);
 
      QWidget *topFiller = new QWidget;
      topFiller-&gt;setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -55,17 +55,18 @@
      QWidget *bottomFiller = new QWidget;
      bottomFiller-&gt;setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-     QVBoxLayout *vbox = new QVBoxLayout;
-     vbox-&gt;setMargin(5);
-     vbox-&gt;addWidget(topFiller);
-     vbox-&gt;addWidget(infoLabel);
-     vbox-&gt;addWidget(bottomFiller);
-     w-&gt;setLayout(vbox);
+     QVBoxLayout *layout = new QVBoxLayout;
+     layout-&gt;setMargin(5);
+     layout-&gt;addWidget(topFiller);
+     layout-&gt;addWidget(infoLabel);
+     layout-&gt;addWidget(bottomFiller);
+     widget-&gt;setLayout(layout);
 
      createActions();
      createMenus();
 
-     statusBar()-&gt;showMessage(tr(&quot;A context menu is available by right-clicking&quot;));
+     QString message = tr(&quot;A context menu is available by right-clicking&quot;);
+     statusBar()-&gt;showMessage(message);
 
      setWindowTitle(tr(&quot;Menus&quot;));
      setMinimumSize(160, 160);
@@ -254,6 +255,25 @@
      italicFont.setItalic(true);
      italicAct-&gt;setFont(italicFont);
 
+     setLineSpacingAct = new QAction(tr(&quot;Set &amp;Line Spacing...&quot;), this);
+     setLineSpacingAct-&gt;setStatusTip(tr(&quot;Change the gap between the lines of a &quot;
+                                        &quot;paragraph&quot;));
+     connect(setLineSpacingAct, SIGNAL(triggered()), this, SLOT(setLineSpacing()));
+
+     setParagraphSpacingAct = new QAction(tr(&quot;Set &amp;Paragraph Spacing...&quot;), this);
+     setLineSpacingAct-&gt;setStatusTip(tr(&quot;Change the gap between paragraphs&quot;));
+     connect(setParagraphSpacingAct, SIGNAL(triggered()),
+             this, SLOT(setParagraphSpacing()));
+
+     aboutAct = new QAction(tr(&quot;&amp;About&quot;), this);
+     aboutAct-&gt;setStatusTip(tr(&quot;Show the application's About box&quot;));
+     connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
+
+     aboutQtAct = new QAction(tr(&quot;About &amp;Qt&quot;), this);
+     aboutQtAct-&gt;setStatusTip(tr(&quot;Show the Qt library's About box&quot;));
+     connect(aboutQtAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
+     connect(aboutQtAct, SIGNAL(triggered()), this, SLOT(aboutQt()));
+
      leftAlignAct = new QAction(tr(&quot;&amp;Left Align&quot;), this);
      leftAlignAct-&gt;setCheckable(true);
      leftAlignAct-&gt;setShortcut(tr(&quot;Ctrl+L&quot;));
@@ -284,25 +304,6 @@
      alignmentGroup-&gt;addAction(justifyAct);
      alignmentGroup-&gt;addAction(centerAct);
      leftAlignAct-&gt;setChecked(true);
-
-     setLineSpacingAct = new QAction(tr(&quot;Set &amp;Line Spacing...&quot;), this);
-     setLineSpacingAct-&gt;setStatusTip(tr(&quot;Change the gap between the lines of a &quot;
-                                        &quot;paragraph&quot;));
-     connect(setLineSpacingAct, SIGNAL(triggered()), this, SLOT(setLineSpacing()));
-
-     setParagraphSpacingAct = new QAction(tr(&quot;Set &amp;Paragraph Spacing...&quot;), this);
-     setLineSpacingAct-&gt;setStatusTip(tr(&quot;Change the gap between paragraphs&quot;));
-     connect(setParagraphSpacingAct, SIGNAL(triggered()),
-             this, SLOT(setParagraphSpacing()));
-
-     aboutAct = new QAction(tr(&quot;&amp;About&quot;), this);
-     aboutAct-&gt;setStatusTip(tr(&quot;Show the application's About box&quot;));
-     connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
-
-     aboutQtAct = new QAction(tr(&quot;About &amp;Qt&quot;), this);
-     aboutQtAct-&gt;setStatusTip(tr(&quot;Show the Qt library's About box&quot;));
-     connect(aboutQtAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
-     connect(aboutQtAct, SIGNAL(triggered()), this, SLOT(aboutQt()));
  }
 
  void MainWindow::createMenus()
@@ -324,6 +325,10 @@
      editMenu-&gt;addAction(pasteAct);
      editMenu-&gt;addSeparator();
 
+     helpMenu = menuBar()-&gt;addMenu(tr(&quot;&amp;Help&quot;));
+     helpMenu-&gt;addAction(aboutAct);
+     helpMenu-&gt;addAction(aboutQtAct);
+
      formatMenu = editMenu-&gt;addMenu(tr(&quot;&amp;Format&quot;));
      formatMenu-&gt;addAction(boldAct);
      formatMenu-&gt;addAction(italicAct);
@@ -335,15 +340,11 @@
      formatMenu-&gt;addSeparator();
      formatMenu-&gt;addAction(setLineSpacingAct);
      formatMenu-&gt;addAction(setParagraphSpacingAct);
-
-     helpMenu = menuBar()-&gt;addMenu(tr(&quot;&amp;Help&quot;));
-     helpMenu-&gt;addAction(aboutAct);
-     helpMenu-&gt;addAction(aboutQtAct);
  }</pre>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
 </tr></table></div></address></body>
 </html>

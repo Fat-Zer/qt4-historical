@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -199,8 +199,8 @@ QStyleOptionFrame QLineEditPrivate::getStyleOption() const
     This signal is emitted whenever the text changes. The \a text
     argument is the new text.
 
-    Unlike textEdited(), this signal is also emitted when
-    programmatically setting the text via setText().
+    Unlike textEdited(), this signal is also emitted when the text is
+    changed programmatically, for example, by calling setText().
 */
 
 /*!
@@ -209,8 +209,8 @@ QStyleOptionFrame QLineEditPrivate::getStyleOption() const
     This signal is emitted whenever the text is edited. The \a text
     argument is the next text.
 
-    Unlike textChanged(), this signal is \e not emitted when
-    programmatically setting the text via setText().
+    Unlike textChanged(), this signal is not emitted when the text is
+    changed programmatically, for example, by calling setText().
 */
 
 /*!
@@ -1488,8 +1488,8 @@ bool QLineEdit::event(QEvent * e)
         d->separate();
     }
 #ifdef QT_KEYPAD_NAVIGATION
-    else if (e->type() == QEvent::KeyRelease) {
-        if (QApplication::keypadNavigationEnabled()) {
+    if (QApplication::keypadNavigationEnabled()) {
+        if (e->type() == QEvent::KeyRelease) {
             QKeyEvent *ke = (QKeyEvent *)e;
             if ( !ke->isAutoRepeat() && !isReadOnly()
                     && ke->key() == Qt::Key_Back
@@ -1499,6 +1499,17 @@ bool QLineEdit::event(QEvent * e)
                 ke->accept();
                 return true;
             }
+        } else if (e->type() == QEvent::EnterEditFocus) {
+            end(false);
+            if (!d->cursorTimer) {
+                int cft = QApplication::cursorFlashTime();
+                d->cursorTimer = cft ? startTimer(cft/2) : -1;
+            }
+        } else if (e->type() == QEvent::LeaveEditFocus) {
+            d->setCursorVisible(false);
+            if (d->cursorTimer > 0)
+                killTimer(d->cursorTimer);
+            d->cursorTimer = 0;
         }
     }
 #endif
@@ -2026,8 +2037,10 @@ void QLineEdit::inputMethodEvent(QInputMethodEvent *e)
 
 
 #ifdef QT_KEYPAD_NAVIGATION
-    if (QApplication::keypadNavigationEnabled() && !hasEditFocus())
+    if (QApplication::keypadNavigationEnabled() && !hasEditFocus()) {
         setEditFocus(true);
+        selectAll();        // so text is replaced rather than appended to
+    }
 #endif
 
     int priorState = d->undoState;
@@ -2112,6 +2125,9 @@ void QLineEdit::focusInEvent(QFocusEvent *e)
             d->moveCursor(d->nextMaskBlank(0));
         else if (!d->hasSelectedText())
             selectAll();
+#ifdef QT_KEYPAD_NAVIGATION
+    if (!QApplication::keypadNavigationEnabled() || (hasEditFocus() && e->reason() == Qt::PopupFocusReason))
+#endif
     if (!d->cursorTimer) {
         int cft = QApplication::cursorFlashTime();
         d->cursorTimer = cft ? startTimer(cft/2) : -1;
@@ -2238,6 +2254,9 @@ void QLineEdit::paintEvent(QPaintEvent *)
     p.setPen(pal.text().color());
 
     QVector<QTextLayout::FormatRange> selections;
+#ifdef QT_KEYPAD_NAVIGATION
+    if (!QApplication::keypadNavigationEnabled() || hasEditFocus())
+#endif
     if (d->selstart < d->selend || (d->cursorVisible && d->maskData)) {
         QTextLayout::FormatRange o;
         const QPalette &pal = palette();

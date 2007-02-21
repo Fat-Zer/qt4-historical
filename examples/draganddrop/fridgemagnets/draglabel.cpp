@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2005-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 2005-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the example classes of the Qt Toolkit.
 **
@@ -28,10 +28,11 @@
 DragLabel::DragLabel(const QString &text, QWidget *parent)
     : QLabel(parent)
 {
-    QFontMetrics fm(font());
-    QSize size = fm.size(Qt::TextSingleLine, text);
+    QFontMetrics metric(font());
+    QSize size = metric.size(Qt::TextSingleLine, text);
 
-    QImage image(size.width() + 12, size.height() + 12, QImage::Format_ARGB32_Premultiplied);
+    QImage image(size.width() + 12, size.height() + 12,
+                 QImage::Format_ARGB32_Premultiplied);
     image.fill(qRgba(0, 0, 0, 0));
 
     QFont font;
@@ -41,7 +42,8 @@ DragLabel::DragLabel(const QString &text, QWidget *parent)
     painter.begin(&image);
     painter.setRenderHint(QPainter::Antialiasing);
     painter.setBrush(Qt::white);
-    painter.drawRoundRect(QRectF(0.5, 0.5, image.width()-1, image.height()-1), 25, 25);
+    painter.drawRoundRect(QRectF(0.5, 0.5, image.width()-1, image.height()-1),
+                          25, 25);
 
     painter.setFont(font);
     painter.setBrush(Qt::black);

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -92,8 +92,10 @@
     model, and for a vertical header the section is equivalent to a row
     in the model.
 
+    QTableWidget and QTableView create default headers. If you want
+    the headers to be visible, you can use \l{QFrame::}{setVisible()}.
+    
     \sa {Model/View Programming}, QListView, QTableView, QTreeView
-
 */
 
 /*!
@@ -117,6 +119,7 @@
     \value ResizeToContents QHeaderView will automatically resize the section to its optimal
                                              size based on the contents of the entire column or row.
                                              The size cannot be changed by the user or programmatically.
+					     (This value was introduced in 4.2)
 
     The following values are obsolete:
     \value Custom Use Fixed instead.
@@ -658,6 +661,7 @@ void QHeaderView::moveSection(int from, int to)
     }
     //Q_ASSERT(d->headerLength() == length());
     //Q_ASSERT(oldHeaderLength == length());
+    //Q_ASSERT(d->logicalIndices.count() == d->sectionCount);
 
     d->viewport->update();
     emit sectionMoved(logical, from, to);
@@ -737,7 +741,7 @@ void QHeaderView::resizeSection(int logical, int size)
     int visual = visualIndex(logical);
     Q_ASSERT(visual != -1);
 
-    if (stretchLastSection() && visual == count() - 1)
+    if (stretchLastSection() && visual == d->lastVisibleVisualIndex())
         d->lastSectionSize = size;
 
     if (size != oldSize)
@@ -1426,8 +1430,10 @@ void QHeaderViewPrivate::_q_sectionsRemoved(const QModelIndex &parent,
         for (int l = logicalLast; l >= logicalFirst; --l) {
             int visual = visualIndices.at(l);
             for (int v = 0; v < sectionCount; ++v) {
+                if (v >= logicalIndices.count())
+                    continue; // the section doesn't exist
                 if (v > visual) {
-                    int logical = logicalIndex(v);
+                    int logical = logicalIndices.at(v);
                     --(visualIndices[logical]);
                 }
                 if (logicalIndex(v) > l) // no need to move the positions before l
@@ -2404,6 +2410,22 @@ bool QHeaderViewPrivate::isSectionSelected(int section) const
 
 /*!
   \internal
+  Returns the last visible (ie. not hidden) visual index
+*/
+int QHeaderViewPrivate::lastVisibleVisualIndex() const
+{
+    Q_Q(const QHeaderView);
+    for(int visual = q->count()-1; visual >= 0; --visual) {
+        if (!q->isSectionHidden(q->logicalIndex(visual)))
+            return visual;
+    }
+
+    //default value if no section is actually visible
+    return -1;
+}
+
+/*!
+  \internal
   Go through and reize all of the sections appling stretchLastSection,
   manualy stretches, sizes, and useGlobalMode.
 
@@ -2478,6 +2500,8 @@ void QHeaderViewPrivate::resizeSections(QHeaderView::ResizeMode globalMode, bool
 
     int spanStartSection = 0;
     int previousSectionLength = 0;
+    const int lastVisibleSection = lastVisibleVisualIndex();
+
     QHeaderView::ResizeMode previousSectionResizeMode = QHeaderView::Interactive;
 
     // resize each section along the total length
@@ -2497,7 +2521,7 @@ void QHeaderViewPrivate::resizeSections(QHeaderView::ResizeMode globalMode, bool
                               ? QHeaderView::Stretch
                               : visualIndexResizeMode(i));
             if (resizeMode == QHeaderView::Stretch) {
-                if (i == sectionCount - 1)
+                if (i == lastVisibleSection)
                     newSectionLength = qMax(stretchSectionLength, lastSectionSize);
                 else
                     newSectionLength = stretchSectionLength;

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the tools applications of the Qt Toolkit.
 **
@@ -1134,19 +1134,19 @@ QDBusArgument &operator<<(QDBusArgument &a, const QRect &rect)
 
 const QDBusArgument &operator>>(const QDBusArgument &a, QRectF &rect)
 {
-    qreal x, y, width, height;
+    double x, y, width, height;
     a.beginStructure();
     a >> x >> y >> width >> height;
     a.endStructure();
 
-    rect.setRect(x, y, width, height);
+    rect.setRect(qreal(x), qreal(y), qreal(width), qreal(height));
     return a;
 }
 
 QDBusArgument &operator<<(QDBusArgument &a, const QRectF &rect)
 {
     a.beginStructure();
-    a << rect.x() << rect.y() << rect.width() << rect.height();
+    a << double(rect.x()) << double(rect.y()) << double(rect.width()) << double(rect.height());
     a.endStructure();
 
     return a;
@@ -1172,17 +1172,20 @@ QDBusArgument &operator<<(QDBusArgument &a, const QSize &size)
 
 const QDBusArgument &operator>>(const QDBusArgument &a, QSizeF &size)
 {
+    double width, height;
     a.beginStructure();
-    a >> size.rwidth() >> size.rheight();
+    a >> width >> height;
     a.endStructure();
 
+    size.setWidth(qreal(width));
+    size.setHeight(qreal(height));
     return a;
 }
 
 QDBusArgument &operator<<(QDBusArgument &a, const QSizeF &size)
 {
     a.beginStructure();
-    a << size.width() << size.height();
+    a << double(size.width()) << double(size.height());
     a.endStructure();
 
     return a;
@@ -1208,17 +1211,20 @@ QDBusArgument &operator<<(QDBusArgument &a, const QPoint &pt)
 
 const QDBusArgument &operator>>(const QDBusArgument &a, QPointF &pt)
 {
+    double x, y;
     a.beginStructure();
-    a >> pt.rx() >> pt.ry();
+    a >> x >> y;
     a.endStructure();
 
+    pt.setX(qreal(x));
+    pt.setY(qreal(y));
     return a;
 }
 
 QDBusArgument &operator<<(QDBusArgument &a, const QPointF &pt)
 {
     a.beginStructure();
-    a << pt.x() << pt.y();
+    a << double(pt.x()) << double(pt.y());
     a.endStructure();
 
     return a;
