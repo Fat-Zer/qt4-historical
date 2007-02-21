@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-mac-opensource-src-4.2.2/doc/src/q3asciicache.qdoc -->
+<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-mac-opensource-src-4.2.3/doc/src/q3asciicache.qdoc -->
 <head>
   <title>Qt 4.2: Q3AsciiCache Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -23,7 +23,7 @@
 <a name="public-functions"></a>
 <h3>Public Functions</h3>
 <ul>
-<li><div class="fn"/><b><a href="q3asciicache.html#Q3AsciiCache-2">Q3AsciiCache</a></b> ( int <i>maxCost</i> = 100, int <i>size</i> = 17, bool <i>caseSensitive</i> = true, bool <i>copyKeys</i> = true )</li>
+<li><div class="fn"/><b><a href="q3asciicache.html#Q3AsciiCache">Q3AsciiCache</a></b> ( int <i>maxCost</i> = 100, int <i>size</i> = 17, bool <i>caseSensitive</i> = true, bool <i>copyKeys</i> = true )</li>
 <li><div class="fn"/><b><a href="q3asciicache.html#dtor.Q3AsciiCache">~Q3AsciiCache</a></b> ()</li>
 <li><div class="fn"/>virtual void <b><a href="q3asciicache.html#clear">clear</a></b> ()</li>
 <li><div class="fn"/>virtual uint <b><a href="q3asciicache.html#count">count</a></b> () const</li>
@@ -61,7 +61,8 @@
 <p>See also <a href="q3asciicacheiterator.html">Q3AsciiCacheIterator</a>, <a href="q3cache.html">Q3Cache</a>, and <a href="q3intcache.html">Q3IntCache</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<h3 class="fn"><a name="Q3AsciiCache-2"></a>Q3AsciiCache::Q3AsciiCache ( int <i>maxCost</i> = 100, int <i>size</i> = 17, bool <i>caseSensitive</i> = true, bool <i>copyKeys</i> = true )</h3>
+<a name="//apple_ref/cpp/instm/Q3AsciiCache/Q3AsciiCache" />
+<h3 class="fn"><a name="Q3AsciiCache"></a>Q3AsciiCache::Q3AsciiCache ( int <i>maxCost</i> = 100, int <i>size</i> = 17, bool <i>caseSensitive</i> = true, bool <i>copyKeys</i> = true )</h3>
 <p>Constructs a cache whose contents will never have a total cost greater than <i>maxCost</i> and which is expected to contain less than <i>size</i> items.</p>
 <p><i>size</i> is actually the size of an internal hash array; it's usually best to make it prime and at least 50% bigger than the largest expected number of items in the cache.</p>
 <p>Each inserted item has an associated cost. When inserting a new item, if the total cost of all items in the cache will exceed <i>maxCost</i>, the cache will start throwing out the older (least recently used) items until there is enough room for the new item to be inserted.</p>
@@ -133,8 +134,8 @@
 <p>See also <a href="q3asciicache.html#find">find</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
 </tr></table></div></address></body>
 </html>

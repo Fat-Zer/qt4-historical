@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the tools applications of the Qt Toolkit.
 **
@@ -55,7 +55,7 @@
     \endcode
 
     However, if it does fail under those conditions, the value returned by QDBusReply::value() is
-    a default-constructed value. It may be undistinguishable from a valid return value.
+    a default-constructed value. It may be indistinguishable from a valid return value.
 
     QDBusReply objects are used for remote calls that have no output
     arguments or return values (i.e., they have a "void" return

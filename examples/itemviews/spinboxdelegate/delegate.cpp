@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2005-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 2005-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the example classes of the Qt Toolkit.
 **
@@ -45,7 +45,6 @@ QWidget *SpinBoxDelegate::createEditor(QWidget *parent,
     QSpinBox *editor = new QSpinBox(parent);
     editor->setMinimum(0);
     editor->setMaximum(100);
-    editor->installEventFilter(const_cast<SpinBoxDelegate*>(this));
 
     return editor;
 }

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -338,6 +338,11 @@ void QItemEditorFactory::setDefaultFactory(QItemEditorFactory *factory)
 
 /*! 
     \class QStandardItemEditorCreator
+
+    \brief The QStandardItemEditorCreator class provides the
+    possibility to register widgets without having to subclass
+    QItemEditorCreatorBase.
+
     \since 4.2
     \ingroup model-view
 

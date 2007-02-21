@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2005-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 2005-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the example classes of the Qt Toolkit.
 **
@@ -55,9 +55,9 @@ DragWidget::DragWidget(QWidget *parent)
     newPalette.setColor(QPalette::Window, Qt::white);
     setPalette(newPalette);
 
-    setAcceptDrops(true);
     setMinimumSize(400, qMax(200, y));
     setWindowTitle(tr("Fridge Magnets"));
+    setAcceptDrops(true);
 }
 
 void DragWidget::dragEnterEvent(QDragEnterEvent *event)
@@ -95,9 +95,10 @@ void DragWidget::dragMoveEvent(QDragMoveEvent *event)
 void DragWidget::dropEvent(QDropEvent *event)
 {
     if (event->mimeData()->hasFormat("application/x-fridgemagnet")) {
-        QByteArray itemData = event->mimeData()->data("application/x-fridgemagnet");
+        const QMimeData *mime = event->mimeData();
+        QByteArray itemData = mime->data("application/x-fridgemagnet");
         QDataStream dataStream(&itemData, QIODevice::ReadOnly);
-        
+
         QString text;
         QPoint offset;
         dataStream >> text >> offset;

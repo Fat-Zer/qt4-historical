@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the tools applications of the Qt Toolkit.
 **
@@ -157,7 +157,7 @@ QDBusInterfacePrivate::~QDBusInterfacePrivate()
             printf( "%d", reply.value() );          // prints 4
     \endcode
 
-    \sa {dbusxml2cpp.html}{The dbusxml2cpp compiler}
+    \sa {QtDBus XML compiler (qdbusxml2cpp)}
 */
 
 /*!

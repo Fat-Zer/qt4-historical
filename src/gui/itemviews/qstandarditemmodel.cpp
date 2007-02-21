@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -766,6 +766,7 @@ QVariant QStandardItem::data(int role) const
   Sets the item flags for the item to \a flags.
 
   The item flags determine how the user can interact with the item.
+  This is often used to disable an item.
 
   \sa flags(), setData()
 */

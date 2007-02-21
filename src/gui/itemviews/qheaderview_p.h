@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -75,6 +75,7 @@ public:
           sectionIndicator(0),
           globalResizeMode(QHeaderView::Interactive) {}
 
+    int lastVisibleVisualIndex() const;
     int sectionHandleAt(int position);
     void setupSectionIndicator(int section, int position);
     void updateSectionIndicator(int section, int position);

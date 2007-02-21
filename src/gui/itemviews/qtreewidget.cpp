@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -328,6 +328,29 @@ bool QTreeModel::setData(const QModelIndex &index, const QVariant &value, int ro
         return true;
     }
     return false;
+}
+
+QMap<int, QVariant> QTreeModel::itemData(const QModelIndex &index) const
+{
+    QMap<int, QVariant> roles;
+    QTreeWidgetItem *itm = item(index);
+    if (itm) {
+        int column = index.column();
+        for (int i = 0; i < itm->values.at(column).count(); ++i) {
+            roles.insert(itm->values.at(column).at(i).role,
+                         itm->values.at(column).at(i).value);
+        }
+
+        // the two special cases
+        QVariant displayValue = itm->data(column, Qt::DisplayRole);
+        if (displayValue.isValid())
+            roles.insert(Qt::DisplayRole, displayValue);
+
+        QVariant checkValue = itm->data(column, Qt::CheckStateRole);
+        if (checkValue.isValid())
+            roles.insert(Qt::CheckStateRole, checkValue);
+    }
+    return roles;
 }
 
 /*!
@@ -1678,10 +1701,12 @@ void QTreeWidgetItem::insertChild(int index, QTreeWidgetItem *child)
 */
 QTreeWidgetItem *QTreeWidgetItem::takeChild(int index)
 {
+    // we move this outside the check of the index to allow executing
+    // pending sorts from inline functions, using this function (hack)
+    QTreeModel *model = (view ? ::qobject_cast<QTreeModel*>(view->model()) : 0);
+    if (model && model->executePendingSort())
+        model = 0; // no need to emit signals
     if (index >= 0 && index < children.count()) {
-        QTreeModel *model = (view ? ::qobject_cast<QTreeModel*>(view->model()) : 0);
-        if (model && model->executePendingSort())
-            model = 0; // no need to emit signals
         if (model) model->beginRemoveItems(this, index, 1);
         QTreeWidgetItem *item = children.takeAt(index);
         item->par = 0;

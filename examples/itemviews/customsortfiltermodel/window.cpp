@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2006-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 2006-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the example classes of the Qt Toolkit.
 **
@@ -31,22 +31,21 @@ Window::Window()
     proxyModel = new MySortFilterProxyModel(this);
     proxyModel->setDynamicSortFilter(true);
 
-    sourceGroupBox = new QGroupBox(tr("Original Model"));
-    proxyGroupBox = new QGroupBox(tr("Sorted/Filtered Model"));
-
     sourceView = new QTreeView;
     sourceView->setRootIsDecorated(false);
     sourceView->setAlternatingRowColors(true);
 
-    proxyView = new QTreeView;
-    proxyView->setRootIsDecorated(false);
-    proxyView->setAlternatingRowColors(true);
-    proxyView->setModel(proxyModel);
-    proxyView->setSortingEnabled(true);
+    QHBoxLayout *sourceLayout = new QHBoxLayout;
+    sourceLayout->addWidget(sourceView);
+    sourceGroupBox = new QGroupBox(tr("Original Model"));
+    sourceGroupBox->setLayout(sourceLayout);
 
     filterCaseSensitivityCheckBox = new QCheckBox(tr("Case sensitive filter"));
+    filterCaseSensitivityCheckBox->setChecked(true);
 
     filterPatternLineEdit = new QLineEdit;
+    filterPatternLineEdit->setText("Grace|Sports");
+
     filterPatternLabel = new QLabel(tr("&Filter pattern:"));
     filterPatternLabel->setBuddy(filterPatternLineEdit);
 
@@ -56,10 +55,12 @@ Window::Window()
     filterSyntaxComboBox->addItem(tr("Fixed string"), QRegExp::FixedString);
 
     fromDateEdit = new QDateEdit;
+    fromDateEdit->setDate(QDate(1970, 01, 01));
     fromLabel = new QLabel(tr("F&rom:"));
     fromLabel->setBuddy(fromDateEdit);
 
     toDateEdit = new QDateEdit;
+    toDateEdit->setDate(QDate(2099, 12, 31));
     toLabel = new QLabel(tr("&To:"));
     toLabel->setBuddy(toDateEdit);
 
@@ -74,9 +75,12 @@ Window::Window()
     connect(toDateEdit, SIGNAL(dateChanged(const QDate &)),
             this, SLOT(dateFilterChanged()));
 
-    QHBoxLayout *sourceLayout = new QHBoxLayout;
-    sourceLayout->addWidget(sourceView);
-    sourceGroupBox->setLayout(sourceLayout);
+    proxyView = new QTreeView;
+    proxyView->setRootIsDecorated(false);
+    proxyView->setAlternatingRowColors(true);
+    proxyView->setModel(proxyModel);
+    proxyView->setSortingEnabled(true);
+    proxyView->sortByColumn(1, Qt::AscendingOrder);
 
     QGridLayout *proxyLayout = new QGridLayout;
     proxyLayout->addWidget(proxyView, 0, 0, 1, 3);
@@ -89,6 +93,7 @@ Window::Window()
     proxyLayout->addWidget(toLabel, 4, 0);
     proxyLayout->addWidget(toDateEdit, 4, 1, 1, 2);
 
+    proxyGroupBox = new QGroupBox(tr("Sorted/Filtered Model"));
     proxyGroupBox->setLayout(proxyLayout);
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
@@ -98,13 +103,6 @@ Window::Window()
 
     setWindowTitle(tr("Custom Sort/Filter Model"));
     resize(500, 450);
-
-    proxyView->sortByColumn(1, Qt::AscendingOrder);
-    filterPatternLineEdit->setText("Grace|Sports");
-    filterCaseSensitivityCheckBox->setChecked(true);
-
-    fromDateEdit->setDate(QDate(1970, 01, 01));
-    toDateEdit->setDate(QDate(2099, 12, 31));
 }
 
 void Window::setSourceModel(QAbstractItemModel *model)

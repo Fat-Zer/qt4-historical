@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the tools applications of the Qt Toolkit.
 **
@@ -44,8 +44,8 @@ QT_BEGIN_HEADER
 # define QTEST_NO_SPECIALIZATIONS
 #endif
 
-#define QTEST_VERSION     0x040202
-#define QTEST_VERSION_STR "4.2.2"
+#define QTEST_VERSION     0x040203
+#define QTEST_VERSION_STR "4.2.3"
 
 namespace QTest
 {

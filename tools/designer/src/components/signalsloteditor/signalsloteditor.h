@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the Qt Designer of the Qt Toolkit.
 **
@@ -58,7 +58,7 @@ public:
 
     QDesignerFormWindowInterface *formWindow() const { return m_form_window; }
 
-    static QObject *objectByName(QWidget *topLevel, const QString &name);
+    QObject *objectByName(QWidget *topLevel, const QString &name) const;
 
     QAbstractItemModel *model() const;
 

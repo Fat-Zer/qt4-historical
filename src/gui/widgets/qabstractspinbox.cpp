@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -663,6 +663,17 @@ bool QAbstractSpinBox::event(QEvent *event)
         if (d->edit->event(event))
             return true;
         break;
+#ifdef QT_KEYPAD_NAVIGATION
+    case QEvent::EnterEditFocus:
+    case QEvent::LeaveEditFocus:
+        if (QApplication::keypadNavigationEnabled()) {
+            const bool b = d->edit->event(event);
+            d->edit->setSelection(d->edit->displayText().size() - d->suffix.size(),0);
+            if (b)
+                return true;
+        }
+        break;
+#endif
     default:
         break;
     }
@@ -853,8 +864,7 @@ void QAbstractSpinBox::keyPressEvent(QKeyEvent *event)
 #ifdef QT_KEYPAD_NAVIGATION
         if (QApplication::keypadNavigationEnabled()) {
             // Reserve up/down for nav - use left/right for edit.
-            if (!hasEditFocus() && (event->key() == Qt::Key_Up
-                                    || event->key() == Qt::Key_Down)) {
+            if (event->key() == Qt::Key_Up || event->key() == Qt::Key_Down) {
                 event->ignore();
                 return;
             }
@@ -908,8 +918,6 @@ void QAbstractSpinBox::keyPressEvent(QKeyEvent *event)
         if (QApplication::keypadNavigationEnabled()) {
             // Toggles between left/right moving cursor and inc/dec.
             setEditFocus(!hasEditFocus());
-            if (!hasEditFocus())
-                selectAll();
         }
         return;
 #endif

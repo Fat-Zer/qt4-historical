@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -344,11 +344,15 @@ void QTextDocument::clear()
 
 /*!
     \since 4.2
-    Undoes the last editing operation on the document if
-    \link QTextDocument::isUndoAvailable() undo is available\endlink.
 
-    The provided \a cursor is positioned at the end of the location where
-    the edition operation was undone.
+    Undoes the last editing operation on the document if undo is
+    available. The provided \a cursor is positioned at the end of the
+    location where the edition operation was undone.
+
+    See the \l {Overview of Qt's Undo Framework}{Qt Undo Framework}
+    documentation for details.
+
+    \sa undoAvailable(), isUndoRedoEnabled()
 */
 void QTextDocument::undo(QTextCursor *cursor)
 {
@@ -380,8 +384,7 @@ void QTextDocument::redo(QTextCursor *cursor)
 
 /*!
     \overload
-    Undoes the last editing operation on the document if
-    \link QTextDocument::isUndoAvailable() undo is available\endlink.
+
 */
 void QTextDocument::undo()
 {
@@ -697,6 +700,11 @@ QString QTextDocument::defaultStyleSheet() const
 
     This signal is emitted whenever undo operations become available
     (\a available is true) or unavailable (\a available is false).
+
+    See the \l {Overview of Qt's Undo Framework}{Qt Undo Framework}
+    documentation for details.
+
+    \sa undo(), isUndoRedoEnabled()
 */
 
 /*!
@@ -712,8 +720,8 @@ QString QTextDocument::defaultStyleSheet() const
     This signal is emitted whenever the position of a cursor changed
     due to an editing operation. The cursor that changed is passed in
     \a cursor.  If you need a signal when the cursor is moved with the
-    arrow keys you can use the \l{QTextEdit::}{cursorPositionChanged()} signal in 
-    QTextEdit. 
+    arrow keys you can use the \l{QTextEdit::}{cursorPositionChanged()} signal in
+    QTextEdit.
 */
 
 /*!
@@ -909,7 +917,13 @@ QTextCursor QTextDocument::find(const QString &subString, int from, FindFlags op
 */
 QTextCursor QTextDocument::find(const QString &subString, const QTextCursor &from, FindFlags options) const
 {
-    const int pos = (from.isNull() ? 0 : from.selectionEnd());
+    int pos = 0;
+    if (!from.isNull()) {
+        if (options & QTextDocument::FindBackward)
+            pos = from.selectionStart();
+        else
+            pos = from.selectionEnd();
+    }
     QRegExp expr(subString);
     expr.setPatternSyntax(QRegExp::FixedString);
     expr.setCaseSensitivity((options & QTextDocument::FindCaseSensitively) ? Qt::CaseSensitive : Qt::CaseInsensitive);
@@ -1029,7 +1043,13 @@ QTextCursor QTextDocument::find(const QRegExp & expr, int from, FindFlags option
 */
 QTextCursor QTextDocument::find(const QRegExp &expr, const QTextCursor &from, FindFlags options) const
 {
-    const int pos = (from.isNull() ? 0 : from.selectionEnd());
+    int pos = 0;
+    if (!from.isNull()) {
+        if (options & QTextDocument::FindBackward)
+            pos = from.selectionStart();
+        else
+            pos = from.selectionEnd();
+    }
     return find(expr, pos, options);
 }
 
@@ -1429,7 +1449,7 @@ QVariant QTextDocument::resource(int type, const QUrl &name) const
 
 /*!
     Adds the resource \a resource to the resource cache, using \a
-    type and \a name as identifiers.
+    type and \a name as identifiers. \a type should be a value from QTextDocument::ResourceType.
 */
 void QTextDocument::addResource(int type, const QUrl &name, const QVariant &resource)
 {

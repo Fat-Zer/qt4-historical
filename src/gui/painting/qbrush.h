@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -95,6 +95,8 @@ private:
 #if defined(Q_WS_X11)
     friend class QX11PaintEngine;
 #endif
+    friend class QRasterPaintEngine;
+    friend class QRasterPaintEnginePrivate;
     friend class QPainter;
     void detach(Qt::BrushStyle newStyle);
     void init(const QColor &color, Qt::BrushStyle bs);
@@ -126,6 +128,7 @@ struct QBrushData
     Qt::BrushStyle style;
     QColor color;
     QMatrix transform;
+    bool hasTransform;
 };
 
 inline Qt::BrushStyle QBrush::style() const { return d->style; }

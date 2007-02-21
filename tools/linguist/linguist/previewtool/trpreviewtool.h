@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2006-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 2006-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the Qt Linguist of the Qt Toolkit.
 **

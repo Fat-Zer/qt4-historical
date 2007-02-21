@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtOpenGL module of the Qt Toolkit.
 **
@@ -1290,8 +1290,16 @@ public:
     QGLTexture(const QGLContext *ctx, GLuint tx_id, qint64 _qt_id, bool _clean = false)
         : context(ctx), id(tx_id), qt_id(_qt_id), clean(_clean) {}
     ~QGLTexture() {
-        if (!context->isSharing())
+        if (!context->isSharing()) {
+            QGLContext *current = const_cast<QGLContext *>(QGLContext::currentContext());
+            QGLContext *ctx = const_cast<QGLContext *>(context);
+            bool switch_context = current && current != ctx;
+            if (switch_context)
+                ctx->makeCurrent();
             glDeleteTextures(1, &id);
+            if (switch_context)
+                current->makeCurrent();
+        }
      }
 
     const QGLContext *context;

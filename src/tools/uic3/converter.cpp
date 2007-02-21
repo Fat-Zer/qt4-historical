@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the tools applications of the Qt Toolkit.
 **
@@ -121,7 +121,7 @@ DomUI *Ui3Reader::generateUi4(const QDomElement &widget)
             author = n.firstChild().toText().data();
         } else if (tagName == QLatin1String("comment")) {
             comment = n.firstChild().toText().data();
-        } else if (tagName == QLatin1String("exportMacro")) {
+        } else if (tagName == QLatin1String("exportmacro")) {
             exportMacro = n.firstChild().toText().data();
         } else if ( n.tagName() == "includehints" ) {
             QDomElement n2 = n.firstChild().toElement();

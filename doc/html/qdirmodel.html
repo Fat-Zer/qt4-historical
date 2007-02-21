@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-mac-opensource-src-4.2.2/src/gui/itemviews/qdirmodel.cpp -->
+<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-mac-opensource-src-4.2.3/src/gui/itemviews/qdirmodel.cpp -->
 <head>
   <title>Qt 4.2: QDirModel Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -98,7 +98,7 @@
 <h2>Detailed Description</h2>
 <p>The QDirModel class provides a data model for the local filesystem.</p>
 <p>This class provides access to the local filesystem, providing functions for renaming and removing files and directories, and for creating new directories. In the simplest case, it can be used with a suitable display widget as part of a browser or filer.</p>
-<p>QDirModel does not store file information internally or cache file data.</p>
+<p>QDirModel keeps a cache with file information. The cache needs to be updated with <a href="qdirmodel.html#refresh">refresh</a>().</p>
 <p>A directory model that displays the contents of a default directory is usually constructed with a parent object:</p>
 <pre>     QDirModel *model = new QDirModel;</pre>
 <p>A tree view can be used to display the contents of the model</p>
@@ -185,7 +185,9 @@
 <p>Returns the icons for the item stored in the model under the given <i>index</i>.</p>
 <a name="//apple_ref/cpp/instm/QDirModel/fileInfo" />
 <h3 class="fn"><a name="fileInfo"></a><a href="qfileinfo.html">QFileInfo</a> QDirModel::fileInfo ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>index</i> ) const</h3>
-<p>Returns the file information for the model item <i>index</i>.</p>
+<p>Returns the file information for the specified model <i>index</i>.</p>
+<p><b>Note:</b> If the model index represents a symbolic link in the underlying filing system, the file information returned will contain information about the symbolic link itself, regardless of whether <a href="qdirmodel.html#resolveSymlinks-prop">resolveSymlinks</a> is enabled or not.</p>
+<p>See also <a href="qfileinfo.html#symLinkTarget">QFileInfo::symLinkTarget</a>().</p>
 <a name="//apple_ref/cpp/instm/QDirModel/fileName" />
 <h3 class="fn"><a name="fileName"></a><a href="qstring.html">QString</a> QDirModel::fileName ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>index</i> ) const</h3>
 <p>Returns the name of the item stored in the model under the <i>index</i> given.</p>
@@ -245,7 +247,7 @@
 <p>Reimplemented from <a href="qabstractitemmodel.html#parent">QAbstractItemModel</a>.</p>
 <a name="//apple_ref/cpp/instm/QDirModel/refresh" />
 <h3 class="fn"><a name="refresh"></a>void QDirModel::refresh ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>parent</i> = QModelIndex() )</h3>
-<p>Refreshes (rereads) the children of <i>parent</i>.</p>
+<p><a href="qdirmodel.html">QDirModel</a> caches file information. This function updates the cache. The <i>parent</i> parameter is the directory from which the model is updated; the default value will update the model from root directory of the file system (the entire model).</p>
 <a name="//apple_ref/cpp/instm/QDirModel/remove" />
 <h3 class="fn"><a name="remove"></a>bool QDirModel::remove ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>index</i> )</h3>
 <p>Removes the model item <i>index</i> from the directory model, returning true if successful. If the item cannot be removed, false is returned.</p>
@@ -293,8 +295,8 @@
 <p>See also <a href="qt.html#DropAction-enum">Qt::DropActions</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
 </tr></table></div></address></body>
 </html>

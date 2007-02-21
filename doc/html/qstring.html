@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-mac-opensource-src-4.2.2/src/corelib/tools/qstring.cpp -->
+<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-mac-opensource-src-4.2.3/src/corelib/tools/qstring.cpp -->
 <head>
   <title>Qt 4.2: QString Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -1623,7 +1623,7 @@
 <p>You can disable this operator by defining <tt>QT_NO_CAST_FROM_ASCII</tt> when you compile your applications. This can be useful if you want to ensure that all user-visible strings go through <a href="qobject.html#tr">QObject::tr</a>(), for example.</p>
 <a name="//apple_ref/cpp/instm/QString/operator[]" />
 <h3 class="fn"><a name="operator-5b-5d"></a>QCharRef QString::operator[] ( int <i>position</i> )</h3>
-<p>Returns the character at the specified <i>position</i> index as a modifiable reference.</p>
+<p>Returns the character at the specified <i>position</i> in the string as a modifiable reference.</p>
 <p>Example:</p>
 <pre>     QString str;
 
@@ -1633,9 +1633,9 @@
 <p>See also <a href="qstring.html#at">at</a>().</p>
 <h3 class="fn"><a name="operator-5b-5d-2"></a>const <a href="qchar.html">QChar</a> QString::operator[] ( int <i>position</i> ) const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
-<p>Returns the character at the specified <i>position</i> index as a modifiable reference. Equivalent to <tt>at(position)</tt>.</p>
 <h3 class="fn"><a name="operator-5b-5d-3"></a>QCharRef QString::operator[] ( <a href="qtglobal.html#uint-typedef">uint</a> <i>position</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
+<p>Returns the character at the specified <i>position</i> in the string as a modifiable reference. Equivalent to <tt>at(position)</tt>.</p>
 <h3 class="fn"><a name="operator-5b-5d-4"></a>const <a href="qchar.html">QChar</a> QString::operator[] ( <a href="qtglobal.html#uint-typedef">uint</a> <i>position</i> ) const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <hr />
@@ -1825,8 +1825,8 @@
 <p>Use <a href="qstring.html#toAscii">toAscii</a>().<a href="qstring.html#constData">constData</a>() instead.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
 </tr></table></div></address></body>
 </html>

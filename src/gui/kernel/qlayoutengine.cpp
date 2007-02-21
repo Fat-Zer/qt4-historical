@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -327,13 +327,15 @@ Q_GUI_EXPORT QSize qSmartMaxSize(const QWidgetItem *i, Qt::Alignment align)
     if (align & Qt::AlignHorizontal_Mask && align & Qt::AlignVertical_Mask)
         return QSize(QLAYOUTSIZE_MAX, QLAYOUTSIZE_MAX);
     QSize s = w->maximumSize();
+
+    QSize sh = w->sizeHint().expandedTo(w->minimumSizeHint());
     if (s.width() == QWIDGETSIZE_MAX && !(align & Qt::AlignHorizontal_Mask))
-        if (!(w->sizePolicy().horizontalPolicy() & QSizePolicy::GrowFlag))
-            s.setWidth(w->sizeHint().width());
+        if (!(w->sizePolicy().horizontalPolicy() & QSizePolicy::GrowFlag) && sh.width() != -1)
+            s.setWidth(sh.width());
 
     if (s.height() == QWIDGETSIZE_MAX && !(align & Qt::AlignVertical_Mask))
-        if (!(w->sizePolicy().verticalPolicy() & QSizePolicy::GrowFlag))
-            s.setHeight(w->sizeHint().height());
+        if (!(w->sizePolicy().verticalPolicy() & QSizePolicy::GrowFlag) && sh.height() != -1)
+            s.setHeight(sh.height());
 
     s = s.expandedTo(w->minimumSize());
 

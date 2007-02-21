@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-mac-opensource-src-4.2.2/src/corelib/tools/qrect.cpp -->
+<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-mac-opensource-src-4.2.3/src/corelib/tools/qrect.cpp -->
 <head>
   <title>Qt 4.2: QRectF Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -115,6 +115,7 @@
 <tr valign="top" class="even"><td><a href="qrectf.html#intersected">intersected</a>()</td><td><a href="qrectf.html#united">united</a>()</td></tr>
 </table></p>
 <p>The <a href="qrectf.html#isEmpty">isEmpty</a>() function returns true if the rectangle's width or height is less than, or equal to, 0. Note that an empty rectangle is not valid: The <a href="qrectf.html#isValid">isValid</a>() function returns true if both width and height is larger than 0. A null rectangle (<a href="qrectf.html#isNull">isNull</a>() == true) on the other hand, has both width and height set to 0.</p>
+<p>Note that due to the way <a href="qrect.html">QRect</a> and QRectF are defined, an empty QRectF is defined in essentially the same way as <a href="qrect.html">QRect</a>.</p>
 <p>Finally, QRectF objects can be streamed as well as compared.</p>
 <ul><li><a href="#rendering">Rendering</a></li>
 <li><a href="#coordinates">Coordinates</a></li>
@@ -205,13 +206,13 @@
 <p>See also <a href="qrectf.html#intersects">intersects</a>(), <a href="qrectf.html#united">united</a>(), and <a href="qrectf.html#operator-and-eq">operator&amp;=</a>().</p>
 <a name="//apple_ref/cpp/instm/QRectF/intersects" />
 <h3 class="fn"><a name="intersects"></a>bool QRectF::intersects ( const QRectF &amp; <i>rectangle</i> ) const</h3>
-<p>Returns true if this rectangle intersects with the given <i>rectangle</i> (i.e. there is at least one pixel that is within both rectangles), otherwise returns false.</p>
+<p>Returns true if this rectangle intersects with the given <i>rectangle</i> (i.e., there is at least one pixel that is within both rectangles), otherwise returns false.</p>
 <p>The intersection rectangle can be retrieved using the <a href="qrectf.html#intersected">intersected</a>() function.</p>
 <p>See also <a href="qrectf.html#contains">contains</a>().</p>
 <a name="//apple_ref/cpp/instm/QRectF/isEmpty" />
 <h3 class="fn"><a name="isEmpty"></a>bool QRectF::isEmpty () const</h3>
 <p>Returns true if the rectangle is empty, otherwise returns false.</p>
-<p>An empty rectangle has <a href="qrectf.html#width">width</a>() &lt;= 0 or <a href="qrectf.html#height">height</a>() &lt;= 0. An empty rectangle is not valid (i.e isEmpty() == !<a href="qrectf.html#isValid">isValid</a>()).</p>
+<p>An empty rectangle has <a href="qrectf.html#width">width</a>() &lt;= 0 or <a href="qrectf.html#height">height</a>() &lt;= 0. An empty rectangle is not valid (i.e., isEmpty() == !<a href="qrectf.html#isValid">isValid</a>()).</p>
 <p>Use the <a href="qrectf.html#normalized">normalized</a>() function to retrieve a rectangle where the corners are swapped.</p>
 <p>See also <a href="qrectf.html#isNull">isNull</a>(), <a href="qrectf.html#isValid">isValid</a>(), and <a href="qrectf.html#normalized">normalized</a>().</p>
 <a name="//apple_ref/cpp/instm/QRectF/isNull" />
@@ -222,7 +223,7 @@
 <a name="//apple_ref/cpp/instm/QRectF/isValid" />
 <h3 class="fn"><a name="isValid"></a>bool QRectF::isValid () const</h3>
 <p>Returns true if the rectangle is valid, otherwise returns false.</p>
-<p>A valid rectangle has a <a href="qrectf.html#width">width</a>() &gt; 0 and <a href="qrectf.html#height">height</a>() &gt; 0. Note that non-trivial operations like intersections are not defined for invalid rectangles. A valid rectangle is not empty (i.e. isValid() == !<a href="qrectf.html#isEmpty">isEmpty</a>()).</p>
+<p>A valid rectangle has a <a href="qrectf.html#width">width</a>() &gt; 0 and <a href="qrectf.html#height">height</a>() &gt; 0. Note that non-trivial operations like intersections are not defined for invalid rectangles. A valid rectangle is not empty (i.e., isValid() == !<a href="qrectf.html#isEmpty">isEmpty</a>()).</p>
 <p>See also <a href="qrectf.html#isNull">isNull</a>(), <a href="qrectf.html#isEmpty">isEmpty</a>(), and <a href="qrectf.html#normalized">normalized</a>().</p>
 <a name="//apple_ref/cpp/instm/QRectF/left" />
 <h3 class="fn"><a name="left"></a><a href="qtglobal.html#qreal-typedef">qreal</a> QRectF::left () const</h3>
@@ -273,7 +274,7 @@
 <p>See also <a href="qrectf.html#setTopRight">setTopRight</a>(), <a href="qrectf.html#moveTop">moveTop</a>(), and <a href="qrectf.html#moveRight">moveRight</a>().</p>
 <a name="//apple_ref/cpp/instm/QRectF/normalized" />
 <h3 class="fn"><a name="normalized"></a>QRectF QRectF::normalized () const</h3>
-<p>Returns a normalized rectangle; i.e. a rectangle that has a non-negative width and height.</p>
+<p>Returns a normalized rectangle; i.e., a rectangle that has a non-negative width and height.</p>
 <p>If <a href="qrectf.html#width">width</a>() &lt; 0 the function swaps the left and right corners, and it swaps the top and bottom corners if <a href="qrectf.html#height">height</a>() &lt; 0.</p>
 <p>See also <a href="qrectf.html#isValid">isValid</a>() and <a href="qrectf.html#isEmpty">isEmpty</a>().</p>
 <a name="//apple_ref/cpp/instm/QRectF/right" />
@@ -429,8 +430,8 @@
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
 </tr></table></div></address></body>
 </html>

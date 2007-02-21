@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the Qt3Support module of the Qt Toolkit.
 **
@@ -32,6 +32,8 @@
 #include "q3ptrdict.h"
 #include "qpointer.h"
 #include "q3valuelist.h"
+
+#include "qapplication.h"
 
 //#define Q3URLOPERATOR_DEBUG
 
@@ -1082,6 +1084,13 @@ void Q3UrlOperator::continueCopy( Q3NetworkOperation *op )
 	if ( op->state() != Q3NetworkProtocol::StFailed ) {
 	    pProt->addOperation( put );
 	    d->currPut = pProt;
+        if (rm) { // we need the result of the put operation
+            qApp->processEvents(); // process posted operations
+            if (put->state() == Q3NetworkProtocol::StFailed) {
+                deleteOperation( rm );
+                rm = 0;
+            }
+        }
 	} else {
 	    deleteOperation( put );
 	}

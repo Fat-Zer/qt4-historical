@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -150,7 +150,7 @@ struct QWExtra {
     uint explicitMinSize : 2;
     uint autoFillBackground : 1;
 
-    QStyle *style;
+    QPointer<QStyle> style;
     QString styleSheet;
 };
 
@@ -170,6 +170,7 @@ public:
 #endif
 #ifdef Q_WS_QWS
     QWindowSurface *currentWindowSurface();
+    void setMaxWindowState_helper();
 #endif
     void init(QWidget *desktopWidget, Qt::WindowFlags f);
     void create_sys(WId window, bool initializeWindow, bool destroyOldWindow);
@@ -299,6 +300,10 @@ public:
     void setWindowIconText_helper(const QString &cap);
     void setWindowTitle_sys(const QString &cap);
 
+#ifdef Q_OS_WIN
+    void grabMouseWhileInWindow();
+#endif
+
 #ifndef QT_NO_CURSOR
     void setCursor_sys(const QCursor &cursor);
     void unsetCursor_sys();
@@ -313,8 +318,8 @@ public:
 #endif
     void setWindowTitle_helper(const QString &cap);
 
-    bool setMinimumSize_helper(int minw, int minh);
-    bool setMaximumSize_helper(int maxw, int maxh);
+    bool setMinimumSize_helper(int &minw, int &minh);
+    bool setMaximumSize_helper(int &maxw, int &maxh);
     void setConstraints_sys();
 
 #if defined(Q_WS_QWS)

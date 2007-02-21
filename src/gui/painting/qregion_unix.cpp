@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -1012,7 +1012,8 @@ static void UnionRegion(const QRegionPrivate *reg1, const QRegionPrivate *reg2, 
       Empty region
     */
     if (isEmpty(reg1)) {
-        dest = *reg2;
+        if (!isEmpty(reg2))
+            dest = *reg2;
         return;
     }
     if (isEmpty(reg2)) {

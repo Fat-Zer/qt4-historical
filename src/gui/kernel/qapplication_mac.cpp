@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -1555,6 +1555,19 @@ QApplicationPrivate::globalEventProcessor(EventHandlerCallRef er, EventRef event
         break;
     case kEventClassMouse:
     {
+        static const int kEventParamQAppSeenMouseEvent = 'QASM';
+        // Check if we've seen the event, if we have we shouldn't process
+        // it again as it may lead to spurious "double events"
+        bool seenEvent;
+        if (GetEventParameter(event, kEventParamQAppSeenMouseEvent,
+                              typeBoolean, 0, sizeof(bool), 0, &seenEvent) == noErr) {
+            if (seenEvent)
+                return eventNotHandledErr;
+        }
+        seenEvent = true;
+        SetEventParameter(event, kEventParamQAppSeenMouseEvent, typeBoolean,
+                          sizeof(bool), &seenEvent);
+
         Point where;
         GetEventParameter(event, kEventParamMouseLocation, typeQDPoint, 0,
                           sizeof(where), 0, &where);

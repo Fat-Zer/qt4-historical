@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 2004-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 2004-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the example classes of the Qt Toolkit.
 **
@@ -37,8 +37,9 @@ HttpWindow::HttpWindow(QWidget *parent)
                                 "download."));
 
     downloadButton = new QPushButton(tr("Download"));
-    quitButton = new QPushButton(tr("Quit"));
     downloadButton->setDefault(true);
+    quitButton = new QPushButton(tr("Quit"));
+    quitButton->setAutoDefault(false);
 
     buttonBox = new QDialogButtonBox;
     buttonBox->addButton(downloadButton, QDialogButtonBox::ActionRole);

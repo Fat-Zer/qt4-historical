@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-mac-opensource-src-4.2.2/src/qt3support/text/q3textbrowser.cpp -->
+<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-mac-opensource-src-4.2.3/src/qt3support/text/q3textbrowser.cpp -->
 <head>
   <title>Qt 4.2: Q3TextBrowser Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -56,7 +56,7 @@
 <li><div class="fn"/>virtual void <b><a href="q3textbrowser.html#home">home</a></b> ()</li>
 <li><div class="fn"/>virtual void <b><a href="q3textbrowser.html#reload">reload</a></b> ()</li>
 <li><div class="fn"/>virtual void <b><a href="q3textbrowser.html#source-prop">setSource</a></b> ( const QString &amp; <i>name</i> )</li>
-<li><div class="fn"/>void <b><a href="q3textbrowser.html#setText-2">setText</a></b> ( const QString &amp; <i>txt</i> )</li>
+<li><div class="fn"/>void <b><a href="q3textbrowser.html#setText">setText</a></b> ( const QString &amp; <i>txt</i> )</li>
 </ul>
 <ul>
 <li><div class="fn"/>60 public slots inherited from <a href="q3textedit.html#public-slots">Q3TextEdit</a></li>
@@ -103,7 +103,7 @@
 <hr />
 <h2>Detailed Description</h2>
 <p>The Q3TextBrowser class provides a rich text browser with hypertext navigation.</p>
-<p>This class extends <a href="q3textedit.html">Q3TextEdit</a> (in read-only mode), adding some navigation functionality so that users can follow links in hypertext documents. The contents of <a href="q3textedit.html">Q3TextEdit</a> is set with <a href="q3textedit.html#text-prop">setText</a>(), but Q3TextBrowser has an additional function, <a href="q3textbrowser.html#source-prop">setSource</a>(), which makes it possible to set the text to a named document. The name is looked up in the text view's mime source factory. If a document name ends with an anchor (for example, &quot;<tt>#anchor&quot;</tt>), the text browser automatically scrolls to that position (using <a href="q3textedit.html#scrollToAnchor">scrollToAnchor</a>()). When the user clicks on a hyperlink, the browser will call <a href="q3textbrowser.html#source-prop">setSource</a>() itself, with the link's <tt>href</tt> value as argument. You can track the current source by connetion to the <a href="q3textbrowser.html#sourceChanged">sourceChanged</a>() signal.</p>
+<p>This class extends <a href="q3textedit.html">Q3TextEdit</a> (in read-only mode), adding some navigation functionality so that users can follow links in hypertext documents. The contents of <a href="q3textedit.html">Q3TextEdit</a> is set with <a href="q3textbrowser.html#setText">setText</a>(), but Q3TextBrowser has an additional function, <a href="q3textbrowser.html#source-prop">setSource</a>(), which makes it possible to set the text to a named document. The name is looked up in the text view's mime source factory. If a document name ends with an anchor (for example, &quot;<tt>#anchor&quot;</tt>), the text browser automatically scrolls to that position (using <a href="q3textedit.html#scrollToAnchor">scrollToAnchor</a>()). When the user clicks on a hyperlink, the browser will call <a href="q3textbrowser.html#source-prop">setSource</a>() itself, with the link's <tt>href</tt> value as argument. You can track the current source by connetion to the <a href="q3textbrowser.html#sourceChanged">sourceChanged</a>() signal.</p>
 <p>Q3TextBrowser provides <a href="q3textbrowser.html#backward">backward</a>() and <a href="q3textbrowser.html#forward">forward</a>() slots which you can use to implement Back and Forward buttons. The <a href="q3textbrowser.html#home">home</a>() slot sets the text to the very first document displayed. The <a href="q3textbrowser.html#linkClicked">linkClicked</a>() signal is emitted when the user clicks a link.</p>
 <p>By using <a href="q3textedit.html#setMimeSourceFactory">Q3TextEdit::setMimeSourceFactory</a>() you can provide your own subclass of <a href="q3mimesourcefactory.html">Q3MimeSourceFactory</a>. This makes it possible to access data from anywhere, for example from a network or from a database. See <a href="q3mimesourcefactory.html#data">Q3MimeSourceFactory::data</a>() for details.</p>
 <p>If you intend using the mime factory to read the data directly from the file system, you may have to specify the encoding for the file extension you are using. For example:</p>
@@ -119,7 +119,7 @@
 <p>This property holds the name of the displayed document.</p>
 <p>This is a an empty string if no document is displayed or if the source is unknown.</p>
 <p>Setting this property uses the <a href="q3textedit.html#mimeSourceFactory">mimeSourceFactory</a>() to lookup the named document. It also checks for optional anchors and scrolls the document accordingly.</p>
-<p>If the first tag in the document is <tt>&lt;qt type=detail&gt;</tt>, the document is displayed as a popup rather than as new document in the browser window itself. Otherwise, the document is displayed normally in the text browser with the text set to the contents of the named document with <a href="q3textedit.html#text-prop">setText</a>().</p>
+<p>If the first tag in the document is <tt>&lt;qt type=detail&gt;</tt>, the document is displayed as a popup rather than as new document in the browser window itself. Otherwise, the document is displayed normally in the text browser with the text set to the contents of the named document with <a href="q3textbrowser.html#setText">setText</a>().</p>
 <p>If you are using the filesystem access capabilities of the mime source factory, you must ensure that the factory knows about the encoding of specified files; otherwise no data will be available. The default factory handles a couple of common file extensions such as <tt>*.html</tt> and <tt>*.txt</tt> with reasonable defaults. See <a href="q3mimesourcefactory.html#data">Q3MimeSourceFactory::data</a>() for details.</p>
 <p>Access functions:</p>
 <ul>
@@ -173,8 +173,8 @@
 <a name="//apple_ref/cpp/instm/Q3TextBrowser/reload" />
 <h3 class="fn"><a name="reload"></a>void Q3TextBrowser::reload ()&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Reloads the current set source.</p>
-<h3 class="fn"><a name="setText-2"></a>void Q3TextBrowser::setText ( const <a href="qstring.html">QString</a> &amp; <i>txt</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
-<p>This is an overloaded member function, provided for convenience.</p>
+<a name="//apple_ref/cpp/instm/Q3TextBrowser/setText" />
+<h3 class="fn"><a name="setText"></a>void Q3TextBrowser::setText ( const <a href="qstring.html">QString</a> &amp; <i>txt</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Sets the text to <i>txt</i>.</p>
 <a name="//apple_ref/cpp/instm/Q3TextBrowser/sourceChanged" />
 <h3 class="fn"><a name="sourceChanged"></a>void Q3TextBrowser::sourceChanged ( const <a href="qstring.html">QString</a> &amp; <i>src</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
@@ -182,8 +182,8 @@
 <p>Source changes happen both programmatically when calling <a href="q3textbrowser.html#source-prop">setSource</a>(), <a href="q3textbrowser.html#forward">forward</a>(), backword() or <a href="q3textbrowser.html#home">home</a>() or when the user clicks on links or presses the equivalent key sequences.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
 </tr></table></div></address></body>
 </html>

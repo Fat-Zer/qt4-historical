@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtNetwork module of the Qt Toolkit.
 **
@@ -23,7 +23,8 @@
 
 //#define QTCPSOCKET_DEBUG
 
-/*! \class QTcpSocket
+/*! 
+    \class QTcpSocket
 
     \brief The QTcpSocket class provides a TCP socket.
 
@@ -39,10 +40,12 @@
     allows you to establish a TCP connection and transfer streams of
     data. See the QAbstractSocket documentation for details.
 
+    \bold{Note:} TCP sockets cannot be opened in QIODevice::Unbuffered mode.
+
     \sa QTcpServer, QUdpSocket, QFtp, QHttp, {Fortune Server Example},
         {Fortune Client Example}, {Threaded Fortune Server Example},
-	{Blocking Fortune Client Example}, {Loopback Example},
-	{Torrent Example}
+        {Blocking Fortune Client Example}, {Loopback Example},
+        {Torrent Example}
 */
 
 #include "qlist.h"

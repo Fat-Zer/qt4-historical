@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-mac-opensource-src-4.2.2/doc/src/examples/activeqt/dotnet.qdoc -->
+<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-mac-opensource-src-4.2.3/doc/src/examples/activeqt/dotnet.qdoc -->
 <head>
   <title>Qt 4.2: Dot Net Example (ActiveQt)</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -14,8 +14,10 @@
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">Dot Net Example (ActiveQt)<br /><small></small></h1>
 <p>The Dot Net example demonstrates how Qt objects can be used in a .NET environment, and how .NET objects can be used in a Qt environment.</p>
+<p>If you need to combine Qt and Win Forms widgets in the same application, you might want to use the higher-level</p>
+<p>{http://www.trolltech.com/products/qt/addon/solutions/catalog/4/Windows/qtwinforms/}{QtWinForms Solution} instead.</p>
 <p>Contents:</p>
-<ul><li><a href="#qt-vs-net">Qt vs .NET</a></li>
+<ul><li><a href="#qt-vs-net">Qt vs. .NET</a></li>
 <li><a href="#walkthrough-net-interop-with-mc-and-ijw">Walkthrough: .NET interop with MC++ and IJW</a></li>
 <li><a href="#walkthrough-net-com-interop-with-activeqt">Walkthrough: .NET/COM Interop with ActiveQt</a></li>
 <ul><li><a href="#starting-a-project">Starting a Project</a></li>
@@ -29,7 +31,7 @@
 </ul>
 </ul>
 <a name="qt-vs-net"></a>
-<h2>Qt vs .NET</h2>
+<h2>Qt vs. .NET</h2>
 <p>Qt is a C++ library and is compiled into traditional, native binaries that make full use of the performance provided by the runtime environment.</p>
 <p>One of the key concepts of .NET is the idea of &quot;intermediate language code&quot; - the source code is compiled into a bytecode format, and at runtime, that bytecode is executed in a virtual machine - the <i>Common Language Runtime</i> (CLR).</p>
 <p>Another key concept is that of <i>managed code</i>. This is essentially intermediate language code written in such a way that the CLR can take care of the memory management, i.e. the CLR will do automatic garbage collection, so the application code does not need to explicitly free the memory for unused objects.</p>
@@ -37,12 +39,12 @@
 <!-- <p>The .NET framework provides Platform Invocation Services - P/Invoke - that enable managed code to call native C (not C++) functions located in DLLs directly. The resulting application then becomes partially unmanaged.</p>
 --><p>The MS C++ compiler for .NET on the other hand, can produce both normal and managed code. To write a C++ class that can be compiled into managed code, the developer must flag the class as managed using the <tt>__gc</tt> keyword, and restrict the code to only use the subset of C++ known as &quot;Managed Extensions for C++&quot;, or MC++ for short. The advantage is that MC++ code can freely call and use normal C++ functions and classes. And it also works the other way around: normal C++ code can call managed functions and use managed classes (e.g. the entire .NET framework class library), including managed functions and classes implemented in C# or VB.NET. This feature of mixing managed and normal C++ code immensely eases the interoperability with .NET, and is by Microsoft referred to as the &quot;It Just Works&quot; (IJW) feature.</p>
 <p>This document demonstrates two different ways of integrating normal C++ code (that uses Qt) with managed .NET code. First, the manual way is presented, which includes using a thin MC++ wrapper class around the normal Qt/C++ class. Then, the automated way is presented, which utilizes the <a href="activeqt.html#activeqt">ActiveQt</a> framework as a generic bridge. The advantage of the first method is that it gives the application developer full control, while the second method requires less coding and relieves the developer of dealing with the conversion between managed and normal data objects.</p>
-<p>The impatient reader, who right away wants to see a <a href="qpushbutton.html">QPushButton</a> and a custom Qt widget (<a href="activeqt-multiple.html">QAxWidget2</a>) run in a .NET GUI application is referred to the example directory of <a href="activeqt.html#activeqt">ActiveQt</a>. It contains the result of this walkthrough using both C# and VB.NET, created with Visual Studio .NET (not 2003). Load <tt>examples/dotnet/walkthrough/csharp.csproj</tt>, <tt>examples/dotnet/walkthrough/vb.vbproj</tt> </p>
-<!-- <p>You will notice that in the generated code the following line is commented out:</p>
+<p>The impatient reader, who right away wants to see a <a href="qpushbutton.html">QPushButton</a> and a custom Qt widget (<a href="activeqt-multiple.html">QAxWidget2</a>) run in a .NET GUI application is referred to the example directory of <a href="activeqt.html#activeqt">ActiveQt</a>. It contains the result of this walkthrough using both C# and VB.NET, created with Visual Studio .NET (not 2003). Load <tt>examples/dotnet/walkthrough/csharp.csproj</tt>, <tt>examples/dotnet/walkthrough/vb.vbproj</tt> or <tt>examples/dotnet/wrapper/wrapper.sln</tt> into the IDE and run the solution.</p>
+<p><b>Remark:</b> You will notice that in the generated code the following line is commented out:</p>
 <pre> ' VB is case insensitive, but our C++ controls are not.
  ' Me.resetButton.enabled = True</pre>
 <p>This line is regenerated without comment whenever you change the dialog, in which case you have to comment it out again to be able to run the project. This is a bug in the original version of Visual Studio.NET, and is fixed in the 2003 edition.</p>
---> or <tt>examples/dotnet/wrapper/wrapper.sln</tt> into the IDE and run the solution.<a name="walkthrough-net-interop-with-mc-and-ijw"></a>
+<a name="walkthrough-net-interop-with-mc-and-ijw"></a>
 <h2>Walkthrough: .NET interop with MC++ and IJW</h2>
 <p>Normal C++ classes and functions can be used from managed .NET code by providing thin wrapper classes written in MC++. The wrapper class will take care of forwarding the calls to the normal C++ functions or methods, and converting parameter data as necessary. Since the wrapper class is a managed class, it can be used without further ado in any managed .NET application, whether written in C#, VB.NET, MC++ or other managed programming language.</p>
 <pre> ** This file is part of the example classes of the Qt Toolkit.
@@ -292,10 +294,11 @@
 <h3>Performance Considerations</h3>
 <p>Every call from CLR bytecode to native code implies a small performance hit, and necessary type conversions introduce an additional delay with every layer that exists between the two frameworks. Consequently every approach to mix .NET and native code should try to minimize the communication necessary between the different worlds.</p>
 <p>As <a href="activeqt.html#activeqt">ActiveQt</a> introduces three layers at once - the RCW, COM and finally <a href="activeqt.html#activeqt">ActiveQt</a> itself - the performance penalty when using the generic Qt/<a href="activeqt.html#activeqt">ActiveQt</a>/COM/RCW/.NET bridge is larger than when using a hand-crafted IJW-wrapper class. The execution speed however is still sufficient for connecting to and modifying interactive elements in a user interface, and as soon as the benefit of using Qt and C++ to implement and compile performance critical algorithms into native code kicks in, <a href="activeqt.html#activeqt">ActiveQt</a> becomes a valid choice for making even non-visual parts of your application accessible to .NET.</p>
+<p>See also <a href="http://www.trolltech.com/products/qt/addon/solutions/catalog/4/Windows/qtwinforms/">QtWinForms Solution</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
 </tr></table></div></address></body>
 </html>

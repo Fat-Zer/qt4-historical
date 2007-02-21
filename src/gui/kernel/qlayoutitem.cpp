@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -144,7 +144,11 @@ QSizePolicy::operator QVariant() const
 
 /*!
     Sets the alignment of this item to \a alignment.
-    Not all subclasses support alignment.
+
+    \bold{Note:} Item alignment is only supported by QLayoutItem subclasses
+    where it would have a visual effect. Except for QSpacerItem, which provides
+    blank space for layouts, all public Qt classes that inherit QLayoutItem
+    support item alignment.
 */
 void QLayoutItem::setAlignment(Qt::Alignment alignment)
 {
@@ -224,7 +228,7 @@ void QLayoutItem::setAlignment(Qt::Alignment alignment)
     to a layout, it is necessary to invalidate the layout in order for the
     spacer item's new size to take effect.
 
-    \sa QLayout::invalidate()
+    \sa QSpacerItem::invalidate()
 */
 void QSpacerItem::changeSize(int w, int h, QSizePolicy::Policy hPolicy,
                              QSizePolicy::Policy vPolicy)

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-mac-opensource-src-4.2.2/doc/src/porting4.qdoc -->
+<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-mac-opensource-src-4.2.3/doc/src/porting4.qdoc -->
 <head>
   <title>Qt 4.2: Porting to Qt 4</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -1561,7 +1561,7 @@
 <a name="qobject"></a>
 <h2>QObject</h2>
 <p><a href="qobject.html#children">QObject::children</a>() now returns a <a href="qobject.html#QObjectList-typedef">QObjectList</a> instead of a pointer to a <a href="qobject.html#QObjectList-typedef">QObjectList</a>. See also the comments on <a href="qobject.html#QObjectList-typedef">QObjectList</a> below.</p>
-<p>Use <a href="qobject.html#findChildren">QObject::findChildren</a>() (or qFindChildren() if you need MSVC 6 compatibility) instead of QObject::queryList(). For example:</p>
+<p>Use <a href="qobject.html#findChildren">QObject::findChildren</a>() (or <a href="qobject.html#qFindChildren">qFindChildren</a>() if you need MSVC 6 compatibility) instead of QObject::queryList(). For example:</p>
 <pre>     QList&lt;QWidget *&gt; myWidgets = qFindChildren&lt;QWidget *&gt;(myParent);</pre>
 <p>QObject::killTimers() has been removed because it was unsafe to use in subclass. (A subclass normally doesn't know whether the base class uses timers or not.)</p>
 <p>The <tt>QObject::name</tt> property has been renamed <a href="qobject.html#objectName-prop">QObject::objectName</a>.</p>
@@ -3157,8 +3157,8 @@
 </table></p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
 </tr></table></div></address></body>
 </html>

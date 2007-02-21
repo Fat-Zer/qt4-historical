@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -32,6 +32,12 @@
     \class QAbstractPrintDialog
     \brief The QAbstractPrintDialog class provides a base implementation for
     print dialogs used to configure printers.
+
+    This class implements getter and setter functions that are used to
+    customize settings shown in print dialogs, but it is not used directly.
+    Use QPrintDialog to display a print dialog in your application.
+
+    \sa QPrintDialog, QPrinter, {Printing with Qt}
 */
 
 /*!

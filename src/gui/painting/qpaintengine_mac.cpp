@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -303,6 +303,7 @@ QCoreGraphicsPaintEngine::begin(QPaintDevice *pdev)
     d->complexXForm = false;
 
     //initialization
+    d->cosmeticPenSize = 1;
     d->current.clipEnabled = false;
     d->pdev = pdev;
     d->hd = qt_mac_cg_context(pdev);
@@ -399,7 +400,7 @@ QCoreGraphicsPaintEngine::updatePen(const QPen &pen)
     Q_ASSERT(isActive());
     d->current.pen = pen;
     d->setStrokePen(pen);
-    d->cosmeticPen = pen.widthF() == 0;
+    d->cosmeticPen = (pen.widthF() == 0);
 }
 
 void
@@ -800,6 +801,12 @@ QCoreGraphicsPaintEngine::drawTiledPixmap(const QRectF &r, const QPixmap &pixmap
 void QCoreGraphicsPaintEngine::drawTextItem(const QPointF &pos, const QTextItem &item)
 {
     Q_D(QCoreGraphicsPaintEngine);
+#ifndef QMAC_NATIVE_GRADIENTS
+    if(painter()->pen().brush().gradient()) { //Just let the base engine "emulate" the gradient
+        QPaintEngine::drawTextItem(pos, item);
+        return;
+    }
+#endif
 
     const QTextItemInt &ti = static_cast<const QTextItemInt &>(item);
 
@@ -851,11 +858,11 @@ QPointF QCoreGraphicsPaintEnginePrivate::devicePixelSize(CGContextRef context)
 {
     CGPoint p1;  p1.x = 0;  p1.y = 0;
     CGPoint p2;  p2.x = 1;  p2.y = 1;
-   
+
 #if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4)
     if (QSysInfo::MacintoshVersion >= QSysInfo::MV_10_4) {
         const CGPoint convertedP1 = CGContextConvertPointToUserSpace(context, p1);
-        const CGPoint convertedP2 = CGContextConvertPointToUserSpace(context, p2);    
+        const CGPoint convertedP2 = CGContextConvertPointToUserSpace(context, p2);
         return QPointF(convertedP2.x - convertedP1.x, convertedP2.y - convertedP1.y);
     } else
 # endif

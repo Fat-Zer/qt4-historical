@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtSVG module of the Qt Toolkit.
 **
@@ -130,7 +130,6 @@ private:
 
     QSvgStyleSelector *m_selector;
 
-    int m_animStart;
     int m_animEnd;
 private:
     static QHash<QString, FactoryMethod> s_groupFactory;

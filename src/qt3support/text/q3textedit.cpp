@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the Qt3Support module of the Qt Toolkit.
 **
@@ -1361,7 +1361,7 @@ void Q3TextEdit::keyPressEvent(QKeyEvent *e)
                   !(e->state() & Qt::AltButton) &&
 #endif
                   !(e->state() & Qt::MetaButton) ||
-                 (((e->state()&Qt::ControlButton) | Qt::AltButton) == (Qt::ControlButton|Qt::AltButton))) &&
+                 (((e->state() & (Qt::ControlButton | Qt::AltButton))) == (Qt::ControlButton|Qt::AltButton))) &&
                  (!ascii || ascii >= 32 || e->text() == "\t")) {
                 clearUndoRedoInfo = false;
                 if (e->key() == Qt::Key_Tab) {
@@ -5491,7 +5491,7 @@ Q3PopupMenu *Q3TextEdit::createPopupMenu()
 
     \overload
 
-    Zooms in on the text by by making the base font size one point
+    Zooms in on the text by making the base font size one point
     larger and recalculating all font sizes to be the new size. This
     does not change the size of any images.
 
@@ -5503,7 +5503,7 @@ Q3PopupMenu *Q3TextEdit::createPopupMenu()
 
     \overload
 
-    Zooms out on the text by by making the base font size one point
+    Zooms out on the text by making the base font size one point
     smaller and recalculating all font sizes to be the new size. This
     does not change the size of any images.
 
@@ -5512,7 +5512,7 @@ Q3PopupMenu *Q3TextEdit::createPopupMenu()
 
 
 /*!
-    Zooms in on the text by by making the base font size \a range
+    Zooms in on the text by making the base font size \a range
     points larger and recalculating all font sizes to be the new size.
     This does not change the size of any images.
 

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the Qt3Support module of the Qt Toolkit.
 **
@@ -3716,7 +3716,7 @@ public:
     bounds.setRight(canvasbounds.right()/cs);
     bounds.setTop(canvasbounds.top()/cs);
     bounds.setBottom(canvasbounds.bottom()/cs);
-    bitmap = QImage(bounds.width(), bounds.height(), 1, 2, QImage::LittleEndian);
+    bitmap = QImage(bounds.width() + 1, bounds.height(), 1, 2, QImage::LittleEndian);
     pnt = 0;
 	bitmap.fill(0);
 #ifdef QCANVAS_POLYGONS_DEBUG

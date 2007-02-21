@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -568,8 +568,8 @@ QMacPasteboard::retrieveData(const QString &format, QVariant::Type) const
         QString c_flavor = c->flavorFor(format);
         if(!c_flavor.isEmpty()) {
             // Handle text/plain a little differently. Try handling Unicode first.
-            if(c_flavor == QLatin1String("public.utf8-plain-text")
-               && hasFlavor(QLatin1String("public.utf16-plain-text")))
+            if((c_flavor == QLatin1String("com.apple.traditional-mac-plain-text") || c_flavor == QLatin1String("public.utf8-plain-text")) &&
+               hasFlavor(QLatin1String("public.utf16-plain-text")))
                 c_flavor = QLatin1String("public.utf16-plain-text");
 
             QVariant ret;
@@ -594,12 +594,9 @@ QMacPasteboard::retrieveData(const QString &format, QVariant::Type) const
 #ifdef DEBUG_PASTEBOARD
                                 qDebug("  - %s [%s] (%s)", qPrintable(format), qPrintable(QCFString::toQString(flavor)), qPrintable(c->convertorName()));
 #endif
-
-                                // Need a copy since we'll be releasing the macBuffer
-                                buffer.detach();
+                                buffer.detach(); //detach since we release the macBuffer
                                 retList.append(buffer);
-                                // We've got the data for this flavor, skip to next element
-                                break;
+                                break; //skip to next element
                             }
                         }
                     } else {

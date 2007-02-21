@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtNetwork module of the Qt Toolkit.
 **
@@ -1520,13 +1520,16 @@ bool QSocks5SocketEngine::waitForRead(int msecs, bool *timedOut) const
         if (d->data->controlSocket->bytesAvailable())
             const_cast<QSocks5SocketEnginePrivate*>(d)->_q_controlSocketReadNotification();
 
-        while (!d->readNotificationActivated && d->data->controlSocket->waitForReadyRead(qt_timeout_value(msecs, stopWatch.elapsed()))) {
+        bool success = true;
+        while (!d->readNotificationActivated && (success = d->data->controlSocket->waitForReadyRead(qt_timeout_value(msecs, stopWatch.elapsed())))) {
             QSOCKS5_DEBUG << "looping";
         }
-        if (d->data->controlSocket->error() != QAbstractSocket::UnknownSocketError) {
+        if (!success) {
             setError(d->data->controlSocket->error(), d->data->controlSocket->errorString());
             if (timedOut && d->data->controlSocket->error() == QAbstractSocket::SocketTimeoutError)
                 *timedOut = true;
+            if (d->data->controlSocket->state() == QAbstractSocket::UnconnectedState)
+                d->readNotificationActivated = true;
         }
 #ifndef QT_NO_UDPSOCKET
     } else {

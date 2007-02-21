@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -362,6 +362,9 @@ void QDockWidgetPrivate::mousePressEvent(QMouseEvent *event)
 {
 #if !defined(QT_NO_MAINWINDOW)
     Q_Q(QDockWidget);
+
+    qApp->setActiveWindow(q);
+
     if (event->button() != Qt::LeftButton)
         return;
 
@@ -369,9 +372,6 @@ void QDockWidgetPrivate::mousePressEvent(QMouseEvent *event)
         return;
     // check if the tool window is movable... do nothing if it is not
     if (!::hasFeature(q, QDockWidget::DockWidgetMovable))
-        return;
-
-    if (!::hasFeature(q, QDockWidget::DockWidgetFloatable))
         return;
 
     if (qobject_cast<QMainWindow*>(q->parentWidget()) == 0)
@@ -425,7 +425,11 @@ void QDockWidgetPrivate::mouseMoveEvent(QMouseEvent *event)
             state->widgetItem = new QWidgetItem(q);
             state->ownWidgetItem = true;
         }
+#ifdef Q_OS_WIN
+        grabMouseWhileInWindow();
+#else
         q->grabMouse();
+#endif
         state->dragging = true;
     }
 
@@ -458,14 +462,19 @@ void QDockWidgetPrivate::mouseReleaseEvent(QMouseEvent *event)
             layout->plug(state->widgetItem, state->pathToGap);
         } else {
             layout->restore();
+            if (::hasFeature(q, QDockWidget::DockWidgetFloatable)) {
+                if (state->ownWidgetItem)
+                    delete state->widgetItem;
 
-            if (state->ownWidgetItem)
-                delete state->widgetItem;
-
-            q->setWindowFlags(Qt::FramelessWindowHint | Qt::Tool);
-            updateButtons();
-            resizer->setActive(QWidgetResizeHandler::Resize, true);
-            q->show();
+                q->setWindowFlags(Qt::FramelessWindowHint | Qt::Tool);
+                updateButtons();
+                resizer->setActive(QWidgetResizeHandler::Resize, true);
+                q->show();
+                qApp->setActiveWindow(q);
+            } else {
+                q->setFloating(false);
+                q->raise();
+            }
         }
     }
 

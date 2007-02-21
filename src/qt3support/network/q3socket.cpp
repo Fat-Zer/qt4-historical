@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the Qt3Support module of the Qt Toolkit.
 **
@@ -1180,12 +1180,13 @@ void Q3Socket::sn_read( bool force )
 	// event loop.
 	nread = d->socket->readBlock( buf, maxToRead ? QMIN((Q_LONG)sizeof(buf),maxToRead) : sizeof(buf) );
 	if ( nread == 0 ) {			// really closed
+            if ( !d->socket->isOpen() ) {
 #if defined(Q3SOCKET_DEBUG)
-	    qDebug( "Q3Socket (%s): sn_read: Connection closed", name() );
+                qDebug( "Q3Socket (%s): sn_read: Connection closed", name() );
 #endif
-	    // ### we should rather ask the socket device if it is closed
-	    d->connectionClosed();
-	    emit connectionClosed();
+                d->connectionClosed();
+                emit connectionClosed();
+            }
 	    Q3SocketPrivate::sn_read_alreadyCalled.removeRef( this );
 	    return;
 	} else {

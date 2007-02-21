@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -1635,7 +1635,7 @@ private:
 
 bool QTextHtmlStyleSelector::nodeNameEquals(NodePtr node, const QString& name) const
 {
-    return parser->at(node.id).tag == name;
+    return QString::compare(parser->at(node.id).tag, name, Qt::CaseInsensitive) == 0;
 }
 
 static inline int findAttribute(const QStringList &attributes, const QString &name)

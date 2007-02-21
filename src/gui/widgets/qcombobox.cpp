@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -99,7 +99,14 @@ QStyleOptionMenuItem QComboMenuDelegate::getStyleOption(const QStyleOptionViewIt
     menuOption.menuRect = option.rect;
     menuOption.rect = option.rect;
     extern QHash<QByteArray, QFont> *qt_app_fonts_hash();
-    menuOption.font = qt_app_fonts_hash()->value("QComboMenuItem", mCombo->font());
+    
+    // Make sure fonts set on the combo box also overrides the font for the popup menu.
+    if (mCombo->testAttribute(Qt::WA_SetFont))
+        menuOption.font = mCombo->font();
+     else
+        menuOption.font = qt_app_fonts_hash()->value("QComboMenuItem", mCombo->font());
+
+    menuOption.fontMetrics = QFontMetrics(menuOption.font);
     return menuOption;
 }
 
@@ -732,6 +739,16 @@ QComboBox::QComboBox(bool rw, QWidget *parent, const char *name)
     setCompleter() and whether or not the user can add duplicates
     is set with setDuplicatesEnabled().
 
+    QComboBox uses the \l{Model/View Programming}{model/view
+    framework} for its popup list and to store its items.  By default
+    a QStandardItemModel stores the items and a QListView subclass
+    displays the popuplist. You can access the model and view directly
+    (with model() and view()), but QComboBox also provides functions
+    to set and get item data (e.g., setItemData() and itemText()). You
+    can also set a new model and view (with setModel() and setView()).
+    For the text and icon in the combobox label, the data in the model
+    that has the Qt::DisplayRole and Qt::DecorationRole is used.
+
     \image qstyle-comboboxes.png Comboboxes in the different built-in styles.
 
     \sa QLineEdit, QSpinBox, QRadioButton, QButtonGroup,
@@ -924,7 +941,12 @@ void QComboBoxPrivate::_q_returnPressed()
         // check for duplicates (if not enabled) and quit
         int index = -1;
         if (!duplicatesEnabled) {
+            // Base how duplicates are determined on the autocompletion case sensitivity
             Qt::MatchFlags flags = Qt::MatchFixedString;
+#ifndef QT_NO_COMPLETER
+            if (!lineEdit->completer() || lineEdit->completer()->caseSensitivity() == Qt::CaseSensitive)
+#endif
+                flags |= Qt::MatchCaseSensitive;
             index = q->findText(text, flags);
             if (index != -1) {
                 q->setCurrentIndex(index);
@@ -2610,7 +2632,10 @@ void QComboBox::setFrame(bool enable)
 
 /*!
     \property QComboBox::modelColumn
-    \brief the column in the model that is visible
+    \brief the column in the model that is visible.
+
+    If set prior to populating the combobox, the popup view will
+    not be affected and will show the first column.
 */
 int QComboBox::modelColumn() const
 {

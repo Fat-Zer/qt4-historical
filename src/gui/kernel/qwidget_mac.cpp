@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -172,14 +172,17 @@ Q_GUI_EXPORT HIViewRef qt_mac_hiview_for(const QWidget *w)
 {
     return (HIViewRef)w->data->winid;
 }
+
 Q_GUI_EXPORT HIViewRef qt_mac_hiview_for(WindowPtr w)
 {
     HIViewRef ret = 0;
-    OSStatus err = HIViewFindByID(HIViewGetRoot(w), kHIViewWindowContentID, &ret);
-    if(err == errUnknownControl)
+    OSStatus err = GetRootControl(w, &ret);  // Returns the window's content view (Apple QA1214)
+    if (err == errUnknownControl) {
         ret = HIViewGetRoot(w);
-    else if(err != noErr)
-        qWarning("That cannot happen! %d [%ld]", __LINE__, err);
+    } else if (err != noErr) {
+        qWarning("Qt:Could not get content or root view of window! %s:%d [%ld]",
+                 __FILE__, __LINE__, err);
+    }
     return ret;
 }
 
@@ -217,6 +220,22 @@ static void qt_mac_release_window_group(WindowGroupRef group)
 }
 #define ReleaseWindowGroup(x) Are you sure you wanted to do that? (you wanted qt_mac_release_window_group)
 
+SInt32 qt_mac_get_group_level(WindowClass wclass)
+{
+    SInt32 group_level;
+#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4
+    if (QSysInfo::MacintoshVersion >= QSysInfo::MV_10_4) {
+        CGWindowLevel tmpLevel;
+        GetWindowGroupLevelOfType(GetWindowGroupOfClass(wclass), kWindowGroupLevelActive, &tmpLevel);
+        group_level = tmpLevel;
+    } else
+#endif
+    {
+        GetWindowGroupLevel(GetWindowGroupOfClass(wclass), &group_level);
+    }
+    return group_level;
+}
+
 /* We create one static stays on top window group so that all stays on top (aka popups) will
    fall into the same group and be able to be raise()'d with releation to one another (from
    within the same window group). */
@@ -225,12 +244,8 @@ static WindowGroupRef qt_mac_get_stays_on_top_group(Qt::WindowType type)
     WindowGroupRef group = 0;
     if(!qt_mac_stays_on_top()->contains(type)) {
         CreateWindowGroup(kWindowActivationScopeNone, &group);
-        int group_level = kCGNormalWindowLevel;
-        if(type == Qt::Dialog)
-            group_level += 1;
-        else if(type == Qt::Popup)
-            group_level += 2;
-        SetWindowGroupLevel(group, group_level);
+        int addition = (type == Qt::Popup || type == Qt::ToolTip) ? 1 : 0;
+        SetWindowGroupLevel(group, qt_mac_get_group_level(kOverlayWindowClass) + addition);
         SetWindowGroupParent(group, GetWindowGroupOfClass(kAllWindowClasses));
         qt_mac_stays_on_top()->insert(type, group);
     } else {
@@ -326,6 +341,7 @@ static OSStatus qt_mac_create_window(WindowClass wclass, WindowAttributes wattr,
 
 // window events
 static EventTypeSpec window_events[] = {
+    { kEventClassWindow, kEventWindowClose },
     { kEventClassWindow, kEventWindowGetRegion },
     { kEventClassMouse, kEventMouseDown },
     { kEventClassMouse, kEventMouseUp }
@@ -348,8 +364,16 @@ OSStatus QWidgetPrivate::qt_window_event(EventHandlerCallRef er, EventRef event,
     bool handled_event = true;
     UInt32 ekind = GetEventKind(event), eclass = GetEventClass(event);
     switch(eclass) {
-    case kEventClassWindow:
-        if(ekind == kEventWindowGetRegion) {
+    case kEventClassWindow: {
+        WindowRef wid = 0;
+        GetEventParameter(event, kEventParamDirectObject, typeWindowRef, 0,
+                          sizeof(WindowRef), 0, &wid);
+        QWidget *widget = qt_mac_find_window(wid);
+        if(!widget) {
+            handled_event = false;
+        } else if(ekind == kEventWindowClose) {
+            widget->d_func()->close_helper(QWidgetPrivate::CloseWithSpontaneousEvent);
+        } else if(ekind == kEventWindowGetRegion) {
             WindowRef window;
             GetEventParameter(event, kEventParamDirectObject, typeWindowRef, 0,
                               sizeof(window), 0, &window);
@@ -365,7 +389,7 @@ OSStatus QWidgetPrivate::qt_window_event(EventHandlerCallRef er, EventRef event,
         } else {
             handled_event = false;
         }
-        break;
+        break; }
     case kEventClassMouse: {
 #if 0
         return SendEventToApplication(event);
@@ -1110,8 +1134,11 @@ void QWidgetPrivate::createWindow_sys()
     QTLWExtra *topExtra = topData();
     quint32 wattr = topExtra->wattr;
 
-    if(parentWidget && (parentWidget->window()->windowFlags() & Qt::WindowStaysOnTopHint)) // If our parent has Qt::WStyle_StaysOnTop, so must we
+    if (parentWidget && (parentWidget->window()->windowFlags() & Qt::WindowStaysOnTopHint)) // If our parent has Qt::WStyle_StaysOnTop, so must we
         flags |= Qt::WindowStaysOnTopHint;
+    else if (type == Qt::Popup | type == Qt::ToolTip)
+        flags |= Qt::WindowStaysOnTopHint;
+
     if (0 && q->testAttribute(Qt::WA_ShowModal)  // ### Look at this, again!
             && !(flags & Qt::CustomizeWindowHint)
         && !(desktop || type == Qt::Popup)) {
@@ -1328,7 +1355,7 @@ void QWidgetPrivate::create_sys(WId window, bool initializeWindow, bool destroyO
             parentWidget->createWinId();
             parent = qt_mac_hiview_for(parentWidget);
         }
-        if(parent)
+        if(parent != hiview)
             HIViewAddSubview(parent, hiview);
         if(transfer)
             transferChildren();
@@ -2014,6 +2041,7 @@ void QWidgetPrivate::stackUnder_sys(QWidget *w)
 void QWidgetPrivate::setWSGeometry(bool dontShow)
 {
     Q_Q(QWidget);
+    Q_ASSERT(q->testAttribute(Qt::WA_WState_Created));
 
     /*
       There are up to four different coordinate systems here:
@@ -2187,14 +2215,29 @@ void QWidgetPrivate::setGeometry_sys(int x, int y, int w, int h, bool isMove)
         //update the widget also..
         bool isMetal = q->testAttribute(Qt::WA_MacMetalStyle);
         HIRect bounds = CGRectMake(0, 0, w, h);
-        HIViewSetFrame(qt_mac_hiview_for(q), &bounds);
+        HIViewRef hiview = qt_mac_hiview_for(q);
+        WindowRef window = qt_mac_window_for(q);
 
+        // Make sure that someone hasn't wrapped the content view as a QWidget.
+        // If they have keep its origin "correct" until the window is visible,
+        // then it doesn't matter anymore apparently.
+        HIViewID widgetID;
+        GetControlID(hiview, &widgetID);
+        if (widgetID.signature == kHIViewWindowContentID.signature
+            && widgetID.id == kHIViewWindowContentID.id && !IsWindowVisible(window)) {
+            HIRect currFrame;
+            HIViewGetFrame(hiview, &currFrame);
+            bounds.origin.x = currFrame.origin.x;
+            bounds.origin.y = currFrame.origin.y;
+        }
+
+        HIViewSetFrame(hiview, &bounds);
         Rect r; SetRect(&r, x, y, x+w, y+h);
         if (!isMetal)
-            HIViewSetDrawingEnabled(qt_mac_hiview_for(q), false);
-        SetWindowBounds(qt_mac_window_for(q), kWindowContentRgn, &r);
+            HIViewSetDrawingEnabled(hiview, false);
+        SetWindowBounds(window, kWindowContentRgn, &r);
         if (!isMetal)
-            HIViewSetDrawingEnabled(qt_mac_hiview_for(q), true);
+            HIViewSetDrawingEnabled(hiview, true);
     } else {
         setWSGeometry();
     }

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -77,6 +77,8 @@ public:
     QList<QGraphicsItem *> newItems;
     QSet<QGraphicsItem *> selectedItems;
     QList<QGraphicsItem *> allItems;
+    QList<QGraphicsItem *> pendingUpdateItems;
+    void _q_updateLater();
     QList<int> freeItemIndexes;
     bool purgePending;
     void _q_removeItemLater(QGraphicsItem *item);

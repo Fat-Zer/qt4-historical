@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -250,11 +250,14 @@ static inline const QRect qt_qrectForHIRect(const HIRect &hirect)
 inline bool qt_mac_is_metal(const QWidget *w)
 {
     for (; w; w = w->parentWidget()) {
-        if (w->d_func()->isOpaque())
-            break;
         if (w->testAttribute(Qt::WA_MacMetalStyle))
             return true;
-        if (w->isWindow())
+        if (w->isWindow() && w->testAttribute(Qt::WA_WState_Created)) {  // If not created will fall through to the opaque check and be fine anyway.
+            WindowAttributes currentAttributes;
+            GetWindowAttributes(qt_mac_window_for(w), &currentAttributes);
+            return (currentAttributes & kWindowMetalAttribute);
+        }
+        if (w->d_func()->isOpaque())
             break;
     }
     return false;
@@ -1629,7 +1632,18 @@ int QMacStyle::pixelMetric(PixelMetric metric, const QStyleOption *opt, const QW
         ret = 0;
         break;
     case PM_TabBarBaseOverlap:
-        ret = 11;
+        switch (qt_aqua_size_constrain(widget)) {
+        case QAquaSizeUnknown:
+        case QAquaSizeLarge:
+            ret = 11;
+            break;
+        case QAquaSizeSmall:
+            ret = 8;
+            break;
+        case QAquaSizeMini:
+            ret = 7;
+            break;
+        }
         break;
     case PM_ScrollBarExtent: {
         switch (qt_aqua_size_constrain(widget)) {
@@ -2841,7 +2855,19 @@ void QMacStyle::drawControl(ControlElement ce, const QStyleOption *opt, QPainter
                 tdi.version = 1;
                 tdi.style = kThemeTabNonFront;
                 tdi.direction = getTabDirection(tabOpt->shape);
-                tdi.size = kHIThemeTabSizeNormal;
+                switch (qt_aqua_size_constrain(w)) {
+                default:
+                case QAquaSizeUnknown:
+                case QAquaSizeLarge:
+                    tdi.size = kHIThemeTabSizeNormal;
+                    break;
+                case QAquaSizeSmall:
+                    tdi.size = kHIThemeTabSizeSmall;
+                    break;
+                case QAquaSizeMini:
+                    tdi.size = kHIThemeTabSizeMini;
+                    break;
+                }
                 bool verticalTabs = tdi.direction == kThemeTabWest || tdi.direction == kThemeTabEast;
                 QRect tabRect = tabOpt->rect;
 
@@ -2928,14 +2954,64 @@ void QMacStyle::drawControl(ControlElement ce, const QStyleOption *opt, QPainter
             QStyleOptionTabV2 myTab = *tab;
             ThemeTabDirection ttd = getTabDirection(myTab.shape);
             bool verticalTabs = ttd == kThemeTabWest || ttd == kThemeTabEast;
-            myTab.rect.setHeight(myTab.rect.height() - 1);
-            if (verticalTabs) {
+
+            // Check to see if we use have the same as the system font
+            // (QComboMenuItem is internal and should never be seen by the
+            // outside world, unless they read the source, in which case, it's
+            // their own fault).
+            bool nonDefaultFont = p->font() != qt_app_fonts_hash()->value("QComboMenuItem");
+            if (verticalTabs || nonDefaultFont) {
+                int heightOffset = 0;
+                if (verticalTabs) {
+                    heightOffset = -1;
+                } else if (nonDefaultFont) {
+                    if (p->fontMetrics().height() == myTab.rect.height())
+                        heightOffset = 2;
+                }
+                myTab.rect.setHeight(myTab.rect.height() + heightOffset);
+                if (verticalTabs) {
+                    p->save();
+                    p->translate((ttd == kThemeTabWest) ? -2 : 0, 0);
+                }
+                QCommonStyle::drawControl(ce, &myTab, p, w);
+                if (verticalTabs)
+                    p->restore();
+            } else {
                 p->save();
-                p->translate((ttd == kThemeTabWest) ? -2 : 0, 0);
-            }
-            QCommonStyle::drawControl(ce, &myTab, p, w);
-            if (verticalTabs)
+                CGContextSetShouldAntialias(cg, true);
+                CGContextSetShouldSmoothFonts(cg, true);
+                HIThemeTextInfo tti;
+                tti.version = qt_mac_hitheme_version;
+                tti.state = tds;
+                QColor textColor = myTab.palette.windowText().color();
+                float colorComp[] = { textColor.redF(), textColor.greenF(),
+                                      textColor.blueF(), textColor.alphaF() };
+                CGContextSetFillColorSpace(cg, QCFType<CGColorSpaceRef>(CGColorSpaceCreateDeviceRGB()));
+                CGContextSetFillColor(cg, colorComp);
+                switch (qt_aqua_size_constrain(w)) {
+                default:
+                case QAquaSizeUnknown:
+                case QAquaSizeLarge:
+                    tti.fontID = kThemeSystemFont;
+                    break;
+                case QAquaSizeSmall:
+                    tti.fontID = kThemeSmallSystemFont;
+                    break;
+                case QAquaSizeMini:
+                    tti.fontID = kThemeMiniSystemFont;
+                    break;
+                }
+                tti.horizontalFlushness = kHIThemeTextHorizontalFlushCenter;
+                tti.verticalFlushness = kHIThemeTextVerticalFlushCenter;
+                tti.options = verticalTabs ? kHIThemeTextBoxOptionStronglyVertical : kHIThemeTextBoxOptionNone;
+                tti.truncationPosition = kHIThemeTextTruncationNone;
+                tti.truncationMaxLines = 1 + myTab.text.count(QLatin1Char('\n'));
+                QCFString tabText = removeMnemonics(myTab.text);
+                QRect r = myTab.rect.adjusted(0, 0, 0, -1);
+                HIRect bounds = qt_hirectForQRect(r);
+                HIThemeDrawTextBox(tabText, &bounds, &tti, cg, kHIThemeOrientationNormal);
                 p->restore();
+            }
         }
         break;
     case CE_DockWidgetTitle:
@@ -4483,16 +4559,55 @@ QSize QMacStyle::sizeFromContents(ContentsType ct, const QStyleOption *opt,
     case QStyle::CT_SpinBox:
         sz.setWidth(sz.width() + macSpinBoxSep);
         break;
-    case QStyle::CT_TabBarTab: {
+    case QStyle::CT_TabBarTab:
+        if (const QStyleOptionTab *tab = qstyleoption_cast<const QStyleOptionTab *>(opt)) {
             bool newStyleTabs =
 #if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4)
                 QSysInfo::MacintoshVersion >= QSysInfo::MV_10_4 ? true :
 #endif
                 false;
-            if (!newStyleTabs) {
+            const QAquaWidgetSize AquaSize = qt_aqua_size_constrain(widget);
+            const bool differentFont = widget && widget->testAttribute(Qt::WA_SetFont);
+            ThemeTabDirection ttd = getTabDirection(tab->shape);
+            bool vertTabs = ttd == kThemeTabWest || ttd == kThemeTabEast;
+            if (vertTabs)
+                sz.transpose();
+            if (newStyleTabs) {
+                int defaultTabHeight;
+                int defaultExtraSpace;
+                QFontMetrics fm = opt->fontMetrics;
+                switch (AquaSize) {
+                case QAquaSizeUnknown:
+                case QAquaSizeLarge:
+                    defaultTabHeight = 21;
+                    defaultExtraSpace = 24;
+                    break;
+                case QAquaSizeSmall:
+                    defaultTabHeight = 18;
+                    defaultExtraSpace = 20;
+                    fm = QFontMetrics(qt_app_fonts_hash()->value("QToolButton"));
+                    break;
+                case QAquaSizeMini:
+                    fm = QFontMetrics(qt_app_fonts_hash()->value("QMiniPushButton"));
+                    defaultTabHeight = 16;
+                    defaultExtraSpace = 16;
+                    break;
+                }
+
+                if (differentFont || !tab->icon.isNull()) {
+                    sz.rheight() = qMax(defaultTabHeight, sz.height());
+                } else {
+                    QSize textSize = fm.size(Qt::TextShowMnemonic, tab->text);
+                    sz.rheight() = qMax(defaultTabHeight, textSize.height());
+                    sz.rwidth() = textSize.width() + defaultExtraSpace;
+                }
+                if (vertTabs)
+                    sz.transpose();
+            } else {
                 SInt32 tabh = sz.height();
                 SInt32 overlap = 0;
-                switch (qt_aqua_size_constrain(widget)) {
+                switch (AquaSize) {
+                default:
                 case QAquaSizeUnknown:
                 case QAquaSizeLarge:
                     GetThemeMetric(kThemeLargeTabHeight, &tabh);
@@ -4505,16 +4620,14 @@ QSize QMacStyle::sizeFromContents(ContentsType ct, const QStyleOption *opt,
                 case QAquaSizeSmall:
                     GetThemeMetric(kThemeSmallTabHeight, &tabh);
                     GetThemeMetric(kThemeMetricSmallTabFrameOverlap, &overlap);
-                default:
-                     break;
+                    break;
                 }
                 tabh += overlap;
                 if (sz.height() < tabh)
                     sz.rheight() = tabh;
-            } else {
-                QWindowsStyle::sizeFromContents(ct, opt, csz, widget);
             }
-        break; }
+        }
+        break;
     case QStyle::CT_PushButton:
         sz = QWindowsStyle::sizeFromContents(ct, opt, csz, widget);
         sz = QSize(sz.width() + 16, sz.height()); // No idea why, but it was in the old style.

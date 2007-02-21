@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtSql module of the Qt Toolkit.
 **
@@ -121,6 +121,7 @@ public:
     QSqlRecord baseRec; // the record without relations
     void clearChanges();
     void clearEditBuffer();
+    void clearCache();
     void revertCachedRow(int row);
 
     void translateFieldNames(int row, QSqlRecord &values) const;
@@ -173,6 +174,17 @@ int QSqlRelationalTableModelPrivate::nameToIndex(const QString &name) const
 void QSqlRelationalTableModelPrivate::clearEditBuffer()
 {
     editBuffer = baseRec;
+}
+
+/*!
+    \reimp
+*/
+void QSqlRelationalTableModelPrivate::clearCache()
+{
+    for (int i = 0; i < relations.count(); ++i)
+        relations[i].displayValues.clear();
+
+    QSqlTableModelPrivate::clearCache();
 }
 
 /*!
@@ -235,6 +247,7 @@ void QSqlRelationalTableModelPrivate::clearEditBuffer()
     Notes:
 
     \list
+    \o The table must have a primary key declared.
     \o The table's primary key may not contain a relation to
        another table.
     \o If a relational table contains keys that refer to non-existent

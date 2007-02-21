@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the Qt Designer of the Qt Toolkit.
 **
@@ -76,6 +76,7 @@ private:
     void updateEditor();
     void moveColumnsLeft(int fromColumn, int toColumn);
     void moveColumnsRight(int fromColumn, int toColumn);
+    void closeEditors();
 
     Ui::TreeWidgetEditor ui;
     QDesignerFormWindowInterface *m_form;

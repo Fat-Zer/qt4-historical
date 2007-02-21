@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-mac-opensource-src-4.2.2/src/corelib/kernel/qabstractitemmodel.cpp -->
+<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-mac-opensource-src-4.2.3/src/corelib/kernel/qabstractitemmodel.cpp -->
 <head>
   <title>Qt 4.2: QAbstractItemModel Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -154,7 +154,7 @@
 <li>A <a href="qabstractitemmodel.html#removeColumns">removeColumns</a>() implementation must call <a href="qabstractitemmodel.html#beginRemoveColumns">beginRemoveColumns</a>() <i>before</i> the columns are removed from the data structure, and it must call <a href="qabstractitemmodel.html#endRemoveColumns">endRemoveColumns</a>() <i>immediately afterwards</i>.</li>
 </ul>
 <p>The <i>private</i> signals that these functions emit give attached components the chance to take action before any data becomes unavailable. The encapsulation of the insert and remove operations with these begin and end functions also enables the model to manage <a href="qpersistentmodelindex.html">persistent model indexes</a> correctly. <b>If you want selections to be handled properly, you must ensure that you call these functions.</b></p>
-<p>See also <a href="model-view-programming.html">Model/View Programming</a>, <a href="qmodelindex.html">QModelIndex</a>, <a href="qabstractitemview.html">QAbstractItemView</a>, <a href="model-view-dnd.html">Using Drag and Drop with Item Views</a>, <a href="itemviews-simpledommodel.html">Simple DOM Model Example</a>, and <a href="itemviews-simpletreemodel.html">Simple Tree Model Example</a>.</p>
+<p>See also <a href="model-view-model.html">Model Classes</a>, <a href="model-view-model-subclassing.html">Model Subclassing Reference</a>, <a href="qmodelindex.html">QModelIndex</a>, <a href="qabstractitemview.html">QAbstractItemView</a>, <a href="model-view-dnd.html">Using Drag and Drop with Item Views</a>, <a href="itemviews-simpledommodel.html">Simple DOM Model Example</a>, and <a href="itemviews-simpletreemodel.html">Simple Tree Model Example</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
 <a name="//apple_ref/cpp/instm/QAbstractItemModel/QAbstractItemModel" />
@@ -269,6 +269,7 @@
 <a name="//apple_ref/cpp/instm/QAbstractItemModel/createIndex" />
 <h3 class="fn"><a name="createIndex"></a><a href="qmodelindex.html">QModelIndex</a> QAbstractItemModel::createIndex ( int <i>row</i>, int <i>column</i>, void * <i>ptr</i> = 0 ) const&nbsp;&nbsp;<tt> [protected]</tt></h3>
 <p>Creates a model index for the given <i>row</i> and <i>column</i> with the internal pointer <i>ptr</i>.</p>
+<p>Note that when you are using a <a href="qsortfilterproxymodel.html">QSortFilterProxyModel</a> it's indexes have their own internal pointer. It is not advisable to access the internal pointer in the index outside of the model. Use the <a href="qabstractitemmodel.html#data">data</a>() function instead.</p>
 <p>This function provides a consistent interface that model subclasses must use to create model indexes.</p>
 <h3 class="fn"><a name="createIndex-3"></a><a href="qmodelindex.html">QModelIndex</a> QAbstractItemModel::createIndex ( int <i>row</i>, int <i>column</i>, <a href="qtglobal.html#quint32-typedef">quint32</a> <i>id</i> ) const&nbsp;&nbsp;<tt> [protected]</tt></h3>
 <p>This is an overloaded member function, provided for convenience.</p>
@@ -285,8 +286,10 @@
 <p>See also <a href="qabstractitemmodel.html#headerDataChanged">headerDataChanged</a>(), <a href="qabstractitemmodel.html#setData">setData</a>(), and <a href="qabstractitemmodel.html#layoutChanged">layoutChanged</a>().</p>
 <a name="//apple_ref/cpp/instm/QAbstractItemModel/dropMimeData" />
 <h3 class="fn"><a name="dropMimeData"></a>bool QAbstractItemModel::dropMimeData ( const <a href="qmimedata.html">QMimeData</a> * <i>data</i>, <a href="qt.html#DropAction-enum">Qt::DropAction</a> <i>action</i>, int <i>row</i>, int <i>column</i>, const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>parent</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>Handles the <i>data</i> supplied by a drag and drop operation that ended with the given <i>action</i>. Although the specified <i>row</i>, <i>column</i> and <i>parent</i> indicate the location of an item in the model where the operation ended, it is the responsibility of the view to provide a suitable location for where the data should be inserted.</p>
+<p>Handles the <i>data</i> supplied by a drag and drop operation that ended with the given <i>action</i>. Returns true if the data and action can be handled by the model; otherwise returns false.</p>
+<p>Although the specified <i>row</i>, <i>column</i> and <i>parent</i> indicate the location of an item in the model where the operation ended, it is the responsibility of the view to provide a suitable location for where the data should be inserted.</p>
 <p>For instance, a drop action on an item in a <a href="qtreeview.html">QTreeView</a> can result in new items either being inserted as children of the item specified by <i>row</i>, <i>column</i>, and <i>parent</i>, or as siblings of the item.</p>
+<p>Returns true if the dropping was successful otherwise false.</p>
 <p>See also <a href="qabstractitemmodel.html#supportedDropActions">supportedDropActions</a>() and <a href="model-view-dnd.html">Using Drag and Drop with Item Views</a>.</p>
 <a name="//apple_ref/cpp/instm/QAbstractItemModel/endInsertColumns" />
 <h3 class="fn"><a name="endInsertColumns"></a>void QAbstractItemModel::endInsertColumns ()&nbsp;&nbsp;<tt> [protected]</tt></h3>
@@ -476,7 +479,7 @@
 <p>See also <a href="qt.html#ItemDataRole-enum">Qt::ItemDataRole</a>, <a href="qabstractitemmodel.html#data">data</a>(), and <a href="qabstractitemmodel.html#itemData">itemData</a>().</p>
 <a name="//apple_ref/cpp/instm/QAbstractItemModel/setHeaderData" />
 <h3 class="fn"><a name="setHeaderData"></a>bool QAbstractItemModel::setHeaderData ( int <i>section</i>, <a href="qt.html#Orientation-enum">Qt::Orientation</a> <i>orientation</i>, const <a href="qvariant.html">QVariant</a> &amp; <i>value</i>, int <i>role</i> = Qt::EditRole )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>Sets the <i>role</i> for the header <i>section</i> to <i>value</i>. The <i>orientation</i> gives the orientation of the header.</p>
+<p>Sets the data for the given <i>role</i> and <i>section</i> in the header with the specified <i>orientation</i> to the <i>value</i> supplied. Returns true if the header's data was updated; otherwise returns false.</p>
 <p>Note that the <a href="qabstractitemmodel.html#headerDataChanged">headerDataChanged</a>() signal must be emitted explicitly when reimplementing this function.</p>
 <p>See also <a href="qt.html#ItemDataRole-enum">Qt::ItemDataRole</a> and <a href="qabstractitemmodel.html#headerData">headerData</a>().</p>
 <a name="//apple_ref/cpp/instm/QAbstractItemModel/setItemData" />
@@ -519,8 +522,8 @@
 <p>See also <a href="qabstractitemmodel.html#dropMimeData">dropMimeData</a>(), <a href="qt.html#DropAction-enum">Qt::DropActions</a>, and <a href="model-view-dnd.html">Using Drag and Drop with Item Views</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
 </tr></table></div></address></body>
 </html>

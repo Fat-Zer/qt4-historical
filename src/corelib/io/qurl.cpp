@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
@@ -179,6 +179,9 @@ static const uint initial_n = 128;
 #define QURL_HASFLAG(a, b) (((a) & (b)) == (b))
 
 struct ErrorInfo {
+    inline ErrorInfo() : _source(0)
+    { }
+
     char *_source;
     QString _message;
     QChar _expected;

@@ -1,6 +1,6 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2006 Trolltech ASA. All rights reserved.
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
@@ -258,6 +258,7 @@ static QBrushData *nullBrushInstance()
         x->ref = 1; x->style = Qt::BrushStyle(0); x->color = Qt::black;
         if (!q_atomic_test_and_set_ptr(&defaultBrush.pointer, 0, x))
             delete x;
+        x->hasTransform = false;
     }
     return defaultBrush.pointer;
 }
@@ -306,6 +307,7 @@ void QBrush::init(const QColor &color, Qt::BrushStyle style)
     d->ref = 1;
     d->style = style;
     d->color = color;
+    d->hasTransform = false;
 }
 
 /*!
@@ -519,6 +521,7 @@ void QBrush::detach(Qt::BrushStyle newStyle)
     x->style = newStyle;
     x->color = d->color;
     x->transform = d->transform;
+    x->hasTransform = d->hasTransform;
     x = qAtomicSetPtr(&d, x);
     if (!x->ref.deref())
         cleanUp(x);
@@ -782,6 +785,7 @@ void QBrush::setMatrix(const QMatrix &matrix)
 {
     detach(d->style);
     d->transform = matrix;
+    d->hasTransform = !matrix.isIdentity();
 }
 
 

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.2-qt-1164647383618/qt-mac-opensource-src-4.2.2/doc/src/deployment.qdoc -->
+<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-mac-opensource-src-4.2.3/doc/src/deployment.qdoc -->
 <head>
   <title>Qt 4.2: Deploying an Application on Qt/X11</title>
   <link rel="contents" href="deployment.html" />
@@ -96,9 +96,12 @@
 <pre> #!/bin/sh
  appname=`basename $0 | sed s,\.sh$,,`
  dirname=`dirname $0`
- LD_LIBRARY_PATH=$PWD/$dirname
+ if [ &quot;${dirname:0:1}&quot; != &quot;/&quot; ]; then
+ dirname=$PWD/$dirname
+ fi
+ LD_LIBRARY_PATH=$dirname
  export LD_LIBRARY_PATH
- $PWD/$dirname/$appname $*</pre>
+ $dirname/$appname $*</pre>
 <p>By running this script instead of the executable, you are sure that the Qt libraries will be found by the dynamic linker. Note that you only have to rename the script to use it with other applications.</p>
 <p>When looking for plugins, the application searches in a plugins subdirectory inside the directory of the application executable. Either you have to manually copy the plugins into the <tt>plugins</tt> directory, or you can set the <tt>DESTDIR</tt> in the plugins' project files:</p>
 <pre> DESTDIR = /path/to/Qt/plugandpaint/plugins</pre>
@@ -142,8 +145,8 @@
 </p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2006 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
 </tr></table></div></address></body>
 </html>
