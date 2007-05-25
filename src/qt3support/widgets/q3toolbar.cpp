@@ -630,7 +630,7 @@ void Q3ToolBar::createPopup()
                 QAbstractButton *b = (QAbstractButton*)w;
                 QString s = b->text();
                 if (s.isEmpty())
-                    s = "";
+                    s = QLatin1String("");
                 if (b->pixmap())
                     id = d->extensionPopup->insertItem(*b->pixmap(), s, b, SLOT(click()));
                 else

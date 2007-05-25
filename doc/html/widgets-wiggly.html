@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-x11-opensource-src-4.2.3/doc/src/examples/wiggly.qdoc -->
+<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/doc/src/examples/wiggly.qdoc -->
 <head>
-  <title>Qt 4.2: Wiggly Example</title>
+  <title>Qt 4.3: Wiggly Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -22,7 +22,7 @@
 <li><a href="widgets-wiggly-main-cpp.html">widgets/wiggly/main.cpp</a></li>
 </ul>
 <p>The Wiggly example shows how to animate a widget using <a href="qbasictimer.html">QBasicTimer</a> and <a href="qobject.html#timerEvent">timerEvent()</a>. In addition, the example demonstrates how to use <a href="qfontmetrics.html">QFontMetrics</a> to determine the size of text on screen.</p>
-<p align="center"><img src="images/wiggly-example.png" alt="Screenshot of the Wiggly example" /></p><p><a href="qbasictimer.html">QBasicTimer</a> is a low-level class for timers. Unlike <a href="qtimer.html">QTimer</a>, <a href="qbasictimer.html">QBasicTimer</a> doesn't inherit from <a href="qobject.html">QObject</a>; instead of emitting a <a href="qtimer.html#timeout">timeout()</a> signal when a certain amount of time has passed, it sends a <a href="qtimerevent.html">QTimerEvent</a> to a <a href="qobject.html">QObject</a> of our choice. This makes <a href="qbasictimer.html">QBasicTimer</a> a more lightweight alternative to <a href="qtimer.html">QTimer</a>. Qt's built-in widgets use it internally, and it is provided in Qt's API for highly-optimized applications (e.g., <a href="qtopiacore.html">Qtopia Core</a> applications).</p>
+<p align="center"><img src="images/wiggly-example.png" alt="Screenshot of the Wiggly example" /></p><p><a href="qbasictimer.html">QBasicTimer</a> is a low-level class for timers. Unlike <a href="qtimer.html">QTimer</a>, <a href="qbasictimer.html">QBasicTimer</a> doesn't inherit from <a href="qobject.html">QObject</a>; instead of emitting a <a href="qtimer.html#timeout">timeout()</a> signal when a certain amount of time has passed, it sends a <a href="qtimerevent.html">QTimerEvent</a> to a <a href="qobject.html">QObject</a> of our choice. This makes <a href="qbasictimer.html">QBasicTimer</a> a more lightweight alternative to <a href="qtimer.html">QTimer</a>. Qt's built-in widgets use it internally, and it is provided in Qt's API for highly-optimized applications (e.g&#x2e;, <a href="qtopiacore.html">Qtopia Core</a> applications).</p>
 <p>The example consists of two classes:</p>
 <ul>
 <li><tt>WigglyWidget</tt> is the custom widget displaying the text in a wiggly line.</li>
@@ -125,7 +125,7 @@
      }
  }</pre>
 <p>Each time the <tt>paintEvent()</tt> function is called, we create a <a href="qpainter.html">QPainter</a> object <tt>painter</tt> to draw the contents of the widget. For each character in <tt>text</tt>, we determine the color and the position on the wiggly line based on <tt>step</tt>. In addition, <tt>x</tt> is incremented by the character's width.</p>
-<p>For simplicity, we assume that QFontMetrics::width(<tt>text</tt>) returns the sum of the individual character widths (QFontMetrics::width(<tt>text[i]</tt>)). In practice, this is not always the case because QFontMetrics::width(<tt>text</tt>) also takes into account the kerning between certain letters (e.g., 'A' and 'V'). The result is that the text isn't perfectly centered. You can verify this by typing &quot;AVAVAVAVAVAV&quot; in the line edit.</p>
+<p>For simplicity, we assume that QFontMetrics::width(<tt>text</tt>) returns the sum of the individual character widths (QFontMetrics::width(<tt>text[i]</tt>)). In practice, this is not always the case because QFontMetrics::width(<tt>text</tt>) also takes into account the kerning between certain letters (e.g&#x2e;, 'A' and 'V'). The result is that the text isn't perfectly centered. You can verify this by typing &quot;AVAVAVAVAVAV&quot; in the line edit.</p>
 <pre> void WigglyWidget::timerEvent(QTimerEvent *event)
  {
      if (event-&gt;timerId() == timer.timerId()) {
@@ -140,6 +140,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
 </tr></table></div></address></body>
 </html>

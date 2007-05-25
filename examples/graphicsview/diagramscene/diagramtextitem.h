@@ -1,0 +1,59 @@
+/****************************************************************************
+**
+** Copyright (C) 2007-2007 Trolltech ASA. All rights reserved.
+**
+** This file is part of the example classes of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
+**
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+#ifndef DIAGRAMTEXTITEM_H
+#define DIAGRAMTEXTITEM_H
+
+#include <QGraphicsTextItem>
+#include <QPen>
+
+class QFocusEvent;
+class QGraphicsItem;
+class QGraphicsScene;
+class QGraphicsSceneMouseEvent;
+
+class DiagramTextItem : public QGraphicsTextItem
+{
+    Q_OBJECT
+
+public:
+    enum { Type = UserType + 3 };
+
+    DiagramTextItem(QGraphicsItem *parent = 0, QGraphicsScene *scene = 0);
+
+    int type() const
+        { return Type; }
+
+signals:
+    void lostFocus(DiagramTextItem *item);
+    void selectedChange(QGraphicsItem *item);
+
+protected:
+    QVariant itemChange(GraphicsItemChange change, const QVariant &value);
+    void focusOutEvent(QFocusEvent *event);
+    void mousePressEvent(QGraphicsSceneMouseEvent *event);
+    void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
+    void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event);
+};
+
+#endif

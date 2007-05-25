@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-x11-opensource-src-4.2.3/doc/src/examples/plugandpaint.qdoc -->
+<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/doc/src/examples/plugandpaint.qdoc -->
 <head>
-  <title>Qt 4.2: Plug &amp; Paint Extra Filters Example</title>
+  <title>Qt 4.3: Plug &amp; Paint Extra Filters Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -26,24 +26,17 @@
  INCLUDEPATH  += ../..
  HEADERS       = extrafiltersplugin.h
  SOURCES       = extrafiltersplugin.cpp
- TARGET        = pnp_extrafilters
- DESTDIR       = ../../plugandpaint/plugins
-
- contains(TEMPLATE,lib) {
-    CONFIG(debug, debug|release) {
-       mac:TARGET = $$member(TARGET, 0)_debug
-       win32:TARGET = $$member(TARGET, 0)d
-    }
- }</pre>
+ TARGET        = $$qtLibraryTarget(pnp_extrafilters)
+ DESTDIR       = ../../plugandpaint/plugins</pre>
 <p>The <tt>.pro</tt> file differs from typical <tt>.pro</tt> files in many respects. First, it starts with a <tt>TEMPLATE</tt> entry specifying <tt>lib</tt>. (The default template is <tt>app</tt>.) It also adds <tt>plugin</tt> to the <tt>CONFIG</tt> variable. This is necessary on some platforms to avoid generating symbolic links with version numbers in the file name, which is appropriate for most dynamic libraries but not for plugins.</p>
-<p>The <tt>INCLUDEPATH</tt> variable sets the search paths for global headers (i.e., header files included using <tt>#include &lt;...&gt;</tt>). We add Qt's <tt>examples/tools</tt> directory (strictly speaking, <tt>examples/tools/plugandpaintplugins/basictools/../..</tt>) to the list, so that we can include <tt>&lt;plugandpaint/interfaces.h&gt;</tt>.</p>
-<p>The <tt>TARGET</tt> variable specifies which name we want to give the target library. We use <tt>pnp_</tt> as the prefix to show that the plugin is designed to work with Plug &amp; Paint. On Unix, <tt>lib</tt> is also prepended to that name. On all platforms, a platform-specific suffix is appended (e.g., <tt>.dll</tt> on Windows, <tt>.so</tt> on Linux).</p>
+<p>The <tt>INCLUDEPATH</tt> variable sets the search paths for global headers (i.e&#x2e;, header files included using <tt>#include &lt;...&gt;</tt>). We add Qt's <tt>examples/tools</tt> directory (strictly speaking, <tt>examples/tools/plugandpaintplugins/basictools/../..</tt>) to the list, so that we can include <tt>&lt;plugandpaint/interfaces.h&gt;</tt>.</p>
+<p>The <tt>TARGET</tt> variable specifies which name we want to give the target library. We use <tt>pnp_</tt> as the prefix to show that the plugin is designed to work with Plug &amp; Paint. On Unix, <tt>lib</tt> is also prepended to that name. On all platforms, a platform-specific suffix is appended (e.g&#x2e;, <tt>.dll</tt> on Windows, <tt>.so</tt> on Linux).</p>
 <p>The <tt>DESTDIR</tt> variable specifies where we want to install the plugin. We put it in Plug &amp; Paint's <tt>plugins</tt> subdirectory, since that's where the application looks for dynamic plugins.</p>
 <p>The <tt>CONFIG()</tt> code at the end is necessary for this example because the example is part of the Qt distribution and Qt can be configured to be built simultaneously in debug and in release modes. You don't need to for your own plugins.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
 </tr></table></div></address></body>
 </html>

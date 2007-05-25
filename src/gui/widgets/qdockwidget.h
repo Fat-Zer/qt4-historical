@@ -32,9 +32,10 @@ QT_MODULE(Gui)
 
 #ifndef QT_NO_DOCKWIDGET
 
-class QDockWidgetLayout;
+class QDockAreaLayout;
 class QDockWidgetPrivate;
 class QMainWindow;
+class QStyleOptionDockWidget;
 
 class Q_GUI_EXPORT QDockWidget : public QWidget
 {
@@ -59,9 +60,10 @@ public:
         DockWidgetClosable    = 0x01,
         DockWidgetMovable     = 0x02,
         DockWidgetFloatable   = 0x04,
+        DockWidgetVerticalTitleBar = 0x08,
 
-        DockWidgetFeatureMask = 0x07,
-        AllDockWidgetFeatures = DockWidgetFeatureMask,
+        DockWidgetFeatureMask = 0x0f,
+        AllDockWidgetFeatures = DockWidgetClosable|DockWidgetMovable|DockWidgetFloatable, // ### remove in 5.0
         NoDockWidgetFeatures  = 0x00,
 
         Reserved              = 0xff
@@ -77,6 +79,9 @@ public:
     void setAllowedAreas(Qt::DockWidgetAreas areas);
     Qt::DockWidgetAreas allowedAreas() const;
 
+    void setTitleBarWidget(QWidget *widget);
+    QWidget *titleBarWidget() const;
+
     inline bool isAreaAllowed(Qt::DockWidgetArea area) const
     { return (allowedAreas() & area) == area; }
 
@@ -88,21 +93,26 @@ Q_SIGNALS:
     void featuresChanged(QDockWidget::DockWidgetFeatures features);
     void topLevelChanged(bool topLevel);
     void allowedAreasChanged(Qt::DockWidgetAreas allowedAreas);
+    void visibilityChanged(bool visible);
+    void dockLocationChanged(Qt::DockWidgetArea area);
 
 protected:
     void changeEvent(QEvent *event);
     void closeEvent(QCloseEvent *event);
     void paintEvent(QPaintEvent *event);
     bool event(QEvent *event);
+    void initStyleOption(QStyleOptionDockWidget *option) const;
 
 private:
     Q_DECLARE_PRIVATE(QDockWidget)
     Q_DISABLE_COPY(QDockWidget)
     Q_PRIVATE_SLOT(d_func(), void _q_toggleView(bool))
     Q_PRIVATE_SLOT(d_func(), void _q_toggleTopLevel())
-    friend class QDockWidgetLayout;
+    friend class QDockAreaLayout;
     friend class QDockWidgetItem;
     friend class QMainWindowLayout;
+    friend class QDockWidgetLayout;
+    friend class QDockAreaLayoutInfo;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QDockWidget::DockWidgetFeatures)

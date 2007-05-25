@@ -39,6 +39,7 @@ namespace QTest
     static const char *currentTestObjectName = 0;
     static bool failed = false;
     static bool dataFailed = false;
+    static bool skipCurrentTest = false;
     static QTestResult::TestLocation location = QTestResult::NoWhere;
 
     static int fails = 0;
@@ -111,6 +112,7 @@ void QTestResult::setCurrentTestFunction(const char *func)
 static void clearExpectFail()
 {
     QTest::expectFailMode = 0;
+    delete [] const_cast<char *>(QTest::expectFailComment);
     QTest::expectFailComment = 0;
 }
 
@@ -121,7 +123,7 @@ void QTestResult::finishedCurrentTestFunction()
         addFailure("Not all expected messages were received", 0, 0);
     }
 
-    if (!QTest::failed) {
+    if (!QTest::failed && !QTest::skipCurrentTest) {
         QTestLog::addPass("");
         ++QTest::passes;
     }
@@ -307,5 +309,20 @@ int QTestResult::skipCount()
 void QTestResult::ignoreMessage(QtMsgType type, const char *msg)
 {
     QTestLog::addIgnoreMessage(type, msg);
+}
+
+bool QTestResult::testFailed()
+{
+    return QTest::failed;
+}
+
+void QTestResult::setSkipCurrentTest(bool value)
+{
+    QTest::skipCurrentTest = value;
+}
+
+bool QTestResult::skipCurrentTest()
+{
+    return QTest::skipCurrentTest;
 }
 

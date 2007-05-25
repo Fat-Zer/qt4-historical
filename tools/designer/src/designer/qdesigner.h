@@ -27,15 +27,16 @@
 #include <QtCore/QPointer>
 #include <QtGui/QApplication>
 
-#include "qdesigner_toolwindow.h"
 
 #define qDesigner \
     (static_cast<QDesigner*>(QCoreApplication::instance()))
 
 class QDesignerSettings;
 class QDesignerWorkbench;
+class QDesignerToolWindow;
 class QDesignerServer;
 class QDesignerClient;
+class QErrorMessage;
 
 class QDesigner: public QApplication
 {
@@ -55,16 +56,25 @@ protected:
 signals:
     void initialized();
 
+public slots:
+    void showErrorMessage(const char *message);
+
 private slots:
     void initialize();
     void callCreateForm();
 
 private:
+    void showErrorMessageBox(const QString &);
+
     QDesignerServer *m_server;
     QDesignerClient *m_client;
     QDesignerWorkbench *m_workbench;
     QPointer<QDesignerToolWindow> m_mainWindow;
-    bool suppressNewFormShow;
+    QPointer<QErrorMessage> m_errorMessageDialog;
+
+    QString m_initializationErrors;
+    QString m_lastErrorMessage;
+    bool m_suppressNewFormShow;
 };
 
 #endif // QDESIGNER_H

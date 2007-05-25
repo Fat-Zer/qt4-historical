@@ -4,6 +4,7 @@
 #include "qdbusconnectioninterface.h"
 #include "qdbusserver.h"
 #include "qdbusreply.h"
+#include "qdbuscontext.h"
 #include "qdbusinterface.h"
 #include "qdbusextratypes.h"
 #include "qdbuserror.h"

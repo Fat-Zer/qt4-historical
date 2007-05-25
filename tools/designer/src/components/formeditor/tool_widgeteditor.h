@@ -24,9 +24,10 @@
 #ifndef TOOL_WIDGETEDITOR_H
 #define TOOL_WIDGETEDITOR_H
 
-#include <QtDesigner/QtDesigner>
+#include <QtDesigner/QDesignerFormWindowToolInterface>
 
 #include <QtGui/qevent.h>
+#include <QtCore/QPointer>
 
 class QAction;
 class QMainWindow;
@@ -61,12 +62,19 @@ public:
     bool handleKeyReleaseEvent(QWidget *widget, QWidget *managedWidget, QKeyEvent *e);
     bool handlePaintEvent(QWidget *widget, QWidget *managedWidget, QPaintEvent *e);
 
+    bool handleDragEnterMoveEvent(QWidget *widget, QWidget *managedWidget, QDragMoveEvent *e, bool isEnter);
+    bool handleDragLeaveEvent(QWidget *widget, QWidget *managedWidget, QDragLeaveEvent *e);
+    bool handleDropEvent(QWidget *widget, QWidget *managedWidget, QDropEvent *e);
+
 private:
+    bool restoreDropHighlighting();
+
     FormWindow *m_formWindow;
     QAction *m_action;
 
     bool mainWindowSeparatorEvent(QWidget *widget, QEvent *event);
     QPointer<QMainWindow> m_separator_drag_mw;
+    QPointer<QWidget> m_lastDropTarget;
 };
 
 }  // namespace qdesigner_internal

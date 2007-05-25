@@ -31,7 +31,7 @@ class QAnimationWriterData;
 class QAnimationWriter
 {
 public:
-    QAnimationWriter( const QString& filename, const char* format="MNG" );
+    QAnimationWriter(const QString& filename, const char* format = "MNG");
     ~QAnimationWriter();
 
     bool okay() const;

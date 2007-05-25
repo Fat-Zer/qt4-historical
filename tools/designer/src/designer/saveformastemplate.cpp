@@ -23,6 +23,7 @@
 
 #include "saveformastemplate.h"
 #include "qdesigner_settings.h"
+#include "preferencesdialog.h"
 
 #include <QtCore/QFile>
 #include <QtGui/QFileDialog>
@@ -36,6 +37,7 @@ SaveFormAsTemplate::SaveFormAsTemplate(QDesignerFormWindowInterface *formWindow,
       m_formWindow(formWindow)
 {
     ui.setupUi(this);
+    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
     ui.templateNameEdit->setText(formWindow->mainContainer()->objectName());
     ui.templateNameEdit->selectAll();
@@ -58,24 +60,30 @@ SaveFormAsTemplate::~SaveFormAsTemplate()
 
 void SaveFormAsTemplate::accept()
 {
-    QString templateFileName = ui.categoryCombo->currentText() + QLatin1Char('/') + ui.templateNameEdit->text();
-    if (!templateFileName.endsWith(QLatin1String(".ui")))
-        templateFileName.append(QLatin1String(".ui"));
+    QString templateFileName = ui.categoryCombo->currentText();
+    templateFileName += QLatin1Char('/');
+    const QString name = ui.templateNameEdit->text();
+    templateFileName +=  name;
+    const QString extension = QLatin1String(".ui");
+    if (!templateFileName.endsWith(extension))
+        templateFileName.append(extension);
     QFile file(templateFileName);
 
     if (file.exists()) {
-        if (QMessageBox::information(m_formWindow, tr("Template Exists"),
-                                 tr("A template with the name %1 already exits\n"
-                                    "Do you want overwrite the template?").arg(ui.templateNameEdit->text()),
-                                 tr("Overwrite Template"), tr("Cancel"), QString(), 1, 1) == 1) {
+        QMessageBox msgBox(QMessageBox::Information, tr("Template Exists"),
+                        tr("A template with the name %1 already exists.\n"
+                           "Do you want overwrite the template?").arg(name), QMessageBox::Cancel, m_formWindow);
+        msgBox.setDefaultButton(QMessageBox::Cancel);
+        QPushButton *overwriteButton = msgBox.addButton(tr("Overwrite Template"), QMessageBox::AcceptRole);
+        msgBox.exec();
+        if (msgBox.clickedButton() != overwriteButton)
             return;
-        }
     }
 
     while (!file.open(QFile::WriteOnly)) {
         if (QMessageBox::information(m_formWindow, tr("Open Error"),
-            tr("There was an error opening template %1 for writing. Reason: %2").arg(ui.templateNameEdit->text()).arg(file.errorString()),
-            tr("Try again"), tr("Cancel"), QString(), 0, 1) == 1) {
+            tr("There was an error opening template %1 for writing. Reason: %2").arg(name).arg(file.errorString()),
+            QMessageBox::Retry|QMessageBox::Cancel, QMessageBox::Cancel) == QMessageBox::Cancel) {
             return;
         }
     }
@@ -83,8 +91,8 @@ void SaveFormAsTemplate::accept()
     QByteArray ba = m_formWindow->contents().toUtf8();
     while (file.write(ba) != ba.size()) {
         if (QMessageBox::information(m_formWindow, tr("Write Error"),
-            tr("There was an error writing the template %1 to disk. Reason: %2").arg(ui.templateNameEdit->text()).arg(file.errorString()),
-            tr("Try again"), tr("Cancel"), QString(), 0, 1) == 1) {
+            tr("There was an error writing the template %1 to disk. Reason: %2").arg(name).arg(file.errorString()),
+            QMessageBox::Retry|QMessageBox::Cancel, QMessageBox::Cancel) == QMessageBox::Cancel) {
                 file.close();
                 file.remove();
                 return;
@@ -112,8 +120,7 @@ void SaveFormAsTemplate::checkToAddPath(int itemIndex)
     if (itemIndex != m_addPathIndex)
         return;
 
-    QString dir = QFileDialog::getExistingDirectory(this,
-                                                    tr("Pick a directory to save templates in"));
+    const QString dir = PreferencesDialog::chooseTemplatePath(this);
     if (dir.isEmpty()) {
         ui.categoryCombo->setCurrentIndex(0);
         return;

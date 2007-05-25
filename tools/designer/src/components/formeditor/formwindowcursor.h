@@ -26,7 +26,7 @@
 
 #include "formeditor_global.h"
 #include "formwindow.h"
-#include <QtDesigner/QtDesigner>
+#include <QtDesigner/QDesignerFormWindowCursorInterface>
 
 #include <QtCore/QObject>
 
@@ -64,7 +64,6 @@ public slots:
 
 private:
     FormWindow *m_formWindow;
-    int m_iterator;
 };
 
 }  // namespace qdesigner_internal

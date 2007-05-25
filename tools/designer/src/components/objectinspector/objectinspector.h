@@ -25,18 +25,22 @@
 #define OBJECTINSPECTOR_H
 
 #include "objectinspector_global.h"
-#include <QtDesigner/QtDesigner>
+#include "qdesigner_objectinspector_p.h"
+
 #include <QtCore/QPointer>
+#include <QtCore/QList>
+#include <QtCore/QSet>
 
 class QDesignerFormEditorInterface;
 class QDesignerFormWindowInterface;
 
+class QTreeWidgetItem;
+
 namespace qdesigner_internal {
-
+class FormWindowBase;
 class TreeWidget;
-class ObjectItem;
 
-class QT_OBJECTINSPECTOR_EXPORT ObjectInspector: public QDesignerObjectInspectorInterface
+class QT_OBJECTINSPECTOR_EXPORT ObjectInspector: public QDesignerObjectInspector
 {
     Q_OBJECT
 public:
@@ -45,25 +49,47 @@ public:
 
     virtual QDesignerFormEditorInterface *core() const;
 
+    virtual void getSelection(Selection &s) const;
+    virtual bool selectObject(QObject *o);
+    virtual void clearSelection();
+
     void setFormWindow(QDesignerFormWindowInterface *formWindow);
+
+public slots:
+    virtual void mainContainerChanged();
 
 private slots:
     void slotSelectionChanged();
     void slotPopupContextMenu(const QPoint &pos);
+    void slotHeaderDoubleClicked(int column);
 
 protected:
-    virtual void showEvent(QShowEvent *enent);
+    virtual void dragEnterEvent (QDragEnterEvent * event);
+    virtual void dragMoveEvent(QDragMoveEvent * event);
+    virtual void dragLeaveEvent(QDragLeaveEvent * event);
+    virtual void dropEvent (QDropEvent * event);
 
 private:
     static bool sortEntry(const QObject *a, const QObject *b);
+    void showContainersCurrentPage(QWidget *widget);
 
 private:
+    void restoreDropHighlighting();
+    QWidget *managedWidgetAt(const QPoint &global_mouse_pos);
+    void handleDragEnterMoveEvent(QDragMoveEvent * event, bool isDragEnter);
+
+    typedef QSet<const QObject *> PreviousSelection;
+    PreviousSelection previousSelection(QDesignerFormWindowInterface *fw, bool formWindowChanged) const;
+
+    typedef QList<QTreeWidgetItem *> ItemList;
+    static void findRecursion(QTreeWidgetItem *item, QObject *o, ItemList &matchList);
+
+    ItemList findItemsOfObject(QObject *o) const;
+
     QDesignerFormEditorInterface *m_core;
     TreeWidget *m_treeWidget;
-    QPointer<QDesignerFormWindowInterface> m_formWindow;
-    ObjectItem *m_root;
-    QPointer<QObject> m_selected;
-    bool m_ignoreNextUpdate;
+    QPointer<FormWindowBase> m_formWindow;
+    QPointer<QWidget> m_formFakeDropTarget;
 };
 
 }  // namespace qdesigner_internal

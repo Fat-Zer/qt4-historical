@@ -45,11 +45,12 @@ class QTableViewPrivate : public QAbstractItemViewPrivate
 public:
     QTableViewPrivate()
         : showGrid(true), gridStyle(Qt::SolidLine),
-          rowSectionAnchor(0), columnSectionAnchor(0),
+          rowSectionAnchor(-1), columnSectionAnchor(-1),
           columnResizeTimerID(0), rowResizeTimerID(0),
           horizontalHeader(0), verticalHeader(0),
           sortingEnabled(false)
  {
+    wrapItemText = true;
 #ifndef QT_NO_DRAGANDDROP
     overwrite = true;
 #endif
@@ -81,11 +82,9 @@ public:
     bool spansIntersectRow(int row) const;
     bool spansIntersectColumns(const QList<int> &columns) const;
     bool spansIntersectRows(const QList<int> &rows) const;
-    void drawAndClipSpans(const QRect &area, QPainter *painter,
-                          const QStyleOptionViewItemV2 &option);
-    void drawCell(QPainter *painter, const QStyleOptionViewItemV2 &option, const QModelIndex &index);
-
-    QStyleOptionViewItemV2 viewOptionsV2() const;
+    QBitArray drawAndClipSpans(const QRect &area, QPainter *painter,
+                               const QStyleOptionViewItemV3 &option);
+    void drawCell(QPainter *painter, const QStyleOptionViewItemV3 &option, const QModelIndex &index);
 
     bool showGrid;
     Qt::PenStyle gridStyle;
@@ -152,8 +151,14 @@ public:
     inline int columnSpanEndLogical(int column, int span) const {
         return sectionSpanEndLogical(horizontalHeader, column, span);
     }
+
     QRect visualSpanRect(const Span &span) const;
 
+    void _q_selectRow(int row);
+    void _q_selectColumn(int column);
+
+    void selectRow(int row, bool anchor);
+    void selectColumn(int column, bool anchor);
 };
 
 #endif // QT_NO_TABLEVIEW

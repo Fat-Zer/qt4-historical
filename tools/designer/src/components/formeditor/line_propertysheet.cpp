@@ -52,9 +52,9 @@ bool LinePropertySheet::isVisible(int index) const
 {
     QString name = propertyName(index);
 
-    return (name == QLatin1String("geometry")
-            || name == QLatin1String("orientation")
-            || name == QLatin1String("objectName"));
+    if (name == QLatin1String("frameShape"))
+        return false;
+    return QDesignerPropertySheet::isVisible(index);
 }
 
 void LinePropertySheet::setProperty(int index, const QVariant &value)
@@ -64,11 +64,7 @@ void LinePropertySheet::setProperty(int index, const QVariant &value)
 
 QString LinePropertySheet::propertyGroup(int index) const
 {
-    QString g = QDesignerPropertySheet::propertyGroup(index);
-    if (g == QLatin1String("QObject"))
-        return g;
-
-    return QLatin1String("Line");
+    return QDesignerPropertySheet::propertyGroup(index);
 }
 
 LinePropertySheetFactory::LinePropertySheetFactory(QExtensionManager *parent)

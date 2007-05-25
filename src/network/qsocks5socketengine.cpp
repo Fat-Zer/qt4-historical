@@ -351,7 +351,7 @@ void QSocks5BindStore::add(int socketDescriptor, QSocks5BindData *bindData)
 {
     QMutexLocker lock(&mutex);
     if (store.contains(socketDescriptor)) {
-        qDebug() << "delete it";
+        // qDebug() << "delete it";
     }
     bindData->timeStamp = QDateTime::currentDateTime();
     store.insert(socketDescriptor, bindData);
@@ -695,7 +695,7 @@ void QSocks5SocketEnginePrivate::parseRequestMethodReply()
         return;
     }
     if (buf[pos++] != S5_VERSION_5) {
-        QSOCKS5_DEBUG << "totaly lost";
+        QSOCKS5_DEBUG << "totally lost";
     }
     if (buf[pos++] != S5_SUCCESS ) {
         socks5Error = Socks5Error(buf[pos-1]);
@@ -706,7 +706,7 @@ void QSocks5SocketEnginePrivate::parseRequestMethodReply()
         return;
     }
     if (buf[pos++] != 0x00) {
-        QSOCKS5_DEBUG << "totaly lost";
+        QSOCKS5_DEBUG << "totally lost";
     }
     if (!qt_socks5_get_host_address_and_port(inBuf, &localAddress, &localPort, &pos)) {
         QSOCKS5_DEBUG << "error getting address";
@@ -745,7 +745,7 @@ void QSocks5SocketEnginePrivate::parseNewConnection()
         return;
     }
     if (buf[pos++] != S5_VERSION_5) {
-        QSOCKS5_D_DEBUG << "totaly lost";
+        QSOCKS5_D_DEBUG << "totally lost";
     }
     if (buf[pos++] != S5_SUCCESS) {
         QSOCKS5_D_DEBUG <<  "Request error :" << s5RequestErrorToString(buf[pos-1]);
@@ -756,7 +756,7 @@ void QSocks5SocketEnginePrivate::parseNewConnection()
         return;
     }
     if (buf[pos++] != 0x00) {
-        QSOCKS5_D_DEBUG << "totaly lost";
+        QSOCKS5_D_DEBUG << "totally lost";
     }
     if (!qt_socks5_get_host_address_and_port(inBuf, &bindData->peerAddress, &bindData->peerPort, &pos)) {
         QSOCKS5_D_DEBUG << "error getting address";
@@ -853,22 +853,12 @@ QSocks5SocketEngine::~QSocks5SocketEngine()
 }
 
 static QBasicAtomic descriptorCounter = Q_ATOMIC_INIT(1);
-static int qt_socks5_new_socket_descriptor()
-{
-    register int descriptor;
-    for (;;) {
-        descriptor = descriptorCounter;
-        if (descriptorCounter.testAndSet(descriptor, descriptor + 1))
-            break;
-    }
-    return descriptor;
-}
 
 bool QSocks5SocketEngine::initialize(QAbstractSocket::SocketType type, QAbstractSocket::NetworkLayerProtocol protocol)
 {
     Q_D(QSocks5SocketEngine);
 
-    d->socketDescriptor = qt_socks5_new_socket_descriptor();
+    d->socketDescriptor = descriptorCounter.fetchAndAdd(1);
 
     d->socketType = type;
     d->socketProtocol = protocol;
@@ -1001,7 +991,7 @@ bool QSocks5SocketEngine::connectToHost(const QHostAddress &address, quint16 por
         QSOCKS5_DEBUG << "not yet connected";
         return false;
     } else {
-        qDebug() << "unexpected call to contectToHost";
+        // qDebug() << "unexpected call to contectToHost";
     }
     return false;
 }
@@ -1046,8 +1036,9 @@ void QSocks5SocketEnginePrivate::_q_controlSocketReadNotification()
             break;
         case Connected: {
             QByteArray buf;
-            if (!data->authenticator->unSeal(data->controlSocket, &buf))
-                qDebug() << "unseal error maybe need to wait for more data";
+            if (!data->authenticator->unSeal(data->controlSocket, &buf)) {
+                // qDebug() << "unseal error maybe need to wait for more data";
+            }
             if (buf.size()) {
                 QSOCKS5_DEBUG << dump(buf);
                 connectData->readBuffer += buf;
@@ -1567,7 +1558,7 @@ bool QSocks5SocketEngine::waitForWrite(int msecs, bool *timedOut) const
         stopWatch.start();
 
         if (!d->data->controlSocket->waitForConnected(qt_timeout_value(msecs, stopWatch.elapsed()))) {
-            qDebug() << "failed to connect to proxy";
+            // qDebug() << "failed to connect to proxy";
             if (timedOut && d->data->controlSocket->error() == QAbstractSocket::SocketTimeoutError)
                 *timedOut = true;
             return false; // ???

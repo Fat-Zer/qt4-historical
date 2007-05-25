@@ -35,14 +35,17 @@
 // We mean it.
 //
 
-#include "private/qwidget_p.h"
+#include "QtCore/qglobal.h"
 
 #ifndef QT_NO_LINEEDIT
+#include "private/qwidget_p.h"
+#include "QtGui/qlineedit.h"
 #include "QtGui/qtextlayout.h"
 #include "QtGui/qstyleoption.h"
 #include "QtCore/qbasictimer.h"
 #include "QtGui/qcompleter.h"
 #include "QtCore/qpointer.h"
+#include "QtGui/qlineedit.h"
 
 class QLineEditPrivate : public QWidgetPrivate
 {
@@ -52,21 +55,25 @@ public:
     QLineEditPrivate()
         : cursor(0), preeditCursor(0), cursorTimer(0), frame(1),
           cursorVisible(0), hideCursor(false), separator(0), readOnly(0),
-          dragEnabled(0), contextMenuEnabled(1), alignment(Qt::AlignLeading),
-          echoMode(0), textDirty(0), selDirty(0), validInput(1),
-          ascent(0), maxLength(32767), hscroll(0), lastCursorPos(-1), maskData(0),
+          dragEnabled(0), contextMenuEnabled(1), echoMode(0), textDirty(0),
+          selDirty(0), validInput(1), alignment(Qt::AlignLeading | Qt::AlignVCenter), ascent(0),
+          maxLength(32767), hscroll(0), vscroll(0), lastCursorPos(-1), maskData(0),
           modifiedState(0), undoState(0), selstart(0), selend(0), userInput(false),
           emitingEditingFinished(false), resumePassword(false)
 #ifndef QT_NO_COMPLETER
         , completer(0)
 #endif
-        {}
+        {
+#ifndef QT_NO_MENU
+            actions[UndoAct] = 0;
+#endif
+        }
+
     ~QLineEditPrivate()
     {
         delete [] maskData;
     }
     void init(const QString&);
-    QStyleOptionFrame getStyleOption() const;
 
     QString text;
     int cursor;
@@ -81,14 +88,15 @@ public:
     uint readOnly : 1;
     uint dragEnabled : 1;
     uint contextMenuEnabled : 1;
-    uint alignment : 5;
     uint echoMode : 2;
     uint textDirty : 1;
     uint selDirty : 1;
     uint validInput : 1;
+    uint alignment;
     int ascent;
     int maxLength;
     int hscroll;
+    int vscroll;
     int lastCursorPos;
 
     enum { UndoAct, RedoAct, CutAct, CopyAct, PasteAct, ClearAct, SelectAllAct, NCountActs };
@@ -126,13 +134,13 @@ public:
 
 
     // undo/redo handling
-    enum CommandType { Separator, Insert, Remove, Delete, RemoveSelection, DeleteSelection };
+    enum CommandType { Separator, Insert, Remove, Delete, RemoveSelection, DeleteSelection, SetSelection };
     struct Command {
         inline Command() {}
-        inline Command(CommandType t, int p, QChar c) : type(t),uc(c),pos(p) {}
+        inline Command(CommandType t, int p, QChar c, int ss, int se) : type(t),uc(c),pos(p),selStart(ss),selEnd(se) {}
         uint type : 4;
         QChar uc;
-        int pos;
+        int pos, selStart, selEnd;
     };
     int modifiedState;
     int undoState;
@@ -207,7 +215,7 @@ public:
     QPointer<QCompleter> completer;
     void complete(int key = -1);
     void _q_completionHighlighted(QString);
-    bool advanceToNextEnabledItem(int n);
+    bool advanceToEnabledItem(int n);
 #endif
 };
 

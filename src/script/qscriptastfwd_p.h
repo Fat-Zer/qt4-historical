@@ -1,0 +1,122 @@
+/****************************************************************************
+**
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
+**
+** This file is part of the $MODULE$ of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
+**
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+#ifndef QSCRIPTAST_FWD_P_H
+#define QSCRIPTAST_FWD_P_H
+
+//
+//  W A R N I N G
+//  -------------
+//
+// This file is not part of the Qt API.  It exists purely as an
+// implementation detail.  This header file may change from version to
+// version without notice, or even be removed.
+//
+// We mean it.
+//
+
+namespace QScript { namespace AST {
+
+class Visitor;
+class Node;
+class ExpressionNode;
+class Statement;
+class ThisExpression;
+class IdentifierExpression;
+class NullExpression;
+class TrueLiteral;
+class FalseLiteral;
+class NumericLiteral;
+class StringLiteral;
+class RegExpLiteral;
+class ArrayLiteral;
+class ObjectLiteral;
+class ElementList;
+class Elision;
+class PropertyNameAndValueList;
+class PropertyName;
+class IdentifierPropertyName;
+class StringLiteralPropertyName;
+class NumericLiteralPropertyName;
+class ArrayMemberExpression;
+class FieldMemberExpression;
+class NewMemberExpression;
+class NewExpression;
+class CallExpression;
+class ArgumentList;
+class PostIncrementExpression;
+class PostDecrementExpression;
+class DeleteExpression;
+class VoidExpression;
+class TypeOfExpression;
+class PreIncrementExpression;
+class PreDecrementExpression;
+class UnaryPlusExpression;
+class UnaryMinusExpression;
+class TildeExpression;
+class NotExpression;
+class BinaryExpression;
+class ConditionalExpression;
+class Expression; // ### rename
+class Block;
+class StatementList;
+class VariableStatement;
+class VariableDeclarationList;
+class VariableDeclaration;
+class EmptyStatement;
+class ExpressionStatement;
+class IfStatement;
+class DoWhileStatement;
+class WhileStatement;
+class ForStatement;
+class LocalForStatement;
+class ForEachStatement;
+class LocalForEachStatement;
+class ContinueStatement;
+class BreakStatement;
+class ReturnStatement;
+class WithStatement;
+class SwitchStatement;
+class CaseBlock;
+class CaseClauses;
+class CaseClause;
+class DefaultClause;
+class LabelledStatement;
+class ThrowStatement;
+class TryStatement;
+class Catch;
+class Finally;
+class FunctionDeclaration;
+class FunctionExpression;
+class FormalParameterList;
+class FunctionBody;
+class Program;
+class SourceElements;
+class SourceElement;
+class FunctionSourceElement;
+class StatementSourceElement;
+
+} } // namespace AST
+
+#endif
+

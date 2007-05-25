@@ -68,6 +68,8 @@ bool QSystemTrayIconSys::sysTrayTracker(void *message, long *result)
             if (sysTrayWindow == None) {
 	        QBalloonTip::hideBalloon();
                 trayIcons[i]->hide(); // still no luck
+                trayIcons[i]->destroy();
+                trayIcons[i]->create();
 	    } else
                 trayIcons[i]->addToTray(); // add it to the new tray
         }
@@ -93,6 +95,9 @@ QSystemTrayIconSys::QSystemTrayIconSys(QSystemTrayIcon *q)
       q(q)
 {
     setAttribute(Qt::WA_AlwaysShowToolTips);
+    setAttribute(Qt::WA_QuitOnClose, false);
+    setAttribute(Qt::WA_PaintOnScreen, true);
+    setAttribute(Qt::WA_NoSystemBackground, true);
     static bool eventFilterAdded = false;
     Display *display = QX11Info::display();
     if (!eventFilterAdded) {
@@ -101,8 +106,10 @@ QSystemTrayIconSys::QSystemTrayIconSys(QSystemTrayIcon *q)
 	Window root = QX11Info::appRootWindow();
         XWindowAttributes attr;
         XGetWindowAttributes(display, root, &attr);
-        if ((attr.your_event_mask & StructureNotifyMask) != StructureNotifyMask)
+        if ((attr.your_event_mask & StructureNotifyMask) != StructureNotifyMask) {
+            (void) QApplication::desktop(); // lame trick to ensure our event mask is not overriden
             XSelectInput(display, root, attr.your_event_mask | StructureNotifyMask); // for MANAGER selection
+        }
     }
     if (trayIcons.isEmpty()) {
         sysTrayWindow = locateSystemTray();
@@ -137,6 +144,8 @@ void QSystemTrayIconSys::addToTray()
     Display *display = QX11Info::display();
     Window wid = winId();
 
+    XSetWindowBackgroundPixmap(display, wid, ParentRelative);
+
     // GNOME, NET WM Specification
     static Atom netwm_tray_atom = XInternAtom(display, "_NET_SYSTEM_TRAY_OPCODE", False);
     long l[5] = { CurrentTime, SYSTEM_TRAY_REQUEST_DOCK, wid, 0, 0 };
@@ -153,18 +162,7 @@ void QSystemTrayIconSys::addToTray()
 
 void QSystemTrayIconSys::updateIcon()
 {
-    cachedPixmap = q->icon().pixmap(size(), QIcon::Normal);
-    if (!cachedPixmap.mask().isNull()) {
-        QBitmap mask(size());
-        mask.fill(Qt::color0);
-        QBitmap pixMask = cachedPixmap.mask();
-        QPainter p(&mask);
-        p.drawPixmap((mask.width() - pixMask.width())/2, (mask.height() - pixMask.height())/2,
-                     pixMask);
-        setMask(mask);
-    } else
-	setMask(QBitmap());
-    update();
+    XClearArea(QX11Info::display(), winId(), 0, 0, width(), height(), True);
 }
 
 void QSystemTrayIconSys::resizeEvent(QResizeEvent *re)
@@ -176,10 +174,7 @@ void QSystemTrayIconSys::resizeEvent(QResizeEvent *re)
 void QSystemTrayIconSys::paintEvent(QPaintEvent *)
 {
     QPainter p(this);
-    const QRect r = rect();
-    p.drawPixmap(r.x() + (r.width() - cachedPixmap.width())/2,
-                 r.y() + (r.height() - cachedPixmap.height())/2,
-                 cachedPixmap);
+    q->icon().paint(&p, rect());
 }
 
 void QSystemTrayIconSys::mousePressEvent(QMouseEvent *ev)
@@ -200,6 +195,11 @@ void QSystemTrayIconSys::mouseDoubleClickEvent(QMouseEvent *ev)
 {
     if (ev->button() == Qt::LeftButton)
         emit q->activated(QSystemTrayIcon::DoubleClick);
+}
+
+void QSystemTrayIconSys::wheelEvent(QWheelEvent *e)
+{
+    QApplication::sendEvent(q, e);
 }
 
 bool QSystemTrayIconSys::event(QEvent *e)
@@ -225,9 +225,11 @@ void QSystemTrayIconPrivate::install_sys()
         sys = new QSystemTrayIconSys(q);
 }
 
-QPoint QSystemTrayIconPrivate::globalPos_sys() const
+QRect QSystemTrayIconPrivate::geometry_sys() const
 {
-    return QPoint();
+    if (!sys)
+	return QRect();
+    return QRect(sys->mapToGlobal(QPoint(0, 0)), sys->size());
 }
 
 void QSystemTrayIconPrivate::remove_sys()

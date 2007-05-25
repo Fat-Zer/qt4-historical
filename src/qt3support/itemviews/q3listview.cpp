@@ -261,7 +261,7 @@ static int indexOfItem(Q3ListViewItem *item)
 */
 static QString qEllipsisText(const QString &org, const QFontMetrics &fm, int width, int align)
 {
-    int ellWidth = fm.width("...");
+    int ellWidth = fm.width(QLatin1String("..."));
     QString text = QString::fromLatin1("");
     int i = 0;
     int len = org.length();
@@ -276,9 +276,9 @@ static QString qEllipsisText(const QString &org, const QFontMetrics &fm, int wid
     if (text.isEmpty())
         text = (align & Qt::AlignRight) ? org.right(1) : text = org.left(1);
     if (align & Qt::AlignRight)
-        text.prepend("...");
+        text.prepend(QLatin1String("..."));
     else
-        text += "...";
+        text += QLatin1String("...");
     return text;
 }
 
@@ -1517,7 +1517,7 @@ void Q3ListViewItem::setup()
         if (mlenabled) {
             h = ph;
             for (int c = 0; c < lv->columns(); ++c) {
-                int lines = text(c).count(QChar('\n')) + 1;
+                int lines = text(c).count(QLatin1Char('\n')) + 1;
                 int tmph = lv->d->fontMetricsHeight
                            + lv->fontMetrics().lineSpacing() * (lines - 1);
                 h = qMax(h, tmph);
@@ -1788,9 +1788,9 @@ void Q3ListViewItem::setText(int column, const QString &text)
     int newLc = 0;
     if (mlenabled) {
         if (!l->text.isEmpty())
-            oldLc = l->text.count(QChar('\n')) + 1;
+            oldLc = l->text.count(QLatin1Char('\n')) + 1;
         if (!text.isEmpty())
-            newLc = text.count(QChar('\n')) + 1;
+            newLc = text.count(QLatin1Char('\n')) + 1;
     }
 
     l->dirty = true;
@@ -2052,7 +2052,7 @@ void Q3ListViewItem::paintCell(QPainter * p, const QColorGroup & cg,
                 ci->truncated = true;
                 ci->tmpText = qEllipsisText(t, fm, width - pw, align);
             } else if (mlenabled && fm.width(t) + pw > width) {
-                QStringList list = t.split(QChar('\n'));
+                QStringList list = t.split(QLatin1Char('\n'));
                 for (QStringList::Iterator it = list.begin(); it != list.end(); ++it) {
                     QString z = *it;
                     if (fm.width(z) + pw > width) {
@@ -2062,7 +2062,7 @@ void Q3ListViewItem::paintCell(QPainter * p, const QColorGroup & cg,
                 }
 
                 if (ci->truncated)
-                    ci->tmpText = list.join(QString("\n"));
+                    ci->tmpText = list.join(QString(QLatin1Char('\n')));
             }
         }
 
@@ -2511,7 +2511,7 @@ void Q3ListViewItem::ignoreDoubleClick()
             children, make its parent item current and visible. If the
             current item is open (\bold{-} icon) close it, i.e. hide its
             children. Exception: if the current item is the first item
-            and is closed and the horizontal scrollbar is offset to
+            and is closed and the horizontal scroll bar is offset to
             the right the list view will be scrolled left.
     \row \i Right Arrow
          \i If the current item is closed (\bold{+} icon) and has
@@ -2608,7 +2608,7 @@ void Q3ListView::init()
     d->clearing = false;
     d->minLeftBearing = fontMetrics().minLeftBearing();
     d->minRightBearing = fontMetrics().minRightBearing();
-    d->ellipsisWidth = fontMetrics().width("...") * 2;
+    d->ellipsisWidth = fontMetrics().width(QLatin1String("...")) * 2;
     d->highlighted = 0;
     d->pressedItem = 0;
     d->selectAnchor = 0;
@@ -2662,6 +2662,7 @@ void Q3ListView::init()
     viewport()->setFocusPolicy(Qt::WheelFocus);
     setFocusPolicy(Qt::WheelFocus);
     viewport()->setBackgroundRole(QPalette::Base);
+    setAttribute(Qt::WA_MacShowFocusRect);
 }
 
 /*!
@@ -5698,7 +5699,7 @@ void Q3ListView::reconfigureItems()
     d->fontMetricsHeight = fontMetrics().height();
     d->minLeftBearing = fontMetrics().minLeftBearing();
     d->minRightBearing = fontMetrics().minRightBearing();
-    d->ellipsisWidth = fontMetrics().width("...") * 2;
+    d->ellipsisWidth = fontMetrics().width(QLatin1String("...")) * 2;
     d->r->setOpen(false);
     d->r->configured = false;
     d->r->setOpen(true);
@@ -6570,7 +6571,7 @@ void Q3CheckListItem::paintCell(QPainter * p, const QColorGroup & cg,
     int marg = lv->itemMargin();
     int r = marg;
 
-    // Draw controller / checkbox / radiobutton ---------------------
+    // Draw controller / check box / radio button ---------------------
     QStyle::State styleflags = QStyle::State_None;
     if (internalState() == On) {
         styleflags |= QStyle::State_On;
@@ -6741,7 +6742,7 @@ void Q3ListView::setOpen(Q3ListViewItem * item, bool open)
         Q3ListViewItem* tmp;
         while (true) {
             tmp = lastChild->itemBelow();
-            if (tmp == nextParent)
+            if (!tmp || tmp == nextParent)
                 break;
             lastChild = tmp;
         }

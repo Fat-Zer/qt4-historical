@@ -238,6 +238,8 @@ static QVariant::Type qDecodeMYSQLType(int mysqltype, uint flags)
     case FIELD_TYPE_TIMESTAMP :
         type = QVariant::DateTime;
         break;
+    case FIELD_TYPE_STRING :
+    case FIELD_TYPE_VAR_STRING :
     case FIELD_TYPE_BLOB :
     case FIELD_TYPE_TINY_BLOB :
     case FIELD_TYPE_MEDIUM_BLOB :
@@ -247,8 +249,6 @@ static QVariant::Type qDecodeMYSQLType(int mysqltype, uint flags)
     default:
     case FIELD_TYPE_ENUM :
     case FIELD_TYPE_SET :
-    case FIELD_TYPE_STRING :
-    case FIELD_TYPE_VAR_STRING :
     case FIELD_TYPE_DECIMAL :
         type = QVariant::String;
         break;
@@ -382,6 +382,16 @@ void QMYSQLResult::cleanup()
 {
     if (d->result)
         mysql_free_result(d->result);
+
+// must iterate trough leftover result sets from multi-selects or stored procedures
+// if this isn't done subsequent queries will fail with "Commands out of sync"
+#if MYSQL_VERSION_ID >= 40100
+    while (mysql_next_result(d->mysql) == 0) {
+        MYSQL_RES *res = mysql_store_result(d->mysql);
+        if (res)
+            mysql_free_result(res);
+    }
+#endif
 
 #if MYSQL_VERSION_ID >= 40108
     if (d->stmt) {
@@ -904,30 +914,45 @@ bool QMYSQLResult::exec()
 #endif
 /////////////////////////////////////////////////////////
 
-static void qServerInit()
+static int qMySqlConnectionCount = 0;
+static bool qMySqlInitHandledByUser = false;
+
+static void qLibraryInit()
 {
 #ifndef Q_NO_MYSQL_EMBEDDED
 # if MYSQL_VERSION_ID >= 40000
-    static bool init = false;
-    if (init)
+    if (qMySqlInitHandledByUser || qMySqlConnectionCount > 1)
         return;
 
-    // this should only be called once
-    // has no effect on client/server library
-    // but is vital for the embedded lib
+# if (MYSQL_VERSION_ID >= 40110 && MYSQL_VERSION_ID < 50000) || MYSQL_VERSION_ID >= 50003
+    if (mysql_library_init(0, 0, 0)) {
+# else
     if (mysql_server_init(0, 0, 0)) {
+# endif
         qWarning("QMYSQLDriver::qServerInit: unable to start server.");
     }
-    init = true;
 # endif // MYSQL_VERSION_ID
 #endif // Q_NO_MYSQL_EMBEDDED
+}
+
+static void qLibraryEnd()
+{
+#ifndef Q_NO_MYSQL_EMBEDDED
+# if MYSQL_VERSION_ID > 40000
+#  if (MYSQL_VERSION_ID >= 40110 && MYSQL_VERSION_ID < 50000) || MYSQL_VERSION_ID >= 50003
+    mysql_library_end();
+#  else
+    mysql_server_end();
+#  endif
+# endif
+#endif
 }
 
 QMYSQLDriver::QMYSQLDriver(QObject * parent)
     : QSqlDriver(parent)
 {
     init();
-    qServerInit();
+    qLibraryInit();
 }
 
 /*!
@@ -946,8 +971,10 @@ QMYSQLDriver::QMYSQLDriver(MYSQL * con, QObject * parent)
 #endif
         setOpen(true);
         setOpenError(false);
+        if (qMySqlConnectionCount == 1)
+            qMySqlInitHandledByUser = true;
     } else {
-        qServerInit();
+        qLibraryInit();
     }
 }
 
@@ -955,16 +982,15 @@ void QMYSQLDriver::init()
 {
     d = new QMYSQLDriverPrivate();
     d->mysql = 0;
+    qMySqlConnectionCount++;
 }
 
 QMYSQLDriver::~QMYSQLDriver()
 {
+    qMySqlConnectionCount--;
+    if (qMySqlConnectionCount == 0 && !qMySqlInitHandledByUser)
+        qLibraryEnd();
     delete d;
-#ifndef Q_NO_MYSQL_EMBEDDED
-# if MYSQL_VERSION_ID > 40000
-    mysql_server_end();
-# endif
-#endif
 }
 
 bool QMYSQLDriver::hasFeature(DriverFeature f) const
@@ -981,11 +1007,12 @@ bool QMYSQLDriver::hasFeature(DriverFeature f) const
         return false;
     case NamedPlaceholders:
     case BatchOperations:
+    case SimpleLocking:
+    case LowPrecisionNumbers:
         return false;
     case QuerySize:
     case BLOB:
     case LastInsertId:
-        return true;
     case Unicode:
         return true;
     case PreparedQueries:

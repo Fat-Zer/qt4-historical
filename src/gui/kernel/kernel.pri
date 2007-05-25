@@ -21,6 +21,8 @@ HEADERS += \
 	kernel/qgridlayout.h \
 	kernel/qkeysequence.h \
 	kernel/qlayout.h \
+	kernel/qlayout_p.h \
+	kernel/qlayoutengine_p.h \
 	kernel/qlayoutitem.h \
 	kernel/qmime.h \
 	kernel/qsessionmanager.h \
@@ -129,22 +131,20 @@ embedded {
 		kernel/qkeymapper_qws.cpp
 }
 
-!x11:mac {
-	exists(qsound_mac.cpp):SOURCES += kernel/qsound_mac.cpp
-	else:SOURCES += kernel/qsound_qws.cpp
-}
-
 !embedded:!x11:mac {
 	SOURCES += \
 		kernel/qapplication_mac.cpp \
 		kernel/qclipboard_mac.cpp \
-		kernel/qcursor_mac.cpp \
                 kernel/qeventdispatcher_mac.cpp \
 		kernel/qmime_mac.cpp \
 		kernel/qdnd_mac.cpp \
 		kernel/qdesktopwidget_mac.cpp \
 		kernel/qwidget_mac.cpp \
 		kernel/qkeymapper_mac.cpp
+
+        OBJECTIVE_SOURCES += \
+                kernel/qcursor_mac.mm \
+                kernel/qsound_mac.mm
 
         HEADERS += \
                 kernel/qeventdispatcher_mac_p.h

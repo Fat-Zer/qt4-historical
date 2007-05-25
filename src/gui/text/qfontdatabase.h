@@ -48,6 +48,8 @@ class Q_GUI_EXPORT QFontDatabase
     Q_GADGET
     Q_ENUMS(WritingSystem)
 public:
+    // do not re-order or delete entries from this enum without updating the
+    // QPF2 format and makeqpf!!
     enum WritingSystem {
         Any,
 
@@ -127,12 +129,10 @@ public:
 private:
     static void createDatabase();
     static void parseFontName(const QString &name, QString &foundry, QString &family);
-#if !defined(Q_WS_X11) && !defined(Q_WS_WIN) && !defined(Q_WS_MAC)
-    static QFontEngine *findFont(int script, const QFontPrivate *fp,
-                                 const QFontDef &request, int force_encoding_id = -1);
-#else
-    static void load(const QFontPrivate *d, int script);
+#if defined(Q_WS_QWS)
+    static QFontEngine *findFont(int script, const QFontPrivate *fp, const QFontDef &request);
 #endif
+    static void load(const QFontPrivate *d, int script);
 #ifdef Q_WS_X11
     static QFontEngine *loadXlfd(int screen, int script, const QFontDef &request, int force_encoding_id = -1);
 #endif
@@ -141,6 +141,7 @@ private:
     friend class QFontPrivate;
     friend class QFontDialog;
     friend class QFontEngineMultiXLFD;
+    friend class QFontEngineMultiQWS;
 
     QFontDatabasePrivate *d;
 };

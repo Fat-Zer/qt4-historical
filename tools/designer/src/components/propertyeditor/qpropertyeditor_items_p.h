@@ -36,6 +36,7 @@
 //
 
 #include "propertyeditor_global.h"
+#include <shared_enums_p.h>
 
 #include <QtCore/QStringList>
 #include <QtCore/QVariant>
@@ -55,6 +56,8 @@ namespace qdesigner_internal {
 
 class QT_PROPERTYEDITOR_EXPORT IProperty
 {
+    IProperty(const IProperty&);
+    IProperty& operator=(const IProperty&);
 public:
     enum Kind
     {
@@ -98,6 +101,7 @@ public:
     virtual void setValue(const QVariant &value) = 0;
 
     virtual QString toString() const = 0;
+
     virtual QVariant decoration() const = 0;
 
     virtual bool hasEditor() const = 0;
@@ -148,7 +152,7 @@ public:
 
 protected:
     T m_value;
-    QString m_name;
+    const QString m_name;
 };
 
 class QT_PROPERTYEDITOR_EXPORT AbstractPropertyGroup: public IPropertyGroup
@@ -179,18 +183,8 @@ public:
     inline QVariant decoration() const
     { return QVariant(); }
 
-    QString toString() const
-    {
-        QString text = QLatin1String("[");
-        for (int i=0; i<propertyCount(); ++i) {
-            text += propertyAt(i)->toString();
-            if (i+1 < propertyCount())
-                text += QLatin1String(", ");
-        }
-        text += QLatin1String("]");
-        return text;
-    }
-
+    QString toString() const;
+    
     inline bool hasEditor() const
     { return true; }
 
@@ -204,7 +198,7 @@ public:
     { Q_UNUSED(parent); return 0; }
 
 protected:
-    QString m_name;
+    const QString m_name;
     QList<IProperty*> m_properties;
 };
 
@@ -245,7 +239,7 @@ public:
     QWidget *createExternalEditor(QWidget *parent);
 
 private:
-    QString m_name;
+    const QString m_name;
     QList<IProperty*> m_properties;
 };
 
@@ -350,13 +344,10 @@ public:
 class QT_PROPERTYEDITOR_EXPORT StringProperty: public AbstractPropertyGroup
 {
 public:
-    StringProperty(const QString &value, const QString &name, bool hasComment = false, const QString &comment = QString());
+    StringProperty(const QString &value, const QString &name,
+                   TextPropertyValidationMode validationMode = ValidationMultiLine,
+                   bool hasComment = false, const QString &comment = QString());
 
-    bool checkValidObjectName() const;
-    void setCheckValidObjectName(bool b);
-
-    bool allowScope() const;
-    void setAllowScope(bool b);
 
     QVariant value() const;
     void setValue(const QVariant &value);
@@ -368,9 +359,8 @@ public:
     void updateValue(QWidget *editor);
 
 private:
+    const TextPropertyValidationMode m_validationMode;
     QString m_value;
-    bool m_checkValidObjectName;
-    bool m_allowScope;
 };
 
 class QT_PROPERTYEDITOR_EXPORT SeparatorProperty: public StringProperty
@@ -511,6 +501,10 @@ public:
     QVariant decoration() const;
 
     QString toString() const { return QLatin1String("  ") + AbstractPropertyGroup::toString(); } // ### temp hack remove me!!
+    QWidget *createEditor(QWidget *parent, const QObject *target, const char *receiver) const;
+    void updateEditorContents(QWidget *editor);
+    void updateValue(QWidget *editor);
+
 };
 
 class QT_PROPERTYEDITOR_EXPORT FontProperty: public AbstractPropertyGroup
@@ -577,6 +571,19 @@ public:
     void updateValue(QWidget *editor);
 };
 
+class QT_PROPERTYEDITOR_EXPORT KeySequenceProperty: public AbstractProperty<QKeySequence>
+{
+public:
+    KeySequenceProperty(const QKeySequence &value, const QString &name);
+
+    void setValue(const QVariant &value);
+    QString toString() const;
+
+    QWidget *createEditor(QWidget *parent, const QObject *target, const char *receiver) const;
+    void updateEditorContents(QWidget *editor);
+    void updateValue(QWidget *editor);
+};
+
 class QT_PROPERTYEDITOR_EXPORT CursorProperty: public AbstractProperty<QCursor>
 {
 public:
@@ -617,6 +624,32 @@ class QT_PROPERTYEDITOR_EXPORT StringListProperty: public AbstractProperty<QStri
 {
 public:
     StringListProperty(const QStringList &value, const QString &name);
+
+    void setValue(const QVariant &value);
+    QString toString() const;
+
+    QWidget *createEditor(QWidget *parent, const QObject *target, const char *receiver) const;
+    void updateEditorContents(QWidget *editor);
+    void updateValue(QWidget *editor);
+};
+
+class QT_PROPERTYEDITOR_EXPORT UIntProperty: public AbstractProperty<uint>
+{
+public:
+    UIntProperty(uint value, const QString &name);
+
+    void setValue(const QVariant &value);
+    QString toString() const;
+
+    QWidget *createEditor(QWidget *parent, const QObject *target, const char *receiver) const;
+    void updateEditorContents(QWidget *editor);
+    void updateValue(QWidget *editor);
+};
+
+class QT_PROPERTYEDITOR_EXPORT ULongLongProperty: public AbstractProperty<qulonglong>
+{
+public:
+    ULongLongProperty(qulonglong value, const QString &name);
 
     void setValue(const QVariant &value);
     QString toString() const;

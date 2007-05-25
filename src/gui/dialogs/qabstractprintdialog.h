@@ -30,7 +30,7 @@ QT_BEGIN_HEADER
 
 QT_MODULE(Gui)
 
-#ifndef QT_NO_PRINTDIALOG
+#ifndef QT_NO_PRINTER
 
 class QAbstractPrintDialogPrivate;
 class QPrinter;
@@ -57,6 +57,8 @@ public:
     };
 
     Q_DECLARE_FLAGS(PrintDialogOptions, PrintDialogOption)
+
+#ifndef QT_NO_PRINTDIALOG
 
     explicit QAbstractPrintDialog(QPrinter *printer, QWidget *parent = 0);
 
@@ -85,11 +87,13 @@ protected:
 
 private:
     Q_DISABLE_COPY(QAbstractPrintDialog)
+
+#endif // QT_NO_PRINTDIALOG
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QAbstractPrintDialog::PrintDialogOptions)
 
-#endif // QT_NO_PRINTDIALOG
+#endif // QT_NO_PRINTER
 
 QT_END_HEADER
 

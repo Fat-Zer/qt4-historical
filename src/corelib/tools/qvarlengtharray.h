@@ -82,8 +82,9 @@ public:
     }
 
     inline void append(const T &t) {
-        const int idx = s;
-        resize(idx + 1);
+        const int idx = s++;
+        if (s == a)
+            realloc(s, s<<1);
         ptr[idx] = t;
     }
     void append(const T *buf, int size);
@@ -139,7 +140,11 @@ Q_OUTOFLINE_TEMPLATE void QVarLengthArray<T, Prealloc>::append(const T *abuf, in
         return;
 
     const int idx = s;
-    resize(idx + asize);
+    const int news = s + asize;
+    if (news >= a)
+        realloc(news, news<<1);
+    else
+        s = news;
 
     if (QTypeInfo<T>::isComplex) {
         T *i = ptr + idx;
@@ -161,17 +166,23 @@ Q_OUTOFLINE_TEMPLATE void QVarLengthArray<T, Prealloc>::realloc(int asize, int a
 
     if (aalloc != a) {
         ptr = reinterpret_cast<T *>(qMalloc(aalloc * sizeof(T)));
-        a = aalloc;
+        if (ptr) {
+            a = aalloc;
 
-        if (QTypeInfo<T>::isStatic) {
-            T *i = ptr + osize;
-            T *j = oldPtr + osize;
-            while (i != ptr) {
-                new (--i) T(*--j);
-                j->~T();
+            if (QTypeInfo<T>::isStatic) {
+                T *i = ptr + osize;
+                T *j = oldPtr + osize;
+                while (i != ptr) {
+                    new (--i) T(*--j);
+                    j->~T();
+                }
+            } else {
+                qMemCopy(ptr, oldPtr, osize * sizeof(T));
             }
         } else {
-            qMemCopy(ptr, oldPtr, osize * sizeof(T));
+            ptr = oldPtr;
+            s = 0;
+            asize = 0;
         }
     }
 

@@ -101,6 +101,7 @@ public:
 #endif
 
 private:
+    friend class QTransform;
     qreal _m11, _m12;
     qreal _m21, _m22;
     qreal _dx, _dy;

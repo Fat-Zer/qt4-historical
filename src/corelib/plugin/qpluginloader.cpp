@@ -200,6 +200,8 @@ bool QPluginLoader::unload()
         did_load = false;
         return d->unload();
     }
+    if (d)  // Ouch
+        d->errorString = tr("The plugin was not loaded.");
     return false;
 }
 
@@ -233,11 +235,9 @@ void QPluginLoader::setFileName(const QString &fileName)
         did_load = false;
     }
     d = QLibraryPrivate::findOrCreate(QFileInfo(fileName).canonicalFilePath());
-    if (d && d->pHnd && d->instance)
-        did_load = true;
 #else
     if (qt_debug_component()) {
-        qWarning("Cannot load %s into a statically linked Qt library.", 
+        qWarning("Cannot load %s into a statically linked Qt library.",
             (const char*)QFile::encodeName(fileName));
     }
     Q_UNUSED(fileName);

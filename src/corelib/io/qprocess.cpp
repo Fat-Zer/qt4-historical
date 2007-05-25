@@ -648,12 +648,16 @@ bool QProcessPrivate::_q_processDied()
         emit q->error(processError);
     }
 
+    bool wasRunning = (processState == QProcess::Running);
+
     cleanup();
 
     processState = QProcess::NotRunning;
     emit q->stateChanged(processState);
-    emit q->finished(exitCode);
-    emit q->finished(exitCode, exitStatus);
+    if (wasRunning) {
+        emit q->finished(exitCode);
+        emit q->finished(exitCode, exitStatus);
+    }
 #if defined QPROCESS_DEBUG
     qDebug("QProcessPrivate::_q_processDied() process is dead");
 #endif
@@ -1575,8 +1579,13 @@ void QProcess::start(const QString &program, OpenMode mode)
     The process may not exit as a result of calling this function (it is given
     the chance to prompt the user for any unsaved files, etc).
 
-    On Windows, terminate() posts a WM_CLOSE message to the process, and on
-    Unix and Mac OS X the SIGTERM signal is sent.
+    On Windows, terminate() posts a WM_CLOSE message to all toplevel windows
+    of the process and then to the main thread of the process itself. On Unix
+    and Mac OS X the SIGTERM signal is sent.
+
+    Console applications on Windows that do not run an event loop, or whose
+    event loop does not handle the WM_CLOSE message, can only be terminated by
+    calling kill().
 
     \sa kill()
 */
@@ -1658,6 +1667,29 @@ int QProcess::execute(const QString &program)
     process.start(program);
     process.waitForFinished(-1);
     return process.exitCode();
+}
+
+/*!
+    Starts the program \a program with the arguments \a arguments in a
+    new process, and detaches from it. Returns true on success;
+    otherwise returns false. If the calling process exits, the
+    detached process will continue to live.
+
+    On Unix, the started process will run in its own session and act
+    like a daemon. On Windows, it will run as a regular standalone
+    process.
+
+    On Windows, arguments that contain spaces are wrapped in quotes.
+
+    The process will be started in the directory \a workingDirectory.
+
+    If the function is successful then *pid is set to the process identifier
+    of the started process.
+*/
+bool QProcess::startDetached(const QString &program, const QStringList &arguments, const QString &workingDirectory,
+                             qint64 *pid)
+{
+    return QProcessPrivate::startDetached(program, arguments, workingDirectory, pid);
 }
 
 /*!

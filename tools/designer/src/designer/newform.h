@@ -34,7 +34,7 @@ class NewForm: public QDialog
 {
     Q_OBJECT
 public:
-    NewForm(QDesignerWorkbench *workbench, QWidget *parentWidget);
+    NewForm(QDesignerWorkbench *workbench, QWidget *parentWidget, const QString &fileName = QString());
     virtual ~NewForm();
 
     QDesignerWorkbench *workbench() const;
@@ -44,15 +44,20 @@ private slots:
     void on_treeWidget_itemActivated(QTreeWidgetItem *item);
     void on_treeWidget_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *);
     void on_treeWidget_itemPressed(QTreeWidgetItem *item);
+    void recentFileChosen();
 
 private:
-    QIcon formPreviewIcon(const QString &fileName);
+    QPixmap formPreviewPixmap(const QString &fileName);
     void loadFrom(const QString &path, bool resourceFile);
 
 private:
+    bool openTemplate(const QString &templateFileName);
+
     QDesignerWorkbench *m_workbench;
     Ui::NewForm ui;
-    QPushButton *createButton;
+    QPushButton *m_createButton;
+    QPushButton *m_recentButton;
+    QString m_fileName;
 };
 
 #endif // NEWFORM_H

@@ -38,8 +38,19 @@
 #include "QtNetwork/qhostaddress.h"
 #include "QtNetwork/qabstractsocket.h"
 #include "private/qobject_p.h"
+class QAuthenticator;
 
 class QAbstractSocketEnginePrivate;
+
+
+class QAbstractSocketEngineReceiver {
+public:
+    virtual ~QAbstractSocketEngineReceiver(){}
+    virtual void readNotification()= 0;
+    virtual void writeNotification()= 0;
+    virtual void exceptionNotification()= 0;
+    virtual void proxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *authenticator)= 0;
+};
 
 class Q_AUTOTEST_EXPORT QAbstractSocketEngine : public QObject
 {
@@ -116,11 +127,14 @@ public:
     virtual bool isExceptionNotificationEnabled() const = 0;
     virtual void setExceptionNotificationEnabled(bool enable) = 0;
 
-Q_SIGNALS:
+public Q_SLOTS:
     void readNotification();
     void writeNotification();
     void exceptionNotification();
+    void proxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *authenticator);
 
+public:
+    void setReceiver(QAbstractSocketEngineReceiver *receiver);
 protected:
     QAbstractSocketEngine(QAbstractSocketEnginePrivate &dd, QObject* parent = 0);
 
@@ -154,6 +168,7 @@ public:
     quint16 localPort;
     QHostAddress peerAddress;
     quint16 peerPort;
+    QAbstractSocketEngineReceiver *receiver;
 };
 
 

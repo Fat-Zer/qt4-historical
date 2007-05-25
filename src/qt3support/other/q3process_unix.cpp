@@ -751,7 +751,7 @@ bool Q3Process::start( QStringList *env )
 #ifdef Q_OS_MACX
     if(i) {
 	Q3CString arg_bundle = arglistQ[0];
-	QFileInfo fi(arg_bundle);
+	QFileInfo fi(QString::fromUtf8(arg_bundle.constData()));
 	if(fi.exists() && fi.isDir() && arg_bundle.right(4) == ".app") {
 	    Q3CString exe = arg_bundle;
 	    int lslash = exe.findRev('/');
@@ -759,7 +759,7 @@ bool Q3Process::start( QStringList *env )
 		exe = exe.mid(lslash+1);
 	    exe = Q3CString(arg_bundle + "/Contents/MacOS/" + exe);
 	    exe = exe.left(exe.length() - 4); //chop off the .app
-	    if(QFile::exists(exe)) {
+	    if(QFile::exists(QString::fromLatin1(exe.constData()))) {
 		arglistQ[0] = exe;
 		arglist[0] = arglistQ[0];
 	    }
@@ -814,12 +814,12 @@ bool Q3Process::start( QStringList *env )
 	    // construct the environment for exec
 	    int numEntries = env->count();
 #if defined(Q_OS_MACX)
-	    QString ld_library_path("DYLD_LIBRARY_PATH");
+	    QString ld_library_path(QLatin1String("DYLD_LIBRARY_PATH"));
 #else
-	    QString ld_library_path("LD_LIBRARY_PATH");
+	    QString ld_library_path(QLatin1String("LD_LIBRARY_PATH"));
 #endif
 	    bool setLibraryPath =
-		env->grep( QRegExp( "^" + ld_library_path + "=" ) ).empty() &&
+		env->grep( QRegExp( QLatin1Char('^') + ld_library_path + QLatin1Char('=') ) ).empty() &&
 		getenv( ld_library_path.local8Bit() ) != 0;
 	    if ( setLibraryPath )
 		numEntries++;
@@ -827,7 +827,7 @@ bool Q3Process::start( QStringList *env )
 	    const char** envlist = new const char*[ numEntries + 1 ];
 	    int i = 0;
 	    if ( setLibraryPath ) {
-		envlistQ[i] = QString( ld_library_path + "=%1" ).arg( getenv( ld_library_path.local8Bit() ) ).local8Bit();
+		envlistQ[i] = QString( ld_library_path + QLatin1String("=%1") ).arg( QString::fromLocal8Bit(getenv( ld_library_path.local8Bit() )) ).local8Bit();
 		envlist[i] = envlistQ[i];
 		i++;
 	    }
@@ -841,13 +841,13 @@ bool Q3Process::start( QStringList *env )
 	    // look for the executable in the search path
 	    if ( _arguments.count()>0 && getenv("PATH")!=0 ) {
 		QString command = _arguments[0];
-		if ( !command.contains( '/' ) ) {
-		    QStringList pathList = QStringList::split( ':', getenv( "PATH" ) );
+		if ( !command.contains( QLatin1Char('/') ) ) {
+		    QStringList pathList = QStringList::split( QLatin1Char(':'), QString::fromLocal8Bit(getenv( "PATH" )) );
 		    for (QStringList::Iterator it = pathList.begin(); it != pathList.end(); ++it ) {
 			QString dir = *it;
 #if defined(Q_OS_MACX) //look in a bundle
-			if(!QFile::exists(dir + "/" + command) && QFile::exists(dir + "/" + command + ".app"))
-			    dir += "/" + command + ".app/Contents/MacOS";
+			if(!QFile::exists(dir + QLatin1Char('/') + command) && QFile::exists(dir + QLatin1Char('/') + command + QLatin1String(".app")))
+			    dir += QLatin1Char('/') + command + QLatin1String(".app/Contents/MacOS");
 #endif
 #ifndef QT_NO_DIR
 			QFileInfo fileInfo( dir, command );

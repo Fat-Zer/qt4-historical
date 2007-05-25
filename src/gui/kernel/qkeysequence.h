@@ -123,7 +123,7 @@ public:
     QKeySequence(StandardKey key);
     ~QKeySequence();
 
-    uint count() const;
+    uint count() const; // ### Qt 5: return 'int'
     bool isEmpty() const;
 
     enum SequenceMatch {
@@ -178,6 +178,10 @@ private:
     friend class Q3AccelManager;
     friend class QShortcutMap;
     friend class QShortcut;
+
+public:
+    typedef QKeySequencePrivate * DataPtr;
+    inline DataPtr &data_ptr() { return d; }
 };
 Q_DECLARE_TYPEINFO(QKeySequence, Q_MOVABLE_TYPE);
 Q_DECLARE_SHARED(QKeySequence)

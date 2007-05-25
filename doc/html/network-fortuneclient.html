@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-x11-opensource-src-4.2.3/doc/src/examples/fortuneclient.qdoc -->
+<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/doc/src/examples/fortuneclient.qdoc -->
 <head>
-  <title>Qt 4.2: Fortune Client Example</title>
+  <title>Qt 4.3: Fortune Client Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -24,7 +24,7 @@
 <p><a href="qtcpsocket.html">QTcpSocket</a> supports two general approaches to network programming:</p>
 <ul>
 <li><i>The asynchronous (non-blocking) approach.</i> Operations are scheduled and performed when control returns to Qt's event loop. When the operation is finished, <a href="qtcpsocket.html">QTcpSocket</a> emits a signal. For example, <a href="qabstractsocket.html#connectToHost">QTcpSocket::connectToHost</a>() returns immediately, and when the connection has been established, <a href="qtcpsocket.html">QTcpSocket</a> emits <a href="qabstractsocket.html#connected">connected()</a>.</li>
-<li><i>The synchronous (blocking) approach.</i> In non-GUI and multithreaded applications, you can call the <tt>waitFor...()</tt> functions (e.g., <a href="qabstractsocket.html#waitForConnected">QTcpSocket::waitForConnected</a>()) to suspend the calling thread until the operation has completed, instead of connecting to signals.</li>
+<li><i>The synchronous (blocking) approach.</i> In non-GUI and multithreaded applications, you can call the <tt>waitFor...()</tt> functions (e.g&#x2e;, <a href="qabstractsocket.html#waitForConnected">QTcpSocket::waitForConnected</a>()) to suspend the calling thread until the operation has completed, instead of connecting to signals.</li>
 </ul>
 <p>In this example, we will demonstrate the asynchronous approach. The <a href="network-blockingfortuneclient.html">Blocking Fortune Client</a> example illustrates the synchronous approach.</p>
 <p>Our class contains some data and a few private slots:</p>
@@ -145,6 +145,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
 </tr></table></div></address></body>
 </html>

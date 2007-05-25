@@ -110,6 +110,7 @@ public:
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     bool setData(const QModelIndex &index, const QVariant &value, int role);
+    bool setItemData(const QModelIndex &index, const QMap<int, QVariant> &roles);
 
     QMap<int, QVariant> itemData(const QModelIndex &index) const;
 
@@ -185,6 +186,14 @@ public:
     // sorting
     void _q_sort();
     void _q_dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
+};
+
+class QTableWidgetItemPrivate
+{
+public:
+    QTableWidgetItemPrivate(QTableWidgetItem *item) : q(item), id(-1) {}
+    QTableWidgetItem *q;
+    int id;
 };
 
 #endif // QT_NO_TABLEWIDGET

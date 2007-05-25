@@ -58,6 +58,16 @@ void ColorItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 	return;
     }
 
+    setCursor(Qt::ClosedHandCursor);
+}
+
+void ColorItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
+{
+    if (QLineF(event->screenPos(), event->buttonDownScreenPos(Qt::LeftButton))
+        .length() < QApplication::startDragDistance()) {
+        return;
+    }
+
     QDrag *drag = new QDrag(event->widget());
     QMimeData *mime = new QMimeData;
     drag->setMimeData(mime);
@@ -91,6 +101,11 @@ void ColorItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 	drag->setHotSpot(QPoint(15, 20));
     }
 
-    drag->start();
+    drag->exec();
+    setCursor(Qt::OpenHandCursor);
 }
 
+void ColorItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
+{
+    setCursor(Qt::OpenHandCursor);
+}

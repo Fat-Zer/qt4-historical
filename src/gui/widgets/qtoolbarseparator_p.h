@@ -39,6 +39,7 @@
 
 #ifndef QT_NO_TOOLBAR
 
+class QStyleOption;
 class QToolBar;
 
 class QToolBarSeparator : public QWidget
@@ -54,6 +55,7 @@ public:
     QSize sizeHint() const;
 
     void paintEvent(QPaintEvent *);
+    void initStyleOption(QStyleOption *option) const;
 
 public Q_SLOTS:
     void setOrientation(Qt::Orientation orientation);

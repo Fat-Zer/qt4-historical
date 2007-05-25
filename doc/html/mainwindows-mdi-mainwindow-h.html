@@ -3,7 +3,7 @@
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>Qt 4.2: mainwindow.h Example File (mainwindows/mdi/mainwindow.h)</title>
+  <title>Qt 4.3: mainwindow.h Example File (mainwindows/mdi/mainwindow.h)</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -42,7 +42,8 @@
 
  class QAction;
  class QMenu;
- class QWorkspace;
+ class QMdiArea;
+ class QMdiSubWindow;
  class MdiChild;
  class QSignalMapper;
 
@@ -69,6 +70,7 @@
      void updateWindowMenu();
      MdiChild *createMdiChild();
      void switchLayoutDirection();
+     void setActiveSubWindow(QWidget *window);
 
  private:
      void createActions();
@@ -78,9 +80,9 @@
      void readSettings();
      void writeSettings();
      MdiChild *activeMdiChild();
-     MdiChild *findMdiChild(const QString &amp;fileName);
+     QMdiSubWindow *findMdiChild(const QString &amp;fileName);
 
-     QWorkspace *workspace;
+     QMdiArea *mdiArea;
      QSignalMapper *windowMapper;
 
      QMenu *fileMenu;
@@ -101,7 +103,6 @@
      QAction *closeAllAct;
      QAction *tileAct;
      QAction *cascadeAct;
-     QAction *arrangeAct;
      QAction *nextAct;
      QAction *previousAct;
      QAction *separatorAct;
@@ -114,6 +115,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
 </tr></table></div></address></body>
 </html>

@@ -33,6 +33,7 @@ QT_MODULE(Gui)
 #ifndef QT_NO_PROGRESSBAR
 
 class QProgressBarPrivate;
+class QStyleOptionProgressBar;
 
 class Q_GUI_EXPORT QProgressBar : public QWidget
 {
@@ -57,7 +58,6 @@ public:
     int minimum() const;
     int maximum() const;
 
-    void setRange(int minimum, int maximum);
     int value() const;
 
     virtual QString text() const;
@@ -82,6 +82,7 @@ public:
 
 public Q_SLOTS:
     void reset();
+    void setRange(int minimum, int maximum);
     void setMinimum(int minimum);
     void setMaximum(int maximum);
     void setValue(int value);
@@ -93,6 +94,7 @@ Q_SIGNALS:
 protected:
     bool event(QEvent *e);
     void paintEvent(QPaintEvent *);
+    void initStyleOption(QStyleOptionProgressBar *option) const;
 
 private:
     Q_DECLARE_PRIVATE(QProgressBar)

@@ -3,7 +3,7 @@
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>Qt 4.2: colorswatch.cpp Example File (demos/mainwindow/colorswatch.cpp)</title>
+  <title>Qt 4.3: colorswatch.cpp Example File (demos/mainwindow/colorswatch.cpp)</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -268,6 +268,11 @@
      floatableAction-&gt;setCheckable(true);
      connect(floatableAction, SIGNAL(triggered(bool)), SLOT(changeFloatable(bool)));
 
+     verticalTitleBarAction = new QAction(tr(&quot;Vertical title bar&quot;), this);
+     verticalTitleBarAction-&gt;setCheckable(true);
+     connect(verticalTitleBarAction, SIGNAL(triggered(bool)),
+             SLOT(changeVerticalTitleBar(bool)));
+
      floatingAction = new QAction(tr(&quot;Floating&quot;), this);
      floatingAction-&gt;setCheckable(true);
      connect(floatingAction, SIGNAL(triggered(bool)), SLOT(changeFloating(bool)));
@@ -351,6 +356,7 @@
      menu-&gt;addAction(movableAction);
      menu-&gt;addAction(floatableAction);
      menu-&gt;addAction(floatingAction);
+     menu-&gt;addAction(verticalTitleBarAction);
      menu-&gt;addSeparator();
      menu-&gt;addActions(allowedAreasActions-&gt;actions());
      menu-&gt;addSeparator();
@@ -380,11 +386,14 @@
          floatableAction-&gt;setEnabled(false);
          floatingAction-&gt;setEnabled(false);
          movableAction-&gt;setEnabled(false);
+         verticalTitleBarAction-&gt;setChecked(false);
      } else {
          floatableAction-&gt;setChecked(features() &amp; QDockWidget::DockWidgetFloatable);
          floatingAction-&gt;setChecked(isWindow());
          <span class="comment">// done after floating, to get 'floatable' correctly initialized</span>
          movableAction-&gt;setChecked(features() &amp; QDockWidget::DockWidgetMovable);
+         verticalTitleBarAction
+             -&gt;setChecked(features() &amp; QDockWidget::DockWidgetVerticalTitleBar);
      }
 
      allowLeftAction-&gt;setChecked(isAreaAllowed(Qt::LeftDockWidgetArea));
@@ -541,11 +550,17 @@
  void ColorSwatch::placeBottom(bool p)
  { place(Qt::BottomDockWidgetArea, p); }
 
+ void ColorSwatch::changeVerticalTitleBar(bool on)
+ {
+     setFeatures(on ? features() | DockWidgetVerticalTitleBar
+                     : features() &amp; ~DockWidgetVerticalTitleBar);
+ }
+
  #include &quot;colorswatch.moc&quot;</pre>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
 </tr></table></div></address></body>
 </html>

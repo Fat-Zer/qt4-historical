@@ -401,10 +401,10 @@ QModelIndexList QItemSelection::indexes() const
 */
 void QItemSelection::merge(const QItemSelection &other, QItemSelectionModel::SelectionFlags command)
 {
-    if (!(command & QItemSelectionModel::Select ||
+    if (other.isEmpty() ||
+          !(command & QItemSelectionModel::Select ||
           command & QItemSelectionModel::Deselect ||
-          command & QItemSelectionModel::Toggle) ||
-        other.isEmpty())
+          command & QItemSelectionModel::Toggle))
         return;
 
     QItemSelection newSelection = other;
@@ -860,6 +860,21 @@ QItemSelectionModel::QItemSelectionModel(QItemSelectionModelPrivate &dd, QAbstra
 */
 QItemSelectionModel::~QItemSelectionModel()
 {
+    Q_D(QItemSelectionModel);
+    if (d->model) {
+        disconnect(d->model, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)),
+                this, SLOT(_q_rowsAboutToBeRemoved(QModelIndex,int,int)));
+        disconnect(d->model, SIGNAL(columnsAboutToBeRemoved(QModelIndex,int,int)),
+                this, SLOT(_q_columnsAboutToBeRemoved(QModelIndex,int,int)));
+        disconnect(d->model, SIGNAL(rowsAboutToBeInserted(QModelIndex,int,int)),
+                this, SLOT(_q_rowsAboutToBeInserted(QModelIndex,int,int)));
+        disconnect(d->model, SIGNAL(columnsAboutToBeInserted(QModelIndex,int,int)),
+                this, SLOT(_q_columnsAboutToBeInserted(QModelIndex,int,int)));
+        disconnect(d->model, SIGNAL(layoutAboutToBeChanged()),
+                this, SLOT(_q_layoutAboutToBeChanged()));
+        disconnect(d->model, SIGNAL(layoutChanged()),
+                this, SLOT(_q_layoutChanged()));
+    }
 }
 
 /*!
@@ -870,10 +885,8 @@ QItemSelectionModel::~QItemSelectionModel()
 */
 void QItemSelectionModel::select(const QModelIndex &index, QItemSelectionModel::SelectionFlags command)
 {
-    if (index.isValid()) {
-        QItemSelection selection(index, index);
-        select(selection, command);
-    }
+    QItemSelection selection(index, index);
+    select(selection, command);
 }
 
 /*!
@@ -1267,7 +1280,14 @@ bool QItemSelectionModel::columnIntersectsSelection(int column, const QModelInde
 bool QItemSelectionModel::hasSelection() const
 {
     Q_D(const QItemSelectionModel);
-    return !(d->ranges.isEmpty() && d->currentSelection.isEmpty());
+    if (d->currentCommand == Toggle || d->currentCommand == Deselect) {
+        QItemSelection sel = d->ranges;
+        sel.merge(d->currentSelection, d->currentCommand);
+        return !sel.isEmpty();
+    }
+    else {
+        return !(d->ranges.isEmpty() && d->currentSelection.isEmpty());
+    }
 }
 
 /*!

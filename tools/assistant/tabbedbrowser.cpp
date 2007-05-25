@@ -76,11 +76,13 @@ MainWindow *TabbedBrowser::mainWindow() const
 void TabbedBrowser::forward()
 {
     currentBrowser()->forward();
+    emit browserUrlChanged(currentBrowser()->source().toString());
 }
 
 void TabbedBrowser::backward()
 {
     currentBrowser()->backward();
+    emit browserUrlChanged(currentBrowser()->source().toString());
 }
 
 void TabbedBrowser::setSource( const QString &ref )
@@ -143,6 +145,7 @@ HelpWindow *TabbedBrowser::createHelpWindow()
 HelpWindow *TabbedBrowser::newBackgroundTab()
 {
     HelpWindow *win = createHelpWindow();
+    emit tabCountChanged(ui.tab->count());
     return win;
 }
 
@@ -159,6 +162,8 @@ void TabbedBrowser::newTab(const QString &lnk)
     if(!link.isNull()) {
          win->setSource(link);
     }
+
+    emit tabCountChanged(ui.tab->count());
 }
 
 void TabbedBrowser::zoomIn()
@@ -191,6 +196,8 @@ void TabbedBrowser::init()
     if (tabBar) {
         opt.init(tabBar);
         opt.shape = tabBar->shape();
+        tabBar->setContextMenuPolicy(Qt::CustomContextMenu);
+        connect(tabBar, SIGNAL(customContextMenuRequested(const QPoint&)), SLOT(openTabMenu(const QPoint&)));
     }
 
     // workaround for sgi style
@@ -274,6 +281,7 @@ void TabbedBrowser::closeTab()
     ui.tab->removeTab(ui.tab->indexOf(win));
     QTimer::singleShot(0, win, SLOT(deleteLater()));
     ui.tab->cornerWidget(Qt::TopRightCorner)->setEnabled(ui.tab->count() > 1);
+    emit tabCountChanged(ui.tab->count());
 }
 
 QStringList TabbedBrowser::sources() const
@@ -305,9 +313,9 @@ void TabbedBrowser::sourceChanged()
         docTitle = QLatin1String("...");
     // Make the classname in the title a bit more visible (otherwise
     // we just see the "Qt 4.0 : Q..." which isn't really helpful ;-)
-    QString qtTitle = "Qt " + QString::number( (QT_VERSION >> 16) & 0xff )
+    QString qtTitle = QLatin1String("Qt ") + QString::number( (QT_VERSION >> 16) & 0xff )
         + QLatin1String(".") + QString::number( (QT_VERSION >> 8) & 0xff )
-        + ": ";
+        + QLatin1String(": ");
     if (docTitle.startsWith(qtTitle))
         docTitle = docTitle.mid(qtTitle.length());
     setTitle(win, docTitle);
@@ -415,7 +423,7 @@ void TabbedBrowser::find(QString ttf, bool forward, bool backward)
 
 		if (newCursor.isNull()) {
 			QTextCursor ac(doc);
-			ac.movePosition(options & QTextDocument::FindBackward 
+			ac.movePosition(options & QTextDocument::FindBackward
 							? QTextCursor::End : QTextCursor::Start);
 			newCursor = doc->find(ttf, ac, options);
 			if (newCursor.isNull()) {
@@ -448,4 +456,52 @@ bool TabbedBrowser::eventFilter(QObject *o, QEvent *e)
 	}
 
 	return QWidget::eventFilter(o, e);
+}
+
+void TabbedBrowser::openTabMenu(const QPoint& pos)
+{
+    QTabBar *tabBar = qFindChild<QTabBar*>(ui.tab);
+    QMenu *m = new QMenu(tabBar);
+    QAction *new_action = m->addAction(tr("New Tab"));
+    QAction *close_action = m->addAction(tr("Close Tab"));
+    QAction *close_others_action = m->addAction(tr("Close Other Tabs"));
+    QAction *action_picked = m->exec(tabBar->mapToGlobal(pos));
+    if (action_picked) {
+        if (action_picked == new_action) {
+            newTab();
+        } else if (action_picked == close_action) {
+            for (int i=0; i< tabBar->count(); ++i) {
+                if (tabBar->tabRect(i).contains(pos)) {
+                    HelpWindow *win = static_cast<HelpWindow*>(ui.tab->widget(i));
+                    mainWindow()->removePendingBrowser(win);
+                    QTimer::singleShot(0, win, SLOT(deleteLater()));
+                    ui.tab->cornerWidget(Qt::TopRightCorner)->setEnabled(ui.tab->count() > 1);
+                    emit tabCountChanged(ui.tab->count());
+                    break;
+                }
+            }
+        } else if (action_picked == close_others_action) {
+            int current_tab_index = -1;
+            for (int i=0; i< tabBar->count(); ++i) {
+                if (tabBar->tabRect(i).contains(pos)) {
+                    current_tab_index = i;
+                    break;
+                }
+            }
+            for (int i=tabBar->count()-1; i>=0; --i) {
+                if (i == current_tab_index) {
+                    continue;
+                } else {
+                    HelpWindow *win = static_cast<HelpWindow*>(ui.tab->widget(i));
+                    mainWindow()->removePendingBrowser(win);
+                    QTimer::singleShot(0, win, SLOT(deleteLater()));
+                    if (i < current_tab_index)
+                        --current_tab_index;
+                }
+            }
+            ui.tab->cornerWidget(Qt::TopRightCorner)->setEnabled(ui.tab->count() > 1);
+            emit tabCountChanged(ui.tab->count());
+        }
+    }
+    delete m;
 }

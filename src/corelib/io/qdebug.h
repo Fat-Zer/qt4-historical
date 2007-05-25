@@ -38,7 +38,6 @@ QT_BEGIN_HEADER
 
 QT_MODULE(Core)
 
-#if !defined(QT_NO_DEBUG_STREAM)
 class Q_CORE_EXPORT QDebug
 {
     struct Stream {
@@ -97,6 +96,9 @@ public:
     inline QDebug &operator<<(QTextStreamManipulator m)
     { stream->ts << m; return *this; }
 };
+
+Q_CORE_EXPORT_INLINE QDebug qWarning() { return QDebug(QtWarningMsg); }
+Q_CORE_EXPORT_INLINE QDebug qCritical() { return QDebug(QtCriticalMsg); }
 
 inline QDebug &QDebug::operator=(const QDebug &other)
 {
@@ -189,9 +191,8 @@ inline QDebug operator<<(QDebug debug, const QSet<T> &set)
     return operator<<(debug, set.toList());
 }
 
+#if !defined(QT_NO_DEBUG_STREAM)
 Q_CORE_EXPORT_INLINE QDebug qDebug() { return QDebug(QtDebugMsg); }
-Q_CORE_EXPORT_INLINE QDebug qWarning() { return QDebug(QtWarningMsg); }
-Q_CORE_EXPORT_INLINE QDebug qCritical() { return QDebug(QtCriticalMsg); }
 
 #else // QT_NO_DEBUG_STREAM
 
@@ -216,7 +217,7 @@ public:
 };
 #undef qDebug
 inline QNoDebug qDebug() { return QNoDebug(); }
-#define qDebug if(1) ; else qDebug
+#define qDebug QT_NO_QDEBUG_MACRO
 
 #ifdef QT_NO_MEMBER_TEMPLATES
 template<typename T>

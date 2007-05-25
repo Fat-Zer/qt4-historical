@@ -38,29 +38,16 @@
 #include "QtCore/qabstracteventdispatcher.h"
 #include "QtCore/qlist.h"
 #include "private/qabstracteventdispatcher_p.h"
+#include "private/qpodlist_p.h"
 
 #include <sys/types.h>
 #include <sys/time.h>
-
-// get time of day
-inline void getTime(timeval &t)
-{
-    gettimeofday(&t, 0);
-    // NTP-related fix
-    while (t.tv_usec >= 1000000l) {
-        t.tv_usec -= 1000000l;
-        ++t.tv_sec;
-    }
-    while (t.tv_usec < 0l) {
-        if (t.tv_sec > 0l) {
-            t.tv_usec += 1000000l;
-            --t.tv_sec;
-        } else {
-            t.tv_usec = 0l;
-            break;
-        }
-    }
-}
+#if !defined(Q_OS_HPUX) || defined(__ia64)
+#include <sys/select.h>
+#endif
+#if !defined(_POSIX_MONOTONIC_CLOCK)
+#  define _POSIX_MONOTONIC_CLOCK -1
+#endif
 
 // Internal operator functions for timevals
 inline bool operator<(const timeval &t1, const timeval &t2)
@@ -108,16 +95,41 @@ struct QTimerInfo {
 
 class QTimerInfoList : public QList<QTimerInfo*>
 {
+#if (_POSIX_MONOTONIC_CLOCK-0 <= 0)
+    bool useMonotonicTimers;
+
+    timeval previousTime;
+    clock_t previousTicks;
+    int ticksPerSecond;
+    int msPerTick;
+
+    bool timeChanged(timeval *delta);
+#endif
+
+    // state variables used by activateTimers()
+    QTimerInfo *firstTimerInfo, *currentTimerInfo;
 
 public:
     QTimerInfoList();
 
-    timeval watchtime;
-    void updateWatchTime(const timeval &currentTime);
+    void getTime(timeval &t);
+
+    timeval currentTime;
+    timeval updateCurrentTime();
+
+    // must call updateCurrentTime() first!
+    void repairTimersIfNeeded();
 
     bool timerWait(timeval &);
     void timerInsert(QTimerInfo *);
     void timerRepair(const timeval &);
+
+    void registerTimer(int timerId, int interval, QObject *object);
+    bool unregisterTimer(int timerId);
+    bool unregisterTimers(QObject *object);
+    QList<QPair<int, int> > registeredTimers(QObject *object) const;
+
+    int activateTimers();
 };
 
 struct Q_CORE_EXPORT QSockNot
@@ -133,7 +145,9 @@ public:
     QSockNotType();
     ~QSockNotType();
 
-    QList<QSockNot*> list;
+    typedef QPodList<QSockNot*, 32> List;
+
+    List list;
     fd_set select_fds;
     fd_set enabled_fds;
     fd_set pending_fds;
@@ -200,7 +214,7 @@ public:
     QTimerInfoList timerList;
 
     // pending socket notifiers list
-    QList<QSockNot*> sn_pending_list;
+    QSockNotType::List sn_pending_list;
 
     QAtomic wakeUps;
     bool interrupt;

@@ -34,6 +34,7 @@ QT_MODULE(Network)
 class QHostAddress;
 class QNetworkProxy;
 class QAbstractSocketPrivate;
+class QAuthenticator;
 
 class Q_NETWORK_EXPORT QAbstractSocket : public QIODevice
 {
@@ -61,7 +62,8 @@ public:
         AddressInUseError,
         SocketAddressNotAvailableError,
         UnsupportedSocketOperationError,
-        /* UnfinishedSocketOperationError = 11, ### add in 4.3 */
+        UnfinishedSocketOperationError,
+        ProxyAuthenticationRequiredError,
         UnknownSocketError = -1
     };
     enum SocketState {
@@ -86,6 +88,7 @@ public:
     QAbstractSocket(SocketType socketType, QObject *parent);
     virtual ~QAbstractSocket();
 
+    // ### Qt 5: Make connectToHost() and disconnectFromHost() virtual.
     void connectToHost(const QString &hostName, quint16 port, OpenMode mode = ReadWrite);
     void connectToHost(const QHostAddress &address, quint16 port, OpenMode mode = ReadWrite);
     void disconnectFromHost();
@@ -108,6 +111,7 @@ public:
 
     void abort();
 
+    // ### Qt 5: Make socketDescriptor() and setSocketDescriptor() virtual.
     int socketDescriptor() const;
     bool setSocketDescriptor(int socketDescriptor, SocketState state = ConnectedState,
                              OpenMode openMode = ReadWrite);
@@ -123,6 +127,7 @@ public:
     bool flush();
 
     // for synchronous access
+    // ### Qt 5: Make waitForConnected() and waitForDisconnected() virtual.
     bool waitForConnected(int msecs = 30000);
     bool waitForReadyRead(int msecs = 30000);
     bool waitForBytesWritten(int msecs = 30000);
@@ -139,6 +144,7 @@ Q_SIGNALS:
     void disconnected();
     void stateChanged(QAbstractSocket::SocketState);
     void error(QAbstractSocket::SocketError);
+    void proxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *authenticator);
 
 protected Q_SLOTS:
     void connectToHostImplementation(const QString &hostName, quint16 port, OpenMode mode = ReadWrite);
@@ -167,8 +173,6 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_startConnecting(const QHostInfo &))
     Q_PRIVATE_SLOT(d_func(), void _q_abortConnectionAttempt())
     Q_PRIVATE_SLOT(d_func(), void _q_testConnection())
-    Q_PRIVATE_SLOT(d_func(), bool _q_canReadNotification())
-    Q_PRIVATE_SLOT(d_func(), bool _q_canWriteNotification())
 
 #ifdef QT3_SUPPORT
 public:
@@ -196,6 +200,12 @@ Q_SIGNALS:
 
 #endif
 };
+
+#ifndef QT_NO_DEBUG_STREAM
+#include <QtCore/qdebug.h>
+Q_NETWORK_EXPORT QDebug operator<<(QDebug, QAbstractSocket::SocketError);
+Q_NETWORK_EXPORT QDebug operator<<(QDebug, QAbstractSocket::SocketState);
+#endif
 
 QT_END_HEADER
 

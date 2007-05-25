@@ -35,6 +35,7 @@ QT_MODULE(Gui)
 
 class QTabBar;
 class QTabWidgetPrivate;
+class QStyleOptionTabWidgetFrame;
 
 class Q_GUI_EXPORT QTabWidget : public QWidget
 {
@@ -112,6 +113,8 @@ public:
     bool usesScrollButtons() const;
     void setUsesScrollButtons(bool useButtons);
 
+    void clear();
+
 public Q_SLOTS:
     void setCurrentIndex(int index);
     void setCurrentWidget(QWidget *widget);
@@ -131,6 +134,7 @@ protected:
     QTabBar* tabBar() const;
     void changeEvent(QEvent *);
     bool event(QEvent *);
+    void initStyleOption(QStyleOptionTabWidgetFrame *option) const;
 
 #ifdef QT3_SUPPORT
 public:

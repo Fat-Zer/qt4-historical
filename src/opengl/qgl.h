@@ -221,6 +221,7 @@ public:
     bool isSharing() const;
     void reset();
 
+    // ### Qt 5: make format() return a const ref instead
     QGLFormat format() const;
     QGLFormat requestedFormat() const;
     void setFormat(const QGLFormat& format);
@@ -267,7 +268,7 @@ protected:
     void setWindowCreated(bool on);
     bool initialized() const;
     void setInitialized(bool on);
-    void generateFontDisplayLists(const QFont & fnt, int listBase);
+    void generateFontDisplayLists(const QFont & fnt, int listBase); // ### Qt 5: remove
 
     uint colorIndex(const QColor& c) const;
     void setValid(bool valid);
@@ -294,8 +295,7 @@ private:
 #ifdef Q_WS_WIN
     friend class QGLFramebufferObject;
     friend class QGLFramebufferObjectPrivate;
-    friend bool qt_resolve_frag_program_extensions(QGLContext *);
-    friend bool qt_resolve_framebufferobject_extensions(QGLContext *);
+    friend QGLContextPrivate *qt_glctx_get_dptr(QGLContext *);
     friend bool qt_resolve_GLSL_functions(QGLContext *ctx);
     friend bool qt_createGLSLProgram(QGLContext *ctx, GLuint &program, const char *shader_src, GLuint &shader);
 #endif
@@ -331,13 +331,14 @@ public:
     bool isValid() const;
     bool isSharing() const;
 
-    // ### Qt 5.0: return bools
+    // ### Qt 5: return bools
     void makeCurrent();
     void doneCurrent();
 
     bool doubleBuffer() const;
     void swapBuffers();
 
+    // ### Qt 5: make format() return a const ref instead
     QGLFormat format() const;
     void setFormat(const QGLFormat& format);
 
@@ -393,7 +394,7 @@ protected:
 
     virtual void glInit();
     virtual void glDraw();
-    int fontDisplayListBase(const QFont & fnt, int listBase = 2000);
+    int fontDisplayListBase(const QFont & fnt, int listBase = 2000); // ### Qt 5: remove
 
 private:
     Q_DISABLE_COPY(QGLWidget)

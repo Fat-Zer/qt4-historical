@@ -1,0 +1,62 @@
+/****************************************************************************
+**
+** Copyright (C) 2005-2007 Trolltech ASA. All rights reserved.
+**
+** This file is part of the demonstration applications of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
+**
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+#include "scanitem.h"
+#include "colors.h"
+
+#define ITEM_WIDTH 16
+#define ITEM_HEIGHT 16
+
+ScanItem::ScanItem(QGraphicsScene *scene, QGraphicsItem *parent)
+    : DemoItem(scene, parent)
+{
+    useSharedImage(QString(__FILE__));
+}
+
+ScanItem::~ScanItem()
+{
+}
+
+QImage *ScanItem::createImage(const QMatrix &matrix) const
+{
+    QRect scaledRect = matrix.mapRect(QRect(0, 0, ITEM_WIDTH, ITEM_HEIGHT));
+    QImage *image = new QImage(scaledRect.width(), scaledRect.height(), QImage::Format_ARGB32_Premultiplied);
+    image->fill(QColor(0, 0, 0, 0).rgba());
+    QPainter painter(image);
+    painter.setRenderHint(QPainter::Antialiasing);
+
+    if (Colors::useEightBitPalette){
+        painter.setPen(QPen(QColor(100, 100, 100), 2));
+        painter.setBrush(QColor(206, 246, 117));
+        painter.drawEllipse(1, 1, scaledRect.width()-2, scaledRect.height()-2);
+    }
+    else {
+        painter.setPen(QPen(QColor(0, 0, 0, 15), 1));
+//        painter.setBrush(QColor(206, 246, 117, 150));
+        painter.setBrush(QColor(0, 0, 0, 15));
+        painter.drawEllipse(1, 1, scaledRect.width()-2, scaledRect.height()-2);
+    }
+    return image;
+}
+
+

@@ -48,6 +48,7 @@ struct QLibrarySettings
     ~QLibrarySettings() { delete static_cast<QSettings *>(settings); }
     QSettings *settings;
 };
+Q_GLOBAL_STATIC(QLibrarySettings, qt_library_settings)
 
 class QLibraryInfoPrivate
 {
@@ -77,8 +78,6 @@ public:
 #endif
         return ls ? static_cast<QSettings *>(qt_library_settings()->settings) : (QSettings*)0;
     }
-
-    Q_GLOBAL_STATIC(QLibrarySettings, qt_library_settings)
 };
 
 QLibrarySettings::QLibrarySettings()

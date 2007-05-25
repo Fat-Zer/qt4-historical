@@ -86,7 +86,7 @@
     \brief whether the radio buttons in the group are exclusive
 
     If this property is true (the default), the \link QRadioButton
-    radiobuttons\endlink in the group are treated exclusively.
+    radio buttons\endlink in the group are treated exclusively.
 */
 
 
@@ -431,8 +431,8 @@ bool Q3ButtonGroup::event(QEvent * e)
                         return Q3GroupBox::event(e);
                     ++it;
                 }
-                insert(button);
             }
+            insert(button);
         }
     }
     return Q3GroupBox::event(e);

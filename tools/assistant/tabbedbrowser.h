@@ -49,6 +49,10 @@ public:
 
     void setTitle(HelpWindow*, const QString &);
 
+signals:
+    void tabCountChanged(int count);
+    void browserUrlChanged(const QString &link);
+
 protected:
 	void keyPressEvent(QKeyEvent *);
 	bool eventFilter(QObject *o, QEvent *e);
@@ -73,13 +77,14 @@ public slots:
     void copy();
     void closeTab();
     void sourceChanged();
-	
-	void find();
-	void findNext();
-	void findPrevious();
+
+    void find();
+    void findNext();
+    void findPrevious();
 
 private slots:
-	void find(QString, bool forward = false, bool backward = false);
+    void find(QString, bool forward = false, bool backward = false);
+    void openTabMenu(const QPoint& pos);
 
 private:
     Ui::TabbedBrowser ui;

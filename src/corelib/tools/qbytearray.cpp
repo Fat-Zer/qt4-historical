@@ -231,7 +231,7 @@ int qstricmp(const char *str1, const char *str2)
     uchar c;
     if (!s1 || !s2)
         return s1 ? 1 : (s2 ? -1 : 0);
-    for (; !(res = (c = QUnicodeTables::lower(*s1)) - QUnicodeTables::lower(*s2)); s1++, s2++)
+    for (; !(res = (c = QChar::toLower((ushort)*s1)) - QChar::toLower((ushort)*s2)); s1++, s2++)
         if (!c)                                // strings are equal
             break;
     return res;
@@ -267,7 +267,7 @@ int qstrnicmp(const char *str1, const char *str2, uint len)
     if (!s1 || !s2)
         return s1 ? 1 : (s2 ? -1 : 0);
     for (; len--; s1++, s2++) {
-        if ((res = (c = QUnicodeTables::lower(*s1)) - QUnicodeTables::lower(*s2)))
+        if ((res = (c = QChar::toLower((ushort)*s1)) - QChar::toLower((ushort)*s2)))
             return res;
         if (!c)                                // strings are equal
             break;
@@ -2435,7 +2435,7 @@ QByteArray QByteArray::toLower() const
     register uchar *p = reinterpret_cast<uchar *>(s.data());
     if (p) {
         while (*p) {
-            *p = QUnicodeTables::lower(*p);
+            *p = QChar::toLower((ushort)*p);
             p++;
         }
     }
@@ -2462,7 +2462,7 @@ QByteArray QByteArray::toUpper() const
     register uchar *p = reinterpret_cast<uchar *>(s.data());
     if (p) {
         while (*p) {
-            *p = QUnicodeTables::upper(*p);
+            *p = QChar::toUpper((ushort)*p);
             p++;
         }
     }
@@ -3692,6 +3692,80 @@ QByteArray QByteArray::fromBase64(const QByteArray &base64)
     tmp.truncate(offset);
     return tmp;
 }
+
+/*!
+    Returns a decoded copy of the hex encoded array \a hexEncoded. Input is not checked
+    for validity; invalid characters in the input are skipped, enabling the
+    decoding process to continue with subsequent characters.
+
+    For example:
+
+    \code
+        QByteArray text = QByteArray::fromHex("517420697320677265617421");
+        text.data();            // returns "Qt is great!"
+    \endcode
+
+    \sa toHex()
+*/
+QByteArray QByteArray::fromHex(const QByteArray &hexEncoded)
+{
+    QByteArray res;
+    res.resize(hexEncoded.size() / 2);
+    uchar *result = (uchar *)res.data();
+
+    bool first = true;
+    for (int i = 0; i < hexEncoded.size(); ++i) {
+        int ch = hexEncoded.at(i);
+        int tmp;
+        if (ch >= '0' && ch <= '9')
+            tmp = ch - '0';
+        else if (ch >= 'a' && ch <= 'f')
+            tmp = ch - 'a' + 10;
+        else if (ch >= 'A' && ch <= 'F')
+            tmp = ch - 'A' + 10;
+        else
+            continue;
+        if (first) {
+            *result = tmp << 4;
+            first = false;
+        } else {
+            *result |= tmp;
+            ++result;
+            first = true;
+        }
+    }
+
+    res.truncate(result - (const uchar *)res.constData());
+    return res;
+}
+
+/*!
+    Returns a hex encoded copy of the byte array. The hex encoding uses the numbers 0-9 and
+    the letters a-f.
+
+    \sa fromHex()
+*/
+QByteArray QByteArray::toHex() const
+{
+    QByteArray hex;
+    hex.resize(d->size*2);
+    char *hexData = hex.data();
+    const uchar *data = (const uchar *)d->data;
+    for (int i = 0; i < d->size; ++i) {
+        int j = (data[i] >> 4) & 0xf;
+        if (j <= 9)
+            hexData[i*2] = (j + '0');
+         else
+            hexData[i*2] = (j + 'a' - 10);
+        j = data[i] & 0xf;
+        if (j <= 9)
+            hexData[i*2+1] = (j + '0');
+         else
+            hexData[i*2+1] = (j + 'a' - 10);
+    }
+    return hex;
+}
+
 
 /*! \typedef QByteArray::ConstIterator
     \internal

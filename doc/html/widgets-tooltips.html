@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-x11-opensource-src-4.2.3/doc/src/examples/tooltips.qdoc -->
+<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/doc/src/examples/tooltips.qdoc -->
 <head>
-  <title>Qt 4.2: Tooltips Example</title>
+  <title>Qt 4.3: Tooltips Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -135,7 +135,7 @@
          if (index != -1)
              QToolTip::showText(helpEvent-&gt;globalPos(), shapeItems[index].toolTip());
          else
-             QToolTip::showText(helpEvent-&gt;globalPos(), &quot;&quot;);
+             QToolTip::hideText();
      }
      return QWidget::event(event);
  }</pre>
@@ -322,7 +322,7 @@
      QColor myColor;
      QString myToolTip;
  };</pre>
-<p>The <tt>ShapeItem</tt> class is a custom widget representing one single shape item. The widget has a path, a position, a color and a tooltip. We need functions to set or modify these objects, as well as functions that return them. We make the latter functions <tt>const</tt> to prohibit any modifications of the objects, i.e. prohibiting unauthorized manipulation of the shape items appearance.</p>
+<p>The <tt>ShapeItem</tt> class is a custom widget representing one single shape item. The widget has a path, a position, a color and a tooltip. We need functions to set or modify these objects, as well as functions that return them. We make the latter functions <tt>const</tt> to prohibit any modifications of the objects, i.e&#x2e; prohibiting unauthorized manipulation of the shape items appearance.</p>
 <a name="shapeitem-class-implementation"></a>
 <h2>ShapeItem Class Implementation</h2>
 <pre> QPainterPath ShapeItem::path() const
@@ -344,7 +344,7 @@
  {
      return myToolTip;
  }</pre>
-<p>This first group of functions simply return the objects that are requested. The objects are returned as constants, i.e. they cannot be modified.</p>
+<p>This first group of functions simply return the objects that are requested. The objects are returned as constants, i.e&#x2e; they cannot be modified.</p>
 <pre> void ShapeItem::setPath(const QPainterPath &amp;path)
  {
      myPath = path;
@@ -369,6 +369,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
 </tr></table></div></address></body>
 </html>

@@ -3,7 +3,7 @@
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>Qt 4.2: paintarea.cpp Example File (tools/plugandpaint/paintarea.cpp)</title>
+  <title>Qt 4.3: paintarea.cpp Example File (tools/plugandpaint/paintarea.cpp)</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -35,23 +35,24 @@
  **
  ****************************************************************************/</span>
 
- #include &lt;QtGui&gt;
-
  #include &quot;interfaces.h&quot;
  #include &quot;paintarea.h&quot;
 
- PaintArea::PaintArea(QWidget *parent)
-     : QWidget(parent)
+ #include &lt;QPainter&gt;
+ #include &lt;QMouseEvent&gt;
+
+ PaintArea::PaintArea(QWidget *parent) :
+     QWidget(parent),
+     theImage(500, 400, QImage::Format_RGB32),
+     color(Qt::blue),
+     thickness(3),
+     brushInterface(0),
+     lastPos(-1, -1)
  {
      setAttribute(Qt::WA_StaticContents);
      setAttribute(Qt::WA_NoBackground);
 
-     theImage = QImage(500, 400, QImage::Format_RGB32);
      theImage.fill(qRgb(255, 255, 255));
-     color = Qt::blue;
-     thickness = 3;
-     brushInterface = 0;
-     lastPos = QPoint(-1, -1);
  }
 
  bool PaintArea::openImage(const QString &amp;fileName)
@@ -116,7 +117,7 @@
              QPainter painter(&amp;theImage);
              setupPainter(painter);
 
-             QRectF boundingRect = pendingPath.boundingRect();
+             const QRectF boundingRect = pendingPath.boundingRect();
              QLinearGradient gradient(boundingRect.topRight(),
                                       boundingRect.bottomLeft());
              gradient.setColorAt(0.0, QColor(color.red(), color.green(),
@@ -134,8 +135,8 @@
              if (brushInterface) {
                  QPainter painter(&amp;theImage);
                  setupPainter(painter);
-                 QRect rect = brushInterface-&gt;mousePress(brush, painter,
-                                                         event-&gt;pos());
+                 const QRect rect = brushInterface-&gt;mousePress(brush, painter,
+                                                               event-&gt;pos());
                  update(rect);
              }
 
@@ -150,8 +151,8 @@
          if (brushInterface) {
              QPainter painter(&amp;theImage);
              setupPainter(painter);
-             QRect rect = brushInterface-&gt;mouseMove(brush, painter, lastPos,
-                                                    event-&gt;pos());
+             const QRect rect = brushInterface-&gt;mouseMove(brush, painter, lastPos,
+                                                          event-&gt;pos());
              update(rect);
          }
 
@@ -184,6 +185,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
 </tr></table></div></address></body>
 </html>

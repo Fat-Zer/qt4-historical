@@ -63,12 +63,11 @@ public:
     static QThread *theMainThread;
     static QThread *mainThread();
     static bool checkInstance(const char *method);
+    static void sendPostedEvents(QObject *receiver, int event_type, QThreadData *data);
 
-#ifdef QT3_SUPPORT
-    void removePostedChildInsertedEvents(QObject *receiver, QObject *child);
-#endif
+#if !defined (QT_NO_DEBUG) || defined (QT_MAC_FRAMEWORK_BUILD)
     void checkReceiverThread(QObject *receiver);
-
+#endif
     int &argc;
     char **argv;
     void appendApplicationPathToLibraryPaths(void);

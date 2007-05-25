@@ -85,7 +85,7 @@ protected:
     bool fetchNext();
     bool fetchFirst();
     bool fetchLast();
-    bool fetchPrior();
+    bool fetchPrevious();
     bool fetch(int i);
     bool reset (const QString& query);
     QVariant data(int field);
@@ -120,6 +120,8 @@ public:
               const QString& host,
               int port,
               const QString& connOpts);
+
+    QString escapeIdentifier(const QString &identifier, IdentifierType type) const;
 
 protected:
     bool beginTransaction();

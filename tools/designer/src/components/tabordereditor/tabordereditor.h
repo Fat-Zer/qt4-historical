@@ -27,7 +27,6 @@
 #include "tabordereditor_global.h"
 
 #include <QtCore/QPointer>
-#include <QtGui/QPixmap>
 #include <QtGui/QWidget>
 #include <QtGui/QRegion>
 #include <QtGui/QFont>
@@ -58,6 +57,7 @@ protected:
     virtual void mouseMoveEvent(QMouseEvent *e);
     virtual void mousePressEvent(QMouseEvent *e);
     virtual void mouseDoubleClickEvent(QMouseEvent *e);
+    virtual void contextMenuEvent(QContextMenuEvent *e);
     virtual void resizeEvent(QResizeEvent *e);
     virtual void showEvent(QShowEvent *e);
 
@@ -76,6 +76,7 @@ private:
 
     QFontMetrics m_font_metrics;
     int m_current_index;
+    bool m_beginning;
 };
 
 }  // namespace qdesigner_internal

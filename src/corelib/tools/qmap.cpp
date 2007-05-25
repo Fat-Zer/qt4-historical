@@ -458,7 +458,8 @@ void QMapData::dump()
     \sa isEmpty(), count()
 */
 
-/*! \fn bool QMap::isEmpty() const
+/*! 
+    \fn bool QMap::isEmpty() const
 
     Returns true if the map contains no items; otherwise returns
     false.
@@ -491,6 +492,11 @@ void QMapData::dump()
     \internal
 */
 
+/*! \fn void QMap::setInsertInOrder(bool sharable)
+
+    \internal
+*/
+
 /*! \fn void QMap::clear()
 
     Removes all items from the map.
@@ -505,7 +511,7 @@ void QMapData::dump()
     0 if the key isn't in the map, or \> 1 if insertMulti() has been
     used with the \a key.
 
-    \sa clear(), take()
+    \sa clear(), take(), QMultiMap::remove()
 */
 
 /*! \fn T QMap::take(const Key &key)
@@ -528,7 +534,7 @@ void QMapData::dump()
     Returns true if the map contains an item with key \a key;
     otherwise returns false.
 
-    \sa count()
+    \sa count(), QMultiMap::contains()
 */
 
 /*! \fn const T QMap::value(const Key &key) const
@@ -622,7 +628,20 @@ void QMapData::dump()
     internal data structure is optimized for fast lookup by key, not
     by value.
 
-    \sa value(), values()
+    \sa value(), keys()
+*/
+
+/*! 
+    \fn Key QMap::key(const T &value, const Key &defaultKey) const
+    \since 4.3
+    \overload
+
+    Returns the first key with value \a value, or \a defaultKey if
+    the map contains no item with value \a value.
+
+    This function can be slow (\l{linear time}), because QMap's
+    internal data structure is optimized for fast lookup by key, not
+    by value.
 */
 
 /*! \fn QList<T> QMap::values() const
@@ -632,7 +651,7 @@ void QMapData::dump()
     all of its values will be in the list, and not just the most
     recently inserted one.
 
-    \sa keys()
+    \sa keys(), value()
 */
 
 /*! \fn QList<T> QMap::values(const Key &key) const
@@ -650,7 +669,7 @@ void QMapData::dump()
 
     Returns the number of items associated with key \a key.
 
-    \sa contains(), insertMulti()
+    \sa contains(), insertMulti(), QMultiMap::count()
 */
 
 /*! \fn int QMap::count() const
@@ -735,7 +754,7 @@ void QMapData::dump()
         }
     \endcode
 
-    \sa constFind(), value(), values(), lowerBound(), upperBound()
+    \sa constFind(), value(), values(), lowerBound(), upperBound(), QMultiMap::find()
 */
 
 /*! \fn QMap::const_iterator QMap::find(const Key &key) const
@@ -752,7 +771,7 @@ void QMapData::dump()
     If the map contains no item with key \a key, the function
     returns constEnd().
 
-    \sa find()
+    \sa find(), QMultiMap::constFind()
 */
 
 /*! \fn QMap::iterator QMap::lowerBound(const Key &key)
@@ -894,10 +913,12 @@ void QMapData::dump()
     Typedef for int. Provided for STL compatibility.
 */
 
-/*! \fn bool QMap::empty() const
+/*! 
+    \fn bool QMap::empty() const
 
     This function is provided for STL compatibility. It is equivalent
-    to isEmpty().
+    to isEmpty(), returning true if the map is empty; otherwise
+    returning false.
 */
 
 /*! \class QMap::iterator
@@ -1563,6 +1584,70 @@ void QMapData::dump()
     maps, the resulting map will contain the key multiple times.
 
     \sa operator+=()
+*/
+
+/*!
+    \fn bool QMultiMap::contains(const Key &key, const T &value) const
+    \since 4.3
+
+    Returns true if the map contains an item with key \a key and
+    value \a value; otherwise returns false.
+
+    \sa QMap::contains()
+*/
+
+/*!
+    \fn int QMultiMap::remove(const Key &key, const T &value)
+    \since 4.3
+
+    Removes all the items that have the key \a key and the value \a
+    value from the map. Returns the number of items removed.
+
+    \sa QMap::remove()
+*/
+
+/*!
+    \fn int QMultiMap::count(const Key &key, const T &value) const
+    \since 4.3
+
+    Returns the number of items with key \a key and value \a value.
+
+    \sa QMap::count()
+*/
+
+/*!
+    \fn typename QMap<Key, T>::iterator QMultiMap::find(const Key &key, const T &value)
+    \since 4.3
+
+    Returns an iterator pointing to the item with key \a key and
+    value \a value in the map.
+
+    If the map contains no such item, the function returns end().
+
+    If the map contains multiple items with key \a key, this
+    function returns an iterator that points to the most recently
+    inserted value.
+
+    \sa QMap::find()
+*/
+
+/*!
+    \fn typename QMap<Key, T>::const_iterator QMultiMap::find(const Key &key, const T &value) const
+    \since 4.3
+    \overload
+*/
+
+/*!
+    \fn typename QMap<Key, T>::const_iterator QMultiMap::constFind(const Key &key, const T &value) const
+    \since 4.3
+
+    Returns an iterator pointing to the item with key \a key and the
+    value \a value in the map.
+
+    If the map contains no such item, the function returns
+    constEnd().
+
+    \sa QMap::constFind()
 */
 
 /*!

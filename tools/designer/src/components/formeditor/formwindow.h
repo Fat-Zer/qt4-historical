@@ -25,10 +25,7 @@
 #define FORMWINDOW_H
 
 #include "formeditor_global.h"
-#include "formeditor.h"
-
-// sdk
-#include <QtDesigner/QtDesigner>
+#include <formwindowbase_p.h>
 
 // Qt
 #include <QtCore/QHash>
@@ -36,11 +33,10 @@
 #include <QtCore/QMap>
 #include <QtCore/QSet>
 
-#include <QtGui/QWidget>
-#include <QtGui/QPixmap>
-
+class QDesignerDnDItemInterface;
 class DomConnections;
 
+class QWidget;
 class QLabel;
 class QTimer;
 class QAction;
@@ -52,24 +48,17 @@ namespace qdesigner_internal {
 
 class FormEditor;
 class FormWindowCursor;
-class WidgetSelection;
 class WidgetEditorTool;
 class FormWindowWidgetStack;
 class FormWindowManager;
 class FormWindowDnDItem;
 class SetPropertyCommand;
 class BreakLayoutCommand;
-class Connection;
 
-class QT_FORMEDITOR_EXPORT FormWindow: public QDesignerFormWindowInterface
+
+class QT_FORMEDITOR_EXPORT FormWindow: public FormWindowBase
 {
     Q_OBJECT
-public:
-    enum HighlightMode
-    {
-        Restore,
-        Highlight
-    };
 
 public:
     FormWindow(FormEditor *core, QWidget *parent = 0, Qt::WindowFlags flags = 0);
@@ -84,10 +73,6 @@ public:
     virtual void setCurrentTool(int index);
     virtual QDesignerFormWindowToolInterface *tool(int index) const;
     virtual void registerTool(QDesignerFormWindowToolInterface *tool);
-
-    virtual bool hasFeature(Feature f) const;
-    virtual Feature features() const;
-    virtual void setFeatures(Feature f);
 
     virtual QString author() const;
     virtual void setAuthor(const QString &author);
@@ -119,10 +104,7 @@ public:
 
     virtual QDir absoluteDir() const;
 
-    virtual QPoint grid() const { return m_grid; }
-    virtual void setGrid(const QPoint &grid) { m_grid = grid; }
-
-    virtual void simplifySelection(QList<QWidget*> *sel) const;
+    virtual void simplifySelection(QWidgetList *sel) const;
 
     virtual void ensureUniqueObjectName(QObject *object);
 
@@ -131,7 +113,6 @@ public:
     bool isMainContainer(const QWidget *w) const;
 
     QWidget *currentWidget() const;
-    void setCurrentWidget(QWidget *currentWidget);
 
     virtual QSize sizeHint() const;
 
@@ -144,21 +125,19 @@ public:
 
     void selectWidgets();
     void repaintSelection();
-    void repaintSelection(QWidget *w);
     void updateSelection(QWidget *w);
     void updateChildSelections(QWidget *w);
     void raiseChildSelections(QWidget *w);
     void raiseSelection(QWidget *w);
     void hideSelection(QWidget *w);
 
-    inline QList<QWidget *> widgets() const { return m_widgets; }
+    inline const QList<QWidget *>& widgets() const { return m_widgets; }
     inline int widgetCount() const { return m_widgets.count(); }
     inline QWidget *widgetAt(int index) const { return m_widgets.at(index); }
 
     QList<QWidget *> widgets(QWidget *widget) const;
 
     QWidget *createWidget(DomUI *ui, const QRect &rect, QWidget *target);
-    void deleteWidgets(const QList<QWidget*> &widget_list);
 
     bool isManaged(QWidget *w) const;
 
@@ -196,10 +175,17 @@ public:
 
     void resizeWidget(QWidget *widget, const QRect &geometry);
 
-    void dropWidgets(QList<QDesignerDnDItemInterface*> &item_list, QWidget *target,
+    bool dropWidgets(const QList<QDesignerDnDItemInterface*> &item_list, QWidget *target,
                         const QPoint &global_mouse_pos);
 
-    QWidget *findContainer(QWidget *w, bool excludeLayout) const;
+    virtual QWidget *findContainer(QWidget *w, bool excludeLayout) const;
+    // for WidgetSelection only.
+    QWidget *designerWidget(QWidget *w) const;
+
+    //  Initialize and return a popup menu for a managed widget
+    QMenu *initializePopupMenu(QWidget *managedWidget);
+    bool eventFilter(QObject *watched, QEvent *event);
+
 signals:
     void contextMenuRequested(QMenu *menu, QWidget *widget);
 
@@ -222,7 +208,6 @@ public slots:
     void layoutGridContainer(QWidget *w);
     void breakLayout(QWidget *w);
 
-    void breakLayout();
     void editContents();
 
 protected:
@@ -241,7 +226,11 @@ private:
     void init();
     void initializeCoreTools();
 
-    QPoint gridPoint(const QPoint &p) const;
+    int getValue(const QRect &rect, int key, bool size) const;
+    int calcValue(int val, bool forward, bool snap, int snapOffset) const;
+    QRect applyValue(const QRect &rect, int val, int key, bool size) const;
+
+    bool frameNeeded(QWidget *w) const;
 
     enum RectType { Insert, Rubber };
 
@@ -264,7 +253,10 @@ private:
     bool handleKeyReleaseEvent(QWidget *widget, QWidget *managedWidget, QKeyEvent *e);
 
     bool isCentralWidget(QWidget *w) const;
-    QWidget *designerWidget(QWidget *w) const;
+    
+    bool setCurrentWidget(QWidget *currentWidget);
+    bool trySelectWidget(QWidget *w, bool select);
+
 
     BreakLayoutCommand *breakLayoutCommand(QWidget *w);
 
@@ -275,60 +267,45 @@ private:
 
     QWidget *findTargetContainer(QWidget *widget) const;
 
-    bool isPageOfContainerWidget(QWidget *widget) const;
+    bool isPageOfContainerWidget(const QWidget *widget) const;
+    void clearMainContainer();
 
-    static int widgetDepth(QWidget *w);
-    static bool isChildOf(QWidget *c, const QWidget *p);
+    static int widgetDepth(const QWidget *w);
+    static bool isChildOf(const QWidget *c, const QWidget *p);
 
     void editWidgets();
 
     void updateWidgets();
 
-    void handleArrowKeyEvent(int key, bool modifier);
+    void handleArrowKeyEvent(int key, Qt::KeyboardModifiers modifiers);
 
 private:
-    Feature m_feature;
     FormEditor *m_core;
     FormWindowCursor *m_cursor;
     QWidget *m_mainContainer;
     QWidget *m_currentWidget;
-    QPoint m_grid;
 
-    uint m_blockSelectionChanged: 1;
-    uint drawRubber: 1;
-    uint oldRectValid: 1;
-    uint hadOwnPalette: 1;
-    uint pad[28];
+    bool m_blockSelectionChanged;
+    bool m_drawRubber;
 
-    QPoint rectAnchor;
-    QRect currRect;
+    QPoint m_rectAnchor;
+    QRect m_currRect;
 
-    QList<QWidget*> m_widgets;
+    QWidgetList m_widgets;
     QSet<QWidget*> m_insertedWidgets;
 
-    QList<WidgetSelection *> selections;
-    QHash<QWidget *, WidgetSelection *> usedSelections;
+    class Selection;
+    Selection *m_selection;
 
-    QPoint startPos;
-    QPoint currentPos;
-
-    QRect widgetGeom;
-    QPoint oldPressPos;
-    QPoint origPressPos;
-    QWidget *startWidget;
-    QWidget *endWidget;
-
-    QWidget *targetContainer;
-    QPalette restorePalette;
-
+    QPoint m_startPos;
+   
     QUndoStack *m_commandHistory;
 
     QString m_fileName;
 
-    QList<QWidget*> orderedWidgets;
-    QList<QWidget*> stackedWidgets;
-
-    QMap<QWidget*, QPair<QPalette ,bool> > palettesBeforeHighlight;
+    typedef QPair<QPalette ,bool> PaletteAndFill;
+    typedef QMap<QWidget*, PaletteAndFill> WidgetPaletteMap;
+    WidgetPaletteMap m_palettesBeforeHighlight;
 
     QRubberBand *m_rubberBand;
 
@@ -354,12 +331,9 @@ private:
 
     QList<SetPropertyCommand*> m_moveSelection;
     int m_lastUndoIndex;
+    bool m_dblClicked;
 
 private:
-//    friend class FormWindowManager;
-    friend class WidgetHandle;
-    friend class WidgetSelection;
-    friend class QDesignerWidget;
     friend class WidgetEditorTool;
 };
 

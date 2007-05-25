@@ -40,6 +40,8 @@
 
 namespace qdesigner_internal {
 
+class ResourceMimeData;
+
 class QPropertyEditorModel: public QAbstractItemModel
 {
     Q_OBJECT
@@ -52,22 +54,16 @@ public:
 
     inline QModelIndex indexOf(IProperty *property, int column = 0) const
     {
-        Q_ASSERT(property);
-        if (property == m_initialInput)
-            return createIndex(0, column, m_initialInput);
-
-        IProperty *parent = parentOf(property);
-        if (!parent || parent->kind() != IProperty::Property_Group)
-            return QModelIndex();
-
-        int row = static_cast<IPropertyGroup*>(parent)->indexOf(property);
-        return createIndex(row, column, property);
+        const int row = rowOf(property);
+        return row == -1 ?  QModelIndex() : createIndex(row, column, property);
     }
 
     inline IProperty *privateData(const QModelIndex &index) const
     { return static_cast<IProperty*>(index.internalPointer()); }
 
     Qt::ItemFlags flags(const QModelIndex &index) const;
+    
+    bool resourceImageDropped(const QModelIndex &index, const ResourceMimeData &m);
 
 signals:
     void propertyChanged(IProperty *property);
@@ -101,6 +97,7 @@ public:
 protected:
     QString columnText(int column) const;
 
+private:
     inline IProperty *childAt(IProperty *parent, int pos) const
     {
         if (parent && parent->kind() == IProperty::Property_Group)
@@ -112,15 +109,9 @@ protected:
     inline IProperty *parentOf(IProperty *property) const
     { return property ? property->parent() : 0; }
 
-    static IPropertyGroup *toPropertyGroup(IProperty *property)
-    {
-        if (!property || property->kind() != IProperty::Property_Group)
-            return 0;
-
-        return static_cast<IPropertyGroup*>(property);
-    }
-
 private:
+    int rowOf(IProperty *property) const;
+    
     IProperty *m_initialInput;
 };
 

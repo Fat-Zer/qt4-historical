@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-x11-opensource-src-4.2.3/doc/src/examples/customwidgetplugin.qdoc -->
+<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/doc/src/examples/customwidgetplugin.qdoc -->
 <head>
-  <title>Qt 4.2: Custom Widget Plugin Example</title>
+  <title>Qt 4.3: Custom Widget Plugin Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -35,11 +35,6 @@
 <li><tt>plugin</tt>: We also need to ensure that <tt>qmake</tt> considers the custom widget a plugin library.</li>
 </ul>
 <p>When Qt is configured to build in both debug and release modes, <i>Qt Designer</i> will be built in release mode. When this occurs, it is necessary to ensure that plugins are also built in release mode. For that reason we add the <tt>debug_and_release</tt> value to the <tt>CONFIG</tt> variable. Otherwise, if a plugin is built in a mode that is incompatible with <i>Qt Designer</i>, it won't be loaded and installed.</p>
-<p>When building in both debug and release mode, we must (on Mac and Windows) also ensure that the proper suffix is added to the debug plugin:</p>
-<pre> CONFIG(debug, debug|release) {
-     mac: TARGET = $$join(TARGET,,,_debug)
-     win32: TARGET = $$join(TARGET,,d)
- }</pre>
 <p>The header and source files for the widget are declared in the usual way, and we provide an implementation of the plugin interface so that <i>Qt Designer</i> can use the custom widget:</p>
 <pre> HEADERS     = analogclock.h \
                customwidgetplugin.h
@@ -176,6 +171,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
 </tr></table></div></address></body>
 </html>

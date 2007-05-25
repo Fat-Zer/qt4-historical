@@ -37,6 +37,7 @@
 #include <QtGui/qpen.h>
 #include <QtGui/qbrush.h>
 #include <QtGui/qmatrix.h>
+#include <QtGui/qtransform.h>
 #include <QtGui/qfontinfo.h>
 #include <QtGui/qfontmetrics.h>
 #endif
@@ -55,6 +56,7 @@ class QPen;
 class QPolygon;
 class QTextItem;
 class QMatrix;
+class QTransform;
 
 class Q_GUI_EXPORT QPainter
 {
@@ -66,7 +68,8 @@ public:
     enum RenderHint {
         Antialiasing = 0x01,
         TextAntialiasing = 0x02,
-        SmoothPixmapTransform = 0x04
+        SmoothPixmapTransform = 0x04,
+        HighQualityAntialiasing = 0x08
     };
 
     Q_DECLARE_FLAGS(RenderHints, RenderHint)
@@ -95,7 +98,21 @@ public:
         CompositionMode_DestinationOut,
         CompositionMode_SourceAtop,
         CompositionMode_DestinationAtop,
-        CompositionMode_Xor
+        CompositionMode_Xor,
+
+        //svg 1.2 blend modes
+        CompositionMode_Plus,
+        CompositionMode_Multiply,
+        CompositionMode_Screen,
+        CompositionMode_Overlay,
+        CompositionMode_Darken,
+        CompositionMode_Lighten,
+        CompositionMode_ColorDodge,
+        CompositionMode_ColorBurn,
+        CompositionMode_HardLight,
+        CompositionMode_SoftLight,
+        CompositionMode_Difference,
+        CompositionMode_Exclusion
     };
     void setCompositionMode(CompositionMode mode);
     CompositionMode compositionMode() const;
@@ -135,11 +152,7 @@ public:
     QPainterPath clipPath() const;
 
     void setClipRect(const QRectF &, Qt::ClipOperation op = Qt::ReplaceClip);
-#ifdef QT_EXPERIMENTAL_REGIONS
     void setClipRect(const QRect &, Qt::ClipOperation op = Qt::ReplaceClip);
-#else
-    inline void setClipRect(const QRect &, Qt::ClipOperation op = Qt::ReplaceClip);
-#endif
     inline void setClipRect(int x, int y, int w, int h, Qt::ClipOperation op = Qt::ReplaceClip);
 
     void setClipRegion(const QRegion &, Qt::ClipOperation op = Qt::ReplaceClip);
@@ -158,10 +171,19 @@ public:
     const QMatrix &deviceMatrix() const;
     void resetMatrix();
 
+    void setTransform(const QTransform &transform, bool combine = false);
+    const QTransform &transform() const;
+    const QTransform &deviceTransform() const;
+    void resetTransform();
+
     void setWorldMatrix(const QMatrix &matrix, bool combine = false);
     const QMatrix &worldMatrix() const;
+    
+    void setWorldTransform(const QTransform &matrix, bool combine = false);
+    const QTransform &worldTransform() const;
 
     QMatrix combinedMatrix() const;
+    QTransform combinedTransform() const;
 
     void setMatrixEnabled(bool enabled);
     bool matrixEnabled() const;
@@ -333,6 +355,7 @@ public:
     void setRenderHint(RenderHint hint, bool on = true);
     void setRenderHints(RenderHints hints, bool on = true);
     RenderHints renderHints() const;
+    inline bool testRenderHint(RenderHint hint) const { return renderHints() & hint; }
 
     QPaintEngine *paintEngine() const;
 
@@ -396,7 +419,7 @@ public:
 
     inline QT3_SUPPORT void setWorldXForm(bool enabled) { setMatrixEnabled(enabled); }
     inline QT3_SUPPORT bool hasWorldXForm() const { return matrixEnabled(); }
-    inline QT3_SUPPORT void resetXForm() { resetMatrix(); }
+    inline QT3_SUPPORT void resetXForm() { resetTransform(); }
 
     inline QT3_SUPPORT void setViewXForm(bool enabled) { setViewTransformEnabled(enabled); }
     inline QT3_SUPPORT bool hasViewXForm() const { return viewTransformEnabled(); }
@@ -432,6 +455,8 @@ private:
     friend class QX11PaintEnginePrivate;
     friend class QWin32PaintEngine;
     friend class QWin32PaintEnginePrivate;
+    friend class QRasterPaintEngine;
+    friend class QAlphaPaintEngine;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QPainter::RenderHints)
@@ -615,19 +640,8 @@ inline void QPainter::drawChord(int x, int y, int w, int h, int a, int alen)
 
 inline void QPainter::setClipRect(int x, int y, int w, int h, Qt::ClipOperation op)
 {
-#ifdef QT_EXPERIMENTAL_REGIONS
     setClipRect(QRect(x, y, w, h), op);
-#else
-    setClipRect(QRectF(x, y, w, h), op);
-#endif
 }
-
-#ifndef QT_EXPERIMENTAL_REGIONS
-inline void QPainter::setClipRect(const QRect &rect, Qt::ClipOperation op)
-{
-    setClipRect(QRectF(rect), op);
-}
-#endif
 
 inline void QPainter::eraseRect(const QRect &rect)
 {

@@ -35,7 +35,7 @@
 // We mean it.
 //
 
-#if defined (Q_OS_HPUX) && !defined (GLX_VERSION_1_3)
+#if defined (Q_OS_HPUX)
 typedef unsigned long GLXPbuffer;
 
 struct GLXFBConfig {
@@ -110,7 +110,7 @@ DECLARE_HANDLE(HPBUFFERARB);
 class QGLPixelBufferPrivate {
     Q_DECLARE_PUBLIC(QGLPixelBuffer)
 public:
-    QGLPixelBufferPrivate() : invalid(true), qctx(0), pbuf(0), ctx(0)
+    QGLPixelBufferPrivate(QGLPixelBuffer *q) : q_ptr(q), invalid(true), qctx(0), pbuf(0), ctx(0)
     {
         QGLExtensions::init();
 #ifdef Q_WS_WIN
@@ -123,9 +123,9 @@ public:
     void common_init(const QSize &size, const QGLFormat &f, QGLWidget *shareWidget);
     bool cleanup();
 
+    QGLPixelBuffer *q_ptr;
     bool invalid;
     QGLContext *qctx;
-    QGLPixelBuffer *q_ptr;
     QGLFormat format;
 
     QGLFormat req_format;
@@ -139,6 +139,7 @@ public:
     HDC dc;
     HPBUFFERARB pbuf;
     HGLRC ctx;
+    bool has_render_texture :1;
 #elif defined(Q_WS_MACX)
 #if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3)
     AGLPbuffer pbuf;

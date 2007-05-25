@@ -41,7 +41,7 @@
      <x>0</x>
      <y>0</y>
      <width>673</width>
-     <height>21</height>
+     <height>29</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuPhrases" >
@@ -207,6 +207,9 @@
    </property>
    <property name="shortcut" >
     <string>Ctrl+Q</string>
+   </property>
+   <property name="menuRole" >
+    <enum>QAction::QuitRole</enum>
    </property>
   </action>
   <action name="actionSave" >
@@ -611,6 +614,9 @@
    <property name="text" >
     <string>About Qt Linguist</string>
    </property>
+   <property name="menuRole" >
+    <enum>QAction::AboutRole</enum>
+   </property>
   </action>
   <action name="actionAboutQt" >
    <property name="text" >
@@ -618,6 +624,9 @@
    </property>
    <property name="whatsThis" >
     <string>Display information about the Qt toolkit by Trolltech.</string>
+   </property>
+   <property name="menuRole" >
+    <enum>QAction::AboutQtRole</enum>
    </property>
   </action>
   <action name="actionWhatsThis" >
@@ -758,7 +767,11 @@
    <property name="text" >
     <string>Translation File &amp;Settings</string>
    </property>
+   <property name="menuRole" >
+    <enum>QAction::NoRole</enum>
+   </property>
   </action>
  </widget>
  <resources/>
+ <connections/>
 </ui>

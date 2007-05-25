@@ -3,7 +3,7 @@
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>Qt 4.2: plugindialog.cpp Example File (tools/plugandpaint/plugindialog.cpp)</title>
+  <title>Qt 4.3: plugindialog.cpp Example File (tools/plugandpaint/plugindialog.cpp)</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -35,24 +35,32 @@
  **
  ****************************************************************************/</span>
 
- #include &lt;QtGui&gt;
-
  #include &quot;interfaces.h&quot;
  #include &quot;plugindialog.h&quot;
 
- PluginDialog::PluginDialog(const QString &amp;path, const QStringList &amp;fileNames,
-                            QWidget *parent)
-     : QDialog(parent)
- {
-     label = new QLabel;
+ #include &lt;QPluginLoader&gt;
+ #include &lt;QStringList&gt;
+ #include &lt;QDir&gt;
 
-     treeWidget = new QTreeWidget;
+ #include &lt;QLabel&gt;
+ #include &lt;QGridLayout&gt;
+ #include &lt;QPushButton&gt;
+ #include &lt;QTreeWidget&gt;
+ #include &lt;QTreeWidgetItem&gt;
+ #include &lt;QHeaderView&gt;
+
+ PluginDialog::PluginDialog(const QString &amp;path, const QStringList &amp;fileNames,
+                            QWidget *parent) :
+     QDialog(parent),
+     label(new QLabel),
+     treeWidget(new QTreeWidget),
+     okButton(new QPushButton(tr(&quot;OK&quot;)))
+ {
      treeWidget-&gt;setAlternatingRowColors(false);
      treeWidget-&gt;setSelectionMode(QAbstractItemView::NoSelection);
      treeWidget-&gt;setColumnCount(1);
      treeWidget-&gt;header()-&gt;hide();
 
-     okButton = new QPushButton(tr(&quot;OK&quot;));
      okButton-&gt;setDefault(true);
 
      connect(okButton, SIGNAL(clicked()), this, SLOT(close()));
@@ -82,7 +90,7 @@
                        &quot;(looked in %1):&quot;)
                     .arg(QDir::toNativeSeparators(path)));
 
-     QDir dir(path);
+     const QDir dir(path);
 
      foreach (QObject *plugin, QPluginLoader::staticInstances())
          populateTreeWidget(plugin, tr(&quot;%1 (Static Plugin)&quot;)
@@ -142,6 +150,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
 </tr></table></div></address></body>
 </html>

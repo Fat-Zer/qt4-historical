@@ -136,6 +136,8 @@ public:
 
     void setSource(QMimeData* s)
     {
+        if (s == src)
+            return;
         delete src;
         src = s;
     }
@@ -356,12 +358,20 @@ static bool qt_x11_clipboard_event_filter(void *message, long *)
     return false;
 }
 
+static Bool checkForClipboardEvents(Display *, XEvent *e, XPointer)
+{
+    return ((e->type == SelectionRequest && (e->xselectionrequest.selection == XA_PRIMARY
+                                             || e->xselectionrequest.selection == ATOM(CLIPBOARD)))
+            || (e->type == SelectionClear && (e->xselectionclear.selection == XA_PRIMARY
+                                              || e->xselectionclear.selection == ATOM(CLIPBOARD))));
+}
+
 bool QX11Data::clipboardWaitForEvent(Window win, int type, XEvent *event, int timeout)
 {
     QTime started = QTime::currentTime();
     QTime now = started;
 
-    if (QAbstractEventDispatcher::instance()->inherits("QMotif")) {
+    if (QAbstractEventDispatcher::instance()->inherits("QtMotif")) {
         if (waiting_for_data)
             qFatal("QClipboard: internal error, qt_xclb_wait_for_event recursed");
         waiting_for_data = true;
@@ -409,6 +419,11 @@ bool QX11Data::clipboardWaitForEvent(Window win, int type, XEvent *event, int ti
         do {
             if (XCheckTypedWindowEvent(X11->display,win,type,event))
                 return true;
+
+            // process other clipboard events, since someone is probably requesting data from us
+            XEvent e;
+            if (XCheckIfEvent(X11->display, &e, checkForClipboardEvents, 0))
+                qApp->x11ProcessEvent(&e);
 
             now = QTime::currentTime();
             if ( started > now )                        // crossed midnight
@@ -904,7 +919,7 @@ bool QClipboard::event(QEvent *e)
                     ;
                 } else if (target == xa_timestamp) {
                     if (d->timestamp != CurrentTime) {
-                        XChangeProperty(dpy, req->requestor, property, xa_timestamp, 32,
+                        XChangeProperty(dpy, req->requestor, property, XA_INTEGER, 32,
                                         PropModeReplace, (uchar *) &d->timestamp, 1);
                         ret = property;
                     } else {
@@ -1235,7 +1250,7 @@ bool qt_check_selection_sentinel()
           and have already emitted dataChanged() as a result of that)
         */
 
-        Window* owners;
+        unsigned char *retval;
         Atom actualType;
         int actualFormat;
         ulong nitems;
@@ -1245,7 +1260,8 @@ bool qt_check_selection_sentinel()
                                QApplication::desktop()->screen(0)->internalWinId(),
                                ATOM(_QT_SELECTION_SENTINEL), 0, 2, False, XA_WINDOW,
                                &actualType, &actualFormat, &nitems,
-                               &bytesLeft, (unsigned char**)&owners) == Success) {
+                               &bytesLeft, &retval) == Success) {
+            Window *owners = (Window *)retval;
             if (actualType == XA_WINDOW && actualFormat == 32 && nitems == 2) {
                 Window win = owner->internalWinId();
                 if (owners[0] == win || owners[1] == win)
@@ -1275,7 +1291,7 @@ bool qt_check_clipboard_sentinel()
 {
     bool doIt = true;
     if (owner) {
-        Window *owners;
+        unsigned char *retval;
         Atom actualType;
         int actualFormat;
         unsigned long nitems, bytesLeft;
@@ -1284,7 +1300,8 @@ bool qt_check_clipboard_sentinel()
                                QApplication::desktop()->screen(0)->internalWinId(),
                                ATOM(_QT_CLIPBOARD_SENTINEL), 0, 2, False, XA_WINDOW,
                                &actualType, &actualFormat, &nitems, &bytesLeft,
-                               (unsigned char **) &owners) == Success) {
+                               &retval) == Success) {
+            Window *owners = (Window *)retval;
             if (actualType == XA_WINDOW && actualFormat == 32 && nitems == 2) {
                 Window win = owner->internalWinId();
                 if (owners[0] == win || owners[1] == win)

@@ -25,6 +25,7 @@
 
 using namespace qdesigner_internal;
 
+// ----------------------------------------------------------------------------
 QLongLongValidator::QLongLongValidator(QObject * parent)
     : QValidator(parent),
       b(Q_UINT64_C(0x8000000000000000)), t(Q_UINT64_C(0x7FFFFFFFFFFFFFFF))
@@ -44,9 +45,9 @@ QLongLongValidator::~QLongLongValidator()
 
 QValidator::State QLongLongValidator::validate(QString & input, int &) const
 {
-    if (input.contains(' '))
+    if (input.contains(QLatin1Char(' ')))
         return Invalid;
-    if (input.isEmpty() || (b < 0 && input == "-"))
+    if (input.isEmpty() || (b < 0 && input == QLatin1String("-")))
         return Intermediate;
     bool ok;
     qlonglong entered = input.toLongLong(&ok);
@@ -77,3 +78,55 @@ void QLongLongValidator::setTop(qlonglong top)
 {
     setRange(bottom(), top);
 }
+
+
+// ----------------------------------------------------------------------------
+QULongLongValidator::QULongLongValidator(QObject * parent)
+    : QValidator(parent),
+      b(0), t(Q_UINT64_C(0xFFFFFFFFFFFFFFFF))
+{
+}
+
+QULongLongValidator::QULongLongValidator(qulonglong minimum, qulonglong maximum,
+                              QObject * parent)
+    : QValidator(parent), b(minimum), t(maximum)
+{
+}
+
+QULongLongValidator::~QULongLongValidator()
+{
+    // nothing
+}
+
+QValidator::State QULongLongValidator::validate(QString & input, int &) const
+{
+    if (input.isEmpty())
+        return Intermediate;
+
+    bool ok;
+    qulonglong entered = input.toULongLong(&ok);
+    if (input.contains(QLatin1Char(' ')) || input.contains(QLatin1Char('-')) || !ok)
+        return Invalid;
+
+    if (entered >= b && entered <= t)
+        return Acceptable;
+
+    return Invalid;
+}
+
+void QULongLongValidator::setRange(qulonglong bottom, qulonglong top)
+{
+    b = bottom;
+    t = top;
+}
+
+void QULongLongValidator::setBottom(qulonglong bottom)
+{
+    setRange(bottom, top());
+}
+
+void QULongLongValidator::setTop(qulonglong top)
+{
+    setRange(bottom(), top);
+}
+

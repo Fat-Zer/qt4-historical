@@ -32,6 +32,7 @@
 #include "qdebug.h"
 #include <private/qshortcutmap_p.h>
 #include <private/qapplication_p.h>
+#include <private/qmenu_p.h>
 
 /*
   internal: guesses a descriptive text from a text suited for a menu entry
@@ -172,7 +173,10 @@ void QActionPrivate::setShortcutEnabled(bool enable, QShortcutMap &map)
     setStatusTip(), setWhatsThis(), and setToolTip(). For menu items,
     it is possible to set an individual font with setFont().
 
-    Actions are added to widgets using QWidget::addAction().
+    Actions are added to widgets using QWidget::addAction(). Note
+    that an action must be added to a widget before it can be used;
+    this is also true when the shortcut should be global (i.e.,
+    Qt::ApplicationShortcut as Qt::ShortcutContext).
 
     Once a QAction has been created it should be added to the relevant
     menu and toolbar, then connected to the slot which will perform
@@ -241,7 +245,7 @@ QAction::QAction(QObject* parent)
 
     The action uses a stripped version of \a text (e.g. "\&Menu
     Option..." becomes "Menu Option") as descriptive text for
-    toolbuttons. You can override this by setting a specific
+    tool buttons. You can override this by setting a specific
     description with setText(). The same text will be used for
     tooltips unless you specify a different text using
     setToolTip().
@@ -264,7 +268,7 @@ QAction::QAction(const QString &text, QObject* parent)
 
     The action uses a stripped version of \a text (e.g. "\&Menu
     Option..." becomes "Menu Option") as descriptive text for
-    toolbuttons. You can override this by setting a specific
+    tool buttons. You can override this by setting a specific
     description with setText(). The same text will be used for
     tooltips unless you specify a different text using
     setToolTip().
@@ -637,7 +641,11 @@ QMenu *QAction::menu() const
 void QAction::setMenu(QMenu *menu)
 {
     Q_D(QAction);
+    if (d->menu)
+        d->menu->d_func()->setOverrideMenuAction(0); //we reset the default action of any previous menu
     d->menu = menu;
+    if (menu)
+        menu->d_func()->setOverrideMenuAction(this);
     d->sendDataChanged();
 }
 #endif // QT_NO_MENU
@@ -933,7 +941,7 @@ void QAction::setEnabled(bool b)
     if (b == d->enabled && b != d->forceDisabled)
         return;
     d->forceDisabled = !b;
-    if (b && d->group && !d->group->isEnabled())
+    if (b && (!d->visible || (d->group && !d->group->isEnabled())))
         return;
     d->enabled = b;
 #ifndef QT_NO_SHORTCUT
@@ -966,6 +974,10 @@ void QAction::setVisible(bool b)
         return;
     d->forceInvisible = !b;
     d->visible = b;
+    d->enabled = b && !d->forceDisabled && (!d->group || d->group->isEnabled()) ;
+#ifndef QT_NO_SHORTCUT
+    d->setShortcutEnabled(d->enabled, qApp->d_func()->shortcutMap);
+#endif
     d->sendDataChanged();
 }
 

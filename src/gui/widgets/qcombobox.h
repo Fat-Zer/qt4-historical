@@ -125,7 +125,8 @@ public:
     enum SizeAdjustPolicy {
         AdjustToContents,
         AdjustToContentsOnFirstShow,
-        AdjustToMinimumContentsLength // ### remove in Qt 5
+        AdjustToMinimumContentsLength, // ### Qt 5: remove
+        AdjustToMinimumContentsLengthWithIcon
     };
 
     SizeAdjustPolicy sizeAdjustPolicy() const;
@@ -228,6 +229,7 @@ protected:
     void contextMenuEvent(QContextMenuEvent *e);
     void inputMethodEvent(QInputMethodEvent *);
     QVariant inputMethodQuery(Qt::InputMethodQuery) const;
+    void initStyleOption(QStyleOptionComboBox *option) const;
 
 #ifdef QT3_SUPPORT
 public:
@@ -281,7 +283,7 @@ private:
     Q_DISABLE_COPY(QComboBox)
     Q_PRIVATE_SLOT(d_func(), void _q_itemSelected(const QModelIndex &item))
     Q_PRIVATE_SLOT(d_func(), void _q_emitHighlighted(const QModelIndex &))
-    Q_PRIVATE_SLOT(d_func(), void _q_emitCurrentIndexChanged(int index))
+    Q_PRIVATE_SLOT(d_func(), void _q_emitCurrentIndexChanged(const QModelIndex &index))
     Q_PRIVATE_SLOT(d_func(), void _q_returnPressed())
     Q_PRIVATE_SLOT(d_func(), void _q_resetButton())
     Q_PRIVATE_SLOT(d_func(), void _q_dataChanged(const QModelIndex &, const QModelIndex &))
@@ -291,6 +293,9 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_rowsRemoved(const QModelIndex & parent, int start, int end))
     Q_PRIVATE_SLOT(d_func(), void _q_modelDestroyed())
     Q_PRIVATE_SLOT(d_func(), void _q_modelReset())
+#ifdef QT_KEYPAD_NAVIGATION
+    Q_PRIVATE_SLOT(d_func(), void _q_completerActivated())
+#endif
 };
 
 inline void QComboBox::addItem(const QString &atext, const QVariant &auserData)

@@ -31,7 +31,7 @@ public:
     QMutex mutex;
 };
 
-Q_GLOBAL_STATIC(QSocketEngineHandlerList, socketHandlers);
+Q_GLOBAL_STATIC(QSocketEngineHandlerList, socketHandlers)
 
 QSocketEngineHandler::QSocketEngineHandler()
 {
@@ -58,6 +58,7 @@ QAbstractSocketEnginePrivate::QAbstractSocketEnginePrivate()
     , socketProtocol(QAbstractSocket::UnknownNetworkLayerProtocol)
     , localPort(0)
     , peerPort(0)
+    , receiver(0)
 {
 }
 
@@ -107,6 +108,36 @@ void QAbstractSocketEngine::setError(QAbstractSocket::SocketError error, const Q
     d->socketError = error;
     d->socketErrorString = errorString;
 }
+
+void QAbstractSocketEngine::setReceiver(QAbstractSocketEngineReceiver *receiver)
+{
+    d_func()->receiver = receiver;
+}
+
+void QAbstractSocketEngine::readNotification()
+{
+    if (QAbstractSocketEngineReceiver *receiver = d_func()->receiver)
+        receiver->readNotification();
+}
+
+void QAbstractSocketEngine::writeNotification()
+{
+    if (QAbstractSocketEngineReceiver *receiver = d_func()->receiver)
+        receiver->writeNotification();
+}
+
+void QAbstractSocketEngine::exceptionNotification()
+{
+    if (QAbstractSocketEngineReceiver *receiver = d_func()->receiver)
+        receiver->exceptionNotification();
+}
+
+void QAbstractSocketEngine::proxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *authenticator)
+{
+    if (QAbstractSocketEngineReceiver *receiver = d_func()->receiver)
+        receiver->proxyAuthenticationRequired(proxy, authenticator);
+}
+
 
 QAbstractSocket::SocketState QAbstractSocketEngine::state() const
 {

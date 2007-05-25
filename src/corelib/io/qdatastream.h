@@ -60,9 +60,10 @@ public:
         Qt_3_3 = 6,
         Qt_4_0 = 7,
         Qt_4_1 = Qt_4_0,
-        Qt_4_2 = 8
-#if QT_VERSION >= 0x040300
-#error Add Qt_4_3 = Qt_4_2
+        Qt_4_2 = 8,
+        Qt_4_3 = 9
+#if QT_VERSION >= 0x040400
+#error Add Qt_4_4 = Qt_4_3
 #endif
     };
 
@@ -363,9 +364,7 @@ Q_OUTOFLINE_TEMPLATE QDataStream &operator>>(QDataStream &in, QMap<aKey, aT> &ma
     in >> n;
 
     map.detach();
-#if !defined(Q_CC_BOR)
-    map.d->insertInOrder = true;
-#endif
+    map.setInsertInOrder(true);
     for (quint32 i = 0; i < n; ++i) {
         if (in.status() != QDataStream::Ok)
             break;
@@ -375,9 +374,7 @@ Q_OUTOFLINE_TEMPLATE QDataStream &operator>>(QDataStream &in, QMap<aKey, aT> &ma
         in >> key >> value;
         map.insertMulti(key, value);
     }
-#if !defined(Q_CC_BOR)
-    map.d->insertInOrder = false;
-#endif
+    map.setInsertInOrder(false);
     if (in.status() != QDataStream::Ok)
         map.clear();
     if (oldStatus != QDataStream::Ok)

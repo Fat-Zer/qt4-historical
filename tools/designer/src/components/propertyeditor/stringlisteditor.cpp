@@ -31,6 +31,7 @@ StringListEditor::StringListEditor(QWidget *parent)
     : QDialog(parent), m_model(new QStringListModel(this))
 {
     setupUi(this);
+    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
     listView->setModel(m_model);
 
     connect(listView->selectionModel(),

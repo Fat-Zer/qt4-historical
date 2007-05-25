@@ -498,6 +498,8 @@ bool QPSQLDriver::hasFeature(DriverFeature f) const
     case PreparedQueries:
     case NamedPlaceholders:
     case PositionalPlaceholders:
+    case SimpleLocking:
+    case LowPrecisionNumbers:
         return false;
     case BLOB:
         return d->pro >= QPSQLDriver::Version71;
@@ -551,6 +553,8 @@ bool QPSQLDriver::open(const QString & db,
 
     d->connection = PQconnectdb(connectString.toLocal8Bit().constData());
     if (PQstatus(d->connection) == CONNECTION_BAD) {
+        PQfinish(d->connection);
+        d->connection = 0;
         setLastError(qMakeError(tr("Unable to connect"), QSqlError::ConnectionError, d));
         setOpenError(true);
         return false;

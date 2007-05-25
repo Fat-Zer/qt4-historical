@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-x11-opensource-src-4.2.3/doc/src/model-view-programming.qdoc -->
+<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/doc/src/model-view-programming.qdoc -->
 <head>
-  <title>Qt 4.2: Model/View Programming</title>
+  <title>Qt 4.3: Model/View Programming</title>
   <link rel="next" href="model-view-using.html" />
   <link rel="start" href="index.html" />
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -30,10 +30,10 @@
 <li><a href="#related-examples">Related Examples</a></li>
 </ul>
 <a name="introduction"></a>
-<h2>Introduction</h2>
+<h3>Introduction</h3>
 <p>Qt 4 introduces a new set of item view classes that use a model/view architecture to manage the relationship between data and the way it is presented to the user. The separation of functionality introduced by this architecture gives developers greater flexibility to customize the presentation of items, and provides a standard model interface to allow a wide range of data sources to be used with existing item views. In this document, we give a brief introduction to the model/view paradigm, outline the concepts involved, and describe the architecture of the item view system. Each of the components in the architecture is explained, and examples are given that show how to use the classes provided.</p>
 <a name="the-model-view-architecture"></a>
-<h2>The Model/View Architecture</h2>
+<h3>The Model/View Architecture</h3>
 <p>Model-View-Controller (MVC) is a design pattern originating from Smalltalk that is often used when building user interfaces. In <a href="guibooks.html#design-patterns">Design Patterns</a>, Gamma et al. write:</p>
 <blockquote><p>MVC consists of three kinds of objects. The Model is the application object, the View is its screen presentation, and the Controller defines the way the user interface reacts to user input. Before MVC, user interface designs tended to lump these objects together. MVC decouples them to increase flexibility and reuse.</p>
 </blockquote>
@@ -52,7 +52,7 @@
 <li>Signals from the delegate are used during editing to tell the model and view about the state of the editor.</li>
 </ul>
 <a name="models"></a>
-<h3>Models</h3>
+<h4>Models</h4>
 <p>All item models are based on the <a href="qabstractitemmodel.html">QAbstractItemModel</a> class. This class defines an interface that is used by views and delegates to access data. The data itself does not have to be stored in the model; it can be held in a data structure or repository provided by a separate class, a file, a database, or some other application component.</p>
 <p>The basic concepts surrounding models are presented in the section on <a href="model-view-model.html">Model Classes</a>.</p>
 <p><a href="qabstractitemmodel.html">QAbstractItemModel</a> provides an interface to data that is flexible enough to handle views that represent data in the form of tables, lists, and trees. However, when implementing new models for list and table-like data structures, the <a href="qabstractlistmodel.html">QAbstractListModel</a> and <a href="qabstracttablemodel.html">QAbstractTableModel</a> classes are better starting points because they provide appropriate default implementations of common functions. Each of these classes can be subclassed to provide models that support specialized kinds of lists and tables.</p>
@@ -66,24 +66,24 @@
 </ul>
 <p>If these standard models do not meet your requirements, you can subclass <a href="qabstractitemmodel.html">QAbstractItemModel</a>, <a href="qabstractlistmodel.html">QAbstractListModel</a>, or <a href="qabstracttablemodel.html">QAbstractTableModel</a> to create your own custom models.</p>
 <a name="views"></a>
-<h3>Views</h3>
+<h4>Views</h4>
 <p>Complete implementations are provided for different kinds of views: <a href="qlistview.html">QListView</a> displays a list of items, <a href="qtableview.html">QTableView</a> displays data from a model in a table, and <a href="qtreeview.html">QTreeView</a> shows model items of data in a hierarchical list. Each of these classes is based on the <a href="qabstractitemview.html">QAbstractItemView</a> abstract base class. Although these classes are ready-to-use implementations, they can also be subclassed to provide customized views.</p>
 <p>The available views are examined in the section on <a href="model-view-view.html">View Classes</a>.</p>
 <a name="delegates"></a>
-<h3>Delegates</h3>
+<h4>Delegates</h4>
 <p><a href="qabstractitemdelegate.html">QAbstractItemDelegate</a> is the abstract base class for delegates in the model/view framework. A default delegate implementation is provided by the <a href="qitemdelegate.html">QItemDelegate</a> class, and this is used as the default delegate by Qt's standard views.</p>
 <p>Delegates are described in the section on <a href="model-view-delegate.html">Delegate Classes</a>.</p>
 <a name="sorting"></a>
-<h3>Sorting</h3>
+<h4>Sorting</h4>
 <p>There are two ways of approaching sorting in the model/view architecture; which approach to choose depends on your underlying model.</p>
-<p>If your model is sortable, i.e, if it reimplements the <a href="qabstractitemmodel.html#sort">QAbstractItemModel::sort</a>() function, both <a href="qtableview.html">QTableView</a> and <a href="qtreeview.html">QTreeView</a> provide an API that allows you to sort your model data programmatically. In addition, you can enable interactive sorting (i.e. allowing the users to sort the data by clicking the view's headers), by connecting the <a href="qheaderview.html#sectionClicked">QHeaderView::sectionClicked</a>() signal to the <a href="qtableview.html#sortByColumn">QTableView::sortByColumn</a>() slot or the <a href="qtreeview.html#sortByColumn">QTreeView::sortByColumn</a>() slot, respectively.</p>
+<p>If your model is sortable, i.e, if it reimplements the <a href="qabstractitemmodel.html#sort">QAbstractItemModel::sort</a>() function, both <a href="qtableview.html">QTableView</a> and <a href="qtreeview.html">QTreeView</a> provide an API that allows you to sort your model data programmatically. In addition, you can enable interactive sorting (i.e&#x2e; allowing the users to sort the data by clicking the view's headers), by connecting the <a href="qheaderview.html#sectionClicked">QHeaderView::sectionClicked</a>() signal to the <a href="qtableview.html#sortByColumn">QTableView::sortByColumn</a>() slot or the <a href="qtreeview.html#sortByColumn">QTreeView::sortByColumn</a>() slot, respectively.</p>
 <p>The alternative approach, if your model do not have the required interface or if you want to use a list view to present your data, is to use a proxy model to transform the structure of your model before presenting the data in the view. This is covered in detail in the section on <a href="model-view-proxy-models.html">Proxy Models</a>.</p>
 <a name="convenience-classes"></a>
-<h3>Convenience Classes</h3>
+<h4>Convenience Classes</h4>
 <p>A number of <i>convenience</i> classes are derived from the standard view classes for the benefit of applications that rely on Qt's item-based item view and table classes. They are not intended to be subclassed, but simply exist to provide a familiar interface to the equivalent classes in Qt 3. Examples of such classes include <a href="qlistwidget.html">QListWidget</a>, <a href="qtreewidget.html">QTreeWidget</a>, and <a href="qtablewidget.html">QTableWidget</a>; these provide similar behavior to the <tt>QListBox</tt>, <tt>QListView</tt>, and <tt>QTable</tt> classes in Qt 3.</p>
 <p>These classes are less flexible than the view classes, and cannot be used with arbitrary models. We recommend that you use a model/view approach to handling data in item views unless you strongly need an item-based set of classes.</p>
 <a name="the-model-view-components"></a>
-<h2>The Model/View Components</h2>
+<h3>The Model/View Components</h3>
 <p>The following sections describe the way in which the model/view pattern is used in Qt. Each section provides an example of use, and is followed by a section showing how you can create new components.</p>
 <ul>
 <li><a href="model-view-using.html">Using Models and Views</a> <ul><li><a href="model-view-using.html#introduction">Introduction</a></li>
@@ -192,7 +192,7 @@
 </ul>
 <p>See also the list of <a href="model-view.html">Model/View Classes</a>.</p>
 <a name="related-examples"></a>
-<h2>Related Examples</h2>
+<h3>Related Examples</h3>
 <ul>
 <li><a href="itemviews-dirview.html">Dir View</a></li>
 <li><a href="itemviews-spinboxdelegate.html">Spin Box Delegate</a></li>
@@ -207,6 +207,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
 </tr></table></div></address></body>
 </html>

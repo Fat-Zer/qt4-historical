@@ -129,7 +129,7 @@ void Q3CanvasClusterizer::add(const QRect& rect)
 {
     QRect biggerrect(rect.x()-1,rect.y()-1,rect.width()+2,rect.height()+2);
 
-    //assert(rect.width()>0 && rect.height()>0);
+    //Q_ASSERT(rect.width()>0 && rect.height()>0);
 
     int cursor;
 
@@ -4657,7 +4657,7 @@ void Q3CanvasEllipse::drawShape(QPainter & p)
 */
 Q3CanvasText::Q3CanvasText(Q3Canvas* canvas) :
     Q3CanvasItem(canvas),
-    txt("<text>"), flags(0)
+    txt(QLatin1String("<text>")), flags(0)
 {
     setRect();
 }

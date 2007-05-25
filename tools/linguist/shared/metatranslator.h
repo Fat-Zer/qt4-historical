@@ -122,6 +122,9 @@ private:
     typedef QMap<MetaTranslatorMessage, int> TMM;       // int stores the sequence position.
     typedef QMap<int, MetaTranslatorMessage> TMMInv;    // Used during save operation. Seems to use the map only the get the sequence order right.
 
+    bool saveTS( const QString& filename ) const;
+    bool saveXLIFF( const QString& filename) const;
+
     TMM mm;
     QByteArray codecName;
     QTextCodec *codec;
@@ -140,5 +143,7 @@ private:
   to extend MetaTranslator's interface.
 */
 #define ContextComment "QT_LINGUIST_INTERNAL_CONTEXT_COMMENT"
+
+bool saveXLIFF( const MetaTranslator &mt, const QString& filename);
 
 #endif

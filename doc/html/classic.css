@@ -42,12 +42,7 @@ table tr.even {
   color: black;
 }
 
-table.annotated {
-  border-spacing: 0px;
-}
-
 table.annotated th {
-  font-weight: bold;
   padding: 3px;
   text-align: left
 }
@@ -94,4 +89,14 @@ span.comment
 span.string,span.char
 {
   color: darkgreen;
+}
+
+.subtitle
+{
+    font-size: 0.8em
+}
+
+.small-subtitle
+{
+    font-size: 0.65em
 }

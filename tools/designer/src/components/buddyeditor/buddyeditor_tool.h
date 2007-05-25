@@ -28,7 +28,7 @@
 
 #include <QtCore/QPointer>
 
-#include <QtDesigner/QtDesigner>
+#include <QtDesigner/QDesignerFormWindowToolInterface>
 
 class QDesignerFormEditorInterface;
 class QDesignerFormWindowInterface;

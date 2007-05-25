@@ -26,6 +26,8 @@
 
 #include <QtCore/QObject>
 
+class QDesignerFormEditorInterface;
+
 namespace qdesigner_internal {
 
 class QtBrushManager;

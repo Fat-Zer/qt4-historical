@@ -48,6 +48,8 @@
 //
 
 class QRenderRule;
+class QAbstractScrollArea;
+class QStyleSheetStylePrivate;
 
 class Q_AUTOTEST_EXPORT QStyleSheetStyle : public QWindowsStyle
 {
@@ -56,6 +58,7 @@ class Q_AUTOTEST_EXPORT QStyleSheetStyle : public QWindowsStyle
     Q_OBJECT
 public:
     QStyleSheetStyle(QStyle *baseStyle);
+    ~QStyleSheetStyle();
 
     void drawComplexControl(ComplexControl cc, const QStyleOptionComplex *opt, QPainter *p,
                             const QWidget *w = 0) const;
@@ -83,6 +86,9 @@ public:
     QPalette standardPalette() const;
     QPixmap standardPixmap(StandardPixmap standardPixmap, const QStyleOption *option = 0,
                            const QWidget *w = 0 ) const;
+    int layoutSpacing(QSizePolicy::ControlType control1, QSizePolicy::ControlType control2,
+                          Qt::Orientation orientation, const QStyleOption *option = 0,
+                          const QWidget *widget = 0) const;
     int styleHint(StyleHint sh, const QStyleOption *opt = 0, const QWidget *w = 0,
                   QStyleHintReturn *shret = 0) const;
     QRect subElementRect(SubElement r, const QStyleOption *opt, const QWidget *widget = 0) const;
@@ -105,17 +111,39 @@ public:
 protected Q_SLOTS:
     QIcon standardIconImplementation(StandardPixmap standardIcon, const QStyleOption *opt = 0,
                                      const QWidget *widget = 0) const;
-
+    int layoutSpacingImplementation(QSizePolicy::ControlType control1,
+                                    QSizePolicy::ControlType control2,
+                                    Qt::Orientation orientation,
+                                    const QStyleOption *option = 0,
+                                    const QWidget *widget = 0) const;
 private Q_SLOTS:
     void widgetDestroyed(QObject *);
 
 private:
-    void setPalette(QWidget *w);
-    QRenderRule renderRule(const QWidget *, const QString &, QStyle::State = QStyle::State_None) const;
-    QRenderRule renderRule(const QWidget *, int, QStyle::State = QStyle::State_None) const;
-    QRenderRule renderRule(const QWidget *, const QStyleOption *, int = 0 /* PseudoElement_None */) const;
-    bool hasStyleRule(const QWidget *, int = 0 /* PseudoElement_None */) const;
     int refcount;
+
+    friend class QRenderRule;
+    int nativeFrameWidth(const QWidget *);
+    QRenderRule renderRule(const QWidget *, int, int = 0) const;
+    QRenderRule renderRule(const QWidget *, const QStyleOption *, int = 0) const;
+    QSize defaultSize(const QWidget *, QSize, const QRect&, int) const;
+    QRect positionRect(const QWidget *, const QRenderRule&, const QRenderRule&, int,
+                       const QRect&, Qt::LayoutDirection) const;
+    QRect positionRect(const QWidget *w, const QRenderRule &rule2, int pe,
+                       const QRect &originRect, Qt::LayoutDirection dir) const;
+
+    void setPalette(QWidget *);
+    void unsetPalette(QWidget *);
+    void setProperties(QWidget *);
+    QVector<QCss::StyleRule> styleRules(const QWidget *w) const;
+    bool hasStyleRule(const QWidget *w, int part) const;
+
+public:
+    static int numinstances;
+
+private:
+    Q_DISABLE_COPY(QStyleSheetStyle)
+    Q_DECLARE_PRIVATE(QStyleSheetStyle)
 };
 
 #endif // QT_NO_STYLE_STYLESHEET

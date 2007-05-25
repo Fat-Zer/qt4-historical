@@ -66,6 +66,7 @@ public:
     Qt::DropActions possible_actions;
     Qt::DropAction executed_action;
     QMap<Qt::DropAction, QPixmap> customCursors;
+    Qt::DropAction defaultDropAction;
 };
 
 class QInternalMimeData : public QMimeData
@@ -136,6 +137,7 @@ public:
     void updatePixmap();
     QWidget *source() const { return object ? object->d_func()->source : 0; }
     QDragPrivate *dragPrivate() const { return object ? object->d_func() : 0; }
+    static QDragPrivate *dragPrivate(QDrag *drag) { return drag ? drag->d_func() : 0; }
 
     static QDragManager *self();
     Qt::DropAction defaultAction(Qt::DropActions possibleActions,
@@ -169,6 +171,9 @@ public:
 private:
     QPixmap *pm_cursor;
     int n_cursor;
+#ifdef Q_WS_QWS
+    Qt::DropAction currentActionForOverrideCursor;
+#endif
 
     QWidget *currentDropTarget;
 

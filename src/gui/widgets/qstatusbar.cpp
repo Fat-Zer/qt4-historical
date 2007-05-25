@@ -456,8 +456,8 @@ void QStatusBar::reformat()
     vbox->addSpacing(3);
     QBoxLayout* l = new QHBoxLayout;
     vbox->addLayout(l);
-    l->addSpacing(3);
-    l->setSpacing(4);
+    l->addSpacing(2);
+    l->setSpacing(6);
 
     int maxH = fontMetrics().height();
 
@@ -482,7 +482,6 @@ void QStatusBar::reformat()
         int itemH = qMin(qSmartMinSize(item->w).height(), item->w->maximumHeight());
         maxH = qMax(maxH, itemH);
     }
-    l->addSpacing(4);
 #ifndef QT_NO_SIZEGRIP
     if (d->resizer) {
         maxH = qMax(maxH, d->resizer->sizeHint().height());
@@ -649,8 +648,8 @@ void QStatusBar::paintEvent(QPaintEvent *)
                         right = qMin(right, item->w->x()-1);
                 }
                 QStyleOption opt(0);
-                opt.rect.setRect(item->w->x() - 1, item->w->y() - 1,
-                                 item->w->width() + 2, item->w->height() + 2);
+                opt.rect.setRect(item->w->x() - 2, item->w->y() - 1,
+                                 item->w->width() + 4, item->w->height() + 2);
                 opt.palette = palette();
                 opt.state = QStyle::State_None;
                 style()->drawPrimitive(QStyle::PE_FrameStatusBar, &opt, &p, item->w);

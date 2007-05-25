@@ -35,33 +35,39 @@
 // We mean it.
 //
 
-#include "QtXml/qxml.h"
+#include "QtXml/qxmlstream.h"
 #include "QtCore/qhash.h"
 #include "QtCore/qstack.h"
 #include "qsvgstyle_p.h"
+#include "private/qcssparser_p.h"
 
 class QSvgNode;
 class QSvgTinyDocument;
-class QXmlAttributes;
 class QSvgHandler;
 class QColor;
 class QSvgStyleSelector;
 
 typedef QSvgNode *(*FactoryMethod)(QSvgNode *,
-                                   const QXmlAttributes &,
+                                   const QXmlStreamAttributes &,
                                    QSvgHandler *);
 typedef bool (*ParseMethod)(QSvgNode *,
-                            const QXmlAttributes &,
+                            const QXmlStreamAttributes &,
                             QSvgHandler *);
 
 typedef QSvgStyleProperty *(*StyleFactoryMethod)(QSvgNode *,
-                                                 const QXmlAttributes &,
+                                                 const QXmlStreamAttributes &,
                                                  QSvgHandler *);
 typedef bool (*StyleParseMethod)(QSvgStyleProperty *,
-                                 const QXmlAttributes &,
+                                 const QXmlStreamAttributes &,
                                  QSvgHandler *);
 
-class QSvgHandler : public QXmlDefaultHandler
+struct QSvgCssAttribute
+{
+    QXmlStreamStringRef name;
+    QXmlStreamStringRef value;
+};
+
+class QSvgHandler
 {
 public:
     enum LengthType {
@@ -76,9 +82,18 @@ public:
     };
 
 public:
-    QSvgHandler();
+    QSvgHandler(QIODevice *device);
+    QSvgHandler(const QByteArray &data);
+    ~QSvgHandler();
 
     QSvgTinyDocument *document() const;
+
+    inline bool ok() const {
+        return document() != 0 && !xml.error();
+    }
+
+    inline QString errorString() const { return xml.errorString(); }
+    inline int lineNumber() const { return xml.lineNumber(); }
 
     void setDefaultCoordinateSystem(LengthType type);
     LengthType defaultCoordinateSystem() const;
@@ -93,15 +108,14 @@ public:
 
     void setAnimPeriod(int start, int end);
     int animationDuration() const;
+
+    void parseCSStoXMLAttrs(QString css, QVector<QSvgCssAttribute> *attributes);
+
 public:
-    bool startElement(const QString &namespaceURI, const QString &localName,
-                      const QString &qName, const QXmlAttributes &attributes);
-    bool endElement(const QString &namespaceURI, const QString &localName,
-                    const QString &qName);
-    bool characters(const QString &str);
-    bool fatalError(const QXmlParseException &exception);
+    bool startElement(const QString &localName, const QXmlStreamAttributes &attributes);
+    bool endElement(const QStringRef &localName);
+    bool characters(const QStringRef &str);
     bool processingInstruction(const QString &target, const QString &data);
-    QString errorString() const;
 
 private:
     void init();
@@ -125,13 +139,16 @@ private:
 
     QStack<QColor> m_colorStack;
     QStack<int>    m_colorTagCount;
-    
+
     bool m_inStyle;
 
     QSvgStyleSelector *m_selector;
 
     int m_animEnd;
 private:
+    QXmlStreamReader xml;
+    QCss::Parser m_cssParser;
+    void parse();
     static QHash<QString, FactoryMethod> s_groupFactory;
     static QHash<QString, FactoryMethod> s_graphicsFactory;
     static QHash<QString, ParseMethod>   s_utilFactory;

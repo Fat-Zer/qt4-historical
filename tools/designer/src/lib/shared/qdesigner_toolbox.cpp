@@ -21,35 +21,28 @@
 **
 ****************************************************************************/
 
-#include <QtDesigner/QtDesigner>
-
 #include "qdesigner_toolbox_p.h"
 #include "qdesigner_command_p.h"
 #include "orderdialog_p.h"
+#include "promotiontaskmenu_p.h"
+
+#include <QtDesigner/QDesignerFormWindowInterface>
 
 #include <QtGui/QAction>
+#include <QtGui/QMenu>
 
-using namespace qdesigner_internal;
-
-QDesignerToolBox::QDesignerToolBox(QWidget *parent)
-    : QToolBox(parent)
+QDesignerToolBox::QDesignerToolBox(QWidget *parent) :
+    QToolBox(parent),
+    m_actionDeletePage(new QAction(tr("Delete Page"), this)),
+    m_actionInsertPage(new QAction(tr("Before Current Page"), this)),
+    m_actionInsertPageAfter(new QAction(tr("After Current Page"), this)),
+    m_actionChangePageOrder(new QAction(tr("Change Page Order..."), this)),
+    m_pagePromotionTaskMenu(new qdesigner_internal::PromotionTaskMenu(0, qdesigner_internal::PromotionTaskMenu::ModeSingleWidget, this))
 {
-    m_actionDeletePage = new QAction(this);
-    m_actionDeletePage->setText(tr("Delete Page"));
     connect(m_actionDeletePage, SIGNAL(triggered()), this, SLOT(removeCurrentPage()));
-
-    m_actionInsertPage = new QAction(this);
-    m_actionInsertPage->setText(tr("Before Current Page"));
     connect(m_actionInsertPage, SIGNAL(triggered()), this, SLOT(addPage()));
-
-    m_actionInsertPageAfter = new QAction(this);
-    m_actionInsertPageAfter->setText(tr("After Current Page"));
     connect(m_actionInsertPageAfter, SIGNAL(triggered()), this, SLOT(addPageAfter()));
-
-    m_actionChangePageOrder = new QAction(this);
-    m_actionChangePageOrder->setText(tr("Change Page Order..."));
     connect(m_actionChangePageOrder, SIGNAL(triggered()), this, SLOT(changeOrder()));
-
     connect(this, SIGNAL(currentChanged(int)), this, SLOT(slotCurrentChanged(int)));
 }
 
@@ -105,9 +98,8 @@ void QDesignerToolBox::removeCurrentPage()
         return;
 
     if (QDesignerFormWindowInterface *fw = QDesignerFormWindowInterface::findFormWindow(this)) {
-        DeleteToolBoxPageCommand *cmd = new DeleteToolBoxPageCommand(fw);
+        qdesigner_internal::DeleteToolBoxPageCommand *cmd = new qdesigner_internal::DeleteToolBoxPageCommand(fw);
         cmd->init(this);
-
         fw->commandHistory()->push(cmd);
     }
 }
@@ -115,8 +107,8 @@ void QDesignerToolBox::removeCurrentPage()
 void QDesignerToolBox::addPage()
 {
     if (QDesignerFormWindowInterface *fw = QDesignerFormWindowInterface::findFormWindow(this)) {
-        AddToolBoxPageCommand *cmd = new AddToolBoxPageCommand(fw);
-        cmd->init(this, AddToolBoxPageCommand::InsertBefore);
+        qdesigner_internal::AddToolBoxPageCommand *cmd = new qdesigner_internal::AddToolBoxPageCommand(fw);
+        cmd->init(this, qdesigner_internal::AddToolBoxPageCommand::InsertBefore);
         fw->commandHistory()->push(cmd);
     }
 }
@@ -124,26 +116,24 @@ void QDesignerToolBox::addPage()
 void QDesignerToolBox::changeOrder()
 {
     QDesignerFormWindowInterface *fw = QDesignerFormWindowInterface::findFormWindow(this);
-    
+
     if (!fw)
         return;
 
-    OrderDialog *dlg = new OrderDialog(fw, this);
+    qdesigner_internal::OrderDialog dlg(fw, this);
 
     QList<QWidget*> wList;
     for(int i=0; i<count(); ++i) {
         wList.append(widget(i));
     }
-    dlg->setPageList(&wList);
+    dlg.setPageList(&wList);
 
-    if (dlg->exec() == QDialog::Accepted)
-    {
+    if (dlg.exec() == QDialog::Accepted)   {
         fw->beginCommand(tr("Change Page Order"));
-
         for(int i=0; i<wList.count(); ++i) {
             if (wList.at(i) == widget(i))
                 continue;
-            MoveToolBoxPageCommand *cmd = new MoveToolBoxPageCommand(fw);
+            qdesigner_internal::MoveToolBoxPageCommand *cmd = new qdesigner_internal::MoveToolBoxPageCommand(fw);
             cmd->init(this, wList.at(i), i);
             fw->commandHistory()->push(cmd);
         }
@@ -154,8 +144,8 @@ void QDesignerToolBox::changeOrder()
 void QDesignerToolBox::addPageAfter()
 {
     if (QDesignerFormWindowInterface *fw = QDesignerFormWindowInterface::findFormWindow(this)) {
-        AddToolBoxPageCommand *cmd = new AddToolBoxPageCommand(fw);
-        cmd->init(this, AddToolBoxPageCommand::InsertAfter);
+        qdesigner_internal::AddToolBoxPageCommand *cmd = new qdesigner_internal::AddToolBoxPageCommand(fw);
+        cmd->init(this, qdesigner_internal::AddToolBoxPageCommand::InsertAfter);
         fw->commandHistory()->push(cmd);
     }
 }
@@ -189,4 +179,29 @@ void QDesignerToolBox::slotCurrentChanged(int index)
             fw->selectWidget(this, true);
         }
     }
+}
+
+QMenu *QDesignerToolBox::addContextMenuActions(QMenu *popup)
+{
+    QMenu *pageMenu = 0;
+    if (count()) {
+        const QString pageSubMenuLabel = tr("Page %1 of %2").arg(currentIndex() + 1).arg(count());
+        pageMenu = popup->addMenu(pageSubMenuLabel);
+        pageMenu->addAction(m_actionDeletePage);
+        // Set up promotion menu for current widget.
+        if (QWidget *page =  currentWidget ()) {
+            m_pagePromotionTaskMenu->setWidget(page);
+            m_pagePromotionTaskMenu->addActions(QDesignerFormWindowInterface::findFormWindow(this), 
+                                                qdesigner_internal::PromotionTaskMenu::SuppressGlobalEdit, 
+                                                pageMenu);
+        }
+    }
+    QMenu *insertPageMenu = popup->addMenu(tr("Insert Page"));
+    insertPageMenu->addAction(m_actionInsertPageAfter);
+    insertPageMenu->addAction(m_actionInsertPage);
+    if (count() > 1) {
+        popup->addAction(m_actionChangePageOrder);
+    }
+    popup->addSeparator();
+    return pageMenu;
 }

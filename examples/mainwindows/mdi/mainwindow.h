@@ -28,7 +28,8 @@
 
 class QAction;
 class QMenu;
-class QWorkspace;
+class QMdiArea;
+class QMdiSubWindow;
 class MdiChild;
 class QSignalMapper;
 
@@ -55,6 +56,7 @@ private slots:
     void updateWindowMenu();
     MdiChild *createMdiChild();
     void switchLayoutDirection();
+    void setActiveSubWindow(QWidget *window);
 
 private:
     void createActions();
@@ -64,9 +66,9 @@ private:
     void readSettings();
     void writeSettings();
     MdiChild *activeMdiChild();
-    MdiChild *findMdiChild(const QString &fileName);
+    QMdiSubWindow *findMdiChild(const QString &fileName);
 
-    QWorkspace *workspace;
+    QMdiArea *mdiArea;
     QSignalMapper *windowMapper;
 
     QMenu *fileMenu;
@@ -87,7 +89,6 @@ private:
     QAction *closeAllAct;
     QAction *tileAct;
     QAction *cascadeAct;
-    QAction *arrangeAct;
     QAction *nextAct;
     QAction *previousAct;
     QAction *separatorAct;

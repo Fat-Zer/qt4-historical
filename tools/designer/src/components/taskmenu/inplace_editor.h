@@ -24,24 +24,25 @@
 #ifndef INPLACE_EDITOR_H
 #define INPLACE_EDITOR_H
 
-#include <QtGui/QLineEdit>
+#include <textpropertyeditor_p.h>
+#include "inplace_widget_helper.h"
+
 
 class QDesignerFormWindowInterface;
 
 namespace qdesigner_internal {
 
-class InPlaceEditor: public QLineEdit
+class InPlaceEditor: public TextPropertyEditor
 {
     Q_OBJECT
 public:
-    InPlaceEditor(QWidget *widget, QDesignerFormWindowInterface *fw);
-    virtual ~InPlaceEditor();
-
-    virtual bool eventFilter(QObject *object, QEvent *event);
-
+    InPlaceEditor(QWidget *widget,
+                  TextPropertyValidationMode validationMode,
+                  QDesignerFormWindowInterface *fw,
+                  const QString& text,
+                  const QRect& r);
 private:
-    QWidget *m_widget;
-    bool m_noChildEvent;
+    InPlaceWidgetHelper m_InPlaceWidgetHelper;
 };
 
 }  // namespace qdesigner_internal

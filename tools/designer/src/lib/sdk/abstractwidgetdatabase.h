@@ -34,6 +34,7 @@ QT_BEGIN_HEADER
 class QIcon;
 class QString;
 class QDesignerFormEditorInterface;
+class QDebug;
 
 class QDesignerWidgetDataBaseItemInterface
 {

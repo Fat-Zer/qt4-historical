@@ -64,6 +64,8 @@ public:
     virtual QWidget* containerOfWidget(QWidget *widget) const;
     virtual QWidget* widgetOfContainer(QWidget *widget) const;
 
+    QObject* createObject(const QString &className, QObject* parent) const;
+    
     virtual QWidget *createWidget(const QString &className, QWidget *parentWidget) const;
     virtual QLayout *createLayout(QWidget *widget, QLayout *layout, int type) const;
 
@@ -72,16 +74,20 @@ public:
 
     virtual QDesignerFormEditorInterface *core() const;
 
-    static const char* classNameOf(QObject* o);
+    static QString classNameOf(QDesignerFormEditorInterface *core, QObject* o);
 
     QDesignerFormWindowInterface *currentFormWindow(QDesignerFormWindowInterface *fw);
 
+    static QLayout *createUnmanagedLayout(QWidget *parentWidget, int type);
 public slots:
     void loadPlugins();
 
 private:
+    QWidget* createCustomWidget(const QString &className, QWidget *parentWidget) const;
+    
     QDesignerFormEditorInterface *m_core;
-    QMap<QString, QDesignerCustomWidgetInterface*> m_customFactory;
+    typedef QMap<QString, QDesignerCustomWidgetInterface*> CustomWidgetFactoryMap;
+    CustomWidgetFactoryMap m_customFactory;
     QDesignerFormWindowInterface *m_formWindow;
 
     static QPointer<QWidget> *m_lastPassiveInteractor;

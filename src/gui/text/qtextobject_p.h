@@ -55,6 +55,7 @@ public:
 
     typedef QList<QTextBlock> BlockList;
     BlockList blocks;
+    void markBlocksDirty();
 };
 
 class QTextFrameLayoutData;

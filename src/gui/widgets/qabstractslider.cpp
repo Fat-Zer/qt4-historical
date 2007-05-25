@@ -516,6 +516,11 @@ void QAbstractSlider::setValue(int value)
     If this property is false (the default), the minimum and maximum will
     be shown in its classic position for the inherited widget. If the
     value is true, the minimum and maximum appear at their opposite location.
+
+    Note: This property makes most sense for sliders and dials. For
+    scroll bars, the visual effect of the scroll bar subcontrols depends on
+    whether or not the styles understand inverted appearance; most styles
+    ignore this property for scroll bars.
 */
 
 bool QAbstractSlider::invertedAppearance() const
@@ -698,10 +703,29 @@ void QAbstractSlider::keyPressEvent(QKeyEvent *ev)
     Q_D(QAbstractSlider);
     SliderAction action = SliderNoAction;
     switch (ev->key()) {
+#ifdef QT_KEYPAD_NAVIGATION
+        case Qt::Key_Select:
+            if (QApplication::keypadNavigationEnabled())
+                setEditFocus(!hasEditFocus());
+            else
+                ev->ignore();
+            break;
+        case Qt::Key_Back:
+            if (QApplication::keypadNavigationEnabled() && hasEditFocus()) {
+                setValue(d->origValue);
+                setEditFocus(false);
+            } else
+                ev->ignore();
+            break;
+#endif
 
         // It seems we need to use invertedAppearance for Left and right, otherwise, things look weird.
         case Qt::Key_Left:
 #ifdef QT_KEYPAD_NAVIGATION
+            if (QApplication::keypadNavigationEnabled() && !hasEditFocus()) {
+                ev->ignore();
+                return;
+            }
             if (QApplication::keypadNavigationEnabled() && d->orientation == Qt::Vertical)
                 action = d->invertedControls ? SliderSingleStepSub : SliderSingleStepAdd;
             else
@@ -710,6 +734,10 @@ void QAbstractSlider::keyPressEvent(QKeyEvent *ev)
             break;
         case Qt::Key_Right:
 #ifdef QT_KEYPAD_NAVIGATION
+            if (QApplication::keypadNavigationEnabled() && !hasEditFocus()) {
+                ev->ignore();
+                return;
+            }
             if (QApplication::keypadNavigationEnabled() && d->orientation == Qt::Vertical)
                 action = d->invertedControls ? SliderSingleStepAdd : SliderSingleStepSub;
             else
@@ -777,6 +805,17 @@ void QAbstractSlider::changeEvent(QEvent *ev)
 */
 bool QAbstractSlider::event(QEvent *e)
 {
+#ifdef QT_KEYPAD_NAVIGATION
+    Q_D(QAbstractSlider);
+    switch (e->type()) {
+    case QEvent::FocusIn:
+        d->origValue = d->value;
+        break;
+    default:
+        break;
+    }
+#endif
+    
     return QWidget::event(e);
 }
 

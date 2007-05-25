@@ -41,7 +41,9 @@
 int main(int argc, char * argv[])
 {
     bool impl = false;
+    bool wrap = false;
     bool subcl = false;
+    bool extract = false;
     bool imagecollection = false;
     bool imagecollection_tmpfile = false;
     bool convert = false;
@@ -50,7 +52,9 @@ int main(int argc, char * argv[])
     const char* fileName = 0;
     const char* className = 0;
     const char* headerFile = 0;
+    const char* convertedUiFile = 0;
     QByteArray outputFile;
+    QByteArray qrcOutputFile;
     QByteArray image_tmpfile;
     const char* projectName = 0;
     const char* trmacro = 0;
@@ -85,6 +89,23 @@ int main(int argc, char * argv[])
                     headerFile = argv[++n];
                 } else
                     headerFile = opt.data() + 1;
+            } else if (opt[0] == 'w' || opt == "wrap") {
+                wrap = true;
+                if (opt == "wrap" || opt[1] == '\0') {
+                    if (!(n < argc-1)) {
+                        error = "Missing name of converted ui file";
+                        break;
+                    }
+                    convertedUiFile = argv[++n];
+                } else
+                    convertedUiFile = opt.data() + 1;
+            } else if (opt == "extract") {                // output redirection
+                extract = true;
+                if (!(n < argc-1)) {
+                    error = "Missing output qrc-file name";
+                    break;
+                }
+                qrcOutputFile = argv[++n];
             } else if ( opt[0] == 'e' || opt == "embed" ) {
                 imagecollection = true;
                 if ( opt == "embed" || opt[1] == '\0' ) {
@@ -185,6 +206,8 @@ int main(int argc, char * argv[])
                  "\t<uiheaderfile>  name of the data file\n"
                  "   %s  [options] -decl <uiheaderfile> <uifile>\n"
                  "\t<uiheaderfile>  name of the data file\n"
+                 "   %s  [options] -wrap <converteduifile> <uifile>\n"
+                 "\t<converteduifile>  name of the converted ui file\n"
                  "Generate implementation:\n"
                  "   %s  [options] -impl <headerfile> <uifile>\n"
                  "\t<headerfile>    name of the declaration file\n"
@@ -203,15 +226,16 @@ int main(int argc, char * argv[])
                  "\t<subclassname>     name of the subclass to generate\n"
                  "\t<subclassheaderfile>    declaration file of the subclass\n"
                  "Options:\n"
-                 "\t-o file         Write output to file rather than stdout\n"
-                 "\t-pch file       Add #include \"file\" as the first statement in implementation\n"
-                 "\t-nofwd          Omit forward declarations of custom classes\n"
-                 "\t-nounload       Don't unload plugins after processing\n"
-                 "\t-tr func        Use func() instead of tr() for i18n\n"
-                 "\t-L path         Additional plugin search path\n"
-                 "\t-version        Display version of uic\n"
-                 "\t-help           Display this information\n"
-                 , argv[0], argv[0], argv[0], argv[0], argv[0], argv[0], argv[0], argv[0], argv[0]
+                 "\t-o file            Write output to file rather than stdout\n"
+                 "\t-extract qrcFile   Create resource file and extract embedded images into \"image\" dir\n"
+                 "\t-pch file          Add #include \"file\" as the first statement in implementation\n"
+                 "\t-nofwd             Omit forward declarations of custom classes\n"
+                 "\t-nounload          Don't unload plugins after processing\n"
+                 "\t-tr func           Use func() instead of tr() for i18n\n"
+                 "\t-L path            Additional plugin search path\n"
+                 "\t-version           Display version of uic\n"
+                 "\t-help              Display this information\n"
+                 , argv[0], argv[0], argv[0], argv[0], argv[0], argv[0], argv[0], argv[0], argv[0], argv[0]
            );
         return 1;
     }
@@ -242,6 +266,7 @@ int main(int argc, char * argv[])
     QTextStream out(&fileOut);
 
     Ui3Reader ui3(out);
+    ui3.setExtractImages(extract, qrcOutputFile);
 
     if (projectName && imagecollection) {
         out.setEncoding(QTextStream::Latin1);
@@ -321,6 +346,17 @@ int main(int argc, char * argv[])
         out << "#include \"" << headerFile << "\"" << endl << endl;
     }
 
+    QString convertedUi;
+    if (wrap) {
+        convertedUi = QFile::decodeName(convertedUiFile);
+        int pos = convertedUi.lastIndexOf(".ui");
+        if (pos > 0) {
+            convertedUi = convertedUi.mid(0, pos);
+            convertedUi += QLatin1String(".h");
+        }
+        convertedUi = QLatin1String("ui_") + convertedUi;
+    }
+
     ui3.generate(QFile::decodeName(fileName),
         QFile::decodeName(outputFile),
         doc,
@@ -328,7 +364,8 @@ int main(int argc, char * argv[])
         subcl,
         QString::fromUtf8(trmacro),
         QString::fromUtf8(className),
-        nofwd);
+        nofwd,
+        convertedUi);
 
     if (!protector.isEmpty()) {
         out << endl;

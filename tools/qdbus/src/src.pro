@@ -23,7 +23,7 @@ MOC_DIR         = tmp
 DESTDIR = ../../../lib
 DLLDESTDIR = ../../../bin
 isEmpty(QT_MAJOR_VERSION) {
-   VERSION=4.2.0
+   VERSION=4.3.0
 } else {
    VERSION=$${QT_MAJOR_VERSION}.$${QT_MINOR_VERSION}.$${QT_PATCH_VERSION}
 }
@@ -34,10 +34,11 @@ QMAKE_TARGET_COPYRIGHT = Copyright (C) 2006 Trolltech ASA
 
 
 unix {
-   CONFIG     += create_libtool create_pc explicitlib
+   CONFIG += create_libtool create_pc explicitlib
    QMAKE_PKGCONFIG_LIBDIR = $$[QT_INSTALL_LIBS]
    QMAKE_PKGCONFIG_INCDIR = $$[QT_INSTALL_HEADERS]
    QMAKE_PKGCONFIG_DESCRIPTION = Qt DBus module
+   QMAKE_PKGCONFIG_DESTDIR = pkgconfig
    QMAKE_PKGCONFIG_NAME = QtDBus
 }
 
@@ -45,6 +46,15 @@ win32 {
    LIBS += -lws2_32 -ladvapi32 -lnetapi32
    CONFIG(debug, debug|release):LIBS += -ldbus-1d
    else:LIBS += -ldbus-1
+   
+   DBUS_INSTALL_DIR=$$(DBUSDIR)   
+   isEmpty(DBUS_INSTALL_DIR) {
+      DBUS_INSTALL_DIR = "$$(PROGRAMFILES)/dbus"
+      message("DBUSDIR not specified. Using $$DBUS_INSTALL_DIR")
+   }
+
+   INCLUDEPATH += $$DBUS_INSTALL_DIR/include
+   LIBS += -L\"$$DBUS_INSTALL_DIR/lib\" -luser32
 }
 
 #load up the headers info
@@ -69,12 +79,7 @@ mac:!static:contains(QT_CONFIG, qt_framework) {
    }
 }
 
-!debug_and_release|build_pass {
-   CONFIG(debug, debug|release) {
-      mac:TARGET = $$member(TARGET, 0)_debug
-      win32:TARGET = $$member(TARGET, 0)d
-   }
-}
+TARGET = $$qtLibraryTarget($$TARGET) #done towards the end (after framework)
 
 # Input
 
@@ -105,12 +110,14 @@ PUB_HEADERS =  qdbusargument.h \
 	       qdbusinterface.h \
 	       qdbusabstractadaptor.h \
 	       qdbusreply.h \
-	       qdbusmetatype.h
+	       qdbusmetatype.h \
+	       qdbuscontext.h
 
 HEADERS += $$PUB_HEADERS \
            qdbusconnection_p.h qdbusmessage_p.h \
            qdbusinterface_p.h qdbusxmlparser_p.h qdbusabstractadaptor_p.h \
-           qdbusargument_p.h qdbusutil_p.h qdbusabstractinterface_p.h
+           qdbusargument_p.h qdbusutil_p.h qdbusabstractinterface_p.h \
+	   qdbuscontext_p.h qdbusthreaddebug_p.h qdbusintegrator_p.h
 
 SOURCES += qdbusconnection.cpp  \
 	qdbusconnectioninterface.cpp \
@@ -124,7 +131,7 @@ SOURCES += qdbusconnection.cpp  \
 	qdbusutil.cpp		\
 	qdbusintrospection.cpp	\
 	qdbusabstractadaptor.cpp \
-	qdbusthread.cpp		\
+	qdbusthread.cpp \
 	qdbusinternalfilters.cpp \
 	qdbusmetaobject.cpp	\
 	qdbusxmlgenerator.cpp	\
@@ -132,5 +139,6 @@ SOURCES += qdbusconnection.cpp  \
 	qdbusargument.cpp	\
 	qdbusreply.cpp		\
 	qdbusmetatype.cpp	\
-	qdbusextratypes.cpp \
-	qdbusmarshaller.cpp
+	qdbusextratypes.cpp	\
+	qdbusmarshaller.cpp	\
+	qdbuscontext.cpp

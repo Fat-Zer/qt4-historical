@@ -35,8 +35,9 @@ MainWindow::MainWindow(QWidget *parent)
     completer->setModel(modelFromFile(":/resources/wordlist.txt"));
     completer->setModelSorting(QCompleter::CaseInsensitivelySortedModel);
     completer->setCaseSensitivity(Qt::CaseInsensitive);
+    completer->setWrapAround(false);
     completingTextEdit->setCompleter(completer);
- 
+
     setCentralWidget(completingTextEdit);
     resize(500, 300);
     setWindowTitle(tr("Completer"));

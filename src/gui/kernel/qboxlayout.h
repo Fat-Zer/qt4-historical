@@ -71,6 +71,9 @@ public:
     void insertWidget(int index, QWidget *widget, int stretch = 0, Qt::Alignment alignment = 0);
     void insertLayout(int index, QLayout *layout, int stretch = 0);
 
+    int spacing() const;
+    void setSpacing(int spacing);
+
     bool setStretchFactor(QWidget *w, int stretch);
     bool setStretchFactor(QLayout *l, int stretch);
 
@@ -92,6 +95,7 @@ public:
     inline QT3_SUPPORT int findWidget(QWidget* w) {return indexOf(w);}
 #endif
 protected:
+    // ### Qt 5: make public
     void insertItem(int index, QLayoutItem *);
 
 private:

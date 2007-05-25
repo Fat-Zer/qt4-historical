@@ -123,14 +123,14 @@ QtGradientStop *QtGradientStopsModel::at(qreal pos) const
 
 QColor QtGradientStopsModel::color(qreal pos) const
 {
-    QMap<double, QtGradientStop *> gradStops = stops();
+    QMap<qreal, QtGradientStop *> gradStops = stops();
     if (gradStops.isEmpty())
         return QColor::fromRgbF(pos, pos, pos, 1.0);
     if (gradStops.contains(pos))
         return gradStops[pos]->color();
 
     gradStops[pos] = 0;
-    QMap<double, QtGradientStop *>::ConstIterator itStop = gradStops.constFind(pos);
+    QMap<qreal, QtGradientStop *>::ConstIterator itStop = gradStops.constFind(pos);
     if (itStop == gradStops.constBegin()) {
         itStop++;
         return itStop.value()->color();
@@ -139,8 +139,8 @@ QColor QtGradientStopsModel::color(qreal pos) const
         itStop--;
         return itStop.value()->color();
     }
-    QMap<double, QtGradientStop *>::ConstIterator itPrev = itStop;
-    QMap<double, QtGradientStop *>::ConstIterator itNext = itStop;
+    QMap<qreal, QtGradientStop *>::ConstIterator itPrev = itStop;
+    QMap<qreal, QtGradientStop *>::ConstIterator itNext = itStop;
     itPrev--;
     itNext++;
 
@@ -276,8 +276,8 @@ void QtGradientStopsModel::setCurrentStop(QtGradientStop *stop)
 
 QtGradientStop *QtGradientStopsModel::firstSelected() const
 {
-    QMap<double, QtGradientStop *> stopList = stops();
-    QMap<double, QtGradientStop *>::ConstIterator itStop = stopList.constBegin();
+    QMap<qreal, QtGradientStop *> stopList = stops();
+    QMap<qreal, QtGradientStop *>::ConstIterator itStop = stopList.constBegin();
     while (itStop != stopList.constEnd()) {
         QtGradientStop *stop = itStop.value();
         if (isSelected(stop))
@@ -289,8 +289,8 @@ QtGradientStop *QtGradientStopsModel::firstSelected() const
 
 QtGradientStop *QtGradientStopsModel::lastSelected() const
 {
-    QMap<double, QtGradientStop *> stopList = stops();
-    QMap<double, QtGradientStop *>::ConstIterator itStop = stopList.constEnd();
+    QMap<qreal, QtGradientStop *> stopList = stops();
+    QMap<qreal, QtGradientStop *>::ConstIterator itStop = stopList.constEnd();
     while (itStop != stopList.constBegin()) {
         itStop--;
 
@@ -338,7 +338,7 @@ void QtGradientStopsModel::moveStops(double newPosition)
 
     bool forward = (offset > 0) ? false : true;
 
-    QMap<double, QtGradientStop *> stopList;
+    QMap<qreal, QtGradientStop *> stopList;
 
     QList<QtGradientStop *> selected = selectedStops();
     QListIterator<QtGradientStop *> it(selected);
@@ -348,24 +348,24 @@ void QtGradientStopsModel::moveStops(double newPosition)
     }
     stopList[current->position()] = current;
 
-    QMap<double, QtGradientStop *>::ConstIterator itStop = forward ? stopList.constBegin() : stopList.constEnd();
+    QMap<qreal, QtGradientStop *>::ConstIterator itStop = forward ? stopList.constBegin() : stopList.constEnd();
     while (itStop != (forward ? stopList.constEnd() : stopList.constBegin())) {
         if (!forward)
             itStop--;
         QtGradientStop *stop = itStop.value();
-            double pos = stop->position() + offset;
-            if (pos > 1)
-                pos = 1;
-            if (pos < 0)
-                pos = 0;
+        double pos = stop->position() + offset;
+        if (pos > 1)
+            pos = 1;
+        if (pos < 0)
+            pos = 0;
 
-            if (current == stop)
-                pos = newPos;
+        if (current == stop)
+            pos = newPos;
 
-            QtGradientStop *oldStop = at(pos);
-            if (oldStop && !stopList.values().contains(oldStop))
-                removeStop(oldStop);
-            moveStop(stop, pos);
+        QtGradientStop *oldStop = at(pos);
+        if (oldStop && !stopList.values().contains(oldStop))
+            removeStop(oldStop);
+        moveStop(stop, pos);
 
         if (forward)
             itStop++;

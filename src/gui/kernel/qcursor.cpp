@@ -64,6 +64,12 @@
     To set or get the position of the mouse cursor use the static
     methods QCursor::pos() and QCursor::setPos().
 
+    \bold{Note:} It is possible to create a QCursor before
+    QApplication, but it is not useful except as a place-holder for a
+    real QCursor created after QApplication. Attempting to use a
+    QCursor that was created before QApplication will result in a
+    crash.
+
     \section1 A Note for X11 Users
 
     On X11, Qt supports the \link
@@ -478,7 +484,11 @@ QCursor &QCursor::operator=(const QCursor &c)
 {
     if (!QCursorData::initialized)
         QCursorData::initialize();
-    qAtomicAssign(d, c.d);
+    if (c.d)
+        c.d->ref.ref();
+    QCursorData *x = qAtomicSetPtr(&d, c.d);
+    if (x && !x->ref.deref())
+        delete x;
     return *this;
 }
 

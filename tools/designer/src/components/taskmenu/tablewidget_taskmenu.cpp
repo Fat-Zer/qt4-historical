@@ -29,7 +29,7 @@ TRANSLATOR qdesigner_internal::TableWidgetTaskMenu
 #include "inplace_editor.h"
 #include "tablewidgeteditor.h"
 
-#include <QtDesigner/QtDesigner>
+#include <QtDesigner/QDesignerFormWindowInterface>
 
 #include <QtGui/QTableWidget>
 #include <QtGui/QAction>
@@ -44,10 +44,9 @@ using namespace qdesigner_internal;
 
 TableWidgetTaskMenu::TableWidgetTaskMenu(QTableWidget *button, QObject *parent)
     : QDesignerTaskMenu(button, parent),
-      m_tableWidget(button)
+      m_tableWidget(button),
+      m_editItemsAction(new QAction(tr("Edit Items..."), this))
 {
-    m_editItemsAction = new QAction(this);
-    m_editItemsAction->setText(tr("Edit Items..."));
     connect(m_editItemsAction, SIGNAL(triggered()), this, SLOT(editItems()));
     m_taskActions.append(m_editItemsAction);
 

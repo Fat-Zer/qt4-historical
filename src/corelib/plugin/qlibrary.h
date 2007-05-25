@@ -25,7 +25,6 @@
 #define QLIBRARY_H
 
 #include <QtCore/qobject.h>
-#include <QtCore/QFlags>
 
 QT_BEGIN_HEADER
 

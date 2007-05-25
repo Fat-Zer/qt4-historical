@@ -23,9 +23,9 @@
 
 #ifndef QMOTIFSTYLE_P_H
 #define QMOTIFSTYLE_P_H
-#include <QList>
-#include <QTime>
-#include <QProgressBar>
+#include <qlist.h>
+#include <qdatetime.h>
+#include <qprogressbar.h>
 #include "qmotifstyle.h"
 #include "qcommonstyle_p.h"
 

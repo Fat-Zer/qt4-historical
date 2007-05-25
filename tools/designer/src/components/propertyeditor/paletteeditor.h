@@ -131,7 +131,7 @@ private slots:
     void brushChanged();
     void textureChooserActivated(QWidget *parent, const QBrush &initialBrush);
 private:
-    QtColorButton *button;
+    QtColorButton *m_button;
     bool m_changed;
     QDesignerFormEditorInterface *m_core;
 };
@@ -159,7 +159,7 @@ class ColorDelegate : public QItemDelegate
     Q_OBJECT
 
 public:
-    ColorDelegate(QDesignerFormEditorInterface *core, QObject *parent = 0) : QItemDelegate(parent) { m_core = core; }
+    ColorDelegate(QDesignerFormEditorInterface *core, QObject *parent = 0);
 
     QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
                 const QModelIndex &index) const;

@@ -37,6 +37,7 @@ QT_MODULE(Gui)
 class QListWidget;
 class QListModel;
 class QWidgetItemData;
+class QListWidgetItemPrivate;
 
 class Q_GUI_EXPORT QListWidgetItem
 {
@@ -144,7 +145,7 @@ private:
     int rtti;
     QVector<QWidgetItemData> values;
     QListWidget *view;
-    QListModel *model;
+    QListWidgetItemPrivate *d;
     Qt::ItemFlags itemFlags;
 };
 
@@ -221,6 +222,7 @@ public:
 
     QWidget *itemWidget(QListWidgetItem *item) const;
     void setItemWidget(QListWidgetItem *item, QWidget *widget);
+    inline void removeItemWidget(QListWidgetItem *item);
 
     bool isItemSelected(const QListWidgetItem *item) const;
     void setItemSelected(const QListWidgetItem *item, bool select);
@@ -279,6 +281,9 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_sort())
     Q_PRIVATE_SLOT(d_func(), void _q_dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight))
 };
+
+inline void QListWidget::removeItemWidget(QListWidgetItem *aItem)
+{ setItemWidget(aItem, 0); }
 
 inline void QListWidget::addItem(QListWidgetItem *aitem)
 { insertItem(count(), aitem); }

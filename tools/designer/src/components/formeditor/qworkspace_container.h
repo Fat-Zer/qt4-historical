@@ -48,7 +48,6 @@ public:
 
 private:
     QWorkspace *m_workspace;
-    QList<QWidget*> m_widgets;
 };
 
 class QWorkspaceContainerFactory: public QExtensionFactory

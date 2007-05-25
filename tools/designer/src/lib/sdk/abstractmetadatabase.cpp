@@ -23,14 +23,6 @@
 
 // sdk
 #include "abstractmetadatabase.h"
-#include "abstractformeditor.h"
-
-// extension
-#include <QtDesigner/qextensionmanager.h>
-#include <QtDesigner/propertysheet.h>
-
-// Qt
-#include <QtCore/qdebug.h>
 
 /*!
     \class QDesignerMetaDataBaseInterface
@@ -129,6 +121,7 @@ QDesignerMetaDataBaseInterface::~QDesignerMetaDataBaseInterface()
     \sa setTabOrder()
 */
 
+
 /*!
     \fn void QDesignerMetaDataBaseItemInterface::setTabOrder(const QList<QWidget*> &tabOrder)
 
@@ -137,6 +130,7 @@ QDesignerMetaDataBaseInterface::~QDesignerMetaDataBaseInterface()
     \sa tabOrder()
 */
 
+    
 /*!
     \fn bool QDesignerMetaDataBaseItemInterface::enabled() const
 
@@ -152,3 +146,4 @@ QDesignerMetaDataBaseInterface::~QDesignerMetaDataBaseInterface()
 
     \sa enabled()
 */
+

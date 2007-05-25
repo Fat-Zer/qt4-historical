@@ -33,8 +33,8 @@ extern Q_CORE_EXPORT char q_atomic_lock;
 inline char q_atomic_swp(volatile char *ptr, char newval)
 {
     register int ret;
-    asm volatile("swpb %0,%1,[%2]"
-                 : "=&r"(ret)
+    asm volatile("swpb %0,%2,[%3]"
+                 : "=&r"(ret), "=m" (*ptr)
                  : "r"(newval), "r"(ptr)
                  : "cc", "memory");
     return ret;
@@ -108,6 +108,25 @@ inline void *q_atomic_set_ptr(volatile void *ptr, void *newval)
     *reinterpret_cast<void * volatile *>(ptr) = newval;
     q_atomic_swp(&q_atomic_lock, 0);
     return originalValue;
+}
+
+inline int q_atomic_fetch_and_add_int(volatile int *ptr, int value)
+{
+    while (q_atomic_swp(&q_atomic_lock, ~0) != 0) ;
+    int originalValue = *ptr;
+    *ptr += value;
+    q_atomic_swp(&q_atomic_lock, 0);
+    return originalValue;
+}
+
+inline int q_atomic_fetch_and_add_acquire_int(volatile int *ptr, int value)
+{
+    return q_atomic_fetch_and_add_int(ptr, value);
+}
+
+inline int q_atomic_fetch_and_add_release_int(volatile int *ptr, int value)
+{
+    return q_atomic_fetch_and_add_int(ptr, value);
 }
 
 QT_END_HEADER

@@ -26,8 +26,7 @@
 #include "ui4.h"
 #include "utils.h"
 
-CustomWidgetsInfo::CustomWidgetsInfo(Driver *drv)
-    : driver(drv)
+CustomWidgetsInfo::CustomWidgetsInfo()
 {
 }
 
@@ -69,4 +68,16 @@ QString CustomWidgetsInfo::realClassName(const QString &className) const
         return QLatin1String("QFrame");
 
     return className;
+}
+
+DomScript *CustomWidgetsInfo::customWidgetScript(const QString &name) const
+{
+    if (m_customWidgets.empty())
+        return 0;
+
+    const NameCustomWidgetMap::const_iterator it = m_customWidgets.constFind(name);
+    if (it == m_customWidgets.constEnd())
+        return 0;
+
+    return it.value()->elementScript();
 }

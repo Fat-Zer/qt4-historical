@@ -765,7 +765,7 @@ QString Q3StyleSheetItem::contexts() const
 */
 void Q3StyleSheetItem::setContexts(const QString& c)
 {
-    d->contxt = QChar(' ') + c + QChar(' ');
+    d->contxt = QLatin1Char(' ') + c + QLatin1Char(' ');
 }
 
 /*!
@@ -778,7 +778,7 @@ bool Q3StyleSheetItem::allowedInContext(const Q3StyleSheetItem* s) const
 {
     if (d->contxt.isEmpty())
         return true;
-    return d->contxt.contains(QChar(' ')+s->name()+QChar(' '));
+    return d->contxt.contains(QLatin1Char(' ')+s->name()+QLatin1Char(' '));
 }
 
 
@@ -1065,7 +1065,7 @@ int Q3StyleSheetItem::lineSpacing() const
 Q3StyleSheet::Q3StyleSheet(QObject *parent, const char *name)
     : QObject(parent)
 {
-    setObjectName(name);
+    setObjectName(QLatin1String(name));
     init();
 }
 
@@ -1092,7 +1092,7 @@ void Q3StyleSheet::init()
 
     Q3StyleSheetItem *style;
 
-    style = new Q3StyleSheetItem(this, "qml"); // compatibility
+    style = new Q3StyleSheetItem(this, QLatin1String("qml")); // compatibility
     style->setDisplayMode(Q3StyleSheetItem::DisplayBlock);
 
     style = new Q3StyleSheetItem(this, QString::fromLatin1("qt"));

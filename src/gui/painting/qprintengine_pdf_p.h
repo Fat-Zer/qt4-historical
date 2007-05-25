@@ -122,9 +122,10 @@ public:
     void writeTail();
 
     int addImage(const QImage &image, bool *bitmap, qint64 serial_no);
-    int addBrushPattern(const QMatrix &matrix, bool *specifyColor, int *gStateObject);
+    int addConstantAlphaObject(int alpha);
+    int addBrushPattern(const QTransform &matrix, bool *specifyColor, int *gStateObject);
 
-    QMatrix pageMatrix() const;
+    QTransform pageMatrix() const;
 
 private:
     Q_DISABLE_COPY(QPdfEnginePrivate)
@@ -160,6 +161,7 @@ private:
     int pageRoot, catalog, info, graphicsState, patternColorSpace;
     QVector<uint> pages;
     QHash<qint64, uint> imageCache;
+    QHash<uint, uint> alphaCache;
 };
 
 

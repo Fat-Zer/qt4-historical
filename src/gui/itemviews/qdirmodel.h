@@ -26,8 +26,7 @@
 
 #include <QtCore/qabstractitemmodel.h>
 #include <QtCore/qdir.h>
-#include <QtCore/qfileinfo.h>
-#include <QtGui/qicon.h>
+#include <QtGui/qfileiconprovider.h>
 
 QT_BEGIN_HEADER
 
@@ -36,23 +35,6 @@ QT_MODULE(Gui)
 #ifndef QT_NO_DIRMODEL
 
 class QDirModelPrivate;
-class QFileIconProviderPrivate;
-
-class Q_GUI_EXPORT QFileIconProvider
-{
-public:
-    QFileIconProvider();
-    virtual ~QFileIconProvider();
-    enum IconType { Computer, Desktop, Trashcan, Network, Drive, Folder, File };
-    virtual QIcon icon(IconType type) const;
-    virtual QIcon icon(const QFileInfo &info) const;
-    virtual QString type(const QFileInfo &info) const;
-
-private:
-    Q_DECLARE_PRIVATE(QFileIconProvider)
-    QFileIconProviderPrivate *d_ptr;
-    Q_DISABLE_COPY(QFileIconProvider)
-};
 
 class Q_GUI_EXPORT QDirModel : public QAbstractItemModel
 {
@@ -118,7 +100,6 @@ public:
     void setLazyChildCount(bool enable);
     bool lazyChildCount() const;
 
-    void refresh(const QModelIndex &parent = QModelIndex());
     QModelIndex index(const QString &path, int column = 0) const;
 
     bool isDir(const QModelIndex &index) const;
@@ -136,6 +117,9 @@ public:
 #else
     using QObject::parent;
 #endif
+
+public Q_SLOTS:
+    void refresh(const QModelIndex &parent = QModelIndex());
 
 protected:
     QDirModel(QDirModelPrivate &, QObject *parent = 0);

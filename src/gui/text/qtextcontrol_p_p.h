@@ -66,6 +66,8 @@ public:
 
     void createAutoBulletList();
 
+    void init(Qt::TextFormat format = Qt::RichText, const QString &text = QString(),
+              QTextDocument *document = 0);
     void setContent(Qt::TextFormat format = Qt::RichText, const QString &text = QString(),
                     QTextDocument *document = 0);
     void startDrag();
@@ -80,11 +82,13 @@ public:
     { repaintOldAndNewSelection(QTextCursor()); }
     void repaintOldAndNewSelection(const QTextCursor &oldSelection);
 
-    void selectionChanged();
+    void selectionChanged(bool forceEmitSelectionChanged = false);
 
     void _q_updateCurrentCharFormatAndSelection();
 
+#ifndef QT_NO_CLIPBOARD
     void setClipboardSelection();
+#endif
 
     void _q_emitCursorPosChanged(const QTextCursor &someCursor);
 
@@ -123,6 +127,12 @@ public:
     bool dropEvent(const QMimeData *mimeData, const QPointF &pos, Qt::DropAction dropAction, QWidget *source);
 
     void inputMethodEvent(QInputMethodEvent *);
+
+    void activateLinkUnderCursor(QString href = QString());
+
+#ifndef QT_NO_TOOLTIP
+    void showToolTip(const QPoint &globalPos, const QPointF &pos, QWidget *contextWidget);
+#endif
 
     QTextDocument *doc;
     bool cursorOn;

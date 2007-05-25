@@ -64,10 +64,8 @@ class Q_GUI_EXPORT QTextControl : public QObject
 {
     Q_OBJECT
     Q_DECLARE_PRIVATE(QTextControl)
-    QDOC_PROPERTY(QTextOption::WrapMode wordWrapMode READ wordWrapMode WRITE setWordWrapMode)
     Q_PROPERTY(QString html READ toHtml WRITE setHtml NOTIFY textChanged USER true)
     Q_PROPERTY(bool overwriteMode READ overwriteMode WRITE setOverwriteMode)
-    Q_PROPERTY(int tabStopWidth READ tabStopWidth WRITE setTabStopWidth)
     Q_PROPERTY(bool acceptRichText READ acceptRichText WRITE setAcceptRichText)
     Q_PROPERTY(int cursorWidth READ cursorWidth WRITE setCursorWidth)
     Q_PROPERTY(Qt::TextInteractionFlags textInteractionFlags READ textInteractionFlags WRITE setTextInteractionFlags)
@@ -91,9 +89,6 @@ public:
 
     void setCurrentCharFormat(const QTextCharFormat &format);
     QTextCharFormat currentCharFormat() const;
-
-    QTextOption::WrapMode wordWrapMode() const;
-    void setWordWrapMode(QTextOption::WrapMode policy);
 
     bool find(const QString &exp, QTextDocument::FindFlags options = 0);
 
@@ -123,9 +118,6 @@ public:
     bool overwriteMode() const;
     void setOverwriteMode(bool overwrite);
 
-    int tabStopWidth() const;
-    void setTabStopWidth(int width);
-
     int cursorWidth() const;
     void setCursorWidth(int width);
 
@@ -147,6 +139,13 @@ public:
     void moveCursor(QTextCursor::MoveOperation op, QTextCursor::MoveMode mode = QTextCursor::MoveAnchor);
 
     bool canPaste() const;
+
+    void setCursorIsFocusIndicator(bool b);
+    bool cursorIsFocusIndicator() const;
+
+#ifndef QT_NO_PRINTER
+    void print(QPrinter *printer) const;
+#endif
 
 public Q_SLOTS:
     void setPlainText(const QString &text);
@@ -197,7 +196,7 @@ public:
     void processEvent(QEvent *e, const QPointF &coordinateOffset = QPointF(), QWidget *contextWidget = 0);
 
     // control methods
-    void drawContents(QPainter *painter, const QRectF &rect = QRectF());
+    void drawContents(QPainter *painter, const QRectF &rect = QRectF(), QWidget *widget = 0);
 
     void setFocus(bool focus, Qt::FocusReason = Qt::OtherFocusReason);
 

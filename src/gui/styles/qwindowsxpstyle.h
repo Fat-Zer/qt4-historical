@@ -38,6 +38,7 @@ class Q_GUI_EXPORT QWindowsXPStyle : public QWindowsStyle
     Q_OBJECT
 public:
     QWindowsXPStyle();
+    QWindowsXPStyle(QWindowsXPStylePrivate &dd);
     ~QWindowsXPStyle();
 
     void unpolish(QApplication*);

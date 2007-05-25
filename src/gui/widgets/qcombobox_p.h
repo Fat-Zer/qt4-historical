@@ -60,6 +60,9 @@
 class QComboBoxListView : public QListView
 {
     Q_OBJECT
+public:
+        QComboBoxListView(QComboBox *cmb = 0) : combo(cmb){};
+
 protected:
     void resizeEvent(QResizeEvent *event)
     {
@@ -71,8 +74,35 @@ protected:
     {
         QStyleOptionViewItem option = QListView::viewOptions();
         option.showDecorationSelected = true;
+        if (combo)
+            option.font = combo->font();
         return option;
     }
+
+    void paintEvent(QPaintEvent *e)
+    {
+        if (combo) {
+            QStyleOptionComboBox opt;
+            opt.initFrom(combo);
+            if (style()->styleHint(QStyle::SH_ComboBox_Popup, &opt, combo)) {
+                //we paint the empty menu area to avoid having blank space that can happen when scrolling
+                QStyleOptionMenuItem menuOpt;
+                menuOpt.initFrom(this);
+                menuOpt.palette = palette();
+                menuOpt.state = QStyle::State_None;
+                menuOpt.checkType = QStyleOptionMenuItem::NotCheckable;
+                menuOpt.menuRect = e->rect();
+                menuOpt.maxIconWidth = 0;
+                menuOpt.tabWidth = 0;
+                QPainter p(viewport());
+                style()->drawControl(QStyle::CE_MenuEmptyArea, &menuOpt, &p, this);
+            }
+        }
+        QListView::paintEvent(e);
+    }
+
+private:
+    QComboBox *combo;
 };
 
 
@@ -84,8 +114,10 @@ class QComboBoxPrivateScroller : public QWidget
 
 public:
     QComboBoxPrivateScroller(QAbstractSlider::SliderAction action, QWidget *parent)
-        : QWidget(parent), sliderAction(action) {
+        : QWidget(parent), sliderAction(action)
+    {
         setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+        setAttribute(Qt::WA_NoMousePropagation);
     }
     QSize sizeHint() const {
         return QSize(20, style()->pixelMetric(QStyle::PM_MenuScrollerHeight));
@@ -168,6 +200,7 @@ public:
     int spacing() const;
 
     QTimer blockMouseReleaseTimer;
+    QBasicTimer adjustSizeTimer;
     QPoint initialClickPosition;
 
 public Q_SLOTS:
@@ -183,6 +216,8 @@ protected:
     void mouseReleaseEvent(QMouseEvent *e);
     void showEvent(QShowEvent *e);
     void hideEvent(QHideEvent *e);
+    void timerEvent(QTimerEvent *timerEvent);
+    void leaveEvent(QEvent *e);
     QStyleOptionComboBox comboStyleOption() const;
 
 Q_SIGNALS:
@@ -233,7 +268,6 @@ public:
     ~QComboBoxPrivate() {}
     void init();
     QComboBoxPrivateContainer* viewContainer();
-    QStyleOptionComboBox getStyleOption() const;
     void updateLineEditGeometry();
     void _q_returnPressed();
     void _q_complete();
@@ -241,9 +275,12 @@ public:
     bool contains(const QString &text, int role);
     void emitActivated(const QModelIndex&);
     void _q_emitHighlighted(const QModelIndex&);
-    void _q_emitCurrentIndexChanged(int index);
+    void _q_emitCurrentIndexChanged(const QModelIndex &index);
     void _q_modelDestroyed();
     void _q_modelReset();
+#ifdef QT_KEYPAD_NAVIGATION
+    void _q_completerActivated();
+#endif
     void _q_resetButton();
     void _q_dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
     void _q_rowsAboutToBeInserted(const QModelIndex & parent, int start, int end);
@@ -256,8 +293,10 @@ public:
     QStyle::SubControl newHoverControl(const QPoint &pos);
     int computeWidthHint() const;
     QSize recomputeSizeHint(QSize &sh) const;
+    void adjustComboBoxSize();
     QString itemText(const QModelIndex &index) const;
     int itemRole() const;
+    void updateLayoutDirection();
 
     QAbstractItemModel *model;
     QLineEdit *lineEdit;
@@ -274,6 +313,7 @@ public:
     int maxVisibleItems;
     int maxCount;
     int modelColumn;
+    bool inserting;
     mutable QSize minimumSizeHint;
     mutable QSize sizeHint;
     QStyle::StateFlag arrowState;

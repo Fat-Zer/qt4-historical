@@ -51,6 +51,7 @@ public:
 
     mutable QDBusConnection connection; // mutable because we want to make calls from const functions
     QString service;
+    QString currentOwner;
     QString path;
     QString interface;
     mutable QDBusError lastError;

@@ -52,7 +52,7 @@ QGifPlugin::~QGifPlugin()
 
 QStringList QGifPlugin::keys() const
 {
-    return QStringList() << "gif";
+    return QStringList() << QLatin1String("gif");
 }
 
 QImageIOPlugin::Capabilities QGifPlugin::capabilities(QIODevice *device, const QByteArray &format) const

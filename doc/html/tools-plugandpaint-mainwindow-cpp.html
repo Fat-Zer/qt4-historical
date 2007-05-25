@@ -3,7 +3,7 @@
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>Qt 4.2: mainwindow.cpp Example File (tools/plugandpaint/mainwindow.cpp)</title>
+  <title>Qt 4.3: mainwindow.cpp Example File (tools/plugandpaint/mainwindow.cpp)</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -35,18 +35,29 @@
  **
  ****************************************************************************/</span>
 
- #include &lt;QtGui&gt;
-
  #include &quot;interfaces.h&quot;
  #include &quot;mainwindow.h&quot;
  #include &quot;paintarea.h&quot;
  #include &quot;plugindialog.h&quot;
 
- MainWindow::MainWindow()
- {
-     paintArea = new PaintArea;
+ #include &lt;QPluginLoader&gt;
+ #include &lt;QTimer&gt;
 
-     scrollArea = new QScrollArea;
+ #include &lt;QScrollArea&gt;
+ #include &lt;QMessageBox&gt;
+ #include &lt;QActionGroup&gt;
+ #include &lt;QAction&gt;
+ #include &lt;QMenu&gt;
+ #include &lt;QMenuBar&gt;
+ #include &lt;QFileDialog&gt;
+ #include &lt;QColorDialog&gt;
+ #include &lt;QInputDialog&gt;
+ #include &lt;QApplication&gt;
+
+ MainWindow::MainWindow() :
+     paintArea(new PaintArea),
+     scrollArea(new QScrollArea)
+ {
      scrollArea-&gt;setBackgroundRole(QPalette::Dark);
      scrollArea-&gt;setWidget(paintArea);
      setCentralWidget(scrollArea);
@@ -65,8 +76,9 @@
 
  void MainWindow::open()
  {
-     QString fileName = QFileDialog::getOpenFileName(this,
-                                     tr(&quot;Open File&quot;), QDir::currentPath());
+     const QString fileName = QFileDialog::getOpenFileName(this,
+                                                           tr(&quot;Open File&quot;),
+                                                           QDir::currentPath());
      if (!fileName.isEmpty()) {
          if (!paintArea-&gt;openImage(fileName)) {
              QMessageBox::information(this, tr(&quot;Plug &amp; Paint&quot;),
@@ -79,10 +91,10 @@
 
  bool MainWindow::saveAs()
  {
-     QString initialPath = QDir::currentPath() + &quot;/untitled.png&quot;;
+     const QString initialPath = QDir::currentPath() + &quot;/untitled.png&quot;;
 
-     QString fileName = QFileDialog::getSaveFileName(this, tr(&quot;Save As&quot;),
-                                                     initialPath);
+     const QString fileName = QFileDialog::getSaveFileName(this, tr(&quot;Save As&quot;),
+                                                           initialPath);
      if (fileName.isEmpty()) {
          return false;
      } else {
@@ -92,7 +104,7 @@
 
  void MainWindow::brushColor()
  {
-     QColor newColor = QColorDialog::getColor(paintArea-&gt;brushColor());
+     const QColor newColor = QColorDialog::getColor(paintArea-&gt;brushColor());
      if (newColor.isValid())
          paintArea-&gt;setBrushColor(newColor);
  }
@@ -100,10 +112,10 @@
  void MainWindow::brushWidth()
  {
      bool ok;
-     int newWidth = QInputDialog::getInteger(this, tr(&quot;Plug &amp; Paint&quot;),
-                                             tr(&quot;Select brush width:&quot;),
-                                             paintArea-&gt;brushWidth(),
-                                             1, 50, 1, &amp;ok);
+     const int newWidth = QInputDialog::getInteger(this, tr(&quot;Plug &amp; Paint&quot;),
+                                                   tr(&quot;Select brush width:&quot;),
+                                                   paintArea-&gt;brushWidth(),
+                                                   1, 50, 1, &amp;ok);
      if (ok)
          paintArea-&gt;setBrushWidth(newWidth);
  }
@@ -112,7 +124,7 @@
  {
      QAction *action = qobject_cast&lt;QAction *&gt;(sender());
      BrushInterface *iBrush = qobject_cast&lt;BrushInterface *&gt;(action-&gt;parent());
-     QString brush = action-&gt;text();
+     const QString brush = action-&gt;text();
 
      paintArea-&gt;setBrush(iBrush, brush);
  }
@@ -122,7 +134,7 @@
      QAction *action = qobject_cast&lt;QAction *&gt;(sender());
      ShapeInterface *iShape = qobject_cast&lt;ShapeInterface *&gt;(action-&gt;parent());
 
-     QPainterPath path = iShape-&gt;generateShape(action-&gt;text(), this);
+     const QPainterPath path = iShape-&gt;generateShape(action-&gt;text(), this);
      if (!path.isEmpty())
          paintArea-&gt;insertShape(path);
  }
@@ -133,8 +145,8 @@
      FilterInterface *iFilter =
              qobject_cast&lt;FilterInterface *&gt;(action-&gt;parent());
 
-     QImage image = iFilter-&gt;filterImage(action-&gt;text(), paintArea-&gt;image(),
-                                         this);
+     const QImage image = iFilter-&gt;filterImage(action-&gt;text(), paintArea-&gt;image(),
+                                               this);
      paintArea-&gt;setImage(image);
  }
 
@@ -276,6 +288,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
 </tr></table></div></address></body>
 </html>

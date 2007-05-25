@@ -25,11 +25,12 @@
 #include <QtNetwork>
 
 #include "httpwindow.h"
+#include "ui_authenticationdialog.h"
 
 HttpWindow::HttpWindow(QWidget *parent)
     : QDialog(parent)
 {
-    urlLineEdit = new QLineEdit("http://www.ietf.org/iesg/1rfc_index.txt");
+    urlLineEdit = new QLineEdit("https://");
 
     urlLabel = new QLabel(tr("&URL:"));
     urlLabel->setBuddy(urlLineEdit);
@@ -57,6 +58,8 @@ HttpWindow::HttpWindow(QWidget *parent)
             this, SLOT(updateDataReadProgress(int, int)));
     connect(http, SIGNAL(responseHeaderReceived(const QHttpResponseHeader &)),
             this, SLOT(readResponseHeader(const QHttpResponseHeader &)));
+    connect(http, SIGNAL(authenticationRequired(const QString &, quint16, QAuthenticator *)),
+            this, SLOT(slotAuthenticationRequired(const QString &, quint16, QAuthenticator *)));
     connect(progressDialog, SIGNAL(canceled()), this, SLOT(cancelDownload()));
     connect(downloadButton, SIGNAL(clicked()), this, SLOT(downloadFile()));
     connect(quitButton, SIGNAL(clicked()), this, SLOT(close()));
@@ -80,13 +83,17 @@ void HttpWindow::downloadFile()
     QUrl url(urlLineEdit->text());
     QFileInfo fileInfo(url.path());
     QString fileName = fileInfo.fileName();
+    if (fileName.isEmpty())
+        fileName = "index.html";
 
     if (QFile::exists(fileName)) {
-        QMessageBox::information(this, tr("HTTP"),
-                                 tr("There already exists a file called %1 in "
-                                    "the current directory.")
-                                 .arg(fileName));
-        return;
+        if (QMessageBox::question(this, tr("HTTP"), 
+                                  tr("There already exists a file called %1 in "
+                                     "the current directory. Overwrite?").arg(fileName),
+                                  QMessageBox::Ok|QMessageBox::Cancel, QMessageBox::Cancel)
+            == QMessageBox::Cancel)
+            return;
+        QFile::remove(fileName);
     }
 
     file = new QFile(fileName);
@@ -99,7 +106,9 @@ void HttpWindow::downloadFile()
         return;
     }
 
-    http->setHost(url.host(), url.port() != -1 ? url.port() : 80);
+    QHttp::ConnectionMode mode = url.scheme().toLower() == "https" ? QHttp::ConnectionModeHttps : QHttp::ConnectionModeHttp;
+    http->setHost(url.host(), mode, url.port() == -1 ? 0 : url.port());
+    
     if (!url.userName().isEmpty())
         http->setUser(url.userName(), url.password());
 
@@ -121,6 +130,8 @@ void HttpWindow::cancelDownload()
 
 void HttpWindow::httpRequestFinished(int requestId, bool error)
 {
+    if (requestId != httpGetId)
+        return;
     if (httpRequestAborted) {
         if (file) {
             file->close();
@@ -179,4 +190,18 @@ void HttpWindow::updateDataReadProgress(int bytesRead, int totalBytes)
 void HttpWindow::enableDownloadButton()
 {
     downloadButton->setEnabled(!urlLineEdit->text().isEmpty());
+}
+
+void HttpWindow::slotAuthenticationRequired(const QString &hostName, quint16, QAuthenticator *authenticator)
+{
+    QDialog dlg;
+    Ui::Dialog ui;
+    ui.setupUi(&dlg);
+    dlg.adjustSize();
+    ui.siteDescription->setText(tr("%1 at %2").arg(authenticator->realm()).arg(hostName));
+    
+    if (dlg.exec() == QDialog::Accepted) {
+        authenticator->setUser(ui.userEdit->text());
+        authenticator->setPassword(ui.passwordEdit->text());
+    }
 }

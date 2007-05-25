@@ -22,7 +22,7 @@
 ****************************************************************************/
 
 
-/*! 
+/*!
     \class QNetworkProxy
 
     \since 4.1
@@ -111,6 +111,10 @@
     \value DefaultProxy Proxy is determined based on the application proxy set using setApplicationProxy()
     \value Socks5Proxy \l Socks5 proxying is used
     \value NoProxy No proxying is used
+    \value HttpProxy Http proxying is used
+
+    While Socks5 proxying works for both Tcp and Udp sockets, Http proxying is limited to Tcp connections.
+    Http proxying also doesn't support binding sockets.
 
     \sa setType(), type()
 */
@@ -120,6 +124,9 @@
 #ifndef QT_NO_NETWORKPROXY
 
 #include "qsocks5socketengine_p.h"
+#include "qhttpsocketengine_p.h"
+#include "qauthenticator.h"
+#include "qhash.h"
 #include "qmutex.h"
 #include "qatomic.h"
 
@@ -131,6 +138,9 @@ public:
 #ifndef QT_NO_SOCKS5
         , socks5SocketEngineHandler(0)
 #endif
+#ifndef QT_NO_HTTP
+        , httpSocketEngineHandler(0)
+#endif
     {
     }
 
@@ -138,6 +148,9 @@ public:
     {
 #ifndef QT_NO_SOCKS5
         delete socks5SocketEngineHandler;
+#endif
+#ifndef QT_NO_HTTP
+        delete httpSocketEngineHandler;
 #endif
     }
 
@@ -147,6 +160,10 @@ public:
         QMutexLocker lock(&mutex);
         if (!socks5SocketEngineHandler)
             socks5SocketEngineHandler = new QSocks5SocketEngineHandler();
+#endif
+#ifndef QT_NO_HTTP
+        if (!httpSocketEngineHandler)
+            httpSocketEngineHandler = new QHttpSocketEngineHandler();
 #endif
     }
 
@@ -168,6 +185,9 @@ private:
 #ifndef QT_NO_SOCKS5
     QSocks5SocketEngineHandler *socks5SocketEngineHandler;
 #endif
+#ifndef QT_NO_HTTP
+    QHttpSocketEngineHandler *httpSocketEngineHandler;
+#endif
 };
 
 Q_GLOBAL_STATIC(QGlobalNetworkProxy, globalNetworkProxy);
@@ -176,10 +196,10 @@ class QNetworkProxyPrivate
 {
 public:
     QNetworkProxy::ProxyType type;
-    QString user;
-    QString password;
     QString hostName;
     quint16 port;
+    QString user;
+    QString password;
 };
 
 /*!
@@ -204,11 +224,14 @@ QNetworkProxy::QNetworkProxy(ProxyType type, const QString &hostName, quint16 po
                   const QString &user, const QString &password)
  : d_ptr(new QNetworkProxyPrivate)
 {
-    setType(type);
-    setHostName(hostName);
-    setPort(port);
-    setUser(user);
-    setPassword(password);
+    globalNetworkProxy()->init();
+
+    Q_D(QNetworkProxy);
+    d->type = type;
+    d->hostName = hostName;
+    d->port = port;
+    d->user = user;
+    d->password = password;
 }
 
 /*!
@@ -247,9 +270,6 @@ QNetworkProxy &QNetworkProxy::operator=(const QNetworkProxy &other)
 void QNetworkProxy::setType(QNetworkProxy::ProxyType type)
 {
     Q_D(QNetworkProxy);
-
-    globalNetworkProxy()->init();
-
     d->type = type;
 }
 
@@ -261,9 +281,6 @@ void QNetworkProxy::setType(QNetworkProxy::ProxyType type)
 QNetworkProxy::ProxyType QNetworkProxy::type() const
 {
     Q_D(const QNetworkProxy);
-
-    globalNetworkProxy()->init();
-
     return d->type;
 }
 
@@ -275,9 +292,6 @@ QNetworkProxy::ProxyType QNetworkProxy::type() const
 void QNetworkProxy::setUser(const QString &user)
 {
     Q_D(QNetworkProxy);
-
-    globalNetworkProxy()->init();
-
     d->user = user;
 }
 
@@ -289,9 +303,6 @@ void QNetworkProxy::setUser(const QString &user)
 QString QNetworkProxy::user() const
 {
     Q_D(const QNetworkProxy);
-
-    globalNetworkProxy()->init();
-
     return d->user;
 }
 
@@ -303,9 +314,6 @@ QString QNetworkProxy::user() const
 void QNetworkProxy::setPassword(const QString &password)
 {
     Q_D(QNetworkProxy);
-
-    globalNetworkProxy()->init();
-
     d->password = password;
 }
 
@@ -317,9 +325,6 @@ void QNetworkProxy::setPassword(const QString &password)
 QString QNetworkProxy::password() const
 {
     Q_D(const QNetworkProxy);
-
-    globalNetworkProxy()->init();
-
     return d->password;
 }
 
@@ -331,9 +336,6 @@ QString QNetworkProxy::password() const
 void QNetworkProxy::setHostName(const QString &hostName)
 {
     Q_D(QNetworkProxy);
-
-    globalNetworkProxy()->init();
-
     d->hostName = hostName;
 }
 
@@ -345,9 +347,6 @@ void QNetworkProxy::setHostName(const QString &hostName)
 QString QNetworkProxy::hostName() const
 {
     Q_D(const QNetworkProxy);
-
-    globalNetworkProxy()->init();
-
     return d->hostName;
 }
 
@@ -359,9 +358,6 @@ QString QNetworkProxy::hostName() const
 void QNetworkProxy::setPort(quint16 port)
 {
     Q_D(QNetworkProxy);
-
-    globalNetworkProxy()->init();
-
     d->port = port;
 }
 
@@ -373,9 +369,6 @@ void QNetworkProxy::setPort(quint16 port)
 quint16 QNetworkProxy::port() const
 {
     Q_D(const QNetworkProxy);
-
-    globalNetworkProxy()->init();
-
     return d->port;
 }
 

@@ -149,7 +149,9 @@ public:
     static QColor fromCmykF(qreal c, qreal m, qreal y, qreal k, qreal a = 1.0);
 
     QColor light(int f = 150) const;
+    QColor lighter(int f = 150) const;
     QColor dark(int f = 200) const;
+    QColor darker(int f = 200) const;
 
     QColor &operator=(const QColor &);
     QColor &operator=(Qt::GlobalColor color);
@@ -158,6 +160,11 @@ public:
     bool operator!=(const QColor &c) const;
 
     operator QVariant() const;
+
+#ifdef Q_WS_X11
+    static bool allowX11ColorNames();
+    static void setAllowX11ColorNames(bool enabled);
+#endif
 
 #ifdef QT3_SUPPORT
     inline QT3_SUPPORT_CONSTRUCTOR QColor(int x, int y, int z, Spec colorSpec)
@@ -234,6 +241,12 @@ inline QColor::QColor(const QColor &acolor)
 
 inline bool QColor::isValid() const
 { return cspec != Invalid; }
+
+inline QColor QColor::lighter(int f) const 
+{ return light(f); }
+
+inline QColor QColor::darker(int f) const 
+{ return dark(f); }
 
 QT_END_HEADER
 

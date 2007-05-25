@@ -25,6 +25,7 @@
 #include "tabbedbrowser.h"
 #include "helpdialog.h"
 #include "config.h"
+#include "fontsettingsdialog.h"
 
 #include <QDockWidget>
 #include <QDir>
@@ -54,6 +55,7 @@ extern Q_CORE_EXPORT int qt_ntfs_permission_lookup;
 
 MainWindow::MainWindow()
 {
+    setUnifiedTitleAndToolBarOnMac(true);
     ui.setupUi(this);
 
 #if defined(Q_WS_WIN)
@@ -68,6 +70,7 @@ MainWindow::MainWindow()
     
     windows.append(this);
     tabs = new TabbedBrowser(this);
+    connect(tabs, SIGNAL(tabCountChanged(int)), this, SLOT(updateTabActions(int)));
     setCentralWidget(tabs);
 
     Config *config = Config::configuration();
@@ -183,12 +186,26 @@ void MainWindow::setup()
     // to poulate the contents in this case.
     if (tabIndex == 0) 
         helpDock->currentTabChanged(tabIndex);
+
+    ui.actionEditFind->setShortcut(QKeySequence::Find);
+    ui.actionEditFindNext->setShortcut(QKeySequence::FindNext);
+    ui.actionEditFindPrev->setShortcut(QKeySequence::FindPrevious);
+    
     QObject::connect(ui.actionEditFind, SIGNAL(triggered()), tabs, SLOT(find()));
     QObject::connect(ui.actionEditFindNext, SIGNAL(triggered()), tabs, SLOT(findNext()));
     QObject::connect(ui.actionEditFindPrev, SIGNAL(triggered()), tabs, SLOT(findPrevious()));
+    connect(ui.actionEditFont_Settings, SIGNAL(triggered()), this, SLOT(showFontSettingsDialog()));
+
 	qApp->restoreOverrideCursor();
     ui.actionGoPrevious->setEnabled(false);
     ui.actionGoNext->setEnabled(false);
+
+    ui.actionEditCopy->setEnabled(false);
+    connect(tabs->currentBrowser(), SIGNAL(copyAvailable(bool)), this, SLOT(copyAvailable(bool)));
+
+    // set the current selected item in the treeview
+    helpDialog()->locateContents(tabs->currentBrowser()->source().toString());
+    connect(tabs, SIGNAL(browserUrlChanged(QString)), helpDock, SLOT(locateContents(QString)));
 }
 
 void MainWindow::browserTabChanged()
@@ -197,6 +214,19 @@ void MainWindow::browserTabChanged()
         ui.actionGoPrevious->setEnabled(tabs->currentBrowser()->isBackwardAvailable());
         ui.actionGoNext->setEnabled(tabs->currentBrowser()->isForwardAvailable());
     }
+}
+
+void MainWindow::copyAvailable(bool yes)
+{
+    ui.actionEditCopy->setEnabled(yes);
+}
+
+void MainWindow::updateTabActions(int index)
+{
+    bool enabled = (index > 1) ? true : false;
+    ui.actionPrevPage->setEnabled(enabled);
+    ui.actionNextPage->setEnabled(enabled);
+    ui.actionClosePage->setEnabled(enabled);
 }
 
 void MainWindow::setupGoActions()
@@ -278,16 +308,16 @@ void MainWindow::about()
 
 #endif
 
-    box.setText(QString("<center><img src=\":/trolltech/assistant/images/assistant-128.png\">"
-                   "<h3>%1</h3>"
-                   "<p>Version %2 %3</p></center>"
-                   "<p>%4</p>"
-                   "<p>%5</p>"
-                   "<p>Copyright (C) 2000-2007 Trolltech ASA. All rights reserved.</p>"
-                   "<p>The program is provided AS IS with NO WARRANTY OF ANY KIND,"
-                   " INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A"
-                   " PARTICULAR PURPOSE.<p/>")
-                   .arg(tr("Qt Assistant")).arg(QT_VERSION_STR).arg(edition).arg(info).arg(moreInfo));
+    box.setText(QString::fromLatin1("<center><img src=\":/trolltech/assistant/images/assistant-128.png\">"
+                                    "<h3>%1</h3>"
+                                    "<p>Version %2 %3</p></center>"
+                                    "<p>%4</p>"
+                                    "<p>%5</p>"
+                                    "<p>Copyright (C) 2000-2007 Trolltech ASA. All rights reserved.</p>"
+                                    "<p>The program is provided AS IS with NO WARRANTY OF ANY KIND,"
+                                    " INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A"
+                                    " PARTICULAR PURPOSE.<p/>")
+                   .arg(tr("Qt Assistant")).arg(QLatin1String(QT_VERSION_STR)).arg(edition).arg(info).arg(moreInfo));
     box.setWindowTitle(tr("Qt Assistant"));
     box.setIcon(QMessageBox::NoIcon);
     box.exec();
@@ -301,7 +331,7 @@ void MainWindow::on_actionAboutApplication_triggered()
         return;
     }
     QString text;
-    if (url.startsWith("file:"))
+    if (url.startsWith(QLatin1String("file:")))
         url = url.mid(5);
     QFile file(url);
     if(file.exists() && file.open(QFile::ReadOnly))
@@ -333,23 +363,23 @@ QString MainWindow::urlifyFileName(const QString &fileName)
     QUrl url(name);
 
 #if defined(Q_OS_WIN32)
-    if (!url.isValid() || url.scheme().isEmpty() || url.scheme().toLower() != "file:") {
-        int i = name.indexOf('#');
+    if (!url.isValid() || url.scheme().isEmpty() || url.scheme().toLower() != QLatin1String("file:")) {
+        int i = name.indexOf(QLatin1Char('#'));
         QString anchor = name.mid(i);
         name = name.toLower();
         if (i > -1)
             name.replace(i, anchor.length(), anchor);
-        name.replace('\\', '/');
+        name.replace(QLatin1Char('\\'), QLatin1Char('/'));
         foreach (QFileInfo drive, QDir::drives()) {
             if (name.startsWith(drive.absolutePath().toLower())) {
-                name = "file:" + name;
+                name = QLatin1String("file:") + name;
                 break;
             }
         }
     }
 #else
     if (!url.isValid() || url.scheme().isEmpty())
-        name.prepend("file:");
+        name.prepend(QLatin1String("file:"));
 #endif
     return name;
 }
@@ -412,9 +442,12 @@ void MainWindow::showLinkFromClient(const QString &link)
 
 void MainWindow::showLink(const QString &link)
 {
-    if(link.isEmpty()) {
+    if(link.isEmpty())
         qWarning("The link is empty!");
-    }
+    
+    // don't fill the history with the same url more then once
+    if (link == tabs->currentBrowser()->source().toString())
+        return;
 
     QUrl url(link);
     QFileInfo fi(url.toLocalFile());
@@ -576,7 +609,7 @@ void MainWindow::showGoActionLink()
 {
     const QObject *origin = sender();
     if(!origin ||
-        QLatin1String(origin->metaObject()->className()) != QLatin1String("QAction"))
+        QString::fromLatin1(origin->metaObject()->className()) != QString::fromLatin1("QAction"))
         return;
 
     QAction *action = (QAction*) origin;
@@ -651,6 +684,7 @@ void MainWindow::on_actionSyncToc_triggered()
         qApp->setOverrideCursor(QCursor(Qt::WaitCursor));
         QString  link = w->source().toString();
         helpDock->locateContents(link);
+        helpDock->tabWidget()->setCurrentIndex(0);
      	qApp->restoreOverrideCursor();
     }
 }
@@ -690,10 +724,10 @@ void MainWindow::on_actionSaveAs_triggered()
 
     QFileInfo fi(fileName);
     QString fn = fi.fileName();
-    int i = fn.lastIndexOf('.');
+    int i = fn.lastIndexOf(QLatin1Char('.'));
     if (i > -1)
         fn = fn.left(i);
-    QString relativeDestPath = fn + "_images";
+    QString relativeDestPath = fn + QLatin1String("_images");
     QDir destDir(fi.absolutePath() + QDir::separator() + relativeDestPath);
     bool imgDirAvailable = destDir.exists();
     if (!imgDirAvailable)
@@ -714,7 +748,7 @@ void MainWindow::on_actionSaveAs_triggered()
                             continue;
                         QString from = imagePath.toLocalFile();
                         QString destName = fm.name();
-                        int j = destName.lastIndexOf('/');
+                        int j = destName.lastIndexOf(QLatin1Char('/'));
                         if (j > -1)
                             destName = destName.mid(j+1);
                         QFileInfo info(from);
@@ -722,7 +756,7 @@ void MainWindow::on_actionSaveAs_triggered()
                             if (!QFile::copy(from, destDir.absolutePath()
                                 + QDir::separator() + destName))
                                 continue;
-                            fm.setName("./" + relativeDestPath + "/" + destName);
+                            fm.setName(QLatin1String("./") + relativeDestPath + QLatin1String("/") + destName);
                             QTextCursor cursor(doc);
                             cursor.setPosition(fragment.position());
                             cursor.setPosition(fragment.position() + fragment.length(),
@@ -734,10 +768,41 @@ void MainWindow::on_actionSaveAs_triggered()
             }
         }
     }
-    QString src = doc->toHtml("utf-8");
+    QString src = doc->toHtml(QByteArray("utf-8"));
     QTextStream s(&file);
     s.setCodec("utf-8");
     s << src;
     s.flush();
     file.close();
+}
+
+void MainWindow::showFontSettingsDialog()
+{
+    Config *config = Config::configuration();
+    FontSettings settings = config->fontSettings();
+
+    { // It is important that the dialog be deleted before UI mode changes.
+        FontSettingsDialog dialog;
+        if (!dialog.showDialog(&settings))
+            return;
+    }
+    
+    config->setFontPointSize(settings.browserFont.pointSizeF());
+    config->setFontSettings(settings);
+    
+    updateApplicationFontSettings(settings);
+}
+
+void MainWindow::updateApplicationFontSettings(FontSettings &settings)
+{
+    QFont font = settings.windowFont;
+    if (this->font() != font)
+        qApp->setFont(font, "QWidget");
+
+    font = settings.browserFont;
+    QList<HelpWindow*> browsers = tabs->browsers();
+    foreach (HelpWindow *browser, browsers) {
+        if (browser->font() != font)
+            browser->setFont(font);
+    }
 }

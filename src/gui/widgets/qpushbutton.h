@@ -32,6 +32,7 @@ QT_MODULE(Gui)
 
 class QPushButtonPrivate;
 class QMenu;
+class QStyleOptionButton;
 
 class Q_GUI_EXPORT QPushButton : public QAbstractButton
 {
@@ -48,6 +49,7 @@ public:
     ~QPushButton();
 
     QSize sizeHint() const;
+    QSize minimumSizeHint() const;
 
     bool autoDefault() const;
     void setAutoDefault(bool);
@@ -73,6 +75,7 @@ protected:
     void keyPressEvent(QKeyEvent *);
     void focusInEvent(QFocusEvent *);
     void focusOutEvent(QFocusEvent *);
+    void initStyleOption(QStyleOptionButton *option) const;
 
 public:
 #ifdef QT3_SUPPORT

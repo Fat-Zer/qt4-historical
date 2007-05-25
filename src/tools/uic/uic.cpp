@@ -53,7 +53,6 @@ Uic::Uic(Driver *d)
        out(d->output()),
        opt(d->option()),
        info(d),
-       cWidgetsInfo(d),
        externalPix(true)
 {
 }
@@ -79,7 +78,7 @@ bool Uic::printDependencies()
     if (!doc.setContent(&f))
         return false;
 
-    QDomElement root = doc.firstChild().toElement();
+    QDomElement root = doc.firstChildElement();
     DomUI *ui = new DomUI();
     ui->read(root);
 
@@ -124,14 +123,14 @@ void Uic::writeCopyrightHeader(DomUI *ui)
     if (comment.size())
         out << "/*\n" << comment << "\n*/\n\n";
 
-	out << "/********************************************************************************\n";
-	out << "** Form generated from reading ui file '" << QFileInfo(opt.inputFile).fileName() << "'\n";
-	out << "**\n";
-	out << "** Created: " << QDateTime::currentDateTime().toString() << "\n";
-	out << "**      " << QString("by: Qt User Interface Compiler version %1\n").arg(QT_VERSION_STR);
-	out << "**\n";
-	out << "** WARNING! All changes made in this file will be lost when recompiling ui file!\n";
-	out << "********************************************************************************/\n\n";
+        out << "/********************************************************************************\n";
+        out << "** Form generated from reading ui file '" << QFileInfo(opt.inputFile).fileName() << "'\n";
+        out << "**\n";
+        out << "** Created: " << QDateTime::currentDateTime().toString() << "\n";
+        out << "**      " << QString::fromLatin1("by: Qt User Interface Compiler version %1\n").arg(QLatin1String(QT_VERSION_STR));
+        out << "**\n";
+        out << "** WARNING! All changes made in this file will be lost when recompiling ui file!\n";
+        out << "********************************************************************************/\n\n";
 }
 
 bool Uic::write(QIODevice *in)
@@ -145,7 +144,7 @@ bool Uic::write(QIODevice *in)
         opt.headerProtection = false;
     }
 
-    QDomElement root = doc.firstChild().toElement();
+    QDomElement root = doc.firstChildElement();
     DomUI *ui = new DomUI();
     ui->read(root);
 
@@ -157,16 +156,28 @@ bool Uic::write(QIODevice *in)
         return false;
     }
 
+    QString language = ui->attributeLanguage();
+
+
     bool rtn = false;
 
     if (option().generator == Option::JavaGenerator) {
 #ifdef QT_UIC_JAVA_GENERATOR
+        if (language.toLower() != QLatin1String("jambi")) {
+            fprintf(stderr, "uic: File is not a 'jambi' form\n");
+            return false;
+        }
         rtn = jwrite (ui);
 #else
         fprintf(stderr, "uic: option to generate java code not compiled in\n");
 #endif
     } else {
 #ifdef QT_UIC_CPP_GENERATOR
+        if (!language.isEmpty() && language.toLower() != QLatin1String("c++")) {
+            fprintf(stderr, "uic: File is not a 'c++' ui file, language=%s\n", qPrintable(language));
+            return false;
+        }
+
         rtn = write (ui);
 #else
         fprintf(stderr, "uic: option to generate cpp code not compiled in\n");
@@ -202,10 +213,11 @@ bool Uic::write(DomUI *ui)
 
     info.acceptUI(ui);
     cWidgetsInfo.acceptUI(ui);
-    WriteIncludes(this).acceptUI(ui);
+    WriteIncludes writeIncludes(this);
+    writeIncludes.acceptUI(ui);
 
     Validator(this).acceptUI(ui);
-    WriteDeclaration(this).acceptUI(ui);
+    WriteDeclaration(this, writeIncludes.scriptsActivated()).acceptUI(ui);
 
     if (opt.headerProtection)
         writeHeaderProtectionEnd();

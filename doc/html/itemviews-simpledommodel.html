@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-x11-opensource-src-4.2.3/doc/src/examples/simpledommodel.qdoc -->
+<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/doc/src/examples/simpledommodel.qdoc -->
 <head>
-  <title>Qt 4.2: Simple DOM Model Example</title>
+  <title>Qt 4.3: Simple DOM Model Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -155,7 +155,7 @@
 <pre> Qt::ItemFlags DomModel::flags(const QModelIndex &amp;index) const
  {
      if (!index.isValid())
-         return Qt::ItemIsEnabled;
+         return 0;
 
      return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
  }</pre>
@@ -185,6 +185,9 @@
 <pre> QModelIndex DomModel::index(int row, int column, const QModelIndex &amp;parent)
              const
  {
+     if (!hasIndex(row, column, parent))
+         return QModelIndex();
+
      DomItem *parentItem;
 
      if (!parent.isValid())
@@ -203,6 +206,9 @@
 <p>The number of rows beneath a given item in the model is returned by the <tt>rowCount()</tt> function, and is the number of child nodes contained by the node that corresponds to the specified model index:</p>
 <pre> int DomModel::rowCount(const QModelIndex &amp;parent) const
  {
+     if (parent.column() &gt; 0)
+         return 0;
+
      DomItem *parentItem;
 
      if (!parent.isValid())
@@ -249,7 +255,7 @@
          case 0:
              return node.nodeName();
          case 1:
-             for (int i = 0; (unsigned int)(i) &lt; attributeMap.count(); ++i) {
+             for (int i = 0; i &lt; attributeMap.count(); ++i) {
                  QDomNode attribute = attributeMap.item(i);
                  attributes &lt;&lt; attribute.nodeName() + &quot;=\&quot;&quot;
                                +attribute.nodeValue() + &quot;\&quot;&quot;;
@@ -271,6 +277,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
 </tr></table></div></address></body>
 </html>

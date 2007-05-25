@@ -39,6 +39,7 @@ class QDir;
 class QUiLoaderPrivate;
 class QUiLoader : public QObject
 {
+    Q_OBJECT
 public:
     QUiLoader(QObject *parent = 0);
     virtual ~QUiLoader();
@@ -57,6 +58,9 @@ public:
 
     void setWorkingDirectory(const QDir &dir);
     QDir workingDirectory() const;
+
+    void setScriptingEnabled(bool enabled);
+    bool isScriptingEnabled() const;
 
 private:
     Q_DECLARE_PRIVATE(QUiLoader)

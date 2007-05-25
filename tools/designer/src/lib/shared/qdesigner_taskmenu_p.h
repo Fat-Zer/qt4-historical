@@ -42,11 +42,15 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QPointer>
+#include <QtCore/QList>
 
-class QWidget;
 class QDesignerFormWindowInterface;
 
+class QWidget;
+class QSignalMapper;
+
 namespace qdesigner_internal {
+class PromotionTaskMenu;
 
 class QDESIGNER_SHARED_EXPORT QDesignerTaskMenu: public QObject, public QDesignerTaskMenuExtension
 {
@@ -64,37 +68,37 @@ protected:
     QDesignerFormWindowInterface *formWindow() const;
     void changeRichTextProperty(const QString &propertyName);
 
+    QAction *createSeparator();
+
 private slots:
     void changeObjectName();
-    void createDockWidget();
-    void promoteToCustomWidget();
-    void demoteFromCustomWidget();
+
     void changeToolTip();
-    void changeStatusTip();
     void changeWhatsThis();
     void changeStyleSheet();
     void createMenuBar();
     void addToolBar();
     void createStatusBar();
     void removeStatusBar();
+    void changeScript();
 
 private:
     QPointer<QWidget> m_widget;
     QAction *m_separator;
     QAction *m_separator2;
+    QAction *m_separator3;
+    QAction *m_separator4;
     QAction *m_changeObjectNameAction;
     QAction *m_changeToolTip;
-    QAction *m_changeStatusTip;
     QAction *m_changeWhatsThis;
     QAction *m_changeStyleSheet;
-    QAction *m_createDockWidgetAction;
-    QAction *m_promoteToCustomWidgetAction;
-    QAction *m_demoteFromCustomWidgetAction;
 
     QAction *m_addMenuBar;
     QAction *m_addToolBar;
     QAction *m_addStatusBar;
     QAction *m_removeStatusBar;
+    QAction *m_changeScript;
+    mutable PromotionTaskMenu* m_promotionTaskMenu;
 };
 
 class QDESIGNER_SHARED_EXPORT QDesignerTaskMenuFactory: public QExtensionFactory

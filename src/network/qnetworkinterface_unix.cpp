@@ -40,6 +40,13 @@
 # include <ifaddrs.h>
 #endif
 
+#ifdef QT_LSB
+#  include <arpa/inet.h>
+#  ifndef SIOCGIFBRDADDR
+#    define SIOCGIFBRDADDR 0x8919
+#  endif
+#endif // QT_LSB
+
 #include <qplatformdefs.h>
 
 static QHostAddress addressFromSockaddr(sockaddr *sa)
@@ -83,7 +90,7 @@ static QSet<QByteArray> interfaceNames(int socket)
     QSet<QByteArray> result;
 #ifdef QT_NO_IPV6IFNAME
     QByteArray storageBuffer;
-    ifconf interfaceList;
+    struct ifconf interfaceList;
 
     forever {
         // grow the storage buffer

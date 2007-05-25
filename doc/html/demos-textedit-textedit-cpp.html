@@ -3,7 +3,7 @@
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>Qt 4.2: textedit.cpp Example File (demos/textedit/textedit.cpp)</title>
+  <title>Qt 4.3: textedit.cpp Example File (demos/textedit/textedit.cpp)</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -445,9 +445,11 @@
      QPrinter printer(QPrinter::HighResolution);
      printer.setFullPage(true);
      QPrintDialog *dlg = new QPrintDialog(&amp;printer, this);
+     if (textEdit-&gt;textCursor().hasSelection())
+         dlg-&gt;addEnabledOption(QAbstractPrintDialog::PrintSelection);
      dlg-&gt;setWindowTitle(tr(&quot;Print Document&quot;));
      if (dlg-&gt;exec() == QDialog::Accepted) {
-         textEdit-&gt;document()-&gt;print(&amp;printer);
+         textEdit-&gt;print(&amp;printer);
      }
      delete dlg;
  #endif
@@ -648,6 +650,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
 </tr></table></div></address></body>
 </html>

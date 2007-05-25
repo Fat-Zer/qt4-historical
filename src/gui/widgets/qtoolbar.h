@@ -37,6 +37,7 @@ class QToolBarPrivate;
 class QAction;
 class QIcon;
 class QMainWindow;
+class QStyleOptionToolBar;
 
 class Q_GUI_EXPORT QToolBar : public QWidget
 {
@@ -54,6 +55,8 @@ class Q_GUI_EXPORT QToolBar : public QWidget
     Q_PROPERTY(QSize iconSize READ iconSize WRITE setIconSize NOTIFY iconSizeChanged)
     Q_PROPERTY(Qt::ToolButtonStyle toolButtonStyle READ toolButtonStyle WRITE setToolButtonStyle
                NOTIFY toolButtonStyleChanged)
+    Q_PROPERTY(bool floating READ isFloating)
+    Q_PROPERTY(bool floatable READ isFloatable WRITE setFloatable)
 
 public:
     explicit QToolBar(const QString &title, QWidget *parent = 0);
@@ -104,6 +107,10 @@ public:
 
     QWidget *widgetForAction(QAction *action) const;
 
+    bool isFloatable() const;
+    void setFloatable(bool floatable);
+    bool isFloating() const;
+
 public Q_SLOTS:
     void setIconSize(const QSize &iconSize);
     void setToolButtonStyle(Qt::ToolButtonStyle toolButtonStyle);
@@ -123,6 +130,7 @@ protected:
     void paintEvent(QPaintEvent *event);
     void resizeEvent(QResizeEvent *event);
     bool event(QEvent *event);
+    void initStyleOption(QStyleOptionToolBar *option) const;
 
 #ifdef QT3_SUPPORT
 public:
@@ -139,8 +147,11 @@ private:
     Q_PRIVATE_SLOT(d_func(), void _q_toggleView(bool))
     Q_PRIVATE_SLOT(d_func(), void _q_updateIconSize(const QSize &))
     Q_PRIVATE_SLOT(d_func(), void _q_updateToolButtonStyle(Qt::ToolButtonStyle))
+    Q_PRIVATE_SLOT(d_func(), void _q_waitForPopup())
 
     friend class QMainWindow;
+    friend class QMainWindowLayout;
+    friend class QToolBarLayout;
 };
 
 inline QAction *QToolBar::actionAt(int ax, int ay) const

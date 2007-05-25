@@ -3,7 +3,7 @@
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>Qt 4.2: model.cpp Example File (demos/interview/model.cpp)</title>
+  <title>Qt 4.3: model.cpp Example File (demos/interview/model.cpp)</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -88,12 +88,13 @@
 
  QVariant Model::data(const QModelIndex &amp;index, int role) const
  {
-     static QIcon folder(QPixmap(&quot;:/images/folder.png&quot;));
-
      if (role == Qt::DisplayRole)
          return &quot;Item &quot; + QString::number(index.row()) + &quot;:&quot; + QString::number(index.column());
-     if (role == Qt::DecorationRole)
-         return qVariantFromValue(folder);
+     if (role == Qt::DecorationRole) {
+         if (index.column() == 0)
+             return iconProvider.icon(QFileIconProvider::Folder);
+         return iconProvider.icon(QFileIconProvider::File);
+     }
      return QVariant();
  }
 
@@ -140,6 +141,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
 </tr></table></div></address></body>
 </html>

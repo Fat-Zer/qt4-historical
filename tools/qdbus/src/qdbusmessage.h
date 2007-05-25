@@ -55,6 +55,8 @@ public:
     static QDBusMessage createError(const QString &name, const QString &msg);
     static inline QDBusMessage createError(const QDBusError &err)
     { return createError(err.name(), err.message()); }
+    static inline QDBusMessage createError(QDBusError::ErrorType type, const QString &msg)
+    { return createError(QDBusError::errorString(type), msg); }
 
     QDBusMessage createReply(const QList<QVariant> &arguments = QList<QVariant>()) const;
     inline QDBusMessage createReply(const QVariant &argument) const
@@ -63,12 +65,14 @@ public:
     QDBusMessage createErrorReply(const QString name, const QString &msg) const;
     inline QDBusMessage createErrorReply(const QDBusError &err) const
     { return createErrorReply(err.name(), err.message()); }
+    inline QDBusMessage createErrorReply(QDBusError::ErrorType type, const QString &msg) const;
 
     QString service() const;
     QString path() const;
     QString interface() const;
     QString member() const;
     QString errorName() const;
+    QString errorMessage() const;
     MessageType type() const;
     QString signature() const;
 
@@ -83,18 +87,12 @@ public:
     QDBusMessage &operator<<(const QVariant &arg);
 
 private:
-#ifndef Q_QDOC
-    template<typename T> inline QVariant qvfv(const T &t);
-#ifndef QT_NO_CAST_FROM_ASCII
-    inline QVariant qvfv(const char *t)
-    { return QVariant(t); }
-#endif
-#endif
-
-    friend class QDBusConnectionPrivate; // ### remove me; just for debugging
     friend class QDBusMessagePrivate;
     QDBusMessagePrivate *d_ptr;
 };
+
+inline QDBusMessage QDBusMessage::createErrorReply(QDBusError::ErrorType atype, const QString &amsg) const
+{ return createErrorReply(QDBusError::errorString(atype), amsg); }
 
 #ifndef QT_NO_DEBUG_STREAM
 QDBUS_EXPORT QDebug operator<<(QDebug, const QDBusMessage &);

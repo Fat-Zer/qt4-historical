@@ -3,7 +3,7 @@
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>Qt 4.2: calculator.cpp Example File (widgets/calculator/calculator.cpp)</title>
+  <title>Qt 4.3: calculator.cpp Example File (widgets/calculator/calculator.cpp)</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -54,7 +54,6 @@
      display-&gt;setReadOnly(true);
      display-&gt;setAlignment(Qt::AlignRight);
      display-&gt;setMaxLength(15);
-     display-&gt;installEventFilter(this);
 
      QFont font = display-&gt;font();
      font.setPointSize(font.pointSize() + 8);
@@ -70,38 +69,38 @@
                                         SLOT(digitClicked()));
      }
 
-     pointButton = createButton(tr(&quot;.&quot;), digitColor, SLOT(pointClicked()));
-     changeSignButton = createButton(tr(&quot;\261&quot;), digitColor, SLOT(changeSignClicked()));
+     Button *pointButton = createButton(tr(&quot;.&quot;), digitColor, SLOT(pointClicked()));
+     Button *changeSignButton = createButton(tr(&quot;\261&quot;), digitColor, SLOT(changeSignClicked()));
 
-     backspaceButton = createButton(tr(&quot;Backspace&quot;), backspaceColor,
+     Button *backspaceButton = createButton(tr(&quot;Backspace&quot;), backspaceColor,
                                     SLOT(backspaceClicked()));
-     clearButton = createButton(tr(&quot;Clear&quot;), backspaceColor, SLOT(clear()));
-     clearAllButton = createButton(tr(&quot;Clear All&quot;), backspaceColor.light(120),
+     Button *clearButton = createButton(tr(&quot;Clear&quot;), backspaceColor, SLOT(clear()));
+     Button *clearAllButton = createButton(tr(&quot;Clear All&quot;), backspaceColor.light(120),
                                    SLOT(clearAll()));
 
-     clearMemoryButton = createButton(tr(&quot;MC&quot;), memoryColor,
+     Button *clearMemoryButton = createButton(tr(&quot;MC&quot;), memoryColor,
                                       SLOT(clearMemory()));
-     readMemoryButton = createButton(tr(&quot;MR&quot;), memoryColor, SLOT(readMemory()));
-     setMemoryButton = createButton(tr(&quot;MS&quot;), memoryColor, SLOT(setMemory()));
-     addToMemoryButton = createButton(tr(&quot;M+&quot;), memoryColor,
+     Button *readMemoryButton = createButton(tr(&quot;MR&quot;), memoryColor, SLOT(readMemory()));
+     Button *setMemoryButton = createButton(tr(&quot;MS&quot;), memoryColor, SLOT(setMemory()));
+     Button *addToMemoryButton = createButton(tr(&quot;M+&quot;), memoryColor,
                                       SLOT(addToMemory()));
 
-     divisionButton = createButton(tr(&quot;\367&quot;), operatorColor,
+     Button *divisionButton = createButton(tr(&quot;\367&quot;), operatorColor,
                                    SLOT(multiplicativeOperatorClicked()));
-     timesButton = createButton(tr(&quot;\327&quot;), operatorColor,
+     Button *timesButton = createButton(tr(&quot;\327&quot;), operatorColor,
                                 SLOT(multiplicativeOperatorClicked()));
-     minusButton = createButton(tr(&quot;-&quot;), operatorColor,
+     Button *minusButton = createButton(tr(&quot;-&quot;), operatorColor,
                                 SLOT(additiveOperatorClicked()));
-     plusButton = createButton(tr(&quot;+&quot;), operatorColor,
+     Button *plusButton = createButton(tr(&quot;+&quot;), operatorColor,
                                SLOT(additiveOperatorClicked()));
 
-     squareRootButton = createButton(tr(&quot;Sqrt&quot;), operatorColor,
+     Button *squareRootButton = createButton(tr(&quot;Sqrt&quot;), operatorColor,
                                      SLOT(unaryOperatorClicked()));
-     powerButton = createButton(tr(&quot;x\262&quot;), operatorColor,
+     Button *powerButton = createButton(tr(&quot;x\262&quot;), operatorColor,
                                 SLOT(unaryOperatorClicked()));
-     reciprocalButton = createButton(tr(&quot;1/x&quot;), operatorColor,
+     Button *reciprocalButton = createButton(tr(&quot;1/x&quot;), operatorColor,
                                      SLOT(unaryOperatorClicked()));
-     equalButton = createButton(tr(&quot;=&quot;), operatorColor.light(120),
+     Button *equalButton = createButton(tr(&quot;=&quot;), operatorColor.light(120),
                                 SLOT(equalClicked()));
 
      QGridLayout *mainLayout = new QGridLayout;
@@ -139,30 +138,6 @@
      setLayout(mainLayout);
 
      setWindowTitle(tr(&quot;Calculator&quot;));
- }
-
- bool Calculator::eventFilter(QObject *target, QEvent *event)
- {
-     if (target == display) {
-         if (event-&gt;type() == QEvent::MouseButtonPress
-                 || event-&gt;type() == QEvent::MouseButtonDblClick
-                 || event-&gt;type() == QEvent::MouseButtonRelease
-                 || event-&gt;type() == QEvent::ContextMenu) {
-             QMouseEvent *mouseEvent = static_cast&lt;QMouseEvent *&gt;(event);
-             if (mouseEvent-&gt;buttons() &amp; Qt::LeftButton) {
-                 QPalette newPalette = palette();
-                 newPalette.setColor(QPalette::Base,
-                                     display-&gt;palette().color(QPalette::Text));
-                 newPalette.setColor(QPalette::Text,
-                                     display-&gt;palette().color(QPalette::Base));
-                 display-&gt;setPalette(newPalette);
-             } else {
-                 display-&gt;setPalette(palette());
-             }
-             return true;
-         }
-     }
-     return QDialog::eventFilter(target, event);
  }
 
  void Calculator::digitClicked()
@@ -395,6 +370,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
 </tr></table></div></address></body>
 </html>

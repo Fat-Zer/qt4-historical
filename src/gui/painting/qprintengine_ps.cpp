@@ -172,7 +172,7 @@ QPSPrintEnginePrivate::~QPSPrintEnginePrivate()
 {
 }
 
-#include <QDebug>
+#include <qdebug.h>
 
 static void ps_r7(QPdf::ByteStream& stream, const char * s, int l)
 {
@@ -690,9 +690,9 @@ bool QPSPrintEngine::end()
         wrapDSC("%%DocumentFonts: " + d->fontsUsed);
     s << "%%EOF\n";
     d->outDevice->write(trailer);
-    ignoreSigPipe(false);
 
     QPdfBaseEngine::end();
+    ignoreSigPipe(false);
 
     d->firstPage = true;
     d->headerDone = false;

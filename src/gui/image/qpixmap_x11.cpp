@@ -366,6 +366,8 @@ QPixmapData::~QPixmapData()
     delete paintEngine;
 }
 
+typedef void (*_qt_pixmap_cleanup_hook_64)(qint64);
+extern _qt_pixmap_cleanup_hook_64 qt_pixmap_cleanup_hook_64;
 
 /*!
     Detaches the pixmap from shared pixmap data.
@@ -384,13 +386,14 @@ QPixmapData::~QPixmapData()
     The detach() function returns immediately if there is just a
     single reference or if the pixmap has not been initialized yet.
 */
-
 void QPixmap::detach()
 {
-    ++data->detach_no;
+    if (qt_pixmap_cleanup_hook_64 && data->count == 1)
+        qt_pixmap_cleanup_hook_64(cacheKey());
+
     if (data->count != 1)
         *this = copy();
-
+    ++data->detach_no;
     data->uninit = false;
 
     // reset the cache data
@@ -1055,7 +1058,7 @@ QPixmap QPixmap::fromImage(const QImage &img, Qt::ImageConversionFlags flags)
         }
     }
 
-    if (d == 1) {
+    if (d == 1 || d == 16) {
         QImage im = image.convertToFormat(QImage::Format_RGB32, flags);
         return fromImage(im);
     }
@@ -1790,23 +1793,10 @@ QPixmap QPixmap::grabWindow(WId window, int x, int y, int w, int h)
     pm.data->uninit = false;
     pm.x11SetScreen(scr);
 
-#ifndef QT_NO_XRENDER
-    if (pm.data->picture) {
-        XRenderPictFormat *format = XRenderFindVisualFormat(dpy, window_attr.visual);
-        XRenderPictureAttributes pattr;
-        pattr.subwindow_mode = IncludeInferiors;
-        Picture src_pict = XRenderCreatePicture(dpy, window, format, CPSubwindowMode, &pattr);
-        Picture dst_pict = pm.x11PictureHandle();
-        XRenderComposite(dpy, PictOpSrc, src_pict, 0, dst_pict, x, y, x, y, 0, 0, w, h);
-        XRenderFreePicture(dpy, src_pict);
-    } else
-#endif
-        {
-            GC gc = XCreateGC(dpy, pm.handle(), 0, 0);
-            XSetSubwindowMode(dpy, gc, IncludeInferiors);
-            XCopyArea(dpy, window, pm.handle(), gc, x, y, w, h, 0, 0);
-            XFreeGC(dpy, gc);
-        }
+    GC gc = XCreateGC(dpy, pm.handle(), 0, 0);
+    XSetSubwindowMode(dpy, gc, IncludeInferiors);
+    XCopyArea(dpy, window, pm.handle(), gc, x, y, w, h, 0, 0);
+    XFreeGC(dpy, gc);
 
     return pm;
 }
@@ -1832,6 +1822,11 @@ QPixmap QPixmap::grabWindow(WId window, int x, int y, int w, int h)
 
 QPixmap QPixmap::transformed(const QMatrix &matrix, Qt::TransformationMode mode) const
 {
+    return transformed(QTransform(matrix), mode);
+}
+
+QPixmap QPixmap::transformed(const QTransform &matrix, Qt::TransformationMode mode ) const
+{
     uint          w = 0;
     uint          h = 0;                                // size of target pixmap
     uint          ws, hs;                                // size of source pixmap
@@ -1849,7 +1844,9 @@ QPixmap QPixmap::transformed(const QMatrix &matrix, Qt::TransformationMode mode)
     ws = width();
     hs = height();
 
-    QMatrix mat(matrix.m11(), matrix.m12(), matrix.m21(), matrix.m22(), 0., 0.);
+    QTransform mat(matrix.m11(), matrix.m12(), matrix.m13(),
+                   matrix.m21(), matrix.m22(), matrix.m23(),
+                   0., 0., 1);
     bool complex_xform = false;
     qreal scaledWidth;
     qreal scaledHeight;
@@ -2024,7 +2021,6 @@ QPixmap QPixmap::transformed(const QMatrix &matrix, Qt::TransformationMode mode)
     }
 }
 
-
 /*!
   \internal
 */
@@ -2069,7 +2065,10 @@ void QPixmap::x11SetScreen(int screen)
 
     QImage img = toImage();
     x11SetDefaultScreen(screen);
-    (*this) = fromImage(img);
+    if (img.depth() == 1)
+        (*this) = QBitmap::fromImage(img);
+    else
+        (*this) = fromImage(img);
 }
 
 /*!

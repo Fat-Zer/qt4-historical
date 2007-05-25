@@ -67,6 +67,26 @@ public:
         USE,
         VIDEO
     };
+    enum DisplayMode {
+        InlineMode,
+        BlockMode,
+        ListItemMode,
+        RunInMode,
+        CompactMode,
+        MarkerMode,
+        TableMode,
+        InlineTableMode,
+        TableRowGroupMode,
+        TableHeaderGroupMode,
+        TableFooterGroupMode,
+        TableRowMode,
+        TableColumnGroupMode,
+        TableColumnMode,
+        TableCellMode,
+        TableCaptionMode,
+        NoneMode,
+        InheritMode
+    };
 public:
     QSvgNode(QSvgNode *parent=0);
     virtual ~QSvgNode();
@@ -105,6 +125,8 @@ public:
     void setVisible(bool visible);
     bool isVisible() const;
 
+    void setDisplayMode(DisplayMode display);
+    DisplayMode displayMode() const;
 
     QString nodeId() const;
     void setNodeId(const QString &i);
@@ -127,6 +149,8 @@ private:
 
     QString m_id;
     QString m_class;
+
+    DisplayMode m_displayMode;
 };
 
 inline QSvgNode *QSvgNode::parent() const

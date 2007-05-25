@@ -39,7 +39,7 @@ QTextOption::QTextOption()
       design(false),
       unused(0),
       f(0),
-      tab(0),
+      tab(-1),
       d(0)
 {
     direction = QApplication::layoutDirection();
@@ -54,7 +54,7 @@ QTextOption::QTextOption(Qt::Alignment alignment)
       design(false),
       unused(0),
       f(0),
-      tab(0),
+      tab(-1),
       d(0)
 {
     direction = QApplication::layoutDirection();
@@ -235,7 +235,7 @@ QList<qreal> QTextOption::tabArray() const
 /*!
   \enum QTextOption::Flag
 
-  \value IncludeTrailingSpaces  
+  \value IncludeTrailingSpaces
 */
 
 /*!

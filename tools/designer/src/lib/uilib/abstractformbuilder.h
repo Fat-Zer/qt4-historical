@@ -76,6 +76,11 @@ class DomString;
 class DomTabStops;
 class DomUI;
 class DomWidget;
+class DomResourcePixmap;
+
+#ifndef QT_FORMBUILDER_NO_SCRIPT
+class QFormScriptRunner;
+#endif 
 
 class QDESIGNER_UILIB_EXPORT QAbstractFormBuilder
 {
@@ -88,6 +93,9 @@ public:
 
     virtual QWidget *load(QIODevice *dev, QWidget *parentWidget=0);
     virtual void save(QIODevice *dev, QWidget *widget);
+
+    void setScriptingEnabled(bool enabled);
+    bool isScriptingEnabled() const;
 
 protected:
 //
@@ -105,6 +113,8 @@ protected:
     virtual void addMenuAction(QAction *action);
 
     virtual void applyProperties(QObject *o, const QList<DomProperty*> &properties);
+    bool applyPropertyInternally(QObject *o, const QString &propertyName, const QVariant &value);
+
     virtual void applyTabStops(QWidget *widget, DomTabStops *tabStops);
 
     virtual QWidget *createWidget(const QString &widgetName, QWidget *parentWidget, const QString &name);
@@ -166,10 +176,12 @@ protected:
 //
 // utils
 //
+
     QVariant toVariant(const QMetaObject *meta, DomProperty *property);
-    static bool toBool(const QString &str);
     static QString toString(const DomString *str);
-    static QHash<QString, DomProperty*> propertyMap(const QList<DomProperty*> &properties);
+
+    typedef QHash<QString, DomProperty*> DomPropertyHash;
+    static DomPropertyHash propertyMap(const QList<DomProperty*> &properties);
 
     void setupColorGroup(QPalette &palette, QPalette::ColorGroup colorGroup, DomColorGroup *group);
     DomColorGroup *saveColorGroup(const QPalette &palette);
@@ -177,8 +189,33 @@ protected:
     DomBrush *saveBrush(const QBrush &brush);
 
     void reset();
+#ifndef QT_FORMBUILDER_NO_SCRIPT
+    QFormScriptRunner *formScriptRunner() const;
+#endif
+//
+//  utils
+//
 
-protected:
+    static QMetaEnum toolBarAreaMetaEnum();
+
+//
+//  Icon/pixmap stuff
+//
+    // A Pair of icon path/qrc path.
+    typedef QPair<QString, QString> IconPaths;
+ 
+    IconPaths iconPaths(const QIcon &) const;
+    IconPaths pixmapPaths(const QPixmap &) const;
+    void setIconProperty(DomProperty &, const IconPaths &) const;
+    void setPixmapProperty(DomProperty &, const IconPaths &) const;
+    DomProperty* iconToDomProperty(const QIcon &) const;
+
+    static const DomResourcePixmap *domPixmap(const DomProperty* p);
+    QIcon domPropertyToIcon(const DomResourcePixmap *);
+    QIcon domPropertyToIcon(const DomProperty* p);
+    QPixmap domPropertyToPixmap(const DomResourcePixmap* p);
+    QPixmap domPropertyToPixmap(const DomProperty* p);
+
     QHash<QObject*, bool> m_laidout;
     QHash<QString, QAction*> m_actions;
     QHash<QString, QActionGroup*> m_actionGroups;
@@ -187,8 +224,16 @@ protected:
     QDir m_workingDirectory;
 
 private:
+//
+//  utils
+//
+    static Qt::ToolBarArea toolbarAreaFromDOMAttributes(const DomPropertyHash &attributeMap);
+
     QAbstractFormBuilder(const QAbstractFormBuilder &other);
     void operator = (const QAbstractFormBuilder &other);
+
+    friend QDESIGNER_UILIB_EXPORT DomProperty *variantToDomProperty(QAbstractFormBuilder *abstractFormBuilder, QObject *object, const QString &propertyName, const QVariant &value);
+    friend QDESIGNER_UILIB_EXPORT QVariant domPropertyToVariant(QAbstractFormBuilder *abstractFormBuilder,const QMetaObject *meta, const DomProperty *property);
 };
 
 #ifdef QFORMINTERNAL_NAMESPACE

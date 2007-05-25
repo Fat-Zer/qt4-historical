@@ -77,6 +77,15 @@ public:
     QObjectPrivate(int version = QObjectPrivateVersion);
     virtual ~QObjectPrivate();
 
+#ifdef QT3_SUPPORT
+    QList<QObject *> pendingChildInsertedEvents;
+    void sendPendingChildInsertedEvents();
+    void removePendingChildInsertedEvents(QObject *child);
+#else
+    // preserve binary compatibility with code compiled without Qt 3 support
+    QList<QObject *> unused;
+#endif
+
     // id of the thread that owns the object
     QThreadData *threadData;
     void moveToThread_helper();
@@ -112,17 +121,19 @@ public:
         QList<QVariant> propertyValues;
     };
     ExtraData *extraData;
+    mutable quint32 connectedSignals;
 
     QString objectName;
 };
 
+class QSemaphore;
 class Q_CORE_EXPORT QMetaCallEvent : public QEvent
 {
 public:
     QMetaCallEvent(int id, const QObject *sender = 0,
-                   int nargs = 0, int *types = 0, void **args = 0);
+                   int nargs = 0, int *types = 0, void **args = 0, QSemaphore *semaphore = 0);
     QMetaCallEvent(int id, const QObject *sender, int idFrom, int idTo,
-                   int nargs = 0, int *types = 0, void **args = 0);
+                   int nargs = 0, int *types = 0, void **args = 0, QSemaphore *semaphore = 0);
     ~QMetaCallEvent();
 
     inline int id() const { return id_; }
@@ -130,6 +141,8 @@ public:
     inline int signalIdStart() const { return idFrom_; }
     inline int signalIdEnd() const { return idTo_; }
     inline void **args() const { return args_; }
+
+    virtual int placeMetaCall(QObject *object);
 
 private:
     int id_;
@@ -139,6 +152,7 @@ private:
     int nargs_;
     int *types_;
     void **args_;
+    QSemaphore *semaphore_;
 };
 
 class Q_CORE_EXPORT QBoolBlocker

@@ -47,6 +47,8 @@ class QHeaderViewPrivate: public QAbstractItemViewPrivate
     Q_DECLARE_PUBLIC(QHeaderView)
 
 public:
+    enum StateVersion { VersionMarker = 0xff };
+
     QHeaderViewPrivate()
         : state(NoState),
           offset(0),
@@ -73,7 +75,9 @@ public:
           lastSectionSize(0),
           sectionIndicatorOffset(0),
           sectionIndicator(0),
-          globalResizeMode(QHeaderView::Interactive) {}
+          globalResizeMode(QHeaderView::Interactive)
+    {}
+
 
     int lastVisibleVisualIndex() const;
     int sectionHandleAt(int position);
@@ -81,6 +85,8 @@ public:
     void updateSectionIndicator(int section, int position);
     void resizeSections(QHeaderView::ResizeMode globalMode, bool useGlobalMode = false);
     void _q_sectionsRemoved(const QModelIndex &,int,int);
+    void _q_layoutAboutToBeChanged();
+    void _q_layoutChanged();
 
     bool isSectionSelected(int section) const;
 
@@ -109,11 +115,15 @@ public:
     }
 
     inline bool reverse() const {
-        return q_func()->isRightToLeft() && orientation == Qt::Horizontal;
+        return orientation == Qt::Horizontal && q_func()->isRightToLeft();
     }
 
     inline int logicalIndex(int visualIndex) const {
         return logicalIndices.isEmpty() ? visualIndex : logicalIndices.at(visualIndex);
+    }
+
+    inline int visualIndex(int logicalIndex) const {
+        return visualIndices.isEmpty() ? logicalIndex : visualIndices.at(logicalIndex);
     }
 
     inline void setDefaultValues(Qt::Orientation o) {
@@ -173,8 +183,14 @@ public:
         }
     }
 
-    inline bool sectionIsCascadable(int visual) {
+    inline bool sectionIsCascadable(int visual) const {
         return visualIndexResizeMode(visual) == QHeaderView::Interactive;
+    }
+
+    inline int modelSectionCount() const {
+        return (orientation == Qt::Horizontal
+                ? model->columnCount(root)
+                : model->rowCount(root));
     }
 
 
@@ -182,7 +198,7 @@ public:
     void flipSortIndicator(int section);
     void cascadingResize(int visual, int newSize);
 
-    enum State { NoState, ResizeSection, MoveSection } state;
+    enum State { NoState, ResizeSection, MoveSection, SelectSections, NoClear } state;
 
     uint offset;
     Qt::Orientation orientation;
@@ -208,6 +224,7 @@ public:
     int target;
     int pressed;
     int hover;
+
     uint length;
     int sectionCount;
     bool movableSections;
@@ -224,6 +241,7 @@ public:
     Qt::Alignment defaultAlignment;
     QLabel *sectionIndicator;
     QHeaderView::ResizeMode globalResizeMode;
+    QList<QPersistentModelIndex> persistentHiddenSections;
 
     // header section spans
 
@@ -235,6 +253,12 @@ public:
         inline SectionSpan(int length, int sections, QHeaderView::ResizeMode mode)
             : size(length), count(sections), resizeMode(mode) {}
         inline int sectionSize() const { return size / count; }
+#ifndef QT_NO_DATASTREAM
+        inline void write(QDataStream &out) const
+        { out << size; out << count; out << (int)resizeMode; }
+        inline void read(QDataStream &in)
+        { in >> size; in >> count; int m; in >> m; resizeMode = (QHeaderView::ResizeMode)m; }
+#endif
     };
 
     QVector<SectionSpan> sectionSpans;
@@ -287,6 +311,11 @@ public:
     // other
     int viewSectionSizeHint(int logical) const;
     int adjustedVisualIndex(int visualIndex) const;
+
+#ifndef QT_NO_DATASTREAM
+    void write(QDataStream &out) const;
+    bool read(QDataStream &in);
+#endif
 
 };
 

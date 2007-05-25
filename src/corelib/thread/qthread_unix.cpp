@@ -35,9 +35,27 @@
 
 #include "qthread_p.h"
 
+#include "qdebug.h"
+
 #include <sched.h>
 #include <errno.h>
-#include <string.h>
+
+#ifdef Q_OS_BSD4
+#include <sys/sysctl.h>
+#endif
+
+#if defined(Q_OS_MAC)
+# ifdef qDebug
+#   define old_qDebug qDebug
+#   undef qDebug
+# endif
+# include <CoreServices/CoreServices.h>
+# ifdef old_qDebug
+#   undef qDebug
+#   define qDebug QT_NO_QDEBUG_MACRO
+#   undef old_qDebug
+# endif
+#endif
 
 #ifndef QT_NO_THREAD
 
@@ -66,24 +84,24 @@ QThreadData *QThreadData::current()
 {
     pthread_once(&current_thread_data_once, create_current_thread_data_key);
 
-    QThreadData *data = 0;
-    QThread *adopted = 0;
-    if (QInternal::activateCallbacks(QInternal::AdoptCurrentThread, (void **) &adopted)) {
-        Q_ASSERT(adopted);
-        data = QThreadData::get2(adopted);
-        pthread_setspecific(current_thread_data_key, data);
-        adopted->d_func()->running = true;
-        adopted->d_func()->finished = false;
-        static_cast<QAdoptedThread *>(adopted)->init();
-    } else {
-        data = reinterpret_cast<QThreadData *>(pthread_getspecific(current_thread_data_key));
-        if (!data) {
+    QThreadData *data = reinterpret_cast<QThreadData *>(pthread_getspecific(current_thread_data_key));
+    if (!data) {
+        void *a;
+        if (QInternal::activateCallbacks(QInternal::AdoptCurrentThread, &a)) {
+            QThread *adopted = static_cast<QThread*>(a);
+            Q_ASSERT(adopted);
+            data = QThreadData::get2(adopted);
+            pthread_setspecific(current_thread_data_key, data);
+            adopted->d_func()->running = true;
+            adopted->d_func()->finished = false;
+            static_cast<QAdoptedThread *>(adopted)->init();
+        } else {
             data = new QThreadData;
             pthread_setspecific(current_thread_data_key, data);
             data->thread = new QAdoptedThread(data);
             data->deref();
-            (void) q_atomic_test_and_set_ptr(&QCoreApplicationPrivate::theMainThread, 0, data->thread);
         }
+        (void) q_atomic_test_and_set_ptr(&QCoreApplicationPrivate::theMainThread, 0, data->thread);
     }
     return data;
 }
@@ -113,7 +131,9 @@ typedef void*(*QtThreadCallback)(void*);
 void QThreadPrivate::createEventDispatcher(QThreadData *data)
 {
 #if !defined(QT_NO_GLIB)
-    if (qgetenv("QT_NO_GLIB").isEmpty())
+    if (qgetenv("QT_NO_GLIB").isEmpty()
+        && qgetenv("QT_NO_THREADED_GLIB").isEmpty()
+        && QEventDispatcherGlib::versionSupported())
         data->eventDispatcher = new QEventDispatcherGlib;
     else
 #endif
@@ -170,8 +190,8 @@ void QThreadPrivate::finish(void *arg)
         delete eventDispatcher;
     }
 
-    QThreadStorageData::finish(d->data->tls);
-    d->data->tls = 0;
+    void *data = &d->data->tls;
+    QThreadStorageData::finish((void **)data);
 
     d->thread_id = 0;
     d->thread_done.wakeAll();
@@ -196,6 +216,55 @@ Qt::HANDLE QThread::currentThreadId()
 {
     // requires a C cast here otherwise we run into trouble on AIX
     return (Qt::HANDLE)pthread_self();
+}
+
+#if defined(QT_LSB) && !defined(_SC_NPROCESSORS_ONLN)
+// LSB doesn't define _SC_NPROCESSORS_ONLN.
+#  define _SC_NPROCESSORS_ONLN 84
+#endif
+
+/*!
+    Returns the ideal number of threads that can be run on the system. This is done querying
+    the number of processor cores, both real and logical, in the system. This function returns -1
+    if the number of processor cores could not be detected.
+*/
+int QThread::idealThreadCount()
+{
+    int cores = -1;
+
+#if defined(Q_OS_MAC)
+    // Mac OS X
+    cores = MPProcessorsScheduled();
+#elif defined(Q_OS_HPUX)
+    // HP-UX
+    struct pst_dynamic psd;
+    if (pstat_getdynamic(&psd, sizeof(psd), 1, 0) == -1) {
+        perror("pstat_getdynamic");
+        cores = -1;
+    } else {
+        cores = (int)psd.psd_proc_cnt;
+    }
+#elif defined(Q_OS_BSD4)
+    // FreeBSD, OpenBSD, NetBSD, BSD/OS
+    size_t len = sizeof(cores);
+    int mib[2];
+    mib[0] = CTL_HW;
+    mib[1] = HW_NCPU;
+    if (sysctl(mib, 2, &cores, &len, NULL, 0) != 0) {
+        perror("sysctl");
+        cores = -1;
+    }
+#elif defined(Q_OS_IRIX)
+    // IRIX
+    cores = (int)sysconf(_SC_NPROC_ONLN);
+#elif defined(Q_OS_INTEGRITY)
+    // ### TODO - how to get the amound of CPUs on INTEGRITY?
+#else
+    // the rest: Linux, Solaris, AIX, Tru64
+    cores = (int)sysconf(_SC_NPROCESSORS_ONLN);
+#endif
+
+    return cores;
 }
 
 /*  \internal
@@ -340,8 +409,12 @@ void QThread::start(Priority priority)
             sched_param sp;
             sp.sched_priority = prio;
 
-            pthread_attr_setinheritsched(&attr, PTHREAD_EXPLICIT_SCHED);
-            pthread_attr_setschedparam(&attr, &sp);
+            if (pthread_attr_setinheritsched(&attr, PTHREAD_EXPLICIT_SCHED) != 0
+                || pthread_attr_setschedpolicy(&attr, sched_policy) != 0
+                || pthread_attr_setschedparam(&attr, &sp) != 0) {
+                // could not set scheduling hints, fallback to inheriting them
+                pthread_attr_setinheritsched(&attr, PTHREAD_INHERIT_SCHED);
+            }
             break;
         }
     }

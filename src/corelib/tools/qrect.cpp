@@ -25,6 +25,8 @@
 #include "qdatastream.h"
 #include "qdebug.h"
 
+#include <math.h>
+
 /*!
     \class QRect
     \ingroup multimedia
@@ -1311,6 +1313,15 @@ QDebug operator<<(QDebug dbg, const QRect &r) {
 */
 
 /*!
+    \fn QRectF::QRectF(const QPointF &topLeft, const QPointF &bottomRight)
+    \since 4.3
+
+    Constructs a rectangle with the given \a topLeft and \a bottomRight corners.
+
+    \sa setTopLeft(), setBottomRight()
+*/
+
+/*!
     \fn QRectF::QRectF(qreal x, qreal y, qreal width, qreal height)
 
     Constructs a rectangle with (\a x, \a y) as its top-left corner
@@ -1999,8 +2010,8 @@ QRectF QRectF::operator&(const QRectF &r) const
     \fn bool QRectF::intersects(const QRectF &rectangle) const
 
     Returns true if this rectangle intersects with the given \a
-    rectangle (i.e., there is at least one pixel that is within both
-    rectangles), otherwise returns false.
+    rectangle (i.e. there is a non-empty area of overlap between
+    them), otherwise returns false.
 
     The intersection rectangle can be retrieved using the intersected()
     function.
@@ -2014,8 +2025,8 @@ bool QRectF::intersects(const QRectF &r) const
         return false;
     QRectF r1 = normalized();
     QRectF r2 = r.normalized();
-    return qMax(r1.xp, r2.xp) <= qMin(r1.xp + r1.w, r2.xp + r2.w)
-        && qMax(r1.yp, r2.yp) <= qMin(r1.yp + r1.h, r2.yp + r2.h);
+    return qMax(r1.xp, r2.xp) < qMin(r1.xp + r1.w, r2.xp + r2.w)
+        && qMax(r1.yp, r2.yp) < qMin(r1.yp + r1.h, r2.yp + r2.h);
 }
 
 /*!
@@ -2024,8 +2035,28 @@ bool QRectF::intersects(const QRectF &r) const
     Returns a QRect based on the values of this rectangle.  Note that the
     coordinates in the returned rectangle are rounded to the nearest integer.
 
-    \sa QRectF()
+    \sa QRectF(), toAlignedRect()
 */
+
+/*!
+    \fn QRect QRectF::toAlignedRect() const
+    \since 4.3
+
+    Returns a QRect based on the values of this rectangle that is the
+    smallest possible integer rectangle that completly contains this
+    rectangle.
+
+    \sa toRect()
+*/
+
+QRect QRectF::toAlignedRect() const
+{
+    int xmin = int(floor(x()));
+    int xmax = int(ceil(x() + width()));
+    int ymin = int(floor(y()));
+    int ymax = int(ceil(y() + height()));
+    return QRect(xmin, ymin, xmax - xmin, ymax - ymin);
+}
 
 /*!
     \fn void QRectF::moveCenter(const QPointF &position)

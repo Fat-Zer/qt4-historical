@@ -70,7 +70,6 @@ TrPreviewTool::TrPreviewTool(QWidget *parent, Qt::WindowFlags flags)
     ui.viewForms->setModel(m_uiFilesModel);
     ui.viewForms->setAlternatingRowColors(true);
     QPalette pal = palette();
-    pal.setColor(QPalette::AlternateBase, TREEVIEW_ODD_COLOR);
     ui.viewForms->setPalette(pal);
 
 }
@@ -269,7 +268,7 @@ void TrPreviewTool::reloadTranslations()
     QString noGoodPaths;
     QList<QTranslator*> oldTrs;			
     foreach(path,trDict.keys()) {
-        if (!path.startsWith("#:")) {
+        if (!path.startsWith(QLatin1String("#:"))) {
 	        QTranslator* newTr = new QTranslator(this); // ### check if we can just reload on the old translator object instead 
 	        if(newTr->load(path)) {
 	            oldTrs.append(trDict.value(path));

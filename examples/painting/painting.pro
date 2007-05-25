@@ -1,7 +1,7 @@
 TEMPLATE      = subdirs
 SUBDIRS       = basicdrawing \
                 concentriccircles \
-                fontsampler \
+		fontsampler \
                 imagecomposition \
                 painterpaths \
                 svgviewer \

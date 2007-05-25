@@ -85,6 +85,8 @@ public:
         BrushStroke               = 0x00000800, // Can render brush based pens
         ConstantOpacity           = 0x00001000, // Can render at constant opacity
         MaskedBrush               = 0x00002000, // Can fill with textures that has an alpha channel or mask
+        PerspectiveTransform      = 0x00004000, // Can do perspective transformations
+        BlendModes                = 0x00008000, // Can do extended Porter&Duff composition
         PaintOutsidePaintEvent    = 0x20000000, // Engine is capable of painting outside paint events
         /*                          0x10000000, // Used for emulating
                                     QGradient::StretchToDevice,
@@ -183,6 +185,7 @@ public:
         Picture,
         SVG,
         Raster,
+	Direct3D,
 
         User = 50,    // first user type id
         MaxUser = 100 // last user type id
@@ -224,6 +227,7 @@ private:
     friend class QFontEngineFT;
 #endif
 #ifndef QT_NO_QWS_QPF
+    friend class QFontEngineQPF1;
     friend class QFontEngineQPF;
 #endif
     friend class QPSPrintEngine;
@@ -232,6 +236,7 @@ private:
 #ifdef Q_WS_QWS
     friend class QtopiaPrintEngine;
     friend class QtopiaPrintEnginePrivate;
+    friend class QProxyFontEngine;
 #endif
     friend class QPainter;
     friend class QPainterPrivate;
@@ -254,6 +259,7 @@ public:
     Qt::BGMode backgroundMode() const;
     QFont font() const;
     QMatrix matrix() const;
+    QTransform transform() const;
 
     Qt::ClipOperation clipOperation() const;
     QRegion clipRegion() const;
@@ -265,6 +271,9 @@ public:
     qreal opacity() const;
 
     QPainter *painter() const;
+
+    bool brushNeedsResolving() const;
+    bool penNeedsResolving() const;
 
 protected:
     friend class QPaintEngine;

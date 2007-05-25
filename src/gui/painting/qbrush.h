@@ -29,6 +29,7 @@
 #include <QtCore/qvector.h>
 #include <QtGui/qcolor.h>
 #include <QtGui/qmatrix.h>
+#include <QtGui/qtransform.h>
 #include <QtGui/qimage.h>
 #include <QtGui/qpixmap.h>
 
@@ -68,6 +69,9 @@ public:
     inline const QMatrix &matrix() const;
     void setMatrix(const QMatrix &mat);
 
+    inline QTransform transform() const;
+    void setTransform(const QTransform &);
+
     QPixmap texture() const;
     void setTexture(const QPixmap &pixmap);
 
@@ -102,12 +106,18 @@ private:
     void init(const QColor &color, Qt::BrushStyle bs);
     QBrushData *d;
     void cleanUp(QBrushData *x);
+
+public:
+    inline bool isDetached() const;
+    typedef QBrushData * DataPtr;
+    inline DataPtr &data_ptr() { return d; }
 };
 
 inline void QBrush::setColor(Qt::GlobalColor acolor)
 { setColor(QColor(acolor)); }
 
 Q_DECLARE_TYPEINFO(QBrush, Q_MOVABLE_TYPE);
+Q_DECLARE_SHARED(QBrush)
 
 /*****************************************************************************
   QBrush stream functions
@@ -127,13 +137,15 @@ struct QBrushData
     QAtomic ref;
     Qt::BrushStyle style;
     QColor color;
-    QMatrix transform;
+    QTransform transform;
     bool hasTransform;
 };
 
 inline Qt::BrushStyle QBrush::style() const { return d->style; }
 inline const QColor &QBrush::color() const { return d->color; }
-inline const QMatrix &QBrush::matrix() const { return d->transform; }
+inline const QMatrix &QBrush::matrix() const { return d->transform.toAffine(); }
+inline QTransform QBrush::transform() const { return d->transform; }
+inline bool QBrush::isDetached() const { return d->ref == 1; }
 
 #ifdef QT3_SUPPORT
 inline QBrush::operator const QColor&() const { return d->color; }
@@ -168,7 +180,8 @@ public:
 
     enum CoordinateMode {
         LogicalMode,
-        StretchToDeviceMode
+        StretchToDeviceMode,
+        ObjectBoundingMode
     };
 
     QGradient();
@@ -190,7 +203,7 @@ public:
     inline bool operator!=(const QGradient &other) const
     { return !operator==(other); }
 
-    bool operator==(const QGradient &gradient); // ### Qt 5.0 - remove me
+    bool operator==(const QGradient &gradient); // ### Qt 5: remove
 
 private:
     friend class QLinearGradient;

@@ -1,0 +1,88 @@
+/****************************************************************************
+**
+** Copyright (C) 2007-2007 Trolltech ASA. All rights reserved.
+**
+** This file is part of the example classes of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
+**
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+#include "prototypes.h"
+#include <QtGui/QListWidgetItem>
+#include <QtGui/QListWidget>
+#include <QtScript/QScriptValue>
+#include <QtScript/QScriptEngine>
+
+Q_DECLARE_METATYPE(QListWidgetItem*)
+Q_DECLARE_METATYPE(QListWidget*)
+
+ListWidgetItemPrototype::ListWidgetItemPrototype(QObject *parent)
+    : QObject(parent)
+{
+}
+
+QString ListWidgetItemPrototype::text() const
+{
+    QListWidgetItem *item = qscriptvalue_cast<QListWidgetItem*>(thisObject());
+    if (item)
+        return item->text();
+    return QString();
+}
+
+void ListWidgetItemPrototype::setText(const QString &text)
+{
+    QListWidgetItem *item = qscriptvalue_cast<QListWidgetItem*>(thisObject());
+    if (item)
+        item->setText(text);
+}
+
+QString ListWidgetItemPrototype::toString() const
+{
+    return QString("ListWidgetItem(text = %0)").arg(text());
+}
+
+
+
+ListWidgetPrototype::ListWidgetPrototype(QObject *parent)
+    : QObject(parent)
+{
+}
+
+void ListWidgetPrototype::addItem(const QString &text)
+{
+    QListWidget *widget = qscriptvalue_cast<QListWidget*>(thisObject());
+    if (widget)
+        widget->addItem(text);
+}
+
+void ListWidgetPrototype::addItems(const QStringList &texts)
+{
+    QListWidget *widget = qscriptvalue_cast<QListWidget*>(thisObject());
+    if (widget)
+        widget->addItems(texts);
+}
+
+void ListWidgetPrototype::setBackgroundColor(const QString &colorName)
+{
+    QListWidget *widget = qscriptvalue_cast<QListWidget*>(thisObject());
+    if (widget) {
+        QPalette palette = widget->palette();
+        QColor color(colorName);
+        palette.setBrush(QPalette::Base, color);
+        widget->setPalette(palette);
+    }
+}

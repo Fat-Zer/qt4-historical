@@ -57,6 +57,7 @@ public:
 
     virtual bool isChanged(int index) const = 0;
     virtual void setChanged(int index, bool changed) = 0;
+
 };
 Q_DECLARE_EXTENSION_INTERFACE(QDesignerPropertySheetExtension, "com.trolltech.Qt.Designer.PropertySheet")
 

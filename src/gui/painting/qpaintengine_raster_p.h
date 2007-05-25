@@ -40,6 +40,7 @@
 #include "private/qdatabuffer_p.h"
 #include "private/qdrawhelper_p.h"
 #include "private/qpaintengine_p.h"
+#include "private/qrasterizer_p.h"
 #include "private/qstroker_p.h"
 
 #include <stdlib.h>
@@ -66,7 +67,7 @@ public:
     bool end();
 
     void updateState(const QPaintEngineState &state);
-    void updateMatrix(const QMatrix &matrix);
+    void updateMatrix(const QTransform &matrix);
 
     void updateClipRegion(const QRegion &region, Qt::ClipOperation op);
     void updateClipPath(const QPainterPath &path, Qt::ClipOperation op);
@@ -75,11 +76,13 @@ public:
     void drawPolygon(const QPointF *points, int pointCount, PolygonDrawMode mode);
     void drawPolygon(const QPoint *points, int pointCount, PolygonDrawMode mode);
     void fillPath(const QPainterPath &path, QSpanData *fillData);
+    void fillPolygon(const QPointF *points, int pointCount, PolygonDrawMode mode);
 
     void drawEllipse(const QRectF &rect);
 
     void drawRects(const QRect  *rects, int rectCount);
     void drawRects(const QRectF *rects, int rectCount);
+    void fastFillRect(const QRect &rect, const QBrush &brush);
 
     void drawPixmap(const QRectF &r, const QPixmap &pm, const QRectF &sr);
     void drawImage(const QRectF &r, const QImage &pm, const QRectF &sr,
@@ -122,9 +125,9 @@ public:
 
     void disableClearType();
 #endif
-#ifdef Q_WS_QWS
     //QWS hack
     void alphaPenBlt(const void* src, int bpl, bool mono, int rx,int ry,int w,int h);
+#ifdef Q_WS_QWS
     void qwsFillRect(int x, int y, int w, int h);
 #endif
 
@@ -164,21 +167,28 @@ public:
     void drawBitmap(const QPointF &pos, const QPixmap &image, QSpanData *fill);
 
     void rasterize(QT_FT_Outline *outline, ProcessSpans callback, void *userData, QRasterBuffer *rasterBuffer);
-#ifdef QT_EXPERIMENTAL_REGIONS
-    void setSimpleClip(const QRect &rect);
-#endif
-    void updateMatrixData(QSpanData *spanData, const QBrush &brush, const QMatrix &brushMatrix);
+    void setClipRect(const QRect &rect);
+    void setClipRegion(const QRegion &region);
+    void updateMatrixData(QSpanData *spanData, const QBrush &brush, const QTransform &brushMatrix);
 
-    QMatrix brushMatrix() const {
-        QMatrix m(matrix);
+    QTransform brushMatrix() const {
+        QTransform m(matrix);
         m.translate(brushOffset.x(), brushOffset.y());
         return m;
     }
 
+    bool isUnclipped_normalized(const QRect &rect) const;
+    bool isUnclipped(const QRect &rect, int penWidth) const;
+    bool isUnclipped(const QRectF &rect, int penWidth) const;
+    ProcessSpans getPenFunc(const QRect &rect, const QSpanData *data) const;
+    ProcessSpans getPenFunc(const QRectF &rect, const QSpanData *data) const;
+    ProcessSpans getBrushFunc(const QRect &rect, const QSpanData *data) const;
+    ProcessSpans getBrushFunc(const QRectF &rect, const QSpanData *data) const;
+
     QPointF brushOffset;
     QBrush brush;
     QPen pen;
-    QMatrix matrix;
+    QTransform matrix;
     int opacity;
 
     QPaintDevice *device;
@@ -191,9 +201,8 @@ public:
 
     QPainterPath baseClip;
     QRect deviceRect;
-#ifdef QT_EXPERIMENTAL_REGIONS
     QRegion clipRegion;
-#endif
+    QRegion disabledClipRegion;
 
     QSpanData penData;
     QSpanData brushData;
@@ -224,7 +233,14 @@ public:
     uint mono_surface : 1;
     uint int_xform : 1;
     uint user_clip_enabled : 1;
+    uint fast_text : 1;
+    uint paint_unclipped : 1;
+    uint tx_noshear : 1;
+#ifdef Q_WS_WIN
+    uint isPlain45DegreeRotation : 1;
+#endif
 
+    QRasterizer rasterizer;
 };
 
 class QClipData {
@@ -244,9 +260,8 @@ public:
 
     void appendSpan(int x, int length, int y, int coverage);
     void appendSpans(const QSpan *s, int num);
-#ifdef QT_EXPERIMENTAL_REGIONS
-    void setSimpleClip(const QRect &rect);
-#endif
+    void setClipRect(const QRect &rect);
+    void setClipRegion(const QRegion &region);
     void fixup();
 };
 
@@ -265,9 +280,10 @@ inline void QClipData::appendSpan(int x, int length, int y, int coverage)
 
 inline void QClipData::appendSpans(const QSpan *s, int num)
 {
-    if (count + num >= allocated) {
-        while (allocated < count + num)
+    if (count + num > allocated) {
+        do {
             allocated *= 2;
+        } while (count + num > allocated);
         spans = (QSpan *)realloc(spans, allocated*sizeof(QSpan));
     }
     memcpy(spans+count, s, num*sizeof(QSpan));
@@ -312,6 +328,7 @@ public:
         : clip(0),
           m_hdc(0),
           m_bitmap(0),
+          m_null_bitmap(0),
           m_width(0),
           m_height(0),
           m_buffer(0)
@@ -365,6 +382,10 @@ void prepare(QCustomRasterPaintDevice *device);
 
     uchar *buffer() const { return m_buffer; }
 
+    QRect clipRect;
+    QRect disabledClipRect;
+    QRegion clipRegion;
+    QRegion disabledClipRegion;
     QClipData *clip;
     QClipData *disabled_clip;
     bool clipEnabled;
@@ -379,6 +400,7 @@ private:
 #if defined(Q_WS_WIN)
     HDC m_hdc;
     HBITMAP m_bitmap;
+    HBITMAP m_null_bitmap;
 #endif
 
     int m_width;

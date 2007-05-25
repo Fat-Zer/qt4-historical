@@ -43,15 +43,14 @@
 #include <QtCore/QPointer>
 #include <QtCore/QMimeData>
 
-class QTimer;
-class QToolButton;
-class QLineEdit;
-
 class QDesignerFormWindowInterface;
 class QDesignerActionProviderExtension;
-class QDesignerMenuBar;
+
+class QLineEdit;
+class QMimeData;
 
 namespace qdesigner_internal {
+class PromotionTaskMenu;
 
 class SpecialMenuAction: public QAction
 {
@@ -85,7 +84,7 @@ public:
     void moveDown();
 
 private slots:
-    void slotRemoveSelectedAction();
+    void deleteMenu();
     void slotRemoveMenuBar();
 
 protected:
@@ -109,8 +108,8 @@ protected:
 
     void startDrag(const QPoint &pos);
 
-    QAction *actionMimeData(const QMimeData *mimeData) const;
-    bool checkAction(QAction *action) const;
+    enum ActionDragCheck { NoActionDrag, ActionDragOnSubMenu, AcceptActionDrag };
+    ActionDragCheck checkAction(QAction *action) const;
 
     void adjustIndicator(const QPoint &pos);
     int findAction(const QPoint &pos) const;
@@ -128,16 +127,16 @@ protected:
     void leaveEditMode(LeaveEditMode mode);
     void showLineEdit();
 
-    void deleteMenu();
     void showMenu(int index = -1);
     void hideMenu(int index = -1);
 
-    QAction *createAction(const QString &objectName);
     QAction *safeActionAt(int index) const;
 
     bool swap(int a, int b);
 
 private:
+    void updateCurrentAction(bool selectAction);
+
     QAction *m_addMenu;
     QPointer<QMenu> m_activeMenu;
     QPoint m_startPosition;
@@ -147,6 +146,7 @@ private:
     bool m_dragging;
     int m_lastMenuActionIndex;
     QPointer<QWidget> m_lastFocusWidget;
+    qdesigner_internal::PromotionTaskMenu* m_promotionTaskMenu;
 };
 
 #endif // QDESIGNER_MENUBAR_H

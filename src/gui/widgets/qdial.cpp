@@ -62,7 +62,6 @@ public:
     int valueFromPoint(const QPoint &) const;
     double angle(const QPoint &, const QPoint &) const;
     void init();
-    QStyleOptionSlider getStyleOption() const;
 };
 
 void QDialPrivate::init()
@@ -77,30 +76,38 @@ void QDialPrivate::init()
 #endif
 }
 
-QStyleOptionSlider QDialPrivate::getStyleOption() const
+/*!
+    Initialize \a option with the values from this QDial. This method
+    is useful for subclasses when they need a QStyleOptionSlider, but don't want
+    to fill in all the information themselves.
+
+    \sa QStyleOption::initFrom()
+*/
+void QDial::initStyleOption(QStyleOptionSlider *option) const
 {
-    Q_Q(const QDial);
-    QStyleOptionSlider opt;
-    opt.init(q);
-    opt.minimum = minimum;
-    opt.maximum = maximum;
-    opt.sliderPosition = position;
-    opt.sliderValue = value;
-    opt.singleStep = singleStep;
-    opt.pageStep = pageStep;
-    opt.upsideDown = !invertedAppearance;
-    opt.notchTarget = target;
-    opt.dialWrapping = wrapping;
-    opt.subControls = QStyle::SC_All;
-    opt.activeSubControls = QStyle::SC_None;
-    if (!showNotches) {
-        opt.subControls &= ~QStyle::SC_DialTickmarks;
-        opt.tickPosition = QSlider::TicksAbove;
+    if (!option)
+        return;
+
+    Q_D(const QDial);
+    option->initFrom(this);
+    option->minimum = d->minimum;
+    option->maximum = d->maximum;
+    option->sliderPosition = d->position;
+    option->sliderValue = d->value;
+    option->singleStep = d->singleStep;
+    option->pageStep = d->pageStep;
+    option->upsideDown = !d->invertedAppearance;
+    option->notchTarget = d->target;
+    option->dialWrapping = d->wrapping;
+    option->subControls = QStyle::SC_All;
+    option->activeSubControls = QStyle::SC_None;
+    if (!d->showNotches) {
+        option->subControls &= ~QStyle::SC_DialTickmarks;
+        option->tickPosition = QSlider::TicksAbove;
     } else {
-        opt.tickPosition = QSlider::NoTicks;
+        option->tickPosition = QSlider::NoTicks;
     }
-    opt.tickInterval = q->notchSize();
-    return opt;
+    option->tickInterval = notchSize();
 }
 
 int QDialPrivate::valueFromPoint(const QPoint &p) const
@@ -132,7 +139,7 @@ int QDialPrivate::valueFromPoint(const QPoint &p) const
     if (dist > 0)
         v -= dist;
 
-    return bound(v);
+    return !invertedAppearance ? bound(v) : maximum - bound(v);
 }
 
 /*!
@@ -140,7 +147,7 @@ int QDialPrivate::valueFromPoint(const QPoint &p) const
 
     \brief The QDial class provides a rounded range control (like a speedometer or potentiometer).
 
-    \ingroup basic
+    \ingroup basicwidgets
     \mainclass
 
     QDial is used when the user needs to control a value within a
@@ -255,9 +262,10 @@ void QDial::resizeEvent(QResizeEvent *e)
 
 void QDial::paintEvent(QPaintEvent *)
 {
-    Q_D(QDial);
     QStylePainter p(this);
-    p.drawComplexControl(QStyle::CC_Dial, d->getStyleOption());
+    QStyleOptionSlider option;
+    initStyleOption(&option);
+    p.drawComplexControl(QStyle::CC_Dial, option);
 }
 
 /*!
@@ -307,14 +315,13 @@ void QDial::mouseReleaseEvent(QMouseEvent * e)
 void QDial::mouseMoveEvent(QMouseEvent * e)
 {
     Q_D(QDial);
-    if (!d->tracking || !(e->buttons() & Qt::LeftButton)) {
+    if (!(e->buttons() & Qt::LeftButton)) {
         e->ignore();
         return;
     }
     e->accept();
     d->doNotEmit = true;
     setSliderPosition(d->valueFromPoint(e->pos()));
-    emit sliderMoved(d->value);
     d->doNotEmit = false;
 }
 

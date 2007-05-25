@@ -3,7 +3,7 @@
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>Qt 4.2: toolbar.h Example File (demos/mainwindow/toolbar.h)</title>
+  <title>Qt 4.3: toolbar.h Example File (demos/mainwindow/toolbar.h)</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -44,6 +44,7 @@
  class QActionGroup;
  class QMenu;
  class QSpinBox;
+ class QLabel;
 
  class ToolBar : public QToolBar
  {
@@ -71,14 +72,21 @@
      QAction *topAction;
      QAction *bottomAction;
 
+     QAction *toolBarBreakAction;
+
  public:
-     ToolBar(QWidget *parent);
+     ToolBar(const QString &amp;title, QWidget *parent);
 
      QMenu *menu;
+
+ protected:
+     void enterEvent(QEvent*);
+     void leaveEvent(QEvent*);
 
  private:
      void allow(Qt::ToolBarArea area, bool allow);
      void place(Qt::ToolBarArea area, bool place);
+     QLabel *tip;
 
  private slots:
      void order();
@@ -99,6 +107,7 @@
      void placeBottom(bool p);
 
      void updateMenu();
+     void insertToolBarBreak();
 
  };
 
@@ -107,6 +116,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
 </tr></table></div></address></body>
 </html>

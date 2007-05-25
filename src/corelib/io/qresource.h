@@ -60,8 +60,12 @@ public:
     static bool registerResource(const QString &rccFilename, const QString &resourceRoot=QString());
     static bool unregisterResource(const QString &rccFilename, const QString &resourceRoot=QString());
 
+    static bool registerResource(const uchar *rccData, const QString &resourceRoot=QString());
+    static bool unregisterResource(const uchar *rccData, const QString &resourceRoot=QString());
+
 protected:
     friend class QResourceFileEngine;
+    friend class QResourceFileEngineIterator;
     bool isDir() const;
     inline bool isFile() const { return !isDir(); }
     QStringList children() const;

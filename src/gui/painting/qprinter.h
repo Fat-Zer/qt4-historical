@@ -77,7 +77,9 @@ public:
                        LargeFormat,
 		       LargeCapacity,
 		       Cassette,
-		       FormSource };
+		       FormSource,
+                       MaxPageSource
+    };
 
     enum PrinterState { Idle,
                         Active,
@@ -140,6 +142,10 @@ public:
 
     QList<int> supportedResolutions() const;
 
+#ifdef Q_WS_WIN
+    QList<PaperSource> supportedPaperSources() const;
+#endif
+
     void setFontEmbeddingEnabled(bool enable);
     bool fontEmbeddingEnabled() const;
 
@@ -176,10 +182,8 @@ public:
     int fromPage() const;
     int toPage() const;
 
-#ifndef QT_NO_PRINTDIALOG
     void setPrintRange(PrintRange range);
     PrintRange printRange() const;
-#endif
 
 #ifdef QT3_SUPPORT
 #ifdef Q_WS_MAC

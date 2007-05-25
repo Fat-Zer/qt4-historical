@@ -53,18 +53,27 @@ public:
     inline QStandardItemPrivate()
         : model(0),
           parent(0),
-          flags(Qt::ItemIsSelectable|Qt::ItemIsEnabled|Qt::ItemIsEditable
-                |Qt::ItemIsDragEnabled|Qt::ItemIsDropEnabled),
           rows(0),
-          columns(0)
+          columns(0),
+          lastIndexOf(2)
         { }
     virtual ~QStandardItemPrivate();
 
-    int childIndex(int row, int column) const;
-    inline int childIndex(const QStandardItem *child) const {
-        return children.indexOf(const_cast<QStandardItem*>(child));
+    inline int childIndex(int row, int column) const {
+        if ((row < 0) || (column < 0)
+            || (row >= rowCount()) || (column >= columnCount())) {
+            return -1;
+        }
+        return (row * columnCount()) + column;
     }
-    QPair<int, int> itemPosition(const QStandardItem *item) const;
+    inline int childIndex(const QStandardItem *child) {
+        int start = qMax(0, lastIndexOf -2);
+        lastIndexOf = children.indexOf(const_cast<QStandardItem*>(child), start);
+        if (lastIndexOf == -1 && start != 0)
+            lastIndexOf = children.lastIndexOf(const_cast<QStandardItem*>(child), start);
+        return lastIndexOf;
+    }
+    QPair<int, int> position() const;
     void setChild(int row, int column, QStandardItem *item,
                   bool emitChanged = false);
     inline int rowCount() const {
@@ -106,6 +115,7 @@ public:
     const QMap<int, QVariant> itemData() const;
 
     bool insertRows(int row, int count, const QList<QStandardItem*> &items);
+    bool insertRows(int row, const QList<QStandardItem*> &items);
     bool insertColumns(int column, int count, const QList<QStandardItem*> &items);
 
     void sortChildren(int column, Qt::SortOrder order);
@@ -113,12 +123,13 @@ public:
     QStandardItemModel *model;
     QStandardItem *parent;
     QVector<QWidgetItemData> values;
-    Qt::ItemFlags flags;
     QVector<QStandardItem*> children;
     int rows;
     int columns;
 
     QStandardItem *q_ptr;
+
+    int lastIndexOf;
 };
 
 class QStandardItemModelPrivate : public QAbstractItemModelPrivate

@@ -29,10 +29,11 @@
 static int qt_palette_count = 1;
 class QPalettePrivate {
 public:
-    QPalettePrivate() : ref(1), ser_no(qt_palette_count++) { }
+    QPalettePrivate() : ref(1), ser_no(qt_palette_count++), detach_no(0) { }
     QAtomic ref;
     QBrush br[QPalette::NColorGroups][QPalette::NColorRoles];
     int ser_no;
+    int detach_no;
 };
 
 static QColor qt_mix_colors(QColor a, QColor b)
@@ -378,8 +379,10 @@ void QPalette::setColorGroup(ColorGroup cg, const QColorGroup &g)
     "base" rather than literal colors like "red" or "turquoise". The color
     roles are enumerated and defined in the \l ColorRole documentation.
 
-    We strongly recommend that you use a system-supplied color group
-    and modify that as necessary.
+				We strongly recommend that you use the default palette of the
+				current style (returned by QApplication::standardPalette()) and
+				modify that as necessary. This is done by Qt's widgets when they
+				are drawn.
 
     To modify a color group you call the functions
     setColor() and setBrush(), depending on whether you want a pure
@@ -532,14 +535,14 @@ static void qt_palette_from_color(QPalette &pal, const QColor & button)
         base = Qt::black;
     }
     //inactive and active are the same..
-    pal.setColorGroup(QPalette::Active, QBrush(fg), QBrush(btn), QBrush(btn.light(150)),
-                      QBrush(btn.dark()), QBrush(btn.dark(150)), QBrush(fg), QBrush(Qt::white),
+    pal.setColorGroup(QPalette::Active, QBrush(fg), QBrush(btn), QBrush(btn.lighter(150)),
+                      QBrush(btn.darker()), QBrush(btn.darker(150)), QBrush(fg), QBrush(Qt::white),
                       QBrush(base), QBrush(bg));
-    pal.setColorGroup(QPalette::Inactive, QBrush(fg), QBrush(btn), QBrush(btn.light(150)),
-                      QBrush(btn.dark()), QBrush(btn.dark(150)), QBrush(fg), QBrush(Qt::white),
+    pal.setColorGroup(QPalette::Inactive, QBrush(fg), QBrush(btn), QBrush(btn.lighter(150)),
+                      QBrush(btn.darker()), QBrush(btn.darker(150)), QBrush(fg), QBrush(Qt::white),
                       QBrush(base), QBrush(bg));
-    pal.setColorGroup(QPalette::Disabled, QBrush(btn.dark()), QBrush(btn), QBrush(btn.light(150)),
-                      QBrush(btn.dark()), QBrush(btn.dark(150)), QBrush(btn.dark()),
+    pal.setColorGroup(QPalette::Disabled, QBrush(btn.darker()), QBrush(btn), QBrush(btn.lighter(150)),
+                      QBrush(btn.darker()), QBrush(btn.darker(150)), QBrush(btn.darker()),
                       QBrush(Qt::white), QBrush(bg), QBrush(bg));
 }
 
@@ -622,14 +625,14 @@ QPalette::QPalette(const QColor &button, const QColor &window)
         disfg = Qt::darkGray;
     }
     //inactive and active are identical
-    setColorGroup(Inactive, QBrush(fg), QBrush(btn), QBrush(btn.light(150)), QBrush(btn.dark()),
-                  QBrush(btn.dark(150)), QBrush(fg), QBrush(Qt::white), QBrush(base),
+    setColorGroup(Inactive, QBrush(fg), QBrush(btn), QBrush(btn.lighter(150)), QBrush(btn.darker()),
+                  QBrush(btn.darker(150)), QBrush(fg), QBrush(Qt::white), QBrush(base),
                   QBrush(bg));
-    setColorGroup(Active, QBrush(fg), QBrush(btn), QBrush(btn.light(150)), QBrush(btn.dark()),
-                  QBrush(btn.dark(150)), QBrush(fg), QBrush(Qt::white), QBrush(base),
+    setColorGroup(Active, QBrush(fg), QBrush(btn), QBrush(btn.lighter(150)), QBrush(btn.darker()),
+                  QBrush(btn.darker(150)), QBrush(fg), QBrush(Qt::white), QBrush(base),
                   QBrush(bg));
-    setColorGroup(Disabled, QBrush(disfg), QBrush(btn), QBrush(btn.light(150)),
-                  QBrush(btn.dark()), QBrush(btn.dark(150)), QBrush(disfg),
+    setColorGroup(Disabled, QBrush(disfg), QBrush(btn), QBrush(btn.lighter(150)),
+                  QBrush(btn.darker()), QBrush(btn.darker(150)), QBrush(disfg),
                   QBrush(Qt::white), QBrush(base), QBrush(bg));
 }
 
@@ -787,6 +790,7 @@ void QPalette::detach()
         if(!x->ref.deref())
             delete x;
     }
+    ++d->detach_no;
 }
 
 /*!
@@ -867,12 +871,15 @@ bool QPalette::isEqual(QPalette::ColorGroup group1, QPalette::ColorGroup group2)
     return true;
 }
 
-/*!
+/*! \obsolete
+
     Returns a number that identifies the contents of this QPalette
     object. Distinct QPalette objects can only have the same serial
     number if they refer to the same contents (but they don't have
     to). Also, the serial number of a QPalette may change during the
     lifetime of the object.
+
+    Use cacheKey() instead.
 
     \warning The serial number doesn't necessarily change when the
     palette is altered. This means that it may be dangerous to use it
@@ -883,6 +890,18 @@ bool QPalette::isEqual(QPalette::ColorGroup group1, QPalette::ColorGroup group2)
 int QPalette::serialNumber() const
 {
     return d->ser_no;
+}
+
+/*!
+    Returns a number that identifies the contents of this QPalette
+    object. Distinct QPalette objects can have the same key if
+    they refer to the same contents.
+
+    The cacheKey() will change when the palette is altered.
+*/
+qint64 QPalette::cacheKey() const
+{
+    return (((qint64) d->ser_no) << 32) | ((qint64) (d->detach_no));
 }
 
 /*!

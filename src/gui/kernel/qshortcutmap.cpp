@@ -49,19 +49,19 @@
 struct QShortcutEntry
 {
     QShortcutEntry()
-        : keyseq(0), context(Qt::WindowShortcut), enabled(false), id(0), autorepeat(1), owner(0)
+        : keyseq(0), context(Qt::WindowShortcut), enabled(false), autorepeat(1), id(0), owner(0)
     {}
 
     QShortcutEntry(const QKeySequence &k)
-        : keyseq(k), context(Qt::WindowShortcut), enabled(false), id(0), autorepeat(1), owner(0)
+        : keyseq(k), context(Qt::WindowShortcut), enabled(false), autorepeat(1), id(0), owner(0)
     {}
 
     QShortcutEntry(QObject *o, const QKeySequence &k, Qt::ShortcutContext c, int i)
-        : keyseq(k), context(c), enabled(true), id(i), autorepeat(1), owner(o)
+        : keyseq(k), context(c), enabled(true), autorepeat(1), id(i), owner(o)
     {}
 
     QShortcutEntry(QObject *o, const QKeySequence &k, Qt::ShortcutContext c, int i, bool a)
-        : keyseq(k), context(c), enabled(true), id(i), autorepeat(a), owner(o)
+        : keyseq(k), context(c), enabled(true), autorepeat(a), id(i), owner(o)
     {}
 
     bool operator<(const QShortcutEntry &f) const
@@ -70,8 +70,8 @@ struct QShortcutEntry
     QKeySequence keyseq;
     Qt::ShortcutContext context;
     bool enabled : 1;
-    signed int id : 31;
     bool autorepeat : 1;
+    signed int id;
     QObject *owner;
 };
 
@@ -159,7 +159,7 @@ int QShortcutMap::addShortcut(QObject *owner, const QKeySequence &key, Qt::Short
 
 /*! \internal
     Removes a shortcut from the global map.
-    If \a owner is 0, all entries in the map with the keysequence specified
+    If \a owner is 0, all entries in the map with the key sequence specified
     is removed. If \a key is null, all sequences for \a owner is removed from
     the map. If \a id is 0, any identical \a key sequences owned by \a owner
     are removed.
@@ -206,7 +206,7 @@ int QShortcutMap::removeShortcut(int id, QObject *owner, const QKeySequence &key
 
 /*! \internal
     Changes the enable state of a shortcut to \a enable.
-    If \a owner is 0, all entries in the map with the keysequence specified
+    If \a owner is 0, all entries in the map with the key sequence specified
     is removed. If \a key is null, all sequences for \a owner is removed from
     the map. If \a id is 0, any identical \a key sequences owned by \a owner
     are changed.
@@ -244,7 +244,7 @@ int QShortcutMap::setShortcutEnabled(bool enable, int id, QObject *owner, const 
 
 /*! \internal
     Changes the auto repeat state of a shortcut to \a enable.
-    If \a owner is 0, all entries in the map with the keysequence specified
+    If \a owner is 0, all entries in the map with the key sequence specified
     is removed. If \a key is null, all sequences for \a owner is removed from
     the map. If \a id is 0, any identical \a key sequences owned by \a owner
     are changed.
@@ -372,15 +372,6 @@ QKeySequence::SequenceMatch QShortcutMap::nextState(QKeyEvent *e)
             QKeyEvent pe = QKeyEvent(e->type(), Qt::Key_Tab, e->modifiers(), e->text());
             result = find(&pe);
         }
-#if 0
-        // ### This is not needed anymore, kill it when qkeymapper is done...
-        // If still no result, try removing the Shift modifier
-        if (result == QKeySequence::NoMatch) {
-            QKeyEvent pe = QKeyEvent(e->type(), e->key(),
-                                     e->modifiers()&~Qt::ShiftModifier, e->text());
-            result = find(&pe);
-        }
-#endif
     }
 
     // Should we eat this key press?
@@ -414,7 +405,7 @@ QKeySequence::SequenceMatch QShortcutMap::find(QKeyEvent *e)
     static QVector<QKeySequence> newEntries;
     createNewSequences(e, newEntries);
 #if defined(DEBUG_QSHORTCUTMAP)
-    qDebug() << "Possible shortcut keysequences:" << newEntries;
+    qDebug() << "Possible shortcut key sequences:" << newEntries;
 #endif
 
     // Should never happen
@@ -470,13 +461,13 @@ QKeySequence::SequenceMatch QShortcutMap::find(QKeyEvent *e)
         if (oneKSResult > result) {
             okEntries.clear();
 #if defined(DEBUG_QSHORTCUTMAP)
-            qDebug() << "Found better match (" << newEntries << "), clearing keysequence list";
+            qDebug() << "Found better match (" << newEntries << "), clearing key sequence list";
 #endif
         }
         if (oneKSResult && oneKSResult >= result) {
             okEntries << newEntries.at(i);
 #if defined(DEBUG_QSHORTCUTMAP)
-            qDebug() << "Added ok keysequence" << newEntries;
+            qDebug() << "Added ok key sequence" << newEntries;
 #endif
         }
     }

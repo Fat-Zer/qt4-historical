@@ -26,18 +26,18 @@
 
 #include "propertyeditor_global.h"
 #include "qpropertyeditor.h"
-
-#include <QtDesigner/QtDesigner>
+#include <qdesigner_propertyeditor_p.h>
 
 #include <QtCore/QPointer>
 
 class DomProperty;
+class QDesignerMetaDataBaseItemInterface;
 class QDesignerPropertySheetExtension;
 
 namespace qdesigner_internal {
-    class MetaDataBaseItem;
+class StringProperty;
 
-class QT_PROPERTYEDITOR_EXPORT PropertyEditor: public QDesignerPropertyEditorInterface
+class QT_PROPERTYEDITOR_EXPORT PropertyEditor: public QDesignerPropertyEditor
 {
     Q_OBJECT
 public:
@@ -49,16 +49,20 @@ public:
     virtual bool isReadOnly() const;
     virtual void setReadOnly(bool readOnly);
     virtual void setPropertyValue(const QString &name, const QVariant &value, bool changed = true);
+    virtual void setPropertyComment(const QString &name, const QString &value);
+    virtual void updatePropertySheet();
+
     virtual void setObject(QObject *object);
 
     virtual QObject *object() const
     { return m_object; }
 
     virtual QString currentPropertyName() const;
-
+    
 private slots:
-    void firePropertyChanged(IProperty *property);
-    void resetProperty(const QString &prop_name);
+    void slotFirePropertyChanged(IProperty *property);
+    void slotResetProperty(const QString &prop_name);
+    void slotCustomContextMenuRequested(const QPoint &pos);
 
 private:
     IProperty *propertyByName(IProperty *p, const QString &name);
@@ -67,13 +71,15 @@ private:
     static IProperty *createSpecialProperty(const QVariant &value, const QString &name);
 
 private:
-    MetaDataBaseItem *metaDataBaseItem() const;
-                
+    QDesignerMetaDataBaseItemInterface *metaDataBaseItem() const;
+    StringProperty* createStringProperty(QObject *object, const QString &pname, const QVariant &value, bool isMainContainer) const;
+  
     QDesignerFormEditorInterface *m_core;
     QPropertyEditor *m_editor;
     IPropertyGroup *m_properties;
     QDesignerPropertySheetExtension *m_prop_sheet;
     QPointer<QObject> m_object;
+    QMap<int, IProperty *> m_indexToProperty;
 };
 
 }  // namespace qdesigner_internal

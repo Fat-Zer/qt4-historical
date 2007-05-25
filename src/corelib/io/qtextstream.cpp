@@ -212,7 +212,7 @@ static const int QTEXTSTREAM_BUFFERSIZE = 16384;
                        there are no decimals.
     \value ForceSign  Always put the sign in numbers, even for positive numbers.
     \value UppercaseBase  Use uppercase versions of base prefixes ("0X", "0B").
-    \value UppercaseDigits  Use uppercare letters for expressing
+    \value UppercaseDigits  Use uppercase letters for expressing
                             digits 10 to 35 instead of lowercase.
 
     \sa setNumberFlags()
@@ -233,6 +233,7 @@ static const int QTEXTSTREAM_BUFFERSIZE = 16384;
 #include "qtextstream.h"
 #include "qbuffer.h"
 #include "qfile.h"
+#include "qnumeric.h"
 #ifndef QT_NO_TEXTCODEC
 #include "qtextcodec.h"
 #endif
@@ -558,6 +559,7 @@ bool QTextStreamPrivate::fillReadBuffer(qint64 maxBytes)
     qDebug("QTextStreamPrivate::fillReadBuffer(), device->read(\"%s\", %d) == %d",
            qt_prettyDebug(buf, qMin(32,int(bytesRead)) , int(bytesRead)).constData(), sizeof(buf), int(bytesRead));
 #endif
+    
     if (bytesRead <= 0)
         return false;
 
@@ -567,7 +569,7 @@ bool QTextStreamPrivate::fillReadBuffer(qint64 maxBytes)
     // convert to unicode
     readBuffer += codec->toUnicode(buf, bytesRead, &readConverterState);
 #else
-    readBuffer += QString(QByteArray(buf, bytesRead));
+    readBuffer += QString::fromLatin1(QByteArray(buf, bytesRead).constData());
 #endif
 
     // reset the Text flag.
@@ -1229,8 +1231,10 @@ void QTextStream::setDevice(QIODevice *device)
         delete d->device;
         d->deleteDevice = false;
     }
+    
+    d->reset();
+    d->status = Ok;    
     d->device = device;
-    d->string = 0;
 #ifndef QT_NO_QOBJECT
     d->deviceClosedNotifier.setupDevice(this, d->device);
 #endif
@@ -1266,8 +1270,10 @@ void QTextStream::setString(QString *string, QIODevice::OpenMode openMode)
         delete d->device;
         d->deleteDevice = false;
     }
+    
+    d->reset();
+    d->status = Ok;
     d->string = string;
-    d->device = 0;
     d->stringOpenMode = openMode;
 }
 
@@ -1805,26 +1811,41 @@ bool QTextStreamPrivate::getReal(double *f)
         ExpMark = 5,
         ExpSign = 6,
         Exponent = 7,
-        Done = 8
+        Nan1 = 8,
+        Nan2 = 9,
+        Inf1 = 10,
+        Inf2 = 11,
+        NanInf = 12,
+        Done = 13
     };
     enum InputToken {
         None = 0,
         InputSign = 1,
         InputDigit = 2,
         InputDot = 3,
-        InputExp = 4
+        InputExp = 4,
+        InputI = 5,
+        InputN = 6,
+        InputF = 7,
+        InputA = 8,
+        InputT = 9
     };
 
-    static uchar table[8][5] = {
-        // None InputSign InputDigit InputDot InputExp
-        { 0,    Sign,     Mantissa,  Dot,     0        }, // Init
-        { 0,    0,        Mantissa,  Dot,     0        }, // Sign
-        { Done, Done,     Mantissa,  Dot,     ExpMark  }, // Mantissa
-        { 0,    0,        Abscissa,  0,       0        }, // Dot
-        { Done, Done,     Abscissa,  Done,    ExpMark  }, // Abscissa
-        { 0,    ExpSign,  Exponent,  0,       0        }, // ExpMark
-        { 0,    0,        Exponent,  0,       0        }, // ExpSign
-        { Done, Done,     Exponent,  Done,    Done     }  // Exponent
+    static uchar table[13][10] = {
+        // None InputSign InputDigit InputDot InputExp InputI    InputN    InputF    InputA    InputT
+        { 0,    Sign,     Mantissa,  Dot,     0,       Inf1,     Nan1,     0,        0,        0      }, // 0  Init
+        { 0,    0,        Mantissa,  Dot,     0,       Inf1,     Nan1,     0,        0,        0      }, // 1  Sign
+        { Done, Done,     Mantissa,  Dot,     ExpMark, 0,        0,        0,        0,        0      }, // 2  Mantissa
+        { 0,    0,        Abscissa,  0,       0,       0,        0,        0,        0,        0      }, // 3  Dot
+        { Done, Done,     Abscissa,  Done,    ExpMark, 0,        0,        0,        0,        0      }, // 4  Abscissa
+        { 0,    ExpSign,  Exponent,  0,       0,       0,        0,        0,        0,        0      }, // 5  ExpMark
+        { 0,    0,        Exponent,  0,       0,       0,        0,        0,        0,        0      }, // 6  ExpSign
+        { Done, Done,     Exponent,  Done,    Done,    0,        0,        0,        0,        0      }, // 7  Exponent
+        { 0,    0,        0,         0,       0,       0,        0,        0,        Nan2,     0      }, // 8  Nan1
+        { 0,    0,        0,         0,       0,       0,        NanInf,   0,        0,        0      }, // 9  Nan2
+        { 0,    0,        0,         0,       0,       0,        Inf2,     0,        0,        0      }, // 10 Inf1
+        { 0,    0,        0,         0,       0,       0,        0,        NanInf,   0,        0      }, // 11 Inf2
+        { Done, 0,        0,         0,       0,       0,        0,        0,        0,        0      }, // 11 NanInf
     };
 
     ParserState state = Init;
@@ -1855,6 +1876,21 @@ bool QTextStreamPrivate::getReal(double *f)
         case 'E':
             input = InputExp;
             break;
+        case 'i': case 'I':
+            input = InputI;
+            break;
+        case 'n': case 'N':
+            input = InputN;
+            break;
+        case 'f': case 'F':
+            input = InputF;
+            break;
+        case 'a': case 'A':
+            input = InputA;
+            break;
+        case 't': case 'T':
+            input = InputT;
+            break;
         default:
             input = None;
             break;
@@ -1880,11 +1916,25 @@ bool QTextStreamPrivate::getReal(double *f)
 
     if (i == 0)
         return false;
+    if (!f)
+        return true;
 
-    buf[i] = '\0';
-
-    if (f)
+    // ### Number parsing should really be handled by QLocale.
+    char c0 = buf[0] | 32; // tolower
+    char c1 = buf[1] | 32; // tolower
+    bool sign = true;
+    if (c0 == '+' || c0 == '-') {
+        sign = (c0 == '+');
+        c0 = c1;
+    }
+    if (c0 == 'i') {
+        *f = sign ? qInf() : -qInf();
+    } else if (c0 == 'n') {
+        *f = qQNaN();
+    } else {
+        buf[i] = '\0';
         *f = strtod(buf, 0);
+    }
     return true;
 }
 
@@ -2034,6 +2084,9 @@ QTextStream &QTextStream::operator>>(qulonglong &i)
     the correct type. If no real number is detect on the stream, \a f
     is set to 0.0.
 
+    As a special exception, QTextStream allows the strings "nan" and "inf" to
+    represent NAN and INF floats or doubles.
+
     Leading whitespace is skipped.
 */
 QTextStream &QTextStream::operator>>(float &f)
@@ -2148,26 +2201,28 @@ QTextStream &QTextStream::operator>>(char *c)
  */
 bool QTextStreamPrivate::putNumber(qulonglong number, bool negative)
 {
-    QString tmp;
+    QString prefix;
     if (negative)
-        tmp = QLatin1Char('-');
+        prefix = QLatin1Char('-');
     else if (numberFlags & QTextStream::ForceSign)
-        tmp = QLatin1Char('+');
+        prefix = QLatin1Char('+');
 
     if (numberFlags & QTextStream::ShowBase) {
         switch (integerBase) {
-        case 2: tmp += QLatin1String("0b"); break;
-        case 8: tmp += QLatin1String("0"); break;
-        case 16: tmp += QLatin1String("0x"); break;
+        case 2: prefix += QLatin1String("0b"); break;
+        case 8: prefix += QLatin1String("0"); break;
+        case 16: prefix += QLatin1String("0x"); break;
         default: break;
         }
+        if (numberFlags & QTextStream::UppercaseBase)
+            prefix = prefix.toUpper(); // ### in-place instead
     }
 
-    tmp += QString::number(number, integerBase ? integerBase : 10);
-    if (numberFlags & QTextStream::UppercaseBase)
-        tmp = tmp.toUpper(); // ### in-place instead
+    QString digits = QString::number(number, integerBase ? integerBase : 10);
+    if (numberFlags & QTextStream::UppercaseDigits)
+        digits = digits.toUpper(); // ### in-place instead
 
-    return putString(tmp);
+    return putString(prefix + digits);
 }
 
 /*!
@@ -2338,6 +2393,21 @@ QTextStream &QTextStream::operator<<(double f)
 {
     Q_D(QTextStream);
     CHECK_VALID_STREAM(*this);
+
+    // Handle nans and infs.
+    bool upperCaseDigits = (d->numberFlags & QTextStream::UppercaseDigits);
+    if (qIsInf(f)) {
+        if (f < 0) {
+            operator<<(upperCaseDigits ? "-INF" : "-inf");
+        } else {
+            operator<<(upperCaseDigits ? "INF" : "inf");
+        }
+        return *this;
+    }
+    if (qIsNaN(f)) {
+        operator<<(upperCaseDigits ? "NAN" : "nan");
+        return *this;
+    }
 
     char f_char;
     char format[16];

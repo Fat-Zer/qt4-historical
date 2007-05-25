@@ -56,7 +56,7 @@ public:
             setSpacing(space);
         if (margin != -1)
             setMargin(margin);
-        setObjectName(name);
+        setObjectName(QString::fromAscii(name));
         init();
     }
     ~Q3DockAreaLayout() {}

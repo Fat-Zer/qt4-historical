@@ -26,9 +26,9 @@
 
 #include "formeditor_global.h"
 
-#include <QtDesigner/QtDesigner>
+#include <QtDesigner/QDesignerFormEditorInterface>
 
-#include <QtCore/QObject>
+class QObject;
 
 namespace qdesigner_internal {
 

@@ -48,6 +48,17 @@ public:
 #endif
 };
 
+// ### Qt 5: move the below into QIconEngine
+class Q_GUI_EXPORT QIconEngineV2 : public QIconEngine
+{
+public:
+    virtual QString key() const;
+    virtual QIconEngineV2 *clone() const;
+    virtual bool read(QDataStream &in);
+    virtual bool write(QDataStream &out) const;
+    virtual void virtual_hook(int id, void *data);
+};
+
 QT_END_HEADER
 
 #endif // QICONENGINE_H

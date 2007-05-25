@@ -139,9 +139,11 @@ static void construct(QVariant::Private *x, const void *copy)
     case QVariant::Locale:
         v_construct<QLocale>(x, copy);
         break;
+#ifndef QT_NO_REGEXP
     case QVariant::RegExp:
         v_construct<QRegExp>(x, copy);
         break;
+#endif
     case QVariant::Int:
         x->data.i = copy ? *static_cast<const int *>(copy) : 0;
         break;
@@ -238,9 +240,11 @@ static void clear(QVariant::Private *d)
     case QVariant::Locale:
         v_clear<QLocale>(d);
         break;
+#ifndef QT_NO_REGEXP
     case QVariant::RegExp:
         v_clear<QRegExp>(d);
         break;
+#endif
     case QVariant::LongLong:
     case QVariant::ULongLong:
     case QVariant::Double:
@@ -364,8 +368,10 @@ static bool compare(const QVariant::Private *a, const QVariant::Private *b)
         return *v_cast<QUrl>(a) == *v_cast<QUrl>(b);
     case QVariant::Locale:
         return *v_cast<QLocale>(a) == *v_cast<QLocale>(b);
+#ifndef QT_NO_REGEXP
     case QVariant::RegExp:
         return *v_cast<QRegExp>(a) == *v_cast<QRegExp>(b);
+#endif
     case QVariant::Int:
         return a->data.i == b->data.i;
     case QVariant::UInt:
@@ -1160,6 +1166,7 @@ const QVariant::Handler *QVariant::handler = &qt_kernel_variant_handler;
     \value LongLong a \l qlonglong
     \value Map  a QVariantMap
     \value Matrix  a QMatrix
+    \value Transform  a QTransform
     \value Palette  a QPalette
     \value Pen  a QPen
     \value Pixmap  a QPixmap
@@ -1310,12 +1317,13 @@ QVariant::QVariant(QDataStream &s)
     \sa QTextCodec::setCodecForCStrings()
 */
 
-
+#ifndef QT_NO_CAST_FROM_ASCII
 QVariant::QVariant(const char *val)
 {
     QString s = QString::fromAscii(val);
     create(String, &s);
 }
+#endif
 
 /*!
   \fn QVariant::QVariant(const QStringList &val)
@@ -1542,7 +1550,9 @@ QVariant::QVariant(const QSizeF &s) { create(SizeF, &s); }
 #endif
 QVariant::QVariant(const QUrl &u) { create(Url, &u); }
 QVariant::QVariant(const QLocale &l) { create(Locale, &l); }
+#ifndef QT_NO_REGEXP
 QVariant::QVariant(const QRegExp &regExp) { create(RegExp, &regExp); }
+#endif
 QVariant::QVariant(Qt::GlobalColor color) { create(62, &color); }
 
 /*!
@@ -2119,10 +2129,12 @@ QLocale QVariant::toLocale() const
 
     \sa canConvert(), convert()
 */
+#ifndef QT_NO_REGEXP
 QRegExp QVariant::toRegExp() const
 {
     return qVariantToHelper<QRegExp>(d, RegExp, handler);
 }
+#endif
 
 /*!
     \fn QChar QVariant::toChar() const

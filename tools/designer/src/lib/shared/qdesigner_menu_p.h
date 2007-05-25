@@ -53,8 +53,7 @@ class QMimeData;
 
 namespace qdesigner_internal {
     class CreateSubmenuCommand;
-    class RemoveActionFromCommand;
-    class InsertActionIntoCommand;
+    class ActionInsertionCommand;
 }
 
 class QDESIGNER_SHARED_EXPORT QDesignerMenu: public QMenu
@@ -92,7 +91,8 @@ public:
     void moveDown(bool ctrl);
 
 private slots:
-    void slotRemoveSelectedAction(QAction *action);
+    void slotAddSeparator();
+    void slotRemoveSelectedAction();
     void slotShowSubMenuNow();
     void slotDeactivateNow();
     void slotAdjustSizeNow();
@@ -106,6 +106,7 @@ protected:
     virtual void paintEvent(QPaintEvent *event);
     virtual void keyPressEvent(QKeyEvent *event);
     virtual void keyReleaseEvent(QKeyEvent *event);
+    virtual void showEvent(QShowEvent *event);
 
     bool handleEvent(QWidget *widget, QEvent *event);
     bool handleMouseDoubleClickEvent(QWidget *widget, QMouseEvent *event);
@@ -115,7 +116,7 @@ protected:
     bool handleContextMenuEvent(QWidget *widget, QContextMenuEvent *event);
     bool handleKeyPressEvent(QWidget *widget, QKeyEvent *event);
 
-    void startDrag(const QPoint &pos);
+    void startDrag(const QPoint &pos, Qt::KeyboardModifiers modifiers);
 
     void adjustIndicator(const QPoint &pos);
     int findAction(const QPoint &pos) const;
@@ -123,10 +124,9 @@ protected:
 
     QAction *currentAction() const;
     int realActionCount() const;
-    QAction *actionMimeData(const QMimeData *mimeData) const;
-    bool checkAction(QAction *action) const;
+    enum ActionDragCheck { NoActionDrag, ActionDragOnSubMenu, AcceptActionDrag };
+    ActionDragCheck checkAction(QAction *action) const;
 
-    void updateCurrentAction();
     void showSubMenu(QAction *action);
 
     enum LeaveEditMode {
@@ -156,6 +156,8 @@ protected:
     QRect subMenuPixmapRect(QAction *action) const;
     bool hasSubMenuPixmap(QAction *action) const;
 
+    void selectCurrentAction();
+
 private:
     QPoint m_startPosition;
     int m_currentIndex;
@@ -171,8 +173,7 @@ private:
     int m_lastSubMenuIndex;
 
     friend class qdesigner_internal::CreateSubmenuCommand;
-    friend class qdesigner_internal::RemoveActionFromCommand;
-    friend class qdesigner_internal::InsertActionIntoCommand;
+    friend class qdesigner_internal::ActionInsertionCommand;
 };
 
 #endif // QDESIGNER_MENU_H

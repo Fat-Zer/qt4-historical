@@ -35,18 +35,16 @@
 // We mean it.
 //
 
-#include <QtGui/QWidget>
-
 #include "shared_global_p.h"
+
+#include <QtGui/QWidget>
 
 class QDesignerFormEditorInterface;
 class QDesignerFormWindowInterface;
 class QPushButton;
 class QToolButton;
-class QLineEdit;
 class QComboBox;
 class QStackedWidget;
-class QString;
 class QTreeView;
 class QModelIndex;
 
@@ -59,11 +57,14 @@ class QDESIGNER_SHARED_EXPORT ResourceEditor : public QWidget
     Q_OBJECT
 
 public:
-    ResourceEditor(QDesignerFormEditorInterface *core, QWidget *parent = 0);
-
+    ResourceEditor(QDesignerFormEditorInterface *core,
+                   bool dragEnabled,
+                   QWidget *parent = 0);
+    
     QDesignerFormWindowInterface *form() const { return m_form; }
     int qrcCount() const;
     void setCurrentFile(const QString &qrc_path, const QString &file_path);
+    bool isIcon(const QString &qrc_path, const QString &file_path) const;
 
 signals:
     void fileActivated(const QString &qrc_path, const QString &file_path);
@@ -91,8 +92,6 @@ private slots:
     void itemChanged(const QModelIndex &index);
 
 private:
-    QDesignerFormWindowInterface *m_form;
-
     void getCurrentItem(QString &prefix, QString &file);
     QTreeView *currentView() const;
     ResourceModel *currentModel() const;
@@ -105,6 +104,7 @@ private:
     void insertEmptyComboItem();
     void removeEmptyComboItem();
 
+    QDesignerFormWindowInterface *m_form;
     QComboBox *m_qrc_combo;
     QStackedWidget *m_qrc_stack;
     QToolButton *m_add_button;
@@ -112,6 +112,7 @@ private:
     QPushButton *m_add_files_button;
     QToolButton *m_remove_qrc_button;
     bool m_ignore_update;
+    const bool m_dragEnabled;
 };
 
 } // namespace qdesigner_internal

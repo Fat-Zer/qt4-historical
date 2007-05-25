@@ -42,7 +42,8 @@
 class Q_CORE_EXPORT QPersistentModelIndexData
 {
 public:
-    QPersistentModelIndexData() : model (0) {}
+    QPersistentModelIndexData() : model(0) {}
+    QPersistentModelIndexData(const QModelIndex &idx) : index(idx), model(idx.model()) {}
     QModelIndex index;
     QAtomic ref;
     const QAbstractItemModel *model;
@@ -57,6 +58,7 @@ class Q_CORE_EXPORT QAbstractItemModelPrivate : public QObjectPrivate
 public:
     QAbstractItemModelPrivate() : QObjectPrivate(), supportedDragActions(-1) {}
     void removePersistentIndexData(QPersistentModelIndexData *data);
+    void addPersistentIndexData(QPersistentModelIndexData *data);
     void invalidate(int position);
     void rowsAboutToBeInserted(const QModelIndex &parent, int first, int last);
     void rowsInserted(const QModelIndex &parent, int first, int last);
@@ -78,11 +80,11 @@ public:
     }
 
     inline bool indexValid(const QModelIndex &index) const {
-         return (index.row() >= 0) && (index.column() >= 0) && (index.model() == q_func()); 
+         return (index.row() >= 0) && (index.column() >= 0) && (index.model() == q_func());
     }
 
     inline void invalidatePersistentIndexes() {
-        QList<QPersistentModelIndexData*>::iterator it = persistent.indexes.begin();
+        QVector<QPersistentModelIndexData*>::iterator it = persistent.indexes.begin();
         for (; it != persistent.indexes.end(); ++it) {
             Q_ASSERT((*it));
             (*it)->index = QModelIndex();
@@ -100,9 +102,11 @@ public:
     QStack<Change> changes;
 
     struct Persistent {
-        QList<QPersistentModelIndexData*> indexes;
+        Persistent() : previous(0) {}
+        QVector<QPersistentModelIndexData*> indexes;
         QStack<QList<int> > moved;
         QStack<QList<int> > invalidated;
+        QPersistentModelIndexData *previous; // optimization
     } persistent;
 
     Qt::DropActions supportedDragActions;

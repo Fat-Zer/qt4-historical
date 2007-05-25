@@ -41,6 +41,9 @@
 #include <qlocale.h>
 #include <qevent.h>
 
+#if defined (Q_WS_MAC64)
+# include <private/qt_mac_p.h>
+#endif
 
 class QKeyMapperPrivate;
 class QKeyMapper : public QObject
@@ -79,6 +82,7 @@ enum WindowsNativeModifiers {
     CapsLock             = 0x00000100,
     NumLock              = 0x00000200,
     ScrollLock           = 0x00000400,
+    ExtendedKey          = 0x01000000,
 
     // Convenience mappings
     ShiftAny             = 0x00000011,
@@ -109,6 +113,7 @@ struct QXCoreDesc {
 #endif
 
 struct KeyboardLayoutItem;
+typedef struct __TISInputSource * TISInputSourceRef;
 class QKeyEvent;
 class QKeyMapperPrivate : public QObjectPrivate
 {
@@ -160,10 +165,14 @@ public:
 
     enum { NullMode, UnicodeMode, OtherMode } keyboard_mode;
     union {
-        UCKeyboardLayout *unicode;
+        const UCKeyboardLayout *unicode;
         void *other;
     } keyboard_layout_format;
+#ifdef Q_WS_MAC64
+    QCFType<TISInputSourceRef> currentInputSource;
+#else
     KeyboardLayoutRef currentKeyboardLayout;
+#endif
     KeyboardLayoutKind keyboard_kind;
     UInt32 keyboard_dead;
     KeyboardLayoutItem *keyLayout[256];

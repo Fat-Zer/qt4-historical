@@ -24,21 +24,11 @@
 #ifndef WIDGETBOX_H
 #define WIDGETBOX_H
 
-#include <QtXml/QDomDocument>
-
-#include <QtDesigner/QtDesigner>
-
 #include "widgetbox_global.h"
+#include <qdesigner_widgetbox_p.h>
 
 class QDesignerFormEditorInterface;
 class QDesignerFormWindowInterface;
-class QStackedLayout;
-class QDomElement;
-class QEvent;
-class QMenu;
-class QAction;
-class QActionGroup;
-class DomWidget;
 
 namespace qdesigner_internal {
 
@@ -46,7 +36,7 @@ class WidgetBoxTreeView;
 class WidgetCollectionModel;
 class Scratchpad;
 
-class QT_WIDGETBOX_EXPORT WidgetBox : public QDesignerWidgetBoxInterface
+class QT_WIDGETBOX_EXPORT WidgetBox : public QDesignerWidgetBox
 {
     Q_OBJECT
 public:
@@ -72,8 +62,15 @@ public:
     virtual bool load();
     virtual bool save();
 
+    virtual bool loadContents(const QString &contents);
+
+protected:
+    virtual void dragEnterEvent (QDragEnterEvent * event);
+    virtual void dragMoveEvent(QDragMoveEvent * event);
+    virtual void dropEvent (QDropEvent * event);
+
 private slots:
-    void handleMousePress(const QString &xml, const QPoint &global_mouse_pos);
+    void handleMousePress(const QString &name, const QString &xml, bool custom, const QPoint &global_mouse_pos);
 
 private:
     QDesignerFormEditorInterface *m_core;

@@ -29,21 +29,26 @@ TRANSLATOR qdesigner_internal::WidgetEditorTool
 #include "formwindow.h"
 
 // sdk
-#include <QtDesigner/QtDesigner>
+#include <QtDesigner/QDesignerFormEditorInterface>
+#include <QtDesigner/QDesignerWidgetFactoryInterface>
+#include <QtDesigner/QDesignerWidgetBoxInterface>
+
 #include <layoutinfo_p.h>
+#include <qdesigner_dnditem_p.h>
 
 #include <QtGui/qevent.h>
 #include <QtGui/QAction>
 #include <QtGui/QMainWindow>
+#include <QtGui/QCursor>
 #include <QtCore/qdebug.h>
 
 using namespace qdesigner_internal;
 
 WidgetEditorTool::WidgetEditorTool(FormWindow *formWindow)
     : QDesignerFormWindowToolInterface(formWindow),
-      m_formWindow(formWindow)
+      m_formWindow(formWindow),
+      m_action(new QAction(tr("Edit Widgets"), this))
 {
-    m_action = new QAction(tr("Edit Widgets"), this);
 }
 
 QAction *WidgetEditorTool::action() const
@@ -101,7 +106,7 @@ bool WidgetEditorTool::mainWindowSeparatorEvent(QWidget *widget, QEvent *event)
 
 bool WidgetEditorTool::handleEvent(QWidget *widget, QWidget *managedWidget, QEvent *event)
 {
-    bool passive = core()->widgetFactory()->isPassiveInteractor(widget) != 0
+    const bool passive = core()->widgetFactory()->isPassiveInteractor(widget) != 0
                     || mainWindowSeparatorEvent(widget, event); // separators in QMainWindow
                                                                 // are no longer widgets
 
@@ -138,7 +143,16 @@ bool WidgetEditorTool::handleEvent(QWidget *widget, QWidget *managedWidget, QEve
     case QEvent::ContextMenu:
         return !passive && handleContextMenu(widget, managedWidget, static_cast<QContextMenuEvent*>(event));
 
-    default: break;
+    case QEvent::DragEnter:
+        return handleDragEnterMoveEvent(widget, managedWidget, static_cast<QDragEnterEvent *>(event), true);
+    case QEvent::DragMove:
+        return handleDragEnterMoveEvent(widget, managedWidget, static_cast<QDragEnterEvent *>(event), false);
+    case QEvent::DragLeave:
+        return handleDragLeaveEvent(widget, managedWidget, static_cast<QDragLeaveEvent *>(event));
+    case QEvent::Drop:
+        return handleDropEvent(widget, managedWidget, static_cast<QDropEvent *>(event));
+    default:
+        break;
 
     } // end switch
 
@@ -188,6 +202,77 @@ bool WidgetEditorTool::handlePaintEvent(QWidget *widget, QWidget *managedWidget,
     Q_UNUSED(managedWidget);
     Q_UNUSED(e);
 
+    return false;
+}
+
+bool WidgetEditorTool::handleDragEnterMoveEvent(QWidget *, QWidget *, QDragMoveEvent *e, bool isEnter)
+{
+    const QDesignerMimeData *mimeData = qobject_cast<const QDesignerMimeData *>(e->mimeData());
+    if (!mimeData)
+        return false;
+
+    if (!m_formWindow->hasFeature(QDesignerFormWindowInterface::EditFeature)) {
+        e->ignore();
+        return true;
+    }
+
+    const QPoint formPos = e->pos();
+    const QPoint globalPos = m_formWindow->mapToGlobal(formPos);
+    const FormWindowBase::WidgetUnderMouseMode wum = mimeData->items().size() == 1 ? FormWindowBase::FindSingleSelectionDropTarget : FormWindowBase::FindMultiSelectionDropTarget;
+    QWidget *dropTarget = m_formWindow->widgetUnderMouse(formPos, wum);
+    if (m_lastDropTarget && dropTarget != m_lastDropTarget)
+        m_formWindow->highlightWidget(m_lastDropTarget, m_lastDropTarget->mapFromGlobal(globalPos), FormWindow::Restore);
+
+    m_lastDropTarget = dropTarget;
+
+    if (m_lastDropTarget)
+        m_formWindow->highlightWidget(m_lastDropTarget, m_lastDropTarget->mapFromGlobal(globalPos), FormWindow::Highlight);
+
+    if (isEnter || m_lastDropTarget)
+        mimeData->acceptEvent(e);
+    else
+        e->ignore();
+    return true;
+}
+
+bool WidgetEditorTool::handleDropEvent(QWidget *widget, QWidget *, QDropEvent *e)
+{
+    const QDesignerMimeData *mimeData = qobject_cast<const QDesignerMimeData *>(e->mimeData());
+    if (!mimeData)
+        return false;
+
+    if (!m_lastDropTarget ||
+        !m_formWindow->hasFeature(QDesignerFormWindowInterface::EditFeature)) {
+        e->ignore();
+        return true;
+    }
+    // FormWindow determines the position from the decoration.
+    const QPoint globalPos = widget->mapToGlobal(e->pos());
+    mimeData->moveDecoration(globalPos);
+    if (!m_formWindow->dropWidgets(mimeData->items(), m_lastDropTarget, globalPos)) {
+        e->ignore();
+        return true;
+    }
+    mimeData->acceptEvent(e);
+    return true;
+}
+
+bool WidgetEditorTool::restoreDropHighlighting()
+{
+    if (!m_lastDropTarget)
+        return false;
+
+    m_formWindow->highlightWidget(m_lastDropTarget, m_lastDropTarget->mapFromGlobal(QCursor::pos()), FormWindow::Restore);
+    m_lastDropTarget = 0;
+    return true;
+}
+
+bool WidgetEditorTool::handleDragLeaveEvent(QWidget *, QWidget *, QDragLeaveEvent *event)
+{
+    if (restoreDropHighlighting()) {
+        event->accept();
+        return true;
+    }
     return false;
 }
 

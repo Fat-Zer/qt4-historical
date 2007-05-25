@@ -37,6 +37,7 @@
 
 #include "QtCore/qabstractfileengine.h"
 #include "private/qiodevice_p.h"
+#include "private/qringbuffer_p.h"
 
 class QFilePrivate : public QIODevicePrivate
 {
@@ -53,6 +54,12 @@ protected:
     mutable QAbstractFileEngine *fileEngine;
     bool isOpen;
 
+    bool lastWasWrite;
+    QRingBuffer writeBuffer;
+    inline bool ensureFlushed() const;
+
+    bool putCharHelper(char c);
+    
     QFile::FileError error;
     void setError(QFile::FileError err);
     void setError(QFile::FileError err, const QString &errorString);

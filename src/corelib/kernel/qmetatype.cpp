@@ -32,7 +32,9 @@
 #include "qlocale.h"
 
 #ifdef QT_BOOTSTRAPPED
+# ifndef QT_NO_GEOM_VARIANT
 #  define QT_NO_GEOM_VARIANT
+# endif
 #else
 #  include "qbitarray.h"
 #  include "qurl.h"
@@ -167,6 +169,7 @@
     \value QLocale QLocale
     \value QBitmap QBitmap
     \value QMatrix QMatrix
+    \value QTransform QTransform
 
     \value User  Base value for user types
 
@@ -273,6 +276,7 @@ static const struct { const char * typeName; int type; } types[] = {
     {"QTextLength", QMetaType::QTextLength},
     {"QTextFormat", QMetaType::QTextFormat},
     {"QMatrix", QMetaType::QMatrix},
+    {"QTransform", QMetaType::QTransform},
 
     /* All Metatype builtins */
     {"void*", QMetaType::VoidStar},
@@ -443,17 +447,20 @@ int QMetaType::registerType(const char *typeName, Destructor destructor,
 }
 
 /*!
-    Returns true if the custom datatype with ID \a type is registered;
+    Returns true if the datatype with ID \a type is registered;
     otherwise returns false.
 
     \sa type(), typeName(), Type
 */
 bool QMetaType::isRegistered(int type)
 {
+    if (type >= 0 && type < User) {
+        // predefined type
+        return true;
+    }
     QReadLocker locker(customTypesLock());
-
     const QVector<QCustomTypeInfo> * const ct = customTypes();
-    return (type < User) || ((type >= User) && (ct && ct->count() > type - User));
+    return ((type >= User) && (ct && ct->count() > type - User));
 }
 
 /*!
@@ -633,6 +640,7 @@ bool QMetaType::save(QDataStream &stream, int type, const void *data)
     case QMetaType::QTextLength:
     case QMetaType::QTextFormat:
     case QMetaType::QMatrix:
+    case QMetaType::QTransform:
         if (!qMetaTypeGuiHelper)
             return false;
         qMetaTypeGuiHelper[type - FirstGuiType].saveOp(stream, data);
@@ -821,6 +829,7 @@ bool QMetaType::load(QDataStream &stream, int type, void *data)
     case QMetaType::QTextLength:
     case QMetaType::QTextFormat:
     case QMetaType::QMatrix:
+    case QMetaType::QTransform:
         if (!qMetaTypeGuiHelper)
             return false;
         qMetaTypeGuiHelper[type - FirstGuiType].loadOp(stream, data);

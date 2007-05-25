@@ -46,19 +46,29 @@
 
 class QHostInfo;
 
-class QAbstractSocketPrivate : public QIODevicePrivate
+class QAbstractSocketPrivate : public QIODevicePrivate, public QAbstractSocketEngineReceiver
 {
     Q_DECLARE_PUBLIC(QAbstractSocket)
 public:
     QAbstractSocketPrivate();
     virtual ~QAbstractSocketPrivate();
 
+    // from QAbstractSocketEngineReceiver
+    inline void readNotification() { canReadNotification(); }
+    inline void writeNotification() { canWriteNotification(); }
+    inline void exceptionNotification() {}
+    inline void proxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *authenticator) {
+        Q_Q(QAbstractSocket);
+        q->proxyAuthenticationRequired(proxy, authenticator);
+    }
+
+    bool canReadNotification();
+    bool canWriteNotification();
+
     // slots
     void _q_connectToNextAddress();
     void _q_startConnecting(const QHostInfo &hostInfo);
     void _q_testConnection();
-    bool _q_canReadNotification();
-    bool _q_canWriteNotification();
     void _q_abortConnectionAttempt();
 
     bool readSocketNotifierCalled;
@@ -82,6 +92,7 @@ public:
     QString peerName;
 
     QAbstractSocketEngine *socketEngine;
+    int cachedSocketDescriptor;
 
     void resetSocketLayer();
     bool flush();

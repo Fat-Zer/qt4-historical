@@ -3,7 +3,7 @@
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>Qt 4.2: httpwindow.cpp Example File (network/http/httpwindow.cpp)</title>
+  <title>Qt 4.3: httpwindow.cpp Example File (network/http/httpwindow.cpp)</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -39,11 +39,12 @@
  #include &lt;QtNetwork&gt;
 
  #include &quot;httpwindow.h&quot;
+ #include &quot;ui_authenticationdialog.h&quot;
 
  HttpWindow::HttpWindow(QWidget *parent)
      : QDialog(parent)
  {
-     urlLineEdit = new QLineEdit(&quot;http:<span class="comment">//www.ietf.org/iesg/1rfc_index.txt&quot;);</span>
+     urlLineEdit = new QLineEdit(&quot;https:<span class="comment">//&quot;);</span>
 
      urlLabel = new QLabel(tr(&quot;&amp;URL:&quot;));
      urlLabel-&gt;setBuddy(urlLineEdit);
@@ -71,6 +72,8 @@
              this, SLOT(updateDataReadProgress(int, int)));
      connect(http, SIGNAL(responseHeaderReceived(const QHttpResponseHeader &amp;)),
              this, SLOT(readResponseHeader(const QHttpResponseHeader &amp;)));
+     connect(http, SIGNAL(authenticationRequired(const QString &amp;, quint16, QAuthenticator *)),
+             this, SLOT(slotAuthenticationRequired(const QString &amp;, quint16, QAuthenticator *)));
      connect(progressDialog, SIGNAL(canceled()), this, SLOT(cancelDownload()));
      connect(downloadButton, SIGNAL(clicked()), this, SLOT(downloadFile()));
      connect(quitButton, SIGNAL(clicked()), this, SLOT(close()));
@@ -94,13 +97,17 @@
      QUrl url(urlLineEdit-&gt;text());
      QFileInfo fileInfo(url.path());
      QString fileName = fileInfo.fileName();
+     if (fileName.isEmpty())
+         fileName = &quot;index.html&quot;;
 
      if (QFile::exists(fileName)) {
-         QMessageBox::information(this, tr(&quot;HTTP&quot;),
-                                  tr(&quot;There already exists a file called %1 in &quot;
-                                     &quot;the current directory.&quot;)
-                                  .arg(fileName));
-         return;
+         if (QMessageBox::question(this, tr(&quot;HTTP&quot;),
+                                   tr(&quot;There already exists a file called %1 in &quot;
+                                      &quot;the current directory. Overwrite?&quot;).arg(fileName),
+                                   QMessageBox::Ok|QMessageBox::Cancel, QMessageBox::Cancel)
+             == QMessageBox::Cancel)
+             return;
+         QFile::remove(fileName);
      }
 
      file = new QFile(fileName);
@@ -113,7 +120,9 @@
          return;
      }
 
-     http-&gt;setHost(url.host(), url.port() != -1 ? url.port() : 80);
+     QHttp::ConnectionMode mode = url.scheme().toLower() == &quot;https&quot; ? QHttp::ConnectionModeHttps : QHttp::ConnectionModeHttp;
+     http-&gt;setHost(url.host(), mode, url.port() == -1 ? 0 : url.port());
+
      if (!url.userName().isEmpty())
          http-&gt;setUser(url.userName(), url.password());
 
@@ -135,6 +144,8 @@
 
  void HttpWindow::httpRequestFinished(int requestId, bool error)
  {
+     if (requestId != httpGetId)
+         return;
      if (httpRequestAborted) {
          if (file) {
              file-&gt;close();
@@ -193,11 +204,25 @@
  void HttpWindow::enableDownloadButton()
  {
      downloadButton-&gt;setEnabled(!urlLineEdit-&gt;text().isEmpty());
+ }
+
+ void HttpWindow::slotAuthenticationRequired(const QString &amp;hostName, quint16, QAuthenticator *authenticator)
+ {
+     QDialog dlg;
+     Ui::Dialog ui;
+     ui.setupUi(&amp;dlg);
+     dlg.adjustSize();
+     ui.siteDescription-&gt;setText(tr(&quot;%1 at %2&quot;).arg(authenticator-&gt;realm()).arg(hostName));
+
+     if (dlg.exec() == QDialog::Accepted) {
+         authenticator-&gt;setUser(ui.userEdit-&gt;text());
+         authenticator-&gt;setPassword(ui.passwordEdit-&gt;text());
+     }
  }</pre>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
 </tr></table></div></address></body>
 </html>

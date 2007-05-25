@@ -93,13 +93,19 @@ public:
     {
         inline WidgetMapper(QWidget *w = 0, int c = 0)
             : widget(w), section(c) {}
+        inline WidgetMapper(QWidget *w, int c, const QByteArray &p)
+            : widget(w), section(c), property(p) {}
 
         QPointer<QWidget> widget;
         int section;
         QPersistentModelIndex currentIndex;
+        QByteArray property;
     };
+  
     void populate(WidgetMapper &m);
     int findWidget(QWidget *w) const;
+
+    bool commit(const WidgetMapper &m);
 
     QList<WidgetMapper> widgetMap;
 };
@@ -113,13 +119,32 @@ int QDataWidgetMapperPrivate::findWidget(QWidget *w) const
     return -1;
 }
 
+bool QDataWidgetMapperPrivate::commit(const WidgetMapper &m)
+{
+    if (m.widget.isNull())
+        return true; // just ignore
+
+    if (!m.currentIndex.isValid())
+        return false;
+
+    if (m.property.isEmpty())
+        delegate->setModelData(m.widget, model, m.currentIndex);
+    else
+        model->setData(m.currentIndex, m.widget->property(m.property), Qt::EditRole);
+
+    return true;
+}
+
 void QDataWidgetMapperPrivate::populate(WidgetMapper &m)
 {
     if (m.widget.isNull())
         return;
 
     m.currentIndex = indexAt(m.section);
-    delegate->setEditorData(m.widget, m.currentIndex);
+    if (m.property.isEmpty())
+        delegate->setEditorData(m.widget, m.currentIndex);
+    else
+        m.widget->setProperty(m.property, m.currentIndex.data(Qt::EditRole));
 }
 
 void QDataWidgetMapperPrivate::populate()
@@ -156,7 +181,7 @@ void QDataWidgetMapperPrivate::_q_commitData(QWidget *w)
     if (idx == -1)
         return; // not our widget
 
-    delegate->setModelData(w, model, widgetMap.at(idx).currentIndex);
+    commit(widgetMap.at(idx));
 }
 
 class QFocusHelper: public QWidget
@@ -181,8 +206,7 @@ void QDataWidgetMapperPrivate::_q_closeEditor(QWidget *w, QAbstractItemDelegate:
 
     switch (hint) {
     case QAbstractItemDelegate::RevertModelCache: {
-        const WidgetMapper &m = widgetMap.at(idx);
-        delegate->setEditorData(m.widget, m.currentIndex);
+        populate(widgetMap[idx]);
         break; }
     case QAbstractItemDelegate::EditNextItem:
         QFocusHelper::focusNextPrevChild(w, true);
@@ -251,12 +275,16 @@ void QDataWidgetMapperPrivate::_q_modelDestroyed()
     can be used to navigate in the model and update the widgets with contents from
     the model.
 
+    The setRootIndex() function enables a particular item in a model to be
+    specified as the root index - children of this item will be mapped to
+    the relevant widgets in the user interface.
+
     QDataWidgetMapper supports two submit policies, \c AutoSubmit and \c{ManualSubmit}.
     \c AutoSubmit will update the model as soon as the current widget loses focus,
     \c ManualSubmit will not update the model unless submit() is called. \c ManualSubmit
     is useful when displaying a dialog that lets the user cancel all modifications.
     Also, other views that display the model won't update until the user finishes
-    all his modifications and submits.
+    all their modifications and submits.
 
     Note that QDataWidgetMapper keeps track of external modifications. If the contents
     of the model are updated in another module of the application, the widgets are
@@ -449,6 +477,24 @@ void QDataWidgetMapper::addMapping(QWidget *widget, int section)
 }
 
 /*!
+  \since 4.3
+
+  Essentially the same as addMapping(), but adds the posibility to specify
+  the property to use specifying \a propertyName.
+
+  \sa addMapping()
+*/
+
+void QDataWidgetMapper::addMapping(QWidget *widget, int section, const QByteArray &propertyName)
+{
+    Q_D(QDataWidgetMapper);
+
+    removeMapping(widget);
+    d->widgetMap.append(QDataWidgetMapperPrivate::WidgetMapper(widget, section, propertyName));
+    widget->installEventFilter(d->delegate);
+}
+
+/*!
     Removes the mapping for the given \a widget.
 
     \sa addMapping(), clearMapping()
@@ -480,6 +526,28 @@ int QDataWidgetMapper::mappedSection(QWidget *widget) const
         return -1;
 
     return d->widgetMap.at(idx).section;
+}
+
+/*!
+  \since 4.3
+  Returns the name of the property that is used when mapping
+  data to the given \a widget.
+
+  \sa mappedSection(), addMapping(), removeMapping()
+*/
+
+QByteArray QDataWidgetMapper::mappedPropertyName(QWidget *widget) const
+{
+    Q_D(const QDataWidgetMapper);
+
+    int idx = d->findWidget(widget);
+    if (idx == -1)
+        return QByteArray();
+    const QDataWidgetMapperPrivate::WidgetMapper &m = d->widgetMap.at(idx);
+    if (m.property.isEmpty())
+        return m.widget->metaObject()->userProperty().name();
+    else
+        return m.property;
 }
 
 /*!
@@ -533,11 +601,8 @@ bool QDataWidgetMapper::submit()
 
     for (int i = 0; i < d->widgetMap.count(); ++i) {
         const QDataWidgetMapperPrivate::WidgetMapper &m = d->widgetMap.at(i);
-        if (m.widget.isNull())
-            continue;
-        if (!m.currentIndex.isValid())
+        if (!d->commit(m))
             return false;
-        d->delegate->setModelData(m.widget, d->model, m.currentIndex);
     }
 
     return d->model->submit();

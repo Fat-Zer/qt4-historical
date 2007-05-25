@@ -50,6 +50,7 @@ void warn_msg(QMakeWarn t, const char *fmt, ...);
 struct Option
 {
     //simply global convenience
+    static QString js_ext;
     static QString libtool_ext;
     static QString pkgcfg_ext;
     static QString prf_ext;
@@ -131,6 +132,7 @@ struct Option
     enum TARG_MODE { TARG_UNIX_MODE, TARG_WIN_MODE, TARG_MACX_MODE, TARG_MAC9_MODE, TARG_QNX6_MODE };
     static TARG_MODE target_mode;
     static QString user_template, user_template_prefix;
+    static QStringList shellPath;
 
     //QMAKE_*_PROPERTY options
     struct prop {
@@ -151,6 +153,7 @@ struct Option
         static bool do_mocs;
         static bool do_dep_heuristics;
         static bool do_preprocess;
+        static bool do_stub_makefile;
         static QString cachefile;
         static int cachefile_depth;
         static QStringList project_files;

@@ -34,6 +34,7 @@ QT_MODULE(Gui)
 
 class QToolButtonPrivate;
 class QMenu;
+class QStyleOptionToolButton;
 
 class Q_GUI_EXPORT QToolButton : public QAbstractButton
 {
@@ -102,12 +103,14 @@ protected:
 
     bool hitButton(const QPoint &pos) const;
     void nextCheckState();
+    void initStyleOption(QStyleOptionToolButton *option) const;
 
 private:
     Q_DISABLE_COPY(QToolButton)
     Q_DECLARE_PRIVATE(QToolButton)
 #ifndef QT_NO_MENU
     Q_PRIVATE_SLOT(d_func(), void _q_buttonPressed())
+    Q_PRIVATE_SLOT(d_func(), void _q_updateButtonDown())
 #endif
     Q_PRIVATE_SLOT(d_func(), void _q_actionTriggered())
 

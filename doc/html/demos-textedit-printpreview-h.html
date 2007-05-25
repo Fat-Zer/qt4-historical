@@ -3,7 +3,7 @@
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>Qt 4.2: printpreview.h Example File (demos/textedit/printpreview.h)</title>
+  <title>Qt 4.3: printpreview.h Example File (demos/textedit/printpreview.h)</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -40,6 +40,8 @@
 
  #include &lt;QMainWindow&gt;
  #include &lt;QPrinter&gt;
+ #include &lt;QPointF&gt;
+ #include &lt;QSizeF&gt;
 
  class PreviewView;
  class QTextDocument;
@@ -50,6 +52,9 @@
  public:
      PrintPreview(const QTextDocument *document, QWidget *parent);
      virtual ~PrintPreview();
+
+     QSizeF paperSize;
+     QPointF pageTopLeft;
 
  private slots:
      void print();
@@ -68,6 +73,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
 </tr></table></div></address></body>
 </html>

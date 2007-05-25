@@ -38,6 +38,8 @@
 #include "qapplication.h"
 #include "qdesktopwidget.h"
 #include "qbitmap.h"
+#include "private/qlabel_p.h"
+#include "qapplication.h"
 
 /*!
     \class QSystemTrayIcon
@@ -58,7 +60,8 @@
     \o All supported versions of Windows.
     \o All window managers for X11 that implement the \l{freedesktop.org} system
        tray specification, including recent versions of KDE and GNOME.
-    \o Mac OS X, with the exception of showMessage()
+    \o All supported version of Mac OS X. QSystemTrayIcon::showMessage() requires 
+       Growl to display messages.
     \endlist
 
     To check whether a system tray is present on the user's desktop,
@@ -75,8 +78,9 @@
 
     The activated() signal is emitted when the user activates the icon.
 
-    Only on X11 when a tooltip is requested the QSystemTrayIcon receives a QHelpEvent
-    of type QEvent::ToolTip. This is not supported on any other platform.
+    Only on X11, when a tooltip is requested, the QSystemTrayIcon receives a QHelpEvent
+    of type QEvent::ToolTip. Additionally, the QSystemTrayIcon receives wheel events of
+    type QEvent::Wheel. These are not supported on any other platform.
 
     \sa QDesktopServices, QDesktopWidget, {Desktop Integration}
 */
@@ -163,10 +167,6 @@ QMenu* QSystemTrayIcon::contextMenu() const
 
     On Windows, the system tray icon size is 16x16; on X11, the preferred size is
     22x22. The icon will be scaled to the appropriate size as necessary.
-
-    On X11, due to a limitation in the system tray specification, mouse clicks
-    on transparent areas in the icon are propagated to the system tray. If this
-    behavior is unacceptable, we suggest using an icon with no transparency.
 */
 void QSystemTrayIcon::setIcon(const QIcon &icon)
 {
@@ -217,20 +217,19 @@ QString QSystemTrayIcon::toolTip() const
     \sa show(), visible
 */
 
-#if 0
 /*!
-  Returns the global position of the system tray icon.
+    \since 4.3
+    Returns the geometry of the system tray icon in screen coordinates.
 
-  \sa visible
+    \sa visible
 */
-QPoint QSystemTrayIcon::pos() const
+QRect QSystemTrayIcon::geometry() const
 {
     Q_D(const QSystemTrayIcon);
     if (!d->visible)
-        return QPoint();
-    return d->globalPos_sys();
+        return QRect();
+    return d->geometry_sys();
 }
-#endif
 
 /*!
     \property QSystemTrayIcon::visible
@@ -323,23 +322,22 @@ bool QSystemTrayIcon::isSystemTrayAvailable()
 /*!
     Returns true if the system tray supports balloon messages; otherwise returns false.
 
-    Mac OS X does not support ballon messages currently.
-
     \sa showMessage()
 */
 bool QSystemTrayIcon::supportsMessages()
 {
-#if defined(Q_WS_MAC) || defined(Q_WS_QWS)
+#if defined(Q_WS_QWS)
     return false;
 #endif
     return true;
 }
 
 /*!
-    \fn void QSystemTrayIcon::showMessage(const QString &title, const QString &message, MessageIcon icon, int milliseconds)
+    \fn void QSystemTrayIcon::showMessage(const QString &title, const QString &message, MessageIcon icon, int millisecondsTimeoutHint)
+    \since 4.3
 
     Shows a balloon message for the entry with the given \a title, \a message and
-    \a icon for the time specified in \a milliseconds.
+    \a icon for the time specified in \a millisecondsTimeoutHint.
 
     Message can be clicked by the user; the messageClicked() signal will emitted when
     this occurs.
@@ -347,6 +345,9 @@ bool QSystemTrayIcon::supportsMessages()
     Note that display of messages are dependent on the system configuration and user
     preferences, and that messages may not appear at all. Hence, it should not be
     relied upon as the sole means for providing critical information.
+
+    On Windows, the \a millisecondsTimeoutHint is usually ignored by the system
+    when the application has focus.
 
     \sa show() supportsMessages()
   */
@@ -409,6 +410,21 @@ QBalloonTip::QBalloonTip(QSystemTrayIcon::MessageIcon icon, const QString& title
     msgLabel->setTextFormat(Qt::PlainText);
     msgLabel->setAlignment(Qt::AlignTop | Qt::AlignLeft);
 
+    // smart size for the message label
+    int limit = QApplication::desktop()->availableGeometry(msgLabel).size().width() / 3;
+    if (msgLabel->sizeHint().width() > limit) {
+        msgLabel->setWordWrap(true);
+        if (msgLabel->sizeHint().width() > limit) {
+            msgLabel->d_func()->ensureTextControl();
+            if (QTextControl *control = msgLabel->d_func()->control) {
+                QTextOption opt = control->document()->defaultTextOption();
+                opt.setWrapMode(QTextOption::WrapAnywhere);
+                control->document()->setDefaultTextOption(opt);
+            }
+        }
+        msgLabel->setFixedSize(limit, msgLabel->heightForWidth(limit));
+    }
+
     QIcon si;
     switch (icon) {
     case QSystemTrayIcon::Warning:
@@ -432,16 +448,15 @@ QBalloonTip::QBalloonTip(QSystemTrayIcon::MessageIcon icon, const QString& title
         iconLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
         iconLabel->setMargin(2);
         layout->addWidget(iconLabel, 0, 0);
-	layout->addWidget(titleLabel, 0, 1);
+        layout->addWidget(titleLabel, 0, 1);
     } else {
-	layout->addWidget(titleLabel, 0, 0, 1, 2);
+        layout->addWidget(titleLabel, 0, 0, 1, 2);
     }
 
     layout->addWidget(closeButton, 0, 2);
     layout->addWidget(msgLabel, 1, 0, 1, 3);
     layout->setSizeConstraint(QLayout::SetFixedSize);
     layout->setMargin(3);
-    layout->setSpacing(1);
     setLayout(layout);
 
     QPalette pal = palette();

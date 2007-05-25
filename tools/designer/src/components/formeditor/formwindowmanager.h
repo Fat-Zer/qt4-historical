@@ -25,22 +25,22 @@
 #define FORMWINDOWMANAGER_H
 
 #include "formeditor_global.h"
-#include "formwindow.h"
 
-#include <QtDesigner/QtDesigner>
+#include <QtDesigner/QDesignerFormWindowManagerInterface>
 
 #include <QtCore/QObject>
 #include <QtCore/QList>
 #include <QtCore/QPointer>
+#include <QtCore/QMap>
 
 class QAction;
 class QActionGroup;
 class QUndoGroup;
-class MetaDataBase;
 class QDesignerFormEditorInterface;
 class QDesignerWidgetBoxInterface;
 
 namespace qdesigner_internal {
+class FormWindow;
 
 class QT_FORMEDITOR_EXPORT FormWindowManager: public QDesignerFormWindowManagerInterface
 {
@@ -143,16 +143,11 @@ private:
     QAction *m_actionUndo;
     QAction *m_actionRedo;
 
-    // DnD stuff
-    void beginDrag(const QList<QDesignerDnDItemInterface*> &item_list, const QPoint &globalPos);
-    void endDrag(const QPoint &pos);
-    void setItemsPos(const QPoint &pos);
-    bool isDecoration(QWidget *widget) const;
-    QList<QDesignerDnDItemInterface*> m_drag_item_list;
-    QWidget *m_last_widget_under_mouse;
-    FormWindow *m_last_form_under_mouse;
-    QDesignerWidgetBoxInterface *m_widget_box_under_mouse;
-    Qt::ContextMenuPolicy m_savedContextMenuPolicy;
+    QMap<QWidget *, bool> getUnsortedLayoutsToBeBroken(bool firstOnly) const;
+    bool hasLayoutsToBeBroken() const;
+    QList<QWidget *> layoutsToBeBroken(QWidget *w) const;
+    QList<QWidget *> layoutsToBeBroken() const;
+
     QUndoGroup *m_undoGroup;
 };
 

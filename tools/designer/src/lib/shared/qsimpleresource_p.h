@@ -38,6 +38,7 @@
 #include "shared_global_p.h"
 #include "abstractformbuilder.h"
 
+class DomScript;
 
 class QDesignerFormEditorInterface;
 
@@ -54,6 +55,20 @@ public:
 
     inline QDesignerFormEditorInterface *core() const
     { return m_core; }
+    
+    // Query extensions for additional data
+    static void addExtensionDataToDOM(QAbstractFormBuilder *afb,
+                                      QDesignerFormEditorInterface *core,
+                                      DomWidget *ui_widget, QWidget *widget);
+    static void applyExtensionDataFromDOM(QAbstractFormBuilder *afb,
+                                          QDesignerFormEditorInterface *core,
+                                          DomWidget *ui_widget, QWidget *widget,
+                                          bool applyState);
+
+    // Return the script returned by the CustomWidget codeTemplate API
+    static QString customWidgetScript(QDesignerFormEditorInterface *core, QObject *object);
+    static QString customWidgetScript(QDesignerFormEditorInterface *core, const QString &className);
+    static bool hasCustomWidgetScript(QDesignerFormEditorInterface *core, QObject *object);
 
 protected:
     virtual QIcon nameToIcon(const QString &filePath, const QString &qrcPath);
@@ -62,6 +77,11 @@ protected:
     virtual QPixmap nameToPixmap(const QString &filePath, const QString &qrcPath);
     virtual QString pixmapToFilePath(const QPixmap &pm) const;
     virtual QString pixmapToQrcPath(const QPixmap &pm) const;
+
+    enum ScriptSource { ScriptDesigner, ScriptExtension, ScriptCustomWidgetPlugin };
+    static DomScript*createScript(const QString &script, ScriptSource source);
+    typedef QList<DomScript*> DomScripts;
+    static void addScript(const QString &script, ScriptSource source, DomScripts &domScripts);
 
 private:
     QDesignerFormEditorInterface *m_core;

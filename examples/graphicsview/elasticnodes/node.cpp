@@ -141,7 +141,7 @@ void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
 QVariant Node::itemChange(GraphicsItemChange change, const QVariant &value)
 {
     switch (change) {
-    case ItemPositionChange:
+    case ItemPositionHasChanged:
         foreach (Edge *edge, edgeList)
             edge->adjust();
         graph->itemMoved();

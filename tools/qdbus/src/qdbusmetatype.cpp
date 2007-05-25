@@ -51,6 +51,8 @@ public:
     QDBusCustomTypeInfo() : signature(0, '\0'), marshall(0), demarshall(0)
     { }
 
+    // Suggestion:
+    // change 'signature' to char* and make QDBusCustomTypeInfo a Movable type
     QByteArray signature;
     QDBusMetaType::MarshallFunction marshall;
     QDBusMetaType::DemarshallFunction demarshall;
@@ -71,6 +73,8 @@ int QDBusMetaTypeId::argument;
 int QDBusMetaTypeId::variant;
 int QDBusMetaTypeId::objectpath;
 int QDBusMetaTypeId::signature;
+int QDBusMetaTypeId::error;
+
 void QDBusMetaTypeId::init()
 {
     static volatile bool initialized = false;
@@ -84,6 +88,7 @@ void QDBusMetaTypeId::init()
         variant = qRegisterMetaType<QDBusVariant>("QDBusVariant");
         objectpath = qRegisterMetaType<QDBusObjectPath>("QDBusObjectPath");
         signature = qRegisterMetaType<QDBusSignature>("QDBusSignature");
+	error = qRegisterMetaType<QDBusError>("QDBusError");
 
 #ifndef QDBUS_NO_SPECIALTYPES
         // and register QtCore's with us
@@ -109,6 +114,8 @@ void QDBusMetaTypeId::init()
         qDBusRegisterMetaType<QList<qlonglong> >();
         qDBusRegisterMetaType<QList<qulonglong> >();
         qDBusRegisterMetaType<QList<double> >();
+        qDBusRegisterMetaType<QList<QDBusObjectPath> >();
+        qDBusRegisterMetaType<QList<QDBusSignature> >();
 #endif
 
         initialized = true;
@@ -254,7 +261,8 @@ bool QDBusMetaType::demarshall(const QDBusArgument &arg, int id, void *data)
             df = info.demarshall;
     }
 
-    df(arg, data);
+    QDBusArgument copy = arg;
+    df(copy, data);
     return true;
 }
 
@@ -327,6 +335,12 @@ int QDBusMetaType::signatureToType(const char *signature)
 
         case DBUS_TYPE_VARIANT:
             return QVariant::List;
+
+        case DBUS_TYPE_OBJECT_PATH:
+            return qMetaTypeId<QList<QDBusObjectPath> >();
+
+        case DBUS_TYPE_SIGNATURE:
+            return qMetaTypeId<QList<QDBusSignature> >();
 
         }
         // fall through

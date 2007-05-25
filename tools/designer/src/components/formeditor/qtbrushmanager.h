@@ -24,7 +24,7 @@
 #ifndef QTBRUSHMANAGER_H
 #define QTBRUSHMANAGER_H
 
-#include <QtDesigner/QtDesigner>
+#include <QtDesigner/QDesignerBrushManagerInterface>
 #include "formeditor_global.h"
 
 #include <QObject>

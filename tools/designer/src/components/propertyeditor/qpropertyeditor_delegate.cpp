@@ -23,27 +23,19 @@
 
 #include "qpropertyeditor_delegate_p.h"
 #include "qpropertyeditor_model_p.h"
+#include "textpropertyeditor_p.h"
 #include <iconloader_p.h>
 
 #include <QtGui/QPainter>
-#include <QtGui/QFrame>
 #include <QtGui/QKeyEvent>
 #include <QtGui/QApplication>
-#include <QtGui/QSpinBox>
 #include <QtGui/QToolButton>
 #include <QtGui/QHBoxLayout>
-#include <QtGui/QMessageBox>
-#include <QtGui/QLabel>
-#include <QtGui/qdrawutil.h>
 
 #include <QtCore/qdebug.h>
 #include <private/qfont_p.h>
 
-#include <limits.h>
-
-#ifndef Q_MOC_RUN
-using namespace qdesigner_internal;
-#endif
+namespace qdesigner_internal {
 
 class EditorWithReset : public QWidget
 {
@@ -100,7 +92,8 @@ void EditorWithReset::setChildEditor(QWidget *child_editor)
 
 QPropertyEditorDelegate::QPropertyEditorDelegate(QObject *parent)
     : QItemDelegate(parent),
-      m_readOnly(false)
+      m_readOnly(false),
+      m_syncing(false)
 {
 }
 
@@ -123,20 +116,12 @@ bool QPropertyEditorDelegate::eventFilter(QObject *object, QEvent *event)
                 event->ignore();
                 return true;
             }
-            if (ke->key() == Qt::Key_Enter || ke->key() == Qt::Key_Return) {
-                QWidget *widget = qobject_cast<QWidget*>(object);
-                if (QSpinBox *spinBox = qobject_cast<QSpinBox*>(widget)) { // ### hack (remove me)
-                    spinBox->interpretText();
-                }
-                emit commitData(widget);
-                return true;
-            }
         } break;
 
         case QEvent::FocusOut:
             if (!editor->isActiveWindow() || (QApplication::focusWidget() != editor)) {
                 QWidget *w = QApplication::focusWidget();
-                while (w) { // dont worry about focus changes internally in the editor
+                while (w) { // do not worry about focus changes internally in the editor
                     if (w == editor)
                         return false;
                     w = w->parentWidget();
@@ -176,18 +161,18 @@ void QPropertyEditorDelegate::paint(QPainter *painter, const QStyleOptionViewIte
     option.state &= ~QStyle::State_HasFocus;
 
     if (property && property->isSeparator()) {
-        QBrush bg = option.palette.dark();
+        const QBrush bg = option.palette.dark();
         painter->fillRect(option.rect, bg);
     }
 
-    QPen savedPen = painter->pen();
+    const QPen savedPen = painter->pen();
 
     QItemDelegate::paint(painter, option, index);
 
-    QColor color = static_cast<QRgb>(QApplication::style()->styleHint(QStyle::SH_Table_GridLineColor, &option));
+    const QColor color = static_cast<QRgb>(QApplication::style()->styleHint(QStyle::SH_Table_GridLineColor, &option));
     painter->setPen(QPen(color));
     if (index.column() == 1 || !(property && property->isSeparator())) {
-        int right = (option.direction == Qt::LeftToRight) ? option.rect.right() : option.rect.left();
+        const int right = (option.direction == Qt::LeftToRight) ? option.rect.right() : option.rect.left();
         painter->drawLine(right, option.rect.y(), right, option.rect.bottom());
     }
     painter->drawLine(option.rect.x(), option.rect.bottom(),
@@ -236,7 +221,11 @@ QWidget *QPropertyEditorDelegate::createEditor(QWidget *parent,
                         this, SLOT(resetProperty(const IProperty *, QPropertyEditorModel *)));
 
             editor = editor_w_reset;
-            child_editor->installEventFilter(const_cast<QPropertyEditorDelegate *>(this));
+            if (TextPropertyEditor* edit = qobject_cast<TextPropertyEditor*>(child_editor)) {
+                // in case of TextPropertyEditor install the filter on it's private QLineEdit
+                edit->installEventFilter(const_cast<QPropertyEditorDelegate *>(this));
+            } else
+                child_editor->installEventFilter(const_cast<QPropertyEditorDelegate *>(this));
         } else {
             editor = property->createEditor(parent, this, SLOT(sync()));
             editor->installEventFilter(const_cast<QPropertyEditorDelegate *>(this));
@@ -255,7 +244,7 @@ void QPropertyEditorDelegate::setEditorData(QWidget *editor,
 
     const QAbstractItemModel *model = index.model();
     IProperty *property = static_cast<const QPropertyEditorModel*>(model)->privateData(index);
-    if (property && property->hasEditor()) {
+    if (property && property->hasEditor() && !m_syncing) {
         property->updateEditorContents(editor);
     }
 }
@@ -277,7 +266,7 @@ void QPropertyEditorDelegate::setModelData(QWidget *editor,
                 property->propertyName() == QLatin1String("Strikeout") ||
                 property->propertyName() == QLatin1String("Kerning") ||
                 property->propertyName() == QLatin1String("Antialiasing")) {
-            QModelIndex parentIndex = index.parent();
+            const QModelIndex parentIndex = index.parent();
             if (IProperty *fontProperty = static_cast<const QPropertyEditorModel*>(model)->privateData(parentIndex)) {
                 QFont f = qvariant_cast<QFont>(fontProperty->value());
                 if (property->propertyName() == QLatin1String("Family"))
@@ -295,7 +284,7 @@ void QPropertyEditorDelegate::setModelData(QWidget *editor,
                 else if (property->propertyName() == QLatin1String("Kerning"))
                     f.setKerning(property->value().toBool());
                 else if (property->propertyName() == QLatin1String("Antialiasing"))
-                    f.setStyleStrategy(property->value().toBool() ? QFont::PreferDefault : QFont::NoAntialias);
+                    f.setStyleStrategy((QFont::StyleStrategy)property->value().toInt());
                 fontProperty->setValue(f);
                 model->setData(parentIndex, f, Qt::EditRole);
                 return;
@@ -313,10 +302,12 @@ void QPropertyEditorDelegate::drawDecoration(QPainter *painter, const QStyleOpti
 
 void QPropertyEditorDelegate::sync()
 {
+    m_syncing = true;
     QWidget *w = qobject_cast<QWidget*>(sender());
     if (w == 0)
         return;
     emit commitData(w);
+    m_syncing = false;
 }
 
 void QPropertyEditorDelegate::resetProperty(const IProperty *property, QPropertyEditorModel *model)
@@ -348,11 +339,11 @@ void QPropertyEditorDelegate::resetProperty(const IProperty *property, QProperty
                 mask &= ~QFontPrivate::StrikeOut;
             else if (property->propertyName() == QLatin1String("Kerning"))
                 mask &= ~QFontPrivate::Kerning;
-            else if (property->propertyName() == QLatin1String("Antialias"))
+            else if (property->propertyName() == QLatin1String("Antialiasing"))
                 mask &= ~QFontPrivate::StyleStrategy;
             f.resolve(mask);
             if (mask) {
-                QModelIndex fontIndex = model->indexOf(fontProperty);
+                const QModelIndex fontIndex = model->indexOf(fontProperty);
                 fontProperty->setDirty(true);
                 model->setData(fontIndex, f, Qt::EditRole);
                 return;
@@ -369,5 +360,5 @@ void QPropertyEditorDelegate::updateEditorGeometry(QWidget *editor, const QStyle
     editor->setGeometry(editor->geometry().adjusted(0, 0, -1, -1));
 }
 
-
+}
 #include "qpropertyeditor_delegate.moc"

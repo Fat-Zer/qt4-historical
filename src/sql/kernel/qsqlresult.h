@@ -42,8 +42,10 @@ class QSqlResultPrivate;
 
 class Q_SQL_EXPORT QSqlResult
 {
-friend class QSqlQuery;
-friend class QSqlResultPrivate;
+    friend class QSqlQuery;
+    friend class QSqlTableModelPrivate;
+    friend class QSqlResultPrivate;
+
 public:
     virtual ~QSqlResult();
     virtual QVariant handle() const;
@@ -108,10 +110,12 @@ protected:
     virtual QSqlRecord record() const;
     virtual QVariant lastInsertId() const;
 
-    enum VirtualHookOperation { BatchOperation };
+    enum VirtualHookOperation { BatchOperation, DetachFromResultSet, SetNumericalPrecision };
     virtual void virtual_hook(int id, void *data);
 
     bool execBatch(bool arrayBind = false);
+    void detachFromResultSet();
+    void setNumericalPrecisionPolicy(QSql::NumericalPrecisionPolicy policy);
 
 private:
     QSqlResultPrivate* d;

@@ -1,3 +1,4 @@
 #include <QtCore/QtCore>
 #include "qdom.h"
 #include "qxml.h"
+#include "qxmlstream.h"

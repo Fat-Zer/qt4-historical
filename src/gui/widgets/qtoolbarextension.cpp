@@ -25,6 +25,7 @@
 #include <qpixmap.h>
 #include <qstyle.h>
 
+
 #ifndef QT_NO_TOOLBUTTON
 
 QToolBarExtension::QToolBarExtension(QWidget *parent)
@@ -32,19 +33,17 @@ QToolBarExtension::QToolBarExtension(QWidget *parent)
 {
     setObjectName(QLatin1String("qt_toolbar_ext_button"));
     setAutoRaise(true);
-#ifndef QT_NO_MENU
-    setPopupMode(QToolButton::InstantPopup);
-#endif
     setOrientation(Qt::Horizontal);
     setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+    setCheckable(true);
 }
 
 void QToolBarExtension::setOrientation(Qt::Orientation o)
 {
     if (o == Qt::Horizontal) {
-        setIcon(style()->standardPixmap(QStyle::SP_ToolBarHorizontalExtensionButton));
+        setIcon(style()->standardIcon(QStyle::SP_ToolBarHorizontalExtensionButton));
     } else {
-        setIcon(style()->standardPixmap(QStyle::SP_ToolBarVerticalExtensionButton));
+        setIcon(style()->standardIcon(QStyle::SP_ToolBarVerticalExtensionButton));
    }
 }
 

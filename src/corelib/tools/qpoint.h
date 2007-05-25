@@ -63,7 +63,7 @@ public:
     friend inline const QPoint operator/(const QPoint &, qreal);
 
 private:
-
+    friend class QTransform;
 #if defined(Q_OS_MAC)
     int yp;
     int xp;
@@ -201,6 +201,7 @@ public:
 
 private:
     friend class QMatrix;
+    friend class QTransform;
 
     qreal xp;
     qreal yp;

@@ -93,6 +93,7 @@ public:
 
 public Q_SLOTS:
     void start();
+    void resume();
     void stop();
     void setPaused(bool paused);
     void setCurrentTime(int msec);

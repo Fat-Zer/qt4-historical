@@ -33,13 +33,19 @@
 #include <objectinspector/objectinspector.h>
 #include <taskmenu/taskmenu_component.h>
 #include <resourceeditor_p.h>
+#include <qdesigner_integration_p.h>
 #include <signalsloteditor/signalsloteditorwindow.h>
 
 #include <buddyeditor/buddyeditor_plugin.h>
 #include <signalsloteditor/signalsloteditor_plugin.h>
 #include <tabordereditor/tabordereditor_plugin.h>
 
+#include <QtDesigner/QDesignerLanguageExtension>
+#include <QtDesigner/QExtensionManager>
+#include <QtDesigner/QDesignerResourceBrowserInterface>
+
 #include <QtCore/qplugin.h>
+#include <QtCore/QDir>
 
 // ### keep it in sync with Q_IMPORT_PLUGIN in qplugin.h
 #define DECLARE_PLUGIN_INSTANCE(PLUGIN) \
@@ -89,17 +95,7 @@ void QDesignerComponents::initializeResources()
     Initializes the plugins used by the components.*/
 void QDesignerComponents::initializePlugins(QDesignerFormEditorInterface *core)
 {
-    using namespace qdesigner_internal;
-
-    // load the plugins
-    if (WidgetDataBase *widgetDatabase = qobject_cast<WidgetDataBase*>(core->widgetDataBase())) {
-        widgetDatabase->loadPlugins();
-        widgetDatabase->grabDefaultPropertyValues();
-    }
-
-    if (WidgetFactory *widgetFactory = qobject_cast<WidgetFactory*>(core->widgetFactory())) {
-        widgetFactory->loadPlugins();
-    }
+    qdesigner_internal::QDesignerIntegration::initializePlugins(core);
 }
 
 /*!
@@ -130,7 +126,36 @@ QObject *QDesignerComponents::createTaskMenu(QDesignerFormEditorInterface *core,
     Returns a new widget box interface with the given \a parent for the \a core interface.*/
 QDesignerWidgetBoxInterface *QDesignerComponents::createWidgetBox(QDesignerFormEditorInterface *core, QWidget *parent)
 {
-    return new qdesigner_internal::WidgetBox(core, parent);
+    qdesigner_internal::WidgetBox *widgetBox = new qdesigner_internal::WidgetBox(core, parent);
+
+    const QDesignerLanguageExtension *lang = qt_extension<QDesignerLanguageExtension*>(core->extensionManager(), core);
+
+    do {
+        if (lang) {
+            const QString languageWidgetBox = lang->widgetBoxContents();
+            if (!languageWidgetBox.isEmpty()) {
+                widgetBox->loadContents(lang->widgetBoxContents());
+                break;
+            }
+        }
+
+        widgetBox->setFileName(QLatin1String(":/trolltech/widgetbox/widgetbox.xml"));
+        widgetBox->load();
+    } while (false);
+
+    QString rc = QDir::homePath();
+    rc += QLatin1String("/.designer");
+    rc += QLatin1String("/widgetbox");
+    if (lang) {
+        rc += QLatin1Char('.');
+        rc += lang->uiExtension();
+    }
+    rc += QLatin1String(".xml");
+
+    widgetBox->setFileName(rc);
+    widgetBox->load();
+
+    return widgetBox;
 }
 
 /*!
@@ -158,7 +183,12 @@ QDesignerActionEditorInterface *QDesignerComponents::createActionEditor(QDesigne
     Returns a new resource editor with the given \a parent for the \a core interface.*/
 QWidget *QDesignerComponents::createResourceEditor(QDesignerFormEditorInterface *core, QWidget *parent)
 {
-    return new qdesigner_internal::ResourceEditor(core, parent);
+    if (QDesignerLanguageExtension *lang = qt_extension<QDesignerLanguageExtension*>(core->extensionManager(), core)) {
+        QWidget *w = lang->createResourceBrowser(parent);
+        if (w)
+            return w;
+    }
+    return new qdesigner_internal::ResourceEditor(core, true, parent);
 }
 
 /*!

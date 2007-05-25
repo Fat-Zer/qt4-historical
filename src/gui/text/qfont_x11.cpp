@@ -38,6 +38,7 @@
 #include <private/qunicodetables_p.h>
 #include "qfont_p.h"
 #include "qfontengine_p.h"
+#include "qfontengine_x11_p.h"
 #include "qtextengine_p.h"
 
 #include <private/qt_x11_p.h>
@@ -212,6 +213,33 @@ Qt::HANDLE QFont::handle() const
         engine = static_cast<QFontEngineMulti *>(engine)->engine(0);
     if (engine->type() == QFontEngine::XLFD)
         return static_cast<QFontEngineXLFD *>(engine)->fontStruct()->fid;
+    return 0;
+}
+
+
+/*!
+  Returns the handle to the primary freetype face of the font. I font merging is not disabled a
+  QFont can contain several physical fonts.
+
+  Returns 0 if the font does not contains a freetype face.
+*/
+FT_Face QFont::freetypeFace() const
+{
+#ifndef QT_NO_FREETYPE
+    QFontEngine *engine = d->engineForScript(QUnicodeTables::Common);
+    if (engine->type() == QFontEngine::Multi)
+        engine = static_cast<QFontEngineMulti *>(engine)->engine(0);
+#ifndef QT_NO_FONTCONFIG
+    if (engine->type() == QFontEngine::Freetype) {
+        const QFontEngineFT *ft = static_cast<const QFontEngineFT *>(engine);
+        return ft->non_locked_face();
+    } else
+#endif
+    if (engine->type() == QFontEngine::XLFD) {
+        const QFontEngineXLFD *xlfd = static_cast<const QFontEngineXLFD *>(engine);
+        return xlfd->non_locked_face();
+    }
+#endif
     return 0;
 }
 

@@ -154,6 +154,7 @@ public:
     }
     void setTristate(bool tristate);
 
+#ifndef QT_NO_DRAGANDDROP
     inline bool isDragEnabled() const {
         return (flags() & Qt::ItemIsDragEnabled) != 0;
     }
@@ -163,6 +164,7 @@ public:
         return (flags() & Qt::ItemIsDropEnabled) != 0;
     }
     void setDropEnabled(bool dropEnabled);
+#endif // QT_NO_DRAGANDDROP
 
     QStandardItem *parent() const;
     int row() const;
@@ -182,6 +184,7 @@ public:
 
     void insertRow(int row, const QList<QStandardItem*> &items);
     void insertColumn(int column, const QList<QStandardItem*> &items);
+    void insertRows(int row, const QList<QStandardItem*> &items);
     void insertRows(int row, int count);
     void insertColumns(int column, int count);
 
@@ -191,6 +194,7 @@ public:
     void removeColumns(int column, int count);
 
     inline void appendRow(const QList<QStandardItem*> &items);
+    inline void appendRows(const QList<QStandardItem*> &items);
     inline void appendColumn(const QList<QStandardItem*> &items);
     inline void insertRow(int row, QStandardItem *item);
     inline void appendRow(QStandardItem *item);
@@ -274,6 +278,9 @@ inline void QStandardItem::setChild(int arow, QStandardItem *aitem)
 
 inline void QStandardItem::appendRow(const QList<QStandardItem*> &aitems)
 { insertRow(rowCount(), aitems); }
+
+inline void QStandardItem::appendRows(const QList<QStandardItem*> &aitems)
+{ insertRows(rowCount(), aitems); }
 
 inline void QStandardItem::appendColumn(const QList<QStandardItem*> &aitems)
 { insertColumn(columnCount(), aitems); }

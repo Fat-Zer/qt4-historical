@@ -3,7 +3,7 @@
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>Qt 4.2: mainwindow.cpp Example File (mainwindows/mdi/mainwindow.cpp)</title>
+  <title>Qt 4.3: mainwindow.cpp Example File (mainwindows/mdi/mainwindow.cpp)</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -42,13 +42,13 @@
 
  MainWindow::MainWindow()
  {
-     workspace = new QWorkspace;
-     setCentralWidget(workspace);
-     connect(workspace, SIGNAL(windowActivated(QWidget *)),
+     mdiArea = new QMdiArea;
+     setCentralWidget(mdiArea);
+     connect(mdiArea, SIGNAL(subWindowActivated(QMdiSubWindow *)),
              this, SLOT(updateMenus()));
      windowMapper = new QSignalMapper(this);
      connect(windowMapper, SIGNAL(mapped(QWidget *)),
-             workspace, SLOT(setActiveWindow(QWidget *)));
+             this, SLOT(setActiveSubWindow(QWidget *)));
 
      createActions();
      createMenus();
@@ -63,7 +63,7 @@
 
  void MainWindow::closeEvent(QCloseEvent *event)
  {
-     workspace-&gt;closeAllWindows();
+     mdiArea-&gt;closeAllSubWindows();
      if (activeMdiChild()) {
          event-&gt;ignore();
      } else {
@@ -83,9 +83,9 @@
  {
      QString fileName = QFileDialog::getOpenFileName(this);
      if (!fileName.isEmpty()) {
-         MdiChild *existing = findMdiChild(fileName);
+         QMdiSubWindow *existing = findMdiChild(fileName);
          if (existing) {
-             workspace-&gt;setActiveWindow(existing);
+             mdiArea-&gt;setActiveSubWindow(existing);
              return;
          }
 
@@ -101,29 +101,32 @@
 
  void MainWindow::save()
  {
-     if (activeMdiChild()-&gt;save())
+     if (activeMdiChild() &amp;&amp; activeMdiChild()-&gt;save())
          statusBar()-&gt;showMessage(tr(&quot;File saved&quot;), 2000);
  }
 
  void MainWindow::saveAs()
  {
-     if (activeMdiChild()-&gt;saveAs())
+     if (activeMdiChild() &amp;&amp; activeMdiChild()-&gt;saveAs())
          statusBar()-&gt;showMessage(tr(&quot;File saved&quot;), 2000);
  }
 
  void MainWindow::cut()
  {
-     activeMdiChild()-&gt;cut();
+     if (activeMdiChild())
+         activeMdiChild()-&gt;cut();
  }
 
  void MainWindow::copy()
  {
-     activeMdiChild()-&gt;copy();
+     if (activeMdiChild())
+         activeMdiChild()-&gt;copy();
  }
 
  void MainWindow::paste()
  {
-     activeMdiChild()-&gt;paste();
+     if (activeMdiChild())
+         activeMdiChild()-&gt;paste();
  }
 
  void MainWindow::about()
@@ -143,7 +146,6 @@
      closeAllAct-&gt;setEnabled(hasMdiChild);
      tileAct-&gt;setEnabled(hasMdiChild);
      cascadeAct-&gt;setEnabled(hasMdiChild);
-     arrangeAct-&gt;setEnabled(hasMdiChild);
      nextAct-&gt;setEnabled(hasMdiChild);
      previousAct-&gt;setEnabled(hasMdiChild);
      separatorAct-&gt;setVisible(hasMdiChild);
@@ -162,17 +164,16 @@
      windowMenu-&gt;addSeparator();
      windowMenu-&gt;addAction(tileAct);
      windowMenu-&gt;addAction(cascadeAct);
-     windowMenu-&gt;addAction(arrangeAct);
      windowMenu-&gt;addSeparator();
      windowMenu-&gt;addAction(nextAct);
      windowMenu-&gt;addAction(previousAct);
      windowMenu-&gt;addAction(separatorAct);
 
-     QList&lt;QWidget *&gt; windows = workspace-&gt;windowList();
+     QList&lt;QMdiSubWindow *&gt; windows = mdiArea-&gt;subWindowList();
      separatorAct-&gt;setVisible(!windows.isEmpty());
 
      for (int i = 0; i &lt; windows.size(); ++i) {
-         MdiChild *child = qobject_cast&lt;MdiChild *&gt;(windows.at(i));
+         MdiChild *child = qobject_cast&lt;MdiChild *&gt;(windows.at(i)-&gt;widget());
 
          QString text;
          if (i &lt; 9) {
@@ -186,14 +187,14 @@
          action-&gt;setCheckable(true);
          action -&gt;setChecked(child == activeMdiChild());
          connect(action, SIGNAL(triggered()), windowMapper, SLOT(map()));
-         windowMapper-&gt;setMapping(action, child);
+         windowMapper-&gt;setMapping(action, windows.at(i));
      }
  }
 
  MdiChild *MainWindow::createMdiChild()
  {
      MdiChild *child = new MdiChild;
-     workspace-&gt;addWindow(child);
+     mdiArea-&gt;addSubWindow(child);
 
      connect(child, SIGNAL(copyAvailable(bool)),
              cutAct, SLOT(setEnabled(bool)));
@@ -251,35 +252,31 @@
      closeAct-&gt;setShortcut(tr(&quot;Ctrl+F4&quot;));
      closeAct-&gt;setStatusTip(tr(&quot;Close the active window&quot;));
      connect(closeAct, SIGNAL(triggered()),
-             workspace, SLOT(closeActiveWindow()));
+             mdiArea, SLOT(closeActiveSubWindow()));
 
      closeAllAct = new QAction(tr(&quot;Close &amp;All&quot;), this);
      closeAllAct-&gt;setStatusTip(tr(&quot;Close all the windows&quot;));
      connect(closeAllAct, SIGNAL(triggered()),
-             workspace, SLOT(closeAllWindows()));
+             mdiArea, SLOT(closeAllSubWindows()));
 
      tileAct = new QAction(tr(&quot;&amp;Tile&quot;), this);
      tileAct-&gt;setStatusTip(tr(&quot;Tile the windows&quot;));
-     connect(tileAct, SIGNAL(triggered()), workspace, SLOT(tile()));
+     connect(tileAct, SIGNAL(triggered()), mdiArea, SLOT(tileSubWindows()));
 
      cascadeAct = new QAction(tr(&quot;&amp;Cascade&quot;), this);
      cascadeAct-&gt;setStatusTip(tr(&quot;Cascade the windows&quot;));
-     connect(cascadeAct, SIGNAL(triggered()), workspace, SLOT(cascade()));
-
-     arrangeAct = new QAction(tr(&quot;Arrange &amp;icons&quot;), this);
-     arrangeAct-&gt;setStatusTip(tr(&quot;Arrange the icons&quot;));
-     connect(arrangeAct, SIGNAL(triggered()), workspace, SLOT(arrangeIcons()));
+     connect(cascadeAct, SIGNAL(triggered()), mdiArea, SLOT(cascadeSubWindows()));
 
      nextAct = new QAction(tr(&quot;Ne&amp;xt&quot;), this);
      nextAct-&gt;setStatusTip(tr(&quot;Move the focus to the next window&quot;));
      connect(nextAct, SIGNAL(triggered()),
-             workspace, SLOT(activateNextWindow()));
+             mdiArea, SLOT(activateNextSubWindow()));
 
      previousAct = new QAction(tr(&quot;Pre&amp;vious&quot;), this);
      previousAct-&gt;setStatusTip(tr(&quot;Move the focus to the previous &quot;
                                   &quot;window&quot;));
      connect(previousAct, SIGNAL(triggered()),
-             workspace, SLOT(activatePreviousWindow()));
+             mdiArea, SLOT(activatePreviousSubWindow()));
 
      separatorAct = new QAction(this);
      separatorAct-&gt;setSeparator(true);
@@ -357,17 +354,19 @@
 
  MdiChild *MainWindow::activeMdiChild()
  {
-     return qobject_cast&lt;MdiChild *&gt;(workspace-&gt;activeWindow());
+     if (QMdiSubWindow *activeSubWindow = mdiArea-&gt;activeSubWindow())
+         return qobject_cast&lt;MdiChild *&gt;(activeSubWindow-&gt;widget());
+     return 0;
  }
 
- MdiChild *MainWindow::findMdiChild(const QString &amp;fileName)
+ QMdiSubWindow *MainWindow::findMdiChild(const QString &amp;fileName)
  {
      QString canonicalFilePath = QFileInfo(fileName).canonicalFilePath();
 
-     foreach (QWidget *window, workspace-&gt;windowList()) {
-         MdiChild *mdiChild = qobject_cast&lt;MdiChild *&gt;(window);
+     foreach (QMdiSubWindow *window, mdiArea-&gt;subWindowList()) {
+         MdiChild *mdiChild = qobject_cast&lt;MdiChild *&gt;(window-&gt;widget());
          if (mdiChild-&gt;currentFile() == canonicalFilePath)
-             return mdiChild;
+             return window;
      }
      return 0;
  }
@@ -378,11 +377,18 @@
          qApp-&gt;setLayoutDirection(Qt::RightToLeft);
      else
          qApp-&gt;setLayoutDirection(Qt::LeftToRight);
+ }
+
+ void MainWindow::setActiveSubWindow(QWidget *window)
+ {
+     if (!window)
+         return;
+     mdiArea-&gt;setActiveSubWindow(qobject_cast&lt;QMdiSubWindow *&gt;(window));
  }</pre>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
 </tr></table></div></address></body>
 </html>

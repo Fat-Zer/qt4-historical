@@ -42,8 +42,8 @@ bool Ui3Reader::isMainWindow = false;
 static QString lineColDebug(int line, int col)
 {
     if (line >= 0) {
-        const QString ret("Line: %1%2");
-        return ret.arg(line).arg(col >= 0 ? QString(" Column: %1").arg(col) : QString());
+        const QString ret = QString::fromLatin1("Line: %1%2");
+        return ret.arg(line).arg(col >= 0 ? QString::fromLatin1(" Column: %1").arg(col) : QString());
     }
     return QString();
 }
@@ -225,6 +225,7 @@ Ui3Reader::Ui3Reader(QTextStream &outStream)
    : out(outStream), trout(&languageChangeBody)
 {
     m_porting = new Porting();
+    m_extractImages = false;
 }
 
 Ui3Reader::~Ui3Reader()
@@ -234,7 +235,7 @@ Ui3Reader::~Ui3Reader()
 
 void Ui3Reader::generate(const QString &fn, const QString &outputFn,
           QDomDocument doc, bool decl, bool subcl, const QString &trm,
-          const QString& subClass, bool omitForwardDecls)
+          const QString& subClass, bool omitForwardDecls, const QString &convertedUiFile)
 {
     init();
 
@@ -251,7 +252,9 @@ void Ui3Reader::generate(const QString &fn, const QString &outputFn,
     bareNameOfClass = namespaces.last();
     namespaces.removeLast();
 
-    if (subcl) {
+    if (!convertedUiFile.isEmpty()) {
+        createWrapperDecl(e, convertedUiFile);
+    } else if (subcl) {
         if (decl)
             createSubDecl(e, subClass);
         else
@@ -602,4 +605,10 @@ QStringList Ui3Reader::unique(const QStringList& list)
 bool Ui3Reader::isLayout(const QString& name) const
 {
     return layoutObjects.contains(name);
+}
+
+void Ui3Reader::setExtractImages(bool extract, const QString &qrcOutputFile)
+{
+    m_extractImages = extract;
+    m_qrcOutputFile = qrcOutputFile;
 }

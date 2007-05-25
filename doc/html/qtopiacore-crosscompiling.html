@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-x11-opensource-src-4.2.3/doc/src/emb-crosscompiling.qdoc -->
+<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/doc/src/emb-crosscompiling.qdoc -->
 <head>
-  <title>Qt 4.2: Cross-Compiling Qtopia Core Applications</title>
+  <title>Qt 4.3: Cross-Compiling Qtopia Core Applications</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -20,7 +20,7 @@
 <li><a href="#step-4-provide-hardware-drivers">Step 4: Provide Hardware Drivers</a></li>
 <li><a href="#step-5-build-the-target-specific-executable">Step 5: Build the Target Specific Executable</a></li>
 </ul>
-<p>Note that the cross-compiling procedure has the configuration process in common with the installation procedure, i.e., you might not necessarily have to perform all the mentioned actions depending on your current configuration.</p>
+<p>Note that the cross-compiling procedure has the configuration process in common with the installation procedure, i.e&#x2e;, you might not necessarily have to perform all the mentioned actions depending on your current configuration.</p>
 <a name="step-1-set-the-cross-compiler-s-path"></a>
 <h2>Step 1: Set the Cross-Compiler's Path</h2>
 <p>Specify which cross-compiler to use by setting the <tt>PATH</tt> environment variable. For example, if the current shell is bash, ksh, zsh or sh:</p>
@@ -38,14 +38,14 @@
 <p>Note also that when providing you own qmake specifcation, you must use the <tt>configure</tt> script's <tt>-xplatform</tt> option to make <a href="qtopiacore.html">Qtopia Core</a> aware of the custom <tt>qmake.conf</tt> file.</p>
 <a name="step-3-provide-architecture-specific-files"></a>
 <h2>Step 3: Provide Architecture Specific Files</h2>
-<p>Starting with Qt 4, all of Qt's implicitly shared classes can safely be copied across threads like any other value classes, i.e., they are fully reentrant. This is accomplished by implementing reference counting operations using atomic hardware instructions on all the different platforms supported by Qt.</p>
+<p>Starting with Qt 4, all of Qt's implicitly shared classes can safely be copied across threads like any other value classes, i.e&#x2e;, they are fully reentrant. This is accomplished by implementing reference counting operations using atomic hardware instructions on all the different platforms supported by Qt.</p>
 <p>To support a new architecture, it is important to ensure that these platform-specific atomic operations are implemented in a corresponding header file (<tt>qatomic_ARCH.h</tt>), and that this file is located in Qt's <tt>src/corelib/arch</tt> directory. For example, the Intel 80386 implementation is located in <tt>src/corelib/arch/qatomic_i386.h</tt>.</p>
 <p>See the <a href="atomic-operations.html">Implementing Atomic Operations</a> documentation for details.</p>
 <a name="step-4-provide-hardware-drivers"></a>
 <h2>Step 4: Provide Hardware Drivers</h2>
 <p>Without the proper mouse and keyboard drivers, you will not be able to give any input to your application when it is installed on the target device. You must also ensure that the appropriate screen driver is present to make the server process able to put the application's widgets on screen.</p>
 <p><a href="qtopiacore.html">Qtopia Core</a> provides several ready-made mouse, keyboard and screen drivers, see the <a href="qtopiacore-pointer.html">pointer handling</a>, <a href="qtopiacore-charinput.html">character input</a> and <a href="qtopiacore-displaymanagement.html">display management</a> documentation for details.</p>
-<p>In addition, custom drivers can be added by deriving from the <a href="qwsmousehandler.html">QWSMouseHandler</a>, <a href="qwskeyboardhandler.html">QWSKeyboardHandler</a> and <a href="qscreen.html">QScreen</a> classes respectively, and by creating corresponding plugins to make use of Qt's plugin mechanism (dynamically loading the drivers into the server application at runtime). Note that the plugins must be located in a location where Qt will look for plugins, e.g., the standard <tt>plugin</tt> directory.</p>
+<p>In addition, custom drivers can be added by deriving from the <a href="qwsmousehandler.html">QWSMouseHandler</a>, <a href="qwskeyboardhandler.html">QWSKeyboardHandler</a> and <a href="qscreen.html">QScreen</a> classes respectively, and by creating corresponding plugins to make use of Qt's plugin mechanism (dynamically loading the drivers into the server application at runtime). Note that the plugins must be located in a location where Qt will look for plugins, e.g&#x2e;, the standard <tt>plugin</tt> directory.</p>
 <p>See the <a href="plugins-howto.html">How to Create Qt Plugins</a> documentation and the <a href="tools-plugandpaint.html">Plug &amp; Paint</a> example for details.</p>
 <a name="step-5-build-the-target-specific-executable"></a>
 <h2>Step 5: Build the Target Specific Executable</h2>
@@ -72,6 +72,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
 </tr></table></div></address></body>
 </html>

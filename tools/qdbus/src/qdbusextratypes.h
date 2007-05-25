@@ -50,6 +50,7 @@ private:
     void check();
 };
 Q_DECLARE_METATYPE(QDBusObjectPath)
+Q_DECLARE_METATYPE(QList<QDBusObjectPath>)
 
 inline QDBusObjectPath::QDBusObjectPath(const char *objectPath)
     : QString(QString::fromLatin1(objectPath))
@@ -85,6 +86,7 @@ private:
     void check();
 };
 Q_DECLARE_METATYPE(QDBusSignature)
+Q_DECLARE_METATYPE(QList<QDBusSignature>)
 
 inline QDBusSignature::QDBusSignature(const char *dBusSignature)
     : QString(QString::fromAscii(dBusSignature))

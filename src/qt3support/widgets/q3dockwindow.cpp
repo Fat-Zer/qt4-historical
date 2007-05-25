@@ -42,6 +42,7 @@
 #include <private/q3titlebar_p.h>
 #include <private/qwidgetresizehandler_p.h>
 #include <qrubberband.h>
+#include <qdebug.h>
 
 #ifdef Q_WS_MAC
 static bool default_opaque = true;
@@ -509,7 +510,7 @@ void Q3DockWindowHandle::updateGui()
 #endif
         QStyleOption opt(0);
         opt.init(closeButton);
-        closeButton->setIcon(style()->standardPixmap(QStyle::SP_DockWidgetCloseButton, &opt,
+        closeButton->setIcon(style()->standardIcon(QStyle::SP_DockWidgetCloseButton, &opt,
                                                     closeButton));
         closeButton->setFixedSize(12, 12);
         connect(closeButton, SIGNAL(clicked()),
@@ -540,7 +541,7 @@ void Q3DockWindowHandle::changeEvent(QEvent *ev)
         if (closeButton) {
             QStyleOption opt(0);
             opt.init(closeButton);
-            closeButton->setIcon(style()->standardPixmap(QStyle::SP_DockWidgetCloseButton,
+            closeButton->setIcon(style()->standardIcon(QStyle::SP_DockWidgetCloseButton,
                                                         &opt, closeButton));
         }
     }
@@ -574,7 +575,7 @@ Q3DockWindowTitleBar::Q3DockWindowTitleBar(Q3DockWindow *dw)
     : Q3TitleBar(0, dw), dockWindow(dw),
       mousePressed(false), hadDblClick(false), opaque(default_opaque)
 {
-    setObjectName("qt_dockwidget_internal");
+    setObjectName(QLatin1String("qt_dockwidget_internal"));
     ctrlDown = false;
     setMouseTracking(true);
     QStyleOptionTitleBar opt = getStyleOption();
@@ -614,10 +615,11 @@ void Q3DockWindowTitleBar::mousePressEvent(QMouseEvent *e)
     QSize s = icon.actualSize(QSize(64, 64));
     opt.icon = icon.pixmap(s);
     opt.titleBarState = window() ? window()->windowState() : static_cast<Qt::WindowStates>(Qt::WindowNoState);
-    opt.titleBarFlags = windowFlags();
+    opt.titleBarFlags = fakeWindowFlags();
     QStyle::SubControl tbctrl = style()->hitTestComplexControl(QStyle::CC_TitleBar, &opt,
                                                                e->pos(), this);
-    if (tbctrl > QStyle::SC_TitleBarLabel) {
+
+    if (tbctrl < QStyle::SC_TitleBarLabel) {
         Q3TitleBar::mousePressEvent(e);
         return;
     }
@@ -704,9 +706,9 @@ void Q3DockWindowTitleBar::resizeEvent(QResizeEvent *e)
 void Q3DockWindowTitleBar::updateGui()
 {
     if (dockWindow->isCloseEnabled()) {
-        setWindowFlags(windowFlags() | Qt::WStyle_SysMenu);
+        setFakeWindowFlags(fakeWindowFlags() | Qt::WStyle_SysMenu);
     } else {
-        setWindowFlags(windowFlags() & ~Qt::WStyle_SysMenu);
+        setFakeWindowFlags(fakeWindowFlags() & ~Qt::WStyle_SysMenu);
     }
 }
 

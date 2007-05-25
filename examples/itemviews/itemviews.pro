@@ -1,13 +1,16 @@
 TEMPLATE      = subdirs
 SUBDIRS       = basicsortfiltermodel \
                 chart \
+		coloreditorfactory \
                 customsortfiltermodel \
                 dirview \
                 pixelator \
                 puzzle \
                 simpledommodel \
                 simpletreemodel \
-                spinboxdelegate
+                simplewidgetmapper \
+                spinboxdelegate \
+                stardelegate
 
 # install
 sources.files = README *.pro

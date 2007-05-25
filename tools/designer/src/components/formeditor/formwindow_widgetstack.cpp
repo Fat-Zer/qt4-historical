@@ -21,8 +21,8 @@
 **
 ****************************************************************************/
 
-#include <QtDesigner/QtDesigner>
 #include "formwindow_widgetstack.h"
+#include <QtDesigner/QDesignerFormWindowToolInterface>
 
 #include <QtGui/QWidget>
 #include <QtGui/qevent.h>
@@ -59,7 +59,7 @@ QDesignerFormWindowToolInterface *FormWindowWidgetStack::currentTool() const
 void FormWindowWidgetStack::setCurrentTool(int index)
 {
     if (index < 0 || index >= count()) {
-        qWarning("FormWindowWidgetStack::setCurrentTool(): invalid index: %d", index);
+        qDebug("FormWindowWidgetStack::setCurrentTool(): invalid index: %d", index);
         return;
     }
 
@@ -96,7 +96,7 @@ void FormWindowWidgetStack::setSenderAsCurrentTool()
     QDesignerFormWindowToolInterface *tool = 0;
     QAction *action = qobject_cast<QAction*>(sender());
     if (action == 0) {
-        qWarning("FormWindowWidgetStack::setSenderAsCurrentTool(): sender is not a QAction");
+        qDebug("FormWindowWidgetStack::setSenderAsCurrentTool(): sender is not a QAction");
         return;
     }
 
@@ -108,7 +108,7 @@ void FormWindowWidgetStack::setSenderAsCurrentTool()
     }
 
     if (tool == 0) {
-        qWarning("FormWindowWidgetStack::setSenderAsCurrentTool(): unknown tool");
+        qDebug("FormWindowWidgetStack::setSenderAsCurrentTool(): unknown tool");
         return;
     }
 
@@ -124,7 +124,7 @@ void FormWindowWidgetStack::setCurrentTool(QDesignerFormWindowToolInterface *too
 {
     int index = indexOf(tool);
     if (index == -1) {
-        qWarning("FormWindowWidgetStack::setCurrentTool(): unknown tool");
+        qDebug("FormWindowWidgetStack::setCurrentTool(): unknown tool");
         return;
     }
 

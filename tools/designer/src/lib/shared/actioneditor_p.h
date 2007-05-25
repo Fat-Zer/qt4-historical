@@ -43,11 +43,11 @@
 class QDesignerPropertyEditorInterface;
 class QListWidget;
 class QListWidgetItem;
-class QSplitter;
 
 namespace qdesigner_internal {
 
 class ActionRepository;
+class ResourceMimeData;
 
 class QDESIGNER_SHARED_EXPORT ActionEditor: public QDesignerActionEditorInterface
 {
@@ -69,13 +69,14 @@ public:
     virtual void manageAction(QAction *action);
     virtual void unmanageAction(QAction *action);
 
-    static QString actionTextToName(const QString &text);
+    static QString actionTextToName(const QString &text, const QString &prefix = QLatin1String("action"));
 
     QAction *itemToAction(QListWidgetItem *item) const;
     QListWidgetItem *actionToItem(QAction *action) const;
 
 public slots:
     void setFilter(const QString &filter);
+    void mainContainerChanged();
 
 private slots:
     void slotItemChanged(QListWidgetItem *item);
@@ -84,6 +85,7 @@ private slots:
     void slotNewAction();
     void slotDeleteAction();
     void slotNotImplemented();
+    void resourceImageDropped(const ResourceMimeData &data, QAction *action);
     
 signals:
     void itemActivated(QListWidgetItem *item);
@@ -91,11 +93,9 @@ signals:
 
 private:
     QListWidgetItem *createListWidgetItem(QAction *action);
-    void updatePropertyEditor(QAction *action);
 
     QDesignerFormEditorInterface *m_core;
     QPointer<QDesignerFormWindowInterface> m_formWindow;
-    QSplitter *splitter;
     QListWidget *m_actionGroups;
     ActionRepository *m_actionRepository;
     QAction *m_actionNew;

@@ -37,6 +37,7 @@
 
 #include "shared_global_p.h"
 
+#include <QtCore/QMap>
 #include <QtCore/QStringList>
 #include <QtCore/QSettings>
 
@@ -64,8 +65,13 @@ public:
     QStringList disabledPlugins() const;
     void setDisabledPlugins(const QStringList &disabled_plugins);
 
+    QStringList failedPlugins() const;
+    QString failureReason(const QString &pluginName) const;
+
     QList<QObject*> instances() const;
     QList<QDesignerCustomWidgetInterface*> registeredCustomWidgets() const;
+
+    bool registerNewPlugins();
 
 public slots:
     bool syncSettings();
@@ -81,7 +87,12 @@ private:
     QStringList m_pluginPaths;
     QStringList m_registeredPlugins;
     QStringList m_disabledPlugins;
-    QList<QDesignerCustomWidgetInterface*> m_customWidgets;
+
+    typedef QMap<QString, QString> FailedPluginMap;
+    FailedPluginMap m_failedPlugins;
+
+    typedef QList<QDesignerCustomWidgetInterface*> CustomWidgetList;
+    CustomWidgetList m_customWidgets;
 
     QStringList defaultPluginPaths() const;
 };

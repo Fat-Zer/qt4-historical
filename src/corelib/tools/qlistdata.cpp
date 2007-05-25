@@ -45,10 +45,15 @@ static int grow(int size)
     return x;
 }
 
+#if QT_VERSION >= 0x050000
+#  error "Remove QListData::detach(), it is only required for binary compatibility for 4.0.x to 4.2.x"
+#endif
 QListData::Data *QListData::detach()
 {
-    Q_ASSERT(d->ref != 1);
     Data *x = static_cast<Data *>(qMalloc(DataHeaderSize + d->alloc * sizeof(void *)));
+    if (!x)
+        qFatal("QList: Out of memory");
+
     ::memcpy(x, d, DataHeaderSize + d->alloc * sizeof(void *));
     x->alloc = d->alloc;
     x->ref.init(1);
@@ -62,15 +67,35 @@ QListData::Data *QListData::detach()
     return 0;
 }
 
+// Returns the old (shared) data, it is up to the caller to deref() and free()
+QListData::Data *QListData::detach2()
+{
+    Data *x = static_cast<Data *>(qMalloc(DataHeaderSize + d->alloc * sizeof(void *)));
+    if (!x)
+        qFatal("QList: Out of memory");
+
+    ::memcpy(x, d, DataHeaderSize + d->alloc * sizeof(void *));
+    x->alloc = d->alloc;
+    x->ref.init(1);
+    x->sharable = true;
+    if (!x->alloc)
+        x->begin = x->end = 0;
+
+    return qAtomicSetPtr(&d, x);
+}
+
 void QListData::realloc(int alloc)
 {
     Q_ASSERT(d->ref == 1);
-    d = static_cast<Data *>(qRealloc(d, DataHeaderSize + alloc * sizeof(void *)));
+    Data *x = static_cast<Data *>(qRealloc(d, DataHeaderSize + alloc * sizeof(void *)));
+    if (!x)
+        qFatal("QList: Out of memory");
+
+    d = x;
     d->alloc = alloc;
     if (!alloc)
         d->begin = d->end = 0;
 }
-
 
 void **QListData::append()
 {
@@ -454,7 +479,7 @@ void **QListData::erase(void **xi)
     \sa operator==()
 */
 
-/*! 
+/*!
     \fn int QList::size() const
 
     Returns the number of items in the list.
@@ -606,7 +631,7 @@ void **QListData::erase(void **xi)
     \sa operator[](), removeAt()
 */
 
-/*!     
+/*!
     \fn int QList::removeAll(const T &value)
 
     Removes all occurrences of \a value in the list and returns the number of entries
@@ -1010,7 +1035,7 @@ void **QListData::erase(void **xi)
 /*! \fn bool QList::empty() const
 
     This function is provided for STL compatibility. It is equivalent
-    to isEmpty().
+    to isEmpty() and returns true if the list is empty.
 */
 
 /*! \fn QList<T> &QList::operator+=(const QList<T> &other)

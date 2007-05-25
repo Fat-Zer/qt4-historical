@@ -234,6 +234,7 @@ public:
     float toFloat(bool *ok = 0) const;
     double toDouble(bool *ok = 0) const;
     QByteArray toBase64() const;
+    QByteArray toHex() const;
 
     QByteArray &setNum(short, int base = 10);
     QByteArray &setNum(ushort, int base = 10);
@@ -251,6 +252,7 @@ public:
     static QByteArray number(double, char f = 'g', int prec = 6);
     static QByteArray fromRawData(const char *, int size);
     static QByteArray fromBase64(const QByteArray &base64);
+    static QByteArray fromHex(const QByteArray &hexEncoded);
 
     typedef char *iterator;
     typedef const char *const_iterator;
@@ -319,6 +321,9 @@ private:
 
     friend class QByteRef;
     friend class QString;
+public:
+    typedef Data * DataPtr;
+    inline DataPtr &data_ptr() { return d; }
 };
 
 inline QByteArray::QByteArray(): d(&shared_null) { d->ref.ref(); }

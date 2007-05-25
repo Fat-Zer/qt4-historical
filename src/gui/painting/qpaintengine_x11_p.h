@@ -45,6 +45,7 @@
 
 class QX11PaintEnginePrivate;
 class QFontEngineFT;
+class QXRenderTessellator;
 
 typedef unsigned long Picture;
 
@@ -69,7 +70,7 @@ public:
     void updateBrush(const QBrush &brush, const QPointF &pt);
     void updateRenderHints(QPainter::RenderHints hints);
     void updateFont(const QFont &font);
-    void updateMatrix(const QMatrix &matrix);
+    void updateMatrix(const QTransform &matrix);
     void updateClipRegion_dev(const QRegion &region, Qt::ClipOperation op);
 
     void drawLines(const QLine *lines, int lineCount);
@@ -107,7 +108,6 @@ protected:
     void drawXLFD(const QPointF &p, const QTextItemInt &si);
 #ifndef QT_NO_FONTCONFIG
     void drawFreetype(const QPointF &p, const QTextItemInt &si);
-    void core_render_glyph(QFontEngineFT *fe, int xp, int yp, uint glyph);
 #endif
 
     friend class QPixmap;
@@ -131,9 +131,12 @@ public:
         gc = gc_brush = 0;
         dpy  = 0;
         xinfo = 0;
-        txop = QPainterPrivate::TxNone;
+        txop = QTransform::TxNone;
         has_clipping = false;
         render_hints = 0;
+#ifndef QT_NO_XRENDER
+        tessellator = 0;
+#endif
     }
     enum GCMode {
         PenGC,
@@ -164,6 +167,7 @@ public:
     int scrn;
     int pdev_depth;
     Qt::HANDLE hd;
+    QPixmap brush_pm;
 #if !defined (QT_NO_XRENDER)
     Qt::HANDLE picture;
     Qt::HANDLE current_brush;
@@ -178,7 +182,7 @@ public:
     QPen cpen;
     QBrush cbrush;
     QRegion crgn;
-    QMatrix matrix;
+    QTransform matrix;
     qreal opacity;
 
     uint has_complex_xform : 1;
@@ -197,10 +201,13 @@ public:
 
     const QX11Info *xinfo;
     QPointF bg_origin;
-    QPainterPrivate::TransformationCodes txop;
+    QTransform::TransformationType txop;
     QPolygonClipper<qt_float_point, qt_float_point, float> polygonClipper;
 
     int xlibMaxLinePoints;
+#ifndef QT_NO_XRENDER
+    QXRenderTessellator *tessellator;
+#endif
 };
 
 #endif // QPAINTENGINE_X11_P_H

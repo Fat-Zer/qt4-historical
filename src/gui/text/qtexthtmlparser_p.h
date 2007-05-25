@@ -36,6 +36,7 @@
 //
 
 #include "QtCore/qvector.h"
+#include "QtGui/qbrush.h"
 #include "QtGui/qcolor.h"
 #include "QtGui/qfont.h"
 #include "QtGui/qtextdocument.h"
@@ -45,7 +46,8 @@
 #include "private/qcssparser_p.h"
 
 enum QTextHTMLElements {
-    Html_qt,
+    Html_unknown = -1,
+    Html_qt = 0,
     Html_body,
 
     Html_a,
@@ -107,9 +109,10 @@ enum QTextHTMLElements {
     Html_thead,
     Html_tbody,
     Html_tfoot,
-    Html_html,
+    Html_caption,
 
     // misc...
+    Html_html,
     Html_style,
     Html_title,
     Html_meta,
@@ -121,14 +124,11 @@ enum QTextHTMLElements {
 struct QTextHtmlElement
 {
     const char *name;
-    int id;
+    QTextHTMLElements id;
     enum DisplayMode { DisplayBlock, DisplayInline, DisplayTable, DisplayNone } displayMode;
 };
 
 class QTextHtmlParser;
-
-
-enum QTriState { Off = 0, On = 1, Unspecified = 2 };
 
 struct QTextHtmlParserNode {
     enum WhiteSpaceMode {
@@ -145,41 +145,18 @@ struct QTextHtmlParserNode {
     QStringList attributes;
     int parent;
     QVector<int> children;
-    int id;
-    uint isBlock : 1;
-    uint isListItem : 1;
-    uint isListStart : 1;
-    uint isTableCell : 1;
-    uint isAnchor : 1;
-    uint fontItalic : 2; // Tristate
-    uint fontUnderline : 2; // Tristate
-    uint fontOverline : 2; // Tristate
-    uint fontStrikeOut : 2; // Tristate
-    uint fontFixedPitch : 2; // Tristate
+    QTextHTMLElements id;
+    QTextCharFormat charFormat;
+    QTextBlockFormat blockFormat;
     uint cssFloat : 2;
     uint hasOwnListStyle : 1;
-    uint hasFontPointSize : 1;
-    uint hasFontPixelSize : 1;
-    uint hasFontSizeAdjustment : 1;
-    uint hasCssBlockIndent : 1;
     uint hasCssListIndent : 1;
     uint isEmptyParagraph : 1;
     uint isTextFrame : 1;
-    uint direction : 2; // 3 means unset
+    uint isRootFrame : 1;
     uint displayMode : 3; // QTextHtmlElement::DisplayMode
-    QTextFormat::PageBreakFlags pageBreakPolicy;
-    QString fontFamily;
-    int fontPointSize;
-    int fontPixelSize;
-    int fontSizeAdjustment;
-    int fontWeight;
-    QBrush foreground;
-    QBrush background;
-    Qt::Alignment alignment;
-    QTextCharFormat::VerticalAlignment verticalAlignment;
+    uint hasHref : 1;
     QTextListFormat::Style listStyle;
-    QString anchorHref;
-    QString anchorName;
     QString imageName;
     qreal imageWidth;
     qreal imageHeight;
@@ -190,15 +167,20 @@ struct QTextHtmlParserNode {
     int tableCellColSpan;
     qreal tableCellSpacing;
     qreal tableCellPadding;
+    QBrush borderBrush;
+    QTextFrameFormat::BorderStyle borderStyle;
+    int userState;
 
-    int cssBlockIndent;
     int cssListIndent;
-    qreal text_indent;
-
-    QTextCharFormat charFormat() const;
-    QTextBlockFormat blockFormat() const;
 
     WhiteSpaceMode wsm;
+
+    inline bool isListStart() const
+    { return id == Html_ol || id == Html_ul; }
+    inline bool isTableCell() const
+    { return id == Html_td || id == Html_th; }
+    inline bool isBlock() const
+    { return displayMode == QTextHtmlElement::DisplayBlock; }
 
     inline bool isNotSelfNesting() const
     { return id == Html_p || id == Html_li; }
@@ -206,7 +188,7 @@ struct QTextHtmlParserNode {
     inline bool allowedInContext(int parentId) const
     {
         switch (id) {
-            case Html_dd: return (parentId == Html_dt || parentId == Html_dl);
+            case Html_dd:
             case Html_dt: return (parentId == Html_dl);
             case Html_tr: return (parentId == Html_table
                                   || parentId == Html_thead
@@ -218,6 +200,7 @@ struct QTextHtmlParserNode {
             case Html_thead:
             case Html_tbody:
             case Html_tfoot: return (parentId == Html_table);
+            case Html_caption: return (parentId == Html_table);
             default: break;
         }
         return true;
@@ -232,7 +215,11 @@ struct QTextHtmlParserNode {
 
     bool isNestedList(const QTextHtmlParser *parser) const;
 
+    void parseStyleAttribute(const QString &value, const QTextDocument *resourceProvider);
     void applyCssDeclarations(const QVector<QCss::Declaration> &declarations, const QTextDocument *resrouceProvider);
+    void setListStyle(const QVector<QCss::Value> &cssValues);
+
+    bool hasOnlyWhitespace() const;
 
     int margin[4];
     friend class QTextHtmlParser;
@@ -279,7 +266,7 @@ protected:
     void parseExclamationTag();
     QString parseEntity();
     QString parseWord();
-    void resolveParent();
+    QTextHtmlParserNode *resolveParent();
     void resolveNode();
     QStringList parseAttributes();
     void applyAttributes(const QStringList &attributes);
@@ -288,12 +275,22 @@ protected:
         {return pos + lookahead < len && txt.at(pos) == c; }
     int margin(int i, int mar) const;
 
+    bool nodeIsChildOf(int i, QTextHTMLElements id) const;
+
     QVector<QCss::Declaration> declarationsForNode(int node) const;
     void resolveStyleSheetImports(const QCss::StyleSheet &sheet);
     void importStyleSheet(const QString &href);
 
-    QHash<QString, QCss::StyleSheet> externalStyleSheets;
-    QList<QCss::StyleSheet> inlineStyleSheets;
+    struct ExternalStyleSheet
+    {
+        inline ExternalStyleSheet() {}
+        inline ExternalStyleSheet(const QString &_url, const QCss::StyleSheet &_sheet)
+            : url(_url), sheet(_sheet) {}
+        QString url;
+        QCss::StyleSheet sheet;
+    };
+    QVector<ExternalStyleSheet> externalStyleSheets;
+    QVector<QCss::StyleSheet> inlineStyleSheets;
     const QTextDocument *resourceProvider;
 };
 

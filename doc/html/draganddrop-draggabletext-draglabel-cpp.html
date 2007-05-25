@@ -3,7 +3,7 @@
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>Qt 4.2: draglabel.cpp Example File (draganddrop/draggabletext/draglabel.cpp)</title>
+  <title>Qt 4.3: draglabel.cpp Example File (draganddrop/draggabletext/draglabel.cpp)</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -58,7 +58,7 @@
      drag-&gt;setMimeData(mimeData);
      drag-&gt;setHotSpot(event-&gt;pos() - rect().topLeft());
 
-     Qt::DropAction dropAction = drag-&gt;start(Qt::CopyAction | Qt::MoveAction);
+     Qt::DropAction dropAction = drag-&gt;exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction);
 
      if (dropAction == Qt::MoveAction) {
          close();
@@ -69,6 +69,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
 </tr></table></div></address></body>
 </html>

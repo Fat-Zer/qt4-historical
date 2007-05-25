@@ -59,7 +59,6 @@ class MakefileGenerator : protected QMakeSourceFileInfo
     QString spec;
     bool init_opath_already, init_already, no_io;
     QHash<QString, bool> init_compiler_already;
-    QStringList createObjectList(const QStringList &sources);
     QString build_args(const QString &outdir=QString());
     void checkMultipleDefinition(const QString &, const QString &);
 
@@ -69,10 +68,10 @@ class MakefileGenerator : protected QMakeSourceFileInfo
     mutable QHash<ReplaceExtraCompilerCacheKey, QString> extraCompilerVariablesCache;
 
 protected:
+    QStringList createObjectList(const QStringList &sources);
+
     //makefile style generator functions
     void writeObj(QTextStream &, const QString &src);
-    void writeLexSrc(QTextStream &, const QString &lex);
-    void writeYaccSrc(QTextStream &, const QString &yac);
     void writeInstalls(QTextStream &t, const QString &installs, bool noBuild=false);
     void writeHeader(QTextStream &t);
     void writeSubDirs(QTextStream &t);
@@ -81,18 +80,22 @@ protected:
     void writeExtraTargets(QTextStream &t);
     void writeExtraCompilerTargets(QTextStream &t);
     void writeExtraCompilerVariables(QTextStream &t);
-    virtual bool writeMakefile(QTextStream &);
+    virtual bool writeStubMakefile(QTextStream &t);
+    virtual bool writeMakefile(QTextStream &t);
 
     //generating subtarget makefiles
     struct SubTarget
     {
-        QString directory, profile, target, makefile;
+        QString name;
+	QString in_directory, out_directory;
+        QString profile, target, makefile;
         QStringList depends;
     };
     enum SubTargetFlags {
-        SubTargetsNoFlags=0x00,
         SubTargetInstalls=0x01,
-        SubTargetOrdered=0x02
+        SubTargetOrdered=0x02,
+
+        SubTargetsNoFlags=0x00
     };
     void writeSubTargets(QTextStream &t, QList<SubTarget*> subtargets, int flags);
 
@@ -138,6 +141,13 @@ protected:
     };
     QStringList findFilesInVPATH(QStringList l, uchar flags, const QString &var="");
 
+    inline int findExecutable(const QStringList &cmdline)
+    { int ret; canExecute(cmdline, &ret); return ret; }
+    bool canExecute(const QStringList &cmdline, int *argv0) const;
+    inline bool canExecute(const QString &cmdline) const
+    { return canExecute(cmdline.split(' '), 0); }
+
+    bool mkdir(const QString &dir) const;
     QString mkdir_p_asstring(const QString &dir, bool escape=true) const;
 
     //subclasses can use these to query information about how the generator was "run"
@@ -157,6 +167,7 @@ protected:
     virtual QString defaultInstall(const QString &);
 
     //for prl
+    QString prlFileName(bool fixify=true);
     void writePrlFile();
     bool processPrlFile(QString &);
     virtual void processPrlVariable(const QString &, const QStringList &);
@@ -206,6 +217,7 @@ public:
     virtual bool supportsMergedBuilds() { return false; }
     virtual bool mergeBuildProject(MakefileGenerator * /*other*/) { return false; }
     virtual bool openOutput(QFile &, const QString &build) const;
+    virtual bool isWindowsShell() const { return Option::target_mode == Option::TARG_WIN_MODE; }
 };
 
 inline void MakefileGenerator::setNoIO(bool o)

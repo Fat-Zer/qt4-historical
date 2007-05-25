@@ -71,6 +71,8 @@ public:
 
     static bool printerHasPPD(const char *printerName);
 
+    QString unicodeString(const char *s);
+
 private:
     void collectMarkedOptions(QStringList& list, const ppd_group_t* group = 0) const;
     void collectMarkedOptionsHelper(QStringList& list, const ppd_group_t* group) const;
@@ -80,6 +82,9 @@ private:
     const ppd_option_t* page_sizes;
     int currPrinterIndex;
     ppd_file_t *currPPD;
+#ifndef QT_NO_TEXTCODEC
+    QTextCodec *codec;
+#endif
 };
 
 #endif // QT_NO_CUPS

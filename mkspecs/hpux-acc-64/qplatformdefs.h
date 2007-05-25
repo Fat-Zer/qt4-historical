@@ -36,6 +36,7 @@
 // We are hot - unistd.h should have turned on the specific APIs we requested
 
 #include <pthread.h>
+#include <sys/pstat.h>
 #define _REENTRANT
 #include <dirent.h>
 #include <fcntl.h>
@@ -112,6 +113,7 @@
 #define QT_CHDIR		::chdir
 #define QT_MKDIR		::mkdir
 #define QT_RMDIR		::rmdir
+#define QT_OPEN_LARGEFILE       0
 #define QT_OPEN_RDONLY		O_RDONLY
 #define QT_OPEN_WRONLY		O_WRONLY
 #define QT_OPEN_RDWR		O_RDWR

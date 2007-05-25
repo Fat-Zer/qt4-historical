@@ -21,11 +21,15 @@
 **
 ****************************************************************************/
 
+#include "qatomic.h"
 #include "qmutexpool_p.h"
 
 #ifndef QT_NO_THREAD
 
+// qt_global_mutexpool is here for backwards compatability only,
+// use QMutexpool::instance() in new clode.
 Q_CORE_EXPORT QMutexPool *qt_global_mutexpool = 0;
+Q_GLOBAL_STATIC_WITH_ARGS(QMutexPool, globalMutexPool, (true))
 
 /*!
     \class QMutexPool qmutexpool_p.h
@@ -113,6 +117,14 @@ QMutexPool::~QMutexPool()
 }
 
 /*!
+    Returns the global QMutexPool instance.
+*/
+QMutexPool *QMutexPool::instance()
+{
+    return globalMutexPool();
+}
+
+/*!
     Returns a QMutex from the pool. QMutexPool uses the value \a address
     to determine which mutex is returned from the pool.
 */
@@ -132,6 +144,17 @@ QMutex *QMutexPool::get(const void *address)
     }
 
     return mutexes[index];
+}
+
+/*!
+    Returns a QMutex from the global mutex pool.
+*/
+QMutex *QMutexPool::globalInstanceGet(const void *address)
+{
+    QMutexPool * const globalInstance = globalMutexPool();
+    if (globalInstance == 0)
+        return 0;
+    return globalInstance->get(address);
 }
 
 #endif // QT_NO_THREAD

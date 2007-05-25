@@ -99,7 +99,7 @@ inline bool qt_isEvilFsTypeName(const char *name)
             || qstrncmp(name, "cachefs", 7) == 0);
 }
 
-#if defined(Q_OS_BSD4)
+#if defined(Q_OS_BSD4) && !defined(Q_OS_NETBSD)
 # include <sys/param.h>
 # include <sys/mount.h>
 
@@ -135,7 +135,7 @@ static bool isLikelyToBeNfs(int handle)
 
 #elif defined(Q_OS_SOLARIS) || defined(Q_OS_IRIX) || defined(Q_OS_AIX) || defined(Q_OS_HPUX) \
       || defined(Q_OS_OSF) || defined(Q_OS_QNX) || defined(Q_OS_QNX6) || defined(Q_OS_SCO) \
-      || defined(Q_OS_UNIXWARE) || defined(Q_OS_RELIANT)
+      || defined(Q_OS_UNIXWARE) || defined(Q_OS_RELIANT) || defined(Q_OS_NETBSD)
 # include <sys/statvfs.h>
 
 static bool isLikelyToBeNfs(int handle)
@@ -973,7 +973,7 @@ static QString windowsConfigPath(int type)
 #ifndef QT_NO_QOBJECT
     // We can't use QLibrary if there is QT_NO_QOBJECT is defined
     // This only happens when bootstrapping qmake.
-    QLibrary library("shell32");
+    QLibrary library(QLatin1String("shell32"));
     QT_WA( {
         typedef BOOL (WINAPI*GetSpecialFolderPath)(HWND, LPTSTR, int, BOOL);
         GetSpecialFolderPath SHGetSpecialFolderPath = (GetSpecialFolderPath)library.resolve("SHGetSpecialFolderPathW");
@@ -2022,6 +2022,11 @@ void QConfFileSettingsPrivate::ensureSectionParsed(QConfFile *confFile,
     \o Avoid key names that are identical except for the case. For
        example, if you have a key called "MainWindow", don't try to
        save another key as "mainwindow".
+
+    \o Do not use slashes  ('/' and '\\') in key names; the
+       backslash character is used to separate sub keys (see below). On
+       windows '\\' are converted by QSettings to '/', which makes
+       them identical.
     \endlist
 
     You can form hierarchical keys using the '/' character as a
@@ -2281,6 +2286,27 @@ void QConfFileSettingsPrivate::ensureSectionParsed(QConfFile *confFile,
     \code
         settings.setValue("11.0/Outlook/Security/DontTrustInstalledFiles", 0);
     \endcode
+
+    Note that the backslash character is, as mentioned, used by
+    QSettings to separate subkeys. As a result, you cannot read or
+    write windows registry entries that contain slashes or
+    backslashes; you should use a native windows API if you need to do
+    so.
+
+    \section2 Accessing Common Registry Settings on Windows
+
+    On windows, it is possible for a key to have both a value and subkeys.
+    Its default value is accessed by using "Default" or "." in
+    place of a subkey:
+
+    \code
+        settings.setValue("HKEY_CURRENT_USER\\MySoft\\Star Runner\\Galaxy", "Milkyway");
+        settings.setValue("HKEY_CURRENT_USER\\MySoft\\Star Runner\\Galaxy\\Sun", "OurStar");
+        settings.value("HKEY_CURRENT_USER\\MySoft\\Star Runner\\Galaxy\\Default"); // returns "Milkyway"
+    \endcode
+    
+    On other platforms than windows, "Default" and "." would be
+    treated as regular subkeys.
 
     \section2 Platform Limitations
 

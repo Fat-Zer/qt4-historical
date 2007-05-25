@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-x11-opensource-src-4.2.3/doc/src/activeqt-dumpcpp.qdoc -->
+<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/doc/src/activeqt-dumpcpp.qdoc -->
 <head>
-  <title>Qt 4.2: The dumpcpp Tool (ActiveQt)</title>
+  <title>Qt 4.3: The dumpcpp Tool (ActiveQt)</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -33,7 +33,7 @@
 
  TYPELIBS = $$system(dumpcpp -getfile {00062FFF-0000-0000-C000-000000000046})</pre>
 <p>The generated namespace will declare all enumerations, as well as one <a href="qaxobject.html">QAxObject</a> subclass for each <tt>coclass</tt> and <tt>interface</tt> declared in the type library. coclasses marked with the <tt>control</tt> attribute will be wrapped by a <a href="qaxwidget.html">QAxWidget</a> subclass.</p>
-<p>Those classes that wrap creatable coclasses (i.e. coclasses that are not marked as <tt>noncreatable</tt>) have a default constructor; this is typically a single class of type <tt>Application</tt>.</p>
+<p>Those classes that wrap creatable coclasses (i.e&#x2e; coclasses that are not marked as <tt>noncreatable</tt>) have a default constructor; this is typically a single class of type <tt>Application</tt>.</p>
 <pre> Outlook::Application *outlook = new Outlook::Application;</pre>
 <p>All other classes can only be created by passing an IDispatch interface pointer to the constructor; those classes should however not be created explicitly. Instead, use the appropriate API of already created objects.</p>
 <pre> Outlook::_NameSpace *session = outlook-&gt;Session();</pre>
@@ -54,6 +54,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
 </tr></table></div></address></body>
 </html>

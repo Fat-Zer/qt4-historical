@@ -52,12 +52,17 @@ public:
     QProgressDialogPrivate() : label(0), cancel(0), bar(0),
         shown_once(false),
         cancellation_flag(false),
-        showTime(defaultShowTime)
+        showTime(defaultShowTime),
+#ifndef QT_NO_SHORTCUT
+        escapeShortcut(0),
+#endif
+        useDefaultCancelText(false)
     {
     }
 
     void init(const QString &labelText, const QString &cancelText, int min, int max);
     void layout();
+    void retranslateStrings();
 
     QLabel *label;
     QPushButton *cancel;
@@ -73,6 +78,10 @@ public:
     bool autoClose;
     bool autoReset;
     bool forceHide;
+#ifndef QT_NO_SHORTCUT
+    QShortcut *escapeShortcut;
+#endif
+    bool useDefaultCancelText;
 };
 
 void QProgressDialogPrivate::init(const QString &labelText, const QString &cancelText,
@@ -87,10 +96,14 @@ void QProgressDialogPrivate::init(const QString &labelText, const QString &cance
     autoClose = true;
     autoReset = true;
     forceHide = false;
-    q->setCancelButtonText(cancelText);
     QObject::connect(q, SIGNAL(canceled()), q, SLOT(cancel()));
     forceTimer = new QTimer(q);
     QObject::connect(forceTimer, SIGNAL(timeout()), q, SLOT(forceShow()));
+    if (useDefaultCancelText) {
+        retranslateStrings();
+    } else {
+        q->setCancelButtonText(cancelText);
+    }
 }
 
 void QProgressDialogPrivate::layout()
@@ -137,6 +150,12 @@ void QProgressDialogPrivate::layout()
     bar->setGeometry(mlr, lh+sp, q->width()-mlr*2, bh.height());
 }
 
+void QProgressDialogPrivate::retranslateStrings()
+{
+    Q_Q(QProgressDialog);
+    if (useDefaultCancelText)
+        q->setCancelButtonText(QProgressDialog::tr("Cancel"));
+}
 
 /*!
   \class QProgressDialog
@@ -236,7 +255,8 @@ QProgressDialog::QProgressDialog(QWidget *parent, Qt::WindowFlags f)
     : QDialog(*(new QProgressDialogPrivate), parent, f)
 {
     Q_D(QProgressDialog);
-    d->init(QString::fromLatin1(""), tr("Cancel"), 0, 100);
+    d->useDefaultCancelText = true;
+    d->init(QString::fromLatin1(""), QString(), 0, 100);
 }
 
 /*!
@@ -367,7 +387,12 @@ void QProgressDialog::setCancelButton(QPushButton *cancelButton)
         }
         connect(d->cancel, SIGNAL(clicked()), this, SIGNAL(canceled()));
 #ifndef QT_NO_SHORTCUT
-        new QShortcut(Qt::Key_Escape, this, SIGNAL(canceled()));
+        d->escapeShortcut = new QShortcut(Qt::Key_Escape, this, SIGNAL(canceled()));
+#endif
+    } else {
+#ifndef QT_NO_SHORTCUT
+        delete d->escapeShortcut;
+        d->escapeShortcut = 0;
 #endif
     }
     int w = qMax(isVisible() ? width() : 0, sizeHint().width());
@@ -385,6 +410,8 @@ void QProgressDialog::setCancelButton(QPushButton *cancelButton)
 void QProgressDialog::setCancelButtonText(const QString &cancelButtonText)
 {
     Q_D(QProgressDialog);
+    d->useDefaultCancelText = false;
+
     if (!cancelButtonText.isNull()) {
         if (d->cancel)
             d->cancel->setText(cancelButtonText);
@@ -644,8 +671,10 @@ void QProgressDialog::resizeEvent(QResizeEvent *)
 void QProgressDialog::changeEvent(QEvent *ev)
 {
     Q_D(QProgressDialog);
-    if(ev->type() == QEvent::StyleChange)
+    if (ev->type() == QEvent::StyleChange)
         d->layout();
+    else if (ev->type() == QEvent::LanguageChange)
+        d->retranslateStrings();
     QDialog::changeEvent(ev);
 }
 

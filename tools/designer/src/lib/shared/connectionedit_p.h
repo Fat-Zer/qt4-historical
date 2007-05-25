@@ -36,6 +36,8 @@
 #ifndef CONNECTIONEDIT_H
 #define CONNECTIONEDIT_H
 
+#include "shared_global_p.h"
+
 #include <QtCore/QMultiMap>
 #include <QtCore/QList>
 #include <QtCore/QPointer>
@@ -45,7 +47,7 @@
 #include <QtGui/QPolygonF>
 
 #include <QtGui/QUndoCommand>
-#include "shared_global_p.h"
+#
 
 class QDesignerFormWindowInterface;
 class QUndoStack;
@@ -146,8 +148,9 @@ class QDESIGNER_SHARED_EXPORT ConnectionEdit : public QWidget, public CETypes
     Q_OBJECT
 public:
     ConnectionEdit(QWidget *parent, QDesignerFormWindowInterface *form);
+    virtual ~ConnectionEdit();
 
-    inline QWidget *background() const { return m_bg_widget; }
+    inline const QPointer<QWidget> &background() const { return m_bg_widget; }
 
     void setSelected(Connection *con, bool sel);
     bool selected(const Connection *con) const;
@@ -200,50 +203,50 @@ protected:
     virtual void modifyConnection(Connection *con);
 
     virtual QWidget *widgetAt(const QPoint &pos) const;
-    QRect widgetRect(QWidget *w) const;
     void addConnection(Connection *con);
-
+    QRect widgetRect(QWidget *w) const;
+    
     enum State { Editing, Connecting, Dragging };
     State state() const;
 
     virtual void endConnection(QWidget *target, const QPoint &pos);
 private:
-    QWidget *m_bg_widget;
+    void startConnection(QWidget *source, const QPoint &pos);
+    void continueConnection(QWidget *target, const QPoint &pos);
+    void abortConnection();
+
+    void findObjectsUnderMouse(const QPoint &pos);
+    void startDrag(const EndPoint &end_point, const QPoint &pos);
+    void continueDrag(const QPoint &pos);
+    void endDrag(const QPoint &pos);
+    void adjustHotSopt(const EndPoint &end_point, const QPoint &pos);
+    Connection *connectionAt(const QPoint &pos) const;
+    EndPoint endPointAt(const QPoint &pos) const;
+    void paintConnection(QPainter *p, Connection *con,
+			 WidgetSet *heavy_highlight_set,
+			 WidgetSet *light_highlight_set) const;
+    void paintLabel(QPainter *p, EndPoint::Type type, Connection *con);
+
+    
+    QPointer<QWidget> m_bg_widget;
     QUndoStack *m_undo_stack;
     bool m_enable_update_background;
 
     Connection *m_tmp_con; // the connection we are currently editing
     ConnectionList m_con_list;
     bool m_start_connection_on_drag;
-    void startConnection(QWidget *source, const QPoint &pos);
-    void continueConnection(QWidget *target, const QPoint &pos);
-    void abortConnection();
-
-    void findObjectsUnderMouse(const QPoint &pos);
     EndPoint m_end_point_under_mouse;
     QPointer<QWidget> m_widget_under_mouse;
 
     EndPoint m_drag_end_point;
     QPoint m_old_source_pos, m_old_target_pos;
-    void startDrag(const EndPoint &end_point, const QPoint &pos);
-    void continueDrag(const QPoint &pos);
-    void endDrag(const QPoint &pos);
-    void adjustHotSopt(const EndPoint &end_point, const QPoint &pos);
-
-    Connection *connectionAt(const QPoint &pos) const;
-    EndPoint endPointAt(const QPoint &pos) const;
     ConnectionSet m_sel_con_set;
-
-    void paintConnection(QPainter *p, Connection *con,
-                            WidgetSet *heavy_highlight_set,
-                            WidgetSet *light_highlight_set) const;
-    void paintLabel(QPainter *p, EndPoint::Type type, Connection *con);
-
-    QColor m_inactive_color, m_active_color;
+    const QColor m_inactive_color;
+    const QColor m_active_color;
 
 private:
-    friend class Connection;
     friend class BuddyEditor;
+    friend class Connection;
     friend class AddConnectionCommand;
     friend class DeleteConnectionsCommand;
     friend class SetEndPointCommand;

@@ -37,6 +37,8 @@
 #include <QMessageBox>
 #include <QSignalMapper>
 #include <QApplication>
+#include <QPainter>
+#include <QMouseEvent>
 #include <qdebug.h>
 
 static const char * const message =
@@ -83,9 +85,11 @@ void MainWindow::actionTriggered(QAction *action)
 
 void MainWindow::setupToolBar()
 {
-    toolbar = new ToolBar(this);
-    toolbar->setAllowedAreas(Qt::TopToolBarArea | Qt::BottomToolBarArea);
-    addToolBar(toolbar);
+    for (int i = 0; i < 3; ++i) {
+        ToolBar *tb = new ToolBar(QString::fromLatin1("Tool Bar %1").arg(i + 1), this);
+        toolBars.append(tb);
+        addToolBar(tb);
+    }
 }
 
 void MainWindow::setupMenuBar()
@@ -105,18 +109,57 @@ void MainWindow::setupMenuBar()
 
     menu->addAction(tr("&Quit"), this, SLOT(close()));
 
-    menuBar()->addMenu(toolbar->menu);
+    mainWindowMenu = menuBar()->addMenu(tr("Main window"));
+
+    action = mainWindowMenu->addAction(tr("Animated docks"));
+    action->setCheckable(true);
+    action->setChecked(dockOptions() & AnimatedDocks);
+    connect(action, SIGNAL(toggled(bool)), this, SLOT(setDockOptions()));
+
+    action = mainWindowMenu->addAction(tr("Allow nested docks"));
+    action->setCheckable(true);
+    action->setChecked(dockOptions() & AllowNestedDocks);
+    connect(action, SIGNAL(toggled(bool)), this, SLOT(setDockOptions()));
+
+    action = mainWindowMenu->addAction(tr("Allow tabbed docks"));
+    action->setCheckable(true);
+    action->setChecked(dockOptions() & AllowTabbedDocks);
+    connect(action, SIGNAL(toggled(bool)), this, SLOT(setDockOptions()));
+
+    action = mainWindowMenu->addAction(tr("Force tabbed docks"));
+    action->setCheckable(true);
+    action->setChecked(dockOptions() & ForceTabbedDocks);
+    connect(action, SIGNAL(toggled(bool)), this, SLOT(setDockOptions()));
+
+    action = mainWindowMenu->addAction(tr("Vertical tabs"));
+    action->setCheckable(true);
+    action->setChecked(dockOptions() & VerticalTabs);
+    connect(action, SIGNAL(toggled(bool)), this, SLOT(setDockOptions()));
+
+    QMenu *toolBarMenu = menuBar()->addMenu(tr("Tool bars"));
+    for (int i = 0; i < toolBars.count(); ++i)
+        toolBarMenu->addMenu(toolBars.at(i)->menu);
+
     dockWidgetMenu = menuBar()->addMenu(tr("&Dock Widgets"));
 }
 
-static void dump(const QByteArray &array)
+void MainWindow::setDockOptions()
 {
-    QString s;
-    for (int i = 0; i < array.count(); ++i) {
-        s += ' ';
-        s += QString::number((uchar)array.at(i));
-    }
-    qDebug() << "dump():" << s;
+    DockOptions opts;
+    QList<QAction*> actions = mainWindowMenu->actions();
+
+    if (actions.at(0)->isChecked())
+        opts |= AnimatedDocks;
+    if (actions.at(1)->isChecked())
+        opts |= AllowNestedDocks;
+    if (actions.at(2)->isChecked())
+        opts |= AllowTabbedDocks;
+    if (actions.at(3)->isChecked())
+        opts |= ForceTabbedDocks;
+    if (actions.at(4)->isChecked())
+        opts |= VerticalTabs;
+
+    QMainWindow::setDockOptions(opts);
 }
 
 void MainWindow::saveLayout()
@@ -207,20 +250,115 @@ QAction *addAction(QMenu *menu, const QString &text, QActionGroup *group, QSigna
     return result;
 }
 
+class BlueTitleBar : public QWidget
+{
+    Q_OBJECT
+public:
+    BlueTitleBar(QWidget *parent = 0);
+
+    QSize sizeHint() const { return minimumSizeHint(); }
+    QSize minimumSizeHint() const;
+protected:
+    void paintEvent(QPaintEvent *event);
+    void mousePressEvent(QMouseEvent *event);
+private:
+    QPixmap leftPm, centerPm, rightPm;
+};
+
+QSize BlueTitleBar::minimumSizeHint() const
+{
+    QDockWidget *dw = qobject_cast<QDockWidget*>(parentWidget());
+    Q_ASSERT(dw != 0);
+    QSize result(leftPm.width() + rightPm.width(), centerPm.height());
+    if (dw->features() & QDockWidget::DockWidgetVerticalTitleBar)
+        result.transpose();
+    return result;
+}
+
+BlueTitleBar::BlueTitleBar(QWidget *parent)
+    : QWidget(parent)
+{
+    leftPm = QPixmap(":/res/titlebarLeft.png");
+    centerPm = QPixmap(":/res/titlebarCenter.png");
+    rightPm = QPixmap(":/res/titlebarRight.png");
+}
+
+void BlueTitleBar::paintEvent(QPaintEvent*)
+{
+    QPainter painter(this);
+    QRect rect = this->rect();
+
+    QDockWidget *dw = qobject_cast<QDockWidget*>(parentWidget());
+    Q_ASSERT(dw != 0);
+
+    if (dw->features() & QDockWidget::DockWidgetVerticalTitleBar) {
+        QSize s = rect.size();
+        s.transpose();
+        rect.setSize(s);
+
+        painter.translate(rect.left(), rect.top() + rect.width());
+        painter.rotate(-90);
+        painter.translate(-rect.left(), -rect.top());
+    }
+
+    painter.drawPixmap(rect.topLeft(), leftPm);
+    painter.drawPixmap(rect.topRight() - QPoint(rightPm.width() - 1, 0), rightPm);
+    QBrush brush(centerPm);
+    painter.fillRect(rect.left() + leftPm.width(), rect.top(),
+                        rect.width() - leftPm.width() - rightPm.width(),
+                        centerPm.height(), centerPm);
+}
+
+void BlueTitleBar::mousePressEvent(QMouseEvent *event)
+{
+    QPoint pos = event->pos();
+
+    QRect rect = this->rect();
+
+    QDockWidget *dw = qobject_cast<QDockWidget*>(parentWidget());
+    Q_ASSERT(dw != 0);
+
+    if (dw->features() & QDockWidget::DockWidgetVerticalTitleBar) {
+        QPoint p = pos;
+        pos.setX(rect.left() + rect.bottom() - p.y());
+        pos.setY(rect.top() + p.x() - rect.left());
+
+        QSize s = rect.size();
+        s.transpose();
+        rect.setSize(s);
+    }
+
+    const int buttonRight = 7;
+    const int buttonWidth = 20;
+    int right = rect.right() - pos.x();
+    int button = (right - buttonRight)/buttonWidth;
+    switch (button) {
+        case 0:
+            event->accept();
+            dw->close();
+            break;
+        case 1:
+            event->accept();
+            dw->setFloating(!dw->isFloating());
+            break;
+        case 2: {
+            event->accept();
+            QDockWidget::DockWidgetFeatures features = dw->features();
+            if (features & QDockWidget::DockWidgetVerticalTitleBar)
+                features &= ~QDockWidget::DockWidgetVerticalTitleBar;
+            else
+                features |= QDockWidget::DockWidgetVerticalTitleBar;
+            dw->setFeatures(features);
+            break;
+        }
+        default:
+            event->ignore();
+            break;
+    }
+}
+
 void MainWindow::setupDockWidgets()
 {
-    QAction *action = dockWidgetMenu->addAction(tr("Animation"));
-    action->setCheckable(true);
-    action->setChecked(isAnimated());
-    connect(action, SIGNAL(toggled(bool)), this, SLOT(setAnimated(bool)));
-
-    action = dockWidgetMenu->addAction(tr("Nesting"));
-    action->setCheckable(true);
-    action->setChecked(isDockNestingEnabled());
-    connect(action, SIGNAL(toggled(bool)), this, SLOT(setDockNestingEnabled(bool)));
-
-    dockWidgetMenu->addSeparator();
-
     mapper = new QSignalMapper(this);
     connect(mapper, SIGNAL(mapped(int)), this, SLOT(setCorner(int)));
 
@@ -272,6 +410,14 @@ void MainWindow::setupDockWidgets()
         ColorSwatch *swatch = new ColorSwatch(tr(sets[i].name), this, Qt::WindowFlags(sets[i].flags));
         if (i%2)
             swatch->setWindowIcon(QIcon(QPixmap(":/res/qt.png")));
+        if (qstrcmp(sets[i].name, "Blue") == 0) {
+            swatch->setTitleBarWidget(new BlueTitleBar(swatch));
+#ifdef Q_WS_QWS
+            QPalette pal = palette();
+            pal.setBrush(backgroundRole(), QColor(0,0,0,0));
+            swatch->setPalette(pal);
+#endif
+        }
         addDockWidget(sets[i].area, swatch);
         dockWidgetMenu->addMenu(swatch->menu);
     }
@@ -314,3 +460,5 @@ void MainWindow::switchLayoutDirection()
     else
         qApp->setLayoutDirection(Qt::LeftToRight);
 }
+
+#include "mainwindow.moc"

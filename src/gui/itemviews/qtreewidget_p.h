@@ -108,7 +108,13 @@ public:
                       int row, int column, const QModelIndex &parent);
     Qt::DropActions supportedDropActions() const;
 
-    QMimeData *internalMimeData()  const;
+    QMimeData *internalMimeData() const;
+
+    inline QModelIndex createIndexFromItem(int row, int col, QTreeWidgetItem *item) const
+    { return createIndex(row, col, item); }
+
+Q_SIGNALS:
+    void itemsSorted();
 
 protected:
     QTreeModel(QTreeModelPrivate &, QTreeWidget *parent = 0);
@@ -137,6 +143,18 @@ private:
 class QTreeModelPrivate : public QAbstractItemModelPrivate
 {
     Q_DECLARE_PUBLIC(QTreeModel)
+};
+
+class QTreeWidgetItemPrivate
+{
+public:
+    QTreeWidgetItemPrivate(QTreeWidgetItem *item)
+        : q(item), disabled(false), policy(QTreeWidgetItem::DontShowIndicatorWhenChildless) {}
+    void propagateDisabled(QTreeWidgetItem *item);
+    QTreeWidgetItem *q;
+    QVariantList display;
+    uint disabled : 1;
+    QTreeWidgetItem::ChildIndicatorPolicy policy;
 };
 
 #endif // QT_NO_TREEWIDGET

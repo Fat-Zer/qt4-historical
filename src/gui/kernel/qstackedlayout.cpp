@@ -277,6 +277,12 @@ void QStackedLayout::setCurrentIndex(int index)
         parent->setUpdatesEnabled(false);
     }
 
+    QWidget *fw = parent ? parent->window()->focusWidget() : 0;
+    if (prev) {
+        prev->clearFocus();
+        prev->hide();
+    }
+
     d->index = index;
     next->raise();
     next->show();
@@ -285,7 +291,6 @@ void QStackedLayout::setCurrentIndex(int index)
     // was somewhere on the outgoing widget.
 
     if (parent) {
-        QWidget * fw = parent->window()->focusWidget();
         if (fw && (prev && prev->isAncestorOf(fw))) { // focus was on old page
             // look for the best focus widget we can find
             if (QWidget *nfw = next->focusWidget())
@@ -307,8 +312,6 @@ void QStackedLayout::setCurrentIndex(int index)
             }
         }
     }
-    if (prev)
-        prev->hide();
     if (reenableUpdates)
         parent->setUpdatesEnabled(true);
     emit currentChanged(index);
@@ -332,10 +335,10 @@ int QStackedLayout::currentIndex() const
 void QStackedLayout::setCurrentWidget(QWidget *widget)
 {
     int index = indexOf(widget);
-	if (index == -1) {
-		qWarning("QStackedLayout::setCurrentWidget: widget %p not contained in stack", widget);
-		return;
-	}
+    if (index == -1) {
+        qWarning("QStackedLayout::setCurrentWidget: Widget %p not contained in stack", widget);
+        return;
+    }
     setCurrentIndex(index);
 }
 

@@ -64,6 +64,7 @@ public:
 
     Qt::Alignment alignment() const { return align; }
     void setAlignment(Qt::Alignment a);
+    QSizePolicy::ControlTypes controlTypes() const;
 
 protected:
     Qt::Alignment align;

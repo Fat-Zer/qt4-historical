@@ -3,7 +3,7 @@
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>Qt 4.2: mainwindow.cpp Example File (widgets/icons/mainwindow.cpp)</title>
+  <title>Qt 4.3: mainwindow.cpp Example File (widgets/icons/mainwindow.cpp)</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -56,24 +56,24 @@
      createContextMenu();
 
      QGridLayout *mainLayout = new QGridLayout;
-     mainLayout-&gt;addWidget(imagesGroupBox, 0, 0);
-     mainLayout-&gt;addWidget(iconSizeGroupBox, 1, 0);
-     mainLayout-&gt;addWidget(previewGroupBox, 0, 1, 2, 1);
+     mainLayout-&gt;addWidget(previewGroupBox, 0, 0, 1, 2);
+     mainLayout-&gt;addWidget(imagesGroupBox, 1, 0);
+     mainLayout-&gt;addWidget(iconSizeGroupBox, 1, 1);
      centralWidget-&gt;setLayout(mainLayout);
 
      setWindowTitle(tr(&quot;Icons&quot;));
      checkCurrentStyle();
      otherRadioButton-&gt;click();
 
-     resize(860, 400);
+     resize(minimumSizeHint());
  }
 
  void MainWindow::about()
  {
      QMessageBox::about(this, tr(&quot;About Icons&quot;),
              tr(&quot;The &lt;b&gt;Icons&lt;/b&gt; example illustrates how Qt renders an icon in &quot;
-                &quot;different modes (active, normal, and disabled) and states (on &quot;
-                &quot;and off) based on a set of images.&quot;));
+                &quot;different modes (active, normal, disabled, and selected) and &quot;
+                &quot;states (on and off) based on a set of images.&quot;));
  }
 
  void MainWindow::changeStyle(bool checked)
@@ -171,7 +171,7 @@
      previewArea-&gt;setIcon(icon);
  }
 
- void MainWindow::addImage()
+ void MainWindow::addImages()
  {
      QStringList fileNames = QFileDialog::getOpenFileNames(this,
                                      tr(&quot;Open Images&quot;), &quot;&quot;,
@@ -234,22 +234,20 @@
  void MainWindow::createImagesGroupBox()
  {
      imagesGroupBox = new QGroupBox(tr(&quot;Images&quot;));
-     imagesGroupBox-&gt;setSizePolicy(QSizePolicy::Expanding,
-                                   QSizePolicy::Expanding);
+
+     imagesTable = new QTableWidget;
+     imagesTable-&gt;setSelectionMode(QAbstractItemView::NoSelection);
+     imagesTable-&gt;setItemDelegate(new ImageDelegate(this));
 
      QStringList labels;
      labels &lt;&lt; tr(&quot;Image&quot;) &lt;&lt; tr(&quot;Mode&quot;) &lt;&lt; tr(&quot;State&quot;);
 
-     imagesTable = new QTableWidget;
-     imagesTable-&gt;setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Ignored);
-     imagesTable-&gt;setSelectionMode(QAbstractItemView::NoSelection);
+     imagesTable-&gt;horizontalHeader()-&gt;setDefaultSectionSize(90);
      imagesTable-&gt;setColumnCount(3);
      imagesTable-&gt;setHorizontalHeaderLabels(labels);
-     imagesTable-&gt;setItemDelegate(new ImageDelegate(this));
-
-     imagesTable-&gt;horizontalHeader()-&gt;resizeSection(0, 160);
-     imagesTable-&gt;horizontalHeader()-&gt;resizeSection(1, 80);
-     imagesTable-&gt;horizontalHeader()-&gt;resizeSection(2, 80);
+     imagesTable-&gt;horizontalHeader()-&gt;setResizeMode(0, QHeaderView::Stretch);
+     imagesTable-&gt;horizontalHeader()-&gt;setResizeMode(1, QHeaderView::Fixed);
+     imagesTable-&gt;horizontalHeader()-&gt;setResizeMode(2, QHeaderView::Fixed);
      imagesTable-&gt;verticalHeader()-&gt;hide();
 
      connect(imagesTable, SIGNAL(itemChanged(QTableWidgetItem *)),
@@ -305,14 +303,15 @@
      layout-&gt;addWidget(iconViewRadioButton, 1, 1);
      layout-&gt;addWidget(tabBarRadioButton, 2, 1);
      layout-&gt;addLayout(otherSizeLayout, 3, 0, 1, 2);
+     layout-&gt;setRowStretch(4, 1);
      iconSizeGroupBox-&gt;setLayout(layout);
  }
 
  void MainWindow::createActions()
  {
-     addImageAct = new QAction(tr(&quot;&amp;Add Image...&quot;), this);
-     addImageAct-&gt;setShortcut(tr(&quot;Ctrl+A&quot;));
-     connect(addImageAct, SIGNAL(triggered()), this, SLOT(addImage()));
+     addImagesAct = new QAction(tr(&quot;&amp;Add Images...&quot;), this);
+     addImagesAct-&gt;setShortcut(tr(&quot;Ctrl+A&quot;));
+     connect(addImagesAct, SIGNAL(triggered()), this, SLOT(addImages()));
 
      removeAllImagesAct = new QAction(tr(&quot;&amp;Remove All Images&quot;), this);
      removeAllImagesAct-&gt;setShortcut(tr(&quot;Ctrl+R&quot;));
@@ -346,7 +345,7 @@
  void MainWindow::createMenus()
  {
      fileMenu = menuBar()-&gt;addMenu(tr(&quot;&amp;File&quot;));
-     fileMenu-&gt;addAction(addImageAct);
+     fileMenu-&gt;addAction(addImagesAct);
      fileMenu-&gt;addAction(removeAllImagesAct);
      fileMenu-&gt;addSeparator();
      fileMenu-&gt;addAction(exitAct);
@@ -367,7 +366,7 @@
  void MainWindow::createContextMenu()
  {
      imagesTable-&gt;setContextMenuPolicy(Qt::ActionsContextMenu);
-     imagesTable-&gt;addAction(addImageAct);
+     imagesTable-&gt;addAction(addImagesAct);
      imagesTable-&gt;addAction(removeAllImagesAct);
  }
 
@@ -389,6 +388,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
 </tr></table></div></address></body>
 </html>

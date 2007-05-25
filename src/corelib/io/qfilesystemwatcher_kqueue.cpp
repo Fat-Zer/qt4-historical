@@ -21,6 +21,8 @@
 **
 ****************************************************************************/
 
+#include <qplatformdefs.h>
+
 #include "qfilesystemwatcher.h"
 #include "qfilesystemwatcher_kqueue_p.h"
 
@@ -34,8 +36,6 @@
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <fcntl.h>
-
-#include <qplatformdefs.h>
 
 // #define KEVENT_DEBUG
 #ifdef KEVENT_DEBUG
@@ -113,8 +113,8 @@ QStringList QKqueueFileSystemWatcherEngine::addPaths(const QStringList &paths,
             continue;
         }
 
-        struct stat st;
-        if (fstat(fd, &st) == -1) {
+        QT_STATBUF st;
+        if (QT_FSTAT(fd, &st) == -1) {
             perror("QKqueueFileSystemWatcherEngine::addPaths: fstat");
             ::close(fd);
             continue;

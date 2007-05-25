@@ -54,7 +54,7 @@ public:
     void updatePen(const QPen &pen);
     void updateBrush(const QBrush &brush, const QPointF &pt);
     void updateFont(const QFont &font);
-    void updateMatrix(const QMatrix &matrix);
+    void updateMatrix(const QTransform &matrix);
     void updateClipRegion(const QRegion &region, Qt::ClipOperation op);
     void updateRenderHints(QPainter::RenderHints hints);
     void updateCompositionMode(QPainter::CompositionMode composition_mode);
@@ -84,6 +84,8 @@ public:
     void drawImage(const QRectF &r, const QImage &image, const QRectF &sr,
                    Qt::ImageConversionFlags conversionFlags);
     void drawTextItem(const QPointF &p, const QTextItem &ti);
+
+    void drawEllipse(const QRectF &rect);
 
 #ifdef Q_WS_WIN
     HDC handle() const;

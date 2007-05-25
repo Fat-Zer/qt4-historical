@@ -34,11 +34,29 @@
 #include "qthread_p.h"
 
 /*
+#ifdef Q_OS_WIN32
+# include "qt_windows.h"
+#else
+# include <unistd.h>
+# include <netinet/in.h>
+# include <sys/utsname.h>
+# include <sys/socket.h>
+*/
+/*
+#  elif defined(Q_OS_HPUX)
+#   include <sys/pstat.h>
+#  elif defined(Q_OS_FREEBSD) || defined(Q_OS_OPENBSD) || defined(Q_OS_MAC)
+#   include <sys/sysctl.h>
+#  endif
+#endif
+*/
+
+/*
   QThreadData
 */
 
 QThreadData::QThreadData(int initialRefCount)
-    : _ref(initialRefCount), thread(0), quitNow(false), eventDispatcher(0), canWait(true), tls(0)
+    : _ref(initialRefCount), thread(0), quitNow(false), eventDispatcher(0), canWait(true)
 {
     // fprintf(stderr, "QThreadData %p created\n", this);
 }
@@ -55,10 +73,6 @@ QThreadData::~QThreadData()
         const QPostEvent &pe = postEventList.at(i);
         if (pe.event) {
             --pe.receiver->d_func()->postedEvents;
-#ifdef QT3_SUPPORT
-            if (pe.event->type() == QEvent::ChildInserted)
-                --pe.receiver->d_func()->postedChildInsertedEvents;
-#endif
             pe.event->posted = false;
             delete pe.event;
         }
@@ -397,6 +411,7 @@ int QThread::exec()
 {
     Q_D(QThread);
     d->mutex.lock();
+    d->data->quitNow = false;
     QEventLoop eventLoop;
     d->mutex.unlock();
     int returnCode = eventLoop.exec();
@@ -463,7 +478,7 @@ void QThread::initialize()
 {
     if (qt_global_mutexpool)
         return;
-    qt_global_mutexpool = new QMutexPool(true);
+    qt_global_mutexpool = QMutexPool::instance();
 
 #if defined (Q_OS_WIN)
     extern void qt_create_tls();
@@ -477,7 +492,6 @@ void QThread::initialize()
 */
 void QThread::cleanup()
 {
-    delete qt_global_mutexpool;
     qt_global_mutexpool = 0;
 }
 

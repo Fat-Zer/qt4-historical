@@ -48,6 +48,7 @@ public:
 
     void lock();
     bool tryLock();
+    bool tryLock(int timeout);
     void unlock();
 
 #if defined(QT3_SUPPORT)
@@ -123,6 +124,7 @@ public:
 
     static inline void lock() {}
     static inline bool tryLock() { return true; }
+    static inline bool tryLock(int timeout) { Q_UNUSED(timeout); return true; }
     static void unlock() {}
 
 #if defined(QT3_SUPPORT)

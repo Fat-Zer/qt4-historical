@@ -57,8 +57,6 @@
     root accessible object of the application to \a object. All other
     accessible objects in the application can be reached by the
     client using object navigation.
-
-    \sa QAccessible::setRootObject()
 */
 
 /*!

@@ -43,14 +43,29 @@ class Q_GUI_EXPORT QMainWindow : public QWidget
 {
     Q_OBJECT
 
+    Q_ENUMS(DockOption)
+    Q_FLAGS(DockOptions)
     Q_PROPERTY(QSize iconSize READ iconSize WRITE setIconSize)
     Q_PROPERTY(Qt::ToolButtonStyle toolButtonStyle READ toolButtonStyle WRITE setToolButtonStyle)
 #ifndef QT_NO_DOCKWIDGET
     Q_PROPERTY(bool animated READ isAnimated WRITE setAnimated)
     Q_PROPERTY(bool dockNestingEnabled READ isDockNestingEnabled WRITE setDockNestingEnabled)
 #endif
+    Q_PROPERTY(DockOptions dockOptions READ dockOptions WRITE setDockOptions)
+#ifndef QT_NO_TOOLBAR
+    Q_PROPERTY(bool unifiedTitleAndToolBarOnMac READ unifiedTitleAndToolBarOnMac WRITE setUnifiedTitleAndToolBarOnMac)
+#endif
 
 public:
+    enum DockOption {
+        AnimatedDocks = 0x01,
+        AllowNestedDocks = 0x02,
+        AllowTabbedDocks = 0x04,
+        ForceTabbedDocks = 0x08,  // implies AllowTabbedDocks, !AllowNestedDocks
+        VerticalTabs = 0x10       // implies AllowTabbedDocks
+    };
+    Q_DECLARE_FLAGS(DockOptions, DockOption)
+
     explicit QMainWindow(QWidget *parent = 0, Qt::WindowFlags flags = 0);
     ~QMainWindow();
 
@@ -62,6 +77,9 @@ public:
 
     bool isAnimated() const;
     bool isDockNestingEnabled() const;
+
+    void setDockOptions(DockOptions options);
+    DockOptions dockOptions() const;
 
     bool isSeparator(const QPoint &pos) const;
 
@@ -95,8 +113,13 @@ public:
     QToolBar *addToolBar(const QString &title);
     void insertToolBar(QToolBar *before, QToolBar *toolbar);
     void removeToolBar(QToolBar *toolbar);
+    void removeToolBarBreak(QToolBar *before);
+
+    void setUnifiedTitleAndToolBarOnMac(bool set);
+    bool unifiedTitleAndToolBarOnMac() const;
 
     Qt::ToolBarArea toolBarArea(QToolBar *toolbar) const;
+    bool toolBarBreak(QToolBar *toolbar) const;
 #endif
 #ifndef QT_NO_DOCKWIDGET
     void addDockWidget(Qt::DockWidgetArea area, QDockWidget *dockwidget);
@@ -139,6 +162,8 @@ private:
     Q_DECLARE_PRIVATE(QMainWindow)
     Q_DISABLE_COPY(QMainWindow)
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(QMainWindow::DockOptions)
 
 #endif // QT_NO_MAINWINDOW
 

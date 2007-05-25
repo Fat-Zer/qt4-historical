@@ -34,6 +34,8 @@ class QDesignerFormWindowInterface;
 
 namespace qdesigner_internal {
 
+class InPlaceEditor;
+
 class LabelTaskMenu: public QDesignerTaskMenu
 {
     Q_OBJECT
@@ -45,15 +47,18 @@ public:
     virtual QList<QAction*> taskActions() const;
 
 private slots:
-    void editText();
+    void editRichText();
+    void editPlainText();
     void editIcon();
     void updateText(const QString &text);
-
+    void updateSelection();
 private:
     QLabel *m_label;
     QPointer<QDesignerFormWindowInterface> m_formWindow;
+    QPointer<InPlaceEditor> m_editor;
     mutable QList<QAction*> m_taskActions;
-    QAction *m_editTextAction;
+    QAction *m_editRichTextAction;
+    QAction *m_editPlainTextAction;
 };
 
 class LabelTaskMenuFactory: public QExtensionFactory

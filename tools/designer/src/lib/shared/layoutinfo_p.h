@@ -65,6 +65,8 @@ public:
     static bool isWidgetLaidout(QDesignerFormEditorInterface *core, QWidget *widget);
 
     static QLayout *managedLayout(QDesignerFormEditorInterface *core, QWidget *widget);
+    static QLayout *managedLayout(QDesignerFormEditorInterface *core, QLayout *layout);
+    static QLayout *internalLayout(QWidget *widget);
 
     class Interval
     {

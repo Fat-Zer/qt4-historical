@@ -242,7 +242,7 @@ QDBusConnectionInterface::registerService(const QString &serviceName,
         flags = 0;
         break;
     case ReplaceExistingService:
-        flags = DBUS_NAME_FLAG_REPLACE_EXISTING;
+        flags = DBUS_NAME_FLAG_DO_NOT_QUEUE | DBUS_NAME_FLAG_REPLACE_EXISTING;
         break;
     }
 
@@ -297,6 +297,40 @@ QDBusConnectionInterface::unregisterService(const QString &serviceName)
         reply.setArguments(QVariantList() << success);
     }
     return reply;
+}
+
+/*!
+    \internal
+*/
+void QDBusConnectionInterface::connectNotify(const char *signalName)
+{
+    // translate the signal names to what we really want
+    // this avoids setting hooks for signals that don't exist on the bus
+    if (qstrcmp(signalName, SIGNAL(serviceRegistered(QString))) == 0)
+        QDBusAbstractInterface::connectNotify(SIGNAL(NameAcquired(QString)));
+
+    else if (qstrcmp(signalName, SIGNAL(serviceUnregistered(QString))) == 0)
+        QDBusAbstractInterface::connectNotify(SIGNAL(NameLost(QString)));
+
+    else if (qstrcmp(signalName, SIGNAL(serviceOwnerChanged(QString,QString,QString))) == 0)
+        QDBusAbstractInterface::connectNotify(SIGNAL(NameOwnerChanged(QString,QString,QString)));
+}
+
+/*!
+    \internal
+*/
+void QDBusConnectionInterface::disconnectNotify(const char *signalName)
+{
+    // translate the signal names to what we really want
+    // this avoids setting hooks for signals that don't exist on the bus
+    if (qstrcmp(signalName, SIGNAL(serviceRegistered(QString))) == 0)
+        QDBusAbstractInterface::disconnectNotify(SIGNAL(NameAcquired(QString)));
+
+    else if (qstrcmp(signalName, SIGNAL(serviceUnregistered(QString))) == 0)
+        QDBusAbstractInterface::disconnectNotify(SIGNAL(NameLost(QString)));
+
+    else if (qstrcmp(signalName, SIGNAL(serviceOwnerChanged(QString,QString,QString))) == 0)
+        QDBusAbstractInterface::disconnectNotify(SIGNAL(NameOwnerChanged(QString,QString,QString)));
 }
 
 // signals

@@ -34,6 +34,7 @@ QT_MODULE(Gui)
 #ifndef QT_NO_DIAL
 
 class QDialPrivate;
+class QStyleOptionSlider;
 
 class Q_GUI_EXPORT QDial: public QAbstractSlider
 {
@@ -73,6 +74,7 @@ protected:
     void mouseMoveEvent(QMouseEvent *me);
 
     void sliderChange(SliderChange change);
+    void initStyleOption(QStyleOptionSlider *option) const;
 
 #ifdef QT3_SUPPORT
 public:

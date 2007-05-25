@@ -41,11 +41,13 @@ public:
 public slots:
     void openFile(const QString &path = QString());
     void setRenderer(QAction *action);
+    void setHighQualityAntialiasing(bool hq);
 
 private:
     QAction *nativeAction;
     QAction *glAction;
     QAction *imageAction;
+    QAction *highQualityAntialiasingAction;
     QString currentPath;
     SvgWindow *area;
 };

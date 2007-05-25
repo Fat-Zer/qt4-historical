@@ -50,6 +50,7 @@ class Q_GUI_EXPORT QCompleter : public QObject
     Q_PROPERTY(int completionColumn READ completionColumn WRITE setCompletionColumn)
     Q_PROPERTY(int completionRole READ completionRole WRITE setCompletionRole)
     Q_PROPERTY(Qt::CaseSensitivity caseSensitivity READ caseSensitivity WRITE setCaseSensitivity)
+    Q_PROPERTY(bool wrapAround READ wrapAround WRITE setWrapAround)
 
 public:
     enum CompletionMode {
@@ -95,6 +96,8 @@ public:
     void setCompletionRole(int role);
     int  completionRole() const;
 
+    bool wrapAround() const;
+
     int completionCount() const;
     bool setCurrentRow(int row);
     int currentRow() const;
@@ -109,6 +112,7 @@ public:
 public Q_SLOTS:
     void setCompletionPrefix(const QString &prefix);
     void complete(const QRect& rect = QRect());
+    void setWrapAround(bool wrap);
 
 public:
     virtual QString pathFromIndex(const QModelIndex &index) const;
@@ -130,6 +134,7 @@ private:
 
     Q_PRIVATE_SLOT(d_func(), void _q_complete(QModelIndex))
     Q_PRIVATE_SLOT(d_func(), void _q_completionSelected(const QItemSelection&))
+    Q_PRIVATE_SLOT(d_func(), void _q_autoResizePopup())
 };
 
 #endif // QT_NO_COMPLETER

@@ -27,12 +27,15 @@
 #include <QtCore/qobject.h>
 #include <QtCore/qstring.h>
 #include <QtCore/qregexp.h>
+#include <QtCore/qlocale.h>
 
 QT_BEGIN_HEADER
 
 QT_MODULE(Gui)
 
 #ifndef QT_NO_VALIDATOR
+
+class QValidatorPrivate;
 
 class Q_GUI_EXPORT QValidator : public QObject
 {
@@ -51,6 +54,9 @@ public:
 #endif
     };
 
+    void setLocale(const QLocale &locale);
+    QLocale locale() const;
+
     virtual State validate(QString &, int &) const = 0;
     virtual void fixup(QString &) const;
 
@@ -58,9 +64,13 @@ public:
 public:
     QT3_SUPPORT_CONSTRUCTOR QValidator(QObject * parent, const char *name);
 #endif
+protected:
+    QValidator(QObjectPrivate &d, QObject *parent);
+    QValidator(QValidatorPrivate &d, QObject *parent);
 
 private:
     Q_DISABLE_COPY(QValidator)
+    Q_DECLARE_PRIVATE(QValidator)
 };
 
 class Q_GUI_EXPORT QIntValidator : public QValidator
@@ -98,17 +108,25 @@ private:
 
 #ifndef QT_NO_REGEXP
 
+class QDoubleValidatorPrivate;
+
 class Q_GUI_EXPORT QDoubleValidator : public QValidator
 {
     Q_OBJECT
     Q_PROPERTY(double bottom READ bottom WRITE setBottom)
     Q_PROPERTY(double top READ top WRITE setTop)
     Q_PROPERTY(int decimals READ decimals WRITE setDecimals)
+    Q_PROPERTY(Notation notation READ notation WRITE setNotation)
 
 public:
     explicit QDoubleValidator(QObject * parent);
     QDoubleValidator(double bottom, double top, int decimals, QObject * parent);
     ~QDoubleValidator();
+
+    enum Notation {
+        StandardNotation,
+        ScientificNotation
+    };
 
     QValidator::State validate(QString &, int &) const;
 
@@ -116,10 +134,12 @@ public:
     void setBottom(double);
     void setTop(double);
     void setDecimals(int);
+    void setNotation(Notation);
 
     double bottom() const { return b; }
     double top() const { return t; }
-    int decimals() const { return d; }
+    int decimals() const { return dec; }
+    Notation notation() const;
 
 #ifdef QT3_SUPPORT
 public:
@@ -128,11 +148,12 @@ public:
                                            QObject * parent, const char *name);
 #endif
 private:
+    Q_DECLARE_PRIVATE(QDoubleValidator)
     Q_DISABLE_COPY(QDoubleValidator)
 
     double b;
     double t;
-    int d;
+    int dec;
 };
 
 

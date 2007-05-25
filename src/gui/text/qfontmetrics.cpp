@@ -533,7 +533,7 @@ int QFontMetrics::width(const QString &text, int len) const
 */
 int QFontMetrics::width(QChar ch) const
 {
-    if (QUnicodeTables::category(ch) == QChar::Mark_NonSpacing)
+    if (QChar::category(ch.unicode()) == QChar::Mark_NonSpacing)
         return 0;
 
     const int script = QUnicodeTables::script(ch);
@@ -575,7 +575,7 @@ int QFontMetrics::charWidth(const QString &text, int pos) const
         layout.ignoreBidi = true;
         layout.itemize();
         width = qRound(layout.width(pos-from, 1));
-    } else if (QUnicodeTables::category(ch) == QChar::Mark_NonSpacing) {
+    } else if (QChar::category(ch.unicode()) == QChar::Mark_NonSpacing) {
         width = 0;
     } else {
         QFontEngine *engine = d->engineForScript(script);
@@ -607,7 +607,7 @@ int QFontMetrics::charWidth(const QString &text, int pos) const
     The height of the bounding rectangle is at least as large as the
     value returned by height().
 
-    \sa width(), height(), QPainter::boundingRect()
+    \sa width(), height(), QPainter::boundingRect(), tightBoundingRect()
 */
 QRect QFontMetrics::boundingRect(const QString &text) const
 {
@@ -623,7 +623,7 @@ QRect QFontMetrics::boundingRect(const QString &text) const
 
 /*!
     Returns the rectangle that is covered by ink if character \a ch
-    where to be drawn at the origin of the coordinate system.
+    were to be drawn at the origin of the coordinate system.
 
     Note that the bounding rectangle may extend to the left of (0, 0),
     e.g. for italicized fonts, and that the text output may cover \e
@@ -720,11 +720,7 @@ QRect QFontMetrics::boundingRect(const QRect &rect, int flags, const QString &te
     qt_format_text(QFont(d), rr, flags | Qt::TextDontPrint, text, &rb, tabStops, tabArray,
                    tabArrayLen, 0);
 
-    int xmin = floor(rb.x());
-    int xmax = ceil(rb.x() + rb.width());
-    int ymin = floor(rb.y());
-    int ymax = ceil(rb.y() + rb.height());
-    return QRect(xmin, ymin, xmax - xmin, ymax - ymin);
+    return rb.toAlignedRect();
 }
 
 /*!
@@ -754,6 +750,41 @@ QSize QFontMetrics::size(int flags, const QString &text, int tabStops, int *tabA
 {
     return boundingRect(QRect(0,0,0,0), flags, text, tabStops, tabArray).size();
 }
+
+/*!
+  \since 4.3
+
+    Returns a tight bounding rectangle around the characters in the
+    string specified by \a text. The bounding rectangle always covers
+    at least the set of pixels the text would cover if drawn at (0,
+    0).
+
+    Note that the bounding rectangle may extend to the left of (0, 0),
+    e.g. for italicized fonts, and that the width of the returned
+    rectangle might be different than what the width() method returns.
+
+    If you want to know the advance width of the string (to layout
+    a set of strings next to each other), use width() instead.
+
+    Newline characters are processed as normal characters, \e not as
+    linebreaks.
+
+    \warning Calling this method is very slow on Windows.
+
+    \sa width(), height(), boundingRect()
+*/
+QRect QFontMetrics::tightBoundingRect(const QString &text) const
+{
+    if (text.length() == 0)
+        return QRect();
+
+    QTextEngine layout(text, d);
+    layout.ignoreBidi = true;
+    layout.itemize();
+    glyph_metrics_t gm = layout.tightBoundingBox(0, text.length());
+    return QRect(qRound(gm.x), qRound(gm.y), qRound(gm.width), qRound(gm.height));
+}
+
 
 /*!
     \since 4.2
@@ -1294,7 +1325,7 @@ qreal QFontMetricsF::width(const QString &text) const
 */
 qreal QFontMetricsF::width(QChar ch) const
 {
-    if (QUnicodeTables::category(ch) == QChar::Mark_NonSpacing)
+    if (QChar::category(ch.unicode()) == QChar::Mark_NonSpacing)
         return 0.;
 
     const int script = QUnicodeTables::script(ch);
@@ -1471,6 +1502,40 @@ QRectF QFontMetricsF::boundingRect(const QRectF &rect, int flags, const QString&
 QSizeF QFontMetricsF::size(int flags, const QString &text, int tabStops, int *tabArray) const
 {
     return boundingRect(QRectF(), flags, text, tabStops, tabArray).size();
+}
+
+/*!
+  \since 4.3
+
+    Returns a tight bounding rectangle around the characters in the
+    string specified by \a text. The bounding rectangle always covers
+    at least the set of pixels the text would cover if drawn at (0,
+    0).
+
+    Note that the bounding rectangle may extend to the left of (0, 0),
+    e.g. for italicized fonts, and that the width of the returned
+    rectangle might be different than what the width() method returns.
+
+    If you want to know the advance width of the string (to layout
+    a set of strings next to each other), use width() instead.
+
+    Newline characters are processed as normal characters, \e not as
+    linebreaks.
+
+    \warning Calling this method is very slow on Windows.
+
+    \sa width(), height(), boundingRect()
+*/
+QRectF QFontMetricsF::tightBoundingRect(const QString &text) const
+{
+    if (text.length() == 0)
+        return QRect();
+
+    QTextEngine layout(text, d);
+    layout.ignoreBidi = true;
+    layout.itemize();
+    glyph_metrics_t gm = layout.tightBoundingBox(0, text.length());
+    return QRectF(gm.x.toReal(), gm.y.toReal(), gm.width.toReal(), gm.height.toReal());
 }
 
 /*!

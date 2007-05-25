@@ -38,10 +38,14 @@
 #include "shared_global_p.h"
 
 #include <QtGui/QStackedWidget>
-#include <QtCore/QList>
 
 class QAction;
+class QMenu;
 class QToolButton;
+
+namespace qdesigner_internal {
+    class PromotionTaskMenu;
+}
 
 class QDESIGNER_SHARED_EXPORT QDesignerStackedWidget : public QStackedWidget
 {
@@ -49,24 +53,9 @@ class QDESIGNER_SHARED_EXPORT QDesignerStackedWidget : public QStackedWidget
     Q_PROPERTY(QString currentPageName READ currentPageName WRITE setCurrentPageName STORED false DESIGNABLE true)
 public:
     QDesignerStackedWidget(QWidget *parent);
-
-    inline QAction *actionPreviousPage() const
-    { return m_actionPreviousPage; }
-
-    inline QAction *actionNextPage() const
-    { return m_actionNextPage; }
-
-    inline QAction *actionDeletePage() const
-    { return m_actionDeletePage; }
-
-    inline QAction *actionInsertPage() const
-    { return m_actionInsertPage; }
-
-    inline QAction *actionInsertPageAfter() const
-    { return m_actionInsertPageAfter; }
-
-    inline QAction *actionChangePageOrder() const
-    { return m_actionChangePageOrder; }
+    
+    // Add context menu and return page submenu or 0.
+    QMenu *addContextMenuActions(QMenu *popup);
 
     QString currentPageName() const;
     void setCurrentPageName(const QString &pageName);
@@ -90,13 +79,16 @@ private slots:
     void slotCurrentChanged(int index);
 
 private:
-    QToolButton *prev, *next;
+    void gotoPage(int page);
+    QToolButton *m_prev;
+    QToolButton *m_next;
     QAction *m_actionPreviousPage;
     QAction *m_actionNextPage;
     QAction *m_actionDeletePage;
     QAction *m_actionInsertPage;
     QAction *m_actionInsertPageAfter;
     QAction *m_actionChangePageOrder;
+    qdesigner_internal::PromotionTaskMenu* m_pagePromotionTaskMenu;
 };
 
 #endif // QDESIGNER_STACKEDBOX_H

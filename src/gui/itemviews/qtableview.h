@@ -41,6 +41,8 @@ class Q_GUI_EXPORT QTableView : public QAbstractItemView
     Q_PROPERTY(bool showGrid READ showGrid WRITE setShowGrid)
     Q_PROPERTY(Qt::PenStyle gridStyle READ gridStyle WRITE setGridStyle)
     Q_PROPERTY(bool sortingEnabled READ isSortingEnabled WRITE setSortingEnabled)
+    Q_PROPERTY(bool wordWrap READ wordWrap WRITE setWordWrap)
+    Q_PROPERTY(bool cornerButtonEnabled READ isCornerButtonEnabled WRITE setCornerButtonEnabled)
 
 public:
     explicit QTableView(QWidget *parent = 0);
@@ -80,6 +82,12 @@ public:
 
     Qt::PenStyle gridStyle() const;
     void setGridStyle(Qt::PenStyle style);
+
+    void setWordWrap(bool on);
+    bool wordWrap() const;
+    
+    void setCornerButtonEnabled(bool enable);
+    bool isCornerButtonEnabled() const;
 
     QRect visualRect(const QModelIndex &index) const;
     void scrollTo(const QModelIndex &index, ScrollHint hint = EnsureVisible);
@@ -140,9 +148,19 @@ protected:
 
     bool isIndexHidden(const QModelIndex &index) const;
 
+    void selectionChanged(const QItemSelection &selected,
+                          const QItemSelection &deselected);
+    void currentChanged(const QModelIndex &current,
+                          const QModelIndex &previous);
+
 private:
+    friend class QAccessibleItemView;
+    int visualIndex(const QModelIndex &index) const;
+
     Q_DECLARE_PRIVATE(QTableView)
     Q_DISABLE_COPY(QTableView)
+    Q_PRIVATE_SLOT(d_func(), void _q_selectRow(int))
+    Q_PRIVATE_SLOT(d_func(), void _q_selectColumn(int))
 };
 
 #endif // QT_NO_TABLEVIEW

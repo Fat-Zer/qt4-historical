@@ -39,13 +39,13 @@ inline QString fixString(const QString &str, const QString &indent)
 {
     QString cursegment;
     QStringList result;
-    uchar cbyte;
     QByteArray utf8 = str.toUtf8();
 
     for (int i = 0; i < utf8.length(); ++i) {
-        cbyte = utf8.at(i);
+        const uchar cbyte = utf8.at(i);
         if (cbyte >= 0x80) {
-            cursegment += QLatin1String("\\") + QString::number(cbyte, 8);
+            cursegment += QLatin1String("\\");
+            cursegment += QString::number(cbyte, 8);
         } else {
             switch(cbyte) {
             case '\\':
@@ -57,10 +57,10 @@ inline QString fixString(const QString &str, const QString &indent)
             case '\n':
                 cursegment += QLatin1String("\\n\"\n\""); break;
             default:
-                cursegment += QChar(cbyte);
+                cursegment += QLatin1Char(cbyte);
             }
         }
-        
+
         if (cursegment.length() > 1024) {
             result << cursegment;
             cursegment.clear();
@@ -70,8 +70,16 @@ inline QString fixString(const QString &str, const QString &indent)
     if (!cursegment.isEmpty())
         result << cursegment;
 
-    QString joinstr = QLatin1String("\"\n") + indent + indent + QLatin1Char('\"');
-    return QLatin1String("\"") + result.join(joinstr) + QLatin1String("\"");
+
+    QString joinstr = QLatin1String("\"\n");
+    joinstr += indent;
+    joinstr += indent;
+    joinstr += QLatin1Char('"');
+
+    QString rc(QLatin1Char('"'));
+    rc += result.join(joinstr);
+    rc += QLatin1Char('"');
+    return rc;
 }
 
 inline QHash<QString, DomProperty *> propertyMap(const QList<DomProperty *> &properties)

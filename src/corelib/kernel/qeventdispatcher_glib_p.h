@@ -40,6 +40,7 @@
 
 #include <QtCore/qhash.h>
 
+typedef struct _GMainContext GMainContext;
 class QEventDispatcherGlibPrivate;
 
 class Q_CORE_EXPORT QEventDispatcherGlib : public QAbstractEventDispatcher
@@ -49,6 +50,7 @@ class Q_CORE_EXPORT QEventDispatcherGlib : public QAbstractEventDispatcher
 
 public:
     explicit QEventDispatcherGlib(QObject *parent = 0);
+    explicit QEventDispatcherGlib(GMainContext *context, QObject *parent = 0);
     ~QEventDispatcherGlib();
 
     bool processEvents(QEventLoop::ProcessEventsFlags flags);
@@ -66,6 +68,8 @@ public:
     void interrupt();
     void flush();
 
+    static bool versionSupported();
+
 protected:
     QEventDispatcherGlib(QEventDispatcherGlibPrivate &dd, QObject *parent);
 };
@@ -79,7 +83,7 @@ class Q_CORE_EXPORT QEventDispatcherGlibPrivate : public QAbstractEventDispatche
 {
 
 public:
-    QEventDispatcherGlibPrivate();
+    QEventDispatcherGlibPrivate(GMainContext *context = 0);
     GMainContext *mainContext;
     GPostEventSource *postEventSource;
     GSocketNotifierSource *socketNotifierSource;

@@ -49,6 +49,7 @@ class QTextCodec;
 class QUrl;
 class QVariant;
 class QRectF;
+class QTextOption;
 
 template<typename T> class QVector;
 
@@ -99,6 +100,7 @@ class Q_GUI_EXPORT QTextDocument : public QObject
     Q_PROPERTY(int blockCount READ blockCount)
     Q_PROPERTY(QString defaultStyleSheet READ defaultStyleSheet WRITE setDefaultStyleSheet)
     Q_PROPERTY(int maximumBlockCount READ maximumBlockCount WRITE setMaximumBlockCount)
+    QDOC_PROPERTY(QTextOption defaultTextOption READ defaultTextOption WRITE setDefaultTextOption)
 
 public:
     explicit QTextDocument(QObject *parent = 0);
@@ -208,6 +210,9 @@ public:
     int maximumBlockCount() const;
     void setMaximumBlockCount(int maximum);
 
+    QTextOption defaultTextOption() const;
+    void setDefaultTextOption(const QTextOption &option);
+
 Q_SIGNALS:
     void contentsChange(int from, int charsRemoves, int charsAdded);
     void contentsChanged();
@@ -215,6 +220,7 @@ Q_SIGNALS:
     void redoAvailable(bool);
     void modificationChanged(bool m);
     void cursorPositionChanged(const QTextCursor &cursor);
+    void blockCountChanged(int newBlockCount);
 
 public Q_SLOTS:
     void undo();

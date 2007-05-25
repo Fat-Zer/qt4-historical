@@ -32,8 +32,12 @@
 #include "qhash.h"
 #include "qlibrary.h"
 #include "qdebug.h"
-#include <private/qfontengine_p.h>
+#include <private/qfontengine_ft_p.h>
 #include <private/qt_x11_p.h>
+#ifdef Q_OS_HPUX
+// for GLXPBuffer
+#include <private/qglpixelbuffer_p.h>
+#endif
 
 #define INT8  dummy_INT8
 #define INT32 dummy_INT32
@@ -238,16 +242,18 @@ static void find_trans_colors()
         int actualFormat;
         ulong nItems;
         ulong bytesAfter;
-        OverlayProp* overlayProps = 0;
+        unsigned char *retval = 0;
         int res = XGetWindowProperty(appDisplay, rootWin->winId(),
                                       overlayVisualsAtom, 0, 10000, False,
                                       overlayVisualsAtom, &actualType,
                                       &actualFormat, &nItems, &bytesAfter,
-                                      (uchar**)&overlayProps);
+                                      &retval);
 
         if (res != Success || actualType != overlayVisualsAtom
-             || actualFormat != 32 || nItems < 4 || !overlayProps)
+             || actualFormat != 32 || nItems < 4 || !retval)
             return;                                        // Error reading property
+
+        OverlayProp *overlayProps = (OverlayProp *)retval;
 
         int numProps = nItems / 4;
         trans_colors.resize(lastsize + numProps);
@@ -617,15 +623,15 @@ void QGLContext::makeCurrent()
     }
     const QX11Info *xinfo = qt_x11Info(d->paintDevice);
     bool ok = true;
-    if (deviceIsPixmap())
+    if (d->paintDevice->devType() == QInternal::Pixmap) {
         ok = glXMakeCurrent(xinfo->display(), (GLXPixmap)d->gpm, (GLXContext)d->cx);
-
-    else
-        ok = glXMakeCurrent(xinfo->display(), ((QWidget *)d->paintDevice)->winId(),
-                             (GLXContext)d->cx);
+    } else if (d->paintDevice->devType() == QInternal::Pbuffer) {
+        ok = glXMakeCurrent(xinfo->display(), (GLXPbuffer)d->pbuf, (GLXContext)d->cx);
+    } else if (d->paintDevice->devType() == QInternal::Widget) {
+        ok = glXMakeCurrent(xinfo->display(), ((QWidget *)d->paintDevice)->winId(), (GLXContext)d->cx);
+    }
     if (!ok)
         qWarning("QGLContext::makeCurrent(): Failed.");
-
 
     if (ok) {
         if (!qgl_context_storage.hasLocalData() && QThread::currentThread())
@@ -777,8 +783,7 @@ static void qgl_use_font(QFontEngineFT *engine, int first, int count, int listBa
     glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-    FcBool antialiased = True;
-    FcPatternGetBool(engine->pattern(), FC_ANTIALIAS, 0, &antialiased);
+    const bool antialiased = engine->drawAntialiased();
     FT_Face face = engine->lockFace();
 
     // start generating font glyphs
@@ -892,7 +897,8 @@ void *QGLContext::getProcAddress(const QString &proc) const
     if (!glXGetProcAddressARB) {
         QString glxExt = QString(QLatin1String(glXGetClientString(QX11Info::display(), GLX_EXTENSIONS)));
         if (glxExt.contains(QLatin1String("GLX_ARB_get_proc_address"))) {
-            QLibrary lib(QLatin1String("GL"));
+            extern const QString qt_gl_library_name();
+            QLibrary lib(qt_gl_library_name());
             glXGetProcAddressARB = (qt_glXGetProcAddressARB) lib.resolve("glXGetProcAddressARB");
         }
         resolved = true;
@@ -1126,6 +1132,9 @@ void QGLWidget::setContext(QGLContext *context,
     QGLContext* oldcx = d->glcx;
     d->glcx = context;
 
+    if (parentWidget() && parentWidget()->x11Info().screen() != x11Info().screen())
+        d_func()->xinfo = parentWidget()->d_func()->xinfo;
+
     bool createFailed = false;
     if (!d->glcx->isValid()) {
         if (!d->glcx->create(shareContext ? shareContext : oldcx))
@@ -1346,4 +1355,13 @@ void QGLExtensions::init()
     QGLWidget dmy;
     dmy.makeCurrent();
     init_extensions();
+
+    // nvidia 9x.xx unix drivers contain a bug which requires us to call glFinish before releasing an fbo
+    // to avoid painting artifacts
+    const QByteArray versionString(reinterpret_cast<const char*>(glGetString(GL_VERSION)));
+    const int pos = versionString.indexOf("NVIDIA");
+    if (pos >= 0) {
+        const float nvidiaDriverVersion = versionString.mid(pos + strlen("NVIDIA")).toFloat();
+        nvidiaFboNeedsFinish = nvidiaDriverVersion >= 90.0 && nvidiaDriverVersion < 100.0;
+    }
 }

@@ -35,11 +35,11 @@
 // We mean it.
 //
 
-#include "qfont.h"
-#include "qmap.h"
-#include "qobject.h"
+#include "QtGui/qfont.h"
+#include "QtCore/qmap.h"
+#include "QtCore/qobject.h"
 #include <private/qunicodetables_p.h>
-#include <qfontdatabase.h>
+#include <QtGui/qfontdatabase.h>
 
 // forwards
 class QFontEngine;
@@ -119,11 +119,11 @@ public:
 
     QAtomic ref;
 
-#if defined(Q_WS_X11) || defined(Q_WS_WIN)
+#if !defined(Q_WS_MAC)
     QFontEngine *engines[QUnicodeTables::ScriptCount];
 #else
     QFontEngine *engine;
-#endif // Q_WS_X11 || Q_WS_WIN
+#endif
 };
 
 
@@ -138,10 +138,7 @@ public:
     QFontPrivate(const QFontPrivate &other);
     ~QFontPrivate();
 
-#if !defined(Q_WS_X11) && !defined(Q_WS_MAC)
-    void load(int script);
-#endif
-#if defined(Q_WS_X11) || defined(Q_WS_WIN)
+#if !defined(Q_WS_MAC)
     inline QFontEngine *engineForScript(int script) const
     {
         if (script >= QUnicodeTables::Inherited)
@@ -150,7 +147,7 @@ public:
             QFontDatabase::load(this, script);
         return engineData->engines[script];
     }
-#elif defined(Q_WS_MAC)
+#else
     inline QFontEngine *engineForScript(int script) const
     {
         if (script >= QUnicodeTables::Inherited)
@@ -159,16 +156,7 @@ public:
             QFontDatabase::load(this, script);
         return engineData->engine;
     }
-#else
-    inline QFontEngine *engineForScript(int script) const
-    {
-        if (script >= QUnicodeTables::Inherited)
-            script = QUnicodeTables::Common;
-        if (!engineData || !engineData->engine)
-            const_cast<QFontPrivate *>(this)->load(script);
-        return engineData->engine;
-    }
-#endif // Q_WS_X11 || Q_WS_WIN
+#endif
 
     QAtomic ref;
     QFontDef request;
@@ -216,6 +204,9 @@ public:
     ~QFontCache();
 
     void clear();
+#if defined(Q_WS_QWS) && !defined(QT_NO_QWS_QPF2)
+    void removeEngineForFont(const QByteArray &fontName);
+#endif
     // universal key structure.  QFontEngineDatas and QFontEngines are cached using
     // the same keys
     struct Key {

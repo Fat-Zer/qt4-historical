@@ -43,13 +43,15 @@ void SvgRasterView::paintEvent(QPaintEvent *)
     if (buffer.size() != size() ||
         m_dirty) {
         buffer = QImage(size(), QImage::Format_ARGB32_Premultiplied);
+        buffer.fill(0x0);
         QPainter p(&buffer);
         p.setViewport(0, 0, width(), height());
-        p.eraseRect(0, 0, width(), height());
         doc->render(&p);
     }
     QPainter pt(this);
     pt.drawImage(0, 0, buffer);
+
+    update();
 }
 
 QSize SvgRasterView::sizeHint() const
@@ -96,6 +98,8 @@ void SvgNativeView::paintEvent(QPaintEvent *)
     QPainter p(this);
     p.setViewport(0, 0, width(), height());
     doc->render(&p);
+
+    update();
 }
 
 QSize SvgNativeView::sizeHint() const
@@ -123,17 +127,26 @@ void SvgNativeView::wheelEvent(QWheelEvent *e)
 
 #ifndef QT_NO_OPENGL
 SvgGLView::SvgGLView(const QString &file, QWidget *parent)
-    : QGLWidget(QGLFormat(QGL::SampleBuffers), parent)
+    : QGLWidget(QGLFormat(QGL::SampleBuffers), parent),
+      highQualityAntialiasing(false)
 {
     doc = new QSvgRenderer(file, this);
     connect(doc, SIGNAL(repaintNeeded()),
             this, SLOT(update()));
 }
 
+void SvgGLView::setHighQualityAntialiasing(bool hq)
+{
+    highQualityAntialiasing = hq;
+}
+
 void SvgGLView::paintEvent(QPaintEvent *)
 {
     QPainter p(this);
+    p.setRenderHint(QPainter::HighQualityAntialiasing, highQualityAntialiasing);
     doc->render(&p);
+
+    update();
 }
 
 QSize SvgGLView::sizeHint() const

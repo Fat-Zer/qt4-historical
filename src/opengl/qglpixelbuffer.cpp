@@ -75,6 +75,18 @@ void QGLPixelBufferPrivate::common_init(const QSize &size, const QGLFormat &form
         qctx = new QGLContext(format);
         qctx->d_func()->sharing = (shareWidget != 0);
         qctx->d_func()->paintDevice = q;
+        qctx->d_func()->valid = true;
+#if defined(Q_WS_WIN)
+        qctx->d_func()->dc = dc;
+        qctx->d_func()->rc = ctx;
+#elif defined(Q_WS_X11)
+        qctx->d_func()->cx = ctx;
+        qctx->d_func()->pbuf = (void *) pbuf;
+        qctx->d_func()->vi = 0;
+#elif defined(Q_WS_MAC)
+        qctx->d_func()->cx = ctx;
+        qctx->d_func()->vi = 0;
+#endif
     }
 }
 
@@ -92,7 +104,7 @@ void QGLPixelBufferPrivate::common_init(const QSize &size, const QGLFormat &form
     \sa size(), format()
 */
 QGLPixelBuffer::QGLPixelBuffer(const QSize &size, const QGLFormat &format, QGLWidget *shareWidget)
-    : d_ptr(new QGLPixelBufferPrivate)
+    : d_ptr(new QGLPixelBufferPrivate(this))
 {
     Q_D(QGLPixelBuffer);
     d->common_init(size, format, shareWidget);
@@ -114,7 +126,7 @@ QGLPixelBuffer::QGLPixelBuffer(const QSize &size, const QGLFormat &format, QGLWi
     \sa size(), format()
 */
 QGLPixelBuffer::QGLPixelBuffer(int width, int height, const QGLFormat &format, QGLWidget *shareWidget)
-    : d_ptr(new QGLPixelBufferPrivate)
+    : d_ptr(new QGLPixelBufferPrivate(this))
 {
     Q_D(QGLPixelBuffer);
     d->common_init(QSize(width, height), format, shareWidget);
@@ -133,12 +145,13 @@ QGLPixelBuffer::~QGLPixelBuffer()
     extern void qgl_cleanup_glyph_cache(QGLContext *);
 
     QGLContext *current = const_cast<QGLContext *>(QGLContext::currentContext());
-    makeCurrent();
+    if (current != d->qctx)
+        makeCurrent();
     qgl_cleanup_glyph_cache(d->qctx);
-    if (current)
+    if (current && current != d->qctx)
         current->makeCurrent();
-    d->cleanup();
     delete d->qctx;
+    d->cleanup();
     delete d_ptr;
 }
 
@@ -150,11 +163,29 @@ QGLPixelBuffer::~QGLPixelBuffer()
     \sa QGLContext::makeCurrent(), doneCurrent()
 */
 
+bool QGLPixelBuffer::makeCurrent()
+{
+    Q_D(QGLPixelBuffer);
+    if (d->invalid)
+        return false;
+    d->qctx->makeCurrent();
+    return true;
+}
+
 /*! \fn bool QGLPixelBuffer::doneCurrent()
 
     Makes no context the current OpenGL context. Returns true on
     success; otherwise returns false.
 */
+
+bool QGLPixelBuffer::doneCurrent()
+{
+    Q_D(QGLPixelBuffer);
+    if (d->invalid)
+        return false;
+    d->qctx->doneCurrent();
+    return true;
+}
 
 /*!
     Generates and binds a 2D GL texture that is the same size as the

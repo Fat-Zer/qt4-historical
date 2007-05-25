@@ -32,6 +32,7 @@ class QCompleter;
 class QLabel;
 class QLineEdit;
 class QProgressBar;
+class QCheckBox;
 
 class MainWindow : public QMainWindow
 {
@@ -44,8 +45,7 @@ private slots:
     void about();
     void changeCase(int);
     void changeMode(int);
-    void updateModel();
-    void useComboBox(bool);
+    void changeModel();
 
 private:
     void createMenu();
@@ -54,6 +54,7 @@ private:
     QComboBox *caseCombo;
     QComboBox *modeCombo;
     QComboBox *modelCombo;
+    QCheckBox *wrapCheckBox;
     QCompleter *completer;
     QLabel *contentsLabel;
     QComboBox *comboBox;

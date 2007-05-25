@@ -77,7 +77,8 @@ static bool qt_resolve_pbuffer_extensions()
     else if (resolved)
         return false;
 
-    QLibrary gl(QLatin1String("GL"));
+    extern const QString qt_gl_library_name();
+    QLibrary gl(qt_gl_library_name());
     qt_glXChooseFBConfig = (_glXChooseFBConfig) gl.resolve("glXChooseFBConfig");
     qt_glXCreateNewContext = (_glXCreateNewContext) gl.resolve("glXCreateNewContext");
     qt_glXCreatePbuffer = (_glXCreatePbuffer) gl.resolve("glXCreatePbuffer");
@@ -144,8 +145,7 @@ static void qt_format_to_attrib_list(const QGLFormat &f, int attribs[])
     attribs[i] = XNone;
 }
 
-bool
-QGLPixelBufferPrivate::init(const QSize &size, const QGLFormat &f, QGLWidget *shareWidget)
+bool QGLPixelBufferPrivate::init(const QSize &size, const QGLFormat &f, QGLWidget *shareWidget)
 {
     if (!qt_resolve_pbuffer_extensions()) {
         qWarning("QGLPixelBuffer: pbuffers are not supported on this system.");
@@ -217,28 +217,10 @@ QGLPixelBufferPrivate::init(const QSize &size, const QGLFormat &f, QGLWidget *sh
     }
 }
 
-bool
-QGLPixelBufferPrivate::cleanup()
+bool QGLPixelBufferPrivate::cleanup()
 {
-    glXDestroyContext(QX11Info::display(), ctx);
     glXDestroyPbuffer(QX11Info::display(), pbuf);
     return true;
-}
-
-bool QGLPixelBuffer::makeCurrent()
-{
-    Q_D(QGLPixelBuffer);
-    if (d->invalid)
-        return false;
-    return glXMakeContextCurrent(QX11Info::display(), d->pbuf, d->pbuf, d->ctx);
-}
-
-bool QGLPixelBuffer::doneCurrent()
-{
-    Q_D(QGLPixelBuffer);
-    if (d->invalid)
-        return false;
-    return glXMakeContextCurrent(QX11Info::display(), 0, 0, 0);
 }
 
 bool QGLPixelBuffer::bindToDynamicTexture(GLuint)
@@ -261,7 +243,7 @@ bool QGLPixelBuffer::hasOpenGLPbuffers()
     int num_configs = 0;
 
     qt_format_to_attrib_list(QGLFormat::defaultFormat(), attribs);
-    
+
     GLXFBConfig *configs = glXChooseFBConfig(X11->display, X11->defaultScreen, attribs, &num_configs);
     GLXPbuffer pbuf = 0;
     GLXContext ctx = 0;

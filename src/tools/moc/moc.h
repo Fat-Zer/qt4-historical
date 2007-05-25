@@ -31,6 +31,8 @@
 #include <stdio.h>
 #include <ctype.h>
 
+struct QMetaObject;
+
 struct Type
 {
     enum ReferenceType { NoReference, Reference, Pointer };
@@ -160,10 +162,11 @@ public:
     QList<ClassDef> classList;
     QMap<QByteArray, QByteArray> interface2IdMap;
     QList<QByteArray> metaTypes;
-
+    QSet<QByteArray> knownQObjectClasses;
 
     void parse();
     void generate(FILE *out);
+    QList<QMetaObject*> generate(bool ignoreProperties);
 
     bool parseClassHead(ClassDef *def);
     inline bool inClass(const ClassDef *def) const {
@@ -196,6 +199,13 @@ public:
 
     QByteArray lexemUntil(Token);
     bool until(Token);
+
+    // test for Q_INVOCABLE, Q_SCRIPTABLE, etc. and set the flags
+    // in FunctionDef accordingly
+    bool testFunctionAttribute(FunctionDef *def);
+    bool testFunctionAttribute(Token tok, FunctionDef *def);
+
+    void checkSuperClasses(ClassDef *def);
 };
 
 inline QByteArray noRef(const QByteArray &type)

@@ -58,8 +58,8 @@ public:
         QFont = 64, QPixmap = 65, QBrush = 66, QColor = 67, QPalette = 68,
         QIcon = 69, QImage = 70, QPolygon = 71, QRegion = 72, QBitmap = 73,
         QCursor = 74, QSizePolicy = 75, QKeySequence = 76, QPen = 77,
-        QTextLength = 78, QTextFormat = 79, QMatrix = 80,
-        LastGuiType = 80 /* QMatrix */,
+        QTextLength = 78, QTextFormat = 79, QMatrix = 80, QTransform = 81, 
+        LastGuiType = 81 /* QTransform */,
 
         FirstCoreExtType = 128 /* VoidStar */,
         VoidStar = 128, Long = 129, Short = 130, Char = 131, ULong = 132,
@@ -185,7 +185,11 @@ inline int qRegisterMetaType(
 #endif
 )
 {
+#ifdef Q_CC_SUN
+    return qMetaTypeId(static_cast<T *>(0));
+#else
     return qMetaTypeId(dummy);
+#endif
 }
 
 #define Q_DECLARE_METATYPE(TYPE) \
@@ -227,7 +231,9 @@ class QLine;
 class QLineF;
 class QPoint;
 class QPointF;
+#ifndef QT_NO_REGEXP
 class QRegExp;
+#endif
 class QWidget;
 class QObject;
 
@@ -251,6 +257,7 @@ class QPen;
 class QTextLength;
 class QTextFormat;
 class QMatrix;
+class QTransform;
 
 Q_DECLARE_BUILTIN_METATYPE(QString, QString)
 Q_DECLARE_BUILTIN_METATYPE(int, Int)
@@ -286,8 +293,10 @@ Q_DECLARE_BUILTIN_METATYPE(QLine, QLine)
 Q_DECLARE_BUILTIN_METATYPE(QLineF, QLineF)
 Q_DECLARE_BUILTIN_METATYPE(QPoint, QPoint)
 Q_DECLARE_BUILTIN_METATYPE(QPointF, QPointF)
+#ifndef QT_NO_REGEXP
 Q_DECLARE_BUILTIN_METATYPE(QRegExp, QRegExp)
-
+#endif
+    
 #ifdef QT3_SUPPORT
 Q_DECLARE_BUILTIN_METATYPE(QColorGroup, QColorGroup)
 #endif
@@ -308,6 +317,7 @@ Q_DECLARE_BUILTIN_METATYPE(QPen, QPen)
 Q_DECLARE_BUILTIN_METATYPE(QTextLength, QTextLength)
 Q_DECLARE_BUILTIN_METATYPE(QTextFormat, QTextFormat)
 Q_DECLARE_BUILTIN_METATYPE(QMatrix, QMatrix)
+Q_DECLARE_BUILTIN_METATYPE(QTransform, QTransform)
 
 QT_END_HEADER
 

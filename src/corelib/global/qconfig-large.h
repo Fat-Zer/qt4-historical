@@ -21,15 +21,15 @@
 **
 ****************************************************************************/
 
-// Dialogs
+/* Dialogs */
+#ifndef QT_NO_FILEDIALOG
+#  define QT_NO_FILEDIALOG
+#endif
 #ifndef QT_NO_FONTDIALOG
 #  define QT_NO_FONTDIALOG
 #endif
 #ifndef QT_NO_INPUTDIALOG
 #  define QT_NO_INPUTDIALOG
-#endif
-#ifndef QT_NO_FILEDIALOG
-#  define QT_NO_FILEDIALOG
 #endif
 #ifndef QT_NO_PRINTDIALOG
 #  define QT_NO_PRINTDIALOG
@@ -38,12 +38,12 @@
 #  define QT_NO_PROGRESSDIALOG
 #endif
 
-// Fonts
+/* Fonts */
 #ifndef QT_NO_QWS_QPF
 #  define QT_NO_QWS_QPF
 #endif
 
-// Images
+/* Images */
 #ifndef QT_NO_IMAGEFORMAT_BMP
 #  define QT_NO_IMAGEFORMAT_BMP
 #endif
@@ -51,7 +51,7 @@
 #  define QT_NO_IMAGEFORMAT_PPM
 #endif
 
-// Internationalization
+/* Internationalization */
 #ifndef QT_NO_CODECS
 #  define QT_NO_CODECS
 #endif
@@ -62,7 +62,7 @@
 #  define QT_NO_TRANSLATION_UTF8
 #endif
 
-// ItemViews
+/* ItemViews */
 #ifndef QT_NO_TABLEVIEW
 #  define QT_NO_TABLEVIEW
 #endif
@@ -70,7 +70,7 @@
 #  define QT_NO_TREEVIEW
 #endif
 
-// Kernel
+/* Kernel */
 #ifndef QT_NO_CLIPBOARD
 #  define QT_NO_CLIPBOARD
 #endif
@@ -87,7 +87,7 @@
 #  define QT_NO_SOUND
 #endif
 
-// Networking
+/* Networking */
 #ifndef QT_NO_HOSTINFO
 #  define QT_NO_HOSTINFO
 #endif
@@ -104,7 +104,7 @@
 #  define QT_NO_FTP
 #endif
 
-// Painting
+/* Painting */
 #ifndef QT_NO_COLORNAMES
 #  define QT_NO_COLORNAMES
 #endif
@@ -114,21 +114,33 @@
 #ifndef QT_NO_PRINTER
 #  define QT_NO_PRINTER
 #endif
+#ifndef QT_NO_CUPS
+#  define QT_NO_CUPS
+#endif
 
-// Qtopia Core
+/* Qtopia Core */
 #ifndef QT_NO_QWS_SOUNDSERVER
 #  define QT_NO_QWS_SOUNDSERVER
 #endif
 
-// Styles
+/* Styles */
 #ifndef QT_NO_STYLE_MOTIF
 #  define QT_NO_STYLE_MOTIF
 #endif
 #ifndef QT_NO_STYLE_CDE
 #  define QT_NO_STYLE_CDE
 #endif
+#ifndef QT_NO_STYLE_STYLESHEET
+#  define QT_NO_STYLE_STYLESHEET
+#endif
 
-// Widgets
+/* Widgets */
+#ifndef QT_NO_CALENDARWIDGET
+#  define QT_NO_CALENDARWIDGET
+#endif
+#ifndef QT_NO_DATETIMEEDIT
+#  define QT_NO_DATETIMEEDIT
+#endif
 #ifndef QT_NO_WORKSPACE
 #  define QT_NO_WORKSPACE
 #endif

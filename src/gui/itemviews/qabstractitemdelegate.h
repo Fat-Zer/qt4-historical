@@ -36,6 +36,8 @@ QT_MODULE(Gui)
 class QPainter;
 class QModelIndex;
 class QAbstractItemModel;
+class QAbstractItemView;
+class QHelpEvent;
 
 class Q_GUI_EXPORT QAbstractItemDelegate : public QObject
 {
@@ -85,13 +87,21 @@ public:
 
     static QString elidedText(const QFontMetrics &fontMetrics, int width,
                               Qt::TextElideMode mode, const QString &text);
+
+public Q_SLOTS:
+    bool helpEvent(QHelpEvent *event,
+                   QAbstractItemView *view,
+                   const QStyleOptionViewItem &option,
+                   const QModelIndex &index);
+
 Q_SIGNALS:
     void commitData(QWidget *editor);
     void closeEditor(QWidget *editor, QAbstractItemDelegate::EndEditHint hint = NoHint);
 
 protected:
-    Q_DISABLE_COPY(QAbstractItemDelegate)
     QAbstractItemDelegate(QObjectPrivate &, QObject *parent = 0);
+private:
+    Q_DISABLE_COPY(QAbstractItemDelegate)
 };
 
 #endif // QT_NO_ITEMVIEWS

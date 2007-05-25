@@ -22,6 +22,7 @@
 ****************************************************************************/
 
 #include "pluginmanager_p.h"
+#include "qdesigner_utils_p.h"
 
 #include <QtDesigner/QDesignerFormEditorInterface>
 #include <QtDesigner/QDesignerCustomWidgetInterface>
@@ -37,7 +38,7 @@
 
 static QStringList unique(const QStringList &lst)
 {
-    QSet<QString> s = QSet<QString>::fromList(lst);
+    const QSet<QString> s = QSet<QString>::fromList(lst);
     return s.toList();
 }
 
@@ -45,16 +46,23 @@ QStringList QDesignerPluginManager::defaultPluginPaths() const
 {
     QStringList result;
 
-    QStringList path_list = QCoreApplication::libraryPaths();
-    foreach (const QString &path, path_list)
-        result.append(path + QDir::separator() + QLatin1String("designer"));
+    const QStringList path_list = QCoreApplication::libraryPaths();
 
-    result.append(QDir::homePath()
-                    + QDir::separator()
-                    + QLatin1String(".designer")
-                    + QDir::separator()
-                    + QLatin1String("plugins"));
+    const QString designer = QLatin1String("designer");
+    foreach (const QString &path, path_list) {
+        QString libPath = path;
+        libPath += QDir::separator();
+        libPath += designer;
+        result.append(libPath);
+    }
 
+    QString homeLibPath = QDir::homePath();
+    homeLibPath += QDir::separator();
+    homeLibPath += QLatin1String(".designer");
+    homeLibPath += QDir::separator();
+    homeLibPath += QLatin1String("plugins");
+
+    result.append(homeLibPath);
     return result;
 }
 
@@ -117,6 +125,16 @@ QStringList QDesignerPluginManager::disabledPlugins() const
     return m_disabledPlugins;
 }
 
+QStringList QDesignerPluginManager::failedPlugins() const
+{
+    return m_failedPlugins.keys();
+}
+
+QString QDesignerPluginManager::failureReason(const QString &pluginName) const
+{
+    return m_failedPlugins.value(pluginName);
+}
+
 QStringList QDesignerPluginManager::registeredPlugins() const
 {
     return m_registeredPlugins;
@@ -143,6 +161,17 @@ void QDesignerPluginManager::updateRegisteredPlugins()
         registerPath(path);
 }
 
+bool QDesignerPluginManager::registerNewPlugins()
+{
+    const int before = m_registeredPlugins.size();
+    foreach (QString path,  m_pluginPaths)
+        registerPath(path);
+    const bool newPluginsFound = m_registeredPlugins.size() > before;
+    if (newPluginsFound)
+        ensureInitialized();
+    return newPluginsFound;
+}
+
 void QDesignerPluginManager::registerPath(const QString &path)
 {
     QStringList candidates = findPlugins(path);
@@ -159,15 +188,16 @@ void QDesignerPluginManager::registerPlugin(const QString &plugin)
         return;
 
     QPluginLoader loader(plugin);
-    if (loader.load())
+    if (loader.isLoaded() || loader.load()) {
         m_registeredPlugins += plugin;
-    if (!loader.isLoaded()) {
-        qWarning("QDesignerPluginManager: failed to load plugin\n"
-                 " - pluginName='%s'\n"
-                 " - error='%s'\n",
-                 qPrintable(plugin),
-                 qPrintable(loader.errorString()));
+        FailedPluginMap::iterator fit = m_failedPlugins.find(plugin);
+        if (fit != m_failedPlugins.end())
+            m_failedPlugins.erase(fit);
+        return;
     }
+
+    const QString errorMessage = loader.errorString();
+    m_failedPlugins.insert(plugin, errorMessage);
 }
 
 bool QDesignerPluginManager::syncSettings()

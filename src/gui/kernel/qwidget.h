@@ -73,6 +73,7 @@ class QHideEvent;
 class QInputContext;
 class QIcon;
 class QWindowSurface;
+class QLocale;
 #if defined(Q_WS_X11)
 class QX11Info;
 #endif
@@ -185,8 +186,16 @@ class Q_GUI_EXPORT QWidget : public QObject, public QPaintDevice
 #ifndef QT_NO_STYLE_STYLESHEET
     Q_PROPERTY(QString styleSheet READ styleSheet WRITE setStyleSheet)
 #endif
+    Q_PROPERTY(QLocale locale READ locale WRITE setLocale RESET unsetLocale)
 
 public:
+    enum RenderFlag {
+        DrawWindowBackground = 0x1,
+        DrawChildren = 0x2,
+        IgnoreMask = 0x4
+    };
+    Q_DECLARE_FLAGS(RenderFlags, RenderFlag)
+
     explicit QWidget(QWidget* parent = 0, Qt::WindowFlags f = 0);
 #ifdef QT3_SUPPORT
     QT3_SUPPORT_CONSTRUCTOR QWidget(QWidget* parent, const char *name, Qt::WindowFlags f = 0);
@@ -307,6 +316,10 @@ public:
     QRegion mask() const;
     void clearMask();
 
+    void render(QPaintDevice *target, const QPoint &targetOffset = QPoint(),
+                const QRegion &sourceRegion = QRegion(),
+                RenderFlags renderFlags = RenderFlags(DrawWindowBackground | DrawChildren));
+
 public Q_SLOTS:
     void setWindowTitle(const QString &);
 #ifndef QT_NO_STYLE_STYLESHEET
@@ -350,6 +363,10 @@ public:
     void setLayoutDirection(Qt::LayoutDirection direction);
     Qt::LayoutDirection layoutDirection() const;
     void unsetLayoutDirection();
+
+    void setLocale(const QLocale &locale);
+    QLocale locale() const;
+    void unsetLocale();
 
     inline bool isRightToLeft() const { return layoutDirection() == Qt::RightToLeft; }
     inline bool isLeftToRight() const { return layoutDirection() == Qt::LeftToRight; }
@@ -441,6 +458,7 @@ public:
     void adjustSize();
     bool isVisible() const;
     bool isVisibleTo(QWidget*) const;
+    // ### Qt 5: bool isVisibleTo(_const_ QWidget *) const
     inline bool isHidden() const;
 
     bool isMinimized() const;
@@ -513,6 +531,11 @@ public:
 #if defined(Q_WS_X11)
     const QX11Info &x11Info() const;
     Qt::HANDLE x11PictureHandle() const;
+#endif
+
+#if defined(Q_WS_MAC)
+    Qt::HANDLE macQDHandle() const;
+    Qt::HANDLE macCGHandle() const;
 #endif
 
 #if defined(Q_WS_WIN)
@@ -631,6 +654,8 @@ private:
     friend void qt_syncBackingStore(QWidget *);
     friend void qt_syncBackingStore(QRegion, QWidget *);
     friend void qt_syncBackingStore(QRegion, QWidget *, bool);
+    friend QWindowSurface *qt_default_window_surface(QWidget*);
+
     friend class QBackingStoreDevice;
     friend class QWidgetBackingStore;
     friend class QApplication;
@@ -644,12 +669,17 @@ private:
     friend class QLayout;
     friend class QWidgetItem;
     friend class QGLContext;
+    friend class QGLWidget;
     friend class QX11PaintEngine;
     friend class QWin32PaintEngine;
     friend class QShortcutPrivate;
+    friend class QWindowSurface;
+    friend class QD3DWindowSurface;
 
 #ifdef Q_WS_MAC
+#ifdef Q_WS_MAC32
     friend class QMacSavedPortInfo;
+#endif
     friend class QCoreGraphicsPaintEnginePrivate;
     friend QPoint qt_mac_posInWindow(const QWidget *w);
     friend WindowPtr qt_mac_window_for(const QWidget *w);
@@ -662,6 +692,10 @@ private:
     friend class QWSManagerPrivate;
     friend class QDecoration;
     friend class QWSWindowSurface;
+    friend class QScreen;
+    friend class QVNCScreen;
+    friend bool isWidgetOpaque(const QWidget *);
+    friend class QGLWidgetPrivate;
 #endif
 
     friend Q_GUI_EXPORT QWidgetData *qt_qwidget_data(QWidget *widget);
@@ -775,6 +809,8 @@ protected:
     virtual void windowActivationChange(bool);  // compat
     virtual void languageChange();  // compat
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(QWidget::RenderFlags)
 
 #if defined Q_CC_MSVC && _MSC_VER < 1300
 template <> inline QWidget *qobject_cast_helper<QWidget*>(QObject *o, QWidget *)

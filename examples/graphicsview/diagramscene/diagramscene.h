@@ -1,0 +1,91 @@
+/****************************************************************************
+**
+** Copyright (C) 2007-2007 Trolltech ASA. All rights reserved.
+**
+** This file is part of the example classes of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
+**
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+#ifndef DIAGRAMSCENE_H
+#define DIAGRAMSCENE_H
+
+#include <QGraphicsScene>
+#include "diagramitem.h"
+#include "diagramtextitem.h"
+
+class QGraphicsSceneMouseEvent;
+class QMenu;
+class QPointF;
+class QGraphicsLineItem;
+class QFont;
+class QGraphicsTextItem;
+class QColor;
+
+class DiagramScene : public QGraphicsScene
+{
+    Q_OBJECT
+
+public:
+    enum Mode { InsertItem, InsertLine, InsertText, MoveItem };
+
+    DiagramScene(QMenu *itemMenu, QObject *parent = 0);
+    QFont font() const
+        { return myFont; }
+    QColor textColor() const
+        { return myTextColor; }
+    QColor itemColor() const
+        { return myItemColor; }
+    QColor lineColor() const
+        { return myLineColor; }
+    void setLineColor(const QColor &color);
+    void setTextColor(const QColor &color);
+    void setItemColor(const QColor &color);
+    void setFont(const QFont &font);
+
+public slots:
+    void setMode(Mode mode);
+    void setItemType(DiagramItem::DiagramType type);
+    void editorLostFocus(DiagramTextItem *item);
+
+signals:
+    void itemInserted(DiagramItem *item);
+    void textInserted(QGraphicsTextItem *item);
+    void itemSelected(QGraphicsItem *item);
+
+protected:
+    void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
+    void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);
+
+private:
+    bool isItemChange(int type);
+
+    DiagramItem::DiagramType myItemType;
+    QMenu *myItemMenu;
+    Mode myMode;
+    bool leftButtonDown;
+    QPointF startPoint;
+    QGraphicsLineItem *line;
+    QFont myFont;
+    DiagramTextItem *textItem;
+    QColor myTextColor;
+    QColor myItemColor;
+    QColor myLineColor;
+};
+
+#endif

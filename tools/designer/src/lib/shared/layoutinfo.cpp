@@ -23,7 +23,10 @@
 
 #include "layoutinfo_p.h"
 
-#include <QtDesigner/QtDesigner>
+#include <QtDesigner/QDesignerFormEditorInterface>
+#include <QtDesigner/QDesignerContainerExtension>
+#include <QtDesigner/QDesignerMetaDataBaseInterface>
+#include <QtDesigner/QExtensionManager>
 
 #include <QtGui/QHBoxLayout>
 #include <QtGui/QSplitter>
@@ -112,7 +115,7 @@ void LayoutInfo::deleteLayout(QDesignerFormEditorInterface *core, QWidget *widge
         return;
     }
 
-    qWarning() << "trying to delete an unmanaged layout:" << "widget:" << widget << "layout:" << layout;
+    qDebug() << "trying to delete an unmanaged layout:" << "widget:" << widget << "layout:" << layout;
 }
 
 void LayoutInfo::cells(QLayout *layout, IntervalList *rows, IntervalList *columns)
@@ -160,19 +163,47 @@ bool LayoutInfo::isWidgetLaidout(QDesignerFormEditorInterface *core, QWidget *wi
     return false;
 }
 
+QLayout *LayoutInfo::internalLayout(QWidget *widget)
+{
+    QLayout *widgetLayout = widget->layout();
+    if (widgetLayout && widget->inherits("Q3GroupBox")) {
+        if (widgetLayout->count()) {
+            widgetLayout = widgetLayout->itemAt(0)->layout();
+        } else {
+            widgetLayout = 0;
+        }
+    }
+    return widgetLayout;
+}
+
+
 QLayout *LayoutInfo::managedLayout(QDesignerFormEditorInterface *core, QWidget *widget)
 {
     if (widget == 0)
         return 0;
-
+    
     QLayout *layout = widget->layout();
-    QDesignerMetaDataBaseItemInterface *item = core->metaDataBase()->item(layout);
-    if (layout != 0 && item == 0) {
-        layout = qFindChild<QLayout*>(layout);
-        item = core->metaDataBase()->item(layout);
-    }
+    if (!layout)
+        return 0;
 
-    return item != 0 ? layout : 0;
+    return managedLayout(core, layout);    
+}
+
+QLayout *LayoutInfo::managedLayout(QDesignerFormEditorInterface *core, QLayout *layout)
+{
+    QDesignerMetaDataBaseInterface *metaDataBase = core->metaDataBase();
+
+    if (!metaDataBase)
+        return layout;
+    
+    const QDesignerMetaDataBaseItemInterface *item = metaDataBase->item(layout);
+    if (item == 0) {
+        layout = qFindChild<QLayout*>(layout);
+        item = metaDataBase->item(layout);
+    }
+    if (!item)
+        return 0;
+    return layout;
 }
 
 

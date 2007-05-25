@@ -3,7 +3,7 @@
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>Qt 4.2: shapedclock.cpp Example File (widgets/shapedclock/shapedclock.cpp)</title>
+  <title>Qt 4.3: shapedclock.cpp Example File (widgets/shapedclock/shapedclock.cpp)</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -46,6 +46,14 @@
      connect(timer, SIGNAL(timeout()), this, SLOT(update()));
      timer-&gt;start(1000);
 
+     QAction *quitAction = new QAction(tr(&quot;E&amp;xit&quot;), this);
+     quitAction-&gt;setShortcut(tr(&quot;Ctrl+Q&quot;));
+     connect(quitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
+     addAction(quitAction);
+
+     setContextMenuPolicy(Qt::ActionsContextMenu);
+     setToolTip(tr(&quot;Drag the clock with the left mouse button.\n&quot;
+                   &quot;Use the right mouse button to open a context menu.&quot;));
      setWindowTitle(tr(&quot;Shaped Analog Clock&quot;));
  }
 
@@ -137,6 +145,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
 </tr></table></div></address></body>
 </html>

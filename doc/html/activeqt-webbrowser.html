@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-x11-opensource-src-4.2.3/doc/src/examples/activeqt/webbrowser.qdoc -->
+<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/doc/src/examples/activeqt/webbrowser.qdoc -->
 <head>
-  <title>Qt 4.2: Web Browser Example (ActiveQt)</title>
+  <title>Qt 4.3: Web Browser Example (ActiveQt)</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -15,6 +15,7 @@
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">Web Browser Example (ActiveQt)<br /><small></small></h1>
 <p>Files:</p>
 <ul>
+<li><a href="activeqt-webbrowser-webaxwidget-h.html">activeqt/webbrowser/webaxwidget.h</a></li>
 <li><a href="activeqt-webbrowser-main-cpp.html">activeqt/webbrowser/main.cpp</a></li>
 </ul>
 <p>The Web Browser example uses the Microsoft Web Browser ActiveX control to implement a fully functional Web Browser application. The user interface has been developed using the Qt Designer integration of the <a href="qaxwidget.html">QAxWidget</a> class.</p>
@@ -126,7 +127,7 @@
      actionStop-&gt;setEnabled(false);
  }</pre>
 <p>Different slots handle the signals emitted by the WebBrowser object.</p>
-<p>Connections that don't require any coding, i.e. connecting the <tt>back</tt> action to the <tt>GoBack()</tt> slot, have already been made in Qt Designer.</p>
+<p>Connections that don't require any coding, i.e&#x2e; connecting the <tt>back</tt> action to the <tt>GoBack()</tt> slot, have already been made in Qt Designer.</p>
 <pre> void MainWindow::on_actionGo_triggered()
  {
      WebBrowser-&gt;dynamicCall(&quot;Navigate(const QString&amp;)&quot;, addressEdit-&gt;text());
@@ -171,6 +172,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
 </tr></table></div></address></body>
 </html>

@@ -25,6 +25,7 @@
 #define MODEL_H
 
 #include <QAbstractItemModel>
+#include <QFileIconProvider>
 #include <QVector>
 
 class Model : public QAbstractItemModel
@@ -64,6 +65,7 @@ private:
 
     int rc, cc;
     QVector<Node> *tree;
+    QFileIconProvider iconProvider;
 };
 
 #endif

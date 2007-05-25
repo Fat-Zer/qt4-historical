@@ -34,6 +34,7 @@ QT_MODULE(Gui)
 
 class QIcon;
 class QTabBarPrivate;
+class QStyleOptionTab;
 
 class Q_GUI_EXPORT QTabBar: public QWidget
 {
@@ -100,6 +101,8 @@ public:
     QVariant tabData(int index) const;
 
     QRect tabRect(int index) const;
+    int tabAt(const QPoint &pos) const;
+
 
     int currentIndex() const;
     int count() const;
@@ -137,6 +140,7 @@ protected:
     void mouseReleaseEvent (QMouseEvent *);
     void keyPressEvent(QKeyEvent *);
     void changeEvent(QEvent *);
+    void initStyleOption(QStyleOptionTab *option, int tabIndex) const;
 
 #ifdef QT3_SUPPORT
 public Q_SLOTS:

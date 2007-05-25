@@ -40,10 +40,12 @@ struct Option
     unsigned int generateNamespace : 1;
     unsigned int autoConnection : 1;
     unsigned int dependencies : 1;
+    unsigned int extractImages : 1;
     Generator generator;
 
     QString inputFile;
     QString outputFile;
+    QString qrcOutputFile;
     QString indent;
     QString prefix;
     QString postfix;
@@ -61,6 +63,7 @@ struct Option
           generateNamespace(1),
           autoConnection(1),
           dependencies(0),
+          extractImages(0),
           generator(CppGenerator),
           prefix(QLatin1String("Ui_"))
     { indent.fill(QLatin1Char(' '), 4); }

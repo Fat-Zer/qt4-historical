@@ -30,6 +30,7 @@ class QAction;
 class QActionGroup;
 class QMenu;
 class QSpinBox;
+class QLabel;
 
 class ToolBar : public QToolBar
 {
@@ -57,14 +58,21 @@ class ToolBar : public QToolBar
     QAction *topAction;
     QAction *bottomAction;
 
+    QAction *toolBarBreakAction;
+
 public:
-    ToolBar(QWidget *parent);
+    ToolBar(const QString &title, QWidget *parent);
 
     QMenu *menu;
+
+protected:
+    void enterEvent(QEvent*);
+    void leaveEvent(QEvent*);
 
 private:
     void allow(Qt::ToolBarArea area, bool allow);
     void place(Qt::ToolBarArea area, bool place);
+    QLabel *tip;
 
 private slots:
     void order();
@@ -85,6 +93,7 @@ private slots:
     void placeBottom(bool p);
 
     void updateMenu();
+    void insertToolBarBreak();
 
 };
 

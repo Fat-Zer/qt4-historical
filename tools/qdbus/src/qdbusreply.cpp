@@ -150,11 +150,18 @@ void qDBusReplyFill(const QDBusMessage &reply, QDBusError &error, QVariant &data
     if (reply.arguments().count() >= 1 && reply.arguments().at(0).userType() == data.userType()) {
         data = reply.arguments().at(0);
         return;
-    } else if (reply.arguments().count() >= 1 &&
-               reply.arguments().at(0).userType() == QDBusMetaTypeId::argument) {
+    }
+
+    const char *expectedSignature = 0;
+    QByteArray receivedSignature;
+
+    if (reply.arguments().count() >= 1 &&
+        reply.arguments().at(0).userType() == QDBusMetaTypeId::argument) {
         // compare signatures instead
         QDBusArgument arg = qvariant_cast<QDBusArgument>(reply.arguments().at(0));
-        if (QDBusMetaType::typeToSignature(data.userType()) == arg.currentSignature().toLatin1()) {
+        expectedSignature = QDBusMetaType::typeToSignature(data.userType());
+        receivedSignature = arg.currentSignature().toLatin1();
+        if (receivedSignature == expectedSignature) {
             // matched. Demarshall it
             QDBusMetaType::demarshall(arg, data.userType(), data.data());
             return;
@@ -162,7 +169,13 @@ void qDBusReplyFill(const QDBusMessage &reply, QDBusError &error, QVariant &data
     }
 
     // error
+    QString errorMsg = QLatin1String("Unexpected reply signature: got \"%1\", "
+                                     "expected \"%2\" (%3)");
+    if (receivedSignature.isEmpty())
+        receivedSignature = "no signature";
     error = QDBusError(QDBusError::InvalidSignature,
-                       QLatin1String("Unexpected reply signature"));
+                      errorMsg.arg(QLatin1String(receivedSignature),
+                                   QLatin1String(expectedSignature),
+                                   QLatin1String(data.typeName())));
     data = QVariant();      // clear it
 }

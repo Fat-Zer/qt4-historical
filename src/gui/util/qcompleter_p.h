@@ -45,6 +45,7 @@
 #include "qcompleter.h"
 #include "QtGui/qitemdelegate.h"
 #include "QtGui/qpainter.h"
+#include "private/qabstractproxymodel_p.h"
 
 class QCompletionModel;
 
@@ -67,12 +68,15 @@ public:
     int role;
     int column;
     QCompleter::ModelSorting sorting;
+    bool wrap;
 
     bool eatFocusOut;
+    QRect popupRect;
 
     void showPopup(const QRect&);
     void _q_complete(QModelIndex, bool = false);
     void _q_completionSelected(const QItemSelection&);
+    void _q_autoResizePopup();
     void setCurrentIndex(QModelIndex, bool = true);
 };
 
@@ -89,6 +93,7 @@ public:
     inline bool isValid() const { return !isEmpty(); }
     inline bool isEmpty() const { return v ? vector.isEmpty() : (t < f); }
     inline void append(int x) { Q_ASSERT(v); vector.append(x); }
+    inline int first() const { return v ? vector.first() : f; }
     inline int last() const { return v ? vector.last() : t; }
     inline int from() const { Q_ASSERT(!v); return f; }
     inline int to() const { Q_ASSERT(!v); return t; }
@@ -147,7 +152,8 @@ class QSortedModelEngine : public QCompletionEngine
 public:
     QSortedModelEngine(QCompleterPrivate *c) : QCompletionEngine(c) { }
     QMatchData filter(const QString&, const QModelIndex&, int);
-    QIndexMapper indexHint(QString part, const QModelIndex& parent);
+    QIndexMapper indexHint(QString, const QModelIndex&, Qt::SortOrder);
+    Qt::SortOrder sortOrder(const QModelIndex&) const;
 };
 
 class QUnsortedModelEngine : public QCompletionEngine
@@ -179,14 +185,14 @@ private:
     QAbstractItemView *view;
 };
 
+class QCompletionModelPrivate;
+
 class QCompletionModel : public QAbstractProxyModel
 {
     Q_OBJECT
 
 public:
-    QCompletionModel(QCompleterPrivate *c, QObject *parent) :
-        QAbstractProxyModel(parent), c(c), engine(0), showAll(false)
-    { model = sourceModel(); createEngine(); }
+    QCompletionModel(QCompleterPrivate *c, QObject *parent);
     ~QCompletionModel() { delete engine; }
 
     void createEngine();
@@ -196,10 +202,11 @@ public:
     int currentRow() const { return engine->curRow; }
     bool setCurrentRow(int row);
     QModelIndex currentIndex(bool) const;
+    void resetModel();
 
     QModelIndex index(int row, int column, const QModelIndex & = QModelIndex()) const;
     int rowCount(const QModelIndex &index = QModelIndex()) const;
-    int columnCount(const QModelIndex& = QModelIndex()) const { return model->columnCount(); }
+    int columnCount(const QModelIndex &index = QModelIndex()) const;
     bool hasChildren(const QModelIndex &parent = QModelIndex()) const;
     QModelIndex parent(const QModelIndex & = QModelIndex()) const { return QModelIndex(); }
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
@@ -209,13 +216,23 @@ public:
     QModelIndex mapFromSource(const QModelIndex& sourceIndex) const;
 
     QCompleterPrivate *c;
-    QAbstractItemModel *model;
     QCompletionEngine *engine;
     bool showAll;
 
+    Q_DECLARE_PRIVATE(QCompletionModel)
+
+signals:
+    void rowsAdded();
+
 public Q_SLOTS:
     void invalidate();
+    void rowsInserted();
     void modelDestroyed();
+};
+
+class QCompletionModelPrivate : public QAbstractProxyModelPrivate
+{
+    Q_DECLARE_PUBLIC(QCompletionModel)
 };
 
 #endif // QT_NO_COMPLETER

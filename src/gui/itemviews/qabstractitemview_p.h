@@ -81,6 +81,7 @@ public:
     void _q_columnsAboutToBeRemoved(const QModelIndex &parent, int start, int end);
     void _q_columnsRemoved(const QModelIndex &parent, int start, int end);
     void _q_modelDestroyed();
+    void _q_layoutChanged();
 
     void fetchMore();
     bool shouldEdit(QAbstractItemView::EditTrigger trigger, const QModelIndex &index) const;
@@ -89,6 +90,7 @@ public:
     void doDelayedItemsLayout();
 
     bool dropOn(QDropEvent *event, int *row, int *col, QModelIndex *index);
+    bool droppingOnItself(QDropEvent *event, const QModelIndex &index);
 
     QWidget *editor(const QModelIndex &index, const QStyleOptionViewItem &options);
     bool sendDelegateEvent(const QModelIndex &index, QEvent *event) const;
@@ -113,7 +115,7 @@ public:
     }
 
 #ifndef QT_NO_DRAGANDDROP
-    QAbstractItemView::DropIndicatorPosition position(const QPoint &pos, const QRect &rect) const;
+    QAbstractItemView::DropIndicatorPosition position(const QPoint &pos, const QRect &rect, const QModelIndex &idx) const;
     inline bool canDecode(QDropEvent *e) const {
         QStringList modelTypes = model->mimeTypes();
         const QMimeData *mime = e->mimeData();
@@ -126,7 +128,11 @@ public:
 
     inline void paintDropIndicator(QPainter *painter)
     {
-        if (showDropIndicator && state == QAbstractItemView::DraggingState)
+        if (showDropIndicator && state == QAbstractItemView::DraggingState
+#ifndef QT_NO_CURSOR
+            && viewport->cursor().shape() != Qt::ForbiddenCursor
+#endif
+            )
             if (dropIndicatorRect.height() == 0) // FIXME: should be painted by style
                 painter->drawLine(dropIndicatorRect.topLeft(), dropIndicatorRect.topRight());
             else painter->drawRect(dropIndicatorRect);
@@ -138,6 +144,7 @@ public:
             QObject::disconnect(editor, SIGNAL(destroyed(QObject*)),
                                 q_func(), SLOT(editorDestroyed(QObject*)));
             editor->removeEventFilter(itemDelegate);
+            editor->hide();
             editor->deleteLater();
         }
     }
@@ -173,6 +180,8 @@ public:
     }
 
     void clearOrRemove();
+    void checkPersistentEditorFocus();
+
     QPixmap renderToPixmap(const QModelIndexList &indexes, QRect *r = 0) const;
 
     inline bool isIndexValid(const QModelIndex &index) const {
@@ -229,6 +238,34 @@ public:
         return QPoint(q->horizontalOffset(), q->verticalOffset());
     }
 
+    /**
+     * For now, assume that we have few editors, if we need a more efficient implementation 
+     * we should add a QMap<QAbstractItemDelegate*, int> member.
+     */
+    int delegateRefCount(const QAbstractItemDelegate *delegate) const
+    {
+        int ref = 0;
+        if (itemDelegate == delegate)
+            ++ref;
+
+        for (int maps = 0; maps < 2; ++maps) {
+            const QMap<int, QPointer<QAbstractItemDelegate> > *delegates = maps ? &columnDelegates : &rowDelegates;
+            for (QMap<int, QPointer<QAbstractItemDelegate> >::const_iterator it = delegates->begin(); 
+                it != delegates->end(); ++it) {
+                    if (it.value() == delegate) {
+                        ++ref;
+                        // optimization, we are only interested in the ref count values 0, 1 or >=2
+                        if (ref >= 2) {
+                            return ref;
+                        }
+                    }
+            }
+        }
+        return ref;
+    }
+
+    QStyleOptionViewItemV3 viewOptionsV3() const;
+
     QAbstractItemModel *model;
     QPointer<QAbstractItemDelegate> itemDelegate;
     QMap<int, QPointer<QAbstractItemDelegate> > rowDelegates;
@@ -249,6 +286,7 @@ public:
 
     QAbstractItemView::State state;
     QAbstractItemView::EditTriggers editTriggers;
+    QAbstractItemView::EditTrigger lastTrigger;
 
     QPersistentModelIndex root;
     QPersistentModelIndex hover;
@@ -270,7 +308,6 @@ public:
     bool autoScroll;
     QBasicTimer autoScrollTimer;
     int autoScrollMargin;
-    int autoScrollInterval;
     int autoScrollCount;
 
     bool alternatingColors;
@@ -284,10 +321,15 @@ public:
     QBasicTimer updateTimer;
     QBasicTimer delayedEditing;
     mutable QBasicTimer delayedLayout;
+    QBasicTimer delayedAutoScroll; //used when an item is clicked
     QTimeLine timeline;
 
     QAbstractItemView::ScrollMode verticalScrollMode;
     QAbstractItemView::ScrollMode horizontalScrollMode;
+
+    bool currentIndexSet;
+
+    bool wrapItemText;
 };
 
 #include <qvector.h>

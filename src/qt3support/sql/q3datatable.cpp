@@ -132,10 +132,10 @@ void qt_debug_buffer( const QString& msg, QSqlRecord* cursor )
     When displaying data, Q3DataTable only retrieves data for visible
     rows. If the driver supports the 'query size' property the
     Q3DataTable will have the correct number of rows and the vertical
-    scrollbar will accurately reflect the number of rows displayed in
+    scroll bar will accurately reflect the number of rows displayed in
     proportion to the number of rows in the dataset. If the driver
     does not support the 'query size' property, rows are dynamically
-    fetched from the database on an as-needed basis with the scrollbar
+    fetched from the database on an as-needed basis with the scroll bar
     becoming more accurate as the user scrolls down through the
     records. This allows extremely large queries to be displayed as
     quickly as possible, with minimum memory usage.
@@ -376,7 +376,7 @@ void Q3DataTable::adjustColumn( int col )
 	d->cur.refresh();
     }
     int oldRow = currentRow();
-    int w = fontMetrics().width( horizontalHeader()->label( col ) + "W" );
+    int w = fontMetrics().width( horizontalHeader()->label( col ) + QLatin1Char('W') );
     cur->seek( QSql::BeforeFirst );
     while ( cur->next() ) {
 	w = QMAX( w, fontMetrics().width( fieldToString( cur->fieldPtr( indexOf( col ) ) ) ) + 10 );
@@ -970,7 +970,7 @@ bool Q3DataTable::beginInsert()
 	lastRow = numRows() - 1;
     d->insertRowLast = lastRow;
     d->insertHeaderLabelLast = verticalHeader()->label( d->insertRowLast );
-    verticalHeader()->setLabel( row, "*" );
+    verticalHeader()->setLabel( row, QString(QLatin1Char('*')) );
     d->editRow = row;
     // in the db world it's common to allow inserting new records
     // into a table that has read-only columns - temporarily
@@ -1665,7 +1665,7 @@ void Q3DataTable::sortColumn ( int col, bool ascending,
 	if ( !sqlCursor() )
 	    return;
 	QSqlIndex lastSort = sqlCursor()->sort();
-	QSqlIndex newSort( lastSort.cursorName(), "newSort" );
+	QSqlIndex newSort( lastSort.cursorName(), QLatin1String("newSort") );
 	const QSqlField *field = sqlCursor()->fieldPtr( indexOf( col ) );
 	if ( field )
 	    newSort.append( *field );

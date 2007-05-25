@@ -41,15 +41,8 @@
 
 #ifndef QT_NO_TOOLBAR
 
-struct QToolBarItem {
-    QAction *action;
-    QWidget *widget;
-    uint hidden : 1; // toolbar too small to show this item
-    uint hasCustomWidget : 1;
-};
-
-class QToolBarExtension;
-class QToolBarHandle;
+class QToolBarLayout;
+class QTimer;
 
 class QToolBarPrivate : public QWidgetPrivate
 {
@@ -60,8 +53,7 @@ public:
         : explicitIconSize(false), explicitToolButtonStyle(false), movable(false),
           allowedAreas(Qt::AllToolBarAreas), orientation(Qt::Horizontal),
           toolButtonStyle(Qt::ToolButtonIconOnly),
-          handle(0), extension(0),
-          inResizeEvent(false)
+          layout(0), state(0)
     { }
 
     void init();
@@ -69,8 +61,7 @@ public:
     void _q_toggleView(bool b);
     void _q_updateIconSize(const QSize &sz);
     void _q_updateToolButtonStyle(Qt::ToolButtonStyle style);
-    QToolBarItem createItem(QAction *action);
-    int indexOf(QAction *action) const;
+    void _q_waitForPopup();
 
     bool explicitIconSize;
     bool explicitToolButtonStyle;
@@ -79,15 +70,32 @@ public:
     Qt::Orientation orientation;
     Qt::ToolButtonStyle toolButtonStyle;
     QSize iconSize;
-
-    QToolBarHandle *handle;
-    QToolBarExtension *extension;
-
-    QList<QToolBarItem> items;
+    bool floatable;
 
     QAction *toggleViewAction;
 
-    bool inResizeEvent;
+    QToolBarLayout *layout;
+
+    struct DragState {
+        QPoint pressPos;
+        bool dragging;
+        QLayoutItem *widgetItem;
+    };
+    DragState *state;
+
+    void mousePressEvent(QMouseEvent *e);
+    void mouseReleaseEvent(QMouseEvent *e);
+    void mouseMoveEvent(QMouseEvent *e);
+
+    void setWindowState(bool floating, bool unplug = false, const QRect &rect = QRect());
+    void initDrag(const QPoint &pos);
+    void startDrag();
+    void endDrag();
+
+    void unplug(const QRect &r);
+    void plug(const QRect &r);
+
+    QTimer *waitForPopupTimer;
 };
 
 #endif // QT_NO_TOOLBAR

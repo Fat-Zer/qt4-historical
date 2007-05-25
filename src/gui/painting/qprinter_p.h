@@ -54,19 +54,18 @@ public:
         : printEngine(0)
         , paintEngine(0)
         , q_ptr(printer)
-#if !(defined(QT_NO_PRINTDIALOG))
-        , ownPrintDialog(0)
-        , printDialog(0)
-#endif
+        , options(QAbstractPrintDialog::PrintToFile | QAbstractPrintDialog::PrintPageRange)
+        , printRange(QAbstractPrintDialog::AllPages)
+        , minPage(1)
+        , maxPage(1)
+        , fromPage(0)
+        , toPage(0)
         , use_default_engine(true)
     {
     }
 
     ~QPrinterPrivate() {
-#if !(defined(QT_NO_PRINTDIALOG))
-        delete ownPrintDialog;
-        ownPrintDialog = 0;
-#endif
+
     }
 
     void createDefaultEngines();
@@ -77,23 +76,11 @@ public:
     QPaintEngine *paintEngine;
     QPrinter *q_ptr;
 
-#if !(defined(QT_NO_PRINTDIALOG))
-    mutable QPrintDialog *ownPrintDialog;
-    mutable QPointer<QAbstractPrintDialog> printDialog;
-#endif
+    QAbstractPrintDialog::PrintDialogOptions options;
+    QAbstractPrintDialog::PrintRange printRange;
+    int minPage, maxPage, fromPage, toPage;
 
     bool use_default_engine;
-#ifndef QT_NO_PRINTDIALOG
-    void ensurePrintDialog() const {
-        if (printDialog)
-            return;
-        if (!ownPrintDialog) {
-            ownPrintDialog = new QPrintDialog(q_ptr); // printDialog is set here.
-        } else {
-            printDialog = ownPrintDialog;
-        }
-    }
-#endif
 };
 
 #endif // QT_NO_PRINTER

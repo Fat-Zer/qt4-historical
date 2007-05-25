@@ -3,7 +3,7 @@
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>Qt 4.2: pieceslist.cpp Example File (draganddrop/puzzle/pieceslist.cpp)</title>
+  <title>Qt 4.3: pieceslist.cpp Example File (draganddrop/puzzle/pieceslist.cpp)</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -33,7 +33,7 @@
  ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
  ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  **
- ****************************************************************************/</span>
+ ****************************************************************************/
 
  #include &lt;QtGui&gt;
 
@@ -94,7 +94,7 @@
                          | Qt::ItemIsDragEnabled);
  }
 
- void PiecesList::startDrag(Qt::DropActions supportedActions)
+ void PiecesList::startDrag(Qt::DropActions /*supportedActions*/</span>)
  {
      QListWidgetItem *item = currentItem();
 
@@ -113,13 +113,13 @@
      drag-&gt;setHotSpot(QPoint(pixmap.width()/2, pixmap.height()/2));
      drag-&gt;setPixmap(pixmap);
 
-     if (drag-&gt;start(Qt::MoveAction) == Qt::MoveAction)
+     if (drag-&gt;exec(Qt::MoveAction) == Qt::MoveAction)
          delete takeItem(row(item));
  }</pre>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
 </tr></table></div></address></body>
 </html>

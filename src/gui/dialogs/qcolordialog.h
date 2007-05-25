@@ -41,7 +41,7 @@ class Q_GUI_EXPORT QColorDialog : public QDialog
 
 public:
     static QColor getColor(const QColor& init = Qt::white, QWidget* parent=0);
-    static QRgb getRgba(QRgb, bool* ok = 0, QWidget* parent=0);
+    static QRgb getRgba(QRgb = 0xffffffff, bool* ok = 0, QWidget* parent=0);
 
     static int customCount();
     static QRgb customColor(int);
@@ -55,6 +55,8 @@ public:
         { Q_UNUSED(name); return getRgba(rgba, ok, parent); }
 #endif
 
+protected:
+    void changeEvent(QEvent *e);
 private:
     ~QColorDialog();
     explicit QColorDialog(QWidget* parent=0, bool modal=false);

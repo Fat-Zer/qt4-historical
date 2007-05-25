@@ -3,7 +3,7 @@
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>Qt 4.2: controllerwindow.cpp Example File (widgets/windowflags/controllerwindow.cpp)</title>
+  <title>Qt 4.3: controllerwindow.cpp Example File (widgets/windowflags/controllerwindow.cpp)</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -105,9 +105,10 @@
          flags |= Qt::WindowShadeButtonHint;
      if (windowStaysOnTopCheckBox-&gt;isChecked())
          flags |= Qt::WindowStaysOnTopHint;
+     if (customizeWindowHintCheckBox-&gt;isChecked())
+         flags |= Qt::CustomizeWindowHint;
 
      previewWindow-&gt;setWindowFlags(flags);
-     previewWindow-&gt;show();
 
      QPoint pos = previewWindow-&gt;pos();
      if (pos.x() &lt; 0)
@@ -115,6 +116,7 @@
      if (pos.y() &lt; 0)
          pos.setY(0);
      previewWindow-&gt;move(pos);
+     previewWindow-&gt;show();
  }
 
  void ControllerWindow::createTypeGroupBox()
@@ -160,6 +162,7 @@
              createCheckBox(tr(&quot;Window context help button&quot;));
      windowShadeButtonCheckBox = createCheckBox(tr(&quot;Window shade button&quot;));
      windowStaysOnTopCheckBox = createCheckBox(tr(&quot;Window stays on top&quot;));
+     customizeWindowHintCheckBox= createCheckBox(tr(&quot;Customize window&quot;));
 
      QGridLayout *layout = new QGridLayout;
      layout-&gt;addWidget(msWindowsFixedSizeDialogCheckBox, 0, 0);
@@ -172,6 +175,7 @@
      layout-&gt;addWidget(windowContextHelpButtonCheckBox, 2, 1);
      layout-&gt;addWidget(windowShadeButtonCheckBox, 3, 1);
      layout-&gt;addWidget(windowStaysOnTopCheckBox, 4, 1);
+     layout-&gt;addWidget(customizeWindowHintCheckBox, 5, 0);
      hintsGroupBox-&gt;setLayout(layout);
  }
 
@@ -192,6 +196,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
 </tr></table></div></address></body>
 </html>

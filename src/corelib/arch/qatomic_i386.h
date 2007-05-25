@@ -34,10 +34,10 @@ inline int q_atomic_test_and_set_int(volatile int *ptr, int expected, int newval
 {
     unsigned char ret;
     asm volatile("lock\n"
-                 "cmpxchgl %2,%3\n"
+                 "cmpxchgl %3,%2\n"
                  "sete %1\n"
-                 : "=a" (newval), "=qm" (ret)
-                 : "r" (newval), "m" (*ptr), "0" (expected)
+                 : "=a" (newval), "=qm" (ret), "+m" (*ptr)
+                 : "r" (newval), "0" (expected)
                  : "memory");
     return static_cast<int>(ret);
 }
@@ -86,16 +86,39 @@ inline int q_atomic_decrement(volatile int *ptr)
 inline int q_atomic_set_int(volatile int *ptr, int newval)
 {
     asm volatile("xchgl %0,%1"
-                 : "=r" (newval)
-                 : "m" (*ptr), "0" (newval)
+                 : "=r" (newval), "+m" (*ptr)
+                 : "0" (newval)
                  : "memory");
     return newval;
 }
 
 inline void *q_atomic_set_ptr(volatile void *ptr, void *newval)
 {
-    return reinterpret_cast<void *>(q_atomic_set_int(reinterpret_cast<volatile int *>(ptr),
-                                                     reinterpret_cast<int>(newval)));
+    asm volatile("xchgl %0,%1"
+                 : "=r" (newval), "+m" (*reinterpret_cast<volatile int *>(ptr))
+                 : "0" (newval)
+                 : "memory");
+    return newval;
+}
+
+inline int q_atomic_fetch_and_add_int(volatile int *ptr, int value)
+{
+    asm volatile("lock\n"
+                 "xaddl %0,%1"
+                 : "=r" (value), "+m" (*ptr)
+                 : "0" (value)
+                 : "memory");
+    return value;
+}
+
+inline int q_atomic_fetch_and_add_acquire_int(volatile int *ptr, int value)
+{
+    return q_atomic_fetch_and_add_int(ptr, value);
+}
+
+inline int q_atomic_fetch_and_add_release_int(volatile int *ptr, int value)
+{
+    return q_atomic_fetch_and_add_int(ptr, value);
 }
 
 #else
@@ -107,6 +130,7 @@ extern "C" {
     Q_CORE_EXPORT int q_atomic_decrement(volatile int *ptr);
     Q_CORE_EXPORT int q_atomic_set_int(volatile int *ptr, int newval);
     Q_CORE_EXPORT void *q_atomic_set_ptr(volatile void *ptr, void *newval);
+    Q_CORE_EXPORT int q_atomic_fetch_and_add_int(volatile int *ptr, int value);
 } // extern "C"
 
 inline int q_atomic_test_and_set_acquire_int(volatile int *ptr, int expected, int newval)
@@ -117,6 +141,16 @@ inline int q_atomic_test_and_set_acquire_int(volatile int *ptr, int expected, in
 inline int q_atomic_test_and_set_release_int(volatile int *ptr, int expected, int newval)
 {
     return q_atomic_test_and_set_int(ptr, expected, newval);
+}
+
+inline int q_atomic_fetch_and_add_acquire_int(volatile int *ptr, int value)
+{
+    return q_atomic_fetch_and_add_int(ptr, value);
+}
+
+inline int q_atomic_fetch_and_add_release_int(volatile int *ptr, int value)
+{
+    return q_atomic_fetch_and_add_int(ptr, value);
 }
 
 #endif

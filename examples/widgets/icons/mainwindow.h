@@ -50,7 +50,7 @@ private slots:
     void changeStyle(bool checked);
     void changeSize(bool checked = true);
     void changeIcon();
-    void addImage();
+    void addImages();
     void removeAllImages();
 
 private:
@@ -83,7 +83,7 @@ private:
     QMenu *fileMenu;
     QMenu *viewMenu;
     QMenu *helpMenu;
-    QAction *addImageAct;
+    QAction *addImagesAct;
     QAction *removeAllImagesAct;
     QAction *exitAct;
     QAction *guessModeStateAct;

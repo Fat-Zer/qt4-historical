@@ -64,6 +64,7 @@ public:
     QString baseName() const;
     QString completeBaseName() const;
     QString suffix() const;
+    QString bundleName() const;
     QString completeSuffix() const;
 
     QString path() const;
@@ -85,6 +86,7 @@ public:
     bool isDir() const;
     bool isSymLink() const;
     bool isRoot() const;
+    bool isBundle() const;
 
     QString readLink() const;
     inline QString symLinkTarget() const { return readLink(); }

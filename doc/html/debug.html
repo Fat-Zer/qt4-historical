@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-x11-opensource-src-4.2.3/doc/src/debug.qdoc -->
+<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/doc/src/debug.qdoc -->
 <head>
-  <title>Qt 4.2: Debugging Techniques</title>
+  <title>Qt 4.3: Debugging Techniques</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -38,6 +38,15 @@
 <p>If the <tt>QT_FATAL_WARNINGS</tt> environment variable is set, <a href="qtglobal.html#qWarning">qWarning</a>() exits after printing the warning message. This makes it easy to obtain a backtrace in the debugger.</p>
 <p>Both <a href="qtglobal.html#qDebug">qDebug</a>() and <a href="qtglobal.html#qWarning">qWarning</a>() are debugging tools. They can be compiled away by defining <tt>QT_NO_DEBUG_OUTPUT</tt> and <tt>QT_NO_WARNING_OUTPUT</tt> during compilation.</p>
 <p>The debugging functions <a href="qobject.html#dumpObjectTree">QObject::dumpObjectTree</a>() and <a href="qobject.html#dumpObjectInfo">QObject::dumpObjectInfo</a>() are often useful when an application looks or acts strangely. More useful if you use <a href="qobject.html#objectName-prop">object names</a> than not, but often useful even without names.</p>
+<a name="providing-support-for-the-qdebug-stream-operator"></a>
+<h2>Providing Support for the qDebug() Stream Operator</h2>
+<p>You can implement the stream operator used by <a href="qtglobal.html#qDebug">qDebug</a>() to provide debugging support for your classes. The class that implements the stream is <tt>QDebug</tt>. The functions you need to know about in <tt>QDebug</tt> are <tt>space()</tt> and <tt>nospace()</tt>. They both return a debug stream; the difference between them is whether a space is inserted between each item. Here is an example for a class that represents a 2D coordinate.</p>
+<pre> QDebug operator&lt;&lt;(QDebug dbg, const Coordinate &amp;c)
+ {
+     dbg.nospace() &lt;&lt; &quot;(&quot; &lt;&lt; c.x() &lt;&lt; &quot;, &quot; &lt;&lt; c.y() &lt;&lt; &quot;)&quot;;
+
+     return dbg.space();
+ }</pre>
 <a name="debugging-macros"></a>
 <h2>Debugging Macros</h2>
 <p>The header file <tt>&lt;QtGlobal&gt;</tt> contains some debugging macros and <tt>#define</tt>s.</p>
@@ -47,7 +56,7 @@
 <li><a href="qtglobal.html#Q_ASSERT_X">Q_ASSERT_X</a>(cond, where, what), where <tt>cond</tt> is a boolean expression, <tt>where</tt> a location, and <tt>what</tt> a message, writes the warning: &quot;ASSERT failure in <tt>where</tt>: '<tt>what</tt>', file xyz.cpp, line 234&quot; and exits if <tt>cond</tt> is false.</li>
 <li><a href="qtglobal.html#Q_CHECK_PTR">Q_CHECK_PTR</a>(ptr), where <tt>ptr</tt> is a pointer. Writes the warning &quot;In file xyz.cpp, line 234: Out of memory&quot; and exits if <tt>ptr</tt> is 0.</li>
 </ul>
-<p>These macros are useful for detecting program errors, e.g. like this:</p>
+<p>These macros are useful for detecting program errors, e.g&#x2e; like this:</p>
 <pre> char *alloc(int size)
  {
      Q_ASSERT(size &gt; 0);
@@ -71,6 +80,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
 </tr></table></div></address></body>
 </html>

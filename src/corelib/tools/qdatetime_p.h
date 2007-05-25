@@ -172,7 +172,7 @@ public:
     void setDigit(QVariant &t, int index, int newval) const;
     int parseSection(int sectionIndex, QString &txt, int index,
                      QDateTimeParser::State &state, int *used = 0) const;
-    int absoluteMax(int index) const;
+    int absoluteMax(int index, const QDateTime &value = QDateTime()) const;
     int absoluteMin(int index) const;
     bool parseFormat(const QString &format);
 #ifndef QT_NO_DATESTRING
@@ -200,7 +200,8 @@ public:
     enum FieldInfoFlag {
         Numeric = 0x01,
         FixedWidth = 0x02,
-        AllowPartial = 0x04
+        AllowPartial = 0x04,
+        Fraction = 0x08
     };
     Q_DECLARE_FLAGS(FieldInfo, FieldInfoFlag)
 

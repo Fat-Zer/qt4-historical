@@ -50,7 +50,7 @@ public:
     inline void setContextItem(ContextItem *ctxtI) {cntxtItem = ctxtI;}
     inline ContextItem *contextItem() const {return cntxtItem;}
 
-    inline QString context() const {return m.context();}
+    inline QString context() const {return QLatin1String(m.context());}
     inline QString sourceText() const {return tx;}
     inline QString comment() const {return com;}
     inline QString translation() const {return m.translation();}
@@ -236,6 +236,7 @@ public:
     inline int contextsInList() const {return cntxtList.count();}
     bool findMessage(int *contextNo, int *itemNo, const QString &findItem, int where, 
         bool matchSubstring, Qt::CaseSensitivity cs = Qt::CaseSensitive);
+    MessageItem *findMessage(const char *context, const char *sourcetext, const char *comment = 0) const;
 
     ContextItem *createContextItem(const QString &c)
     {
@@ -288,7 +289,6 @@ public:
                     Translator::SaveMode mode = Translator::Stripped );
     
     QTranslator *translator();
-    MessageItem *findMessage(const char *context, const char *sourcetext, const char *comment = 0) const;
 
     QLocale::Language language() const;
     void setLanguage(QLocale::Language lang);
@@ -339,6 +339,7 @@ private:
 
     QLocale::Language m_language;
     QLocale::Country m_country;
+    QByteArray m_codecForTr;
 
     friend class iterator;
 };

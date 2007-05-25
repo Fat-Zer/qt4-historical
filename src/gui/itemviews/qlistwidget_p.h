@@ -34,9 +34,9 @@
 // We mean it.
 //
 
-#include <QtCore/QAbstractListModel>
-#include <QtGui/QAbstractItemView>
-#include <QtGui/QListWidget>
+#include <QtCore/qabstractitemmodel.h>
+#include <QtGui/qabstractitemview.h>
+#include <QtGui/qlistwidget.h>
 #include <qitemdelegate.h>
 #include <private/qlistview_p.h>
 #include <private/qwidgetitemdata_p.h>
@@ -137,6 +137,14 @@ public:
     void _q_dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
     Qt::SortOrder sortOrder;
     bool sortingEnabled;
+};
+
+class QListWidgetItemPrivate
+{
+public:
+    QListWidgetItemPrivate(QListWidgetItem *item) : q(item), id(-1) {}
+    QListWidgetItem *q;
+    int id;
 };
 
 #endif // QT_NO_LISTWIDGET

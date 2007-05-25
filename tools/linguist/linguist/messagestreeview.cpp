@@ -56,7 +56,6 @@ MessagesTreeView::MessagesTreeView(QWidget *parent) : QTreeView(parent)
     setUniformRowHeights(true);
     setAlternatingRowColors(true);
     QPalette pal = palette();
-    pal.setColor(QPalette::AlternateBase, TREEVIEW_ODD_COLOR);
     setPalette(pal);
 
     setSelectionBehavior(QAbstractItemView::SelectRows);

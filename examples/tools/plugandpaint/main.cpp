@@ -21,9 +21,9 @@
 **
 ****************************************************************************/
 
-#include <QtGui>
-
 #include "mainwindow.h"
+#include <QtPlugin>
+#include <QApplication>
 
 Q_IMPORT_PLUGIN(pnp_basictools)
 

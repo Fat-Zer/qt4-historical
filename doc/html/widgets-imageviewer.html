@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-x11-opensource-src-4.2.3/doc/src/examples/imageviewer.qdoc -->
+<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/doc/src/examples/imageviewer.qdoc -->
 <head>
-  <title>Qt 4.2: Image Viewer Example</title>
+  <title>Qt 4.3: Image Viewer Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -23,8 +23,8 @@
 <p>The example demonstrates how <a href="qlabel.html">QLabel</a>'s ability to scale its contents (<a href="qlabel.html#scaledContents-prop">QLabel::scaledContents</a>), and <a href="qscrollarea.html">QScrollArea</a>'s ability to automatically resize its contents (<a href="qscrollarea.html#widgetResizable-prop">QScrollArea::widgetResizable</a>), can be used to implement zooming and scaling features. In addition the example shows how to use <a href="qpainter.html">QPainter</a> to print an image.</p>
 <p align="center"><img src="images/imageviewer-example.png" alt="Screenshot of the Image Viewer example" /></p><p>With the Image Viewer application, the users can view an image of their choice. The <b>File</b> menu gives the user the possibility to:</p>
 <ul>
-<li><b>Open...</b> - Open an image file</li>
-<li><b>Print...</b> - Print an image</li>
+<li><b>Open..&#x2e;</b> - Open an image file</li>
+<li><b>Print..&#x2e;</b> - Print an image</li>
 <li><b>Exit</b> - Exit the application</li>
 </ul>
 <p>Once an image is loaded, the <b>View</b> menu allows the users to:</p>
@@ -178,7 +178,7 @@
      imageLabel-&gt;adjustSize();
      scaleFactor = 1.0;
  }</pre>
-<p>When zooming, we use the <a href="qlabel.html">QLabel</a>'s ability to scale its contents. Such scaling doesn't change the actual size hint of the contents. And since the <a href="qwidget.html#adjustSize">adjustSize()</a> function use those size hint, the only thing we need to do to restore the normal size of the currently displayed image is to call <tt>adjustSize()</tt> and reset the scale factor to 1.0.</p>
+<p>When zooming, we use the <a href="qlabel.html">QLabel</a>'s ability to scale its contents. Such scaling doesn't change the actual size hint of the contents. And since the <a href="qwidget.html#adjustSize">adjustSize()</a> function use those size hint, the only thing we need to do to restore the normal size of the currently displayed image is to call <tt>adjustSize()</tt> and reset the scale factor to 1.0&#x2e;</p>
 <pre> void ImageViewer::fitToWindow()
  {
      bool fitToWindow = fitToWindowAct-&gt;isChecked();
@@ -314,6 +314,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
 </tr></table></div></address></body>
 </html>

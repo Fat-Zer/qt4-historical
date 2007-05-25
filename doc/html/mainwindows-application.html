@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-x11-opensource-src-4.2.3/doc/src/examples/application.qdoc -->
+<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/doc/src/examples/application.qdoc -->
 <head>
-  <title>Qt 4.2: Application Example</title>
+  <title>Qt 4.3: Application Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -132,7 +132,7 @@
              loadFile(fileName);
      }
  }</pre>
-<p>The <tt>open()</tt> slot is invoked when the user clicks <b>File|Open</b>. We pop up a <a href="qfiledialog.html">QFileDialog</a> asking the user to choose a file. If the user chooses a file (i.e., <tt>fileName</tt> is not an empty string), we call the private function <tt>loadFile()</tt> to actually load the file.</p>
+<p>The <tt>open()</tt> slot is invoked when the user clicks <b>File|Open</b>. We pop up a <a href="qfiledialog.html">QFileDialog</a> asking the user to choose a file. If the user chooses a file (i.e&#x2e;, <tt>fileName</tt> is not an empty string), we call the private function <tt>loadFile()</tt> to actually load the file.</p>
 <pre> bool MainWindow::save()
  {
      if (curFile.isEmpty()) {
@@ -182,7 +182,7 @@
      connect(aboutQtAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));</pre>
 <p>The <tt>createActions()</tt> private function, which is called from the <tt>MainWindow</tt> constructor, creates <a href="qaction.html">QAction</a>s. The code is very repetitive, so we show only the actions corresponding to <b>File|New</b>, <b>File|Open</b>, and <b>Help|About Qt</b>.</p>
 <p>A <a href="qaction.html">QAction</a> is an object that represents one user action, such as saving a file or invoking a dialog. An action can be put in a <a href="qmenu.html">QMenu</a> or a <a href="qtoolbar.html">QToolBar</a>, or both, or in any other widget that reimplements <a href="qwidget.html#actionEvent">QWidget::actionEvent</a>().</p>
-<p>An action has a text that is shown in the menu, an icon, a shortcut key, a tooltip, a status tip (shown in the status bar), a &quot;What's This?&quot; text, and more. It emits a <a href="qaction.html#triggered">triggered()</a> signal whenever the user invokes the action (e.g., by clicking the associated menu item or toolbar button). We connect this signal to a slot that performs the actual action.</p>
+<p>An action has a text that is shown in the menu, an icon, a shortcut key, a tooltip, a status tip (shown in the status bar), a &quot;What's This?&quot; text, and more. It emits a <a href="qaction.html#triggered">triggered()</a> signal whenever the user invokes the action (e.g&#x2e;, by clicking the associated menu item or toolbar button). We connect this signal to a slot that performs the actual action.</p>
 <p>The code above contains one more idiom that must be explained. For some of the actions, we specify an icon as a <a href="qicon.html">QIcon</a> to the <a href="qaction.html">QAction</a> constructor. The <a href="qicon.html">QIcon</a> constructor takes the file name of an image that it tries to load. Here, the file name starts with <tt>:</tt>. Such file names aren't ordinary file names, but rather path in the executable's stored resources. We'll come back to this when we review the <tt>application.qrc</tt> file that's part of the project.</p>
 <pre>     cutAct-&gt;setEnabled(false);
      copyAct-&gt;setEnabled(false);
@@ -214,7 +214,7 @@
      helpMenu-&gt;addAction(aboutQtAct);
  }</pre>
 <p>Creating actions isn't sufficient to make them available to the user; we must also add them to the menu system. This is what <tt>createMenus()</tt> does. We create a <b>File</b>, an <b>Edit</b>, and a <b>Help</b> menu. <a href="qmainwindow.html#menuBar">QMainWindow::menuBar</a>() lets us access the window's menu bar widget. We don't have to worry about creating the menu bar ourselves; the first time we call this function, the <a href="qmenubar.html">QMenuBar</a> is created.</p>
-<p>Just before we create the <b>Help</b> menu, we call <a href="qmenubar.html#addSeparator">QMenuBar::addSeparator</a>(). This has no effect for most widget styles (e.g., Windows and Mac OS X styles), but for Motif-based styles this makes sure that <b>Help</b> is pushed to the right side of the menu bar. Try running the application with various styles and see the results:</p>
+<p>Just before we create the <b>Help</b> menu, we call <a href="qmenubar.html#addSeparator">QMenuBar::addSeparator</a>(). This has no effect for most widget styles (e.g&#x2e;, Windows and Mac OS X styles), but for Motif-based styles this makes sure that <b>Help</b> is pushed to the right side of the menu bar. Try running the application with various styles and see the results:</p>
 <pre> application -style=windows
  application -style=motif
  application -style=cde</pre>
@@ -376,6 +376,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
 </tr></table></div></address></body>
 </html>

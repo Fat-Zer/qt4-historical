@@ -132,16 +132,20 @@ private:
 class QDESIGNER_SHARED_EXPORT QLayoutWidget: public QWidget
 {
     Q_OBJECT
-    Q_PROPERTY(int margin READ layoutMargin WRITE setLayoutMargin STORED false DESIGNABLE true)
-    Q_PROPERTY(int spacing READ layoutSpacing WRITE setLayoutSpacing STORED false DESIGNABLE true)
 public:
     QLayoutWidget(QDesignerFormWindowInterface *formWindow, QWidget *parent = 0);
 
-    int layoutMargin() const;
-    void setLayoutMargin(int layoutMargin);
+    int layoutLeftMargin() const;
+    void setLayoutLeftMargin(int layoutMargin);
 
-    int layoutSpacing() const;
-    void setLayoutSpacing(int layoutSpacing);
+    int layoutTopMargin() const;
+    void setLayoutTopMargin(int layoutMargin);
+
+    int layoutRightMargin() const;
+    void setLayoutRightMargin(int layoutMargin);
+
+    int layoutBottomMargin() const;
+    void setLayoutBottomMargin(int layoutMargin);
 
     inline QDesignerFormWindowInterface *formWindow() const
     { return m_formWindow; }
@@ -188,6 +192,10 @@ protected:
 private:
     QDesignerFormWindowInterface *m_formWindow;
     QLayoutSupport m_support;
+    int m_leftMargin;
+    int m_topMargin;
+    int m_rightMargin;
+    int m_bottomMargin;
 };
 
 class QLayoutWidgetItem: public QWidgetItem

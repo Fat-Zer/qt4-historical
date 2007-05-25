@@ -60,6 +60,9 @@ public:
     QVector<qreal> dashPattern() const;
     void setDashPattern(const QVector<qreal> &pattern);
 
+    qreal dashOffset() const;
+    void setDashOffset(qreal doffset);
+
     qreal miterLimit() const;
     void setMiterLimit(qreal limit);
 
@@ -83,6 +86,9 @@ public:
     Qt::PenJoinStyle joinStyle() const;
     void setJoinStyle(Qt::PenJoinStyle pcs);
 
+    bool isCosmetic() const;
+    void setCosmetic(bool cosmetic);
+
     bool operator==(const QPen &p) const;
     inline bool operator!=(const QPen &p) const { return !(operator==(p)); }
     operator QVariant() const;
@@ -95,6 +101,10 @@ private:
 
     void detach();
     class QPenPrivate *d;
+
+public:
+    typedef QPenPrivate * DataPtr;
+    inline DataPtr &data_ptr() { return d; }
 };
 Q_DECLARE_TYPEINFO(QPen, Q_MOVABLE_TYPE);
 Q_DECLARE_SHARED(QPen)

@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-x11-opensource-src-4.2.3/doc/src/examples/shapedclock.qdoc -->
+<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/doc/src/examples/shapedclock.qdoc -->
 <head>
-  <title>Qt 4.2: Shaped Clock Example</title>
+  <title>Qt 4.3: Shaped Clock Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -21,6 +21,7 @@
 </ul>
 <p>The Shaped Clock example shows how to apply a widget mask to a top-level widget to produce a shaped window.</p>
 <p align="center"><img src="images/shapedclock-example.png" /></p><p>Widget masks are used to customize the shapes of top-level widgets by restricting the available area for painting. On some window systems, setting certain window flags will cause the window decoration (title bar, window frame, buttons) to be disabled, allowing specially-shaped windows to be created. In this example, we use this feature to create a circular window containing an analog clock.</p>
+<p>Since this example's window does not provide a <b>File</b> menu or a close button, we provide a context menu with an <b>Exit</b> entry so that the example can be closed. Click the right mouse button over the window to open this menu.</p>
 <a name="shapedclock-class-definition"></a>
 <h2>ShapedClock Class Definition</h2>
 <p>The <tt>ShapedClock</tt> class is based on the <tt>AnalogClock</tt> class defined in the <a href="widgets-analogclock.html">Analog Clock</a> example. The whole class definition is presented below:</p>
@@ -53,6 +54,14 @@
      connect(timer, SIGNAL(timeout()), this, SLOT(update()));
      timer-&gt;start(1000);
 
+     QAction *quitAction = new QAction(tr(&quot;E&amp;xit&quot;), this);
+     quitAction-&gt;setShortcut(tr(&quot;Ctrl+Q&quot;));
+     connect(quitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
+     addAction(quitAction);
+
+     setContextMenuPolicy(Qt::ActionsContextMenu);
+     setToolTip(tr(&quot;Drag the clock with the left mouse button.\n&quot;
+                   &quot;Use the right mouse button to open a context menu.&quot;));
      setWindowTitle(tr(&quot;Shaped Analog Clock&quot;));
  }</pre>
 <p>We inform the window manager that the widget is not to be decorated with a window frame by setting the <a href="qt.html#WindowType-enum">Qt::FramelessWindowHint</a> flag on the widget. As a result, we need to provide a way for the user to move the clock around the screen.</p>
@@ -153,6 +162,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
 </tr></table></div></address></body>
 </html>

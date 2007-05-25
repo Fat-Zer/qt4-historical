@@ -74,9 +74,7 @@ struct QBasicAtomic
 
     inline QBasicAtomic &operator=(int x)
     {
-        q_atomic_lock(lock);
         atomic = x;
-        q_atomic_unlock(lock);
         return *this;
     }
 
@@ -94,12 +92,12 @@ struct QBasicAtomic
 	q_atomic_unlock(lock);
 	return false;
     }
-    
+
     inline bool testAndSetAcquire(int expected, int newval)
     {
         return testAndSet(expected, newval);
     }
-    
+
     inline bool testAndSetRelease(int expected, int newval)
     {
         return testAndSet(expected, newval);
@@ -112,6 +110,25 @@ struct QBasicAtomic
 	atomic = newval;
 	q_atomic_unlock(lock);
 	return oldval;
+    }
+
+    inline int fetchAndAdd(int value)
+    {
+	q_atomic_lock(lock);
+        int originalValue = atomic;
+        atomic += value;
+	q_atomic_unlock(lock);
+	return originalValue;
+    }
+
+    inline int fetchAndAddAcquire(int value)
+    {
+        return fetchAndAdd(value);
+    }
+
+    inline bool fetchAndAddRelease(int value)
+    {
+        return fetchAndAdd(value);
     }
 };
 
@@ -141,9 +158,7 @@ struct QBasicAtomicPointer
 
     inline QBasicAtomicPointer<T> &operator=(T *t)
     {
-        q_atomic_lock(lock);
         pointer = const_cast<T *>(t);
-        q_atomic_unlock(lock);
         return *this;
     }
 

@@ -43,6 +43,7 @@
 #include "QtCore/qmutex.h"
 #include "QtCore/qtranslator.h"
 #include "QtCore/qbasictimer.h"
+#include "QtCore/qhash.h"
 #include "private/qcoreapplication_p.h"
 #include "private/qshortcutmap_p.h"
 #ifdef Q_WS_QWS
@@ -256,8 +257,11 @@ public:
     static QPalette *sys_pal;
     static QPalette *set_pal;
     static QFont *app_font;
+    static QFont *sys_font;
+    static QFont *set_font;
     static QWidget *main_widget;
     static QWidget *focus_widget;
+    static QWidget *hidden_focus_widget;
     static QWidget *active_window;
     static QIcon *app_icon;
     static bool obey_desktop_settings;
@@ -278,6 +282,7 @@ public:
     static void setSystemPalette(const QPalette &pal);
     static void setPalette_helper(const QPalette &palette, const char* className, bool clearWidgetPaletteHash);
     static void initializeWidgetPaletteHash();
+    static void setSystemFont(const QFont &font);
 
 #if defined(Q_WS_X11)
     static void applyX11SpecificCommandLineArguments(QWidget *main_widget);
@@ -286,7 +291,6 @@ public:
 #endif
 
 #ifdef Q_WS_MAC
-    bool do_mouse_down(const QPoint &, bool *);
     static OSStatus globalEventProcessor(EventHandlerCallRef, EventRef, void *);
     static OSStatus globalAppleEventProcessor(const AppleEvent *, AppleEvent *, long);
     static void qt_context_timer_callbk(EventLoopTimerRef, void *);
@@ -313,8 +317,16 @@ public:
     static QWidget *oldEditFocus;
 #endif
 
+    static bool tryEmitLastWindowClosedPending;
     void _q_tryEmitLastWindowClosed();
+
+#if defined(Q_WS_MAC) || defined(Q_WS_X11)
+    void _q_alertTimeOut();
+    QHash<QWidget *, QTimer *> alertTimerHash;
+#endif
+#ifndef QT_NO_STYLE_STYLESHEET
     static QString styleSheet;
+#endif
 
 private:
 #ifdef Q_WS_QWS

@@ -39,6 +39,8 @@
 
 #ifndef QT_NO_TEXTCODEC
 
+template <typename T> class QAtomicPointer;
+
 class QSimpleTextCodec: public QTextCodec
 {
 public:
@@ -54,12 +56,8 @@ public:
     int mibEnum() const;
 
 private:
-    void buildReverseMap() const;
-
     int forwardIndex;
-#ifndef Q_WS_QWS
-    mutable QByteArray reverseMap;
-#endif
+    mutable QAtomicPointer<QByteArray> reverseMap;
 };
 
 #endif // QT_NO_TEXTCODEC

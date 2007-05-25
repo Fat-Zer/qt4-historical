@@ -198,7 +198,7 @@ public:
     uint signal_choke : 1;
 
     // This variables indicates in updateScrollBars() that we are
-    // in a resizeEvent() and thus don't want to flash scrollbars
+    // in a resizeEvent() and thus don't want to flash scroll bars
     uint inresize : 1;
     uint use_cached_size_hint : 1;
     QSize cachedSizeHint;
@@ -497,8 +497,8 @@ void Q3ScrollViewData::viewportResized(int w, int h)
     childX() and childY() to get the position of a child widget.
 
     A widget may be placed in the corner between the vertical and
-    horizontal scrollbars with setCornerWidget(). You can get access
-    to the scrollbars using horizontalScrollBar() and
+    horizontal scroll bars with setCornerWidget(). You can get access
+    to the scroll bars using horizontalScrollBar() and
     verticalScrollBar(), and to the viewport with viewport(). The
     scroll view can be scrolled using scrollBy(), ensureVisible(),
     setContentsPos() or center().
@@ -517,7 +517,7 @@ void Q3ScrollViewData::viewportResized(int w, int h)
     \warning Q3ScrollView currently does not erase the background when
     resized, i.e. you must always clear the background manually in
     scrollview subclasses. This will change in a future version of Qt
-    and we recommend specifying the WNoAutoErase flag explicitly.
+    and we recommend specifying the \c WNoAutoErase flag explicitly.
 */
 
 
@@ -774,11 +774,11 @@ QSize Q3ScrollView::viewportSize(int x, int y) const
     int vsbExt = verticalScrollBar()->sizeHint().width();
 
     if (d->policy != AutoOne || d->anyVisibleChildren()) {
-        // Do we definitely need the scrollbar?
+        // Do we definitely need the scroll bar?
         needh = w-lmarg-rmarg < x;
         needv = h-tmarg-bmarg < y;
 
-        // Do we intend to show the scrollbar?
+        // Do we intend to show the scroll bar?
         if (d->hMode == AlwaysOn)
             showh = true;
         else if (d->hMode == AlwaysOff)
@@ -793,7 +793,7 @@ QSize Q3ScrollView::viewportSize(int x, int y) const
         else
             showv = needv;
 
-        // Given other scrollbar will be shown, NOW do we need one?
+        // Given other scroll bar will be shown, NOW do we need one?
         if (showh && h-vsbExt-tmarg-bmarg < y) {
             if (d->vMode == Auto)
                 showv=true;
@@ -803,7 +803,7 @@ QSize Q3ScrollView::viewportSize(int x, int y) const
                 showh=true;
         }
     } else {
-        // Scrollbars not needed, only show scrollbar that are always on.
+        // Scroll bars not needed, only show scroll bar that are always on.
         showh = d->hMode == AlwaysOn;
         showv = d->vMode == AlwaysOn;
     }
@@ -847,13 +847,13 @@ void Q3ScrollView::updateScrollBars()
     QSize oldVisibleSize(visibleWidth(), visibleHeight());
 
     if (d->policy != AutoOne || d->anyVisibleChildren()) {
-        // Do we definitely need the scrollbar?
+        // Do we definitely need the scroll bar?
         needh = w-lmarg-rmarg < d->contentsWidth();
         if (d->inresize)
             needh  = !horizontalScrollBar()->isHidden();
         needv = h-tmarg-bmarg < contentsHeight();
 
-        // Do we intend to show the scrollbar?
+        // Do we intend to show the scroll bar?
         if (d->hMode == AlwaysOn)
             showh = true;
         else if (d->hMode == AlwaysOff)
@@ -893,7 +893,7 @@ void Q3ScrollView::updateScrollBars()
         }
 #endif
 
-        // Given other scrollbar will be shown, NOW do we need one?
+        // Given other scroll bar will be shown, NOW do we need one?
         if (showh && h-vsbExt-tmarg-bmarg < contentsHeight()) {
             needv=true;
             if (d->vMode == Auto)
@@ -905,7 +905,7 @@ void Q3ScrollView::updateScrollBars()
                 showh=true;
         }
     } else {
-        // Scrollbars not needed, only show scrollbar that are always on.
+        // Scrollbars not needed, only show scroll bar that are always on.
         needh = needv = false;
         showh = d->hMode == AlwaysOn;
         showv = d->vMode == AlwaysOn;
@@ -914,7 +914,7 @@ void Q3ScrollView::updateScrollBars()
     bool sc = d->signal_choke;
     d->signal_choke=true;
 
-    // Hide unneeded scrollbar, calculate viewport size
+    // Hide unneeded scroll bar, calculate viewport size
     if (showh) {
         porth=h-hsbExt-tmarg-bmarg;
     } else {
@@ -932,7 +932,7 @@ void Q3ScrollView::updateScrollBars()
         portw=w-lmarg-rmarg;
     }
 
-    // Configure scrollbars that we will show
+    // Configure scroll bars that we will show
     if (needv) {
         d->vbar->setRange(0, contentsHeight()-porth);
         d->vbar->setSteps(Q3ScrollView::d->vbar->lineStep(), porth);
@@ -946,7 +946,7 @@ void Q3ScrollView::updateScrollBars()
         d->hbar->setRange(0, 0);
     }
 
-    // Position the scrollbars, viewport and corner widget.
+    // Position the scroll bars, viewport and corner widget.
     int bottom;
     bool reverse = QApplication::reverseLayout();
     int xoffset = (reverse && (showv || cornerWidget())) ? vsbExt : 0;
@@ -1455,6 +1455,7 @@ int Q3ScrollView::childY(QWidget* child)
 
 bool Q3ScrollView::eventFilter(QObject *obj, QEvent *e)
 {
+    bool disabled = !(qobject_cast<QWidget*>(obj)->isEnabled());
     if (!d)
         return false; // we are destructing
     if (obj == d->viewport || obj == d->clipped_viewport) {
@@ -1468,30 +1469,42 @@ bool Q3ScrollView::eventFilter(QObject *obj, QEvent *e)
                 viewportResizeEvent((QResizeEvent *)e);
             break;
         case QEvent::MouseButtonPress:
+            if (disabled)
+                return false;
             viewportMousePressEvent((QMouseEvent*)e);
             if (((QMouseEvent*)e)->isAccepted())
                 return true;
             break;
         case QEvent::MouseButtonRelease:
+            if (disabled)
+                return false;
             viewportMouseReleaseEvent((QMouseEvent*)e);
             if (((QMouseEvent*)e)->isAccepted())
                 return true;
             break;
         case QEvent::MouseButtonDblClick:
+            if (disabled)
+                return false;
             viewportMouseDoubleClickEvent((QMouseEvent*)e);
             if (((QMouseEvent*)e)->isAccepted())
                 return true;
             break;
         case QEvent::MouseMove:
+            if (disabled)
+                return false;
             viewportMouseMoveEvent((QMouseEvent*)e);
             if (((QMouseEvent*)e)->isAccepted())
                 return true;
             break;
 #ifndef QT_NO_DRAGANDDROP
         case QEvent::DragEnter:
+            if (disabled)
+                return false;
             viewportDragEnterEvent((QDragEnterEvent*)e);
             break;
         case QEvent::DragMove: {
+            if (disabled)
+                return false;
             if (d->drag_autoscroll) {
                 QPoint vp = ((QDragMoveEvent*) e)->pos();
                 QRect inside_margin(autoscroll_margin, autoscroll_margin,
@@ -1506,15 +1519,27 @@ bool Q3ScrollView::eventFilter(QObject *obj, QEvent *e)
             viewportDragMoveEvent((QDragMoveEvent*)e);
         } break;
         case QEvent::DragLeave:
+            if (disabled)
+                return false;
             stopDragAutoScroll();
             viewportDragLeaveEvent((QDragLeaveEvent*)e);
             break;
         case QEvent::Drop:
+            if (disabled)
+                return false;
             stopDragAutoScroll();
             viewportDropEvent((QDropEvent*)e);
             break;
 #endif // QT_NO_DRAGANDDROP
+#ifndef QT_NO_WHEELEVENT
+        case QEvent::Wheel:
+            if (disabled)
+                return false;
+            break;
+#endif
         case QEvent::ContextMenu:
+            if (disabled)
+                return false;
             viewportContextMenuEvent((QContextMenuEvent*)e);
             if (((QContextMenuEvent*)e)->isAccepted())
                 return true;

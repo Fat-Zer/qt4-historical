@@ -38,6 +38,9 @@ QT_MODULE(Network)
 class QTcpSocket;
 class QTimerEvent;
 class QIODevice;
+class QAuthenticator;
+class QNetworkProxy;
+class QSslError;
 
 class QHttpPrivate;
 
@@ -150,8 +153,14 @@ class Q_NETWORK_EXPORT QHttp : public QObject
     Q_OBJECT
 
 public:
+    enum ConnectionMode {
+        ConnectionModeHttp,
+        ConnectionModeHttps
+    };
+    
     explicit QHttp(QObject *parent = 0);
     QHttp(const QString &hostname, quint16 port = 80, QObject *parent = 0);
+    QHttp(const QString &hostname, ConnectionMode mode, quint16 port = 0, QObject *parent = 0);
     virtual ~QHttp();
 
     enum State {
@@ -171,16 +180,23 @@ public:
         UnexpectedClose,
         InvalidResponseHeader,
         WrongContentLength,
-        Aborted
+        Aborted, 
+        AuthenticationRequiredError,
+        ProxyAuthenticationRequiredError
     };
 
     int setHost(const QString &hostname, quint16 port = 80);
+    int setHost(const QString &hostname, ConnectionMode mode, quint16 port = 0);
+    
     int setSocket(QTcpSocket *socket);
     int setUser(const QString &username, const QString &password = QString());
 
+#ifndef QT_NO_NETWORKPROXY
     int setProxy(const QString &host, int port,
                  const QString &username = QString(),
                  const QString &password = QString());
+    int setProxy(const QNetworkProxy &proxy);
+#endif
 
     int get(const QString &path, QIODevice *to=0);
     int post(const QString &path, QIODevice *data, QIODevice *to=0 );
@@ -216,6 +232,10 @@ public:
 public Q_SLOTS:
     void abort();
 
+#ifndef QT_NO_OPENSSL
+    void ignoreSslErrors();
+#endif
+
 Q_SIGNALS:
     void stateChanged(int);
     void responseHeaderReceived(const QHttpResponseHeader &resp);
@@ -226,6 +246,15 @@ Q_SIGNALS:
     void requestStarted(int);
     void requestFinished(int, bool);
     void done(bool);
+
+#ifndef QT_NO_NETWORKPROXY
+    void proxyAuthenticationRequired(const QNetworkProxy &proxy, QAuthenticator *);
+#endif
+    void authenticationRequired(const QString &hostname, quint16 port, QAuthenticator *);
+
+#ifndef QT_NO_OPENSSL
+    void sslErrors(const QList<QSslError> &errors);
+#endif
 
 private:
     Q_DISABLE_COPY(QHttp)

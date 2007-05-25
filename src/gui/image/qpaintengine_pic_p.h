@@ -56,13 +56,17 @@ public:
     void updateState(const QPaintEngineState &state);
 
     void updatePen(const QPen &pen);
-    void updateBrush(const QBrush &brush, const QPointF &origin);
+    void updateBrush(const QBrush &brush);
+    void updateBrushOrigin(const QPointF &origin);
     void updateFont(const QFont &font);
     void updateBackground(Qt::BGMode bgmode, const QBrush &bgBrush);
-    void updateMatrix(const QMatrix &matrix);
+    void updateMatrix(const QTransform &matrix);
     void updateClipRegion(const QRegion &region, Qt::ClipOperation op);
     void updateClipPath(const QPainterPath &path, Qt::ClipOperation op);
     void updateRenderHints(QPainter::RenderHints hints);
+    void updateCompositionMode(QPainter::CompositionMode cmode);
+    void updateClipEnabled(bool enabled);
+    void updateOpacity(qreal opacity);
 
     void drawPath(const QPainterPath &path);
     void drawPolygon(const QPointF *points, int numPoints, PolygonDrawMode mode);

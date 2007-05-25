@@ -1,6 +1,9 @@
 TEMPLATE      = subdirs
 SUBDIRS       = dombookmarks \
-                saxbookmarks
+                rsslisting \
+                saxbookmarks \
+                streambookmarks \
+                xmlstreamlint
 
 # install
 target.path = $$[QT_INSTALL_EXAMPLES]/xml

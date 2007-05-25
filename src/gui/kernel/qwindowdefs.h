@@ -72,7 +72,7 @@ typedef QList<QWidget *> QWidgetList;
 
 // Window system dependent definitions
 
-#if defined(Q_WS_MAC)
+#if defined(Q_WS_MAC) && !defined(Q_WS_QWS)
 #if (MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_2)
 typedef struct OpaqueEventLoopTimerRef* EventLoopTimerRef;
 typedef struct OpaqueMenuHandle *MenuRef;
@@ -95,7 +95,13 @@ typedef struct OpaquePMPageFormat *PMPageFormat;
 typedef struct OpaqueEventHandlerRef *EventHandlerRef;
 typedef struct OpaqueEventHandlerCallRef *EventHandlerCallRef;
 typedef struct OpaqueEventRef *EventRef;
+#ifdef Q_WS_MAC32
 typedef long int OSStatus;
+typedef int WId;
+#else
+typedef int OSStatus;
+typedef long WId;
+#endif
 typedef struct OpaqueScrapRef *ScrapRef;
 typedef struct OpaqueRgnHandle *RgnHandle;
 typedef struct OpaqueWindowPtr *WindowPtr;
@@ -104,7 +110,6 @@ typedef struct OpaqueGrafPtr *GWorldPtr;
 typedef GWorldPtr GrafPtr;
 typedef struct GDevice **GDHandle;
 typedef void * MSG;
-typedef int WId;
 typedef struct AEDesc AppleEvent;
 #endif // Q_WS_MAC
 

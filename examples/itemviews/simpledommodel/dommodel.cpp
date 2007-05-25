@@ -61,7 +61,7 @@ QVariant DomModel::data(const QModelIndex &index, int role) const
         case 0:
             return node.nodeName();
         case 1:
-            for (int i = 0; (unsigned int)(i) < attributeMap.count(); ++i) {
+            for (int i = 0; i < attributeMap.count(); ++i) {
                 QDomNode attribute = attributeMap.item(i);
                 attributes << attribute.nodeName() + "=\""
                               +attribute.nodeValue() + "\"";
@@ -77,7 +77,7 @@ QVariant DomModel::data(const QModelIndex &index, int role) const
 Qt::ItemFlags DomModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
-        return Qt::ItemIsEnabled;
+        return 0;
 
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
@@ -104,6 +104,9 @@ QVariant DomModel::headerData(int section, Qt::Orientation orientation,
 QModelIndex DomModel::index(int row, int column, const QModelIndex &parent)
             const
 {
+    if (!hasIndex(row, column, parent))
+        return QModelIndex();
+
     DomItem *parentItem;
 
     if (!parent.isValid())
@@ -134,6 +137,9 @@ QModelIndex DomModel::parent(const QModelIndex &child) const
 
 int DomModel::rowCount(const QModelIndex &parent) const
 {
+    if (parent.column() > 0)
+        return 0;
+
     DomItem *parentItem;
 
     if (!parent.isValid())

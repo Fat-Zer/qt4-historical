@@ -54,13 +54,14 @@ public:
         LinkType      = 0x10000,
         FileType      = 0x20000,
         DirectoryType = 0x40000,
+        BundleType    = 0x80000,
 
         //flags
         HiddenFlag     = 0x0100000,
         LocalDiskFlag  = 0x0200000,
         ExistsFlag     = 0x0400000,
         RootFlag       = 0x0800000,
-        // Qt 4.2: Refresh   = 0x1000000,
+        Refresh        = 0x1000000,
 
         //masks
         PermsMask  = 0x0000FFFF,
@@ -78,7 +79,8 @@ public:
         AbsolutePathName,
         LinkName,
         CanonicalName,
-        CanonicalPathName
+        CanonicalPathName,
+        BundleName
     };
     enum FileOwner {
         OwnerUser,
@@ -117,6 +119,7 @@ public:
     virtual QDateTime fileTime(FileTime time) const;
     virtual void setFileName(const QString &file);
     virtual int handle() const;
+    bool atEnd() const;
 
     typedef QAbstractFileEngineIterator Iterator;
     virtual Iterator *beginEntryList(QDir::Filters filters, const QStringList &filterNames);
@@ -130,6 +133,8 @@ public:
     QString errorString() const;
 
     enum Extension {
+        AtEndExtension,
+        FastReadLineExtension
     };
     class ExtensionOption
     {};
@@ -161,6 +166,37 @@ public:
     QAbstractFileEngineHandler();
     virtual ~QAbstractFileEngineHandler();
     virtual QAbstractFileEngine *create(const QString &fileName) const = 0;
+};
+
+class QAbstractFileEngineIteratorPrivate;
+class Q_CORE_EXPORT QAbstractFileEngineIterator
+{
+public:
+    QAbstractFileEngineIterator(QDir::Filters filters, const QStringList &nameFilters);
+    virtual ~QAbstractFileEngineIterator();
+
+    virtual QString next() = 0;
+    virtual bool hasNext() const = 0;
+
+    QString path() const;
+    QStringList nameFilters() const;
+    QDir::Filters filters() const;
+
+    virtual QString currentFileName() const = 0;
+    virtual QFileInfo currentFileInfo() const;
+    QString currentFilePath() const;
+
+protected:
+    enum EntryInfoType {
+    };
+    virtual QVariant entryInfo(EntryInfoType type) const;
+
+private:
+    Q_DISABLE_COPY(QAbstractFileEngineIterator)
+    friend class QDirIterator;
+    friend class QDirIteratorPrivate;
+    void setPath(const QString &path);
+    QAbstractFileEngineIteratorPrivate *d;
 };
 
 QT_END_HEADER

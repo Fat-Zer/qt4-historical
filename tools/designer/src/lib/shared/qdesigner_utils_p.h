@@ -35,29 +35,55 @@
 #ifndef QDESIGNER_UTILS_H
 #define QDESIGNER_UTILS_H
 
+#include "shared_global_p.h"
+
+#include <QtDesigner/QDesignerFormWindowInterface>
+
 #include <QtCore/QVariant>
 #include <QtCore/QMap>
 #include <QtGui/QMainWindow>
-#include "abstractformwindow.h"
+
+class QIcon;
+class QPixmap;
 
 namespace qdesigner_internal {
+class ResourceMimeData;
 
-class EnumType
+QDESIGNER_SHARED_EXPORT void designerWarning(const QString &message);
+
+class QDESIGNER_SHARED_EXPORT EnumType
 {
 public:
+    typedef QMap<QString, QVariant> ItemMap;
+
+    QString id() const;
+
     QVariant value;
-    QMap<QString, QVariant> items;
+    ItemMap items;
     QStringList names;
 };
 
 
-class FlagType
+class QDESIGNER_SHARED_EXPORT FlagType
 {
 public:
+    typedef QMap<QString, QVariant> ItemMap;
+
+    QStringList flags() const;
+    QString flagString() const;
+
     QVariant value;
-    QMap<QString, QVariant> items;
+    ItemMap items;
 };
 
+// Convenience to return a dropped icon, normalized to form directory
+QDESIGNER_SHARED_EXPORT QIcon resourceMimeDataToIcon(const ResourceMimeData &rmd, QDesignerFormWindowInterface *fw);
+// Convenience to return an dropped pixmap, normalized to form directory
+QDESIGNER_SHARED_EXPORT QPixmap resourceMimeDataToPixmap(const ResourceMimeData &rmd, QDesignerFormWindowInterface *fw);
+
+// Convenience to run UIC
+enum UIC_Mode { UIC_GenerateCode, UIC_ConvertV3 };
+QDESIGNER_SHARED_EXPORT bool runUIC(const QString &fileName, UIC_Mode mode, QByteArray& ba, QString &errorMessage);
 } // namespace qdesigner_internal
 
 Q_DECLARE_METATYPE(qdesigner_internal::EnumType)

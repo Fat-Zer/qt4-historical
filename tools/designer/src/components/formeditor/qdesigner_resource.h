@@ -25,24 +25,24 @@
 #define QDESIGNER_RESOURCE_H
 
 #include "formeditor_global.h"
-
-#include <QtDesigner/QtDesigner>
-
 #include "qsimpleresource_p.h"
 
 #include <QtCore/QHash>
 #include <QtCore/QStack>
+#include <QtCore/QList>
 
+class DomCustomWidget;
 class DomCustomWidgets;
 
 class QDesignerContainerExtension;
 class QDesignerFormEditorInterface;
 class QDesignerCustomWidgetInterface;
+class QDesignerWidgetDataBaseItemInterface;
 
 class QDesignerTabWidget;
 class QDesignerStackedWidget;
 class QDesignerToolBox;
-class QDesignerToolBar;
+class QToolBar;
 class QDesignerDockWidget;
 class QLayoutWidget;
 
@@ -62,6 +62,7 @@ public:
     DomUI *copy(const QList<QWidget*> &selection);
     QList<QWidget*> paste(DomUI *ui, QWidget *parentWidget);
     QList<QWidget*> paste(QIODevice *dev, QWidget *parentWidget);
+    static QString qtify(const QString &name);
 
 protected:
     using QSimpleResource::create;
@@ -106,7 +107,7 @@ protected:
     DomWidget *saveWidget(QDesignerStackedWidget *widget, DomWidget *ui_parentWidget);
     DomWidget *saveWidget(QDesignerToolBox *widget, DomWidget *ui_parentWidget);
     DomWidget *saveWidget(QWidget *widget, QDesignerContainerExtension *container, DomWidget *ui_parentWidget);
-    DomWidget *saveWidget(QDesignerToolBar *toolBar, DomWidget *ui_parentWidget);
+    DomWidget *saveWidget(QToolBar *toolBar, DomWidget *ui_parentWidget);
     DomWidget *saveWidget(QDesignerDockWidget *dockWidget, DomWidget *ui_parentWidget);
 
     virtual DomCustomWidgets *saveCustomWidgets();
@@ -120,9 +121,15 @@ protected:
     DomProperty *createIconProperty(const QVariant &v) const;
 
     void changeObjectName(QObject *o, QString name);
-    static QString qtify(const QString &name);
+
+    DomProperty *applyProperStdSetAttribute(QObject *object, const QString &propertyName, DomProperty *property);
 
 private:
+    void addUserDefinedScripts(QWidget *w, DomWidget *ui_widget);
+
+    typedef QList<DomCustomWidget*> DomCustomWidgetList;
+    void addCustomWidgetsToWidgetDatabase(DomCustomWidgetList& list);
+    void fixIconPath(IconPaths &) const;
     FormWindow *m_formWindow;
     bool m_isMainWidget;
     QHash<QString, QString> m_internal_to_qt;

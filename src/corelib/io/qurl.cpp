@@ -21,7 +21,7 @@
 **
 ****************************************************************************/
 
-/*! 
+/*!
     \class QUrl
 
     \brief The QUrl class provides a convenient interface for working
@@ -149,7 +149,9 @@
 #include "qatomic.h"
 #include "qbytearray.h"
 #include "qlist.h"
+#ifndef QT_NO_REGEXP
 #include "qregexp.h"
+#endif
 #include "qstring.h"
 #include "qstringlist.h"
 #include "qstack.h"
@@ -158,6 +160,8 @@
 #if defined QT3_SUPPORT
 #include "qfileinfo.h"
 #endif
+
+// ### Qt 5: Consider accepting empty strings as valid. See task 144227.
 
 //#define QURL_DEBUG
 
@@ -267,7 +271,7 @@ static bool QT_FASTCALL _char(char **ptr, char expected, ErrorInfo *errorInfo)
         return true;
     }
 
-    errorInfo->setParams(*ptr, "", QLatin1Char(expected), QLatin1Char(*((*ptr))));
+    errorInfo->setParams(*ptr, QLatin1String(""), QLatin1Char(expected), QLatin1Char(*((*ptr))));
     return false;
 }
 
@@ -280,7 +284,7 @@ static bool QT_FASTCALL _HEXDIG(char **ptr, char *dig, ErrorInfo *errorInfo)
         return true;
     }
 
-    errorInfo->setParams(*ptr, QT_TRANSLATE_NOOP(QUrl, "expected hexdigit number (0-9, a-f, A-F)"),
+    errorInfo->setParams(*ptr, QLatin1String(QT_TRANSLATE_NOOP(QUrl, "expected hexdigit number (0-9, a-f, A-F)")),
                          QLatin1Char('\0'), QLatin1Char(ch));
     return false;
 }
@@ -333,9 +337,9 @@ static bool QT_FASTCALL _subDelims(char **ptr, char *c, ErrorInfo *errorInfo)
         ++(*ptr);
         return true;
     default:
-        errorInfo->setParams(*ptr, QT_TRANSLATE_NOOP(QUrl, "expected sub-delimiter ")
-                             + QString("(\"!\", \"$\", \"&\", \"\'\", \"(\", \")\",")
-                             + QString("\"*\", \"+\", \",\", \";\", \"=\")"),
+        errorInfo->setParams(*ptr, QLatin1String(QT_TRANSLATE_NOOP(QUrl, "expected sub-delimiter "))
+                             + QLatin1String("(\"!\", \"$\", \"&\", \"\'\", \"(\", \")\",")
+                             + QLatin1String("\"*\", \"+\", \",\", \";\", \"=\")"),
                              QLatin1Char('\0'), QLatin1Char(ch));
         return false;
     }
@@ -378,8 +382,8 @@ static bool QT_FASTCALL _unreserved(char **ptr, char *c, ErrorInfo *errorInfo)
         ++(*ptr);
         return true;
     default:
-        errorInfo->setParams(*ptr, QT_TRANSLATE_NOOP(QUrl, "expected unreserved (alpha, digit,")
-                             + QString("\'=\', \'.\', \'_\', \'~\'"),
+        errorInfo->setParams(*ptr, QLatin1String(QT_TRANSLATE_NOOP(QUrl, "expected unreserved (alpha, digit,"))
+                             + QLatin1String("\'=\', \'.\', \'_\', \'~\'"),
                              QLatin1Char('\0'), QLatin1Char(ch));
         return false;
     }
@@ -414,7 +418,7 @@ static bool QT_FASTCALL _IPvFuture(char **ptr, QByteArray *host, ErrorInfo *erro
     char ch = *((*ptr)++);
     if (ch != 'v') {
         *ptr = ptrBackup;
-        errorInfo->setParams(*ptr, "", QLatin1Char('v'), QLatin1Char(ch));
+        errorInfo->setParams(*ptr, QLatin1String(""), QLatin1Char('v'), QLatin1Char(ch));
         return false;
     }
 
@@ -433,13 +437,13 @@ static bool QT_FASTCALL _IPvFuture(char **ptr, QByteArray *host, ErrorInfo *erro
     char c = *((*ptr)++);
     if (c != '.') {
         *ptr = ptrBackup;
-        errorInfo->setParams(*ptr, "", QLatin1Char('.'), QLatin1Char(c));
+        errorInfo->setParams(*ptr, QLatin1String(""), QLatin1Char('.'), QLatin1Char(c));
         return false;
     }
 
     if (!_unreserved(ptr, &ch, errorInfo) && !_subDelims(ptr, &ch, errorInfo) && (ch = *((*ptr)++)) != ':') {
         *ptr = ptrBackup;
-        errorInfo->setParams(*ptr, "", QLatin1Char(':'), QLatin1Char(ch));
+        errorInfo->setParams(*ptr, QLatin1String(""), QLatin1Char(':'), QLatin1Char(ch));
         return false;
     }
 
@@ -479,7 +483,7 @@ static bool QT_FASTCALL _decOctet(char **ptr, QByteArray *octet, ErrorInfo *erro
     char c1 = **ptr;
 
     if (c1 < '0' || c1 > '9') {
-        errorInfo->setParams(*ptr, QT_TRANSLATE_NOOP(QUrl, "expected decimal digit (0-9)"),
+        errorInfo->setParams(*ptr, QLatin1String(QT_TRANSLATE_NOOP(QUrl, "expected decimal digit (0-9)")),
                              QLatin1Char('\0'), QLatin1Char(c1));
         return false;
     }
@@ -509,7 +513,7 @@ static bool QT_FASTCALL _decOctet(char **ptr, QByteArray *octet, ErrorInfo *erro
     // If there is a three digit number larger than 255, reject the
     // whole token.
     if (c1 >= '2' && c2 >= '5' && c3 > '5') {
-        errorInfo->setParams(*ptr, QT_TRANSLATE_NOOP(QUrl, "digit number larger than 255"),
+        errorInfo->setParams(*ptr, QLatin1String(QT_TRANSLATE_NOOP(QUrl, "digit number larger than 255")),
                              QLatin1Char('\0'), QLatin1Char('\0'));
         return false;
     }
@@ -534,7 +538,7 @@ static bool QT_FASTCALL _IPv4Address(char **ptr, QByteArray *c, ErrorInfo *error
         char ch = *((*ptr)++);
         if (ch != '.') {
             *ptr = ptrBackup;
-            errorInfo->setParams(*ptr, "", QLatin1Char('.'), QLatin1Char(ch));
+            errorInfo->setParams(*ptr, QLatin1String(""), QLatin1Char('.'), QLatin1Char(ch));
             return false;
         }
 
@@ -633,8 +637,8 @@ static bool QT_FASTCALL _IPv6Address(char **ptr, QByteArray *host, ErrorInfo *er
             if (!_ls32(ptr, &tmp, errorInfo)) {
                 if (rightHexColons != 0) {
                     *ptr = ptrBackup;
-                    errorInfo->setParams(*ptr, QT_TRANSLATE_NOOP(QUrl,
-                                         "too many colons (\':\'))"),
+                    errorInfo->setParams(*ptr, QLatin1String(QT_TRANSLATE_NOOP(QUrl,
+                                         "too many colons (\':\'))")),
                                          QLatin1Char('\0'), QLatin1Char('\0'));
                     return false;
                 }
@@ -684,7 +688,7 @@ static bool QT_FASTCALL _IPv6Address(char **ptr, QByteArray *host, ErrorInfo *er
     // based on the case we need to check that the number of leftHexColons is valid
     if (leftHexColons > (canBeCase - 2)) {
         *ptr = ptrBackup;
-        errorInfo->setParams(*ptr, QT_TRANSLATE_NOOP(QUrl, "too many colons (\':\')"),
+        errorInfo->setParams(*ptr, QLatin1String(QT_TRANSLATE_NOOP(QUrl, "too many colons (\':\')")),
                              QLatin1Char('\0'), QLatin1Char('\0'));
         return false;
     }
@@ -846,8 +850,8 @@ static bool QT_FASTCALL _pchar(char **ptr, char pc[], ErrorInfo *errorInfo)
     if (_pctEncoded(ptr, pc, errorInfo))
         return true;
 
-    errorInfo->setParams(*ptr, QT_TRANSLATE_NOOP(QUrl, "expected pchar (unreserved / pct-encoded"
-                         "/ sub-delims / \":\" / \"@\""), QLatin1Char('\0'), QLatin1Char(c));
+    errorInfo->setParams(*ptr, QLatin1String(QT_TRANSLATE_NOOP(QUrl, "expected pchar (unreserved / pct-encoded"
+                         "/ sub-delims / \":\" / \"@\"")), QLatin1Char('\0'), QLatin1Char(c));
     return false;
 }
 
@@ -914,7 +918,7 @@ static bool QT_FASTCALL _pathAbs(char **ptr, QByteArray *path, ErrorInfo *errorI
     char ch = *((*ptr)++);
     if (ch != '/') {
         *ptr = ptrBackup;
-        errorInfo->setParams(*ptr, "", QLatin1Char('/'), QLatin1Char(ch));
+        errorInfo->setParams(*ptr, QLatin1String(""), QLatin1Char('/'), QLatin1Char(ch));
         return false;
     }
 
@@ -1071,10 +1075,10 @@ struct NameprepCaseFoldingEntry {
     int mapping[5];
 };
 
-static inline bool operator<(int one, const NameprepCaseFoldingEntry &other)
+inline bool operator<(int one, const NameprepCaseFoldingEntry &other)
 { return one < other.mapping[0]; }
 
-static inline bool operator<(const NameprepCaseFoldingEntry &one, int other)
+inline bool operator<(const NameprepCaseFoldingEntry &one, int other)
 { return one.mapping[0] < other; }
 
 static const NameprepCaseFoldingEntry NameprepCaseFolding[] = {
@@ -2459,7 +2463,7 @@ static QString mappedToLowerCase(const QString &str)
     for (int i = 0; i < str.size(); ++i) {
         const NameprepCaseFoldingEntry *entry = qBinaryFind(NameprepCaseFolding,
                                                             NameprepCaseFolding + N,
-                                                            str.at(i).unicode());
+                                                            int(str.at(i).unicode()));
         if ((entry - NameprepCaseFolding) != N) {
             for (int j = 1; j < 5 && entry->mapping[j]; ++j)
                 tmp += QChar(entry->mapping[j]);
@@ -2934,7 +2938,7 @@ static bool isBidirectionalL(const QChar &ch)
           || (uc >= 0x100000 && uc <= 0x10FFFD)*/;
 }
 
-QString Q_AUTOTEST_EXPORT qt_nameprep(const QString &source)
+Q_AUTOTEST_EXPORT QString qt_nameprep(const QString &source)
 {
     // Characters commonly mapped to nothing are simply removed
     // (Table B.1)
@@ -2948,9 +2952,7 @@ QString Q_AUTOTEST_EXPORT qt_nameprep(const QString &source)
     mapped = mappedToLowerCase(mapped);
 
     // Normalize to Unicode 3.2 form KC
-    mapped = QUnicodeTables::normalize(mapped,
-                                       QString::NormalizationForm_KC,
-                                       QChar::Unicode_3_2);
+    mapped = mapped.normalized(QString::NormalizationForm_KC, QChar::Unicode_3_2);
 
     // Strip prohibited output
     mapped = strippedOfProhibitedOutput(mapped);
@@ -3028,7 +3030,7 @@ static QString qt_from_ACE(const QString &domain)
         return labels.join(QLatin1String("."));
     } else {
         return qt_nameprep(domain);
-    }    
+    }
 }
 
 
@@ -3292,13 +3294,13 @@ void QUrlPrivate::validate() const
     if (scheme == QLatin1String("mailto")) {
         if (!host.isEmpty() || port != -1 || !userName.isEmpty() || !password.isEmpty()) {
             that->isValid = false;
-            that->errorInfo.setParams(0, QT_TRANSLATE_NOOP(QUrl, "expected empty host, username,"
-                                      "port and password"), QLatin1Char('\0'), QLatin1Char('\0'));
+            that->errorInfo.setParams(0, QLatin1String(QT_TRANSLATE_NOOP(QUrl, "expected empty host, username,"
+                                      "port and password")), QLatin1Char('\0'), QLatin1Char('\0'));
         }
     } else if (scheme == QLatin1String("ftp") || scheme == QLatin1String("http")) {
         if (host.isEmpty() && !path.isEmpty()) {
             that->isValid = false;
-            that->errorInfo.setParams(0, QT_TRANSLATE_NOOP(QUrl, "the host is empty, but not the path"),
+            that->errorInfo.setParams(0, QLatin1String(QT_TRANSLATE_NOOP(QUrl, "the host is empty, but not the path")),
                                       QLatin1Char('\0'), QLatin1Char('\0'));
         }
     }
@@ -3307,10 +3309,10 @@ void QUrlPrivate::validate() const
 void QUrlPrivate::parse(ParseOptions parseOptions) const
 {
     QUrlPrivate *that = (QUrlPrivate *)this;
-    that->errorInfo.setParams(0, "", QLatin1Char('\0'), QLatin1Char('\0'));
+    that->errorInfo.setParams(0, QLatin1String(""), QLatin1Char('\0'), QLatin1Char('\0'));
     if (encodedOriginal.isEmpty()) {
         that->isValid = false;
-        that->errorInfo.setParams(0, QT_TRANSLATE_NOOP(QUrl, "empty"),
+        that->errorInfo.setParams(0, QLatin1String(QT_TRANSLATE_NOOP(QUrl, "empty")),
                                   QLatin1Char('\0'), QLatin1Char('\0'));
         QURL_SETFLAG(that->stateFlags, Validated | Parsed);
         return;
@@ -3363,7 +3365,7 @@ void QUrlPrivate::parse(ParseOptions parseOptions) const
         (void) _fragment(ptr, &__fragment, &errorInfo);
     } else if (ch != '\0') {
         that->isValid = false;
-        that->errorInfo.setParams(*ptr, QT_TRANSLATE_NOOP(QUrl, "expected end of URL"),
+        that->errorInfo.setParams(*ptr, QLatin1String(QT_TRANSLATE_NOOP(QUrl, "expected end of URL")),
                                   QLatin1Char('\0'), QLatin1Char(ch));
         QURL_SETFLAG(that->stateFlags, Validated | Parsed);
 #if defined (QURL_DEBUG)
@@ -3523,29 +3525,29 @@ QString QUrlPrivate::createErrorString()
     if (isValid)
         return QString();
 
-    QString original(encodedOriginal);
-    QString errorString(QT_TRANSLATE_NOOP(QUrl, "Invalid URL \""));
+    QString original(QString::fromLatin1(encodedOriginal.constData()));
+    QString errorString(QLatin1String(QT_TRANSLATE_NOOP(QUrl, "Invalid URL \"")));
     errorString.append(original);
-    errorString.append(QT_TRANSLATE_NOOP(QUrl, "\""));
+    errorString.append(QLatin1String(QT_TRANSLATE_NOOP(QUrl, "\"")));
 
     if (errorInfo._source) {
         QString source = QString::fromLatin1(errorInfo._source);
         int position = original.indexOf(source) - 1;
         if (position > 0)
-            errorString.append(QT_TRANSLATE_NOOP(QUrl, ": error at position ")
+            errorString.append(QLatin1String(QT_TRANSLATE_NOOP(QUrl, ": error at position "))
                                + QString::number(position));
         else
-            errorString.append(QT_TRANSLATE_NOOP(QUrl, ": ") + source);
+            errorString.append(QLatin1String(QT_TRANSLATE_NOOP(QUrl, ": ")) + source);
     }
 
     if (!errorInfo._expected.isNull())
-        errorString.append(QT_TRANSLATE_NOOP(QUrl, ": expected \'") + QString(errorInfo._expected)
-                           + QT_TRANSLATE_NOOP(QUrl, "\'"));
+        errorString.append(QLatin1String(QT_TRANSLATE_NOOP(QUrl, ": expected \'")) + QString(errorInfo._expected)
+                           + QLatin1String(QT_TRANSLATE_NOOP(QUrl, "\'")));
     else
-        errorString.append(QT_TRANSLATE_NOOP(QUrl, ": ") + errorInfo._message);
+        errorString.append(QLatin1String(QT_TRANSLATE_NOOP(QUrl, ": ")) + errorInfo._message);
     if (!errorInfo._found.isNull())
-        errorString.append(QT_TRANSLATE_NOOP(QUrl, ", but found \'") + QString(errorInfo._found)
-                           + QT_TRANSLATE_NOOP(QUrl, "\'"));
+        errorString.append(QLatin1String(QT_TRANSLATE_NOOP(QUrl, ", but found \'")) + QString(errorInfo._found)
+                           + QLatin1String(QT_TRANSLATE_NOOP(QUrl, "\'")));
 
     return errorString;
 }
@@ -4262,13 +4264,13 @@ QList<QPair<QString, QString> > QUrl::queryItems() const
             QList<QByteArray> keyValuePair = items.at(i).split(d->valueDelimiter);
             if (keyValuePair.size() == 1) {
                 itemMap += qMakePair(QString(QUrl::fromPercentEncoding(
-                                     keyValuePair.at(0))).replace('+', ' '),
+                                     keyValuePair.at(0))).replace(QLatin1Char('+'), QLatin1Char(' ')),
                                      QString());
             } else if (keyValuePair.size() == 2) {
                 itemMap += qMakePair(QString(QUrl::fromPercentEncoding(
-                                     keyValuePair.at(0))).replace('+', ' '),
+                                     keyValuePair.at(0))).replace(QLatin1Char('+'), QLatin1Char(' ')),
                                      QString(QUrl::fromPercentEncoding(
-                                     keyValuePair.at(1))).replace('+', ' '));
+                                     keyValuePair.at(1))).replace(QLatin1Char('+'), QLatin1Char(' ')));
             }
         }
     }
@@ -4991,7 +4993,7 @@ QString QUrl::fromAce(const QByteArray &domain)
 
     Returns the ASCII Compatible Encoding of the given domain name \a domain.
     The result of this function is considered equivalent to \a domain.
-    
+
     The ASCII-Compatible Encoding (ACE) is defined by RFC 3490, RFC 3491
     and RFC 3492. It is part of the Internationalizing Domain Names in
     Applications (IDNA) specification, which allows for domain names
@@ -5003,8 +5005,12 @@ QByteArray QUrl::toAce(const QString &domain)
     // IDNA / rfc3490 describes these four delimiters used for
     // separating labels in unicode international domain
     // names.
+#ifndef QT_NO_REGEXP
     const unsigned short delimiters[] = {'[', 0x2e, 0x3002, 0xff0e, 0xff61, ']', 0};
     QStringList labels = domain.split(QRegExp(QString::fromUtf16(delimiters)));
+#else
+    QStringList labels = domain.split(QLatin1String("."));
+#endif
     QByteArray result;
     for (int i = 0; i < labels.count(); ++i) {
         if (i != 0) result += '.';
@@ -5120,6 +5126,8 @@ bool QUrl::isDetached() const
 /*!
     Returns a QUrl representation of \a localFile, interpreted as a
     local file.
+
+    \sa toLocalFile()
 */
 QUrl QUrl::fromLocalFile(const QString &localFile)
 {
@@ -5148,6 +5156,8 @@ QUrl QUrl::fromLocalFile(const QString &localFile)
 
 /*!
     Returns the path of this URL formatted as a local file path.
+
+    \sa fromLocalFile()
 */
 QString QUrl::toLocalFile() const
 {
@@ -5359,8 +5369,14 @@ QString QUrl::fileName() const
 QString QUrl::dirPath() const
 {
     QFileInfo fileInfo(path());
-    if (fileInfo.isAbsolute())
-        return fileInfo.absolutePath();
+    if (fileInfo.isAbsolute()) {
+        QString absPath = fileInfo.absolutePath();
+#ifdef Q_OS_WIN
+        if (absPath.size() > 1 && absPath.at(1) == QLatin1Char(':'))
+            absPath = absPath.mid(2);
+#endif
+        return absPath;
+    }
     return fileInfo.path();
 }
 #endif

@@ -55,13 +55,14 @@ public:
     inline const QAbstractItemModel *model() const { return m; }
     inline bool isValid() const { return (r >= 0) && (c >= 0) && (m != 0); }
     inline bool operator==(const QModelIndex &other) const
-        { return (other.r == r && other.c == c && other.p == p && other.m == m); }
+        { return (other.r == r) && (other.p == p) && (other.c == c) && (other.m == m); }
     inline bool operator!=(const QModelIndex &other) const
         { return !(*this == other); }
     inline bool operator<(const QModelIndex &other) const
         { if (r < other.r) return true;
           if (r == other.r && c < other.c) return true;
-          if (r == other.r && c == other.c) return p < other.p;
+          if (r == other.r && c == other.c && p < other.p) return true;
+          if (r == other.r && c == other.c && p == other.p) return m < other.m;
           return false; }
 private:
     inline QModelIndex(int row, int column, void *ptr, const QAbstractItemModel *model);
@@ -248,7 +249,7 @@ protected:
     void changePersistentIndex(const QModelIndex &from, const QModelIndex &to);
     void changePersistentIndexList(const QModelIndexList &from, const QModelIndexList &to);
     QModelIndexList persistentIndexList() const;
-    
+
 private:
     Q_DECLARE_PRIVATE(QAbstractItemModel)
     Q_DISABLE_COPY(QAbstractItemModel)

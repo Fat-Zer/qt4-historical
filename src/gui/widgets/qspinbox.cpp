@@ -55,6 +55,10 @@ public:
                                   QValidator::State &state) const;
     bool isIntermediateValue(const QString &str) const;
     QChar thousand;
+
+    inline void init() {
+        setLayoutItemMargins(QStyle::SE_SpinBoxLayoutItem);
+    }
 };
 
 class QDoubleSpinBoxPrivate : public QAbstractSpinBoxPrivate
@@ -80,7 +84,7 @@ public:
     \class QSpinBox
     \brief The QSpinBox class provides a spin box widget.
 
-    \ingroup basic
+    \ingroup basicwidgets
     \mainclass
 
     QSpinBox is designed to handle integers and discrete sets of
@@ -177,6 +181,8 @@ public:
 QSpinBox::QSpinBox(QWidget *parent)
     : QAbstractSpinBox(*new QSpinBoxPrivate, parent)
 {
+    Q_D(QSpinBox);
+    d->init();
 }
 
 #ifdef QT3_SUPPORT
@@ -187,7 +193,9 @@ QSpinBox::QSpinBox(QWidget *parent)
 QSpinBox::QSpinBox(QWidget *parent, const char *name)
     : QAbstractSpinBox(*new QSpinBoxPrivate, parent)
 {
+    Q_D(QSpinBox);
     setObjectName(QString::fromAscii(name));
+    d->init();
 }
 
 /*!
@@ -202,6 +210,7 @@ QSpinBox::QSpinBox(int minimum, int maximum, int step, QWidget *parent, const ch
     d->maximum = QVariant(qMax<int>(minimum, maximum));
     d->singleStep = QVariant(step);
     setObjectName(QString::fromAscii(name));
+    d->init();
 }
 
 #endif
@@ -501,19 +510,15 @@ void QSpinBox::fixup(QString &input) const
     \brief The QDoubleSpinBox class provides a spin box widget that
     takes doubles.
 
-    \ingroup basic
+    \ingroup basicwidgets
     \mainclass
 
     QDoubleSpinBox allows the user to choose a value by clicking the
     up and down buttons or by pressing Up or Down on the keyboard to
     increase or decrease the value currently displayed. The user can
-    also type the value in manually. If the value is entered directly
-    into the spin box, the value will be changed and valueChanged()
-    will be emitted with the new value when Enter or Return is
-    pressed, when the spin box loses focus or when the spin box is
-    deactivated (see QWidget::windowActivationChanged()). The spin box
-    supports double values but can be extended to use different
-    strings with validate(), textFromValue() and valueFromText().
+    also type the value in manually. The spin box supports double
+    values but can be extended to use different strings with
+    validate(), textFromValue() and valueFromText().
 
     Every time the value changes QDoubleSpinBox emits the
     valueChanged() signal. The current value can be fetched with
@@ -810,9 +815,10 @@ void QDoubleSpinBox::setRange(double minimum, double maximum)
      \brief the precision of the spin box, in decimals
 
      Sets how many decimals the spinbox will use for displaying and
-     interpreting doubles. The valid decimal range is 0-13. The
-     default is 2. \a decimals will be bounded to a value that is
-     within the valid range.
+     interpreting doubles.
+
+     \warning The results might not be reliable with very high values
+     for \a decimals.
 
      Note: The maximum, minimum and value might change as a result of
      changing this property.
@@ -828,7 +834,7 @@ int QDoubleSpinBox::decimals() const
 void QDoubleSpinBox::setDecimals(int decimals)
 {
     Q_D(QDoubleSpinBox);
-    d->decimals = qBound(0, decimals, 13);
+    d->decimals = qMax(0, decimals);
 
     setRange(minimum(), maximum()); // make sure values are rounded
     setValue(value());
@@ -1509,6 +1515,13 @@ static bool isIntermediateValueHelper(qint64 num, qint64 min, qint64 max, qint64
 /*! \reimp */
 bool QSpinBox::event(QEvent *event)
 {
+    Q_D(QSpinBox);
+    if (event->type() == QEvent::StyleChange
+#ifdef Q_WS_MAC
+            || event->type() == QEvent::MacSizeChange
+#endif
+            )
+        d->setLayoutItemMargins(QStyle::SE_SpinBoxLayoutItem);
     return QAbstractSpinBox::event(event);
 }
 

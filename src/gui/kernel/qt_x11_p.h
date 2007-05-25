@@ -272,7 +272,8 @@ enum DesktopEnvironment {
     DE_UNKNOWN,
     DE_KDE,
     DE_GNOME,
-    DE_CDE
+    DE_CDE,
+    DE_4DWM
 };
 
 struct QX11Data
@@ -482,6 +483,9 @@ struct QX11Data
         _NET_VIRTUAL_ROOTS,
         _NET_WORKAREA,
 
+        _NET_MOVERESIZE_WINDOW,
+        _NET_WM_MOVERESIZE,
+
         _NET_WM_NAME,
         _NET_WM_ICON_NAME,
         _NET_WM_ICON,
@@ -497,6 +501,7 @@ struct QX11Data
         _NET_WM_STATE_MAXIMIZED_VERT,
         _NET_WM_STATE_MODAL,
         _NET_WM_STATE_STAYS_ON_TOP,
+        _NET_WM_STATE_DEMANDS_ATTENTION,
 
         _NET_WM_USER_TIME,
         _NET_WM_FULL_PLACEMENT,
@@ -561,6 +566,8 @@ struct QX11Data
         NAtoms
     };
     Atom atoms[NAtoms];
+
+    bool isSupportedByWM(Atom atom);
 };
 
 extern QX11Data *qt_x11Data;

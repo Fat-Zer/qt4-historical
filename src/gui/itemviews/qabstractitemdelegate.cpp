@@ -25,7 +25,11 @@
 
 #ifndef QT_NO_ITEMVIEWS
 #include <qabstractitemmodel.h>
+#include <qabstractitemview.h>
 #include <qfontmetrics.h>
+#include <qwhatsthis.h>
+#include <qtooltip.h>
+#include <qevent.h>
 #include <qstring.h>
 #include <qdebug.h>
 #include <private/qtextengine_p.h>
@@ -183,7 +187,7 @@ QAbstractItemDelegate::~QAbstractItemDelegate()
     otherwise, \l{QMouseEvent}s received by the widget will propagate
     to the view. The view's background will shine through unless the
     editor paints its own background (e.g., with
-    \l{QWidget::}{setAutoFillBackground()}). 
+    \l{QWidget::}{setAutoFillBackground()}).
 
     \sa setModelData() setEditorData()
 */
@@ -260,10 +264,10 @@ bool QAbstractItemDelegate::editorEvent(QEvent *,
 }
 
 /*!
-    \obsolete 
+    \obsolete
 
     Use QFontMetrics::elidedText() instead.
-    
+
     \oldcode
         QFontMetrics fm = ...
         QString str = QAbstractItemDelegate::elidedText(fm, width, mode, text);
@@ -277,5 +281,61 @@ QString QAbstractItemDelegate::elidedText(const QFontMetrics &fontMetrics, int w
                                           Qt::TextElideMode mode, const QString &text)
 {
     return fontMetrics.elidedText(text, mode, width);
+}
+
+/*!
+    \since 4.3
+    Whenever a help event occurs, this function is called with the \a event
+    \a view \a option and the \a index that corresponds to the item where the
+    event occurs.
+
+    Returns true if the delegate can handle the event; otherwise returns false.
+    A return value of true indicates that the data obtained using the index had
+    the required role.
+
+    For QEvent::ToolTip and QEvent::WhatsThis events that were handled successfully,
+    the relevant popup may be shown depending on the user's system configuration.
+
+    \sa QHelpEvent
+*/
+// ### Qt 5: Make this a virtual non-slot function
+bool QAbstractItemDelegate::helpEvent(QHelpEvent *event,
+                                      QAbstractItemView *view,
+                                      const QStyleOptionViewItem &option,
+                                      const QModelIndex &index)
+{
+    Q_UNUSED(option);
+
+    if (!event || !view)
+        return false;
+    switch (event->type()) {
+#ifndef QT_NO_TOOLTIP
+    case QEvent::ToolTip: {
+        QHelpEvent *he = static_cast<QHelpEvent*>(event);
+        QVariant tooltip = index.data(Qt::ToolTipRole);
+        if (qVariantCanConvert<QString>(tooltip)) {
+            QToolTip::showText(he->globalPos(), tooltip.toString(), view);
+            return true;
+        }
+        break;}
+#endif
+#ifndef QT_NO_WHATSTHIS
+    case QEvent::QueryWhatsThis: {
+        if (index.data(Qt::WhatsThisRole).isValid())
+            return true;
+        break; }
+    case QEvent::WhatsThis: {
+        QHelpEvent *he = static_cast<QHelpEvent*>(event);
+        QVariant whatsthis = index.data(Qt::WhatsThisRole);
+        if (qVariantCanConvert<QString>(whatsthis)) {
+            QWhatsThis::showText(he->globalPos(), whatsthis.toString(), view);
+            return true;
+        }
+        break ; }
+#endif
+    default:
+        break;
+    }
+    return false;
 }
 #endif // QT_NO_ITEMVIEWS

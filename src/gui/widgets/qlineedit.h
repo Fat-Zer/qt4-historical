@@ -37,6 +37,9 @@ class QValidator;
 class QMenu;
 class QLineEditPrivate;
 class QCompleter;
+class QStyleOptionFrame;
+class QAbstractSpinBox;
+class QDateTimeEdit;
 
 class Q_GUI_EXPORT QLineEdit : public QWidget
 {
@@ -185,6 +188,7 @@ protected:
 #endif
 
     void inputMethodEvent(QInputMethodEvent *);
+    void initStyleOption(QStyleOptionFrame *option) const;
 public:
     QVariant inputMethodQuery(Qt::InputMethodQuery) const;
     bool event(QEvent *);
@@ -209,8 +213,8 @@ public:
 
     QT3_SUPPORT void setFrameRect(QRect) {}
     QT3_SUPPORT QRect frameRect() const { return QRect(); }
-    enum DummyFrame { Box, Sunken, Plain, Raised, MShadow, NoFrame, Panel, StyledPanel, 
-                      HLine, VLine, GroupBoxPanel, WinPanel, ToolBarPanel, MenuBarPanel, 
+    enum DummyFrame { Box, Sunken, Plain, Raised, MShadow, NoFrame, Panel, StyledPanel,
+                      HLine, VLine, GroupBoxPanel, WinPanel, ToolBarPanel, MenuBarPanel,
                       PopupPanel, LineEditPanel, TabWidgetPanel, MShape };
     QT3_SUPPORT void setFrameShadow(DummyFrame) {}
     QT3_SUPPORT DummyFrame frameShadow() const { return Plain; }
@@ -220,10 +224,10 @@ public:
     QT3_SUPPORT int frameStyle() const  { return 0; }
     QT3_SUPPORT int frameWidth() const { return 0; }
     QT3_SUPPORT void setLineWidth(int) {}
-    QT3_SUPPORT int lineWidth() const { return 0; }    
+    QT3_SUPPORT int lineWidth() const { return 0; }
     QT3_SUPPORT void setMargin(int margin) { setContentsMargins(margin, margin, margin, margin); }
-    QT3_SUPPORT int margin() const 
-    { int margin; int dummy; getContentsMargins(&margin, &dummy, &dummy, &dummy);  return margin; }    
+    QT3_SUPPORT int margin() const
+    { int margin; int dummy; getContentsMargins(&margin, &dummy, &dummy, &dummy);  return margin; }
     QT3_SUPPORT void setMidLineWidth(int) {}
     QT3_SUPPORT int midLineWidth() const { return 0; }
 
@@ -232,6 +236,10 @@ Q_SIGNALS:
 #endif
 
 private:
+    friend class QAbstractSpinBox;
+#ifdef QT_KEYPAD_NAVIGATION
+    friend class QDateTimeEdit;
+#endif
     Q_DISABLE_COPY(QLineEdit)
     Q_DECLARE_PRIVATE(QLineEdit)
     Q_PRIVATE_SLOT(d_func(), void _q_clipboardChanged())

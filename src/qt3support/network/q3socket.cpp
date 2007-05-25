@@ -273,7 +273,7 @@ void Q3SocketPrivate::setSocketDevice( Q3Socket *q, Q3SocketDevice *device )
 Q3Socket::Q3Socket( QObject *parent, const char *name )
     : QIODevice( parent )
 {
-    setObjectName(name);
+    setObjectName(QLatin1String(name));
     d = new Q3SocketPrivate;
     setSocketDevice( 0 );
     resetStatus();
@@ -715,6 +715,7 @@ bool Q3Socket::consumeWriteBuf( Q_ULONG nbytes )
 
 /*!
     Implementation of the abstract virtual QIODevice::flush() function.
+    This function always returns true.
 */
 
 bool Q3Socket::flush()

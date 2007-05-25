@@ -33,13 +33,13 @@ MySortFilterProxyModel::MySortFilterProxyModel(QObject *parent)
 void MySortFilterProxyModel::setFilterMinimumDate(const QDate &date)
 {
     minDate = date;
-    filterChanged();
+    invalidateFilter();
 }
 
 void MySortFilterProxyModel::setFilterMaximumDate(const QDate &date)
 {
     maxDate = date;
-    filterChanged();
+    invalidateFilter();
 }
 
 bool MySortFilterProxyModel::filterAcceptsRow(int sourceRow,

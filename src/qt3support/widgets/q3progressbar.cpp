@@ -86,7 +86,7 @@ Q3ProgressBar::Q3ProgressBar(QWidget *parent, const char *name, Qt::WindowFlags 
       percentage_visible(true),
       d(0)
 {
-    setObjectName(name);
+    setObjectName(QLatin1String(name));
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     initFrame();
 }
@@ -116,7 +116,7 @@ Q3ProgressBar::Q3ProgressBar(int totalSteps, QWidget *parent, const char *name, 
       percentage_visible(true),
       d(0)
 {
-    setObjectName(name);
+    setObjectName(QLatin1String(name));
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     initFrame();
 }
@@ -264,6 +264,7 @@ static QStyleOptionProgressBar getStyleOption(const Q3ProgressBar *pb)
 {
     QStyleOptionProgressBar opt;
     opt.init(pb);
+    opt.rect = pb->contentsRect();
     opt.minimum = 0;
     opt.maximum = pb->totalSteps();
     opt.progress = pb->progress();
@@ -286,7 +287,7 @@ QSize Q3ProgressBar::sizeHint() const
     QStyleOptionProgressBar opt = getStyleOption(this);
     int cw = style()->pixelMetric(QStyle::PM_ProgressBarChunkWidth, &opt, this);
     return style()->sizeFromContents(QStyle::CT_ProgressBar, &opt,
-                                    QSize(cw * 7 + fm.width('0') * 4, fm.height() + 8), this);
+                                    QSize(cw * 7 + fm.width(QLatin1Char('0')) * 4, fm.height() + 8), this);
 }
 
 /*!
@@ -409,12 +410,12 @@ void Q3ProgressBar::paintEvent(QPaintEvent *)
     opt.rect = style()->subElementRect(QStyle::SE_ProgressBarGroove, &opt, this);
 
     style()->drawControl(QStyle::CE_ProgressBarGroove, &opt, p, this);
-    opt.rect = rect();
+    opt.rect = contentsRect();
     opt.rect = style()->subElementRect(QStyle::SE_ProgressBarContents, &opt, this);
     style()->drawControl(QStyle::CE_ProgressBarContents, &opt, p, this);
 
     if (percentageVisible()) {
-        opt.rect = rect();
+        opt.rect = contentsRect();
         opt.rect = style()->subElementRect(QStyle::SE_ProgressBarLabel, &opt, this);
         style()->drawControl(QStyle::CE_ProgressBarLabel, &opt, p, this);
     }

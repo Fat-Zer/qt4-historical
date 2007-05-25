@@ -253,7 +253,7 @@ void Q3ActionPrivate::update(uint upd)
         QString t = menuText();
 #ifndef QT_NO_ACCEL
         if (key)
-            t += '\t' + (QString)QKeySequence(key);
+            t += QLatin1Char('\t') + (QString)QKeySequence(key);
 #endif
         if (upd & State) {
             mi->popup->setItemEnabled(mi->id, enabled);
@@ -291,7 +291,7 @@ void Q3ActionPrivate::update(uint upd)
             QString text = action->menuText();
 #ifndef QT_NO_ACCEL
             if (key)
-                text += '\t' + (QString)QKeySequence(key);
+                text += QLatin1Char('\t') + (QString)QKeySequence(key);
 #endif
             act->setText(text);
             act->setToolTip(statusTip());
@@ -361,7 +361,7 @@ QString Q3ActionPrivate::menuText() const
 {
     if (menutext.isNull()) {
         QString t(text);
-        t.replace('&', "&&");
+        t.replace(QLatin1Char('&'), QLatin1String("&&"));
         return t;
     }
     return menutext;
@@ -372,7 +372,7 @@ QString Q3ActionPrivate::toolTip() const
     if (tooltip.isNull()) {
 #ifndef QT_NO_ACCEL
         if (accel)
-            return text + " (" + (QString)QKeySequence(accel->key(accelid)) + ")";
+            return text + QLatin1String(" (") + (QString)QKeySequence(accel->key(accelid)) + QLatin1Char('(');
 #endif
         return text;
     }
@@ -392,7 +392,7 @@ QString Q3ActionPrivate::statusTip() const
 static QString qt_stripMenuText(QString s)
 {
     s.remove(QLatin1String("..."));
-    s.remove(QChar('&'));
+    s.remove(QLatin1Char('&'));
     return s.trimmed();
 };
 
@@ -452,7 +452,7 @@ Q3Action::Q3Action(QObject* parent, const char* name, bool toggle)
 
     The action uses a stripped version of \a menuText (e.g. "\&Menu
     Option..." becomes "Menu Option") as descriptive text for
-    toolbuttons. You can override this by setting a specific
+    tool buttons. You can override this by setting a specific
     description with setText(). The same text and \a accel will be
     used for tool tips and status tips unless you provide text for
     these using setToolTip() and setStatusTip().
@@ -488,7 +488,7 @@ Q3Action::Q3Action(const QIcon& icon, const QString& menuText, QKeySequence acce
 
     The action uses a stripped version of \a menuText (e.g. "\&Menu
     Option..." becomes "Menu Option") as descriptive text for
-    toolbuttons. You can override this by setting a specific
+    tool buttons. You can override this by setting a specific
     description with setText(). The same text and \a accel will be
     used for tool tips and status tips unless you provide text for
     these using setToolTip() and setStatusTip().
@@ -1193,7 +1193,7 @@ bool Q3Action::removeFrom(QWidget* w)
                 d->toolbuttons.removeAll(btn);
                 disconnect(btn, SIGNAL(destroyed()), this, SLOT(objectDestroyed()));
                 delete btn;
-                // no need to disconnect from statusbar
+                // no need to disconnect from status bar
             }
         }
     } else

@@ -105,7 +105,7 @@ QString Driver::findOrInsertName(const QString &name)
 QString Driver::normalizedName(const QString &name)
 {
     QString result = name;
-    result.replace(QRegExp(QLatin1String("[^a-zA-Z_0-9]")), QLatin1String("_"));
+    result.replace(QRegExp(QLatin1String("[^a-zA-Z_0-9]")), QString(QLatin1Char('_')));
     return result;
 }
 
@@ -191,7 +191,7 @@ QString Driver::headerFileName(const QString &fileName)
         if (!isAnsiCCharacter(c)) {
             // Replace character by its unicode value
             QString hex = QString::number(c.unicode(), 16);
-            baseName.replace(i, 1, "_" + hex + "_");
+            baseName.replace(i, 1, QLatin1Char('_') + hex + QLatin1Char('_'));
             i += hex.size() + 1;
         }
     }
@@ -250,7 +250,15 @@ bool Driver::uic(const QString &fileName, QTextStream *out)
     if (out) {
         m_output = out;
     } else {
+#ifdef Q_WS_WIN
+        // As one might also redirect the output to a file on win, 
+        // we should not create the textstream with QFile::Text flag.
+        // The redirected file is opened in TextMode and this will
+        // result in broken line endings as writing will replace \n again.
+        m_output = new QTextStream(stdout, QIODevice::WriteOnly);
+#else
         m_output = new QTextStream(stdout, QIODevice::WriteOnly | QFile::Text);
+#endif
         deleteOutput = true;
     }
 

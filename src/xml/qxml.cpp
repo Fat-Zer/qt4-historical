@@ -202,6 +202,10 @@ public:
 #ifndef QT_NO_TEXTCODEC
     QTextDecoder *encMapper;
 #endif
+
+    QByteArray encodingDeclBytes;
+    QString encodingDeclChars;
+    bool lookingForEncodingDecl;
 };
 
 class QXmlParseExceptionPrivate
@@ -285,6 +289,15 @@ private:
 
     QString publicId; // used by parseExternalID() to store the public ID
     QString systemId; // used by parseExternalID() to store the system ID
+
+    // Since publicId/systemId is used as temporary variables by parseExternalID(), it
+    // might overwrite the PUBLIC/SYSTEM for the document we're parsing. In effect, we would
+    // possibly send off an QXmlParseException that has the PUBLIC/SYSTEM of a entity declaration
+    // instead of those of the current document.
+    // Hence we have these two variables for storing the document's data.
+    QString thisPublicId;
+    QString thisSystemId;
+
     QString attDeclEName; // use by parseAttlistDecl()
     QString attDeclAName; // use by parseAttlistDecl()
 
@@ -496,7 +509,7 @@ private:
 */
 
 QXmlParseException::QXmlParseException(const QString& name, int c, int l,
-                                        const QString& p, const QString& s)
+                                       const QString& p, const QString& s)
 {
     d = new QXmlParseExceptionPrivate;
     d->msg = name;
@@ -764,7 +777,7 @@ void QXmlNamespaceSupport::splitName(const QString& qname, QString& prefix,
 
     Note that attribute names are processed differently than element
     names: an unprefixed element name gets the default namespace (if
-    any), while an unprefixed element name does not.
+    any), while an unprefixed attribute name does not.
 */
 void QXmlNamespaceSupport::processName(const QString& qname,
         bool isAttribute,
@@ -939,7 +952,6 @@ int QXmlAttributes::index(const QString& qName) const
     return -1;
 }
 
-#ifdef Q_WS_QWS
 /*! \overload
   */
 int QXmlAttributes::index(const QLatin1String& qName) const
@@ -950,7 +962,6 @@ int QXmlAttributes::index(const QLatin1String& qName) const
     }
     return -1;
 }
-#endif
 
 /*!
     \overload
@@ -1092,7 +1103,6 @@ QString QXmlAttributes::value(const QString& qName) const
     return attList.at(i).value;
 }
 
-#ifdef Q_WS_QWS
 /*!
     \overload
 
@@ -1108,7 +1118,6 @@ QString QXmlAttributes::value(const QLatin1String& qName) const
         return QString();
     return attList.at(i).value;
 }
-#endif
 
 /*!
     \overload
@@ -1223,6 +1232,10 @@ void QXmlInputSource::init()
     d->encMapper = 0;
 #endif
     d->nextReturnedEndOfData = true; // first call to next() will call fetchData()
+
+    d->encodingDeclBytes.clear();
+    d->encodingDeclChars.clear();
+    d->lookingForEncodingDecl = true;
 }
 
 /*!
@@ -1247,6 +1260,7 @@ QXmlInputSource::QXmlInputSource(QIODevice *dev)
 {
     init();
     d->inputDevice = dev;
+    d->inputDevice->setTextModeEnabled(false);
 }
 
 #ifdef QT3_SUPPORT
@@ -1315,7 +1329,14 @@ QChar QXmlInputSource::next()
         d->nextReturnedEndOfData = true;
         return EndOfData;
     }
-    return d->unicode[d->pos++];
+
+    // QXmlInputSource has no way to signal encoding errors. The best we can do
+    // is return EndOfDocument. We do *not* return EndOfData, because the reader
+    // will then just call this function again to get the next char.
+    QChar c = d->unicode[d->pos++];
+    if (c.unicode() == EndOfData)
+        c = EndOfDocument;
+    return c;
 }
 
 /*!
@@ -1393,6 +1414,31 @@ void QXmlInputSource::setData(const QByteArray& dat)
 
     \sa data() next() QXmlInputSource()
 */
+
+#define QSAX_BUFF_SIZE 1024
+#if 0
+static QByteArray escapeBuff(const QByteArray &arr)
+{
+    QByteArray result;
+    for (int i = 0; i < arr.count(); ++i) {
+        char c = arr.at(i);
+        if (c == '\\') {
+            result.append('\\');
+            result.append('\\');
+        } else if (c >= 32 && c <= 126) {
+            result.append(c);
+        } else {
+            result.append('\\');
+            QByteArray num = QByteArray::number((uchar)c);
+            while (num.length() < 3)
+                num.prepend('0');
+            result.append(num);
+        }
+    }
+    return result;
+}
+#endif
+
 void QXmlInputSource::fetchData()
 {
     QByteArray rawData;
@@ -1406,10 +1452,68 @@ void QXmlInputSource::fetchData()
                 rawData = QByteArray((const char *) s->constData(), s->size() * sizeof(QChar));
             }
         } else if (device->isOpen() || device->open(QIODevice::ReadOnly)) {
-            rawData = device->readAll();
+            rawData.resize(QSAX_BUFF_SIZE);
+            qint64 size = device->read(rawData.data(), QSAX_BUFF_SIZE);
+
+            if (size != -1) {
+                // We don't want to give fromRawData() less than four bytes if we can avoid it.
+                while (size < 4) {
+                    if (!device->waitForReadyRead(-1))
+                        break;
+                    int ret = device->read(rawData.data() + size, QSAX_BUFF_SIZE - size);
+                    if (ret <= 0)
+                        break;
+                    size += ret;
+                }
+            }
+
+            rawData.resize(qMax(qint64(0), size));
         }
     }
+
     setData(fromRawData(rawData));
+}
+
+static QString extractEncodingDecl(const QString &text, bool *needMoreText)
+{
+    *needMoreText = false;
+
+    int l = text.length();
+    QString snip = QString::fromLatin1("<?xml").left(l);
+    if (l > 0 && !text.startsWith(snip))
+        return QString();
+
+    int endPos = text.indexOf(QLatin1Char('>'));
+    if (endPos == -1) {
+        *needMoreText = l < 255; // we won't look forever
+        return QString();
+    }
+
+    int pos = text.indexOf(QLatin1String("encoding"));
+    if (pos == -1 || pos >= endPos)
+        return QString();
+
+    while (pos < endPos) {
+        ushort uc = text.at(pos).unicode();
+        if (uc == '\'' || uc == '"')
+            break;
+        ++pos;
+    }
+
+    if (pos == endPos)
+        return QString();
+
+    QString encoding;
+    ++pos;
+    while (pos < endPos) {
+        ushort uc = text.at(pos).unicode();
+        if (uc == '\'' || uc == '"')
+            break;
+        encoding.append(uc);
+        ++pos;
+    }
+
+    return encoding;
 }
 
 /*!
@@ -1435,8 +1539,14 @@ QString QXmlInputSource::fromRawData(const QByteArray &data, bool beginning)
         delete d->encMapper;
         d->encMapper = 0;
     }
+
+    int mib = 106; // UTF-8
+
+    // This is the initial UTF codec we will read the encoding declaration with
     if (d->encMapper == 0) {
-        int mib = 106; // UTF-8
+        d->encodingDeclBytes.clear();
+        d->encodingDeclChars.clear();
+        d->lookingForEncodingDecl = true;
 
         // look for byte order mark and read the first 5 characters
         if (data.size() >= 2) {
@@ -1455,42 +1565,41 @@ QString QXmlInputSource::fromRawData(const QByteArray &data, bool beginning)
         Q_ASSERT(codec);
 
         d->encMapper = codec->makeDecoder();
-        QString input = d->encMapper->toUnicode(data, data.size());
-        // ### unexpected EOF? (for incremental parsing)
-        // starts the document with an XML declaration?
-        if (input.startsWith(QLatin1String("<?xml"))) {
-            // try to find out if there is an encoding
-            int endPos = input.indexOf(QLatin1Char('>'));
-            int pos = input.indexOf(QLatin1String("encoding"));
-            if (pos != -1 && pos < endPos) {
-                QString encoding;
-                do {
-                    pos++;
-                    if (pos > endPos) {
-                        return input;
-                    }
-                } while(input[pos] != QLatin1Char('"') && input[pos] != QLatin1Char('\''));
-                pos++;
-                while(input[pos] != QLatin1Char('"') && input[pos] != QLatin1Char('\'')) {
-                    encoding += input[pos];
-                    pos++;
-                    if (pos > endPos) {
-                        return input;
-                    }
-                }
+    }
 
-                codec = QTextCodec::codecForName(encoding.toLatin1());
-                if (codec == 0) {
-                    return input;
+    QString input = d->encMapper->toUnicode(data, data.size());
+
+    if (d->lookingForEncodingDecl) {
+        d->encodingDeclChars += input;
+
+        bool needMoreText;
+        QString encoding = extractEncodingDecl(d->encodingDeclChars, &needMoreText);
+
+        if (!encoding.isEmpty()) {
+            if (QTextCodec *codec = QTextCodec::codecForName(encoding.toLatin1())) {
+                /* If the encoding is the same, we don't have to do toUnicode() all over again. */
+                if(codec->mibEnum() != mib) {
+                    delete d->encMapper;
+                    d->encMapper = codec->makeDecoder();
+
+                    /* The variable input can potentially be large, so we deallocate
+                     * it before calling toUnicode() in order to avoid having two
+                     * large QStrings in memory simultaneously. */
+                    input.clear();
+
+                    // prime the decoder with the data so far
+                    d->encMapper->toUnicode(d->encodingDeclBytes, d->encodingDeclBytes.size());
+                    // now feed it the new data
+                    input = d->encMapper->toUnicode(data, data.size());
                 }
-                delete d->encMapper;
-                d->encMapper = codec->makeDecoder();
-                return d->encMapper->toUnicode(data, data.size());
             }
         }
-        return input;
+
+        d->encodingDeclBytes += data;
+        d->lookingForEncodingDecl = needMoreText;
     }
-    return d->encMapper->toUnicode(data, data.size());
+
+    return input;
 #endif
 }
 
@@ -2828,7 +2937,9 @@ void QXmlSimpleReaderPrivate::initIncrementalParsing()
     This XML reader is suitable for a wide range of applications. It
     is able to parse well-formed XML and can report the namespaces of
     elements to a content handler; however, it does not parse any
-    external entities.
+    external entities. For historical reasons, Attribute Value
+    Normalization and End-of-Line Handling as described in the XML 1.0
+    specification is not performed.
 
     The easiest pattern of use for this class is to create a reader
     instance, define an input source, specify the handlers to be used
@@ -3032,7 +3143,8 @@ bool QXmlSimpleReader::feature(const QString& name, bool *ok) const
          \i true
          \i If enabled, CharData that consist of
             only whitespace characters are reported
-            using QXmlContentHandler::characters().
+            using QXmlContentHandler::characters(). If disabled, whitespace is silently
+            discarded.
     \row \i \e http://trolltech.com/xml/features/report-start-end-entity
          \i false
          \i If enabled, the parser reports
@@ -3254,13 +3366,14 @@ bool QXmlSimpleReader::parse(const QXmlInputSource *input, bool incremental)
 {
     Q_D(QXmlSimpleReader);
 
-    d->init(input);
     if (incremental) {
         d->initIncrementalParsing();
     } else {
         delete d->parseStack;
         d->parseStack = 0;
     }
+    d->init(input);
+
     // call the handler
     if (d->contentHnd) {
         d->contentHnd->setDocumentLocator(d->locator);
@@ -4683,7 +4796,7 @@ bool QXmlSimpleReaderPrivate::parsePI()
   Precondition: the beginning '<!' of the doctype is already read the head
   stands on the 'D' of '<!DOCTYPE'.
 
-  If this funktion was successful, the head-position is on the first
+  If this function was successful, the head-position is on the first
   character after the document type definition.
 */
 bool QXmlSimpleReaderPrivate::parseDoctype()
@@ -4834,6 +4947,8 @@ bool QXmlSimpleReaderPrivate::parseDoctype()
                     parseFailed(&QXmlSimpleReaderPrivate::parseDoctype, state);
                     return false;
                 }
+                thisPublicId = publicId;
+                thisSystemId = systemId;
                 break;
             case MP:
             case MPR:
@@ -7754,18 +7869,19 @@ void QXmlSimpleReaderPrivate::next()
     // the following could be written nicer, but since it is a time-critical
     // function, rather optimize for speed
     ushort uc = c.unicode();
-    if (uc == '\n') {
+    c = inputSource->next();
+    // If we are not incremental parsing, we just skip over EndOfData chars to give the
+    // parser an uninterrupted stream of document chars.
+    if (c == QXmlInputSource::EndOfData && parseStack == 0)
         c = inputSource->next();
+    if (uc == '\n') {
         lineNr++;
         columnNr = -1;
     } else if (uc == '\r') {
-        c = inputSource->next();
         if (c != QLatin1Char('\n')) {
             lineNr++;
             columnNr = -1;
         }
-    } else {
-        c = inputSource->next();
     }
     ++columnNr;
 }
@@ -7810,7 +7926,7 @@ void QXmlSimpleReaderPrivate::init(const QXmlInputSource *i)
 {
     lineNr = 0;
     columnNr = -1;
-    inputSource = (QXmlInputSource *)i;
+    inputSource = const_cast<QXmlInputSource *>(i);
     initData();
 
     externParameterEntities.clear();
@@ -7859,10 +7975,12 @@ void QXmlSimpleReaderPrivate::reportParseError(const QString& error)
     this->error = error;
     if (errorHnd) {
         if (this->error.isNull()) {
-            QXmlParseException ex(QLatin1String(XMLERR_OK), columnNr+1, lineNr+1);
+            const QXmlParseException ex(QLatin1String(XMLERR_OK), columnNr+1, lineNr+1,
+                                        thisPublicId, thisSystemId);
             errorHnd->fatalError(ex);
         } else {
-            QXmlParseException ex(this->error, columnNr+1, lineNr+1);
+            const QXmlParseException ex(this->error, columnNr+1, lineNr+1,
+                                        thisPublicId, thisSystemId);
             errorHnd->fatalError(ex);
         }
     }

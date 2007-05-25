@@ -97,6 +97,7 @@ public:
 
     mutable QReadWriteLock lock;
 };
+Q_GLOBAL_STATIC(QConnectionDict, dbDict)
 
 class QSqlDatabasePrivate
 {
@@ -129,7 +130,6 @@ public:
     static void removeDatabase(const QString& name);
     static void invalidateDb(const QSqlDatabase &db, const QString &name);
     static DriverDict &driverDict();
-    Q_GLOBAL_STATIC(QConnectionDict, dbDict)
     static void cleanConnections();
 };
 
@@ -372,7 +372,8 @@ void QSqlDatabasePrivate::disable()
     If transactions are supported, you can use transaction() to start
     a transaction, and then commit() or rollback() to complete it.
     You can find out whether transactions are supported using
-    QSqlDriver::hasFeature().
+    QSqlDriver::hasFeature(). When using transactions you must start
+    the transaction before you create your query.
 
     If an error occurred, it is given by lastError().
 
@@ -579,7 +580,7 @@ void QSqlDatabase::registerSqlDriver(const QString& name, QSqlDriverCreatorBase 
 
 bool QSqlDatabase::contains(const QString& connectionName)
 {
-    return QSqlDatabasePrivate::dbDict()->contains_ts(connectionName);
+    return dbDict()->contains_ts(connectionName);
 }
 
 /*!
@@ -591,7 +592,7 @@ bool QSqlDatabase::contains(const QString& connectionName)
 */
 QStringList QSqlDatabase::connectionNames()
 {
-    return QSqlDatabasePrivate::dbDict()->keys_ts();
+    return dbDict()->keys_ts();
 }
 
 /*!
@@ -814,7 +815,10 @@ bool QSqlDatabase::open(const QString& user, const QString& password)
 }
 
 /*!
-    Closes the database connection, freeing any resources acquired.
+    Closes the database connection, freeing any resources acquired, and
+    invalidating any existing QSqlQuery objects that are used with the
+    database.
+
     This will also affect copies of this QSqlDatabase object.
 
     \sa removeDatabase()
@@ -1200,12 +1204,18 @@ QSqlRecord QSqlDatabase::record(const QString& tablename) const
     \i
     \e none
 
-    \header \i SQLite
+    \header \i SQLite \i Interbase
     \row
 
     \i
     \list
     \i QSQLITE_BUSY_TIMEOUT
+    \endlist
+
+    \i
+    \list
+    \i ISC_DPB_LC_CTYPE
+    \i ISC_DPB_SQL_ROLE_NAME
     \endlist
 
     \endtable

@@ -178,7 +178,9 @@ public:
     QWinEventNotifier *processFinishedNotifier;
 
     void startProcess();
-    void execChild(const QByteArray &encodedProgramName);
+#ifdef Q_OS_UNIX
+    void execChild(const char *workingDirectory, char **path, char **argv, char **envp);
+#endif
     bool processStarted();
     void terminateProcess();
     void killProcess();
@@ -191,7 +193,8 @@ public:
     qint64 pipeWriterBytesToWrite() const;
 #endif
 
-    static bool startDetached(const QString &program, const QStringList &arguments);
+    static bool startDetached(const QString &program, const QStringList &arguments, const QString &workingDirectory = QString(),
+                              qint64 *pid = 0);
 
     int exitCode;
     QProcess::ExitStatus exitStatus;

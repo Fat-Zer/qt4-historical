@@ -49,6 +49,9 @@ class QObject;
 class QDBusConnectionPrivate;
 class QDBUS_EXPORT QDBusConnection
 {
+    Q_GADGET
+    Q_ENUMS(BusType UnregisterMode)
+    Q_FLAGS(RegisterOptions)
 public:
     enum BusType { SessionBus, SystemBus, ActivationBus };
     enum RegisterOption {
@@ -65,9 +68,14 @@ public:
         ExportNonScriptableContents = 0xf00,
 
         ExportAllSlots = ExportScriptableSlots|ExportNonScriptableSlots,
-        ExportAllSignal = ExportScriptableSignals|ExportNonScriptableSignals,
+        ExportAllSignals = ExportScriptableSignals|ExportNonScriptableSignals,
         ExportAllProperties = ExportScriptableProperties|ExportNonScriptableProperties,
         ExportAllContents = ExportScriptableContents|ExportNonScriptableContents,
+
+#ifndef Q_QDOC
+        // Qt 4.2 had a misspelling here
+        ExportAllSignal = ExportAllSignals,
+#endif
 
         ExportChildObjects = 0x1000
     };
@@ -89,6 +97,9 @@ public:
     QDBusError lastError() const;
 
     bool send(const QDBusMessage &message) const;
+    bool callWithCallback(const QDBusMessage &message, QObject *receiver,
+                          const char *returnMethod, const char *errorMethod,
+                          int timeout = -1) const;
     bool callWithCallback(const QDBusMessage &message, QObject *receiver,
                           const char *slot, int timeout = -1) const;
     QDBusMessage call(const QDBusMessage &message, QDBus::CallMode mode = QDBus::Block,

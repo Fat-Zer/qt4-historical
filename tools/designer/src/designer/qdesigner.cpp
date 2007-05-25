@@ -21,9 +21,19 @@
 **
 ****************************************************************************/
 
+// designer
+#include "qdesigner.h"
+#include "qdesigner_actions.h"
+#include "qdesigner_server.h"
+#include "qdesigner_settings.h"
+#include "qdesigner_workbench.h"
+#include "qdesigner_toolwindow.h"
+
 #include <QtGui/QFileOpenEvent>
 #include <QtGui/QCloseEvent>
 #include <QtGui/QMessageBox>
+#include <QtGui/QIcon>
+#include <QtGui/QErrorMessage>
 #include <QtCore/QMetaObject>
 #include <QtCore/QFile>
 #include <QtCore/QLibraryInfo>
@@ -34,28 +44,38 @@
 
 #include <QtDesigner/QDesignerComponents>
 
-// designer
-#include "qdesigner.h"
-#include "qdesigner_actions.h"
-#include "qdesigner_server.h"
-#include "qdesigner_settings.h"
-#include "qdesigner_workbench.h"
-#include "qdesigner_toolwindow.h"
+static const char *designerApplicationName = "Designer";
+static const char *designerWarningPrefix = "Designer: ";
+static void defaultMessageOutput(const char *msg)
+{
+    fputs(msg, stderr);
+    fputc('\n', stderr);
+}
+
+static void designerMessageHandler(QtMsgType type, const char *msg)
+{
+    // Only Designer warnings are displayed as box
+    QDesigner *designerApp = qDesigner;
+    if (type != QtWarningMsg || !designerApp || qstrncmp(designerWarningPrefix, msg, qstrlen(designerWarningPrefix))) {
+        defaultMessageOutput(msg);
+        return;
+    }
+    designerApp->showErrorMessage(msg);
+}
 
 QDesigner::QDesigner(int &argc, char **argv)
     : QApplication(argc, argv),
       m_server(0),
       m_client(0),
-      m_workbench(0), suppressNewFormShow(false)
+      m_workbench(0), m_suppressNewFormShow(false)
 {
     setOrganizationName(QLatin1String("Trolltech"));
-    setApplicationName(QLatin1String("Designer"));
+    setApplicationName(QLatin1String(designerApplicationName));
     QDesignerComponents::initializeResources();
 
 #ifndef Q_WS_MAC
     setWindowIcon(QIcon(QLatin1String(":/trolltech/designer/images/designer.png")));
 #endif
-
     initialize();
 }
 
@@ -67,6 +87,42 @@ QDesigner::~QDesigner()
         delete m_server;
     if (m_client)
         delete m_client;
+}
+
+void QDesigner::showErrorMessage(const char *message)
+{
+    // strip the prefix
+    const QString qMessage = QString::fromUtf8(message + qstrlen(designerWarningPrefix));
+    // If there is no main window yet, just store the message.
+    // The QErrorMessage would otherwise be hidden by the main window.
+    if (m_mainWindow) {
+        showErrorMessageBox(qMessage);
+    } else {
+        defaultMessageOutput(message); // just in case we crash
+        m_initializationErrors += qMessage;
+        m_initializationErrors += QLatin1Char('\n');
+    }
+}
+
+void QDesigner::showErrorMessageBox(const QString &msg)
+{
+    // Manually suppress consecutive messages.
+    // This happens if for example sth is wrong with custom widget creation.
+    // The same warning will be displayed by Widget box D&D and form Drop
+    // while trying to create instance.
+    if (m_errorMessageDialog && m_lastErrorMessage == msg)
+        return;
+
+    if (!m_errorMessageDialog) {
+        m_lastErrorMessage.clear();
+        m_errorMessageDialog = new QErrorMessage(m_mainWindow);
+        const QString title = QObject::tr("%1 - warning").arg(QLatin1String(designerApplicationName));
+        m_errorMessageDialog->setWindowTitle(title);
+        m_errorMessageDialog->setMinimumSize(QSize(600, 250));
+        m_errorMessageDialog->setWindowFlags(m_errorMessageDialog->windowFlags() & ~Qt::WindowContextHelpButtonHint);
+    }
+    m_errorMessageDialog->showMessage(msg);
+    m_lastErrorMessage = msg;
 }
 
 QDesignerWorkbench *QDesigner::workbench() const
@@ -86,34 +142,44 @@ void QDesigner::initialize()
 
     QString resourceDir = QLibraryInfo::location(QLibraryInfo::TranslationsPath);
 
-    for (int i = 1; i < argc(); ++i)
+    const QStringList args = arguments();
+
+    for (int i = 1; i < args.count(); ++i)
     {
-        if (QString::fromLocal8Bit(argv()[i]) == QLatin1String("-server")) {
+        const QString argument = args.at(i);
+        if (argument == QLatin1String("-server")) {
             m_server = new QDesignerServer();
             printf("%d\n", m_server->serverPort());
             fflush(stdout);
-        } else if (QString::fromLocal8Bit(argv()[i]) == QLatin1String("-client")) {
+        } else if (argument == QLatin1String("-client")) {
             bool ok = true;
-            if (i + 1 < argc()) {
-                quint16 port = QString::fromLocal8Bit(argv()[++i]).toUShort(&ok);
+            if (i + 1 < args.count()) {
+                const quint16 port = args.at(++i).toUShort(&ok);
                 if (ok)
                     m_client = new QDesignerClient(port, this);
             }
-        } else if (QString::fromLocal8Bit(argv()[i]) == QLatin1String("-resourcedir")) {
-            if (i + 1 < argc()) {
-                resourceDir = QFile::decodeName(argv()[++i]);
+        } else if (argument == QLatin1String("-resourcedir")) {
+            if (i + 1 < args.count()) {
+                resourceDir = QFile::decodeName(args.at(++i).toLocal8Bit());
             } else {
                 // issue a warning
             }
-        } else {
-            files.append(QString::fromLocal8Bit(argv()[i]));
+        } else if (!files.contains(argument)) {
+            files.append(argument);
         }
     }
 
-    QTranslator *translator = new QTranslator;
-    QTranslator *qtTranslator = new QTranslator;
-    translator->load(QLatin1String("designer_") + QLocale::system().name().toLower(), resourceDir);
-    qtTranslator->load(QLatin1String("qt_") + QLocale::system().name().toLower(), resourceDir);
+    QTranslator *translator = new QTranslator(this);
+    QTranslator *qtTranslator = new QTranslator(this);
+
+    const QString localSysName = QLocale::system().name();
+    QString  translatorFileName = QLatin1String("designer_");
+    translatorFileName += localSysName;
+    translator->load(translatorFileName, resourceDir);
+
+    translatorFileName = QLatin1String("qt_");
+    translatorFileName += localSysName;
+    qtTranslator->load(translatorFileName, resourceDir);
     installTranslator(translator);
     installTranslator(qtTranslator);
 
@@ -128,12 +194,23 @@ void QDesigner::initialize()
 
     emit initialized();
 
+    m_suppressNewFormShow = m_workbench->readInBackup();
+
     foreach (QString file, files) {
-        if (m_workbench->readInForm(file) && !suppressNewFormShow)
-            suppressNewFormShow = true;
+        m_workbench->readInForm(file);
     }
-    if (QDesignerSettings().showNewFormOnStartup())
-        QTimer::singleShot(100, this, SLOT(callCreateForm())); // won't show anything if suppressed
+    if ( m_workbench->formWindowCount())
+        m_suppressNewFormShow = true;
+
+    // Show up error box with parent now if something went wrong
+    if (m_initializationErrors.isEmpty()) {
+        if (!m_suppressNewFormShow && QDesignerSettings().showNewFormOnStartup())
+            QTimer::singleShot(100, this, SLOT(callCreateForm())); // won't show anything if suppressed
+    } else {
+        showErrorMessageBox(m_initializationErrors);
+        m_initializationErrors.clear();
+    }
+    qInstallMsgHandler (designerMessageHandler);
 }
 
 bool QDesigner::event(QEvent *ev)
@@ -141,10 +218,10 @@ bool QDesigner::event(QEvent *ev)
     bool eaten;
     switch (ev->type()) {
     case QEvent::FileOpen:
-        // set it true first since, if it's a Qt 3 form, the messagebox from convert will fire the timer.
-        suppressNewFormShow = true;
+        // Set it true first since, if it's a Qt 3 form, the messagebox from convert will fire the timer.
+        m_suppressNewFormShow = true;
         if (!m_workbench->readInForm(static_cast<QFileOpenEvent *>(ev)->file()))
-            suppressNewFormShow = false;
+            m_suppressNewFormShow = false;
         eaten = true;
         break;
     case QEvent::Close: {
@@ -178,6 +255,6 @@ QDesignerToolWindow *QDesigner::mainWindow() const
 
 void QDesigner::callCreateForm()
 {
-    if (!suppressNewFormShow)
+    if (!m_suppressNewFormShow)
         m_workbench->actionManager()->createForm();
 }

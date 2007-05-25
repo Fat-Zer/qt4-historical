@@ -65,6 +65,20 @@ void DragWidget::dragEnterEvent(QDragEnterEvent *event)
     }
 }
 
+void DragWidget::dragMoveEvent(QDragMoveEvent *event)
+{
+    if (event->mimeData()->hasFormat("application/x-dnditemdata")) {
+        if (event->source() == this) {
+            event->setDropAction(Qt::MoveAction);
+            event->accept();
+        } else {
+            event->acceptProposedAction();
+        }
+    } else {
+        event->ignore();
+    }
+}
+
 void DragWidget::dropEvent(QDropEvent *event)
 {
     if (event->mimeData()->hasFormat("application/x-dnditemdata")) {
@@ -120,7 +134,7 @@ void DragWidget::mousePressEvent(QMouseEvent *event)
 
     child->setPixmap(tempPixmap);
 
-    if (drag->start(Qt::CopyAction | Qt::MoveAction) == Qt::MoveAction)
+    if (drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction) == Qt::MoveAction)
         child->close();
     else {
         child->show();

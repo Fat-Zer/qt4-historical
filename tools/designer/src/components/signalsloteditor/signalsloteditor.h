@@ -27,18 +27,15 @@
 #include "signalsloteditor_global.h"
 
 #include <QtDesigner/private/connectionedit_p.h>
-#include <QtDesigner/QtDesigner>
 
 #include <QtXml/QDomDocument>
 #include <QtXml/QDomElement>
 
 class DomConnections;
-class DomConnection;
 class QAbstractItemModel;
 
 namespace qdesigner_internal {
 
-class SignalSlotDialog;
 class SignalSlotConnection;
 
 class QT_SIGNALSLOTEDITOR_EXPORT SignalSlotEditor : public ConnectionEdit
@@ -54,7 +51,7 @@ public:
     virtual void setTarget(Connection *con, const QString &obj_name);
 
     DomConnections *toUi() const;
-    void fromUi(DomConnections *connections, QWidget *parent);
+    void fromUi(const DomConnections *connections, QWidget *parent);
 
     QDesignerFormWindowInterface *formWindow() const { return m_form_window; }
 

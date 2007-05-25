@@ -90,6 +90,7 @@
 #define QT_CHDIR		::chdir
 #define QT_MKDIR		::mkdir
 #define QT_RMDIR		::rmdir
+#define QT_OPEN_LARGEFILE       0
 #define QT_OPEN_RDONLY		O_RDONLY
 #define QT_OPEN_WRONLY		O_WRONLY
 #define QT_OPEN_RDWR		O_RDWR
@@ -115,9 +116,9 @@
 // On the other hand _POSIX_THREAD_SAFE_FUNCTIONS should be defined only
 // if the Thread-Safe Functions option is implemented. OpenBSD does not
 // support all of the required _r() interfaces, especially getpwuid_r(),
-// which means it cannot legitimately define _POSIX_THREAD_SAFE_FUNCTIONS.
+// which means it should not define _POSIX_THREAD_SAFE_FUNCTIONS.
 //
-// Since OpenBSD does define _POSIX_THREAD_SAFE_FUNCTIONS, we hae to
+// Since OpenBSD does define _POSIX_THREAD_SAFE_FUNCTIONS, we have to
 // undefine it behind its back.
 #ifdef _POSIX_THREAD_SAFE_FUNCTIONS
 #undef _POSIX_THREAD_SAFE_FUNCTIONS

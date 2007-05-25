@@ -39,6 +39,9 @@
 #ifndef QT_NO_STYLE_WINDOWSXP
 #include "qwindowsxpstyle.h"
 #endif
+#ifndef QT_NO_STYLE_WINDOWSVISTA
+#include "qwindowsvistastyle.h"
+#endif
 
 #if !defined(QT_NO_STYLE_MAC) && defined(Q_WS_MAC)
 #  include <private/qt_mac_p.h>
@@ -50,7 +53,7 @@ QString qt_mac_get_style_name()
     if (c) {
         GetTheme(c);
         Str255 str;
-        long int s = 256;
+        SInt32 s = 256;
         if(!GetCollectionItem(c, kThemeNameTag, 0, &s, &str)) {
             extern QString qt_mac_from_pascal_string(const Str255); //qglobal.cpp
             ret = qt_mac_from_pascal_string(str);
@@ -107,6 +110,11 @@ QStyle *QStyleFactory::create(const QString& key)
 #ifndef QT_NO_STYLE_WINDOWSXP
     if (style == QLatin1String("windowsxp"))
         ret = new QWindowsXPStyle;
+    else
+#endif
+#ifndef QT_NO_STYLE_WINDOWSVISTA
+    if (style == QLatin1String("windowsvista"))
+        ret = new QWindowsVistaStyle;
     else
 #endif
 #ifndef QT_NO_STYLE_MOTIF
@@ -168,8 +176,14 @@ QStringList QStyleFactory::keys()
         list << QLatin1String("Windows");
 #endif
 #ifndef QT_NO_STYLE_WINDOWSXP
-    if (!list.contains(QLatin1String("WindowsXP")))
+    if (!list.contains(QLatin1String("WindowsXP")) &&
+        (QSysInfo::WindowsVersion >= QSysInfo::WV_XP && QSysInfo::WindowsVersion < QSysInfo::WV_NT_based))
         list << QLatin1String("WindowsXP");
+#endif
+#ifndef QT_NO_STYLE_WINDOWSVISTA
+    if (!list.contains(QLatin1String("WindowsVista")) &&
+        (QSysInfo::WindowsVersion >= QSysInfo::WV_VISTA && QSysInfo::WindowsVersion < QSysInfo::WV_NT_based))
+        list << QLatin1String("WindowsVista");
 #endif
 #ifndef QT_NO_STYLE_MOTIF
     if (!list.contains(QLatin1String("Motif")))
@@ -190,7 +204,7 @@ QStringList QStyleFactory::keys()
 #ifndef QT_NO_STYLE_MAC
     QString mstyle = QLatin1String("Macintosh");
 # ifdef Q_WS_MAC
-    mstyle += " (" + qt_mac_get_style_name() + ")";
+    mstyle += QLatin1String(" (") + qt_mac_get_style_name() + QLatin1String(")");
 # endif
     if (!list.contains(mstyle))
         list << mstyle;

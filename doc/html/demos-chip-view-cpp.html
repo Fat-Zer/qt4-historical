@@ -3,7 +3,7 @@
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>Qt 4.2: view.cpp Example File (demos/chip/view.cpp)</title>
+  <title>Qt 4.3: view.cpp Example File (demos/chip/view.cpp)</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -38,7 +38,9 @@
  #include &quot;view.h&quot;
 
  #include &lt;QtGui&gt;
+ #ifndef QT_NO_OPENGL
  #include &lt;QtOpenGL&gt;
+ #endif
 
  #include &lt;math.h&gt;
 
@@ -49,6 +51,7 @@
      graphicsView = new QGraphicsView;
      graphicsView-&gt;setRenderHint(QPainter::Antialiasing, false);
      graphicsView-&gt;setDragMode(QGraphicsView::RubberBandDrag);
+     graphicsView-&gt;setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
 
      int size = style()-&gt;pixelMetric(QStyle::PM_ToolBarIconSize);
      QSize iconSize(size, size);
@@ -110,7 +113,11 @@
      openGlButton = new QToolButton;
      openGlButton-&gt;setText(tr(&quot;OpenGL&quot;));
      openGlButton-&gt;setCheckable(true);
+ #ifndef QT_NO_OPENGL
      openGlButton-&gt;setEnabled(QGLFormat::hasOpenGL());
+ #else
+     openGlButton-&gt;setEnabled(false);
+ #endif
      printButton = new QToolButton;
      printButton-&gt;setIcon(QIcon(QPixmap(&quot;:/fileprint.png&quot;)));
 
@@ -178,7 +185,9 @@
 
  void View::toggleOpenGL()
  {
+ #ifndef QT_NO_OPENGL
      graphicsView-&gt;setViewport(openGlButton-&gt;isChecked() ? new QGLWidget(QGLFormat(QGL::SampleBuffers)) : new QWidget);
+ #endif
  }
 
  void View::toggleAntialiasing()
@@ -219,6 +228,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
 </tr></table></div></address></body>
 </html>

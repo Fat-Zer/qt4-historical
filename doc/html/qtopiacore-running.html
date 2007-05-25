@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-x11-opensource-src-4.2.3/doc/src/emb-running.qdoc -->
+<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/doc/src/emb-running.qdoc -->
 <head>
-  <title>Qt 4.2: Running Qtopia Core Applications</title>
+  <title>Qt 4.3: Running Qtopia Core Applications</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -22,7 +22,7 @@
 </ul>
 <a name="using-a-single-display"></a>
 <h2>Using a Single Display</h2>
-<p>To run the application using a single display, change to a Linux console and select an application to run, e.g. <a href="demos-textedit.html">demos/textedit</a>. Run the application with the <tt>-qws</tt> option:</p>
+<p>To run the application using a single display, change to a Linux console and select an application to run, e.g&#x2e; <a href="demos-textedit.html">demos/textedit</a>. Run the application with the <tt>-qws</tt> option:</p>
 <pre> cd path/to/Qtopia/Core/demos/textedit
  ./textedit -qws</pre>
 <p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
@@ -34,14 +34,14 @@
 </ul>
 </td><td><img src="images/qtopiacore-runningapplication.png" /></td></tr>
 </table></p>
-<p>Additional applications can be run as clients, i.e., by running these applications <i>without</i> the <tt>-qws</tt> option they will connect to the existing server as clients. You can exit the server application at any time using <b>Ctrl+Alt+Backspace</b>.</p>
+<p>Additional applications can be run as clients, i.e&#x2e;, by running these applications <i>without</i> the <tt>-qws</tt> option they will connect to the existing server as clients. You can exit the server application at any time using <b>Ctrl+Alt+Backspace</b>.</p>
 <a name="using-multiple-displays"></a>
 <h2>Using Multiple Displays</h2>
 <p>Qtopia Core also allows multiple displays to be used simultaneously. There are two ways of achieving this: Either run multiple Qtopia Core server processes, or use <a href="qtopiacore.html">Qtopia Core</a>'s ready-made <tt>Multi</tt> screen driver.</p>
 <p>When running multiple server processes, the screen driver (and display number) must be specified for each process using the <tt>-display</tt> command line option or by setting the <a href="qtopiacore-envvars.html#qws-display">QWS_DISPLAY</a> environment variable. For example:</p>
 <pre> ./myfirstserverapplication -qws -display &quot;transformed:rot90:1&quot;
  ./mysecondserverapplication -qws -display &quot;QVFb:2&quot;</pre>
-<p>See the <a href="qtopiacore-displaymanagement.html">display management</a> documentation for more details on how to specify a screen driver. Note that you must also specify the display (i.e., server process) when starting client applications:</p>
+<p>See the <a href="qtopiacore-displaymanagement.html">display management</a> documentation for more details on how to specify a screen driver. Note that you must also specify the display (i.e&#x2e;, server process) when starting client applications:</p>
 <pre> ./myclientapplication -display &quot;QVFb:2&quot;</pre>
 <p>There is no way of moving a client from one display to another when running multiple server processes. Using the <tt>Multi</tt> screen driver, on the other hand, applications can easiliy be moved between the various screens.</p>
 <p>The <tt>Multi</tt> screen driver can be specified just like any other screen driver by using the <tt>-display</tt> command line option or by setting the <a href="qtopiacore-envvars.html#qws-display">QWS_DISPLAY</a> environment variable. For example:</p>
@@ -64,7 +64,7 @@
 <tr valign="top" class="even"><td><b>-fg</b> &lt;color&gt;</td><td>Sets the default application foreground color. For example:<pre> ./myapplication -fg 'dark blue'</pre>
 <p>The color-name must be one of the names recognized by the <a href="qcolor.html">QColor</a> constructor.</p>
 </td></tr>
-<tr valign="top" class="odd"><td><b>-name</b> &lt;objectname&gt;</td><td>Sets the application name, i.e. the application object's object name. For example:<pre> ./myapplication -name texteditapplication</pre>
+<tr valign="top" class="odd"><td><b>-name</b> &lt;objectname&gt;</td><td>Sets the application name, i.e&#x2e; the application object's object name. For example:<pre> ./myapplication -name texteditapplication</pre>
 </td></tr>
 <tr valign="top" class="even"><td><b>-title</b> &lt;title&gt;</td><td>Sets the application's title. For example:<pre> ./myapplication -title 'Text Edit'</pre>
 </td></tr>
@@ -76,7 +76,7 @@
 <tr valign="top" class="even"><td><b>-mouse</b></td><td>Enables the mouse cursor.<p>See also: <a href="qtopiacore-pointer.html">Qtopia Core Pointer Handling</a>.</p>
 </td></tr>
 <tr valign="top" class="odd"><td><b>-nomouse</b></td><td>Disables the mouse cursor.</td></tr>
-<tr valign="top" class="even"><td><b>-qws</b></td><td>Runs the application as a server application, i.e. constructs a <a href="qapplication.html">QApplication</a> object of the <a href="qapplication.html#Type-enum">QApplication::GuiServer</a> type.</td></tr>
+<tr valign="top" class="even"><td><b>-qws</b></td><td>Runs the application as a server application, i.e&#x2e; constructs a <a href="qapplication.html">QApplication</a> object of the <a href="qapplication.html#Type-enum">QApplication::GuiServer</a> type.</td></tr>
 <tr valign="top" class="odd"><td><b>-display</b></td><td>Specifies the screen driver.<p>See also: <a href="qtopiacore-displaymanagement.html">Qtopia Core Display Management</a>.</p>
 </td></tr>
 <tr valign="top" class="even"><td><b>-decoration</b> &lt;style&gt;</td><td>Sets the application decoration. For example:<pre> ./myapplication -decoration windows</pre>
@@ -88,6 +88,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
 </tr></table></div></address></body>
 </html>

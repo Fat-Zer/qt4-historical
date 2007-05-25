@@ -55,31 +55,38 @@ public:
     QGraphicsScenePrivate();
 
     QGraphicsScene::ItemIndexMethod indexMethod;
+    int bspTreeDepth;
+
     QList<QGraphicsItem *> estimateItemsInRect(const QRectF &rect) const;
     void addToIndex(QGraphicsItem *item);
     void removeFromIndex(QGraphicsItem *item);
     void resetIndex();
 
     QGraphicsSceneBspTree bspTree;
-    mutable bool generatingBspTree;
     void _q_generateBspTree();
     int lastItemCount;
 
     QRectF sceneRect;
     bool hasSceneRect;
     QRectF growingItemsBoundingRect;
+    QRectF largestUntransformableItem;
 
     void _q_emitUpdated();
     QList<QRectF> updatedRects;
     bool updateAll;
     bool calledEmitUpdated;
 
-    QList<QGraphicsItem *> newItems;
+    QPainterPath selectionArea;
+    int selectionChanging;
     QSet<QGraphicsItem *> selectedItems;
-    QList<QGraphicsItem *> allItems;
+    QList<QGraphicsItem *> unindexedItems;
+    QList<QGraphicsItem *> indexedItems;
     QList<QGraphicsItem *> pendingUpdateItems;
     void _q_updateLater();
+
     QList<int> freeItemIndexes;
+    bool regenerateIndex;
+
     bool purgePending;
     void _q_removeItemLater(QGraphicsItem *item);
     QSet<QGraphicsItem *> removedItems;
@@ -88,6 +95,10 @@ public:
     QBrush backgroundBrush;
     QBrush foregroundBrush;
 
+    int indexTimerId;
+    bool restartIndexTimer;
+    void startIndexTimer();
+
     bool hasFocus;
     QGraphicsItem *focusItem;
     QGraphicsItem *lastFocusItem;
@@ -95,14 +106,20 @@ public:
     QGraphicsItem *lastMouseGrabberItem;
     QGraphicsItem *dragDropItem;
     Qt::DropAction lastDropAction;
+    QList<QGraphicsItem *> cachedItemsUnderMouse;
     QList<QGraphicsItem *> hoverItems;
     QMap<Qt::MouseButton, QPointF> mouseGrabberButtonDownPos;
     QMap<Qt::MouseButton, QPointF> mouseGrabberButtonDownScenePos;
     QMap<Qt::MouseButton, QPoint> mouseGrabberButtonDownScreenPos;
-    QList<QGraphicsItem *> possibleMouseGrabbersForEvent(QGraphicsSceneMouseEvent *event);
+    QList<QGraphicsItem *> possibleMouseGrabbersForEvent(const QList<QGraphicsItem *> &items,
+                                                         QGraphicsSceneMouseEvent *event);
+    QList<QGraphicsItem *> itemsAtPosition(const QPoint &screenPos,
+                                           const QPointF &scenePos,
+                                           QWidget *widget) const;
     void storeMouseButtonsForMouseGrabber(QGraphicsSceneMouseEvent *event);
 
     QList<QGraphicsView *> views;
+    bool painterStateProtection(const QPainter *painter) const;
 
     QMultiMap<QGraphicsItem *, QGraphicsItem *> sceneEventFilters;
     void installSceneEventFilter(QGraphicsItem *watched, QGraphicsItem *filter);

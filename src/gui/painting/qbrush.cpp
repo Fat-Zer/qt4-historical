@@ -87,6 +87,7 @@ QPixmap qt_pixmapForBrush(int brushStyle, bool invert)
     return pm;
 }
 
+Q_GUI_EXPORT
 QImage qt_imageForBrush(int brushStyle, bool invert)
 {
     QImage image(8, 8, QImage::Format_MonoLSB);
@@ -256,9 +257,9 @@ static QBrushData *nullBrushInstance()
     if (!defaultBrush.pointer && !defaultBrush.destroyed) {
         QBrushData *x = new QBrushData;
         x->ref = 1; x->style = Qt::BrushStyle(0); x->color = Qt::black;
+        x->hasTransform = false;
         if (!q_atomic_test_and_set_ptr(&defaultBrush.pointer, 0, x))
             delete x;
-        x->hasTransform = false;
     }
     return defaultBrush.pointer;
 }
@@ -783,6 +784,10 @@ bool QBrush::isOpaque() const
 */
 void QBrush::setMatrix(const QMatrix &matrix)
 {
+    setTransform(QTransform(matrix));
+}
+void QBrush::setTransform(const QTransform &matrix)
+{
     detach(d->style);
     d->transform = matrix;
     d->hasTransform = !matrix.isIdentity();
@@ -831,7 +836,7 @@ bool QBrush::operator==(const QBrush &b) const
         case Qt::TexturePattern: {
             QPixmap &us = ((QTexturedBrushData *) d)->pixmap();
             QPixmap &them = ((QTexturedBrushData *) b.d)->pixmap();
-            return ((us.isNull() && them.isNull()) || us.serialNumber() == them.serialNumber());
+            return ((us.isNull() && them.isNull()) || us.cacheKey() == them.cacheKey());
         }
         case Qt::LinearGradientPattern:
         case Qt::RadialGradientPattern:
@@ -898,6 +903,10 @@ QDataStream &operator<<(QDataStream &s, const QBrush &b)
         const QGradient *gradient = b.gradient();
         int type_as_int = int(gradient->type());
         s << type_as_int;
+        if (s.version() >= QDataStream::Qt_4_3) {
+            s << int(gradient->spread());
+            s << int(gradient->coordinateMode());
+        }
 
         if (sizeof(qreal) == sizeof(double)) {
             s << gradient->stops();
@@ -925,6 +934,8 @@ QDataStream &operator<<(QDataStream &s, const QBrush &b)
             s << (double) static_cast<const QConicalGradient *>(gradient)->angle();
         }
     }
+    if (s.version() >= QDataStream::Qt_4_3)
+        s << b.transform();
     return s;
 }
 
@@ -955,9 +966,17 @@ QDataStream &operator>>(QDataStream &s, QBrush &b)
         int type_as_int;
         QGradient::Type type;
         QGradientStops stops;
+        QGradient::CoordinateMode cmode = QGradient::LogicalMode;
+        QGradient::Spread spread = QGradient::PadSpread;
 
         s >> type_as_int;
         type = QGradient::Type(type_as_int);
+        if (s.version() >= QDataStream::Qt_4_3) {
+            s >> type_as_int;
+            spread = QGradient::Spread(type_as_int);
+            s >> type_as_int;
+            cmode = QGradient::CoordinateMode(type_as_int);
+        }
 
         if (sizeof(qreal) == sizeof(double)) {
             s >> stops;
@@ -979,6 +998,8 @@ QDataStream &operator>>(QDataStream &s, QBrush &b)
             s >> p2;
             QLinearGradient lg(p1, p2);
             lg.setStops(stops);
+            lg.setSpread(spread);
+            lg.setCoordinateMode(cmode);
             b = QBrush(lg);
         } else if (type == QGradient::RadialGradient) {
             QPointF center, focal;
@@ -988,6 +1009,8 @@ QDataStream &operator>>(QDataStream &s, QBrush &b)
             s >> radius;
             QRadialGradient rg(center, radius, focal);
             rg.setStops(stops);
+            rg.setSpread(spread);
+            rg.setCoordinateMode(cmode);
             b = QBrush(rg);
         } else { // type == QGradient::ConicalGradient
             QPointF center;
@@ -996,11 +1019,17 @@ QDataStream &operator>>(QDataStream &s, QBrush &b)
             s >> angle;
             QConicalGradient cg(center, angle);
             cg.setStops(stops);
+            cg.setSpread(spread);
+            cg.setCoordinateMode(cmode);
             b = QBrush(cg);
         }
-
     } else {
         b = QBrush(color, (Qt::BrushStyle)style);
+    }
+    if (s.version() >= QDataStream::Qt_4_3) {
+        QTransform transform;
+        s >> transform;
+        b.setTransform(transform);
     }
     return s;
 }
@@ -1014,6 +1043,7 @@ QDataStream &operator>>(QDataStream &s, QBrush &b)
 /*!
     \class QGradient
     \ingroup multimedia
+    \ingroup shared
 
     \brief The QGradient class is used in combination with QBrush to
     specify gradient fills.
@@ -1247,8 +1277,10 @@ QGradient::CoordinateMode QGradient::coordinateMode() const
 {
     if (dummy == 0)
         return LogicalMode;
-    else
+    else if (dummy == (void*)1)
         return StretchToDeviceMode;
+    else
+        return ObjectBoundingMode;
 }
 
 /*!
@@ -1261,8 +1293,10 @@ void QGradient::setCoordinateMode(CoordinateMode mode)
 {
     if (mode == LogicalMode)
         dummy = 0;
-    else
+    else if (mode == StretchToDeviceMode)
         dummy = (void *) 1;
+    else
+        dummy = (void *) 2;
 }
 
 
@@ -1907,7 +1941,6 @@ void QConicalGradient::setAngle(qreal angle)
     Q_ASSERT(m_type == ConicalGradient);
     m_data.conical.angle = angle;
 }
-
 
 /*!
     \typedef QGradientStop

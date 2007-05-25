@@ -45,8 +45,12 @@ QDBusServer::QDBusServer(const QString &address, QObject *parent)
     if (address.isEmpty())
         return;
 
-    // server = dbus_server_listen( "unix:tmpdir=/tmp",  &error );
-    d->setServer(dbus_server_listen(address.toUtf8().constData(), &d->error));
+    //    QObject::connect(d, SIGNAL(newServerConnection(QDBusConnection&)),
+    //                     this, SIGNAL(newConnection(QDBusConnection&)));
+
+    // server = dbus_server_listen( "unix:tmpdir=/tmp", &error);
+    QDBusErrorInternal error;
+    d->setServer(dbus_server_listen(address.toUtf8().constData(), error), error);
 }
 
 /*!

@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-x11-opensource-src-4.2.3/doc/src/examples/syntaxhighlighter.qdoc -->
+<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/doc/src/examples/syntaxhighlighter.qdoc -->
 <head>
-  <title>Qt 4.2: Syntax Highlighter Example</title>
+  <title>Qt 4.3: Syntax Highlighter Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -146,7 +146,7 @@
      commentStartExpression = QRegExp(&quot;/\\*&quot;);
      commentEndExpression = QRegExp(&quot;\\*/</span>&quot;);
  }</pre>
-<p>The C++ language has two variations of comments: The single line comment (<tt>\\</tt>) and the multiline comment (<tt>\*...*\</tt>). The single line comment can easily be defined through a highlighting rule similar to the previous ones. But the multiline comment needs special care due to the design of the <a href="qsyntaxhighlighter.html">QSyntaxHighlighter</a> class.</p>
+<p>The C++ language has two variations of comments: The single line comment (<tt><span class="comment">//</span></tt>) and the multiline comment (<tt>/*...</tt><tt>*/</tt>). The single line comment can easily be defined through a highlighting rule similar to the previous ones. But the multiline comment needs special care due to the design of the <a href="qsyntaxhighlighter.html">QSyntaxHighlighter</a> class.</p>
 <p>After a <a href="qsyntaxhighlighter.html">QSyntaxHighlighter</a> object is created, its <a href="qsyntaxhighlighter.html#highlightBlock">highlightBlock()</a> function will be called automatically whenever it is necessary by the rich text engine, highlighting the given text block. The problem appears when a comment spans several text blocks. We will take a closer look at how this problem can be solved when reviewing the implementation of the <tt>Highlighter::highlightBlock()</tt> function. At this point we only specify the multiline comment's color.</p>
 <pre> void Highlighter::highlightBlock(const QString &amp;text)
  {
@@ -159,12 +159,12 @@
              index = text.indexOf(expression, index + length);
          }
      }</pre>
-<p>The highlightBlock() function is called automatically whenever it is necessary by the rich text engine, i.e. when there are text blocks that have changed.</p>
-<p>First we apply the syntax highlighting rules that we stored in the <tt>highlightingRules</tt> vector. For each rule (i.e. for each HighlightingRule object) we search for the pattern in the given textblock using the <a href="qstring.html#indexOf">QString::indexOf</a>() function. When the first occurrence of the pattern is found, we use the <a href="qregexp.html#matchedLength">QRegExp::matchedLength</a>() function to determine the string that will be formatted. <a href="qregexp.html#matchedLength">QRegExp::matchedLength</a>() returns the length of the last matched string, or -1 if there was no match.</p>
+<p>The highlightBlock() function is called automatically whenever it is necessary by the rich text engine, i.e&#x2e; when there are text blocks that have changed.</p>
+<p>First we apply the syntax highlighting rules that we stored in the <tt>highlightingRules</tt> vector. For each rule (i.e&#x2e; for each HighlightingRule object) we search for the pattern in the given textblock using the <a href="qstring.html#indexOf">QString::indexOf</a>() function. When the first occurrence of the pattern is found, we use the <a href="qregexp.html#matchedLength">QRegExp::matchedLength</a>() function to determine the string that will be formatted. <a href="qregexp.html#matchedLength">QRegExp::matchedLength</a>() returns the length of the last matched string, or -1 if there was no match.</p>
 <p>To perform the actual formatting the <a href="qsyntaxhighlighter.html">QSyntaxHighlighter</a> class provides the <a href="qsyntaxhighlighter.html#setFormat">setFormat()</a> function. This function operates on the text block that is passed as argument to the <tt>highlightBlock()</tt> function. The specified format is applied to the text from the given start position for the given length. The formatting properties set in the given format are merged at display time with the formatting information stored directly in the document. Note that the document itself remains unmodified by the format set through this function.</p>
 <p>This process is repeated until the last occurrence of the pattern in the current text block is found.</p>
 <pre>     setCurrentBlockState(0);</pre>
-<p>To deal with constructs that can span several text blocks (like the C++ multiline comment), it is necessary to know the end state of the previous text block (e.g. &quot;in comment&quot;). Inside your <tt>highlightBlock()</tt> implementation you can query the end state of the previous text block using the <a href="qsyntaxhighlighter.html#previousBlockState">QSyntaxHighlighter::previousBlockState</a>() function. After parsing the block you can save the last state using <a href="qsyntaxhighlighter.html#setCurrentBlockState">QSyntaxHighlighter::setCurrentBlockState</a>().</p>
+<p>To deal with constructs that can span several text blocks (like the C++ multiline comment), it is necessary to know the end state of the previous text block (e.g&#x2e; &quot;in comment&quot;). Inside your <tt>highlightBlock()</tt> implementation you can query the end state of the previous text block using the <a href="qsyntaxhighlighter.html#previousBlockState">QSyntaxHighlighter::previousBlockState</a>() function. After parsing the block you can save the last state using <a href="qsyntaxhighlighter.html#setCurrentBlockState">QSyntaxHighlighter::setCurrentBlockState</a>().</p>
 <p>The <a href="qsyntaxhighlighter.html#previousBlockState">previousBlockState()</a> function return an int value. If no state is set, the returned value is -1. You can designate any other value to identify any given state using the <a href="qsyntaxhighlighter.html#setCurrentBlockState">setCurrentBlockState()</a> function. Once the state is set, the <a href="qtextblock.html">QTextBlock</a> keeps that value until it is set again or until the corresponding paragraph of text is deleted.</p>
 <p>In this example we have chosen to use 0 to represent the &quot;not in comment&quot; state, and 1 for the &quot;in comment&quot; state. When the stored syntax highlighting rules are applied we initialize the current block state to 0.</p>
 <pre>     int startIndex = 0;
@@ -186,7 +186,7 @@
                                                  startIndex + commentLength);
      }
  }</pre>
-<p>When an end expression is found, we calculate the length of the comment and apply the multiline comment format. Then we search for the next occurrence of the start expression and repeat the process. If no end expression can be found in the current text block we set the current block state to 1, i.e. &quot;in comment&quot;.</p>
+<p>When an end expression is found, we calculate the length of the comment and apply the multiline comment format. Then we search for the next occurrence of the start expression and repeat the process. If no end expression can be found in the current text block we set the current block state to 1, i.e&#x2e; &quot;in comment&quot;.</p>
 <p>This completes the <tt>Highlighter</tt> class implementation; it is now ready for use.</p>
 <a name="mainwindow-class-definition"></a>
 <h2>MainWindow Class Definition</h2>
@@ -276,6 +276,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
 </tr></table></div></address></body>
 </html>

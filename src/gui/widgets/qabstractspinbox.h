@@ -36,6 +36,7 @@ QT_MODULE(Gui)
 class QLineEdit;
 
 class QAbstractSpinBoxPrivate;
+class QStyleOptionSpinBox;
 
 class Q_GUI_EXPORT QAbstractSpinBox : public QWidget
 {
@@ -53,7 +54,7 @@ class Q_GUI_EXPORT QAbstractSpinBox : public QWidget
     Q_PROPERTY(bool accelerated READ isAccelerated WRITE setAccelerated)
     Q_PROPERTY(CorrectionMode correctionMode READ correctionMode WRITE setCorrectionMode)
     Q_PROPERTY(bool acceptableInput READ hasAcceptableInput)
-
+    Q_PROPERTY(bool keyboardTracking READ keyboardTracking WRITE setKeyboardTracking)
 public:
     explicit QAbstractSpinBox(QWidget *parent = 0);
     ~QAbstractSpinBox();
@@ -62,7 +63,7 @@ public:
                            StepDownEnabled = 0x02 };
     Q_DECLARE_FLAGS(StepEnabled, StepEnabledFlag)
 
-    enum ButtonSymbols { UpDownArrows, PlusMinus };
+    enum ButtonSymbols { UpDownArrows, PlusMinus, NoButtons };
 
     ButtonSymbols buttonSymbols() const;
     void setButtonSymbols(ButtonSymbols bs);
@@ -84,6 +85,9 @@ public:
     void setReadOnly(bool r);
     bool isReadOnly() const;
 
+    void setKeyboardTracking(bool kt);
+    bool keyboardTracking() const;
+
     void setAlignment(Qt::Alignment flag);
     Qt::Alignment alignment() const;
 
@@ -95,7 +99,6 @@ public:
 
     QSize sizeHint() const;
     QSize minimumSizeHint() const;
-
     void interpretText();
     bool event(QEvent *event);
 
@@ -108,7 +111,6 @@ public Q_SLOTS:
     void stepDown();
     void selectAll();
     virtual void clear();
-
 protected:
     void resizeEvent(QResizeEvent *event);
     void keyPressEvent(QKeyEvent *event);
@@ -126,6 +128,7 @@ protected:
     void timerEvent(QTimerEvent *event);
     void paintEvent(QPaintEvent *event);
     void showEvent(QShowEvent *event);
+    void initStyleOption(QStyleOptionSpinBox *option) const;
 
     QLineEdit *lineEdit() const;
     void setLineEdit(QLineEdit *edit);

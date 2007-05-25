@@ -42,9 +42,15 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 
+#include <private/qfontengine_x11_p.h>
+
 #ifndef QT_NO_FONTCONFIG
 #include <ft2build.h>
 #include FT_FREETYPE_H
+
+#if FC_VERSION >= 20402
+#include <fontconfig/fcfreetype.h>
+#endif
 #endif
 
 // from qfont_x11.cpp
@@ -722,8 +728,12 @@ QFontDef qt_FcPatternToQFontDef(FcPattern *pattern, const QFontDef &request)
     }
 
     double dpi;
-    if (FcPatternGetDouble(pattern, FC_DPI, 0, &dpi) != FcResultMatch)
-        dpi = QX11Info::appDpiY();
+    if (FcPatternGetDouble(pattern, FC_DPI, 0, &dpi) != FcResultMatch) {
+        if (X11->display)
+            dpi = QX11Info::appDpiY();
+        else
+            dpi = 96; // ####
+    }
 
     double size;
     if (FcPatternGetDouble(pattern, FC_PIXEL_SIZE, 0, &size) == FcResultMatch)
@@ -1227,18 +1237,17 @@ static void checkSymbolFont(QtFontFamily *family)
 //     qDebug() << "checking " << family->rawName;
     family->symbol_checked = true;
 
-    extern FT_Library qt_getFreetype();
-    FT_Library library = qt_getFreetype();
-
-    FT_Face face;
-    FT_Error err = FT_New_Face(library, family->fontFilename, family->fontFileIndex, &face);
-    if (err != FT_Err_Ok) {
+    QFontEngine::FaceId id;
+    id.filename = family->fontFilename;
+    id.index = family->fontFileIndex;
+    QFreetypeFace *f = QFreetypeFace::getFace(id);
+    if (!f) {
         qWarning("checkSymbolFonts: Couldn't open face %s (%s/%d)",
                  qPrintable(family->rawName), family->fontFilename.data(), family->fontFileIndex);
         return;
     }
-    for (int i = 0; i < face->num_charmaps; ++i) {
-        FT_CharMap cm = face->charmaps[i];
+    for (int i = 0; i < f->face->num_charmaps; ++i) {
+        FT_CharMap cm = f->face->charmaps[i];
         if (cm->encoding == ft_encoding_adobe_custom
             || cm->encoding == ft_encoding_symbol) {
             for (int x = QFontDatabase::Latin; x < QFontDatabase::Other; ++x)
@@ -1247,8 +1256,7 @@ static void checkSymbolFont(QtFontFamily *family)
             break;
         }
     }
-
-    FT_Done_Face(face);
+    f->release(id);
 }
 
 static void checkSymbolFonts(const QString &family = QString())
@@ -1441,7 +1449,7 @@ void qt_addPatternProps(FcPattern *pattern, int screen, int script, const QFontD
         stretch = 100;
     FcPatternAddInteger(pattern, FC_WIDTH, stretch);
 
-    if (QX11Info::appDepth(screen) <= 8) {
+    if (X11->display && QX11Info::appDepth(screen) <= 8) {
         // can't do antialiasing on 8bpp
         FcPatternAddBool(pattern, FC_ANTIALIAS, false);
     } else if (request.styleStrategy & (QFont::PreferAntialias|QFont::NoAntialias)) {
@@ -1572,7 +1580,7 @@ static QFontEngine *tryPatternLoad(FcPattern *p, int screen,
     FcDefaultSubstitute(pattern);
     FcResult res;
     FcPattern *match = FcFontMatch(0, pattern, &res);
-    QFontEngineFT *engine = 0;
+    QFontEngineX11FT *engine = 0;
 
     if (script != QUnicodeTables::Common) {
         // skip font if it doesn't support the language we want
@@ -1598,7 +1606,7 @@ static QFontEngine *tryPatternLoad(FcPattern *p, int screen,
         FcPatternAddBool(match, FC_ANTIALIAS, false);
     }
 
-    engine = new QFontEngineFT(match, qt_FcPatternToQFontDef(match, request), screen);
+    engine = new QFontEngineX11FT(match, qt_FcPatternToQFontDef(match, request), screen);
     if (engine->invalid()) {
         FM_DEBUG("   --> invalid!\n");
         delete engine;
@@ -1678,6 +1686,33 @@ static QFontEngine *loadFc(const QFontPrivate *fp, int script, const QFontDef &r
         FcPatternDestroy(pattern);
     }
     return fe;
+}
+
+static FcPattern *queryFont(const FcChar8 *file, const QByteArray &data, int id, FcBlanks *blanks, int *count)
+{
+#if FC_VERSION < 20402
+    Q_UNUSED(data)
+    return FcFreeTypeQuery(file, id, blanks, count);
+#else
+    if (data.isEmpty())
+        return FcFreeTypeQuery(file, id, blanks, count);
+
+    extern FT_Library qt_getFreetype();
+    FT_Library lib = qt_getFreetype();
+
+    FcPattern *pattern = 0;
+
+    FT_Face face;
+    if (!FT_New_Memory_Face(lib, (const FT_Byte *)data.constData(), data.size(), id, &face)) {
+        *count = face->num_faces;
+
+        pattern = FcFreeTypeQueryFace(face, file, id, blanks);
+
+        FT_Done_Face(face);
+    }
+
+    return pattern;
+#endif
 }
 #endif // QT_NO_FONTCONFIG
 
@@ -1876,12 +1911,6 @@ void QFontDatabase::load(const QFontPrivate *d, int script)
     QFontCache::instance->insertEngine(key, fe);
 }
 
-// used from qfontengine_x11.cpp
-QByteArray qt_fontdata_from_index(int index)
-{
-    return privateDb()->applicationFonts.value(index).data;
-}
-
 static void registerFont(QFontDatabasePrivate::ApplicationFont *fnt)
 {
 #if defined(QT_NO_FONTCONFIG)
@@ -1903,6 +1932,7 @@ static void registerFont(QFontDatabasePrivate::ApplicationFont *fnt)
     }
 
     QString fileNameForQuery = fnt->fileName;
+#if FC_VERSION < 20402
     QTemporaryFile tmp;
 
     if (!fnt->data.isEmpty()) {
@@ -1912,6 +1942,7 @@ static void registerFont(QFontDatabasePrivate::ApplicationFont *fnt)
         tmp.flush();
         fileNameForQuery = tmp.fileName();
     }
+#endif
 
     int id = 0;
     FcBlanks *blanks = FcConfigGetBlanks(0);
@@ -1921,8 +1952,8 @@ static void registerFont(QFontDatabasePrivate::ApplicationFont *fnt)
 
     FcPattern *pattern = 0;
     do {
-        pattern = FcFreeTypeQuery((const FcChar8 *)QFile::encodeName(fileNameForQuery).constData(),
-                                  id, blanks, &count);
+        pattern = queryFont((const FcChar8 *)QFile::encodeName(fileNameForQuery).constData(),
+                            fnt->data, id, blanks, &count);
         if (!pattern)
             return;
 

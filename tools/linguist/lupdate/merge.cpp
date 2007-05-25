@@ -73,9 +73,9 @@ void merge( const MetaTranslator *tor, const MetaTranslator *virginTor, MetaTran
                     // Do not just accept it if its on the same line number, but different source text.
                     // Also check if the texts are more or less similar before we consider them to represent the same message...
                     // ### The QString() cast is evil
-                    if (getSimilarityScore(QString(m.sourceText()), mv.sourceText()) >= textSimilarityThreshold) {
+                    if (getSimilarityScore(QLatin1String(m.sourceText()), mv.sourceText()) >= textSimilarityThreshold) {
                         // It is just slightly modified, assume that it is the same string
-                        m = MetaTranslatorMessage(m.context(), mv.sourceText(), m.comment(), m.fileName(), m.lineNumber(), m.translations());
+                        m = MetaTranslatorMessage(m.context(), mv.sourceText(), m.comment(), m.fileName(), m.lineNumber(), m.translations(), mv.utf8());
                         m.setPlural(mv.isPlural());
 
                         // Mark it as unfinished. (Since the source text was changed it might require re-translating...)
@@ -137,7 +137,7 @@ void merge( const MetaTranslator *tor, const MetaTranslator *virginTor, MetaTran
         if (!found) {
             MetaTranslatorMessage m = tor->find(mv.context(), mv.comment(), mv.fileName(), mv.lineNumber());
             if (!m.isNull()) {
-                if (getSimilarityScore(QString(m.sourceText()), mv.sourceText()) >= textSimilarityThreshold) {
+                if (getSimilarityScore(QLatin1String(m.sourceText()), mv.sourceText()) >= textSimilarityThreshold) {
                     found = true;
                 }
             } else {

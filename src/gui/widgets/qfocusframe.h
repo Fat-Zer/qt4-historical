@@ -31,6 +31,8 @@ QT_BEGIN_HEADER
 QT_MODULE(Gui)
 
 class QFocusFramePrivate;
+class QStyleOption;
+
 class Q_GUI_EXPORT QFocusFrame : public QWidget
 {
     Q_OBJECT
@@ -46,6 +48,7 @@ protected:
 
     bool eventFilter(QObject *, QEvent *);
     void paintEvent(QPaintEvent *);
+    void initStyleOption(QStyleOption *option) const;
 
 private:
     Q_DECLARE_PRIVATE(QFocusFrame)

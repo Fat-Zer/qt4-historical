@@ -35,6 +35,7 @@ class Q_CORE_EXPORT QBitArray
 {
     friend Q_CORE_EXPORT QDataStream &operator<<(QDataStream &, const QBitArray &);
     friend Q_CORE_EXPORT QDataStream &operator>>(QDataStream &, QBitArray &);
+    friend Q_CORE_EXPORT uint qHash(const QBitArray &key);
     QByteArray d;
 
 public:
@@ -81,6 +82,10 @@ public:
     void fill(bool val, int first, int last);
 
     inline void truncate(int pos) { if (pos < size()) resize(pos); }
+
+public:
+    typedef QByteArray::DataPtr DataPtr;
+    inline DataPtr &data_ptr() { return d.data_ptr(); }
 };
 
 inline bool QBitArray::fill(bool aval, int asize)

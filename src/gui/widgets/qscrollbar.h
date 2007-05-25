@@ -55,6 +55,7 @@ protected:
     void hideEvent(QHideEvent*);
     void sliderChange(SliderChange change);
     void contextMenuEvent(QContextMenuEvent *);
+    void initStyleOption(QStyleOptionSlider *option) const;
 
 #ifdef QT3_SUPPORT
 public:

@@ -33,6 +33,7 @@ QT_BEGIN_HEADER
 QT_MODULE(Gui)
 
 class QMatrix;
+class QTransform;
 class QRect;
 class QVariant;
 
@@ -61,6 +62,12 @@ public:
     void putPoints(int index, int nPoints, const int *points);
     void putPoints(int index, int nPoints, int firstx, int firsty, ...);
     void putPoints(int index, int nPoints, const QPolygon & from, int fromIndex=0);
+
+    bool containsPoint(const QPoint &pt, Qt::FillRule fillRule) const;
+
+    QPolygon united(const QPolygon &r) const;
+    QPolygon intersected(const QPolygon &r) const;
+    QPolygon subtracted(const QPolygon &r) const;
 };
 
 inline QPolygon::QPolygon(int asize) : QVector<QPoint>(asize) {}
@@ -106,6 +113,12 @@ public:
     bool isClosed() const { return !isEmpty() && first() == last(); }
 
     QRectF boundingRect() const;
+
+    bool containsPoint(const QPointF &pt, Qt::FillRule fillRule) const;
+
+    QPolygonF united(const QPolygonF &r) const;
+    QPolygonF intersected(const QPolygonF &r) const;
+    QPolygonF subtracted(const QPolygonF &r) const;
 };
 
 inline QPolygonF::QPolygonF(int asize) : QVector<QPointF>(asize) {}

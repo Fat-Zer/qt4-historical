@@ -27,6 +27,7 @@
 #include "treewalker.h"
 
 class QTextStream;
+class QIODevice;
 class Driver;
 class Uic;
 
@@ -42,6 +43,9 @@ public:
     void acceptUI(DomUI *node);
     void acceptImages(DomImages *images);
     void acceptImage(DomImage *image);
+
+    static void writeImage(QTextStream &output, const QString &indent, DomImage *image);
+    static void writeImage(QIODevice &output, DomImage *image);
 
 private:
     Driver *driver;

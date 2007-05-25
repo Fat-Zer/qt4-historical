@@ -204,14 +204,14 @@ QVariant QMimeDataPrivate::retrieveTypedData(const QString &format, QVariant::Ty
     \code
         void MyWidget::dragEnterEvent(QDragEnterEvent *event)
         {
-            if (event->mimeData()->hasUrl())
+            if (event->mimeData()->hasUrls())
                 event->acceptProposedEvent();
         }
 
         void MyWidget::dropEvent(QDropEvent *event)
         {
-            if (event->mimeData()->hasUrl()) {
-                QUrl url = event->mimeData()->url();
+            if (event->mimeData()->hasUrls()) {
+                QUrl url = event->mimeData()->urls();
                 ...
             }
         }
@@ -251,8 +251,34 @@ QVariant QMimeDataPrivate::retrieveTypedData(const QString &format, QVariant::Ty
         \endcode
     \endlist
 
+    \section1 Platform-Specific MIME Types
+
+    On Windows, formats() will also return custom formats available
+    in the MIME data, using the \c{x-qt-windows-mime} subtype to
+    indicate that they represent data in non-standard formats.
+    The formats will take the following form:
+
+    \code
+    application/x-qt-windows-mime;value="<custom type>"
+    \endcode
+
+    The following are examples of custom MIME types:
+
+    \code
+    application/x-qt-windows-mime;value="FileGroupDescriptor"
+    application/x-qt-windows-mime;value="FileContents"
+    \endcode
+
+    The \c value declaration of each format describes the way in which the
+    data is encoded.
+
+    On Windows, the MIME format does not always map directly to the
+    clipboard formats. Qt provides QWindowsMime to map clipboard
+    formats to open-standard MIME formats. Similarly, the
+    QMacPasteboardMime maps MIME to Mac flavors.
+
     \sa QClipboard, QDragEnterEvent, QDragMoveEvent, QDropEvent, QDrag,
-        {Drag and Drop}
+        QWindowsMime, QMacPasteboardMime, {Drag and Drop}
 */
 
 /*!

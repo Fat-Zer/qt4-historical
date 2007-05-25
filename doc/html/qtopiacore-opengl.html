@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-x11-opensource-src-4.2.3/doc/src/qtopiacore-opengl.qdoc -->
+<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/doc/src/qtopiacore-opengl.qdoc -->
 <head>
-  <title>Qt 4.2: Qtopia Core and OpenGL</title>
+  <title>Qt 4.3: Qtopia Core and OpenGL</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -13,7 +13,7 @@
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">Qtopia Core and OpenGL<br /><small></small></h1>
-<p>Starting with the 4.2 release, <a href="qtopiacore.html">Qtopia Core</a> supports <a href="http://www.khronos.org/opengles/">OpenGL ES</a> (OpenGL for Embedded Systems). To be able to use the OpenGL API in <a href="qtopiacore.html">Qtopia Core</a>, it must be integrated with the Q Window System (QWS). This is done by providing an <a href="http://www.khronos.org/egl/">EGL</a> implementation, i.e., a native platform window system interface.</p>
+<p>Starting with the 4.2 release, <a href="qtopiacore.html">Qtopia Core</a> supports <a href="http://www.khronos.org/opengles/">OpenGL ES</a> (OpenGL for Embedded Systems). To be able to use the OpenGL API in <a href="qtopiacore.html">Qtopia Core</a>, it must be integrated with the Q Window System (QWS). This is done by providing an <a href="http://www.khronos.org/egl/">EGL</a> implementation, i.e&#x2e;, a native platform window system interface.</p>
 <p align="center"><img src="images/qtopiacore-opengl.png" /></p><p><a href="http://www.khronos.org/egl/">EGL</a> is an interface portable layer for graphics resource management - and works between the rendering API and the underlying native platform window system. There are two ways of implementing <a href="http://www.khronos.org/egl/">EGL</a> in <a href="qtopiacore.html">Qtopia Core</a>:</p>
 <ul><li><a href="#simple-integration">Simple Integration</a></li>
 <li><a href="#full-integration">Full Integration</a></li>
@@ -26,11 +26,11 @@
 <p>Another approach to simple integration, is to implement the <tt>createNativeWindow()</tt> function that enables the programmer to draw directly onto the screen. Please note that this approach currently requires more extensive modifications of the implementation files. Please contact <a href="mailto:qtbugs@trolltech.com">Trolltech</a> for more information.</p>
 <a name="full-integration"></a>
 <h2>Full Integration</h2>
-<p>It is also possible to do a full integration, taking the advantage of accelerated hardware, but this requires a custom <a href="http://www.khronos.org/egl/">EGL</a> implementation that is tailored for the given platform. Please contact <a href="mailto:qtbugs@trolltech.com">Trolltech</a> for more information.</p>
+<p>It is also possible to do a full integration, taking the advantage of accelerated hardware. This requires creating a custom driver using the screen driver framework. See the <a href="qtopiacore-svgalib.html">Accelerated Screen Driver Example</a> for more information on the screen driver framework and the OpenGL ES Screen Driver Example for an example OpenGL ES integration.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
 </tr></table></div></address></body>
 </html>

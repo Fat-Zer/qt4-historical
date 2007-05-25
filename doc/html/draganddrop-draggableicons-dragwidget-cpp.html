@@ -3,7 +3,7 @@
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>Qt 4.2: dragwidget.cpp Example File (draganddrop/draggableicons/dragwidget.cpp)</title>
+  <title>Qt 4.3: dragwidget.cpp Example File (draganddrop/draggableicons/dragwidget.cpp)</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -79,6 +79,20 @@
      }
  }
 
+ void DragWidget::dragMoveEvent(QDragMoveEvent *event)
+ {
+     if (event-&gt;mimeData()-&gt;hasFormat(&quot;application/x-dnditemdata&quot;)) {
+         if (event-&gt;source() == this) {
+             event-&gt;setDropAction(Qt::MoveAction);
+             event-&gt;accept();
+         } else {
+             event-&gt;acceptProposedAction();
+         }
+     } else {
+         event-&gt;ignore();
+     }
+ }
+
  void DragWidget::dropEvent(QDropEvent *event)
  {
      if (event-&gt;mimeData()-&gt;hasFormat(&quot;application/x-dnditemdata&quot;)) {
@@ -134,7 +148,7 @@
 
      child-&gt;setPixmap(tempPixmap);
 
-     if (drag-&gt;start(Qt::CopyAction | Qt::MoveAction) == Qt::MoveAction)
+     if (drag-&gt;exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction) == Qt::MoveAction)
          child-&gt;close();
      else {
          child-&gt;show();
@@ -145,6 +159,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
 </tr></table></div></address></body>
 </html>

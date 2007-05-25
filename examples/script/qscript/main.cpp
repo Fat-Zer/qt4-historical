@@ -1,0 +1,122 @@
+/****************************************************************************
+**
+** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
+**
+** This file is part of the example classes of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
+**
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+
+#include <qscriptengine.h>
+
+#include <QtCore/QFile>
+#include <QtCore/QTextStream>
+#include <QtCore/QStringList>
+
+#include <stdlib.h>
+
+static void interactive(QScriptEngine &eng)
+{
+    QTextStream qin(stdin, QFile::ReadOnly);
+
+    const char *qscript_prompt = "qs> ";
+    const char *dot_prompt = ".... ";
+    const char *prompt = qscript_prompt;
+
+    QString code;
+
+    forever {
+        QString line;
+
+        printf("%s", prompt);
+        fflush(stdout);
+
+        line = qin.readLine();
+        if (line.isNull())
+            break;
+
+        code += line;
+        code += QLatin1Char('\n');
+
+        if (line.trimmed().isEmpty()) {
+            continue;
+
+        } else if (! eng.canEvaluate(code)) {
+            prompt = dot_prompt;
+
+        } else {
+            QScriptValue result = eng.evaluate(code, QLatin1String("typein"));
+
+            code.clear();
+            prompt = qscript_prompt;
+
+            if (! result.isUndefined())
+                fprintf(stderr, "%s\n", qPrintable(result.toString()));
+        }
+    }
+}
+
+int main(int, char *argv[])
+{
+    QScriptEngine eng;
+    QScriptValue globalObject = eng.globalObject();
+
+    if (! *++argv) {
+        interactive(eng);
+        return EXIT_SUCCESS;
+    }
+
+    while (const char *arg = *argv++) {
+        QString fn = QString::fromLocal8Bit(arg);
+
+        if (fn == QLatin1String("-i")) {
+            interactive(eng);
+            break;
+        }
+
+        QString contents;
+
+        if (fn == QLatin1String("-")) {
+            QTextStream stream(stdin, QFile::ReadOnly);
+            contents = stream.readAll();
+        }
+
+        else {
+            QFile file(fn);
+
+            if (file.open(QFile::ReadOnly)) {
+                QTextStream stream(&file);
+                contents = stream.readAll();
+                file.close();
+            }
+        }
+
+        if (contents.isEmpty())
+            continue;
+
+        QScriptValue r = eng.evaluate(contents, fn);
+        if (eng.hasUncaughtException()) {
+            QStringList backtrace = eng.uncaughtExceptionBacktrace();
+            fprintf (stderr, "    %s\n%s\n\n", qPrintable(r.toString()),
+                     qPrintable(backtrace.join("\n")));
+            return EXIT_FAILURE;
+        }
+    }
+
+    return EXIT_SUCCESS;
+}

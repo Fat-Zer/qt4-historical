@@ -41,12 +41,14 @@ public:
     ~QSqlQueryPrivate();
     QAtomic ref;
     QSqlResult* sqlResult;
+    QSql::NumericalPrecisionPolicy precisionPolicy;
 
-    Q_GLOBAL_STATIC_WITH_ARGS(QSqlQueryPrivate, nullQueryPrivate, (0))
-    Q_GLOBAL_STATIC(QSqlNullDriver, nullDriver)
-    Q_GLOBAL_STATIC_WITH_ARGS(QSqlNullResult, nullResult, (nullDriver()))
     static QSqlQueryPrivate* shared_null();
 };
+
+Q_GLOBAL_STATIC_WITH_ARGS(QSqlQueryPrivate, nullQueryPrivate, (0))
+Q_GLOBAL_STATIC(QSqlNullDriver, nullDriver)
+Q_GLOBAL_STATIC_WITH_ARGS(QSqlNullResult, nullResult, (nullDriver()))
 
 QSqlQueryPrivate* QSqlQueryPrivate::shared_null()
 {
@@ -58,7 +60,8 @@ QSqlQueryPrivate* QSqlQueryPrivate::shared_null()
 /*!
 \internal
 */
-QSqlQueryPrivate::QSqlQueryPrivate(QSqlResult* result): ref(1), sqlResult(result)
+QSqlQueryPrivate::QSqlQueryPrivate(QSqlResult* result)
+    : ref(1), sqlResult(result), precisionPolicy(QSql::HighPrecision)
 {
     if (!sqlResult)
         sqlResult = nullResult();
@@ -203,8 +206,12 @@ QSqlQueryPrivate::~QSqlQueryPrivate()
     Note that unbound parameters will retain their values.
 
     Stored procedures that uses the return statement to return values,
-    or return multiple result sets, are not fully supported. For specific 
+    or return multiple result sets, are not fully supported. For specific
     details see \l{SQL Database Drivers}.
+
+    \warning You must load the SQL driver and open the connection before a
+    QSqlQuery is created. Also, the connection must remain open while the
+    query exists; otherwise, the behavior of QSqlQuery is undefined.
 
     \sa QSqlDatabase, QSqlQueryModel, QSqlTableModel, QVariant
 */
@@ -337,12 +344,14 @@ bool QSqlQuery::exec(const QString& query)
     if (d->ref != 1) {
         bool fo = isForwardOnly();
         *this = QSqlQuery(driver()->createResult());
+        d->sqlResult->setNumericalPrecisionPolicy(d->precisionPolicy);
         setForwardOnly(fo);
     } else {
         d->sqlResult->clear();
         d->sqlResult->setActive(false);
         d->sqlResult->setLastError(QSqlError());
         d->sqlResult->setAt(QSql::BeforeFirstRow);
+        d->sqlResult->setNumericalPrecisionPolicy(d->precisionPolicy);
     }
     d->sqlResult->setQuery(query.trimmed());
     if (!driver()->isOpen() || driver()->isOpenError()) {
@@ -856,10 +865,12 @@ bool QSqlQuery::prepare(const QString& query)
         bool fo = isForwardOnly();
         *this = QSqlQuery(driver()->createResult());
         setForwardOnly(fo);
+        d->sqlResult->setNumericalPrecisionPolicy(d->precisionPolicy);
     } else {
         d->sqlResult->setActive(false);
         d->sqlResult->setLastError(QSqlError());
         d->sqlResult->setAt(QSql::BeforeFirstRow);
+        d->sqlResult->setNumericalPrecisionPolicy(d->precisionPolicy);
     }
     if (!driver()) {
         qWarning("QSqlQuery::prepare: no driver");
@@ -1081,10 +1092,46 @@ QString QSqlQuery::executedQuery() const
     If more than one row was touched by the insert, the behavior is
     undefined.
 
+    Note that for Oracle databases the row's ROWID will be returned,
+    while for MySQL databases the row's auto-increment field will
+    be returned.
+
     \sa QSqlDriver::hasFeature()
 */
 QVariant QSqlQuery::lastInsertId() const
 {
     return d->sqlResult->lastInsertId();
+}
+
+/*!
+    Instruct the database driver to return numerical values with a precision specified by
+    \a precisionPolicy.
+
+    The Oracle driver, for example, retrieves numerical values as strings by default to
+    prevent the loss of precision. If the high precision doesn't matter, use this method
+    to increase execution speed by bypassing string conversions.
+
+    Note: Drivers that don't support fetching numerical values with low precision will
+    ignore the precision policy. You can use QSqlDriver::hasFeature() to find out whether a
+    driver supports this feature.
+
+    Note: Setting the precision policy doesn't affect the currently active query. Call
+    \l{exec()}{exec(QString)} or prepare() in order to activate the policy.
+
+    \sa QSql::NumericalPrecisionPolicy, numericalPrecisionPolicy()
+*/
+void QSqlQuery::setNumericalPrecisionPolicy(QSql::NumericalPrecisionPolicy precisionPolicy)
+{
+    d->precisionPolicy = precisionPolicy;
+}
+
+/*!
+    Returns the current precision policy.
+
+    \sa QSql::NumericalPrecisionPolicy, setNumericalPrecisionPolicy()
+*/
+QSql::NumericalPrecisionPolicy QSqlQuery::numericalPrecisionPolicy() const
+{
+    return d->precisionPolicy;
 }
 

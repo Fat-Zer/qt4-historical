@@ -36,9 +36,12 @@
 class QProgressBarPrivate : public QWidgetPrivate
 {
     Q_DECLARE_PUBLIC(QProgressBar)
+
 public:
     QProgressBarPrivate();
+
     void init();
+    inline void resetLayoutItemMargins();
 
     int minimum;
     int maximum;
@@ -50,7 +53,6 @@ public:
     bool invertedAppearance;
     QProgressBar::Direction textDirection;
     QString format;
-    QStyleOptionProgressBarV2 getStyleOption() const;
     inline int bound(int val) const { return qMax(minimum-1, qMin(maximum, val)); }
     bool repaintRequired() const;
 };
@@ -70,24 +72,48 @@ void QProgressBarPrivate::init()
         sp.transpose();
     q->setSizePolicy(sp);
     q->setAttribute(Qt::WA_WState_OwnSizePolicy, false);
+    resetLayoutItemMargins();
 }
 
-QStyleOptionProgressBarV2 QProgressBarPrivate::getStyleOption() const
+void QProgressBarPrivate::resetLayoutItemMargins()
 {
-    QStyleOptionProgressBarV2 opt;
-    opt.init(q_func());
+    Q_Q(QProgressBar);
+    QStyleOptionProgressBar option;
+    q->initStyleOption(&option);
+    setLayoutItemMargins(QStyle::SE_ProgressBarLayoutItem, &option);
+}
 
-    opt.minimum = minimum;
-    opt.maximum = maximum;
-    opt.progress = value;
-    opt.textAlignment = alignment;
-    opt.textVisible = textVisible;
-    opt.text = q_func()->text();
-    opt.orientation = orientation;
-    opt.invertedAppearance = invertedAppearance;
-    opt.bottomToTop = (textDirection == QProgressBar::BottomToTop);
+/*!
+    Initialize \a option with the values from this QProgressBar. This method is useful
+    for subclasses when they need a QStyleOptionProgressBar or QStyleOptionProgressBarV2,
+    but don't want to fill in all the information themselves. This function will check the version
+    of the QStyleOptionProgressBar and fill in the additional values for a
+    QStyleOptionProgressBarV2.
 
-    return opt;
+    \sa QStyleOption::initFrom()
+*/
+void QProgressBar::initStyleOption(QStyleOptionProgressBar *option) const
+{
+    if (!option)
+        return;
+    Q_D(const QProgressBar);
+    option->initFrom(this);
+
+    if (d->orientation == Qt::Horizontal)
+        option->state |= QStyle::State_Horizontal;
+    option->minimum = d->minimum;
+    option->maximum = d->maximum;
+    option->progress = d->value;
+    option->textAlignment = d->alignment;
+    option->textVisible = d->textVisible;
+    option->text = text();
+
+    if (QStyleOptionProgressBarV2 *optionV2
+            = qstyleoption_cast<QStyleOptionProgressBarV2 *>(option)) {
+        optionV2->orientation = d->orientation;  // ### Qt 5: use State_Horizontal instead
+        optionV2->invertedAppearance = d->invertedAppearance;
+        optionV2->bottomToTop = (d->textDirection == QProgressBar::BottomToTop);
+    }
 }
 
 bool QProgressBarPrivate::repaintRequired() const
@@ -99,12 +125,19 @@ bool QProgressBarPrivate::repaintRequired() const
     int valueDifference = qAbs(value - lastPaintedValue);
 
     // Check if the text needs to be repainted
-    if ((value == minimum || value == maximum)
-            || (textVisible && valueDifference >= qAbs((maximum - minimum) / 100)))
+    if (value == minimum || value == maximum)
         return true;
+    if (textVisible) {
+        if ((format.contains(QLatin1String("%v"))))
+            return true;
+        if ((format.contains(QLatin1String("%p"))
+             && valueDifference >= qAbs((maximum - minimum) / 100)))
+            return true;
+    }
 
     // Check if the bar needs to be repainted
-    QStyleOptionProgressBarV2 opt = getStyleOption();
+    QStyleOptionProgressBarV2 opt;
+    q->initStyleOption(&opt);
     int cw = q->style()->pixelMetric(QStyle::PM_ProgressBarChunkWidth, &opt, q);
     QRect groove  = q->style()->subElementRect(QStyle::SE_ProgressBarGroove, &opt, q);
     // This expression is basically
@@ -209,7 +242,7 @@ void QProgressBar::reset()
 
     When setting this property, the \l maximum is adjusted if
     necessary to ensure that the range remains valid. If the
-    current value falls outside the new range, the progressbar is reset
+    current value falls outside the new range, the progress bar is reset
     with reset().
 */
 void QProgressBar::setMinimum(int minimum)
@@ -229,7 +262,7 @@ int QProgressBar::minimum() const
 
     When setting this property, the \l minimum is adjusted if
     necessary to ensure that the range remains valid. If the
-    current value falls outside the new range, the progressbar is reset
+    current value falls outside the new range, the progress bar is reset
     with reset().
 */
 
@@ -272,13 +305,13 @@ int QProgressBar::value() const
 }
 
 /*!
-    Sets the progressbar's minimum and maximum values to \a minimum and
+    Sets the progress bar's minimum and maximum values to \a minimum and
     \a maximum respectively.
 
     If \a maximum is smaller than \a minimum, \a minimum becomes the only
     legal value.
 
-    If the current value falls outside the new range, the progressbar is reset
+    If the current value falls outside the new range, the progress bar is reset
     with reset().
 
     \sa minimum maximum
@@ -334,7 +367,8 @@ Qt::Alignment QProgressBar::alignment() const
 void QProgressBar::paintEvent(QPaintEvent *)
 {
     QStylePainter paint(this);
-    QStyleOptionProgressBarV2 opt = d_func()->getStyleOption();
+    QStyleOptionProgressBarV2 opt;
+    initStyleOption(&opt);
     paint.drawControl(QStyle::CE_ProgressBar, opt);
     d_func()->lastPaintedValue = d_func()->value;
 }
@@ -346,7 +380,8 @@ QSize QProgressBar::sizeHint() const
 {
     ensurePolished();
     QFontMetrics fm = fontMetrics();
-    QStyleOptionProgressBarV2 opt = d_func()->getStyleOption();
+    QStyleOptionProgressBarV2 opt;
+    initStyleOption(&opt);
     int cw = style()->pixelMetric(QStyle::PM_ProgressBarChunkWidth, &opt, this);
     QSize size = QSize(cw * 7 + fm.width(QLatin1Char('0')) * 4, fm.height() + 8);
     if (opt.orientation == Qt::Vertical)
@@ -389,7 +424,7 @@ QString QProgressBar::text() const
             || (d->value == INT_MIN && d->minimum == INT_MIN))
         return QString();
 
-    int totalSteps = d->maximum - d->minimum;
+    qint64 totalSteps = qint64(d->maximum) - qint64(d->minimum);
 
     QString result = d->format;
     result.replace(QLatin1String("%m"), QString::fromLatin1("%1").arg(totalSteps));
@@ -403,14 +438,8 @@ QString QProgressBar::text() const
         return result;
     }
 
-    int progress = d->value - d->minimum;
-    // Get the values down to something usable.
-    if (totalSteps > INT_MAX / 1000) {
-        progress /= 1000;
-        totalSteps /= 1000;
-    }
-
-    result.replace(QLatin1String("%p"), QString::fromLatin1("%1").arg((progress * 100) / totalSteps));
+    int progress = int(((qreal(d->value) - qreal(d->minimum)) * 100.0) / totalSteps);
+    result.replace(QLatin1String("%p"), QString::fromLatin1("%1").arg(progress));
     return result;
 }
 
@@ -437,6 +466,7 @@ void QProgressBar::setOrientation(Qt::Orientation orientation)
         setSizePolicy(sp);
         setAttribute(Qt::WA_WState_OwnSizePolicy, false);
     }
+    d->resetLayoutItemMargins();
     update();
     updateGeometry();
 }
@@ -498,6 +528,13 @@ QProgressBar::Direction QProgressBar::textDirection()
 /*! \reimp */
 bool QProgressBar::event(QEvent *e)
 {
+    Q_D(QProgressBar);
+    if (e->type() == QEvent::StyleChange
+#ifdef Q_WS_MAC
+            || e->type() == QEvent::MacSizeChange
+#endif
+            )
+        d->resetLayoutItemMargins();
     return QWidget::event(e);
 }
 
@@ -517,7 +554,10 @@ bool QProgressBar::event(QEvent *e)
 void QProgressBar::setFormat(const QString &format)
 {
     Q_D(QProgressBar);
+    if (d->format == format)
+        return;
     d->format = format;
+    update();
 }
 
 QString QProgressBar::format() const

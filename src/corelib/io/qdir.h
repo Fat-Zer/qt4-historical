@@ -114,12 +114,18 @@ public:
 
     static void addResourceSearchPath(const QString &path);
 
+    static void setSearchPaths(const QString &prefix, const QStringList &searchPaths);
+    static void addSearchPath(const QString &prefix, const QString &path);
+    static QStringList searchPaths(const QString &prefix);
+
     QString dirName() const;
     QString filePath(const QString &fileName) const;
     QString absoluteFilePath(const QString &fileName) const;
     QString relativeFilePath(const QString &fileName) const;
 
+#ifdef QT_DEPRECATED
     QT_DEPRECATED static QString convertSeparators(const QString &pathName);
+#endif
     static QString toNativeSeparators(const QString &pathName);
     static QString fromNativeSeparators(const QString &pathName);
 
@@ -225,7 +231,7 @@ public:
 Q_DECLARE_OPERATORS_FOR_FLAGS(QDir::Filters)
 Q_DECLARE_OPERATORS_FOR_FLAGS(QDir::SortFlags)
 
-#ifndef QT_NO_DEBUG
+#ifndef QT_NO_DEBUG_STREAM
 class QDebug;
 Q_CORE_EXPORT QDebug operator<<(QDebug debug, QDir::Filters filters);
 Q_CORE_EXPORT QDebug operator<<(QDebug debug, const QDir &dir);

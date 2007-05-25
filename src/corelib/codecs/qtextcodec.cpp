@@ -473,8 +473,7 @@ static void setupLocaleMapper()
 static void setup()
 {
 #ifndef QT_NO_THREAD
-    QMutexLocker locker(qt_global_mutexpool ?
-                        qt_global_mutexpool->get(&all) : 0);
+    QMutexLocker locker(QMutexPool::globalInstanceGet(&all));
 #endif
 
     if (all)
@@ -1031,7 +1030,6 @@ QString QTextCodec::toUnicode(const QByteArray& a) const
     return convertToUnicode(a.constData(), a.length(), 0);
 }
 
-
 /*!
     Returns true if the Unicode character \a ch can be fully encoded
     with this codec; otherwise returns false.
@@ -1219,6 +1217,30 @@ QString QTextDecoder::toUnicode(const char *chars, int len)
     return c->toUnicode(chars, len, &state);
 }
 
+
+/*! \overload
+
+    The converted string is returned in \a target.
+ */
+void QTextDecoder::toUnicode(QString *target, const char *chars, int len)
+{
+    Q_ASSERT(target);
+    switch (c->mibEnum()) {
+    case 106: // utf8
+        static_cast<const QUtf8Codec*>(c)->convertToUnicode(target, chars, len, &state);
+        break;
+    case 4: { // latin1
+        target->resize(len);
+        ushort *data = (ushort*)target->data();
+        for (int i = len; i >=0; --i)
+            data[i] = (uchar) chars[i];
+    } break;
+    default:
+        *target = c->toUnicode(chars, len, &state);
+    }
+}
+
+
 /*!
     \overload
 
@@ -1334,6 +1356,17 @@ QTextCodec *QTextCodec::codecForHtml(const QByteArray &ba)
         c = QTextCodec::codecForMib(mib);
 
     return c;
+}
+
+/*! \internal
+    \since 4.3
+    Determines whether the decoder encountered a failure while decoding the input. If
+    an error was encountered, the produced result is undefined, and gets converted as according
+    to the conversion flags.
+ */
+bool QTextDecoder::hasFailure() const
+{
+    return state.invalidChars != 0;
 }
 
 /*!

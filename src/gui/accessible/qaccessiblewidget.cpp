@@ -25,14 +25,16 @@
 
 #ifndef QT_NO_ACCESSIBILITY
 
+#include "qaction.h"
 #include "qapplication.h"
 #include "qgroupbox.h"
 #include "qlabel.h"
 #include "qtooltip.h"
 #include "qwhatsthis.h"
 #include "qwidget.h"
-
-#include <math.h>
+#include "private/qmath_p.h"
+#include <QRubberBand>
+#include <QtGui/QFocusFrame>
 
 static QList<QWidget*> childWidgets(const QWidget *widget)
 {
@@ -40,7 +42,7 @@ static QList<QWidget*> childWidgets(const QWidget *widget)
     QList<QWidget*> widgets;
     for (int i = 0; i < list.size(); ++i) {
         QWidget *w = qobject_cast<QWidget *>(list.at(i));
-        if (w && !w->isWindow())
+        if (w && !w->isWindow() && !qobject_cast<QFocusFrame*>(w))
             widgets.append(w);
     }
     return widgets;
@@ -200,6 +202,8 @@ QObject *QAccessibleWidget::parentObject() const
 int QAccessibleWidget::childAt(int x, int y) const
 {
     QWidget *w = widget();
+    if (!w->isVisible())
+        return -1;
     QPoint gp = w->mapToGlobal(QPoint(0, 0));
     if (!QRect(gp.x(), gp.y(), w->width(), w->height()).contains(x, y))
         return -1;
@@ -223,16 +227,20 @@ int QAccessibleWidget::childAt(int x, int y) const
             return i + 1;
         }
     }
-    return -1;
+    return 0;
 }
 
 /*! \reimp */
 QRect QAccessibleWidget::rect(int child) const
 {
-    if (child)
-        qWarning("QAccessibleWidget::rect: This implementation does not support subelements! (ID %d unknown for %s)", child, widget()->metaObject()->className());
+    if (child) {
+        qWarning("QAccessibleWidget::rect: This implementation does not support subelements! "
+                 "(ID %d unknown for %s)", child, widget()->metaObject()->className());
+    }
 
     QWidget *w = widget();
+    if (!w->isVisible())
+        return QRect();
     QPoint wpos = w->mapToGlobal(QPoint(0, 0));
 
     return QRect(wpos.x(), wpos.y(), w->width(), w->height());
@@ -566,7 +574,7 @@ int QAccessibleWidget::navigate(RelationFlag relation, int entry,
 		    break;
                 }
 
-                int dist = (int)sqrt((double)distp.x() * distp.x() + distp.y() * distp.y());
+                int dist = (int)qSqrt((qreal)distp.x() * distp.x() + distp.y() * distp.y());
                 if (dist < mindist) {
                     delete candidate;
                     candidate = sibling;
@@ -592,7 +600,6 @@ int QAccessibleWidget::navigate(RelationFlag relation, int entry,
             QAccessibleInterface *sibling = 0;
             for (int i = pIface->indexOfChild(this) + 1; i <= sibCount && entry; ++i) {
                 pIface->navigate(Child, i, &sibling);
-                Q_ASSERT(sibling);
                 if (!sibling || (sibling->state(0) & Invisible)) {
                     delete sibling;
                     sibling = 0;
@@ -736,6 +743,7 @@ int QAccessibleWidget::navigate(RelationFlag relation, int entry,
     default:
         break;
     }
+
     *target = QAccessible::queryAccessibleInterface(targetObject);
     return *target ? 0 : -1;
 }
@@ -813,11 +821,39 @@ QString QAccessibleWidget::text(Text t, int child) const
     return str;
 }
 
+#ifndef QT_NO_ACTION
+
+/*! \reimp */
+int QAccessibleWidget::userActionCount(int child) const
+{
+    if (child)
+        return 0;
+    return widget()->actions().count();
+}
+
 /*! \reimp */
 QString QAccessibleWidget::actionText(int action, Text t, int child) const
 {
     if (action == DefaultAction)
         action = SetFocus;
+
+    if (action > 0 && !child) {
+        QAction *act = widget()->actions().value(action - 1);
+        if (act) {
+            switch (t) {
+            case Name:
+                return act->text();
+            case Description:
+                return act->toolTip();
+#ifndef QT_NO_SHORTCUT
+            case Accelerator:
+                return act->shortcut().toString();
+#endif
+            default:
+                break;
+            }
+        }
+    }
 
     return QAccessibleObject::actionText(action, t, child);
 }
@@ -835,15 +871,34 @@ bool QAccessibleWidget::doAction(int action, int child, const QVariantList &para
         else
             return false;
         return true;
+    } else if (action > 0) {
+        if (QAction *act = widget()->actions().value(action - 1)) {
+            act->trigger();
+            return true;
+        }
     }
     return QAccessibleObject::doAction(action, child, params);
 }
+
+#endif // QT_NO_ACTION
 
 /*! \reimp */
 QAccessible::Role QAccessibleWidget::role(int child) const
 {
     if (!child)
         return d->role;
+
+    QWidgetList childList = childWidgets(widget());
+    if (childList.count() > 0 && child <= childList.count()) {
+        QWidget *targetWidget = childList.at(child - 1);
+        QAccessibleInterface *iface = QAccessible::queryAccessibleInterface(targetWidget);
+        if (iface) {
+            QAccessible::Role role = iface->role(0);
+            delete iface;
+            return role;
+        }
+    }
+
     return NoRole;
 }
 
@@ -929,5 +984,25 @@ void QAccessibleWidgetEx::setHelp(const QString &help)
 { reinterpret_cast<QAccessibleWidget *>(this)->QAccessibleWidget::setHelp(help); }
 void QAccessibleWidgetEx::setAccelerator(const QString &accel)
 { reinterpret_cast<QAccessibleWidget *>(this)->QAccessibleWidget::setAccelerator(accel); }
+
+QVariant QAccessibleWidgetEx::invokeMethodEx(Method method, int child, const QVariantList & /*params*/)
+{
+    if (child)
+        return QVariant();
+
+    switch (method) {
+    case ListSupportedMethods: {
+        QSet<QAccessible::Method> set;
+        set << ListSupportedMethods << ForegroundColor << BackgroundColor;
+        return qVariantFromValue(set);
+    }
+    case ForegroundColor:
+        return widget()->palette().color(widget()->foregroundRole());
+    case BackgroundColor:
+        return widget()->palette().color(widget()->backgroundRole());
+    default:
+        return QVariant();
+    }
+}
 
 #endif //QT_NO_ACCESSIBILITY

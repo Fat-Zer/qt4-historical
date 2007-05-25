@@ -25,14 +25,15 @@
 #define CPPWRITEINCLUDES_H
 
 #include "treewalker.h"
+
+#include <QHash>
 #include <QMap>
+#include <QSet>
 #include <QString>
 
 class QTextStream;
 class Driver;
 class Uic;
-
-struct Option;
 
 namespace CPP {
 
@@ -44,6 +45,8 @@ struct WriteIncludes : public TreeWalker
     void acceptWidget(DomWidget *node);
     void acceptLayout(DomLayout *node);
     void acceptSpacer(DomSpacer *node);
+    void acceptProperty(DomProperty *node);
+    void acceptWidgetScripts(const DomScripts &, DomWidget *, const DomWidgets &);
 
 //
 // custom widgets
@@ -57,19 +60,32 @@ struct WriteIncludes : public TreeWalker
     void acceptIncludes(DomIncludes *node);
     void acceptInclude(DomInclude *node);
 
-private:
-    void add(const QString &className);
+    bool scriptsActivated() const { return m_scriptsActivated; }
 
 private:
-    Uic *uic;
-    Driver *driver;
-    QTextStream &output;
-    const Option &option;
+    void add(const QString &className, const QString &header = QString(), bool global = false);
 
-    QMap<QString, bool> m_includes;
-    QMap<QString, bool> m_customWidgets;
-    QMap<QString, QString> m_classToHeader;
-    QMap<QString, QString> m_oldHeaderToNewHeader;
+private:
+    typedef QMap<QString, bool> OrderedSet;
+    void insertIncludeForClass(const QString &className, QString header = QString(), bool global = false);
+    void insertInclude(const QString &header, bool global);
+    void writeHeaders(const OrderedSet &headers, bool global);
+    QString headerForClassName(const QString &className) const;
+    void activateScripts();
+
+    const Uic *m_uic;
+    QTextStream &m_output;
+
+    OrderedSet m_localIncludes;
+    OrderedSet m_globalIncludes;
+    QSet<QString> m_includeBaseNames;
+
+    QSet<QString> m_knownClasses;
+
+    typedef QHash<QString, QString> StringMap;
+    StringMap m_classToHeader;
+    StringMap m_oldHeaderToNewHeader;
+    bool m_scriptsActivated;
 };
 
 } // namespace CPP

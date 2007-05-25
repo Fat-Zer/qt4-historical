@@ -36,25 +36,14 @@
 #define QDESIGNER_WIDGET_H
 
 #include "shared_global_p.h"
-#include "layoutdecoration.h"
-
-#include <QtDesigner/QDesignerMetaDataBaseInterface>
-
-#include <QtCore/QPointer>
-#include <QtCore/QPair>
-
-#include <QtGui/QGridLayout>
-#include <QtGui/QWidget>
 #include <QtGui/QDialog>
 #include <QtGui/QLabel>
-#include <QtGui/QPixmap>
 
 class QDesignerFormWindowInterface;
-class QAction;
-class QLayoutItem;
-class QVBoxLayout;
-class QHBoxLayout;
-class QGridLayout;
+
+namespace qdesigner_internal {
+    class FormWindowBase;
+}
 
 class QDESIGNER_SHARED_EXPORT QDesignerWidget : public QWidget
 {
@@ -63,64 +52,35 @@ public:
     QDesignerWidget(QDesignerFormWindowInterface* formWindow, QWidget *parent = 0);
     virtual ~QDesignerWidget();
 
-    inline QDesignerFormWindowInterface* formWindow() const
-    { return m_formWindow; }
+    QDesignerFormWindowInterface* formWindow() const;
 
     void updatePixmap();
+
+    virtual QSize minimumSizeHint() const
+    { return QWidget::minimumSizeHint().expandedTo(QSize(16, 16)); }
 
 protected:
     virtual void paintEvent(QPaintEvent *e);
     virtual void dragEnterEvent(QDragEnterEvent *e);
 
 private:
-    QDesignerFormWindowInterface* m_formWindow;
-    uint need_frame : 1;
-    QPixmap grid;
+    qdesigner_internal::FormWindowBase* m_formWindow;
 };
 
 class QDESIGNER_SHARED_EXPORT QDesignerDialog : public QDialog
 {
     Q_OBJECT
 public:
-    QDesignerDialog(QDesignerFormWindowInterface *fw, QWidget *parent)
-        : QDialog(parent), m_formWindow(fw) {}
+    QDesignerDialog(QDesignerFormWindowInterface *fw, QWidget *parent);
+
+    virtual QSize minimumSizeHint() const
+    { return QWidget::minimumSizeHint().expandedTo(QSize(16, 16)); }
 
 protected:
     void paintEvent(QPaintEvent *e);
 
 private:
-    QDesignerFormWindowInterface *m_formWindow;
-};
-
-class QDESIGNER_SHARED_EXPORT QDesignerLabel : public QLabel
-{
-    Q_OBJECT
-    Q_PROPERTY(QByteArray buddy READ buddy WRITE setBuddy)
-public:
-    QDesignerLabel(QWidget *parent = 0);
-
-    inline void setBuddy(const QByteArray &b)
-    {
-        myBuddy = b;
-        updateBuddy();
-    }
-
-    inline QByteArray buddy() const
-    { return myBuddy; }
-
-    void setBuddy(QWidget *widget);
-
-protected:
-    void showEvent(QShowEvent *e)
-    {
-        QLabel::showEvent(e);
-        updateBuddy();
-    }
-
-private:
-    void updateBuddy();
-
-    QByteArray myBuddy;
+    qdesigner_internal::FormWindowBase* m_formWindow;
 };
 
 class QDESIGNER_SHARED_EXPORT Line : public QFrame

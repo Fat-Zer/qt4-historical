@@ -47,7 +47,7 @@ public:
 
     QItemSelection expandSelection(const QItemSelection &selection,
                                    QItemSelectionModel::SelectionFlags command) const;
-    
+
     void _q_rowsAboutToBeRemoved(const QModelIndex &parent, int start, int end);
     void _q_columnsAboutToBeRemoved(const QModelIndex &parent, int start, int end);
     void _q_rowsAboutToBeInserted(const QModelIndex &parent, int start, int end);
@@ -65,7 +65,8 @@ public:
     inline void finalize()
     {
         ranges.merge(currentSelection, currentCommand);
-        currentSelection.clear();
+        if (!currentSelection.isEmpty())  // ### perhaps this should be in QList
+            currentSelection.clear();
     }
 
     QPointer<QAbstractItemModel> model;

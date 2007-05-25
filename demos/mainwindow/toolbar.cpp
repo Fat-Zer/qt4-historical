@@ -28,6 +28,8 @@
 #include <QPainter>
 #include <QPainterPath>
 #include <QSpinBox>
+#include <QLabel>
+#include <QToolTip>
 
 #include <stdlib.h>
 
@@ -50,11 +52,12 @@ static QPixmap genIcon(const QSize &iconSize, const QString &, const QColor &col
 static QPixmap genIcon(const QSize &iconSize, int number, const QColor &color)
 { return genIcon(iconSize, QString::number(number), color); }
 
-ToolBar::ToolBar(QWidget *parent)
+ToolBar::ToolBar(const QString &title, QWidget *parent)
     : QToolBar(parent), spinbox(0), spinboxAction(0)
 {
-    setWindowTitle(tr("Main Tool Bar"));
-    setObjectName("MainToolBar");
+    tip = 0;
+    setWindowTitle(title);
+    setObjectName(title);
 
     setIconSize(QSize(32, 32));
 
@@ -144,11 +147,14 @@ ToolBar::ToolBar(QWidget *parent)
     areaActions->addAction(topAction);
     areaActions->addAction(bottomAction);
 
+    toolBarBreakAction = new QAction(tr("Insert break"), this);
+    connect(toolBarBreakAction, SIGNAL(triggered(bool)), this, SLOT(insertToolBarBreak()));
+
     connect(movableAction, SIGNAL(triggered(bool)), areaActions, SLOT(setEnabled(bool)));
 
     connect(movableAction, SIGNAL(triggered(bool)), allowedAreasActions, SLOT(setEnabled(bool)));
 
-    menu = new QMenu(tr("&Toolbar"), this);
+    menu = new QMenu(title, this);
     menu->addAction(toggleViewAction());
     menu->addSeparator();
     menu->addAction(orderAction);
@@ -162,6 +168,8 @@ ToolBar::ToolBar(QWidget *parent)
     menu->addActions(allowedAreasActions->actions());
     menu->addSeparator();
     menu->addActions(areaActions->actions());
+    menu->addSeparator();
+    menu->addAction(toolBarBreakAction);
 
     connect(menu, SIGNAL(aboutToShow()), this, SLOT(updateMenu()));
 
@@ -315,3 +323,43 @@ void ToolBar::placeTop(bool p)
 
 void ToolBar::placeBottom(bool p)
 { place(Qt::BottomToolBarArea, p); }
+
+void ToolBar::insertToolBarBreak()
+{
+    QMainWindow *mainWindow = qobject_cast<QMainWindow *>(parentWidget());
+    Q_ASSERT(mainWindow != 0);
+
+    mainWindow->insertToolBarBreak(this);
+}
+
+void ToolBar::enterEvent(QEvent*)
+{
+/*
+    These labels on top of toolbars look darn ugly
+
+    if (tip == 0) {
+        tip = new QLabel(windowTitle(), this);
+        QPalette pal = tip->palette();
+        QColor c = Qt::black;
+        c.setAlpha(100);
+        pal.setColor(QPalette::Window, c);
+        pal.setColor(QPalette::Foreground, Qt::white);
+        tip->setPalette(pal);
+        tip->setAutoFillBackground(true);
+        tip->setMargin(3);
+        tip->setText(windowTitle());
+    }
+    QPoint c = rect().center();
+    QSize hint = tip->sizeHint();
+    tip->setGeometry(c.x() - hint.width()/2, c.y() - hint.height()/2,
+                        hint.width(), hint.height());
+
+    tip->show();
+*/
+}
+
+void ToolBar::leaveEvent(QEvent*)
+{
+    if (tip != 0)
+        tip->hide();
+}

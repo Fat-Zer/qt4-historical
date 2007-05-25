@@ -95,6 +95,8 @@ void QAbstractProxyModel::setSourceModel(QAbstractItemModel *sourceModel)
 QAbstractItemModel *QAbstractProxyModel::sourceModel() const
 {
     Q_D(const QAbstractProxyModel);
+    if (d->model == QAbstractItemModelPrivate::staticEmptyModel())
+        return 0;
     return d->model;
 }
 
@@ -179,6 +181,15 @@ QVariant QAbstractProxyModel::headerData(int section, Qt::Orientation orientatio
 {
     Q_D(const QAbstractProxyModel);
     return d->model->headerData(section, orientation, role);
+}
+
+/*!
+    \reimp
+ */
+QMap<int, QVariant> QAbstractProxyModel::itemData(const QModelIndex &proxyIndex) const
+{
+    Q_D(const QAbstractProxyModel);
+    return d->model->itemData(mapToSource(proxyIndex));
 }
 
 /*!

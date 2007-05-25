@@ -30,7 +30,7 @@
 QT_BEGIN_HEADER
 
 class DomWidget;
-class DomUi;
+class DomUI;
 class QWidget;
 
 class QDesignerFormEditorInterface;
@@ -43,8 +43,8 @@ public:
     virtual QDesignerFormEditorInterface *core() const = 0;
     virtual QWidget *widget() const = 0;
 
-    virtual bool saveUiExtraInfo(DomUi *ui) = 0;
-    virtual bool loadUiExtraInfo(DomUi *ui) = 0;
+    virtual bool saveUiExtraInfo(DomUI *ui) = 0;
+    virtual bool loadUiExtraInfo(DomUI *ui) = 0;
 
     virtual bool saveWidgetExtraInfo(DomWidget *ui_widget) = 0;
     virtual bool loadWidgetExtraInfo(DomWidget *ui_widget) = 0;
@@ -55,7 +55,7 @@ public:
 private:
     QString m_workingDirectory;
 };
-Q_DECLARE_EXTENSION_INTERFACE(QDesignerExtraInfoExtension, "com.trolltech.Qt.Designer.ExtraInfo")
+Q_DECLARE_EXTENSION_INTERFACE(QDesignerExtraInfoExtension, "com.trolltech.Qt.Designer.ExtraInfo.2")
 
 
 QT_END_HEADER

@@ -102,9 +102,7 @@ public:
     virtual ~QXmlAttributes() {}
 
     int index(const QString& qName) const;
-#ifdef Q_WS_QWS
     int index(const QLatin1String& qName) const;
-#endif
     int index(const QString& uri, const QString& localPart) const;
     int length() const;
     int count() const;
@@ -116,9 +114,7 @@ public:
     QString type(const QString& uri, const QString& localName) const;
     QString value(int index) const;
     QString value(const QString& qName) const;
-#ifdef Q_WS_QWS
     QString value(const QLatin1String& qName) const;
-#endif
     QString value(const QString& uri, const QString& localName) const;
 
     void clear();
@@ -347,6 +343,7 @@ public:
     virtual bool internalEntityDecl(const QString& name, const QString& value) = 0;
     virtual bool externalEntityDecl(const QString& name, const QString& publicId, const QString& systemId) = 0;
     virtual QString errorString() const = 0;
+    // ### Qt5: Conform to SAX by adding elementDecl
 };
 
 

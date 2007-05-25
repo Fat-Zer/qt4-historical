@@ -49,6 +49,15 @@ MainWindow::MainWindow()
     imageAction = rendererMenu->addAction(tr("&Image"));
     imageAction->setCheckable(true);
 
+    #ifndef QT_NO_OPENGL
+    rendererMenu->addSeparator();
+    highQualityAntialiasingAction = rendererMenu->addAction(tr("&High Quality Antialiasing"));
+    highQualityAntialiasingAction->setEnabled(false);
+    highQualityAntialiasingAction->setCheckable(true);
+    highQualityAntialiasingAction->setChecked(false);
+    connect(highQualityAntialiasingAction, SIGNAL(toggled(bool)), this, SLOT(setHighQualityAntialiasing(bool)));
+    #endif
+
     QActionGroup *rendererGroup = new QActionGroup(this);
     rendererGroup->addAction(nativeAction);
     #ifndef QT_NO_OPENGL
@@ -65,6 +74,11 @@ MainWindow::MainWindow()
 
     setCentralWidget(area);
     setWindowTitle(tr("SVG Viewer"));
+}
+
+void MainWindow::setHighQualityAntialiasing(bool highQualityAntialiasing)
+{
+    area->setHighQualityAntialiasing(highQualityAntialiasing);
 }
 
 void MainWindow::openFile(const QString &path)
@@ -87,11 +101,17 @@ void MainWindow::openFile(const QString &path)
 
 void MainWindow::setRenderer(QAction *action)
 {
+    #ifndef QT_NO_OPENGL
+    highQualityAntialiasingAction->setEnabled(false);
+    #endif
+
     if (action == nativeAction)
         area->setRenderer(SvgWindow::Native);
     #ifndef QT_NO_OPENGL
-    else if (action == glAction)
+    else if (action == glAction) {
         area->setRenderer(SvgWindow::OpenGL);
+        highQualityAntialiasingAction->setEnabled(true);
+    }
     #endif
     else if (action == imageAction)
         area->setRenderer(SvgWindow::Image);

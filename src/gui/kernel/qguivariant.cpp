@@ -33,6 +33,7 @@
 #include "qicon.h"
 #include "qimage.h"
 #include "qkeysequence.h"
+#include "qtransform.h"
 #include "qmatrix.h"
 #include "qpalette.h"
 #include "qpen.h"
@@ -93,6 +94,9 @@ static void construct(QVariant::Private *x, const void *copy)
 #endif
     case QVariant::Matrix:
         v_construct<QMatrix>(x, copy);
+        break;
+    case QVariant::Transform:
+        v_construct<QTransform>(x, copy);
         break;
     case QVariant::TextFormat:
         v_construct<QTextFormat>(x, copy);
@@ -177,6 +181,9 @@ static void clear(QVariant::Private *d)
     case QVariant::Matrix:
         v_clear<QMatrix>(d);
         break;
+    case QVariant::Transform:
+        v_clear<QTransform>(d);
+        break;
     case QVariant::TextFormat:
         v_clear<QTextFormat>(d);
         break;
@@ -255,8 +262,8 @@ static bool compare(const QVariant::Private *a, const QVariant::Private *b)
         return v_cast<QCursor>(a)->shape() == v_cast<QCursor>(b)->shape();
 #endif
     case QVariant::Bitmap:
-        return v_cast<QBitmap>(a)->serialNumber()
-            == v_cast<QBitmap>(b)->serialNumber();
+        return v_cast<QBitmap>(a)->cacheKey()
+            == v_cast<QBitmap>(b)->cacheKey();
     case QVariant::Polygon:
         return *v_cast<QPolygon>(a) == *v_cast<QPolygon>(b);
     case QVariant::Region:
@@ -264,7 +271,7 @@ static bool compare(const QVariant::Private *a, const QVariant::Private *b)
     case QVariant::Font:
         return *v_cast<QFont>(a) == *v_cast<QFont>(b);
     case QVariant::Pixmap:
-        return v_cast<QPixmap>(a)->serialNumber() == v_cast<QPixmap>(b)->serialNumber();
+        return v_cast<QPixmap>(a)->cacheKey() == v_cast<QPixmap>(b)->cacheKey();
     case QVariant::Image:
         return *v_cast<QImage>(a) == *v_cast<QImage>(b);
     case QVariant::Brush:
@@ -283,6 +290,8 @@ static bool compare(const QVariant::Private *a, const QVariant::Private *b)
 #endif
     case QVariant::Matrix:
         return *v_cast<QMatrix>(a) == *v_cast<QMatrix>(b);
+    case QVariant::Transform:
+        return *v_cast<QTransform>(a) == *v_cast<QTransform>(b);
     case QVariant::TextFormat:
         return *v_cast<QTextFormat>(a) == *v_cast<QTextFormat>(b);
     case QVariant::TextLength:
@@ -448,6 +457,9 @@ static void streamDebug(QDebug dbg, const QVariant &v)
     case QVariant::Matrix:
         dbg.nospace() << qvariant_cast<QMatrix>(v);
         break;
+    case QVariant::Transform:
+        dbg.nospace() << qvariant_cast<QTransform>(v);
+        break;
     case QVariant::Pixmap:
 //        dbg.nospace() << qvariant_cast<QPixmap>(v); //FIXME
         break;
@@ -566,6 +578,7 @@ Q_DECL_METATYPE_HELPER(QPen)
 Q_DECL_METATYPE_HELPER(QTextLength)
 Q_DECL_METATYPE_HELPER(QTextFormat)
 Q_DECL_METATYPE_HELPER(QMatrix)
+Q_DECL_METATYPE_HELPER(QTransform)
 
 #ifdef QT_NO_DATASTREAM
 #  define Q_IMPL_METATYPE_HELPER(TYPE) \
@@ -614,15 +627,25 @@ static const QMetaTypeGuiHelper qVariantGuiHelper[] = {
     Q_IMPL_METATYPE_HELPER(QPen),
     Q_IMPL_METATYPE_HELPER(QTextLength),
     Q_IMPL_METATYPE_HELPER(QTextFormat),
-    Q_IMPL_METATYPE_HELPER(QMatrix)
+    Q_IMPL_METATYPE_HELPER(QMatrix),
+    Q_IMPL_METATYPE_HELPER(QTransform)
 };
 
+static const QVariant::Handler *qt_guivariant_last_handler = 0;
 int qRegisterGuiVariant()
 {
+    qt_guivariant_last_handler = QVariant::handler;
     QVariant::handler = &qt_gui_variant_handler;
     qMetaTypeGuiHelper = qVariantGuiHelper;
-
     return 1;
 }
-
 Q_CONSTRUCTOR_FUNCTION(qRegisterGuiVariant)
+
+int qUnregisterGuiVariant()
+{
+    QVariant::handler = qt_guivariant_last_handler;
+    qMetaTypeGuiHelper = 0;
+    return 1;
+}
+Q_DESTRUCTOR_FUNCTION(qUnregisterGuiVariant)
+

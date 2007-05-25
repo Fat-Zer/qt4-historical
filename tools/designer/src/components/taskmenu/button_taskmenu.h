@@ -30,10 +30,10 @@
 #include <qdesigner_taskmenu_p.h>
 #include <QtDesigner/default_extensionfactory.h>
 
-class QLineEdit;
 class QDesignerFormWindowInterface;
 
 namespace qdesigner_internal {
+class InPlaceEditor;
 
 class ButtonTaskMenu: public QDesignerTaskMenu
 {
@@ -54,7 +54,7 @@ private slots:
 private:
     QAbstractButton *m_button;
     QPointer<QDesignerFormWindowInterface> m_formWindow;
-    QPointer<QLineEdit> m_editor;
+    QPointer<InPlaceEditor> m_editor;
     mutable QList<QAction*> m_taskActions;
     QAction *m_preferredEditAction;
 };

@@ -3,7 +3,7 @@
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>Qt 4.2: multipagewidgetplugin.cpp Example File (designer/containerextension/multipagewidgetplugin.cpp)</title>
+  <title>Qt 4.3: multipagewidgetplugin.cpp Example File (designer/containerextension/multipagewidgetplugin.cpp)</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -57,27 +57,27 @@
 
  QString MultiPageWidgetPlugin::name() const
  {
-     return QString(&quot;MultiPageWidget&quot;);
+     return QLatin1String(&quot;MultiPageWidget&quot;);
  }
 
  QString MultiPageWidgetPlugin::group() const
  {
-     return QString(&quot;Display Widgets [Examples]&quot;);
+     return QLatin1String(&quot;Display Widgets [Examples]&quot;);
  }
 
  QString MultiPageWidgetPlugin::toolTip() const
  {
-     return &quot;&quot;;
+     return QString();
  }
 
  QString MultiPageWidgetPlugin::whatsThis() const
  {
-     return &quot;&quot;;
+     return QString();
  }
 
  QString MultiPageWidgetPlugin::includeFile() const
  {
-     return QString(&quot;multipagewidget.h&quot;);
+     return QLatin1String(&quot;multipagewidget.h&quot;);
  }
 
  QIcon MultiPageWidgetPlugin::icon() const
@@ -121,7 +121,7 @@
 
  QString MultiPageWidgetPlugin::domXml() const
  {
-     return QString(&quot;\
+     return QLatin1String(&quot;\
      &lt;widget class=\&quot;MultiPageWidget\&quot; name=\&quot;multipagewidget\&quot;&gt;\
          &lt;widget class=\&quot;QWidget\&quot; name=\&quot;page\&quot; /&gt;\
      &lt;/widget&gt;\
@@ -130,10 +130,10 @@
 
  void MultiPageWidgetPlugin::currentIndexChanged(int index)
  {
+     Q_UNUSED(index);
      MultiPageWidget *widget = qobject_cast&lt;MultiPageWidget*&gt;(sender());
      if (widget) {
-         QDesignerFormWindowInterface *form;
-         form = QDesignerFormWindowInterface::findFormWindow(widget);
+         QDesignerFormWindowInterface *form = QDesignerFormWindowInterface::findFormWindow(widget);
          if (form)
              form-&gt;emitSelectionChanged();
      }
@@ -141,6 +141,7 @@
 
  void MultiPageWidgetPlugin::pageTitleChanged(const QString &amp;title)
  {
+     Q_UNUSED(title);
      MultiPageWidget *widget = qobject_cast&lt;MultiPageWidget*&gt;(sender());
      if (widget) {
          QWidget *page = widget-&gt;widget(widget-&gt;currentIndex());
@@ -151,7 +152,7 @@
              QExtensionManager *manager = editor-&gt;extensionManager();
              QDesignerPropertySheetExtension *sheet;
              sheet = qt_extension&lt;QDesignerPropertySheetExtension*&gt;(manager, page);
-             int propertyIndex = sheet-&gt;indexOf(QLatin1String(&quot;windowTitle&quot;));
+             const int propertyIndex = sheet-&gt;indexOf(QLatin1String(&quot;windowTitle&quot;));
              sheet-&gt;setChanged(propertyIndex, true);
          }
      }
@@ -162,6 +163,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
 </tr></table></div></address></body>
 </html>

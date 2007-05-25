@@ -51,7 +51,8 @@ struct Q_CORE_EXPORT QListData {
     };
     enum { DataHeaderSize = sizeof(Data) - sizeof(void *) };
 
-    Data *detach();
+    Data *detach(); // remove in 5.0
+    Data *detach2();
     void realloc(int alloc);
     static Data shared_null;
     Data *d;
@@ -485,6 +486,7 @@ Q_OUTOFLINE_TEMPLATE T QList<T>::value(int i) const
     }
     return reinterpret_cast<Node *>(p.at(i))->t();
 }
+
 template<typename T>
 Q_OUTOFLINE_TEMPLATE T QList<T>::value(int i, const T& defaultValue) const
 {
@@ -494,13 +496,9 @@ Q_OUTOFLINE_TEMPLATE T QList<T>::value(int i, const T& defaultValue) const
 template <typename T>
 Q_OUTOFLINE_TEMPLATE void QList<T>::detach_helper()
 {
-    QListData::Data *x = p.d;
-    // keep an extra reference to original data, we need it during node_copy()
     Node *n = reinterpret_cast<Node *>(p.begin());
-    x->ref.ref();
-    (void) p.detach();
+    QListData::Data *x = p.detach2();
     node_copy(reinterpret_cast<Node *>(p.begin()), reinterpret_cast<Node *>(p.end()), n);
-    // drop the extra ref
     if (!x->ref.deref())
         free(x);
 }

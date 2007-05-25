@@ -41,6 +41,12 @@
 
 class QDesignerFormWindowInterface;
 
+namespace qdesigner_internal {
+    class PromotionTaskMenu;
+}
+
+class QMenu;
+
 class QDESIGNER_SHARED_EXPORT QDesignerTabWidget : public QTabWidget
 {
     Q_OBJECT
@@ -65,14 +71,8 @@ public:
     QIcon currentTabIcon() const;
     void setCurrentTabIcon(const QIcon &tabIcon);
 
-    inline QAction *actionDeletePage() const
-    { return m_actionDeletePage; }
-
-    inline QAction *actionInsertPage() const
-    { return m_actionInsertPage; }
-
-    inline QAction *actionInsertPageAfter() const
-    { return m_actionInsertPageAfter; }
+    // Add context menu and return page submenu or 0.
+    QMenu *addContextMenuActions(QMenu *popup);
 
     bool eventFilter(QObject *o, QEvent *e);
 
@@ -90,16 +90,21 @@ protected:
     virtual void tabRemoved(int index);
 
 private:
-    QPoint pressPoint;
-    QWidget *dropIndicator;
-    int dragIndex;
-    QWidget *dragPage;
-    QString dragLabel;
-    QIcon dragIcon;
-    bool mousePressed;
+
+private:
+    int pageFromPosition(const QPoint &pos, QRect &rect) const;
+
+    QPoint m_pressPoint;
+    QWidget *m_dropIndicator;
+    int m_dragIndex;
+    QWidget *m_dragPage;
+    QString m_dragLabel;
+    QIcon m_dragIcon;
+    bool m_mousePressed;
     QAction *m_actionDeletePage;
     QAction *m_actionInsertPage;
     QAction *m_actionInsertPageAfter;
+    qdesigner_internal::PromotionTaskMenu* m_pagePromotionTaskMenu;
 };
 
 #endif // QDESIGNER_TABWIDGET_H

@@ -62,9 +62,6 @@ public:
     Layout(const QList<QWidget*> &wl, QWidget *p, QDesignerFormWindowInterface *fw, QWidget *lb, bool splitter = false);
     virtual ~Layout();
 
-    int margin() const;
-    int spacing() const;
-
     virtual void sort() = 0;
     virtual void doLayout() = 0;
 
@@ -76,23 +73,27 @@ public:
 
     QList<QWidget*> widgets() const { return m_widgets; }
     QWidget *parentWidget() const { return m_parentWidget; }
-    QWidget *layoutBaseWidget() const { return layoutBase; }
+    QWidget *layoutBaseWidget() const { return m_layoutBase; }
 
 protected:
+    QLayout *createLayout(int type);
+
     QList<QWidget*> m_widgets;
     QWidget *m_parentWidget;
-    QPoint startPoint;
-    QHash<QWidget *, QRect> geometries;
-    QWidget *layoutBase;
-    QDesignerFormWindowInterface *formWindow;
-    QRect oldGeometry;
-    bool isBreak;
-    bool useSplitter;
+    typedef QHash<QWidget *, QRect> WidgetGeometryHash;
+    WidgetGeometryHash m_geometries;
+    QWidget *m_layoutBase;
+    QDesignerFormWindowInterface *m_formWindow;
+    bool m_useSplitter;
 
 
 protected slots:
     void widgetDestroyed();
 
+private:
+    QPoint m_startPoint;
+    QRect m_oldGeometry;
+    bool m_isBreak;
 };
 
 class QDESIGNER_SHARED_EXPORT HorizontalLayout : public Layout
@@ -139,8 +140,8 @@ protected:
 
 protected:
     void buildGrid();
-    QSize resolution;
-    Grid* grid;
+    QSize m_resolution;
+    Grid* m_grid;
 
 };
 

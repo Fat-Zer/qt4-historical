@@ -3,7 +3,7 @@
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>Qt 4.2: mainwindow.cpp Example File (tools/completer/mainwindow.cpp)</title>
+  <title>Qt 4.3: mainwindow.cpp Example File (tools/completer/mainwindow.cpp)</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -75,63 +75,55 @@
      caseCombo-&gt;setCurrentIndex(1);
  #endif
 
+     wrapCheckBox = new QCheckBox;
+     wrapCheckBox-&gt;setText(tr(&quot;Wrap around completions&quot;));
+     wrapCheckBox-&gt;setChecked(true);
+
      contentsLabel = new QLabel;
      contentsLabel-&gt;setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
-     connect(modelCombo, SIGNAL(activated(int)), this, SLOT(updateModel()));
+     connect(modelCombo, SIGNAL(activated(int)), this, SLOT(changeModel()));
      connect(modeCombo, SIGNAL(activated(int)), this, SLOT(changeMode(int)));
      connect(caseCombo, SIGNAL(activated(int)), this, SLOT(changeCase(int)));
+
+     lineEdit = new QLineEdit;
+
+     comboBox = new QComboBox;
+     comboBox-&gt;setEditable(true);
 
      QGridLayout *layout = new QGridLayout;
      layout-&gt;addWidget(modelLabel, 0, 0); layout-&gt;addWidget(modelCombo, 0, 1);
      layout-&gt;addWidget(modeLabel, 1, 0);  layout-&gt;addWidget(modeCombo, 1, 1);
      layout-&gt;addWidget(caseLabel, 2, 0);  layout-&gt;addWidget(caseCombo, 2, 1);
-     layout-&gt;addWidget(contentsLabel, 3, 0, 1, 2);
+     layout-&gt;addWidget(wrapCheckBox, 3, 0);
+     layout-&gt;addWidget(contentsLabel, 4, 0, 1, 2);
+     layout-&gt;addWidget(lineEdit, 5, 0, 1, 2);
+     layout-&gt;addWidget(comboBox, 6, 0, 1, 2);
      centralWidget-&gt;setLayout(layout);
      setCentralWidget(centralWidget);
 
-     useComboBox(false);
-     updateModel();
-     changeCase(caseCombo-&gt;currentIndex());
-     changeMode(modeCombo-&gt;currentIndex());
+     changeModel();
 
      setWindowTitle(tr(&quot;Completer&quot;));
+     lineEdit-&gt;setFocus();
  }
 
  void MainWindow::createMenu()
  {
-     QAction *comboAction = new QAction(tr(&quot;Show QComboBox&quot;), this);
-     comboAction-&gt;setCheckable(true);
      QAction *exitAction = new QAction(tr(&quot;Exit&quot;), this);
      QAction *aboutAct = new QAction(tr(&quot;About&quot;), this);
      QAction *aboutQtAct = new QAction(tr(&quot;About Qt&quot;), this);
 
-     connect(comboAction, SIGNAL(toggled(bool)), this, SLOT(useComboBox(bool)));
      connect(exitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
      connect(aboutAct, SIGNAL(triggered()), this, SLOT(about()));
      connect(aboutQtAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
      QMenu* fileMenu = menuBar()-&gt;addMenu(tr(&quot;File&quot;));
-     fileMenu-&gt;addAction(comboAction);
-     fileMenu-&gt;addSeparator();
      fileMenu-&gt;addAction(exitAction);
 
      QMenu* helpMenu = menuBar()-&gt;addMenu(tr(&quot;About&quot;));
      helpMenu-&gt;addAction(aboutAct);
      helpMenu-&gt;addAction(aboutQtAct);
- }
-
- void MainWindow::changeMode(int index)
- {
-     QCompleter::CompletionMode mode;
-     if (index == 0)
-         mode = QCompleter::InlineCompletion;
-     else if (index == 1)
-         mode = QCompleter::PopupCompletion;
-     else
-         mode = QCompleter::UnfilteredPopupCompletion;
-
-     completer-&gt;setCompletionMode(mode);
  }
 
  QAbstractItemModel *MainWindow::modelFromFile(const QString&amp; fileName)
@@ -169,14 +161,28 @@
      return m;
  }
 
- void MainWindow::updateModel()
+ void MainWindow::changeMode(int index)
  {
-     if (completer) {
-         comboBox ? comboBox-&gt;setCompleter(0) : lineEdit-&gt;setCompleter(0);
-         delete completer;
-     }
+     QCompleter::CompletionMode mode;
+     if (index == 0)
+         mode = QCompleter::InlineCompletion;
+     else if (index == 1)
+         mode = QCompleter::PopupCompletion;
+     else
+         mode = QCompleter::UnfilteredPopupCompletion;
+
+     completer-&gt;setCompletionMode(mode);
+ }
+
+ void MainWindow::changeCase(int cs)
+ {
+     completer-&gt;setCaseSensitivity(cs ? Qt::CaseSensitive : Qt::CaseInsensitive);
+ }
+
+ void MainWindow::changeModel()
+ {
+     delete completer;
      completer = new QCompleter(this);
-     comboBox ? comboBox-&gt;setCompleter(completer) : lineEdit-&gt;setCompleter(completer);
 
      switch (modelCombo-&gt;currentIndex()) {
      default:
@@ -216,46 +222,23 @@
          break;
      }
 
-     changeCase(caseCombo-&gt;currentIndex());
      changeMode(modeCombo-&gt;currentIndex());
- }
-
- void MainWindow::useComboBox(bool combo)
- {
-     if ((comboBox &amp;&amp; combo) || (lineEdit &amp;&amp; !combo))
-         return;
-     if (combo) {
-         delete lineEdit;
-         lineEdit = 0;
-         comboBox = new QComboBox;
-         comboBox-&gt;setEditable(true);
-         comboBox-&gt;setCompleter(completer);
-         (static_cast&lt;QGridLayout *&gt;(centralWidget()-&gt;layout()))-&gt;addWidget(comboBox, 4, 0, 1, 2);
-         comboBox-&gt;setFocus();
-     } else {
-         delete comboBox;
-         comboBox = 0;
-         lineEdit = new QLineEdit;
-         lineEdit-&gt;setCompleter(completer);
-         (static_cast&lt;QGridLayout *&gt;(centralWidget()-&gt;layout()))-&gt;addWidget(lineEdit, 4, 0, 1, 2);
-         lineEdit-&gt;setFocus();
-     }
+     changeCase(caseCombo-&gt;currentIndex());
+     completer-&gt;setWrapAround(wrapCheckBox-&gt;isChecked());
+     lineEdit-&gt;setCompleter(completer);
+     comboBox-&gt;setCompleter(completer);
+     connect(wrapCheckBox, SIGNAL(clicked(bool)), completer, SLOT(setWrapAround(bool)));
  }
 
  void MainWindow::about()
  {
      QMessageBox::about(this, tr(&quot;About&quot;), tr(&quot;This example demonstrates the &quot;
          &quot;different features of the QCompleter class.&quot;));
- }
-
- void MainWindow::changeCase(int cs)
- {
-     completer-&gt;setCaseSensitivity(cs ? Qt::CaseSensitive : Qt::CaseInsensitive);
  }</pre>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
 </tr></table></div></address></body>
 </html>

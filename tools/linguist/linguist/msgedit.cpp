@@ -112,7 +112,7 @@ QVariant BackTabTextEdit::loadResource ( int type, const QUrl & name )
                     QFontMetrics fm(fnt);
                     int h = fm.height();
                     
-                    QString str = QString::fromAscii("(%1)").arg(MessageEditor::friendlyBackTab[i]);
+                    QString str = QString::fromAscii("(%1)").arg(QLatin1String(MessageEditor::friendlyBackTab[i]));
                     int w = fm.boundingRect(str).width() + 1;   //###
                     QImage textimg(w, h, QImage::Format_RGB32);
                     textimg.fill(qRgb(255,255,255));
@@ -314,15 +314,15 @@ void MessageEditor::visualizeBackTabs(const QString &text, QTextEdit *te)
             // store the character in the user format property
             // in the first '(' in the phrase
             blueFormat.setProperty(QTextFormat::UserProperty, ch);
-            tc.insertText(QString("("), blueFormat);
+            tc.insertText(QString(QLatin1String("(")), blueFormat);
             blueFormat.setProperty(QTextFormat::UserProperty, -1);
             if (p == 0)
             {
-                tc.insertText(QString::number(ch, 16) + ")", blueFormat);
+                tc.insertText(QString::number(ch, 16) + QLatin1String(")"), blueFormat);
             }
             else
             {
-                tc.insertText(MessageEditor::tr(friendlyBackTab[p - backTab]) + ")",
+                tc.insertText(MessageEditor::tr(friendlyBackTab[p - backTab]) + QLatin1String(")"),
                     blueFormat);
                 if (backTab[p - backTab] == '\n')
                     tc.insertBlock();
@@ -337,13 +337,13 @@ void MessageEditor::visualizeBackTabs(const QString &text, QTextEdit *te)
                 tc.insertText(plainText, defFormat);
                 plainText.clear();
                 blueFormat.setProperty(QTextFormat::UserProperty, ch);
-                tc.insertText(QString("("), blueFormat);
+                tc.insertText(QString(QLatin1String("(")), blueFormat);
                 blueFormat.setProperty(QTextFormat::UserProperty, -1);
                 tc.insertText(MessageEditor::tr("sp)"), blueFormat);
             }
             else
             {
-                plainText += ' ';
+                plainText += QLatin1Char(' ');
             }
         }
         else
@@ -479,7 +479,7 @@ void ShadowWidget::paintEvent(QPaintEvent *e)
 EditorPage::EditorPage(MessageEditor *parent, const char *name)
     : QFrame(parent)
 {
-    setObjectName(name);
+    setObjectName(QLatin1String(name));
     setLineWidth(1);
     setFrameStyle(QFrame::Box | QFrame::Plain);
 
@@ -519,7 +519,7 @@ EditorPage::EditorPage(MessageEditor *parent, const char *name)
              SLOT(sourceSelectionChanged()));
 
     cmtText = new QTextEdit(this);
-    cmtText->setObjectName("comment/context view");
+    cmtText->setObjectName(QLatin1String("comment/context view"));
     cmtText->setFrameStyle( QFrame::NoFrame );
     cmtText->setSizePolicy( QSizePolicy( QSizePolicy::MinimumExpanding,
                                          QSizePolicy::Minimum ) );
@@ -561,7 +561,7 @@ void EditorPage::addPluralForm(const QString &label)
     }
     te->label()->adjustSize();
     
-    te->editor()->setObjectName("translation editor");
+    te->editor()->setObjectName(QLatin1String("translation editor"));
     te->editor()->setFrameStyle(QFrame::NoFrame);
     te->editor()->setSizePolicy(QSizePolicy(QSizePolicy::MinimumExpanding,
                                              QSizePolicy::MinimumExpanding));
@@ -825,7 +825,7 @@ MessageEditor::MessageEditor(MessageModel *model, QMainWindow *parent)
     doGuesses = true;
     canPaste = false;
     bottomDockWnd = new QDockWidget(parent);
-    bottomDockWnd->setObjectName("PhrasesDockwidget");
+    bottomDockWnd->setObjectName(QLatin1String("PhrasesDockwidget"));
     bottomDockWnd->setAllowedAreas(Qt::AllDockWidgetAreas);
     bottomDockWnd->setFeatures(QDockWidget::AllDockWidgetFeatures);
     bottomDockWnd->setWindowTitle(tr("Phrases"));
@@ -838,7 +838,7 @@ MessageEditor::MessageEditor(MessageModel *model, QMainWindow *parent)
     phraseLbl = new QLabel( tr("Phrases and guesses:"), w );
 
     phraseTv = new QTreeView(w);
-    phraseTv->setObjectName("phrase list view");
+    phraseTv->setObjectName(QLatin1String("phrase list view"));
     phrMdl = new PhraseModel(w);
     phraseTv->setModel(phrMdl);
     phraseTv->setAlternatingRowColors(true);
@@ -847,7 +847,6 @@ MessageEditor::MessageEditor(MessageModel *model, QMainWindow *parent)
     phraseTv->setRootIsDecorated(false);
     phraseTv->setItemsExpandable(false);
     QPalette pal = phraseTv->palette();
-    pal.setColor(QPalette::AlternateBase, TREEVIEW_ODD_COLOR);
     phraseTv->setPalette(pal);
 
     phraseTv->header()->setResizeMode(QHeaderView::Stretch);
@@ -864,7 +863,7 @@ MessageEditor::MessageEditor(MessageModel *model, QMainWindow *parent)
     bottomDockWnd->setWidget(w);
     parent->addDockWidget(Qt::BottomDockWidgetArea, bottomDockWnd);
 
-    setObjectName("scroll area");
+    setObjectName(QLatin1String("scroll area"));
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setFrameStyle(QFrame::NoFrame);
 
@@ -1050,7 +1049,7 @@ void MessageEditor::showMessage(const QString &text,
     visualizeBackTabs(text, editorPage->srcText);
 
     if (!fullContext.isEmpty() && !comment.isEmpty())
-        visualizeBackTabs(fullContext.simplified() + "\n" +
+        visualizeBackTabs(fullContext.simplified() + QLatin1String("\n") +
             comment.simplified(), editorPage->cmtText);
     else if (!fullContext.isEmpty() && comment.isEmpty())
         visualizeBackTabs(fullContext.simplified(), editorPage->cmtText);
@@ -1104,7 +1103,6 @@ void MessageEditor::showMessage(const QString &text,
     editorPage->handleCommentChanges();
     editorPage->adjustTranslationFieldHeights();
     editorPage->updateCommentField();
-    setEditorFocus();
 }
 
 void MessageEditor::setNumerusForms(const QString &invariantForm, const QStringList &numerusForms)

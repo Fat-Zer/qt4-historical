@@ -42,7 +42,7 @@ class QAbstractButtonPrivate : public QWidgetPrivate
 {
     Q_DECLARE_PUBLIC(QAbstractButton)
 public:
-    QAbstractButtonPrivate();
+    QAbstractButtonPrivate(QSizePolicy::ControlType type = QSizePolicy::DefaultType);
 
     QString text;
     QIcon icon;
@@ -65,6 +65,9 @@ public:
     QBasicTimer animateTimer;
 
     int autoRepeatDelay, autoRepeatInterval;
+
+    QSizePolicy::ControlType controlType;
+    mutable QSize sizeHint;
 
     void init();
     void click();

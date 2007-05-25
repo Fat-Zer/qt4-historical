@@ -28,6 +28,7 @@
 #include "widgetbox_global.h"
 
 class QDesignerFormEditorInterface;
+class DomWidget;
 
 namespace qdesigner_internal {
 

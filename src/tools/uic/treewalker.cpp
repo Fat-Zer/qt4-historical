@@ -90,11 +90,21 @@ void TreeWalker::acceptWidget(DomWidget *widget)
     for (int i=0; i<widget->elementProperty().size(); ++i)
         acceptProperty(widget->elementProperty().at(i));
 
-    for (int i=0; i<widget->elementWidget().size(); ++i)
-        acceptWidget(widget->elementWidget().at(i));
+
+
+    // recurse down
+    DomWidgets childWidgets;
+    for (int i=0; i<widget->elementWidget().size(); ++i) {
+        DomWidget *child = widget->elementWidget().at(i);
+        childWidgets += child;
+        acceptWidget(child);
+    }
 
     if (!widget->elementLayout().isEmpty())
         acceptLayout(widget->elementLayout().at(0));
+
+    const DomScripts scripts(widget->elementScript());
+    acceptWidgetScripts(scripts, widget, childWidgets);
 }
 
 void TreeWalker::acceptSpacer(DomSpacer *spacer)
@@ -167,6 +177,7 @@ void TreeWalker::acceptProperty(DomProperty *property)
         case DomProperty::Color:
         case DomProperty::Cstring:
         case DomProperty::Cursor:
+        case DomProperty::CursorShape:
         case DomProperty::Enum:
         case DomProperty::Font:
         case DomProperty::Pixmap:
@@ -177,6 +188,7 @@ void TreeWalker::acceptProperty(DomProperty *property)
         case DomProperty::Rect:
         case DomProperty::RectF:
         case DomProperty::Set:
+        case DomProperty::Locale:
         case DomProperty::SizePolicy:
         case DomProperty::Size:
         case DomProperty::SizeF:
@@ -192,6 +204,8 @@ void TreeWalker::acceptProperty(DomProperty *property)
         case DomProperty::StringList:
         case DomProperty::Float:
         case DomProperty::Double:
+        case DomProperty::UInt:
+        case DomProperty::ULongLong:
             break;
     }
 }
@@ -268,4 +282,8 @@ void TreeWalker::acceptConnectionHints(DomConnectionHints *connectionHints)
 void TreeWalker::acceptConnectionHint(DomConnectionHint *connectionHint)
 {
     Q_UNUSED(connectionHint);
+}
+
+void TreeWalker::acceptWidgetScripts(const DomScripts &, DomWidget *, const  DomWidgets &)
+{
 }

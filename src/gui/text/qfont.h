@@ -36,8 +36,14 @@ class QStringList;
 class QVariant;
 class Q3TextFormatCollection;
 
+#if defined(Q_WS_X11) || defined(Q_WS_QWS)
+typedef struct FT_FaceRec_* FT_Face;
+#endif
+
 class Q_GUI_EXPORT QFont
 {
+    Q_GADGET
+    Q_ENUMS(StyleStrategy)
 public:
     enum StyleHint {
         Helvetica,  SansSerif = Helvetica,
@@ -160,7 +166,12 @@ public:
 #else // !Q_WS_WIN
     Qt::HANDLE handle() const;
 #endif // Q_WS_WIN
-
+#ifdef Q_WS_MAC
+    quint32 macFontID() const;
+#endif
+#if defined(Q_WS_X11) || defined(Q_WS_QWS)
+    FT_Face freetypeFace() const;
+#endif
 
     // needed for X11
     void setRawName(const QString &);
@@ -227,8 +238,10 @@ private:
     friend struct QScriptLine;
     friend class QGLContext;
     friend class QWin32PaintEngine;
+    friend class QAlphaPaintEngine;
     friend class QPainterPath;
     friend class QTextItemInt;
+    friend class QPicturePaintEngine;
 
 #ifndef QT_NO_DATASTREAM
     friend Q_GUI_EXPORT QDataStream &operator<<(QDataStream &, const QFont &);

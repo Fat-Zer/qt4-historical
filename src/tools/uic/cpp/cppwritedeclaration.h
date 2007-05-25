@@ -36,20 +36,21 @@ namespace CPP {
 
 struct WriteDeclaration : public TreeWalker
 {
-    WriteDeclaration(Uic *uic);
+    WriteDeclaration(Uic *uic, bool activateScripts);
 
     void acceptUI(DomUI *node);
     void acceptWidget(DomWidget *node);
-    void acceptLayout(DomLayout *node);
     void acceptSpacer(DomSpacer *node);
+    void acceptLayout(DomLayout *node);
     void acceptActionGroup(DomActionGroup *node);
     void acceptAction(DomAction *node);
 
 private:
-    Uic *uic;
-    Driver *driver;
-    QTextStream &output;
-    const Option &option;
+    Uic *m_uic;
+    Driver *m_driver;
+    QTextStream &m_output;
+    const Option &m_option;
+    const bool m_activateScripts;
 };
 
 } // namespace CPP

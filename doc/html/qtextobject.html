@@ -2,12 +2,13 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-x11-opensource-src-4.2.3/src/gui/text/qtextobject.cpp -->
+<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/gui/text/qtextobject.cpp -->
 <head>
-  <title>Qt 4.2: QTextObject Class Reference</title>
+  <title>Qt 4.3: QTextObject Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
+<a name="//apple_ref/cpp/cl//QTextObject" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
@@ -57,23 +58,30 @@
 <p>See also <a href="qtextdocument.html">QTextDocument</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
+<a name="//apple_ref/cpp/instm/QTextObject/QTextObject" />
 <h3 class="fn"><a name="QTextObject"></a>QTextObject::QTextObject ( <a href="qtextdocument.html">QTextDocument</a> * <i>document</i> )&nbsp;&nbsp;<tt> [protected]</tt></h3>
 <p>Creates a new <a href="qtextobject.html">QTextObject</a> for the given <i>document</i>.</p>
 <p><b>Warning:</b> This function should never be called directly, but only from <a href="qtextdocument.html#createObject">QTextDocument::createObject</a>().</p>
+<a name="//apple_ref/cpp/instm/QTextObject/~QTextObject" />
 <h3 class="fn"><a name="dtor.QTextObject"></a>QTextObject::~QTextObject ()&nbsp;&nbsp;<tt> [protected]</tt></h3>
 <p>Destroys the text object.</p>
 <p><b>Warning:</b> Text objects are owned by the document, so you should never destroy them yourself.</p>
+<a name="//apple_ref/cpp/instm/QTextObject/document" />
 <h3 class="fn"><a name="document"></a><a href="qtextdocument.html">QTextDocument</a> * QTextObject::document () const</h3>
 <p>Returns the document this object belongs to.</p>
 <p>See also <a href="qtextobject.html#format">format</a>().</p>
+<a name="//apple_ref/cpp/instm/QTextObject/format" />
 <h3 class="fn"><a name="format"></a><a href="qtextformat.html">QTextFormat</a> QTextObject::format () const</h3>
 <p>Returns the text object's format.</p>
 <p>See also <a href="qtextobject.html#setFormat">setFormat</a>() and <a href="qtextobject.html#document">document</a>().</p>
+<a name="//apple_ref/cpp/instm/QTextObject/formatIndex" />
 <h3 class="fn"><a name="formatIndex"></a>int QTextObject::formatIndex () const</h3>
 <p>Returns the index of the object's format in the document's internal list of formats.</p>
 <p>See also <a href="qtextdocument.html#object">QTextDocument::object</a>().</p>
+<a name="//apple_ref/cpp/instm/QTextObject/objectIndex" />
 <h3 class="fn"><a name="objectIndex"></a>int QTextObject::objectIndex () const</h3>
 <p>Returns the object index of this object. This can be used together with <a href="qtextformat.html#setObjectIndex">QTextFormat::setObjectIndex</a>().</p>
+<a name="//apple_ref/cpp/instm/QTextObject/setFormat" />
 <h3 class="fn"><a name="setFormat"></a>void QTextObject::setFormat ( const <a href="qtextformat.html">QTextFormat</a> &amp; <i>format</i> )&nbsp;&nbsp;<tt> [protected]</tt></h3>
 <p>Sets the text object's <i>format</i>.</p>
 <p>See also <a href="qtextobject.html#format">format</a>().</p>
@@ -81,6 +89,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
 </tr></table></div></address></body>
 </html>

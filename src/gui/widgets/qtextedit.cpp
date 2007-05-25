@@ -105,7 +105,7 @@ QTextEditPrivate::QTextEditPrivate()
     : control(0),
       autoFormatting(QTextEdit::AutoNone), tabChangesFocus(false),
       lineWrap(QTextEdit::WidgetWidth), lineWrapColumnOrWidth(0),
-      textFormat(Qt::AutoText)
+      wordWrap(QTextOption::WrapAtWordBoundaryOrAnywhere), textFormat(Qt::AutoText)
 {
     ignoreAutomaticScrollbarAdjustment = false;
     preferRichText = false;
@@ -187,7 +187,7 @@ void QTextEditPrivate::_q_repaintContents(const QRectF &contentsRect)
     const int yOffset = verticalOffset();
     const QRectF visibleRect(xOffset, yOffset, viewport->width(), viewport->height());
 
-    QRect r = contentsRect.intersected(visibleRect).toRect();
+    QRect r = contentsRect.intersected(visibleRect).toAlignedRect();
     if (r.isEmpty())
         return;
 
@@ -248,38 +248,44 @@ void QTextEditPrivate::_q_adjustScrollbars()
         return;
     ignoreAutomaticScrollbarAdjustment = true; // avoid recursion, #106108
 
-    const QSize viewportSize = viewport->size();
+    QSize viewportSize = viewport->size();
     QSize docSize = documentSize(control);
 
-    hbar->setRange(0, docSize.width() - viewportSize.width());
-    hbar->setPageStep(viewportSize.width());
+    // due to the recursion guard we have to repeat this step a few times,
+    // as adding/removing a scroll bar will cause the document or viewport
+    // size to change
+    // ideally we should loop until the viewport size and doc size stabilize,
+    // but in corner cases they might fluctuate, so we need to limit the
+    // number of iterations
+    for (int i = 0; i < 4; ++i) {
+        hbar->setRange(0, docSize.width() - viewportSize.width());
+        hbar->setPageStep(viewportSize.width());
 
-    vbar->setRange(0, docSize.height() - viewportSize.height());
-    vbar->setPageStep(viewportSize.height());
+        vbar->setRange(0, docSize.height() - viewportSize.height());
+        vbar->setPageStep(viewportSize.height());
 
-    // if we are in left-to-right mode widening the document due to
-    // lazy layouting does not require a repaint. If in right-to-left
-    // the scrollbar has the value zero and it visually has the maximum
-    // value (it is visually at the right), then widening the document
-    // keeps it at value zero but visually adjusts it to the new maximum
-    // on the right, hence we need an update.
-    if (q_func()->isRightToLeft())
-        viewport->update();
-
-    _q_showOrHideScrollBars();
-
-    // has the document/viewport size been changed due to adding/removing scroll bars?
-    // due to the recursion guard we have to adjust the scroll bars here
-    const QSize newSize = documentSize(control);
-    const QSize newViewportSize = viewport->size();
-    if (newSize != docSize || viewportSize != newViewportSize) {
-        hbar->setRange(0, newSize.width() - newViewportSize.width());
-        hbar->setPageStep(newViewportSize.width());
-
-        vbar->setRange(0, newSize.height() - newViewportSize.height());
-        vbar->setPageStep(newViewportSize.height());
+        // if we are in left-to-right mode widening the document due to
+        // lazy layouting does not require a repaint. If in right-to-left
+        // the scroll bar has the value zero and it visually has the maximum
+        // value (it is visually at the right), then widening the document
+        // keeps it at value zero but visually adjusts it to the new maximum
+        // on the right, hence we need an update.
+        if (q_func()->isRightToLeft())
+            viewport->update();
 
         _q_showOrHideScrollBars();
+
+        const QSize oldViewportSize = viewportSize;
+        const QSize oldDocSize = docSize;
+
+        // make sure the document is layouted if the viewport width changes
+        viewportSize = viewport->size();
+        if (viewportSize.width() != oldViewportSize.width())
+            relayoutDocument();
+
+        docSize = documentSize(control);
+        if (viewportSize == oldViewportSize && docSize == oldDocSize)
+            break;
     }
     ignoreAutomaticScrollbarAdjustment = false;
 }
@@ -289,6 +295,9 @@ void QTextEditPrivate::_q_adjustScrollbars()
 void QTextEditPrivate::_q_ensureVisible(const QRectF &_rect)
 {
     const QRect rect = _rect.toRect();
+    if ((vbar->isVisible() && vbar->maximum() < rect.bottom())
+        || (hbar->isVisible() && hbar->maximum() < rect.right()))
+        _q_adjustScrollbars();
     const int visibleWidth = viewport->width();
     const int visibleHeight = viewport->height();
     const bool rtl = q_func()->isRightToLeft();
@@ -346,7 +355,7 @@ void QTextEditPrivate::ensureViewportLayouted()
     attributes, for example, font and color.
 
     QTextEdit can display images, lists and tables. If the text is
-    too large to view within the text edit's viewport, scrollbars will
+    too large to view within the text edit's viewport, scroll bars will
     appear. The text edit can load both plain text and HTML files (a
     subset of HTML 3.2 and 4).
 
@@ -358,6 +367,9 @@ void QTextEditPrivate::ensureViewportLayouted()
     text support in Qt is designed to provide a fast, portable and
     efficient way to add reasonable online help facilities to
     applications, and to provide a basis for rich text editors.
+
+    The shape of the mouse cursor on a QTextEdit is Qt::IBeamCursor by default.
+    It can be changed through the viewport()'s cursor property.
 
     \section1 Using QTextEdit as a Display Widget
 
@@ -488,6 +500,17 @@ void QTextEditPrivate::ensureViewportLayouted()
 
     \sa QTextDocument, QTextCursor, {Application Example},
 	{Syntax Highlighter Example}, {Rich Text Processing}
+*/
+
+/*!
+        \property QTextEdit::plainText
+        \since 4.3
+
+        This property gets and sets the text edit's contents as plain
+        text. Previous contents are removed and undo/redo history is reset
+        when the property is set. If the text edit has another content
+        type, it will not be replaced by plain text when you call
+        toPlainText().
 */
 
 /*!
@@ -713,6 +736,12 @@ void QTextEdit::setDocument(QTextDocument *document)
 {
     Q_D(QTextEdit);
     d->control->setDocument(document);
+
+    document = d->control->document();
+    QTextOption opt = document->defaultTextOption();
+    opt.setWrapMode(d->wordWrap);
+    document->setDefaultTextOption(opt);
+
     d->relayoutDocument();
 }
 
@@ -972,7 +1001,8 @@ bool QTextEdit::event(QEvent *e)
         const bool result = QAbstractScrollArea::event(&ce);
         e->setAccepted(ce.isAccepted());
         return result;
-    } else if (e->type() == QEvent::ShortcutOverride) {
+    } else if (e->type() == QEvent::ShortcutOverride
+               || e->type() == QEvent::ToolTip) {
         d->sendControlEvent(e);
     }
 #ifdef QT_KEYPAD_NAVIGATION
@@ -1248,7 +1278,7 @@ QVariant QTextEdit::loadResource(int type, const QUrl &name)
 void QTextEdit::resizeEvent(QResizeEvent *e)
 {
     Q_D(QTextEdit);
-    if (d->lineWrap == WidgetWidth) {
+    if (d->lineWrap != FixedPixelWidth) {
         if (e->oldSize().width() == e->size().width()
             && e->oldSize().height() != e->size().height())
             d->_q_adjustScrollbars();
@@ -1284,21 +1314,9 @@ void QTextEditPrivate::relayoutDocument()
     const bool oldIgnoreScrollbarAdjustment = ignoreAutomaticScrollbarAdjustment;
     ignoreAutomaticScrollbarAdjustment = true;
 
-    int width = 0;
-    switch (lineWrap) {
-        case QTextEdit::NoWrap:
-            width = -1;
-            break;
-        case QTextEdit::WidgetWidth:
-            width = viewport->width();
-            break;
-        case QTextEdit::FixedPixelWidth:
-            width = lineWrapColumnOrWidth;
-            break;
-        case QTextEdit::FixedColumnWidth:
-            width = 0;
-            break;
-    }
+    int width = viewport->width();
+    if (lineWrap == QTextEdit::FixedPixelWidth)
+        width = lineWrapColumnOrWidth;
 
     doc->setPageSize(QSize(width, INT_MAX));
     if (tlayout)
@@ -1320,11 +1338,11 @@ void QTextEditPrivate::relayoutDocument()
     // horizontally (causing the character to wrap in the first place) but also
     // vertically, because the original line is now smaller and the one below kept
     // its size. So a layout with less width _can_ take up less vertical space, too.
-    // If the wider case causes a vertical scrollbar to appear and the narrower one
-    // (narrower because the vertical scrollbar takes up horizontal space)) to disappear
+    // If the wider case causes a vertical scroll bar to appear and the narrower one
+    // (narrower because the vertical scroll bar takes up horizontal space)) to disappear
     // again then we have an endless loop, as _q_adjustScrollBars sets new ranges on the
-    // scrollbars, the QAbstractScrollArea will find out about it and try to show/hide the scrollbars
-    // again. That's why we try to detect this case here and break out.
+    // scroll bars, the QAbstractScrollArea will find out about it and try to show/hide
+    // the scroll bars again. That's why we try to detect this case here and break out.
     //
     // (if you change this please also check the layoutingLoop() testcase in
     // QTextEdit's autotests)
@@ -1347,7 +1365,7 @@ void QTextEditPrivate::paint(QPainter *p, QPaintEvent *e)
     p->translate(-xOffset, -yOffset);
     r.translate(xOffset, yOffset);
 
-    control->drawContents(p, r);
+    control->drawContents(p, r, q_func());
 }
 
 /*! \reimp
@@ -1375,6 +1393,10 @@ void QTextEditPrivate::_q_currentCharFormatChanged(const QTextCharFormat &fmt)
 void QTextEdit::mousePressEvent(QMouseEvent *e)
 {
     Q_D(QTextEdit);
+#ifdef QT_KEYPAD_NAVIGATION
+    if (QApplication::keypadNavigationEnabled() && !hasEditFocus())
+        setEditFocus(true);
+#endif
     d->sendControlEvent(e);
 }
 
@@ -1424,6 +1446,8 @@ bool QTextEdit::focusNextPrevChild(bool next)
 }
 
 /*!
+  \fn void QTextEdit::contextMenuEvent(QContextMenuEvent *event)
+
   Shows the standard context menu created with createStandardContextMenu().
 
   If you do not want the text edit to have a context menu, you can set
@@ -1432,17 +1456,18 @@ bool QTextEdit::focusNextPrevChild(bool next)
   to extend the standard context menu, reimplement this function, call
   createStandardContextMenu() and extend the menu returned.
 
-  Information about the event is passed in \a e.
+  Information about the event is passed in the \a event object.
 
-    \code
-    void TextEdit::contextMenuEvent(QContextMenuEvent * e) {
-            QMenu *menu = createStandardContextMenu();
-            menu->addAction(My Menu Item");
-            //...
-            menu->exec(e->globalPos());
-            delete menu;
-    }
-    \endcode
+  \code
+  void MyTextEdit::contextMenuEvent(QContextMenuEvent *event)
+  {
+      QMenu *menu = createStandardContextMenu();
+      menu->addAction(tr("My Menu Item"));
+      //...
+      menu->exec(event->globalPos());
+      delete menu;
+  }
+  \endcode
 */
 void QTextEdit::contextMenuEvent(QContextMenuEvent *e)
 {
@@ -1690,13 +1715,17 @@ void QTextEdit::setOverwriteMode(bool overwrite)
 int QTextEdit::tabStopWidth() const
 {
     Q_D(const QTextEdit);
-    return d->control->tabStopWidth();
+    return qRound(d->control->document()->defaultTextOption().tabStop());
 }
 
 void QTextEdit::setTabStopWidth(int width)
 {
     Q_D(QTextEdit);
-    d->control->setTabStopWidth(width);
+    QTextOption opt = d->control->document()->defaultTextOption();
+    if (opt.tabStop() == width || width < 0)
+        return;
+    opt.setTabStop(width);
+    d->control->document()->setDefaultTextOption(opt);
 }
 
 /*!
@@ -2055,6 +2084,22 @@ bool QTextEdit::canPaste() const
     return d->control->canPaste();
 }
 
+#ifndef QT_NO_PRINTER
+/*!
+    \since 4.3
+    Convenience function to print the text edit's document to the given \a printer. This
+    is equivalent to calling the print method on the document directly except that this
+    function also supports QPrinter::Selection as print range.
+
+    \sa QTextDocument::print()
+*/
+void QTextEdit::print(QPrinter *printer) const
+{
+    Q_D(const QTextEdit);
+    d->control->print(printer);
+}
+#endif // QT _NO_PRINTER
+
 /*! \property QTextEdit::tabChangesFocus
   \brief whether \gui Tab changes focus or is accepted as input
 
@@ -2092,6 +2137,9 @@ void QTextEdit::setTabChangesFocus(bool b)
     FixedPixelWidth or FixedColumnWidth you should also call
     setWrapColumnOrWidth() with the width you want.
 
+    Note that setting NoWrap as line wrap mode will implicitly also
+    set QTextOption::NoWrap as word wrap mode.
+
     \sa lineWrapColumnOrWidth
 */
 
@@ -2107,6 +2155,8 @@ void QTextEdit::setLineWrapMode(LineWrapMode wrap)
     if (d->lineWrap == wrap)
         return;
     d->lineWrap = wrap;
+    if (d->lineWrap == NoWrap)
+        setWordWrapMode(QTextOption::ManualWrap);
     d->relayoutDocument();
 }
 
@@ -2146,13 +2196,18 @@ void QTextEdit::setLineWrapColumnOrWidth(int w)
 QTextOption::WrapMode QTextEdit::wordWrapMode() const
 {
     Q_D(const QTextEdit);
-    return d->control->wordWrapMode();
+    return d->wordWrap;
 }
 
 void QTextEdit::setWordWrapMode(QTextOption::WrapMode mode)
 {
     Q_D(QTextEdit);
-    d->control->setWordWrapMode(mode);
+    if (mode == d->wordWrap)
+        return;
+    d->wordWrap = mode;
+    QTextOption opt = d->control->document()->defaultTextOption();
+    opt.setWrapMode(mode);
+    d->control->document()->setDefaultTextOption(opt);
 }
 
 /*!

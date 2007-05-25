@@ -1,0 +1,128 @@
+/****************************************************************************
+**
+** Copyright (C) 2007-2007 Trolltech ASA. All rights reserved.
+**
+** This file is part of the example classes of the Qt Toolkit.
+**
+** This file may be used under the terms of the GNU General Public
+** License version 2.0 as published by the Free Software Foundation
+** and appearing in the file LICENSE.GPL included in the packaging of
+** this file.  Please review the following information to ensure GNU
+** General Public Licensing requirements will be met:
+** http://www.trolltech.com/products/qt/opensource.html
+**
+** If you are unsure which license is appropriate for your use, please
+** review the following information:
+** http://www.trolltech.com/products/qt/licensing.html or contact the
+** sales department at sales@trolltech.com.
+**
+** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
+** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+**
+****************************************************************************/
+
+#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include <QMainWindow>
+
+#include "diagramitem.h"
+
+class QAction;
+class QToolBox;
+class QSpinBox;
+class QComboBox;
+class QFontComboBox;
+class QButtonGroup;
+class DiagramScene;
+class QLineEdit;
+class QGraphicsTextItem;
+class QFont;
+class QToolButton;
+class QAbstractButton;
+class QGraphicsView;
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+   MainWindow();
+
+private slots:
+    void backgroundButtonGroupClicked(QAbstractButton *button);
+    void buttonGroupClicked(int id);
+    void deleteItem();
+    void pointerGroupClicked(int id);
+    void bringToFront();
+    void sendToBack();
+    void itemInserted(DiagramItem *item);
+    void textInserted(QGraphicsTextItem *item);
+    void currentFontChanged(const QFont &font);
+    void fontSizeChanged(const QString &size);
+    void sceneScaleChanged(const QString &scale);
+    void textColorChanged();
+    void itemColorChanged();
+    void lineColorChanged();
+    void textButtonTriggered();
+    void fillButtonTriggered();
+    void lineButtonTriggered();
+    void handleFontChange();
+    void itemSelected(QGraphicsItem *item);
+    void about();
+
+private:
+    void createToolBox();
+    void createActions();
+    void createMenus();
+    void createToolbars();
+    QWidget *createBackgroundCellWidget(const QString &text,
+                                        const QString &image);
+    QWidget *createCellWidget(const QString &text,
+                              DiagramItem::DiagramType type);
+    QMenu *createColorMenu(const char *slot, QColor defaultColor);
+    QIcon createColorToolButtonIcon(const QString &image, QColor color);
+    QIcon createColorIcon(QColor color);
+
+    DiagramScene *scene;
+    QGraphicsView *view;
+
+    QAction *exitAction;
+    QAction *addAction;
+    QAction *deleteAction;
+
+    QAction *toFrontAction;
+    QAction *sendBackAction;
+    QAction *aboutAction;
+
+    QMenu *fileMenu;
+    QMenu *itemMenu;
+    QMenu *aboutMenu;
+
+    QToolBar *textToolBar;
+    QToolBar *editToolBar;
+    QToolBar *colorToolBar;
+    QToolBar *pointerToolbar;
+
+    QComboBox *sceneScaleCombo;
+    QComboBox *itemColorCombo;
+    QComboBox *textColorCombo;
+    QComboBox *fontSizeCombo;
+    QFontComboBox *fontCombo;
+
+    QToolBox *toolBox;
+    QButtonGroup *buttonGroup;
+    QButtonGroup *pointerTypeGroup;
+    QButtonGroup *backgroundButtonGroup;
+    QToolButton *fontColorToolButton;
+    QToolButton *fillColorToolButton;
+    QToolButton *lineColorToolButton;
+    QAction *boldAction;
+    QAction *underlineAction;
+    QAction *italicAction;
+    QAction *textAction;
+    QAction *fillAction;
+    QAction *lineAction;
+};
+
+#endif

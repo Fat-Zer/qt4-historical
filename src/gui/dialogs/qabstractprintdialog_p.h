@@ -35,42 +35,26 @@
 // We mean it.
 //
 
+#include "private/qdialog_p.h"
+
 #ifndef QT_NO_PRINTDIALOG
 
-#include "private/qdialog_p.h"
 #include "QtGui/qabstractprintdialog.h"
 
 class QPrinter;
+class QPrinterPrivate;
 
 class QAbstractPrintDialogPrivate : public QDialogPrivate
 {
     Q_DECLARE_PUBLIC(QAbstractPrintDialog)
 public:
     QAbstractPrintDialogPrivate()
-        :
-        printer(0),
-        options(QAbstractPrintDialog::PrintToFile | QAbstractPrintDialog::PrintPageRange),
-        printRange(QAbstractPrintDialog::AllPages),
-        minPage(1),
-        maxPage(1),
-        fromPage(0),
-        toPage(0)
+        : printer(0)
     {
     }
 
-    void init(QAbstractPrintDialogPrivate *d) {
-        options = d->options;
-        printRange = d->printRange;
-        minPage = d->minPage;
-        maxPage = d->maxPage;
-        fromPage = d->fromPage;
-        toPage = d->toPage;
-    }
-
     QPrinter *printer;
-    QAbstractPrintDialog::PrintDialogOptions options;
-    QAbstractPrintDialog::PrintRange printRange;
-    int minPage, maxPage, fromPage, toPage;
+    QPrinterPrivate *pd;
 };
 
 #endif // QT_NO_PRINTDIALOG

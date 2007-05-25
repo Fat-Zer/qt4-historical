@@ -26,6 +26,8 @@
 
 #include <QMainWindow>
 #include <QPrinter>
+#include <QPointF>
+#include <QSizeF>
 
 class PreviewView;
 class QTextDocument;
@@ -36,6 +38,9 @@ class PrintPreview : public QMainWindow
 public:
     PrintPreview(const QTextDocument *document, QWidget *parent);
     virtual ~PrintPreview();
+
+    QSizeF paperSize;
+    QPointF pageTopLeft;
 
 private slots:
     void print();

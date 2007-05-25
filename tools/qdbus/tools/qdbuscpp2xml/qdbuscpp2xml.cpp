@@ -30,6 +30,7 @@
 #include <QList>
 #include <QRegExp>
 #include <QCoreApplication>
+#include <QLibraryInfo>
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -47,7 +48,7 @@ static const char docTypeHeader[] =
 extern QDBUS_EXPORT QString qDBusGenerateMetaObjectXml(QString interface, const QMetaObject *mo,
                                                        const QMetaObject *base, int flags);
 
-#define PROGRAMNAME     "dbuscpp2xml"
+#define PROGRAMNAME     "qdbuscpp2xml"
 #define PROGRAMVERSION  "0.1"
 #define PROGRAMCOPYRIGHT "Copyright (C) 2006 Trolltech ASA. All rights reserved."
 
@@ -360,7 +361,7 @@ int main(int argc, char **argv)
             continue;
 
         QFile f(arg);
-        if (!f.open(QIODevice::ReadOnly)) {
+        if (!f.open(QIODevice::ReadOnly|QIODevice::Text)) {
             fprintf(stderr, PROGRAMNAME ": could not open '%s': %s\n",
                     qPrintable(arg), qPrintable(f.errorString()));
             return 1;
@@ -375,7 +376,7 @@ int main(int argc, char **argv)
         else {
             // run moc on this file
             QProcess proc;
-            proc.start(QLatin1String("moc"), QStringList() << QFile::decodeName(argv[i]));
+            proc.start(QLibraryInfo::location(QLibraryInfo::BinariesPath) + QLatin1String("/moc"), QStringList() << QFile::decodeName(argv[i]), QIODevice::ReadOnly | QIODevice::Text);
 
             if (!proc.waitForStarted()) {
                 fprintf(stderr, PROGRAMNAME ": could not execute moc! Aborting.\n");

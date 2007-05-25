@@ -85,7 +85,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="Widget8" >
+     <widget class="QWidget" name="indexPage" >
       <attribute name="title" >
        <string>&amp;Index</string>
       </attribute>
@@ -128,7 +128,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="Widget9" >
+     <widget class="QWidget" name="bookmarkPage" >
       <attribute name="title" >
        <string>&amp;Bookmarks</string>
       </attribute>
@@ -211,7 +211,7 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="searchTab" >
+     <widget class="QWidget" name="searchPage" >
       <attribute name="title" >
        <string>&amp;Search</string>
       </attribute>
@@ -325,6 +325,9 @@
            </property>
            <property name="text" >
             <string>&amp;Search</string>
+           </property>
+           <property name="enabled" >
+            <bool>false</bool>
            </property>
           </widget>
          </item>

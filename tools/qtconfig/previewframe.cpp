@@ -25,6 +25,7 @@
 
 #include <QBoxLayout>
 #include <QPainter>
+#include <QMdiSubWindow>
 
 PreviewFrame::PreviewFrame( QWidget *parent, const char *name )
     : QFrame( parent, name )
@@ -38,8 +39,9 @@ PreviewFrame::PreviewFrame( QWidget *parent, const char *name )
     Workspace * w = new Workspace( this );
     vbox->addWidget(w);
 
-    previewWidget = new PreviewWidget(w);
-    QWidget *frame = w->addWindow(previewWidget, Qt::Window);
+    previewWidget = new PreviewWidget;
+    previewWidget->setAutoFillBackground(true);
+    QMdiSubWindow *frame = w->addSubWindow(previewWidget, Qt::Window);
     frame->move(10,10);
     frame->show();
 }
@@ -50,15 +52,16 @@ void PreviewFrame::setPreviewPalette(QPalette pal)
 }
 
 Workspace::Workspace( QWidget* parent, const char* name)
-    : QWorkspace( parent, name )
+    : QMdiArea(parent)
 {
+    setObjectName(name);
 }
 
 void Workspace::paintEvent( QPaintEvent* )
 {
-    QPainter p ( this );
+    QPainter p (viewport());
     p.fillRect(rect(), palette().color(backgroundRole()).dark());
     p.setPen( QPen( Qt::white ) );
     p.drawText ( 0, height() / 2,  width(), height(), Qt::AlignHCenter,
-                "The moose in the noose\nate the goose who was loose." );
+                QLatin1String("The moose in the noose\nate the goose who was loose.") );
 }

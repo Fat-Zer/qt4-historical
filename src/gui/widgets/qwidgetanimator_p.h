@@ -35,9 +35,9 @@
 // We mean it.
 //
 
-#include <QObject>
-#include <QRect>
-#include <QMap>
+#include <qobject.h>
+#include <qrect.h>
+#include <qmap.h>
 
 class QWidget;
 class QTimer;
@@ -52,6 +52,8 @@ public:
     void animate(QWidget *widget, const QRect &final_geometry, bool animate);
     bool animating() const;
     bool animating(QWidget *widget);
+
+    void abort(QWidget *widget);
 
 signals:
     void finished(QWidget *widget);

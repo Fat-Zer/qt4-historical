@@ -29,13 +29,13 @@
 #include <QtCore/qnamespace.h>
 #include <QtCore/qstring.h> // char*->QString conversion
 #include <QtGui/qimage.h>
+#include <QtGui/qtransform.h>
 
 QT_BEGIN_HEADER
 
 QT_MODULE(Gui)
 
 class QImageWriter;
-class QPixmapPrivate;
 class QColor;
 class QVariant;
 class QX11Info;
@@ -85,7 +85,8 @@ public:
 #ifndef QT_NO_IMAGE_HEURISTIC_MASK
     QBitmap createHeuristicMask(bool clipTight = true) const;
 #endif
-    QBitmap createMaskFromColor(const QColor &maskColor) const;
+    QBitmap createMaskFromColor(const QColor &maskColor) const; // ### Qt 5: remove
+    QBitmap createMaskFromColor(const QColor &maskColor, Qt::MaskMode mode) const;
 
     static QPixmap grabWindow(WId, int x=0, int y=0, int w=-1, int h=-1);
     static QPixmap grabWidget(QWidget *widget, const QRect &rect);
@@ -102,6 +103,8 @@ public:
     QPixmap scaledToHeight(int h, Qt::TransformationMode mode = Qt::FastTransformation) const;
     QPixmap transformed(const QMatrix &, Qt::TransformationMode mode = Qt::FastTransformation) const;
     static QMatrix trueMatrix(const QMatrix &m, int w, int h);
+    QPixmap transformed(const QTransform &, Qt::TransformationMode mode = Qt::FastTransformation) const;
+    static QTransform trueMatrix(const QTransform &m, int w, int h);
 
     QImage toImage() const;
     static QPixmap fromImage(const QImage &image, Qt::ImageConversionFlags flags = Qt::AutoColor);
@@ -131,6 +134,7 @@ public:
     QPixmap copy(const QRect &rect = QRect()) const;
 
     int serialNumber() const;
+    qint64 cacheKey() const;
 
     bool isDetached() const;
     void detach();
@@ -177,7 +181,7 @@ public:
     QT3_SUPPORT bool convertFromImage(const QImage &img, Qt::ImageConversionFlags flags = Qt::AutoColor)
         { (*this) = fromImage(img, flags); return !isNull(); }
     inline QT3_SUPPORT operator QImage() const { return toImage(); }
-    inline QT3_SUPPORT QPixmap xForm(const QMatrix &matrix) const { return transformed(matrix); }
+    inline QT3_SUPPORT QPixmap xForm(const QMatrix &matrix) const { return transformed(QTransform(matrix)); }
     inline QT3_SUPPORT bool selfMask() const { return false; }
 private:
     void resize_helper(const QSize &s);
@@ -192,10 +196,6 @@ private:
     bool doImageIO(QImageWriter *io, int quality) const;
     enum Type { PixmapType, BitmapType };
     QPixmap(const QSize &s, Type);
-#ifdef Q_WS_MAC
-    static void grabWidget_helper(QWidget *widget, QPixmap &res, QPixmap &buf, const QRect &r, const QPoint &offset, bool);
-#endif
-
     void init(int, int, Type = PixmapType);
     void deref();
 #if defined(Q_WS_WIN)
@@ -207,6 +207,8 @@ private:
     friend CGImageRef qt_mac_create_imagemask(const QPixmap &, const QRectF &rect);
     friend IconRef qt_mac_create_iconref(const QPixmap &);
     friend QPixmap qt_mac_unmultiplyPixmapAlpha(const QPixmap &);
+    friend quint32 *qt_mac_pixmap_get_base(const QPixmap *);
+    friend int qt_mac_pixmap_get_bytes_per_line(const QPixmap *);
 #endif
     friend struct QPixmapData;
     friend class QBitmap;
@@ -218,10 +220,16 @@ private:
     friend class QWidgetPrivate;
     friend class QRasterPaintEngine;
     friend class QRasterBuffer;
+    friend class QDirect3DPaintEngine;
+    friend class QDirect3DPaintEnginePrivate;
 #if !defined(QT_NO_DATASTREAM)
     friend Q_GUI_EXPORT QDataStream &operator>>(QDataStream &, QPixmap &);
 #endif
     friend Q_GUI_EXPORT qint64 qt_pixmap_id(const QPixmap &pixmap);
+
+public:
+    typedef QPixmapData * DataPtr;
+    inline DataPtr &data_ptr() { return data; }
 };
 
 Q_DECLARE_SHARED(QPixmap)

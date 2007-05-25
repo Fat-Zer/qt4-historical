@@ -82,16 +82,17 @@ bool evaluateProFile(const QString &fileName, bool verbose,QMap<QByteArray, QStr
             + visitor->values(QLatin1String("DEFAULTCODEC"))
             + visitor->values(QLatin1String("CODECFORTR"));
         if (!trcodec.isEmpty())
-            codecForTr = trcodec.last().toLatin1();
+            codecForTr = trcodec.last();
 
         QStringList srccodec = visitor->values(QLatin1String("CODECFORSRC"));
         if (!srccodec.isEmpty()) 
-            codecForSource = srccodec.last().toLatin1();
+            codecForSource = srccodec.last();
         
         QStringList forms = visitor->absFileNames(QLatin1String("INTERFACES"))
             + visitor->absFileNames(QLatin1String("FORMS"))
             + visitor->absFileNames(QLatin1String("FORMS3"));
         sourceFiles << forms;
+
     }
     if (ok) {
         removeDuplicates(&sourceFiles, false);
@@ -124,7 +125,7 @@ QStringList getListOfProfiles(const QStringList &proFiles, bool verbose)
                 ok = pro->Accept(visitor);
 
             if (ok && visitor->templateType() == ProFileEvaluator::TT_Subdirs) {
-                QStringList subdirs = visitor->values("SUBDIRS");
+                QStringList subdirs = visitor->values(QLatin1String("SUBDIRS"));
                 for (int is = 0; is < subdirs.count(); ++is) {
                     QString subdir = subdirs[is];
                     QDir dir( subdir );

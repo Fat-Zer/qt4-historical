@@ -36,6 +36,7 @@ QT_MODULE(Gui)
 #ifndef QT_NO_MENU
 
 class QMenuPrivate;
+class QStyleOptionMenuItem;
 #ifdef QT3_SUPPORT
 class QMenuItem;
 #include <QtGui/qpixmap.h>
@@ -140,6 +141,7 @@ protected:
     void timerEvent(QTimerEvent *);
     bool event(QEvent *);
     bool focusNextPrevChild(bool next);
+    void initStyleOption(QStyleOptionMenuItem *option, const QAction *action) const;
 
 private Q_SLOTS:
     void internalSetSloppyAction();
@@ -148,6 +150,7 @@ private Q_SLOTS:
 private:
     Q_PRIVATE_SLOT(d_func(), void _q_actionTriggered())
     Q_PRIVATE_SLOT(d_func(), void _q_actionHovered())
+    Q_PRIVATE_SLOT(d_func(), void _q_overrideMenuActionDestroyed())
 
 #ifdef QT3_SUPPORT
 public:
@@ -358,6 +361,9 @@ private:
     int findIdForAction(QAction*) const;
 #endif
 
+protected:
+    QMenu(QMenuPrivate &dd, QWidget* parent = 0);
+
 private:
     Q_DISABLE_COPY(QMenu)
 
@@ -366,6 +372,8 @@ private:
     friend class QTornOffMenu;
     friend class Q3PopupMenu;
     friend class QComboBox;
+    friend class QAction;
+    friend class QToolButtonPrivate;
 
 #ifdef Q_WS_MAC
     friend void qt_mac_trayicon_activate_action(QMenu *, QAction *action);

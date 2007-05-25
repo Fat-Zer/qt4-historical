@@ -191,7 +191,13 @@ void QMakeSourceFileInfo::dependTreeWalker(SourceFile *node, SourceDependChildre
 
 void QMakeSourceFileInfo::setDependencyPaths(const QList<QMakeLocalFileName> &l)
 {
-    depdirs = l;
+    // Ensure that depdirs does not contain the same paths several times, to minimize the stats
+    QList<QMakeLocalFileName> ll;
+    for (int i = 0; i < l.count(); ++i) {
+        if (!ll.contains(l.at(i)))
+            ll.append(l.at(i));
+    }
+    depdirs = ll;
 }
 
 QStringList QMakeSourceFileInfo::dependencies(const QString &file)
@@ -325,7 +331,7 @@ char *QMakeSourceFileInfo::getBuffer(int s) {
     return spare_buffer;
 }
 
-#ifdef Q_WS_WIN
+#ifndef S_ISDIR
 #define S_ISDIR(x) (x & _S_IFDIR)
 #endif
 
@@ -577,6 +583,8 @@ bool QMakeSourceFileInfo::findDeps(SourceFile *file)
                         ++x;
                     }
                 }
+            } else {
+                --x;
             }
         }
 
@@ -631,7 +639,7 @@ bool QMakeSourceFileInfo::findDeps(SourceFile *file)
                     dep->exists = exists;
                 }
             }
-            if(dep) {
+            if(dep && dep->file != file->file) {
                 dep->included_count++;
                 if(dep->exists) {
                     debug_msg(5, "%s:%d Found dependency to %s", file->file.real().toLatin1().constData(),

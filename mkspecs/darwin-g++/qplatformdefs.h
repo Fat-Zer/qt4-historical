@@ -88,6 +88,7 @@
 #define QT_CHDIR		::chdir
 #define QT_MKDIR		::mkdir
 #define QT_RMDIR		::rmdir
+#define QT_OPEN_LARGEFILE       0
 #define QT_OPEN_RDONLY		O_RDONLY
 #define QT_OPEN_WRONLY		O_WRONLY
 #define QT_OPEN_RDWR		O_RDWR
@@ -99,12 +100,9 @@
 #define QT_SIGNAL_ARGS		int
 #define QT_SIGNAL_IGNORE	SIG_IGN
 
-#define QT_SOCKLEN_T		int
+#define QT_SOCKLEN_T		socklen_t
 
 #define QT_SNPRINTF		::snprintf
 #define QT_VSNPRINTF		::vsnprintf
-
-#define QT_AOUT_UNDERSCORE
-
 
 #endif // QPLATFORMDEFS_H

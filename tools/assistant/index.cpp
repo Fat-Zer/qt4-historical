@@ -132,7 +132,7 @@ void Index::setupDocumentList()
     QStringList lst = d.entryList(filters);
     QStringList::ConstIterator it = lst.constBegin();
     for ( ; it != lst.constEnd(); ++it )
-        docList.append( "file:" + docPath + QLatin1String("/") + *it );
+        docList.append( QLatin1String("file:") + docPath + QLatin1String("/") + *it );
 }
 
 void Index::insertInDict( const QString &str, int docNum )
@@ -159,12 +159,12 @@ QString Index::getCharsetForDocument(QFile *file)
     QString contents = s.readAll();
 
     QString encoding;
-    int start = contents.indexOf("<meta", 0, Qt::CaseInsensitive);
+    int start = contents.indexOf(QLatin1String("<meta"), 0, Qt::CaseInsensitive);
     if (start > 0) {
-        int end = contents.indexOf(">", start);
+        int end = contents.indexOf(QLatin1String(">"), start);
         QString meta = contents.mid(start+5, end-start);
         meta = meta.toLower();
-        QRegExp r("charset=([^\"\\s]+)");
+        QRegExp r(QLatin1String("charset=([^\"\\s]+)"));
         if (r.indexIn(meta) != -1) {
             encoding = r.cap(1);        
         }
@@ -172,7 +172,7 @@ QString Index::getCharsetForDocument(QFile *file)
 
     file->seek(0);
     if (encoding.isEmpty())
-        return "utf-8";
+        return QLatin1String("utf-8");
     return encoding;
 }
 
@@ -346,6 +346,10 @@ QString Index::getDocumentTitle( const QString &fullFileName )
 {
     QUrl url(fullFileName);
     QString fileName = url.toLocalFile();
+
+    if (documentTitleCache.contains(fileName))
+        return documentTitleCache.value(fileName);
+
     QFile file( fileName );
     if ( !file.open( QFile::ReadOnly ) ) {
         qWarning( (QLatin1String("cannot open file ") + fileName).toAscii().constData() );
@@ -358,6 +362,7 @@ QString Index::getDocumentTitle( const QString &fullFileName )
     int end = text.indexOf(QLatin1String("</title>"), 0, Qt::CaseInsensitive);
 
     QString title = ( end - start <= 0 ? tr("Untitled") : text.mid( start, end - start ) );
+    documentTitleCache.insert(fileName, title);
     return title;
 }
 

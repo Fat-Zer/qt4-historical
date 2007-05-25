@@ -3,7 +3,7 @@
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>Qt 4.2: toolbar.cpp Example File (demos/mainwindow/toolbar.cpp)</title>
+  <title>Qt 4.3: toolbar.cpp Example File (demos/mainwindow/toolbar.cpp)</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -33,7 +33,7 @@
  ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
  ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  **
- ****************************************************************************/</span>
+ ****************************************************************************/
 
  #include &quot;toolbar.h&quot;
 
@@ -42,6 +42,8 @@
  #include &lt;QPainter&gt;
  #include &lt;QPainterPath&gt;
  #include &lt;QSpinBox&gt;
+ #include &lt;QLabel&gt;
+ #include &lt;QToolTip&gt;
 
  #include &lt;stdlib.h&gt;
 
@@ -64,11 +66,12 @@
  static QPixmap genIcon(const QSize &amp;iconSize, int number, const QColor &amp;color)
  { return genIcon(iconSize, QString::number(number), color); }
 
- ToolBar::ToolBar(QWidget *parent)
+ ToolBar::ToolBar(const QString &amp;title, QWidget *parent)
      : QToolBar(parent), spinbox(0), spinboxAction(0)
  {
-     setWindowTitle(tr(&quot;Main Tool Bar&quot;));
-     setObjectName(&quot;MainToolBar&quot;);
+     tip = 0;
+     setWindowTitle(title);
+     setObjectName(title);
 
      setIconSize(QSize(32, 32));
 
@@ -158,11 +161,14 @@
      areaActions-&gt;addAction(topAction);
      areaActions-&gt;addAction(bottomAction);
 
+     toolBarBreakAction = new QAction(tr(&quot;Insert break&quot;), this);
+     connect(toolBarBreakAction, SIGNAL(triggered(bool)), this, SLOT(insertToolBarBreak()));
+
      connect(movableAction, SIGNAL(triggered(bool)), areaActions, SLOT(setEnabled(bool)));
 
      connect(movableAction, SIGNAL(triggered(bool)), allowedAreasActions, SLOT(setEnabled(bool)));
 
-     menu = new QMenu(tr(&quot;&amp;Toolbar&quot;), this);
+     menu = new QMenu(title, this);
      menu-&gt;addAction(toggleViewAction());
      menu-&gt;addSeparator();
      menu-&gt;addAction(orderAction);
@@ -176,6 +182,8 @@
      menu-&gt;addActions(allowedAreasActions-&gt;actions());
      menu-&gt;addSeparator();
      menu-&gt;addActions(areaActions-&gt;actions());
+     menu-&gt;addSeparator();
+     menu-&gt;addAction(toolBarBreakAction);
 
      connect(menu, SIGNAL(aboutToShow()), this, SLOT(updateMenu()));
 
@@ -328,11 +336,51 @@
  { place(Qt::TopToolBarArea, p); }
 
  void ToolBar::placeBottom(bool p)
- { place(Qt::BottomToolBarArea, p); }</pre>
+ { place(Qt::BottomToolBarArea, p); }
+
+ void ToolBar::insertToolBarBreak()
+ {
+     QMainWindow *mainWindow = qobject_cast&lt;QMainWindow *&gt;(parentWidget());
+     Q_ASSERT(mainWindow != 0);
+
+     mainWindow-&gt;insertToolBarBreak(this);
+ }
+
+ void ToolBar::enterEvent(QEvent*)
+ {
+ /*
+     These labels on top of toolbars look darn ugly
+
+     if (tip == 0) {
+         tip = new QLabel(windowTitle(), this);
+         QPalette pal = tip-&gt;palette();
+         QColor c = Qt::black;
+         c.setAlpha(100);
+         pal.setColor(QPalette::Window, c);
+         pal.setColor(QPalette::Foreground, Qt::white);
+         tip-&gt;setPalette(pal);
+         tip-&gt;setAutoFillBackground(true);
+         tip-&gt;setMargin(3);
+         tip-&gt;setText(windowTitle());
+     }
+     QPoint c = rect().center();
+     QSize hint = tip-&gt;sizeHint();
+     tip-&gt;setGeometry(c.x() - hint.width()/2, c.y() - hint.height()/2,
+                         hint.width(), hint.height());
+
+     tip-&gt;show();
+ */</span>
+ }
+
+ void ToolBar::leaveEvent(QEvent*)
+ {
+     if (tip != 0)
+         tip-&gt;hide();
+ }</pre>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
 </tr></table></div></address></body>
 </html>

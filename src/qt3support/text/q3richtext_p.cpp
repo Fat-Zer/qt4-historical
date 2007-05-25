@@ -100,7 +100,7 @@ int Q3TextCursor::x() const
     if (!c->rightToLeft &&
          c->c.isSpace() &&
          idx > 0 &&
-         para->at(idx - 1)->c != '\t' &&
+         para->at(idx - 1)->c != QLatin1Char('\t') &&
          !c->lineStart &&
          (para->alignment() & Qt::AlignJustify) == Qt::AlignJustify)
         curx = para->at(idx - 1)->x + para->string()->width(idx - 1);
@@ -127,7 +127,7 @@ Q3TextDocument *Q3TextCursor::document() const
 void Q3TextCursor::gotoPosition(Q3TextParagraph* p, int index)
 {
     if (para && p != para) {
-        while (para->document() != p->document() && !indices.isEmpty())
+        while (!indices.isEmpty() && para->document() != p->document())
             pop();
         Q_ASSERT(indices.isEmpty() || para->document() == p->document());
     }
@@ -400,11 +400,11 @@ void Q3TextFormat::generateKey()
 QString Q3TextFormat::getKey(const QFont &fn, const QColor &col, bool misspelled, VerticalAlignment a)
 {
     QString k = fn.key();
-    k += '/';
+    k += QLatin1Char('/');
     k += QString::number((uint)col.rgb());
-    k += '/';
+    k += QLatin1Char('/');
     k += QString::number((int)misspelled);
-    k += '/';
+    k += QLatin1Char('/');
     k += QString::number((int)a);
     return k;
 }

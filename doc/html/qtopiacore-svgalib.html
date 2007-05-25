@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-x11-opensource-src-4.2.3/doc/src/examples/svgalib.qdoc -->
+<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/doc/src/examples/svgalib.qdoc -->
 <head>
-  <title>Qt 4.2: Accelerated Screen Driver Example</title>
+  <title>Qt 4.3: Accelerated Screen Driver Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -92,7 +92,7 @@
      GraphicsContext *context;
  };</pre>
 <p>The <a href="qscreen.html#connect">connect()</a>, <a href="qscreen.html#disconnect">disconnect()</a>, <a href="qscreen.html#initDevice">initDevice()</a> and <a href="qscreen.html#shutdownDevice">shutdownDevice()</a> functions are declared as pure virtual functions in <a href="qscreen.html">QScreen</a> and must be implemented. They are used to configure the hardware, or query its configuration: <a href="qscreen.html#connect">connect()</a> and <a href="qscreen.html#disconnect">disconnect()</a> are called by both the server and client processes, while the <a href="qscreen.html#initDevice">initDevice()</a> and <a href="qscreen.html#shutdownDevice">shutdownDevice()</a> functions are only called by the server process.</p>
-<p><a href="qscreen.html">QScreen</a>'s <a href="qscreen.html#setMode">setMode()</a> and <a href="qscreen.html#blank">blank()</a> functions are also pure virtual, but our driver's implementations are trivial. The last three functions (<a href="qscreen.html#exposeRegion">exposeRegion()</a>, <a href="qscreen.html#blit">blit()</a> and <a href="qscreen.html#solidFill">solidFill()</a>) are the ones involved in putting pixels on the screen, i.e., we reimplement these functions to perform the pixel copying acceleration.</p>
+<p><a href="qscreen.html">QScreen</a>'s <a href="qscreen.html#setMode">setMode()</a> and <a href="qscreen.html#blank">blank()</a> functions are also pure virtual, but our driver's implementations are trivial. The last three functions (<a href="qscreen.html#exposeRegion">exposeRegion()</a>, <a href="qscreen.html#blit">blit()</a> and <a href="qscreen.html#solidFill">solidFill()</a>) are the ones involved in putting pixels on the screen, i.e&#x2e;, we reimplement these functions to perform the pixel copying acceleration.</p>
 <p>Finally, the <tt>context</tt> variable is a pointer to a <a href="http://www.svgalib.org">SVGAlib</a> specific type. Note that the details of using the <a href="http://www.svgalib.org">SVGAlib</a> library is beyond the scope of this example.</p>
 <a name="svgalibscreen-class-implementation"></a>
 <h3>SvgalibScreen Class Implementation</h3>
@@ -115,6 +115,17 @@
      QScreen::d = modeinfo-&gt;bytesperpixel * 8;
      QScreen::size = QScreen::lstep * dh;
      QScreen::data = 0;
+
+     switch (depth()) {
+     case 32:
+         setPixelFormat(QImage::Format_ARGB32_Premultiplied);
+         break;
+     case 16:
+         setPixelFormat(QImage::Format_RGB16);
+         break;
+     default:
+         break;
+     }
 
      const int dpi = 72;
      QScreen::physWidth = qRound(QScreen::dw * 25.4 / dpi);
@@ -191,14 +202,7 @@
  void SvgalibScreen::blit(const QImage &amp;img, const QPoint &amp;topLeft,
                           const QRegion &amp;reg)
  {
-     bool do_fallback = true;
-
-     if (depth() == 16 &amp;&amp; img.format() == QImage::Format_RGB16)
-         do_fallback = false;
-     if (depth() == 32 &amp;&amp; img.format() == QImage::Format_ARGB32_Premultiplied)
-         do_fallback = false;
-
-     if (do_fallback) {
+     if (img.format() != pixelFormat()) {
          QScreen::blit(img, topLeft, reg);
          return;
      }
@@ -249,7 +253,7 @@
      bool sourceOver;
      QPaintDevice *device;
  };</pre>
-<p>In this example, we will only accelerate one of the <a href="qpaintengine.html#drawRects-2">drawRects()</a> functions, i.e., only non-rotated, aliased and opaque rectangles will be rendered using accelerated painting. All other primitives are rendered using the base class's unaccelerated implementation.</p>
+<p>In this example, we will only accelerate one of the <a href="qpaintengine.html#drawRects-2">drawRects()</a> functions, i.e&#x2e;, only non-rotated, aliased and opaque rectangles will be rendered using accelerated painting. All other primitives are rendered using the base class's unaccelerated implementation.</p>
 <p>The paint engine's state is stored in the private member variables, and we reimplement the <a href="qpaintengine.html#updateState">updateState()</a> function to ensure that our custom paint engine's state is updated properly whenever it is required. The private <tt>setClip()</tt> and <tt>updateClip()</tt> functions are only helper function used to simplify the <a href="qpaintengine.html#updateState">updateState()</a> implementation.</p>
 <p>We also reimplement <a href="qrasterpaintengine.html">QRasterPaintEngine</a>'s <a href="qpaintengine.html#begin">begin()</a> and <a href="qpaintengine.html#end">end()</a> functions to initialize the paint engine and to do the cleanup when we are done rendering, respectively.</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
@@ -359,7 +363,7 @@
                           r.y() + r.height());
  }</pre>
 <p>The <tt>setClip()</tt> helper function is called from our custom implementation of <a href="qpaintengine.html#updateState">updateState()</a>, and enables clipping to the given region. An empty region means that clipping is disabled.</p>
-<p>Our custom update function also makes use of the <tt>updateClip()</tt> helper function that checks if the clip is &quot;simple&quot;, i.e., that it can be represented by only one rectangle, and updates the clip region in <a href="http://www.svgalib.org">SVGAlib</a>.</p>
+<p>Our custom update function also makes use of the <tt>updateClip()</tt> helper function that checks if the clip is &quot;simple&quot;, i.e&#x2e;, that it can be represented by only one rectangle, and updates the clip region in <a href="http://www.svgalib.org">SVGAlib</a>.</p>
 <pre> void SvgalibPaintEngine::drawRects(const QRect *rects, int rectCount)
  {
      const bool canAccelerate = simplePen &amp;&amp; simpleBrush &amp;&amp; simpleMatrix
@@ -412,10 +416,10 @@
      SvgalibPaintEngine *pengine;
  };</pre>
 <p>The <a href="qpaintdevice.html#paintEngine">paintEngine()</a> function should return an instance of the <tt>SvgalibPaintEngine</tt> class. The <a href="qcustomrasterpaintdevice.html#memory">memory()</a> function should return a pointer to the buffer which should be used when drawing the widget.</p>
-<p>Our example driver is rendering directly on the screen without any buffering, i.e., our custom pain device's <a href="qcustomrasterpaintdevice.html#memory">memory()</a> function returns a pointer to the framebuffer. For this reason, we must also reimplement the <a href="qpaintdevice.html#metric">metric()</a> function to reflect the metrics of framebuffer.</p>
+<p>Our example driver is rendering directly on the screen without any buffering, i.e&#x2e;, our custom pain device's <a href="qcustomrasterpaintdevice.html#memory">memory()</a> function returns a pointer to the framebuffer. For this reason, we must also reimplement the <a href="qpaintdevice.html#metric">metric()</a> function to reflect the metrics of framebuffer.</p>
 <a name="implementing-a-custom-window-surface"></a>
 <h3>Implementing a Custom Window Surface</h3>
-<p>The custom window surface can be derived from the <a href="qwswindowsurface.html">QWSWindowSurface</a> class. <a href="qwswindowsurface.html">QWSWindowSurface</a> manages the memory used when drawing a window.</p>
+<p>The custom window surface can be derived from the QWSWindowSurface class. QWSWindowSurface manages the memory used when drawing a window.</p>
 <pre> class SvgalibSurface : public QWSWindowSurface
  {
  public:
@@ -424,28 +428,22 @@
      ~SvgalibSurface();
 
      void setGeometry(const QRect &amp;rect);
-     QRect geometry() const { return brect; }
-
-     bool isValidFor(const QWidget *) const { return true; }
-
-     void scroll(const QRegion &amp;region, int dx, int dy);
-
-     const QString key() const { return QLatin1String(&quot;svgalib&quot;); }
-     const QByteArray data() const { return QByteArray(); }
+     bool isValid() const { return true; }
+     bool scroll(const QRegion &amp;region, int dx, int dy);
+     QString key() const { return QLatin1String(&quot;svgalib&quot;); }
 
      bool attach(const QByteArray &amp;) { return true; }
      void detach() {}
 
-     const QImage image() const { return QImage(); }
+     QImage image() const { return QImage(); }
      QPaintDevice *paintDevice() { return pdevice; }
      QPoint painterOffset() const;
 
  private:
-     QRect brect;
      SvgalibPaintDevice *pdevice;
  };</pre>
-<p>We can implement most of the pure virtual functions inherited from <a href="qwswindowsurface.html">QWSWindowSurface</a> as trivial inline functions, except the <a href="qwswindowsurface.html#scroll">scroll()</a> function that actually makes use of some hardware acceleration:</p>
-<pre> void SvgalibSurface::scroll(const QRegion &amp;region, int dx, int dy)
+<p>We can implement most of the pure virtual functions inherited from QWSWindowSurface as trivial inline functions, except the <a href="qwindowsurface.html#scroll">scroll()</a> function that actually makes use of some hardware acceleration:</p>
+<pre> bool SvgalibSurface::scroll(const QRegion &amp;region, int dx, int dy)
  {
      const QVector&lt;QRect&gt; rects = region.rects();
      for (int i = 0; i &lt; rects.size(); ++i) {
@@ -453,6 +451,8 @@
          gl_copybox(r.left(), r.top(), r.width(), r.height(),
                     r.left() + dx, r.top() + dy);
      }
+
+     return true;
  }</pre>
 <a name="adjusting-the-screen-driver"></a>
 <h3>Adjusting the Screen Driver</h3>
@@ -480,6 +480,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
 </tr></table></div></address></body>
 </html>

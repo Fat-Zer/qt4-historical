@@ -239,7 +239,9 @@ public:
     Qt::PenCapStyle capStyle;
     Qt::PenJoinStyle joinStyle;
     mutable QVector<qreal> dashPattern;
+    qreal dashOffset;
     qreal miterLimit;
+    uint cosmetic : 1;
 };
 
 
@@ -249,8 +251,10 @@ public:
 inline QPenPrivate::QPenPrivate(const QBrush &_brush, qreal _width, Qt::PenStyle penStyle,
                                 Qt::PenCapStyle _capStyle, Qt::PenJoinStyle _joinStyle)
     : ref(1), width(_width), brush(_brush), style(penStyle), capStyle(_capStyle),
-      joinStyle(_joinStyle), miterLimit(2)
+      joinStyle(_joinStyle), dashOffset(0), miterLimit(2),
+      cosmetic(false)
 {
+
 }
 
 static const Qt::PenCapStyle qpen_default_cap = Qt::SquareCap;
@@ -395,6 +399,8 @@ void QPen::detach()
                                      d->joinStyle);
     x->miterLimit = d->miterLimit;
     x->dashPattern = d->dashPattern;
+    x->dashOffset = d->dashOffset;
+    x->cosmetic = d->cosmetic;
     x = qAtomicSetPtr(&d, x);
     if (!x->ref.deref())
         delete x;
@@ -537,6 +543,29 @@ void QPen::setDashPattern(const QVector<qreal> &pattern)
         qWarning("QPen::setDashPattern: Pattern not of even length");
         d->dashPattern << 1;
     }
+}
+
+
+/*!
+    Returns the dash offset for the pen.
+
+    \sa setDashOffset
+*/
+qreal QPen::dashOffset() const
+{
+    return d->dashOffset;
+}
+/*!
+    Sets the dash offset for this pen to the given \a offset. This
+    implicitly converts the style of the pen to Qt::CustomDashLine.
+*/
+void QPen::setDashOffset(qreal offset)
+{
+    if (qFuzzyCompare(offset, d->dashOffset))
+        return;
+    detach();
+    d->dashOffset = offset;
+    d->style = Qt::CustomDashLine;
 }
 
 /*!
@@ -763,6 +792,40 @@ bool QPen::isSolid() const
 
 
 /*!
+    Returns true if the pen is cosmetic; otherwise returns false.
+
+    Cosmetic pens are used to draw strokes that have a constant width
+    regardless of any transformations applied to the QPainter they are
+    used with. Drawing a shape with a cosmetic pen ensures that its
+    outline will have the same thickness at different scale factors.
+
+    A zero width pen is cosmetic by default; pens with a non-zero width
+    are non-cosmetic.
+
+    \sa setCosmetic(), widthF()
+*/
+
+bool QPen::isCosmetic() const
+{
+    return (d->cosmetic == true) || d->width == 0;
+}
+
+
+/*!
+    Sets this pen to cosmetic.
+
+    \sa isCosmetic()
+*/
+
+void QPen::setCosmetic(bool cosmetic)
+{
+    detach();
+    d->cosmetic = cosmetic;
+}
+
+
+
+/*!
     \fn bool QPen::operator!=(const QPen &pen) const
 
     Returns true if the pen is different from the given \a pen;
@@ -790,7 +853,8 @@ bool QPen::operator==(const QPen &p) const
                           && p.d->width == d->width
                           && p.d->miterLimit == d->miterLimit
                           && (d->style != Qt::CustomDashLine
-                              || p.dashPattern() == dashPattern())
+                              || (qFuzzyCompare(p.dashOffset(), dashOffset()) &&
+                                  p.dashPattern() == dashPattern()))
                           && p.d->brush == d->brush);
 }
 
@@ -825,8 +889,10 @@ QDataStream &operator<<(QDataStream &s, const QPen &p)
 {
     if (s.version() < 3)
         s << (quint8)p.style();
-    else
+    else if (s.version() < QDataStream::Qt_4_3)
         s << (quint8)(p.style() | p.capStyle() | p.joinStyle());
+    else
+        s << (quint16)(p.style() | p.capStyle() | p.joinStyle());
 
     if (s.version() < 7) {
         s << (quint8)p.width();
@@ -836,6 +902,8 @@ QDataStream &operator<<(QDataStream &s, const QPen &p)
         s << p.brush();
         s << double(p.miterLimit());
         s << p.dashPattern();
+        if (s.version() >= 9)
+            s << double(p.dashOffset());
     }
     return s;
 }
@@ -852,14 +920,21 @@ QDataStream &operator<<(QDataStream &s, const QPen &p)
 
 QDataStream &operator>>(QDataStream &s, QPen &p)
 {
-    quint8 style;
+    quint16 style;
     quint8 width8 = 0;
     double width = 0;
     QColor color;
     QBrush brush;
     double miterLimit = 2;
     QVector<qreal> dashPattern;
-    s >> style;
+    double dashOffset = 0;
+    if (s.version() < QDataStream::Qt_4_3) {
+        quint8 style8;
+        s >> style8;
+        style = style8;
+    } else {
+        s >> style;
+    }
     if (s.version() < 7) {
         s >> width8;
         s >> color;
@@ -870,6 +945,8 @@ QDataStream &operator>>(QDataStream &s, QPen &p)
         s >> brush;
         s >> miterLimit;
         s >> dashPattern;
+        if (s.version() >= 9)
+            s >> dashOffset;
     }
 
     p.detach();
@@ -880,6 +957,7 @@ QDataStream &operator>>(QDataStream &s, QPen &p)
     p.d->joinStyle = Qt::PenJoinStyle(style & Qt::MPenJoinStyle);
     p.d->dashPattern = dashPattern;
     p.d->miterLimit = miterLimit;
+    p.d->dashOffset = dashOffset;
 
     return s;
 }
@@ -892,6 +970,7 @@ QDebug operator<<(QDebug dbg, const QPen &p)
     dbg.nospace() << "QPen(" << p.width() << ',' << p.brush()
                   << ',' << int(p.style()) << ',' << int(p.capStyle())
                   << ',' << int(p.joinStyle()) << ',' << p.dashPattern()
+                  << "," << p.dashOffset()
                   << ',' << p.miterLimit() << ')';
     return dbg.space();
 #else

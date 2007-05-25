@@ -33,6 +33,7 @@ QT_MODULE(Gui)
 #ifndef QT_NO_ITEMVIEWS
 
 class QHeaderViewPrivate;
+class QStyleOptionHeader;
 
 class Q_GUI_EXPORT QHeaderView : public QAbstractItemView
 {
@@ -134,9 +135,17 @@ public:
     bool sectionsMoved() const;
     bool sectionsHidden() const;
 
+#ifndef QT_NO_DATASTREAM
+    QByteArray saveState() const;
+    bool restoreState(const QByteArray &state);
+#endif
+
+    void reset();
+
 public Q_SLOTS:
     void setOffset(int offset);
     void setOffsetToSectionPosition(int visualIndex);
+    void setOffsetToLastSection();
     void headerDataChanged(Qt::Orientation orientation, int logicalFirst, int logicalLast);
 
 Q_SIGNALS:
@@ -144,11 +153,13 @@ Q_SIGNALS:
     void sectionResized(int logicalIndex, int oldSize, int newSize);
     void sectionPressed(int logicalIndex);
     void sectionClicked(int logicalIndex);
+    void sectionEntered(int logicalIndex);
     void sectionDoubleClicked(int logicalIndex);
     void sectionCountChanged(int oldCount, int newCount);
     void sectionHandleDoubleClicked(int logicalIndex);
     void sectionAutoResize(int logicalIndex, QHeaderView::ResizeMode mode);
     void geometriesChanged();
+    void sortIndicatorChanged(int logicalIndex, Qt::SortOrder order);
 
 protected Q_SLOTS:
     void updateSection(int logicalIndex);
@@ -192,9 +203,12 @@ protected:
     QModelIndex moveCursor(CursorAction, Qt::KeyboardModifiers);
     void setSelection(const QRect&, QItemSelectionModel::SelectionFlags);
     QRegion visualRegionForSelection(const QItemSelection &selection) const;
+    void initStyleOption(QStyleOptionHeader *option) const;
 
 private:
     Q_PRIVATE_SLOT(d_func(), void _q_sectionsRemoved(const QModelIndex &parent, int logicalFirst, int logicalLast))
+    Q_PRIVATE_SLOT(d_func(), void _q_layoutAboutToBeChanged())
+    Q_PRIVATE_SLOT(d_func(), void _q_layoutChanged())
     Q_DECLARE_PRIVATE(QHeaderView)
     Q_DISABLE_COPY(QHeaderView)
 };

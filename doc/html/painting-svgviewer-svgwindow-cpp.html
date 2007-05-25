@@ -3,7 +3,7 @@
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>Qt 4.2: svgwindow.cpp Example File (painting/svgviewer/svgwindow.cpp)</title>
+  <title>Qt 4.3: svgwindow.cpp Example File (painting/svgviewer/svgwindow.cpp)</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -41,7 +41,8 @@
  #include &quot;svgwindow.h&quot;
 
  SvgWindow::SvgWindow()
-     : QScrollArea()
+     : QScrollArea(),
+       highQualityAntialiasing(false)
  {
      QWidget *view = new QWidget(this);
      renderer = SvgWindow::Native;
@@ -62,14 +63,27 @@
      if (renderer == OpenGL) {
          #ifndef QT_NO_OPENGL
          view = new SvgGLView(currentPath, this);
+         qobject_cast&lt;SvgGLView *&gt;(view)-&gt;setHighQualityAntialiasing(highQualityAntialiasing);
          #endif
-     } else if (renderer == Image)
+     } else if (renderer == Image) {
          view = new SvgRasterView(currentPath, this);
-     else
+     } else {
          view = new SvgNativeView(currentPath, this);
+     }
 
      setWidget(view);
      view-&gt;show();
+ }
+
+ void SvgWindow::setHighQualityAntialiasing(bool hq)
+ {
+     highQualityAntialiasing = hq;
+
+     #ifndef QT_NO_OPENGL
+     QWidget *view = widget();
+     if (renderer == OpenGL)
+         qobject_cast&lt;SvgGLView *&gt;(view)-&gt;setHighQualityAntialiasing(highQualityAntialiasing);
+     #endif
  }
 
  void SvgWindow::mousePressEvent(QMouseEvent *event)
@@ -103,6 +117,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
 </tr></table></div></address></body>
 </html>

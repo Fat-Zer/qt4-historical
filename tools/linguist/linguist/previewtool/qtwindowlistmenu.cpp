@@ -72,7 +72,7 @@ QtWindowListMenu::QtWindowListMenu(QWorkspace *workspace, QWidget *parent,
 					    const char *name)
 	: QMenu(parent), groupWindows(this)
 {    
-    setObjectName(name);
+    setObjectName(QLatin1String(name));
     m_menubar = 0;
     m_my_action = 0;
     m_close_current_action = 0;
@@ -325,7 +325,7 @@ bool QtWindowListMenu::eventFilter(QObject *obj, QEvent *e)
 
     	QChildEvent *child_event = (QChildEvent *) e;
 	    QObject *child = child_event->child();
-    	if (child->metaObject()->className() != "QWorkspaceChild")
+    	if (qstrcmp(child->metaObject()->className(), "QWorkspaceChild"))
 	        return false;
 
         QWidget *child_widget = qobject_cast<QWidget *>(child);

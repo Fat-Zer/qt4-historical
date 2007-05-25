@@ -23,16 +23,12 @@
 
 #include "qlayoutwidget_propertysheet.h"
 #include "qlayout_widget_p.h"
-#include "qdesigner_widget_p.h"
 #include "formwindow.h"
 #include "formeditor.h"
 
 #include <QtDesigner/QExtensionManager>
 
 #include <QLayout>
-#include <QMetaObject>
-#include <QMetaProperty>
-#include <QtCore/qdebug.h>
 
 using namespace qdesigner_internal;
 
@@ -48,22 +44,20 @@ QLayoutWidgetPropertySheet::~QLayoutWidgetPropertySheet()
 
 bool QLayoutWidgetPropertySheet::isVisible(int index) const
 {
-    QString name = propertyName(index);
-
-    return name == QLatin1String("margin") || name == QLatin1String("spacing");
+    if (propertyGroup(index) == QLatin1String("Layout"))
+        return QDesignerPropertySheet::isVisible(index);
+    return false;
 }
 
 void QLayoutWidgetPropertySheet::setProperty(int index, const QVariant &value)
 {
     QDesignerPropertySheet::setProperty(index, value);
-
-    QLayoutWidget *l = static_cast<QLayoutWidget*>(m_object);
-    QDesignerFormEditorInterface *core = l->formWindow()->core();
-    if (QDesignerPropertySheetExtension *sheet = qt_extension<QDesignerPropertySheetExtension*>(core->extensionManager(), l->layout())) {
-        sheet->setChanged(sheet->indexOf(propertyName(index)), true);
-    }
 }
 
+bool QLayoutWidgetPropertySheet::dynamicPropertiesAllowed() const
+{
+    return false;
+}
 
 QLayoutWidgetPropertySheetFactory::QLayoutWidgetPropertySheetFactory(QExtensionManager *parent)
     : QExtensionFactory(parent)

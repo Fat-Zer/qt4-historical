@@ -42,6 +42,8 @@ QT_BEGIN_HEADER
 class QDialog;
 class QWidget;
 class QDesignerFormWindowInterface;
+class QDesignerFormEditorInterface;
+class QDesignerResourceBrowserInterface;
 
 class QDesignerLanguageExtension
 {
@@ -49,13 +51,27 @@ public:
     virtual ~QDesignerLanguageExtension() {}
 
     virtual QDialog *createFormWindowSettingsDialog(QDesignerFormWindowInterface *formWindow, QWidget *parentWidget) = 0;
+    virtual QDesignerResourceBrowserInterface *createResourceBrowser(QWidget *parentWidget) = 0;
+
+    virtual QDialog *createPromotionDialog(QDesignerFormEditorInterface *formEditor, QWidget *parentWidget = 0) = 0;
+
+    virtual QDialog *createPromotionDialog(QDesignerFormEditorInterface *formEditor,
+                                           const QString &promotableWidgetClassName,
+                                           QString *promoteToClassName,
+                                           QWidget *parentWidget = 0) = 0;
+
+    virtual bool isLanguageResource(const QString &path) const = 0;
 
     virtual QString classNameOf(QObject *object) const = 0;
-    virtual QString enumerator(const QString &neutralName) const = 0;
-    virtual QString neutralEnumerator(const QString &enumName) const = 0;
+
+    virtual bool signalMatchesSlot(const QString &signal, const QString &slot) const = 0;
+
+    virtual QString widgetBoxContents() const = 0;
+
+    virtual QString uiExtension() const = 0;
 };
 
-Q_DECLARE_EXTENSION_INTERFACE(QDesignerLanguageExtension, "com.trolltech.Qt.Designer.Language")
+Q_DECLARE_EXTENSION_INTERFACE(QDesignerLanguageExtension, "com.trolltech.Qt.Designer.Language.3")
 
 QT_END_HEADER
 

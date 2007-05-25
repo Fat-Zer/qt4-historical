@@ -31,13 +31,17 @@
 #include <QtCore/qtextstream.h>
 #include <QtCore/qset.h>
 
-#include <QtDBus>
+#include <QtDBus/QtDBus>
 #include "private/qdbusmetaobject_p.h"
 #include "private/qdbusintrospection_p.h"
 
 #include <sys/types.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+#ifdef Q_WS_WIN
+#include <process.h>
+#endif
 
 #define PROGRAMNAME     "dbusxml2cpp"
 #define PROGRAMVERSION  "0.6"
@@ -211,7 +215,7 @@ static QDBusIntrospection::Interfaces readInput()
         // already XML
         return QDBusIntrospection::parseInterfaces(QString::fromUtf8(data));
 
-    fprintf(stderr, "Cannot process input. Stop.\n");
+    fprintf(stderr, "Cannot process input: '%s'. Stop.\n", qPrintable(inputFile));
     exit(1);
 }
 
@@ -326,7 +330,7 @@ static QByteArray qtTypeName(const QString &signature, const QDBusIntrospection:
     if (type == QVariant::Invalid) {
         QString annotationName = QString::fromLatin1("com.trolltech.QtDBus.QtTypeName");
         if (paramId >= 0)
-            annotationName += QString::fromLatin1(".%1%2").arg(direction).arg(paramId);
+            annotationName += QString::fromLatin1(".%1%2").arg(QLatin1String(direction)).arg(paramId);
         QString qttype = annotations.value(annotationName);
         if (!qttype.isEmpty())
             return qttype.toLatin1();

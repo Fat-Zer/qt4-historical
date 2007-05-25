@@ -83,9 +83,11 @@ public:
 
     static bool sendEvent(QObject *receiver, QEvent *event);
     static void postEvent(QObject *receiver, QEvent *event);
+    static void postEvent(QObject *receiver, QEvent *event, int priority);
     static void sendPostedEvents(QObject *receiver, int event_type);
     static void sendPostedEvents();
     static void removePostedEvents(QObject *receiver);
+    static void removePostedEvents(QObject *receiver, int eventType);
     static bool hasPendingEvents();
 
     virtual bool notify(QObject *, QEvent *);
@@ -108,7 +110,7 @@ public:
     static void removeTranslator(QTranslator * messageFile);
 #endif
     enum Encoding { CodecForTr, UnicodeUTF8, DefaultCodec = CodecForTr };
-    // ### merge in Qt 5
+    // ### Qt 5: merge
     static QString translate(const char * context,
                              const char * key,
                              const char * comment = 0,
@@ -162,6 +164,7 @@ protected:
 
 private:
     static bool sendSpontaneousEvent(QObject *receiver, QEvent *event);
+    bool notifyInternal(QObject *receiver, QEvent *event);
 
     void init();
 
@@ -180,10 +183,10 @@ private:
 };
 
 inline bool QCoreApplication::sendEvent(QObject *receiver, QEvent *event)
-{  if (event) event->spont = false; return self ? self->notify(receiver, event) : false; }
+{  if (event) event->spont = false; return self ? self->notifyInternal(receiver, event) : false; }
 
 inline bool QCoreApplication::sendSpontaneousEvent(QObject *receiver, QEvent *event)
-{ if (event) event->spont = true; return self ? self->notify(receiver, event) : false; }
+{ if (event) event->spont = true; return self ? self->notifyInternal(receiver, event) : false; }
 
 inline void QCoreApplication::sendPostedEvents() { sendPostedEvents(0, 0); }
 

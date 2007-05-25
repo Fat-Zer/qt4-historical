@@ -176,7 +176,7 @@ QDesignerFormWindowInterface *QDesignerFormWindowInterface::findFormWindow(QWidg
     while (w != 0) {
         if (QDesignerFormWindowInterface *fw = qobject_cast<QDesignerFormWindowInterface*>(w)) {
             return fw;
-        } else if (w->isWindow()) {
+        } else if (w->isWindow() && !w->inherits("QDesignerDialog")) {
             break;
         }
 

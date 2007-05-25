@@ -36,10 +36,11 @@
 //
 
 #include "private/qpaintengine_raster_p.h"
+#include "private/qwidget_p.h"
 
 class QWindowSurface;
 
-class QWidgetBackingStore
+class Q_AUTOTEST_EXPORT QWidgetBackingStore
 {
 public:
     QWidgetBackingStore(QWidget *t);
@@ -57,28 +58,49 @@ public:
 #ifdef Q_WS_WIN
     static void blitToScreen(const QRegion &rgn, QWidget *w);
 #endif
-private:
-    QWidget *tlw;
-    QRegion dirty;
-
-    QWindowSurface *windowSurface;
-
-    QPoint tlwOffset;
+#ifdef Q_WIDGET_USE_DIRTYLIST
+    void removeDirtyWidget(QWidget *w);
+#endif
 
     static bool isOpaque(const QWidget *widget);
 
+private:
+    QWidget *tlw;
+#ifdef Q_WS_QWS
+    QRegion dirtyOnScreen;
+#else
+    QRegion dirty;
+#endif
+#ifdef Q_WIDGET_USE_DIRTYLIST
+    QList<QWidget*> dirtyWidgets;
+#endif
+
+    QWindowSurface *windowSurface;
+#ifdef Q_BACKINGSTORE_SUBSURFACES
+    QList<QWindowSurface*> subSurfaces;
+#endif
+    QPoint tlwOffset;
+
     void copyToScreen(const QRegion &rgn, QWidget *widget, const QPoint &offset, bool recursive = true);
 
-    static void paintSiblingsRecursive(QPaintDevice *pdev, const QObjectList& children, int index, const QRegion &rgn, const QPoint &offset, int flags);
+    static void paintSiblingsRecursive(QPaintDevice *pdev, const QObjectList& children, int index, const QRegion &rgn, const QPoint &offset, int flags
+#ifdef Q_BACKINGSTORE_SUBSURFACES
+                                                 , const QWindowSurface *currentSurface
+#endif
+        );
+
+    static void updateWidget(QWidget *that, const QRegion &rgn);
 
     friend void qt_syncBackingStore(QRegion, QWidget *);
-#if defined(Q_WS_X11) || defined(Q_WS_QWS)
+#if defined(Q_WS_X11) || defined(Q_WS_QWS) || defined(Q_WS_WIN)
     friend void qt_syncBackingStore(QWidget *);
 #endif
     friend class QWidgetPrivate;
     friend class QWidget;
     friend class QWSManagerPrivate;
     friend class QETWidget;
+    friend class QWindowSurface;
+    friend class QWSWindowSurface;
 };
 
 #endif // QBACKINGSTORE_P_H

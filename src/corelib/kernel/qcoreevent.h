@@ -96,7 +96,8 @@ public:
         ChildAdded = 68,                        // new child widget
         ChildPolished = 69,                     // polished child widget
 #ifdef QT3_SUPPORT
-        ChildInserted = 70,                     // compatibility posted insert
+        ChildInsertedRequest = 67,              // send ChildInserted compatibility events to receiver
+        ChildInserted = 70,                     // compatibility child inserted
         LayoutHint = 72,                        // compatibility relayout request
 #endif
         ChildRemoved = 71,                      // deleted child widget
@@ -164,8 +165,10 @@ public:
 #endif
         ToolBarChange = 120,                    // toolbar visibility toggled
 
-        ApplicationActivated = 121,             // application has been changed to active
-        ApplicationDeactivated = 122,           // application has been changed to inactive
+        ApplicationActivate = 121,              // application has been changed to active
+        ApplicationActivated = ApplicationActivate, // deprecated
+        ApplicationDeactivate = 122,            // application has been changed to inactive
+        ApplicationDeactivated = ApplicationDeactivate, // deprecated
 
         QueryWhatsThis = 123,                   // query what's this widget help
         EnterWhatsThisMode = 124,
@@ -214,6 +217,16 @@ public:
 
         TabletEnterProximity = 171,
         TabletLeaveProximity = 172,
+
+        NonClientAreaMouseMove = 173,
+        NonClientAreaMouseButtonPress = 174,
+        NonClientAreaMouseButtonRelease = 175,
+        NonClientAreaMouseButtonDblClick = 176,
+
+        MacSizeChange = 177,                    // when the Qt::WA_Mac{Normal,Small,Mini}Size changes
+
+        ContentsRectChange = 178,               // sent by QWidget::setContentsMargins (internal)
+
         User = 1000,                            // first user event id
         MaxUser = 65535                         // last user event id
     };

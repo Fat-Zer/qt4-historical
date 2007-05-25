@@ -119,12 +119,12 @@ int main(int argc, char *argv[])
 #ifdef QT_CONFIGURE_BINARIES_PATH
     const char *binariesPath = QT_CONFIGURE_BINARIES_PATH;
     QString reporterPath = QString::fromLocal8Bit(binariesPath) + QDir::separator()
-                           + "qtusagereporter";
+                           + QLatin1String("qtusagereporter");
 #if defined(Q_OS_WIN)
-    reporterPath += ".exe";
+    reporterPath += QLatin1String(".exe");
 #endif
     if (QFile::exists(reporterPath))
-        system(qPrintable(reporterPath + " uic"));
+        system(qPrintable(reporterPath + QLatin1String(" uic")));
 #endif
 #endif
 
@@ -151,10 +151,15 @@ int main(int argc, char *argv[])
     }
 
     bool rtn = driver.uic(inputFile, out);
-    if (!rtn)
-        fprintf(stderr, "File '%s' is not valid\n", inputFile.isEmpty() ? "<stdin>" : inputFile.toLocal8Bit().constData());
-
     delete out;
+
+    if (!rtn) {
+        if (driver.option().outputFile.size()) {
+            f.close();
+            f.remove();
+        }
+        fprintf(stderr, "File '%s' is not valid\n", inputFile.isEmpty() ? "<stdin>" : inputFile.toLocal8Bit().constData());
+    }
 
     return !rtn;
 }

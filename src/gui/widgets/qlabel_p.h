@@ -79,10 +79,6 @@ public:
 #ifndef QT_NO_SHORTCUT
     void updateShortcut();
 #endif
-    bool isRichText() const {
-        return textformat == Qt::RichText
-               || (textformat == Qt::AutoText && Qt::mightBeRichText(text));
-    }
 #ifndef QT_NO_SHORTCUT
     QPointer<QWidget> buddy;
     int shortcutId;
@@ -90,21 +86,30 @@ public:
     ushort align;
     short indent;
     uint scaledcontents :1;
+    mutable uint textLayoutDirty : 1;
     mutable uint textDirty : 1;
+    mutable uint isRichText : 1;
+    mutable uint isTextLabel : 1;
+    mutable uint hasShortcut : 1;
     Qt::TextFormat textformat;
-    QTextDocument* doc;
-    QTextControl *control;
+    mutable QTextControl *control;
     QTextCursor shortcutCursor;
     Qt::TextInteractionFlags textInteractionFlags;
 
+    inline bool needTextControl() const {
+        return isTextLabel
+               && (isRichText
+                   || (!isRichText && (textInteractionFlags & (Qt::TextSelectableByMouse | Qt::TextSelectableByKeyboard))));
+    }
+
+    void ensureTextPopulated() const;
     void ensureTextLayouted() const;
-    void ensureTextControl();
+    void ensureTextControl() const;
     void sendControlEvent(QEvent *e);
-    void textInteractionFlagsChanged();
 
     void _q_linkHovered(const QString &link);
 
-    QRect layoutRect() const;
+    QRectF layoutRect() const;
     QRect documentRect() const;
     QPoint layoutPoint(const QPoint& p) const;
 #ifndef QT_NO_CONTEXTMENU
@@ -113,8 +118,9 @@ public:
 
     bool openExternalLinks;
 
-    bool hasCustomCursor;
 #ifndef QT_NO_CURSOR
+    uint validCursor : 1;
+    uint onAnchor : 1;
     QCursor cursor;
 #endif
 

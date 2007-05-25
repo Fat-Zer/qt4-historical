@@ -28,7 +28,8 @@
 
 QSvgNode::QSvgNode(QSvgNode *parent)
     : m_parent(parent),
-      m_visible(true)
+      m_visible(true),
+      m_displayMode(BlockMode)
 {
 }
 
@@ -76,6 +77,9 @@ void QSvgNode::appendStyleProperty(QSvgStyleProperty *prop, const QString &id,
             break;
         case QSvgStyleProperty::OPACITY:
             m_style.opacity = static_cast<QSvgOpacityStyle*>(prop);
+            break;
+        case QSvgStyleProperty::COMP_OP:
+            m_style.compop = static_cast<QSvgCompOpStyle*>(prop);
             break;
         default:
             qDebug("QSvgNode: Trying to append unknown property!");
@@ -143,8 +147,12 @@ QSvgStyleProperty * QSvgNode::styleProperty(QSvgStyleProperty::Type type) const
                 return node->m_style.animateTransforms.first();
             break;
         case QSvgStyleProperty::OPACITY:
-            if (!node->m_style.opacity)
+            if (node->m_style.opacity)
                 return node->m_style.opacity;
+            break;
+        case QSvgStyleProperty::COMP_OP:
+            if (node->m_style.compop)
+                return node->m_style.compop;
             break;
         default:
             break;
@@ -274,4 +282,14 @@ void QSvgNode::setNodeId(const QString &i)
 void QSvgNode::setXmlClass(const QString &str)
 {
     m_class = str;
+}
+
+void QSvgNode::setDisplayMode(DisplayMode mode)
+{
+    m_displayMode = mode;
+}
+
+QSvgNode::DisplayMode QSvgNode::displayMode() const
+{
+    return m_displayMode;
 }

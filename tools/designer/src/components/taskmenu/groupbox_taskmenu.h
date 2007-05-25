@@ -30,10 +30,10 @@
 #include <qdesigner_taskmenu_p.h>
 #include <QtDesigner/default_extensionfactory.h>
 
-class QLineEdit;
 class QDesignerFormWindowInterface;
 
 namespace qdesigner_internal {
+class InPlaceEditor;
 
 class GroupBoxTaskMenu: public QDesignerTaskMenu
 {
@@ -53,7 +53,7 @@ private slots:
 
 private:
     QGroupBox *m_groupbox;
-    QPointer<QLineEdit> m_editor;
+    QPointer<InPlaceEditor> m_editor;
 
     QAction *m_editTitleAction;
     QList<QAction*> m_taskActions;

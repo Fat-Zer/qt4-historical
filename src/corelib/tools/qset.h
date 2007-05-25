@@ -147,7 +147,7 @@ public:
     typedef iterator Iterator;
     typedef const_iterator ConstIterator;
     inline int count() const { return q_hash.count(); }
-    inline const_iterator insert(const T &value) // ### should return an 'iterator' in Qt 5
+    inline const_iterator insert(const T &value) // ### Qt 5: should return an 'iterator'
         { return static_cast<typename Hash::const_iterator>(q_hash.insert(value,
                                                                           QHashDummyValue())); }
     iterator find(const T &value) { return q_hash.find(value); }
@@ -180,6 +180,16 @@ public:
     inline QSet<T> &operator+=(const T &value) { insert(value); return *this; }
     inline QSet<T> &operator-=(const QSet<T> &other) { subtract(other); return *this; }
     inline QSet<T> &operator-=(const T &value) { remove(value); return *this; }
+    inline QSet<T> operator|(const QSet<T> &other) const
+        { QSet<T> result = *this; result |= other; return result; }
+    inline QSet<T> operator&(const QSet<T> &other) const
+        { QSet<T> result = *this; result &= other; return result; }
+    inline QSet<T> operator+(const QSet<T> &other) const
+        { QSet<T> result = *this; result += other; return result; }
+    inline QSet<T> operator-(const QSet<T> &other) const
+        { QSet<T> result = *this; result -= other; return result; }
+#if QT_VERSION < 0x050000
+    // ### Qt 5: remove
     inline QSet<T> operator|(const QSet<T> &other)
         { QSet<T> result = *this; result |= other; return result; }
     inline QSet<T> operator&(const QSet<T> &other)
@@ -188,6 +198,7 @@ public:
         { QSet<T> result = *this; result += other; return result; }
     inline QSet<T> operator-(const QSet<T> &other)
         { QSet<T> result = *this; result -= other; return result; }
+#endif
 
     QList<T> toList() const;
     inline QList<T> values() const { return toList(); }

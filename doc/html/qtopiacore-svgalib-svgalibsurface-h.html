@@ -3,7 +3,7 @@
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>Qt 4.2: svgalibsurface.h Example File (qtopiacore/svgalib/svgalibsurface.h)</title>
+  <title>Qt 4.3: svgalibsurface.h Example File (qtopiacore/svgalib/svgalibsurface.h)</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -52,24 +52,18 @@
      ~SvgalibSurface();
 
      void setGeometry(const QRect &amp;rect);
-     QRect geometry() const { return brect; }
-
-     bool isValidFor(const QWidget *) const { return true; }
-
-     void scroll(const QRegion &amp;region, int dx, int dy);
-
-     const QString key() const { return QLatin1String(&quot;svgalib&quot;); }
-     const QByteArray data() const { return QByteArray(); }
+     bool isValid() const { return true; }
+     bool scroll(const QRegion &amp;region, int dx, int dy);
+     QString key() const { return QLatin1String(&quot;svgalib&quot;); }
 
      bool attach(const QByteArray &amp;) { return true; }
      void detach() {}
 
-     const QImage image() const { return QImage(); }
+     QImage image() const { return QImage(); }
      QPaintDevice *paintDevice() { return pdevice; }
      QPoint painterOffset() const;
 
  private:
-     QRect brect;
      SvgalibPaintDevice *pdevice;
  };
 
@@ -78,6 +72,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
 </tr></table></div></address></body>
 </html>

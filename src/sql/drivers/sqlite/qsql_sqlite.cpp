@@ -208,6 +208,13 @@ bool QSQLiteResultPrivate::fetchNext(QSqlCachedResult::ValueCache &values, int i
         sqlite3_reset(stmt);
         return false;
     case SQLITE_ERROR:
+        // SQLITE_ERROR is a generic error code and we must call sqlite3_reset()
+        // to get the specific error message.
+        res = sqlite3_reset(stmt);
+        q->setLastError(qMakeError(access, QCoreApplication::translate("QSQLiteResult",
+                        "Unable to fetch row"), QSqlError::ConnectionError, res));
+        q->setAt(QSql::AfterLastRow);
+        return false;
     case SQLITE_MISUSE:
     case SQLITE_BUSY:
     default:
@@ -232,6 +239,16 @@ QSQLiteResult::~QSQLiteResult()
 {
     d->cleanup();
     delete d;
+}
+
+void QSQLiteResult::virtual_hook(int id, void *data)
+{
+    if (id == DetachFromResultSet) {
+        if (d->stmt)
+            sqlite3_reset(d->stmt);
+        return;
+    }
+    QSqlResult::virtual_hook(id, data);
 }
 
 bool QSQLiteResult::reset(const QString &query)
@@ -408,10 +425,12 @@ bool QSQLiteDriver::hasFeature(DriverFeature f) const
     case LastInsertId:
     case PreparedQueries:
     case PositionalPlaceholders:
+    case SimpleLocking:
         return true;
     case QuerySize:
     case NamedPlaceholders:
     case BatchOperations:
+    case LowPrecisionNumbers:
         return false;
     }
     return false;
@@ -553,8 +572,16 @@ QStringList QSQLiteDriver::tables(QSql::TableType type) const
 
 static QSqlIndex qGetTableInfo(QSqlQuery &q, const QString &tableName, bool onlyPIndex = false)
 {
+    QString schema;
+    QString table(tableName);
+    int indexOfSeparator = tableName.indexOf(QLatin1String("."));
+    if (indexOfSeparator > -1) {
+        schema = tableName.left(indexOfSeparator).append(QLatin1String("."));
+        table = tableName.mid(indexOfSeparator + 1);
+    }
+    q.exec(QLatin1String("PRAGMA ") + schema + QLatin1String("table_info ('") + table + QLatin1String("')"));
+
     QSqlIndex ind;
-    q.exec(QLatin1String("PRAGMA table_info ('") + tableName + QLatin1String("')"));
     while (q.next()) {
         bool isPk = q.value(5).toInt();
         if (onlyPIndex && !isPk)
@@ -594,5 +621,14 @@ QSqlRecord QSQLiteDriver::record(const QString &tbl) const
 QVariant QSQLiteDriver::handle() const
 {
     return qVariantFromValue(d->access);
+}
+
+QString QSQLiteDriver::escapeIdentifier(const QString &identifier, IdentifierType /*type*/) const
+{
+    QString res = identifier;
+    res.replace(QLatin1Char('"'), QLatin1String("\"\""));
+    res.prepend(QLatin1Char('"')).append(QLatin1Char('"'));
+    res.replace(QLatin1Char('.'), QLatin1String("\".\""));
+    return res;
 }
 

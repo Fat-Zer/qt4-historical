@@ -25,6 +25,8 @@
 #include <QLibraryInfo>
 #include <QDir>
 
+#include <stdlib.h>
+
 int main(int argc, char *argv[])
 {
     Q_INIT_RESOURCE(designer);
@@ -32,12 +34,12 @@ int main(int argc, char *argv[])
     // report Qt usage for commercial customers with a "metered license" (currently experimental)
 #if QT_EDITION != QT_EDITION_OPENSOURCE
     QString reporterPath = QLibraryInfo::location(QLibraryInfo::BinariesPath) + QDir::separator()
-                           + "qtusagereporter";
+                           + QLatin1String("qtusagereporter");
 #if defined(Q_OS_WIN)
-    reporterPath += ".exe";
+    reporterPath += QLatin1String(".exe");
 #endif
     if (QFile::exists(reporterPath))
-        system(qPrintable(reporterPath + " designer"));
+        ::system(qPrintable(reporterPath + QLatin1String(" designer")));
 #endif
 
     QDesigner app(argc, argv);

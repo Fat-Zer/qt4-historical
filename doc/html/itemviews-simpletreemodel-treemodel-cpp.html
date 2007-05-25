@@ -3,7 +3,7 @@
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
-  <title>Qt 4.2: treemodel.cpp Example File (itemviews/simpletreemodel/treemodel.cpp)</title>
+  <title>Qt 4.3: treemodel.cpp Example File (itemviews/simpletreemodel/treemodel.cpp)</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -85,7 +85,7 @@
  Qt::ItemFlags TreeModel::flags(const QModelIndex &amp;index) const
  {
      if (!index.isValid())
-         return Qt::ItemIsEnabled;
+         return 0;
 
      return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
  }
@@ -102,6 +102,9 @@
  QModelIndex TreeModel::index(int row, int column, const QModelIndex &amp;parent)
              const
  {
+     if (!hasIndex(row, column, parent))
+         return QModelIndex();
+
      TreeItem *parentItem;
 
      if (!parent.isValid())
@@ -133,6 +136,8 @@
  int TreeModel::rowCount(const QModelIndex &amp;parent) const
  {
      TreeItem *parentItem;
+     if (parent.column() &gt; 0)
+         return 0;
 
      if (!parent.isValid())
          parentItem = rootItem;
@@ -194,6 +199,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
 </tr></table></div></address></body>
 </html>

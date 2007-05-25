@@ -80,8 +80,7 @@ private:
 class QTextDocumentFragmentPrivate
 {
 public:
-    QTextDocumentFragmentPrivate();
-    QTextDocumentFragmentPrivate(const QTextCursor &cursor);
+    QTextDocumentFragmentPrivate(const QTextCursor &cursor = QTextCursor());
     inline ~QTextDocumentFragmentPrivate() { delete doc; }
 
     void insert(QTextCursor &cursor) const;
@@ -89,7 +88,6 @@ public:
     QAtomic ref;
     QTextDocument *doc;
 
-    uint containsCompleteDocument : 1;
     uint importedFromPlainText : 1;
 private:
     Q_DISABLE_COPY(QTextDocumentFragmentPrivate)
@@ -99,22 +97,35 @@ class QTextHtmlImporter : public QTextHtmlParser
 {
     struct Table;
 public:
-    QTextHtmlImporter(QTextDocument *_doc, const QString &html, const QTextDocument *resourceProvider = 0);
+    enum ImportMode {
+        ImportToFragment,
+        ImportToDocument
+    };
+
+    QTextHtmlImporter(QTextDocument *_doc, const QString &html,
+                      ImportMode mode,
+                      const QTextDocument *resourceProvider = 0);
 
     void import();
 
-    bool containsCompleteDocument() const { return containsCompleteDoc; }
-
 private:
-    bool closeTag(int i);
+    bool closeTag();
 
     Table scanTable(int tableNodeIdx);
 
+    enum ProcessNodeResult { ContinueWithNextNode, ContinueWithCurrentNode };
+
     void appendBlock(const QTextBlockFormat &format, QTextCharFormat charFmt = QTextCharFormat());
+    bool appendNodeText();
+
+    ProcessNodeResult processBlockNode();
+    ProcessNodeResult processSpecialNodes();
 
     struct List
     {
+        inline List() : listNode(0) {}
         QTextListFormat format;
+        int listNode;
         QPointer<QTextList> list;
     };
     QVector<List> lists;
@@ -122,8 +133,7 @@ private:
 
     // insert a named anchor the next time we emit a char format,
     // either in a block or in regular text
-    bool setNamedAnchorInNextOutput;
-    QString namedAnchor;
+    QStringList namedAnchors;
 
 #ifdef Q_CC_SUN
     friend struct QTextHtmlImporter::Table;
@@ -158,21 +168,36 @@ private:
         int column;
     };
 
+    friend struct Table;
     struct Table
     {
-        Table() : isTextFrame(false), rows(0), columns(0), currentRow(0) {}
+        Table() : isTextFrame(false), rows(0), columns(0), currentRow(0), lastIndent(0) {}
         QPointer<QTextFrame> frame;
         bool isTextFrame;
         int rows;
         int columns;
         int currentRow; // ... for buggy html (see html_skipCell testcase)
         TableCellIterator currentCell;
+        int lastIndent;
     };
     QVector<Table> tables;
 
+    struct RowColSpanInfo
+    {
+        int row, col;
+        int rowSpan, colSpan;
+    };
+
     QTextDocument *doc;
     QTextCursor cursor;
-    bool containsCompleteDoc;
+    QTextHtmlParserNode::WhiteSpaceMode wsm;
+    ImportMode importMode;
+    bool compressNextWhitespace;
+    bool hasBlock;
+    bool forceBlockMerging;
+    bool blockTagClosed;
+    int currentNodeIdx;
+    const QTextHtmlParserNode *currentNode;
 };
 
 #endif // QTEXTDOCUMENTFRAGMENT_P_H

@@ -2,12 +2,13 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-x11-opensource-src-4.2.3/src/xml/qxml.cpp -->
+<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/xml/qxml.cpp -->
 <head>
-  <title>Qt 4.2: QXmlDTDHandler Class Reference</title>
+  <title>Qt 4.3: QXmlDTDHandler Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
+<a name="//apple_ref/cpp/cl//QXmlDTDHandler" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
@@ -32,18 +33,22 @@
 <h2>Detailed Description</h2>
 <p>The QXmlDTDHandler class provides an interface to report DTD content of XML data.</p>
 <p>If an application needs information about notations and unparsed entities, it can implement this interface and register an instance with <a href="qxmlreader.html#setDTDHandler">QXmlReader::setDTDHandler</a>().</p>
-<p>Note that this interface includes only those DTD events that the XML recommendation requires processors to report, i.e. notation and unparsed entity declarations using <a href="qxmldtdhandler.html#notationDecl">notationDecl</a>() and <a href="qxmldtdhandler.html#unparsedEntityDecl">unparsedEntityDecl</a>() respectively.</p>
+<p>Note that this interface includes only those DTD events that the XML recommendation requires processors to report, i.e&#x2e; notation and unparsed entity declarations using <a href="qxmldtdhandler.html#notationDecl">notationDecl</a>() and <a href="qxmldtdhandler.html#unparsedEntityDecl">unparsedEntityDecl</a>() respectively.</p>
 <p>See also <a href="qxmldeclhandler.html">QXmlDeclHandler</a>, <a href="qxmlcontenthandler.html">QXmlContentHandler</a>, <a href="qxmlentityresolver.html">QXmlEntityResolver</a>, <a href="qxmlerrorhandler.html">QXmlErrorHandler</a>, <a href="qxmllexicalhandler.html">QXmlLexicalHandler</a>, and <a href="qtxml.html#introduction-to-sax2">Introduction to SAX2</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
+<a name="//apple_ref/cpp/instm/QXmlDTDHandler/~QXmlDTDHandler" />
 <h3 class="fn"><a name="dtor.QXmlDTDHandler"></a>QXmlDTDHandler::~QXmlDTDHandler ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Destroys the DTD handler.</p>
+<a name="//apple_ref/cpp/instm/QXmlDTDHandler/errorString" />
 <h3 class="fn"><a name="errorString"></a><a href="qstring.html">QString</a> QXmlDTDHandler::errorString () const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>The reader calls this function to get an error string if any of the handler functions returns false.</p>
+<a name="//apple_ref/cpp/instm/QXmlDTDHandler/notationDecl" />
 <h3 class="fn"><a name="notationDecl"></a>bool QXmlDTDHandler::notationDecl ( const <a href="qstring.html">QString</a> &amp; <i>name</i>, const <a href="qstring.html">QString</a> &amp; <i>publicId</i>, const <a href="qstring.html">QString</a> &amp; <i>systemId</i> )&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>The reader calls this function when it has parsed a notation declaration.</p>
 <p>The argument <i>name</i> is the notation name, <i>publicId</i> is the notation's public identifier and <i>systemId</i> is the notation's system identifier.</p>
 <p>If this function returns false the reader stops parsing and reports an error. The reader uses the function <a href="qxmldtdhandler.html#errorString">errorString</a>() to get the error message.</p>
+<a name="//apple_ref/cpp/instm/QXmlDTDHandler/unparsedEntityDecl" />
 <h3 class="fn"><a name="unparsedEntityDecl"></a>bool QXmlDTDHandler::unparsedEntityDecl ( const <a href="qstring.html">QString</a> &amp; <i>name</i>, const <a href="qstring.html">QString</a> &amp; <i>publicId</i>, const <a href="qstring.html">QString</a> &amp; <i>systemId</i>, const <a href="qstring.html">QString</a> &amp; <i>notationName</i> )&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>The reader calls this function when it finds an unparsed entity declaration.</p>
 <p>The argument <i>name</i> is the unparsed entity's name, <i>publicId</i> is the entity's public identifier, <i>systemId</i> is the entity's system identifier and <i>notationName</i> is the name of the associated notation.</p>
@@ -52,6 +57,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
 </tr></table></div></address></body>
 </html>

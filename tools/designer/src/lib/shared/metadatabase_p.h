@@ -52,23 +52,34 @@ public:
 
     virtual QString name() const;
     virtual void setName(const QString &name);
-
-    virtual QList<QWidget*> tabOrder() const;
-    virtual void setTabOrder(const QList<QWidget*> &tabOrder);
+    
+    typedef QList<QWidget*> TabOrder;
+    virtual TabOrder tabOrder() const;
+    virtual void setTabOrder(const TabOrder &tabOrder);
 
     virtual bool enabled() const;
     virtual void setEnabled(bool b);
+    
+    QString customClassName() const;
+    void setCustomClassName(const QString &customClassName);
 
     QString propertyComment(const QString &name) const;
     void setPropertyComment(const QString &name, const QString &comment);
 
-    QHash<QString, QString> comments() const { return m_comments; }
+    typedef QHash<QString, QString> PropertyComments;
+    
+    const PropertyComments &comments() const { return m_comments; }
+
+    QString script() const;
+    void setScript(const QString &script);
 
 private:
     QObject *m_object;
-    QList<QWidget*> m_tabOrder;
-    QHash<QString, QString> m_comments;
+    TabOrder m_tabOrder;
+    PropertyComments m_comments;
     bool m_enabled;
+    QString m_customClassName;
+    QString m_script;
 };
 
 class QDESIGNER_SHARED_EXPORT MetaDataBase: public QDesignerMetaDataBaseInterface
@@ -80,7 +91,8 @@ public:
 
     virtual QDesignerFormEditorInterface *core() const;
 
-    virtual QDesignerMetaDataBaseItemInterface *item(QObject *object) const;
+    virtual QDesignerMetaDataBaseItemInterface *item(QObject *object) const { return metaDataBaseItem(object); }
+    virtual MetaDataBaseItem *metaDataBaseItem(QObject *object) const;
     virtual void add(QObject *object);
     virtual void remove(QObject *object);
 
@@ -96,7 +108,17 @@ private:
     typedef QHash<QObject *, MetaDataBaseItem*> ItemMap;
     ItemMap m_items;
 };
-
+    
+    // promotion convenience
+    QDESIGNER_SHARED_EXPORT bool promoteWidget(QDesignerFormEditorInterface *core,QWidget *widget,const QString &customClassName);
+    QDESIGNER_SHARED_EXPORT void demoteWidget(QDesignerFormEditorInterface *core,QWidget *widget); 
+    QDESIGNER_SHARED_EXPORT bool isPromoted(QDesignerFormEditorInterface *core, QWidget* w);
+    QDESIGNER_SHARED_EXPORT QString promotedCustomClassName(QDesignerFormEditorInterface *core, QWidget* w);
+    QDESIGNER_SHARED_EXPORT QString promotedExtends(QDesignerFormEditorInterface *core, QWidget* w);
+    
+    // Property comment helpers
+    QDESIGNER_SHARED_EXPORT QString propertyComment(QDesignerFormEditorInterface* core, QObject *o, const QString &propertyName);
+    QDESIGNER_SHARED_EXPORT bool setPropertyComment(QDesignerFormEditorInterface* core, QObject *o, const QString &propertyName, const QString &value);
 } // namespace qdesigner_internal
 
 #endif // METADATABASE_H

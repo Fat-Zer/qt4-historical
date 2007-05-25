@@ -125,6 +125,12 @@ public:
         CharacterDataNode         = 22 // this is not in the standard
     };
 
+    enum EncodingPolicy
+    {
+        EncodingFromDocument      = 1,
+        EncodingFromTextStream    = 2
+    };
+
     QDomNode();
     QDomNode(const QDomNode&);
     QDomNode& operator= (const QDomNode&);
@@ -203,6 +209,7 @@ public:
     QDomComment toComment() const;
 
     void save(QTextStream&, int) const;
+    void save(QTextStream&, int, EncodingPolicy) const; // ### Qt 5: Merge overload(if we at all keep this)
 
     QDomElement firstChildElement(const QString &tagName = QString()) const;
     QDomElement lastChildElement(const QString &tagName = QString()) const;

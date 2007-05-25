@@ -93,8 +93,8 @@
     also be used in the weaker wildcard mode that works in a
     similar way to command shells. It can even be feed with fixed
     strings (see setPatternSyntax()). A good text on regexps is \e
-    {Mastering Regular Expressions: Powerful Techniques for Perl and
-    Other Tools} by Jeffrey E. Friedl, ISBN 1565922573.
+    {Mastering Regular Expressions} (Third Edition) by Jeffrey E. F.
+    Friedl, ISBN 0-596-52812-4.
 
     \tableofcontents
 
@@ -952,7 +952,7 @@ Q_DECLARE_TYPEINFO(QRegExpAutomatonState, Q_MOVABLE_TYPE);
 struct QRegExpCharClassRange
 {
     ushort from; // 48
-    ushort to; // 57
+    ushort len; // 10
 };
 
 Q_DECLARE_TYPEINFO(QRegExpCharClassRange, Q_PRIMITIVE_TYPE);
@@ -1937,8 +1937,6 @@ bool QRegExpMatchState::matchHere()
 #endif
 
 #ifndef QT_NO_REGEXP_BACKREF
-    QVector<int> zzZ;
-
     while ((ncur > 0 || !sleeping.isEmpty()) && i <= len - pos && !stop)
 #else
     while (ncur > 0 && i <= len - pos && !stop)
@@ -2177,7 +2175,7 @@ bool QRegExpMatchState::matchHere()
                       nextStack.
                     */
                     if (needSomeSleep > 0) {
-                        zzZ.resize(2 + 2 * ncap);
+                        QVector<int> zzZ(2 + 2 * ncap);
                         zzZ[0] = i + needSomeSleep;
                         zzZ[1] = next;
                         if (ncap > 0) {
@@ -2319,7 +2317,7 @@ void QRegExpCharClass::addRange(ushort from, ushort to)
     int m = r.size();
     r.resize(m + 1);
     r[m].from = from;
-    r[m].to = to;
+    r[m].len = to - from + 1;
 
 #ifndef QT_NO_REGEXP_OPTIM
     int i;
@@ -2349,8 +2347,13 @@ bool QRegExpCharClass::in(QChar ch) const
 
     if (c != 0 && (c & (1 << (int)ch.category())) != 0)
         return !n;
-    for (int i = 0; i < r.size(); i++) {
-        if (ch.unicode() >= r.at(i).from && ch.unicode() <= r.at(i).to)
+
+    const int uc = ch.unicode();
+    int size = r.size();
+
+    for (int i = 0; i < size; ++i) {
+        const QRegExpCharClassRange &range = r.at(i);
+        if (uint(uc - range.from) < uint(r.at(i).len))
             return !n;
     }
     return n;
@@ -2366,7 +2369,7 @@ void QRegExpCharClass::dump() const
         qDebug("      categories 0x%.8x", c);
 #endif
     for (i = 0; i < r.size(); i++)
-        qDebug("      0x%.4x through 0x%.4x", r[i].from, r[i].to);
+        qDebug("      0x%.4x through 0x%.4x", r[i].from, r[i].from + r[i].len - 1);
 }
 #endif
 #endif
@@ -3069,6 +3072,22 @@ int QRegExpEngine::parse(const QChar *pattern, int len)
         }
     }
 #endif
+
+    // cleanup anchors
+    int numStates = s.count();
+    for (int i = 0; i < numStates; ++i) {
+        QRegExpAutomatonState &state = s[i];
+        if (!state.anchors.isEmpty()) {
+            QMap<int, int>::iterator a = state.anchors.begin();
+            while (a != state.anchors.constEnd()) {
+                if (a.value() == 0)
+                    a = state.anchors.erase(a);
+                else
+                    ++a;
+            }
+        }
+    }
+
     return yyPos0;
 }
 
@@ -3307,7 +3326,7 @@ static void derefEngine(QRegExpEngine *eng, const QRegExpEngineKey &key)
     }
 }
 
-static void prepareEngine(QRegExpPrivate *priv)
+static void prepareEngine_helper(QRegExpPrivate *priv)
 {
     bool initMatchState;
 
@@ -3333,6 +3352,13 @@ static void prepareEngine(QRegExpPrivate *priv)
 
     if (initMatchState)
         priv->matchState.captured.fill(-1, 2 + 2 * priv->eng->numCaptures());
+}
+
+inline static void prepareEngine(QRegExpPrivate *priv)
+{
+    if (priv->eng)
+        return;
+    prepareEngine_helper(priv);
 }
 
 static void prepareEngineForMatch(QRegExpPrivate *priv, const QString &str)
@@ -3848,12 +3874,15 @@ QStringList QRegExp::capturedTexts()
 {
     if (priv->capturedCache.isEmpty()) {
         prepareEngine(priv);
-        for (int i = 0; i < priv->matchState.captured.size(); i += 2) {
+        const QVector<int> &captured = priv->matchState.captured;
+        int n = captured.size();
+
+        for (int i = 0; i < n; i += 2) {
             QString m;
-            if (priv->matchState.captured.at(i + 1) == 0)
+            if (captured.at(i + 1) == 0)
                 m = QLatin1String(""); // ### Qt 5: don't distinguish between null and empty
-            else if (priv->matchState.captured.at(i) >= 0)
-                m = priv->t.mid(priv->matchState.captured.at(i), priv->matchState.captured.at(i + 1));
+            else if (captured.at(i) >= 0)
+                m = priv->t.mid(captured.at(i), captured.at(i + 1));
             priv->capturedCache.append(m);
         }
         priv->t.clear();

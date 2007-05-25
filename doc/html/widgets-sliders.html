@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-x11-opensource-src-4.2.3/doc/src/examples/sliders.qdoc -->
+<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/doc/src/examples/sliders.qdoc -->
 <head>
-  <title>Qt 4.2: Sliders Example</title>
+  <title>Qt 4.3: Sliders Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -211,7 +211,7 @@
 <p>First we create the slider-like widgets with the appropiate properties. In particular we set the focus policy for each widget. <a href="qt.html#FocusPolicy-enum">Qt::FocusPolicy</a> is an enum type that defines the various policies a widget can have with respect to acquiring keyboard focus. The <a href="qt.html#FocusPolicy-enum">Qt::StrongFocus</a> policy means that the widget accepts focus by both tabbing and clicking.</p>
 <p>Then we connect the widgets with each other, so that they will stay synchronized when the current value of one of them changes.</p>
 <pre>     connect(dial, SIGNAL(valueChanged(int)), this, SIGNAL(valueChanged(int)));</pre>
-<p>We connect <tt>dial</tt>'s <tt>valueChanged()</tt> signal to the <tt>SlidersGroup</tt>'s <tt>valueChanged()</tt> signal, to notify the other widgets in the application (i.e., the control widgets) of the changed value.</p>
+<p>We connect <tt>dial</tt>'s <tt>valueChanged()</tt> signal to the <tt>SlidersGroup</tt>'s <tt>valueChanged()</tt> signal, to notify the other widgets in the application (i.e&#x2e;, the control widgets) of the changed value.</p>
 <pre>     QBoxLayout::Direction direction;
 
      if (orientation == Qt::Horizontal)
@@ -263,6 +263,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
 </tr></table></div></address></body>
 </html>

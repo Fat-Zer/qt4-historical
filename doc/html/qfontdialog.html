@@ -2,12 +2,13 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.2.3-qt-1172051129238/qt-x11-opensource-src-4.2.3/src/gui/dialogs/qfontdialog.cpp -->
+<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/gui/dialogs/qfontdialog.cpp -->
 <head>
-  <title>Qt 4.2: QFontDialog Class Reference</title>
+  <title>Qt 4.3: QFontDialog Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
+<a name="//apple_ref/cpp/cl//QFontDialog" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
@@ -31,13 +32,23 @@
 <li><div class="fn"/>4 static public members inherited from <a href="qwidget.html#static-public-members">QWidget</a></li>
 <li><div class="fn"/>5 static public members inherited from <a href="qobject.html#static-public-members">QObject</a></li>
 </ul>
+<a name="protected-functions"></a>
+<h3>Protected Functions</h3>
+<ul>
+<li><div class="fn"/>virtual void <b><a href="qfontdialog.html#changeEvent">changeEvent</a></b> ( QEvent * <i>e</i> )</li>
+</ul>
+<ul>
+<li><div class="fn"/>38 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
+<li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
+<li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
+</ul>
 <h3>Additional Inherited Members</h3>
 <ul>
 <li><div class="fn"/>2 properties inherited from <a href="qdialog.html#properties">QDialog</a></li>
-<li><div class="fn"/>55 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
+<li><div class="fn"/>56 properties inherited from <a href="qwidget.html#properties">QWidget</a></li>
 <li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
 <li><div class="fn"/>5 public functions inherited from <a href="qdialog.html#public-functions">QDialog</a></li>
-<li><div class="fn"/>195 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
+<li><div class="fn"/>201 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>29 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
 <li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 <li><div class="fn"/>4 public slots inherited from <a href="qdialog.html#public-slots">QDialog</a></li>
@@ -46,16 +57,13 @@
 <li><div class="fn"/>3 signals inherited from <a href="qdialog.html#signals">QDialog</a></li>
 <li><div class="fn"/>1 signal inherited from <a href="qwidget.html#signals">QWidget</a></li>
 <li><div class="fn"/>1 signal inherited from <a href="qobject.html#signals">QObject</a></li>
-<li><div class="fn"/>38 protected functions inherited from <a href="qwidget.html#protected-functions">QWidget</a></li>
-<li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
-<li><div class="fn"/>1 protected function inherited from <a href="qpaintdevice.html#protected-functions">QPaintDevice</a></li>
 <li><div class="fn"/>1 protected slot inherited from <a href="qwidget.html#protected-slots">QWidget</a></li>
 </ul>
 <a name="details"></a>
 <hr />
 <h2>Detailed Description</h2>
 <p>The QFontDialog class provides a dialog widget for selecting a font.</p>
-<p>The usual way to use this class is to call one of the static convenience functions, e.g. <a href="qfontdialog.html#getFont">getFont</a>().</p>
+<p>The usual way to use this class is to call one of the static convenience functions, e.g&#x2e; <a href="qfontdialog.html#getFont">getFont</a>().</p>
 <p>Examples:</p>
 <pre> bool ok;
  QFont font = QFontDialog::getFont(
@@ -72,6 +80,9 @@
 <p align="center"><img src="images/plastique-fontdialog.png" alt="A font dialog in the Plastique widget style." /></p><p>See also <a href="qfont.html">QFont</a>, <a href="qfontinfo.html">QFontInfo</a>, <a href="qfontmetrics.html">QFontMetrics</a>, <a href="qcolordialog.html">QColorDialog</a>, <a href="qfiledialog.html">QFileDialog</a>, <a href="qprintdialog.html">QPrintDialog</a>, and <a href="dialogs-standarddialogs.html">Standard Dialogs Example</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
+<a name="//apple_ref/cpp/instm/QFontDialog/changeEvent" />
+<h3 class="fn"><a name="changeEvent"></a>void QFontDialog::changeEvent ( <a href="qevent.html">QEvent</a> * <i>e</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
+<a name="//apple_ref/cpp/clm/QFontDialog/getFont" />
 <h3 class="fn"><a name="getFont"></a><a href="qfont.html">QFont</a> QFontDialog::getFont ( bool * <i>ok</i>, const <a href="qfont.html">QFont</a> &amp; <i>initial</i>, <a href="qwidget.html">QWidget</a> * <i>parent</i>, const <a href="qstring.html">QString</a> &amp; <i>caption</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Executes a modal font dialog and returns a font.</p>
 <p>If the user clicks OK, the selected font is returned. If the user clicks Cancel, the <i>initial</i> font is returned.</p>
@@ -118,6 +129,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.2.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
 </tr></table></div></address></body>
 </html>
