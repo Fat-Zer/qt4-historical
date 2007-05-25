@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/gui/kernel/qgridlayout.cpp -->
+<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-x11-opensource-src-4.3.0/src/gui/kernel/qgridlayout.cpp -->
 <head>
   <title>Qt 4.3: QGridLayout Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//QGridLayout" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
@@ -95,8 +94,6 @@
 <p>See also <a href="qboxlayout.html">QBoxLayout</a>, <a href="qstackedlayout.html">QStackedLayout</a>, <a href="layout.html">Layout Classes</a>, and <a href="layouts-basiclayouts.html">Basic Layouts Example</a>.</p>
 <hr />
 <h2>Property Documentation</h2>
-<a name="//apple_ref/cpp/instm/QGridLayout/horizontalSpacing" />
-<a name="//apple_ref/cpp/instm/QGridLayout/setHorizontalSpacing" />
 <h3 class="fn"><a name="horizontalSpacing-prop"></a>horizontalSpacing : int</h3>
 <p>This property holds the spacing between widgets that are laid out side by side.</p>
 <p>If no value is explicitly set, the layout's horizontal spacing is inherited from the parent layout, or from the style settings for the parent widget.</p>
@@ -107,8 +104,6 @@
 <li><div class="fn"/><b>void setHorizontalSpacing ( int <i>spacing</i> )</b></li>
 </ul>
 <p>See also <a href="qgridlayout.html#verticalSpacing-prop">verticalSpacing</a>, <a href="qstyle.html#pixelMetric">QStyle::pixelMetric</a>(), and <a href="qstyle.html#PixelMetric-enum">PM_LayoutHorizontalSpacing</a>.</p>
-<a name="//apple_ref/cpp/instm/QGridLayout/verticalSpacing" />
-<a name="//apple_ref/cpp/instm/QGridLayout/setVerticalSpacing" />
 <h3 class="fn"><a name="verticalSpacing-prop"></a>verticalSpacing : int</h3>
 <p>This property holds the spacing between widgets that are laid out on top of each other.</p>
 <p>If no value is explicitly set, the layout's vertical spacing is inherited from the parent layout, or from the style settings for the parent widget.</p>
@@ -121,21 +116,17 @@
 <p>See also <a href="qgridlayout.html#horizontalSpacing-prop">horizontalSpacing</a>, <a href="qstyle.html#pixelMetric">QStyle::pixelMetric</a>(), and <a href="qstyle.html#PixelMetric-enum">PM_LayoutHorizontalSpacing</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QGridLayout/QGridLayout" />
 <h3 class="fn"><a name="QGridLayout"></a>QGridLayout::QGridLayout ( <a href="qwidget.html">QWidget</a> * <i>parent</i> )</h3>
 <p>Constructs a new <a href="qgridlayout.html">QGridLayout</a> with parent widget, <i>parent</i>. The layout has one row and one column initially, and will expand when new items are inserted.</p>
 <h3 class="fn"><a name="QGridLayout-2"></a>QGridLayout::QGridLayout ()</h3>
 <p>Constructs a new grid layout.</p>
 <p>You must insert this grid into another layout. You can insert widgets and layouts into this layout at any time, but laying out will not be performed before this is inserted into another layout.</p>
-<a name="//apple_ref/cpp/instm/QGridLayout/~QGridLayout" />
 <h3 class="fn"><a name="dtor.QGridLayout"></a>QGridLayout::~QGridLayout ()</h3>
 <p>Destroys the grid layout. Geometry management is terminated if this is a top-level grid.</p>
 <p>The layout's widgets aren't destroyed.</p>
-<a name="//apple_ref/cpp/instm/QGridLayout/addItem" />
 <h3 class="fn"><a name="addItem"></a>void QGridLayout::addItem ( <a href="qlayoutitem.html">QLayoutItem</a> * <i>item</i>, int <i>row</i>, int <i>column</i>, int <i>rowSpan</i> = 1, int <i>columnSpan</i> = 1, <a href="qt.html#AlignmentFlag-enum">Qt::Alignment</a> <i>alignment</i> = 0 )</h3>
 <p>Adds <i>item</i> at position <i>row</i>, <i>column</i>, spanning <i>rowSpan</i> rows and <i>columnSpan</i> columns, and aligns it according to <i>alignment</i>. If <i>rowSpan</i> and/or <i>columnSpan</i> is -1, then the item will extend to the bottom and/or right edge, respectively. The layout takes ownership of the <i>item</i>.</p>
 <p><b>Warning:</b> Do not use this function to add child layouts or child widget items. Use <a href="qgridlayout.html#addLayout">addLayout</a>() or <a href="qgridlayout.html#addWidget">addWidget</a>() instead.</p>
-<a name="//apple_ref/cpp/instm/QGridLayout/addLayout" />
 <h3 class="fn"><a name="addLayout"></a>void QGridLayout::addLayout ( <a href="qlayout.html">QLayout</a> * <i>layout</i>, int <i>row</i>, int <i>column</i>, <a href="qt.html#AlignmentFlag-enum">Qt::Alignment</a> <i>alignment</i> = 0 )</h3>
 <p>Places the <i>layout</i> at position (<i>row</i>, <i>column</i>) in the grid. The top-left position is (0, 0).</p>
 <p>The alignment is specified by <i>alignment</i>. The default alignment is 0, which means that the widget fills the entire cell.</p>
@@ -145,7 +136,6 @@
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>This version adds the layout <i>layout</i> to the cell grid, spanning multiple rows/columns. The cell will start at <i>row</i>, <i>column</i> spanning <i>rowSpan</i> rows and <i>columnSpan</i> columns.</p>
 <p>If <i>rowSpan</i> and/or <i>columnSpan</i> is -1, then the layout will extend to the bottom and/or right edge, respectively.</p>
-<a name="//apple_ref/cpp/instm/QGridLayout/addWidget" />
 <h3 class="fn"><a name="addWidget"></a>void QGridLayout::addWidget ( <a href="qwidget.html">QWidget</a> * <i>widget</i>, int <i>row</i>, int <i>column</i>, <a href="qt.html#AlignmentFlag-enum">Qt::Alignment</a> <i>alignment</i> = 0 )</h3>
 <p>Adds the given <i>widget</i> to the cell grid at <i>row</i>, <i>column</i>. The top-left position is (0, 0) by default.</p>
 <p>The alignment is specified by <i>alignment</i>. The default alignment is 0, which means that the widget fills the entire cell.</p>
@@ -153,70 +143,54 @@
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>This version adds the given <i>widget</i> to the cell grid, spanning multiple rows/columns. The cell will start at <i>fromRow</i>, <i>fromColumn</i> spanning <i>rowSpan</i> rows and <i>columnSpan</i> columns. The grid will have the given <i>alignment</i>.</p>
 <p>If <i>rowSpan</i> and/or <i>columnSpan</i> is -1, then the widget will extend to the bottom and/or right edge, respectively.</p>
-<a name="//apple_ref/cpp/instm/QGridLayout/cellRect" />
 <h3 class="fn"><a name="cellRect"></a><a href="qrect.html">QRect</a> QGridLayout::cellRect ( int <i>row</i>, int <i>column</i> ) const</h3>
 <p>Returns the geometry of the cell with row <i>row</i> and column <i>column</i> in the grid. Returns an invalid rectangle if <i>row</i> or <i>column</i> is outside the grid.</p>
 <p><b>Warning:</b> in the current version of Qt this function does not return valid results until <a href="qlayoutitem.html#setGeometry">setGeometry</a>() has been called, i.e&#x2e; after the <a href="qlayout.html#parentWidget">parentWidget</a>() is visible.</p>
-<a name="//apple_ref/cpp/instm/QGridLayout/columnCount" />
 <h3 class="fn"><a name="columnCount"></a>int QGridLayout::columnCount () const</h3>
 <p>Returns the number of columns in this grid.</p>
-<a name="//apple_ref/cpp/instm/QGridLayout/columnMinimumWidth" />
 <h3 class="fn"><a name="columnMinimumWidth"></a>int QGridLayout::columnMinimumWidth ( int <i>column</i> ) const</h3>
 <p>Returns the column spacing for column <i>column</i>.</p>
 <p>See also <a href="qgridlayout.html#setColumnMinimumWidth">setColumnMinimumWidth</a>().</p>
-<a name="//apple_ref/cpp/instm/QGridLayout/columnStretch" />
 <h3 class="fn"><a name="columnStretch"></a>int QGridLayout::columnStretch ( int <i>column</i> ) const</h3>
 <p>Returns the stretch factor for column <i>column</i>.</p>
 <p>See also <a href="qgridlayout.html#setColumnStretch">setColumnStretch</a>().</p>
-<a name="//apple_ref/cpp/instm/QGridLayout/getItemPosition" />
 <h3 class="fn"><a name="getItemPosition"></a>void QGridLayout::getItemPosition ( int <i>index</i>, int * <i>row</i>, int * <i>column</i>, int * <i>rowSpan</i>, int * <i>columnSpan</i> )</h3>
 <p>Returns the position information of the item with the given <i>index</i>.</p>
 <p>The variables passed as <i>row</i> and <i>column</i> are updated with the position of the item in the layout, and the <i>rowSpan</i> and <i>columnSpan</i> variables are updated with the vertical and horizontal spans of the item.</p>
-<a name="//apple_ref/cpp/instm/QGridLayout/originCorner" />
 <h3 class="fn"><a name="originCorner"></a><a href="qt.html#Corner-enum">Qt::Corner</a> QGridLayout::originCorner () const</h3>
 <p>Returns the corner that's used for the grid's origin, i.e&#x2e; for position (0, 0).</p>
 <p>See also <a href="qgridlayout.html#setOriginCorner">setOriginCorner</a>().</p>
-<a name="//apple_ref/cpp/instm/QGridLayout/rowCount" />
 <h3 class="fn"><a name="rowCount"></a>int QGridLayout::rowCount () const</h3>
 <p>Returns the number of rows in this grid.</p>
-<a name="//apple_ref/cpp/instm/QGridLayout/rowMinimumHeight" />
 <h3 class="fn"><a name="rowMinimumHeight"></a>int QGridLayout::rowMinimumHeight ( int <i>row</i> ) const</h3>
 <p>Returns the minimum width set for row <i>row</i>.</p>
 <p>See also <a href="qgridlayout.html#setRowMinimumHeight">setRowMinimumHeight</a>().</p>
-<a name="//apple_ref/cpp/instm/QGridLayout/rowStretch" />
 <h3 class="fn"><a name="rowStretch"></a>int QGridLayout::rowStretch ( int <i>row</i> ) const</h3>
 <p>Returns the stretch factor for row <i>row</i>.</p>
 <p>See also <a href="qgridlayout.html#setRowStretch">setRowStretch</a>().</p>
-<a name="//apple_ref/cpp/instm/QGridLayout/setColumnMinimumWidth" />
 <h3 class="fn"><a name="setColumnMinimumWidth"></a>void QGridLayout::setColumnMinimumWidth ( int <i>column</i>, int <i>minSize</i> )</h3>
 <p>Sets the minimum width of column <i>column</i> to <i>minSize</i> pixels.</p>
 <p>See also <a href="qgridlayout.html#columnMinimumWidth">columnMinimumWidth</a>() and <a href="qgridlayout.html#setRowMinimumHeight">setRowMinimumHeight</a>().</p>
-<a name="//apple_ref/cpp/instm/QGridLayout/setColumnStretch" />
 <h3 class="fn"><a name="setColumnStretch"></a>void QGridLayout::setColumnStretch ( int <i>column</i>, int <i>stretch</i> )</h3>
 <p>Sets the stretch factor of column <i>column</i> to <i>stretch</i>. The first column is number 0.</p>
 <p>The stretch factor is relative to the other columns in this grid. Columns with a higher stretch factor take more of the available space.</p>
 <p>The default stretch factor is 0. If the stretch factor is 0 and no other column in this table can grow at all, the column may still grow.</p>
 <p>An alternative approach is to add spacing using <a href="qgridlayout.html#addItem">addItem</a>() with a <a href="qspaceritem.html">QSpacerItem</a>.</p>
 <p>See also <a href="qgridlayout.html#columnStretch">columnStretch</a>() and <a href="qgridlayout.html#setRowStretch">setRowStretch</a>().</p>
-<a name="//apple_ref/cpp/instm/QGridLayout/setOriginCorner" />
 <h3 class="fn"><a name="setOriginCorner"></a>void QGridLayout::setOriginCorner ( <a href="qt.html#Corner-enum">Qt::Corner</a> <i>corner</i> )</h3>
 <p>Sets the grid's origin corner, i.e&#x2e; position (0, 0), to <i>corner</i>.</p>
 <p>See also <a href="qgridlayout.html#originCorner">originCorner</a>().</p>
-<a name="//apple_ref/cpp/instm/QGridLayout/setRowMinimumHeight" />
 <h3 class="fn"><a name="setRowMinimumHeight"></a>void QGridLayout::setRowMinimumHeight ( int <i>row</i>, int <i>minSize</i> )</h3>
 <p>Sets the minimum height of row <i>row</i> to <i>minSize</i> pixels.</p>
 <p>See also <a href="qgridlayout.html#rowMinimumHeight">rowMinimumHeight</a>() and <a href="qgridlayout.html#setColumnMinimumWidth">setColumnMinimumWidth</a>().</p>
-<a name="//apple_ref/cpp/instm/QGridLayout/setRowStretch" />
 <h3 class="fn"><a name="setRowStretch"></a>void QGridLayout::setRowStretch ( int <i>row</i>, int <i>stretch</i> )</h3>
 <p>Sets the stretch factor of row <i>row</i> to <i>stretch</i>. The first row is number 0.</p>
 <p>The stretch factor is relative to the other rows in this grid. Rows with a higher stretch factor take more of the available space.</p>
 <p>The default stretch factor is 0. If the stretch factor is 0 and no other row in this table can grow at all, the row may still grow.</p>
 <p>See also <a href="qgridlayout.html#rowStretch">rowStretch</a>(), <a href="qgridlayout.html#setRowMinimumHeight">setRowMinimumHeight</a>(), and <a href="qgridlayout.html#setColumnStretch">setColumnStretch</a>().</p>
-<a name="//apple_ref/cpp/instm/QGridLayout/setSpacing" />
 <h3 class="fn"><a name="setSpacing"></a>void QGridLayout::setSpacing ( int <i>spacing</i> )</h3>
 <p>This functiob sets both the vertical and horizontal spacing to <i>spacing</i>.</p>
 <p>See also <a href="qgridlayout.html#spacing">spacing</a>(), <a href="qgridlayout.html#verticalSpacing-prop">setVerticalSpacing</a>(), and <a href="qgridlayout.html#horizontalSpacing-prop">setHorizontalSpacing</a>().</p>
-<a name="//apple_ref/cpp/instm/QGridLayout/spacing" />
 <h3 class="fn"><a name="spacing"></a>int QGridLayout::spacing () const</h3>
 <p>If the vertical spacing is equal to the horizontal spacing, this function returns that value; otherwise it return -1.</p>
 <p>See also <a href="qgridlayout.html#setSpacing">setSpacing</a>(), <a href="qgridlayout.html#verticalSpacing-prop">verticalSpacing</a>(), and <a href="qgridlayout.html#horizontalSpacing-prop">horizontalSpacing</a>().</p>
@@ -231,67 +205,49 @@
 <h3 class="fn"><a name="QGridLayout-5"></a>QGridLayout::QGridLayout ( <a href="qlayout.html">QLayout</a> * <i>parentLayout</i>, int <i>nRows</i> = 1, int <i>nCols</i> = 1, int <i>spacing</i> = -1, const char * <i>name</i> = 0 )</h3>
 <p>Constructs a new grid with <i>nRows</i> rows and <i>nCols</i> columns. If <i>spacing</i> is -1, this <a href="qgridlayout.html">QGridLayout</a> inherits its parent's <a href="qgridlayout.html#spacing">spacing</a>(); otherwise <i>spacing</i> is used. The grid layout is called <i>name</i>.</p>
 <p>You must insert this grid into another layout. You can insert widgets and layouts into this layout at any time, but laying out will not be performed before this is inserted into another layout.</p>
-<a name="//apple_ref/cpp/instm/QGridLayout/addColSpacing" />
 <h3 class="fn"><a name="addColSpacing"></a>void QGridLayout::addColSpacing ( int <i>col</i>, int <i>minsize</i> )</h3>
 <p>Use addItem(new <a href="qspaceritem.html">QSpacerItem</a>(minsize, 0), 0, col) instead.</p>
-<a name="//apple_ref/cpp/instm/QGridLayout/addMultiCell" />
 <h3 class="fn"><a name="addMultiCell"></a>void QGridLayout::addMultiCell ( <a href="qlayoutitem.html">QLayoutItem</a> * <i>l</i>, int <i>fromRow</i>, int <i>toRow</i>, int <i>fromCol</i>, int <i>toCol</i>, <a href="qt.html#AlignmentFlag-enum">Qt::Alignment</a> <i>align</i> = 0 )</h3>
 <p>Use an <a href="qgridlayout.html#addItem">addItem</a>() overload that allows you to specify row and column spans instead.</p>
-<a name="//apple_ref/cpp/instm/QGridLayout/addMultiCellLayout" />
 <h3 class="fn"><a name="addMultiCellLayout"></a>void QGridLayout::addMultiCellLayout ( <a href="qlayout.html">QLayout</a> * <i>layout</i>, int <i>fromRow</i>, int <i>toRow</i>, int <i>fromCol</i>, int <i>toCol</i>, <a href="qt.html#AlignmentFlag-enum">Qt::Alignment</a> <i>align</i> = 0 )</h3>
 <p>Use an <a href="qgridlayout.html#addLayout">addLayout</a>() overload that allows you to specify row and column spans instead.</p>
-<a name="//apple_ref/cpp/instm/QGridLayout/addMultiCellWidget" />
 <h3 class="fn"><a name="addMultiCellWidget"></a>void QGridLayout::addMultiCellWidget ( <a href="qwidget.html">QWidget</a> * <i>widget</i>, int <i>fromRow</i>, int <i>toRow</i>, int <i>fromCol</i>, int <i>toCol</i>, <a href="qt.html#AlignmentFlag-enum">Qt::Alignment</a> <i>align</i> = 0 )</h3>
 <p>Use an <a href="qgridlayout.html#addWidget">addWidget</a>() overload that allows you to specify row and column spans instead.</p>
-<a name="//apple_ref/cpp/instm/QGridLayout/addRowSpacing" />
 <h3 class="fn"><a name="addRowSpacing"></a>void QGridLayout::addRowSpacing ( int <i>row</i>, int <i>minsize</i> )</h3>
 <p>Use addItem(new <a href="qspaceritem.html">QSpacerItem</a>(0, minsize), row, 0) instead.</p>
-<a name="//apple_ref/cpp/instm/QGridLayout/cellGeometry" />
 <h3 class="fn"><a name="cellGeometry"></a><a href="qrect.html">QRect</a> QGridLayout::cellGeometry ( int <i>row</i>, int <i>column</i> ) const</h3>
 <p>Use cellRect(<i>row</i>, <i>column</i>) instead.</p>
-<a name="//apple_ref/cpp/instm/QGridLayout/colSpacing" />
 <h3 class="fn"><a name="colSpacing"></a>int QGridLayout::colSpacing ( int <i>col</i> ) const</h3>
 <p>Use columnSpacing() instead.</p>
 <p>See also <a href="qgridlayout-qt3.html#setColSpacing">setColSpacing</a>().</p>
-<a name="//apple_ref/cpp/instm/QGridLayout/colStretch" />
 <h3 class="fn"><a name="colStretch"></a>int QGridLayout::colStretch ( int <i>col</i> ) const</h3>
 <p>Use <a href="qgridlayout.html#columnStretch">columnStretch</a>() instead.</p>
 <p>See also <a href="qgridlayout-qt3.html#setColStretch">setColStretch</a>().</p>
-<a name="//apple_ref/cpp/instm/QGridLayout/expand" />
 <h3 class="fn"><a name="expand"></a>void QGridLayout::expand ( int <i>nRows</i>, int <i>nCols</i> )</h3>
 <p>Expands this grid so that it will have <i>nRows</i> rows and <i>nCols</i> columns. Will not shrink the grid. You should not need to call this function because <a href="qgridlayout.html">QGridLayout</a> expands automatically as new items are inserted.</p>
-<a name="//apple_ref/cpp/instm/QGridLayout/findWidget" />
 <h3 class="fn"><a name="findWidget"></a>bool QGridLayout::findWidget ( <a href="qwidget.html">QWidget</a> * <i>w</i>, int * <i>row</i>, int * <i>column</i> )&nbsp;&nbsp;<tt> [protected]</tt></h3>
 <p>Searches for widget <i>w</i> in this layout (not including child layouts). If <i>w</i> is found, it sets <tt>*</tt><i>row</i> and <tt>*</tt><i>column</i> to the row and column that the widget occupies and returns true; otherwise returns false.</p>
 <p>If the widget spans multiple rows/columns, the top-left cell is returned.</p>
 <p>Use <a href="qlayout.html#indexOf">indexOf</a>() and <a href="qgridlayout.html#getItemPosition">getItemPosition</a>() instead.</p>
-<a name="//apple_ref/cpp/instm/QGridLayout/numCols" />
 <h3 class="fn"><a name="numCols"></a>int QGridLayout::numCols () const</h3>
 <p>Use <a href="qgridlayout.html#columnCount">columnCount</a>() instead.</p>
-<a name="//apple_ref/cpp/instm/QGridLayout/numRows" />
 <h3 class="fn"><a name="numRows"></a>int QGridLayout::numRows () const</h3>
 <p>Use <a href="qgridlayout.html#rowCount">rowCount</a>() instead.</p>
-<a name="//apple_ref/cpp/instm/QGridLayout/origin" />
 <h3 class="fn"><a name="origin"></a><a href="qt.html#Corner-enum">Qt::Corner</a> QGridLayout::origin () const</h3>
 <p>Use <a href="qgridlayout.html#originCorner">originCorner</a>() instead.</p>
 <p>See also <a href="qgridlayout-qt3.html#setOrigin">setOrigin</a>().</p>
-<a name="//apple_ref/cpp/instm/QGridLayout/rowSpacing" />
 <h3 class="fn"><a name="rowSpacing"></a>int QGridLayout::rowSpacing ( int <i>row</i> ) const</h3>
 <p>Use rowMinimumHeight(<i>row</i>) instead.</p>
 <p>See also <a href="qgridlayout-qt3.html#setRowSpacing">setRowSpacing</a>().</p>
-<a name="//apple_ref/cpp/instm/QGridLayout/setColSpacing" />
 <h3 class="fn"><a name="setColSpacing"></a>void QGridLayout::setColSpacing ( int <i>col</i>, int <i>minSize</i> )</h3>
 <p>Use <a href="qgridlayout.html#setColumnMinimumWidth">setColumnMinimumWidth</a>() instead.</p>
 <p>See also <a href="qgridlayout-qt3.html#colSpacing">colSpacing</a>().</p>
-<a name="//apple_ref/cpp/instm/QGridLayout/setColStretch" />
 <h3 class="fn"><a name="setColStretch"></a>void QGridLayout::setColStretch ( int <i>col</i>, int <i>stretch</i> )</h3>
 <p>Use <a href="qgridlayout.html#setColumnStretch">setColumnStretch</a>() instead.</p>
 <p>See also <a href="qgridlayout-qt3.html#colStretch">colStretch</a>().</p>
-<a name="//apple_ref/cpp/instm/QGridLayout/setOrigin" />
 <h3 class="fn"><a name="setOrigin"></a>void QGridLayout::setOrigin ( <a href="qt.html#Corner-enum">Qt::Corner</a> <i>corner</i> )</h3>
 <p>Use setOriginCorner(<i>corner</i>) instead.</p>
 <p>See also <a href="qgridlayout-qt3.html#origin">origin</a>().</p>
-<a name="//apple_ref/cpp/instm/QGridLayout/setRowSpacing" />
 <h3 class="fn"><a name="setRowSpacing"></a>void QGridLayout::setRowSpacing ( int <i>row</i>, int <i>minSize</i> )</h3>
 <p>Use setRowMinimumHeight(<i>row</i>, <i>minSize</i>) instead.</p>
 <p>See also <a href="qgridlayout-qt3.html#rowSpacing">rowSpacing</a>().</p>
