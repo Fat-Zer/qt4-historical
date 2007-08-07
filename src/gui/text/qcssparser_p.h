@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -135,6 +150,7 @@ enum Property {
     ListStyleType,
     ListStyle,
     QtImageAlignment,
+    TextAlignment,
     NumProperties
 };
 
@@ -367,6 +383,7 @@ enum PseudoClass
     PseudoClass_Unchecked       = 0x00000040,
     PseudoClass_Off             = PseudoClass_Unchecked,
     PseudoClass_Indeterminate   = 0x00000080,
+    PseudoClass_Editable        = PseudoClass_Indeterminate,
     PseudoClass_Unspecified     = 0x00000100,
     PseudoClass_Selected        = 0x00000200,
     PseudoClass_Horizontal      = 0x00000400,
@@ -375,6 +392,7 @@ enum PseudoClass
     PseudoClass_Children        = 0x00002000,
     PseudoClass_Sibling         = 0x00004000,
     PseudoClass_Default         = 0x00008000,
+    PseudoClass_Item            = PseudoClass_Default,
     PseudoClass_First           = 0x00010000,
     PseudoClass_Last            = 0x00020000,
     PseudoClass_Middle          = 0x00040000,
@@ -391,7 +409,7 @@ enum PseudoClass
     PseudoClass_Frameless        = 0x20000000,
     PseudoClass_ReadOnly         = 0x40000000,
     PseudoClass_Closed           = 0x80000000,
-    NumPseudos = 34
+    NumPseudos = 36
 };
 
 struct Q_GUI_EXPORT Pseudo
@@ -458,9 +476,9 @@ struct Q_GUI_EXPORT ValueExtractor
     bool extractFont(QFont *font, int *fontSizeAdjustment);
     bool extractBackground(QBrush *, QString *, Repeat *, Qt::Alignment *, QCss::Origin *, QCss::Attachment *,
                            QCss::Origin *);
-    bool extractGeometry(int *w, int *h, int *mw, int *mh);
+    bool extractGeometry(int *w, int *h, int *minw, int *minh, int *maxw, int *maxh);
     bool extractPosition(int *l, int *t, int *r, int *b, QCss::Origin *, Qt::Alignment *,
-                         QCss::PositionMode *);
+                         QCss::PositionMode *, Qt::Alignment *);
     bool extractBox(int *margins, int *paddings, int *spacing = 0);
     bool extractBorder(int *borders, QBrush *colors, BorderStyle *Styles, QSize *radii);
     bool extractPalette(QBrush *fg, QBrush *sfg, QBrush *sbg, QBrush *abg);

@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -459,6 +474,30 @@ void QTextEditPrivate::ensureViewportLayouted()
     modified since it was either loaded or since the last call to setModified
     with false as argument. In addition it provides methods for undo and redo.
 
+    \section2 Drag and Drop
+    
+    QTextEdit also supports custom drag and drop behavior. By default,
+    QTextEdit will insert plain text, HTML and rich text when the user drops
+    data of these MIME types onto a document. Reimplement 
+    canInsertFromMimeData() and insertFromMimeData() to add support for
+    additional MIME types.
+
+    For example, to allow the user to drag and drop an image onto a QTextEdit,
+    you could the implement these functions in the following way:
+    
+    \quotefromfile snippets/textdocument-imagedrop/textedit.cpp
+    \skipto bool TextEdit::canInsertFromMimeData
+    \printuntil /^\}/
+    
+    We add support for image MIME types by returning true. For all other
+    MIME types, we use the default implementation.
+    
+    \skipto void TextEdit::insertFromMimeData
+    \printuntil /^\}/
+
+    We unpack the image from the QVariant held by the MIME source and insert
+    it into the document as a resource. 
+    
     \section2 Editing Key Bindings
 
     The list of key bindings which are implemented for editing:
@@ -511,6 +550,8 @@ void QTextEditPrivate::ensureViewportLayouted()
         when the property is set. If the text edit has another content
         type, it will not be replaced by plain text when you call
         toPlainText().
+
+		\sa html
 */
 
 /*!
@@ -736,12 +777,7 @@ void QTextEdit::setDocument(QTextDocument *document)
 {
     Q_D(QTextEdit);
     d->control->setDocument(document);
-
-    document = d->control->document();
-    QTextOption opt = document->defaultTextOption();
-    opt.setWrapMode(d->wordWrap);
-    document->setDefaultTextOption(opt);
-
+    d->updateDefaultTextOption();
     d->relayoutDocument();
 }
 
@@ -1069,11 +1105,14 @@ void QTextEdit::setPlainText(const QString &text)
     toHtml() returns the text of the text edit as html.
 
     setHtml() changes the text of the text edit.  Any previous text is
-    removed. The input text is interpreted as rich text in html format.
+    removed and the undo/redo history is cleared. The input text is
+    interpreted as rich text in html format.
 
-    Note that the undo/redo history is cleared by calling setHtml().
+    \note It is the responsibility of the caller to make sure that the
+    text is correctly decoded when a QString containing HTML is created
+    and passed to setHtml().
 
-    \sa {Supported HTML Subset}
+    \sa {Supported HTML Subset}, plainText
 */
 
 void QTextEdit::setHtml(const QString &text)
@@ -1318,7 +1357,7 @@ void QTextEditPrivate::relayoutDocument()
     if (lineWrap == QTextEdit::FixedPixelWidth)
         width = lineWrapColumnOrWidth;
 
-    doc->setPageSize(QSize(width, INT_MAX));
+    doc->setPageSize(QSize(width, -1));
     if (tlayout)
         tlayout->ensureLayouted(verticalOffset() + viewport->height());
 
@@ -1386,6 +1425,22 @@ void QTextEditPrivate::_q_currentCharFormatChanged(const QTextCharFormat &fmt)
     emit q->currentFontChanged(fmt.font());
     emit q->currentColorChanged(fmt.foreground().color());
 #endif
+}
+
+void QTextEditPrivate::updateDefaultTextOption()
+{
+    QTextDocument *doc = control->document();
+
+    QTextOption opt = doc->defaultTextOption();
+    QTextOption::WrapMode oldWrapMode = opt.wrapMode();
+
+    if (lineWrap == QTextEdit::NoWrap)
+        opt.setWrapMode(QTextOption::NoWrap);
+    else
+        opt.setWrapMode(wordWrap);
+
+    if (opt.wrapMode() != oldWrapMode)
+        doc->setDefaultTextOption(opt);
 }
 
 /*! \reimp
@@ -1834,7 +1889,10 @@ QMimeData *QTextEdit::createMimeDataFromSelection() const
     This function returns true if the contents of the MIME data object, specified
     by \a source, can be decoded and inserted into the document. It is called
     for example when during a drag operation the mouse enters this widget and it
-    is necessary to determine whether it is possible to accept the drag.
+    is necessary to determine whether it is possible to accept the drag and drop
+    operation.
+
+    Reimplement this function to enable drag and drop support for additional MIME types.
  */
 bool QTextEdit::canInsertFromMimeData(const QMimeData *source) const
 {
@@ -1848,7 +1906,9 @@ bool QTextEdit::canInsertFromMimeData(const QMimeData *source) const
     called whenever text is inserted as the result of a clipboard paste
     operation, or when the text edit accepts data from a drag and drop
     operation.
-*/
+
+    Reimplement this function to enable drag and drop support for additional MIME types.   
+ */
 void QTextEdit::insertFromMimeData(const QMimeData *source)
 {
     Q_D(QTextEdit);
@@ -1996,6 +2056,11 @@ void QTextEdit::insertPlainText(const QString &text)
     \code
     edit->textCursor().insertHtml(fragment);
     \endcode
+
+    \note When using this function with a style sheet, the style sheet will
+    only apply to the current block in the document. In order to apply a style
+    sheet throughout a document, use QTextDocument::setDefaultStyleSheet()
+    instead.
  */
 void QTextEdit::insertHtml(const QString &text)
 {
@@ -2133,12 +2198,9 @@ void QTextEdit::setTabChangesFocus(bool b)
     The default mode is WidgetWidth which causes words to be
     wrapped at the right edge of the text edit. Wrapping occurs at
     whitespace, keeping whole words intact. If you want wrapping to
-    occur within words use setWrapPolicy(). If you set a wrap mode of
+    occur within words use setWordWrapMode(). If you set a wrap mode of
     FixedPixelWidth or FixedColumnWidth you should also call
-    setWrapColumnOrWidth() with the width you want.
-
-    Note that setting NoWrap as line wrap mode will implicitly also
-    set QTextOption::NoWrap as word wrap mode.
+    setLineWrapColumnOrWidth() with the width you want.
 
     \sa lineWrapColumnOrWidth
 */
@@ -2155,8 +2217,7 @@ void QTextEdit::setLineWrapMode(LineWrapMode wrap)
     if (d->lineWrap == wrap)
         return;
     d->lineWrap = wrap;
-    if (d->lineWrap == NoWrap)
-        setWordWrapMode(QTextOption::ManualWrap);
+    d->updateDefaultTextOption();
     d->relayoutDocument();
 }
 
@@ -2205,9 +2266,7 @@ void QTextEdit::setWordWrapMode(QTextOption::WrapMode mode)
     if (mode == d->wordWrap)
         return;
     d->wordWrap = mode;
-    QTextOption opt = d->control->document()->defaultTextOption();
-    opt.setWrapMode(mode);
-    d->control->document()->setDefaultTextOption(opt);
+    d->updateDefaultTextOption();
 }
 
 /*!
@@ -2397,10 +2456,15 @@ Qt::TextFormat QTextEdit::textFormat() const
 
 #endif // QT3_SUPPORT
 
-
 /*!
     Appends a new paragraph with \a text to the end of the text edit.
+    
+    \note The new paragraph appended will have the same character format and
+    block format as the current paragraph, determined by the position of the cursor.
+    
+    \sa currentCharFormat(), QTextCursor::blockFormat()
 */
+
 void QTextEdit::append(const QString &text)
 {
     Q_D(QTextEdit);

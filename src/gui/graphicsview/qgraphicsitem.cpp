@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -206,7 +221,7 @@
         class CustomItem : public QGraphicsItem
         {
            ...
-           enum { Type = UserType + 1 }
+           enum { Type = UserType + 1 };
 
            int type() const
            {
@@ -261,7 +276,7 @@
     \value ItemIgnoresTransformations The item ignores inherited
     transformations (i.e., its position is still relative to its parent, but
     the parent or view rotation, zoom or shear transformations are
-    ignored). This flag is particularily useful for text label items, which
+    ignored). This flag is particularly useful for text label items, which
     can become unreadable when the view zooms away from the scene. By default,
     this flag is disabled. This flag was introduced in Qt 4.3.
 */
@@ -1884,7 +1899,7 @@ void QGraphicsItem::resetMatrix()
 /*!
     \since 4.3
 
-    Resets this item's tranformation matrix to the identity matrix. This is
+    Resets this item's transformation matrix to the identity matrix. This is
     equivalent to calling \c setTransform(QTransform()).
 
     \sa setTransform(), transform()
@@ -3083,8 +3098,9 @@ bool QGraphicsItem::sceneEvent(QEvent *event)
 }
 
 /*!
-    This event handler, for event \a event, can be reimplemented to
-    receive context menu events for this item.
+    This event handler can be reimplemented in a subclass to process context
+    menu events. The \a event parameter contains details about the event to
+    be handled.
 
     If you ignore the event, (i.e., by calling QEvent::ignore(),) \a event
     will propagate to any item beneath this item. If no items accept the
@@ -3105,6 +3121,10 @@ bool QGraphicsItem::sceneEvent(QEvent *event)
     \endcode
 
     The default implementation does nothing.
+
+    \note Items only receive context menu events if the view they are
+    displayed in is configured to ignore context menu events; i.e., its
+    \l{QWidget::}{contextMenuPolicy} property is set to Qt::ContextMenuPolicy.
 
     \sa sceneEvent()
 */
@@ -3364,6 +3384,12 @@ void QGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
     }
 }
 
+bool _qt_movableAncestorIsSelected(const QGraphicsItem *item)
+{
+    const QGraphicsItem *parent = item->parentItem();
+    return parent && (((parent->flags() & QGraphicsItem::ItemIsMovable) && parent->isSelected()) || _qt_movableAncestorIsSelected(parent));
+}
+
 /*!
     This event handler, for event \a event, can be reimplemented to
     receive mouse move events for this item. If you do receive this
@@ -3384,12 +3410,19 @@ void QGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 void QGraphicsItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
     if ((event->buttons() & Qt::LeftButton) && (flags() & ItemIsMovable)) {
-        // Determine the list of selected items
+        // Determine the list of items that need to be moved.
         QList<QGraphicsItem *> selectedItems;
-        if (d_ptr->scene)
+        QMap<QGraphicsItem *, QPointF> initialPositions;
+        if (d_ptr->scene) {
             selectedItems = d_ptr->scene->selectedItems();
-        if (!isSelected())
-            selectedItems << this;
+            initialPositions = d_ptr->scene->d_func()->movingItemsInitialPositions;
+            if (initialPositions.isEmpty()) {
+                foreach (QGraphicsItem *item, selectedItems)
+                    initialPositions[item] = item->pos();
+                initialPositions[this] = pos();
+            }
+            d_ptr->scene->d_func()->movingItemsInitialPositions = initialPositions;
+        }
 
         // Find the active view.
         QGraphicsView *view = 0;
@@ -3397,36 +3430,54 @@ void QGraphicsItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
             view = qobject_cast<QGraphicsView *>(event->widget()->parentWidget());
 
         // Move all selected items
-        foreach (QGraphicsItem *item, selectedItems) {
-            if ((item->flags() & ItemIsMovable) && (!item->parentItem() || !item->parentItem()->isSelected())) {
-                QPointF diff;
-                if (item->flags() & ItemIgnoresTransformations) {
-                    // Root items that ignore transformations need to
-                    // calculate their diff by mapping viewport coordinates to
-                    // parent coordinates. Items whose ancestors ignore
-                    // transformations can ignore this problem; their events
-                    // are already mapped correctly.
-                    QTransform viewToParentTransform = (sceneTransform() * view->viewportTransform()).inverted();
+        int i = 0;
+        bool movedMe = false;
+        while (i <= selectedItems.size()) {
+            QGraphicsItem *item = 0;
+            if (i < selectedItems.size())
+                item = selectedItems.at(i);
+            else
+                item = this;
+            if (item == this) {
+                // Slightly clumsy-looking way to ensure that "this" is part
+                // of the list of items to move, this is to avoid allocations
+                // (appending this item to the list of selected items causes a
+                // detach).
+                if (movedMe)
+                    break;
+                movedMe = true;
+            }
 
-                    QTransform myTransform = transform().translate(d_ptr->pos.x(), d_ptr->pos.y());
-                    viewToParentTransform = myTransform * viewToParentTransform;
-                    
-                    diff = viewToParentTransform.map(QPointF(view->mapFromGlobal(event->screenPos())))
-                           - viewToParentTransform.map(QPointF(view->mapFromGlobal(event->lastScreenPos())));
+            if ((item->flags() & ItemIsMovable) && !_qt_movableAncestorIsSelected(item)) {
+                QPointF currentParentPos;
+                QPointF buttonDownParentPos;
+                if (item->d_ptr->ancestorFlags & QGraphicsItemPrivate::AncestorIgnoresTransformations) {
+                    // Items whose ancestors ignore transformations need to
+                    // map screen coordinates to local coordinates, then map
+                    // those to the parent.
+                    QTransform viewToItemTransform = (item->deviceTransform(view->viewportTransform())).inverted();
+                    currentParentPos = mapToParent(viewToItemTransform.map(QPointF(view->mapFromGlobal(event->screenPos()))));
+                    buttonDownParentPos = mapToParent(viewToItemTransform.map(QPointF(view->mapFromGlobal(event->buttonDownScreenPos(Qt::LeftButton)))));
+                } else if (item->flags() & ItemIgnoresTransformations) {
+                    // Root items that ignore transformations need to
+                    // calculate their diff by mapping viewport coordinates
+                    // directly to parent coordinates.
+                    QTransform viewToParentTransform = (item->transform().translate(item->d_ptr->pos.x(), item->d_ptr->pos.y()))
+                                                       * (item->sceneTransform() * view->viewportTransform()).inverted();
+                    currentParentPos = viewToParentTransform.map(QPointF(view->mapFromGlobal(event->screenPos())));
+                    buttonDownParentPos = viewToParentTransform.map(QPointF(view->mapFromGlobal(event->buttonDownScreenPos(Qt::LeftButton))));
                 } else {
-                    if (item == this) {
-                        diff = mapToParent(event->pos()) - mapToParent(event->lastPos());
-                    } else {
-                        diff = item->mapToParent(item->mapFromScene(event->scenePos()))
-                               - item->mapToParent(item->mapFromScene(event->lastScenePos()));
-                    }
+                    // All other items simply map from the scene.
+                    currentParentPos = item->mapToParent(item->mapFromScene(event->scenePos()));
+                    buttonDownParentPos = item->mapToParent(item->mapFromScene(event->buttonDownScenePos(Qt::LeftButton)));
                 }
-                        
-                item->moveBy(diff.x(), diff.y());
+
+                item->setPos(initialPositions.value(item) + currentParentPos - buttonDownParentPos);
 
                 if (item->flags() & ItemIsSelectable)
                     item->setSelected(true);
             }
+            ++i;
         }
 
     } else {
@@ -3472,6 +3523,8 @@ void QGraphicsItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
             }
         }
     }
+    if (d_ptr->scene)
+        d_ptr->scene->d_func()->movingItemsInitialPositions.clear();
 }
 
 /*!

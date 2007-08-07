@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -146,12 +161,14 @@ QDockAreaLayoutItem
 ** QDockAreaLayoutInfo
 */
 
+#ifndef QT_NO_TABBAR
 static quintptr tabId(const QDockAreaLayoutItem &item)
 {
     if (item.widgetItem == 0)
         return 0;
     return reinterpret_cast<quintptr>(item.widgetItem->widget());
 }
+#endif
 
 QDockAreaLayoutInfo::QDockAreaLayoutInfo()
     : sep(0), dockPos(QInternal::LeftDock), o(Qt::Horizontal), rect(0, 0, -1, -1), mainWindow(0)
@@ -1050,8 +1067,6 @@ void QDockAreaLayoutInfo::setCurrentTabId(quintptr id)
             return;
         }
     }
-
-    qWarning("QDockAreaLayoutInfo::setCurrentTabId(): not found!");
 }
 
 #endif // QT_NO_TABBAR
@@ -1551,6 +1566,8 @@ void QDockAreaLayoutInfo::tab(int index, QLayoutItem *dockWidgetItem)
 #else
     if (tabbed) {
         item_list.append(QDockAreaLayoutItem(dockWidgetItem));
+        updateTabBar();
+        setCurrentTab(dockWidgetItem->widget());
     } else {
         QDockAreaLayoutInfo *new_info
             = new QDockAreaLayoutInfo(sep, dockPos, o, tabBarShape, mainWindow);
@@ -1559,6 +1576,8 @@ void QDockAreaLayoutInfo::tab(int index, QLayoutItem *dockWidgetItem)
         item_list[index].widgetItem = 0;
         new_info->item_list.append(dockWidgetItem);
         new_info->tabbed = true;
+        new_info->updateTabBar();
+        new_info->setCurrentTab(dockWidgetItem->widget());
     }
 #endif // QT_NO_TABBAR
 }
@@ -1696,6 +1715,20 @@ void QDockAreaLayoutInfo::saveState(QDataStream &stream) const
     }
 }
 
+#ifdef Q_WS_MAC
+static Qt::DockWidgetArea toDockWidgetArea(QInternal::DockPosition pos)
+{
+    switch (pos) {
+        case QInternal::LeftDock:   return Qt::LeftDockWidgetArea;
+        case QInternal::RightDock:  return Qt::RightDockWidgetArea;
+        case QInternal::TopDock:    return Qt::TopDockWidgetArea;
+        case QInternal::BottomDock: return Qt::BottomDockWidgetArea;
+        default: break;
+    }
+    return Qt::NoDockWidgetArea;
+}
+#endif
+
 bool QDockAreaLayoutInfo::restoreState(QDataStream &stream, QList<QDockWidget*> &widgets)
 {
     uchar marker;
@@ -1746,12 +1779,31 @@ bool QDockAreaLayoutInfo::restoreState(QDataStream &stream, QList<QDockWidget*> 
 
             QDockAreaLayoutItem item(new QDockWidgetItem(widget));
             if (flags & StateFlagFloating) {
+                bool drawer = false;
+#ifdef Q_WS_MAC // drawer support
+                extern bool qt_mac_is_macdrawer(const QWidget *); //qwidget_mac.cpp
+                extern bool qt_mac_set_drawer_preferred_edge(QWidget *, Qt::DockWidgetArea); //qwidget_mac.cpp
+                drawer = qt_mac_is_macdrawer(widget);
+#endif
+
                 widget->hide();
-                widget->setFloating(true);
+                if (!drawer)
+                    widget->setFloating(true);
                 int x, y, w, h;
                 stream >> x >> y >> w >> h;
-                widget->move(x, y);
-                widget->resize(w, h);
+                
+#ifdef Q_WS_MAC // drawer support
+                if (drawer) {
+                    mainWindow->window()->createWinId();
+                    widget->window()->createWinId();
+                    qt_mac_set_drawer_preferred_edge(widget, toDockWidgetArea(dockPos));
+                } else 
+#endif                
+                {                
+                    widget->move(x, y);
+                    widget->resize(w, h);
+                }
+
                 widget->setVisible(flags & StateFlagVisible);
             } else {
                 int dummy;
@@ -1820,7 +1872,8 @@ void QDockAreaLayoutInfo::updateTabBar() const
         if (item.widgetItem == 0)
             continue;
 
-        QString title = item.widgetItem->widget()->windowTitle();
+        QDockWidget *dw = qobject_cast<QDockWidget*>(item.widgetItem->widget());
+        QString title = dw->d_func()->fixedWindowTitle;
         quintptr id = tabId(item);
         if (tab_idx == tabBar->count()) {
             tabBar->insertTab(tab_idx, title);
@@ -2054,7 +2107,7 @@ bool QDockAreaLayout::restoreState(QDataStream &stream, const QList<QDockWidget*
     return ok;
 }
 
-QList<int> QDockAreaLayout::indexOf(QDockWidget *dockWidget) const
+QList<int> QDockAreaLayout::indexOf(QWidget *dockWidget) const
 {
     for (int i = 0; i < QInternal::DockCount; ++i) {
         QList<int> result = docks[i].indexOf(dockWidget);

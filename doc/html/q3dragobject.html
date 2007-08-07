@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/qt3support/other/q3dragobject.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/qt3support/other/q3dragobject.cpp -->
 <head>
   <title>Qt 4.3: Q3DragObject Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -125,6 +125,7 @@
 <a name="//apple_ref/cpp/instm/Q3DragObject/dragMove" />
 <h3 class="fn"><a name="dragMove"></a>bool Q3DragObject::dragMove ()</h3>
 <p>Starts a drag operation using the contents of this object, using <tt>DragMove</tt> mode. Be sure to read the constraints described in <a href="q3dragobject.html#drag">drag</a>().</p>
+<p>Returns true if the data was dragged as a <i>move</i>, indicating that the caller should remove the original source of the data (the drag object must continue to have a copy); otherwise returns false.</p>
 <p>See also <a href="q3dragobject.html#drag">drag</a>(), <a href="q3dragobject.html#dragCopy">dragCopy</a>(), and <a href="q3dragobject.html#dragLink">dragLink</a>().</p>
 <a name="//apple_ref/cpp/instm/Q3DragObject/pixmap" />
 <h3 class="fn"><a name="pixmap"></a><a href="qpixmap.html">QPixmap</a> Q3DragObject::pixmap () const</h3>
@@ -154,6 +155,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

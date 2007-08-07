@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/gui/kernel/qkeysequence.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/kernel/qkeysequence.cpp -->
 <head>
   <title>Qt 4.3: QKeySequence Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -22,7 +22,6 @@
 <a name="public-types"></a>
 <h3>Public Types</h3>
 <ul>
-<li><div class="fn"/>typedef <b><a href="qkeysequence.html#DataPtr-typedef">DataPtr</a></b></li>
 <li><div class="fn"/>enum <b><a href="qkeysequence.html#SequenceFormat-enum">SequenceFormat</a></b> { NativeText, PortableText }</li>
 <li><div class="fn"/>enum <b><a href="qkeysequence.html#SequenceMatch-enum">SequenceMatch</a></b> { NoMatch, PartialMatch, ExactMatch }</li>
 <li><div class="fn"/>enum <b><a href="qkeysequence.html#StandardKey-enum">StandardKey</a></b> { UnknownKey, HelpContents, WhatsThis, Open, ..., DeleteEndOfLine }</li>
@@ -37,7 +36,6 @@
 <li><div class="fn"/><b><a href="qkeysequence.html#QKeySequence-5">QKeySequence</a></b> ( StandardKey <i>key</i> )</li>
 <li><div class="fn"/><b><a href="qkeysequence.html#dtor.QKeySequence">~QKeySequence</a></b> ()</li>
 <li><div class="fn"/>uint <b><a href="qkeysequence.html#count">count</a></b> () const</li>
-<li><div class="fn"/>DataPtr &amp; <b><a href="qkeysequence.html#data_ptr">data_ptr</a></b> ()</li>
 <li><div class="fn"/>bool <b><a href="qkeysequence.html#isEmpty">isEmpty</a></b> () const</li>
 <li><div class="fn"/>SequenceMatch <b><a href="qkeysequence.html#matches">matches</a></b> ( const QKeySequence &amp; <i>seq</i> ) const</li>
 <li><div class="fn"/>QString <b><a href="qkeysequence.html#toString">toString</a></b> ( SequenceFormat <i>format</i> = PortableText ) const</li>
@@ -169,8 +167,6 @@
 <p>See also <a href="qshortcut.html">QShortcut</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
-<a name="//apple_ref/cpp/tdef/QKeySequence/DataPtr" />
-<h3 class="fn"><a name="DataPtr-typedef"></a>typedef QKeySequence::DataPtr</h3>
 <a name="//apple_ref/cpp/tag/QKeySequence/SequenceFormat" />
 <a name="//apple_ref/cpp/econst/QKeySequence/NativeText" />
 <a name="//apple_ref/cpp/econst/QKeySequence/PortableText" />
@@ -350,8 +346,6 @@
 <a name="//apple_ref/cpp/instm/QKeySequence/count" />
 <h3 class="fn"><a name="count"></a><a href="qtglobal.html#uint-typedef">uint</a> QKeySequence::count () const</h3>
 <p>Returns the number of keys in the key sequence. The maximum is 4.</p>
-<a name="//apple_ref/cpp/instm/QKeySequence/data_ptr" />
-<h3 class="fn"><a name="data_ptr"></a><a href="qkeysequence.html#DataPtr-typedef">DataPtr</a> &amp; QKeySequence::data_ptr ()</h3>
 <a name="//apple_ref/cpp/clm/QKeySequence/fromString" />
 <h3 class="fn"><a name="fromString"></a>QKeySequence QKeySequence::fromString ( const <a href="qstring.html">QString</a> &amp; <i>str</i>, <a href="qkeysequence.html#SequenceFormat-enum">SequenceFormat</a> <i>format</i> = PortableText )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Return a <a href="qkeysequence.html">QKeySequence</a> from the string <i>str</i> based on <i>format</i>.</p>
@@ -426,6 +420,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

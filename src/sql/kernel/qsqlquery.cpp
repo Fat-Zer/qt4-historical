@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -946,8 +961,9 @@ bool QSqlQuery::exec()
         4  NULL
     \endcode
 
-    To bind NULL values, a null QVariant has to be added to the bound QVariantList,
-    for example: \c {QVariant(QVariant::String)}
+    To bind NULL values, a null QVariant of the relevant type has to be added to
+    the bound QVariantList; for example, \c {QVariant(QVariant::String)} should be
+    used if you are using strings.
 
     Note that every bound QVariantList must contain the same amount of variants.
     Note that the type of the QVariants in a list must not change. For example,
@@ -975,6 +991,9 @@ bool QSqlQuery::execBatch(BatchExecutionMode mode)
     must be included when specifying the placeholder name. If \a paramType
     is QSql::Out or QSql::InOut, the placeholder will be
     overwritten with data from the database after the exec() call.
+
+    To bind a NULL value, use a null QVariant; for example, use
+    \c {QVariant(QVariant::String)} if you are binding a string.
 
     \sa addBindValue(), prepare(), exec(), boundValue() boundValues()
 */
@@ -1004,6 +1023,9 @@ void QSqlQuery::bindValue(int pos, const QVariant& val, QSql::ParamType paramTyp
     which placeholder a value will be bound to in the prepared query.
     If \a paramType is QSql::Out or QSql::InOut, the placeholder will
     be overwritten with data from the database after the exec() call.
+
+    To bind a NULL value, use a null QVariant; for example, use
+    \c {QVariant(QVariant::String)} if you are binding a string.
 
     \sa bindValue(), prepare(), exec(), boundValue() boundValues()
 */

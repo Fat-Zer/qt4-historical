@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -496,7 +511,7 @@ QX11EmbedWidget::QX11EmbedWidget(QWidget *parent)
 
     unsigned int data[] = {XEMBED_VERSION, XEMBED_MAPPED};
     XChangeProperty(x11Info().display(), internalWinId(), _XEMBED_INFO,
-                    XA_CARDINAL, 32, PropModeReplace,
+                    _XEMBED_INFO, 32, PropModeReplace,
                     (unsigned char*) data, 2);
 
     setFocusPolicy(Qt::StrongFocus);
@@ -833,7 +848,7 @@ bool QX11EmbedWidget::x11Event(XEvent *event)
             unsigned long bytes_after_return;
             unsigned char *prop_return = 0;
             if (XGetWindowProperty(x11Info().display(), internalWinId(), _XEMBED_INFO, 0, 2,
-                                   false, XA_CARDINAL, &actual_type_return,
+                                   false, _XEMBED_INFO, &actual_type_return,
                                    &actual_format_return, &nitems_return,
                                    &bytes_after_return, &prop_return) == Success) {
                 if (nitems_return > 1) {
@@ -1094,6 +1109,9 @@ QX11EmbedContainer::QX11EmbedContainer(QWidget *parent)
                  | StructureNotifyMask
                  | SubstructureNotifyMask);
 
+    // Make sure our new event mask takes effect as soon as possible.
+    XFlush(x11Info().display());
+
     // Move input to our focusProxy if this widget is active, and not
     // shaded by a modal dialog (in which case isActiveWindow() would
     // still return true, but where we must not move input focus).
@@ -1238,7 +1256,7 @@ void QX11EmbedContainer::embedClient(WId id)
     data.rootWindow = attrib.root;
     data.clearedWmState = false;
     data.reparentedToRoot = false;
-    
+
     do {
 	if (t.elapsed() > 500) // time-out after 500 ms
 	    break;
@@ -1249,7 +1267,7 @@ void QX11EmbedContainer::embedClient(WId id)
             usleep(50000);
 	    continue;
 	}
-        
+
         qApp->x11ProcessEvent(&event);
     } while (!data.clearedWmState || !data.reparentedToRoot);
 
@@ -1565,7 +1583,7 @@ void QX11EmbedContainer::showEvent(QShowEvent *)
     Q_D(QX11EmbedContainer);
     if (d->client) {
 	unsigned int data[] = {XEMBED_VERSION, XEMBED_MAPPED};
-	XChangeProperty(x11Info().display(), d->client, _XEMBED_INFO, XA_CARDINAL, 32,
+	XChangeProperty(x11Info().display(), d->client, _XEMBED_INFO, _XEMBED_INFO, 32,
 			PropModeReplace, (unsigned char *) data, 2);
     }
 }
@@ -1582,7 +1600,7 @@ void QX11EmbedContainer::hideEvent(QHideEvent *)
     if (d->client) {
 	unsigned int data[] = {XEMBED_VERSION, XEMBED_MAPPED};
 
-	XChangeProperty(x11Info().display(), d->client, _XEMBED_INFO, XA_CARDINAL, 32,
+	XChangeProperty(x11Info().display(), d->client, _XEMBED_INFO, _XEMBED_INFO, 32,
 			PropModeReplace, (unsigned char *) data, 2);
     }
 }
@@ -1657,7 +1675,7 @@ void QX11EmbedContainerPrivate::acceptClient(WId window)
 
     // XEmbed clients have an _XEMBED_INFO property in which we can
     // fetch the version
-    if (XGetWindowProperty(q->x11Info().display(), client, _XEMBED_INFO, 0, 2, false, XA_CARDINAL,
+    if (XGetWindowProperty(q->x11Info().display(), client, _XEMBED_INFO, 0, 2, false, _XEMBED_INFO,
 			   &actual_type_return, &actual_format_return, &nitems_return,
 			   &bytes_after_return, &prop_return) == Success) {
 
@@ -1699,8 +1717,10 @@ void QX11EmbedContainerPrivate::acceptClient(WId window)
     XMapWindow(q->x11Info().display(), client);
 
     // Resize it, but no smaller than its minimum size hint.
-    XResizeWindow(q->x11Info().display(), client,
-                  qMax(q->width(), size.min_width), qMax(q->height(), size.min_height));
+    XResizeWindow(q->x11Info().display(),
+                  client,
+                  qMax(q->width(), wmMinimumSizeHint.width()),
+                  qMax(q->height(), wmMinimumSizeHint.height()));
     q->update();
 
     // Not mentioned in the protocol is that if the container

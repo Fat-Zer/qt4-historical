@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/doc/src/q3intdict.qdoc -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/doc/src/q3intdict.qdoc -->
 <head>
   <title>Qt 4.3: Q3IntDict Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -59,7 +59,7 @@
 <p>Q3IntDict is implemented as a template class. Define a template instance Q3IntDict&lt;X&gt; to create a dictionary that operates on pointers to X (X*).</p>
 <p>A dictionary is a collection of key-value pairs. The key is an <tt>long</tt> used for insertion, removal and lookup. The value is a pointer. Dictionaries provide very fast insertion and lookup.</p>
 <p>Example:</p>
-<pre> Q3IntDict&lt;QLineEdit&gt; fields; <span class="comment">// long int keys, QLineEdit* values</span>
+<pre> Q3IntDict&lt;QLineEdit&gt; fields; <span class="comment">//</span> long int keys, QLineEdit* values
  for ( int i = 0; i &lt; 3; i++ )
      fields.insert( i, new QLineEdit( this ) );
 
@@ -72,13 +72,13 @@
      cout &lt;&lt; it.currentKey() &lt;&lt; &quot;: &quot; &lt;&lt; it.current()-&gt;text() &lt;&lt; endl;
 
  for ( int i = 0; i &lt; 3; i++ )
-     cout &lt;&lt; fields[i]-&gt;text() &lt;&lt; &quot; &quot;; <span class="comment">// Prints &quot;Homer Simpson 45&quot;</span>
+     cout &lt;&lt; fields[i]-&gt;text() &lt;&lt; &quot; &quot;; <span class="comment">//</span> Prints &quot;Homer Simpson 45&quot;
  cout &lt;&lt; endl;
 
- fields.remove( 1 ); <span class="comment">// Does not delete the line edit</span>
+ fields.remove( 1 ); <span class="comment">//</span> Does not delete the line edit
  for ( int i = 0; i &lt; 3; i++ )
      if ( fields[i] )
-         cout &lt;&lt; fields[i]-&gt;text() &lt;&lt; &quot; &quot;; <span class="comment">// Prints &quot;Homer 45&quot;</span></pre>
+         cout &lt;&lt; fields[i]-&gt;text() &lt;&lt; &quot; &quot;; <span class="comment">//</span> Prints &quot;Homer 45&quot;</pre>
 <p>See <a href="q3dict.html">Q3Dict</a> for full details, including the choice of dictionary size, and how deletions are handled.</p>
 <p>See also <a href="q3intdictiterator.html">Q3IntDictIterator</a>, <a href="q3dict.html">Q3Dict</a>, <a href="q3asciidict.html">Q3AsciiDict</a>, and <a href="q3ptrdict.html">Q3PtrDict</a>.</p>
 <hr />
@@ -141,7 +141,7 @@
 <p><i>item</i> may not be 0.</p>
 <p>Equivalent to:</p>
 <pre> Q3IntDict&lt;char&gt; dict;
-<span class="comment"> //      ...</span>
+<span class="comment"> //</span>      ...
  if ( dict.find(key) )
      dict.remove( key );
  dict.insert( key, item );</pre>
@@ -182,6 +182,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

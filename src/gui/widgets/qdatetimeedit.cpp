@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -68,7 +83,7 @@ public:
 
     QVariant validateAndInterpret(QString &input, int &, QValidator::State &state, bool fixup = false) const;
     void clearSection(int index);
-    QString displayText() const { return edit->displayText(); }
+    virtual QString displayText() const { return edit->displayText(); } // this is from QDateTimeParser
 
     int absoluteIndex(QDateTimeEdit::Section s, int index) const;
     int absoluteIndex(const SectionNode &s) const;
@@ -238,6 +253,10 @@ QDateTimeEdit::QDateTimeEdit(const QDate &date, QWidget *parent)
     d->value = QVariant(QDateTime(date.isValid() ? date : QDATETIMEEDIT_DATE_INITIAL, QDATETIMEEDIT_TIME_MIN));
     setDisplayFormat(d->defaultDateFormat);
     d->init();
+#ifdef QT_KEYPAD_NAVIGATION
+    if (QApplication::keypadNavigationEnabled())
+        setCalendarPopup(true);
+#endif
 }
 
 /*!
@@ -778,8 +797,6 @@ void QDateTimeEdit::setDisplayFormat(const QString &format)
             d->value = QVariant(QDateTime(d->value.toDate(), QTime()));
         }
         d->updateEdit();
-        d->edit->setCursorPosition(0);
-        QDTEDEBUG << 0;
         d->_q_editorCursorPositionChanged(-1, 0);
     }
 }
@@ -907,7 +924,7 @@ void QDateTimeEdit::keyPressEvent(QKeyEvent *event)
     switch (event->key()) {
 #ifdef QT_KEYPAD_NAVIGATION
     case Qt::Key_NumberSign:    //shortcut to popup calendar
-        if (QApplication::keypadNavigationEnabled() && d->calendarPopup) {
+        if (QApplication::keypadNavigationEnabled() && d->showCalendarPopup()) {
             d->initCalendarPopup();
             d->positionCalendarPopup();
             d->monthCalendar->show();
@@ -996,7 +1013,7 @@ void QDateTimeEdit::keyPressEvent(QKeyEvent *event)
                 newSection = forward ? 0 : d->sectionNodes.size() - 1;
                 d->focusOnButton = false;
                 update();
-            } else if (newSection < 0 && select && d->calendarPopup) {
+            } else if (newSection < 0 && select && d->showCalendarPopup()) {
                 setSelectedSection(NoSection);
                 d->focusOnButton = true;
                 update();

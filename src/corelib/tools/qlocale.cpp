@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -2477,6 +2492,8 @@ QString QLocale::toString(qulonglong i) const
 QString QLocale::toString(const QDate &date, const QString &format) const
 {
     QString result;
+    if (!date.isValid())
+        return result;
 
     int i = 0;
     while (i < format.size()) {
@@ -2564,6 +2581,9 @@ QString QLocale::toString(const QDate &date, const QString &format) const
 */
 QString QLocale::toString(const QDate &date, FormatType format) const
 {
+    if (!date.isValid())
+        return QString();
+
 #ifndef QT_NO_SYSTEMLOCALE
     if (d() == systemPrivate()) {
         QVariant res = systemLocale()->query(format == ShortFormat
@@ -2625,6 +2645,8 @@ static QString timeZone()
 QString QLocale::toString(const QTime &time, const QString &format) const
 {
     QString result;
+    if (!time.isValid())
+        return result;
 
     int hour12 = time.hour();
     enum { AM, PM } am_pm = AM;
@@ -2768,6 +2790,9 @@ QString QLocale::toString(const QTime &time, const QString &format) const
 */
 QString QLocale::toString(const QTime &time, FormatType format) const
 {
+    if (!time.isValid())
+        return QString();
+
 #ifndef QT_NO_SYSTEMLOCALE
     if (d() == systemPrivate()) {
         QVariant res = systemLocale()->query(format == ShortFormat
@@ -2962,9 +2987,8 @@ QString QLocale::toString(double i, char f, int prec) const
 /*!
     Returns a QLocale object initialized to the system locale.
 
-    On Windows and Mac, this locale will use system functions to format dates and
-    strings. It will therefore reflect customizations made by the user
-    in the control panel.
+    On Windows and Mac, this locale will use the decimal/grouping characters and date/time
+    formats specified in the system configuration panel.
 
     \sa QTextCodec::locale() c()
 */

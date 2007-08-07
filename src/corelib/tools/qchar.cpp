@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -162,6 +177,8 @@
     \value Unicode_3_1  Version 3.1.
     \value Unicode_3_2  Version 3.2.
     \value Unicode_4_0  Version 4.0.
+    \value Unicode_4_1  Version 4.1.
+    \value Unicode_5_0  Version 5.0.
     \value Unicode_Unassigned  The value is not assigned to any character
         in version 4.0 of Unicode.
 
@@ -639,15 +656,16 @@ bool QChar::isSymbol() const
 /*!
   \fn static uint QChar::surrogateToUcs4(ushort high, ushort low)
 
-  Converts a utf16 surrogate pair to it's ucs4 code point.
+  Converts a utf16 surrogate pair (\a high, \a low) to it's ucs4
+  code point.
 */
 
 /*!
   \fn static uint QChar::surrogateToUcs4(QChar high, QChar low)
 
-  Converts a utf16 surrogate pair to it's ucs4 code point.
+  Converts a utf16 surrogate pair (\a high, \a low) to it's ucs4 code
+  point.
 */
-
 
 /*!
   \fn static ushort QChar::highSurrogate(uint ucs4)
@@ -1157,7 +1175,7 @@ static inline ushort foldCase(ushort ch)
 
 /*!
     Returns the case folded equivalent of the character. For most Unicode characters this
-    is the same as toLowerCase.
+    is the same as toLowerCase().
 */
 QChar QChar::toCaseFolded() const
 {

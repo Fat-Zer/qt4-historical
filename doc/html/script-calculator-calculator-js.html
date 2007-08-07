@@ -85,7 +85,7 @@
 
  Calculator.prototype.digitClicked = function()
  {
-     var digitValue = this.sender.text - 0;
+     var digitValue = __qt_sender__.text - 0;
      if ((digitValue == 0) &amp;&amp; (this.ui.display.text == &quot;0&quot;))
          return;
      if (this.waitingForOperand) {
@@ -99,15 +99,15 @@
  {
      var operand = this.ui.display.text - 0;
      var result = 0;
-     if (this.sender.text == &quot;Sqrt&quot;) {
+     if (__qt_sender__.text == &quot;Sqrt&quot;) {
          if (operand &lt; 0) {
              this.abortOperation();
              return;
          }
          result = Math.sqrt(operand);
-     } else if (this.sender.text == &quot;x^2&quot;) {
+     } else if (__qt_sender__.text == &quot;x^2&quot;) {
          result = Math.pow(operand, 2);
-     } else if (this.sender.text == &quot;1/x&quot;) {
+     } else if (__qt_sender__.text == &quot;1/x&quot;) {
          if (operand == 0.0) {
              this.abortOperation();
              return;
@@ -143,7 +143,7 @@
          this.sumSoFar = operand;
      }
 
-     this.pendingAdditiveOperator = this.sender.text;
+     this.pendingAdditiveOperator = __qt_sender__.text;
      this.waitingForOperand = true;
  }
 
@@ -161,7 +161,7 @@
          this.factorSoFar = operand;
      }
 
-     this.pendingMultiplicativeOperator = this.sender.text;
+     this.pendingMultiplicativeOperator = __qt_sender__.text;
      this.waitingForOperand = true;
  }
 
@@ -274,6 +274,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

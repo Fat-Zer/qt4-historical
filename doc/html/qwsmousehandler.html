@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/gui/embedded/qmouse_qws.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/embedded/qmouse_qws.cpp -->
 <head>
   <title>Qt 4.3: QWSMouseHandler Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -26,6 +26,7 @@
 <li><div class="fn"/>virtual <b><a href="qwsmousehandler.html#dtor.QWSMouseHandler">~QWSMouseHandler</a></b> ()</li>
 <li><div class="fn"/>virtual void <b><a href="qwsmousehandler.html#calibrate">calibrate</a></b> ( const QWSPointerCalibrationData * <i>data</i> )</li>
 <li><div class="fn"/>virtual void <b><a href="qwsmousehandler.html#clearCalibration">clearCalibration</a></b> ()</li>
+<li><div class="fn"/>virtual void <b><a href="qwsmousehandler.html#getCalibration">getCalibration</a></b> ( QWSPointerCalibrationData * <i>data</i> ) const</li>
 <li><div class="fn"/>void <b><a href="qwsmousehandler.html#limitToScreen">limitToScreen</a></b> ( QPoint &amp; <i>position</i> )</li>
 <li><div class="fn"/>void <b><a href="qwsmousehandler.html#mouseChanged">mouseChanged</a></b> ( const QPoint &amp; <i>position</i>, int <i>state</i>, int <i>wheel</i> = 0 )</li>
 <li><div class="fn"/>const QPoint &amp; <b><a href="qwsmousehandler.html#pos">pos</a></b> () const</li>
@@ -39,7 +40,7 @@
 <p>The QWSMouseHandler class is a base class for mouse drivers in Qtopia Core.</p>
 <p>Note that this class is only available in <a href="qtopiacore.html">Qtopia Core</a>.</p>
 <p><a href="qtopiacore.html">Qtopia Core</a> provides ready-made drivers for several mouse protocols, see the <a href="qtopiacore-pointer.html">pointer handling</a> documentation for details. Custom mouse drivers can be implemented by subclassing the QWSMouseHandler class and creating a mouse driver plugin (derived from <a href="qmousedriverplugin.html">QMouseDriverPlugin</a>). <a href="qtopiacore.html">Qtopia Core</a>'s implementation of the <a href="qmousedriverfactory.html">QMouseDriverFactory</a> class will automatically detect the plugin, and load the driver into the server application at runtime using Qt's <a href="plugins-howto.html">plugin system</a>.</p>
-<p>The mouse driver receives mouse events from the system device and encapsulates each event with an instance of the <a href="qwsevent.html">QWSEvent</a> class which it then passes to the server application (the server is responsible for propagating the event to the appropiate client). To receive mouse events, a QWSMouseHandler object will usually create a <a href="qsocketnotifier.html">QSocketNotifier</a> object for the given device. The <a href="qsocketnotifier.html">QSocketNotifier</a> class provides support for monitoring activity on a file descriptor. When the socket notifier receives data, it will call the mouse driver's <a href="qwsmousehandler.html#mouseChanged">mouseChanged</a>() function to send the event to the <a href="qtopiacore.html">Qtopia Core</a> server application for relaying to clients.</p>
+<p>The mouse driver receives mouse events from the system device and encapsulates each event with an instance of the <a href="qwsevent.html">QWSEvent</a> class which it then passes to the server application (the server is responsible for propagating the event to the appropriate client). To receive mouse events, a QWSMouseHandler object will usually create a <a href="qsocketnotifier.html">QSocketNotifier</a> object for the given device. The <a href="qsocketnotifier.html">QSocketNotifier</a> class provides support for monitoring activity on a file descriptor. When the socket notifier receives data, it will call the mouse driver's <a href="qwsmousehandler.html#mouseChanged">mouseChanged</a>() function to send the event to the <a href="qtopiacore.html">Qtopia Core</a> server application for relaying to clients.</p>
 <p>If you are creating a driver for a device that needs calibration or noise reduction, such as a touchscreen, use the <a href="qwscalibratedmousehandler.html">QWSCalibratedMouseHandler</a> subclass instead to take advantage of the <a href="qwsmousehandler.html#calibrate">calibrate</a>() and <a href="qwsmousehandler.html#clearCalibration">clearCalibration</a>() functions. The <a href="qtopiacore-mousecalibration.html">Mouse Calibration example</a> demonstrates how to write a simple program using the mechanisms provided by the QWSMouseHandler class to calibrate a mouse driver.</p>
 <p>Note that when deriving from the QWSMouseHandler class, the <a href="qwsmousehandler.html#resume">resume</a>() and <a href="qwsmousehandler.html#suspend">suspend</a>() functions must be reimplemented to control the flow of mouse input, i.e&#x2e;, the default implementation does nothing. Reimplementations of these functions typically call the <a href="qsocketnotifier.html#setEnabled">QSocketNotifier::setEnabled</a>() function to enable or disable the socket notifier, respectively.</p>
 <p>In addition, QWSMouseHandler provides the <a href="qwsmousehandler.html#setScreen">setScreen</a>() function that allows you to specify a screen for your mouse driver and the <a href="qwsmousehandler.html#limitToScreen">limitToScreen</a>() function that ensures that a given position is within this screen's boundaries (changing the position if necessary). Finally, QWSMouseHandler provides the <a href="qwsmousehandler.html#pos">pos</a>() function returning the current mouse position.</p>
@@ -62,6 +63,9 @@
 <h3 class="fn"><a name="clearCalibration"></a>void QWSMouseHandler::clearCalibration ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>This virtual function allows subclasses of <a href="qwsmousehandler.html">QWSMouseHandler</a> to clear the calibration information. Note that the default implementation does nothing.</p>
 <p>See also <a href="qwscalibratedmousehandler.html#clearCalibration">QWSCalibratedMouseHandler::clearCalibration</a>() and <a href="qwsmousehandler.html#calibrate">calibrate</a>().</p>
+<a name="//apple_ref/cpp/instm/QWSMouseHandler/getCalibration" />
+<h3 class="fn"><a name="getCalibration"></a>void QWSMouseHandler::getCalibration ( <a href="qwspointercalibrationdata.html">QWSPointerCalibrationData</a> * <i>data</i> ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
+<p>This virtual function allows subclasses of <a href="qwsmousehandler.html">QWSMouseHandler</a> to fill in the device coordinates in <i>data</i> with values that correspond to screen coordinates that are already in <i>data</i>. Note that the default implementation does nothing.</p>
 <a name="//apple_ref/cpp/instm/QWSMouseHandler/limitToScreen" />
 <h3 class="fn"><a name="limitToScreen"></a>void QWSMouseHandler::limitToScreen ( <a href="qpoint.html">QPoint</a> &amp; <i>position</i> )</h3>
 <p>Ensures that the given <i>position</i> is within the screen's boundaries, changing the <i>position</i> if necessary.</p>
@@ -93,6 +97,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

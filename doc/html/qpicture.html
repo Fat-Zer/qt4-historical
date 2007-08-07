@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/gui/image/qpicture.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/image/qpicture.cpp -->
 <head>
   <title>Qt 4.3: QPicture Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -22,11 +22,6 @@
 <li><a href="qpicture-obsolete.html">Obsolete members</a></li>
 <li><a href="qpicture-qt3.html">Qt 3 support members</a></li>
 </ul>
-<a name="public-types"></a>
-<h3>Public Types</h3>
-<ul>
-<li><div class="fn"/>typedef <b><a href="qpicture.html#DataPtr-typedef">DataPtr</a></b></li>
-</ul>
 <a name="public-functions"></a>
 <h3>Public Functions</h3>
 <ul>
@@ -35,7 +30,6 @@
 <li><div class="fn"/><b><a href="qpicture.html#dtor.QPicture">~QPicture</a></b> ()</li>
 <li><div class="fn"/>QRect <b><a href="qpicture.html#boundingRect">boundingRect</a></b> () const</li>
 <li><div class="fn"/>const char * <b><a href="qpicture.html#data">data</a></b> () const</li>
-<li><div class="fn"/>DataPtr &amp; <b><a href="qpicture.html#data_ptr">data_ptr</a></b> ()</li>
 <li><div class="fn"/>bool <b><a href="qpicture.html#isNull">isNull</a></b> () const</li>
 <li><div class="fn"/>bool <b><a href="qpicture.html#load">load</a></b> ( const QString &amp; <i>fileName</i>, const char * <i>format</i> = 0 )</li>
 <li><div class="fn"/>bool <b><a href="qpicture.html#load-2">load</a></b> ( QIODevice * <i>dev</i>, const char * <i>format</i> = 0 )</li>
@@ -74,24 +68,20 @@
 <p>Example of how to record a picture:</p>
 <pre>         QPicture picture;
          QPainter painter;
-         painter.begin(&amp;picture);           <span class="comment">// paint in picture</span>
-         painter.drawEllipse(10,20, 80,70); <span class="comment">// draw an ellipse</span>
-         painter.end();                     <span class="comment">// painting done</span>
-         picture.save(&quot;drawing.pic&quot;);       <span class="comment">// save picture</span></pre>
+         painter.begin(&amp;picture);           <span class="comment">//</span> paint in picture
+         painter.drawEllipse(10,20, 80,70); <span class="comment">//</span> draw an ellipse
+         painter.end();                     <span class="comment">//</span> painting done
+         picture.save(&quot;drawing.pic&quot;);       <span class="comment">//</span> save picture</pre>
 <p>Note that the list of painter commands is reset on each call to the <a href="qpainter.html#begin">QPainter::begin</a>() function.</p>
 <p>Example of how to replay a picture:</p>
 <pre>         QPicture picture;
-         picture.load(&quot;drawing.pic&quot;);           <span class="comment">// load picture</span>
+         picture.load(&quot;drawing.pic&quot;);           <span class="comment">//</span> load picture
          QPainter painter;
-         painter.begin(&amp;myWidget);              <span class="comment">// paint in myWidget</span>
-         painter.drawPicture(0, 0, picture);    <span class="comment">// draw the picture at (0,0)</span>
-         painter.end();                         <span class="comment">// painting done</span></pre>
+         painter.begin(&amp;myWidget);              <span class="comment">//</span> paint in myWidget
+         painter.drawPicture(0, 0, picture);    <span class="comment">//</span> draw the picture at (0,0)
+         painter.end();                         <span class="comment">//</span> painting done</pre>
 <p>Pictures can also be drawn using <a href="qpicture.html#play">play</a>(). Some basic data about a picture is available, for example, <a href="qpicture.html#size">size</a>(), <a href="qpicture.html#isNull">isNull</a>() and <a href="qpicture.html#boundingRect">boundingRect</a>().</p>
 <p>See also <a href="qmovie.html">QMovie</a>.</p>
-<hr />
-<h2>Member Type Documentation</h2>
-<a name="//apple_ref/cpp/tdef/QPicture/DataPtr" />
-<h3 class="fn"><a name="DataPtr-typedef"></a>typedef QPicture::DataPtr</h3>
 <hr />
 <h2>Member Function Documentation</h2>
 <a name="//apple_ref/cpp/instm/QPicture/QPicture" />
@@ -114,8 +104,6 @@
 <h3 class="fn"><a name="data"></a>const char * QPicture::data () const</h3>
 <p>Returns a pointer to the picture data. The pointer is only valid until the next non-const function is called on this picture. The returned pointer is 0 if the picture contains no data.</p>
 <p>See also <a href="qpicture.html#setData">setData</a>(), <a href="qpicture.html#size">size</a>(), and <a href="qpicture.html#isNull">isNull</a>().</p>
-<a name="//apple_ref/cpp/instm/QPicture/data_ptr" />
-<h3 class="fn"><a name="data_ptr"></a><a href="qpicture.html#DataPtr-typedef">DataPtr</a> &amp; QPicture::data_ptr ()</h3>
 <a name="//apple_ref/cpp/instm/QPicture/isNull" />
 <h3 class="fn"><a name="isNull"></a>bool QPicture::isNull () const</h3>
 <p>Returns true if the picture contains no data; otherwise returns false.</p>
@@ -168,15 +156,10 @@
 <h3 class="fn"><a name="operator-gt-gt-37"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>s</i>, QPicture &amp; <i>r</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads a picture from the stream <i>s</i> into picture <i>r</i> and returns a reference to the stream.</p>
-<hr />
-<h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QPicture/copy" />
-<h3 class="fn"><a name="copy"></a>QPicture QPicture::copy () const&nbsp;&nbsp;<tt> [protected]</tt></h3>
-<p>Use simple assignment instead.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/opengl/qgl.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/opengl/qgl.cpp -->
 <head>
   <title>Qt 4.3: QGLContext Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -66,9 +66,7 @@
 <hr />
 <h2>Detailed Description</h2>
 <p>The QGLContext class encapsulates an OpenGL rendering context.</p>
-<p>An OpenGL </p>
-<!-- <p>OpenGL is a trademark of Silicon Graphics, Inc. in the United States and other countries.</p>
---> rendering context is a complete set of OpenGL state variables.<p>The context's <a href="qgl.html#FormatOption-enum">format</a> is set in the constructor or later with <a href="qglcontext.html#setFormat">setFormat</a>(). The format options that are actually set are returned by <a href="qglcontext.html#format">format</a>(); the options you asked for are returned by <a href="qglcontext.html#requestedFormat">requestedFormat</a>(). Note that after a QGLContext object has been constructed, the actual OpenGL context must be created by explicitly calling the <a href="qglcontext.html#create">create()</a> function. The <a href="qglcontext.html#makeCurrent">makeCurrent</a>() function makes this context the current rendering context. You can make <i>no</i> context current using <a href="qglcontext.html#doneCurrent">doneCurrent</a>(). The <a href="qglcontext.html#reset">reset</a>() function will reset the context and make it invalid.</p>
+<p>An OpenGL rendering context is a complete set of OpenGL state variables. The rendering context's <a href="qgl.html#FormatOption-enum">format</a> is set in the constructor, but it can also be set later with <a href="qglcontext.html#setFormat">setFormat</a>(). The format options that are actually set are returned by <a href="qglcontext.html#format">format</a>(); the options you asked for are returned by <a href="qglcontext.html#requestedFormat">requestedFormat</a>(). Note that after a QGLContext object has been constructed, the actual OpenGL context must be created by explicitly calling the <a href="qglcontext.html#create">create()</a> function. The <a href="qglcontext.html#makeCurrent">makeCurrent</a>() function makes this context the current rendering context. You can make <i>no</i> context current using <a href="qglcontext.html#doneCurrent">doneCurrent</a>(). The <a href="qglcontext.html#reset">reset</a>() function will reset the context and make it invalid.</p>
 <p>You can examine properties of the context with, e.g&#x2e; <a href="qglcontext.html#isValid">isValid</a>(), <a href="qglcontext.html#isSharing">isSharing</a>(), <a href="qglcontext.html#initialized">initialized</a>(), <a href="qglcontext.html#windowCreated">windowCreated</a>() and <a href="qglcontext.html#overlayTransparentColor">overlayTransparentColor</a>().</p>
 <p>If you're using double buffering you can swap the screen contents with the off-screen buffer using <a href="qglcontext.html#swapBuffers">swapBuffers</a>().</p>
 <p>Please note that QGLContext is not thread safe.</p>
@@ -184,14 +182,14 @@
 <p>Sets a <i>format</i> for this context. The context is <a href="qglcontext.html#reset">reset</a>.</p>
 <p>Call <a href="qglcontext.html#create">create</a>() to create a new GL context that tries to match the new format.</p>
 <pre> QGLContext *cx;
-<span class="comment"> //  ...</span>
+<span class="comment"> //</span>  ...
  QGLFormat f;
  f.setStereo(true);
  cx-&gt;setFormat(f);
  if (!cx-&gt;create())
-     exit(); <span class="comment">// no OpenGL support, or cannot render on the specified paintdevice</span>
+     exit(); <span class="comment">//</span> no OpenGL support, or cannot render on the specified paintdevice
  if (!cx-&gt;format().stereo())
-     exit(); <span class="comment">// could not create stereo context</span></pre>
+     exit(); <span class="comment">//</span> could not create stereo context</pre>
 <p>See also <a href="qglcontext.html#format">format</a>(), <a href="qglcontext.html#reset">reset</a>(), and <a href="qglcontext.html#create">create</a>().</p>
 <a name="//apple_ref/cpp/instm/QGLContext/setInitialized" />
 <h3 class="fn"><a name="setInitialized"></a>void QGLContext::setInitialized ( bool <i>on</i> )&nbsp;&nbsp;<tt> [protected]</tt></h3>
@@ -222,6 +220,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

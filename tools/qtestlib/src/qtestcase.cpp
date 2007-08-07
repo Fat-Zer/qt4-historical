@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -291,7 +306,7 @@
 
     \relates QTest
 
-    Implements a main() function that instanciates a QApplication object and
+    Implements a main() function that instantiates a QApplication object and
     the \a TestClass, and executes all tests in the order they were defined.
     Use this macro to build stand-alone executables.
 
@@ -310,7 +325,7 @@
 
     Implements a main() function that executes all tests in \a TestClass.
 
-    Behaves like \l QTEST_MAIN(), but doesn't instanciate a QApplication
+    Behaves like \l QTEST_MAIN(), but doesn't instantiate a QApplication
     object. Use this macro for really simple stand-alone non-GUI tests.
 
     \sa QTEST_MAIN()
@@ -592,6 +607,15 @@
 */
 
 /*!
+    \fn char *QTest::toString(const QByteArray &ba)
+    \overload
+
+    Returns a textual representation of the byte array \a ba.
+
+    \sa QTest::toHexRepresentation()
+*/
+
+/*!
     \fn char *QTest::toString(const QTime &time)
     \overload
 
@@ -807,6 +831,8 @@ static int qToInt(char *str)
 
 static void qParseArgs(int argc, char *argv[])
 {
+    lastTestFuncIdx = -1;
+
     const char *testOptions =
          " options:\n"
          " -functions : Returns a list of current testfunctions\n"
@@ -1051,12 +1077,15 @@ void *fetchData(QTestData *data, const char *tagName, int typeId)
     return data->data(idx);
 }
 
-/*! \internal
+/*!
+  \fn char* QTest::toHexRepresentation(const char *ba, int length)
+  
+  Returns a pointer to a string that is the string \a ba represented
+  as a space-separated sequence of hex characters. If the input is
+  considered too long, it is truncated. A trucation is indicated in
+  the returned string as an ellipsis at the end.
 
- Returns a pointer to a string which is \a ba represented as a
- space separated sequence of hex characters. If the input is considered too long,
- it is truncated, which is signalled by an ending ellipsis.
-
+  \a length is the length of the string \a ba. 
  */
 char *toHexRepresentation(const char *ba, int length)
 {
@@ -1148,13 +1177,13 @@ char *toHexRepresentation(const char *ba, int length)
 */
 int QTest::qExec(QObject *testObject, int argc, char **argv)
 {
-// #ifndef QT_NO_EXCEPTIONS
-//     try {
-// #endif
+ #ifndef QT_NO_EXCEPTIONS
+     try {
+ #endif
 
-// #if defined(Q_OS_WIN)
-//     SetErrorMode(SetErrorMode(0) | SEM_NOGPFAULTERRORBOX);
-// #endif
+ #if defined(Q_OS_WIN)
+     SetErrorMode(SetErrorMode(0) | SEM_NOGPFAULTERRORBOX);
+ #endif
 
     QTestResult::reset();
 
@@ -1211,22 +1240,22 @@ int QTest::qExec(QObject *testObject, int argc, char **argv)
     QTestResult::setCurrentTestFunction(0);
     QTestTable::clearGlobalTestTable();
 
-// #ifndef QT_NO_EXCEPTIONS
-//     } catch (...) {
-//         QTestResult::addFailure("Caught unhandled exception", __FILE__, __LINE__);
-//         if (QTestResult::currentTestFunction()) {
-//             QTestResult::finishedCurrentTestFunction();
-//             QTestResult::setCurrentTestFunction(0);
-//         }
+ #ifndef QT_NO_EXCEPTIONS
+     } catch (...) {
+         QTestResult::addFailure("Caught unhandled exception", __FILE__, __LINE__);
+         if (QTestResult::currentTestFunction()) {
+             QTestResult::finishedCurrentTestFunction();
+             QTestResult::setCurrentTestFunction(0);
+         }
 
-//         QTestLog::stopLogging();
-// #ifdef Q_OS_WIN
-//         // rethrow exception to make debugging easier
-//         throw;
-// #endif
-//         return -1;
-//     }
-// #endif
+         QTestLog::stopLogging();
+ #ifdef Q_OS_WIN
+         // rethrow exception to make debugging easier
+         throw;
+ #endif
+         return -1;
+     }
+ #endif
 
     QTestLog::stopLogging();
     currentTestObject = 0;

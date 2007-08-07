@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/gui/embedded/qwindowsystem_qws.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/embedded/qwindowsystem_qws.cpp -->
 <head>
   <title>Qt 4.3: QWSWindow Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -58,10 +58,10 @@
 <a name="//apple_ref/cpp/econst/QWSWindow/Raising" />
 <a name="//apple_ref/cpp/econst/QWSWindow/Lowering" />
 <a name="//apple_ref/cpp/econst/QWSWindow/Moving" />
-<a name="//apple_ref/cpp/econst/QWSWindow/GeometryChanging" />
+<a name="//apple_ref/cpp/econst/QWSWindow/ChangingGeometry" />
 <a name="//apple_ref/cpp/econst/QWSWindow/Destroyed" />
 <h3 class="fn"><a name="State-enum"></a>enum QWSWindow::State</h3>
-<p>This enum describes the state of a window. Most of the transitional states are set just before a call to <a href="qscreen.html#exposeRegion">QScreen::exposeRegion</a>(), and reset immediately afterwards.</p>
+<p>This enum describes the state of a window. Most of the transitional states are set just before a call to <a href="qscreen.html#exposeRegion">QScreen::exposeRegion</a>() and reset immediately afterwards.</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QWSWindow::NoState</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">Initial state before the window is properly initialized.</td></tr>
@@ -72,10 +72,10 @@
 <tr><td valign="top"><tt>QWSWindow::Raising</tt></td><td align="center" valign="top"><tt>5</tt></td><td valign="top">The windoe is being raised.</td></tr>
 <tr><td valign="top"><tt>QWSWindow::Lowering</tt></td><td align="center" valign="top"><tt>6</tt></td><td valign="top">The window is being raised.</td></tr>
 <tr><td valign="top"><tt>QWSWindow::Moving</tt></td><td align="center" valign="top"><tt>7</tt></td><td valign="top">The window is being moved.</td></tr>
-<tr><td valign="top"><tt>QWSWindow::GeometryChanging</tt></td><td align="center" valign="top">?</td><td valign="top">The window's geometry is being changed.</td></tr>
+<tr><td valign="top"><tt>QWSWindow::ChangingGeometry</tt></td><td align="center" valign="top"><tt>8</tt></td><td valign="top">The window's geometry is being changed.</td></tr>
 <tr><td valign="top"><tt>QWSWindow::Destroyed</tt></td><td align="center" valign="top"><tt>9</tt></td><td valign="top">The window is destroyed.</td></tr>
 </table></p>
-<p>See also <a href="qwswindow.html#state">state</a>() and QScreen::exposeRegion.</p>
+<p>See also <a href="qwswindow.html#state">state</a>() and <a href="qscreen.html#exposeRegion">QScreen::exposeRegion</a>().</p>
 <hr />
 <h2>Member Function Documentation</h2>
 <a name="//apple_ref/cpp/instm/QWSWindow/caption" />
@@ -88,6 +88,8 @@
 <p>See also <a href="qwswindow.html#requestedRegion">requestedRegion</a>().</p>
 <a name="//apple_ref/cpp/instm/QWSWindow/dirtyOnScreen" />
 <h3 class="fn"><a name="dirtyOnScreen"></a><a href="qregion.html">QRegion</a> QWSWindow::dirtyOnScreen () const</h3>
+<p>Returns the region that has been repainted since the previous <a href="qscreen.html#exposeRegion">QScreen::exposeRegion</a>(), and needs to be copied to the screen.</p>
+<p>This function was introduced in Qt 4.3.</p>
 <a name="//apple_ref/cpp/instm/QWSWindow/isFullyObscured" />
 <h3 class="fn"><a name="isFullyObscured"></a>bool QWSWindow::isFullyObscured () const</h3>
 <p>Returns true if the window is completely obsured by another window or by the bounds of the screen; otherwise returns false.</p>
@@ -114,16 +116,20 @@
 <p>See also <a href="qwswindow.html#client">client</a>().</p>
 <a name="//apple_ref/cpp/instm/QWSWindow/state" />
 <h3 class="fn"><a name="state"></a><a href="qwswindow.html#State-enum">State</a> QWSWindow::state () const</h3>
+<p>Returns the current state of the window.</p>
+<p>This function was introduced in Qt 4.3.</p>
 <a name="//apple_ref/cpp/instm/QWSWindow/winId" />
 <h3 class="fn"><a name="winId"></a>int QWSWindow::winId () const</h3>
 <p>Returns the window's ID.</p>
 <p>See also <a href="qwswindow.html#name">name</a>() and <a href="qwswindow.html#caption">caption</a>().</p>
 <a name="//apple_ref/cpp/instm/QWSWindow/windowFlags" />
 <h3 class="fn"><a name="windowFlags"></a><a href="qt.html#WindowType-enum">Qt::WindowFlags</a> QWSWindow::windowFlags () const</h3>
+<p>Returns the window flags of the window. This value is only available after the first paint event.</p>
+<p>This function was introduced in Qt 4.3.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

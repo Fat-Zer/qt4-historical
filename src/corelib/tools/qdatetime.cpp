@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -2555,6 +2570,22 @@ QDateTime QDateTime::fromTime_t(uint seconds)
 }
 
 #ifndef QT_NO_DATESTRING
+
+static int fromShortMonthName(const QString &monthName)
+{
+    // Assume that English monthnames are the default
+    for (int i = 0; i < 12; ++i) {
+        if (monthName == QLatin1String(qt_shortMonthNames[i]))
+            return i + 1;
+    }
+    // If English names can't be found, search the localized ones
+    for (int i = 1; i <= 12; ++i) {
+        if (monthName == QDate::shortMonthName(i))
+            return i;
+    }
+    return -1;
+}
+
 /*!
     \fn QDateTime QDateTime::fromString(const QString &string, Qt::DateFormat format)
 
@@ -2596,32 +2627,35 @@ QDateTime QDateTime::fromString(const QString& s, Qt::DateFormat f)
             return QDateTime();
         }
 
-        QString monthName = parts.at(1);
-        int month = -1;
-        // Assume that English monthnames are the default
-        for (int i = 0; i < 12; ++i) {
-            if (monthName == QLatin1String(qt_shortMonthNames[i])) {
-                month = i + 1;
-                break;
-            }
+        // Accept "Sun Dec 1 13:02:00 1974" and "Sun 1. Dec 13:02:00 1974"
+        int month = -1, day = -1;
+        bool ok;
+
+        month = fromShortMonthName(parts.at(1));
+        if (month != -1) {
+            day = parts.at(2).toInt(&ok);
+            if (!ok)
+                day = -1;
         }
-        // If English names can't be found, search the localized ones
-        if (month == -1) {
-            for (int i = 1; i <= 12; ++i) {
-                if (monthName == QDate::shortMonthName(i)) {
-                    month = i;
-                    break;
+
+        if (month == -1 || day == -1) {
+            // first variant failed, lets try the other
+            month = fromShortMonthName(parts.at(2));
+            if (month != -1) {
+                QString dayStr = parts.at(1);
+                if (dayStr.endsWith(QLatin1Char('.'))) {
+                    dayStr.chop(1);
+                    day = dayStr.toInt(&ok);
+                    if (!ok)
+                        day = -1;
+                } else {
+                    day = -1;
                 }
             }
         }
-        if (month < 1 || month > 12) {
-            qWarning("QDateTime::fromString: Parameter out of range");
-            return QDateTime();
-        }
 
-        bool ok;
-        int day = parts.at(2).toInt(&ok);
-        if (!ok) {
+        if (month == -1 || day == -1) {
+            // both variants failed, give up
             qWarning("QDateTime::fromString: Parameter out of range");
             return QDateTime();
         }
@@ -3815,7 +3849,7 @@ QString QDateTimeParser::sectionText(const QString &text, int sectionIndex, int 
   stateptr != 0.
 */
 
-int QDateTimeParser::parseSection(int sectionIndex, QString &text, int index,
+int QDateTimeParser::parseSection(const QVariant &currentValue, int sectionIndex, QString &text, int index,
                                   State &state, int *usedptr) const
 {
     state = Invalid;
@@ -3866,7 +3900,11 @@ int QDateTimeParser::parseSection(int sectionIndex, QString &text, int index,
     case DaySection:
         if (sn.count >= 3) {
             if (sn.type == MonthSection) {
-                num = findMonth(sectiontext.toLower(), 1, sectionIndex, &sectiontext, &used);
+                int min = 1;
+                if (currentValue.toDate().year() == getMinimum().toDate().year()) {
+                    min = getMinimum().toDate().month();
+                }
+                num = findMonth(sectiontext.toLower(), min, sectionIndex, &sectiontext, &used);
             } else {
                 num = findDay(sectiontext.toLower(), 1, sectionIndex, &sectiontext, &used);
             }
@@ -3972,6 +4010,7 @@ int QDateTimeParser::parseSection(int sectionIndex, QString &text, int index,
 QDateTimeParser::StateNode QDateTimeParser::parse(const QString &inp,
                                                   const QVariant &currentValue, bool fixup) const
 {
+
     QString input = inp;
     State state = Acceptable;
     const QVariant maximum = getMaximum();
@@ -4019,7 +4058,7 @@ QDateTimeParser::StateNode QDateTimeParser::parse(const QString &inp,
             sn = sectionNodes.at(index);
             int used;
 
-            num = parseSection(index, input, pos, tmpstate, &used);
+            num = parseSection(currentValue, index, input, pos, tmpstate, &used);
             QDTPDEBUG << "sectionValue" << sectionName(sectionType(index)) << input
                       << "pos" << pos << "used" << used << stateName(tmpstate);
             if (fixup && tmpstate == Intermediate && used < sn.count) {
@@ -4057,7 +4096,8 @@ QDateTimeParser::StateNode QDateTimeParser::parse(const QString &inp,
                     if (sn.count >= 3) {
                         current = &dayofweek;
                     } else {
-                        current = &day; num = qMax<int>(1, num);
+                        current = &day;
+                        num = qMax<int>(1, num);
                     }
                     break;
                 case AmPmSection: current = &ampm; break;
@@ -4106,13 +4146,14 @@ QDateTimeParser::StateNode QDateTimeParser::parse(const QString &inp,
                 }
 
                 const QDate date = strictDate(year, month, day);
-                const int diff = dayofweek - date.dayOfWeek() && isSet.contains(&dayofweek);
-                if (diff != 0 && state == Acceptable) {
-                    conflicts = true;
+                const int diff = dayofweek - date.dayOfWeek();
+                if (diff != 0 && state == Acceptable && isSet.contains(&dayofweek)) {
+                    conflicts = isSet.contains(&day);
                     const SectionNode &sn = sectionNode(currentSectionIndex);
-                    if (sn.type == DaySection && sn.count >= 3) {
-                        day -= diff;
-                        if (day < 0) {
+                    if ((sn.type == DaySection && sn.count >= 3) || currentSectionIndex == -1) {
+                        // dayofweek should be preferred
+                        day += diff;
+                        if (day <= 0) {
                             day += 7;
                         } else if (day > date.daysInMonth()) {
                             day -= 7;
@@ -4262,10 +4303,10 @@ int QDateTimeParser::findMonth(const QString &str1, int startMonth, int sectionI
                     if (used) {
                         *used = limit;
                     }
-                    if (usedMonth)
+                    if (usedMonth) {
                         *usedMonth = nameFunction(month);
                     QDTPDEBUG << "used is set to" << limit << *usedMonth;
-
+                    }
                     return month;
                 }
             }
@@ -4792,6 +4833,7 @@ bool QDateTimeParser::fromString(const QString &text, QDate *date, QTime *time) 
     }
     return true;
 }
+#endif // QT_NO_DATESTRING
 
 QVariant QDateTimeParser::getMinimum() const
 {
@@ -4813,7 +4855,6 @@ QVariant QDateTimeParser::getMaximum() const
     }
     return QVariant();
 }
-#endif // QT_NO_DATESTRING
 
 QString QDateTimeParser::getAmPmText(AmPm ap, Case cs) const
 {

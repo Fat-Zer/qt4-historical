@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -367,10 +382,11 @@ void QAlphaPaintEngine::flushAndInit(bool init)
         // reset states
         gccaps = d->m_savedcaps;
 
+        QTransform old_transform = painter()->transform();
         d->resetState(painter());
 
         // make sure the output from QPicture is unscaled
-        QTransform mtx = painter()->transform();
+        QTransform mtx;
         mtx.scale(1.0f / (qreal(d->m_pdev->logicalDpiX()) / qreal(qt_defaultDpi())),
                   1.0f / (qreal(d->m_pdev->logicalDpiY()) / qreal(qt_defaultDpi())));
         painter()->setTransform(mtx);
@@ -383,6 +399,8 @@ void QAlphaPaintEngine::flushAndInit(bool init)
         for (int i=0; i<rects.count(); ++i)
             d->drawAlphaImage(rects.at(i));
         d->m_alphargn = QRegion();
+
+        painter()->setTransform(old_transform);
 
         --d->m_pass; // pass #2 finished
 

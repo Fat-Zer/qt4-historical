@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -554,8 +569,7 @@ int QMetaCallEvent::placeMetaCall(QObject *object)
     inherits() function.
 
     When an object is deleted, it emits a destroyed() signal. You can
-    catch this signal to avoid dangling references to QObjects. The
-    QPointer class provides an elegant way to use this feature.
+    catch this signal to avoid dangling references to QObjects.
 
     QObjects can receive events through event() and filter the events
     of other objects. See installEventFilter() and eventFilter() for
@@ -600,7 +614,7 @@ int QMetaCallEvent::placeMetaCall(QObject *object)
     \l uic generates code that invokes this function to enable auto-connection
     to be performed between widgets on forms created with \QD. More information
     about using auto-connection with \QD is given in the
-    \l{Using a Component in Your Application#A Dialog With Auto-Connect}{Using a
+    \l{Using a Component in Your Application}{Using a
     Component in Your Application} section of the \QD manual.
 
     \section1 Dynamic Properties
@@ -1705,7 +1719,7 @@ QObjectList QObject::queryList(const char *inheritsClass,
 /*!
     \fn T *QObject::findChild(const QString &name) const
 
-    Returns the child of this object that can be casted into type T and
+    Returns the child of this object that can be cast into type T and
     that is called \a name, or 0 if there is no such object.
     Omitting the \a name argument causes all object names to be matched.
     The search is performed recursively.
@@ -1767,7 +1781,7 @@ QObjectList QObject::queryList(const char *inheritsClass,
     \fn QList<T> QObject::findChildren(const QRegExp &regExp) const
     \overload
 
-    Returns the children of this object that can be casted to type T
+    Returns the children of this object that can be cast to type T
     and that have names matching the regular expression \a regExp,
     or an empty list if there are no such objects.
     The search is performed recursively.

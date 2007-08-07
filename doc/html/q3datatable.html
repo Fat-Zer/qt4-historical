@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/qt3support/sql/q3datatable.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/qt3support/sql/q3datatable.cpp -->
 <head>
   <title>Qt 4.3: Q3DataTable Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -410,7 +410,7 @@
 <p>This signal is emitted just before the cursor's edit buffer is updated in the database. The <i>buf</i> parameter points to the edit buffer being updated. Connect to this signal when you want to transform the user's data behind-the-scenes.</p>
 <a name="//apple_ref/cpp/instm/Q3DataTable/beginInsert" />
 <h3 class="fn"><a name="beginInsert"></a>bool Q3DataTable::beginInsert ()&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
-<p>Protected virtual function called when editing is about to begin on a new record. If the table is read-only, or if there's no cursor or the cursor does not allow inserts, nothing happens.</p>
+<p>Protected virtual function called when editing is about to begin on a new record. If the table is read-only, or if there's no cursor or the cursor does not allow inserts, nothing happens and false is returned. Otherwise returns true.</p>
 <p>Editing takes place using the cursor's edit buffer(see <a href="q3sqlcursor.html#editBuffer">Q3SqlCursor::editBuffer</a>()).</p>
 <p>When editing begins, a new row is created in the table marked with an asterisk '*' in the row's vertical header column, i.e&#x2e; at the left of the row.</p>
 <a name="//apple_ref/cpp/instm/Q3DataTable/beginUpdate" />
@@ -548,6 +548,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

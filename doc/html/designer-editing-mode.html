@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/doc/src/designer-manual.qdoc -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/doc/src/designer-manual.qdoc -->
 <head>
   <title>Qt 4.3: Qt Designer's Widget Editing Mode</title>
   <link rel="prev" href="designer-designing-a-component.html" />
@@ -25,6 +25,8 @@
 <ul><li><a href="#managing-forms">Managing Forms</a></li>
 <li><a href="#editing-a-form">Editing a Form</a></li>
 <li><a href="#the-property-editor">The Property Editor</a></li>
+<ul><li><a href="#dynamic-properties">Dynamic Properties</a></li>
+</ul>
 <li><a href="#the-object-inspector">The Object Inspector</a></li>
 <li><a href="#layouts">Layouts</a></li>
 <ul><li><a href="#applying-and-breaking-layouts">Applying and Breaking Layouts</a></li>
@@ -78,6 +80,16 @@
 <p>Changes in properties are applied to all selected objects that have a matching property.</p>
 </td></tr>
 </table></p>
+<p>Certain properties are treated specially by the property editor:</p>
+<ul>
+<li>Compound properties - properties that are made up of more than one value - are represented as nodes that can be expanded, enabling their values to be edited.</li>
+<li>Properties that contain a choice or selection of flags are edited via combo boxes whose items can be checked.</li>
+<li>Properties that allow access to rich data types, such as <a href="qpalette.html">QPalette</a>, are modified using dialogs that open when the properties are edited.</li>
+</ul>
+<p><a href="qlabel.html">QLabel</a> and the widgets in the <b>Buttons</b> section of the widget box have a <tt>text</tt> property that can also be edited by double clicking on the widget or by pressing <b>F2</b>. <i>Qt Designer</i> interprets the backslash (\) character specially, enabling newline (\n) characters to be inserted into the text; the \\ character sequence is used to insert a single backslash into the text. A context menu can also be opened while editing, providing another way to insert special characters and newlines into the text.</p>
+<a name="dynamic-properties"></a>
+<h3>Dynamic Properties</h3>
+<p>The property editor can also be used to add new <a href="qobject.html#dynamic-properties">dynamic properties</a> to both standard Qt widgets and to forms themselves. Dynamic properties are added and removed via the property editor's context menu - click the right mouse button to open this.</p>
 <table align="center" width="80%">
 <tr><td>
 <p><img src="images/designer-adding-dynamic-property.png" /></p>
@@ -85,7 +97,6 @@
 <p><img src="images/designer-creating-dynamic-property.png" /></p>
 </td></tr>
 </table>
-<p>The property editor can also be used to add new <a href="qobject.html#dynamic-properties">dynamic properties</a> to both standard Qt widgets and to forms themselves. Dynamic properties are added and removed via the property editor's context menu - click the right mouse button to open this.</p>
 <a name="the-object-inspector"></a>
 <h2>The Object Inspector</h2>
 <p>The Object Inspector shows an up-to-date hierarchical list of the objects (widgets, layouts, spacers, and other objects) on the form that is currently being edited.</p>
@@ -142,6 +153,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

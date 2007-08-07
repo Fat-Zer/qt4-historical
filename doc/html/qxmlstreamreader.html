@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/xml/qxmlstream.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/xml/qxmlstream.cpp -->
 <head>
   <title>Qt 4.3: QXmlStreamReader Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -94,13 +94,13 @@
  ...
  while (!xml.atEnd()) {
        xml.readNext();
-       ... <span class="comment">// do processing</span>
+       ... <span class="comment">//</span> do processing
  }
  if (xml.hasError()) {
-       ... <span class="comment">// do error handling</span>
+       ... <span class="comment">//</span> do error handling
  }</pre>
 <p>QXmlStreamReader is a well-formed XML 1.0 parser that does <i>not</i> include external parsed entities. As long as no error occurs, the application code can thus be assured that the data provided by the stream reader satisfies the W3C's criteria for well-formed XML. For example, you can be certain that all tags are indeed nested and closed properly, that references to internal entities have been replaced with the correct replacement text, and that attributes have been normalized or added according to the internal subset of the DTD.</p>
-<p>If an error does occur while parsing, <a href="qxmlstreamreader.html#atEnd">atEnd</a>() returns true and <a href="qxmlstreamreader.html#error">error</a>() returns the kind of error that occured. <a href="qxmlstreamreader.html#hasError">hasError</a>() can also be used to check whether an error has occured. The functions <a href="qxmlstreamreader.html#errorString">errorString</a>(), <a href="qxmlstreamreader.html#lineNumber">lineNumber</a>(), <a href="qxmlstreamreader.html#columnNumber">columnNumber</a>(), and <a href="qxmlstreamreader.html#characterOffset">characterOffset</a>() make it possible to generate a verbose human-understandable error or warning message. In order to simplify application code, QXmlStreamReader contains a <a href="qxmlstreamreader.html#raiseError">raiseError</a>() mechanism that makes it possible to raise custom errors that then trigger the same error handling code path.</p>
+<p>If an error does occur while parsing, <a href="qxmlstreamreader.html#atEnd">atEnd</a>() returns true and <a href="qxmlstreamreader.html#error">error</a>() returns the kind of error that occurred. <a href="qxmlstreamreader.html#hasError">hasError</a>() can also be used to check whether an error has occurred. The functions <a href="qxmlstreamreader.html#errorString">errorString</a>(), <a href="qxmlstreamreader.html#lineNumber">lineNumber</a>(), <a href="qxmlstreamreader.html#columnNumber">columnNumber</a>(), and <a href="qxmlstreamreader.html#characterOffset">characterOffset</a>() make it possible to generate a verbose human-understandable error or warning message. In order to simplify application code, QXmlStreamReader contains a <a href="qxmlstreamreader.html#raiseError">raiseError</a>() mechanism that makes it possible to raise custom errors that then trigger the same error handling code path.</p>
 <p>The <a href="xml-streambookmarks.html">QXmlStream Bookmarks Example</a> illustrates how to use the recursive descent technique with a subclassed stream reader to read an XML bookmark file (XBEL).</p>
 <a name="namespaces"></a>
 <h3>Namespaces</h3>
@@ -126,7 +126,7 @@
 <p>This enum specifies different error cases</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
-<tr><td valign="top"><tt>QXmlStreamReader::NoError</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">No error has occured.</td></tr>
+<tr><td valign="top"><tt>QXmlStreamReader::NoError</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">No error has occurred.</td></tr>
 <tr><td valign="top"><tt>QXmlStreamReader::CustomError</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">A custom error has been raised with <a href="qxmlstreamreader.html#raiseError">raiseError</a>()</td></tr>
 <tr><td valign="top"><tt>QXmlStreamReader::NotWellFormedError</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">The parser internally raised an error due to the read XML not being well-formed.</td></tr>
 <tr><td valign="top"><tt>QXmlStreamReader::PrematureEndOfDocumentError</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">The input stream ended before the document was parsed completely. This error can be recovered from.</td></tr>
@@ -149,7 +149,7 @@
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QXmlStreamReader::NoToken</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The reader has not yet read anything.</td></tr>
-<tr><td valign="top"><tt>QXmlStreamReader::Invalid</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">An error has occured, reported in <a href="qxmlstreamreader.html#error">error</a>() and <a href="qxmlstreamreader.html#errorString">errorString</a>().</td></tr>
+<tr><td valign="top"><tt>QXmlStreamReader::Invalid</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">An error has occurred, reported in <a href="qxmlstreamreader.html#error">error</a>() and <a href="qxmlstreamreader.html#errorString">errorString</a>().</td></tr>
 <tr><td valign="top"><tt>QXmlStreamReader::StartDocument</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">The reader reports the start of the document. If the document is declared standalone, <a href="qxmlstreamreader.html#isStandaloneDocument">isStandaloneDocument</a>() returns true; otherwise it returns false.</td></tr>
 <tr><td valign="top"><tt>QXmlStreamReader::EndDocument</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">The reader reports the end of the document.</td></tr>
 <tr><td valign="top"><tt>QXmlStreamReader::StartElement</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">The reader reports the start of an element with <a href="qxmlstreamreader.html#namespaceUrix">namespaceUri</a>() and <a href="qxmlstreamreader.html#name">name</a>(). Empty elements are also reported as StartElement, followed directly by EndElement. The convenience function <a href="qxmlstreamreader.html#readElementText">readElementText</a>() can be called to concatenate all content until the corresponding EndElement. Attributes are reported in <a href="qxmlstreamreader.html#attributes">attributes</a>(), namespace declarations in <a href="qxmlstreamreader.html#namespaceDeclarations">namespaceDeclarations</a>().</td></tr>
@@ -167,7 +167,7 @@
 <h3 class="fn"><a name="namespaceProcessing-prop"></a>namespaceProcessing : bool</h3>
 <p>the namespace-processing flag of the stream reader</p>
 <p>This property controls whether or not the stream reader processes namespaces. If enabled, the reader processes namespaces, otherwise it does not.</p>
-<p>By default, namespace-processing is disabled.</p>
+<p>By default, namespace-processing is enabled.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>bool namespaceProcessing () const</b></li>
@@ -211,7 +211,7 @@
 <p>See also <a href="qxmlstreamreader.html#clear">clear</a>().</p>
 <a name="//apple_ref/cpp/instm/QXmlStreamReader/atEnd" />
 <h3 class="fn"><a name="atEnd"></a>bool QXmlStreamReader::atEnd () const</h3>
-<p>Returns true if the reader has read until the end of the XML document, or an error has occured and reading has been aborted; otherwise returns false.</p>
+<p>Returns true if the reader has read until the end of the XML document, or an error has occurred and reading has been aborted; otherwise returns false.</p>
 <p>Has reading been aborted with a <a href="qxmlstreamreader.html#Error-enum">PrematureEndOfDocumentError</a> because the device no longer delivered data, atEnd() will return true once more data has arrived.</p>
 <p>See also <a href="qxmlstreamreader.html#device">device</a>() and <a href="qiodevice.html#atEnd">QIODevice::atEnd</a>().</p>
 <a name="//apple_ref/cpp/instm/QXmlStreamReader/attributes" />
@@ -239,7 +239,7 @@
 <p>The <a href="qxmlstreamentitydeclaration.html#QXmlStreamEntityDeclarations-typedef">QXmlStreamEntityDeclarations</a> class is defined to be a <a href="qvector.html">QVector</a> of <a href="qxmlstreamentitydeclaration.html">QXmlStreamEntityDeclaration</a>.</p>
 <a name="//apple_ref/cpp/instm/QXmlStreamReader/error" />
 <h3 class="fn"><a name="error"></a><a href="qxmlstreamreader.html#Error-enum">Error</a> QXmlStreamReader::error () const</h3>
-<p>Returns the type of the current error, or <a href="qxmlstreamreader.html#Error-enum">NoError</a> if no error occured.</p>
+<p>Returns the type of the current error, or <a href="qxmlstreamreader.html#Error-enum">NoError</a> if no error occurred.</p>
 <p>See also <a href="qxmlstreamreader.html#errorString">errorString</a>() and <a href="qxmlstreamreader.html#raiseError">raiseError</a>().</p>
 <a name="//apple_ref/cpp/instm/QXmlStreamReader/errorString" />
 <h3 class="fn"><a name="errorString"></a><a href="qstring.html">QString</a> QXmlStreamReader::errorString () const</h3>
@@ -247,7 +247,7 @@
 <p>See also <a href="qxmlstreamreader.html#error">error</a>(), <a href="qxmlstreamreader.html#lineNumber">lineNumber</a>(), <a href="qxmlstreamreader.html#columnNumber">columnNumber</a>(), and <a href="qxmlstreamreader.html#characterOffset">characterOffset</a>().</p>
 <a name="//apple_ref/cpp/instm/QXmlStreamReader/hasError" />
 <h3 class="fn"><a name="hasError"></a>bool QXmlStreamReader::hasError () const</h3>
-<p>Returns true an error has occured, otherwise false.</p>
+<p>Returns <tt>true</tt> if an error has occurred, otherwise <tt>false</tt>.</p>
 <p>See also <a href="qxmlstreamreader.html#errorString">errorString</a>() and <a href="qxmlstreamreader.html#error">error</a>().</p>
 <a name="//apple_ref/cpp/instm/QXmlStreamReader/isCDATA" />
 <h3 class="fn"><a name="isCDATA"></a>bool QXmlStreamReader::isCDATA () const</h3>
@@ -354,6 +354,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

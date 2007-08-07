@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -58,6 +73,8 @@ void QX11WindowSurface::flush(QWidget *widget, const QRegion &rgn, const QPoint 
 {
     if (d_ptr->device.isNull())
         return;
+
+#ifndef Q_FLATTEN_EXPOSE
     extern void *qt_getClipRects(const QRegion &r, int &num); // in qpaintengine_x11.cpp
     extern QWidgetData* qt_widget_data(QWidget *);
     QPoint wOffset = qt_qwidget_data(widget)->wrect.topLeft();
@@ -81,10 +98,22 @@ void QX11WindowSurface::flush(QWidget *widget, const QRegion &rgn, const QPoint 
 //         for  (int i = 0; i < num; ++i)
 //             qDebug() << " " << i << rects[i].x << rects[i].x << rects[i].y << rects[i].width << rects[i].height;
     XSetClipRectangles(X11->display, gc, 0, 0, rects, num, YXBanded);
+#else
+    Q_UNUSED(rgn);
+    XGCValues values;
+    values.subwindow_mode = IncludeInferiors;
+    GC gc = XCreateGC(X11->display, d_ptr->device.handle(), GCSubwindowMode, &values);
+#endif
     XSetGraphicsExposures(X11->display, gc, False);
 //         XFillRectangle(X11->display, widget->handle(), gc, 0, 0, widget->width(), widget->height());
+#ifndef Q_FLATTEN_EXPOSE
     XCopyArea(X11->display, d_ptr->device.handle(), widget->handle(), gc,
               br.x() + offset.x(), br.y() + offset.y(), br.width(), br.height(), wbr.x(), wbr.y());
+#else
+    Q_ASSERT(widget->isWindow());
+    XCopyArea(X11->display, d_ptr->device.handle(), widget->handle(), gc,
+              offset.x(), offset.y(), widget->width(), widget->height(), 0, 0);
+#endif
     XFreeGC(X11->display, gc);
 }
 
@@ -113,5 +142,46 @@ bool QX11WindowSurface::scroll(const QRegion &area, int dx, int dy)
     XFreeGC(X11->display, gc);
 
     return true;
+}
+
+QPixmap QX11WindowSurface::grabWidget(const QWidget *widget,
+                                      const QRect& rect) const
+{
+    if (d_ptr->device.isNull())
+        return QPixmap();
+
+    QRect br = rect;
+    QRect wbr(widget->geometry());
+
+    if (wbr.isNull())
+        return QPixmap();
+
+    int w = qMin(rect.size().width(), wbr.size().width());
+    if (!w)
+        w = qMax(rect.size().width(), wbr.size().width());
+
+    int h = qMin(rect.size().height(), wbr.size().height());
+    if (!h)
+        h = qMax(rect.size().height(), wbr.size().height());
+
+    if (br.isNull())
+        br = wbr;
+
+    QPixmap::x11SetDefaultScreen(widget->x11Info().screen());
+    QPixmap px(w, h);
+
+    GC gc = XCreateGC(X11->display, d_ptr->device.handle(), 0, 0);
+    XRectangle xrect;
+    xrect.x = short(wbr.x());
+    xrect.y = short(wbr.y());
+    xrect.width = ushort(wbr.width());
+    xrect.height = ushort(wbr.height());
+    XSetClipRectangles(X11->display, gc, 0, 0, &xrect, 1, YXBanded);
+    XSetGraphicsExposures(X11->display, gc, False);
+    XCopyArea(X11->display, d_ptr->device.handle(), px.handle(), gc,
+              br.x(), br.y(), br.width(), br.height(), 0, 0);
+    XFreeGC(X11->display, gc);
+
+    return px;
 }
 

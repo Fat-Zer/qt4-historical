@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/doc/src/containers.qdoc -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/doc/src/containers.qdoc -->
 <head>
   <title>Qt 4.3: Generic Containers</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -28,7 +28,7 @@
 <h3>Introduction</h3>
 <p>The Qt library provides a set of general purpose template-based container classes. These classes can be used to store items of a specified type. For example, if you need a resizable array of <a href="qstring.html">QString</a>s, use <a href="qvector.html">QVector</a>&lt;<a href="qstring.html">QString</a>&gt;.</p>
 <p>These container classes are designed to be lighter, safer, and easier to use than the STL containers. If you are unfamiliar with the STL, or prefer to do things the &quot;Qt way&quot;, you can use these classes instead of the STL classes.</p>
-<p>The container classes are <a href="shared.html#implicitly-shared">implicitly shared</a>, they are <a href="threads.html#reentrant">reentrant</a>, and they are optimized for speed, low memory consumption, and minimal inline code expansion, resulting in smaller executables.</p>
+<p>The container classes are <a href="shared.html#implicitly-shared">implicitly shared</a>, they are <a href="threads.html#reentrant">reentrant</a>, and they are optimized for speed, low memory consumption, and minimal inline code expansion, resulting in smaller executables. In addition, they are <a href="threads.html#thread-safe">thread-safe</a> in situations where they are used as read-only containers by all threads used to access them.</p>
 <p>For traversing the items stored in a container, you can use one of two types of iterators: <a href="#java-style-iterators">Java-style iterators</a> and <a href="#stl-style-iterators">STL-style iterators</a>. The Java-style iterators are easier to use and provide high-level functionality, whereas the STL-style iterators are slightly more efficient and can be used together with Qt's and STL's <a href="qtalgorithms.html">generic algorithms</a>.</p>
 <p>Qt also offers a <a href="#foreach">foreach</a> keyword that make it very easy to iterate over all the items stored in a container.</p>
 <a name="the-container-classes"></a>
@@ -67,25 +67,27 @@
 <p>If we don't provide a copy constructor or an assignment operator, C++ provides a default implementation that performs a member-by-member copy. In the example above, that would have been sufficient. Also, if you don't provide any constructors, C++ provides a default constructor that initializes its member using default constructors. Although it doesn't provide any explicit constructors or assignment operator, the following data type can be stored in a container:</p>
 <pre> struct Movie
  {
+     int id;
      QString title;
      QDate releaseDate;
  };</pre>
 <p>Some containers have additional requirements for the data types they can store. For example, the Key type of a <a href="qmap.html">QMap</a>&lt;Key, T&gt; must provide <tt>operator&lt;()</tt>. Such special requirements are documented in a class's detailed description. In some cases, specific functions have special requirements; these are described on a per-function basis. The compiler will always emit an error if a requirement isn't met.</p>
 <p>Qt's containers provide operator&lt;&lt;() and operator&gt;&gt;() so that they can easily be read and written using a <a href="qdatastream.html">QDataStream</a>. This means that the data types stored in the container must also support operator&lt;&lt;() and operator&gt;&gt;(). Providing such support is straightforward; here's how we could do it for the Movie struct above:</p>
-<pre> inline QDataStream &amp;operator&lt;&lt;(QDataStream &amp;out, const Movie &amp;movie)
+<pre> QDataStream &amp;operator&lt;&lt;(QDataStream &amp;out, const Movie &amp;movie)
  {
      out &lt;&lt; (quint32)movie.id &lt;&lt; movie.title
-         &lt;&lt; (quint32)movie.year;
+         &lt;&lt; movie.releaseDate;
      return out;
  }
 
- inline QDataStream &amp;operator&gt;&gt;(QDataStream &amp;in, Movie &amp;movie)
+ QDataStream &amp;operator&gt;&gt;(QDataStream &amp;in, Movie &amp;movie)
  {
      quint32 id;
-     quint32 year;
-     in &gt;&gt; id &gt;&gt; movie.title &gt;&gt; year;
+     QDate date;
+
+     in &gt;&gt; id &gt;&gt; movie.title &gt;&gt; date;
      movie.id = (int)id;
-     movie.year = (int)year;
+     movie.releaseDate = date;
      return in;
  }</pre>
 <a name="default-constructed-values"></a><p>The documentation of certain container class functions refer to <i>default-constructed values</i>; for example, <a href="qvector.html">QVector</a> automatically initializes its items with default-constructed values, and <a href="qmap.html#value">QMap::value</a>() returns a default-constructed value if the specified key isn't in the map. For most value types, this simply means that a value is created using the default constructor (e.g&#x2e; an empty string for <a href="qstring.html">QString</a>). But for primitive types like <tt>int</tt> and <tt>double</tt>, as well as for pointer types, the C++ language doesn't specify any initialization; in those cases, Qt's containers automatically initialize the value to 0.</p>
@@ -243,13 +245,13 @@
  for (i = map.constBegin(); i != map.constEnd(); ++i)
      qDebug() &lt;&lt; i.key() &lt;&lt; &quot;:&quot; &lt;&lt; i.value();</pre>
 <p>Thanks to <a href="shared.html#implicit-sharing">implicit sharing</a>, it is very inexpensive for a function to return a container per value. The Qt API contains dozens of functions that return a <a href="qlist.html">QList</a> or <a href="qstringlist.html">QStringList</a> per value (e.g&#x2e;, <a href="qsplitter.html#sizes">QSplitter::sizes</a>()). If you want to iterate over these using an STL iterator, you should always take a copy of the container and iterate over the copy. For example:</p>
-<pre><span class="comment"> // RIGHT</span>
+<pre><span class="comment"> //</span> RIGHT
  const QList&lt;int&gt; sizes = splitter-&gt;sizes();
  QList&lt;int&gt;::const_iterator i;
  for (i = sizes.begin(); i != sizes.end(); ++i)
      ...
 
-<span class="comment"> // WRONG</span>
+<span class="comment"> //</span> WRONG
  QList&lt;int&gt;::const_iterator i;
  for (i = splitter-&gt;sizes().begin();
          i != splitter-&gt;sizes().end(); ++i)
@@ -374,6 +376,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

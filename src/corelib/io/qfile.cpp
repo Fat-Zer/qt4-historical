@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -719,6 +734,8 @@ QFile::rename(const QString &oldName, const QString &newName)
     What a link is depends on the underlying filesystem
     (be it a shortcut on Windows or a symbolic link on Unix). Returns
     true if successful; otherwise returns false.
+    
+    \note To create a valid link on Windows, \a linkName must have a \c{.lnk} file extension.
 
     \sa setFileName()
 */
@@ -960,6 +977,12 @@ bool QFile::open(OpenMode mode)
     \code
     CONFIG += console
     \endcode
+
+    \note On Windows, \a fh must be opened in binary mode (i.e., the mode
+    string must contain 'b', as in "rb" or "wb") when accessing files and
+    other random-access devices. Qt will translate the end-of-line characters
+    if you pass QIODevice::Text to \a mode. Sequential devices, such as stdin
+    and stdout, are unaffected by this limitation.
 
     \sa close(), {qmake Variable Reference#CONFIG}{qmake Variable Reference}
 */

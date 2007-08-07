@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -621,6 +636,9 @@ void QTableView::setVerticalHeader(QHeaderView *header)
 void QTableView::scrollContentsBy(int dx, int dy)
 {
     Q_D(QTableView);
+    
+    d->delayedAutoScroll.stop(); // auto scroll was canceled by the user scrolling
+
     dx = isRightToLeft() ? -dx : dx;
     if (dx) {
         if (horizontalScrollMode() == QAbstractItemView::ScrollPerItem) {
@@ -800,11 +818,10 @@ void QTableView::paintEvent(QPaintEvent *event)
             }
 
             //draw the top & left grid lines if the headers are not visible.
-            if (!horizontalHeader->isVisible())
+            if (horizontalHeader->isHidden() && verticalScrollMode() == ScrollPerItem)
                 painter.drawLine(dirtyArea.left(), 0, dirtyArea.right(), 0);
-            if (!verticalHeader->isVisible())
+            if (verticalHeader->isHidden() && horizontalScrollMode() == ScrollPerItem)
                 painter.drawLine(0, dirtyArea.top(), 0, dirtyArea.bottom());
-
             painter.setPen(old);
         }
     }
@@ -1408,7 +1425,7 @@ int QTableView::sizeHintForRow(int row) const
         if (d->horizontalHeader->isSectionHidden(logicalColumn))
             continue;
         index = d->model->index(row, logicalColumn, d->root);
-        if (d->wrapItemText) {// for wrapping boundries
+        if (d->wrapItemText) {// for wrapping boundaries
             option.rect.setY(rowViewportPosition(index.row()));
             option.rect.setHeight(rowHeight(index.row()));
             option.rect.setX(columnViewportPosition(index.column()));
@@ -1617,7 +1634,7 @@ void QTableView::setSortingEnabled(bool enable)
     if (enable) {
         disconnect(d->horizontalHeader, SIGNAL(sectionEntered(int)),
                    this, SLOT(_q_selectColumn(int)));
-        disconnect(horizontalHeader(), SIGNAL(sectionEntered(int)),
+        disconnect(horizontalHeader(), SIGNAL(sectionPressed(int)),
                    this, SLOT(selectColumn(int)));
         connect(horizontalHeader(), SIGNAL(sectionClicked(int)),
                 this, SLOT(sortByColumn(int)));
@@ -2305,6 +2322,9 @@ void QTableViewPrivate::selectColumn(int column, bool anchor)
     }
 }
 
+/*!
+  \reimp
+ */
 void QTableView::currentChanged(const QModelIndex &current, const QModelIndex &previous)
 {
 #ifndef QT_NO_ACCESSIBILITY
@@ -2318,6 +2338,9 @@ void QTableView::currentChanged(const QModelIndex &current, const QModelIndex &p
     QAbstractItemView::currentChanged(current, previous);
 }
 
+/*!
+  \reimp
+ */
 void QTableView::selectionChanged(const QItemSelection &selected,
                                   const QItemSelection &deselected)
 {
@@ -2341,7 +2364,6 @@ void QTableView::selectionChanged(const QItemSelection &selected,
 
 int QTableView::visualIndex(const QModelIndex &index) const
 {
-    Q_D(const QTableView);
     return index.row();
 }
 

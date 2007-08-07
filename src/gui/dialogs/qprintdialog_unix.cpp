@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -859,6 +874,10 @@ static int getLprPrinters(QList<QPrinterDescription>& printers)
         dollarPrinter = QString::fromLocal8Bit(qgetenv("PRINTER"));
         if (dollarPrinter.isEmpty())
             dollarPrinter = QString::fromLocal8Bit(qgetenv("LPDEST"));
+        if (dollarPrinter.isEmpty())
+            dollarPrinter = QString::fromLocal8Bit(qgetenv("NPRINTER"));
+        if (dollarPrinter.isEmpty())
+            dollarPrinter = QString::fromLocal8Bit(qgetenv("NGPRINTER"));
         if (!dollarPrinter.isEmpty())
             perhapsAddPrinter(&printers, dollarPrinter,
                               QPrintDialog::tr("unknown"),
@@ -921,7 +940,7 @@ void QPrintDialogPrivate::init()
 
 #if !defined(QT_NO_CUPS) && !defined(QT_NO_LIBRARY)
     cups = new QCUPSSupport;
-    if (QCUPSSupport::isAvailable() && cups->availablePrintersCount() > 0) {
+    if (QCUPSSupport::isAvailable()) {
         cupsPPD = cups->currentPPD();
         cupsPrinterCount = cups->availablePrintersCount();
         cupsPrinters = cups->availablePrinters();
@@ -951,7 +970,7 @@ void QPrintDialogPrivate::init()
 #if !defined(QT_NO_CUPS) && !defined(QT_NO_LIBRARY)
     }
 #endif
-    if (!ui.cbPrinters->count()) 
+    if (!ui.cbPrinters->count())
         ui.buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
 
     ui.cbPaperLayout->addItem(QPrintDialog::tr("Portrait"), QPrinter::Portrait);
@@ -1054,11 +1073,11 @@ void QPrintDialogPrivate::_q_printToFileChanged(int state)
         ui.leFile->setCursorPosition(ui.leFile->text().length());
         ui.leFile->selectAll();
         ui.buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
-        
+
     } else {
         ui.stackedWidget->setCurrentIndex(0);
         ui.gbDestination->setTitle(QPrintDialog::tr("Printer"));
-        if (!ui.cbPrinters->count()) 
+        if (!ui.cbPrinters->count())
             ui.buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
     }
     refreshPageSizes();
@@ -1265,7 +1284,10 @@ bool QPrintDialogPrivate::setupPrinter()
 void QPrintDialogPrivate::updateWidgets()
 {
     Q_Q(QPrintDialog);
-    ui.gbPrintRange->setEnabled(q->isOptionEnabled(QPrintDialog::PrintPageRange));
+    ui.gbPrintRange->setEnabled(q->isOptionEnabled(QPrintDialog::PrintPageRange) ||
+                                q->isOptionEnabled(QPrintDialog::PrintSelection));
+
+    ui.rbPrintRange->setEnabled(q->isOptionEnabled(QPrintDialog::PrintPageRange));
     ui.rbPrintSelection->setEnabled(q->isOptionEnabled(QPrintDialog::PrintSelection));
     ui.chbPrintToFile->setEnabled(q->isOptionEnabled(QPrintDialog::PrintToFile));
     ui.chbCollate->setEnabled(q->isOptionEnabled(QPrintDialog::PrintCollateCopies));

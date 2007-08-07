@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/qt3support/network/q3localfs.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/qt3support/network/q3localfs.cpp -->
 <head>
   <title>Qt 4.3: Q3LocalFs Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -45,8 +45,8 @@
 <h2>Detailed Description</h2>
 <p>The Q3LocalFs class is an implementation of a <a href="porting4.html#qnetworkprotocol">QNetworkProtocol</a> that works on the local file system.</p>
 <p>This class is derived from <a href="porting4.html#qnetworkprotocol">QNetworkProtocol</a>. Q3LocalFs is not normally used directly, but rather through a <a href="porting4.html#qurloperator">QUrlOperator</a>, for example:</p>
-<pre> QUrlOperator op( &quot;file:<span class="comment">///tmp&quot; );</span>
- op.listChildren(); <span class="comment">// Asks the server to provide a directory listing</span></pre>
+<pre> QUrlOperator op( &quot;file:<span class="comment">//</span>/tmp&quot; );
+ op.listChildren(); <span class="comment">//</span> Asks the server to provide a directory listing</pre>
 <p>This code will only work if the Q3LocalFs class is registered; to register the class, you must call qInitNetworkProtocols() before using a <a href="porting4.html#qurloperator">QUrlOperator</a> with Q3LocalFs.</p>
 <p>If you really need to use Q3LocalFs directly, don't forget to set its <a href="porting4.html#qurloperator">QUrlOperator</a> with <a href="q3networkprotocol.html#setUrl">setUrl</a>().</p>
 <p>See also <a href="porting4.html#qnetworkprotocol">QNetworkProtocol</a> and <a href="porting4.html#qurloperator">QUrlOperator</a>.</p>
@@ -59,6 +59,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

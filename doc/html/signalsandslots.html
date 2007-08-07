@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/doc/src/signalsandslots.qdoc -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/doc/src/signalsandslots.qdoc -->
 <head>
   <title>Qt 4.3: Signals and Slots</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -29,7 +29,7 @@
 <p>Older toolkits achieve this kind of communication using callbacks. A callback is a pointer to a function, so if you want a processing function to notify you about some event you pass a pointer to another function (the callback) to the processing function. The processing function then calls the callback when appropriate. Callbacks have two fundamental flaws: Firstly, they are not type-safe. We can never be certain that the processing function will call the callback with the correct arguments. Secondly, the callback is strongly coupled to the processing function since the processing function must know which callback to call.</p>
 <a name="signals-and-slots"></a>
 <h3>Signals and Slots</h3>
-<p>In Qt, we have an alternative to the callback technique: We use signals and slots. A signal is emitted when a particular event occurs. Qt's widgets have many predefined signals, but we can always subclass widgets to add our own signals to them. A slot is a function that is called in reponse to a particular signal. Qt's widgets have many pre-defined slots, but it is common practice to subclass widgets and add your own slots so that you can handle the signals that you are interested in.</p>
+<p>In Qt, we have an alternative to the callback technique: We use signals and slots. A signal is emitted when a particular event occurs. Qt's widgets have many predefined signals, but we can always subclass widgets to add our own signals to them. A slot is a function that is called in response to a particular signal. Qt's widgets have many pre-defined slots, but it is common practice to subclass widgets and add your own slots so that you can handle the signals that you are interested in.</p>
 <p align="center"><img src="images/abstract-connections.png" /></p><p>The signals and slots mechanism is type safe: The signature of a signal must match the signature of the receiving slot. (In fact a slot may have a shorter signature than the signal it receives because it can ignore extra arguments.) Since the signatures are compatible, the compiler can help us detect type mismatches. Signals and slots are loosely coupled: A class which emits a signal neither knows nor cares which slots receive the signal. Qt's signals and slots mechanism ensures that if you connect a signal to a slot, the slot will be called with the signal's parameters at the right time. Signals and slots can take any number of arguments of any type. They are completely type safe.</p>
 <p>All classes that inherit from <a href="qobject.html">QObject</a> or one of its subclasses (e.g&#x2e;, <a href="qwidget.html">QWidget</a>) can contain signals and slots. Signals are emitted by objects when they change their state in a way that may be interesting to other objects. This is all the object does to communicate. It does not know or care whether anything is receiving the signals it emits. This is true information encapsulation, and ensures that the object can be used as a software component.</p>
 <p>Slots can be used for receiving signals, but they are also normal member functions. Just as an object does not know if anything receives its signals, a slot does not know if it has any signals connected to it. This ensures that truly independent components can be created with Qt.</p>
@@ -86,8 +86,8 @@
      QObject::connect(&amp;a, SIGNAL(valueChanged(int)),
                       &amp;b, SLOT(setValue(int)));
 
-     a.setValue(12);     <span class="comment">// a.value() == 12, b.value() == 12</span>
-     b.setValue(48);     <span class="comment">// a.value() == 12, b.value() == 48</span></pre>
+     a.setValue(12);     <span class="comment">//</span> a.value() == 12, b.value() == 12
+     b.setValue(48);     <span class="comment">//</span> a.value() == 12, b.value() == 48</pre>
 <p>Calling <tt>a.setValue(12)</tt> makes <tt>a</tt> emit a <tt>valueChanged(12)</tt> signal, which <tt>b</tt> will receive in its <tt>setValue()</tt> slot, i.e&#x2e; <tt>b.setValue(12)</tt> is called. Then <tt>b</tt> emits the same <tt>valueChanged()</tt> signal, but since no slot has been connected to <tt>b</tt>'s <tt>valueChanged()</tt> signal, the signal is ignored.</p>
 <p>Note that the <tt>setValue()</tt> function sets the value and emits the signal only if <tt>value != m_value</tt>. This prevents infinite looping in the case of cyclic connections (e.g&#x2e;, if <tt>b.valueChanged()</tt> were connected to <tt>a.setValue()</tt>).</p>
 <p>A signal is emitted for every connection you make; if you duplicate a connection, two signals will be emitted. You can always break a connection using <a href="qobject.html#disconnect">QObject::disconnect</a>().</p>
@@ -166,6 +166,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/corelib/tools/qhash.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/corelib/tools/qhash.cpp -->
 <head>
   <title>Qt 4.3: QHash Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -82,6 +82,7 @@
 <h3>Related Non-Members</h3>
 <ul>
 <li><div class="fn"/>uint <b><a href="qhash.html#qHashx">qHash</a></b> ( char <i>key</i> )</li>
+<li><div class="fn"/>uint <b><a href="qhash.html#qHash-4">qHash</a></b> ( const QPair&lt;T1, T2&gt; &amp; <i>key</i> )</li>
 <li><div class="fn"/>uint <b><a href="qhash.html#qHash-10">qHash</a></b> ( uchar <i>key</i> )</li>
 <li><div class="fn"/>uint <b><a href="qhash.html#qHash-11">qHash</a></b> ( signed char <i>key</i> )</li>
 <li><div class="fn"/>uint <b><a href="qhash.html#qHash-12">qHash</a></b> ( ushort <i>key</i> )</li>
@@ -130,7 +131,7 @@
 <p>There is also a <a href="qhash.html#value">value</a>() overload that uses its second argument as a default value if there is no item with the specified key:</p>
 <pre> int timeout = hash.value(&quot;TIMEOUT&quot;, 30);</pre>
 <p>In general, we recommend that you use <a href="qhash.html#contains">contains</a>() and <a href="qhash.html#value">value</a>() rather than operator[]() for looking up a key in a hash. The reason is that operator[]() silently inserts an item into the hash if no item exists with the same key (unless the hash is const). For example, the following code snippet will create 1000 items in memory:</p>
-<pre><span class="comment"> // WRONG</span>
+<pre><span class="comment"> //</span> WRONG
  QHash&lt;int, QWidget *&gt; hash;
  ...
  for (int i = 0; i &lt; 1000; ++i) {
@@ -154,7 +155,7 @@
 <p>Normally, a QHash allows only one value per key. If you call <a href="qhash.html#insert">insert</a>() with a key that already exists in the QHash, the previous value is erased. For example:</p>
 <pre> hash.insert(&quot;plenty&quot;, 100);
  hash.insert(&quot;plenty&quot;, 2000);
-<span class="comment"> // hash.value(&quot;plenty&quot;) == 2000</span></pre>
+<span class="comment"> //</span> hash.value(&quot;plenty&quot;) == 2000</pre>
 <p>However, you can store multiple values per key by using <a href="qhash.html#insertMulti">insertMulti</a>() instead of <a href="qhash.html#insert">insert</a>() (or using the convenience subclass <a href="qmultihash.html">QMultiHash</a>). If you want to retrieve all the values for a single key, you can use values(const Key &amp;key), which returns a <a href="qlist.html">QList</a>&lt;T&gt;:</p>
 <pre> QList&lt;int&gt; values = hash.values(&quot;plenty&quot;);
  for (int i = 0; i &lt; values.size(); ++i)
@@ -200,7 +201,7 @@
      return qHash(key.name()) ^ key.dateOfBirth().day();
  }
 
- #endif <span class="comment">// EMPLOYEE_H</span></pre>
+ #endif <span class="comment">//</span> EMPLOYEE_H</pre>
 <p>The <a href="qhash.html#qHashx">qHash</a>() function computes a numeric value based on a key. It can use any algorithm imaginable, as long as it always returns the same value if given the same argument. In other words, if <tt>e1 == e2</tt>, then <tt>qHash(e1) == qHash(e2)</tt> must hold as well. However, to obtain good performance, the <a href="qhash.html#qHashx">qHash</a>() function should attempt to return different hash values for different keys to the largest extent possible.</p>
 <p>In the example above, we've relied on Qt's global qHash(const <a href="qstring.html">QString</a> &amp;) to give us a hash value for the employee's name, and XOR'ed this with the day they were born to help produce unique hashes for people with the same name.</p>
 <p>Internally, QHash uses a hash table to perform lookups. Unlike Qt 3's <tt>QDict</tt> class, which needed to be initialized with a prime number, QHash's hash table automatically grows and shrinks to provide fast lookups without wasting too much memory. You can still control the size of the hash table by calling <a href="qhash.html#reserve">reserve</a>() if you already know approximately how many items the QHash will contain, but this isn't necessary to obtain good performance. You can also call <a href="qhash.html#capacity">capacity</a>() to retrieve the hash table's size.</p>
@@ -437,6 +438,11 @@
 <a name="//apple_ref/cpp/func//qHash" />
 <h3 class="fn"><a name="qHashx"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( char <i>key</i> )</h3>
 <p>Returns the hash value for <i>key</i>.</p>
+<h3 class="fn"><a name="qHash-4"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( const <a href="qpair.html">QPair</a>&lt;T1, T2&gt; &amp; <i>key</i> )</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p>Returns the hash value for <i>key</i>.</p>
+<p>Types <tt>T1</tt> and <tt>T2</tt> must be supported by <a href="qhash.html#qHashx">qHash</a>().</p>
+<p>This function was introduced in Qt 4.3.</p>
 <h3 class="fn"><a name="qHash-10"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( <a href="qtglobal.html#uchar-typedef">uchar</a> <i>key</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns the hash value for <i>key</i>.</p>
@@ -496,6 +502,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

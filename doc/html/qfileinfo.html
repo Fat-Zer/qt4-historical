@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/corelib/io/qfileinfo.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/corelib/io/qfileinfo.cpp -->
 <head>
   <title>Qt 4.3: QFileInfo Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -104,30 +104,30 @@
 <pre> #ifdef Q_OS_UNIX
 
  QFileInfo info1(&quot;/home/bob/bin/untabify&quot;);
- info1.isSymLink();          <span class="comment">// returns true</span>
- info1.absoluteFilePath();   <span class="comment">// returns &quot;/home/bob/bin/untabify&quot;</span>
- info1.size();               <span class="comment">// returns 56201</span>
- info1.symLinkTarget();      <span class="comment">// returns &quot;/opt/pretty++/bin/untabify&quot;</span>
+ info1.isSymLink();          <span class="comment">//</span> returns true
+ info1.absoluteFilePath();   <span class="comment">//</span> returns &quot;/home/bob/bin/untabify&quot;
+ info1.size();               <span class="comment">//</span> returns 56201
+ info1.symLinkTarget();      <span class="comment">//</span> returns &quot;/opt/pretty++/bin/untabify&quot;
 
  QFileInfo info2(info1.symLinkTarget());
- info1.isSymLink();          <span class="comment">// returns false</span>
- info1.absoluteFilePath();   <span class="comment">// returns &quot;/opt/pretty++/bin/untabify&quot;</span>
- info1.size();               <span class="comment">// returns 56201</span>
+ info1.isSymLink();          <span class="comment">//</span> returns false
+ info1.absoluteFilePath();   <span class="comment">//</span> returns &quot;/opt/pretty++/bin/untabify&quot;
+ info1.size();               <span class="comment">//</span> returns 56201
 
  #endif</pre>
 <p>On Windows, symlinks (shortcuts) are <tt>.lnk</tt> files. The reported <a href="qfileinfo.html#size">size</a>() is that of the symlink (not the link's target), and opening a symlink using <a href="qfile.html">QFile</a> opens the <tt>.lnk</tt> file. For example:</p>
 <pre> #ifdef Q_OS_WIN
 
  QFileInfo info1(&quot;C:\\Documents and Settings\\Bob\\untabify.lnk&quot;);
- info1.isSymLink();          <span class="comment">// returns true</span>
- info1.absoluteFilePath();   <span class="comment">// returns &quot;C:/Documents and Settings/Bob/untabify.lnk&quot;</span>
- info1.size();               <span class="comment">// returns 743</span>
- info1.symLinkTarget();      <span class="comment">// returns &quot;C:/Pretty++/untabify&quot;</span>
+ info1.isSymLink();          <span class="comment">//</span> returns true
+ info1.absoluteFilePath();   <span class="comment">//</span> returns &quot;C:/Documents and Settings/Bob/untabify.lnk&quot;
+ info1.size();               <span class="comment">//</span> returns 743
+ info1.symLinkTarget();      <span class="comment">//</span> returns &quot;C:/Pretty++/untabify&quot;
 
  QFileInfo info2(info1.symLinkTarget());
- info1.isSymLink();          <span class="comment">// returns false</span>
- info1.absoluteFilePath();   <span class="comment">// returns &quot;C:/Pretty++/untabify&quot;</span>
- info1.size();               <span class="comment">// returns 63942</span>
+ info1.isSymLink();          <span class="comment">//</span> returns false
+ info1.absoluteFilePath();   <span class="comment">//</span> returns &quot;C:/Pretty++/untabify&quot;
+ info1.size();               <span class="comment">//</span> returns 63942
 
  #endif</pre>
 <p>Elements of the file's name can be extracted with <a href="qfileinfo.html#path">path</a>() and <a href="qfileinfo.html#fileName">fileName</a>(). The <a href="qfileinfo.html#fileName">fileName</a>()'s parts can be extracted with <a href="qfileinfo.html#baseName">baseName</a>() and <a href="qfileinfo-qt3.html#extension">extension</a>().</p>
@@ -178,7 +178,7 @@
 <p>The base name consists of all characters in the file up to (but not including) the <i>first</i> '.' character.</p>
 <p>Example:</p>
 <pre> QFileInfo fi(&quot;/tmp/archive.tar.gz&quot;);
- QString base = fi.baseName();  <span class="comment">// base = &quot;archive&quot;</span></pre>
+ QString base = fi.baseName();  <span class="comment">//</span> base = &quot;archive&quot;</pre>
 <p>The base name of a file is computed equally on all platforms, independent of file naming conventions (e.g&#x2e;, &quot;.bashrc&quot; on Unix has an empty base name, and the suffix is &quot;bashrc&quot;).</p>
 <p>See also <a href="qfileinfo.html#fileName">fileName</a>(), <a href="qfileinfo.html#suffix">suffix</a>(), <a href="qfileinfo.html#completeSuffix">completeSuffix</a>(), and <a href="qfileinfo.html#completeBaseName">completeBaseName</a>().</p>
 <a name="//apple_ref/cpp/instm/QFileInfo/bundleName" />
@@ -187,7 +187,7 @@
 <p>On Mac OS X this returns the proper localized name for a bundle if the path <a href="qfileinfo.html#isBundle">isBundle</a>(). On all other platforms an empty <a href="qstring.html">QString</a> is returned.</p>
 <p>Example:</p>
 <pre> QFileInfo fi(&quot;/Applications/Safari.app&quot;);
- QString bundle = fi.bundleName();                <span class="comment">// name = &quot;Safari&quot;</span></pre>
+ QString bundle = fi.bundleName();                <span class="comment">//</span> name = &quot;Safari&quot;</pre>
 <p>This function was introduced in Qt 4.3.</p>
 <p>See also <a href="qfileinfo.html#isBundle">isBundle</a>(), <a href="qfileinfo.html#filePath">filePath</a>(), <a href="qfileinfo.html#baseName">baseName</a>(), and <a href="qfileinfo-qt3.html#extension">extension</a>().</p>
 <a name="//apple_ref/cpp/instm/QFileInfo/caching" />
@@ -210,7 +210,7 @@
 <p>The complete base name consists of all characters in the file up to (but not including) the <i>last</i> '.' character.</p>
 <p>Example:</p>
 <pre> QFileInfo fi(&quot;/tmp/archive.tar.gz&quot;);
- QString base = fi.completeBaseName();  <span class="comment">// base = &quot;archive.tar&quot;</span></pre>
+ QString base = fi.completeBaseName();  <span class="comment">//</span> base = &quot;archive.tar&quot;</pre>
 <p>See also <a href="qfileinfo.html#fileName">fileName</a>(), <a href="qfileinfo.html#suffix">suffix</a>(), <a href="qfileinfo.html#completeSuffix">completeSuffix</a>(), and <a href="qfileinfo.html#baseName">baseName</a>().</p>
 <a name="//apple_ref/cpp/instm/QFileInfo/completeSuffix" />
 <h3 class="fn"><a name="completeSuffix"></a><a href="qstring.html">QString</a> QFileInfo::completeSuffix () const</h3>
@@ -218,7 +218,7 @@
 <p>The complete suffix consists of all characters in the file after (but not including) the first '.'&#x2e;</p>
 <p>Example:</p>
 <pre> QFileInfo fi(&quot;/tmp/archive.tar.gz&quot;);
- QString ext = fi.completeSuffix();  <span class="comment">// ext = &quot;tar.gz&quot;</span></pre>
+ QString ext = fi.completeSuffix();  <span class="comment">//</span> ext = &quot;tar.gz&quot;</pre>
 <p>See also <a href="qfileinfo.html#fileName">fileName</a>(), <a href="qfileinfo.html#suffix">suffix</a>(), <a href="qfileinfo.html#baseName">baseName</a>(), and <a href="qfileinfo.html#completeBaseName">completeBaseName</a>().</p>
 <a name="//apple_ref/cpp/instm/QFileInfo/created" />
 <h3 class="fn"><a name="created"></a><a href="qdatetime.html">QDateTime</a> QFileInfo::created () const</h3>
@@ -239,7 +239,7 @@
 <p>Returns the name of the file, excluding the path.</p>
 <p>Example:</p>
 <pre> QFileInfo fi(&quot;/tmp/archive.tar.gz&quot;);
- QString name = fi.fileName();                <span class="comment">// name = &quot;archive.tar.gz&quot;</span></pre>
+ QString name = fi.fileName();                <span class="comment">//</span> name = &quot;archive.tar.gz&quot;</pre>
 <p>See also <a href="qfileinfo.html#isRelative">isRelative</a>(), <a href="qfileinfo.html#filePath">filePath</a>(), <a href="qfileinfo.html#baseName">baseName</a>(), and <a href="qfileinfo-qt3.html#extension">extension</a>().</p>
 <a name="//apple_ref/cpp/instm/QFileInfo/filePath" />
 <h3 class="fn"><a name="filePath"></a><a href="qstring.html">QString</a> QFileInfo::filePath () const</h3>
@@ -365,11 +365,11 @@
  QFileInfo relFile(relative);
 
  QDir::setCurrent(QDir::rootPath());
-<span class="comment"> // absFile and relFile now point to the same file</span>
+<span class="comment"> //</span> absFile and relFile now point to the same file
 
  QDir::setCurrent(&quot;/tmp&quot;);
-<span class="comment"> // absFile now points to &quot;/local/bin&quot;,</span>
-<span class="comment"> // while relFile points to &quot;/tmp/local/bin&quot;</span></pre>
+<span class="comment"> //</span> absFile now points to &quot;/local/bin&quot;,
+<span class="comment"> //</span> while relFile points to &quot;/tmp/local/bin&quot;</pre>
 <p>See also <a href="qfileinfo.html#isFile">isFile</a>(), <a href="qfileinfo.html#isRelative">isRelative</a>(), <a href="qdir.html#setCurrent">QDir::setCurrent</a>(), and <a href="qdir.html#isRelativePath">QDir::isRelativePath</a>().</p>
 <h3 class="fn"><a name="setFile-2"></a>void QFileInfo::setFile ( const <a href="qfile.html">QFile</a> &amp; <i>file</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
@@ -391,7 +391,7 @@
 <p>The suffix consists of all characters in the file after (but not including) the last '.'&#x2e;</p>
 <p>Example:</p>
 <pre> QFileInfo fi(&quot;/tmp/archive.tar.gz&quot;);
- QString ext = fi.suffix();  <span class="comment">// ext = &quot;gz&quot;</span></pre>
+ QString ext = fi.suffix();  <span class="comment">//</span> ext = &quot;gz&quot;</pre>
 <p>The suffix of a file is computed equally on all platforms, independent of file naming conventions (e.g&#x2e;, &quot;.bashrc&quot; on Unix has an empty base name, and the suffix is &quot;bashrc&quot;).</p>
 <p>See also <a href="qfileinfo.html#fileName">fileName</a>(), <a href="qfileinfo.html#completeSuffix">completeSuffix</a>(), <a href="qfileinfo.html#baseName">baseName</a>(), and <a href="qfileinfo.html#completeBaseName">completeBaseName</a>().</p>
 <a name="//apple_ref/cpp/instm/QFileInfo/symLinkTarget" />
@@ -423,66 +423,10 @@
 <a name="//apple_ref/cpp/tdef//QFileInfoList" />
 <h3 class="fn"><a name="QFileInfoList-typedef"></a>typedef QFileInfoList</h3>
 <p>Synonym for <a href="qlist.html">QList</a>&lt;<a href="qfileinfo.html">QFileInfo</a>&gt;.</p>
-<hr />
-<h2>Member Type Documentation</h2>
-<a name="//apple_ref/cpp/tag/QFileInfo/Permission" />
-<a name="//apple_ref/cpp/econst/QFileInfo/ReadOwner" />
-<a name="//apple_ref/cpp/econst/QFileInfo/WriteOwner" />
-<a name="//apple_ref/cpp/econst/QFileInfo/ExeOwner" />
-<a name="//apple_ref/cpp/econst/QFileInfo/ReadUser" />
-<a name="//apple_ref/cpp/econst/QFileInfo/WriteUser" />
-<a name="//apple_ref/cpp/econst/QFileInfo/ExeUser" />
-<a name="//apple_ref/cpp/econst/QFileInfo/ReadGroup" />
-<a name="//apple_ref/cpp/econst/QFileInfo/WriteGroup" />
-<a name="//apple_ref/cpp/econst/QFileInfo/ExeGroup" />
-<a name="//apple_ref/cpp/econst/QFileInfo/ReadOther" />
-<a name="//apple_ref/cpp/econst/QFileInfo/WriteOther" />
-<a name="//apple_ref/cpp/econst/QFileInfo/ExeOther" />
-<a name="//apple_ref/cpp/tdef/QFileInfo/PermissionSpec" />
-<h3 class="flags"><a name="Permission-enum"></a>enum QFileInfo::Permission<br />flags QFileInfo::PermissionSpec</h3>
-<p><table border="1" cellpadding="2" cellspacing="1" width="40%">
-<tr><th width="60%">Constant</th><th width="40%">Value</th></tr>
-<tr><td valign="top"><tt>QFileInfo::ReadOwner</tt></td><td align="center" valign="top"><tt>QFile::ReadOwner</tt></td></tr>
-<tr><td valign="top"><tt>QFileInfo::WriteOwner</tt></td><td align="center" valign="top"><tt>QFile::WriteOwner</tt></td></tr>
-<tr><td valign="top"><tt>QFileInfo::ExeOwner</tt></td><td align="center" valign="top"><tt>QFile::ExeOwner</tt></td></tr>
-<tr><td valign="top"><tt>QFileInfo::ReadUser</tt></td><td align="center" valign="top"><tt>QFile::ReadUser</tt></td></tr>
-<tr><td valign="top"><tt>QFileInfo::WriteUser</tt></td><td align="center" valign="top"><tt>QFile::WriteUser</tt></td></tr>
-<tr><td valign="top"><tt>QFileInfo::ExeUser</tt></td><td align="center" valign="top"><tt>QFile::ExeUser</tt></td></tr>
-<tr><td valign="top"><tt>QFileInfo::ReadGroup</tt></td><td align="center" valign="top"><tt>QFile::ReadGroup</tt></td></tr>
-<tr><td valign="top"><tt>QFileInfo::WriteGroup</tt></td><td align="center" valign="top"><tt>QFile::WriteGroup</tt></td></tr>
-<tr><td valign="top"><tt>QFileInfo::ExeGroup</tt></td><td align="center" valign="top"><tt>QFile::ExeGroup</tt></td></tr>
-<tr><td valign="top"><tt>QFileInfo::ReadOther</tt></td><td align="center" valign="top"><tt>QFile::ReadOther</tt></td></tr>
-<tr><td valign="top"><tt>QFileInfo::WriteOther</tt></td><td align="center" valign="top"><tt>QFile::WriteOther</tt></td></tr>
-<tr><td valign="top"><tt>QFileInfo::ExeOther</tt></td><td align="center" valign="top"><tt>QFile::ExeOther</tt></td></tr>
-</table></p>
-<p>The PermissionSpec type is a typedef for <a href="qflags.html">QFlags</a>&lt;Permission&gt;. It stores an OR combination of Permission values.</p>
-<hr />
-<h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QFileInfo/absFilePath" />
-<h3 class="fn"><a name="absFilePath"></a><a href="qstring.html">QString</a> QFileInfo::absFilePath () const</h3>
-<p>Use <a href="qfileinfo.html#absoluteFilePath">absoluteFilePath</a>() instead.</p>
-<h3 class="fn"><a name="baseName-2"></a><a href="qstring.html">QString</a> QFileInfo::baseName ( bool <i>complete</i> )</h3>
-<p>This is an overloaded member function, provided for convenience.</p>
-<p>Use <a href="qfileinfo.html#completeBaseName">completeBaseName</a>() or the <a href="qfileinfo.html#baseName">baseName</a>() overload that takes no parameters instead.</p>
-<a name="//apple_ref/cpp/instm/QFileInfo/convertToAbs" />
-<h3 class="fn"><a name="convertToAbs"></a>bool QFileInfo::convertToAbs ()</h3>
-<p>Use <a href="qfileinfo.html#makeAbsolute">makeAbsolute</a>() instead.</p>
-<h3 class="fn"><a name="dir-2"></a><a href="qdir.html">QDir</a> QFileInfo::dir ( bool <i>absPath</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience.</p>
-<p>Use <a href="qfileinfo.html#absoluteDir">absoluteDir</a>() or the <a href="qfileinfo.html#dir">dir</a>() overload that takes no parameters instead.</p>
-<a name="//apple_ref/cpp/instm/QFileInfo/dirPath" />
-<h3 class="fn"><a name="dirPath"></a><a href="qstring.html">QString</a> QFileInfo::dirPath ( bool <i>absPath</i> = false ) const</h3>
-<p>Returns the path (which may be relative). If <i>absPath</i> is true, returns the absolute path, i.e&#x2e;, from the root.</p>
-<a name="//apple_ref/cpp/instm/QFileInfo/extension" />
-<h3 class="fn"><a name="extension"></a><a href="qstring.html">QString</a> QFileInfo::extension ( bool <i>complete</i> = true ) const</h3>
-<p>Use <a href="qfileinfo.html#completeSuffix">completeSuffix</a>() or <a href="qfileinfo.html#suffix">suffix</a>() instead.</p>
-<h3 class="fn"><a name="permission-2"></a>bool QFileInfo::permission ( <a href="qfileinfo.html#Permission-enum">PermissionSpec</a> <i>permissions</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience.</p>
-<p>Use <a href="qfileinfo.html#permission">permission</a>() instead.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

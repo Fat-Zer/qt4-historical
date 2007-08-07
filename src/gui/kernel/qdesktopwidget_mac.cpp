@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -36,12 +51,6 @@ void qt_mac_dispose_rgn(RgnHandle r); //qregion_mac.cpp
   QDesktopWidget member functions
  *****************************************************************************/
 
-#if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5)
-typedef CGDirectDisplayID QtMacDisplayType;
-#else
-typedef GDHandle QtMacDisplayType;
-#endif
-
 class QDesktopWidgetPrivate : public QWidgetPrivate
 {
 public:
@@ -50,9 +59,13 @@ public:
     int appScreen;
     int screenCount;
 
-    QVector<QtMacDisplayType> devs;
+    // Icky Icky Icky... we have two different types depending on
+    // which version of OS X we are running. They are both 32-bit values though
+    // so we can do the casting that needs to be done. Sensitive viewers of
+    // this code may want to look away.
+    QVector<CGDirectDisplayID> devs;
     QVector<QRect> rects;
-    static void readScreenInformation(QVector<QtMacDisplayType> &devices, QVector<QRect> &screenRects,
+    static void readScreenInformation(QVector<CGDirectDisplayID> &devices, QVector<QRect> &screenRects,
                                       int &screenCount);
 };
 
@@ -62,35 +75,41 @@ QDesktopWidgetPrivate::QDesktopWidgetPrivate()
     readScreenInformation(devs, rects, screenCount);
 }
 
-void QDesktopWidgetPrivate::readScreenInformation(QVector<QtMacDisplayType> &devices,
+void QDesktopWidgetPrivate::readScreenInformation(QVector<CGDirectDisplayID> &devices,
                                                   QVector<QRect> &screenRects, int &screenCount)
 {
     screenCount = 0;
 #if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5)
     CGDisplayCount cg_count;
-    CGGetActiveDisplayList(0, 0, &cg_count);
-    screenCount = cg_count;
-#else
-    for (GDHandle g = GetMainDevice(); g; g = GetNextDevice(g))
-        ++screenCount;
+    if (QSysInfo::MacintoshVersion >= QSysInfo::MV_10_5) {
+        CGGetActiveDisplayList(0, 0, &cg_count);
+        screenCount = cg_count;
+    } else
 #endif
+    {
+        for (GDHandle g = GetMainDevice(); g; g = GetNextDevice(g))
+            ++screenCount;
+    }
     devices.resize(screenCount);
     screenRects.resize(screenCount);
 #if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5)
-    CGGetActiveDisplayList(screenCount, devices.data(), &cg_count);
-    Q_ASSERT(cg_count == (CGDisplayCount)screenCount);
-    for(int i = 0; i < screenCount; ++i) {
-        CGRect r = CGDisplayBounds(devices.at(i));
-        screenRects[i] = QRectF(r.origin.x, r.origin.y, r.size.width, r.size.height).toRect();
-    }
-#else
-    int i = 0;
-    for (GDHandle g = GetMainDevice(); i < screenCount && g; g = GetNextDevice(g), ++i) {
-        devices[i] = g;
-        Rect r = (*g)->gdRect;
-        screenRects[i] = QRect(r.left, r.top, r.right - r.left, r.bottom - r.top);
-    }
+    if (QSysInfo::MacintoshVersion >= QSysInfo::MV_10_5) {
+        CGGetActiveDisplayList(screenCount, devices.data(), &cg_count);
+        Q_ASSERT(cg_count == (CGDisplayCount)screenCount);
+        for (int i = 0; i < screenCount; ++i) {
+            CGRect r = CGDisplayBounds(devices.at(i));
+            screenRects[i] = QRectF(r.origin.x, r.origin.y, r.size.width, r.size.height).toRect();
+        }
+    } else
 #endif
+    {
+        int i = 0;
+        for (GDHandle g = GetMainDevice(); i < screenCount && g; g = GetNextDevice(g), ++i) {
+            devices[i] = CGDirectDisplayID(g);
+            Rect r = (*g)->gdRect;
+            screenRects[i] = QRect(r.left, r.top, r.right - r.left, r.bottom - r.top);
+        }
+    }
 }
 
 QDesktopWidget::QDesktopWidget()
@@ -130,14 +149,15 @@ const QRect QDesktopWidget::availableGeometry(int screen) const
     if(screen < 0 || screen >= d->screenCount)
         screen = d->appScreen;
 #if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5)
-    HIRect r;
-    HIWindowGetAvailablePositioningBounds(d->devs[screen], kHICoordSpaceScreenPixel, &r);
-    return QRectF(r.origin.x, r.origin.y, r.size.width, r.size.height).toRect();
-#else
-    Rect r;
-    GetAvailableWindowPositioningBounds(d->devs[screen], &r);
-    return QRect(r.left, r.top, r.right - r.left, r.bottom - r.top);
+    if (QSysInfo::MacintoshVersion >= QSysInfo::MV_10_5) {
+        HIRect r;
+        HIWindowGetAvailablePositioningBounds(d->devs[screen], kHICoordSpaceScreenPixel, &r);
+        return QRectF(r.origin.x, r.origin.y, r.size.width, r.size.height).toRect();
+    }
 #endif
+    Rect r;
+    GetAvailableWindowPositioningBounds(reinterpret_cast<GDHandle>(d->devs[screen]), &r);
+    return QRect(r.left, r.top, r.right - r.left, r.bottom - r.top);
 }
 
 const QRect QDesktopWidget::screenGeometry(int screen) const
@@ -189,7 +209,7 @@ void QDesktopWidget::resizeEvent(QResizeEvent *)
     int oldScreenCount = d->screenCount;
     QVector<QRect> oldRects = d->rects;
 
-    QVector<QtMacDisplayType> newDevs;
+    QVector<CGDirectDisplayID> newDevs;
     QVector<QRect> newRects;
     int newScreenCount;
     QDesktopWidgetPrivate::readScreenInformation(newDevs, newRects, newScreenCount);

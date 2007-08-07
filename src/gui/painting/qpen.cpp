@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -549,7 +564,7 @@ void QPen::setDashPattern(const QVector<qreal> &pattern)
 /*!
     Returns the dash offset for the pen.
 
-    \sa setDashOffset
+    \sa setDashOffset()
 */
 qreal QPen::dashOffset() const
 {
@@ -812,7 +827,8 @@ bool QPen::isCosmetic() const
 
 
 /*!
-    Sets this pen to cosmetic.
+    Sets this pen to cosmetic or non-cosmetic, depending on the value of
+    \a cosmetic.
 
     \sa isCosmetic()
 */
@@ -887,12 +903,14 @@ bool QPen::isDetached()
 
 QDataStream &operator<<(QDataStream &s, const QPen &p)
 {
-    if (s.version() < 3)
+    if (s.version() < 3) {
         s << (quint8)p.style();
-    else if (s.version() < QDataStream::Qt_4_3)
+    } else if (s.version() < QDataStream::Qt_4_3) {
         s << (quint8)(p.style() | p.capStyle() | p.joinStyle());
-    else
+    } else {
         s << (quint16)(p.style() | p.capStyle() | p.joinStyle());
+        s << p.isCosmetic();
+    }
 
     if (s.version() < 7) {
         s << (quint8)p.width();
@@ -928,12 +946,14 @@ QDataStream &operator>>(QDataStream &s, QPen &p)
     double miterLimit = 2;
     QVector<qreal> dashPattern;
     double dashOffset = 0;
+    bool cosmetic = false;
     if (s.version() < QDataStream::Qt_4_3) {
         quint8 style8;
         s >> style8;
         style = style8;
     } else {
         s >> style;
+        s >> cosmetic;
     }
     if (s.version() < 7) {
         s >> width8;
@@ -958,6 +978,7 @@ QDataStream &operator>>(QDataStream &s, QPen &p)
     p.d->dashPattern = dashPattern;
     p.d->miterLimit = miterLimit;
     p.d->dashOffset = dashOffset;
+    p.d->cosmetic = cosmetic;
 
     return s;
 }
@@ -981,3 +1002,12 @@ QDebug operator<<(QDebug dbg, const QPen &p)
 }
 #endif
 
+/*!
+    \fn DataPtr &QPen::data_ptr()
+    \internal
+*/
+
+/*!
+    \typedef QPen::DataPtr
+    \internal
+*/

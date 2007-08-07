@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -2244,56 +2259,12 @@ void QFontCache::clear()
 #if defined(Q_WS_QWS) && !defined(QT_NO_QWS_QPF2)
 void QFontCache::removeEngineForFont(const QByteArray &_fontName)
 {
-    QFontEngine *engineToRemove = 0;
-    QString fontName = QFile::decodeName(_fontName);
-//    qDebug() << "removeEngineForFont" << fontName;
 
-#ifndef QT_NO_QWS_QPF
-    for (EngineCache::ConstIterator it = engineCache.constBegin(), end = engineCache.constEnd();
-         it != end; ++it) {
-        if (it->data->type() == QFontEngine::QPF2
-            && static_cast<QFontEngineQPF *>(it->data)->fontFile() == fontName) {
-            engineToRemove = it->data;
-            break;
-        }
-    }
-#endif // QT_NO_QWS_QPF
-
-    if (!engineToRemove)
-        return;
-
-//    qDebug() << "found engine:" << engineToRemove;
-
-    {
-        EngineDataCache::Iterator it = engineDataCache.begin(),
-                                 end = engineDataCache.end();
-        while (it != end) {
-            QFontEngineData *data = it.value();
-            for (int i = 0; i < QUnicodeTables::ScriptCount; ++i) {
-                if (data->engines[i] && data->engines[i] == engineToRemove) {
-                    data->engines[i]->ref.deref();
-                    data->engines[i] = 0;
-                }
-            }
-            ++it;
-        }
-    }
-
-    // ###### this needs to be fixed once we introduce the multi fontengine
-    // for embedded!!
-    for (EngineCache::Iterator it = engineCache.begin(), end = engineCache.end();
-         it != end; ++it) {
-        if (it->data == engineToRemove) {
-            Q_ASSERT(it->data->ref == 0);
-//            qDebug() << "deleting engine";
-            delete it->data;
-            it->data = 0;
-            engineCache.erase(it);
-            engineToRemove = 0;
-            break;
-        }
-    }
-    Q_ASSERT(!engineToRemove);
+    /* This could be optimized but the code becomes much more complex if we want to handle multi
+     * font engines and it is probably not worth it. Therefore we just clear the entire font cache.
+     */
+    Q_UNUSED(_fontName);
+    clear();
 }
 #endif
 

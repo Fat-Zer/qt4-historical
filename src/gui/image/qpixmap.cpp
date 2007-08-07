@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -323,7 +338,7 @@ QPixmap::operator QVariant() const
 */
 
 /*!
-    \fn QMatrix QPixmap::trueMatrix(const QMatrix &matrix, int width, int height)
+    \fn QMatrix QPixmap::trueMatrix(const QTransform &matrix, int width, int height)
 
     Returns the actual matrix used for transforming a pixmap with the
     given \a width, \a height and \a matrix.
@@ -338,14 +353,21 @@ QPixmap::operator QVariant() const
     \sa transformed(), {QPixmap#Pixmap Transformations}{Pixmap
     Transformations}
 */
-QMatrix QPixmap::trueMatrix(const QMatrix &m, int w, int h)
-{
-    return trueMatrix(QTransform(m), w, h).toAffine();
-}
-
 QTransform QPixmap::trueMatrix(const QTransform &m, int w, int h)
 {
     return QImage::trueMatrix(m, w, h);
+}
+
+/*!
+  \overload
+
+  This convenience function loads the matrix \a m into a
+  QTransform and calls the overloaded function with the
+  QTransform and the width \a w and the height \a h.
+ */
+QMatrix QPixmap::trueMatrix(const QMatrix &m, int w, int h)
+{
+    return trueMatrix(QTransform(m), w, h).toAffine();
 }
 
 
@@ -608,8 +630,8 @@ bool QPixmap::load(const QString &fileName, const char *format, Qt::ImageConvers
         return false;
 
     QFileInfo info(fileName);
-    QString key = QLatin1String("qt_pixmap_") + info.absoluteFilePath() + QLatin1Char('_') + info.lastModified().toString()
-                  + QString::number(data->type);
+    QString key = QLatin1String("qt_pixmap_") + info.absoluteFilePath() + QLatin1Char('_') + info.lastModified().toString() + QLatin1Char('_') +
+                  QString::number(info.size()) + QLatin1Char('_') + QString::number(data->type);
 
     if (QPixmapCache::find(key, *this))
         return true;
@@ -779,7 +801,7 @@ int QPixmap::serialNumber() const
 */
 qint64 QPixmap::cacheKey() const
 {
-    return -(((qint64) data->ser_no) << 32) | ((qint64) (data->detach_no));
+    return (((qint64) data->ser_no) << 32) | ((qint64) (data->detach_no));
 }
 
 static void sendResizeEvents(QWidget *target)
@@ -1398,4 +1420,15 @@ QPixmap QPixmap::scaledToHeight(int h, Qt::TransformationMode mode) const
     setAlphaChannel() function sets the pixmap's alpha channel.
 
     \sa QBitmap, QImage, QImageReader, QImageWriter
+*/
+
+
+/*!
+    \typedef QPixmap::DataPtr
+    \internal
+*/
+
+/*!
+    \fn DataPtr &QPixmap::data_ptr()
+    \internal
 */

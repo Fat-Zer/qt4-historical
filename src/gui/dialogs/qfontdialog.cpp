@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -367,14 +382,14 @@ QFontDialog::~QFontDialog()
 /*!
   Executes a modal font dialog and returns a font.
 
-  If the user clicks OK, the selected font is returned. If the user
-  clicks Cancel, the \a initial font is returned.
+  If the user clicks \gui OK, the selected font is returned. If the user
+  clicks \gui Cancel, the \a initial font is returned.
 
   The dialog is constructed with the given \a parent.  \a caption is
   shown as the window title of the dialog and  \a initial is the
-  initially selected font. If the \a ok parameter is not-null, \e *\a
-  ok is set to true if the user clicked OK, and set to false if the
-  user clicked Cancel.
+  initially selected font. If the \a ok parameter is not-null, the
+  value it refers to is set to true if the user clicks \gui OK, and
+  set to false if the user clicks \gui Cancel.
 
   This static function is less flexible than the full QFontDialog
   object, but is convenient and easy to use.
@@ -418,12 +433,13 @@ QFont QFontDialog::getFont(bool *ok, const QFont &initial,
 
   Executes a modal font dialog and returns a font.
 
-  If the user clicks OK, the selected font is returned. If the user
-  clicks Cancel, the Qt default font is returned.
+  If the user clicks \gui OK, the selected font is returned. If the user
+  clicks \gui Cancel, the Qt default font is returned.
 
   The dialog is constructed with the given \a parent.
-  If the \a ok parameter is not-null, \e *\a ok is set to true if the
-  user clicked OK, and false if the user clicked Cancel.
+  If the \a ok parameter is not-null, the value it refers to is set
+  to true if the user clicks \gui OK, and false if the user clicks
+  \gui Cancel.
 
   This static function is less functional than the full QFontDialog
   object, but is convenient and easy to use.
@@ -803,6 +819,10 @@ void QFontDialogPrivate::retranslateStrings()
     writingSystemAccel->setText(QFontDialog::tr("Wr&iting System"));
 }
 
+
+/*!
+    \reimp
+*/
 void QFontDialog::changeEvent(QEvent *e)
 {
     Q_D(QFontDialog);

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/qt3support/network/q3url.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/qt3support/network/q3url.cpp -->
 <head>
   <title>Qt 4.3: Q3Url Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -108,15 +108,15 @@
 <p>The individual parts of a URL can be set with <a href="q3url.html#setProtocol">setProtocol</a>(), <a href="q3url.html#setHost">setHost</a>(), <a href="q3url.html#setPort">setPort</a>(), <a href="q3url.html#setPath">setPath</a>(), <a href="q3url.html#setFileName">setFileName</a>(), <a href="q3url.html#setRef">setRef</a>() and <a href="q3url.html#setQuery">setQuery</a>(). A URL could contain, for example, an ftp address which requires a user name and password; these can be set with <a href="q3url.html#setUser">setUser</a>() and <a href="q3url.html#setPassword">setPassword</a>().</p>
 <p>Because path is always encoded internally you must not use &quot;%00&quot; in the path, although this is okay (but not recommended) for the query.</p>
 <p>Q3Url is normally used like this:</p>
-<pre> Q3Url url( &quot;http:<span class="comment">//www.trolltech.com&quot; );</span>
-<span class="comment"> // or</span>
- Q3Url url( &quot;file:<span class="comment">///home/myself/Mail&quot;, &quot;Inbox&quot; );</span></pre>
+<pre> Q3Url url( &quot;http:<span class="comment">//</span>www.trolltech.com&quot; );
+<span class="comment"> //</span> or
+ Q3Url url( &quot;file:<span class="comment">//</span>/home/myself/Mail&quot;, &quot;Inbox&quot; );</pre>
 <p>You can then access and manipulate the various parts of the URL.</p>
 <p>To make it easy to work with Q3Urls and QStrings, Q3Url implements the necessary cast and assignment operators so you can do following:</p>
-<pre> Q3Url url( &quot;http:<span class="comment">//www.trolltech.com&quot; );</span>
+<pre> Q3Url url( &quot;http:<span class="comment">//</span>www.trolltech.com&quot; );
  QString s = url;
-<span class="comment"> // or</span>
- QString s( &quot;http:<span class="comment">//www.trolltech.com&quot; );</span>
+<span class="comment"> //</span> or
+ QString s( &quot;http:<span class="comment">//</span>www.trolltech.com&quot; );
  Q3Url url( s );</pre>
 <p>Use the static functions, <a href="q3url.html#encode">encode</a>() and <a href="q3url.html#decode">decode</a>() to encode or decode a URL in a string. (They operate on the string in-place.) The <a href="q3url.html#isRelativeUrl">isRelativeUrl</a>() static function returns true if the given string is a relative URL.</p>
 <p>If you want to use a URL to work on a hierarchical structure (e.g&#x2e; a local or remote filesystem), you might want to use the subclass <a href="q3urloperator.html">Q3UrlOperator</a>.</p>
@@ -134,13 +134,13 @@
 <h3 class="fn"><a name="Q3Url-4"></a>Q3Url::Q3Url ( const Q3Url &amp; <i>url</i>, const <a href="qstring.html">QString</a> &amp; <i>relUrl</i>, bool <i>checkSlash</i> = false )</h3>
 <p>Constructs an URL taking <i>url</i> as the base (context) and <i>relUrl</i> as a relative URL to <i>url</i>. If <i>relUrl</i> is not relative, <i>relUrl</i> is taken as the new URL.</p>
 <p>For example, the path of</p>
-<pre> Q3Url url( &quot;ftp:<span class="comment">//ftp.trolltech.com/qt/source&quot;, &quot;qt-2.1.0.tar.gz&quot; );</span></pre>
+<pre> Q3Url url( &quot;ftp:<span class="comment">//</span>ftp.trolltech.com/qt/source&quot;, &quot;qt-2.1.0.tar.gz&quot; );</pre>
 <p>will be &quot;/qt/srource/qt-2.1&#x2e;0&#x2e;tar.gz&quot;.</p>
 <p>On the other hand,</p>
-<pre> Q3Url url( &quot;ftp:<span class="comment">//ftp.trolltech.com/qt/source&quot;, &quot;/usr/local&quot; );</span></pre>
+<pre> Q3Url url( &quot;ftp:<span class="comment">//</span>ftp.trolltech.com/qt/source&quot;, &quot;/usr/local&quot; );</pre>
 <p>will result in a new URL, &quot;ftp://ftp.trolltech.com/usr/local&quot;, because &quot;/usr/local&quot; isn't relative.</p>
 <p>Similarly,</p>
-<pre> Q3Url url( &quot;ftp:<span class="comment">//ftp.trolltech.com/qt/source&quot;, &quot;file:///usr/local&quot; );</span></pre>
+<pre> Q3Url url( &quot;ftp:<span class="comment">//</span>ftp.trolltech.com/qt/source&quot;, &quot;file:<span class="comment">//</span>/usr/local&quot; );</pre>
 <p>will result in a new URL, with &quot;/usr/local&quot; as the path and &quot;file&quot; as the protocol.</p>
 <p>Normally it is expected that the path of <i>url</i> points to a directory, even if the path has no slash at the end. But if you want the constructor to handle the last part of the path as a file name if there is no slash at the end, and to let it be replaced by the file name of <i>relUrl</i> (if it contains one), set <i>checkSlash</i> to true.</p>
 <a name="//apple_ref/cpp/instm/Q3Url/~Q3Url" />
@@ -157,9 +157,9 @@
 <a name="//apple_ref/cpp/clm/Q3Url/decode" />
 <h3 class="fn"><a name="decode"></a>void Q3Url::decode ( <a href="qstring.html">QString</a> &amp; <i>url</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Decodes the <i>url</i> in-place into UTF-8. For example</p>
-<pre> QString url = &quot;http%3A<span class="comment">//www%20trolltech%20com&quot;</span>
+<pre> QString url = &quot;http%3A<span class="comment">//</span>www%20trolltech%20com&quot;
  Q3Url::decode( url );
-<span class="comment"> // url is now &quot;http://www.trolltech.com&quot;</span></pre>
+<span class="comment"> //</span> url is now &quot;http:<span class="comment">//</span>www.trolltech.com&quot;</pre>
 <p>See also <a href="q3url.html#encode">encode</a>().</p>
 <a name="//apple_ref/cpp/instm/Q3Url/dirPath" />
 <h3 class="fn"><a name="dirPath"></a><a href="qstring.html">QString</a> Q3Url::dirPath () const</h3>
@@ -168,9 +168,9 @@
 <a name="//apple_ref/cpp/clm/Q3Url/encode" />
 <h3 class="fn"><a name="encode"></a>void Q3Url::encode ( <a href="qstring.html">QString</a> &amp; <i>url</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Encodes the <i>url</i> in-place into UTF-8. For example</p>
-<pre> QString url = http:<span class="comment">//www.trolltech.com</span>
+<pre> QString url = http:<span class="comment">//</span>www.trolltech.com
  Q3Url::encode( url );
-<span class="comment"> // url is now &quot;http%3A//www%20trolltech%20com&quot;</span></pre>
+<span class="comment"> //</span> url is now &quot;http%3A<span class="comment">//</span>www%20trolltech%20com&quot;</pre>
 <p>See also <a href="q3url.html#decode">decode</a>().</p>
 <a name="//apple_ref/cpp/instm/Q3Url/encodedPathAndQuery" />
 <h3 class="fn"><a name="encodedPathAndQuery"></a><a href="qstring.html">QString</a> Q3Url::encodedPathAndQuery ()</h3>
@@ -320,6 +320,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

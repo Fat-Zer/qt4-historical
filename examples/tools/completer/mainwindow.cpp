@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -26,7 +41,7 @@
 #include "mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent), completer(0), comboBox(0), lineEdit(0)
+    : QMainWindow(parent), completer(0), lineEdit(0)
 {
     createMenu();
 
@@ -55,11 +70,7 @@ MainWindow::MainWindow(QWidget *parent)
     caseCombo = new QComboBox;
     caseCombo->addItem(tr("Case Insensitive"));
     caseCombo->addItem(tr("Case Sensitive"));
-#ifdef Q_OS_WIN
     caseCombo->setCurrentIndex(0);
-#else
-    caseCombo->setCurrentIndex(1);
-#endif
 
     wrapCheckBox = new QCheckBox;
     wrapCheckBox->setText(tr("Wrap around completions"));
@@ -74,9 +85,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     lineEdit = new QLineEdit;
     
-    comboBox = new QComboBox;
-    comboBox->setEditable(true);
-    
     QGridLayout *layout = new QGridLayout;
     layout->addWidget(modelLabel, 0, 0); layout->addWidget(modelCombo, 0, 1);
     layout->addWidget(modeLabel, 1, 0);  layout->addWidget(modeCombo, 1, 1);
@@ -84,7 +92,6 @@ MainWindow::MainWindow(QWidget *parent)
     layout->addWidget(wrapCheckBox, 3, 0);
     layout->addWidget(contentsLabel, 4, 0, 1, 2);
     layout->addWidget(lineEdit, 5, 0, 1, 2);
-    layout->addWidget(comboBox, 6, 0, 1, 2);
     centralWidget->setLayout(layout);
     setCentralWidget(centralWidget);
 
@@ -212,7 +219,6 @@ void MainWindow::changeModel()
     changeCase(caseCombo->currentIndex());
     completer->setWrapAround(wrapCheckBox->isChecked());
     lineEdit->setCompleter(completer);
-    comboBox->setCompleter(completer);
     connect(wrapCheckBox, SIGNAL(clicked(bool)), completer, SLOT(setWrapAround(bool)));
 }
 

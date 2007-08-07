@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/doc/src/q3valuelist.qdoc -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/doc/src/q3valuelist.qdoc -->
 <head>
   <title>Qt 4.3: Q3ValueList Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -135,11 +135,11 @@
              (*it).forename().latin1() &lt;&lt; &quot; earns &quot; &lt;&lt;
              (*it).salary() &lt;&lt; endl;
 
-<span class="comment"> // Output:</span>
-<span class="comment"> // Doe, John earns 50000</span>
-<span class="comment"> // Williams, Jane earns 80000</span>
-<span class="comment"> // Hawthorne, Mary earns 90000</span>
-<span class="comment"> // Jones, Tom earns 60000</span></pre>
+<span class="comment"> //</span> Output:
+<span class="comment"> //</span> Doe, John earns 50000
+<span class="comment"> //</span> Williams, Jane earns 80000
+<span class="comment"> //</span> Hawthorne, Mary earns 90000
+<span class="comment"> //</span> Jones, Tom earns 60000</pre>
 <p>Notice that the latest changes to Mary's salary did not affect the value in the list because the list created a copy of Mary's entry.</p>
 <p>There are several ways to find items in the list. The <a href="qlinkedlist.html#begin">begin</a>() and <a href="qlinkedlist.html#end">end</a>() functions return iterators to the beginning and end of the list. The advantage of getting an iterator is that you can move forward or backward from this position by incrementing/decrementing the iterator. The iterator returned by <a href="qlinkedlist.html#end">end</a>() points to the item which is one <i>past</i> the last item in the container. The past-the-end iterator is still associated with the list it belongs to, however it is <i>not</i> dereferenceable; operator*() will not return a well-defined value. If the list is <a href="qlinkedlist.html#empty">empty</a>(), the iterator returned by <a href="qlinkedlist.html#begin">begin</a>() will equal the iterator returned by <a href="qlinkedlist.html#end">end</a>().</p>
 <p>It is safe to have multiple iterators a the list at the same time. If some member of the list is removed, only iterators pointing to the removed member become invalid. Inserting into the list does not invalidate any iterator. For convenience, the function <a href="qlinkedlist.html#last">last</a>() returns a reference to the last item in the list, and <a href="qlinkedlist.html#first">first</a>() returns a reference to the the first item. If the list is <a href="qlinkedlist.html#empty">empty</a>(), both <a href="qlinkedlist.html#last">last</a>() and <a href="qlinkedlist.html#first">first</a>() have undefined behavior (your application will crash or do unpredictable things). Use <a href="qlinkedlist.html#last">last</a>() and <a href="qlinkedlist.html#first">first</a>() with caution, for example:</p>
@@ -149,13 +149,13 @@
  list.append( 3 );
  ...
  if ( !list.empty() ) {
-     <span class="comment">// OK, modify the first item</span>
+     <span class="comment">//</span> OK, modify the first item
      int&amp; i = list.first();
      i = 18;
  }
  ...
  Q3ValueList&lt;double&gt; dlist;
- double d = dlist.last(); <span class="comment">// undefined</span></pre>
+ double d = dlist.last(); <span class="comment">//</span> undefined</pre>
 <p>Because Q3ValueList is value-based there is no need to be careful about deleting items in the list. The list holds its own copies and will free them if the corresponding member or the list itself is deleted. You can force the list to free all of its items with <a href="qlinkedlist.html#clear">clear</a>().</p>
 <p>Q3ValueList is shared implicitly, which means it can be copied in constant time, i.e&#x2e; O(1). If multiple Q3ValueList instances share the same data and one needs to modify its contents, this modifying instance makes a copy and modifies its private copy; therefore it does not affect the other instances; this takes O(n) time. This is often called &quot;copy on write&quot;. If a Q3ValueList is being used in a multi-threaded program, you must protect all access to the list. See <a href="qmutex.html">QMutex</a>.</p>
 <p>There are several ways to insert items into the list. The <a href="q3valuelist.html#prepend">prepend</a>() and <a href="q3valuelist.html#append">append</a>() functions insert items at the beginning and the end of the list respectively. The <a href="q3valuelist.html#insert">insert</a>() function comes in several flavors and can be used to add one or more items at specific positions within the list.</p>
@@ -237,7 +237,7 @@
  Q3ValueList&lt;int&gt;::iterator it = l.end();
  --it;
  if ( it != end() )
-     <span class="comment">// ...</span></pre>
+     <span class="comment">//</span> ...</pre>
 <h3 class="fn"><a name="fromLast-2"></a>Q3ValueList&lt;T&gt;::Iterator Q3ValueList::fromLast ()</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns an iterator to the last item in the list, or <a href="qlinkedlist.html#end">end</a>() if there is no last item.</p>
@@ -247,7 +247,7 @@
  Q3ValueList&lt;int&gt;::iterator it = l.end();
  --it;
  if ( it != end() )
-     <span class="comment">// ...</span></pre>
+     <span class="comment">//</span> ...</pre>
 <a name="//apple_ref/cpp/instm/Q3ValueList/insert" />
 <h3 class="fn"><a name="insert"></a>Q3ValueList&lt;T&gt;::Iterator Q3ValueList::insert ( Q3ValueList&lt;T&gt;::Iterator <i>it</i>, const T &amp; <i>x</i> )</h3>
 <p>Inserts the value <i>x</i> in front of the item pointed to by the iterator, <i>it</i>.</p>
@@ -326,6 +326,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

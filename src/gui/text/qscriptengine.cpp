@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -3285,6 +3300,7 @@ static bool indic_shape_syllable(QOpenType *openType, QShaperItem *item, bool in
 
    We return syllable boundaries on invalid combinations aswell
 */
+#if !defined(Q_WS_WIN)
 static int indic_nextSyllableBoundary(int script, const QString &s, int start, int end, bool *invalid)
 {
     *invalid = false;
@@ -3366,6 +3382,7 @@ static int indic_nextSyllableBoundary(int script, const QString &s, int start, i
  finish:
     return pos+start;
 }
+#endif
 
 #if defined(Q_WS_X11) || defined(Q_WS_QWS)
 
@@ -3419,6 +3436,7 @@ static bool indic_shape(QShaperItem *item)
 }
 #endif
 
+#if !defined(Q_WS_WIN)
 static void indic_attributes(int script, const QString &text, int from, int len, QCharAttributes *attributes)
 {
     int end = from + len;
@@ -3442,6 +3460,7 @@ static void indic_attributes(int script, const QString &text, int from, int len,
 
 
 }
+#endif
 
 
 // --------------------------------------------------------------------------------------------------------------------------------------------
@@ -3454,6 +3473,7 @@ static void indic_attributes(int script, const QString &text, int from, int len,
 #include <qlibrary.h>
 
 
+#if defined(Q_WS_X11) || defined(Q_WS_QWS) || defined(Q_WS_MAC)
 static void thaiWordBreaks(const QChar *string, const int len, QCharAttributes *attributes)
 {
 #ifdef QT_NO_TEXTCODEC
@@ -3499,14 +3519,17 @@ static void thaiWordBreaks(const QChar *string, const int len, QCharAttributes *
         delete [] break_positions;
 #endif // QT_NO_TEXTCODEC
 }
+#endif
 
 
+#if !defined(Q_WS_WIN)
 static void thai_attributes( int script, const QString &text, int from, int len, QCharAttributes *attributes )
 {
     Q_UNUSED(script);
     Q_ASSERT(script == QUnicodeTables::Thai);
     thaiWordBreaks(text.unicode() + from, len, attributes);
 }
+#endif
 
 
 
@@ -3644,6 +3667,7 @@ static bool tibetan_shape_syllable(QOpenType *openType, QShaperItem *item, bool 
 #endif
 
 
+#if defined(Q_WS_X11) || defined(Q_WS_QWS) || defined(Q_WS_MAC)
 static int tibetan_nextSyllableBoundary(const QString &s, int start, int end, bool *invalid)
 {
     const QChar *uc = s.unicode() + start;
@@ -3687,6 +3711,7 @@ finish:
     *invalid = false;
     return start+pos;
 }
+#endif
 
 #if defined(Q_WS_X11) || defined(Q_WS_QWS)
 static bool tibetan_shape(QShaperItem *item)
@@ -3731,6 +3756,7 @@ static bool tibetan_shape(QShaperItem *item)
 }
 #endif
 
+#if !defined(Q_WS_WIN)
 static void tibetan_attributes(int script, const QString &text, int from, int len, QCharAttributes *attributes)
 {
     Q_UNUSED(script);
@@ -3755,6 +3781,7 @@ static void tibetan_attributes(int script, const QString &text, int from, int le
         Q_ASSERT(i == boundary);
     }
 }
+#endif
 
 // --------------------------------------------------------------------------------------------------------------------------------------------
 //
@@ -4365,6 +4392,7 @@ static bool khmer_shape(QShaperItem *item)
 }
 #endif
 
+#if !defined(Q_WS_WIN)
 static void khmer_attributes( int script, const QString &text, int from, int len, QCharAttributes *attributes )
 {
     Q_UNUSED(script);
@@ -4389,6 +4417,7 @@ static void khmer_attributes( int script, const QString &text, int from, int len
 	Q_ASSERT( i == boundary );
     }
 }
+#endif
 
 
 // --------------------------------------------------------------------------------------------------------------------------------------------
@@ -4619,6 +4648,7 @@ static const QOpenType::Features myanmar_features[] = {
 // This means that we can keep the logical order apart from having to
 // move the pre vowel, medial ra and kinzi
 
+#if defined(Q_WS_X11) || defined(Q_WS_QWS)
 static bool myanmar_shape_syllable(QOpenType *openType, QShaperItem *item, bool invalid)
 {
 #ifndef QT_NO_OPENTYPE
@@ -4825,7 +4855,9 @@ static bool myanmar_shape_syllable(QOpenType *openType, QShaperItem *item, bool 
     item->glyphs[0].attributes.clusterStart = true;
     return true;
 }
+#endif
 
+#if defined(Q_WS_X11) || defined(Q_WS_QWS)
 static bool myanmar_shape(QShaperItem *item)
 {
     Q_ASSERT(item->script == QUnicodeTables::Myanmar);
@@ -4875,7 +4907,9 @@ static bool myanmar_shape(QShaperItem *item)
     item->num_glyphs = first_glyph;
     return true;
 }
+#endif
 
+#if defined(Q_WS_X11) || defined(Q_WS_QWS)
 static void myanmar_attributes(int script, const QString &text, int from, int len, QCharAttributes *attributes)
 {
     Q_UNUSED(script);
@@ -4903,6 +4937,7 @@ static void myanmar_attributes(int script, const QString &text, int from, int le
 	Q_ASSERT(i == boundary);
     }
 }
+#endif
 
 #endif
 // --------------------------------------------------------------------------------------------------------------------------------------------

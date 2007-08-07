@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/corelib/kernel/qcoreevent.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/corelib/kernel/qcoreevent.cpp -->
 <head>
   <title>Qt 4.3: QEvent Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -73,6 +73,7 @@
 <a name="//apple_ref/cpp/econst/QEvent/ChildRemoved" />
 <a name="//apple_ref/cpp/econst/QEvent/Clipboard" />
 <a name="//apple_ref/cpp/econst/QEvent/Close" />
+<a name="//apple_ref/cpp/econst/QEvent/ContentsRectChange" />
 <a name="//apple_ref/cpp/econst/QEvent/ContextMenu" />
 <a name="//apple_ref/cpp/econst/QEvent/DeferredDelete" />
 <a name="//apple_ref/cpp/econst/QEvent/DragEnter" />
@@ -118,6 +119,11 @@
 <a name="//apple_ref/cpp/econst/QEvent/LeaveEditFocus" />
 <a name="//apple_ref/cpp/econst/QEvent/LeaveWhatsThisMode" />
 <a name="//apple_ref/cpp/econst/QEvent/LocaleChange" />
+<a name="//apple_ref/cpp/econst/QEvent/NonClientAreaMouseButtonDblClick" />
+<a name="//apple_ref/cpp/econst/QEvent/NonClientAreaMouseButtonPress" />
+<a name="//apple_ref/cpp/econst/QEvent/NonClientAreaMouseButtonRelease" />
+<a name="//apple_ref/cpp/econst/QEvent/NonClientAreaMouseMove" />
+<a name="//apple_ref/cpp/econst/QEvent/MacSizeChange" />
 <a name="//apple_ref/cpp/econst/QEvent/MenubarUpdated" />
 <a name="//apple_ref/cpp/econst/QEvent/MetaCall" />
 <a name="//apple_ref/cpp/econst/QEvent/ModifiedChange" />
@@ -217,6 +223,7 @@
 <tr><td valign="top"><tt>QEvent::ChildRemoved</tt></td><td align="center" valign="top"><tt>71</tt></td><td valign="top">An object loses a child (<a href="qchildevent.html">QChildEvent</a>).</td></tr>
 <tr><td valign="top"><tt>QEvent::Clipboard</tt></td><td align="center" valign="top"><tt>40</tt></td><td valign="top">The clipboard contents have changed (QClipboardEvent).</td></tr>
 <tr><td valign="top"><tt>QEvent::Close</tt></td><td align="center" valign="top"><tt>19</tt></td><td valign="top">Widget was closed (<a href="qcloseevent.html">QCloseEvent</a>).</td></tr>
+<tr><td valign="top"><tt>QEvent::ContentsRectChange</tt></td><td align="center" valign="top"><tt>178</tt></td><td valign="top">The margins of the widget's content rect changed.</td></tr>
 <tr><td valign="top"><tt>QEvent::ContextMenu</tt></td><td align="center" valign="top"><tt>82</tt></td><td valign="top">Context popup menu (<a href="qcontextmenuevent.html">QContextMenuEvent</a>).</td></tr>
 <tr><td valign="top"><tt>QEvent::DeferredDelete</tt></td><td align="center" valign="top"><tt>52</tt></td><td valign="top">The object will be deleted after it has cleaned up.</td></tr>
 <tr><td valign="top"><tt>QEvent::DragEnter</tt></td><td align="center" valign="top"><tt>60</tt></td><td valign="top">The cursor enters a widget during a drag and drop operation (<a href="qdragenterevent.html">QDragEnterEvent</a>).</td></tr>
@@ -262,6 +269,11 @@
 <tr><td valign="top"><tt>QEvent::LeaveEditFocus</tt></td><td align="center" valign="top"><tt>151</tt></td><td valign="top">An editor widget loses focus for editing.</td></tr>
 <tr><td valign="top"><tt>QEvent::LeaveWhatsThisMode</tt></td><td align="center" valign="top"><tt>125</tt></td><td valign="top">Send to toplevel widgets when the application leaves &quot;What's This?&quot; mode.</td></tr>
 <tr><td valign="top"><tt>QEvent::LocaleChange</tt></td><td align="center" valign="top"><tt>88</tt></td><td valign="top">The system locale has changed.</td></tr>
+<tr><td valign="top"><tt>QEvent::NonClientAreaMouseButtonDblClick</tt></td><td align="center" valign="top"><tt>176</tt></td><td valign="top">A mouse double click occurred outside the client area.</td></tr>
+<tr><td valign="top"><tt>QEvent::NonClientAreaMouseButtonPress</tt></td><td align="center" valign="top"><tt>174</tt></td><td valign="top">A mouse button press occurred outside the client area.</td></tr>
+<tr><td valign="top"><tt>QEvent::NonClientAreaMouseButtonRelease</tt></td><td align="center" valign="top"><tt>175</tt></td><td valign="top">A mouse button release occurred outside the client area.</td></tr>
+<tr><td valign="top"><tt>QEvent::NonClientAreaMouseMove</tt></td><td align="center" valign="top"><tt>173</tt></td><td valign="top">A mouse move occurred outside the client area.</td></tr>
+<tr><td valign="top"><tt>QEvent::MacSizeChange</tt></td><td align="center" valign="top"><tt>177</tt></td><td valign="top">The user changed his widget sizes (Mac OS X only).</td></tr>
 <tr><td valign="top"><tt>QEvent::MenubarUpdated</tt></td><td align="center" valign="top"><tt>153</tt></td><td valign="top">The window's menu bar has been updated.</td></tr>
 <tr><td valign="top"><tt>QEvent::MetaCall</tt></td><td align="center" valign="top"><tt>43</tt></td><td valign="top">An asynchronous method invocation via <a href="qmetaobject.html#invokeMethod">QMetaObject::invokeMethod</a>().</td></tr>
 <tr><td valign="top"><tt>QEvent::ModifiedChange</tt></td><td align="center" valign="top"><tt>102</tt></td><td valign="top">Widgets modification state has been changed.</td></tr>
@@ -359,6 +371,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

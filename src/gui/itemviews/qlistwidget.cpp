@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -458,8 +473,8 @@ Qt::DropActions QListModel::supportedDropActions() const
     partially checked with the setCheckState() function. The corresponding
     checkState() function indicates what check state the item currently has.
 
-    The isItemHidden() function can be used to determine whether the
-    item is hidden.  Items can be hidden with setItemHidden().
+    The isHidden() function can be used to determine whether the
+    item is hidden.  Items can be hidden with setHidden().
 
     \section1 Subclassing
 
@@ -567,13 +582,14 @@ QListWidgetItem::QListWidgetItem(QListWidget *view, int type)
     \sa type()
 */
 QListWidgetItem::QListWidgetItem(const QString &text, QListWidget *view, int type)
-    : rtti(type), view(view), d(new QListWidgetItemPrivate(this)),
+    : rtti(type), view(0), d(new QListWidgetItemPrivate(this)),
       itemFlags(Qt::ItemIsSelectable
                 |Qt::ItemIsUserCheckable
                 |Qt::ItemIsEnabled
                 |Qt::ItemIsDragEnabled)
 {
     setData(Qt::DisplayRole, text);
+    this->view = view;
     if (QListModel *model = (view ? ::qobject_cast<QListModel*>(view->model()) : 0))
         model->insert(model->rowCount(), this);
 }
@@ -590,7 +606,7 @@ QListWidgetItem::QListWidgetItem(const QString &text, QListWidget *view, int typ
 */
 QListWidgetItem::QListWidgetItem(const QIcon &icon,const QString &text,
                                  QListWidget *view, int type)
-    : rtti(type), view(view), d(new QListWidgetItemPrivate(this)),
+    : rtti(type), view(0), d(new QListWidgetItemPrivate(this)),
       itemFlags(Qt::ItemIsSelectable
                 |Qt::ItemIsUserCheckable
                 |Qt::ItemIsEnabled
@@ -598,6 +614,7 @@ QListWidgetItem::QListWidgetItem(const QIcon &icon,const QString &text,
 {
     setData(Qt::DisplayRole, text);
     setData(Qt::DecorationRole, icon);
+    this->view = view;
     if (QListModel *model = (view ? ::qobject_cast<QListModel*>(view->model()) : 0))
         model->insert(model->rowCount(), this);
 }

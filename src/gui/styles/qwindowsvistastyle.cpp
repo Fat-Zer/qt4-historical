@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -297,7 +312,7 @@ void Pulse::paint(QPainter *painter, const QStyleOption *option)
  * widget as well as the current one. This is solved by updating dynamic properties on the widget
  * every time the function is called.
  *
- * Transitions interrupting existing transitions should allways be smooth, so whenever a hover-transition
+ * Transitions interrupting existing transitions should always be smooth, so whenever a hover-transition
  * is started on a pulsating button, it uses the current frame of the pulse-animation as the
  * starting image for the hover transition.
  *
@@ -825,7 +840,7 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
                             pulse->setPrimaryImage(startImage);
                             pulse->setAlternateImage(alternateImage);
                             pulse->setStartTime(QTime::currentTime());
-                            pulse->setDuration(1600);
+                            pulse->setDuration(2000);
                             d->startAnimation(pulse);
                             anim = pulse;
                         }
@@ -880,7 +895,7 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
             }
 
             if (const QProgressBar *progressbar = qobject_cast<const QProgressBar *>(widget)) {
-                if (progressbar->value() < progressbar->maximum() && (progressbar->value() > 0 || isIndeterminate) && d->transitionsEnabled()) {
+                if ((progressbar->value() > 0 || isIndeterminate) && d->transitionsEnabled()) {
                     if (!d->widgetAnimation(progressbar)) {
                         Animation *a = new Animation;
                         a->setWidget(const_cast<QWidget*>(widget));
@@ -894,33 +909,58 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
 
             XPThemeData theme(widget, painter, QLatin1String("PROGRESS"), vertical ? PP_FILLVERT : PP_FILL);
             theme.rect = option->rect;
+            bool reverse = bar->direction == Qt::LeftToRight && inverted || bar->direction == Qt::RightToLeft && !inverted;
+            QTime current = QTime::currentTime();
 
             if (isIndeterminate) {
                 if (Animation *a = d->widgetAnimation(widget)) {
-                    QTime current = QTime::currentTime();
-                    int timeDiff = a->startTime().msecsTo(current);
-                    int loopTime = 2200;
-                    float ps = (timeDiff%loopTime)/(float)loopTime;
+                    int glowSize = 120;
+                    int animationWidth = glowSize * 2 + (vertical ? theme.rect.height() : theme.rect.width());
+                    int animOffset = a->startTime().msecsTo(current) / 4;
+                    if (animOffset > animationWidth)
+                        a->setStartTime(QTime::currentTime());
                     painter->save();
                     painter->setClipRect(theme.rect);
-                    QRect barRect;
-                    QRect middleRect;
-
+                    QRect animRect;
+                    QSize pixmapSize(14, 14);
                     if (vertical) {
-                        theme.rect = QRect(theme.rect.left(),
-                                           theme.rect.top() - theme.rect.height() + (int)(2*ps*theme.rect.height()),
-                                           theme.rect.width(), (int)theme.rect.height()/2);
+                        animRect = QRect(theme.rect.left(),
+                                         inverted ? rect.top() - glowSize + animOffset :
+                                                    rect.bottom() + glowSize - animOffset,
+                                         rect.width(), glowSize);
+                         pixmapSize.setHeight(animRect.height());
                     } else {
-                        theme.rect = QRect(theme.rect.left() - theme.rect.width() + (int)(2*ps*theme.rect.width()),
-                                           theme.rect.top(), (int)theme.rect.width()/2, theme.rect.height());
+                        animRect = QRect(reverse ? rect.right() + glowSize - animOffset:
+                                                   rect.left() - glowSize + animOffset,
+                                         rect.top(), glowSize, rect.height());
+                        pixmapSize.setWidth(animRect.width());
                     }
-                    theme.partId = vertical ? PP_FILLVERT : PP_FILL;
-                    d->drawBackground(theme);
+                    QString name = QString::fromLatin1("qiprogress-%1-%2").arg(pixmapSize.width()).arg(pixmapSize.height());
+                    QPixmap pixmap;
+                    if (!QPixmapCache::find(name, pixmap)) {
+                        QImage image(pixmapSize, QImage::Format_ARGB32);
+                        image.fill(Qt::transparent);
+                        QPainter imagePainter(&image);
+                        theme.painter = &imagePainter;
+                        theme.partId = vertical ? PP_FILLVERT : PP_FILL;
+                        theme.rect = QRect(QPoint(0,0), theme.rect.size());
+                        QLinearGradient alphaGradient(0, 0, vertical ? 0 : image.width(), 
+                                                      vertical ? image.height() : 0);
+                        alphaGradient.setColorAt(0, QColor(0, 0, 0, 0));
+                        alphaGradient.setColorAt(0.5, QColor(0, 0, 0, 220));
+                        alphaGradient.setColorAt(1, QColor(0, 0, 0, 0));
+                        imagePainter.fillRect(image.rect(), alphaGradient);
+                        imagePainter.setCompositionMode(QPainter::CompositionMode_SourceIn);
+                        d->drawBackground(theme);
+                        imagePainter.end();
+                        pixmap = QPixmap::fromImage(image);
+                        QPixmapCache::insert(name, pixmap);
+                    }
+                    painter->drawPixmap(animRect, pixmap);
                     painter->restore();
                 }
             }
             else {
-                bool reverse = bar->direction == Qt::LeftToRight && inverted || bar->direction == Qt::RightToLeft && !inverted;
                 qint64 progress = qMax<qint64>(bar->progress, bar->minimum); // workaround for bug in QProgressBar
 
                 if (vertical) {
@@ -945,11 +985,10 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
                 d->drawBackground(theme);
 
                 if (Animation *a = d->widgetAnimation(widget)) {
-                    QTime current = QTime::currentTime();
-                    int animOffset = a->startTime().msecsTo(current) / 4;
-                    theme.partId = vertical ? PP_MOVEOVERLAYVERT : PP_MOVEOVERLAY;
                     int glowSize = 140;
                     int animationWidth = glowSize * 2 + (vertical ? theme.rect.height() : theme.rect.width());
+                    int animOffset = a->startTime().msecsTo(current) / 4;
+                    theme.partId = vertical ? PP_MOVEOVERLAYVERT : PP_MOVEOVERLAY;
                     if (animOffset > animationWidth)
                         a->setStartTime(QTime::currentTime());
                     painter->save();

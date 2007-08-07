@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -27,6 +42,7 @@
 #include "qabstracteventdispatcher.h"
 #include "qcoreevent.h"
 #include "qeventloop.h"
+#include "qcorecmdlineargs_p.h"
 #include <qdatastream.h>
 #include <qdatetime.h>
 #include <qdebug.h>
@@ -465,8 +481,15 @@ QCoreApplication::~QCoreApplication()
 
 
 /*!
-    Sets the attribute \a attribute  if \a on is true;
+    Sets the attribute \a attribute if \a on is true;
     otherwise clears the attribute.
+
+    One of the attributes that can be set with this method is
+    Qt::AA_ImmediateWidgetCreation. It tells Qt to create toplevel
+    windows immediately. Normally, resources for widgets are allocated
+    on demand to improve efficiency and minimize resource usage.
+    Therefore, if it is important to minimize resource consumption, do
+    not set this attribute.
 
     \sa testAttribute()
 */
@@ -739,16 +762,17 @@ int QCoreApplication::exec()
 /*!
   Tells the application to exit with a return code.
 
-  After this function has been called, the application leaves the main
-  event loop and returns from the call to exec(). The exec() function
-  returns \a returnCode.
+    After this function has been called, the application leaves the
+    main event loop and returns from the call to exec(). The exec()
+    function returns \a returnCode. If the event loop is not running,
+    this function does nothing.
 
   By convention, a \a returnCode of 0 means success, and any non-zero
   value indicates an error.
 
   Note that unlike the C library function of the same name, this
   function \e does return to the caller -- it is event processing that
-  stops.
+  stops. 
 
   \sa quit(), exec()
 */
@@ -779,7 +803,7 @@ void QCoreApplication::exit(int returnCode)
     approach is to create the event on the stack, for example:
 
     \code
-        QMouseEvent event(QEvent::MouseButtonPress, pos, 0, 0);
+        QMouseEvent event(QEvent::MouseButtonPress, pos, 0, 0, 0);
         QApplication::sendEvent(mainWindow, &event);
     \endcode
 
@@ -1653,7 +1677,6 @@ QStringList QCoreApplication::arguments()
     }
 #ifdef Q_OS_WIN
     QString cmdline = QT_WA_INLINE(QString::fromUtf16((unsigned short *)GetCommandLineW()), QString::fromLocal8Bit(GetCommandLineA()));
-    extern QStringList qWinCmdArgs(QString cmdLine);
     list = qWinCmdArgs(cmdline);
     if (self->d_func()->application_type) { // GUI app? Skip known - see qapplication.cpp
         QStringList stripped;

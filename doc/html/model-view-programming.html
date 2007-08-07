@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/doc/src/model-view-programming.qdoc -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/doc/src/model-view-programming.qdoc -->
 <head>
   <title>Qt 4.3: Model/View Programming</title>
   <link rel="next" href="model-view-using.html" />
@@ -82,6 +82,7 @@
 <h4>Convenience Classes</h4>
 <p>A number of <i>convenience</i> classes are derived from the standard view classes for the benefit of applications that rely on Qt's item-based item view and table classes. They are not intended to be subclassed, but simply exist to provide a familiar interface to the equivalent classes in Qt 3. Examples of such classes include <a href="qlistwidget.html">QListWidget</a>, <a href="qtreewidget.html">QTreeWidget</a>, and <a href="qtablewidget.html">QTableWidget</a>; these provide similar behavior to the <tt>QListBox</tt>, <tt>QListView</tt>, and <tt>QTable</tt> classes in Qt 3.</p>
 <p>These classes are less flexible than the view classes, and cannot be used with arbitrary models. We recommend that you use a model/view approach to handling data in item views unless you strongly need an item-based set of classes.</p>
+<p>If you wish to take advantage of the features provided by the model/view approach while still using an item-based interface, consider using view classes, such as <a href="qlistview.html">QListView</a>, <a href="qtableview.html">QTableView</a>, and <a href="qtreeview.html">QTreeView</a> with <a href="qstandarditemmodel.html">QStandardItemModel</a>.</p>
 <a name="the-model-view-components"></a>
 <h3>The Model/View Components</h3>
 <p>The following sections describe the way in which the model/view pattern is used in Qt. Each section provides an example of use, and is followed by a section showing how you can create new components.</p>
@@ -187,6 +188,7 @@
 <li><a href="model-view-model-subclassing.html#accepting-dropped-data">Accepting Dropped Data</a></li>
 <li><a href="model-view-model-subclassing.html#convenience-views">Convenience Views</a></li>
 </ul>
+<li><a href="model-view-model-subclassing.html#performance-optimization-for-large-amounts-of-data">Performance Optimization for Large Amounts of Data</a></li>
 </ul>
 </li>
 </ul>
@@ -207,6 +209,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

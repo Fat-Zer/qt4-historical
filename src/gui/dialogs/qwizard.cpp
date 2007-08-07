@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -571,7 +586,7 @@ void QWizardPrivate::init()
             texts.insert(QWizard::BackButton,   QWizard::tr("< &Back"));
             texts.insert(
                 QWizard::NextButton,
-                QWizard::tr(wstyle == QWizard::AeroStyle ? "&Next" : "&Next >"));
+                wstyle == QWizard::AeroStyle ? QWizard::tr("&Next") : QWizard::tr("&Next >"));
             texts.insert(QWizard::CommitButton, QWizard::tr("Commit"));
             texts.insert(QWizard::FinishButton, QWizard::tr("&Finish"));
             texts.insert(QWizard::CancelButton, QWizard::tr("Cancel"));
@@ -654,7 +669,7 @@ void QWizardPrivate::addField(const QWizardField &field)
     myField.resolve(defaultPropertyTable);
 
     if (fieldIndexMap.contains(myField.name)) {
-        qWarning("QWizardPage::registerField: Duplicate field '%s'", qPrintable(myField.name));
+        qWarning("QWizardPage::addField: Duplicate field '%s'", qPrintable(myField.name));
         return;
     }
 
@@ -754,11 +769,17 @@ QWizardLayoutInfo QWizardPrivate::layoutInfoForCurrentPage()
 
     QWizardLayoutInfo info;
 
+    const int layoutHorizontalSpacing = style->pixelMetric(QStyle::PM_LayoutHorizontalSpacing);
     info.topLevelMargin = style->pixelMetric(QStyle::PM_LayoutBottomMargin, 0, q);
-    info.childMargin = style->pixelMetric(QStyle::PM_DefaultChildMargin);
-    info.hspacing = style->pixelMetric(QStyle::PM_LayoutHorizontalSpacing);
+    info.childMargin = style->pixelMetric(QStyle::PM_LayoutLeftMargin, 0, titleLabel);
+    info.hspacing = (layoutHorizontalSpacing == -1)
+        ? style->layoutSpacing(QSizePolicy::DefaultType, QSizePolicy::DefaultType, Qt::Horizontal)
+        : layoutHorizontalSpacing;
     info.vspacing = style->pixelMetric(QStyle::PM_LayoutVerticalSpacing);
-    info.buttonSpacing = info.hspacing;
+    info.buttonSpacing = (layoutHorizontalSpacing == -1)
+        ? style->layoutSpacing(QSizePolicy::PushButton, QSizePolicy::PushButton, Qt::Horizontal)
+        : layoutHorizontalSpacing;
+
 #ifdef Q_WS_MAC
     if (qobject_cast<QMacStyle *>(style))
         info.buttonSpacing = 12;
@@ -920,7 +941,7 @@ void QWizardPrivate::recreateLayout(const QWizardLayoutInfo &info)
             subTitleLabel->setWordWrap(true);
 
             // ideally, the same margin should be used on the right side as well
-            subTitleLabel->setIndent(info.childMargin);
+            subTitleLabel->setIndent(info.childMargin + 1); // ###
 
             pageVBoxLayout->insertWidget(1, subTitleLabel);
         }
@@ -1014,6 +1035,11 @@ void QWizardPrivate::recreateLayout(const QWizardLayoutInfo &info)
     if (classic)
         mainLayout->setRowMinimumHeight(row++, deltaVSpacing);
 
+    if (aero) {
+        buttonLayout->setContentsMargins(9, 9, 9, 9);
+        mainLayout->setContentsMargins(0, 11, 0, 0);
+    }
+
     int buttonStartColumn = info.extension ? 1 : 0;
     int buttonNumColumns = info.extension ? 1 : numColumns;
 
@@ -1094,9 +1120,16 @@ void QWizardPrivate::updateLayout()
 void QWizardPrivate::updateMinMaxSizes(const QWizardLayoutInfo &info)
 {
     Q_Q(QWizard);
-    q->setMinimumSize(mainLayout->totalMinimumSize());
+
+    int extraHeight = 0;
+#if !defined(QT_NO_STYLE_WINDOWSVISTA)
+    if (wizStyle == QWizard::AeroStyle)
+        extraHeight = vistaHelper->titleBarSize() + vistaHelper->topOffset();
+#endif
+    q->setMinimumSize(mainLayout->totalMinimumSize() + QSize(0, extraHeight));
+
 #if defined(Q_WS_WIN)
-    if (QSysInfo::WindowsVersion > QSysInfo::WV_98)
+    if (QSysInfo::WindowsVersion > QSysInfo::WV_98) // ### See Tasks 164078 and 161660
 #endif
     q->setMaximumSize(mainLayout->totalMaximumSize());
     if (info.header && headerWidget->maximumWidth() != QWIDGETSIZE_MAX)
@@ -1451,15 +1484,14 @@ QPixmap QWizardPrivate::findDefaultBackgroundPixmap()
 void QWizardAntiFlickerWidget::paintEvent(QPaintEvent *)
 {
     if (wizard->wizardStyle() == QWizard::AeroStyle) {
-        QFrame *pageFrame = wizardPrivate->pageFrame;
-        Q_ASSERT(pageFrame->parent() == this);
-        const int pageFrameBottom =
-            pageFrame->mapToParent(QPoint(0, pageFrame->geometry().height())).y();
+        int leftMargin, topMargin, rightMargin, bottomMargin;
+        wizardPrivate->buttonLayout->getContentsMargins(&leftMargin, &topMargin, &rightMargin, &bottomMargin);
+        const int buttonLayoutTop = wizardPrivate->buttonLayout->contentsRect().top() - topMargin;
         QPainter painter(this);
         const QBrush brush(QColor(240, 240, 240)); // ### hardcoded for now
-        painter.fillRect(0, pageFrameBottom, width(), height() - pageFrameBottom, brush);
+        painter.fillRect(0, buttonLayoutTop, width(), height() - buttonLayoutTop, brush);
         painter.setPen(QPen(QBrush(QColor(223, 223, 223)), 0)); // ### hardcoded for now
-        painter.drawLine(0, pageFrameBottom, width(), pageFrameBottom);
+        painter.drawLine(0, buttonLayoutTop, width(), buttonLayoutTop);
     }
 }
 #endif
@@ -2450,6 +2482,10 @@ void QWizard::setButton(WizardButton which, QAbstractButton *button)
 QAbstractButton *QWizard::button(WizardButton which) const
 {
     Q_D(const QWizard);
+#if !defined(QT_NO_STYLE_WINDOWSVISTA)
+    if (d->wizStyle == AeroStyle && which == BackButton)
+        return d->vistaHelper->backButton();
+#endif
     if (!d->ensureButton(which))
         return 0;
     return d->btns[which];

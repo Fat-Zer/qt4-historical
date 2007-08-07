@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/corelib/kernel/qobject.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/corelib/kernel/qobject.cpp -->
 <head>
   <title>Qt 4.3: QObject Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -117,7 +117,7 @@
 <p>QObject is the heart of the <a href="object.html">Qt object model</a>. The central feature in this model is a very powerful mechanism for seamless object communication called <a href="signalsandslots.html">signals and slots</a>. You can connect a signal to a slot with <a href="qobject.html#connect">connect</a>() and destroy the connection with <a href="qobject.html#disconnect">disconnect</a>(). To avoid never ending notification loops you can temporarily block signals with <a href="qobject.html#blockSignals">blockSignals</a>(). The protected functions <a href="qobject.html#connectNotify">connectNotify</a>() and <a href="qobject.html#disconnectNotify">disconnectNotify</a>() make it possible to track connections.</p>
 <p>QObjects organize themselves in object trees. When you create a QObject with another object as parent, the object will automatically add itself to the parent's <a href="qobject.html#children">children</a>() list. The parent takes ownership of the object i.e&#x2e; it will automatically delete its children in its destructor. You can look for an object by name and optionally type using <a href="qobject.html#findChild">findChild</a>() or <a href="qobject.html#findChildren">findChildren</a>().</p>
 <p>Every object has an <a href="qobject.html#objectName-prop">objectName</a>() and its class name can be found via the corresponding <a href="qobject.html#metaObject">metaObject</a>() (see <a href="qmetaobject.html#className">QMetaObject::className</a>()). You can determine whether the object's class inherits another class in the QObject inheritance hierarchy by using the <a href="qobject.html#inherits">inherits</a>() function.</p>
-<p>When an object is deleted, it emits a <a href="qobject.html#destroyed">destroyed</a>() signal. You can catch this signal to avoid dangling references to QObjects. The <a href="qpointer.html">QPointer</a> class provides an elegant way to use this feature.</p>
+<p>When an object is deleted, it emits a <a href="qobject.html#destroyed">destroyed</a>() signal. You can catch this signal to avoid dangling references to QObjects.</p>
 <p>QObjects can receive events through <a href="qobject.html#event">event</a>() and filter the events of other objects. See <a href="qobject.html#installEventFilter">installEventFilter</a>() and <a href="qobject.html#eventFilter">eventFilter</a>() for details. A convenience handler, <a href="qobject.html#childEvent">childEvent</a>(), can be reimplemented to catch child events.</p>
 <p>Events are delivered in the thread in which the object was created; see <a href="threads.html">Thread Support in Qt</a> and <a href="qobject.html#thread">thread</a>() for details. Note that event processing is not done at all for QObjects with no thread affinity (<a href="qobject.html#thread">thread</a>() returns zero). Use the <a href="qobject.html#moveToThread">moveToThread</a>() function to change the thread affinity for an object and its children (the object cannot be moved if it has a parent).</p>
 <p>Last but not least, QObject provides the basic timer support in Qt; see <a href="qtimer.html">QTimer</a> for high-level support for timers.</p>
@@ -127,7 +127,7 @@
 <a name="auto-connection"></a>
 <h3>Auto-Connection</h3>
 <p>Qt's meta-object system provides a mechanism to automatically connect signals and slots between QObject subclasses and their children. As long as objects are defined with suitable object names, and slots follow a simple naming convention, this connection can be performed at run-time by the <a href="qmetaobject.html#connectSlotsByName">QMetaObject::connectSlotsByName</a>() function.</p>
-<p><a href="uic.html#uic">uic</a> generates code that invokes this function to enable auto-connection to be performed between widgets on forms created with <i>Qt Designer</i>. More information about using auto-connection with <i>Qt Designer</i> is given in the <a href="designer-using-a-component.html#a-dialog-with-auto-connect">Using a Component in Your Application</a> section of the <i>Qt Designer</i> manual.</p>
+<p><a href="uic.html#uic">uic</a> generates code that invokes this function to enable auto-connection to be performed between widgets on forms created with <i>Qt Designer</i>. More information about using auto-connection with <i>Qt Designer</i> is given in the <a href="designer-using-a-component.html">Using a Component in Your Application</a> section of the <i>Qt Designer</i> manual.</p>
 <a name="dynamic-properties"></a>
 <h3>Dynamic Properties</h3>
 <p>From Qt 4.2, dynamic properties can be added to and removed from QObject instances at run-time. Dynamic properties do not need to be declared at compile-time, yet they provide the same advantages as static properties and are manipulated using the same API - using <a href="qobject.html#property">property</a>() to read them and <a href="qobject.html#setProperty">setProperty</a>() to write them.</p>
@@ -194,7 +194,7 @@
  QObject::connect(scrollBar, SIGNAL(valueChanged(int)),
                   label,  SLOT(setNum(int)));</pre>
 <p>This example ensures that the label always displays the current scroll bar value. Note that the signal and slots parameters must not contain any variable names, only the type. E.g&#x2e; the following would not work and return false:</p>
-<pre><span class="comment"> // WRONG</span>
+<pre><span class="comment"> //</span> WRONG
  QObject::connect(scrollBar, SIGNAL(valueChanged(int value)),
                   label, SLOT(setNum(int value)));</pre>
 <p>A signal can also be connected to another signal:</p>
@@ -240,7 +240,7 @@
 <p>This virtual function is called when something has been connected to <i>signal</i> in this object.</p>
 <p>If you want to compare <i>signal</i> with a specific signal, use <a href="qlatin1string.html">QLatin1String</a> and the <tt>SIGNAL()</tt> macro as follows:</p>
 <pre> if (QLatin1String(signal) == SIGNAL(valueChanged(int))) {
-     <span class="comment">// signal is valueChanged(int)</span>
+     <span class="comment">//</span> signal is valueChanged(int)
  }</pre>
 <p>If the signal contains multiple parameters or parameters that contain spaces, call <a href="qmetaobject.html#normalizedSignature">QMetaObject::normalizedSignature</a>() on the result of the <tt>SIGNAL()</tt> macro.</p>
 <p><b>Warning:</b> This function violates the object-oriented principle of modularity. However, it might be useful when you need to perform expensive initialization only if something is connected to a signal.</p>
@@ -357,7 +357,7 @@
              return false;
          }
      } else {
-         <span class="comment">// pass the event on to the parent class</span>
+         <span class="comment">//</span> pass the event on to the parent class
          return QMainWindow::eventFilter(obj, event);
      }
  }</pre>
@@ -366,7 +366,7 @@
 <p>See also <a href="qobject.html#installEventFilter">installEventFilter</a>().</p>
 <a name="//apple_ref/cpp/instm/QObject/findChild" />
 <h3 class="fn"><a name="findChild"></a>T QObject::findChild ( const <a href="qstring.html">QString</a> &amp; <i>name</i> = QString() ) const</h3>
-<p>Returns the child of this object that can be casted into type T and that is called <i>name</i>, or 0 if there is no such object. Omitting the <i>name</i> argument causes all object names to be matched. The search is performed recursively.</p>
+<p>Returns the child of this object that can be cast into type T and that is called <i>name</i>, or 0 if there is no such object. Omitting the <i>name</i> argument causes all object names to be matched. The search is performed recursively.</p>
 <p>If there is more than one child matching the search, the most direct ancestor is returned. If there are several direct ancestors, it is undefined which one will be returned. In that case, <a href="qobject.html#findChildren">findChildren</a>() should be used.</p>
 <p>This example returns a child <a href="qpushbutton.html">QPushButton</a> of <tt>parentWidget</tt> named <tt>&quot;button1&quot;</tt>:</p>
 <pre> QPushButton *button = parentWidget-&gt;findChild&lt;QPushButton *&gt;(&quot;button1&quot;);</pre>
@@ -385,22 +385,22 @@
 <p>See also <a href="qobject.html#findChild">findChild</a>() and <a href="qobject.html#qFindChildren">qFindChildren</a>().</p>
 <h3 class="fn"><a name="findChildren-2"></a><a href="qlist.html">QList</a>&lt;T&gt; QObject::findChildren ( const <a href="qregexp.html">QRegExp</a> &amp; <i>regExp</i> ) const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
-<p>Returns the children of this object that can be casted to type T and that have names matching the regular expression <i>regExp</i>, or an empty list if there are no such objects. The search is performed recursively.</p>
+<p>Returns the children of this object that can be cast to type T and that have names matching the regular expression <i>regExp</i>, or an empty list if there are no such objects. The search is performed recursively.</p>
 <p><b>Warning:</b> This function is not available with MSVC 6. Use <a href="qobject.html#qFindChildren">qFindChildren</a>() instead if you need to support that version of the compiler.</p>
 <a name="//apple_ref/cpp/instm/QObject/inherits" />
 <h3 class="fn"><a name="inherits"></a>bool QObject::inherits ( const char * <i>className</i> ) const</h3>
 <p>Returns true if this object is an instance of a class that inherits <i>className</i> or a <a href="qobject.html">QObject</a> subclass that inherits <i>className</i>; otherwise returns false.</p>
 <p>A class is considered to inherit itself.</p>
 <p>Example:</p>
-<pre> QTimer *timer = new QTimer;         <span class="comment">// QTimer inherits QObject</span>
- timer-&gt;inherits(&quot;QTimer&quot;);          <span class="comment">// returns true</span>
- timer-&gt;inherits(&quot;QObject&quot;);         <span class="comment">// returns true</span>
- timer-&gt;inherits(&quot;QAbstractButton&quot;); <span class="comment">// returns false</span>
+<pre> QTimer *timer = new QTimer;         <span class="comment">//</span> QTimer inherits QObject
+ timer-&gt;inherits(&quot;QTimer&quot;);          <span class="comment">//</span> returns true
+ timer-&gt;inherits(&quot;QObject&quot;);         <span class="comment">//</span> returns true
+ timer-&gt;inherits(&quot;QAbstractButton&quot;); <span class="comment">//</span> returns false
 
-<span class="comment"> // QLayout inherits QObject and QLayoutItem</span>
+<span class="comment"> //</span> QLayout inherits QObject and QLayoutItem
  QLayout *layout = new QLayout;
- layout-&gt;inherits(&quot;QObject&quot;);        <span class="comment">// returns true</span>
- layout-&gt;inherits(&quot;QLayoutItem&quot;);    <span class="comment">// returns false</span></pre>
+ layout-&gt;inherits(&quot;QObject&quot;);        <span class="comment">//</span> returns true
+ layout-&gt;inherits(&quot;QLayoutItem&quot;);    <span class="comment">//</span> returns false</pre>
 <p>(<a href="qlayoutitem.html">QLayoutItem</a> is not a <a href="qobject.html">QObject</a>.)</p>
 <p>Consider using qobject_cast&lt;Type *&gt;(object) instead. The method is both faster and safer.</p>
 <p>See also <a href="qobject.html#metaObject">metaObject</a>() and <a href="qobject.html#qobject_cast">qobject_cast</a>().</p>
@@ -427,7 +427,7 @@
              qDebug(&quot;Ate key press %d&quot;, keyEvent-&gt;key());
              return true;
          } else {
-             <span class="comment">// standard event processing</span>
+             <span class="comment">//</span> standard event processing
              return QObject::eventFilter(obj, event);
          }
      }</pre>
@@ -459,9 +459,9 @@
 <p>If you have no pointer to an actual object instance but still want to access the meta-object of a class, you can use <a href="qobject.html#staticMetaObject-var">staticMetaObject</a>.</p>
 <p>Example:</p>
 <pre> QObject *obj = new QPushButton;
- obj-&gt;metaObject()-&gt;className();             <span class="comment">// returns &quot;QPushButton&quot;</span>
+ obj-&gt;metaObject()-&gt;className();             <span class="comment">//</span> returns &quot;QPushButton&quot;
 
- QPushButton::staticMetaObject.className();  <span class="comment">// returns &quot;QPushButton&quot;</span></pre>
+ QPushButton::staticMetaObject.className();  <span class="comment">//</span> returns &quot;QPushButton&quot;</pre>
 <p>See also <a href="qobject.html#staticMetaObject-var">staticMetaObject</a>.</p>
 <a name="//apple_ref/cpp/instm/QObject/moveToThread" />
 <h3 class="fn"><a name="moveToThread"></a>void QObject::moveToThread ( <a href="qthread.html">QThread</a> * <i>targetThread</i> )</h3>
@@ -490,7 +490,7 @@
 <p>When calling this function, you can use the <tt>SIGNAL()</tt> macro to pass a specific signal:</p>
 <pre> if (receivers(SIGNAL(valueChanged(QByteArray))) &gt; 0) {
      QByteArray data;
-     get_the_value(&amp;data);       <span class="comment">// expensive operation</span>
+     get_the_value(&amp;data);       <span class="comment">//</span> expensive operation
      emit valueChanged(data);
  }</pre>
 <p>As the code snippet above illustrates, you can use this function to avoid emitting a signal that nobody listens to.</p>
@@ -546,9 +546,9 @@
  MyObject::MyObject(QObject *parent)
      : QObject(parent)
  {
-     startTimer(50);     <span class="comment">// 50-millisecond timer</span>
-     startTimer(1000);   <span class="comment">// 1-second timer</span>
-     startTimer(60000);  <span class="comment">// 1-minute timer</span>
+     startTimer(50);     <span class="comment">//</span> 50-millisecond timer
+     startTimer(1000);   <span class="comment">//</span> 1-second timer
+     startTimer(60000);  <span class="comment">//</span> 1-minute timer
  }
 
  void MyObject::timerEvent(QTimerEvent *event)
@@ -613,10 +613,10 @@
 <p>The meta-object information is required by the signal/slot connection mechanism and the property system. The <a href="qobject.html#inherits">inherits</a>() function also makes use of the meta-object.</p>
 <p>If you have a pointer to an object, you can use <a href="qobject.html#metaObject">metaObject</a>() to retrieve the meta-object associated with that object.</p>
 <p>Example:</p>
-<pre> QPushButton::staticMetaObject.className();  <span class="comment">// returns &quot;QPushButton&quot;</span>
+<pre> QPushButton::staticMetaObject.className();  <span class="comment">//</span> returns &quot;QPushButton&quot;
 
  QObject *obj = new QPushButton;
- obj-&gt;metaObject()-&gt;className();             <span class="comment">// returns &quot;QPushButton&quot;</span></pre>
+ obj-&gt;metaObject()-&gt;className();             <span class="comment">//</span> returns &quot;QPushButton&quot;</pre>
 <p>See also <a href="qobject.html#metaObject">metaObject</a>().</p>
 <hr />
 <h2>Related Non-Members</h2>
@@ -640,13 +640,13 @@
 <p>The class T must inherit (directly or indirectly) <a href="qobject.html">QObject</a> and be declared with the <a href="qobject.html#Q_OBJECT">Q_OBJECT</a> macro.</p>
 <p>A class is considered to inherit itself.</p>
 <p>Example:</p>
-<pre> QObject *obj = new QTimer;          <span class="comment">// QTimer inherits QObject</span>
+<pre> QObject *obj = new QTimer;          <span class="comment">//</span> QTimer inherits QObject
 
  QTimer *timer = qobject_cast&lt;QTimer *&gt;(obj);
-<span class="comment"> // timer == (QObject *)obj</span>
+<span class="comment"> //</span> timer == (QObject *)obj
 
  QAbstractButton *button = qobject_cast&lt;QAbstractButton *&gt;(obj);
-<span class="comment"> // button == 0</span></pre>
+<span class="comment"> //</span> button == 0</pre>
 <p>The qobject_cast() function behaves similarly to the standard C++ <tt>dynamic_cast()</tt>, with the advantages that it doesn't require RTTI support and it works across dynamic library boundaries.</p>
 <p>qobject_cast() can also be used in conjunction with interfaces; see the <a href="tools-plugandpaint.html">Plug &amp; Paint</a> example for details.</p>
 <p><b>Warning:</b> If T isn't declared with the <a href="qobject.html#Q_OBJECT">Q_OBJECT</a> macro, this function's return value is undefined.</p>
@@ -662,7 +662,7 @@
  {
      Q_OBJECT
      Q_CLASSINFO(&quot;Author&quot;, &quot;Pierre Gendron&quot;)
-     Q_CLASSINFO(&quot;URL&quot;, &quot;http:<span class="comment">//www.my-organization.qc.ca&quot;)</span>
+     Q_CLASSINFO(&quot;URL&quot;, &quot;http:<span class="comment">//</span>www.my-organization.qc.ca&quot;)
 
  public:
      ...
@@ -748,48 +748,10 @@
 <p>For example:</p>
 <pre> Q_PROPERTY(QString title READ title WRITE setTitle)</pre>
 <p>See also <a href="properties.html">Qt's Property System</a>.</p>
-<hr />
-<h2>Member Function Documentation</h2>
-<h3 class="fn"><a name="QObject-3"></a>QObject::QObject ( QObject * <i>parent</i>, const char * <i>name</i> )</h3>
-<p>Creates a new <a href="qobject.html">QObject</a> with the given <i>parent</i> and object <i>name</i>.</p>
-<a name="//apple_ref/cpp/instm/QObject/checkConnectArgs" />
-<h3 class="fn"><a name="checkConnectArgs"></a>bool QObject::checkConnectArgs ( const char * <i>signal</i>, const QObject * <i>object</i>, const char * <i>method</i> )&nbsp;&nbsp;<tt> [protected]</tt></h3>
-<p>Use <a href="qmetaobject.html#checkConnectArgs">QMetaObject::checkConnectArgs</a>() instead.</p>
-<a name="//apple_ref/cpp/instm/QObject/child" />
-<h3 class="fn"><a name="child"></a>QObject * QObject::child ( const char * <i>objName</i>, const char * <i>inheritsClass</i> = 0, bool <i>recursiveSearch</i> = true ) const</h3>
-<p>Searches the children and optionally grandchildren of this object, and returns a child that is called <i>objName</i> that inherits <i>inheritsClass</i>. If <i>inheritsClass</i> is 0 (the default), any class matches.</p>
-<p>If <i>recursiveSearch</i> is true (the default), child() performs a depth-first search of the object's children.</p>
-<p>If there is no such object, this function returns 0. If there are more than one, the first one found is returned.</p>
-<a name="//apple_ref/cpp/instm/QObject/className" />
-<h3 class="fn"><a name="className"></a>const char * QObject::className () const</h3>
-<p>Use <a href="qobject.html#metaObject">metaObject</a>()-&gt;className() instead.</p>
-<a name="//apple_ref/cpp/instm/QObject/insertChild" />
-<h3 class="fn"><a name="insertChild"></a>void QObject::insertChild ( QObject * <i>object</i> )</h3>
-<p>Use <a href="qobject.html#setParent">setParent</a>() instead, i.e&#x2e;, call object-&gt;setParent(this).</p>
-<a name="//apple_ref/cpp/instm/QObject/isA" />
-<h3 class="fn"><a name="isA"></a>bool QObject::isA ( const char * <i>className</i> ) const</h3>
-<p>Compare <i>className</i> with the object's <a href="qobject.html#metaObject">metaObject</a>()-&gt;<a href="qobject-qt3.html#className">className</a>() instead.</p>
-<a name="//apple_ref/cpp/instm/QObject/name" />
-<h3 class="fn"><a name="name"></a>const char * QObject::name () const</h3>
-<p>Use <a href="qobject.html#objectName-prop">objectName</a>() instead.</p>
-<p>See also <a href="qobject-qt3.html#setName">setName</a>().</p>
-<h3 class="fn"><a name="name-2"></a>const char * QObject::name ( const char * <i>defaultName</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience.</p>
-<p>Use <a href="qobject.html#objectName-prop">objectName</a>() instead.</p>
-<a name="//apple_ref/cpp/clm/QObject/normalizeSignalSlot" />
-<h3 class="fn"><a name="normalizeSignalSlot"></a><a href="qbytearray.html">QByteArray</a> QObject::normalizeSignalSlot ( const char * <i>signalSlot</i> )&nbsp;&nbsp;<tt> [static protected]</tt></h3>
-<p>Use <a href="qmetaobject.html#normalizedSignature">QMetaObject::normalizedSignature</a>() instead.</p>
-<a name="//apple_ref/cpp/instm/QObject/removeChild" />
-<h3 class="fn"><a name="removeChild"></a>void QObject::removeChild ( QObject * <i>object</i> )</h3>
-<p>Use <a href="qobject.html#setParent">setParent</a>() instead, i.e&#x2e;, call object-&gt;setParent(0).</p>
-<a name="//apple_ref/cpp/instm/QObject/setName" />
-<h3 class="fn"><a name="setName"></a>void QObject::setName ( const char * <i>name</i> )</h3>
-<p>Use <a href="qobject.html#objectName-prop">setObjectName</a>() instead.</p>
-<p>See also <a href="qobject-qt3.html#name">name</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

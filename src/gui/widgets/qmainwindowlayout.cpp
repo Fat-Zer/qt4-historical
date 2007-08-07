@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -35,6 +50,7 @@
 #include "qwidgetanimator_p.h"
 #include "qrubberband.h"
 #include "qdockwidget_p.h"
+#include "qtabbar_p.h"
 
 #include <qapplication.h>
 #include <qstatusbar.h>
@@ -298,6 +314,25 @@ QList<int> QMainWindowLayoutState::indexOf(QWidget *widget) const
 #endif //QT_NO_DOCKWIDGET
 
     return result;
+}
+
+bool QMainWindowLayoutState::contains(QWidget *widget) const
+{
+#ifndef QT_NO_DOCKWIDGET
+    if (dockAreaLayout.centralWidgetItem != 0 && dockAreaLayout.centralWidgetItem->widget() == widget)
+        return true;
+    if (!dockAreaLayout.indexOf(widget).isEmpty())
+        return true;
+#else
+    if (centralWidgetItem != 0 && centralWidgetItem->widget() == widget)
+        return true;
+#endif
+
+#ifndef QT_NO_TOOLBAR
+    if (!toolBarAreaLayout.indexOf(widget).isEmpty())
+        return true;
+#endif
+    return false;
 }
 
 void QMainWindowLayoutState::setCentralWidget(QWidget *widget)
@@ -1081,11 +1116,11 @@ void QMainWindowLayout::toggleToolBarsVisible()
 {
     layoutState.toolBarAreaLayout.visible = !layoutState.toolBarAreaLayout.visible;
 
-    QRect r = parentWidget()->geometry();
-    r = layoutState.toolBarAreaLayout.rectHint(r);
-
+    QRect oldRect = parentWidget()->geometry();
+    QRect newRect = layoutState.toolBarAreaLayout.rectHint(oldRect);
+    newRect.moveTopRight(oldRect.topRight());
 //    widgetAnimator->animate(parentWidget(), r, true);
-    parentWidget()->setGeometry(r);
+    parentWidget()->setGeometry(newRect);
 }
 
 #endif // QT_NO_TOOLBAR
@@ -1160,6 +1195,12 @@ void QMainWindowLayout::addDockWidget(Qt::DockWidgetArea area,
                                              Qt::Orientation orientation)
 {
     addChildWidget(dockwidget);
+
+    // If we are currently moving a separator, then we need to abort the move, since each
+    // time we move the mouse layoutState is replaced by savedState modified by the move.
+    if (!movingSeparator.isEmpty())
+        endSeparatorMove(movingSeparatorPos);
+
     layoutState.dockAreaLayout.addDockWidget(toDockPos(area), dockwidget, orientation);
     emit dockwidget->dockLocationChanged(area);
     invalidate();
@@ -1223,11 +1264,16 @@ void QMainWindowLayout::keepSize(QDockWidget *w)
 class QMainWindowTabBar : public QTabBar
 {
 public:
-    QMainWindowTabBar(QWidget *parent)
-        : QTabBar(parent) {}
+    QMainWindowTabBar(QWidget *parent);
 protected:
     bool event(QEvent *e);
 };
+
+QMainWindowTabBar::QMainWindowTabBar(QWidget *parent)
+    : QTabBar(parent)
+{
+    static_cast<QTabBarPrivate*>(d_ptr)->squeezeTabs = true;
+}
 
 bool QMainWindowTabBar::event(QEvent *e)
 {
@@ -1273,6 +1319,9 @@ void QMainWindowLayout::tabChanged()
     if (info == 0)
         return;
     info->apply(false);
+
+    if (QWidget *w = centralWidget())
+        w->raise();
 }
 #endif // QT_NO_TABBAR
 
@@ -1563,6 +1612,21 @@ void QMainWindowLayout::allAnimationsFinished()
 
 void QMainWindowLayout::animationFinished(QWidget *widget)
 {
+
+    /* This signal is delivered from QWidgetAnimator over a qeued connection. The problem is that
+       the widget can be deleted. This is handled as follows:
+
+       The animator only ever animates widgets that have been added to this layout. If a widget
+       is deleted during animation, the widget's destructor removes the widget form this layout.
+       This in turn aborts the animation (see takeAt()) and this signal will never be delivered.
+
+       If the widget is deleted after the animation is finished but before this qeued signal
+       is delivered, the widget is no longer in the layout and we catch it here. The key is that
+       QMainWindowLayoutState::contains() never dereferences the pointer. */
+
+    if (!layoutState.contains(widget))
+        return;
+
 #ifndef QT_NO_TOOLBAR
     if (QToolBar *tb = qobject_cast<QToolBar*>(widget)) {
         QToolBarLayout *tbl = qobject_cast<QToolBarLayout*>(tb->layout());
@@ -1605,14 +1669,15 @@ void QMainWindowLayout::animationFinished(QWidget *widget)
     updateGapIndicator();
 }
 
-void QMainWindowLayout::restore()
+void QMainWindowLayout::restore(bool keepSavedState)
 {
     if (!savedState.isValid())
         return;
 
     layoutState = savedState;
     applyState(layoutState);
-    savedState.clear();
+    if (!keepSavedState)
+        savedState.clear();
     currentGapPos.clear();
     pluggingWidget = 0;
     updateGapIndicator();
@@ -1785,7 +1850,7 @@ QList<int> QMainWindowLayout::hover(QLayoutItem *widgetItem, const QPoint &mouse
     currentGapPos = path;
     if (path.isEmpty()) {
         fixToolBarOrientation(widgetItem, 2); // 2 = top dock, ie. horizontal
-        restore();
+        restore(true);
         return QList<int>();
     }
 
@@ -1794,7 +1859,7 @@ QList<int> QMainWindowLayout::hover(QLayoutItem *widgetItem, const QPoint &mouse
     QMainWindowLayoutState newState = savedState;
 
     if (!newState.insertGap(path, widgetItem)) {
-        restore(); // not enough space
+        restore(true); // not enough space
         return QList<int>();
     }
 
@@ -1802,7 +1867,7 @@ QList<int> QMainWindowLayout::hover(QLayoutItem *widgetItem, const QPoint &mouse
     QSize size = newState.rect.size();
 
     if (min.width() > size.width() || min.height() > size.height()) {
-        restore();
+        restore(true);
         return QList<int>();
     }
 

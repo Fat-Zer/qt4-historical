@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/gui/painting/qpolygon.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/painting/qpolygon.cpp -->
 <head>
   <title>Qt 4.3: QPolygon Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -31,7 +31,7 @@
 <li><div class="fn"/><b><a href="qpolygon.html#QPolygon-5">QPolygon</a></b> ( const QRect &amp; <i>rectangle</i>, bool <i>closed</i> = false )</li>
 <li><div class="fn"/><b><a href="qpolygon.html#dtor.QPolygon">~QPolygon</a></b> ()</li>
 <li><div class="fn"/>QRect <b><a href="qpolygon.html#boundingRect">boundingRect</a></b> () const</li>
-<li><div class="fn"/>bool <b><a href="qpolygon.html#containsPoint">containsPoint</a></b> ( const QPoint &amp; <i>pt</i>, Qt::FillRule <i>fillRule</i> ) const</li>
+<li><div class="fn"/>bool <b><a href="qpolygon.html#containsPoint">containsPoint</a></b> ( const QPoint &amp; <i>point</i>, Qt::FillRule <i>fillRule</i> ) const</li>
 <li><div class="fn"/>QPolygon <b><a href="qpolygon.html#intersected">intersected</a></b> ( const QPolygon &amp; <i>r</i> ) const</li>
 <li><div class="fn"/>void <b><a href="qpolygon.html#point">point</a></b> ( int <i>index</i>, int * <i>x</i>, int * <i>y</i> ) const</li>
 <li><div class="fn"/>QPoint <b><a href="qpolygon.html#point-2">point</a></b> ( int <i>index</i> ) const</li>
@@ -93,7 +93,9 @@
 <p>Returns the bounding rectangle of the polygon, or <a href="qrect.html">QRect</a>(0, 0, 0, 0) if the polygon is empty.</p>
 <p>See also <a href="qvector.html#isEmpty">QVector::isEmpty</a>().</p>
 <a name="//apple_ref/cpp/instm/QPolygon/containsPoint" />
-<h3 class="fn"><a name="containsPoint"></a>bool QPolygon::containsPoint ( const <a href="qpoint.html">QPoint</a> &amp; <i>pt</i>, <a href="qt.html#FillRule-enum">Qt::FillRule</a> <i>fillRule</i> ) const</h3>
+<h3 class="fn"><a name="containsPoint"></a>bool QPolygon::containsPoint ( const <a href="qpoint.html">QPoint</a> &amp; <i>point</i>, <a href="qt.html#FillRule-enum">Qt::FillRule</a> <i>fillRule</i> ) const</h3>
+<p>Returns true if the given <i>point</i> is inside the polygon according to the specified <i>fillRule</i>; otherwise returns false.</p>
+<p>This function was introduced in Qt 4.3.</p>
 <a name="//apple_ref/cpp/instm/QPolygon/intersected" />
 <h3 class="fn"><a name="intersected"></a>QPolygon QPolygon::intersected ( const QPolygon &amp; <i>r</i> ) const</h3>
 <p>Returns a polygon which is the intersection of this polygon and <i>r</i>.</p>
@@ -123,14 +125,14 @@
 <p>Copies <i>nPoints</i> points from the given <i>fromIndex</i> ( 0 by default) in <i>fromPolygon</i> into this polygon, starting at the specified <i>index</i>. For example:</p>
 <pre>         QPolygon polygon1;
          polygon1.putPoints(0, 3, 1,2, 0,0, 5,6);
-         <span class="comment">// polygon1 is now the three-point polygon(1,2, 0,0, 5,6);</span>
+         <span class="comment">//</span> polygon1 is now the three-point polygon(1,2, 0,0, 5,6);
 
          QPolygon polygon2;
          polygon2.putPoints(0, 3, 4,4, 5,5, 6,6);
-         <span class="comment">// polygon2 is now (4,4, 5,5, 6,6);</span>
+         <span class="comment">//</span> polygon2 is now (4,4, 5,5, 6,6);
 
          polygon1.putPoints(2, 3, polygon2);
-         <span class="comment">// polygon1 is now the five-point polygon(1,2, 0,0, 4,4, 5,5, 6,6);</span></pre>
+         <span class="comment">//</span> polygon1 is now the five-point polygon(1,2, 0,0, 4,4, 5,5, 6,6);</pre>
 <a name="//apple_ref/cpp/instm/QPolygon/setPoint" />
 <h3 class="fn"><a name="setPoint"></a>void QPolygon::setPoint ( int <i>index</i>, int <i>x</i>, int <i>y</i> )</h3>
 <p>Sets the point at the given <i>index</i> to the point specified by (<i>x</i>, <i>y</i>).</p>
@@ -174,6 +176,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

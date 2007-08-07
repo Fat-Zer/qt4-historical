@@ -23,12 +23,27 @@
  ** and appearing in the file LICENSE.GPL included in the packaging of
  ** this file.  Please review the following information to ensure GNU
  ** General Public Licensing requirements will be met:
- ** http://www.trolltech.com/products/qt/opensource.html
+ ** http://trolltech.com/products/qt/licenses/licensing/opensource/
  **
  ** If you are unsure which license is appropriate for your use, please
  ** review the following information:
- ** http://www.trolltech.com/products/qt/licensing.html or contact the
- ** sales department at sales@trolltech.com.
+ ** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+ ** or contact the sales department at sales@trolltech.com.
+ **
+ ** In addition, as a special exception, Trolltech gives you certain
+ ** additional rights. These rights are described in the Trolltech GPL
+ ** Exception version 1.0, which can be found at
+ ** http://www.trolltech.com/products/qt/gplexception/ and in the file
+ ** GPL_EXCEPTION.txt in this package.
+ **
+ ** In addition, as a special exception, Trolltech, as the sole copyright
+ ** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+ ** plug-in the right for the Qt/Eclipse Integration to link to
+ ** functionality provided by Qt Designer and its related libraries.
+ **
+ ** Trolltech reserves all rights not expressly granted herein.
+ **
+ ** Trolltech ASA (c) 2007
  **
  ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
  ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -79,7 +94,7 @@
          return editor;
      }
      QLineEdit *editor = new QLineEdit(parent);
-     <span class="comment">//create a completer with the strings in the column as model.</span>
+     <span class="comment">//</span>create a completer with the strings in the column as model.
      QStringList allStrings;
      for(int i = 1; i&lt;index.model()-&gt;rowCount(); i++){
          QString strItem(index.model()-&gt;data(index.sibling(i, index.column()), Qt::EditRole).toString());
@@ -200,7 +215,7 @@
 
  QVariant SpreadSheetItem::display() const
  {
-     <span class="comment">// avoid circular dependencies</span>
+     <span class="comment">//</span> avoid circular dependencies
      if (isResolving)
          return QVariant();
      isResolving = true;
@@ -213,10 +228,10 @@
                                           const QTableWidget *widget,
                                           const QTableWidgetItem *self)
  {
-     <span class="comment">// check if the string is actually a formula or not</span>
+     <span class="comment">//</span> check if the string is actually a formula or not
      QStringList list = formula.split(' ');
      if (list.isEmpty() || !widget)
-         return formula; <span class="comment">// its a normal string</span>
+         return formula; <span class="comment">//</span> its a normal string
 
      QString op = list.value(0).toLower();
 
@@ -286,7 +301,7 @@
  private:
      QTableWidget *table;
  };
- #endif <span class="comment">// QT_NO_DBUS</span>
+ #endif <span class="comment">//</span> QT_NO_DBUS
 
  class SpreadSheet : public QMainWindow
  {
@@ -763,7 +778,7 @@
      QFont titleFont = table-&gt;font();
      titleFont.setBold(true);
 
-     <span class="comment">// column 0</span>
+     <span class="comment">//</span> column 0
      table-&gt;setItem(0, 0, new SpreadSheetItem(&quot;Item&quot;));
      table-&gt;item(0, 0)-&gt;setBackgroundColor(titleBackground);
      table-&gt;item(0, 0)-&gt;setToolTip(&quot;This column shows the purchased item/service&quot;);
@@ -779,7 +794,7 @@
      table-&gt;setItem(9, 0, new SpreadSheetItem(&quot;Total:&quot;));
      table-&gt;item(9, 0)-&gt;setFont(titleFont);
      table-&gt;item(9,0)-&gt;setBackgroundColor(Qt::lightGray);
-     <span class="comment">// column 1</span>
+     <span class="comment">//</span> column 1
      table-&gt;setItem(0, 1, new SpreadSheetItem(&quot;Date&quot;));
      table-&gt;item(0, 1)-&gt;setBackgroundColor(titleBackground);
      table-&gt;item(0, 1)-&gt;setToolTip(&quot;This column shows the purchase date, double click to change&quot;);
@@ -794,7 +809,7 @@
      table-&gt;setItem(8, 1, new SpreadSheetItem(&quot;18/6/2006&quot;));
      table-&gt;setItem(9, 1, new SpreadSheetItem());
      table-&gt;item(9,1)-&gt;setBackgroundColor(Qt::lightGray);
-     <span class="comment">// column 2</span>
+     <span class="comment">//</span> column 2
      table-&gt;setItem(0, 2, new SpreadSheetItem(&quot;Price&quot;));
      table-&gt;item(0, 2)-&gt;setBackgroundColor(titleBackground);
      table-&gt;item(0, 2)-&gt;setToolTip(&quot;This column shows the price of the purchase&quot;);
@@ -809,7 +824,7 @@
      table-&gt;setItem(8, 2, new SpreadSheetItem(&quot;1240&quot;));
      table-&gt;setItem(9, 2, new SpreadSheetItem());
      table-&gt;item(9,2)-&gt;setBackgroundColor(Qt::lightGray);
-     <span class="comment">// column 3</span>
+     <span class="comment">//</span> column 3
      table-&gt;setItem(0, 3, new SpreadSheetItem(&quot;Currency&quot;));
      table-&gt;item(0, 3)-&gt;setBackgroundColor(titleBackground);
      table-&gt;item(0, 3)-&gt;setToolTip(&quot;This column shows the currency&quot;);
@@ -824,7 +839,7 @@
      table-&gt;setItem(8, 3, new SpreadSheetItem(&quot;USD&quot;));
      table-&gt;setItem(9, 3, new SpreadSheetItem());
      table-&gt;item(9,3)-&gt;setBackgroundColor(Qt::lightGray);
-     <span class="comment">// column 4</span>
+     <span class="comment">//</span> column 4
      table-&gt;setItem(0, 4, new SpreadSheetItem(&quot;Ex.Rate&quot;));
      table-&gt;item(0, 4)-&gt;setBackgroundColor(titleBackground);
      table-&gt;item(0, 4)-&gt;setToolTip(&quot;This column shows the exchange rate to NOK&quot;);
@@ -839,7 +854,7 @@
      table-&gt;setItem(8, 4, new SpreadSheetItem(&quot;7&quot;));
      table-&gt;setItem(9, 4, new SpreadSheetItem());
      table-&gt;item(9,4)-&gt;setBackgroundColor(Qt::lightGray);
-     <span class="comment">// column 5</span>
+     <span class="comment">//</span> column 5
      table-&gt;setItem(0, 5, new SpreadSheetItem(&quot;NOK&quot;));
      table-&gt;item(0, 5)-&gt;setBackgroundColor(titleBackground);
      table-&gt;item(0, 5)-&gt;setToolTip(&quot;This column shows the expenses in NOK&quot;);
@@ -892,6 +907,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

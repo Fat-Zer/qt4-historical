@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -476,7 +491,7 @@ const QString::Null QString::null = QString::Null();
        to ASCII.
     \endlist
 
-    One way to define these prepocessor symbols globally for your
+    One way to define these preprocessor symbols globally for your
     application is to add the following entry to your
     \l{qmake Project Files}{qmake project file}:
 
@@ -1085,7 +1100,7 @@ QString &QString::operator=(const QString &other)
     You can disable this operator by defining \c
     QT_NO_CAST_FROM_ASCII when you compile your applications. This
     can be useful if you want to ensure that all user-visible strings
-    go through QObject::tr(), for exaple.
+    go through QObject::tr(), for example.
 */
 
 /*! \fn QString &QString::operator=(const char *str)
@@ -1287,7 +1302,7 @@ QString &QString::append(const QLatin1String &str)
 
     \overload
 
-    Appends the string \a str to this string. the given const char
+    Appends the string \a str to this string. The given const char
     pointer is converted to Unicode using the fromAscii() function.
 
     You can disable this function by defining \c QT_NO_CAST_FROM_ASCII
@@ -3933,7 +3948,7 @@ QString& QString::fill(QChar ch, int size)
 
     Returns true if \a s1 is not equal to \a s2; otherwise returns false.
 
-    For \a s1 != 0, this is equivalent to \c {compare(\a s1, \a s2) !=
+    For \a s1 != 0, this is equivalent to \c {compare(} \a s1, \a s2 \c {) !=
     0}. Note that no string is equal to \a s1 being 0.
 
     \sa QString::compare()
@@ -4432,6 +4447,8 @@ QString QString::toLower() const
 }
 
 /*!
+Returns the case folded equivalent of the string. For most Unicode characters this
+is the same as toLowerCase().
 */
 QString QString::toCaseFolded() const
 {
@@ -5650,6 +5667,7 @@ QStringList QString::split(const QRegExp &rx, SplitBehavior behavior) const
 */
 
 /*!
+    \fn QString QString::normalized(NormalizationForm mode) const
     Returns the string in the given Unicode normalization \a mode.
 */
 QString QString::normalized(QString::NormalizationForm mode) const
@@ -5657,9 +5675,9 @@ QString QString::normalized(QString::NormalizationForm mode) const
     return normalized(mode, CURRENT_VERSION);
 }
 
-
 /*!
     \overload
+    \fn QString QString::normalized(NormalizationForm mode, QChar::UnicodeVersion version) const
 
     Returns the string in the given Unicode normalization \a mode,
     according to the given \a version of the Unicode standard.
@@ -7104,7 +7122,7 @@ QDataStream &operator>>(QDataStream &in, QString &str)
 
     QStringRef provides a read-only subset of the QString API.
 
-    A string reference explicitely references a portion of a string()
+    A string reference explicitly references a portion of a string()
     with a given size(), starting at a specific position(). Calling
     toString() returns a copy of the data as a real QString instance.
 
@@ -7404,6 +7422,17 @@ bool operator<(const QStringRef &s1,const QStringRef &s2)
     Constructs a string reference to the given \a string and assigns it to
     this string reference, returning the result.
 */
+
+/*!
+    \typedef QString::DataPtr
+    \internal
+*/
+
+/*!
+    \fn DataPtr & QString::data_ptr()
+    \internal
+*/
+
 
 
 /*!  Appends the string reference to \a string, and returns a new

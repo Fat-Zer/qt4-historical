@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -1538,7 +1553,7 @@ QHttp::QHttp(const QString &hostName, quint16 port, QObject *parent)
     connection mode \a mode.
 
     If port is 0, it will use the default port for the \a mode used
-    (80 for Http and 443 fopr Https).
+    (80 for Http and 443 for Https).
 
     The \a parent parameter is passed on to the QObject constructor.
 
@@ -1783,7 +1798,10 @@ QHttp::~QHttp()
     \since 4.3
 
     Forwards the sslErrors signal from the QSslSocket used in QHttp. \a errors
-    is the list of errors that occurred during the SSL handshake.
+    is the list of errors that occurred during the SSL handshake. Unless you
+    call ignoreSslErrors() from within a slot connected to this signal when an
+    error occurs, QHttp will tear down the connection immediately after
+    emitting the signal.
 
     \sa QSslSocket QSslSocket::ignoreSslErrors()
 */
@@ -2972,10 +2990,13 @@ void QHttpPrivate::setSock(QTcpSocket *sock)
 }
 
 /*!
-  Tells the QSslSocket used for the Http connection to ignore
-  the errors reported in the sslErrors signal
+    Tells the QSslSocket used for the Http connection to ignore the errors
+    reported in the sslErrors() signal.
 
-  \sa QSslSocket QSslSocket::sslErrors()
+    Note that this function must be called from within a slot connected to the
+    sslErrors() signal to have any effect.
+
+    \sa QSslSocket QSslSocket::sslErrors()
 */
 #ifndef QT_NO_OPENSSL
 void QHttp::ignoreSslErrors()

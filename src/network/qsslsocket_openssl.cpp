@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -256,7 +271,7 @@ bool QSslSocketBackendPrivate::initSslContext()
 
     // Add all our CAs to this store.
     foreach (const QSslCertificate &caCertificate, q->caCertificates())
-        q_X509_STORE_add_cert(ctx->cert_store, q_X509_dup((X509 *)caCertificate.handle()));
+        q_X509_STORE_add_cert(ctx->cert_store, (X509 *)caCertificate.handle());
 
     // Register a custom callback to get all verification errors.
     X509_STORE_set_verify_cb_func(ctx->cert_store, q_X509Callback);
@@ -479,6 +494,10 @@ void QSslSocketBackendPrivate::transmit()
 {
     Q_Q(QSslSocket);
 
+    // If we don't have any SSL context, don't bother transmitting.
+    if (!ssl)
+        return;
+
     bool transmitting;
     do {
         transmitting = false;
@@ -503,7 +522,7 @@ void QSslSocketBackendPrivate::transmit()
         // Check if we've got any data to be written to the socket.
         QVarLengthArray<char, 4096> data;
         int pendingBytes;
-        while ((pendingBytes = q_BIO_pending(writeBio)) > 0) {
+        while (plainSocket->isValid() && (pendingBytes = q_BIO_pending(writeBio)) > 0) {
             // Read encrypted data from the write BIO into a buffer.
             data.resize(pendingBytes);
             int encryptedBytesRead = q_BIO_read(writeBio, data.data(), pendingBytes);
@@ -565,7 +584,7 @@ void QSslSocketBackendPrivate::transmit()
                 emit q->error(QAbstractSocket::UnknownSocketError);
                 break;
             }
-        } while (readBytes > 0);
+        } while (ssl && readBytes > 0);
     } while (ssl && ctx && transmitting);
 }
 
@@ -619,14 +638,28 @@ bool QSslSocketBackendPrivate::testConnection()
         }
     }
 
-    // Check the peer certificate itself.
+    // Check the peer certificate itself. First try the subject's common name
+    // (CN) as a wildcard, then try all alternate subject name DNS entries the
+    // same way.
     if (!peerCertificate.isNull()) {
-        QString commonName = peerCertificate.subjectInfo(QSslCertificate::CommonName);
-        // ### Both CommonName and AlternameSubjectNames can contain wildcards.
-        // ### We aren't using AlternateSubjectNames
         QString peerName = q->peerName();
-        if (commonName != peerName /* && !peerCertificate.alternateSubjectNames().contains(peerName) */)
-            errors << QSslError(QSslError::HostNameMismatch);
+        QString commonName = peerCertificate.subjectInfo(QSslCertificate::CommonName);
+
+        QRegExp regexp(commonName, Qt::CaseInsensitive, QRegExp::Wildcard);
+        if (!regexp.exactMatch(peerName)) {
+            bool matched = false;
+            foreach (QString altName, peerCertificate.alternateSubjectNames().values(QSsl::DnsEntry)) {
+                regexp.setPattern(altName);
+                if (regexp.exactMatch(peerName)) {
+                    matched = true;
+                    break;
+                }
+            }
+            if (!matched) {
+                // No matches in common names or alternate names.
+                errors << QSslError(QSslError::HostNameMismatch);
+            }
+        }
     } else {
         errors << QSslError(QSslError::NoPeerCertificate);
     }
@@ -686,6 +719,7 @@ bool QSslSocketBackendPrivate::testConnection()
         sslErrors = errors;
         emit q->sslErrors(errors);
         if (!ignoreSslErrors) {
+            q->setErrorString(sslErrors.first().errorString());
             plainSocket->disconnectFromHost();
             return false;
         }

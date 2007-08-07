@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -49,6 +64,8 @@ extern QDirect3DPaintEngine *qt_d3dEngine();
 #endif
 
 extern int qt_defaultDpi();
+extern int qt_defaultDpiX();
+extern int qt_defaultDpiY();
 
 // ### Qt 5: remove
 typedef void (*_qt_pixmap_cleanup_hook)(int);
@@ -485,7 +502,6 @@ bool QPixmap::load(const QString& fileName, const char *format, Qt::ImageConvers
                QLatin1Char('_')).append(QString::number(info.lastModified().toTime_t())).append(
                QLatin1Char('_')).append(QString::number(data->type));
 
-    detach();
     if (QPixmapCache::find(key, *this))
             return true;
     QImage image = QImageReader(fileName, format).read();
@@ -509,7 +525,6 @@ bool QPixmap::loadFromData(const uchar *buf, uint len, const char* format, Qt::I
     QBuffer b(&a);
     b.open(QIODevice::ReadOnly);
 
-    detach();
     QImage image = QImageReader(&b, format).read();
     if (!image.isNull()) {
         if (data->type == BitmapType)
@@ -545,12 +560,12 @@ qint64 QPixmap::cacheKey() const
 {
     // avoid exposing the internal QImageData structure..
 #if defined (Q_CC_MINGW) || (defined (_MSC_VER) && _MSC_VER >= 1310)
-    return -((data->image.cacheKey() & 0xffffffff00000000LL) | ((qint64) data->detach_no));
+    return ((data->image.cacheKey() & 0xffffffff00000000LL) | ((qint64) data->detach_no));
 #else
     // MSVC 6.0 can't handle 64 bit constants properly..
     qint64 mask = 0xffffffff;
     mask <<= 32;
-    return -((data->image.cacheKey() & mask) | ((qint64) data->detach_no));
+    return ((data->image.cacheKey() & mask) | ((qint64) data->detach_no));
 #endif
 }
 
@@ -615,31 +630,37 @@ bool QPixmap::convertFromImage(const QImage &image, ColorMode mode)
 int QPixmap::metric(PaintDeviceMetric metric) const
 {
     // override the image dpi with the screen dpi when rendering to a pixmap
-
-    int dpm = qRound(qt_defaultDpi()*100./2.54);
+    // ### Qt 4.4: remove #ifdef
+#ifdef Q_WS_QWS
+    int dpmX = qRound(qt_defaultDpiX()*100./2.54);
+    int dpmY = qRound(qt_defaultDpiY()*100./2.54);
+#else
+    int dpmX = qRound(qt_defaultDpi()*100./2.54);
+    int dpmY = dpmX;
+#endif
     switch (metric) {
     case PdmWidthMM:
-        return qRound(data->image.width() * 1000 / dpm);
+        return qRound(data->image.width() * 1000 / dpmX);
         break;
 
     case PdmHeightMM:
-        return qRound(data->image.height() * 1000 / dpm);
+        return qRound(data->image.height() * 1000 / dpmY);
         break;
 
     case PdmDpiX:
-        return qRound(dpm * 0.0254);
+        return qRound(dpmX * 0.0254);
         break;
 
     case PdmDpiY:
-        return qRound(dpm * 0.0254);
+        return qRound(dpmY * 0.0254);
         break;
 
     case PdmPhysicalDpiX:
-        return qRound(dpm * 0.0254);
+        return qRound(dpmX * 0.0254);
         break;
 
     case PdmPhysicalDpiY:
-        return qRound(dpm * 0.0254);
+        return qRound(dpmY * 0.0254);
         break;
     default:
         return data->image.metric(metric);

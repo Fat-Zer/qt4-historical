@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/doc/src/model-view-programming.qdoc -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/doc/src/model-view-programming.qdoc -->
 <head>
   <title>Qt 4.3: Proxy Models</title>
   <link rel="prev" href="model-view-dnd.html" />
@@ -35,7 +35,7 @@
 <p>To solve this problem, the model/view framework uses proxy models to manage the information supplied between individual models and views. Proxy models are components that behave like ordinary models from the perspective of a view, and access data from source models on behalf of that view. The signals and slots used by the model/view framework ensure that each view is updated appropriately no matter how many proxy models are placed between itself and the source model.</p>
 <a name="using-proxy-models"></a>
 <h2>Using Proxy Models</h2>
-<p>Proxy models can be inserted between an existing model and any number of views. Qt is supplied with a standard proxy models, <a href="qsortfilterproxymodel.html">QSortFilterProxyModel</a>, that is usually instantiated and used directly, but can also be subclassed to provide custom filtering and sorting behavior. The <a href="qsortfilterproxymodel.html">QSortFilterProxyModel</a> class can be used in the following way:</p>
+<p>Proxy models can be inserted between an existing model and any number of views. Qt is supplied with a standard proxy model, <a href="qsortfilterproxymodel.html">QSortFilterProxyModel</a>, that is usually instantiated and used directly, but can also be subclassed to provide custom filtering and sorting behavior. The <a href="qsortfilterproxymodel.html">QSortFilterProxyModel</a> class can be used in the following way:</p>
 <pre>     QSortFilterProxyModel *filterModel = new QSortFilterProxyModel(parent);
      filterModel-&gt;setSourceModel(stringListModel);
 
@@ -68,6 +68,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

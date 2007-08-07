@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/doc/src/qtsql.qdoc -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/doc/src/qtsql.qdoc -->
 <head>
   <title>Qt 4.3: QtSql Module</title>
   <link rel="prev" href="qtopengl.html" />
@@ -127,7 +127,7 @@
      if (defaultDB.driver()-&gt;hasFeature(QSqlDriver::QuerySize)) {
          numRows = query.size();
      } else {
-         <span class="comment">// this can be very slow</span>
+         <span class="comment">//</span> this can be very slow
          query.last();
          numRows = query.at() + 1;
      }</pre>
@@ -166,7 +166,7 @@
      query.exec(&quot;DELETE FROM employee WHERE id = 1007&quot;);</pre>
 <a name="transactions"></a>
 <h4>Transactions</h4>
-<p>If the underlying database engine supports transactions, QSqlDriver::hasFeature(<a href="qsqldriver.html#DriverFeature-enum">QSqlDriver::Transactions</a>) will return true. You can use <a href="qsqldatabase.html#transaction">QSqlDatabase::transaction</a>() to initiate a transaction, followed by the SQL commands you want to execute within the context of the transaction, and then either <a href="qsqldatabase.html#commit">QSqlDatabase::commit</a>() or <a href="qsqldatabase.html#rollback">QSqlDatabase::rollback</a>().</p>
+<p>If the underlying database engine supports transactions, QSqlDriver::hasFeature(<a href="qsqldriver.html#DriverFeature-enum">QSqlDriver::Transactions</a>) will return true. You can use <a href="qsqldatabase.html#transaction">QSqlDatabase::transaction</a>() to initiate a transaction, followed by the SQL commands you want to execute within the context of the transaction, and then either <a href="qsqldatabase.html#commit">QSqlDatabase::commit</a>() or <a href="qsqldatabase.html#rollback">QSqlDatabase::rollback</a>(). When using transactions you must start the transaction before you create your query.</p>
 <p>Example:</p>
 <pre>     QSqlDatabase::database().transaction();
      QSqlQuery query;
@@ -289,7 +289,7 @@
      return flags;
  }
 
- bool EditableSqlModel::setData(const QModelIndex &amp;index, const QVariant &amp;value, int /* role */</span>)
+ bool EditableSqlModel::setData(const QModelIndex &amp;index, const QVariant &amp;value, int <span class="comment">/* role */</span>)
  {
      if (index.column() &lt; 1 || index.column() &gt; 2)
          return false;
@@ -336,6 +336,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

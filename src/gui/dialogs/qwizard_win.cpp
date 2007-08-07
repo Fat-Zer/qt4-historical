@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -87,6 +102,8 @@ enum WIZ_NAV_BACKBUTTONSTATES {     //NAV_BACKBUTTONSTATES
 #define WIZ_TMT_CAPTIONFONT (801)           //TMT_CAPTIONFONT
 #define WIZ_DTT_COMPOSITED  (1UL << 13)     //DTT_COMPOSITED
 #define WIZ_DTT_GLOWSIZE    (1UL << 11)     //DTT_GLOWSIZE
+
+#define WIZ_WM_NCMOUSELEAVE 674             //WM_NCMOUSELEAVE
 
 typedef BOOL (WINAPI *PtrDwmDefWindowProc)(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam, LRESULT *plResult);
 typedef HRESULT (WINAPI *PtrDwmIsCompositionEnabled)(BOOL* pfEnabled);
@@ -267,35 +284,19 @@ bool QVistaHelper::winEvent(MSG* msg, long* result)
     switch (msg->message) {
     case WM_NCHITTEST: {
         LRESULT lResult;
-        HRESULT hr;
-        hr = pDwmDefWindowProc(msg->hwnd, msg->message, msg->wParam, msg->lParam, &lResult);
-        if (lResult == HTCLOSE || lResult == HTMAXBUTTON || lResult == HTMINBUTTON)
+        pDwmDefWindowProc(msg->hwnd, msg->message, msg->wParam, msg->lParam, &lResult);
+        if (lResult == HTCLOSE || lResult == HTMAXBUTTON || lResult == HTMINBUTTON || lResult == HTHELP)
             *result = lResult;
         else
             *result = DefWindowProc(msg->hwnd, msg->message, msg->wParam, msg->lParam);
         break;
     }
-    case WM_NCMOUSEMOVE: {
+    case WM_NCMOUSEMOVE:
+    case WM_NCLBUTTONDOWN:
+    case WM_NCLBUTTONUP:
+    case WIZ_WM_NCMOUSELEAVE: {
         LRESULT lResult;
-        HRESULT hr;
-        hr = pDwmDefWindowProc(msg->hwnd, msg->message, msg->wParam, msg->lParam, &lResult);
-        *result = lResult;
-        *result = DefWindowProc(msg->hwnd, msg->message, msg->wParam, msg->lParam);
-        break;
-    }
-    case WM_NCLBUTTONDOWN: {
-        LRESULT lResult;
-        HRESULT hr;
-        hr = pDwmDefWindowProc(msg->hwnd, msg->message, msg->wParam, msg->lParam, &lResult);
-        *result = lResult;
-        *result = DefWindowProc(msg->hwnd, msg->message, msg->wParam, msg->lParam);
-        break;
-    }
-    case WM_NCLBUTTONUP: {
-        LRESULT lResult;
-        HRESULT hr;
-        hr = pDwmDefWindowProc(msg->hwnd, msg->message, msg->wParam, msg->lParam, &lResult);
-        *result = lResult;
+        pDwmDefWindowProc(msg->hwnd, msg->message, msg->wParam, msg->lParam, &lResult);
         *result = DefWindowProc(msg->hwnd, msg->message, msg->wParam, msg->lParam);
         break;
     }

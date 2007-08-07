@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/corelib/tools/qsize.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/corelib/tools/qsize.cpp -->
 <head>
   <title>Qt 4.3: QSize Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -104,7 +104,7 @@
 <pre> QSize size(100, 10);
  size.rheight() += 5;
 
-<span class="comment"> // size becomes (100,15)</span></pre>
+<span class="comment"> //</span> size becomes (100,15)</pre>
 <p>See also <a href="qsize.html#rwidth">rwidth</a>() and <a href="qsize.html#setHeight">setHeight</a>().</p>
 <a name="//apple_ref/cpp/instm/QSize/rwidth" />
 <h3 class="fn"><a name="rwidth"></a>int &amp; QSize::rwidth ()</h3>
@@ -113,7 +113,7 @@
 <pre> QSize size(100, 10);
  size.rwidth() += 20;
 
-<span class="comment"> // size becomes (120,10)</span></pre>
+<span class="comment"> //</span> size becomes (120,10)</pre>
 <p>See also <a href="qsize.html#rheight">rheight</a>() and <a href="qsize.html#setWidth">setWidth</a>().</p>
 <a name="//apple_ref/cpp/instm/QSize/scale" />
 <h3 class="fn"><a name="scale"></a>void QSize::scale ( int <i>width</i>, int <i>height</i>, <a href="qt.html#AspectRatioMode-enum">Qt::AspectRatioMode</a> <i>mode</i> )</h3>
@@ -126,15 +126,15 @@
 <p>Example:</p>
 <pre> QSize t1(10, 12);
  t1.scale(60, 60, Qt::IgnoreAspectRatio);
-<span class="comment"> // t1 is (60, 60)</span>
+<span class="comment"> //</span> t1 is (60, 60)
 
  QSize t2(10, 12);
  t2.scale(60, 60, Qt::KeepAspectRatio);
-<span class="comment"> // t2 is (50, 60)</span>
+<span class="comment"> //</span> t2 is (50, 60)
 
  QSize t3(10, 12);
  t3.scale(60, 60, Qt::KeepAspectRatioByExpanding);
-<span class="comment"> // t3 is (60, 72)</span></pre>
+<span class="comment"> //</span> t3 is (60, 72)</pre>
 <p>See also <a href="qsize.html#setWidth">setWidth</a>() and <a href="qsize.html#setHeight">setHeight</a>().</p>
 <h3 class="fn"><a name="scale-2"></a>void QSize::scale ( const QSize &amp; <i>size</i>, <a href="qt.html#AspectRatioMode-enum">Qt::AspectRatioMode</a> <i>mode</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
@@ -167,7 +167,7 @@
  QSize r(-1, 4);
  s += r;
 
-<span class="comment"> // s becomes (2,11)</span></pre>
+<span class="comment"> //</span> s becomes (2,11)</pre>
 <a name="//apple_ref/cpp/instm/QSize/operator-=" />
 <h3 class="fn"><a name="operator--eq"></a>QSize &amp; QSize::operator-= ( const QSize &amp; <i>size</i> )</h3>
 <p>Subtracts the given <i>size</i> from <i>this</i> size, and returns a reference to this size. For example:</p>
@@ -175,7 +175,7 @@
  QSize r(-1, 4);
  s -= r;
 
-<span class="comment"> // s becomes (4,3)</span></pre>
+<span class="comment"> //</span> s becomes (4,3)</pre>
 <a name="//apple_ref/cpp/instm/QSize/operator/=" />
 <h3 class="fn"><a name="operator-2f-eq"></a>QSize &amp; QSize::operator/= ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>divisor</i> )</h3>
 <p>Divides both the width and height by the given <i>divisor</i>, and returns a reference to the size.</p>
@@ -218,6 +218,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

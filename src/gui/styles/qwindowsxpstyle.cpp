@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -237,7 +252,8 @@ void QWindowsXPStylePrivate::cleanup(bool force)
 
     use_xp = false;
     cleanupHandleMap();
-    delete limboWidget;
+    if (limboWidget)
+        limboWidget->deleteLater();
     delete tabbody;
     limboWidget = 0;
     tabbody = 0;
@@ -822,7 +838,8 @@ void QWindowsXPStylePrivate::drawBackgroundThruNativeBuffer(XPThemeData &themeDa
 
         // Drawing the part into the backing store
         if (pDrawThemeBackgroundEx != 0) {
-            pDrawThemeBackgroundEx(themeData.handle(), dc, themeData.partId, themeData.stateId, &(themeData.toRECT(area)), &drawOptions);
+	    RECT rect(themeData.toRECT(area));
+            pDrawThemeBackgroundEx(themeData.handle(), dc, themeData.partId, themeData.stateId, &rect, &drawOptions);
         } else {
             // Set the clip region, if used..
             if (addBorderContentClipping) {
@@ -3446,21 +3463,38 @@ QRect QWindowsXPStyle::subControlRect(ComplexControl cc, const QStyleOptionCompl
 #ifndef QT_NO_WORKSPACE
     case CC_MdiControls:
     {
-        int buttonWidth = option->rect.width()/3;
+        int numSubControls = 0;
+        if (option->subControls & SC_MdiCloseButton)
+            ++numSubControls;
+        if (option->subControls & SC_MdiMinButton)
+            ++numSubControls;
+        if (option->subControls & SC_MdiNormalButton)
+            ++numSubControls;
+        if (numSubControls == 0)
+            break;
+
+        int buttonWidth = option->rect.width()/ numSubControls;
         int offset = 0;
         switch (sc) {
         case SC_MdiCloseButton:
+            // Only one sub control, no offset needed.
+            if (numSubControls == 1)
+                break;
             offset += buttonWidth;
             //FALL THROUGH
         case SC_MdiNormalButton:
-            offset += buttonWidth;
-            //FALL THROUGH
-        case SC_MdiMinButton:
-            rect = QRect(offset, 0, buttonWidth, option->rect.height());
+            // No offset needed if
+            // 1) There's only one sub control
+            // 2) We have a close button and a normal button (offset already added in SC_MdiClose)
+            if (numSubControls == 1 || (numSubControls == 2 && !(option->subControls & SC_MdiMinButton)))
+                break;
+            if (option->subControls & SC_MdiNormalButton)
+                offset += buttonWidth;
             break;
         default:
             break;
         }
+        rect = QRect(offset, 0, buttonWidth, option->rect.height());
         break;
     }
 #endif // QT_NO_WORKSPACE
@@ -3538,7 +3572,18 @@ QSize QWindowsXPStyle::sizeFromContents(ContentsType ct, const QStyleOption *opt
         break;
 
     case CT_MdiControls:
-        sz = QSize(54, 19);
+        if (const QStyleOptionComplex *styleOpt = qstyleoption_cast<const QStyleOptionComplex *>(option)) {
+            int width = 0;
+            if (styleOpt->subControls & SC_MdiMinButton)
+                width += 17 + 1;
+            if (styleOpt->subControls & SC_MdiNormalButton)
+                width += 17 + 1;
+            if (styleOpt->subControls & SC_MdiCloseButton)
+                width += 17 + 1;
+            sz = QSize(width, 19);
+        } else {
+            sz = QSize(54, 19);
+        }
         break;
 
     default:

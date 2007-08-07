@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/doc/src/q3asciidict.qdoc -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/doc/src/q3asciidict.qdoc -->
 <head>
   <title>Qt 4.3: Q3AsciiDict Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -60,23 +60,23 @@
 <p>A dictionary is a collection of key-value pairs. The key is a char* used for insertion, removal and lookup. The value is a pointer. Dictionaries provide very fast insertion and lookup.</p>
 <p>Q3AsciiDict cannot handle Unicode keys; use the <a href="q3dict.html">Q3Dict</a> template instead, which uses <a href="qstring.html">QString</a> keys. A <a href="q3dict.html">Q3Dict</a> has the same performace as a Q3AsciiDict.</p>
 <p>Example:</p>
-<pre> Q3AsciiDict&lt;QLineEdit&gt; fields; <span class="comment">// char* keys, QLineEdit* values</span>
+<pre> Q3AsciiDict&lt;QLineEdit&gt; fields; <span class="comment">//</span> char* keys, QLineEdit* values
  fields.insert( &quot;forename&quot;, new QLineEdit( this ) );
  fields.insert( &quot;surname&quot;, new QLineEdit( this ) );
 
  fields[&quot;forename&quot;]-&gt;setText( &quot;Homer&quot; );
  fields[&quot;surname&quot;]-&gt;setText( &quot;Simpson&quot; );
 
- Q3AsciiDictIterator&lt;QLineEdit&gt; it( fields ); <span class="comment">// See Q3AsciiDictIterator</span>
+ Q3AsciiDictIterator&lt;QLineEdit&gt; it( fields ); <span class="comment">//</span> See Q3AsciiDictIterator
  for( ; it.current(); ++it )
      cout &lt;&lt; it.currentKey() &lt;&lt; &quot;: &quot; &lt;&lt; it.current()-&gt;text() &lt;&lt; endl;
  cout &lt;&lt; endl;
 
  if ( fields[&quot;forename&quot;] &amp;&amp; fields[&quot;surname&quot;] )
      cout &lt;&lt; fields[&quot;forename&quot;]-&gt;text() &lt;&lt; &quot; &quot;
-         &lt;&lt; fields[&quot;surname&quot;]-&gt;text() &lt;&lt; endl;  <span class="comment">// Prints &quot;Homer Simpson&quot;</span>
+         &lt;&lt; fields[&quot;surname&quot;]-&gt;text() &lt;&lt; endl;  <span class="comment">//</span> Prints &quot;Homer Simpson&quot;
 
- fields.remove( &quot;forename&quot; ); <span class="comment">// Does not delete the line edit</span>
+ fields.remove( &quot;forename&quot; ); <span class="comment">//</span> Does not delete the line edit
  if ( ! fields[&quot;forename&quot;] )
      cout &lt;&lt; &quot;forename is not in the dictionary&quot; &lt;&lt; endl;</pre>
 <p>In this example we use a dictionary to keep track of the line edits we're using. We insert each line edit into the dictionary with a unique name and then access the line edits via the dictionary. See <a href="q3ptrdict.html">Q3PtrDict</a>, <a href="q3intdict.html">Q3IntDict</a> and <a href="q3dict.html">Q3Dict</a>.</p>
@@ -189,6 +189,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

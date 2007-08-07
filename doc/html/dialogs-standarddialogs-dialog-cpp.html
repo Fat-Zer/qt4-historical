@@ -23,12 +23,27 @@
  ** and appearing in the file LICENSE.GPL included in the packaging of
  ** this file.  Please review the following information to ensure GNU
  ** General Public Licensing requirements will be met:
- ** http://www.trolltech.com/products/qt/opensource.html
+ ** http://trolltech.com/products/qt/licenses/licensing/opensource/
  **
  ** If you are unsure which license is appropriate for your use, please
  ** review the following information:
- ** http://www.trolltech.com/products/qt/licensing.html or contact the
- ** sales department at sales@trolltech.com.
+ ** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+ ** or contact the sales department at sales@trolltech.com.
+ **
+ ** In addition, as a special exception, Trolltech gives you certain
+ ** additional rights. These rights are described in the Trolltech GPL
+ ** Exception version 1.0, which can be found at
+ ** http://www.trolltech.com/products/qt/gplexception/ and in the file
+ ** GPL_EXCEPTION.txt in this package.
+ **
+ ** In addition, as a special exception, Trolltech, as the sole copyright
+ ** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+ ** plug-in the right for the Qt/Eclipse Integration to link to
+ ** functionality provided by Qt Designer and its related libraries.
+ **
+ ** Trolltech reserves all rights not expressly granted herein.
+ **
+ ** Trolltech ASA (c) 2007
  **
  ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
  ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -143,6 +158,14 @@
      connect(warningButton, SIGNAL(clicked()), this, SLOT(warningMessage()));
      connect(errorButton, SIGNAL(clicked()), this, SLOT(errorMessage()));
 
+     native = new QCheckBox(this);
+     native-&gt;setText(&quot;Use native file dialog.&quot;);
+     native-&gt;setChecked(true);
+ #ifndef Q_WS_WIN
+ #ifndef Q_OS_MAC
+     native-&gt;hide();
+ #endif
+ #endif
      QGridLayout *layout = new QGridLayout;
      layout-&gt;setColumnStretch(1, 1);
      layout-&gt;setColumnMinimumWidth(1, 250);
@@ -176,6 +199,7 @@
      layout-&gt;addWidget(warningLabel, 13, 1);
      layout-&gt;addWidget(errorButton, 14, 0);
      layout-&gt;addWidget(errorLabel, 14, 1);
+     layout-&gt;addWidget(native, 15, 0);
      setLayout(layout);
 
      setWindowTitle(tr(&quot;Standard Dialogs&quot;));
@@ -243,31 +267,45 @@
 
  void Dialog::setExistingDirectory()
  {
+     QFileDialog::Options options = QFileDialog::DontResolveSymlinks | QFileDialog::ShowDirsOnly;
+     if (!native-&gt;isChecked())
+         options |= QFileDialog::DontUseNativeDialog;
      QString directory = QFileDialog::getExistingDirectory(this,
                                  tr(&quot;QFileDialog::getExistingDirectory()&quot;),
                                  directoryLabel-&gt;text(),
-                                 QFileDialog::DontResolveSymlinks
-                                 | QFileDialog::ShowDirsOnly);
+                                 options);
      if (!directory.isEmpty())
          directoryLabel-&gt;setText(directory);
  }
 
  void Dialog::setOpenFileName()
  {
+     QFileDialog::Options options;
+     if (!native-&gt;isChecked())
+         options |= QFileDialog::DontUseNativeDialog;
+     QString selectedFilter;
      QString fileName = QFileDialog::getOpenFileName(this,
                                  tr(&quot;QFileDialog::getOpenFileName()&quot;),
                                  openFileNameLabel-&gt;text(),
-                                 tr(&quot;All Files (*);;Text Files (*.txt)&quot;));
+                                 tr(&quot;All Files (*);;Text Files (*.txt)&quot;),
+                                 &amp;selectedFilter,
+                                 options);
      if (!fileName.isEmpty())
          openFileNameLabel-&gt;setText(fileName);
  }
 
  void Dialog::setOpenFileNames()
  {
+     QFileDialog::Options options;
+     if (!native-&gt;isChecked())
+         options |= QFileDialog::DontUseNativeDialog;
+     QString selectedFilter;
      QStringList files = QFileDialog::getOpenFileNames(
                                  this, tr(&quot;QFileDialog::getOpenFileNames()&quot;),
                                  openFilesPath,
-                                 tr(&quot;All Files (*);;Text Files (*.txt)&quot;));
+                                 tr(&quot;All Files (*);;Text Files (*.txt)&quot;),
+                                 &amp;selectedFilter,
+                                 options);
      if (files.count()) {
          openFilesPath = files[0];
          openFileNamesLabel-&gt;setText(QString(&quot;[%1]&quot;).arg(files.join(&quot;, &quot;)));
@@ -276,10 +314,16 @@
 
  void Dialog::setSaveFileName()
  {
+     QFileDialog::Options options;
+     if (!native-&gt;isChecked())
+         options |= QFileDialog::DontUseNativeDialog;
+     QString selectedFilter;
      QString fileName = QFileDialog::getSaveFileName(this,
                                  tr(&quot;QFileDialog::getSaveFileName()&quot;),
                                  saveFileNameLabel-&gt;text(),
-                                 tr(&quot;All Files (*);;Text Files (*.txt)&quot;));
+                                 tr(&quot;All Files (*);;Text Files (*.txt)&quot;),
+                                 &amp;selectedFilter,
+                                 options);
      if (!fileName.isEmpty())
          saveFileNameLabel-&gt;setText(fileName);
  }
@@ -351,6 +395,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

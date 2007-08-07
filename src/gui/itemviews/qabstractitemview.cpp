@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -50,6 +65,7 @@ QAbstractItemViewPrivate::QAbstractItemViewPrivate()
         selectionModel(0),
         selectionMode(QAbstractItemView::ExtendedSelection),
         selectionBehavior(QAbstractItemView::SelectItems),
+        currentlyCommittingEditor(0),
         pressedModifiers(Qt::NoModifier),
         pressedPosition(QPoint(-1, -1)),
         state(QAbstractItemView::NoState),
@@ -594,6 +610,11 @@ QItemSelectionModel* QAbstractItemView::selectionModel() const
     Any existing delegate will be removed, but not deleted. QAbstractItemView
     does not take ownership of \a delegate.
 
+    \warning You should not share the same instance of a delegate between views.
+    Doing so can cause incorrect or unintuitive editing behavior since each
+    view connected to a given delegate may receive the \l{QAbstractItemDelegate::}{closeEditor()}
+    signal, and attempt to access, modify or close an editor that has already been closed.
+
     \sa itemDelegate()
 */
 void QAbstractItemView::setItemDelegate(QAbstractItemDelegate *delegate)
@@ -653,9 +674,14 @@ QVariant QAbstractItemView::inputMethodQuery(Qt::InputMethodQuery query) const
     Any existing row delegate for \a row will be removed, but not
     deleted. QAbstractItemView does not take ownership of \a delegate.
 
-    Note: If a delegate has been assigned to both a row and a column, the row
+    \note If a delegate has been assigned to both a row and a column, the row
     delegate (i.e., this delegate) will take presedence and manage the
     intersecting cell index.
+
+    \warning You should not share the same instance of a delegate between views.
+    Doing so can cause incorrect or unintuitive editing behavior since each
+    view connected to a given delegate may receive the \l{QAbstractItemDelegate::}{closeEditor()}
+    signal, and attempt to access, modify or close an editor that has already been closed.
 
     \sa itemDelegateForRow(), setItemDelegateForColumn(), itemDelegate()
 */
@@ -706,8 +732,13 @@ QAbstractItemDelegate *QAbstractItemView::itemDelegateForRow(int row) const
     Any existing column delegate for \a column will be removed, but not
     deleted. QAbstractItemView does not take ownership of \a delegate.
 
-    Note: If a delegate has been assigned to both a row and a column, the row
+    \note If a delegate has been assigned to both a row and a column, the row
     delegate will take presedence and manage the intersecting cell index.
+
+    \warning You should not share the same instance of a delegate between views.
+    Doing so can cause incorrect or unintuitive editing behavior since each
+    view connected to a given delegate may receive the \l{QAbstractItemDelegate::}{closeEditor()}
+    signal, and attempt to access, modify or close an editor that has already been closed.
 
     \sa itemDelegateForColumn(), setItemDelegateForRow(), itemDelegate()
 */
@@ -870,7 +901,7 @@ void QAbstractItemView::setRootIndex(const QModelIndex &index)
 
 /*!
     Returns the model index of the model's root item. The root item is
-    the parent item to the views toplevel items. The root can be invalid.
+    the parent item to the view's toplevel items. The root can be invalid.
 
     \sa setRootIndex()
 */
@@ -1266,6 +1297,10 @@ bool QAbstractItemView::event(QEvent *event)
         break;
     case QEvent::FocusOut:
         d->checkPersistentEditorFocus();
+        break;
+    case QEvent::Show:
+        // the paint event sometimes comes before the layout
+        d->executePostedLayout();
         break;
     default:
         break;
@@ -1701,10 +1736,13 @@ void QAbstractItemView::dropEvent(QDropEvent *event)
     int row = -1;
     if (d->dropOn(event, &row, &col, &index)) {
         if (d->model->dropMimeData(event->mimeData(),
-                    dragDropMode() == InternalMove ? Qt::MoveAction : event->dropAction(), row, col, index)) {
-            if (dragDropMode() == InternalMove)
+                    dragDropMode() == InternalMove ? Qt::MoveAction : event->proposedAction(), row, col, index)) {
+            if (dragDropMode() == InternalMove) {
                 event->setDropAction(Qt::MoveAction);
-            event->accept();
+		event->accept();
+	    } else {
+		event->acceptProposedAction();
+	    }
         }
     }
     stopAutoScroll();
@@ -1791,8 +1829,7 @@ QAbstractItemViewPrivate::position(const QPoint &pos, const QRect &rect, const Q
         }
     }
 
-    if (r == QAbstractItemView::OnItem
-        && (!(model->flags(index) & Qt::ItemIsDropEnabled) || !(model->flags(index.parent()) & Qt::ItemIsDropEnabled)))
+    if (r == QAbstractItemView::OnItem && (!(model->flags(index) & Qt::ItemIsDropEnabled)))
         r = pos.y() < rect.center().y() ? QAbstractItemView::AboveItem : QAbstractItemView::BelowItem;
 
     return r;
@@ -2340,15 +2377,17 @@ void QAbstractItemView::closeEditor(QWidget *editor, QAbstractItemDelegate::EndE
 void QAbstractItemView::commitData(QWidget *editor)
 {
     Q_D(QAbstractItemView);
-    if (!editor || !d->itemDelegate)
+    if (!editor || !d->itemDelegate || d->currentlyCommittingEditor)
         return;
     QModelIndex index = d->indexForEditor(editor);
     if (!index.isValid())
         return;
+    d->currentlyCommittingEditor = editor;
     QAbstractItemDelegate *delegate = d->delegateForIndex(index);
     editor->removeEventFilter(delegate);
     delegate->setModelData(editor, d->model, index);
     editor->installEventFilter(delegate);
+    d->currentlyCommittingEditor = 0;
 }
 
 /*!
@@ -2471,8 +2510,12 @@ void QAbstractItemView::keyboardSearch(const QString &search)
     const QString searchString = sameKey ? QString(d->keyboardInput.at(0)) : d->keyboardInput;
     QModelIndex current = start;
     QModelIndexList match;
+    QModelIndexList previous;
     do {
         match = d->model->match(current, Qt::DisplayRole, searchString);
+        if (match == previous)
+            break;
+        previous = match;
         if (match.value(0).isValid() && (match.value(0).flags() & Qt::ItemIsEnabled)) {
             setCurrentIndex(match.first());
             break;
@@ -2683,7 +2726,6 @@ void QAbstractItemView::scrollToBottom()
 
     Updates the area occupied by the given \a index.
 
-    \sa update()
 */
 void QAbstractItemView::update(const QModelIndex &index)
 {
@@ -2849,7 +2891,9 @@ void QAbstractItemViewPrivate::_q_columnsRemoved(const QModelIndex &, int, int)
 */
 void QAbstractItemViewPrivate::_q_modelDestroyed()
 {
+    Q_Q(QAbstractItemView);
     model = QAbstractItemModelPrivate::staticEmptyModel();
+    QMetaObject::invokeMethod(q, "reset", Qt::QueuedConnection);
 }
 
 /*!
@@ -3415,7 +3459,6 @@ QWidget *QAbstractItemViewPrivate::editor(const QModelIndex &index,
             addEditor(index, w);
             QWidget::setTabOrder(q, w);
 
-            if (q->currentIndex() == index) {
             // Special cases for some editors containing QLineEdit
 #ifndef QT_NO_LINEEDIT
             if (QLineEdit *le = ::qobject_cast<QLineEdit*>(w))
@@ -3424,8 +3467,9 @@ QWidget *QAbstractItemViewPrivate::editor(const QModelIndex &index,
 #ifndef QT_NO_SPINBOX
             if (QSpinBox *sb = ::qobject_cast<QSpinBox*>(w))
                 sb->selectAll();
+            else if (QDoubleSpinBox *dsb = ::qobject_cast<QDoubleSpinBox*>(w))
+                dsb->selectAll();
 #endif
-            }
         }
     }
     return w;

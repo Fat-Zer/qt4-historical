@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/xml/qxmlstream.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/xml/qxmlstream.cpp -->
 <head>
   <title>Qt 4.3: QXmlStreamWriter Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -68,15 +68,15 @@
 <hr />
 <h2>Detailed Description</h2>
 <p>The QXmlStreamWriter class provides an XML writer with a simple streaming API.</p>
-<p>QXmlStreamWriter is the pendent to <a href="qxmlstreamreader.html">QXmlStreamReader</a> for writing XML. Like its related class, it operates on a <a href="qiodevice.html">QIODevice</a> specified with <a href="qxmlstreamwriter.html#setDevice">setDevice</a>(). The API is simple and straight forward: For every XML token or event you want to write, the writer provides a specialised function.</p>
-<p>You start a document with <a href="qxmlstreamwriter.html#writeStartDocument">writeStartDocument</a>() and end it with <a href="qxmlstreamwriter.html#writeEndDocument">writeEndDocument</a>(). This will implicitely close all remaining open tags.</p>
-<p>Element tags are opened with <a href="qxmlstreamwriter.html#writeStartElement">writeStartElement</a>() followed by <a href="qxmlstreamwriter.html#writeAttribute">writeAttribute</a>() or <a href="qxmlstreamwriter.html#writeAttributes">writeAttributes</a>(), element content, and then <a href="qxmlstreamwriter.html#writeEndDocument">writeEndDocument</a>(). A shorter form <a href="qxmlstreamwriter.html#writeEmptyElement">writeEmptyElement</a>() can be used to write empty elements.</p>
-<p>Element content consists of either characters, entity references or nested elements. It is written with <a href="qxmlstreamwriter.html#writeCharacters">writeCharacters</a>() - which also takes care of excaping all forbidden characters and character sequences -, <a href="qxmlstreamwriter.html#writeEntityReference">writeEntityReference</a>(), or subsequent calls to <a href="qxmlstreamwriter.html#writeStartElement">writeStartElement</a>(). A convenience method <a href="qxmlstreamwriter.html#writeTextElement">writeTextElement</a>() can be used for writing terminal elements that contain nothing but text.</p>
+<p>QXmlStreamWriter is the pendent to <a href="qxmlstreamreader.html">QXmlStreamReader</a> for writing XML. Like its related class, it operates on a <a href="qiodevice.html">QIODevice</a> specified with <a href="qxmlstreamwriter.html#setDevice">setDevice</a>(). The API is simple and straight forward: For every XML token or event you want to write, the writer provides a specialized function.</p>
+<p>You start a document with <a href="qxmlstreamwriter.html#writeStartDocument">writeStartDocument</a>() and end it with <a href="qxmlstreamwriter.html#writeEndDocument">writeEndDocument</a>(). This will implicitly close all remaining open tags.</p>
+<p>Element tags are opened with <a href="qxmlstreamwriter.html#writeStartElement">writeStartElement</a>() followed by <a href="qxmlstreamwriter.html#writeAttribute">writeAttribute</a>() or <a href="qxmlstreamwriter.html#writeAttributes">writeAttributes</a>(), element content, and then <a href="qxmlstreamwriter.html#writeEndElement">writeEndElement</a>(). A shorter form <a href="qxmlstreamwriter.html#writeEmptyElement">writeEmptyElement</a>() can be used to write empty elements.</p>
+<p>Element content consists of either characters, entity references or nested elements. It is written with <a href="qxmlstreamwriter.html#writeCharacters">writeCharacters</a>(), which also takes care of escaping all forbidden characters and character sequences, <a href="qxmlstreamwriter.html#writeEntityReference">writeEntityReference</a>(), or subsequent calls to <a href="qxmlstreamwriter.html#writeStartElement">writeStartElement</a>(). A convenience method <a href="qxmlstreamwriter.html#writeTextElement">writeTextElement</a>() can be used for writing terminal elements that contain nothing but text.</p>
 <p>QXmlStreamWriter takes care of prefixing namespaces, all you have to do is specify the <tt>namespaceUri</tt> when writing elements or attributes. If you must conform to certain prefixes, you can force the writer to use them by declaring the namespaces manually with either <a href="qxmlstreamwriter.html#writeNamespace">writeNamespace</a>() or <a href="qxmlstreamwriter.html#writeDefaultNamespace">writeDefaultNamespace</a>(). Alternatively, you can bypass the stream writer's namespace support and use overloaded methods that take a qualified name instead. The namespace <i>http://www.w3.org/XML/1998/namespace</i> is implicit and mapped to the prefix <i>xml</i>.</p>
-<p>The stream writer can automatically format the generated XML data by adding line-breaks and indentation to empty sections between elements, somethign that makes the XML data more readable for humans and easier to work with for most source code management systems. The feature can be turned on with the <a href="qxmlstreamwriter.html#autoFormatting-prop">autoFormatting</a> property.</p>
+<p>The stream writer can automatically format the generated XML data by adding line-breaks and indentation to empty sections between elements, making the XML data more readable for humans and easier to work with for most source code management systems. The feature can be turned on with the <a href="qxmlstreamwriter.html#autoFormatting-prop">autoFormatting</a> property.</p>
 <p>Other functions are <a href="qxmlstreamwriter.html#writeCDATA">writeCDATA</a>(), <a href="qxmlstreamwriter.html#writeComment">writeComment</a>(), <a href="qxmlstreamwriter.html#writeProcessingInstruction">writeProcessingInstruction</a>(), and <a href="qxmlstreamwriter.html#writeDTD">writeDTD</a>(). Chaining of XML streams is supported with <a href="qxmlstreamwriter.html#writeCurrentToken">writeCurrentToken</a>().</p>
 <p>By default, QXmlStreamWriter encodes XML in UTF-8. Different encodings can be enforced using <a href="qxmlstreamwriter.html#setCodec">setCodec</a>().</p>
-<p>The <a href="xml-streambookmarks.html">QXmlStream Bookmarks Example</a> illustrates how to use the a subclassed stream writer to write an XML bookmark file (XBEL) that was previously read in by a <a href="qxmlstreamreader.html">QXmlStreamReader</a>.</p>
+<p>The <a href="xml-streambookmarks.html">QXmlStream Bookmarks Example</a> illustrates how to use a subclassed stream writer to write an XML bookmark file (XBEL) that was previously read in by a <a href="qxmlstreamreader.html">QXmlStreamReader</a>.</p>
 <hr />
 <h2>Property Documentation</h2>
 <a name="//apple_ref/cpp/instm/QXmlStreamWriter/autoFormatting" />
@@ -226,6 +226,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

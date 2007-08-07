@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/gui/widgets/qworkspace.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/widgets/qworkspace.cpp -->
 <head>
   <title>Qt 4.3: QWorkspace Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -95,8 +95,8 @@
 <p>The workspace itself is an ordinary Qt widget. It has a standard constructor that takes a parent widget. Workspaces can be placed in any layout, but are typically given as the central widget in a <a href="qmainwindow.html">QMainWindow</a>:</p>
 <pre> MainWindow::MainWindow()
  {
-     mdiArea = new QMdiArea;
-     setCentralWidget(mdiArea);
+     workspace = new QWorkspace;
+     setCentralWidget(workspace);
      ...
  }</pre>
 <p>Child windows (MDI windows) are standard Qt widgets that are inserted into the workspace with <a href="qworkspace.html#addWindow">addWindow</a>(). As with top-level widgets, you can call functions such as <a href="qwidget.html#show">show</a>(), <a href="qwidget.html#hide">hide</a>(), <a href="qwidget.html#showMaximized">showMaximized</a>(), and <a href="qwidget.html#windowTitle-prop">setWindowTitle</a>() on a child window to change its appearance within the workspace. You can also provide widget flags to determine the layout of the decoration or the behavior of the widget itself.</p>
@@ -197,20 +197,10 @@
 <a name="//apple_ref/cpp/instm/QWorkspace/windowList" />
 <h3 class="fn"><a name="windowList"></a><a href="qwidget.html#QWidgetList-typedef">QWidgetList</a> QWorkspace::windowList ( <a href="qworkspace.html#WindowOrder-enum">WindowOrder</a> <i>order</i> = CreationOrder ) const</h3>
 <p>Returns a list of all visible or minimized child windows. If <i>order</i> is <a href="qworkspace.html#WindowOrder-enum">CreationOrder</a> (the default), the windows are listed in the order in which they were inserted into the workspace. If <i>order</i> is <a href="qworkspace.html#WindowOrder-enum">StackingOrder</a>, the windows are listed in their stacking order, with the topmost window as the last item in the list.</p>
-<hr />
-<h2>Member Function Documentation</h2>
-<h3 class="fn"><a name="QWorkspace-2"></a>QWorkspace::QWorkspace ( <a href="qwidget.html">QWidget</a> * <i>parent</i>, const char * <i>name</i> )</h3>
-<p>Use one of the constructors that doesn't take the <i>name</i> argument and then use <a href="qobject.html#objectName-prop">setObjectName</a>() instead.</p>
-<a name="//apple_ref/cpp/instm/QWorkspace/setPaletteBackgroundColor" />
-<h3 class="fn"><a name="setPaletteBackgroundColor"></a>void QWorkspace::setPaletteBackgroundColor ( const <a href="qcolor.html">QColor</a> &amp; <i>c</i> )</h3>
-<p>Sets the background color to <i>c</i>. Use <a href="qworkspace.html#background-prop">setBackground</a>() instead.</p>
-<a name="//apple_ref/cpp/instm/QWorkspace/setPaletteBackgroundPixmap" />
-<h3 class="fn"><a name="setPaletteBackgroundPixmap"></a>void QWorkspace::setPaletteBackgroundPixmap ( const <a href="qpixmap.html">QPixmap</a> &amp; <i>pm</i> )</h3>
-<p>Sets the background pixmap to <i>pm</i>. Use <a href="qworkspace.html#background-prop">setBackground</a>() instead.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

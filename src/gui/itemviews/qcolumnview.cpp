@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -69,7 +84,8 @@ QColumnView::QColumnView(QWidget * parent)
 {
     Q_D(QColumnView);
     setTextElideMode(Qt::ElideMiddle);
-    connect(&(d->currentAnimation), SIGNAL(frameChanged(int)), horizontalScrollBar(), SLOT(setValue(int)));
+    connect(&(d->currentAnimation), SIGNAL(frameChanged(int)),
+            horizontalScrollBar(), SLOT(setValue(int)));
     connect(&(d->currentAnimation), SIGNAL(finished()), this, SLOT(_q_changeCurrentColumn()));
     delete d->itemDelegate;
     setItemDelegate(new QColumnViewDelegate(this));
@@ -600,8 +616,11 @@ void QColumnViewPrivate::closeColumns(const QModelIndex &parent, bool build)
     }
 
     // Now fill in missing columns
-    while (!dirsToAppend.isEmpty())
-        createColumn(dirsToAppend.takeLast(), true);
+    while (!dirsToAppend.isEmpty()) {
+        QAbstractItemView *newView = createColumn(dirsToAppend.takeLast(), true);
+        if (!dirsToAppend.isEmpty())
+            newView->setCurrentIndex(dirsToAppend.last());
+    }
 
     if (build && !alreadyExists)
         createColumn(parent, false);
@@ -612,8 +631,20 @@ void QColumnViewPrivate::_q_clicked(const QModelIndex &index)
     Q_Q(QColumnView);
     if (!index.isValid())
         return;
-    if (q->currentIndex().parent() != index.parent())
-        q->setCurrentIndex(index);
+    QModelIndex parent = index.parent();
+    QAbstractItemView *columnClicked = 0;
+    for (int column = 0; column < columns.count(); ++column) {
+        if (columns.at(column)->rootIndex() == parent) {
+            columnClicked = columns[column];
+            break;
+        }
+    }
+    if (q->selectionModel() && columnClicked) {
+        QItemSelectionModel::SelectionFlags flags = QItemSelectionModel::Current;
+        if (columnClicked->selectionModel()->isSelected(index))
+            flags |= QItemSelectionModel::Select;
+        q->selectionModel()->setCurrentIndex(index, flags);
+    }
 }
 
 /*!
@@ -786,7 +817,7 @@ void QColumnViewPrivate::setPreviewWidget(QWidget *widget)
 {
     Q_Q(QColumnView);
     if (previewColumn) {
-        if(!columns.isEmpty() && columns.last() == previewColumn)
+        if (!columns.isEmpty() && columns.last() == previewColumn)
             columns.removeLast();
         previewColumn->deleteLater();
     }
@@ -804,7 +835,8 @@ void QColumnViewPrivate::setPreviewWidget(QWidget *widget)
 }
 
 /*!
-    Sets the column widths to the values given in the \a list.  Extra values in the list are kept and used when the columns are created.
+    Sets the column widths to the values given in the \a list.  Extra values in the list are
+    kept and used when the columns are created.
 
     If list contains too few values, only width of the rest of the columns will not be modified.
 
@@ -907,7 +939,6 @@ void QColumnViewPrivate::_q_changeCurrentColumn()
     // Set up the "current" column with focus
     int currentColumn = qMax(0, columns.size() - 2);
     QAbstractItemView *parentColumn = columns.at(currentColumn);
-    parentColumn->setCurrentIndex(current);
     if (q->hasFocus())
         parentColumn->setFocus(Qt::OtherFocusReason);
     q->setFocusProxy(parentColumn);
@@ -924,6 +955,8 @@ void QColumnViewPrivate::_q_changeCurrentColumn()
             QAbstractItemView *view = columns.at(i);
             view->setSelectionModel(replacementSelectionModel);
             view->setFocusPolicy(Qt::NoFocus);
+            if (columns.size() > i + 1)
+                view->setCurrentIndex(columns.at(i+1)->rootIndex());
             break;
         }
     }
@@ -933,12 +966,15 @@ void QColumnViewPrivate::_q_changeCurrentColumn()
     // We want the parent selection to stay highlighted (but dimmed depending upon the color theme)
     if (currentColumn > 0) {
         parentColumn = columns.at(currentColumn - 1);
-        parentColumn->setCurrentIndex(current.parent());
+        if (parentColumn->currentIndex() != current.parent())
+            parentColumn->setCurrentIndex(current.parent());
     }
 
-    if (columns.last()->isHidden())
+    if (columns.last()->isHidden()) {
         columns.last()->setVisible(true);
-
+    }
+    if (columns.last()->selectionModel())
+        columns.last()->selectionModel()->clear();
     updateScrollbars();
 }
 
@@ -1066,3 +1102,4 @@ void QColumnViewDelegate::paint(QPainter *painter,
 #include "moc_qcolumnview.cpp"
 
 #endif // QT_NO_COLUMNVIEW
+

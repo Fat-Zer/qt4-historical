@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/doc/src/examples/styleplugin.qdoc -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/doc/src/examples/styleplugin.qdoc -->
 <head>
   <title>Qt 4.3: Style Plugin Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -24,7 +24,8 @@
 <li><a href="tools-styleplugin-stylewindow-main-cpp.html">tools/styleplugin/stylewindow/main.cpp</a></li>
 </ul>
 <p>This example shows how to create a plugin that extends Qt with a new GUI look and feel.</p>
-<p align="center"><img src="images/stylepluginexample.png" /></p><p>A plugin in Qt is a class stored in a shared library that can be loaded by a <a href="qpluginloader.html">QPluginLoader</a> at run-time. When you create plugins in Qt, they either extend a Qt application or Qt itself. Writing a plugin that extends Qt itself is achieved by inheriting one of the plugin <a href="plugins.html">base classes</a>, reimplementing functions from that class, and adding a macro. In this example we extend Qt by adding a new GUI look and feel (i.e&#x2e;, making a new <a href="qstyle.html">QStyle</a> available). A high-level introduction to plugins is given in the plugin <a href="plugins-howto.html">overview document</a>.</p>
+<p align="center"><img src="images/stylepluginexample.png" /></p><p>On some platforms, the native style will prevent the button from having a red background. In this case, try to run the example in another style (e.g&#x2e;, plastique).</p>
+<p>A plugin in Qt is a class stored in a shared library that can be loaded by a <a href="qpluginloader.html">QPluginLoader</a> at run-time. When you create plugins in Qt, they either extend a Qt application or Qt itself. Writing a plugin that extends Qt itself is achieved by inheriting one of the plugin <a href="plugins.html">base classes</a>, reimplementing functions from that class, and adding a macro. In this example we extend Qt by adding a new GUI look and feel (i.e&#x2e;, making a new <a href="qstyle.html">QStyle</a> available). A high-level introduction to plugins is given in the plugin <a href="plugins-howto.html">overview document</a>.</p>
 <p>Plugins that provide new styles inherit the <a href="qstyleplugin.html">QStylePlugin</a> base class. Style plugins are loaded by Qt and made available through <a href="qstylefactory.html">QStyleFactory</a>; we will look at this later. We have implemented <tt>SimpleStylePlugin</tt>, which provides <tt>SimpleStyle</tt>. The new style inherits <a href="qwindowsstyle.html">QWindowsStyle</a> and contributes to widget styling by drawing button backgrounds in red - not a major contribution, but it still makes a new style. We test the plugin with <tt>StyleWindow</tt>, in which we display a <a href="qpushbutton.html">QPushButton</a>.</p>
 <p>The <tt>SimpleStyle</tt> and <tt>StyleWindow</tt> classes do not contain any plugin specific functionality and their implementations are trivial; we will therefore leap past them and head on to the <tt>SimpleStylePlugin</tt> and the <tt>main()</tt> function. After we have looked at that, we examine the plugin's profile.</p>
 <a name="simplestyleplugin-class-definition"></a>
@@ -90,6 +91,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

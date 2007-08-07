@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -93,6 +108,13 @@
          \o A \l{Macintosh Style Widget Gallery}{Macintosh style} list view.
          \o A \l{Plastique Style Widget Gallery}{Plastique style} list view.
     \endtable
+
+    \section1 Improving Performance
+
+    It is possible to give the view hints about the data it is handling in order
+    to improve its performance when displaying large numbers of items. One approach
+    that can be taken for views that are intended to display items with equal sizes
+    is to set the \l uniformItemSizes property to true.
 
     \sa {View Classes}, QTreeView, QTableView, QListWidget
 */
@@ -202,7 +224,6 @@ void QListView::setMovement(Movement movement)
     setDragEnabled(movable);
     d->viewport->setAcceptDrops(movable);
 #endif
-
     d->doDelayedItemsLayout();
 }
 
@@ -320,14 +341,16 @@ QListView::LayoutMode QListView::layoutMode() const
     \property QListView::spacing
     \brief the space between items in the layout
 
-    This property is the size of the empty space between items in the
-    layout.
+    This property is the size of the empty space that is padded around
+    an item in the layout.
 
     Setting this property when the view is visible will cause the
     items to be laid out again.
 
     \sa viewMode
 */
+// Qt5: Use same semantic as layouts (spacing is the size of space 
+// *between* items)
 void QListView::setSpacing(int space)
 {
     Q_D(QListView);
@@ -516,6 +539,8 @@ void QListView::setRowHidden(int row, bool hide)
             d->hiddenRows.remove(d->hiddenRows.indexOf(row));
             d->dynamicListView->insertItem(row);
         }
+        if (d->resizeMode == Adjust)
+            d->doDelayedItemsLayout();
         d->viewport->update();
     }
 }
@@ -646,7 +671,9 @@ void QListView::setRootIndex(const QModelIndex &index)
     Q_D(QListView);
     d->column = qBound(0, d->column, d->model->columnCount(index) - 1);
     QAbstractItemView::setRootIndex(index);
-    // ### clear the internal structures
+    // sometimes we get an update before reset() is called
+    d->clear();
+    d->hiddenRows.clear();
 }
 
 /*!
@@ -657,6 +684,8 @@ void QListView::setRootIndex(const QModelIndex &index)
 void QListView::scrollContentsBy(int dx, int dy)
 {
     Q_D(QListView);
+
+    d->delayedAutoScroll.stop(); // auto scroll was canceled by the user scrolling
 
     if (d->viewMode == ListMode)
         d->staticListView->scrollContentsBy(dx, dy);
@@ -698,7 +727,7 @@ QSize QListView::contentsSize() const
 void QListView::dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
 {
     Q_D(QListView);
-    if (d->movement != Static)
+    if (d->viewMode == IconMode)
         d->dynamicListView->dataChanged(topLeft, bottomRight);
     QAbstractItemView::dataChanged(topLeft, bottomRight);
 }
@@ -884,7 +913,7 @@ void QListView::dragLeaveEvent(QDragLeaveEvent *e)
 void QListView::dropEvent(QDropEvent *event)
 {
     Q_D(QListView);
-    if (event->source() == this && d->movement != Static)
+    if (event->source() == this && d->viewMode == IconMode)
         internalDrop(event); // ### move to dynamic
     else
         QAbstractItemView::dropEvent(event);
@@ -896,7 +925,7 @@ void QListView::dropEvent(QDropEvent *event)
 void QListView::startDrag(Qt::DropActions supportedActions)
 {
     Q_D(QListView);
-    if (d->movement != Static) // ### move to dynamic
+    if (d->viewMode == IconMode) // ### move to dynamic
         internalDrag(supportedActions);
     else
         QAbstractItemView::startDrag(supportedActions);
@@ -1081,8 +1110,10 @@ void QListView::paintEvent(QPaintEvent *e)
         }
 
         if (const QWidget *widget = d->editorForIndex(*it)) {
+            QRegion itemGeometry(option.rect);
+            QRegion widgetGeometry(widget->geometry());
             painter.save();
-            painter.setClipRect(widget->geometry());
+            painter.setClipRegion(itemGeometry.subtracted(widgetGeometry));
             d->delegateForIndex(*it)->paint(&painter, option, *it);
             painter.restore();
         } else {
@@ -1404,46 +1435,86 @@ void QListView::setSelection(const QRect &rect, QItemSelectionModel::SelectionFl
 
             // get the ranges
             if (tl.isValid() && br.isValid()) {
-                QRect top = rectForIndex(tl);
-                QRect bottom = rectForIndex(br);
-                // if bottom is above top, swap them
-                if (top.center().y() > bottom.center().y()) {
-                    QRect tmp = top;
-                    top = bottom;
-                    bottom = tmp;
-                }
-                // if the rect are on differnet lines, expand
-                if (top.top() != bottom.top()) {
-                    // top rectangle
-                    if (isRightToLeft())
-                        top.setLeft(0);
-                    else
-                        top.setRight(contentsSize().width());
-                    // bottom rectangle
-                    if (isRightToLeft())
-                        bottom.setRight(contentsSize().width());
-                    else
-                        bottom.setLeft(0);
-                } else if (top.left() > bottom.right()) {
-                    if (isRightToLeft())
-                        bottom.setLeft(top.right());
-                    else
-                        bottom.setRight(top.left());
-
-                }
-                // middle rectangle
+                QRect first = rectForIndex(tl);
+                QRect last = rectForIndex(br);
                 QRect middle;
-                if (top.bottom() < bottom.top()) {
-                    middle.setTop(top.bottom() + 1);
-                    middle.setLeft(qMin(top.left(), bottom.left()));
-                    middle.setBottom(bottom.top() - 1);
-                    middle.setRight(qMax(top.right(), bottom.right()));
+                if (d->flow == TopToBottom) {
+                    
+                }
+                if (d->flow == LeftToRight) {
+                    QRect &top = first;
+                    QRect &bottom = last;
+                    // if bottom is above top, swap them
+                    if (top.center().y() > bottom.center().y()) {
+                        QRect tmp = top;
+                        top = bottom;
+                        bottom = tmp;
+                    }
+                    // if the rect are on differnet lines, expand
+                    if (top.top() != bottom.top()) {
+                        // top rectangle
+                        if (isRightToLeft())
+                            top.setLeft(0);
+                        else
+                            top.setRight(contentsSize().width());
+                        // bottom rectangle
+                        if (isRightToLeft())
+                            bottom.setRight(contentsSize().width());
+                        else
+                            bottom.setLeft(0);
+                    } else if (top.left() > bottom.right()) {
+                        if (isRightToLeft())
+                            bottom.setLeft(top.right());
+                        else
+                            bottom.setRight(top.left());
+                    } else {
+                        if (isRightToLeft())
+                            top.setLeft(bottom.right());
+                        else
+                            top.setRight(bottom.left());
+                    }
+                    // middle rectangle
+                    if (top.bottom() < bottom.top()) {
+                        middle.setTop(top.bottom() + 1);
+                        middle.setLeft(qMin(top.left(), bottom.left()));
+                        middle.setBottom(bottom.top() - 1);
+                        middle.setRight(qMax(top.right(), bottom.right()));
+                    }
+                } else {    // TopToBottom
+                    QRect &left = first;
+                    QRect &right = last;
+                    if (left.center().x() > right.center().x())
+                        qSwap(left, right);
+
+                    int ch = contentsSize().height();
+                    if (left.left() != right.left()) {
+                        // left rectangle
+                        if (isRightToLeft())
+                            left.setTop(0);
+                        else
+                            left.setBottom(ch);
+
+                        // top rectangle
+                        if (isRightToLeft())
+                            right.setBottom(ch);
+                        else
+                            right.setTop(0);
+                        // only set middle if the 
+                        middle.setTop(0);
+                        middle.setBottom(ch);
+                        middle.setLeft(left.right() + 1);
+                        middle.setRight(right.left() - 1);
+                    } else if (left.bottom() < right.top()) {
+                        left.setBottom(right.top() - 1);
+                    } else {
+                        right.setBottom(left.top() - 1);
+                    }
                 }
 
                 // do the selections
-                QItemSelection topSelection = d->selection(top);
+                QItemSelection topSelection = d->selection(first);
                 QItemSelection middleSelection = d->selection(middle);
-                QItemSelection bottomSelection = d->selection(bottom);
+                QItemSelection bottomSelection = d->selection(last);
                 // merge
                 selection.merge(topSelection, QItemSelectionModel::Select);
                 selection.merge(middleSelection, QItemSelectionModel::Select);
@@ -1470,7 +1541,7 @@ QRegion QListView::visualRegionForSelection(const QItemSelection &selection) con
         QModelIndex parent = selection.at(i).topLeft().parent();
         int t = selection.at(i).topLeft().row();
         int b = selection.at(i).bottomRight().row();
-        if (d->movement != Static || d->isWrapping()) { // in non-static mode, we have to go through all selected items
+        if (d->viewMode == IconMode || d->isWrapping()) { // in non-static mode, we have to go through all selected items
             for (int r = t; r <= b; ++r)
                 selectionRegion += QRegion(visualRect(d->model->index(r, c, parent)));
         } else { // in static mode, we can optimize a bit
@@ -1595,7 +1666,7 @@ void QListView::updateGeometries()
             if (horizontal && !d->isWrapping() && d->viewMode == ListMode) {
                 const QVector<int> flowPositions = d->staticListView->flowPositions;
                 int steps = flowPositions.count();
-                if (steps > 0) {
+                if (steps > 1) {
                     int lastFlowWidth = flowPositions.at(steps - 1) - flowPositions.at(steps - 2);
                     int pageSteps = d->staticListView->perItemScrollingPageSteps(vsize.width(),
                                                                                  csize.width(),
@@ -1615,7 +1686,7 @@ void QListView::updateGeometries()
             if (vertical && d->isWrapping() && d->viewMode == ListMode) {
                 const QVector<int> segmentPositions = d->staticListView->segmentPositions;
                 int steps = segmentPositions.count();
-                if (steps > 0) {
+                if (steps > 1) {
                     int lastSegmentWidth = segmentPositions.at(steps - 1) - segmentPositions.at(steps - 2);
                     int pageSteps = d->staticListView->perItemScrollingPageSteps(vsize.height(),
                                                                                  csize.height(),
@@ -2747,6 +2818,9 @@ void QDynamicListViewBase::clear()
     batchSavedDeltaSeg = 0;
 }
 
+/*!
+  \reimp
+*/
 void QListView::currentChanged(const QModelIndex &current, const QModelIndex &previous)
 {
 #ifndef QT_NO_ACCESSIBILITY
@@ -2760,6 +2834,9 @@ void QListView::currentChanged(const QModelIndex &current, const QModelIndex &pr
     QAbstractItemView::currentChanged(current, previous);
 }
 
+/*!
+  \reimp
+*/
 void QListView::selectionChanged(const QItemSelection &selected,
                                  const QItemSelection &deselected)
 {

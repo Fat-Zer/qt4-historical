@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -27,6 +42,7 @@
 
 #include <qwidget.h>
 #include <qapplication.h>
+#include <qmessagebox.h>
 #include <private/qapplication_p.h>
 
 #include <private/qabstractprintdialog_p.h>
@@ -247,7 +263,7 @@ QPrintDialog::~QPrintDialog()
 
 int QPrintDialog::exec()
 {
-    if (printer()->outputFormat() == QPrinter::PdfFormat) {
+    if (printer()->outputFormat() != QPrinter::NativeFormat) {
         return false;
     }
 
@@ -267,20 +283,41 @@ int QPrintDialog::exec()
     HGLOBAL *tempDevNames = d->ep->createDevNames();
 
     bool result;
-    void *voidp;
+    bool done;
+    void *pd = 0;
+
     QT_WA({
-        PRINTDLGW *pd = qt_win_make_PRINTDLGW(parent, this, d, tempDevNames);
-        voidp = pd; // store until later
-        result = PrintDlgW(pd);
-        if (result && pd->hDC == 0)
-            result = false;
+        pd = qt_win_make_PRINTDLGW(parent, this, d, tempDevNames);
     }, {
-        PRINTDLGA *pd = qt_win_make_PRINTDLGA(parent, this, d, tempDevNames);
-        voidp = pd; // store until later
-        result = PrintDlgA(pd);
-        if (result && pd->hDC == 0)
-            result = false;
+        pd = qt_win_make_PRINTDLGA(parent, this, d, tempDevNames);
     });
+    do {
+        done = true;
+        QT_WA({
+            PRINTDLGW *pdw = reinterpret_cast<PRINTDLGW *>(pd);
+            result = PrintDlgW(pdw);
+            if ((pdw->Flags & PD_PAGENUMS) && (pdw->nFromPage > pdw->nToPage))
+                done = false;
+            if (result && pdw == 0)
+                result = false;
+            else if (!result)
+                done = true;
+        }, {
+            PRINTDLGA *pda = reinterpret_cast<PRINTDLGA *>(pd);
+            result = PrintDlgA(pda);
+            if ((pda->Flags & PD_PAGENUMS) && (pda->nFromPage > pda->nToPage))
+                done = false;
+            if (result && pda->hDC == 0)
+                result = false;
+            else if (!result)
+                done = true;
+        });
+        if (!done) {
+            QMessageBox::warning(0, tr("Print"),
+                                 tr("The 'From' value cannot be greater than the 'To' value."),
+                                 tr("OK"));
+        }
+    } while (!done);
 
     QApplicationPrivate::leaveModal(&modal_widget);
 
@@ -289,13 +326,13 @@ int QPrintDialog::exec()
     // write values back...
     if (result) {
         QT_WA({
-            PRINTDLGW *pd = reinterpret_cast<PRINTDLGW *>(voidp);
-            qt_win_read_back_PRINTDLGW(pd, this, d);
-            qt_win_clean_up_PRINTDLGW(&pd);
+            PRINTDLGW *pdw = reinterpret_cast<PRINTDLGW *>(pd);
+            qt_win_read_back_PRINTDLGW(pdw, this, d);
+            qt_win_clean_up_PRINTDLGW(&pdw);
         }, {
-            PRINTDLGA *pd = reinterpret_cast<PRINTDLGA *>(voidp);
-            qt_win_read_back_PRINTDLGA(pd, this, d);
-            qt_win_clean_up_PRINTDLGA(&pd);
+            PRINTDLGA *pda = reinterpret_cast<PRINTDLGA *>(pd);
+            qt_win_read_back_PRINTDLGA(pda, this, d);
+            qt_win_clean_up_PRINTDLGA(&pda);
         });
     }
 

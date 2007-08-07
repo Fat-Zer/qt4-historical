@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -82,7 +97,7 @@ static const int QGRAPHICSSCENE_INDEXTIMER_TIMEOUT = 2000;
     positional information for every item on the scene. Because of this, you
     should always set the scene rect when operating on large scenes.
 
-    One of QGraphicsScene's greatest strengts is its ability to efficiently
+    One of QGraphicsScene's greatest strengths is its ability to efficiently
     determine the location of items. Even with millions of items on the scene,
     the items() functions can determine the location of an item within few
     milliseconds. There are several overloads to items(): one that finds items
@@ -96,6 +111,8 @@ static const int QGRAPHICSSCENE_INDEXTIMER_TIMEOUT = 2000;
     items, call setSelectionArea(), and to clear the current selection, call
     clearSelection(). Call selectedItems() to get the list of all selected
     items.
+
+    \section1 Event Handling and Propagation
 
     Another responsibility that QGraphicsScene has, is to propagate events
     from QGraphicsView. To send an event to a scene, you construct an event
@@ -1098,8 +1115,12 @@ void QGraphicsScene::render(QPainter *painter, const QRectF &target, const QRect
 
     // Default target rect = device rect
     QRectF targetRect = target;
-    if (targetRect.isNull())
-        targetRect.setRect(0, 0, painter->device()->width(), painter->device()->height());
+    if (targetRect.isNull()) {
+        if (painter->device()->devType() == QInternal::Picture)
+            targetRect = sourceRect;
+        else
+            targetRect.setRect(0, 0, painter->device()->width(), painter->device()->height());
+    }
 
     // Find the ideal x / y scaling ratio to fit \a source into \a target.
     qreal xratio = targetRect.width() / sourceRect.width();
@@ -1343,6 +1364,7 @@ static void _qt_pathIntersectsItem(const QPainterPath &selectionPath, QGraphicsI
         path = item->mapToScene(item->shape());
     } else {
         path.addPolygon(_q_adjustedRect(item->sceneBoundingRect()));
+        path.closeSubpath();
     }
 
     if (path.isEmpty())
@@ -1413,6 +1435,7 @@ QList<QGraphicsItem *> QGraphicsScene::items(const QPolygonF &polygon, Qt::ItemS
 
     QPainterPath polyPath;
     polyPath.addPolygon(polygon);
+    polyPath.closeSubpath();
 
     QRectF polyRect = polygon.boundingRect();
 
@@ -3286,9 +3309,9 @@ void QGraphicsScene::drawItems(QPainter *painter,
 void QGraphicsScene::itemUpdated(QGraphicsItem *item, const QRectF &rect)
 {
     Q_D(QGraphicsScene);
-    QRectF boundingRect = item->boundingRect();
+    QRectF boundingRect = _q_adjustedRect(item->boundingRect());
     if (!rect.isNull())
-        boundingRect &= rect;
+        boundingRect &= _q_adjustedRect(rect);
 
     QRectF oldGrowingItemsBoundingRect = d->growingItemsBoundingRect;
 

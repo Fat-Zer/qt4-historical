@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/gui/accessible/qaccessible.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/accessible/qaccessible.cpp -->
 <head>
   <title>Qt 4.3: QAccessibleInterface Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -44,7 +44,7 @@
 </ul>
 <h3>Additional Inherited Members</h3>
 <ul>
-<li><div class="fn"/>6 static public members inherited from <a href="qaccessible.html#static-public-members">QAccessible</a></li>
+<li><div class="fn"/>7 static public members inherited from <a href="qaccessible.html#static-public-members">QAccessible</a></li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -130,7 +130,7 @@
 <pre> QAccessibleInterface *child = 0;
  int targetChild = object-&gt;navigate(Accessible::Child, 1, &amp;child);
  if (child) {
-     <span class="comment">// ...</span>
+     <span class="comment">//</span> ...
      delete child;
  }</pre>
 </li>
@@ -179,7 +179,7 @@
 <a name="//apple_ref/cpp/instm/QAccessibleInterface/text" />
 <h3 class="fn"><a name="text"></a><a href="qstring.html">QString</a> QAccessibleInterface::text ( <a href="qaccessible.html#Text-enum">Text</a> <i>t</i>, int <i>child</i> ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Returns the value of the text property <i>t</i> of the object, or of the object's child if <i>child</i> is not 0.</p>
-<p>The <a href="qaccessible.html#Text-enum">Name</a> is a string used by clients to identify, find or announce an accessible object for the user. All objects must have a name that is unique within their container.</p>
+<p>The <a href="qaccessible.html#Text-enum">Name</a> is a string used by clients to identify, find, or announce an accessible object for the user. All objects must have a name that is unique within their container. The name can be used differently by clients, so the name should both give a short description of the object and be unique.</p>
 <p>An accessible object's <a href="qaccessible.html#Text-enum">Description</a> provides textual information about an object's visual appearance. The description is primarily used to provide greater context for vision-impaired users, but is also used for context searching or other applications. Not all objects have a description. An &quot;OK&quot; button would not need a description, but a tool button that shows a picture of a smiley would.</p>
 <p>The <a href="qaccessible.html#Text-enum">Value</a> of an accessible object represents visual information contained by the object, e.g&#x2e; the text in a line edit. Usually, the value can be modified by the user. Not all objects have a value, e.g&#x2e; static text labels don't, and some objects have a state that already is the value, e.g&#x2e; toggle buttons.</p>
 <p>The <a href="qaccessible.html#Text-enum">Help</a> text provides information about the function and usage of an accessible object. Not all objects provide this information.</p>
@@ -195,6 +195,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

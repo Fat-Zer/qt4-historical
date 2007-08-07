@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/gui/graphicsview/qgraphicsview.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/graphicsview/qgraphicsview.cpp -->
 <head>
   <title>Qt 4.3: QGraphicsView Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -242,7 +242,7 @@
 <p>This enum describes flags that you can enable to improve rendering performance in <a href="qgraphicsview.html">QGraphicsView</a>. By default, none of these flags are set. Note that setting a flag usually imposes a side effect, and this effect can vary between paint devices and platforms.</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
-<tr><td valign="top"><tt>QGraphicsView::DontClipPainter</tt></td><td align="center" valign="top"><tt>0x1</tt></td><td valign="top"><a href="qgraphicsview.html">QGraphicsView</a> sometimes clips the painter when rendering the scene contents. This can generally improve performance (e.g&#x2e;, rendering only small parts of a large pixmap), and protects against rendering mistakes (e.g&#x2e;, drawing outside bounding rectangles, or outside the exposed area). In some situations, however, the painter clip can slow down rendering; especially when all painting is restricted to inside exposed areas. By enabling this flag, <a href="qgraphicsview.html">QGraphicsView</a> will completely disable its implicit clipping.</td></tr>
+<tr><td valign="top"><tt>QGraphicsView::DontClipPainter</tt></td><td align="center" valign="top"><tt>0x1</tt></td><td valign="top"><a href="qgraphicsview.html">QGraphicsView</a> sometimes clips the painter when rendering the scene contents. This can generally improve performance (e.g&#x2e;, rendering only small parts of a large pixmap), and protects against rendering mistakes (e.g&#x2e;, drawing outside bounding rectangles, or outside the exposed area). In some situations, however, the painter clip can slow down rendering; especially when all painting is restricted to inside exposed areas. By enabling this flag, <a href="qgraphicsview.html">QGraphicsView</a> will completely disable its implicit clipping. Note that rendering artifacts from using a semi-transparent foreground or background brush can occur if clipping is disabled.</td></tr>
 <tr><td valign="top"><tt>QGraphicsView::DontSavePainterState</tt></td><td align="center" valign="top"><tt>0x2</tt></td><td valign="top">When rendering, <a href="qgraphicsview.html">QGraphicsView</a> protects the painter state (see <a href="qpainter.html#save">QPainter::save</a>()) when rendering the background or foreground, and when rendering each item. This allows you to leave the painter in an altered state (i.e&#x2e;, you can call <a href="qpainter.html#setPen">QPainter::setPen</a>() or <a href="qpainter.html#setBrush">QPainter::setBrush</a>() without restoring the state after painting). However, if the items consistently do restore the state, you should enable this flag to prevent <a href="qgraphicsview.html">QGraphicsView</a> from doing the same.</td></tr>
 <tr><td valign="top"><tt>QGraphicsView::DontAdjustForAntialiasing</tt></td><td align="center" valign="top"><tt>0x4</tt></td><td valign="top">Disables <a href="qgraphicsview.html">QGraphicsView</a>'s antialiasing auto-adjustment of exposed areas. Items that render antialiased lines on the boundaries of their <a href="qgraphicsitem.html#boundingRect">QGraphicsItem::boundingRect</a>() can end up rendering parts of the line outside. To prevent rendering artifacts, <a href="qgraphicsview.html">QGraphicsView</a> expands all exposed regions by 2 pixels in all directions. If you enable this flag, <a href="qgraphicsview.html">QGraphicsView</a> will no longer perform these adjustments, minimizing the areas that require redrawing, which improves performance. A common side effect is that items that do draw with antialiasing can leave painting traces behind on the scene as they are moved.</td></tr>
 </table></p>
@@ -512,7 +512,7 @@
 <a name="//apple_ref/cpp/instm/QGraphicsView/invalidateScene" />
 <h3 class="fn"><a name="invalidateScene"></a>void QGraphicsView::invalidateScene ( const <a href="qrectf.html">QRectF</a> &amp; <i>rect</i> = QRectF(), <a href="qgraphicsscene.html#SceneLayer-enum">QGraphicsScene::SceneLayers</a> <i>layers</i> = QGraphicsScene::AllLayers )&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Invalidates and schedules a redraw of <i>layers</i> inside <i>rect</i>. <i>rect</i> is in scene coordinates. Any cached content for <i>layers</i> inside <i>rect</i> is unconditionally invalidated and redrawn.</p>
-<p>You can call this function to notify <a href="qgraphicsview.html">QGraphicsView</a> of changes to the background or the foreground of the scene. It is commonly used for scenes with tile-based backgrounds to notify changes when <a href="qgraphicsview.html">QGraphicsView</a> has enabled background cacheing.</p>
+<p>You can call this function to notify <a href="qgraphicsview.html">QGraphicsView</a> of changes to the background or the foreground of the scene. It is commonly used for scenes with tile-based backgrounds to notify changes when <a href="qgraphicsview.html">QGraphicsView</a> has enabled background caching.</p>
 <p>Note that <a href="qgraphicsview.html">QGraphicsView</a> currently supports background caching only (see CachedBackground). This function is equivalent to calling <a href="qwidget.html#update">update</a>() if any layer but <a href="qgraphicsscene.html#SceneLayer-enum">QGraphicsScene::BackgroundLayer</a> is passed.</p>
 <p>See also <a href="qgraphicsscene.html#invalidate">QGraphicsScene::invalidate</a>() and <a href="qwidget.html#update">update</a>().</p>
 <a name="//apple_ref/cpp/instm/QGraphicsView/itemAt" />
@@ -631,11 +631,11 @@
  printer.setPageSize(QPrinter::A4);
  QPainter painter(&amp;printer);
 
-<span class="comment"> // print, fitting the viewport contents into a full page</span>
+<span class="comment"> //</span> print, fitting the viewport contents into a full page
  view.render(&amp;painter);
 
-<span class="comment"> // print the upper half of the viewport into the lower.</span>
-<span class="comment"> // half of the page.</span>
+<span class="comment"> //</span> print the upper half of the viewport into the lower.
+<span class="comment"> //</span> half of the page.
  QRect viewport = view.viewport()-&gt;rect();
  view.render(&amp;painter,
              QRectF(0, printer.height() / 2,
@@ -678,7 +678,7 @@
  scene.addText(&quot;GraphicsView rotated clockwise&quot;);
 
  QGraphicsView view(&amp;scene);
- view.rotate(90); <span class="comment">// the text is rendered with a 90 degree clockwise rotation</span>
+ view.rotate(90); <span class="comment">//</span> the text is rendered with a 90 degree clockwise rotation
  view.show();</pre>
 <p>To simplify interation with items using a transformed view, <a href="qgraphicsview.html">QGraphicsView</a> provides mapTo... and mapFrom... functions that can translate between scene and view coordinates. For example, you can call <a href="qgraphicsview.html#mapToScene">mapToScene</a>() to map a view coordinate to a floating point scene coordinate, or <a href="qgraphicsview.html#mapFromScene">mapFromScene</a>() to map from floating point scene coordinates to view coordinates.</p>
 <p>See also <a href="qgraphicsview.html#matrix">matrix</a>(), <a href="qgraphicsview.html#rotate">rotate</a>(), <a href="qgraphicsview.html#scale">scale</a>(), <a href="qgraphicsview.html#shear">shear</a>(), and <a href="qgraphicsview.html#translate">translate</a>().</p>
@@ -705,7 +705,7 @@
  scene.addText(&quot;GraphicsView rotated clockwise&quot;);
 
  QGraphicsView view(&amp;scene);
- view.rotate(90); <span class="comment">// the text is rendered with a 90 degree clockwise rotation</span>
+ view.rotate(90); <span class="comment">//</span> the text is rendered with a 90 degree clockwise rotation
  view.show();</pre>
 <p>To simplify interation with items using a transformed view, <a href="qgraphicsview.html">QGraphicsView</a> provides mapTo... and mapFrom... functions that can translate between scene and view coordinates. For example, you can call <a href="qgraphicsview.html#mapToScene">mapToScene</a>() to map a view coordiate to a floating point scene coordinate, or <a href="qgraphicsview.html#mapFromScene">mapFromScene</a>() to map from floating point scene coordinates to view coordinates.</p>
 <p>See also <a href="qgraphicsview.html#transform">transform</a>(), <a href="qgraphicsview.html#rotate">rotate</a>(), <a href="qgraphicsview.html#scale">scale</a>(), <a href="qgraphicsview.html#shear">shear</a>(), and <a href="qgraphicsview.html#translate">translate</a>().</p>
@@ -741,6 +741,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -2,19 +2,34 @@
 **
 ** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
-** This file is part of the $MODULE$ of the Qt Toolkit.
+** This file is part of the QtScript module of the Qt Toolkit.
 **
 ** This file may be used under the terms of the GNU General Public
 ** License version 2.0 as published by the Free Software Foundation
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -757,7 +772,34 @@ QScriptContext *QScriptEngine::currentContext() const
 }
 
 /*!
-  \internal
+  Enters a new execution context and returns the associated
+  QScriptContext object.
+
+  Once you are done with the context, you should call popContext() to
+  restore the old context.
+
+  By default, the `this' object of the new context is the Global Object.
+  The context's \l{QScriptContext::callee()}{callee}() will be invalid.
+
+  This function is useful when you want to evaluate script code
+  as if it were the body of a function. You can use the context's
+  \l{QScriptContext::activationObject()}{activationObject}() to initialize
+  local variables that will be available to scripts. Example:
+
+  \code
+  QScriptEngine engine;
+  QScriptContext *context = engine.pushContext();
+  context->activationObject().setProperty("myArg", QScriptValue(&engine, 123));
+  engine.evaluate("var tmp = myArg + 42");
+  ...
+  engine.popContext();
+  \endcode
+
+  In the above example, the new variable "tmp" defined in the script
+  will be local to the context; in other words, the script doesn't
+  have any effect on the global environment.
+
+  \sa popContext()
 */
 QScriptContext *QScriptEngine::pushContext()
 {
@@ -771,7 +813,10 @@ QScriptContext *QScriptEngine::pushContext()
 }
 
 /*!
-  \internal
+  Pops the current execution context and restores the previous one.
+  This function must be used in conjunction with pushContext().
+
+  \sa pushContext()
 */
 void QScriptEngine::popContext()
 {
@@ -925,7 +970,7 @@ void QScriptEngine::registerCustomType(int type, MarshalFunction mf,
 /*!
     Imports the given \a extension into this QScriptEngine.  Returns
     undefinedValue() if the extension was successfully imported. You
-    can call hasUncaughtException() to check if an error occured; in
+    can call hasUncaughtException() to check if an error occurred; in
     that case, the return value is the value that was thrown by the
     exception (usually an \c{Error} object).
 
@@ -986,9 +1031,9 @@ QScriptValue QScriptEngine::importExtension(const QString &extension)
     Creates a QScriptValue using the given \a engine with the given \a
     value of template type \c{T}.
 
-    This function is equivalent to QScriptEngine::toScriptValue(\a
-    value). It is provided as a work-around for MSVC 6, which doesn't
-    support member template functions.
+    This function is equivalent to QScriptEngine::toScriptValue().
+    It is provided as a work-around for MSVC 6, which doesn't support
+    member template functions.
 
     \sa qScriptValueToValue()
 */
@@ -1000,11 +1045,52 @@ QScriptValue QScriptEngine::importExtension(const QString &extension)
 
     Returns the given \a value converted to the template type \c{T}.
 
-    This function is equivalent to QScriptEngine::fromScriptValue(\a
-    value). It is provided as a work-around for MSVC 6, which doesn't
+    This function is equivalent to QScriptEngine::fromScriptValue().
+    It is provided as a work-around for MSVC 6, which doesn't
     support member template functions.
 
     \sa qScriptValueFromValue()
+*/
+
+/*!
+    \fn QScriptValue qScriptValueFromSequence(QScriptEngine *engine, const Container &container)
+    \since 4.3
+    \relates QScriptEngine
+
+    Creates an array in the form of a QScriptValue using the given \a engine
+    with the given \a container of template type \c{Container}.
+
+    The \c Container type must provide a \c const_iterator class to enable the
+    contents of the container to be copied into the array.
+
+    Additionally, the type of each element in the sequence should be suitable
+    for conversion to a QScriptValue.
+    See \l{QtScript Module#Conversion Between QtScript and C++ Types}
+    {Conversion Between QtScript and C++ Types} for more information about the
+    restrictions on types that can be used with QScriptValue.
+
+    \sa qScriptValueFromValue()
+*/
+
+/*!
+    \fn void qScriptValueToSequence(const QScriptValue &value, Container &container)
+    \since 4.3
+    \relates QScriptEngine
+
+    Copies the elements in the sequence specified by \a value to the given
+    \a container of template type \c{Container}.
+
+    The \a value used is typically an array, but any container can be copied
+    as long as it provides a \c length property describing how many elements
+    it contains.
+
+    Additionally, the type of each element in the sequence must be suitable
+    for conversion to a C++ type from a QScriptValue.
+    See \l{QtScript Module#Conversion Between QtScript and C++ Types}
+    {Conversion Between QtScript and C++ Types} for more information about the
+    restrictions on types that can be used with QScriptValue.
+
+    \sa qscriptvalue_cast()
 */
 
 /*!

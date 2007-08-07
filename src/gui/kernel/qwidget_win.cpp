@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -291,7 +306,9 @@ void QWidgetPrivate::create_sys(WId window, bool initializeWindow, bool destroyO
         // if (!testAttribute(Qt::WA_PaintUnclipped))
         // ### Commented out for now as it causes some problems, but
         // this should be correct anyway, so dig some more into this
+#ifndef Q_FLATTEN_EXPOSE
         style |= WS_CLIPSIBLINGS | WS_CLIPCHILDREN ;
+#endif
         if (topLevel) {
             if ((type == Qt::Window || dialog || tool)) {
                 if (!(flags & Qt::FramelessWindowHint)) {
@@ -595,7 +612,7 @@ void QWidgetPrivate::setParent_sys(QWidget *parent, Qt::WindowFlags f)
     q->setAttribute(Qt::WA_WState_Hidden, false);
     adjustFlags(data.window_flags, q);
     // keep compatibility with previous versions, we need to preserve the created state
-    // (but we recreate the winId for the widget being reparented, again for compability)
+    // (but we recreate the winId for the widget being reparented, again for compatibility)
     if (wasCreated || (!q->isWindow() && parent->testAttribute(Qt::WA_WState_Created)))
         createWinId();
     if (q->isWindow() || (!parent || parent->isVisible()) || explicitlyHidden)
@@ -904,6 +921,11 @@ void QWidgetPrivate::dirtyWidget_sys(const QRegion &rgn)
         QRegion wrgn = rgn;
         if (data.wrect.isValid())
             wrgn.translate(-data.wrect.topLeft());
+#if defined(Q_WIN_USE_QT_UPDATE_EVENT)
+        dirtyOnScreen += rgn;
+        QApplication::postEvent(q, new QEvent(QEvent::UpdateRequest), Qt::LowEventPriority);
+        return;
+#endif
         InvalidateRgn(q->internalWinId(), wrgn.handle(), FALSE);
         // check if this is the first call to dirty a previously clean widget
         if (!q->testAttribute(Qt::WA_PendingUpdate)) {
@@ -920,6 +942,9 @@ void QWidgetPrivate::dirtyWidget_sys(const QRegion &rgn)
 void QWidgetPrivate::cleanWidget_sys(const QRegion& rgn)
 {
     Q_Q(QWidget);
+#if defined(Q_WIN_USE_QT_UPDATE_EVENT)
+    dirtyOnScreen -= rgn;
+#endif
     Q_ASSERT(q->testAttribute(Qt::WA_WState_Created));
     ValidateRgn(q->internalWinId(),rgn.handle());
 }
@@ -972,7 +997,11 @@ void QWidget::setWindowState(Qt::WindowStates newstate)
                 if (d->topData()->normalGeometry.width() < 0 && !(oldstate & Qt::WindowMaximized))
                     d->topData()->normalGeometry = geometry();
                 d->topData()->savedFlags = GetWindowLongA(internalWinId(), GWL_STYLE);
+#ifndef Q_FLATTEN_EXPOSE
                 UINT style = WS_CLIPCHILDREN | WS_CLIPSIBLINGS | WS_POPUP;
+#else
+                UINT style = WS_POPUP;
+#endif
                 if (isVisible())
                     style |= WS_VISIBLE;
                 SetWindowLongA(internalWinId(), GWL_STYLE, style);
@@ -1398,14 +1427,14 @@ void QWidgetPrivate::setGeometry_sys(int x, int y, int w, int h, bool isMove)
 
                 show_sys();
             } else {
-                //If the window is hidden and in maximized state, instead of moving the
+                // If the window is hidden and in maximized state or minimized, instead of moving the
                 // window, set the normal position of the window.
                 WINDOWPLACEMENT wndpl;
                 GetWindowPlacement(q->internalWinId(), &wndpl);
-                if (wndpl.showCmd == SW_MAXIMIZE && !IsWindowVisible(q->internalWinId())) {
+                if ((wndpl.showCmd == SW_MAXIMIZE && !IsWindowVisible(q->internalWinId())) || wndpl.showCmd == SW_SHOWMINIMIZED) {
                     RECT normal = {fs.x(), fs.y(), fs.x()+fs.width(), fs.y()+fs.height()};
                     wndpl.rcNormalPosition = normal;
-                    wndpl.showCmd = SW_HIDE;
+                    wndpl.showCmd = wndpl.showCmd == SW_SHOWMINIMIZED ? SW_SHOWMINIMIZED : SW_HIDE;
                     SetWindowPlacement(q->internalWinId(), &wndpl);
                 } else {
                     MoveWindow(q->internalWinId(), fs.x(), fs.y(), fs.width(), fs.height(), true);

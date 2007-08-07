@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -161,8 +176,8 @@ void QPainterPrivate::draw_helper(const QPainterPath &originalPath, DrawOperatio
                 QPainterPath stroke = stroker.createStroke(originalPath);
                 strokeBounds = (stroke * state->matrix).boundingRect();
             } else {
-                strokeOffsetX = penWidth / 2.0 * state->matrix.m11();
-                strokeOffsetY = penWidth / 2.0 * state->matrix.m22();
+                strokeOffsetX = penWidth / qAbs(2.0 * state->matrix.m11());
+                strokeOffsetY = penWidth / qAbs(2.0 * state->matrix.m22());
             }
         }
     }
@@ -224,8 +239,7 @@ void QPainterPrivate::draw_helper(const QPainterPath &originalPath, DrawOperatio
     p.end();
 
     q->save();
-    q->setViewTransformEnabled(false);
-    q->setTransform(QTransform(1, 0, 0, 1, -redirection_offset.x(), -redirection_offset.y()));
+    q->resetMatrix();
     updateState(state);
     engine->drawImage(absPathRect,
                  image,
@@ -331,10 +345,16 @@ void QPainterPrivate::updateMatrix()
         state->txop |= QTransform::TxTranslate;
         // We want to translate in dev space so we do the adding of the redirection
         // offset manually.
-        state->matrix = QTransform(state->matrix.m11(), state->matrix.m12(),
-                              state->matrix.m21(), state->matrix.m22(),
-                              state->matrix.dx()-redirection_offset.x(),
-                              state->matrix.dy()-redirection_offset.y());
+        if (state->matrix.isAffine()) {
+            state->matrix = QTransform(state->matrix.m11(), state->matrix.m12(),
+                                       state->matrix.m21(), state->matrix.m22(),
+                                       state->matrix.dx()-redirection_offset.x(),
+                                       state->matrix.dy()-redirection_offset.y());
+        } else {
+            QTransform temp;
+            temp.translate(-redirection_offset.x(), -redirection_offset.y());
+            state->matrix *= temp;
+        }
     }
     state->dirtyFlags |= QPaintEngine::DirtyTransform;
 
@@ -933,7 +953,7 @@ void QPainterPrivate::updateState(QPainterState *newState)
     QPainter provides the CompositionMode enum which defines the
     Porter-Duff rules for digital image compositing; it describes a
     model for combining the pixels in one image, the source, with the
-    pixel in another image, the destination.
+    pixels in another image, the destination.
 
     The two most common forms of composition are \l
     {QPainter::CompositionMode}{Source} and \l
@@ -4229,7 +4249,9 @@ void QPainter::drawPixmap(const QRectF &r, const QPixmap &pm, const QRectF &sr)
         scale(w / sw, h / sh);
         setBackgroundMode(Qt::TransparentMode);
         setRenderHint(Antialiasing, renderHints() & SmoothPixmapTransform);
-        setBrush(QBrush(d->state->pen.color(), pm));
+        QBrush brush(d->state->pen.color(), pm);
+        brush.d->forceTextureClamp = true;
+        setBrush(brush);
         setPen(Qt::NoPen);
         setBrushOrigin(QPointF(-sx, -sy));
 
@@ -4399,7 +4421,9 @@ void QPainter::drawImage(const QRectF &targetRect, const QImage &image, const QR
         scale(w / sw, h / sh);
         setBackgroundMode(Qt::TransparentMode);
         setRenderHint(Antialiasing, renderHints() & SmoothPixmapTransform);
-        setBrush(QBrush(image));
+        QBrush brush(image);
+        brush.d->forceTextureClamp = true;
+        setBrush(brush);
         setPen(Qt::NoPen);
         setBrushOrigin(QPointF(-sx, -sy));
 
@@ -5287,8 +5311,10 @@ void QPainter::fillRect(const QRect &r, const QBrush &brush)
         if (d->state->dirtyFlags)
             d->updateState(d->state);
 
-        const QRect rt = r.translated(int(d->state->matrix.dx()),
-                                      int(d->state->matrix.dy()));
+        const QRect &rt = r;
+
+        if (d->state->bgMode == Qt::OpaqueMode)
+            ((d->engine)->*(d->fillrect_func))(rt, d->state->bgBrush);
         ((d->engine)->*(d->fillrect_func))(rt, brush);
         return;
     }

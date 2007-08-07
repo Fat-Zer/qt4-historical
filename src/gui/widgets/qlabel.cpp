@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -375,7 +390,7 @@ void QLabel::clear()
     \property QLabel::pixmap
     \brief the label's pixmap
 
-    If no pixmap has been set this will return an invalid pixmap.
+    If no pixmap has been set this will return 0.
 
     Setting the pixmap clears any previous content. The buddy
     shortcut, if any, is disabled.
@@ -428,8 +443,6 @@ void QLabel::setPicture(const QPicture &picture)
 
     The buddy shortcut, if any, is disabled.
 
-    The label resizes itself if auto-resizing is enabled.
-
     \sa setText(), QString::setNum(), setBuddy()
 */
 
@@ -449,8 +462,6 @@ void QLabel::setNum(int num)
     the current contents of the label.
 
     The buddy shortcut, if any, is disabled.
-
-    The label resizes itself if auto-resizing is enabled.
 
     \sa setText(), QString::setNum(), setBuddy()
 */
@@ -656,7 +667,7 @@ QSize QLabelPrivate::sizeForWidth(int w) const
                 w = fm.averageCharWidth() * 80;
             else if (w < 0)
                 w = 2000;
-            w -= hextra;
+            w -= (hextra + contentsMargin.width());
             br = fm.boundingRect(0, 0, w ,2000, flags, text);
             if (tryWidth && br.height() < 4*fm.lineSpacing() && br.width() > w/2)
                 br = fm.boundingRect(0, 0, w/2, 2000, flags, text);
@@ -1192,8 +1203,6 @@ void QLabelPrivate::_q_movieResized(const QSize& size)
     cleared. The label does NOT take ownership of the movie.
 
     The buddy shortcut, if any, is disabled.
-
-    The label resizes itself if auto-resizing is enabled.
 
     \sa movie(), setBuddy()
 */

@@ -23,12 +23,27 @@
  ** and appearing in the file LICENSE.GPL included in the packaging of
  ** this file.  Please review the following information to ensure GNU
  ** General Public Licensing requirements will be met:
- ** http://www.trolltech.com/products/qt/opensource.html
+ ** http://trolltech.com/products/qt/licenses/licensing/opensource/
  **
  ** If you are unsure which license is appropriate for your use, please
  ** review the following information:
- ** http://www.trolltech.com/products/qt/licensing.html or contact the
- ** sales department at sales@trolltech.com.
+ ** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+ ** or contact the sales department at sales@trolltech.com.
+ **
+ ** In addition, as a special exception, Trolltech gives you certain
+ ** additional rights. These rights are described in the Trolltech GPL
+ ** Exception version 1.0, which can be found at
+ ** http://www.trolltech.com/products/qt/gplexception/ and in the file
+ ** GPL_EXCEPTION.txt in this package.
+ **
+ ** In addition, as a special exception, Trolltech, as the sole copyright
+ ** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+ ** plug-in the right for the Qt/Eclipse Integration to link to
+ ** functionality provided by Qt Designer and its related libraries.
+ **
+ ** Trolltech reserves all rights not expressly granted herein.
+ **
+ ** Trolltech ASA (c) 2007
  **
  ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
  ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -103,13 +118,13 @@
 
  void TrackerClient::fetchPeerList()
  {
-     <span class="comment">// Prepare connection details</span>
+     <span class="comment">//</span> Prepare connection details
      QUrl url(metaInfo.announceUrl());
 
      QByteArray infoHash = torrentDownloader-&gt;infoHash();
      unsigned int *messageDigest = (unsigned int *)infoHash.constData();
 
-     <span class="comment">// Percent encode the hash</span>
+     <span class="comment">//</span> Percent encode the hash
      QByteArray encodedSum;
      const char hex[] = &quot;0123456789ABCDEF&quot;;
      unsigned char chars[4];
@@ -198,30 +213,30 @@
      QMap&lt;QByteArray, QVariant&gt; dict = parser.dictionary();
 
      if (dict.contains(&quot;failure reason&quot;)) {
-         <span class="comment">// no other items are present</span>
+         <span class="comment">//</span> no other items are present
          emit failure(QString::fromUtf8(dict.value(&quot;failure reason&quot;).toByteArray()));
          return;
      }
 
      if (dict.contains(&quot;warning message&quot;)) {
-         <span class="comment">// continue processing</span>
+         <span class="comment">//</span> continue processing
          emit warning(QString::fromUtf8(dict.value(&quot;warning message&quot;).toByteArray()));
      }
 
      if (dict.contains(&quot;tracker id&quot;)) {
-         <span class="comment">// store it</span>
+         <span class="comment">//</span> store it
          trackerId = dict.value(&quot;tracker id&quot;).toByteArray();
      }
 
      if (dict.contains(&quot;interval&quot;)) {
-         <span class="comment">// Mandatory item</span>
+         <span class="comment">//</span> Mandatory item
          if (requestIntervalTimer != -1)
              killTimer(requestIntervalTimer);
          requestIntervalTimer = startTimer(dict.value(&quot;interval&quot;).toInt() * 1000);
      }
 
      if (dict.contains(&quot;peers&quot;)) {
-         <span class="comment">// store it</span>
+         <span class="comment">//</span> store it
          peers.clear();
          QVariant peerEntry = dict.value(&quot;peers&quot;);
          if (peerEntry.type() == QVariant::List) {
@@ -256,6 +271,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

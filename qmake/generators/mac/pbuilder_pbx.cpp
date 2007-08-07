@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -33,6 +48,10 @@
 #ifdef Q_OS_UNIX
 #  include <sys/types.h>
 #  include <sys/stat.h>
+#endif
+#ifdef Q_OS_DARWIN
+#include <ApplicationServices/ApplicationServices.h>
+#include <private/qcore_mac_p.h>
 #endif
 
 //#define GENERATE_AGGREGRATE_SUBDIR
@@ -806,7 +825,7 @@ ProjectBuilderMakefileGenerator::writeMakeParts(QTextStream &t)
                     QString lib("lib" + name);
                     for(QStringList::Iterator lit = libdirs.begin(); lit != libdirs.end(); ++lit) {
                         if(project->isActiveConfig("link_prl")) {
-                            /* This isn't real nice, but it is real usefull. This looks in a prl
+                            /* This isn't real nice, but it is real useful. This looks in a prl
                                for what the library will ultimately be called so we can stick it
                                in the ProjectFile. If the prl format ever changes (not likely) then
                                this will not really work. However, more concerning is that it will
@@ -1213,7 +1232,7 @@ ProjectBuilderMakefileGenerator::writeMakeParts(QTextStream &t)
       << "\t\t\t\t" << writeSettings("OTHER_REZFLAGS", QStringList()) << ";" << "\n"
       << "\t\t\t\t" << writeSettings("SECTORDER_FLAGS", QStringList()) << ";" << "\n"
       << "\t\t\t\t" << writeSettings("WARNING_CFLAGS", QStringList()) << ";" << "\n"
-      << "\t\t\t\t" << writeSettings("PREBINDINGS", QStringList((project->isEmpty("QMAKE_DO_PREBINDING") ? "NO" : "YES")), SettingsNoQuote) << ";" << "\n";
+      << "\t\t\t\t" << writeSettings("PREBINDING", QStringList((project->isEmpty("QMAKE_DO_PREBINDING") ? "NO" : "YES")), SettingsNoQuote) << ";" << "\n";
     if(!project->isEmpty("PRECOMPILED_HEADER")) {
         if(pbVersion >= 38) {
             t << "\t\t\t\t" << writeSettings("GCC_PRECOMPILE_PREFIX_HEADER", "YES") << ";" << "\n"
@@ -1645,53 +1664,82 @@ int
 ProjectBuilderMakefileGenerator::pbuilderVersion() const
 {
     QString ret;
-    if(project->isEmpty("QMAKE_PBUILDER_VERSION")) {
+    if(!project->isEmpty("QMAKE_PBUILDER_VERSION")) {
+        ret = project->first("QMAKE_PBUILDER_VERSION");
+    } else {
         QString version, version_plist = project->first("QMAKE_PBUILDER_VERSION_PLIST");
         if(version_plist.isEmpty()) {
+#ifdef Q_OS_DARWIN
+            ret = QLatin1String("34");
+            QCFType<CFURLRef> cfurl;
+            OSStatus err = LSFindApplicationForInfo(0, CFSTR("com.apple.Xcode"), 0, 0, &cfurl);
+            if (err == noErr) {
+                QCFType<CFBundleRef> bundle = CFBundleCreate(0, cfurl);
+                if (bundle) {
+                    CFStringRef str = CFStringRef(CFBundleGetValueForInfoDictionaryKey(bundle,
+                                                              CFSTR("CFBundleShortVersionString")));
+                    if (str) {
+                        QStringList versions = QCFString::toQString(str).split(QLatin1Char('.'));
+                        int versionMajor = versions.at(0).toInt();
+                        int versionMinor = versions.at(1).toInt();
+                        if (versionMajor >= 2) {
+                            ret = QLatin1String("42");
+                        } else if (versionMajor == 1 && versionMinor >= 5) {
+                            ret = QLatin1String("39");
+                        }
+                    }
+                }
+            }
+#else
             if(exists("/Developer/Applications/Xcode.app/Contents/version.plist"))
                 version_plist = "/Developer/Applications/Xcode.app/Contents/version.plist";
             else
                 version_plist = "/Developer/Applications/Project Builder.app/Contents/version.plist";
+#endif
         } else {
             version_plist = version_plist.replace(QRegExp("\""), "");
         }
-        QFile version_file(version_plist);
-        if (version_file.open(QIODevice::ReadOnly)) {
-            debug_msg(1, "pbuilder: version.plist: Reading file: %s", version_plist.toLatin1().constData());
-            QTextStream plist(&version_file);
+        if (ret.isEmpty()) {
+            QFile version_file(version_plist);
+            if (version_file.open(QIODevice::ReadOnly)) {
+                debug_msg(1, "pbuilder: version.plist: Reading file: %s", version_plist.toLatin1().constData());
+                QTextStream plist(&version_file);
 
-            bool in_dict = false;
-            QString current_key;
-            QRegExp keyreg("^<key>(.*)</key>$"), stringreg("^<string>(.*)</string>$");
-            while(!plist.atEnd()) {
-                QString line = plist.readLine().trimmed();
-                if(line == "<dict>")
-                    in_dict = true;
-                else if(line == "</dict>")
-                    in_dict = false;
-                else if(in_dict) {
-                    if(keyreg.exactMatch(line))
-                        current_key = keyreg.cap(1);
-                    else if(current_key == "CFBundleShortVersionString" && stringreg.exactMatch(line))
-                        version = stringreg.cap(1);
+                bool in_dict = false;
+                QString current_key;
+                QRegExp keyreg("^<key>(.*)</key>$"), stringreg("^<string>(.*)</string>$");
+                while(!plist.atEnd()) {
+                    QString line = plist.readLine().trimmed();
+                    if(line == "<dict>")
+                        in_dict = true;
+                    else if(line == "</dict>")
+                        in_dict = false;
+                    else if(in_dict) {
+                        if(keyreg.exactMatch(line))
+                            current_key = keyreg.cap(1);
+                        else if(current_key == "CFBundleShortVersionString" && stringreg.exactMatch(line))
+                            version = stringreg.cap(1);
+                    }
                 }
+                plist.flush();
+                version_file.close();
+            } else {
+                debug_msg(1, "pbuilder: version.plist: Failure to open %s", version_plist.toLatin1().constData());
             }
-            plist.flush();
-            version_file.close();
-        } else { debug_msg(1, "pbuilder: version.plist: Failure to open %s", version_plist.toLatin1().constData()); }
-        if(version.isEmpty() && version_plist.contains("Xcode")) {
-            ret = "39";
-        } else {
-            if(version.startsWith("2."))
-                ret = "42";
-            else if(version == "1.5")
+            if(version.isEmpty() && version_plist.contains("Xcode")) {
                 ret = "39";
-            else if(version == "1.1")
-                ret = "34";
+            } else {
+                int versionMajor = version.left(1).toInt();
+                if(versionMajor >= 2)
+                    ret = "42";
+                else if(version == "1.5")
+                    ret = "39";
+                else if(version == "1.1")
+                    ret = "34";
+            }
         }
-    } else {
-        ret = project->first("QMAKE_PBUILDER_VERSION");
     }
+
     if(!ret.isEmpty()) {
         bool ok;
         int int_ret = ret.toInt(&ok);

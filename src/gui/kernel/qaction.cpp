@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -33,6 +48,12 @@
 #include <private/qshortcutmap_p.h>
 #include <private/qapplication_p.h>
 #include <private/qmenu_p.h>
+
+#define QAPP_CHECK(functionName) \
+    if (!qApp) { \
+        qWarning("QAction: Initialize QApplication before calling '" functionName "'."); \
+        return; \
+    }
 
 /*
   internal: guesses a descriptive text from a text suited for a menu entry
@@ -329,6 +350,8 @@ QList<QWidget *> QAction::associatedWidgets() const
 */
 void QAction::setShortcut(const QKeySequence &shortcut)
 {
+    QAPP_CHECK("setShortcut");
+
     Q_D(QAction);
     if (d->shortcut == shortcut)
         return;
@@ -358,6 +381,8 @@ void QAction::setShortcuts(const QList<QKeySequence> &shortcuts)
 
     if (d->shortcut == primary && d->alternateShortcuts == listCopy)
         return;
+
+    QAPP_CHECK("setShortcuts");
 
     d->shortcut = primary;
     d->alternateShortcuts = listCopy;
@@ -424,6 +449,7 @@ void QAction::setShortcutContext(Qt::ShortcutContext context)
     Q_D(QAction);
     if (d->shortcutContext == context)
         return;
+    QAPP_CHECK("setShortcutContext");
     d->shortcutContext = context;
     d->redoGrab(qApp->d_func()->shortcutMap);
     d->redoGrabAlternate(qApp->d_func()->shortcutMap);
@@ -451,6 +477,7 @@ void QAction::setAutoRepeat(bool on)
     Q_D(QAction);
     if (d->autorepeat == on)
         return;
+    QAPP_CHECK("setAutoRepeat");
     d->autorepeat = on;
     d->redoGrab(qApp->d_func()->shortcutMap);
     d->redoGrabAlternate(qApp->d_func()->shortcutMap);
@@ -943,6 +970,7 @@ void QAction::setEnabled(bool b)
     d->forceDisabled = !b;
     if (b && (!d->visible || (d->group && !d->group->isEnabled())))
         return;
+    QAPP_CHECK("setEnabled");
     d->enabled = b;
 #ifndef QT_NO_SHORTCUT
     d->setShortcutEnabled(b, qApp->d_func()->shortcutMap);
@@ -972,6 +1000,7 @@ void QAction::setVisible(bool b)
     Q_D(QAction);
     if (b == d->visible && b != d->forceInvisible)
         return;
+    QAPP_CHECK("setVisible");
     d->forceInvisible = !b;
     d->visible = b;
     d->enabled = b && !d->forceDisabled && (!d->group || d->group->isEnabled()) ;

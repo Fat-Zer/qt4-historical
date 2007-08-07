@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/gui/widgets/qscrollarea.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/widgets/qscrollarea.cpp -->
 <head>
   <title>Qt 4.3: QScrollArea Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -130,7 +130,8 @@
 <p>Scrolls the contents of the scroll area so that the point (<i>x</i>, <i>y</i>) is visible inside the region of the viewport with margins specified in pixels by <i>xmargin</i> and <i>ymargin</i>. If the specified point cannot be reached, the contents are scrolled to the nearest valid position. The default value for both margins is 50 pixels.</p>
 <a name="//apple_ref/cpp/instm/QScrollArea/ensureWidgetVisible" />
 <h3 class="fn"><a name="ensureWidgetVisible"></a>void QScrollArea::ensureWidgetVisible ( <a href="qwidget.html">QWidget</a> * <i>childWidget</i>, int <i>xmargin</i> = 50, int <i>ymargin</i> = 50 )</h3>
-<p>Scrolls the contents of the scroll area so that the <i>childWidget</i> of the scroll area's <a href="qscrollarea.html#widget">widget</a>() is visible inside the region of the viewport with margins specified in pixels by <i>xmargin</i> and <i>ymargin</i>. If the specified point cannot be reached, the contents are scrolled to the nearest valid position. The default value for both margins is 50 pixels.</p>
+<p>Scrolls the contents of the scroll area so that the <i>childWidget</i> of the scroll area's <a href="qscrollarea.html#widget">widget</a>() is visible inside the viewport with margins specified in pixels by <i>xmargin</i> and <i>ymargin</i>.</p>
+<p>If the child widget is an input widget, <a href="qscrollarea.html">QScrollArea</a> will ensure that its micro focus rectangle is visible, rather than the widget as a whole. If the child widget (or its micro focus rectangle) with margins is not completely contained within the viewport, the contents are scrolled to the nearest valid position, or as close to this position as possible. The default value for both margins is 50 pixels.</p>
 <p>This function was introduced in Qt 4.2.</p>
 <a name="//apple_ref/cpp/instm/QScrollArea/setWidget" />
 <h3 class="fn"><a name="setWidget"></a>void QScrollArea::setWidget ( <a href="qwidget.html">QWidget</a> * <i>widget</i> )</h3>
@@ -149,6 +150,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

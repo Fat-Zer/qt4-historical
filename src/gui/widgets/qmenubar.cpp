@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -85,7 +100,7 @@ QAction *QMenuBarPrivate::actionAt(QPoint p) const
     return 0;
 }
 
-QRect QMenuBarPrivate::menuRect() const
+QRect QMenuBarPrivate::menuRect(bool extVisible) const
 {
     Q_Q(const QMenuBar);
 
@@ -93,10 +108,12 @@ QRect QMenuBarPrivate::menuRect() const
     QRect result = q->rect();
     result.adjust(hmargin, 0, -hmargin, 0);
 
-    if (QApplication::layoutDirection() == Qt::RightToLeft)
-        result.setLeft(result.left() + extension->width());
-    else
-        result.setWidth(result.width() - extension->width());
+    if (extVisible) {
+        if (q->layoutDirection() == Qt::RightToLeft)
+            result.setLeft(result.left() + extension->sizeHint().width());
+        else
+            result.setWidth(result.width() - extension->sizeHint().width());
+    }
 
     if (leftWidget && leftWidget->isVisible()) {
         QSize sz = leftWidget->sizeHint();
@@ -119,8 +136,7 @@ QRect QMenuBarPrivate::menuRect() const
 
 bool QMenuBarPrivate::isVisible(QAction *action)
 {
-    QRect r = menuRect();
-    return r.contains(actionRect(action));
+    return !hiddenActions.contains(action);
 }
 
 void QMenuBarPrivate::updateGeometries()
@@ -173,11 +189,27 @@ void QMenuBarPrivate::updateGeometries()
 #endif
     itemsDirty = false;
 
-    QList<QAction *> hiddenActions;
-    QRect menuRect = this->menuRect();
-    for (int i = 0; i < actionList.count(); ++i) {
-        if (!menuRect.contains(actionRect(actionList.at(i))))
-            hiddenActions.append(actionList.at(i));
+    hiddenActions.clear();
+    //this is the menu rectangle without any extension
+    QRect menuRect = this->menuRect(false);
+
+    //we try to see if the actions will fit there
+    bool hasHiddenActions = false;
+    foreach(QAction *action, actionList) {
+        if (!menuRect.contains(actionRect(action))) {
+            hasHiddenActions = true;
+            break;
+        }
+    }
+
+    //...and if not, determine the ones that fit on the menu with the extension visible
+    if (hasHiddenActions) {
+        menuRect = this->menuRect(true);
+        foreach(QAction *action, actionList) {
+            if (!menuRect.contains(actionRect(action))) {
+                hiddenActions.append(action);
+            }
+        }
     }
 
     if (hiddenActions.count() > 0) {
@@ -190,7 +222,7 @@ void QMenuBarPrivate::updateGeometries()
         pop->addActions(hiddenActions);
 
         int vmargin = q->style()->pixelMetric(QStyle::PM_MenuBarVMargin, 0, q);
-        int x = QApplication::layoutDirection() == Qt::RightToLeft
+        int x = q->layoutDirection() == Qt::RightToLeft
                 ? menuRect.left() - extension->sizeHint().width() + 1
                 : menuRect.right();
         extension->setGeometry(x, vmargin, extension->sizeHint().width(), menuRect.height() - vmargin*2);
@@ -476,6 +508,15 @@ void QMenuBarPrivate::_q_actionHovered()
     Q_Q(QMenuBar);
     if (QAction *action = qobject_cast<QAction *>(q->sender())) {
         emit q->hovered(action);
+#ifndef QT_NO_ACCESSIBILITY
+        if (QAccessible::isActive()) {
+            QList<QAction*> actions = q->actions();
+            int actionIndex = actions.indexOf(action);
+            ++actionIndex;
+            QAccessible::updateAccessibility(q, actionIndex, QAccessible::Focus);
+            QAccessible::updateAccessibility(q, actionIndex, QAccessible::Selection);
+        }
+#endif //QT_NO_ACCESSIBILITY
 #ifdef QT3_SUPPORT
         emit q->highlighted(q->findIdForAction(action));
 #endif
@@ -619,7 +660,7 @@ void QMenuBar::initStyleOption(QStyleOptionMenuItem *option, const QAction *acti
     parent. The menu bar is created like this:
 
     \code
-	QMenuBar *menuBar = new QMenuBar(0);
+        QMenuBar *menuBar = new QMenuBar(0);
     \endcode
 
     \bold{Note:} The text used for the application name in the menu bar is
@@ -629,7 +670,7 @@ void QMenuBar::initStyleOption(QStyleOptionMenuItem *option, const QAction *acti
     \section1 Examples
 
     The \l{mainwindows/menus}{Menus} example shows how to use QMenuBar and QMenu.
-    The other \l{Qt Examples#Main Window Examples}{main window application examples}
+    The other \l{Qt Examples#Main Windows}{main window application examples}
     also provide menus using these classes.
 
     \sa QMenu, QShortcut, QAction,
@@ -1675,8 +1716,9 @@ QWidget *QMenuBar::cornerWidget(Qt::Corner corner) const
 /*!
     \fn void QMenuBar::triggered(QAction *action)
 
-    This signal is emitted when an action in this menubar is triggered; \a action
-    is the action that caused the event to be sent.
+    This signal is emitted when an action in a menu belonging to this menubar
+    is triggered as a result of a mouse click; \a action is the action that
+    caused the signal to be emitted.
 
     Normally, you connect each menu action to a single slot using
     QAction::triggered(), but sometimes you will want to connect

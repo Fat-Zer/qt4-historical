@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/gui/itemviews/qheaderview.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/itemviews/qheaderview.cpp -->
 <head>
   <title>Qt 4.3: QHeaderView Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -188,11 +188,16 @@
 <p>The header gets the data for each section from the model using the <a href="qabstractitemmodel.html#headerData">QAbstractItemModel::headerData</a>() function. You can set the data by using <a href="qabstractitemmodel.html#setHeaderData">QAbstractItemModel::setHeaderData</a>().</p>
 <p>Each header has an <a href="qheaderview.html#orientation">orientation</a>() and a number of sections, given by the <a href="qheaderview.html#count">count</a>() function. Sections can be moved and resized using <a href="qheaderview.html#moveSection">moveSection</a>() and <a href="qheaderview.html#resizeSection">resizeSection</a>(); they can be hidden and shown with <a href="qheaderview.html#hideSection">hideSection</a>() and <a href="qheaderview.html#showSection">showSection</a>().</p>
 <p>Each section of a header is described by a section ID, specified by its section(), and can be located at a particular <a href="qheaderview.html#visualIndex">visualIndex</a>() in the header. A section can have a sort indicator set with <a href="qheaderview.html#setSortIndicator">setSortIndicator</a>(); this indicates whether the items in the associated item view will be sorted in the order given by the section.</p>
+<p>For a horizontal header the section is equivalent to a column in the model, and for a vertical header the section is equivalent to a row in the model.</p>
+<a name="moving-header-sections"></a>
+<h3>Moving Header Sections</h3>
 <p>A header can be fixed in place, or made movable with <a href="qheaderview.html#setMovable">setMovable</a>(). It can be made clickable with <a href="qheaderview.html#setClickable">setClickable</a>(), and has resizing behavior in accordance with <a href="qheaderview.html#setResizeMode">setResizeMode</a>().</p>
 <p>A header emits <a href="qheaderview.html#sectionMoved">sectionMoved</a>() if the user moves a section, <a href="qheaderview.html#sectionResized">sectionResized</a>() if the user resizes a section, and <a href="qheaderview.html#sectionClicked">sectionClicked</a>() and <a href="qheaderview.html#sectionHandleDoubleClicked">sectionHandleDoubleClicked</a>() in response to mouse clicks. A header also emits <a href="qheaderview.html#sectionCountChanged">sectionCountChanged</a>() and <a href="qheaderview.html#sectionAutoResize">sectionAutoResize</a>().</p>
-<p>You can identify a section using the <a href="qheaderview.html#logicalIndex">logicalIndex</a>() and <a href="qheaderview.html#logicalIndexAt">logicalIndexAt</a>() functions, or by its index position, using the <a href="qheaderview.html#visualIndex">visualIndex</a>() and <a href="qheaderview.html#visualIndexAt">visualIndexAt</a>() functions. The visual index will change if a section is moved while the logical index wont change.</p>
-<p>For a horizontal header the section is equivalent to a column in the model, and for a vertical header the section is equivalent to a row in the model.</p>
+<p>You can identify a section using the <a href="qheaderview.html#logicalIndex">logicalIndex</a>() and <a href="qheaderview.html#logicalIndexAt">logicalIndexAt</a>() functions, or by its index position, using the <a href="qheaderview.html#visualIndex">visualIndex</a>() and <a href="qheaderview.html#visualIndexAt">visualIndexAt</a>() functions. The visual index will change if a section is moved, but the logical index will not change.</p>
+<a name="appearance"></a>
+<h3>Appearance</h3>
 <p><a href="qtablewidget.html">QTableWidget</a> and <a href="qtableview.html">QTableView</a> create default headers. If you want the headers to be visible, you can use <a href="qwidget.html#visible-prop">setVisible()</a>.</p>
+<p><b>Note:</b> Each header renders the data for each section itself, and does not rely on a delegate. As a result, calling a header's <a href="qabstractitemview.html#setItemDelegate">setItemDelegate</a>() function will have no effect.</p>
 <p>See also <a href="model-view-programming.html">Model/View Programming</a>, <a href="qlistview.html">QListView</a>, <a href="qtableview.html">QTableView</a>, and <a href="qtreeview.html">QTreeView</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
@@ -569,6 +574,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

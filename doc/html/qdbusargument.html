@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/tools/qdbus/src/qdbusargument.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/tools/qdbus/src/qdbusargument.cpp -->
 <head>
   <title>Qt 4.3: QDBusArgument Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -90,7 +90,7 @@
  };
  QT_DECLARE_METATYPE(MyStructure)
 
-<span class="comment"> // Marshall the MyStructure data into a D-BUS argument</span>
+<span class="comment"> //</span> Marshall the MyStructure data into a D-BUS argument
  QDBusArgument &amp;operator&lt;&lt;(QDBusArgument &amp;argument, const MyStructure &amp;mystruct)
  {
      argument.beginStructure();
@@ -99,7 +99,7 @@
      return argument;
  }
 
-<span class="comment"> // Retrieve the MyStructure data from the D-BUS argument</span>
+<span class="comment"> //</span> Retrieve the MyStructure data from the D-BUS argument
  const QDBusArgument &amp;operator&gt;&gt;(const QDBusArgument &amp;argument, MyStructure &amp;mystruct)
  {
      argument.beginStructure();
@@ -145,7 +145,7 @@
 <h3 class="fn"><a name="beginArray"></a>void QDBusArgument::beginArray ( int <i>id</i> )</h3>
 <p>Opens a new D-BUS array suitable for appending elements of meta-type <i>id</i>.</p>
 <p>This function is used usually in <tt>operator&lt;&lt;</tt> streaming operators, as in the following example:</p>
-<pre><span class="comment"> // append an array of MyElement types</span>
+<pre><span class="comment"> //</span> append an array of MyElement types
  QDBusArgument &amp;operator&lt;&lt;(QDBusArgument &amp;argument, const MyArray &amp;myarray)
  {
      argument.beginArray( qMetaTypeId&lt;MyElement&gt;() );
@@ -154,13 +154,13 @@
      argument.endArray();
      return argument;
  }</pre>
-<p>If the type you want to marshall is a <a href="qlist.html">QList</a>, <a href="qvector.html">QVector</a> or any of the Qt's containers that take one template parameter, you need not declare an <tt>operator&lt;&lt;</tt> function for it, since <a href="qtdbus.html">QtDBus</a> provides generic templates to do the job of marshalling the data. The same applies for STL's sequence containers, such as <tt>std::list</tt>, <tt>std::vector</tt>, etc.</p>
+<p>If the type you want to marshall is a <a href="qlist.html">QList</a>, <a href="qvector.html">QVector</a> or any of the Qt's <a href="containers.html">Generic Containers</a> that take one template parameter, you need not declare an <tt>operator&lt;&lt;</tt> function for it, since <a href="qtdbus.html">QtDBus</a> provides generic templates to do the job of marshalling the data. The same applies for STL's sequence containers, such as <tt>std::list</tt>, <tt>std::vector</tt>, etc.</p>
 <p>See also <a href="qdbusargument.html#endArray">endArray</a>(), <a href="qdbusargument.html#beginStructure">beginStructure</a>(), and <a href="qdbusargument.html#beginMap">beginMap</a>().</p>
 <h3 class="fn"><a name="beginArray-2"></a>void QDBusArgument::beginArray () const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Recurses into the D-BUS array to allow extraction of the array elements.</p>
 <p>This function is used usually in <tt>operator&gt;&gt;</tt> streaming operators, as in the following example:</p>
-<pre><span class="comment"> // extract a MyArray array of MyElement elements</span>
+<pre><span class="comment"> //</span> extract a MyArray array of MyElement elements
  const QDBusArgument &amp;operator&gt;&gt;(const QDBusArgument &amp;argument, MyArray &amp;myarray)
  {
      argument.beginArray();
@@ -175,13 +175,13 @@
      argument.endArray();
      return argument;
  }</pre>
-<p>If the type you want to demarshall is a <a href="qlist.html">QList</a>, <a href="qvector.html">QVector</a> or any of the Qt's containers that take one template parameter, you need not declare an <tt>operator&gt;&gt;</tt> function for it, since <a href="qtdbus.html">QtDBus</a> provides generic templates to do the job of demarshalling the data. The same applies for STL's sequence containers, such as <tt>std::list</tt>, <tt>std::vector</tt>, etc.</p>
+<p>If the type you want to demarshall is a <a href="qlist.html">QList</a>, <a href="qvector.html">QVector</a> or any of the Qt's <a href="containers.html">Generic Containers</a> that take one template parameter, you need not declare an <tt>operator&gt;&gt;</tt> function for it, since <a href="qtdbus.html">QtDBus</a> provides generic templates to do the job of demarshalling the data. The same applies for STL's sequence containers, such as <tt>std::list</tt>, <tt>std::vector</tt>, etc.</p>
 <p>See also <a href="qdbusargument.html#atEnd">atEnd</a>(), <a href="qdbusargument.html#beginStructure">beginStructure</a>(), and <a href="qdbusargument.html#beginMap">beginMap</a>().</p>
 <a name="//apple_ref/cpp/instm/QDBusArgument/beginMap" />
 <h3 class="fn"><a name="beginMap"></a>void QDBusArgument::beginMap ( int <i>kid</i>, int <i>vid</i> )</h3>
 <p>Opens a new D-BUS map suitable for appending elements. Maps are containers that associate one entry (the key) to another (the value), such as Qt's <a href="qmap.html">QMap</a> or <a href="qhash.html">QHash</a>. The ids of the map's key and value meta types must be passed in <i>kid</i> and <i>vid</i> respectively.</p>
 <p>This function is used usually in <tt>operator&lt;&lt;</tt> streaming operators, as in the following example:</p>
-<pre><span class="comment"> // append a dictionary that associates ints to MyValue types</span>
+<pre><span class="comment"> //</span> append a dictionary that associates ints to MyValue types
  QDBusArgument &amp;operator&lt;&lt;(QDBusArgument &amp;argument, const MyDictionary &amp;mydict)
  {
      argument.beginMap( QVariant::Int, qMetaTypeId&lt;MyValue&gt;() );
@@ -199,7 +199,7 @@
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Recurses into the D-BUS map to allow extraction of the map's elements.</p>
 <p>This function is used usually in <tt>operator&gt;&gt;</tt> streaming operators, as in the following example:</p>
-<pre><span class="comment"> // extract a MyDictionary map that associates ints to MyValue elements</span>
+<pre><span class="comment"> //</span> extract a MyDictionary map that associates ints to MyValue elements
  const QDBusArgument &amp;operator&gt;&gt;(const QDBusArgument &amp;argument, MyDictionary &amp;mydict)
  {
      argument.beginMap();
@@ -416,6 +416,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

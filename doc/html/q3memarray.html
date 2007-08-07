@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/doc/src/q3memarray.qdoc -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/doc/src/q3memarray.qdoc -->
 <head>
   <title>Qt 4.3: Q3MemArray Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -85,10 +85,10 @@
 <pre> #include &lt;qmemarray.h&gt;
  #include &lt;stdio.h&gt;
 
- Q3MemArray&lt;int&gt; fib( int num ) <span class="comment">// returns fibonacci array</span>
+ Q3MemArray&lt;int&gt; fib( int num ) <span class="comment">//</span> returns fibonacci array
  {
      Q_ASSERT( num &gt; 2 );
-     Q3MemArray&lt;int&gt; f( num ); <span class="comment">// array of ints</span>
+     Q3MemArray&lt;int&gt; f( num ); <span class="comment">//</span> array of ints
 
      f[0] = f[1] = 1;
      for ( int i = 2; i &lt; num; i++ )
@@ -99,7 +99,7 @@
 
  int main()
  {
-     Q3MemArray&lt;int&gt; a = fib( 6 ); <span class="comment">// get first 6 fibonaccis</span>
+     Q3MemArray&lt;int&gt; a = fib( 6 ); <span class="comment">//</span> get first 6 fibonaccis
      for ( int i = 0; i &lt; a.size(); i++ )
          qDebug( &quot;%d: %d&quot;, i, a[i] );
 
@@ -118,11 +118,11 @@
  1 is found 2 times
  5 is found at index 4</pre>
 <p>Note concerning the use of Q3MemArray for manipulating structs or classes: Compilers will often pad the size of structs of odd sizes up to the nearest word boundary. This will then be the size Q3MemArray will use for its bitwise element comparisons. Because the remaining bytes will typically be uninitialized, this can cause <a href="q3memarray.html#find">find</a>() etc. to fail to find the element. Example:</p>
-<pre><span class="comment"> // MyStruct may be padded to 4 or 8 bytes</span>
+<pre><span class="comment"> //</span> MyStruct may be padded to 4 or 8 bytes
  struct MyStruct
  {
-     short i; <span class="comment">// 2 bytes</span>
-     char c;  <span class="comment">// 1 byte</span>
+     short i; <span class="comment">//</span> 2 bytes
+     char c;  <span class="comment">//</span> 1 byte
  };
 
  Q3MemArray&lt;MyStruct&gt; a(1);
@@ -132,7 +132,7 @@
  MyStruct x;
  x.i = '5';
  x.c = 't';
- int i = a.find( x ); <span class="comment">// may return -1 if the pad bytes differ</span></pre>
+ int i = a.find( x ); <span class="comment">//</span> may return -1 if the pad bytes differ</pre>
 <p>To work around this, make sure that you use a struct where sizeof() returns the same as the sum of the sizes of the members either by changing the types of the struct members or by adding dummy members.</p>
 <p>Q3MemArray data can be traversed by iterators (see <a href="q3memarray.html#begin">begin</a>() and <a href="q3memarray.html#end">end</a>()). The number of items is returned by <a href="q3memarray.html#count">count</a>(). The array can be resized with <a href="q3memarray.html#resize">resize</a>() and filled using <a href="q3memarray.html#fill">fill</a>().</p>
 <p>You can make a shallow copy of the array with <a href="q3memarray.html#assign">assign</a>() (or operator=()) and a deep copy with <a href="q3memarray.html#duplicate">duplicate</a>().</p>
@@ -275,18 +275,18 @@
 <p>Example I (intended use):</p>
 <pre> static char bindata[] = { 231, 1, 44, ... };
  QByteArray  a;
- a.setRawData( bindata, sizeof(bindata) );   <span class="comment">// a points to bindata</span>
- QDataStream s( a, IO_ReadOnly );            <span class="comment">// open on a's data</span>
- s &gt;&gt; &lt;something&gt;;                           <span class="comment">// read raw bindata</span>
- a.resetRawData( bindata, sizeof(bindata) ); <span class="comment">// finished</span></pre>
+ a.setRawData( bindata, sizeof(bindata) );   <span class="comment">//</span> a points to bindata
+ QDataStream s( a, IO_ReadOnly );            <span class="comment">//</span> open on a's data
+ s &gt;&gt; &lt;something&gt;;                           <span class="comment">//</span> read raw bindata
+ a.resetRawData( bindata, sizeof(bindata) ); <span class="comment">//</span> finished</pre>
 <p>Example II (you don't want to do this):</p>
 <pre> static char bindata[] = { 231, 1, 44, ... };
  QByteArray  a, b;
- a.setRawData( bindata, sizeof(bindata) );   <span class="comment">// a points to bindata</span>
- a.resize( 8 );                              <span class="comment">// will crash</span>
- b = a;                                      <span class="comment">// will crash</span>
- a[2] = 123;                                 <span class="comment">// might crash</span>
-<span class="comment"> // forget to resetRawData: will crash</span></pre>
+ a.setRawData( bindata, sizeof(bindata) );   <span class="comment">//</span> a points to bindata
+ a.resize( 8 );                              <span class="comment">//</span> will crash
+ b = a;                                      <span class="comment">//</span> will crash
+ a[2] = 123;                                 <span class="comment">//</span> might crash
+<span class="comment"> //</span> forget to resetRawData: will crash</pre>
 <p><b>Warning:</b> If you do not call <a href="q3memarray.html#resetRawData">resetRawData</a>(), <a href="q3memarray.html">Q3MemArray</a> will attempt to deallocate or reallocate the raw data, which might not be too good. Be careful.</p>
 <p>See also <a href="q3memarray.html#resetRawData">resetRawData</a>().</p>
 <a name="//apple_ref/cpp/instm/Q3MemArray/size" />
@@ -334,6 +334,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

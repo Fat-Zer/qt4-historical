@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/gui/kernel/qdesktopwidget_win.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/kernel/qdesktopwidget_win.cpp -->
 <head>
   <title>Qt 4.3: QDesktopWidget Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -87,7 +87,7 @@
 <p>Destroy the object and free allocated resources.</p>
 <a name="//apple_ref/cpp/instm/QDesktopWidget/availableGeometry" />
 <h3 class="fn"><a name="availableGeometry"></a>const <a href="qrect.html">QRect</a> QDesktopWidget::availableGeometry ( int <i>screen</i> = -1 ) const</h3>
-<p>Returns the available geometry of the screen with index <i>screen</i>. What is available will be subrect of <a href="qdesktopwidget.html#screenGeometry">screenGeometry</a>() based on what the platform decides is available (for example excludes the <a href="qt.html#Dock-enum">Qt::Dock</a> and menu bar on Mac OS X, or the taskbar on Windows).</p>
+<p>Returns the available geometry of the screen with index <i>screen</i>. What is available will be subrect of <a href="qdesktopwidget.html#screenGeometry">screenGeometry</a>() based on what the platform decides is available (for example excludes the dock and menu bar on Mac OS X, or the task bar on Windows).</p>
 <p>See also <a href="qdesktopwidget.html#screenNumber">screenNumber</a>() and <a href="qdesktopwidget.html#screenGeometry">screenGeometry</a>().</p>
 <h3 class="fn"><a name="availableGeometry-2"></a>const <a href="qrect.html">QRect</a> QDesktopWidget::availableGeometry ( const <a href="qwidget.html">QWidget</a> * <i>widget</i> ) const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
@@ -115,7 +115,7 @@
 <a name="//apple_ref/cpp/instm/QDesktopWidget/screen" />
 <h3 class="fn"><a name="screen"></a><a href="qwidget.html">QWidget</a> * QDesktopWidget::screen ( int <i>screen</i> = -1 )</h3>
 <p>Returns a widget that represents the screen with index <i>screen</i>.</p>
-<p>If the system uses a virtual desktop, the returned widget will have the geometry of the entire virtual desktop i.e&#x2e; bounding every <i>screen</i>.</p>
+<p>If the system uses a virtual desktop, the returned widget will have the geometry of the entire virtual desktop; i.e&#x2e;, bounding every <i>screen</i>.</p>
 <p>See also <a href="qdesktopwidget.html#primaryScreen">primaryScreen</a>(), <a href="qdesktopwidget.html#numScreens">numScreens</a>(), and <a href="qdesktopwidget.html#isVirtualDesktop">isVirtualDesktop</a>().</p>
 <a name="//apple_ref/cpp/instm/QDesktopWidget/screenGeometry" />
 <h3 class="fn"><a name="screenGeometry"></a>const <a href="qrect.html">QRect</a> QDesktopWidget::screenGeometry ( int <i>screen</i> = -1 ) const</h3>
@@ -142,6 +142,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

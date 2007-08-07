@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/gui/text/qfontmetrics.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/text/qfontmetrics.cpp -->
 <head>
   <title>Qt 4.3: QFontMetrics Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -142,7 +142,7 @@
 <li><a href="qt.html#TextFlag-enum">Qt::TextSingleLine</a> ignores newline characters in the text.</li>
 <li><a href="qt.html#TextFlag-enum">Qt::TextExpandTabs</a> expands tabs (see below)</li>
 <li><a href="qt.html#TextFlag-enum">Qt::TextShowMnemonic</a> interprets &quot;&amp;amp;x&quot; as <u>x</u>, i.e&#x2e; underlined.</li>
-<li>Qt::TextWordBreak breaks the text to fit the rectangle.</li>
+<li><a href="qt.html#TextFlag-enum">Qt::TextWordWrap</a> breaks the text to fit the rectangle.</li>
 </ul>
 <p><a href="qt.html#Orientation-enum">Qt::Horizontal</a> alignment defaults to <a href="qt.html#AlignmentFlag-enum">Qt::AlignLeft</a> and vertical alignment defaults to <a href="qt.html#AlignmentFlag-enum">Qt::AlignTop</a>.</p>
 <p>If several of the horizontal or several of the vertical alignment flags are set, the resulting alignment is undefined.</p>
@@ -290,35 +290,10 @@
 <p>Returns true if <i>other</i> is equal to this object; otherwise returns false.</p>
 <p>Two font metrics are considered equal if they were constructed from the same <a href="qfont.html">QFont</a> and the paint devices they were constructed for are considered compatible.</p>
 <p>See also <a href="qfontmetrics.html#operator-not-eq">operator!=</a>().</p>
-<hr />
-<h2>Member Function Documentation</h2>
-<h3 class="fn"><a name="boundingRect-3"></a><a href="qrect.html">QRect</a> QFontMetrics::boundingRect ( const <a href="qstring.html">QString</a> &amp; <i>text</i>, int <i>len</i> ) const</h3>
-<p>This is an overloaded member function, provided for convenience.</p>
-<p>Use the <a href="qfontmetrics.html#boundingRect">boundingRect</a>() function in combination with <a href="qstring.html#left">QString::left</a>() instead.</p>
-<p>For example, if you have code like</p>
-<pre><font color="#404040"> QRect rect = boundingRect(text, len);</font></pre>
-<p>you can rewrite it as</p>
-<pre> QRect rect = boundingRect(text.left(len));</pre>
-<h3 class="fn"><a name="boundingRect-4"></a><a href="qrect.html">QRect</a> QFontMetrics::boundingRect ( int <i>x</i>, int <i>y</i>, int <i>w</i>, int <i>h</i>, int <i>flags</i>, const <a href="qstring.html">QString</a> &amp; <i>text</i>, int <i>len</i>, int <i>tabStops</i> = 0, int * <i>tabArray</i> = 0 ) const</h3>
-<p>This is an overloaded member function, provided for convenience.</p>
-<p>Use the <a href="qfontmetrics.html#boundingRect">boundingRect</a>() function in combination with <a href="qstring.html#left">QString::left</a>() and a <a href="qrect.html">QRect</a> constructor instead.</p>
-<p>For example, if you have code like</p>
-<pre><font color="#404040"> QRect rect = boundingRect(x, y, w, h , flags, text, len,
-                           tabStops, tabArray);</font></pre>
-<p>you can rewrite it as</p>
-<pre> QRect rect = boundingRect(QRect(x, y, w, h), flags, text.left(len),
-                           tabstops, tabarray);</pre>
-<h3 class="fn"><a name="size-2"></a><a href="qsize.html">QSize</a> QFontMetrics::size ( int <i>flags</i>, const <a href="qstring.html">QString</a> &amp; <i>text</i>, int <i>len</i>, int <i>tabStops</i> = 0, int * <i>tabArray</i> = 0 ) const</h3>
-<p>This is an overloaded member function, provided for convenience.</p>
-<p>Use the <a href="qfontmetrics.html#size">size</a>() function in combination with <a href="qstring.html#left">QString::left</a>() instead.</p>
-<p>For example, if you have code like</p>
-<pre><font color="#404040"> QSize size = size(flags, str, len, tabstops, tabarray);</font></pre>
-<p>you can rewrite it as</p>
-<pre> QSize size = size(flags, str.left(len), tabstops, tabarray);</pre>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

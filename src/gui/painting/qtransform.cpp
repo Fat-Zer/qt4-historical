@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -67,14 +82,15 @@
     \since 4.3
     \ingroup multimedia
 
-    A transformation specifies how to translate, scale, shear, rotate or project
-    the coordinate system, and is typically used when rendering graphics.
+    A transformation specifies how to translate, scale, shear, rotate
+    or project the coordinate system, and is typically used when
+    rendering graphics.
 
-    QTransform differs from QMatrix in that it is a true 3x3 matrix, allowing
-    perpective transformations. QTransform's toAffine() method allows
-    casting QTransform to QMatrix. If a perspective transformation has been
-    specified on the matrix, then the conversion to an affine QMatrix
-    will cause loss of data.
+    QTransform differs from QMatrix in that it is a true 3x3 matrix,
+    allowing perpective transformations. QTransform's toAffine()
+    method allows casting QTransform to QMatrix. If a perspective
+    transformation has been specified on the matrix, then the
+    conversion to an affine QMatrix will cause loss of data.
 
     QTransform is the recommended transformation class in Qt.
 
@@ -124,23 +140,23 @@
 
     \table 100%
     \row
-    \o \inlineimage qmatrix-simpletransformation
+    \o \inlineimage qtransform-simpletransformation.png
     \o
-    \quotefromfile snippets/matrix/matrix.cpp
+    \quotefromfile snippets/transform/main.cpp
     \skipto SimpleTransformation::paintEvent
     \printuntil }
     \endtable
 
     Although these functions are very convenient, it can be more
-    efficient to build a QTransform and call QPainter::setMatrix() if you
+    efficient to build a QTransform and call QPainter::setTransform() if you
     want to perform more than a single transform operation. For
     example:
 
     \table 100%
     \row
-    \o \inlineimage qmatrix-combinedtransformation.png
+    \o \inlineimage qtransform-combinedtransformation.png
     \o
-    \quotefromfile snippets/matrix/matrix.cpp
+    \quotefromfile snippets/transform/main.cpp
     \skipto CombinedTransformation::paintEvent
     \printuntil }
     \endtable
@@ -191,9 +207,9 @@
 
     \table 100%
     \row
-    \o \inlineimage qmatrix-combinedtransformation.png
+    \o \inlineimage qtransform-combinedtransformation2.png
     \o
-    \quotefromfile snippets/matrix/matrix.cpp
+    \quotefromfile snippets/transform/main.cpp
     \skipto BasicOperations::paintEvent
     \printuntil }
     \endtable
@@ -355,8 +371,15 @@ QTransform QTransform::inverted(bool *invertible) const
 */
 QTransform & QTransform::translate(qreal dx, qreal dy)
 {
-    affine._dx += dx*affine._m11 + dy*affine._m21;
-    affine._dy += dy*affine._m22 + dx*affine._m12;
+    if (type() != TxProject) {
+        affine._dx += dx*affine._m11 + dy*affine._m21;
+        affine._dy += dy*affine._m22 + dx*affine._m12;
+    } else {
+        QTransform translate;
+        translate.affine._dx = dx;
+        translate.affine._dy = dy;
+        *this = translate * *this;
+    }
     m_dirty |= TxTranslate;
     return *this;
 }
@@ -369,10 +392,17 @@ QTransform & QTransform::translate(qreal dx, qreal dy)
 */
 QTransform & QTransform::scale(qreal sx, qreal sy)
 {
-    affine._m11 *= sx;
-    affine._m12 *= sx;
-    affine._m21 *= sy;
-    affine._m22 *= sy;
+    if (type() != TxProject) {
+        affine._m11 *= sx;
+        affine._m12 *= sx;
+        affine._m21 *= sy;
+        affine._m22 *= sy;
+    } else {
+        QTransform scale;
+        scale.affine._m11 = sx;
+        scale.affine._m22 = sy;
+        *this = scale * *this;
+    }
     m_dirty |= TxScale;
     return *this;
 }
@@ -385,14 +415,21 @@ QTransform & QTransform::scale(qreal sx, qreal sy)
 */
 QTransform & QTransform::shear(qreal sh, qreal sv)
 {
-    qreal tm11 = sv*affine._m21;
-    qreal tm12 = sv*affine._m22;
-    qreal tm21 = sh*affine._m11;
-    qreal tm22 = sh*affine._m12;
-    affine._m11 += tm11;
-    affine._m12 += tm12;
-    affine._m21 += tm21;
-    affine._m22 += tm22;
+    if (type() != TxProject) {
+        qreal tm11 = sv*affine._m21;
+        qreal tm12 = sv*affine._m22;
+        qreal tm21 = sh*affine._m11;
+        qreal tm22 = sh*affine._m12;
+        affine._m11 += tm11;
+        affine._m12 += tm12;
+        affine._m21 += tm21;
+        affine._m22 += tm22;
+    } else {
+        QTransform shear;
+        shear.affine._m12 = sv;
+        shear.affine._m21 = sh;
+        *this = shear * *this;
+    }
     m_dirty |= TxShear;
     return *this;
 }
@@ -431,12 +468,21 @@ QTransform & QTransform::rotate(qreal a, Qt::Axis axis)
     }
 
     if (axis == Qt::ZAxis) {
-        qreal tm11 = cosa*affine._m11 + sina*affine._m21;
-        qreal tm12 = cosa*affine._m12 + sina*affine._m22;
-        qreal tm21 = -sina*affine._m11 + cosa*affine._m21;
-        qreal tm22 = -sina*affine._m12 + cosa*affine._m22;
-        affine._m11 = tm11; affine._m12 = tm12;
-        affine._m21 = tm21; affine._m22 = tm22;
+        if (type() != TxProject) {
+            qreal tm11 = cosa*affine._m11 + sina*affine._m21;
+            qreal tm12 = cosa*affine._m12 + sina*affine._m22;
+            qreal tm21 = -sina*affine._m11 + cosa*affine._m21;
+            qreal tm22 = -sina*affine._m12 + cosa*affine._m22;
+            affine._m11 = tm11; affine._m12 = tm12;
+            affine._m21 = tm21; affine._m22 = tm22;
+        } else {
+            QTransform result;
+            result.affine._m11 = cosa;
+            result.affine._m12 = sina;
+            result.affine._m22 = cosa;
+            result.affine._m21 = -sina;
+            *this = result * *this;
+        }
         m_dirty |= TxRotate;
     } else {
         QTransform result;
@@ -448,7 +494,7 @@ QTransform & QTransform::rotate(qreal a, Qt::Axis axis)
             result.m_23 = -sina * inv_dist_to_plane;
         }
         m_dirty = TxProject;
-        operator*=(result);
+        *this = result * *this;
     }
 
     return *this;
@@ -474,12 +520,21 @@ QTransform & QTransform::rotateRadians(qreal a, Qt::Axis axis)
     qreal cosa = qCos(a);
 
     if (axis == Qt::ZAxis) {
-        qreal tm11 = cosa*affine._m11 + sina*affine._m21;
-        qreal tm12 = cosa*affine._m12 + sina*affine._m22;
-        qreal tm21 = -sina*affine._m11 + cosa*affine._m21;
-        qreal tm22 = -sina*affine._m12 + cosa*affine._m22;
-        affine._m11 = tm11; affine._m12 = tm12;
-        affine._m21 = tm21; affine._m22 = tm22;
+        if (type() != TxProject) {
+            qreal tm11 = cosa*affine._m11 + sina*affine._m21;
+            qreal tm12 = cosa*affine._m12 + sina*affine._m22;
+            qreal tm21 = -sina*affine._m11 + cosa*affine._m21;
+            qreal tm22 = -sina*affine._m12 + cosa*affine._m22;
+            affine._m11 = tm11; affine._m12 = tm12;
+            affine._m21 = tm21; affine._m22 = tm22;
+        } else {
+            QTransform result;
+            result.affine._m11 = cosa;
+            result.affine._m12 = sina;
+            result.affine._m22 = cosa;
+            result.affine._m21 = -sina;
+            *this = result * *this;
+        }
         m_dirty |= TxRotate;
     } else {
         QTransform result;
@@ -491,7 +546,7 @@ QTransform & QTransform::rotateRadians(qreal a, Qt::Axis axis)
             result.m_23 = -sina * inv_dist_to_plane;
         }
         m_dirty = TxProject;
-        operator*=(result);
+        *this = result * *this;
     }
     return *this;
 }
@@ -1346,6 +1401,9 @@ void QTransform::map(int x, int y, int *tx, int *ty) const
     MAPINT(x, y, *tx, *ty);
 }
 
+/*!
+  Returns the QTransform cast to a QMatrix.
+ */
 const QMatrix &QTransform::toAffine() const
 {
     return affine;

@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -1044,7 +1059,7 @@ void QGLGradientCache::generateGradientColorTable(const QGradientStops& s, uint 
     for (int i = 0; i < s.size(); ++i)
         colors[i] = s[i].second.rgba();
 
-    uint alpha = qRound(opacity * 255);
+    uint alpha = qRound(opacity * 256);
     while (fpos < s.first().first) {
         colorTable[pos] = PREMUL(ARGB_COMBINE_ALPHA(colors[0], alpha));
         pos++;
@@ -1200,11 +1215,15 @@ bool QOpenGLPaintEngine::begin(QPaintDevice *pdev)
         qt_resolve_version_1_3_functions(ctx);
 
 #ifndef Q_WS_QWS
+    glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
     glPushAttrib(GL_ALL_ATTRIB_BITS);
     glGetDoublev(GL_PROJECTION_MATRIX, &d->projection_matrix[0][0]);
 #endif
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
+    glMatrixMode(GL_TEXTURE);
+    glPushMatrix();
+    glLoadIdentity();
 
     if (QGLExtensions::glExtensions & QGLExtensions::SampleBuffers)
         glDisable(GL_MULTISAMPLE);
@@ -1277,8 +1296,10 @@ bool QOpenGLPaintEngine::begin(QPaintDevice *pdev)
         if (has_frag_program) {
             d->use_fragment_programs = d->createFragmentPrograms();
 
-            if (!d->use_fragment_programs)
+            if (!d->use_fragment_programs) {
+                d->deleteFragmentPrograms();
                 qWarning() << "QOpenGLPaintEngine: Failed to create fragment programs.";
+            }
         }
 
         gccaps &= ~(RadialGradientFill | ConicalGradientFill | LinearGradientFill | PatternBrush | BlendModes);
@@ -1328,12 +1349,15 @@ bool QOpenGLPaintEngine::end()
     Q_D(QOpenGLPaintEngine);
     d->flushDrawQueue();
     d->offscreen.end();
+    glMatrixMode(GL_TEXTURE);
+    glPopMatrix();
     glMatrixMode(GL_MODELVIEW);
     glPopMatrix();
 #ifndef Q_WS_QWS
     glMatrixMode(GL_PROJECTION);
     glLoadMatrixd(&d->projection_matrix[0][0]);
     glPopAttrib();
+    glPopClientAttrib();
 #endif
 
 #ifndef Q_WS_QWS
@@ -1779,7 +1803,7 @@ void QOpenGLPaintEnginePrivate::fillPolygon_dev(const QPointF *polygonPoints, in
     GLenum geometry_mode = GL_TRIANGLES;
 #endif
 
-    if (use_fragment_programs && !fast_style) {
+    if (use_fragment_programs && !(fast_style && has_fast_composition_mode)) {
         composite(geometry_mode, tessellator.vertices, tessellator.size / 2);
     } else {
         glVertexPointer(2, GL_FLOAT, 0, tessellator.vertices);
@@ -2060,7 +2084,9 @@ void QOpenGLPaintEngine::updatePen(const QPen &pen)
     d->has_pen = (pen_style != Qt::NoPen);
 
     if (pen.isCosmetic()) {
-        glLineWidth(pen.widthF());
+        GLfloat width = pen.widthF() == 0.0f ? 1.0f : pen.widthF();
+        glLineWidth(width);
+        glPointSize(width);
     }
 
     if (d->pen_brush_style >= Qt::LinearGradientPattern
@@ -3212,7 +3238,7 @@ void QOpenGLPaintEnginePrivate::drawFastRect(const QRectF &r)
         bool fast_style = current_style == Qt::LinearGradientPattern
                           || current_style == Qt::SolidPattern;
 
-        if (fast_style) {
+        if (fast_style && has_fast_composition_mode) {
             glEnableClientState(GL_VERTEX_ARRAY);
             glVertexPointer(2, GL_FLOAT, 0, vertexArray);
             glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
@@ -3309,8 +3335,7 @@ void QOpenGLPaintEngine::drawPoints(const QPointF *points, int pointCount)
     Q_D(QOpenGLPaintEngine);
     d->setGradientOps(d->cpen.brush(), QRectF());
 
-    GLfloat pen_width = d->cpen.widthF();
-    if (pen_width > 1 || (pen_width > 0 && d->txop > QTransform::TxTranslate)) {
+    if (!d->cpen.isCosmetic() || d->high_quality_antialiasing) {
         QPaintEngine::drawPoints(points, pointCount);
         return;
     }
@@ -4312,7 +4337,7 @@ void QOpenGLPaintEngine::drawTextItem(const QPointF &p, const QTextItem &textIte
     glEnable(GL_TEXTURE_2D);
 
 #ifdef Q_WS_QWS
-    // XXX: it is necessary to disable alpha writes on GLES/embedded because we dont want
+    // XXX: it is necessary to disable alpha writes on GLES/embedded because we don't want
     // text rendering to update the alpha in the window surface.
     // XXX: This may not be needed as this behavior does seem to be caused by driver bug
     glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_FALSE);

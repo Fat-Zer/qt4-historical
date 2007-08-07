@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -265,8 +280,12 @@ void QVFbView::refreshDisplay(const QRect &r)
             animation->appendFrame(img,QPoint(r.x(),r.y()));
         }
     }
-    if (!r.isNull())
-	update(r);
+    if (!r.isNull()) {
+        if (hzm == 1.0 && vzm == 1.0) // hw: workaround for 4.3.1
+            update(r);
+        else
+            update();
+    }
 }
 
 QImage QVFbView::getBuffer(const QRect &r, int &leading) const
@@ -339,7 +358,7 @@ QImage QVFbView::getBuffer(const QRect &r, int &leading) const
 	    }
 
             if (doTail) {
-                quint8 c = (*sptr & 0xf0);
+                quint8 c = *sptr >> 4;
                 c |= (c << 4);
                 *dptr = qRgb(c, c, c);
             }
@@ -397,21 +416,102 @@ QImage QVFbView::getBuffer(const QRect &r, int &leading) const
         return img;
     }
     case 32: {
-	leading = r.x();
-	return QImage(mView->data() + r.y() * mView->linestep(),
-                       mView->width(), r.height(), QImage::Format_RGB32);
+        leading = 0;
+	return QImage(mView->data() + r.y() * mView->linestep() + r.x() * 4,
+                      r.width(), r.height(), mView->linestep(),
+                      QImage::Format_RGB32);
     }
     case 8: {
-        leading = r.x();
-        QImage img(mView->data() + r.y() * mView->linestep(),
-                    mView->width(), r.height(), QImage::Format_Indexed8);
+        leading = 0;
+        QImage img(mView->data() + r.y() * mView->linestep() + r.x(),
+                   r.width(), r.height(), mView->linestep(),
+                   QImage::Format_Indexed8);
         img.setColorTable(mView->clut());
         return img;
     }
     case 1: {
-	leading = r.x();
-	return QImage(mView->data() + r.y() * mView->linestep(),
-                       mView->width(), r.height(), QImage::Format_MonoLSB);
+        if (requiredSize > buffer.size())
+            buffer.resize(requiredSize);
+
+        // XXX: hw: replace by drawhelper functionality
+
+        const int pixelsPerByte = 8;
+        quint8 *src = reinterpret_cast<quint8*>(mView->data())
+                      + r.y() * mView->linestep() + r.x() / pixelsPerByte;
+        const int align = qMin(r.width(), (8 - (r.x() & 7)) & 7);
+        const int doAlign = (align > 0 ? 1 : 0);
+        const int tail = qMin(r.width(), (r.width() - align) & 7);
+        const int doTail = (tail > 0 ? 1 : 0);
+        const int width8 = (r.width() - align) / pixelsPerByte;
+        const int stride = mView->linestep() - (width8 + doAlign);
+
+        uchar *b = reinterpret_cast<uchar*>(buffer.data());
+	QImage img(b, r.width(), r.height(), QImage::Format_RGB32);
+	for (int y = 0; y < r.height(); ++y) {
+            quint32 *dest = reinterpret_cast<quint32*>(img.scanLine(y));
+            quint8 c;
+
+            if (doAlign) {
+                switch (align) {
+                case 7: c = ((*src & 0x40) >> 6) * 0xff;
+                        *dest++ = qRgb(c, c, c);
+                case 6: c = ((*src & 0x20) >> 5) * 0xff;
+                        *dest++ = qRgb(c, c, c);
+                case 5: c = ((*src & 0x10) >> 4) * 0xff;
+                        *dest++ = qRgb(c, c, c);
+                case 4: c = ((*src & 0x08) >> 3) * 0xff;
+                        *dest++ = qRgb(c, c, c);
+                case 3: c = ((*src & 0x04) >> 2) * 0xff;
+                        *dest++ = qRgb(c, c, c);
+                case 2: c = ((*src & 0x02) >> 1) * 0xff;
+                        *dest++ = qRgb(c, c, c);
+                case 1: c = ((*src & 0x01)) * 0xff;
+                        *dest++ = qRgb(c, c, c);
+                }
+                ++src;
+            }
+            for (int i = 0; i < width8; ++i) {
+                c = ((*src & 0x80) >> 7) * 0xff;
+                *dest++ = qRgb(c, c, c);
+                c = ((*src & 0x40) >> 6) * 0xff;
+                *dest++ = qRgb(c, c, c);
+                c = ((*src & 0x20) >> 5) * 0xff;
+                *dest++ = qRgb(c, c, c);
+                c = ((*src & 0x10) >> 4) * 0xff;
+                *dest++ = qRgb(c, c, c);
+                c = ((*src & 0x08) >> 3) * 0xff;
+                *dest++ = qRgb(c, c, c);
+                c = ((*src & 0x04) >> 2) * 0xff;
+                *dest++ = qRgb(c, c, c);
+                c = ((*src & 0x02) >> 1) * 0xff;
+                *dest++ = qRgb(c, c, c);
+                c = ((*src & 0x01)) * 0xff;
+                *dest++ = qRgb(c, c, c);
+
+                ++src;
+            }
+            if (doTail) {
+                switch (tail) {
+                case 7: c = ((*src & 0x02) >> 1) * 0xff;
+                        dest[6] = qRgb(c, c, c);
+                case 6: c = ((*src & 0x04) >> 2) * 0xff;
+                        dest[5] = qRgb(c, c, c);
+                case 5: c = ((*src & 0x08) >> 3) * 0xff;
+                        dest[4] = qRgb(c, c, c);
+                case 4: c = ((*src & 0x10) >> 4) * 0xff;
+                        dest[3] = qRgb(c, c, c);
+                case 3: c = ((*src & 0x20) >> 5) * 0xff;
+                        dest[2] = qRgb(c, c, c);
+                case 2: c = ((*src & 0x40) >> 6) * 0xff;
+                        dest[1] = qRgb(c, c, c);
+                case 1: c = ((*src & 0x80) >> 7) * 0xff;
+                        dest[0] = qRgb(c, c, c);
+                }
+            }
+            src += stride;
+        }
+	leading = 0;
+	return img;
     }
     }
     return QImage();
@@ -430,7 +530,10 @@ static int findMultiple(int start, double m, int limit, int step)
 
 void QVFbView::drawScreen(const QRect &rect)
 {
-    QRect r = rect & QRect(0, 0, mView->width(), mView->height());
+    QRect r = QRect(0, 0, mView->width(), mView->height());
+
+    if (hzm == 1.0 && vzm == 1.0) // hw: workaround for 4.3.1
+        r &= rect;
 
     if (int(hzm) != hzm || int(vzm) != vzm) {
         r.setLeft(findMultiple(r.left(),hzm,0,-1));

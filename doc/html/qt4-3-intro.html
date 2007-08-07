@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/doc/src/qt4-intro.qdoc -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/doc/src/qt4-intro.qdoc -->
 <head>
   <title>Qt 4.3: What's New in Qt 4.3</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -28,7 +28,7 @@
 <a name="main-window-styles"></a>
 <h2>Main Window Styles</h2>
 <p>The <a href="application.html">main window classes</a> now provide support for different main window paradigms, such as those found in Visual Studio or KDevelop.</p>
-<p>Dock widgets occupying the same area can now be arranged in horizontal, vertical or collapsible tabs. Collapsible tabs are oriented according to the location of dock widgets around the main window's central area. suitable</p>
+<p>Dock widgets occupying the same area can now be arranged in horizontal, vertical or collapsible tabs. Collapsible tabs are oriented according to the location of dock widgets around the main window's central area.</p>
   <table align="center" width="80%">
   <tr><td>
   <p><img src="images/mainwindow-vertical-tabs.png" /></p>
@@ -40,7 +40,7 @@
 <p align="center"><img src="images/mainwindow-vertical-dock.png" /></p><p>Additionally, support for animations has been extended to tool bars, resulting in more sophisticated effects when tool bars and dock widgets are rearranged. See the <a href="demos-mainwindow.html">Main Window</a> demonstration for an extensive tour of these new features.</p>
 <a name="qtscript-application-scripting-with-ecmascript"></a>
 <h2>QtScript - Application Scripting with ECMAScript</h2>
-<p>This release introduces the <a href="qtscript.html">QtScript module</a>, providing an script engine for the ECMAScript language, based on the <a href="http://www.ecma-international.org/publications/standards/Ecma-262.htm">ECMA-262</a> standard, that is designed to enable easier integration of scripting facilities into end-user applications.</p>
+<p>This release introduces the <a href="qtscript.html">QtScript module</a>, providing a script engine for the ECMAScript language, based on the <a href="http://www.ecma-international.org/publications/standards/Ecma-262.htm">ECMA-262</a> standard, that is designed to enable easier integration of scripting facilities into end-user applications.</p>
 <p align="center"><img src="images/qtscript-context2d.png" /></p><p>Scripts access application functionality via QObjects that are specifically created and exposed by each application. Information about the available child objects, properties, signals and slots is provided by Qt's <a href="object.html">object model</a>. This means that, in many cases, script-enabling an application requires little effort on the part of the developer.</p>
 <p align="center"><img src="images/qtscript-calculator.png" /></p><p>A set of examples are included to show how classes and functions written in C++ can be exposed to the script engine, including <a href="script-calculator.html">a port</a> of the <a href="widgets-calculator.html">Calculator example</a> which shows how a <a href="qtscript.html">QtScript</a> can be used with a user interface created with <i>Qt Designer</i>.</p>
 <a name="improved-graphics-support"></a>
@@ -83,6 +83,7 @@
 <h2>Extended and Improved Infrastructure</h2>
 <p>The <a href="qtnetwork.html">QtNetwork</a> module has been extended to include support for Secure Socket Layer (SSL) communications via the <a href="qsslsocket.html">QSslSocket</a> class. As a result, <a href="qhttp.html">QHttp</a> is now able to provide support for the HTTPS protocol.</p>
 <p>Qt's network proxying facilties have been extended to cover HTTP CONNECT proxying, and also include support for Cram-MD5 and NTLM authentication.</p>
+<p><a href="linguist-manual.html#qt-linguist">Qt Linguist</a> has been extended to provide support for XML Localization Interchange File Format (XLIFF) files, improving interoperability with third party tools and services that support this format.</p>
 <p>The <a href="qtxml.html">QtXml</a> module has been expanded with classes to provide a streaming API for handling XML: <a href="qxmlstreamreader.html">QXmlStreamReader</a> and <a href="qxmlstreamwriter.html">QXmlStreamWriter</a> complement Qt's existing range of SAX and DOM-based classes.</p>
 <p>Support for the MSYS environment for MinGW on Windows.</p>
 <p>Qt's threading has been enhanced to include support for timed try-locks in <a href="qmutex.html">QMutex</a>, <a href="qreadwritelock.html">QReadWriteLock</a> and <a href="qsemaphore.html">QSemaphore</a>. Additionally, a <a href="qt.html#ConnectionType-enum">BlockingQueuedConnection</a> connection type has been introduced to complement <a href="qt.html#ConnectionType-enum">DirectConnection</a> and <a href="qt.html#ConnectionType-enum">QueuedConnection</a>.</p>
@@ -99,6 +100,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

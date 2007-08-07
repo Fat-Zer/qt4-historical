@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -913,7 +928,6 @@ void Configure::parseCmdLine()
     }
 
     useUnixSeparators = (dictionary["QMAKESPEC"] == "win32-g++");
-    qDebug("Spec is [%s]", qPrintable(dictionary["QMAKESPEC"]));
 
 
 #if !defined(EVAL)
@@ -1214,8 +1228,8 @@ bool Configure::displayHelp()
         desc("BUILD_QMAKE", "no", "-no-qmake",          "Do not compile qmake.");
         desc("BUILD_QMAKE", "yes", "-qmake",            "Compile qmake.\n");
 
-        desc("NOPROCESS", "yes", "-dont-process",        "Do not generate Makefiles/Project files. This will override -no-fast if specified.");
-        desc("NOPROCESS", "no",  "-process",             "Generate Makefiles/Project files.\n");
+        desc("NOPROCESS", "yes", "-dont-process",       "Do not generate Makefiles/Project files. This will override -no-fast if specified.");
+        desc("NOPROCESS", "no",  "-process",            "Generate Makefiles/Project files.\n");
 
         desc("RTTI", "no",      "-no-rtti",             "Do not compile runtime type information.");
         desc("RTTI", "yes",     "-rtti",                "Compile runtime type information.\n");
@@ -1226,7 +1240,7 @@ bool Configure::displayHelp()
         desc("DIRECT3D", "yes",  "-direct3d",           "Compile in Direct3D support (experimental - see INSTALL for more info)");
         desc("OPENSSL", "no",    "-no-openssl",         "Do not compile in OpenSSL support");
         desc("OPENSSL", "yes",   "-openssl",            "Compile in OpenSSL support");
-        desc("QDBUS", "no",      "-no-qbus",            "Do not compile in qdbus support");
+        desc("QDBUS", "no",      "-no-qdbus",           "Do not compile in qdbus support");
         desc("QDBUS", "yes",     "-qdbus",              "Compile in qdbus support");
 
         desc(                   "-arch <arch>",         "Specify an architecture.\n"
@@ -1443,7 +1457,7 @@ void Configure::autoDetection()
     if (dictionary["MNG"] == "auto")
         dictionary["MNG"] = defaultTo("MNG");
     if (dictionary["TIFF"] == "auto")
-        dictionary["TIFF"] == defaultTo("TIFF");
+        dictionary["TIFF"] = dictionary["ZLIB"] == "no" ? "no" : defaultTo("TIFF");
     if (dictionary["LIBJPEG"] == "auto")
         dictionary["LIBJPEG"] = checkAvailability("LIBJPEG") ? defaultTo("LIBJPEG") : "qt";
     if (dictionary["LIBPNG"] == "auto")
@@ -2100,11 +2114,11 @@ void Configure::generateConfigfiles()
 
         tmpStream.flush();
         tmpFile.flush();
-        if(!QFile::exists(outName) || filesDiffer(tmpFile.fileName(), outName)) {
-            ::SetFileAttributesA( outName.toLocal8Bit(), FILE_ATTRIBUTE_NORMAL );
-            QFile::remove( outName );
-            tmpFile.copy( outName );
-        }
+
+        // Replace old qconfig.h with new one
+        ::SetFileAttributesA(outName.toLocal8Bit(), FILE_ATTRIBUTE_NORMAL);
+        QFile::remove(outName);
+        tmpFile.copy(outName);
         tmpFile.close();
 
         if(!QFile::exists(buildPath + "/include/QtCore/qconfig.h")) {
@@ -2187,11 +2201,11 @@ void Configure::generateConfigfiles()
 
         tmpStream.flush();
         tmpFile2.flush();
-        if(!QFile::exists(outName) || filesDiffer(tmpFile2.fileName(), outName)) {
-            ::SetFileAttributesA(outName.toLocal8Bit(), FILE_ATTRIBUTE_NORMAL );
-            QFile::remove( outName );
-            tmpFile2.copy(outName);
-        }
+        
+        // Replace old qconfig.cpp with new one
+        ::SetFileAttributesA(outName.toLocal8Bit(), FILE_ATTRIBUTE_NORMAL );
+        QFile::remove( outName );
+        tmpFile2.copy(outName);
         tmpFile2.close();
     }
 }
@@ -2330,7 +2344,8 @@ void Configure::displayConfig()
 #if !defined(EVAL)
 void Configure::generateHeaders()
 {
-    if (dictionary["SYNCQT"] == "yes") {
+    if (dictionary["SYNCQT"] == "yes"
+        && findFile("perl.exe")) {
         cout << "Running syncqt..." << endl;
         QStringList args;
         args += buildPath + "/bin/syncqt.bat";

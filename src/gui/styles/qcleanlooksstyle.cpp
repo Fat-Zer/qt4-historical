@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -3763,7 +3778,18 @@ QSize QCleanlooksStyle::sizeFromContents(ContentsType type, const QStyleOption *
 	    newSize += QSize(4, 4);
 	break;
     case CT_MdiControls:
-        newSize = QSize(60, 19);
+        if (const QStyleOptionComplex *styleOpt = qstyleoption_cast<const QStyleOptionComplex *>(option)) {
+            int width = 0;
+            if (styleOpt->subControls & SC_MdiMinButton)
+                width += 19 + 1;
+            if (styleOpt->subControls & SC_MdiNormalButton)
+                width += 19 + 1;
+            if (styleOpt->subControls & SC_MdiCloseButton)
+                width += 19 + 1;
+            newSize = QSize(width, 19);
+        } else {
+            newSize = QSize(60, 19);
+        }
         break;
     default:
         break;
@@ -4135,26 +4161,6 @@ QRect QCleanlooksStyle::subControlRect(ComplexControl control, const QStyleOptio
             ret = visualRect(tb->direction, tb->rect, ret);
         }
         break;
-#ifndef QT_NO_WORKSPACE
-    case CC_MdiControls:
-    {
-        int buttonWidth = option->rect.width()/3 - 1;
-        int offset = 0;
-        switch (subControl) {
-        case SC_MdiCloseButton:
-            offset += buttonWidth + 2;
-            //FALL THROUGH
-        case SC_MdiNormalButton:
-            offset += buttonWidth;
-            //FALL THROUGH
-        case SC_MdiMinButton:
-            rect = QRect(offset, 0, buttonWidth, option->rect.height());
-            break;
-        default:
-            break;
-        }
-    }
-#endif // QT_NO_WORKSPACE
     default:
         break;
     }

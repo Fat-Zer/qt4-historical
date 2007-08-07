@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/qt3support/tools/q3cstring.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/qt3support/tools/q3cstring.cpp -->
 <head>
   <title>Qt 4.3: Q3CString Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -62,7 +62,7 @@
 <li><div class="fn"/>Q3CString &amp; <b><a href="q3cstring.html#operator-eq-3">operator=</a></b> ( const char * <i>str</i> )</li>
 </ul>
 <ul>
-<li><div class="fn"/>116 public functions inherited from <a href="qbytearray.html#public-functions">QByteArray</a></li>
+<li><div class="fn"/>115 public functions inherited from <a href="qbytearray.html#public-functions">QByteArray</a></li>
 </ul>
 <a name="related-non-members"></a>
 <h3>Related Non-Members</h3>
@@ -130,7 +130,7 @@
 <h3 class="fn"><a name="Q3CString-6"></a>Q3CString::Q3CString ( const char * <i>str</i>, <a href="qtglobal.html#uint-typedef">uint</a> <i>maxsize</i> )</h3>
 <p>Constructs a string that is a deep copy of <i>str</i>. The copy will be at most <i>maxsize</i> bytes long including the '\0'-terminator.</p>
 <p>Example:</p>
-<pre> Q3CString str(&quot;helloworld&quot;, 6); <span class="comment">// assigns &quot;hello&quot; to str</span></pre>
+<pre> Q3CString str(&quot;helloworld&quot;, 6); <span class="comment">//</span> assigns &quot;hello&quot; to str</pre>
 <p>If <i>str</i> contains a 0 byte within the first <i>maxsize</i> bytes, the resulting <a href="q3cstring.html">Q3CString</a> will be terminated by this 0. If <i>str</i> is 0 a null string is created.</p>
 <p>See also <a href="qbytearray.html#isNull">isNull</a>().</p>
 <a name="//apple_ref/cpp/instm/Q3CString/append" />
@@ -145,7 +145,7 @@
 <p>If the length of the string exceeds <i>width</i> and <i>truncate</i> is false (the default), then the returned string is a copy of the string. If the length of the string exceeds <i>width</i> and <i>truncate</i> is true, then the returned string is a left(<i>width</i>).</p>
 <p>Example:</p>
 <pre> Q3CString s(&quot;apple&quot;);
- Q3CString t = s.leftJustify(8, '.');  <span class="comment">// t == &quot;apple...&quot;</span></pre>
+ Q3CString t = s.leftJustify(8, '.');  <span class="comment">//</span> t == &quot;apple...&quot;</pre>
 <p>See also <a href="q3cstring.html#rightJustify">rightJustify</a>().</p>
 <a name="//apple_ref/cpp/instm/Q3CString/lower" />
 <h3 class="fn"><a name="lower"></a>Q3CString Q3CString::lower () const</h3>
@@ -156,7 +156,7 @@
 <p>If the length of the string exceeds <i>width</i> and <i>truncate</i> is false (the default), then the returned string is a copy of the string. If the length of the string exceeds <i>width</i> and <i>truncate</i> is true, then the returned string is a left(<i>width</i>).</p>
 <p>Example:</p>
 <pre> Q3CString s(&quot;pie&quot;);
- Q3CString t = s.rightJustify(8, '.');  <span class="comment">// t == &quot;.....pie&quot;</span></pre>
+ Q3CString t = s.rightJustify(8, '.');  <span class="comment">//</span> t == &quot;.....pie&quot;</pre>
 <p>See also <a href="q3cstring.html#leftJustify">leftJustify</a>().</p>
 <a name="//apple_ref/cpp/instm/Q3CString/setExpand" />
 <h3 class="fn"><a name="setExpand"></a>bool Q3CString::setExpand ( <a href="qtglobal.html#uint-typedef">uint</a> <i>index</i>, char <i>c</i> )</h3>
@@ -199,10 +199,10 @@
 <p>If the string is shorter than 256 characters, this sprintf() calls resize(256) to decrease the chance of memory corruption. The string is resized back to its actual length before sprintf() returns.</p>
 <p>Example:</p>
 <pre> Q3CString s;
- s.sprintf(&quot;%d - %s&quot;, 1, &quot;first&quot;);                <span class="comment">// result &lt; 256 chars</span>
+ s.sprintf(&quot;%d - %s&quot;, 1, &quot;first&quot;);                <span class="comment">//</span> result &lt; 256 chars
 
- Q3CString big(25000);                        <span class="comment">// very long string</span>
- big.sprintf(&quot;%d - %s&quot;, 2, longString);        <span class="comment">// result &lt; 25000 chars</span></pre>
+ Q3CString big(25000);                        <span class="comment">//</span> very long string
+ big.sprintf(&quot;%d - %s&quot;, 2, longString);        <span class="comment">//</span> result &lt; 25000 chars</pre>
 <p><b>Warning:</b> All vsprintf() implementations will write past the end of the target string (*this) if the <i>format</i> specification and arguments happen to be longer than the target string, and some will also fail if the target string is longer than some arbitrary implementation limit.</p>
 <p>Giving user-supplied arguments to sprintf() is risky: Sooner or later someone will paste a huge line into your application.</p>
 <a name="//apple_ref/cpp/instm/Q3CString/stripWhiteSpace" />
@@ -339,6 +339,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

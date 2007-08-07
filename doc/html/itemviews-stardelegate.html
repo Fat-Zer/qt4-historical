@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/doc/src/examples/stardelegate.qdoc -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/doc/src/examples/stardelegate.qdoc -->
 <head>
   <title>Qt 4.3: Star Delegate Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -23,10 +23,10 @@
 <li><a href="itemviews-stardelegate-starrating-h.html">itemviews/stardelegate/starrating.h</a></li>
 <li><a href="itemviews-stardelegate-main-cpp.html">itemviews/stardelegate/main.cpp</a></li>
 </ul>
-<p>The Star Delegate example shows how to create a delegate that can paint itself and that supports edition.</p>
+<p>The Star Delegate example shows how to create a delegate that can paint itself and that supports editing.</p>
 <p align="center"><img src="images/stardelegate.png" alt="The Star Delegate Example" /></p><p>When displaying data in a <a href="qlistview.html">QListView</a>, <a href="qtableview.html">QTableView</a>, or <a href="qtreeview.html">QTreeView</a>, the individual items are drawn by a <a href="model-view-delegate.html">delegate</a>. Also, when the user starts editing an item (e.g&#x2e;, by double-clicking the item), the delegate provides an editor widget that is placed on top of the item while editing takes place.</p>
 <p>Delegates are subclasses of <a href="qabstractitemdelegate.html">QAbstractItemDelegate</a>. Qt provides <a href="qitemdelegate.html">QItemDelegate</a>, which inherits <a href="qabstractitemdelegate.html">QAbstractItemDelegate</a> and handles the most common data types (notably <tt>int</tt> and <a href="qstring.html">QString</a>). If we need to support custom data types, or want to customize the rendering or the editing for existing data types, we can subclass <a href="qabstractitemdelegate.html">QAbstractItemDelegate</a> or <a href="qitemdelegate.html">QItemDelegate</a>. See <a href="model-view-delegate.html">Delegate Classes</a> for more information about delegates, and <a href="model-view-programming.html">Model/View Programming</a> if you need a high-level introduction to Qt's model/view architecture (including delegates).</p>
-<p>In this example, we will see how to implement a custom delegate to render and edit a &quot;star rating&quot; data type, which can stores values such as &quot;1 out of 5 stars&quot;.</p>
+<p>In this example, we will see how to implement a custom delegate to render and edit a &quot;star rating&quot; data type, which can store values such as &quot;1 out of 5 stars&quot;.</p>
 <p>The example consists of the following classes:</p>
 <ul>
 <li><tt>StarRating</tt> is the custom data type. It stores a rating expressed as stars, such as &quot;2 out of 5 stars&quot; or &quot;5 out of 6 stars&quot;.</li>
@@ -360,6 +360,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -26,8 +41,6 @@
 #include <QtGui/qwidget.h>
 #include <QtGui/qtextedit.h>
 #include <QtGui/private/qwidget_p.h>
-#include <QtGui/qapplication.h>
-#include <QtGui/private/qapplication_p.h>
 #include <qdebug.h>
 
 #include "qwidgetanimator_p.h"
@@ -84,21 +97,6 @@ void QWidgetAnimator::abort(QWidget *w)
 void QWidgetAnimator::animate(QWidget *widget, const QRect &_final_geometry, bool animate)
 {
     QRect final_geometry = _final_geometry;
-
-    /* If QApplication::exec() hasn't been called yet, there is no point trying to animate
-       anything. It won't work, since there are no timers, and it will crash when the
-       finshed(QWidget*) signal is delivered through the qeued connection to QMainWindowLayout,
-       if the widget is deleted before QApplication::exec() is called. This happens when
-       you f.ex. call QMainWindow::setCentralWidget() twice before exec(). */
-    if (qApp != 0 && !qApp->d_func()->in_exec) {
-        if (!final_geometry.isValid() && !widget->isWindow()) {
-            // Make the wigdet go away by sending it to negative space
-            QSize s = widget->size();
-            final_geometry = QRect(-500 - s.width(), -500 - s.height(), s.width(), s.height());
-        }
-        widget->setGeometry(final_geometry);
-        return;
-    }
 
     QRect r = widget->geometry();
     if (r.right() < 0 || r.bottom() < 0)

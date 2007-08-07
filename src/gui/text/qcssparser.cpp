@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -160,6 +175,7 @@ static const QCssKnownValue properties[NumProperties - 1] = {
     { "spacing", QtSpacing },
     { "subcontrol-origin", QtOrigin },
     { "subcontrol-position", QtPosition },
+    { "text-align", TextAlignment },
     { "text-decoration", TextDecoration },
     { "text-indent", TextIndent },
     { "text-underline-style", TextUnderlineStyle },
@@ -235,11 +251,13 @@ static const QCssKnownValue values[NumKnownValues - 1] = {
 };
 
 static const QCssKnownValue pseudos[NumPseudos - 1] = {
+    { "adjoins-item", PseudoClass_Item },
     { "bottom", PseudoClass_Bottom },
     { "checked", PseudoClass_Checked },
     { "closed", PseudoClass_Closed },
     { "default", PseudoClass_Default },
     { "disabled", PseudoClass_Disabled },
+    { "editable", PseudoClass_Editable },
     { "enabled", PseudoClass_Enabled },
     { "exclusive", PseudoClass_Exclusive },
     { "first", PseudoClass_First },
@@ -376,7 +394,7 @@ void ValueExtractor::lengthValues(const Declaration &decl, int *m)
     else if (i == 3) m[3] = m[1];
 }
 
-bool ValueExtractor::extractGeometry(int *w, int *h, int *mw, int *mh)
+bool ValueExtractor::extractGeometry(int *w, int *h, int *minw, int *minh, int *maxw, int *maxh)
 {
     extractFont();
     bool hit = false;
@@ -385,8 +403,10 @@ bool ValueExtractor::extractGeometry(int *w, int *h, int *mw, int *mh)
         switch (decl.propertyId) {
         case Width: *w = lengthValue(decl); break;
         case Height: *h = lengthValue(decl); break;
-        case MinimumWidth: *mw = lengthValue(decl); break;
-        case MinimumHeight: *mh = lengthValue(decl); break;
+        case MinimumWidth: *minw = lengthValue(decl); break;
+        case MinimumHeight: *minh = lengthValue(decl); break;
+        case MaximumWidth: *maxw = lengthValue(decl); break;
+        case MaximumHeight: *maxh = lengthValue(decl); break;
         default: continue;
         }
         hit = true;
@@ -396,7 +416,7 @@ bool ValueExtractor::extractGeometry(int *w, int *h, int *mw, int *mh)
 }
 
 bool ValueExtractor::extractPosition(int *left, int *top, int *right, int *bottom, QCss::Origin *origin,
-                                     Qt::Alignment *position, QCss::PositionMode *mode)
+                                     Qt::Alignment *position, QCss::PositionMode *mode, Qt::Alignment *textAlignment)
 {
     extractFont();
     bool hit = false;
@@ -409,6 +429,7 @@ bool ValueExtractor::extractPosition(int *left, int *top, int *right, int *botto
         case Bottom: *bottom = lengthValue(decl); break;
         case QtOrigin: *origin = decl.originValue(); break;
         case QtPosition: *position = decl.alignmentValue(); break;
+        case TextAlignment: *textAlignment = decl.alignmentValue(); break;
         case Position: *mode = decl.positionValue(); break;
         default: continue;
         }
@@ -637,34 +658,46 @@ static QBrush parseBrushValue(Value v, const QPalette &pal)
     gradFuncs << QLatin1String("qlineargradient") << QLatin1String("qradialgradient") << QLatin1String("qconicalgradient") << QLatin1String("qgradient");
     int gradType = -1;
 
-    if (lst.at(0).compare(QLatin1String("gradient"), Qt::CaseInsensitive) != 0
-        && (gradType = gradFuncs.indexOf(lst.at(0).toLower())) == -1)
+    if ((gradType = gradFuncs.indexOf(lst.at(0).toLower())) == -1)
         return QBrush();
 
-    QStringList gradientTypes;
-    gradientTypes << QLatin1String("linear") << QLatin1String("radial") << QLatin1String("conical") << QLatin1String("gradient");
-    QStringList params = lst.at(1).split(QLatin1String(","), QString::SkipEmptyParts);
     QHash<QString, qreal> vars;
     QVector<QGradientStop> stops;
-    QRegExp re(QLatin1String("\\s*(\\S*):\\s*(\\S*)\\s*(\\S*)"));
+
     int spread = -1;
     QStringList spreads;
     spreads << QLatin1String("pad") << QLatin1String("reflect") << QLatin1String("repeat");
-    for (int i = 0; i < params.count(); i++) {
-        if (re.indexIn(params.at(i)) == -1)
-            continue;
-        QString attr = re.cap(1);
-        QString value = re.cap(2);
 
-        if (attr.compare(QLatin1String("type"), Qt::CaseInsensitive) == 0) {
-           gradType = gradientTypes.indexOf(value);
-        } else if (attr.compare(QLatin1String("spread"), Qt::CaseInsensitive) == 0) {
-            spread = spreads.indexOf(value);
-        } else if (attr.compare(QLatin1String("stop"), Qt::CaseInsensitive) == 0) {
-            stops.append(QGradientStop(value.toDouble(), QColor(re.cap(3))));
+    Parser parser(lst.at(1));
+    while (parser.hasNext()) {
+        parser.skipSpace();
+        if (!parser.test(IDENT))
+            return QBrush();
+        QString attr = parser.lexem();
+        parser.skipSpace();
+        if (!parser.test(COLON))
+            return QBrush();
+        parser.skipSpace();
+        if (attr.compare(QLatin1String("stop"), Qt::CaseInsensitive) == 0) {
+            Value stop, color;
+            parser.next();
+            if (!parser.parseTerm(&stop)) return QBrush();
+            parser.skipSpace();
+            parser.next();
+            if (!parser.parseTerm(&color)) return QBrush();
+            stops.append(QGradientStop(stop.variant.toDouble(), parseColorValue(color, pal)));
         } else {
-            vars[attr] = value.toDouble();
+            parser.next();
+            Value value;
+            parser.parseTerm(&value);
+            if (attr.compare(QLatin1String("spread"), Qt::CaseInsensitive) == 0) {
+                spread = spreads.indexOf(value.variant.toString());
+            } else {
+                vars[attr] = value.variant.toString().toDouble();
+            }
         }
+        parser.skipSpace();
+        parser.test(COMMA);
     }
 
     if (gradType == 0) {

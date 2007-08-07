@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -117,11 +132,7 @@ QPixmap QPixmap::fromImage(const QImage &img, Qt::ImageConversionFlags flags)
             if(image.numColors() == 2) {
                 QRgb c0 = image.color(0);       // Auto: convert to best
                 QRgb c1 = image.color(1);
-#if 0
                 conv8 = qMin(c0,c1) != qRgb(0,0,0) || qMax(c0,c1) != qRgb(255,255,255);
-#else
-                conv8 = ((c0 == qRgb(0,0,0)) && c1 == qRgb(255,255,255));
-#endif
             } else {
                 // eg. 1-color monochrome images (they do exist).
                 conv8 = true;
@@ -692,6 +703,8 @@ int QPixmap::defaultDepth()
     return 32;
 }
 
+#include <OpenGL/OpenGL.h>
+#include <OpenGL/gl.h>
 // Load and resolve the symbols we need from OpenGL manually so QtGui doesn't have to link against the OpenGL framework.
 typedef CGLError (*PtrCGLChoosePixelFormat)(const CGLPixelFormatAttribute *, CGLPixelFormatObj *,  long *);
 typedef CGLError (*PtrCGLClearDrawable)(CGLContextObj);
@@ -1012,12 +1025,14 @@ CGImageRef qt_mac_create_imagemask(const QPixmap &px, const QRectF &sr)
     const int sx = qRound(sr.x()), sy = qRound(sr.y()), sw = qRound(sr.width()), sh = qRound(sr.height());
     const int sbpr = px.data->nbytes / px.data->h;
     const uint nbytes = sw * sh;
+    //  alpha is always 255 for bitmaps, ignore it in this case.
+    const quint32 mask = px.depth() == 1 ? 0x00ffffff : 0xffffffff;
     quint8 *dptr = (quint8 *)malloc(nbytes);
     quint32 *sptr = px.data->pixels, *srow;
     for(int y = sy, offset=0; y < sh; ++y) {
         srow = sptr + (y * (sbpr / 4));
         for(int x = sx; x < sw; ++x)
-            *(dptr+(offset++)) =  *(srow+x) ? 255 : 0;
+            *(dptr+(offset++)) = (*(srow+x) & mask) ? 255 : 0;
     }
     QCFType<CGDataProviderRef> provider = CGDataProviderCreateWithData(dptr, dptr, nbytes, qt_mac_cgimage_data_free);
     px.data->cg_mask = CGImageMaskCreate(sw, sh, 8, 8, nbytes / sh, provider, 0, 0);

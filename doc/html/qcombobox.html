@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/gui/widgets/qcombobox.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/widgets/qcombobox.cpp -->
 <head>
   <title>Qt 4.3: QComboBox Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -167,11 +167,11 @@
 <p>The QComboBox widget is a combined button and popup list.</p>
 <p>A QComboBox provides a means of presenting a list of options to the user in a way that takes up the minimum amount of screen space.</p>
 <p>A combobox is a selection widget that displays the current item, and can pop up a list of selectable items. A combobox may be editable, allowing the user to modify each item in the list.</p>
-<p>Comboboxes can contain pixmaps as well as strings; the <a href="qcombobox.html#insertItem">insertItem</a>() and <a href="qcombobox-qt3.html#changeItem">changeItem</a>() functions are suitably overloaded. For editable comboboxes, the function <a href="qcombobox-qt3.html#clearEdit">clearEdit</a>() is provided, to clear the displayed string without changing the combobox's contents.</p>
+<p>Comboboxes can contain pixmaps as well as strings; the <a href="qcombobox.html#insertItem">insertItem</a>() and <a href="qcombobox.html#setItemText">setItemText</a>() functions are suitably overloaded. For editable comboboxes, the function <a href="qcombobox.html#clearEditText">clearEditText</a>() is provided, to clear the displayed string without changing the combobox's contents.</p>
 <p>There are two signals emitted if the current item of a combobox changes, <a href="qcombobox.html#currentIndexChanged">currentIndexChanged</a>() and <a href="qcombobox.html#activated">activated</a>(). <a href="qcombobox.html#currentIndexChanged">currentIndexChanged</a>() is always emitted regardless if the change was done programmatically or by user interaction, while <a href="qcombobox.html#activated">activated</a>() is only emitted when the change is caused by user interaction. The <a href="qcombobox.html#highlighted">highlighted</a>() signal is emitted when the user highlights an item in the combobox popup list. All three signals exist in two versions, one with a <a href="qstring.html">QString</a> argument and one with an <tt>int</tt> argument. If the user selectes or highlights a pixmap, only the <tt>int</tt> signals are emitted. Whenever the text of an editable combobox is changed the <a href="qcombobox.html#editTextChanged">editTextChanged</a>() signal is emitted.</p>
 <p>When the user enters a new string in an editable combobox, the widget may or may not insert it, and it can insert it in several locations. The default policy is is <a href="qcombobox.html#InsertPolicy-enum">AtBottom</a> but you can change this using <a href="qcombobox.html#insertPolicy-prop">setInsertPolicy</a>().</p>
 <p>It is possible to constrain the input to an editable combobox using <a href="qvalidator.html">QValidator</a>; see <a href="qcombobox.html#setValidator">setValidator</a>(). By default, any input is accepted.</p>
-<p>A combobox can be populated using the insert functions, <a href="qcombobox-qt3.html#insertStringList">insertStringList</a>() and <a href="qcombobox.html#insertItem">insertItem</a>() for example. Items can be changed with <a href="qcombobox-qt3.html#changeItem">changeItem</a>(). An item can be removed with <a href="qcombobox.html#removeItem">removeItem</a>() and all items can be removed with <a href="qcombobox.html#clear">clear</a>(). The text of the current item is returned by <a href="qcombobox.html#currentText-prop">currentText</a>(), and the text of a numbered item is returned with <a href="qcombobox-qt3.html#text">text</a>(). The current item can be set with <a href="qcombobox.html#currentIndex-prop">setCurrentIndex</a>(). The number of items in the combobox is returned by <a href="qcombobox.html#count-prop">count</a>(); the maximum number of items can be set with <a href="qcombobox.html#maxCount-prop">setMaxCount</a>(). You can allow editing using <a href="qcombobox.html#editable-prop">setEditable</a>(). For editable comboboxes you can set auto-completion using <a href="qcombobox.html#setCompleter">setCompleter</a>() and whether or not the user can add duplicates is set with <a href="qcombobox.html#duplicatesEnabled-prop">setDuplicatesEnabled</a>().</p>
+<p>A combobox can be populated using the insert functions, <a href="qcombobox.html#insertItem">insertItem</a>() and <a href="qcombobox.html#insertItems">insertItems</a>() for example. Items can be changed with <a href="qcombobox.html#setItemText">setItemText</a>(). An item can be removed with <a href="qcombobox.html#removeItem">removeItem</a>() and all items can be removed with <a href="qcombobox.html#clear">clear</a>(). The text of the current item is returned by <a href="qcombobox.html#currentText-prop">currentText</a>(), and the text of a numbered item is returned with <a href="qcombobox-qt3.html#text">text</a>(). The current item can be set with <a href="qcombobox.html#currentIndex-prop">setCurrentIndex</a>(). The number of items in the combobox is returned by <a href="qcombobox.html#count-prop">count</a>(); the maximum number of items can be set with <a href="qcombobox.html#maxCount-prop">setMaxCount</a>(). You can allow editing using <a href="qcombobox.html#editable-prop">setEditable</a>(). For editable comboboxes you can set auto-completion using <a href="qcombobox.html#setCompleter">setCompleter</a>() and whether or not the user can add duplicates is set with <a href="qcombobox.html#duplicatesEnabled-prop">setDuplicatesEnabled</a>().</p>
 <p>QComboBox uses the <a href="model-view-programming.html">model/view framework</a> for its popup list and to store its items. By default a <a href="qstandarditemmodel.html">QStandardItemModel</a> stores the items and a <a href="qlistview.html">QListView</a> subclass displays the popuplist. You can access the model and view directly (with <a href="qcombobox.html#model">model</a>() and <a href="qcombobox.html#view">view</a>()), but QComboBox also provides functions to set and get item data (e.g&#x2e;, <a href="qcombobox.html#setItemData">setItemData</a>() and <a href="qcombobox.html#itemText">itemText</a>()). You can also set a new model and view (with <a href="qcombobox.html#setModel">setModel</a>() and <a href="qcombobox.html#setView">setView</a>()). For the text and icon in the combobox label, the data in the model that has the <a href="qt.html#ItemDataRole-enum">Qt::DisplayRole</a> and <a href="qt.html#ItemDataRole-enum">Qt::DecorationRole</a> is used.</p>
 <p align="center"><img src="images/qstyle-comboboxes.png" alt="Comboboxes in the different built-in styles." /></p><p>See also <a href="qlineedit.html">QLineEdit</a>, <a href="qspinbox.html">QSpinBox</a>, <a href="qradiobutton.html">QRadioButton</a>, <a href="qbuttongroup.html">QButtonGroup</a>, and <a href="guibooks.html#fowler">GUI Design Handbook: Combo Box, Drop-Down List Box</a>.</p>
 <hr />
@@ -474,6 +474,7 @@
 <a name="//apple_ref/cpp/instm/QComboBox/setItemDelegate" />
 <h3 class="fn"><a name="setItemDelegate"></a>void QComboBox::setItemDelegate ( <a href="qabstractitemdelegate.html">QAbstractItemDelegate</a> * <i>delegate</i> )</h3>
 <p>Sets the item <i>delegate</i> for the popup list view. The combobox takes ownership of the delegate.</p>
+<p><b>Warning:</b> You should not share the same instance of a delegate between comboboxes, widget mappers or views. Doing so can cause incorrect or unintuitive editing behavior since each view connected to a given delegate may receive the <a href="qabstractitemdelegate.html#closeEditor">closeEditor()</a> signal, and attempt to access, modify or close an editor that has already been closed.</p>
 <p>See also <a href="qcombobox.html#itemDelegate">itemDelegate</a>().</p>
 <a name="//apple_ref/cpp/instm/QComboBox/setItemIcon" />
 <h3 class="fn"><a name="setItemIcon"></a>void QComboBox::setItemIcon ( int <i>index</i>, const <a href="qicon.html">QIcon</a> &amp; <i>icon</i> )</h3>
@@ -516,84 +517,10 @@
 <h3 class="fn"><a name="view"></a><a href="qabstractitemview.html">QAbstractItemView</a> * QComboBox::view () const</h3>
 <p>Returns the list view used for the combobox popup.</p>
 <p>See also <a href="qcombobox.html#setView">setView</a>().</p>
-<hr />
-<h2>Member Type Documentation</h2>
-<a name="//apple_ref/cpp/tdef/QComboBox/Policy" />
-<h3 class="fn"><a name="Policy-typedef"></a>typedef QComboBox::Policy</h3>
-<p>Use <a href="qcombobox.html#InsertPolicy-enum">QComboBox::InsertPolicy</a> instead.</p>
-<hr />
-<h2>Member Function Documentation</h2>
-<h3 class="fn"><a name="QComboBox-2"></a>QComboBox::QComboBox ( <a href="qwidget.html">QWidget</a> * <i>parent</i>, const char * <i>name</i> )</h3>
-<p>Use one of the constructors that doesn't take the <i>name</i> argument and then use <a href="qobject.html#objectName-prop">setObjectName</a>() instead.</p>
-<h3 class="fn"><a name="QComboBox-3"></a>QComboBox::QComboBox ( bool <i>rw</i>, <a href="qwidget.html">QWidget</a> * <i>parent</i>, const char * <i>name</i> = 0 )</h3>
-<p>Use one of the constructors that doesn't take the <i>name</i> argument and then use <a href="qobject.html#objectName-prop">setObjectName</a>() instead.</p>
-<a name="//apple_ref/cpp/instm/QComboBox/changeItem" />
-<h3 class="fn"><a name="changeItem"></a>void QComboBox::changeItem ( const <a href="qstring.html">QString</a> &amp; <i>text</i>, int <i>index</i> )</h3>
-<p>Use <a href="qcombobox.html#setItemText">setItemText</a>() instead.</p>
-<h3 class="fn"><a name="changeItem-2"></a>void QComboBox::changeItem ( const <a href="qpixmap.html">QPixmap</a> &amp; <i>pixmap</i>, int <i>index</i> )</h3>
-<p>This is an overloaded member function, provided for convenience.</p>
-<p>Use <a href="qcombobox.html#setItemIcon">setItemIcon</a>() instead, for example, setItemIcon(index, <a href="qicon.html">QIcon</a>(pixmap)).</p>
-<h3 class="fn"><a name="changeItem-3"></a>void QComboBox::changeItem ( const <a href="qpixmap.html">QPixmap</a> &amp; <i>pixmap</i>, const <a href="qstring.html">QString</a> &amp; <i>text</i>, int <i>index</i> )</h3>
-<p>This is an overloaded member function, provided for convenience.</p>
-<p>Use setItem() instead, for example, setItem(index, <a href="qicon.html">QIcon</a>(pixmap),text).</p>
-<a name="//apple_ref/cpp/instm/QComboBox/clearEdit" />
-<h3 class="fn"><a name="clearEdit"></a>void QComboBox::clearEdit ()</h3>
-<p>Use <a href="qcombobox.html#clearEditText">clearEditText</a>() instead.</p>
-<a name="//apple_ref/cpp/instm/QComboBox/clearValidator" />
-<h3 class="fn"><a name="clearValidator"></a>void QComboBox::clearValidator ()</h3>
-<p>Use setValidator(0) instead.</p>
-<a name="//apple_ref/cpp/instm/QComboBox/currentItem" />
-<h3 class="fn"><a name="currentItem"></a>int QComboBox::currentItem () const</h3>
-<p>Use <a href="qcombobox.html#currentIndex-prop">currentIndex</a>() instead.</p>
-<p>See also <a href="qcombobox-qt3.html#setCurrentItem">setCurrentItem</a>().</p>
-<a name="//apple_ref/cpp/instm/QComboBox/editable" />
-<h3 class="fn"><a name="editable"></a>bool QComboBox::editable () const</h3>
-<p>Use <a href="qcombobox.html#editable-prop">isEditable</a>() instead.</p>
-<p>See also <a href="qcombobox.html#editable-prop">setEditable</a>().</p>
-<h3 class="fn"><a name="insertItem-3"></a>void QComboBox::insertItem ( const <a href="qstring.html">QString</a> &amp; <i>text</i>, int <i>index</i> = -1 )</h3>
-<p>This is an overloaded member function, provided for convenience.</p>
-<h3 class="fn"><a name="insertItem-4"></a>void QComboBox::insertItem ( const <a href="qpixmap.html">QPixmap</a> &amp; <i>pixmap</i>, int <i>index</i> = -1 )</h3>
-<p>This is an overloaded member function, provided for convenience.</p>
-<p>Use an <a href="qcombobox.html#insertItem">insertItem</a>() function that takes a <a href="qicon.html">QIcon</a> instead, for example, insertItem(index, <a href="qicon.html">QIcon</a>(pixmap)).</p>
-<h3 class="fn"><a name="insertItem-5"></a>void QComboBox::insertItem ( const <a href="qpixmap.html">QPixmap</a> &amp; <i>pixmap</i>, const <a href="qstring.html">QString</a> &amp; <i>text</i>, int <i>index</i> = -1 )</h3>
-<p>This is an overloaded member function, provided for convenience.</p>
-<p>Use an <a href="qcombobox.html#insertItem">insertItem</a>() function that takes a <a href="qicon.html">QIcon</a> instead, for example, insertItem(index, <a href="qicon.html">QIcon</a>(pixmap), text).</p>
-<p>See also <a href="qcombobox.html#insertItems">insertItems</a>().</p>
-<a name="//apple_ref/cpp/instm/QComboBox/insertStringList" />
-<h3 class="fn"><a name="insertStringList"></a>void QComboBox::insertStringList ( const <a href="qstringlist.html">QStringList</a> &amp; <i>list</i>, int <i>index</i> = -1 )</h3>
-<p>Use <a href="qcombobox.html#insertItems">insertItems</a>() instead.</p>
-<a name="//apple_ref/cpp/instm/QComboBox/insertionPolicy" />
-<h3 class="fn"><a name="insertionPolicy"></a><a href="qcombobox.html#InsertPolicy-enum">InsertPolicy</a> QComboBox::insertionPolicy () const</h3>
-<p>Use <a href="qcombobox.html#insertPolicy-prop">QComboBox::insertPolicy</a> instead.</p>
-<p>See also <a href="qcombobox-qt3.html#setInsertionPolicy">setInsertionPolicy</a>().</p>
-<a name="//apple_ref/cpp/instm/QComboBox/pixmap" />
-<h3 class="fn"><a name="pixmap"></a><a href="qpixmap.html">QPixmap</a> QComboBox::pixmap ( int <i>index</i> ) const</h3>
-<p>Use <a href="qcombobox.html#itemIcon">itemIcon</a>() instead.</p>
-<a name="//apple_ref/cpp/instm/QComboBox/popup" />
-<h3 class="fn"><a name="popup"></a>void QComboBox::popup ()</h3>
-<p>Use <a href="qcombobox.html#showPopup">showPopup</a>() instead.</p>
-<a name="//apple_ref/cpp/instm/QComboBox/setCurrentItem" />
-<h3 class="fn"><a name="setCurrentItem"></a>void QComboBox::setCurrentItem ( int <i>index</i> )</h3>
-<p>Use setCurrentIndex(int) instead.</p>
-<p>See also <a href="qcombobox-qt3.html#currentItem">currentItem</a>().</p>
-<a name="//apple_ref/cpp/instm/QComboBox/setCurrentText" />
-<h3 class="fn"><a name="setCurrentText"></a>void QComboBox::setCurrentText ( const <a href="qstring.html">QString</a> &amp; <i>text</i> )</h3>
-<p>Use <a href="qcombobox.html#setItemText">setItemText</a>() instead.</p>
-<p>See also <a href="qcombobox.html#currentText-prop">currentText</a>() and <a href="qcombobox.html#currentIndex-prop">currentIndex</a>().</p>
-<a name="//apple_ref/cpp/instm/QComboBox/setInsertionPolicy" />
-<h3 class="fn"><a name="setInsertionPolicy"></a>void QComboBox::setInsertionPolicy ( <a href="qcombobox.html#InsertPolicy-enum">InsertPolicy</a> <i>policy</i> )</h3>
-<p>Use <a href="qcombobox.html#insertPolicy-prop">QComboBox::insertPolicy</a> instead.</p>
-<p>See also <a href="qcombobox-qt3.html#insertionPolicy">insertionPolicy</a>().</p>
-<a name="//apple_ref/cpp/instm/QComboBox/text" />
-<h3 class="fn"><a name="text"></a><a href="qstring.html">QString</a> QComboBox::text ( int <i>index</i> ) const</h3>
-<p>Use <a href="qcombobox.html#itemText">itemText</a>() instead.</p>
-<a name="//apple_ref/cpp/instm/QComboBox/textChanged" />
-<h3 class="fn"><a name="textChanged"></a>void QComboBox::textChanged ( const <a href="qstring.html">QString</a> &amp; <i>text</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>Use the editTextChanged(const <a href="qstring.html">QString</a> &amp;text) signal instead.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

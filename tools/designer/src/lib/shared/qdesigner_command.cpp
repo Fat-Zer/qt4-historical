@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -1688,7 +1703,20 @@ ChangeTableContentsCommand::ChangeTableContentsCommand(QDesignerFormWindowInterf
         m_oldRowCount(0),
         m_newRowCount(0)
 {
+}
 
+static void insertHeaderItem(const QString &text, const QIcon &icon, int i,
+                             QMap<int, QPair<QString, QIcon> > *headerMap)
+{
+    if (icon.isNull()) {
+        if (text.isEmpty()) // Legacy behaviour: auto-generate number for empty items
+             return;
+        QString defaultText;
+        defaultText.setNum(i+1);
+        if (text == defaultText)
+            return;
+    }
+    headerMap->insert(i, QPair<QString, QIcon>(text, icon));
 }
 
 void ChangeTableContentsCommand::init(QTableWidget *tableWidget, QTableWidget *fromTableWidget)
@@ -1707,29 +1735,13 @@ void ChangeTableContentsCommand::init(QTableWidget *tableWidget, QTableWidget *f
     m_newColumnCount = fromTableWidget->columnCount();
     m_newRowCount = fromTableWidget->rowCount();
 
-    for (int col = 0; col < m_oldColumnCount; col++) {
-        const QTableWidgetItem *item = tableWidget->horizontalHeaderItem(col);
-        if (item) {
-            const QString text = item->text();
-            const QIcon icon = item->icon();
-            if (!text.isEmpty() || !icon.isNull()) {
-                m_oldHorizontalHeaderState[col] =
-                            qMakePair<QString, QIcon>(text, icon);
-            }
-        }
-    }
+    for (int col = 0; col < m_oldColumnCount; col++)
+        if (const QTableWidgetItem *item = tableWidget->horizontalHeaderItem(col))
+            insertHeaderItem(item->text(), item->icon(), col, &m_oldHorizontalHeaderState);
 
-    for (int row = 0; row < m_oldRowCount; row++) {
-        const QTableWidgetItem *item = tableWidget->verticalHeaderItem(row);
-        if (item) {
-            const QString text = item->text();
-            const QIcon icon = item->icon();
-            if (!text.isEmpty() || !icon.isNull()) {
-                m_oldVerticalHeaderState[row] =
-                            qMakePair<QString, QIcon>(text, icon);
-            }
-        }
-    }
+    for (int row = 0; row < m_oldRowCount; row++)
+        if (const QTableWidgetItem *item = tableWidget->verticalHeaderItem(row))
+            insertHeaderItem(item->text(), item->icon(), row,  &m_oldVerticalHeaderState);
 
     for (int col = 0; col < m_oldColumnCount; col++) {
         for (int row = 0; row < m_oldRowCount; row++) {
@@ -1745,30 +1757,13 @@ void ChangeTableContentsCommand::init(QTableWidget *tableWidget, QTableWidget *f
         }
     }
 
+    for (int col = 0; col < m_newColumnCount; col++)
+        if (const QTableWidgetItem *item = fromTableWidget->horizontalHeaderItem(col))
+            insertHeaderItem(item->text(), item->icon(), col, &m_newHorizontalHeaderState);
 
-    for (int col = 0; col < m_newColumnCount; col++) {
-        const QTableWidgetItem *item = fromTableWidget->horizontalHeaderItem(col);
-        if (item) {
-            const QString text = item->text();
-            const QIcon icon = item->icon();
-            if (!text.isEmpty() || !icon.isNull()) {
-                m_newHorizontalHeaderState[col] =
-                            qMakePair<QString, QIcon>(text, icon);
-            }
-        }
-    }
-
-    for (int row = 0; row < m_newRowCount; row++) {
-        const QTableWidgetItem *item = fromTableWidget->verticalHeaderItem(row);
-        if (item) {
-            const QString text = item->text();
-            const QIcon icon = item->icon();
-            if (!text.isEmpty() || !icon.isNull()) {
-                m_newVerticalHeaderState[row] =
-                            qMakePair<QString, QIcon>(text, icon);
-            }
-        }
-    }
+    for (int row = 0; row < m_newRowCount; row++)
+        if (const QTableWidgetItem *item = fromTableWidget->verticalHeaderItem(row))
+            insertHeaderItem(item->text(), item->icon(), row, &m_newVerticalHeaderState);
 
     for (int col = 0; col < m_newColumnCount; col++) {
         for (int row = 0; row < m_newRowCount; row++) {

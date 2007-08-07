@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/tools/qtestlib/src/qtestcase.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/tools/qtestlib/src/qtestcase.cpp -->
 <head>
   <title>Qt 4.3: QTest Namespace Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -51,10 +51,10 @@
 <li><div class="fn"/>void <b><a href="qtest.html#qSleep">qSleep</a></b> ( int <i>ms</i> )</li>
 <li><div class="fn"/>void <b><a href="qtest.html#qWait">qWait</a></b> ( int <i>ms</i> )</li>
 <li><div class="fn"/>char * <b><a href="qtest.html#toHexRepresentation">toHexRepresentation</a></b> ( const char * <i>ba</i>, int <i>length</i> )</li>
-<li><div class="fn"/>char * <b><a href="qtest.html#toString">toString</a></b> ( const QByteArray &amp; <i>ba</i> )</li>
-<li><div class="fn"/>char * <b><a href="qtest.html#toString-2">toString</a></b> ( const T &amp; <i>value</i> )</li>
-<li><div class="fn"/>char * <b><a href="qtest.html#toString-5">toString</a></b> ( const QLatin1String &amp; <i>string</i> )</li>
-<li><div class="fn"/>char * <b><a href="qtest.html#toString-6">toString</a></b> ( const QString &amp; <i>string</i> )</li>
+<li><div class="fn"/>char * <b><a href="qtest.html#toString">toString</a></b> ( const T &amp; <i>value</i> )</li>
+<li><div class="fn"/>char * <b><a href="qtest.html#toString-4">toString</a></b> ( const QLatin1String &amp; <i>string</i> )</li>
+<li><div class="fn"/>char * <b><a href="qtest.html#toString-5">toString</a></b> ( const QString &amp; <i>string</i> )</li>
+<li><div class="fn"/>char * <b><a href="qtest.html#toString-6">toString</a></b> ( const QByteArray &amp; <i>ba</i> )</li>
 <li><div class="fn"/>char * <b><a href="qtest.html#toString-7">toString</a></b> ( const QTime &amp; <i>time</i> )</li>
 <li><div class="fn"/>char * <b><a href="qtest.html#toString-8">toString</a></b> ( const QDate &amp; <i>date</i> )</li>
 <li><div class="fn"/>char * <b><a href="qtest.html#toString-9">toString</a></b> ( const QDateTime &amp; <i>dateTime</i> )</li>
@@ -170,7 +170,7 @@
 <pre> void MyTestClass::cleanup()
  {
      if (qstrcmp(currentTestFunction(), &quot;myDatabaseTest&quot;) == 0) {
-         <span class="comment">// clean up all database connections</span>
+         <span class="comment">//</span> clean up all database connections
          closeAllDatabases();
      }
  }</pre>
@@ -295,13 +295,13 @@
 <p>See also <a href="qtest.html#qSleep">QTest::qSleep</a>().</p>
 <a name="//apple_ref/cpp/instm/QTest/toHexRepresentation" />
 <h3 class="fn"><a name="toHexRepresentation"></a>char * QTest::toHexRepresentation ( const char * <i>ba</i>, int <i>length</i> )</h3>
+<p>Returns a pointer to a string that is the string <i>ba</i> represented as a space-separated sequence of hex characters. If the input is considered too long, it is truncated. A trucation is indicated in the returned string as an ellipsis at the end.</p>
+<p><i>length</i> is the length of the string <i>ba</i>.</p>
 <a name="//apple_ref/cpp/instm/QTest/toString" />
-<h3 class="fn"><a name="toString"></a>char * QTest::toString ( const <a href="qbytearray.html">QByteArray</a> &amp; <i>ba</i> )</h3>
-<h3 class="fn"><a name="toString-2"></a>char * QTest::toString ( const T &amp; <i>value</i> )</h3>
-<p>This is an overloaded member function, provided for convenience.</p>
+<h3 class="fn"><a name="toString"></a>char * QTest::toString ( const T &amp; <i>value</i> )</h3>
 <p>Returns a textual representation of <i>value</i>. This function is used by <a href="qtest.html#QCOMPARE">QCOMPARE</a>() to output verbose information in case of a test failure.</p>
 <p>You can add specializations of this function to your test to enable verbose output.</p>
-<p><b>Note:</b> The caller of <a href="qtest.html#toString">toString</a>() must delete the returned data using <tt>delete[]</tt>. Your implementation should return a string created with <tt>new[]</tt> or <a href="qbytearray.html#qstrdup">qstrdup</a>().</p>
+<p><b>Note:</b> The caller of toString() must delete the returned data using <tt>delete[]</tt>. Your implementation should return a string created with <tt>new[]</tt> or <a href="qbytearray.html#qstrdup">qstrdup</a>().</p>
 <p>Example:</p>
 <pre> namespace QTest {
      template&lt;&gt;
@@ -313,14 +313,18 @@
          return qstrdup(ba.data());
      }
  }</pre>
-<p>The example above defines a <a href="qtest.html#toString">toString</a>() specialization for a class called <tt>MyPoint</tt>. Whenever a comparison of two instances of <tt>MyPoint</tt> fails, <a href="qtest.html#QCOMPARE">QCOMPARE</a>() will call this function to output the contents of <tt>MyPoint</tt> to the test log.</p>
+<p>The example above defines a toString() specialization for a class called <tt>MyPoint</tt>. Whenever a comparison of two instances of <tt>MyPoint</tt> fails, <a href="qtest.html#QCOMPARE">QCOMPARE</a>() will call this function to output the contents of <tt>MyPoint</tt> to the test log.</p>
 <p>See also <a href="qtest.html#QCOMPARE">QCOMPARE</a>().</p>
-<h3 class="fn"><a name="toString-5"></a>char * QTest::toString ( const <a href="qlatin1string.html">QLatin1String</a> &amp; <i>string</i> )</h3>
+<h3 class="fn"><a name="toString-4"></a>char * QTest::toString ( const <a href="qlatin1string.html">QLatin1String</a> &amp; <i>string</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns a textual representation of the given <i>string</i>.</p>
-<h3 class="fn"><a name="toString-6"></a>char * QTest::toString ( const <a href="qstring.html">QString</a> &amp; <i>string</i> )</h3>
+<h3 class="fn"><a name="toString-5"></a>char * QTest::toString ( const <a href="qstring.html">QString</a> &amp; <i>string</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns a textual representation of the given <i>string</i>.</p>
+<h3 class="fn"><a name="toString-6"></a>char * QTest::toString ( const <a href="qbytearray.html">QByteArray</a> &amp; <i>ba</i> )</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p>Returns a textual representation of the byte array <i>ba</i>.</p>
+<p>See also <a href="qtest.html#toHexRepresentation">QTest::toHexRepresentation</a>().</p>
 <h3 class="fn"><a name="toString-7"></a>char * QTest::toString ( const <a href="qtime.html">QTime</a> &amp; <i>time</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns a textual representation of the given <i>time</i>.</p>
@@ -432,11 +436,11 @@
 <a name="//apple_ref/cpp/macro//QTEST_APPLESS_MAIN" />
 <h3 class="fn"><a name="QTEST_APPLESS_MAIN"></a>QTEST_APPLESS_MAIN (  <i>TestClass</i> )</h3>
 <p>Implements a main() function that executes all tests in <i>TestClass</i>.</p>
-<p>Behaves like <a href="qtest.html#QTEST_MAIN">QTEST_MAIN</a>(), but doesn't instanciate a <a href="qapplication.html">QApplication</a> object. Use this macro for really simple stand-alone non-GUI tests.</p>
+<p>Behaves like <a href="qtest.html#QTEST_MAIN">QTEST_MAIN</a>(), but doesn't instantiate a <a href="qapplication.html">QApplication</a> object. Use this macro for really simple stand-alone non-GUI tests.</p>
 <p>See also <a href="qtest.html#QTEST_MAIN">QTEST_MAIN</a>().</p>
 <a name="//apple_ref/cpp/macro//QTEST_MAIN" />
 <h3 class="fn"><a name="QTEST_MAIN"></a>QTEST_MAIN (  <i>TestClass</i> )</h3>
-<p>Implements a main() function that instanciates a <a href="qapplication.html">QApplication</a> object and the <i>TestClass</i>, and executes all tests in the order they were defined. Use this macro to build stand-alone executables.</p>
+<p>Implements a main() function that instantiates a <a href="qapplication.html">QApplication</a> object and the <i>TestClass</i>, and executes all tests in the order they were defined. Use this macro to build stand-alone executables.</p>
 <p>Example:</p>
 <pre> class TestQString: public QObject { ... };
  QTEST_MAIN(TestQString)</pre>
@@ -447,7 +451,7 @@
 <pre> #ifdef Q_WS_X11
      QTEST_MAIN(MyX11Test)
  #else
-     <span class="comment">// do nothing on non-X11 platforms</span>
+     <span class="comment">//</span> do nothing on non-X11 platforms
      QTEST_NOOP_MAIN
  #endif</pre>
 <p>See also <a href="qtest.html#QTEST_MAIN">QTEST_MAIN</a>().</p>
@@ -472,6 +476,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

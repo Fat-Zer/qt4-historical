@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/gui/embedded/qwindowsystem_qws.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/embedded/qwindowsystem_qws.cpp -->
 <head>
   <title>Qt 4.3: QWSServer Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -89,25 +89,18 @@
 <ul>
 <li><div class="fn"/>5 static public members inherited from <a href="qobject.html#static-public-members">QObject</a></li>
 </ul>
-<a name="protected-functions"></a>
-<h3>Protected Functions</h3>
-<ul>
-<li><div class="fn"/>virtual void <b><a href="qwsserver.html#timerEvent">timerEvent</a></b> ( QTimerEvent * <i>e</i> )</li>
-</ul>
-<ul>
-<li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
-</ul>
 <h3>Additional Inherited Members</h3>
 <ul>
 <li><div class="fn"/>1 property inherited from <a href="qobject.html#properties">QObject</a></li>
 <li><div class="fn"/>1 public slot inherited from <a href="qobject.html#public-slots">QObject</a></li>
+<li><div class="fn"/>7 protected functions inherited from <a href="qobject.html#protected-functions">QObject</a></li>
 </ul>
 <a name="details"></a>
 <hr />
 <h2>Detailed Description</h2>
 <p>The QWSServer class encapsulates a server process in Qtopia Core.</p>
 <p>When you run a <a href="qtopiacore.html">Qtopia Core</a> application, it either runs as a server or connects to an existing server. The server and client processes have different responsibilities: The client process performs all application specific operations. The server process is responsible for managing the clients as well as taking care of the pointer handling, character input, and screen output. In addition, the server provides functionality to handle input methods.</p>
-<p>In <a href="qtopiacore.html">Qtopia Core</a>, all system generated events are passed to the server application which then propagates the event to the appropiate client. See the <a href="qtopiacore-architecture.html">Qtopia Core Architecture</a> documentation for details.</p>
+<p>In <a href="qtopiacore.html">Qtopia Core</a>, all system generated events are passed to the server application which then propagates the event to the appropriate client. See the <a href="qtopiacore-architecture.html">Qtopia Core Architecture</a> documentation for details.</p>
 <p>Note that this class is instantiated by <a href="qapplication.html">QApplication</a> for <a href="qtopiacore.html">Qtopia Core</a> server processes; you should never construct this class yourself. Use the <a href="qwsserver.html#instance">instance</a>() function to retrieve a pointer to the server object.</p>
 <p>Note that the static functions of the QWSServer class can only be used in the server process.</p>
 <ul><li><a href="#client-administration">Client Administration</a></li>
@@ -143,7 +136,7 @@
 <p>See also: <a href="qscreen.html">QScreen</a> and <a href="qtopiacore-displaymanagement.html">Qtopia Core Display Management</a>.</p>
 <a name="input-method-handling"></a>
 <h3>Input Method Handling</h3>
-<p>Whenever the server receives an event, it queries its stack of top-level windows to find the window containing the event's position (each window can identify the client application that created it). Then the server forwards the event to the appropiate client. If an input method is installed, it is used as a filter between the server and the client application.</p>
+<p>Whenever the server receives an event, it queries its stack of top-level windows to find the window containing the event's position (each window can identify the client application that created it). Then the server forwards the event to the appropriate client. If an input method is installed, it is used as a filter between the server and the client application.</p>
 <p>Derive from the <a href="qwsinputmethod.html">QWSInputMethod</a> class to create custom input methods, and use the server's <a href="qwsserver.html#setCurrentInputMethod">setCurrentInputMethod</a>() function to install it. Use the <a href="qwsserver.html#sendIMEvent">sendIMEvent</a>() and <a href="qwsserver.html#sendIMQuery">sendIMQuery</a>() functions to send input method events and queries.</p>
 <p>QWSServer provides the <a href="qwsserver.html#IMMouse-enum">IMMouse</a> enum describing the various mouse events recognized by the <a href="qwsinputmethod.html#mouseHandler">QWSInputMethod::mouseHandler</a>() function. The latter function allows subclasses of <a href="qwsinputmethod.html">QWSInputMethod</a> to handle mouse events within the preedit text.</p>
 <p>See also: <a href="qwsinputmethod.html">QWSInputMethod</a></p>
@@ -370,17 +363,17 @@
      switch ( level ) {
          case 0:
              if ( dim_enabled ) {
-                 <span class="comment">// dim the screen</span>
+                 <span class="comment">//</span> dim the screen
              }
              return true;
          case 1:
              if ( screenoff_enabled ) {
-                 <span class="comment">// turn off the screen</span>
+                 <span class="comment">//</span> turn off the screen
              }
              return true;
          case 2:
              if ( suspend_enabled ) {
-                 <span class="comment">// suspend</span>
+                 <span class="comment">//</span> suspend
              }
              return true;
          default:
@@ -391,19 +384,19 @@
  ...
 
  int timings[4];
- timings[0] = 5000;  <span class="comment">// dim after 5 seconds</span>
- timings[1] = 10000; <span class="comment">// light off after 15 seconds</span>
- timings[2] = 45000; <span class="comment">// suspend after 60 seconds</span>
+ timings[0] = 5000;  <span class="comment">//</span> dim after 5 seconds
+ timings[1] = 10000; <span class="comment">//</span> light off after 15 seconds
+ timings[2] = 45000; <span class="comment">//</span> suspend after 60 seconds
  timings[3] = 0;
  QWSServer::setScreenSaverIntervals( timings );
 
-<span class="comment"> // ignore the key/mouse event that turns on the screen</span>
+<span class="comment"> //</span> ignore the key/mouse event that turns on the screen
  int blocklevel = 1;
  if ( !screenoff_enabled ) {
-     <span class="comment">// screenoff is disabled, ignore the key/mouse event that wakes from suspend</span>
+     <span class="comment">//</span> screenoff is disabled, ignore the key/mouse event that wakes from suspend
      blocklevel = 2;
      if ( !suspend_enabled ) {
-         <span class="comment">// suspend is disabled, never ignore events</span>
+         <span class="comment">//</span> suspend is disabled, never ignore events
          blocklevel = -1;
      }
  }
@@ -425,8 +418,6 @@
 <h3 class="fn"><a name="suspendMouse"></a>void QWSServer::suspendMouse ()</h3>
 <p>Suspends pointer handling by deactivating all the mouse drivers registered by the <a href="qtopiacore-envvars.html#qws-mouse-proto">QWS_MOUSE_PROTO</a> environment variable.</p>
 <p>See also <a href="qwsserver.html#resumeMouse">resumeMouse</a>() and <a href="qwsmousehandler.html#suspend">QWSMouseHandler::suspend</a>().</p>
-<a name="//apple_ref/cpp/instm/QWSServer/timerEvent" />
-<h3 class="fn"><a name="timerEvent"></a>void QWSServer::timerEvent ( <a href="qtimerevent.html">QTimerEvent</a> * <i>e</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <a name="//apple_ref/cpp/instm/QWSServer/windowAt" />
 <h3 class="fn"><a name="windowAt"></a><a href="qwswindow.html">QWSWindow</a> * QWSServer::windowAt ( const <a href="qpoint.html">QPoint</a> &amp; <i>position</i> )</h3>
 <p>Returns the window containing the given <i>position</i>.</p>
@@ -436,34 +427,10 @@
 <h3 class="fn"><a name="windowEvent"></a>void QWSServer::windowEvent ( <a href="qwswindow.html">QWSWindow</a> * <i>window</i>, <a href="qwsserver.html#WindowEvent-enum">QWSServer::WindowEvent</a> <i>eventType</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted whenever something happens to a top-level window (e.g&#x2e;, it's created or destroyed), passing a pointer to the window and the event's type in the <i>window</i> and <i>eventType</i> parameters, respectively.</p>
 <p>See also <a href="qwsserver.html#markedText">markedText</a>().</p>
-<hr />
-<h2>Member Function Documentation</h2>
-<h3 class="fn"><a name="QWSServer-2"></a>QWSServer::QWSServer ( int <i>flags</i>, <a href="qobject.html">QObject</a> * <i>parent</i>, const char * <i>name</i> )</h3>
-<p>Use the two-argument overload and call the <a href="qobject.html#objectName-prop">QObject::setObjectName</a>() function instead.</p>
-<a name="//apple_ref/cpp/clm/QWSServer/setDesktopBackground" />
-<h3 class="fn"><a name="setDesktopBackground"></a>void QWSServer::setDesktopBackground ( const <a href="qimage.html">QImage</a> &amp; <i>image</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Sets the image used as background in the absence of obscuring windows, to be the given <i>image</i>.</p>
-<p>Use the <a href="qwsserver.html#setBackground">setBackground</a>() function instead.</p>
-<p>For example, if you have code like</p>
-<pre><font color="#404040"> QImage image;
- setDesktopBackground(image);</font></pre>
-<p>you can rewrite it as</p>
-<pre> QImage image;
- setBackground(QBrush(image));</pre>
-<h3 class="fn"><a name="setDesktopBackground-2"></a>void QWSServer::setDesktopBackground ( const <a href="qcolor.html">QColor</a> &amp; <i>color</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>This is an overloaded member function, provided for convenience.</p>
-<p>Sets the color used as background in the absence of obscuring windows, to be the given <i>color</i>.</p>
-<p>Use the <a href="qwsserver.html#setBackground">setBackground</a>() function instead.</p>
-<p>For example, if you have code like</p>
-<pre><font color="#404040"> QColor color;
- setDesktopBackground(color);</font></pre>
-<p>you can rewrite it as</p>
-<pre> QColor color;
- setBackground(QBrush(color));</pre>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

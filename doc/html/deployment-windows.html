@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/doc/src/deployment.qdoc -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/doc/src/deployment.qdoc -->
 <head>
   <title>Qt 4.3: Deploying an Application on Qt/Windows</title>
   <link rel="contents" href="deployment.html" />
@@ -44,7 +44,7 @@
  configure -static &lt;any other options you need&gt;</pre>
 <p>Remember to specify any other options you need, such as data base drivers, as arguments to <tt>configure</tt>. Once <tt>configure</tt> has finished, type the following:</p>
 <pre> nmake sub-src</pre>
-<p>This will build Qt statically. Note that we have used <tt>nmake</tt> in all the examples, but if you use MinGW you must use the <tt>mingw32-make</tt> instead.</p>
+<p>This will build Qt statically. Note that unlike with a dynamic build, building Qt statically will result in libraries without version numbers; e.g&#x2e; <tt>QtCore4.lib</tt> will be <tt>QtCore.lib</tt>. Also, we have used <tt>nmake</tt> in all the examples, but if you use MinGW you must use <tt>mingw32-make</tt> instead.</p>
 <a name="linking-the-application-to-the-static-version-of-qt"></a>
 <h3>Linking the Application to the Static Version of Qt</h3>
 <p>Once Qt has finished building we can build the <a href="tools-plugandpaint.html">Plug &amp; Paint</a> application. First we must go into the directory that contains the application:</p>
@@ -116,15 +116,20 @@
 <pre> CONFIG += embed_manifest_exe</pre>
 <p>to your .pro file. The <tt>embed_manifest_dll</tt> option is enabled by default.</p>
 <p>You can find more information about manifest files and side-by-side assemblies at the <a href="http://msdn.microsoft.com/library/default.asp?url=/library/en-us/sbscs/setup/side_by_side_assemblies_reference.asp">MSDN website</a>.</p>
-<p>We also need to include the runtime libraries. To do this, copy the contents of</p>
+<p>There are two ways to include the run time libraries: by bundling them directly with your application or by installing them on the end-user's system.</p>
+<p>To bundle the run time libraries with your application, copy the directory</p>
 <pre> &lt;Visual Studio Install Path&gt;\VC\redist\&lt;Architecture&gt;\Microsoft.VC80.CRT</pre>
-<p>into the folder where your executable is.</p>
+<p>into the folder where your executable is, so that you are including a <tt>Microsoft.VC80.CRT</tt> directory alongside your application's executable. If you are bundling the runtimes and also need to deploy plugins you have to remove the manifest from the plugins (embedded as a resource) by adding this to the pro file of the plugins you are compiling:</p>
+<pre> CONFIG-=embed_manifest_dll</pre>
+<p>If this is not done, plugins will not load on some systems.</p>
+<p>To install the run time libraries on the end-user's system, you need to include the appropriate Visual C++ Redistributable Package (VCRedist) executable with your application and ensure that it is executed when the user installs your application.</p>
+<p>For example, on an 32-bit x86-based system, you would include the <a href="http://www.microsoft.com/downloads/details.aspx?FamilyId=32BC1BEE-A3F9-4C13-9C99-220B62A191EE">vcredist_x86.exe</a> executable. The <a href="http://www.microsoft.com/downloads/details.aspx?familyid=526BF4A7-44E6-4A91-B328-A4594ADB70E5">vcredist_IA64.exe</a> and <a href="http://www.microsoft.com/downloads/details.aspx?familyid=90548130-4468-4BBC-9673-D6ACABD5D13B">vcredist_x64.exe</a> executables provide the appropriate libraries for the IA64 and 64-bit x86 architectures, respectively.</p>
 <a name="application-dependencies"></a>
 <h2>Application Dependencies</h2>
 <a name="additional-libraries"></a>
 <h3>Additional Libraries</h3>
 <p>Depending on configuration, compiler specific libraries must be redistributed along with your application. You can check which libraries your application is linking against by using the <a href="http://www.dependencywalker.com/">Dependency Walker</a> tool. All you need to do is to run it like this:</p>
-<pre> depends &lt;application executable&gt;</pre>
+<pre>     depends &lt;application executable&gt;</pre>
 <p>This will provide a list of the libraries that your application depends on and other information.</p>
 <p align="center"><img src="images/deployment-windows-depends.png" /></p><p>When looking at the release build of the Plug &amp; Paint executable (<tt>plugandpaint.exe</tt>) with the <tt>depends</tt> tool, the tool lists the following immediate dependencies to non-system libraries:</p>
 <p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
@@ -154,7 +159,9 @@
 <a name="qt-plugins"></a>
 <h3>Qt Plugins</h3>
 <p>Your application may also depend on one or more Qt plugins, such as the JPEG image format plugin or a SQL driver plugin. Be sure to distribute any Qt plugins that you need with your application.</p>
-<p>The search path for Qt plugins (as well as a few other paths) is hard-coded into the <a href="qtcore.html">QtCore</a> library. By default, the first plugin search path will be hard-coded as <tt>C:\path\to\Qt\plugins</tt>. Using pre-determined paths has certain disadvantages. For example, they may not exist on the target machine. For that reason you need to examine various alternatives to make sure that the Qt plugins are found:</p>
+<p>The search path for Qt plugins (as well as a few other paths) is hard-coded into the <a href="qtcore.html">QtCore</a> library. By default, the first plugin search path will be hard-coded to be a <tt>plugins</tt> subdirectory of the Qt installation:</p>
+<pre> C:&lt;path to Qt&gt;\plugins</pre>
+<p>Pre-determined paths like this one have certain disadvantages. For example, they may not exist on the target machine. For that reason you need to examine various alternatives to make sure that the Qt plugins are found:</p>
 <ul>
 <li>Using <a href="qcoreapplication.html#addLibraryPath">QApplication::addLibraryPath</a>() or <a href="qcoreapplication.html#setLibraryPaths">QApplication::setLibraryPaths</a>().</li>
 <li>Using a third party installation utility to change the hard-coded paths in the <a href="qtcore.html">QtCore</a> library.</li>
@@ -167,6 +174,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

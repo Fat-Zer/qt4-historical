@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/qt3support/text/q3textedit.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/qt3support/text/q3textedit.cpp -->
 <head>
   <title>Qt 4.3: Q3TextEdit Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -288,13 +288,13 @@
 <p>Q3TextEdit can display a large HTML subset, including tables and images.</p>
 <p>The text is set or replaced using <a href="q3textedit.html#text-prop">setText</a>() which deletes any existing text and replaces it with the text passed in the <a href="q3textedit.html#text-prop">setText</a>() call. If you call <a href="q3textedit.html#text-prop">setText</a>() with legacy HTML (with setTextFormat(<a href="qt.html#TextFormat-enum">Qt::RichText</a>) in force), and then call <a href="q3textedit.html#text-prop">text</a>(), the text that is returned may have different markup, but will render the same. Text can be inserted with <a href="q3textedit.html#insert">insert</a>(), <a href="q3textedit.html#paste">paste</a>(), <a href="q3textedit.html#pasteSubType">pasteSubType</a>() and <a href="q3textedit.html#append">append</a>(). Text that is appended does not go into the undo history; this makes <a href="q3textedit.html#append">append</a>() faster and consumes less memory. Text can also be <a href="q3textedit.html#cut">cut</a>(). The entire text is deleted with <a href="q3textedit.html#clear">clear</a>() and the selected text is deleted with <a href="q3textedit.html#removeSelectedText">removeSelectedText</a>(). Selected (marked) text can also be deleted with <a href="q3textedit.html#del">del</a>() (which will delete the character to the right of the cursor if no text is selected).</p>
 <p>Loading and saving text is achieved using <a href="q3textedit.html#text-prop">setText</a>() and <a href="q3textedit.html#text-prop">text</a>(), for example:</p>
-<pre> QFile file(fileName); <span class="comment">// Read the text from a file</span>
+<pre> QFile file(fileName); <span class="comment">//</span> Read the text from a file
  if (file.open(IO_ReadOnly)) {
      QTextStream stream(&amp;file);
      textEdit-&gt;setText(stream.read());
  }
 
- QFile file(fileName); <span class="comment">// Write the text to a file</span>
+ QFile file(fileName); <span class="comment">//</span> Write the text to a file
  if (file.open(IO_WriteOnly)) {
      QTextStream stream(&amp;file);
      stream &lt;&lt; textEdit-&gt;text();
@@ -1099,6 +1099,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

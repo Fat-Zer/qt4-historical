@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -84,6 +99,8 @@ public:
 
     virtual QSize sizeHint() const;
     virtual QSize minimumSizeHint() const;
+
+    void setCustomSizeHint(const QSize &size);
 
 public slots:
     void changeSizeHints();
@@ -229,11 +246,17 @@ void ColorDock::changeSizeHints()
     update();
 }
 
+void ColorDock::setCustomSizeHint(const QSize &size)
+{
+    szHint = size;
+    updateGeometry();
+}
+
 ColorSwatch::ColorSwatch(const QString &colorName, QWidget *parent, Qt::WindowFlags flags)
     : QDockWidget(parent, flags)
 {
     setObjectName(colorName + QLatin1String(" Dock Widget"));
-    setWindowTitle(objectName());
+    setWindowTitle(objectName() + QLatin1String(" [*]"));
 
     QFrame *swatch = new ColorDock(colorName, this);
     swatch->setFrameStyle(QFrame::Box | QFrame::Sunken);
@@ -333,6 +356,11 @@ ColorSwatch::ColorSwatch(const QString &colorName, QWidget *parent, Qt::WindowFl
     splitVMenu->setTitle(tr("Split vertically into"));
     connect(splitVMenu, SIGNAL(triggered(QAction*)), this, SLOT(splitInto(QAction*)));
 
+    windowModifiedAction = new QAction(tr("Modified"), this);
+    windowModifiedAction->setCheckable(true);
+    windowModifiedAction->setChecked(false);
+    connect(windowModifiedAction, SIGNAL(toggled(bool)), this, SLOT(setWindowModified(bool)));
+
     menu = new QMenu(colorName, this);
     menu->addAction(toggleViewAction());
     QAction *action = menu->addAction(tr("Raise"));
@@ -352,6 +380,8 @@ ColorSwatch::ColorSwatch(const QString &colorName, QWidget *parent, Qt::WindowFl
     menu->addMenu(splitHMenu);
     menu->addMenu(splitVMenu);
     menu->addMenu(tabMenu);
+    menu->addSeparator();
+    menu->addAction(windowModifiedAction);
 
     connect(menu, SIGNAL(aboutToShow()), this, SLOT(updateContextMenu()));
 
@@ -424,9 +454,9 @@ void ColorSwatch::updateContextMenu()
     foreach (ColorSwatch *dock, dock_list) {
 //        if (!dock->isVisible() || dock->isFloating())
 //            continue;
-        tabMenu->addAction(dock->windowTitle());
-        splitHMenu->addAction(dock->windowTitle());
-        splitVMenu->addAction(dock->windowTitle());
+        tabMenu->addAction(dock->objectName());
+        splitHMenu->addAction(dock->objectName());
+        splitVMenu->addAction(dock->objectName());
     }
 }
 
@@ -436,7 +466,7 @@ void ColorSwatch::splitInto(QAction *action)
     QList<ColorSwatch*> dock_list = qFindChildren<ColorSwatch*>(mainWindow);
     ColorSwatch *target = 0;
     foreach (ColorSwatch *dock, dock_list) {
-        if (action->text() == dock->windowTitle()) {
+        if (action->text() == dock->objectName()) {
             target = dock;
             break;
         }
@@ -455,7 +485,7 @@ void ColorSwatch::tabInto(QAction *action)
     QList<ColorSwatch*> dock_list = qFindChildren<ColorSwatch*>(mainWindow);
     ColorSwatch *target = 0;
     foreach (ColorSwatch *dock, dock_list) {
-        if (action->text() == dock->windowTitle()) {
+        if (action->text() == dock->objectName()) {
             target = dock;
             break;
         }
@@ -499,6 +529,12 @@ void ColorSwatch::place(Qt::DockWidgetArea area, bool p)
         allowTopAction->setEnabled(area != Qt::TopDockWidgetArea);
         allowBottomAction->setEnabled(area != Qt::BottomDockWidgetArea);
     }
+}
+
+void ColorSwatch::setCustomSizeHint(const QSize &size)
+{
+    if (ColorDock *dock = qobject_cast<ColorDock*>(widget()))
+        dock->setCustomSizeHint(size);
 }
 
 void ColorSwatch::changeClosable(bool on)

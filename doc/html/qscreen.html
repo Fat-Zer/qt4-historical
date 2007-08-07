@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/gui/embedded/qscreen_qws.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/embedded/qscreen_qws.cpp -->
 <head>
   <title>Qt 4.3: QScreen Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -15,8 +15,7 @@
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">QScreen Class Reference<br /><sup><sup>[<a href="qtgui.html">QtGui</a> module]</sup></sup></h1>
 <p>The QScreen class is a base class for screen drivers in Qtopia Core. <a href="#details">More...</a></p>
-<pre> #include &lt;QScreen&gt;</pre><p>Inherited by <a href="qvncscreen.html">QVNCScreen</a>.</p>
-<ul>
+<pre> #include &lt;QScreen&gt;</pre><ul>
 <li><a href="qscreen-members.html">List of all members, including inherited members</a></li>
 </ul>
 <a name="public-types"></a>
@@ -187,7 +186,7 @@
 <p>See also <a href="qscreen.html#alloc">alloc</a>(), <a href="qscreen.html#depth">depth</a>(), and <a href="qscreen.html#numCols">numCols</a>().</p>
 <a name="//apple_ref/cpp/instm/QScreen/connect" />
 <h3 class="fn"><a name="connect"></a>bool QScreen::connect ( const <a href="qstring.html">QString</a> &amp; <i>displaySpec</i> )&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
-<p>This function is called by every <a href="qtopiacore.html">Qtopia Core</a> application on startup, and must be implemented to map in the framebuffer and the accelerated drivers that the graphics card control registers. Note that a server application will call the <a href="qscreen.html#initDevice">initDevice</a>() function prior to this function.</p>
+<p>This function is called by every <a href="qtopiacore.html">Qtopia Core</a> application on startup, and must be implemented to map in the framebuffer and the accelerated drivers that the graphics card control registers. Note that it is called <i>before</i> the <a href="qscreen.html#initDevice">initDevice</a>() function.</p>
 <p>Ensure that the function returns true if a connection to the screen device can be made; otherwise return false.</p>
 <p>The <i>displaySpec</i> argument is passed by the <a href="qtopiacore-envvars.html#qws-display">QWS_DISPLAY</a> environment variable or the -display command line parameter, and has the following syntax:</p>
 <pre> [screen driver][:driver specific options][:display number]</pre>
@@ -197,8 +196,8 @@
 <p>See also <a href="qscreen.html#disconnect">disconnect</a>(), <a href="qscreen.html#initDevice">initDevice</a>(), and <a href="qtopiacore-running.html">Running Qtopia Core Applications</a>.</p>
 <a name="//apple_ref/cpp/instm/QScreen/createSurface" />
 <h3 class="fn"><a name="createSurface"></a>QWSWindowSurface * QScreen::createSurface ( const <a href="qstring.html">QString</a> &amp; <i>key</i> ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>Creates and returns a new window surface matching the given <i>key</i>.</p>
-<p>The server application will call this function whenever it needs to create a server side representation of a window, e.g&#x2e; when copying the content of memory to the screeen using the screen driver.</p>
+<p>Creates and returns a new window surface matching the given <i>key</i>. Possible keys include <i>OnScreen</i> for an on-screen surface, <i>mem</i> for a surface constructed from local memory, <i>shm</i> for a surface constructed from shared memory, <i>Yellow</i> for a yellow surface, and <i>DirectPainter</i> for a direct painter surface.</p>
+<p>The server application will call this function whenever it needs to create a server side representation of a window, e.g&#x2e; when copying the content of memory to the screen using the screen driver.</p>
 <p>Note that this function must be reimplemented when adding an accelerated graphics driver. See the <a href="qtopiacore-accel.html">Adding an Accelerated Graphics Driver</a> documentation for details.</p>
 <p>This function was introduced in Qt 4.2.</p>
 <p>See also <a href="qtopiacore-architecture.html">Qtopia Core Architecture</a>.</p>
@@ -226,7 +225,7 @@
 <p>See also <a href="qscreen.html#connect">connect</a>(), <a href="qscreen.html#shutdownDevice">shutdownDevice</a>(), and <a href="qtopiacore-running.html">Running Qtopia Core Applications</a>.</p>
 <a name="//apple_ref/cpp/instm/QScreen/exposeRegion" />
 <h3 class="fn"><a name="exposeRegion"></a>void QScreen::exposeRegion ( <a href="qregion.html">QRegion</a> <i>region</i>, int <i>windowIndex</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>This function is called by the <a href="qtopiacore.html">Qtopia Core</a> server whenever a screen update is required. <i>region</i> is the screen region that needs to be updated, and <i>windowIndex</i> is the index into <a href="qwsserver.html#clientWindows">QWSServer::clientWindows</a>() of the window that caused the update. <a href="qwswindow.html#state">QWSWindow::state</a>() gives more information about the cause.</p>
+<p>This function is called by the <a href="qtopiacore.html">Qtopia Core</a> server whenever a screen update is required. <i>region</i> is the area on the screen that must be updated, and <i>windowIndex</i> is the index into <a href="qwsserver.html#clientWindows">QWSServer::clientWindows</a>() of the window that required the update. <a href="qwswindow.html#state">QWSWindow::state</a>() gives more information about the cause.</p>
 <p>The default implementation composes the affected windows and paints the given <i>region</i> on screen by calling the <a href="qscreen.html#blit">blit</a>() and <a href="qscreen.html#solidFill">solidFill</a>() functions</p>
 <p>This function can be reimplemented to perform composition in hardware, or to perform transition effects. For simpler hardware acceleration, or to interface with this is typically done by reimplementing the <a href="qscreen.html#blit">blit</a>() and <a href="qscreen.html#solidFill">solidFill</a>() functions instead.</p>
 <p>Note that there is no need to call this function explicitly.</p>
@@ -237,7 +236,7 @@
 <p>See also <a href="qscreen.html#deviceHeight">deviceHeight</a>(), <a href="qscreen.html#physicalHeight">physicalHeight</a>(), and <a href="qscreen.html#width">width</a>().</p>
 <a name="//apple_ref/cpp/instm/QScreen/initDevice" />
 <h3 class="fn"><a name="initDevice"></a>bool QScreen::initDevice ()&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
-<p>This function is called by the <a href="qtopiacore.html">Qtopia Core</a> server to initialize the framebuffer. Note that it is called <i>before</i> the <a href="qscreen.html#connect">connect</a>() function.</p>
+<p>This function is called by the <a href="qtopiacore.html">Qtopia Core</a> server to initialize the framebuffer. Note that a server application will call the <a href="qscreen.html#connect">connect</a>() function prior to this function.</p>
 <p>Implement this function to make accelerated drivers set up the graphics card. Return true to indicate success and false to indicate failure.</p>
 <p>See also <a href="qscreen.html#shutdownDevice">shutdownDevice</a>() and <a href="qscreen.html#connect">connect</a>().</p>
 <a name="//apple_ref/cpp/clm/QScreen/instance" />
@@ -370,6 +369,7 @@
 <p>After the resolution has been set, existing paint engines will be invalid and the framebuffer should be completely redrawn. In a multiple-process situation, all other applications must be notified to reset their mode and update themselves accordingly.</p>
 <a name="//apple_ref/cpp/instm/QScreen/setPixelFormat" />
 <h3 class="fn"><a name="setPixelFormat"></a>void QScreen::setPixelFormat ( <a href="qimage.html#Format-enum">QImage::Format</a> <i>format</i> )&nbsp;&nbsp;<tt> [protected]</tt></h3>
+<p>Sets the screen's pixel format to <i>format</i>.</p>
 <p>See also <a href="qscreen.html#pixelFormat">pixelFormat</a>().</p>
 <a name="//apple_ref/cpp/instm/QScreen/shutdownDevice" />
 <h3 class="fn"><a name="shutdownDevice"></a>void QScreen::shutdownDevice ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
@@ -415,6 +415,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

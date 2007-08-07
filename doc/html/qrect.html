@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/corelib/tools/qrect.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/corelib/tools/qrect.cpp -->
 <head>
   <title>Qt 4.3: QRect Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -137,7 +137,7 @@
 <p>The QRect class provides a collection of functions that return the various rectangle coordinates, and enable manipulation of these. QRect also provide functions to move the rectangle relative to the various coordinates.</p>
 <p>For example the <a href="qrect.html#left">left</a>(), <a href="qrect.html#setLeft">setLeft</a>() and <a href="qrect.html#moveLeft">moveLeft</a>() functions as an example: <a href="qrect.html#left">left</a>() returns the x-coordinate of the rectangle's left edge, <a href="qrect.html#setLeft">setLeft</a>() sets the left edge of the rectangle to the given x coordinate (it may change the width, but will never change the rectangle's right edge) and <a href="qrect.html#moveLeft">moveLeft</a>() moves the entire rectangle horizontally, leaving the rectangle's left edge at the given x coordinate and its size unchanged.</p>
 <p align="center"><img src="images/qrect-coordinates.png" /></p><p>Note that for historical reasons the values returned by the <a href="qrect.html#bottom">bottom</a>() and <a href="qrect.html#right">right</a>() functions deviate from the true bottom-right corner of the rectangle: The <a href="qrect.html#right">right</a>() function returns <i> <a href="qrect.html#left">left</a>() + <a href="qrect.html#width">width</a>() - 1</i> and the <a href="qrect.html#bottom">bottom</a>() function returns <i><a href="qrect.html#top">top</a>() + <a href="qrect.html#height">height</a>() - 1</i>. The same is the case for the point returned by the <a href="qrect.html#bottomRight">bottomRight</a>() convenience function. In addition, the x and y coordinate of the <a href="qrect.html#topRight">topRight</a>() and <a href="qrect.html#bottomLeft">bottomLeft</a>() functions, respectively, contain the same deviation from the true right and bottom edges.</p>
-<p>We recommend that you use <a href="qrect.html#x">x</a>() + <a href="qrect.html#width">width</a>() and <a href="qrect.html#y">y</a>() + <a href="qrect.html#height">height</a>() to find the true bottom-right corner, and avoid <a href="qrect.html#right">right</a>() and <a href="qrect.html#bottom">bottom</a>(). Another solution is to use <a href="qrectf.html">QRectF</a>: The <a href="qrectf.html">QRectF</a> class defines a rectangle in the plane using floating point accuracy for coordinates, and the <a href="qrectf.html#right">QRectF::right</a>() and <a href="qrectf.html#bottom">QRectF::bottom</a>() functions <i>do</i> return the true bottom-right corner.</p>
+<p>We recommend that you use <a href="qrect.html#x">x</a>() + <a href="qrect.html#width">width</a>() and <a href="qrect.html#y">y</a>() + <a href="qrect.html#height">height</a>() to find the true bottom-right corner, and avoid <a href="qrect.html#right">right</a>() and <a href="qrect.html#bottom">bottom</a>(). Another solution is to use <a href="qrectf.html">QRectF</a>: The <a href="qrectf.html">QRectF</a> class defines a rectangle in the plane using floating point accuracy for coordinates, and the <a href="qrectf.html#right">QRectF::right</a>() and <a href="qrectf.html#bottom">QRectF::bottom</a>() functions <i>do</i> return the right and bottom coordinates.</p>
 <p>It is also possible to add offsets to this rectangle's coordinates using the <a href="qrect.html#adjust">adjust</a>() function, as well as retrieve a new rectangle based on adjustments of the original one using the <a href="qrect.html#adjusted">adjusted</a>() function. If either of the width and height is negative, use the <a href="qrect.html#normalized">normalized</a>() function to retrieve a rectangle where the corners are swapped.</p>
 <p>In addition, QRect provides the <a href="qrect.html#getCoords">getCoords</a>() function which extracts the position of the rectangle's top-left and bottom-right corner, and the <a href="qrect.html#getRect">getRect</a>() function which extracts the rectangle's top-left corner, width and height. Use the <a href="qrect.html#setCoords">setCoords</a>() and <a href="qrect.html#setRect">setRect</a>() function to manipulate the rectangle's coordinates and dimensions in one go.</p>
 <p>See also <a href="qrectf.html">QRectF</a> and <a href="qregion.html">QRegion</a>.</p>
@@ -434,53 +434,10 @@
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads a rectangle from the given <i>stream</i> into the given <i>rectangle</i>, and returns a reference to the stream.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream Operators</a>.</p>
-<hr />
-<h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QRect/addCoords" />
-<h3 class="fn"><a name="addCoords"></a>void QRect::addCoords ( int <i>dx1</i>, int <i>dy1</i>, int <i>dx2</i>, int <i>dy2</i> )</h3>
-<p>Adds <i>dx1</i>, <i>dy1</i>, <i>dx2</i> and <i>dy2</i> to the existing coordinates of the rectangle respectively.</p>
-<p>Use the <a href="qrect.html#adjust">adjust</a>() function instead.</p>
-<a name="//apple_ref/cpp/instm/QRect/coords" />
-<h3 class="fn"><a name="coords"></a>void QRect::coords ( int * <i>x1</i>, int * <i>y1</i>, int * <i>x2</i>, int * <i>y2</i> ) const</h3>
-<p>Extracts the position of the rectangle's top-left corner to *<i>x1</i> and *<i>y1</i>, and the position of the bottom-right corner to *<i>x2</i> and *<i>y2</i>.</p>
-<p>Use the <a href="qrect.html#getCoords">getCoords</a>() function instead.</p>
-<p>See also <a href="qrect.html#setCoords">setCoords</a>().</p>
-<a name="//apple_ref/cpp/instm/QRect/moveBy" />
-<h3 class="fn"><a name="moveBy"></a>void QRect::moveBy ( int <i>dx</i>, int <i>dy</i> )</h3>
-<p>Moves the rectangle <i>dx</i> along the x axis and <i>dy</i> along the y axis, relative to the current position.</p>
-<p>Use the <a href="qrect.html#translate">translate</a>() function instead.</p>
-<h3 class="fn"><a name="moveBy-2"></a>void QRect::moveBy ( const <a href="qpoint.html">QPoint</a> &amp; <i>p</i> )</h3>
-<p>This is an overloaded member function, provided for convenience.</p>
-<p>Use the <a href="qrect.html#translate">translate</a>() function instead.</p>
-<a name="//apple_ref/cpp/instm/QRect/normalize" />
-<h3 class="fn"><a name="normalize"></a>QRect QRect::normalize () const</h3>
-<p>Returns a normalized rectangle; i.e&#x2e;, a rectangle that has a non-negative width and height.</p>
-<p>Use the <a href="qrect.html#normalized">normalized</a>() function instead</p>
-<a name="//apple_ref/cpp/instm/QRect/rBottom" />
-<h3 class="fn"><a name="rBottom"></a>int &amp; QRect::rBottom ()</h3>
-<p>Returns a reference to the bottom coordinate of the rectangle.</p>
-<p>Use the <a href="qrect.html#bottom">bottom</a>() function instead.</p>
-<a name="//apple_ref/cpp/instm/QRect/rLeft" />
-<h3 class="fn"><a name="rLeft"></a>int &amp; QRect::rLeft ()</h3>
-<p>Returns a reference to the left coordinate of the rectangle.</p>
-<p>Use the <a href="qrect.html#left">left</a>() function instead.</p>
-<a name="//apple_ref/cpp/instm/QRect/rRight" />
-<h3 class="fn"><a name="rRight"></a>int &amp; QRect::rRight ()</h3>
-<p>Returns a reference to the right coordinate of the rectangle.</p>
-<p>Use the <a href="qrect.html#right">right</a>() function instead.</p>
-<a name="//apple_ref/cpp/instm/QRect/rTop" />
-<h3 class="fn"><a name="rTop"></a>int &amp; QRect::rTop ()</h3>
-<p>Returns a reference to the top coordinate of the rectangle.</p>
-<p>Use the <a href="qrect.html#top">top</a>() function instead.</p>
-<a name="//apple_ref/cpp/instm/QRect/rect" />
-<h3 class="fn"><a name="rect"></a>void QRect::rect ( int * <i>x</i>, int * <i>y</i>, int * <i>width</i>, int * <i>height</i> ) const</h3>
-<p>Extracts the position of the rectangle's top-left corner to *<i>x</i> and *<i>y</i>, and its dimensions to *<i>width</i> and * <i>height</i>.</p>
-<p>Use the <a href="qrect.html#getRect">getRect</a>() function instead.</p>
-<p>See also <a href="qrect.html#setRect">setRect</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/sql/kernel/qsqlquery.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/sql/kernel/qsqlquery.cpp -->
 <head>
   <title>Qt 4.3: QSqlQuery Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -144,7 +144,7 @@
      query.bindValue(0, &quot;A&quot;);
      query.bindValue(1, 0, QSql::Out);
      query.exec();
-     int i = query.boundValue(1).toInt(); <span class="comment">// i is 65</span></pre>
+     int i = query.boundValue(1).toInt(); <span class="comment">//</span> i is 65</pre>
 <p>Note that unbound parameters will retain their values.</p>
 <p>Stored procedures that uses the return statement to return values, or return multiple result sets, are not fully supported. For specific details see <a href="sql-driver.html">SQL Database Drivers</a>.</p>
 <p><b>Warning:</b> You must load the SQL driver and open the connection before a QSqlQuery is created. Also, the connection must remain open while the query exists; otherwise, the behavior of QSqlQuery is undefined.</p>
@@ -179,6 +179,7 @@
 <a name="//apple_ref/cpp/instm/QSqlQuery/addBindValue" />
 <h3 class="fn"><a name="addBindValue"></a>void QSqlQuery::addBindValue ( const <a href="qvariant.html">QVariant</a> &amp; <i>val</i>, <a href="qsql.html#ParamTypeFlag-enum">QSql::ParamType</a> <i>paramType</i> = QSql::In )</h3>
 <p>Adds the value <i>val</i> to the list of values when using positional value binding. The order of the addBindValue() calls determines which placeholder a value will be bound to in the prepared query. If <i>paramType</i> is <a href="qsql.html#ParamTypeFlag-enum">QSql::Out</a> or <a href="qsql.html#ParamTypeFlag-enum">QSql::InOut</a>, the placeholder will be overwritten with data from the database after the <a href="qsqlquery.html#exec">exec</a>() call.</p>
+<p>To bind a NULL value, use a null <a href="qvariant.html">QVariant</a>; for example, use <tt>QVariant(QVariant::String)</tt> if you are binding a string.</p>
 <p>See also <a href="qsqlquery.html#bindValue">bindValue</a>(), <a href="qsqlquery.html#prepare">prepare</a>(), <a href="qsqlquery.html#exec">exec</a>(), <a href="qsqlquery.html#boundValue">boundValue</a>(), and <a href="qsqlquery.html#boundValues">boundValues</a>().</p>
 <a name="//apple_ref/cpp/instm/QSqlQuery/at" />
 <h3 class="fn"><a name="at"></a>int QSqlQuery::at () const</h3>
@@ -187,6 +188,7 @@
 <a name="//apple_ref/cpp/instm/QSqlQuery/bindValue" />
 <h3 class="fn"><a name="bindValue"></a>void QSqlQuery::bindValue ( const <a href="qstring.html">QString</a> &amp; <i>placeholder</i>, const <a href="qvariant.html">QVariant</a> &amp; <i>val</i>, <a href="qsql.html#ParamTypeFlag-enum">QSql::ParamType</a> <i>paramType</i> = QSql::In )</h3>
 <p>Set the placeholder <i>placeholder</i> to be bound to value <i>val</i> in the prepared statement. Note that the placeholder mark (e.g <tt>:</tt>) must be included when specifying the placeholder name. If <i>paramType</i> is <a href="qsql.html#ParamTypeFlag-enum">QSql::Out</a> or <a href="qsql.html#ParamTypeFlag-enum">QSql::InOut</a>, the placeholder will be overwritten with data from the database after the <a href="qsqlquery.html#exec">exec</a>() call.</p>
+<p>To bind a NULL value, use a null <a href="qvariant.html">QVariant</a>; for example, use <tt>QVariant(QVariant::String)</tt> if you are binding a string.</p>
 <p>See also <a href="qsqlquery.html#addBindValue">addBindValue</a>(), <a href="qsqlquery.html#prepare">prepare</a>(), <a href="qsqlquery.html#exec">exec</a>(), <a href="qsqlquery.html#boundValue">boundValue</a>(), and <a href="qsqlquery.html#boundValues">boundValues</a>().</p>
 <h3 class="fn"><a name="bindValue-2"></a>void QSqlQuery::bindValue ( int <i>pos</i>, const <a href="qvariant.html">QVariant</a> &amp; <i>val</i>, <a href="qsql.html#ParamTypeFlag-enum">QSql::ParamType</a> <i>paramType</i> = QSql::In )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
@@ -260,7 +262,7 @@
  2  Boris
  3  Trond
  4  NULL</pre>
-<p>To bind NULL values, a null <a href="qvariant.html">QVariant</a> has to be added to the bound <a href="qvariant.html#QVariantList-typedef">QVariantList</a>, for example: <tt>QVariant(QVariant::String)</tt></p>
+<p>To bind NULL values, a null <a href="qvariant.html">QVariant</a> of the relevant type has to be added to the bound <a href="qvariant.html#QVariantList-typedef">QVariantList</a>; for example, <tt>QVariant(QVariant::String)</tt> should be used if you are using strings.</p>
 <p>Note that every bound <a href="qvariant.html#QVariantList-typedef">QVariantList</a> must contain the same amount of variants. Note that the type of the QVariants in a list must not change. For example, you cannot mix integer and string variants within a <a href="qvariant.html#QVariantList-typedef">QVariantList</a>.</p>
 <p>The <i>mode</i> parameter indicates how the bound <a href="qvariant.html#QVariantList-typedef">QVariantList</a> will be interpreted. If <i>mode</i> is <tt>ValuesAsRows</tt>, every variant within the <a href="qvariant.html#QVariantList-typedef">QVariantList</a> will be interpreted as a value for a new row. <tt>ValuesAsColumns</tt> is a special case for the Oracle driver. In this mode, every entry within a <a href="qvariant.html#QVariantList-typedef">QVariantList</a> will be interpreted as array-value for an IN or OUT value within a stored procedure. Note that this will only work if the IN or OUT value is a table-type consisting of only one column of a basic type, for example <tt>TYPE myType IS TABLE OF VARCHAR(64) INDEX BY BINARY_INTEGER;</tt></p>
 <p>This function was introduced in Qt 4.2.</p>
@@ -354,9 +356,9 @@
 
  qDebug() &lt;&lt; &quot;Number of columns: &quot; &lt;&lt; rec.count();
 
- int nameCol = rec.indexOf(&quot;name&quot;); <span class="comment">// index of the field &quot;name&quot;</span>
+ int nameCol = rec.indexOf(&quot;name&quot;); <span class="comment">//</span> index of the field &quot;name&quot;
  while (q.next())
-     qDebug() &lt;&lt; q.value(nameCol).toString(); <span class="comment">// output all names</span></pre>
+     qDebug() &lt;&lt; q.value(nameCol).toString(); <span class="comment">//</span> output all names</pre>
 <p>See also <a href="qsqlquery.html#value">value</a>().</p>
 <a name="//apple_ref/cpp/instm/QSqlQuery/result" />
 <h3 class="fn"><a name="result"></a>const <a href="qsqlresult.html">QSqlResult</a> * QSqlQuery::result () const</h3>
@@ -406,15 +408,10 @@
 <a name="//apple_ref/cpp/instm/QSqlQuery/operator=" />
 <h3 class="fn"><a name="operator-eq"></a>QSqlQuery &amp; QSqlQuery::operator= ( const QSqlQuery &amp; <i>other</i> )</h3>
 <p>Assigns <i>other</i> to this object.</p>
-<hr />
-<h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QSqlQuery/prev" />
-<h3 class="fn"><a name="prev"></a>bool QSqlQuery::prev ()</h3>
-<p>Use <a href="qsqlquery.html#previous">previous</a>() instead.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

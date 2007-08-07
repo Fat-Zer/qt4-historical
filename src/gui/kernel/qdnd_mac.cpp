@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -273,7 +288,7 @@ static inline bool qt_mac_set_existing_drop_action(const DragRef &dragRef, QDrop
 }
 
 /**
-    If an answer rect has been set on the event (after beeing sendt
+    If an answer rect has been set on the event (after being sent
     to the global event processor), we store that rect so we can
     check if the mouse is in the same area upon next drag move event. 
 */
@@ -330,7 +345,7 @@ bool QWidgetPrivate::qt_mac_dnd_event(uint kind, DragRef dragRef)
     if(QDragManager::self()->source())
         dropdata = QDragManager::self()->dragPrivate()->data;
 
-    // 'interrestedInDrag' should end up beeing 'true' if a later drop
+    // 'interrestedInDrag' should end up being 'true' if a later drop
     // will be accepted by the widget for the current mouse position 
     bool interrestedInDrag = true;
 
@@ -372,7 +387,7 @@ bool QWidgetPrivate::qt_mac_dnd_event(uint kind, DragRef dragRef)
             return false;
         else {
             // Documentation states that a drag move event is sendt immidiatly after
-            // a drag enter event. So we do that. This will honour widgets overriding
+            // a drag enter event. So we do that. This will honor widgets overriding
             // 'dragMoveEvent' only, and not 'dragEnterEvent' 
             QDragMoveEvent qDMEvent(q->mapFromGlobal(QPoint(mouse.h, mouse.v)), qtAllowed, dropdata,
                     QApplication::mouseButtons(), QApplication::keyboardModifiers());

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/gui/kernel/qclipboard.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/kernel/qclipboard.cpp -->
 <head>
   <title>Qt 4.3: QClipboard Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -103,7 +103,7 @@
 <a name="//apple_ref/cpp/econst/QClipboard/FindBuffer" />
 <a name="//apple_ref/cpp/econst/QClipboard/LastMode" />
 <h3 class="fn"><a name="Mode-enum"></a>enum QClipboard::Mode</h3>
-<a name="clipboard-mode"></a><p>This enum type is used to control which part of the system clipboard is used by <a href="qclipboard-qt3.html#data">QClipboard::data</a>(), <a href="qclipboard-qt3.html#setData">QClipboard::setData</a>() and related functions.</p>
+<a name="clipboard-mode"></a><p>This enum type is used to control which part of the system clipboard is used by <a href="qclipboard.html#mimeData">QClipboard::mimeData</a>(), <a href="qclipboard.html#setMimeData">QClipboard::setMimeData</a>() and related functions.</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>QClipboard::Clipboard</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">indicates that data should be stored and retrieved from the global clipboard.</td></tr>
@@ -138,7 +138,7 @@
 <h3 class="fn"><a name="image"></a><a href="qimage.html">QImage</a> QClipboard::image ( <a href="qclipboard.html#Mode-enum">Mode</a> <i>mode</i> = Clipboard ) const</h3>
 <p>Returns the clipboard image, or returns a null image if the clipboard does not contain an image or if it contains an image in an unsupported image format.</p>
 <p>The <i>mode</i> argument is used to control which part of the system clipboard is used. If <i>mode</i> is <a href="qclipboard.html#Mode-enum">QClipboard::Clipboard</a>, the image is retrieved from the global clipboard. If <i>mode</i> is <a href="qclipboard.html#Mode-enum">QClipboard::Selection</a>, the image is retrieved from the global mouse selection.</p>
-<p>See also <a href="qclipboard.html#setImage">setImage</a>(), <a href="qclipboard.html#pixmap">pixmap</a>(), <a href="qclipboard-qt3.html#data">data</a>(), and <a href="qimage.html#isNull">QImage::isNull</a>().</p>
+<p>See also <a href="qclipboard.html#setImage">setImage</a>(), <a href="qclipboard.html#pixmap">pixmap</a>(), <a href="qclipboard.html#mimeData">mimeData</a>(), and <a href="qimage.html#isNull">QImage::isNull</a>().</p>
 <a name="//apple_ref/cpp/instm/QClipboard/mimeData" />
 <h3 class="fn"><a name="mimeData"></a>const <a href="qmimedata.html">QMimeData</a> * QClipboard::mimeData ( <a href="qclipboard.html#Mode-enum">Mode</a> <i>mode</i> = Clipboard ) const</h3>
 <p>Returns a reference to a <a href="qmimedata.html">QMimeData</a> representation of the current clipboard data.</p>
@@ -159,7 +159,7 @@
 <h3 class="fn"><a name="pixmap"></a><a href="qpixmap.html">QPixmap</a> QClipboard::pixmap ( <a href="qclipboard.html#Mode-enum">Mode</a> <i>mode</i> = Clipboard ) const</h3>
 <p>Returns the clipboard pixmap, or null if the clipboard does not contain a pixmap. Note that this can lose information. For example, if the image is 24-bit and the display is 8-bit, the result is converted to 8 bits, and if the image has an alpha channel, the result just has a mask.</p>
 <p>The <i>mode</i> argument is used to control which part of the system clipboard is used. If <i>mode</i> is <a href="qclipboard.html#Mode-enum">QClipboard::Clipboard</a>, the pixmap is retrieved from the global clipboard. If <i>mode</i> is <a href="qclipboard.html#Mode-enum">QClipboard::Selection</a>, the pixmap is retrieved from the global mouse selection.</p>
-<p>See also <a href="qclipboard.html#setPixmap">setPixmap</a>(), <a href="qclipboard.html#image">image</a>(), <a href="qclipboard-qt3.html#data">data</a>(), and <a href="qpixmap-qt3.html#convertFromImage">QPixmap::convertFromImage</a>().</p>
+<p>See also <a href="qclipboard.html#setPixmap">setPixmap</a>(), <a href="qclipboard.html#image">image</a>(), <a href="qclipboard.html#mimeData">mimeData</a>(), and <a href="qpixmap-qt3.html#convertFromImage">QPixmap::convertFromImage</a>().</p>
 <a name="//apple_ref/cpp/instm/QClipboard/selectionChanged" />
 <h3 class="fn"><a name="selectionChanged"></a>void QClipboard::selectionChanged ()&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when the selection is changed. This only applies to windowing systems that support selections, e.g&#x2e; X11. Windows and Mac OS X don't support selections.</p>
@@ -172,23 +172,23 @@
 <pre> QMimeData *data = new QMimeData;
  data-&gt;setImageData(image);
  clipboard-&gt;setMimeData(data, mode);</pre>
-<p>See also <a href="qclipboard.html#image">image</a>(), <a href="qclipboard.html#setPixmap">setPixmap</a>(), and <a href="qclipboard-qt3.html#setData">setData</a>().</p>
+<p>See also <a href="qclipboard.html#image">image</a>(), <a href="qclipboard.html#setPixmap">setPixmap</a>(), and <a href="qclipboard.html#setMimeData">setMimeData</a>().</p>
 <a name="//apple_ref/cpp/instm/QClipboard/setMimeData" />
 <h3 class="fn"><a name="setMimeData"></a>void QClipboard::setMimeData ( <a href="qmimedata.html">QMimeData</a> * <i>src</i>, <a href="qclipboard.html#Mode-enum">Mode</a> <i>mode</i> = Clipboard )</h3>
-<p>Sets the clipboard data to <i>src</i>. Ownership of the data is transferred to the clipboard. If you want to remove the data either call <a href="qclipboard.html#clear">clear</a>() or call <a href="qclipboard-qt3.html#setData">setData</a>() again with new data.</p>
+<p>Sets the clipboard data to <i>src</i>. Ownership of the data is transferred to the clipboard. If you want to remove the data either call <a href="qclipboard.html#clear">clear</a>() or call setMimeData() again with new data.</p>
 <p>The <i>mode</i> argument is used to control which part of the system clipboard is used. If <i>mode</i> is <a href="qclipboard.html#Mode-enum">QClipboard::Clipboard</a>, the data is stored in the global clipboard. If <i>mode</i> is <a href="qclipboard.html#Mode-enum">QClipboard::Selection</a>, the data is stored in the global mouse selection. If <i>mode</i> is <a href="qclipboard.html#Mode-enum">QClipboard::FindBuffer</a>, the data is stored in the search string buffer.</p>
 <p>The <a href="qclipboard.html#setText">setText</a>(), <a href="qclipboard.html#setImage">setImage</a>() and <a href="qclipboard.html#setPixmap">setPixmap</a>() functions are simpler wrappers for setting text, image and pixmap data respectively.</p>
-<p>See also <a href="qclipboard.html#mimeData">mimeData</a>() and <a href="qclipboard-qt3.html#data">data</a>().</p>
+<p>See also <a href="qclipboard.html#mimeData">mimeData</a>().</p>
 <a name="//apple_ref/cpp/instm/QClipboard/setPixmap" />
 <h3 class="fn"><a name="setPixmap"></a>void QClipboard::setPixmap ( const <a href="qpixmap.html">QPixmap</a> &amp; <i>pixmap</i>, <a href="qclipboard.html#Mode-enum">Mode</a> <i>mode</i> = Clipboard )</h3>
 <p>Copies <i>pixmap</i> into the clipboard. Note that this is slower than <a href="qclipboard.html#setImage">setImage</a>() because it needs to convert the <a href="qpixmap.html">QPixmap</a> to a <a href="qimage.html">QImage</a> first.</p>
 <p>The <i>mode</i> argument is used to control which part of the system clipboard is used. If <i>mode</i> is <a href="qclipboard.html#Mode-enum">QClipboard::Clipboard</a>, the pixmap is stored in the global clipboard. If <i>mode</i> is <a href="qclipboard.html#Mode-enum">QClipboard::Selection</a>, the pixmap is stored in the global mouse selection.</p>
-<p>See also <a href="qclipboard.html#pixmap">pixmap</a>(), <a href="qclipboard.html#setImage">setImage</a>(), and <a href="qclipboard-qt3.html#setData">setData</a>().</p>
+<p>See also <a href="qclipboard.html#pixmap">pixmap</a>(), <a href="qclipboard.html#setImage">setImage</a>(), and <a href="qclipboard.html#setMimeData">setMimeData</a>().</p>
 <a name="//apple_ref/cpp/instm/QClipboard/setText" />
 <h3 class="fn"><a name="setText"></a>void QClipboard::setText ( const <a href="qstring.html">QString</a> &amp; <i>text</i>, <a href="qclipboard.html#Mode-enum">Mode</a> <i>mode</i> = Clipboard )</h3>
 <p>Copies <i>text</i> into the clipboard as plain text.</p>
 <p>The <i>mode</i> argument is used to control which part of the system clipboard is used. If <i>mode</i> is <a href="qclipboard.html#Mode-enum">QClipboard::Clipboard</a>, the text is stored in the global clipboard. If <i>mode</i> is <a href="qclipboard.html#Mode-enum">QClipboard::Selection</a>, the text is stored in the global mouse selection. If <i>mode</i> is <a href="qclipboard.html#Mode-enum">QClipboard::FindBuffer</a>, the text is stored in the search string buffer.</p>
-<p>See also <a href="qclipboard.html#text">text</a>() and <a href="qclipboard-qt3.html#setData">setData</a>().</p>
+<p>See also <a href="qclipboard.html#text">text</a>() and <a href="qclipboard.html#setMimeData">setMimeData</a>().</p>
 <a name="//apple_ref/cpp/instm/QClipboard/supportsFindBuffer" />
 <h3 class="fn"><a name="supportsFindBuffer"></a>bool QClipboard::supportsFindBuffer () const</h3>
 <p>Returns true if the clipboard supports a separate search buffer; otherwise returns false.</p>
@@ -199,27 +199,17 @@
 <h3 class="fn"><a name="text"></a><a href="qstring.html">QString</a> QClipboard::text ( <a href="qclipboard.html#Mode-enum">Mode</a> <i>mode</i> = Clipboard ) const</h3>
 <p>Returns the clipboard text as plain text, or an empty string if the clipboard does not contain any text.</p>
 <p>The <i>mode</i> argument is used to control which part of the system clipboard is used. If <i>mode</i> is <a href="qclipboard.html#Mode-enum">QClipboard::Clipboard</a>, the text is retrieved from the global clipboard. If <i>mode</i> is <a href="qclipboard.html#Mode-enum">QClipboard::Selection</a>, the text is retrieved from the global mouse selection. If <i>mode</i> is <a href="qclipboard.html#Mode-enum">QClipboard::FindBuffer</a>, the text is retrieved from the search string buffer.</p>
-<p>See also <a href="qclipboard.html#setText">setText</a>() and <a href="qclipboard-qt3.html#data">data</a>().</p>
+<p>See also <a href="qclipboard.html#setText">setText</a>() and <a href="qclipboard.html#mimeData">mimeData</a>().</p>
 <h3 class="fn"><a name="text-2"></a><a href="qstring.html">QString</a> QClipboard::text ( <a href="qstring.html">QString</a> &amp; <i>subtype</i>, <a href="qclipboard.html#Mode-enum">Mode</a> <i>mode</i> = Clipboard ) const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns the clipboard text in subtype <i>subtype</i>, or an empty string if the clipboard does not contain any text. If <i>subtype</i> is null, any subtype is acceptable, and <i>subtype</i> is set to the chosen subtype.</p>
 <p>The <i>mode</i> argument is used to control which part of the system clipboard is used. If <i>mode</i> is <a href="qclipboard.html#Mode-enum">QClipboard::Clipboard</a>, the text is retrieved from the global clipboard. If <i>mode</i> is <a href="qclipboard.html#Mode-enum">QClipboard::Selection</a>, the text is retrieved from the global mouse selection.</p>
 <p>Common values for <i>subtype</i> are &quot;plain&quot; and &quot;html&quot;.</p>
-<p>See also <a href="qclipboard.html#setText">setText</a>() and <a href="qclipboard-qt3.html#data">data</a>().</p>
-<hr />
-<h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QClipboard/data" />
-<h3 class="fn"><a name="data"></a><a href="qmimesource.html">QMimeSource</a> * QClipboard::data ( <a href="qclipboard.html#Mode-enum">Mode</a> <i>mode</i> = Clipboard ) const</h3>
-<p>Use <a href="qclipboard.html#mimeData">mimeData</a>() instead.</p>
-<p>See also <a href="qclipboard-qt3.html#setData">setData</a>().</p>
-<a name="//apple_ref/cpp/instm/QClipboard/setData" />
-<h3 class="fn"><a name="setData"></a>void QClipboard::setData ( <a href="qmimesource.html">QMimeSource</a> * <i>src</i>, <a href="qclipboard.html#Mode-enum">Mode</a> <i>mode</i> = Clipboard )</h3>
-<p>Use <a href="qclipboard.html#setMimeData">setMimeData</a>() instead.</p>
-<p>See also <a href="qclipboard-qt3.html#data">data</a>().</p>
+<p>See also <a href="qclipboard.html#setText">setText</a>() and <a href="qclipboard.html#mimeData">mimeData</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -40,6 +55,23 @@
 #include <qdebug.h>
 #include <qapplication.h>
 #include "ui_qfiledialog.h"
+
+/*
+    \internal
+
+    Exported hooks that can be used to customize the static functions.
+ */
+typedef QString (*_qt_filedialog_existing_directory_hook)(QWidget *parent, const QString &caption, const QString &dir, QFileDialog::Options options);
+Q_GUI_EXPORT _qt_filedialog_existing_directory_hook qt_filedialog_existing_directory_hook = 0;
+
+typedef QString (*_qt_filedialog_open_filename_hook)(QWidget * parent, const QString &caption, const QString &dir, const QString &filter, QString *selectedFilter, QFileDialog::Options options);
+Q_GUI_EXPORT _qt_filedialog_open_filename_hook qt_filedialog_open_filename_hook = 0;
+
+typedef QStringList (*_qt_filedialog_open_filenames_hook)(QWidget * parent, const QString &caption, const QString &dir, const QString &filter, QString *selectedFilter, QFileDialog::Options options);
+Q_GUI_EXPORT _qt_filedialog_open_filenames_hook qt_filedialog_open_filenames_hook = 0;
+
+typedef QString (*_qt_filedialog_save_filename_hook)(QWidget * parent, const QString &caption, const QString &dir, const QString &filter, QString *selectedFilter, QFileDialog::Options options);
+Q_GUI_EXPORT _qt_filedialog_save_filename_hook qt_filedialog_save_filename_hook = 0;
 
 /*!
   \class QFileDialog
@@ -412,8 +444,7 @@ void QFileDialog::changeEvent(QEvent *e)
 {
     Q_D(QFileDialog);
     if (e->type() == QEvent::LanguageChange) {
-        if (d->useDefaultCaption)
-            d->retranslateWindowTitle();
+        d->retranslateWindowTitle();
         d->retranslateStrings();
     }
     QDialog::changeEvent(e);
@@ -422,12 +453,15 @@ void QFileDialog::changeEvent(QEvent *e)
 void QFileDialogPrivate::retranslateWindowTitle()
 {
     Q_Q(QFileDialog);
+    if (!useDefaultCaption || setWindowTitle != q->windowTitle())
+        return;
     if (fileMode == QFileDialog::ExistingFiles || fileMode == QFileDialog::ExistingFile)
         q->setWindowTitle(QFileDialog::tr("Open"));
     if (fileMode == QFileDialog::AnyFile)
         q->setWindowTitle(QFileDialog::tr("Save As"));
     if (fileMode == QFileDialog::DirectoryOnly || fileMode == QFileDialog::Directory)
         q->setWindowTitle(QFileDialog::tr("Find Directory"));
+    setWindowTitle = q->windowTitle();
 }
 
 void QFileDialogPrivate::retranslateStrings()
@@ -484,10 +518,6 @@ void QFileDialog::setDirectory(const QString &directory)
     d->qFileDialogUi->newFolderButton->setEnabled(d->model->flags(root) & Qt::ItemIsDropEnabled);
     d->setRootIndex(root);
     d->qFileDialogUi->listView->selectionModel()->clear();
-    if (d->qFileDialogUi->treeView->model()->rowCount(d->qFileDialogUi->treeView->rootIndex()) > 0
-        && d->lineEdit()->text().isEmpty()
-        && d->acceptMode == AcceptOpen)
-        d->qFileDialogUi->treeView->selectAnyIndex();
 }
 
 /*!
@@ -500,7 +530,7 @@ QDir QFileDialog::directory() const
 }
 
 /*!
-    Selects the given \a filename in both the file dialog.
+    Selects the given \a filename in the file dialog.
 
     \sa selectedFiles()
 */
@@ -510,16 +540,19 @@ void QFileDialog::selectFile(const QString &filename)
     if (filename.isEmpty())
         return;
 
-    QString text = filename;
-    if (QFileInfo(filename).isAbsolute()) {
-        QString current = d->rootPath();
-        text.remove(current);
-    }
-    QModelIndex index = d->select(d->model->index(text));
+    QModelIndex index = d->model->index(filename);
     if (!index.isValid()) {
-        d->qFileDialogUi->listView->selectionModel()->clear();
+        // save as dialog where we want to input a default value
+        QString text = filename;
+        if (QFileInfo(filename).isAbsolute()) {
+            QString current = d->rootPath();
+            text.remove(current);
+        }
         if (!d->lineEdit()->hasFocus())
             d->lineEdit()->setText(text);
+    } else {
+        if (!d->lineEdit()->hasFocus())
+            d->lineEdit()->setText(index.data().toString());
     }
 }
 
@@ -733,8 +766,7 @@ void QFileDialog::setFileMode(QFileDialog::FileMode mode)
 {
     Q_D(QFileDialog);
     d->fileMode = mode;
-    if (d->useDefaultCaption)
-        d->retranslateWindowTitle();
+    d->retranslateWindowTitle();
 
     // set selection mode and behavior
     QAbstractItemView::SelectionMode selectionMode;
@@ -760,6 +792,7 @@ void QFileDialog::setFileMode(QFileDialog::FileMode mode)
     }
     setLabelText(Accept, buttonText);
     d->qFileDialogUi->fileTypeCombo->setEnabled(mode != DirectoryOnly);
+    d->_q_updateOkButton();
 }
 
 QFileDialog::FileMode QFileDialog::fileMode() const
@@ -832,7 +865,7 @@ QModelIndex QFileDialogPrivate::select(const QModelIndex &index) const {
     Q_ASSERT(index.isValid() ? index.model() == model : true);
     QModelIndex idx = mapFromSource(index);
     if (idx.isValid())
-    qFileDialogUi->listView->selectionModel()->select(idx,
+        qFileDialogUi->listView->selectionModel()->select(idx,
             QItemSelectionModel::Select | QItemSelectionModel::Rows);
     return idx;
 }
@@ -847,8 +880,10 @@ QFileDialog::AcceptMode QFileDialog::acceptMode() const
     \property QFileDialog::readOnly
     \brief Whether the filedialog is readonly.
 
-    If this property is set to false, the filedialog will allow creating, renaming, copying
-    and deleting files and directories.
+    If this property is set to false, the filedialog will allow renaming,
+    and deleting of files and directories and creating directories.
+
+    The default value is false.
 */
 void QFileDialog::setReadOnly(bool disabled)
 {
@@ -988,8 +1023,13 @@ QStringList QFileDialog::history() const
 }
 
 /*!
-    \brief set the item delegate used to render the items in the views in the
-    filedialog to the specified \a delegate
+    Sets the item delegate used to render items in the views in the
+    file dialog to the given \a delegate.
+
+    \warning You should not share the same instance of a delegate between views.
+    Doing so can cause incorrect or unintuitive editing behavior since each
+    view connected to a given delegate may receive the \l{QAbstractItemDelegate::}{closeEditor()}
+    signal, and attempt to access, modify or close an editor that has already been closed.
 */
 void QFileDialog::setItemDelegate(QAbstractItemDelegate *delegate)
 {
@@ -1167,6 +1207,8 @@ QString QFileDialog::getOpenFileName(QWidget *parent,
                                QString *selectedFilter,
                                Options options)
 {
+    if (qt_filedialog_open_filename_hook)
+        return qt_filedialog_open_filename_hook(parent, caption, dir, filter, selectedFilter, options);
     QFileDialogArgs args;
     args.parent = parent;
     args.caption = caption;
@@ -1261,6 +1303,8 @@ QStringList QFileDialog::getOpenFileNames(QWidget *parent,
                                     QString *selectedFilter,
                                     Options options)
 {
+    if (qt_filedialog_open_filenames_hook)
+        return qt_filedialog_open_filenames_hook(parent, caption, dir, filter, selectedFilter, options);
     QFileDialogArgs args;
     args.parent = parent;
     args.caption = caption;
@@ -1317,6 +1361,8 @@ QStringList QFileDialog::getOpenFileNames(QWidget *parent,
   options about how to run the dialog, see the QFileDialog::Option enum for
   more information on the flags you can pass.
 
+  The default filter can be chosen by setting \a selectedFilter to the desired value.
+
   The dialog's caption is set to \a caption. If \a caption is not
   specified then a default caption will be used.
 
@@ -1343,6 +1389,8 @@ QString QFileDialog::getSaveFileName(QWidget *parent,
                                QString *selectedFilter,
                                Options options)
 {
+    if (qt_filedialog_save_filename_hook)
+        return qt_filedialog_save_filename_hook(parent, caption, dir, filter, selectedFilter, options);
     QFileDialogArgs args;
     args.parent = parent;
     args.caption = caption;
@@ -1420,6 +1468,8 @@ QString QFileDialog::getExistingDirectory(QWidget *parent,
                                     const QString &dir,
                                     Options options)
 {
+    if (qt_filedialog_existing_directory_hook)
+        return qt_filedialog_existing_directory_hook(parent, caption, dir, options);
     QFileDialogArgs args;
     args.parent = parent;
     args.caption = caption;
@@ -1521,12 +1571,9 @@ void QFileDialog::accept()
             info = QFileInfo(d->getEnvironmentVariable(fn));
         if (!info.exists()) {
 #ifndef QT_NO_MESSAGEBOX
-            QString message = tr("\nFile not found.\nPlease verify the "
-                                 "correct file name was given");
-
-            QPushButton *button = d->qFileDialogUi->buttonBox->button(acceptMode() == AcceptOpen ?
-                                                       QDialogButtonBox::Open : QDialogButtonBox::Save);
-            QMessageBox::warning(this, button->text(), info.fileName() + message);
+            QString message = tr("%1\nDirectory not found.\nPlease verify the "
+                                          "correct directory name was given.");
+            QMessageBox::warning(this, windowTitle(), info.fileName() + message);
 #endif // QT_NO_MESSAGEBOX
             return;
         }
@@ -1557,9 +1604,7 @@ void QFileDialog::accept()
             QDialog::accept();
 #ifndef QT_NO_MESSAGEBOX
         } else {
-            QPushButton *button = d->qFileDialogUi->buttonBox->button(acceptMode() == AcceptOpen ?
-                                                       QDialogButtonBox::Open : QDialogButtonBox::Save);
-            if (QMessageBox::warning(this, button->text(),
+            if (QMessageBox::warning(this, windowTitle(),
                                      tr("%1 already exists.\nDo you want to replace it?")
                                      .arg(info.fileName()),
                                      QMessageBox::Yes | QMessageBox::No, QMessageBox::No)
@@ -1580,10 +1625,7 @@ void QFileDialog::accept()
 #ifndef QT_NO_MESSAGEBOX
                 QString message = tr("%1\nFile not found.\nPlease verify the "
                                      "correct file name was given.");
-                QPushButton *button = d->qFileDialogUi->buttonBox->button(acceptMode() == AcceptOpen ?
-                                                            QDialogButtonBox::Open : QDialogButtonBox::Save);
-
-                QMessageBox::warning(this, button->text(), message.arg(info.fileName()));
+                QMessageBox::warning(this, windowTitle(), message.arg(info.fileName()));
 #endif // QT_NO_MESSAGEBOX
                 return;
             }
@@ -1610,6 +1652,7 @@ void QFileDialogPrivate::init(const QString &directory, const QString &nameFilte
     Q_Q(QFileDialog);
     if (!caption.isEmpty()) {
         useDefaultCaption = false;
+        setWindowTitle = caption;
         q->setWindowTitle(caption);
     }
 
@@ -1818,6 +1861,13 @@ void QFileDialog::setProxyModel(QAbstractProxyModel *proxyModel)
     d->qFileDialogUi->treeView->setSelectionModel(d->qFileDialogUi->listView->selectionModel());
     delete selModel;
     d->setRootIndex(idx);
+
+    // reconnect selection
+    QItemSelectionModel *selections = d->qFileDialogUi->listView->selectionModel();
+    QObject::connect(selections, SIGNAL(selectionChanged(const QItemSelection &, const QItemSelection &)),
+                     this, SLOT(_q_selectionChanged()));
+    QObject::connect(selections, SIGNAL(currentChanged(QModelIndex,QModelIndex)),
+                     this, SLOT(_q_currentChanged(QModelIndex)));
 }
 
 /*!
@@ -1977,7 +2027,7 @@ void QFileDialogPrivate::_q_navigateBackward()
 void QFileDialogPrivate::_q_navigateForward()
 {
     Q_Q(QFileDialog);
-    if (!currentHistory.isEmpty() && currentHistoryLocation < currentHistory.size()) {
+    if (!currentHistory.isEmpty() && currentHistoryLocation < currentHistory.size() - 1) {
         ++currentHistoryLocation;
         QString nextHistory = currentHistory.at(currentHistoryLocation);
         q->setDirectory(nextHistory);
@@ -2109,11 +2159,16 @@ void QFileDialogPrivate::_q_renameCurrent()
 void QFileDialogPrivate::_q_deleteCurrent()
 {
     QModelIndex index = qFileDialogUi->listView->currentIndex();
+    if (index == qFileDialogUi->listView->rootIndex())
+        return;
     index = mapToSource(index.sibling(index.row(), 0));
     if (!index.isValid() || model->isReadOnly())
         return;
 
     QString fileName = model->fileName(index);
+    QString filePath = model->filePath(index);
+    bool isDir = model->isDir(index);
+
 #ifndef QT_NO_MESSAGEBOX
     Q_Q(QFileDialog);
     if (!model->fileInfo(index).isWritable()
@@ -2132,13 +2187,17 @@ void QFileDialogPrivate::_q_deleteCurrent()
         return;
 #endif // QT_NO_MESSAGEBOX
 
-    if (model->isDir(index) && !model->rmdir(index)) {
+    // the event loop has run, we can NOT reuse index because the model might have removed it.
+    if (isDir) {
+        QDir dir;
+        if (!dir.rmdir(filePath)) {
 #ifndef QT_NO_MESSAGEBOX
         QMessageBox::warning(q, q->windowTitle(),
                             QFileDialog::tr("Could not delete directory."));
 #endif
+        }
     } else {
-        model->remove(index);
+        QFile::remove(filePath);
     }
 }
 
@@ -2150,26 +2209,23 @@ void QFileDialogPrivate::_q_autoCompleteFileName(const QString &text) {
     if (!idx.isValid())
         idx = mapFromSource(model->index(rootPath() + QDir::separator() + text));
 
-    if (!idx.isValid()) {
-        QStringList multipleFiles = typedFiles();
-        if (multipleFiles.count() > 0) {
-            QModelIndexList oldFiles = qFileDialogUi->listView->selectionModel()->selectedRows();
-            QModelIndexList newFiles;
-            for (int i = 0; i < multipleFiles.count(); ++i) {
-                QModelIndex idx = model->index(multipleFiles.at(i));
-                if (oldFiles.contains(idx))
-                    oldFiles.removeAll(idx);
-                else
-                    newFiles.append(idx);
-            }
-            for (int i = 0; i < newFiles.count(); ++i)
-                select(newFiles.at(i));
+    QStringList multipleFiles = typedFiles();
+    if (multipleFiles.count() > 0) {
+        QModelIndexList oldFiles = qFileDialogUi->listView->selectionModel()->selectedRows();
+        QModelIndexList newFiles;
+        for (int i = 0; i < multipleFiles.count(); ++i) {
+            QModelIndex idx = model->index(multipleFiles.at(i));
+            if (oldFiles.contains(idx))
+                oldFiles.removeAll(idx);
+            else
+                newFiles.append(idx);
+        }
+        for (int i = 0; i < newFiles.count(); ++i)
+            select(newFiles.at(i));
+        if (lineEdit()->hasFocus())
             for (int i = 0; i < oldFiles.count(); ++i)
                 qFileDialogUi->listView->selectionModel()->select(oldFiles.at(i),
-                        QItemSelectionModel::Toggle | QItemSelectionModel::Rows);
-        }
-    } else {
-        qFileDialogUi->listView->setCurrentIndex(idx);
+                    QItemSelectionModel::Toggle | QItemSelectionModel::Rows);
     }
 }
 
@@ -2252,9 +2308,12 @@ void QFileDialogPrivate::_q_enterDirectory(const QModelIndex &index)
     if (path.isEmpty() || model->isDir(sourceIndex)) {
         q->setDirectory(path);
         emit q->directoryEntered(path);
-        // ### find out why you have to do both of these.
-        lineEdit()->setText(QString());
-        lineEdit()->clear();
+        if (fileMode == QFileDialog::Directory
+            || fileMode == QFileDialog::DirectoryOnly) {
+            // ### find out why you have to do both of these.
+            lineEdit()->setText(QString());
+            lineEdit()->clear();
+        }
     } else {
         q->accept();
     }
@@ -2297,7 +2356,7 @@ void QFileDialogPrivate::_q_goToDirectory(const QString &path)
 }
 
 const char *qt_file_dialog_filter_reg_exp =
-    "([a-zA-Z0-9 ]*)\\(([a-zA-Z0-9_.*? +;#\\-\\[\\]@\\{\\}/!<>\\$%&=^~:\\|]*)\\)$";
+    "([a-zA-Z0-9 -]*)\\(([a-zA-Z0-9_.*? +;#\\-\\[\\]@\\{\\}/!<>\\$%&=^~:\\|]*)\\)$";
 
 // Makes a list of filters from a normal filter string "Image Files (*.png *.jpg)"
 static QStringList qt_clean_filter_list(const QString &filter)
@@ -2345,23 +2404,23 @@ void QFileDialogPrivate::_q_useNameFilter(const QString &nameFilter)
 */
 void QFileDialogPrivate::_q_selectionChanged()
 {
-    if (lineEdit()->hasFocus())
-        return; // the selection changed because of auto completion
-
     QModelIndexList indexes = qFileDialogUi->listView->selectionModel()->selectedRows();
     bool stripDirs = (fileMode != QFileDialog::DirectoryOnly && fileMode != QFileDialog::Directory);
-    bool addQuotes = indexes.count() > 1;
-    QString allFiles;
+
+    QStringList allFiles;
     for (int i = 0; i < indexes.count(); ++i) {
         if (stripDirs && model->isDir(mapToSource(indexes.at(i))))
             continue;
-        QString fileName = indexes.at(i).data().toString();
-        if (addQuotes)
-            fileName = (QLatin1Char('"')) + fileName + QLatin1String("\" ");
-        allFiles.append(fileName);
+        allFiles.append(indexes.at(i).data().toString());
     }
-    if (!allFiles.isEmpty() && !lineEdit()->hasFocus() && lineEdit()->isVisible())
-        lineEdit()->setText(allFiles);
+    if (allFiles.count() > 1)
+        for (int i = 0; i < allFiles.count(); ++i) {
+            allFiles.replace(i, QString(QLatin1Char('"') + allFiles.at(i) + QLatin1Char('"')));
+    }
+
+    QString finalFiles = allFiles.join(QLatin1String(" "));
+    if (!finalFiles.isEmpty() && !lineEdit()->hasFocus() && lineEdit()->isVisible())
+        lineEdit()->setText(finalFiles);
 }
 
 /*!
@@ -2393,10 +2452,6 @@ void QFileDialogPrivate::_q_rowsInserted(const QModelIndex &parent)
         || qFileDialogUi->treeView->selectionModel()->hasSelection()
         || qFileDialogUi->treeView->model()->rowCount(parent) == 0)
         return;
-    if (fileMode != QFileDialog::ExistingFile
-        && lineEdit()->text().isEmpty()
-        && acceptMode == QFileDialog::AcceptOpen)
-    qFileDialogUi->treeView->selectAnyIndex();
 }
 
 /*!
@@ -2571,7 +2626,7 @@ QStringList QFSCompletor::splitPath(const QString &path) const
 
     if (parts.count() == 1 || (parts.count() > 1 && path[0] != sep[0])) {
         const QFileSystemModel *dirModel = static_cast<const QFileSystemModel *>(model());
-        QString currentLocation = dirModel->rootPath();
+        QString currentLocation = QDir::toNativeSeparators(dirModel->rootPath());
         if (currentLocation.contains(sep) && path != currentLocation) {
             QStringList currentLocationList = splitPath(currentLocation);
             while (!currentLocationList.isEmpty()

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/gui/graphicsview/qgraphicssceneevent.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/graphicsview/qgraphicssceneevent.cpp -->
 <head>
   <title>Qt 4.3: QGraphicsSceneEvent Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -38,7 +38,7 @@
 <hr />
 <h2>Detailed Description</h2>
 <p>The QGraphicsSceneEvent class provides a base class for all graphics view related events.</p>
-<p>When a <a href="qgraphicsview.html">QGraphicsView</a> receives Qt mouse, keyboard, and drag and drop events (<a href="qmouseevent.html">QMouseEvent</a>, <a href="qkeyevent.html">QKeyEvent</a>, QDragEvent, etc.), it translates them into instances of QGraphicsSceneEvent subclasses and forwards them to the <a href="qgraphicsscene.html">QGraphicsScene</a> it displays. The scene then forwards the events to the relevent items.</p>
+<p>When a <a href="qgraphicsview.html">QGraphicsView</a> receives Qt mouse, keyboard, and drag and drop events (<a href="qmouseevent.html">QMouseEvent</a>, <a href="qkeyevent.html">QKeyEvent</a>, QDragEvent, etc.), it translates them into instances of QGraphicsSceneEvent subclasses and forwards them to the <a href="qgraphicsscene.html">QGraphicsScene</a> it displays. The scene then forwards the events to the relevant items.</p>
 <p>For example, when a <a href="qgraphicsview.html">QGraphicsView</a> receives a <a href="qmouseevent.html">QMouseEvent</a> of type MousePress as a response to a user click, the view sends a <a href="qgraphicsscenemouseevent.html">QGraphicsSceneMouseEvent</a> of type <a href="qevent.html#Type-enum">GraphicsSceneMousePress</a> to the underlying <a href="qgraphicsscene.html">QGraphicsScene</a> through its <a href="qgraphicsscene.html#mousePressEvent">mousePressEvent()</a> function. The default <a href="qgraphicsscene.html#mousePressEvent">QGraphicsScene::mousePressEvent</a>() implementation determines which item was clicked and forwards the event to <a href="qgraphicsitem.html#mousePressEvent">QGraphicsItem::mousePressEvent</a>().</p>
 <p>Subclasses such as <a href="qgraphicsscenemouseevent.html">QGraphicsSceneMouseEvent</a> and <a href="qgraphicsscenecontextmenuevent.html">QGraphicsSceneContextMenuEvent</a> provide the coordinates from the original <a href="qevent.html">QEvent</a> in screen, scene, and item coordinates (see <a href="qgraphicsscenemouseevent.html#screenPos">screenPos()</a>, <a href="qgraphicsscenemouseevent.html#scenePos">scenePos()</a>, and <a href="qgraphicsscenemouseevent.html#pos">pos()</a>). The item coordinates are set by the <a href="qgraphicsscene.html">QGraphicsScene</a> before it forwards the event to the event to a <a href="qgraphicsitem.html">QGraphicsItem</a>. The mouse events also add the possibility to retrieve the coordinates from the last event received by the view (see <a href="qgraphicsscenemouseevent.html#lastScreenPos">lastScreenPos()</a>, <a href="qgraphicsscenemouseevent.html#lastScenePos">lastScenePos()</a>, and <a href="qgraphicsscenemouseevent.html#lastPos">lastPos()</a>).</p>
 <p>See also <a href="qevent.html">QEvent</a>.</p>
@@ -54,6 +54,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

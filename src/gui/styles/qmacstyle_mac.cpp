@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -217,16 +232,16 @@ public:
 
     HIRect pushButtonContentBounds(const QStyleOptionButton *btn,
                                    const HIThemeButtonDrawInfo *bdi) const;
-    
-    static void initComboboxBdi(const QStyleOptionComboBox *combo, HIThemeButtonDrawInfo *bdi, 
+
+    static void initComboboxBdi(const QStyleOptionComboBox *combo, HIThemeButtonDrawInfo *bdi,
                         const QWidget *widget, const ThemeDrawState &tds);
-                        
+
     static HIRect comboboxInnerBounds(const HIRect &outerBounds, int buttonKind);
 
     static QRect comboboxEditBounds(const QRect &outerBounds, const HIThemeButtonDrawInfo &bdi);
 
     static void drawCombobox(const HIRect &outerBounds, const HIThemeButtonDrawInfo &bdi, QPainter *p);
-        
+
     bool contentFitsInPushButton(const QStyleOptionButton *btn, HIThemeButtonDrawInfo *bdi,
                                  ThemeButtonKind buttonKindToCheck) const;
     void initHIThemePushButton(const QStyleOptionButton *btn, const QWidget *widget,
@@ -378,7 +393,7 @@ static QSize qt_aqua_get_known_size(QStyle::ContentsType ct, const QWidget *widg
     switch (ct) {
     case QStyle::CT_PushButton: {
         const QPushButton *psh = static_cast<const QPushButton *>(widg);
-        QString buttonText = removeMnemonics(psh->text());            
+        QString buttonText = removeMnemonics(psh->text());
         if (buttonText.contains(QLatin1Char('\n')))
             ret = QSize(-1, -1);
         else if (sz == QAquaSizeLarge)
@@ -390,7 +405,7 @@ static QSize qt_aqua_get_known_size(QStyle::ContentsType ct, const QWidget *widg
 
         if (!psh->icon().isNull()){
             // If the button got an icon, and the icon is larger than the
-            // button, we can't decide on a default size 
+            // button, we can't decide on a default size
             ret.setWidth(-1);
             if (ret.height() < psh->iconSize().height())
                 ret.setHeight(-1);
@@ -780,8 +795,7 @@ void QMacStylePrivate::initHIThemePushButton(const QStyleOptionButton *btn,
 
     if (drawColorless && tdsModified == kThemeStateInactive)
         bdi->state = kThemeStateActive;
-    if (btn->state & QStyle::State_HasFocus &&
-            QMacStyle::focusRectPolicy(widget) != QMacStyle::FocusDisabled)
+    if (btn->state & QStyle::State_HasFocus)
         bdi->adornment = kThemeAdornmentFocus;
     else
         bdi->adornment = kThemeAdornmentNone;
@@ -798,14 +812,14 @@ void QMacStylePrivate::initHIThemePushButton(const QStyleOptionButton *btn,
             bdi->kind = kThemePushButtonMini;
             break;
         case QAquaSizeLarge:
-            // ... We should honour if the user is explicit about using the
-            // large button. But right now Qt will specify the large button 
+            // ... We should honor if the user is explicit about using the
+            // large button. But right now Qt will specify the large button
             // as default rather than QAquaSizeUnknown.
             // So we treat it like QAquaSizeUnknown
             // to get the dynamic choosing of button kind.
         case QAquaSizeUnknown:
             // Choose the button kind that closest match the button rect, but at the
-            // same time displays the button contents without clipping.         
+            // same time displays the button contents without clipping.
 
             bdi->kind = kThemeBevelButton;
             if (btn->rect.width() > BevelButtonW && btn->rect.height() > BevelButtonH){
@@ -863,9 +877,9 @@ void QMacStylePrivate::initComboboxBdi(const QStyleOptionComboBox *combo, HIThem
         // an extra check here before using the mini and small buttons.
         int h = combo->rect.size().height();
         if (combo->editable){
-            if (h < 25)
+            if (h < 21)
                 bdi->kind = kThemeComboBoxMini;
-            else if (h < 28)
+            else if (h < 26)
                 bdi->kind = kThemeComboBoxSmall;
             else
                 bdi->kind = kThemeComboBox;
@@ -877,7 +891,7 @@ void QMacStylePrivate::initComboboxBdi(const QStyleOptionComboBox *combo, HIThem
             // the use of LargeButtons explicit.
             if (h < 21)
                 bdi->kind = kThemePopupButtonMini;
-            else if (h < 27)
+            else if (h < 26)
                 bdi->kind = kThemePopupButtonSmall;
             else
                 bdi->kind = kThemePopupButton;
@@ -901,7 +915,7 @@ HIRect QMacStylePrivate::comboboxInnerBounds(const HIRect &outerBounds, int butt
         innerBounds.origin.x += 2;
         innerBounds.origin.y += 3;
         innerBounds.size.width -= 5;
-        innerBounds.size.height -= 7;
+        innerBounds.size.height -= 6;
         break;
     case kThemePopupButtonSmall:
         innerBounds.origin.x += 3;
@@ -911,7 +925,7 @@ HIRect QMacStylePrivate::comboboxInnerBounds(const HIRect &outerBounds, int butt
         break;
     case kThemePopupButtonMini:
         innerBounds.origin.x += 2;
-        innerBounds.origin.y += 3;
+        innerBounds.origin.y += 2;
         innerBounds.size.width -= 5;
         innerBounds.size.height -= 6;
         break;
@@ -1497,7 +1511,7 @@ bool QMacStylePrivate::eventFilter(QObject *o, QEvent *e)
         bginfo.state = kThemeStateActive;
         bginfo.kind = kThemeBackgroundMetal;
         HIRect rect = CGRectMake(0, 0, widget->width(), widget->height());
-        HIThemeApplyBackground(&rect, &bginfo, QCFType<CGContextRef>(qt_mac_cg_context(widget)),
+        HIThemeDrawBackground(&rect, &bginfo, QCFType<CGContextRef>(qt_mac_cg_context(widget)),
                                kHIThemeOrientationNormal);
     }
     return false;
@@ -2733,8 +2747,7 @@ void QMacStyle::drawPrimitive(PrimitiveElement pe, const QStyleOption *opt, QPai
         if (drawColorless && tds == kThemeStateInactive)
             bdi.state = kThemeStateActive;
         bdi.adornment = kThemeDrawIndicatorOnly;
-        if (opt->state & State_HasFocus
-                && QMacStyle::focusRectPolicy(w) != QMacStyle::FocusDisabled)
+        if (opt->state & State_HasFocus)
             bdi.adornment |= kThemeAdornmentFocus;
         bool isRadioButton = (pe == PE_Q3CheckListExclusiveIndicator
                               || pe == PE_IndicatorRadioButton);
@@ -2989,7 +3002,7 @@ void QMacStyle::drawControl(ControlElement ce, const QStyleOption *opt, QPainter
                 if (header->sortIndicator == QStyleOptionHeader::SortDown)
                     bdi.adornment = kThemeAdornmentHeaderButtonSortUp;
             }
-            if (flags & State_HasFocus && QMacStyle::focusRectPolicy(w) != QMacStyle::FocusDisabled)
+            if (flags & State_HasFocus)
                 bdi.adornment = kThemeAdornmentFocus;
             // The ListViewHeader button is only drawn one size, so draw into a pixmap and scale it
             // Otherwise just draw it normally.
@@ -3834,6 +3847,14 @@ void QMacStyle::drawControl(ControlElement ce, const QStyleOption *opt, QPainter
     }
 }
 
+static void setLayoutItemMargins(int left, int top, int right, int bottom, QRect *rect, Qt::LayoutDirection dir)
+{
+    if (dir == Qt::RightToLeft) {
+        rect->adjust(-right, top, -left, bottom);
+    } else {
+        rect->adjust(left, top, right, bottom);
+    }
+}
 /*! \reimp */
 QRect QMacStyle::subElementRect(SubElement sr, const QStyleOption *opt,
                                 const QWidget *widget) const
@@ -3997,26 +4018,33 @@ QRect QMacStyle::subElementRect(SubElement sr, const QStyleOption *opt,
     case SE_CheckBoxLayoutItem:
         rect = opt->rect;
         if (controlSize == QAquaSizeLarge) {
-            rect.adjust(+2, +3, -9, -4);
+            setLayoutItemMargins(+2, +3, -9, -4, &rect, opt->direction);
         } else if (controlSize == QAquaSizeSmall) {
-            rect.adjust(+1, +5, 0 /* fix */, -6);
+            setLayoutItemMargins(+1, +5, 0 /* fix */, -6, &rect, opt->direction);
         } else {
-            rect.adjust(0, +7, 0 /* fix */, -6);
+            setLayoutItemMargins(0, +7, 0 /* fix */, -6, &rect, opt->direction);
         }
         break;
     case SE_ComboBoxLayoutItem:
-        rect = opt->rect;
-        if (controlSize == QAquaSizeLarge) {
-            rect.adjust(+3, +2, -3, -4);
-        } else if (controlSize == QAquaSizeSmall) {
-            rect.adjust(+2, +1, -3, -4);
+        if (widget && qobject_cast<QToolBar *>(widget->parentWidget())) {
+            // Do nothing, because QToolbar needs the entire widget rect.
+            // Otherwise it will be clipped. Equivalent to
+            // widget->setAttribute(Qt::WA_LayoutUsesWidgetRect), but without
+            // all the hassle.
         } else {
-            rect.adjust(+1, 0, -2, 0);
+            rect = opt->rect;
+            if (controlSize == QAquaSizeLarge) {
+                rect.adjust(+3, +2, -3, -4);
+            } else if (controlSize == QAquaSizeSmall) {
+                setLayoutItemMargins(+2, +1, -3, -4, &rect, opt->direction);
+            } else {
+                setLayoutItemMargins(+1, 0, -2, 0, &rect, opt->direction);
+            }
         }
         break;
     case SE_LabelLayoutItem:
         rect = opt->rect;
-        rect.adjust(+1, -1, 0, -1);
+        setLayoutItemMargins(+1, -1, 0, -1, &rect, opt->direction);
         break;
     case SE_ProgressBarLayoutItem: {
         rect = opt->rect;
@@ -4024,7 +4052,7 @@ QRect QMacStyle::subElementRect(SubElement sr, const QStyleOption *opt,
         if (opt->state & State_Horizontal) {
             rect.adjust(0, +1, 0, -bottom);
         } else {
-            rect.adjust(+1, 0, -bottom, 0);
+            setLayoutItemMargins(+1, 0, -bottom, 0, &rect, opt->direction);
         }
         break;
     }
@@ -4046,7 +4074,7 @@ QRect QMacStyle::subElementRect(SubElement sr, const QStyleOption *opt,
     case SE_RadioButtonLayoutItem:
         rect = opt->rect;
         if (controlSize == QAquaSizeLarge) {
-            rect.adjust(+2, +3, -9, -3);
+            setLayoutItemMargins(+2, +3, -9, -3, &rect, opt->direction);
         } else if (controlSize == QAquaSizeSmall) {
             rect.adjust(0, +6, 0 /* fix */, -5);
         } else {
@@ -4063,7 +4091,7 @@ QRect QMacStyle::subElementRect(SubElement sr, const QStyleOption *opt,
                 if (sliderOpt->orientation == Qt::Horizontal) {
                     rect.adjust(0, +above, 0, -below);
                 } else {
-                    rect.adjust(+above, 0, -below, 0);
+                    rect.adjust(+above, 0, -below, 0);  //### Seems that QSlider flip the position of the ticks in reverse mode.
                 }
             } else if (sliderOpt->tickPosition == QSlider::TicksAbove) {
                 int below = SIZE(3, 2, 0);
@@ -4580,8 +4608,7 @@ void QMacStyle::drawComplexControl(ComplexControl cc, const QStyleOptionComplex 
                         bdi.adornment = kThemeAdornmentNone;
                         bdi.kind = bkind;
                         bdi.value = kThemeButtonOff;
-                        if (tb->state & State_HasFocus && QMacStyle::focusRectPolicy(widget)
-                                != QMacStyle::FocusDisabled)
+                        if (tb->state & State_HasFocus)
                             bdi.adornment = kThemeAdornmentFocus;
                         if (tb->state & State_Sunken)
                             bdi.state = kThemeStatePressed;
@@ -4610,8 +4637,7 @@ void QMacStyle::drawComplexControl(ComplexControl cc, const QStyleOptionComplex 
                     bdi.value = kThemeButtonOff;
                     bdi.adornment = kThemeAdornmentNone;
                     bdi.kind = bkind;
-                    if (tb->state & State_HasFocus
-                            && QMacStyle::focusRectPolicy(widget) != QMacStyle::FocusDisabled)
+                    if (tb->state & State_HasFocus)
                         bdi.adornment = kThemeAdornmentFocus;
                     if (tb->state & (State_On | State_Sunken)
                                      || (tb->activeSubControls & SC_ToolButtonMenu))
@@ -4819,7 +4845,7 @@ QRect QMacStyle::subControlRect(ComplexControl cc, const QStyleOptionComplex *op
             ret = qt_qrectForHIRect(macRect);
 
             // Tweak: the dark line between the sub/add line buttons belong to only one of the buttons
-            // when doing hit-testing, but both of them have to repaint it. Extend the rect to cover 
+            // when doing hit-testing, but both of them have to repaint it. Extend the rect to cover
             // the line in the cases where HIThemeGetTrackPartBounds returns a rect that doesn't.
             if (slider->orientation == Qt::Horizontal) {
                 if (slider->direction == Qt::LeftToRight && sc == SC_ScrollBarSubLine)
@@ -5239,7 +5265,7 @@ QSize QMacStyle::sizeFromContents(ContentsType ct, const QStyleOption *opt,
         if (macsz.height() != -1)
             sz.setHeight(macsz.height());
     }
-    
+
     // Adjust size to within Aqua guidelines
     if (const QStyleOptionComboBox *combo = qstyleoption_cast<const QStyleOptionComboBox *>(opt)){
         QAquaWidgetSize widgetSize = qt_aqua_size_constrain(widget);
@@ -5260,9 +5286,9 @@ QSize QMacStyle::sizeFromContents(ContentsType ct, const QStyleOption *opt,
         HIRect diffRect = QMacStylePrivate::comboboxInnerBounds(tmpRect, bkind);
         sz.rwidth() -= qRound(diffRect.size.width);
         sz.rheight() -= qRound(diffRect.size.height);
-    } else if (ct == CT_PushButton || ct == CT_ToolButton){           
+    } else if (ct == CT_PushButton || ct == CT_ToolButton){
         ThemeButtonKind bkind;
-        QAquaWidgetSize widgetSize = qt_aqua_size_constrain(widget);          
+        QAquaWidgetSize widgetSize = qt_aqua_size_constrain(widget);
         switch (ct) {
         default:
         case CT_PushButton:
@@ -5291,7 +5317,7 @@ QSize QMacStyle::sizeFromContents(ContentsType ct, const QStyleOption *opt,
             }
             break;
         }
-        
+
         HIThemeButtonDrawInfo bdi;
         bdi.version = qt_mac_hitheme_version;
         bdi.state = kThemeStateActive;
@@ -5303,7 +5329,7 @@ QSize QMacStyle::sizeFromContents(ContentsType ct, const QStyleOption *opt,
         HIThemeGetButtonBackgroundBounds(&myRect, &bdi, &macRect);
         sz.setWidth(sz.width() + int(macRect.size.width - myRect.size.width));
         sz.setHeight(sz.height() + int(macRect.size.height - myRect.size.height));
-    } 
+    }
     return sz;
 }
 
@@ -5524,7 +5550,7 @@ int QMacStyle::layoutSpacingImplementation(QSizePolicy::ControlType control1,
     }
 
     if ((control1 | control2) & ButtonMask)
-        return_SIZE(12, 10, 8);     // AHIG 
+        return_SIZE(12, 10, 8);     // AHIG
 
     switch (CT2(control1, control2)) {
     case CT1(QSizePolicy::Label):                             // guess

@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -401,9 +416,21 @@ static bool compare(const QVariant::Private *a, const QVariant::Private *b)
     }
     if (!QMetaType::isRegistered(a->type))
         qFatal("QVariant::compare: type %d unknown to QVariant.", a->type);
+
+    /* The reason we cannot place this test in a case branch above for the types
+     * QMetaType::VoidStar, QMetaType::QObjectStar and so forth, is that it wouldn't include
+     * user defined pointer types. */
+    const char *const typeName = QMetaType::typeName(a->type);
+    if (typeName[qstrlen(typeName) - 1] == '*')
+        return *static_cast<void **>(a->data.shared->ptr) ==
+               *static_cast<void **>(b->data.shared->ptr);
+
     return a->data.shared->ptr == b->data.shared->ptr;
 }
 
+/*!
+  \internal
+ */
 static qlonglong qMetaTypeNumber(const QVariant::Private *d)
 {
     switch (d->type) {
@@ -510,6 +537,11 @@ static qulonglong qConvertToUnsignedNumber(const QVariant::Private *d, bool *ok)
     return Q_UINT64_C(0);
 }
 
+/*!
+ \internal
+
+ Converts \a d to type \a t, which is placed in \a result.
+ */
 static bool convert(const QVariant::Private *d, QVariant::Type t, void *result, bool *ok)
 {
     Q_ASSERT(d->type != uint(t));
@@ -760,6 +792,10 @@ static bool convert(const QVariant::Private *d, QVariant::Type t, void *result, 
         *static_cast<qulonglong *>(result) = qConvertToUnsignedNumber(d, ok);
         return *ok;
     }
+    case QMetaType::UChar: {
+        *static_cast<uchar *>(result) = qConvertToUnsignedNumber(d, ok);
+        return *ok;
+    }
     case QVariant::Bool: {
         bool *b = static_cast<bool *>(result);
         switch(d->type) {
@@ -918,6 +954,11 @@ static bool convert(const QVariant::Private *d, QVariant::Type t, void *result, 
         else
             return false;
         break;
+    case QMetaType::Char:
+    {
+        *static_cast<qint8 *>(result) = qint8(qConvertToNumber(d, ok));
+        return *ok;
+    }
 #endif
     default:
         return false;
@@ -1626,6 +1667,7 @@ void QVariant::detach()
     \internal
 */
 
+// Qt 5 ###: change typeName()(and froends= to return a QString. Suggestion from Harald.
 /*!
     Returns the name of the type stored in the variant. The returned
     strings describe the C++ datatype used to store the data: for
@@ -2446,7 +2488,10 @@ bool QVariant::canConvert(Type t) const
         }
     }
 
-    return qCanConvertMatrix[t] & (1 << d.type);
+    if(t == String && d.type == StringList)
+        return v_cast<QStringList>(&d)->count() == 1;
+    else
+        return qCanConvertMatrix[t] & (1 << d.type);
 }
 
 /*!
@@ -2945,3 +2990,12 @@ QDebug operator<<(QDebug dbg, const QVariant::Type p)
     Synonym for QMap<QString, QVariant>.
 */
 
+/*!
+    \typedef QVariant::DataPtr
+    \internal
+*/
+
+/*!
+    \fn DataPtr &QVariant::data_ptr()
+    \internal
+*/

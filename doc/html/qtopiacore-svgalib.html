@@ -2,9 +2,9 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/doc/src/examples/svgalib.qdoc -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/doc/src/examples/svgalib.qdoc -->
 <head>
-  <title>Qt 4.3: Accelerated Screen Driver Example</title>
+  <title>Qt 4.3: Accelerated Graphics Driver Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
@@ -12,7 +12,7 @@
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">Accelerated Screen Driver Example<br /><small></small></h1>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">Accelerated Graphics Driver Example<br /><small></small></h1>
 <p>Files:</p>
 <ul>
 <li><a href="qtopiacore-svgalib-svgalibpaintdevice-cpp.html">qtopiacore/svgalib/svgalibpaintdevice.cpp</a></li>
@@ -25,24 +25,23 @@
 <li><a href="qtopiacore-svgalib-svgalibsurface-cpp.html">qtopiacore/svgalib/svgalibsurface.cpp</a></li>
 <li><a href="qtopiacore-svgalib-svgalibsurface-h.html">qtopiacore/svgalib/svgalibsurface.h</a></li>
 </ul>
-<p>The Accelerated Screen Driver example shows how to write an accelerated screen driver for <a href="qtopiacore.html">Qtopia Core</a>.</p>
-<p>In <a href="qtopiacore.html">Qtopia Core</a>, painting is a pure software implementation and is normally performed in two steps: The clients render each window onto a corresponding surface (stored in memory) using a paint engine, and then the server uses the screen driver to compose the surface images and copy them to the screen. (See the <a href="qtopiacore-architecture.html">Qtopia Core Architecture</a> documentation for details.)</p>
-<p>The rendering can be accelerated in two ways: Either by accelerating the copying of pixels to the screen, or by accelerating the explicit painting operations. The first is done in the screen driver implementation, the latter is performed by the paint engine implementation. Typically, both the pixel copying and the painting operations are accelerted using the following approach:</p>
+<p>The Accelerated Graphics Driver example shows how you can write your own accelerated graphics driver and <a href="qtopiacore-accel.html#add-your-graphics-driver-to-qtopia-core">add your graphics driver to Qtopia Core</a>. In <a href="qtopiacore.html">Qtopia Core</a>, painting is a pure software implementation and is normally performed in two steps: The clients render each window onto a corresponding surface (stored in memory) using a paint engine, and then the server uses the graphics driver to compose the surface images and copy them to the screen. (See the <a href="qtopiacore-architecture.html">Qtopia Core Architecture</a> documentation for details.)</p>
+<p>The rendering can be accelerated in two ways: Either by accelerating the copying of pixels to the screen, or by accelerating the explicit painting operations. The first is done in the graphics driver implementation, the latter is performed by the paint engine implementation. Typically, both the pixel copying and the painting operations are accelerted using the following approach:</p>
 <ol type="1">
-<li><a href="#step-1-creating-a-custom-screen-driver">Creating a Custom Screen Driver</a></li>
+<li><a href="#step-1-creating-a-custom-graphics-driver">Creating a Custom Graphics Driver</a></li>
 <li><a href="#step-2-implementing-a-custom-raster-paint-engine">Implementing a Custom Paint Engine</a></li>
 <li><a href="#step-3-making-the-widgets-aware-of-the-custom-paint-engine">Making the Widgets Aware of the Custom Paint Engine</a></li>
 </ol>
-<p>After compiling the example code, you should install the screen driver plugin with the command <tt>make install</tt>. To start an application using the example's screen driver, you can either set the environment variable <a href="qtopiacore-envvars.html#qws-display">QWS_DISPLAY</a> or start the program using the <tt>-display</tt> switch:</p>
+<p>After compiling the example code, install the graphics driver plugin with the command <tt>make install</tt>. To start an application using the graphics driver, you can either set the environment variable <a href="qtopiacore-envvars.html#qws-display">QWS_DISPLAY</a> and then run the application, or you can just run the application using the <tt>-display</tt> switch:</p>
 <pre> myApplication -qws -display svgalib</pre>
 <p>Note that in order to keep the example as simple as possible, our driver only works with screen modes having 32 bits per pixel and does not work with multiple processes.</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <thead><tr valign="top" class="qt-style"><th>SVGAlib</th></tr></thead>
 <tr valign="top" class="odd"><td>Instead of interfacing the graphics hardware directly, this example relies on <a href="http://www.svgalib.org">SVGAlib</a> being installed on your system. <a href="http://www.svgalib.org">SVGAlib</a> is a small graphics library which provides acceleration for many common graphics cards used on desktop computers. It should work on most workstations and has a small and simple API.</td></tr>
 </table></p>
-<a name="step-1-creating-a-custom-screen-driver"></a>
-<h2>Step 1: Creating a Custom Screen Driver</h2>
-<p>The custom screen driver is created by deriving from the <a href="qscreen.html">QScreen</a> class. <a href="qscreen.html">QScreen</a> is the base class for implementing screen drivers in Qtopia Core.</p>
+<a name="step-1-creating-a-custom-graphics-driver"></a>
+<h2>Step 1: Creating a Custom Graphics Driver</h2>
+<p>The custom graphics driver is created by deriving from the <a href="qscreen.html">QScreen</a> class. <a href="qscreen.html">QScreen</a> is the base class for implementing screen/graphics drivers in Qtopia Core.</p>
 <pre> ** This file is part of the example classes of the Qt Toolkit.
  **
  ** This file may be used under the terms of the GNU General Public
@@ -50,12 +49,27 @@
  ** and appearing in the file LICENSE.GPL included in the packaging of
  ** this file.  Please review the following information to ensure GNU
  ** General Public Licensing requirements will be met:
- ** http://www.trolltech.com/products/qt/opensource.html
+ ** http://trolltech.com/products/qt/licenses/licensing/opensource/
  **
  ** If you are unsure which license is appropriate for your use, please
  ** review the following information:
- ** http://www.trolltech.com/products/qt/licensing.html or contact the
- ** sales department at sales@trolltech.com.
+ ** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+ ** or contact the sales department at sales@trolltech.com.
+ **
+ ** In addition, as a special exception, Trolltech gives you certain
+ ** additional rights. These rights are described in the Trolltech GPL
+ ** Exception version 1.0, which can be found at
+ ** http://www.trolltech.com/products/qt/gplexception/ and in the file
+ ** GPL_EXCEPTION.txt in this package.
+ **
+ ** In addition, as a special exception, Trolltech, as the sole copyright
+ ** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+ ** plug-in the right for the Qt/Eclipse Integration to link to
+ ** functionality provided by Qt Designer and its related libraries.
+ **
+ ** Trolltech reserves all rights not expressly granted herein.
+ **
+ ** Trolltech ASA (c) 2007
  **
  ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
  ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -156,11 +170,8 @@
      gl_getcontext(context);
 
      vga_modeinfo *modeinfo = vga_getmodeinfo(mode);
-     if (!(modeinfo-&gt;flags &amp; IS_LINEAR)) {
-         qCritical(&quot;SvgalibScreen::initDevice(): graphics memory not linear&quot;);
-         return false;
-     }
-     QScreen::data = vga_getgraphmem();
+     if (modeinfo-&gt;flags &amp; IS_LINEAR)
+         QScreen::data = vga_getgraphmem();
 
      QScreenCursor::initSoftwareCursor();
      return true;
@@ -177,18 +188,19 @@
  {
  }</pre>
 <p>Before exiting, the server process will call the <a href="qscreen.html#shutdownDevice">shutdownDevice()</a> function to do the necessary hardware cleanup. Again, it is important that the function leaves the hardware in a state consistent with the driver configuration. When <a href="qscreen.html#shutdownDevice">shutdownDevice()</a> returns, the <a href="qscreen.html#disconnect">disconnect()</a> function is called. Our implementation of the latter function is trivial.</p>
-<p>Note that, provided that the <tt>QScreen::data</tt> variable points to a valid linear framebuffer, the screen driver is fully functional at this point. The rest of this example will show where to take advantage of the accelerated capabilities available on the hardware.</p>
+<p>Note that, provided that the <tt>QScreen::data</tt> variable points to a valid linear framebuffer, the graphics driver is fully functional as a simple screen driver at this point. The rest of this example will show where to take advantage of the accelerated capabilities available on the hardware.</p>
 <pre> void SvgalibScreen::exposeRegion(QRegion region, int changing)
  {
      QScreen::exposeRegion(region, changing);
-     <span class="comment">// flip between buffers if implementing a double buffered driver</span>
+     <span class="comment">//</span> flip between buffers if implementing a double buffered driver
  }</pre>
 <p>The next function we implement is the <a href="qscreen.html#exposeRegion">exposeRegion()</a> function that paints the given region on screen.</p>
 <p>The default implementation will do the necessary composing of the top-level windows and call <a href="qscreen.html#solidFill">solidFill()</a> and <a href="qscreen.html#blit">blit()</a> whenever it is required. We do not want to change this behavior in this driver so we just call the base class implementation. On the other hand, if you are implementing a double buffered screen driver, this is where you would like to flip between the buffers.</p>
 <pre> void SvgalibScreen::solidFill(const QColor &amp;color, const QRegion &amp;reg)
  {
-     if (depth() != 32 || depth() != 16) {
-         QScreen::solidFill(color, reg);
+     if (depth() != 32 &amp;&amp; depth() != 16) {
+         if (base())
+             QScreen::solidFill(color, reg);
          return;
      }
 
@@ -203,7 +215,8 @@
                           const QRegion &amp;reg)
  {
      if (img.format() != pixelFormat()) {
-         QScreen::blit(img, topLeft, reg);
+         if (base())
+             QScreen::blit(img, topLeft, reg);
          return;
      }
 
@@ -392,11 +405,11 @@
 <p>Finally, we accelerated that drawing of non-rotated, aliased and opaque rectangles in our reimplementation of the <a href="qpaintengine.html#drawRects-2">drawRects()</a> function. The <a href="qrasterpaintengine.html">QRasterPaintEngine</a> fallback is used whenever the rectangle is not simple enough.</p>
 <a name="step-3-making-the-widgets-aware-of-the-custom-paint-engine"></a>
 <h2>Step 3: Making the Widgets Aware of the Custom Paint Engine</h2>
-<p>To activate the custom paint engine, we also need to implement a corresponding paint device and window surface and make some minor adjustments of the screen driver.</p>
+<p>To activate the custom paint engine, we also need to implement a corresponding paint device and window surface and make some minor adjustments of the graphics driver.</p>
 <ul>
 <li><a href="#implementing-a-custom-paint-device">Implementing a Custom Paint Device</a></li>
 <li><a href="#implementing-a-custom-window-surface">Implementing a Custom Window Surface</a></li>
-<li><a href="#adjusting-the-screen-driver">Adjusting the Screen Driver</a></li>
+<li><a href="#adjusting-the-graphics-driver">Adjusting the Graphics Driver</a></li>
 </ul>
 <a name="implementing-a-custom-paint-device"></a>
 <h3>Implementing a Custom Paint Device</h3>
@@ -416,7 +429,7 @@
      SvgalibPaintEngine *pengine;
  };</pre>
 <p>The <a href="qpaintdevice.html#paintEngine">paintEngine()</a> function should return an instance of the <tt>SvgalibPaintEngine</tt> class. The <a href="qcustomrasterpaintdevice.html#memory">memory()</a> function should return a pointer to the buffer which should be used when drawing the widget.</p>
-<p>Our example driver is rendering directly on the screen without any buffering, i.e&#x2e;, our custom pain device's <a href="qcustomrasterpaintdevice.html#memory">memory()</a> function returns a pointer to the framebuffer. For this reason, we must also reimplement the <a href="qpaintdevice.html#metric">metric()</a> function to reflect the metrics of framebuffer.</p>
+<p>Our example driver is rendering directly to the screen without any buffering, i.e&#x2e;, our custom pain device's <a href="qcustomrasterpaintdevice.html#memory">memory()</a> function returns a pointer to the framebuffer. For this reason, we must also reimplement the <a href="qpaintdevice.html#metric">metric()</a> function to reflect the metrics of framebuffer.</p>
 <a name="implementing-a-custom-window-surface"></a>
 <h3>Implementing a Custom Window Surface</h3>
 <p>The custom window surface can be derived from the QWSWindowSurface class. QWSWindowSurface manages the memory used when drawing a window.</p>
@@ -454,18 +467,19 @@
 
      return true;
  }</pre>
-<a name="adjusting-the-screen-driver"></a>
-<h3>Adjusting the Screen Driver</h3>
-<p>Finally, we enable the screen driver to recognize an instance of our custom window surface:</p>
+<a name="adjusting-the-graphics-driver"></a>
+<h3>Adjusting the Graphics Driver</h3>
+<p>Finally, we enable the graphics driver to recognize an instance of our custom window surface:</p>
 <pre> QWSWindowSurface* SvgalibScreen::createSurface(QWidget *widget) const
  {
-     static int onScreenPaint = -1;
-     if (onScreenPaint == -1)
-         onScreenPaint = qgetenv(&quot;QT_ONSCREEN_PAINT&quot;).toInt();
+     if (base()) {
+         static int onScreenPaint = -1;
+         if (onScreenPaint == -1)
+             onScreenPaint = qgetenv(&quot;QT_ONSCREEN_PAINT&quot;).toInt();
 
-     if (onScreenPaint &gt; 0 || widget-&gt;testAttribute(Qt::WA_PaintOnScreen))
-         return new SvgalibSurface(widget);
-
+         if (onScreenPaint &gt; 0 || widget-&gt;testAttribute(Qt::WA_PaintOnScreen))
+             return new SvgalibSurface(widget);
+     }
      return QScreen::createSurface(widget);
  }
 
@@ -480,6 +494,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

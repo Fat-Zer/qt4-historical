@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -99,12 +114,29 @@ OSStatus QMacFontPath::closePath(void *data)
 
 #include "qscriptengine_p.h"
 
-QFontEngineMacMulti::QFontEngineMacMulti(const ATSUFontID &fontID, const QFontDef &fontDef, bool kerning)
+QFontEngineMacMulti::QFontEngineMacMulti(const ATSFontFamilyRef &atsFamily, const ATSFontRef &atsFontRef, const QFontDef &fontDef, bool kerning)
     : QFontEngineMulti(0)
 {
     this->fontDef = fontDef;
     this->kerning = kerning;
-    this->fontID = fontID;
+
+    FMFontFamily fmFamily;
+    FMFontStyle fntStyle = 0;
+    fmFamily = FMGetFontFamilyFromATSFontFamilyRef(atsFamily);
+    if (fmFamily == kInvalidFontFamily) {
+        // Use the ATSFont then...
+        fontID = FMGetFontFromATSFontRef(atsFontRef);
+    } else {
+        if (fontDef.weight >= QFont::Bold)
+            fntStyle |= ::bold;
+        if (fontDef.style != QFont::StyleNormal)
+            fntStyle |= ::italic;
+
+        FMFontStyle intrinsicStyle;
+        FMFont fnt = 0;
+        if (FMGetFontFromFontFamilyInstance(fmFamily, fntStyle, &fnt, &intrinsicStyle) == noErr)
+           fontID = FMGetATSFontRefFromFont(fnt);
+    }
 
     OSStatus status;
 
@@ -985,18 +1017,20 @@ QFontEngine::Properties QFontEngineMac::properties() const
         qint16 xMax;
         qint16 yMax;
     } bbox;
-    if (ATSFontGetTable(atsFont, MAKE_TAG('h', 'e', 'a', 'd'), 36, 2, &bbox, 0) == noErr) {
+    bbox.xMin = bbox.xMax = bbox.yMin = bbox.yMax = 0;
+    if (ATSFontGetTable(atsFont, MAKE_TAG('h', 'e', 'a', 'd'), 36, 8, &bbox, 0) == noErr) {
         bbox.xMin = qFromBigEndian<quint16>(bbox.xMin);
         bbox.yMin = qFromBigEndian<quint16>(bbox.yMin);
         bbox.xMax = qFromBigEndian<quint16>(bbox.xMax);
         bbox.yMax = qFromBigEndian<quint16>(bbox.yMax);
     }
     struct {
-        qint32 ascender;
-        qint32 descender;
-        qint32 linegap;
+        qint16 ascender;
+        qint16 descender;
+        qint16 linegap;
     } metrics;
-    if (ATSFontGetTable(atsFont, MAKE_TAG('h', 'h', 'e', 'a'), 4, 12, &metrics, 0) == noErr) {
+    metrics.ascender = metrics.descender = metrics.linegap = 0;
+    if (ATSFontGetTable(atsFont, MAKE_TAG('h', 'h', 'e', 'a'), 4, 6, &metrics, 0) == noErr) {
         metrics.ascender = qFromBigEndian<quint16>(metrics.ascender);
         metrics.descender = qFromBigEndian<quint16>(metrics.descender);
         metrics.linegap = qFromBigEndian<quint16>(metrics.linegap);
@@ -1010,8 +1044,8 @@ QFontEngine::Properties QFontEngineMac::properties() const
     props.italicAngle = 0;
     props.capHeight = props.ascent;
 
-    int lw = 0;
-    if (ATSFontGetTable(atsFont, MAKE_TAG('p', 'o', 's', 't'), 12, 4, &lw, 0) == noErr)
+    qint16 lw = 0;
+    if (ATSFontGetTable(atsFont, MAKE_TAG('p', 'o', 's', 't'), 10, 2, &lw, 0) == noErr)
        lw = qFromBigEndian<quint16>(lw);
     props.lineWidth = lw;
     

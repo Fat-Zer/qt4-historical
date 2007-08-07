@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/gui/graphicsview/qgraphicsscene.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/graphicsview/qgraphicsscene.cpp -->
 <head>
   <title>Qt 4.3: QGraphicsScene Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -175,8 +175,10 @@
 <p>To add items to a scene, you start off by constructing a QGraphicsScene object. Then, you have two options: either add your existing <a href="qgraphicsitem.html">QGraphicsItem</a> objects by calling <a href="qgraphicsscene.html#addItem">addItem</a>(), or you can call one of the convenience functions <a href="qgraphicsscene.html#addEllipse">addEllipse</a>(), <a href="qgraphicsscene.html#addLine">addLine</a>(), <a href="qgraphicsscene.html#addPath">addPath</a>(), <a href="qgraphicsscene.html#addPixmap">addPixmap</a>(), <a href="qgraphicsscene.html#addPolygon">addPolygon</a>(), <a href="qgraphicsscene.html#addRect">addRect</a>(), or <a href="qgraphicsscene.html#addText">addText</a>(), which all return a pointer to the newly added item. You can then visualize the scene using <a href="qgraphicsview.html">QGraphicsView</a>. When the scene changes, (e.g&#x2e;, when an item moves or is transformed) QGraphicsScene emits the <a href="qgraphicsscene.html#changed">changed</a>() signal. To remove an item, call <a href="qgraphicsscene.html#removeItem">removeItem</a>().</p>
 <p>QGraphicsScene uses an indexing algorithm to manage the location of items efficiently. By default, a BSP (Binary Space Partitioning) tree is used; an algorithm suitable for large scenes where most items remain static (i.e&#x2e;, do not move around). You can choose to disable this index by calling <a href="qgraphicsscene.html#itemIndexMethod-prop">setItemIndexMethod</a>(). For more information about the available indexing algorithms, see the <a href="qgraphicsscene.html#itemIndexMethod-prop">itemIndexMethod</a> property.</p>
 <p>The scene's bounding rect is set by calling <a href="qgraphicsscene.html#sceneRect-prop">setSceneRect</a>(). Items can be placed at any position on the scene, and the size of the scene is by default unlimited. The scene rect is used only for internal bookkeeping, maintaining the scene's item index. If the scene rect is unset, QGraphicsScene will use the bounding area of all items, as returned by <a href="qgraphicsscene.html#itemsBoundingRect">itemsBoundingRect</a>(), as the scene rect. However, <a href="qgraphicsscene.html#itemsBoundingRect">itemsBoundingRect</a>() is a relatively time consuming function, as it operates by collecting positional information for every item on the scene. Because of this, you should always set the scene rect when operating on large scenes.</p>
-<p>One of QGraphicsScene's greatest strengts is its ability to efficiently determine the location of items. Even with millions of items on the scene, the <a href="qgraphicsscene.html#items">items</a>() functions can determine the location of an item within few milliseconds. There are several overloads to <a href="qgraphicsscene.html#items">items</a>(): one that finds items at a certain position, one that finds items inside or intersecting with a polygon or a rectangle, and more. The list of returned items is sorted by stacking order, with the topmost item being the first item in the list. For convenience, there is also an <a href="qgraphicsscene.html#itemAt">itemAt</a>() function that returns the topmost item at a given position.</p>
+<p>One of QGraphicsScene's greatest strengths is its ability to efficiently determine the location of items. Even with millions of items on the scene, the <a href="qgraphicsscene.html#items">items</a>() functions can determine the location of an item within few milliseconds. There are several overloads to <a href="qgraphicsscene.html#items">items</a>(): one that finds items at a certain position, one that finds items inside or intersecting with a polygon or a rectangle, and more. The list of returned items is sorted by stacking order, with the topmost item being the first item in the list. For convenience, there is also an <a href="qgraphicsscene.html#itemAt">itemAt</a>() function that returns the topmost item at a given position.</p>
 <p>QGraphicsScene maintains selection information for the scene. To select items, call <a href="qgraphicsscene.html#setSelectionArea">setSelectionArea</a>(), and to clear the current selection, call <a href="qgraphicsscene.html#clearSelection">clearSelection</a>(). Call <a href="qgraphicsscene.html#selectedItems">selectedItems</a>() to get the list of all selected items.</p>
+<a name="event-handling-and-propagation"></a>
+<h3>Event Handling and Propagation</h3>
 <p>Another responsibility that QGraphicsScene has, is to propagate events from <a href="qgraphicsview.html">QGraphicsView</a>. To send an event to a scene, you construct an event that inherits <a href="qevent.html">QEvent</a>, and then send it using, for example, <a href="qcoreapplication.html#sendEvent">QApplication::sendEvent</a>(). <a href="qgraphicsscene.html#event">event</a>() is responsible for dispatching the event to the individual items. Some common events are handled by convenience event handlers. For example, key press events are handled by <a href="qgraphicsscene.html#keyPressEvent">keyPressEvent</a>(), and mouse press events are handled by <a href="qgraphicsscene.html#mousePressEvent">mousePressEvent</a>().</p>
 <p>Key events are delivered to the <i>focus item</i>. To set the focus item, you can either call <a href="qgraphicsscene.html#setFocusItem">setFocusItem</a>(), passing an item that accepts focus, or the item itself can call <a href="qgraphicsitem.html#setFocus">QGraphicsItem::setFocus</a>(). Call <a href="qgraphicsscene.html#focusItem">focusItem</a>() to get the current focus item. For compatibility with widgets, the scene also maintains its own focus information. By default, the scene does not have focus, and all key events are discarded. If <a href="qgraphicsscene.html#setFocus">setFocus</a>() is called, or if an item on the scene gains focus, the scene automatically gains focus. If the scene has focus, <a href="qgraphicsscene.html#hasFocus">hasFocus</a>() will return true, and key events will be forwarded to the focus item, if any. If the scene loses focus, (i.e&#x2e;, someone calls <a href="qgraphicsscene.html#clearFocus">clearFocus</a>(),) while an item has focus, the scene will maintain its item focus information, and once the scene regains focus, it will make sure the last focus item regains focus.</p>
 <p>For mouse-over effects, QGraphicsScene dispatches <i>hover events</i>. If an item accepts hover events (see <a href="qgraphicsitem.html#acceptsHoverEvents">QGraphicsItem::acceptsHoverEvents</a>()), it will receive a <a href="qevent.html#Type-enum">GraphicsSceneHoverEnter</a> event when the mouse enters its area. As the mouse continues moving inside the item's area, QGraphicsScene will send it <a href="qevent.html#Type-enum">GraphicsSceneHoverMove</a> events. When the mouse leaves the item's area, the item will receive a <a href="qevent.html#Type-enum">GraphicsSceneHoverLeave</a> event.</p>
@@ -226,10 +228,10 @@
  QGraphicsView view(&amp;scene);
  view.show();
 
-<span class="comment"> // a blue background</span>
+<span class="comment"> //</span> a blue background
  scene.setBackgroundBrush(Qt::blue);
 
-<span class="comment"> // a gradient background</span>
+<span class="comment"> //</span> a gradient background
  QRadialGradient gradient(0, 0, 10);
  gradient.setSpread(QGradient::RepeatSpread);
  scene.setBackgroundBrush(gradient);</pre>
@@ -267,10 +269,10 @@
  QGraphicsView view(&amp;scene);
  view.show();
 
-<span class="comment"> // a white semi-transparent foreground</span>
+<span class="comment"> //</span> a white semi-transparent foreground
  scene.setForegroundBrush(QColor(255, 255, 255, 127));
 
-<span class="comment"> // a grid foreground</span>
+<span class="comment"> //</span> a grid foreground
  scene.setForegroundBrush(QBrush(Qt::lightGray, Qt::CrossPattern));</pre>
 <p><a href="qgraphicsscene.html#render">QGraphicsScene::render</a>() calls <a href="qgraphicsscene.html#drawForeground">drawForeground</a>() to draw the scene foreground. For more detailed control over how the foreground is drawn, you can reimplement the <a href="qgraphicsscene.html#drawForeground">drawForeground</a>() function in a <a href="qgraphicsscene.html">QGraphicsScene</a> subclass.</p>
 <p>Access functions:</p>
@@ -453,7 +455,7 @@
                              QWidget *widget)
  {
      for (int i = 0; i &lt; numItems; ++i) {
-          <span class="comment">// Draw the item</span>
+          <span class="comment">//</span> Draw the item
           painter-&gt;save();
           painter-&gt;setMatrix(items[i]-&gt;sceneMatrix(), true);
           items[i]-&gt;paint(painter, &amp;options[i], widget);
@@ -520,13 +522,13 @@
 <p>Example:</p>
 <pre> QRectF TileScene::rectForTile(int x, int y) const
  {
-     <span class="comment">// Return the rectangle for the tile at position (x, y).</span>
+     <span class="comment">//</span> Return the rectangle for the tile at position (x, y).
      return QRectF(x * tileWidth, y * tileHeight, tileWidth, tileHeight);
  }
 
  void TileScene::setTile(int x, int y, const QPixmap &amp;pixmap)
  {
-     <span class="comment">// Sets or replaces the tile at position (x, y) with pixmap.</span>
+     <span class="comment">//</span> Sets or replaces the tile at position (x, y) with pixmap.
      if (x &gt;= 0 &amp;&amp; x &lt; numTilesH &amp;&amp; y &gt;= 0 &amp;&amp; y &lt; numTilesV) {
          tiles[y][x] = pixmap;
          invalidate(rectForTile(x, y), BackgroundLayer);
@@ -535,7 +537,7 @@
 
  void TileScene::drawBackground(QPainter *painter, const QRectF &amp;exposed)
  {
-     <span class="comment">// Draws all tiles that intersect the exposed area.</span>
+     <span class="comment">//</span> Draws all tiles that intersect the exposed area.
      for (int y = 0; y &lt; numTilesV; ++y) {
          for (int x = 0; x &lt; numTilesH; ++x) {
              QRectF rect = rectForTile(x, y);
@@ -708,6 +710,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

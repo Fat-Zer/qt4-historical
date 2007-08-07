@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/qt3support/other/q3accel.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/qt3support/other/q3accel.cpp -->
 <head>
   <title>Qt 4.3: Q3Accel Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -74,7 +74,7 @@
 <p>The Q3Accel class handles keyboard accelerator and shortcut keys.</p>
 <p>A keyboard accelerator triggers an action when a certain key combination is pressed. The accelerator handles all keyboard activity for all the children of one top-level widget, so it is not affected by the keyboard focus.</p>
 <p>In most cases, you will not need to use this class directly. Use the <a href="qaction.html">QAction</a> class to create actions with accelerators that can be used in both menus and toolbars. If you're only interested in menus use Q3MenuData::insertItem() or Q3MenuData::setAccel() to make accelerators for operations that are also available on menus. Many widgets automatically generate accelerators, such as <a href="qabstractbutton.html">QAbstractButton</a>, <a href="qgroupbox.html">QGroupBox</a>, <a href="qlabel.html">QLabel</a> (with <a href="qlabel.html#setBuddy">QLabel::setBuddy</a>()), <a href="qmenubar.html">QMenuBar</a>, and <a href="qtabbar.html">QTabBar</a>. Example:</p>
-<pre> QPushButton p(&quot;&amp;Exit&quot;, parent); <span class="comment">// automatic shortcut Alt+E</span>
+<pre> QPushButton p(&quot;&amp;Exit&quot;, parent); <span class="comment">//</span> automatic shortcut Alt+E
  Q3PopupMenu *fileMenu = new fileMenu(parent);
  fileMenu-&gt;insertItem(&quot;Undo&quot;, parent, SLOT(undo()),
                       Qt::CTRL + Qt::Key_Z);</pre>
@@ -118,18 +118,18 @@
 <p>Removes all accelerator items.</p>
 <a name="//apple_ref/cpp/instm/Q3Accel/connectItem" />
 <h3 class="fn"><a name="connectItem"></a>bool Q3Accel::connectItem ( int <i>id</i>, const <a href="qobject.html">QObject</a> * <i>receiver</i>, const char * <i>member</i> )</h3>
-<p>Connects the accelerator item <i>id</i> to the slot <i>member</i> of <i>receiver</i>.</p>
+<p>Connects the accelerator item <i>id</i> to the slot <i>member</i> of <i>receiver</i>. Returns true if the connection is successful.</p>
 <pre> a-&gt;connectItem(201, mainView, SLOT(quit()));</pre>
 <p>Of course, you can also send a signal as <i>member</i>.</p>
 <p>Normally accelerators are connected to slots which then receive the <tt>activated(int id)</tt> signal with the id of the accelerator item that was activated. If you choose to connect a specific accelerator item using this function, the <tt>activated()</tt> signal is emitted if the associated key sequence is pressed but no <tt>activated(int id)</tt> signal is emitted.</p>
-<p>See also <a href="q3accel.html#disconnectItem">disconnectItem</a>().</p>
+<p>See also <a href="q3accel.html#disconnectItem">disconnectItem</a>() and <a href="qobject.html#connect">QObject::connect</a>().</p>
 <a name="//apple_ref/cpp/instm/Q3Accel/count" />
 <h3 class="fn"><a name="count"></a><a href="qtglobal.html#uint-typedef">uint</a> Q3Accel::count () const</h3>
 <p>Returns the number of accelerator items in this accelerator.</p>
 <a name="//apple_ref/cpp/instm/Q3Accel/disconnectItem" />
 <h3 class="fn"><a name="disconnectItem"></a>bool Q3Accel::disconnectItem ( int <i>id</i>, const <a href="qobject.html">QObject</a> * <i>receiver</i>, const char * <i>member</i> )</h3>
-<p>Disconnects an accelerator item with id <i>id</i> from the function called <i>member</i> in the <i>receiver</i> object.</p>
-<p>See also <a href="q3accel.html#connectItem">connectItem</a>().</p>
+<p>Disconnects the accelerator item identified by <i>id</i> from the function called <i>member</i> in the <i>receiver</i> object. Returns true if the connection existed and the disconnect was successful.</p>
+<p>See also <a href="q3accel.html#connectItem">connectItem</a>() and <a href="qobject.html#disconnect">QObject::disconnect</a>().</p>
 <a name="//apple_ref/cpp/instm/Q3Accel/findKey" />
 <h3 class="fn"><a name="findKey"></a>int Q3Accel::findKey ( const <a href="qkeysequence.html">QKeySequence</a> &amp; <i>key</i> ) const</h3>
 <p>Returns the identifier of the accelerator item with the key code <i>key</i>, or -1 if the item cannot be found.</p>
@@ -138,12 +138,12 @@
 <p>Inserts an accelerator item and returns the item's identifier.</p>
 <p><i>key</i> is a key code and an optional combination of SHIFT, CTRL and ALT. <i>id</i> is the accelerator item id.</p>
 <p>If <i>id</i> is negative, then the item will be assigned a unique negative identifier less than -1.</p>
-<pre> Q3Accel *a = new Q3Accel(myWindow);        <span class="comment">// create accels for myWindow</span>
- a-&gt;insertItem(CTRL + Key_P, 200);          <span class="comment">// Ctrl+P, e.g. to print document</span>
- a-&gt;insertItem(ALT + Key_X, 201);           <span class="comment">// Alt+X, e.g. to quit</span>
- a-&gt;insertItem(UNICODE_ACCEL + 'q', 202); <span class="comment">// Unicode 'q', e.g. to quit</span>
- a-&gt;insertItem(Key_D);                      <span class="comment">// gets a unique negative id &lt; -1</span>
- a-&gt;insertItem(CTRL + SHIFT + Key_P);       <span class="comment">// gets a unique negative id &lt; -1</span></pre>
+<pre> Q3Accel *a = new Q3Accel(myWindow);        <span class="comment">//</span> create accels for myWindow
+ a-&gt;insertItem(CTRL + Key_P, 200);          <span class="comment">//</span> Ctrl+P, e.g. to print document
+ a-&gt;insertItem(ALT + Key_X, 201);           <span class="comment">//</span> Alt+X, e.g. to quit
+ a-&gt;insertItem(UNICODE_ACCEL + 'q', 202); <span class="comment">//</span> Unicode 'q', e.g. to quit
+ a-&gt;insertItem(Key_D);                      <span class="comment">//</span> gets a unique negative id &lt; -1
+ a-&gt;insertItem(CTRL + SHIFT + Key_P);       <span class="comment">//</span> gets a unique negative id &lt; -1</pre>
 <a name="//apple_ref/cpp/instm/Q3Accel/isEnabled" />
 <h3 class="fn"><a name="isEnabled"></a>bool Q3Accel::isEnabled () const</h3>
 <p>Returns true if the accelerator is enabled; otherwise returns false.</p>
@@ -186,6 +186,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

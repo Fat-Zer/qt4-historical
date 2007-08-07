@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -44,7 +59,7 @@
 /*!
     \class QToolTip
 
-    \brief The QToolTip class provides tooltips (balloon help) for any
+    \brief The QToolTip class provides tool tips (balloon help) for any
     widget.
 
     \ingroup helpsystem
@@ -55,30 +70,30 @@
     position in a distinctive black-on-yellow color combination. The
     tip can be any \l{QTextEdit}{rich text} formatted string.
 
-    Rich text formatted tips implictely do word breaking, unless
+    Rich text displayed in a tool tip is implicitly word-wrapped unless
     specified differently with \c{<p style='white-space:pre'>}.
 
-    The simplest and most common way to set a widget's tooltip is by
+    The simplest and most common way to set a widget's tool tip is by
     calling its QWidget::setToolTip() function.
 
-    It is also possible to show different tooltips for different
+    It is also possible to show different tool tips for different
     regions of a widget, by using a QHelpEvent of type
     QEvent::ToolTip. Intercept the help event in your widget's \l
     {QWidget::}{event()} function and call QToolTip::showText() with
     the text you want to display. The \l{widgets/tooltips}{Tooltips}
     example illustrates this technique.
 
-    Note that if you want to show tooltips in an item view, the
+    Note that, if you want to show tooltips in an item view, the
     model/view architecture provides functionality to set an item's
-    tootip, e.g., the QTableWidgetItem::setToolTip() function. But if
-    you want to provide custom tooltips in an item view you must
-    intercept the help event in the QAbstractItemView::viewportEvent()
-    function instead.
+    tool tip; e.g., the QTableWidgetItem::setToolTip() function.
+    However, if you want to provide custom tool tips in an item view,
+    you must intercept the help event in the
+    QAbstractItemView::viewportEvent() function and handle it yourself.
 
-    The default tooltip color and font can be customized with
+    The default tool tip color and font can be customized with
     setPalette() and setFont().
 
-    \sa QWidget::toolTip, QAction::toolTip, {Tooltips Example}
+    \sa QWidget::toolTip, QAction::toolTip, {Tool Tips Example}
 */
 
 class QTipLabel : public QLabel
@@ -324,9 +339,12 @@ bool QTipLabel::tipChanged(const QPoint &pos, const QString &text, QObject *o)
 }
 
 /*!
-    Shows \a text as a tool tip, at global position \a pos. If you
-    specify a non-empty rect the tip will be hidden as soon as you
-    move your cursor out of this area.
+    Shows \a text as a tool tip, with the global position \a pos as
+    the point of interest. The tool tip will be shown with a platform
+    specific offset from this point of interest.
+
+    If you specify a non-empty rect the tip will be hidden as soon
+    as you move your cursor out of this area.
 
     The \a rect is in the coordinates of the widget you specify with
     \a w. If the \a rect is not empty you must specify a widget.

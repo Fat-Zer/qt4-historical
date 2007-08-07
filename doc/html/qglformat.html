@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/opengl/qgl.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/opengl/qgl.cpp -->
 <head>
   <title>Qt 4.3: QGLFormat Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -106,9 +106,8 @@
 </ul>
 <p>You can also specify preferred bit depths for the depth buffer, alpha buffer, accumulation buffer and the stencil buffer with the functions: <a href="qglformat.html#setDepthBufferSize">setDepthBufferSize</a>(), <a href="qglformat.html#setAlphaBufferSize">setAlphaBufferSize</a>(), <a href="qglformat.html#setAccumBufferSize">setAccumBufferSize</a>() and <a href="qglformat.html#setStencilBufferSize">setStencilBufferSize</a>().</p>
 <p>Note that even if you specify that you prefer a 32 bit depth buffer (e.g&#x2e; with setDepthBufferSize(32)), the format that is chosen may not have a 32 bit depth buffer, even if there is a format available with a 32 bit depth buffer. The main reason for this is how the system dependant picking algorithms work on the different platforms, and some format options may have higher precedence than others.</p>
-<p>You create and tell a QGLFormat object what rendering options you want from an OpenGL </p>
-<!-- <p>OpenGL is a trademark of Silicon Graphics, Inc. in the United States and other countries.</p>
---> rendering context.<p>OpenGL drivers or accelerated hardware may or may not support advanced features such as alpha channel or stereographic viewing. If you request some features that the driver/hardware does not provide when you create a <a href="qglwidget.html">QGLWidget</a>, you will get a rendering context with the nearest subset of features.</p>
+<p>You create and tell a QGLFormat object what rendering options you want from an OpenGL rendering context.</p>
+<p>OpenGL drivers or accelerated hardware may or may not support advanced features such as alpha channel or stereographic viewing. If you request some features that the driver/hardware does not provide when you create a <a href="qglwidget.html">QGLWidget</a>, you will get a rendering context with the nearest subset of features.</p>
 <p>There are different ways to define the display characteristics of a rendering context. One is to create a QGLFormat and make it the default for the entire application:</p>
 <pre> QGLFormat fmt;
  fmt.setAlpha(true);
@@ -116,8 +115,8 @@
  QGLFormat::setDefaultFormat(fmt);</pre>
 <p>Or you can specify the desired format when creating an object of your <a href="qglwidget.html">QGLWidget</a> subclass:</p>
 <pre> QGLFormat fmt;
- fmt.setDoubleBuffer(false);                 <span class="comment">// single buffer</span>
- fmt.setDirectRendering(false);              <span class="comment">// software rendering</span>
+ fmt.setDoubleBuffer(false);                 <span class="comment">//</span> single buffer
+ fmt.setDirectRendering(false);              <span class="comment">//</span> software rendering
  MyGLWidget* myWidget = new MyGLWidget(fmt, ...);</pre>
 <p>After the widget has been created, you can find out which of the requested features the system was able to provide:</p>
 <pre> QGLFormat fmt;
@@ -125,12 +124,13 @@
  fmt.setStereo(true);
  MyGLWidget* myWidget = new MyGLWidget(fmt, ...);
  if (!myWidget-&gt;format().stereo()) {
-     <span class="comment">// ok, goggles off</span>
+     <span class="comment">//</span> ok, goggles off
      if (!myWidget-&gt;format().hasOverlay()) {
          qFatal(&quot;Cool hardware required&quot;);
      }
  }</pre>
-<p>See also <a href="qglcontext.html">QGLContext</a> and <a href="qglwidget.html">QGLWidget</a>.</p>
+<div style="padding: 0.5em; background: #e0e0e0; color: black"><p>OpenGL is a trademark of Silicon Graphics, Inc. in the United States and other countries.</p>
+</div><p>See also <a href="qglcontext.html">QGLContext</a> and <a href="qglwidget.html">QGLWidget</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
 <a name="//apple_ref/cpp/tag/QGLFormat/OpenGLVersionFlag" />
@@ -192,8 +192,8 @@
 <p>Creates a <a href="qglformat.html">QGLFormat</a> object that is a copy of the current <a href="qglformat.html#defaultFormat">application default format</a>.</p>
 <p>If <i>options</i> is not 0, this copy is modified by these format options. The <i>options</i> parameter should be <tt>FormatOption</tt> values OR'ed together.</p>
 <p>This constructor makes it easy to specify a certain desired format in classes derived from <a href="qglwidget.html">QGLWidget</a>, for example:</p>
-<pre><span class="comment"> // The rendering in MyGLWidget depends on using</span>
-<span class="comment"> // stencil buffer and alpha channel</span>
+<pre><span class="comment"> //</span> The rendering in MyGLWidget depends on using
+<span class="comment"> //</span> stencil buffer and alpha channel
  MyGLWidget::MyGLWidget(QWidget* parent)
      : QGLWidget(QGLFormat(QGL::StencilBuffer | QGL::AlphaChannel), parent)
  {
@@ -359,15 +359,15 @@
  f.setDoubleBuffer(true);
  QGLFormat::setDefaultOverlayFormat(f);</pre>
 <p>As usual, you can find out after widget creation whether the underlying OpenGL system was able to provide the requested specification:</p>
-<pre><span class="comment"> // ...continued from above</span>
+<pre><span class="comment"> //</span> ...continued from above
  MyGLWidget* myWidget = new MyGLWidget(QGLFormat(QGL::HasOverlay), ...);
  if (myWidget-&gt;format().hasOverlay()) {
-     <span class="comment">// Yes, we got an overlay, let's check _its_ format:</span>
+     <span class="comment">//</span> Yes, we got an overlay, let's check _its_ format:
      QGLContext* olContext = myWidget-&gt;overlayContext();
      if (olContext-&gt;format().doubleBuffer())
-         ; <span class="comment">// yes, we got a double buffered overlay</span>
+         ; <span class="comment">//</span> yes, we got a double buffered overlay
      else
-         ; <span class="comment">// no, only single buffered overlays are available</span>
+         ; <span class="comment">//</span> no, only single buffered overlays are available
  }</pre>
 <p>See also <a href="qglformat.html#defaultOverlayFormat">defaultOverlayFormat</a>().</p>
 <a name="//apple_ref/cpp/instm/QGLFormat/setDepth" />
@@ -482,6 +482,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

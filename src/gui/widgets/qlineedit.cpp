@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -502,7 +517,7 @@ void QLineEdit::setEchoMode(EchoMode mode)
     Q_D(QLineEdit);
     if(mode == (EchoMode)d->echoMode)
         return;
-    setAttribute(Qt::WA_InputMethodEnabled, mode == Normal);
+    setAttribute(Qt::WA_InputMethodEnabled, mode == Normal || mode == PasswordEchoOnEdit);
     d->echoMode = mode;
     d->updateTextLayout();
     update();
@@ -1826,8 +1841,7 @@ void QLineEdit::keyPressEvent(QKeyEvent *event)
     }
     else if (event == QKeySequence::Cut) {
         if (!d->readOnly) {
-            copy();
-            del();
+            cut();
         }
     }
     else if (event == QKeySequence::DeleteEndOfLine) {
@@ -2852,7 +2866,8 @@ void QLineEditPrivate::addCommand(const Command& cmd)
 
 void QLineEditPrivate::insert(const QString& s)
 {
-    addCommand(Command(SetSelection, cursor, 0, selstart, selend));
+    if (hasSelectedText())
+        addCommand(Command(SetSelection, cursor, 0, selstart, selend));
     if (maskData) {
         QString ms = maskString(cursor, s);
         for (int i = 0; i < (int) ms.length(); ++i) {
@@ -2874,7 +2889,8 @@ void QLineEditPrivate::insert(const QString& s)
 void QLineEditPrivate::del(bool wasBackspace)
 {
     if (cursor < (int) text.length()) {
-        addCommand(Command(SetSelection, cursor, 0, selstart, selend));
+        if (hasSelectedText())
+            addCommand(Command(SetSelection, cursor, 0, selstart, selend));
         addCommand (Command((CommandType)((maskData?2:0)+(wasBackspace?Remove:Delete)), cursor, text.at(cursor), -1, -1));
         if (maskData) {
             text.replace(cursor, 1, clearString(cursor, 1));

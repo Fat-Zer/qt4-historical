@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/script/qscriptengine.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/script/qscriptengine.cpp -->
 <head>
   <title>Qt 4.3: QScriptEngine Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -55,7 +55,9 @@
 <li><div class="fn"/>QScriptValue <b><a href="qscriptengine.html#newRegExp-2">newRegExp</a></b> ( const QString &amp; <i>pattern</i>, const QString &amp; <i>flags</i> )</li>
 <li><div class="fn"/>QScriptValue <b><a href="qscriptengine.html#newVariant">newVariant</a></b> ( const QVariant &amp; <i>value</i> )</li>
 <li><div class="fn"/>QScriptValue <b><a href="qscriptengine.html#nullValue">nullValue</a></b> ()</li>
+<li><div class="fn"/>void <b><a href="qscriptengine.html#popContext">popContext</a></b> ()</li>
 <li><div class="fn"/>int <b><a href="qscriptengine.html#processEventsInterval">processEventsInterval</a></b> () const</li>
+<li><div class="fn"/>QScriptContext * <b><a href="qscriptengine.html#pushContext">pushContext</a></b> ()</li>
 <li><div class="fn"/>QScriptValue <b><a href="qscriptengine.html#scriptValueFromQMetaObject">scriptValueFromQMetaObject</a></b> ()</li>
 <li><div class="fn"/>void <b><a href="qscriptengine.html#setDefaultPrototype">setDefaultPrototype</a></b> ( int <i>metaTypeId</i>, const QScriptValue &amp; <i>prototype</i> )</li>
 <li><div class="fn"/>void <b><a href="qscriptengine.html#setProcessEventsInterval">setProcessEventsInterval</a></b> ( int <i>interval</i> )</li>
@@ -75,7 +77,9 @@
 <li><div class="fn"/>int <b><a href="qscriptengine.html#qScriptRegisterMetaType">qScriptRegisterMetaType</a></b> ( QScriptEngine * <i>engine</i>, QScriptValue(* ) ( QScriptEngine *, const T &amp; t ) <i>toScriptValue</i>, void(* ) ( const QScriptValue &amp;, T &amp; t ) <i>fromScriptValue</i>, const QScriptValue &amp; <i>prototype</i> = QScriptValue() )</li>
 <li><div class="fn"/>int <b><a href="qscriptengine.html#qScriptRegisterSequenceMetaType">qScriptRegisterSequenceMetaType</a></b> ( QScriptEngine * <i>engine</i>, const QScriptValue &amp; <i>prototype</i> = QScriptValue() )</li>
 <li><div class="fn"/>QScriptValue <b><a href="qscriptengine.html#qScriptValueFromQMetaObject">qScriptValueFromQMetaObject</a></b> ( QScriptEngine * <i>engine</i> )</li>
+<li><div class="fn"/>QScriptValue <b><a href="qscriptengine.html#qScriptValueFromSequence">qScriptValueFromSequence</a></b> ( QScriptEngine * <i>engine</i>, const Container &amp; <i>container</i> )</li>
 <li><div class="fn"/>QScriptValue <b><a href="qscriptengine.html#qScriptValueFromValue">qScriptValueFromValue</a></b> ( QScriptEngine * <i>engine</i>, const T &amp; <i>value</i> )</li>
+<li><div class="fn"/>void <b><a href="qscriptengine.html#qScriptValueToSequence">qScriptValueToSequence</a></b> ( const QScriptValue &amp; <i>value</i>, Container &amp; <i>container</i> )</li>
 <li><div class="fn"/>T <b><a href="qscriptengine.html#qScriptValueToValue">qScriptValueToValue</a></b> ( const QScriptValue &amp; <i>value</i> )</li>
 </ul>
 <a name="macros"></a>
@@ -239,7 +243,7 @@
 <p>See also <a href="qscriptengine.html#uncaughtException">uncaughtException</a>(), <a href="qscriptengine.html#uncaughtExceptionLineNumber">uncaughtExceptionLineNumber</a>(), and <a href="qscriptengine.html#uncaughtExceptionBacktrace">uncaughtExceptionBacktrace</a>().</p>
 <a name="//apple_ref/cpp/instm/QScriptEngine/importExtension" />
 <h3 class="fn"><a name="importExtension"></a><a href="qscriptvalue.html">QScriptValue</a> QScriptEngine::importExtension ( const <a href="qstring.html">QString</a> &amp; <i>extension</i> )</h3>
-<p>Imports the given <i>extension</i> into this <a href="qscriptengine.html">QScriptEngine</a>. Returns <a href="qscriptengine.html#undefinedValue">undefinedValue</a>() if the extension was successfully imported. You can call <a href="qscriptengine.html#hasUncaughtException">hasUncaughtException</a>() to check if an error occured; in that case, the return value is the value that was thrown by the exception (usually an <tt>Error</tt> object).</p>
+<p>Imports the given <i>extension</i> into this <a href="qscriptengine.html">QScriptEngine</a>. Returns <a href="qscriptengine.html#undefinedValue">undefinedValue</a>() if the extension was successfully imported. You can call <a href="qscriptengine.html#hasUncaughtException">hasUncaughtException</a>() to check if an error occurred; in that case, the return value is the value that was thrown by the exception (usually an <tt>Error</tt> object).</p>
 <p><a href="qscriptengine.html">QScriptEngine</a> ensures that a particular extension is only imported once; subsequent calls to importExtension() with the same extension name will do nothing and return <a href="qscriptengine.html#undefinedValue">undefinedValue</a>().</p>
 <p>See also <a href="qscriptextensionplugin.html">QScriptExtensionPlugin</a> and <a href="qtscriptextensions.html">Creating QtScript Extensions</a>.</p>
 <a name="//apple_ref/cpp/instm/QScriptEngine/newArray" />
@@ -261,7 +265,7 @@
 <pre> static QScriptValue getSetFoo(QScriptContext *context, QScriptEngine *engine)
  {
      QScriptValue callee = context-&gt;callee();
-     if (context-&gt;argumentCount() == 1) <span class="comment">// writing?</span>
+     if (context-&gt;argumentCount() == 1) <span class="comment">//</span> writing?
          callee.setProperty(&quot;value&quot;, context-&gt;argument(0));
      return callee.property(&quot;value&quot;);
  }
@@ -284,15 +288,15 @@
 <pre> QScriptValue Foo(QScriptContext *context, QScriptEngine *engine)
  {
      if (context-&gt;calledAsConstructor()) {
-         <span class="comment">// initialize the new object</span>
+         <span class="comment">//</span> initialize the new object
          context-&gt;thisObject().setProperty(&quot;bar&quot;, ...);
-         <span class="comment">// ...</span>
-         <span class="comment">// return a non-object value to indicate that the</span>
-         <span class="comment">// thisObject() should be the result of the &quot;new Foo()&quot; expression</span>
+         <span class="comment">//</span> ...
+         <span class="comment">//</span> return a non-object value to indicate that the
+         <span class="comment">//</span> thisObject() should be the result of the &quot;new Foo()&quot; expression
          return engine-&gt;undefinedValue();
      } else {
-         <span class="comment">// not called as &quot;new Foo()&quot;, just &quot;Foo()&quot;</span>
-         <span class="comment">// create our own object and return that one</span>
+         <span class="comment">//</span> not called as &quot;new Foo()&quot;, just &quot;Foo()&quot;
+         <span class="comment">//</span> create our own object and return that one
          QScriptValue object = engine-&gt;newObject();
          object.setPrototype(context-&gt;callee().property(&quot;prototype&quot;));
          object.setProperty(&quot;baz&quot;, ...);
@@ -313,20 +317,20 @@
  QScriptValue constructBar(QScriptContext *context, QScriptEngine *engine)
  {
      Bar bar;
-     <span class="comment">// initialize from arguments in context, if desired</span>
+     <span class="comment">//</span> initialize from arguments in context, if desired
      ...
      return engine-&gt;toScriptValue(bar);
  }
 
  class BarPrototype : public QObject, public QScriptable
  {
-<span class="comment"> // provide the scriptable interface of this type using slots and properties</span>
+<span class="comment"> //</span> provide the scriptable interface of this type using slots and properties
  ...
  };
 
  ...
 
-<span class="comment"> // create and register the Bar prototype and constructor in the engine</span>
+<span class="comment"> //</span> create and register the Bar prototype and constructor in the engine
  BarPrototype *barPrototypeObject = new BarPrototype(...);
  QScriptValue barProto = engine-&gt;newQObject(barPrototypeObject);
  engine-&gt;setDefaultPrototype(qMetaTypeId&lt;Bar&gt;, barProto);
@@ -365,10 +369,28 @@
 <h3 class="fn"><a name="nullValue"></a><a href="qscriptvalue.html">QScriptValue</a> QScriptEngine::nullValue ()</h3>
 <p>Returns a <a href="qscriptvalue.html">QScriptValue</a> of the primitive type Null.</p>
 <p>See also <a href="qscriptengine.html#undefinedValue">undefinedValue</a>().</p>
+<a name="//apple_ref/cpp/instm/QScriptEngine/popContext" />
+<h3 class="fn"><a name="popContext"></a>void QScriptEngine::popContext ()</h3>
+<p>Pops the current execution context and restores the previous one. This function must be used in conjunction with <a href="qscriptengine.html#pushContext">pushContext</a>().</p>
+<p>See also <a href="qscriptengine.html#pushContext">pushContext</a>().</p>
 <a name="//apple_ref/cpp/instm/QScriptEngine/processEventsInterval" />
 <h3 class="fn"><a name="processEventsInterval"></a>int QScriptEngine::processEventsInterval () const</h3>
 <p>Returns the interval in milliseconds between calls to <a href="qcoreapplication.html#processEvents">QCoreApplication::processEvents</a>() while the interpreter is running.</p>
 <p>See also <a href="qscriptengine.html#setProcessEventsInterval">setProcessEventsInterval</a>().</p>
+<a name="//apple_ref/cpp/instm/QScriptEngine/pushContext" />
+<h3 class="fn"><a name="pushContext"></a><a href="qscriptcontext.html">QScriptContext</a> * QScriptEngine::pushContext ()</h3>
+<p>Enters a new execution context and returns the associated <a href="qscriptcontext.html">QScriptContext</a> object.</p>
+<p>Once you are done with the context, you should call <a href="qscriptengine.html#popContext">popContext</a>() to restore the old context.</p>
+<p>By default, the `this' object of the new context is the Global Object. The context's <a href="qscriptcontext.html#callee">callee</a>() will be invalid.</p>
+<p>This function is useful when you want to evaluate script code as if it were the body of a function. You can use the context's <a href="qscriptcontext.html#activationObject">activationObject</a>() to initialize local variables that will be available to scripts. Example:</p>
+<pre> QScriptEngine engine;
+ QScriptContext *context = engine.pushContext();
+ context-&gt;activationObject().setProperty(&quot;myArg&quot;, QScriptValue(&amp;engine, 123));
+ engine.evaluate(&quot;var tmp = myArg + 42&quot;);
+ ...
+ engine.popContext();</pre>
+<p>In the above example, the new variable &quot;tmp&quot; defined in the script will be local to the context; in other words, the script doesn't have any effect on the global environment.</p>
+<p>See also <a href="qscriptengine.html#popContext">popContext</a>().</p>
 <a name="//apple_ref/cpp/instm/QScriptEngine/scriptValueFromQMetaObject" />
 <h3 class="fn"><a name="scriptValueFromQMetaObject"></a><a href="qscriptvalue.html">QScriptValue</a> QScriptEngine::scriptValueFromQMetaObject ()</h3>
 <p>Creates a <a href="qscriptvalue.html">QScriptValue</a> that represents the Qt class <tt>T</tt>.</p>
@@ -486,23 +508,37 @@
  QVector&lt;int&gt; v = qscriptvalue_cast&lt;QVector&lt;int&gt; &gt;(engine-&gt;evaluate(&quot;[5, 1, 3, 2]&quot;));
  qSort(v.begin(), v.end());
  QScriptValue a = engine-&gt;toScriptValue(v);
- qDebug() &lt;&lt; a.toString(); <span class="comment">// outputs &quot;[1, 2, 3, 5]&quot;</span></pre>
+ qDebug() &lt;&lt; a.toString(); <span class="comment">//</span> outputs &quot;[1, 2, 3, 5]&quot;</pre>
 <p>See also <a href="qscriptengine.html#qScriptRegisterMetaType">qScriptRegisterMetaType</a>().</p>
 <a name="//apple_ref/cpp/func//qScriptValueFromQMetaObject" />
 <h3 class="fn"><a name="qScriptValueFromQMetaObject"></a><a href="qscriptvalue.html">QScriptValue</a> qScriptValueFromQMetaObject ( QScriptEngine * <i>engine</i> )</h3>
 <p>Uses <i>engine</i> to create a <a href="qscriptvalue.html">QScriptValue</a> that represents the Qt class <tt>T</tt>.</p>
 <p>This function is equivalent to <a href="qscriptengine.html#scriptValueFromQMetaObject">QScriptEngine::scriptValueFromQMetaObject</a>(). It is provided as a work-around for MSVC 6, which doesn't support member template functions.</p>
 <p>This function was introduced in Qt 4.3.</p>
+<a name="//apple_ref/cpp/func//qScriptValueFromSequence" />
+<h3 class="fn"><a name="qScriptValueFromSequence"></a><a href="qscriptvalue.html">QScriptValue</a> qScriptValueFromSequence ( QScriptEngine * <i>engine</i>, const Container &amp; <i>container</i> )</h3>
+<p>Creates an array in the form of a <a href="qscriptvalue.html">QScriptValue</a> using the given <i>engine</i> with the given <i>container</i> of template type <tt>Container</tt>.</p>
+<p>The <tt>Container</tt> type must provide a <tt>const_iterator</tt> class to enable the contents of the container to be copied into the array.</p>
+<p>Additionally, the type of each element in the sequence should be suitable for conversion to a <a href="qscriptvalue.html">QScriptValue</a>. See <a href="qtscript.html#conversion-between-qtscript-and-c-types">Conversion Between QtScript and C++ Types</a> for more information about the restrictions on types that can be used with <a href="qscriptvalue.html">QScriptValue</a>.</p>
+<p>This function was introduced in Qt 4.3.</p>
+<p>See also <a href="qscriptengine.html#qScriptValueFromValue">qScriptValueFromValue</a>().</p>
 <a name="//apple_ref/cpp/func//qScriptValueFromValue" />
 <h3 class="fn"><a name="qScriptValueFromValue"></a><a href="qscriptvalue.html">QScriptValue</a> qScriptValueFromValue ( QScriptEngine * <i>engine</i>, const T &amp; <i>value</i> )</h3>
 <p>Creates a <a href="qscriptvalue.html">QScriptValue</a> using the given <i>engine</i> with the given <i>value</i> of template type <tt>T</tt>.</p>
-<p>This function is equivalent to QScriptEngine::toScriptValue(<i>value</i>). It is provided as a work-around for MSVC 6, which doesn't support member template functions.</p>
+<p>This function is equivalent to <a href="qscriptengine.html#toScriptValue">QScriptEngine::toScriptValue</a>(). It is provided as a work-around for MSVC 6, which doesn't support member template functions.</p>
 <p>This function was introduced in Qt 4.3.</p>
 <p>See also <a href="qscriptengine.html#qScriptValueToValue">qScriptValueToValue</a>().</p>
+<a name="//apple_ref/cpp/func//qScriptValueToSequence" />
+<h3 class="fn"><a name="qScriptValueToSequence"></a>void qScriptValueToSequence ( const <a href="qscriptvalue.html">QScriptValue</a> &amp; <i>value</i>, Container &amp; <i>container</i> )</h3>
+<p>Copies the elements in the sequence specified by <i>value</i> to the given <i>container</i> of template type <tt>Container</tt>.</p>
+<p>The <i>value</i> used is typically an array, but any container can be copied as long as it provides a <tt>length</tt> property describing how many elements it contains.</p>
+<p>Additionally, the type of each element in the sequence must be suitable for conversion to a C++ type from a <a href="qscriptvalue.html">QScriptValue</a>. See <a href="qtscript.html#conversion-between-qtscript-and-c-types">Conversion Between QtScript and C++ Types</a> for more information about the restrictions on types that can be used with <a href="qscriptvalue.html">QScriptValue</a>.</p>
+<p>This function was introduced in Qt 4.3.</p>
+<p>See also <a href="qscriptvalue.html#qscriptvalue_cast">qscriptvalue_cast</a>().</p>
 <a name="//apple_ref/cpp/func//qScriptValueToValue" />
 <h3 class="fn"><a name="qScriptValueToValue"></a>T qScriptValueToValue ( const <a href="qscriptvalue.html">QScriptValue</a> &amp; <i>value</i> )</h3>
 <p>Returns the given <i>value</i> converted to the template type <tt>T</tt>.</p>
-<p>This function is equivalent to QScriptEngine::fromScriptValue(<i>value</i>). It is provided as a work-around for MSVC 6, which doesn't support member template functions.</p>
+<p>This function is equivalent to <a href="qscriptengine.html#fromScriptValue">QScriptEngine::fromScriptValue</a>(). It is provided as a work-around for MSVC 6, which doesn't support member template functions.</p>
 <p>This function was introduced in Qt 4.3.</p>
 <p>See also <a href="qscriptengine.html#qScriptValueFromValue">qScriptValueFromValue</a>().</p>
 <hr />
@@ -515,6 +551,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

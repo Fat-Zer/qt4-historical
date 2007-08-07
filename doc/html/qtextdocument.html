@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/gui/text/qtextdocument.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/text/qtextdocument.cpp -->
 <head>
   <title>Qt 4.3: QTextDocument Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -236,6 +236,8 @@
 <a name="//apple_ref/cpp/instm/QTextDocument/defaultTextOption" />
 <a name="//apple_ref/cpp/instm/QTextDocument/setDefaultTextOption" />
 <h3 class="fn"><a name="defaultTextOption-prop"></a>defaultTextOption : <a href="qtextoption.html">QTextOption</a></h3>
+<p>This property holds the default text option will be set on all QTextLayouts in the document.</p>
+<p>When <a href="qtextblock.html">QTextBlock</a>s are created, the defaultTextOption is set on their <a href="qtextlayout.html">QTextLayout</a>. This allows setting global properties for the document such as the default word wrap mode.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>QTextOption defaultTextOption () const</b></li>
@@ -382,7 +384,10 @@
 <p>This function was introduced in Qt 4.2.</p>
 <a name="//apple_ref/cpp/instm/QTextDocument/end" />
 <h3 class="fn"><a name="end"></a><a href="qtextblock.html">QTextBlock</a> QTextDocument::end () const</h3>
-<p>Returns the document's last text block.</p>
+<p>This function returns a block to test for the end of the document while iterating over it.</p>
+<pre>     for (QTextBlock it = doc-&gt;begin(); it != doc-&gt;end(); it = it.next())
+         cout &lt;&lt; it.text().toStdString() &lt;&lt; endl;</pre>
+<p>The block returned is invalid and represents the block after the last block in the document.</p>
 <a name="//apple_ref/cpp/instm/QTextDocument/find" />
 <h3 class="fn"><a name="find"></a><a href="qtextcursor.html">QTextCursor</a> QTextDocument::find ( const <a href="qstring.html">QString</a> &amp; <i>subString</i>, const <a href="qtextcursor.html">QTextCursor</a> &amp; <i>cursor</i>, <a href="qtextdocument.html#FindFlag-enum">FindFlags</a> <i>options</i> = 0 ) const</h3>
 <p>Finds the next occurrence of the string, <i>subString</i>, in the document. The search starts at the position of the given <i>cursor</i>, and proceeds forwards through the document unless specified otherwise in the search options. The <i>options</i> control the type of search performed.</p>
@@ -484,6 +489,7 @@
 <h3 class="fn"><a name="setHtml"></a>void QTextDocument::setHtml ( const <a href="qstring.html">QString</a> &amp; <i>html</i> )</h3>
 <p>Replaces the entire contents of the document with the given HTML-formatted text in the <i>html</i> string.</p>
 <p>The HTML formatting is respected as much as possible; for example, &quot;&lt;b&gt;bold&lt;/b&gt; text&quot; will produce text where the first word has a font weight that gives it a bold appearance: &quot;<b>bold</b> text&quot;.</p>
+<p><b>Note:</b> It is the responsibility of the caller to make sure that the text is correctly decoded when a <a href="qstring.html">QString</a> containing HTML is created and passed to setHtml().</p>
 <p>See also <a href="qtextdocument.html#setPlainText">setPlainText</a>() and <a href="richtext-html-subset.html">Supported HTML Subset</a>.</p>
 <a name="//apple_ref/cpp/instm/QTextDocument/setMetaInformation" />
 <h3 class="fn"><a name="setMetaInformation"></a>void QTextDocument::setMetaInformation ( <a href="qtextdocument.html#MetaInformation-enum">MetaInformation</a> <i>info</i>, const <a href="qstring.html">QString</a> &amp; <i>string</i> )</h3>
@@ -522,6 +528,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

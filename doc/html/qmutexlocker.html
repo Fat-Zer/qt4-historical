@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/corelib/thread/qmutex.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/corelib/thread/qmutex.cpp -->
 <head>
   <title>Qt 4.3: QMutexLocker Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -32,7 +32,7 @@
 <hr />
 <h2>Detailed Description</h2>
 <p>The QMutexLocker class is a convenience class that simplifies locking and unlocking mutexes.</p>
-<p>The purpose of QMutexLocker is to simplify <a href="qmutex.html">QMutex</a> locking and unlocking. Locking and unlocking a <a href="qmutex.html">QMutex</a> in complex functions and statements or in exception handling code is error-prone and difficult to debug. QMutexLocker can be used in such situations to ensure that the state of the mutex is always well-defined.</p>
+<p>Locking and unlocking a <a href="qmutex.html">QMutex</a> in complex functions and statements or in exception handling code is error-prone and difficult to debug. QMutexLocker can be used in such situations to ensure that the state of the mutex is always well-defined.</p>
 <p>QMutexLocker should be created within a function where a <a href="qmutex.html">QMutex</a> needs to be locked. The mutex is locked when QMutexLocker is created. You can unlock and relock the mutex with <tt>unlock()</tt> and <tt>relock()</tt>. If locked, the mutex will be unlocked when the QMutexLocker is destroyed.</p>
 <p>For example, this complex function locks a <a href="qmutex.html">QMutex</a> upon entering the function and unlocks the mutex at all the exit points:</p>
 <pre> int complexFunction(int flag)
@@ -143,6 +143,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

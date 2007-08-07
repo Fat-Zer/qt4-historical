@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -68,7 +83,7 @@
 
     Qt supports Microsoft Active Accessibility (MSAA), Mac OS X
     Accessibility, and the Unix/X11 AT-SPI standard. Other backends
-    can be supported using QAccessibilityBridge.
+    can be supported using QAccessibleBridge.
 
     In addition to QAccessible's static functions, Qt offers one
     generic interface, QAccessibleInterface, that can be used to wrap
@@ -343,7 +358,9 @@
     This enum specifies string information that an accessible object
     returns.
 
-    \value Name         The name of the object.
+    \value Name         The name of the object. This can be used both
+                        as an identifier or a short description by
+                        accessible clients.
     \value Description  A short text describing the object.
     \value Value        The value of the object.
     \value Help         A longer text giving information about how to use the object.
@@ -365,27 +382,6 @@
 /*!
     \fn void QAccessible::cleanup()
     \internal
-*/
-
-/*!
-    \fn static void QAccessible::updateAccessibility(QObject *object, int child, Event reason)
-
-    Notifies accessibility clients about a change in \a object's
-    accessibility information.
-
-    \a reason specifies the cause of the change, for example,
-    \c ValueChange when the position of a slider has been changed. \a
-    child is the (1-based) index of the child element that has changed.
-    When \a child is 0, the object itself has changed.
-
-    Call this function whenever the state of your accessible object or
-    one of its sub-elements has been changed either programmatically
-    (e.g. by calling QLabel::setText()) or by user interaction.
-
-    If there are no accessibility tools listening to this event, the
-    performance penalty for calling this function is small, but if determining
-    the parameters of the call is expensive you can test isActive() to
-    avoid unnecessary computations.
 */
 
 #ifndef QT_NO_LIBRARY
@@ -564,22 +560,41 @@ bool QAccessible::isActive()
 }
 
 /*!
-    \internal
+  \fn void QAccessible::setRootObject(QObject *object)
 
-    \fn void QAccessible::setRootObject(QObject *object)
+  Sets the root accessible object of this application to \a object.
+  All other accessible objects in the application can be reached by the
+  client using object navigation.
 
-    Sets the root accessible object of this application to \a object.
-    All other accessible objects in the application can be reached by the
-    client using object navigation.
+  You should never need to call this function. Qt sets the QApplication
+  object as the root object immediately before the event loop is entered
+  in QApplication::exec().
 
-    You should never need to call this function. Qt sets the QApplication
-    object as the root object immediately before the event loop is entered
-    in QApplication::exec().
+  Use QAccessible::installRootObjectHandler() to redirect the function
+  call to a customized handler function.
 
-    Use installRootObjectHandler() to redirect the function call to a
-    customized handler function.
+  \sa queryAccessibleInterface()
+*/
 
-    \sa RootObjectHandler, queryAccessibleInterface()
+/*!
+  \fn void QAccessible::updateAccessibility(QObject *object, int child, Event reason)
+
+  Notifies accessibility clients about a change in \a object's
+  accessibility information.
+
+  \a reason specifies the cause of the change, for example,
+  \c ValueChange when the position of a slider has been changed. \a
+  child is the (1-based) index of the child element that has changed.
+  When \a child is 0, the object itself has changed.
+  
+  Call this function whenever the state of your accessible object or
+  one of its sub-elements has been changed either programmatically
+  (e.g. by calling QLabel::setText()) or by user interaction.
+  
+  If there are no accessibility tools listening to this event, the
+  performance penalty for calling this function is small, but if determining
+  the parameters of the call is expensive you can test isActive() to
+  avoid unnecessary computations.
 */
 
 
@@ -822,9 +837,11 @@ const QAccessibleInterface *other, int otherChild) const
     Returns the value of the text property \a t of the object, or of
     the object's child if \a child is not 0.
 
-    The \l Name is a string used by clients to identify, find or
+    The \l Name is a string used by clients to identify, find, or
     announce an accessible object for the user. All objects must have
-    a name that is unique within their container.
+    a name that is unique within their container. The name can be
+    used differently by clients, so the name should both give a
+    short description of the object and be unique.
 
     An accessible object's \l Description provides textual information
     about an object's visual appearance. The description is primarily

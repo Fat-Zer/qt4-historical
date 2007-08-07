@@ -23,12 +23,27 @@
  ** and appearing in the file LICENSE.GPL included in the packaging of
  ** this file.  Please review the following information to ensure GNU
  ** General Public Licensing requirements will be met:
- ** http://www.trolltech.com/products/qt/opensource.html
+ ** http://trolltech.com/products/qt/licenses/licensing/opensource/
  **
  ** If you are unsure which license is appropriate for your use, please
  ** review the following information:
- ** http://www.trolltech.com/products/qt/licensing.html or contact the
- ** sales department at sales@trolltech.com.
+ ** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+ ** or contact the sales department at sales@trolltech.com.
+ **
+ ** In addition, as a special exception, Trolltech gives you certain
+ ** additional rights. These rights are described in the Trolltech GPL
+ ** Exception version 1.0, which can be found at
+ ** http://www.trolltech.com/products/qt/gplexception/ and in the file
+ ** GPL_EXCEPTION.txt in this package.
+ **
+ ** In addition, as a special exception, Trolltech, as the sole copyright
+ ** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+ ** plug-in the right for the Qt/Eclipse Integration to link to
+ ** functionality provided by Qt Designer and its related libraries.
+ **
+ ** Trolltech reserves all rights not expressly granted herein.
+ **
+ ** Trolltech ASA (c) 2007
  **
  ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
  ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -40,7 +55,7 @@
  #include &quot;mainwindow.h&quot;
 
  MainWindow::MainWindow(QWidget *parent)
-     : QMainWindow(parent), completer(0), comboBox(0), lineEdit(0)
+     : QMainWindow(parent), completer(0), lineEdit(0)
  {
      createMenu();
 
@@ -69,11 +84,7 @@
      caseCombo = new QComboBox;
      caseCombo-&gt;addItem(tr(&quot;Case Insensitive&quot;));
      caseCombo-&gt;addItem(tr(&quot;Case Sensitive&quot;));
- #ifdef Q_OS_WIN
      caseCombo-&gt;setCurrentIndex(0);
- #else
-     caseCombo-&gt;setCurrentIndex(1);
- #endif
 
      wrapCheckBox = new QCheckBox;
      wrapCheckBox-&gt;setText(tr(&quot;Wrap around completions&quot;));
@@ -88,9 +99,6 @@
 
      lineEdit = new QLineEdit;
 
-     comboBox = new QComboBox;
-     comboBox-&gt;setEditable(true);
-
      QGridLayout *layout = new QGridLayout;
      layout-&gt;addWidget(modelLabel, 0, 0); layout-&gt;addWidget(modelCombo, 0, 1);
      layout-&gt;addWidget(modeLabel, 1, 0);  layout-&gt;addWidget(modeCombo, 1, 1);
@@ -98,7 +106,6 @@
      layout-&gt;addWidget(wrapCheckBox, 3, 0);
      layout-&gt;addWidget(contentsLabel, 4, 0, 1, 2);
      layout-&gt;addWidget(lineEdit, 5, 0, 1, 2);
-     layout-&gt;addWidget(comboBox, 6, 0, 1, 2);
      centralWidget-&gt;setLayout(layout);
      setCentralWidget(centralWidget);
 
@@ -146,8 +153,8 @@
      if (!fileName.contains(QLatin1String(&quot;countries.txt&quot;)))
          return new QStringListModel(words, completer);
 
-     <span class="comment">// The last two chars of the countries.txt file indicate the country</span>
-     <span class="comment">// symbol. We put that in column 2 of a standard item model</span>
+     <span class="comment">//</span> The last two chars of the countries.txt file indicate the country
+     <span class="comment">//</span> symbol. We put that in column 2 of a standard item model
      QStandardItemModel *m = new QStandardItemModel(words.count(), 2, completer);
      for (int i = 0; i &lt; words.count(); ++i) {
          QModelIndex countryIdx = m-&gt;index(i, 0);
@@ -187,21 +194,21 @@
      switch (modelCombo-&gt;currentIndex()) {
      default:
      case 0:
-         { <span class="comment">// Unsorted QDirModel</span>
+         { <span class="comment">//</span> Unsorted QDirModel
              QDirModel *dirModel = new QDirModel(completer);
              completer-&gt;setModel(dirModel);
              contentsLabel-&gt;setText(tr(&quot;Enter file path&quot;));
          }
          break;
      case 1:
-         { <span class="comment">// DirModel that shows full paths</span>
+         { <span class="comment">//</span> DirModel that shows full paths
              DirModel *dirModel = new DirModel(completer);
              completer-&gt;setModel(dirModel);
              contentsLabel-&gt;setText(tr(&quot;Enter file path&quot;));
          }
          break;
      case 2:
-         { <span class="comment">// Country List</span>
+         { <span class="comment">//</span> Country List
              completer-&gt;setModel(modelFromFile(&quot;:/resources/countries.txt&quot;));
              QTreeView *treeView = new QTreeView;
              completer-&gt;setPopup(treeView);
@@ -214,7 +221,7 @@
          }
          break;
      case 3:
-         { <span class="comment">// Word list</span>
+         { <span class="comment">//</span> Word list
              completer-&gt;setModel(modelFromFile(&quot;:/resources/wordlist.txt&quot;));
              completer-&gt;setModelSorting(QCompleter::CaseInsensitivelySortedModel);
              contentsLabel-&gt;setText(tr(&quot;Enter a word&quot;));
@@ -226,7 +233,6 @@
      changeCase(caseCombo-&gt;currentIndex());
      completer-&gt;setWrapAround(wrapCheckBox-&gt;isChecked());
      lineEdit-&gt;setCompleter(completer);
-     comboBox-&gt;setCompleter(completer);
      connect(wrapCheckBox, SIGNAL(clicked(bool)), completer, SLOT(setWrapAround(bool)));
  }
 
@@ -239,6 +245,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

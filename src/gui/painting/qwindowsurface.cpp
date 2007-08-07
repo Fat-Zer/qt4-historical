@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -38,8 +53,9 @@ public:
 /*!
     \class QWindowSurface
     \since 4.3
-    \preliminary
     \internal
+    \preliminary
+    \ingroup qws
 
     \brief The QWindowSurface class provides the drawing area for top-level
     windows.
@@ -72,16 +88,12 @@ public:
     screen.
 
     Note that the \a offset parameter is currently unused.
-
-    \sa painterOffset()
 */
 
 /*!
     \fn QPaintDevice* QWindowSurface::paintDevice()
 
     Implement this function to return the appropriate paint device.
-
-    \sa painterOffset()
 */
 
 /*!
@@ -107,8 +119,6 @@ QWindowSurface::~QWindowSurface()
 /*!
     Returns a pointer to the top-level window associated with this
     surface.
-
-    \sa isValid(), key()
 */
 QWidget* QWindowSurface::window() const
 {
@@ -125,7 +135,7 @@ void QWindowSurface::endPaint(const QRegion &)
 }
 
 /*!
-    Sets the currently allocated area to be the given \a rectangle.
+    Sets the currently allocated area to be the given \a rect.
 
     This function is called whenever area covered by the top-level
     window changes.
@@ -146,7 +156,7 @@ QRect QWindowSurface::geometry() const
 }
 
 /*!
-    Scrolls the given \a region \a dx pixels to the right and \a dy
+    Scrolls the given \a area \a dx pixels to the right and \a dy
     downward; both \a dx and \a dy may be negative.
 
     Returns true if the area was scrolled successfully; false otherwise.
@@ -214,7 +224,10 @@ QPixmap QWindowSurface::grabWidget(const QWidget *widget, const QRect &rectangle
     return QPixmap();
 }
 
-
+/*!
+  Returns the offset of \a widget in the coordinates of this
+  window surface.
+ */
 QPoint QWindowSurface::offset(const QWidget *widget) const
 {
     QWidget *window = d_ptr->window;
@@ -225,3 +238,9 @@ QPoint QWindowSurface::offset(const QWidget *widget) const
     return offset;
 }
 
+/*!
+  \fn QRect QWindowSurface::rect(const QWidget *widget) const
+
+  Returns the rectangle for \a widget in the coordinates of this
+  window surface.
+*/

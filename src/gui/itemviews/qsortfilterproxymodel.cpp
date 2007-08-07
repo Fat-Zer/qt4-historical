@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -717,12 +732,21 @@ void QSortFilterProxyModelPrivate::source_items_removed(
     int delta_item_count = end - start + 1;
     source_to_proxy.remove(start, delta_item_count);
 
-    // Adjust "stale" indexes in proxy-to-source mapping
     int proxy_count = proxy_to_source.size();
+    if (proxy_count > source_to_proxy.size()) {
+        // mapping is in an inconsistent state -- redo the whole mapping
+        qWarning("QSortFilterProxyModel: inconsistent changes reported by source model");
+        remove_from_mapping(source_parent);
+        return;
+    }
+
+    // Adjust "stale" indexes in proxy-to-source mapping
     for (int proxy_item = 0; proxy_item < proxy_count; ++proxy_item) {
         int source_item = proxy_to_source.at(proxy_item);
-        if (source_item >= start)
+        if (source_item >= start) {
+            Q_ASSERT(source_item - delta_item_count >= 0);
             proxy_to_source.replace(proxy_item, source_item - delta_item_count);
+        }
     }
     build_source_to_proxy_mapping(proxy_to_source, source_to_proxy);
 
@@ -1152,11 +1176,10 @@ void QSortFilterProxyModelPrivate::_q_sourceColumnsRemoved(
     mapFromSource(), mapSelectionToSource(), and
     mapSelectionFromSource().
 
-    In Qt 4.1, sorting and filtering isn't dynamically reapplied
-    whenever the data of the original model changes, as an
-    optimization. Qt 4.2 is expected to offer a mechanism to enable
-    dynamic sorting and filtering.
-
+    \note By default, the model does not dynamically re-sort and re-filter
+    data whenever the original model changes. This behavior can be
+    changed by setting the \l{dynamicSortFilter} property. 
+        
     The \l{itemviews/basicsortfiltermodel}{Basic Sort/Filter Model}
     and \l{itemviews/customsortfiltermodel}{Custom Sort/Filter Model}
     examples illustrate how to use QSortFilterProxyModel to perform
@@ -1837,7 +1860,7 @@ void QSortFilterProxyModel::setFilterKeyColumn(int column)
     \brief the case sensitivity of the QRegExp pattern used to filter the
     contents of the source model
 
-    By default, the filter is case sensistive.
+    By default, the filter is case sensitive.
 
     \sa filterRegExp, sortCaseSensitivity
 */
@@ -1861,7 +1884,7 @@ void QSortFilterProxyModel::setFilterCaseSensitivity(Qt::CaseSensitivity cs)
     \property QSortFilterProxyModel::sortCaseSensitivity
     \brief the case sensitivity setting used for comparing strings when sorting
 
-    By default, sorting is case sensistive.
+    By default, sorting is case sensitive.
 
     \sa filterCaseSensitivity, lessThan()
 */

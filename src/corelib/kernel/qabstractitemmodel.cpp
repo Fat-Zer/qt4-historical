@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -1701,10 +1716,10 @@ QModelIndex QAbstractItemModel::buddy(const QModelIndex &index) const
 }
 
 /*!
-    Returns a list of indexes for the items where the data stored under
-    the given \a role matches the specified \a value. The way the search
-    is performed is defined by the \a flags given. The list that is
-    returned may be empty.
+    Returns a list of indexes for the items in the column of the \a
+    start index where the data stored under the given \a role matches
+    the specified \a value. The way the search is performed is defined
+    by the \a flags given. The list that is returned may be empty.
 
     The search starts from the \a start index, and continues until the
     number of matching data items equals \a hits, the search reaches
@@ -1809,7 +1824,7 @@ bool QAbstractItemModel::submit()
 }
 
 /*!
-  Called to let the model know that it should discart whatever it has cached.
+  Called to let the model know that it should discard whatever it has cached.
   Typically used for row editing.
 */
 
@@ -1859,7 +1874,7 @@ bool QAbstractItemModel::setHeaderData(int section, Qt::Orientation orientation,
 
     Creates a model index for the given \a row and \a column with the internal pointer \a ptr.
 
-    Note that when you are using a QSortFilterProxyModel it's indexes have their own
+    Note that when you are using a QSortFilterProxyModel its indexes have their own
     internal pointer.  It is not advisable to access the internal pointer in the index
     outside of the model.  Use the data() function instead.
 
@@ -2280,12 +2295,12 @@ void QAbstractItemModel::changePersistentIndexList(const QModelIndexList &from,
         return;
     QVector<QPersistentModelIndexData*> persistentIndexes = d->persistent.indexes;
     QVector<QPersistentModelIndexData*> toBeReinserted;
-    QVector<QPersistentModelIndexData*>::iterator begin = d->persistent.indexes.begin();
-    QVector<QPersistentModelIndexData*>::iterator end = d->persistent.indexes.end();
     // find, remove and update
     for (int i = 0; i < from.count(); ++i) {
         if (from.at(i) == to.at(i))
             continue;
+        QVector<QPersistentModelIndexData*>::iterator begin = d->persistent.indexes.begin();
+        QVector<QPersistentModelIndexData*>::iterator end = d->persistent.indexes.end();
         const QPersistentModelIndexData tmp(from.at(i));
         QVector<QPersistentModelIndexData*>::iterator it =
             qLowerBound(begin, end, &tmp, QPersistentModelIndexDataLessThan());
@@ -2293,10 +2308,13 @@ void QAbstractItemModel::changePersistentIndexList(const QModelIndexList &from,
             (*it)->index = to.at(i);
             toBeReinserted.append(*it);
             d->persistent.indexes.erase(it);
+            end = d->persistent.indexes.end();
         }
     }
     // then reinsert sorted
     for (int j = 0; j < toBeReinserted.count(); ++j) {
+        QVector<QPersistentModelIndexData*>::iterator begin = d->persistent.indexes.begin();
+        QVector<QPersistentModelIndexData*>::iterator end = d->persistent.indexes.end();
         QVector<QPersistentModelIndexData*>::iterator it =
             qLowerBound(begin, end, toBeReinserted.at(j), QPersistentModelIndexDataLessThan());
         if (it != end)

@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -77,6 +92,7 @@ public:
     // contents width includes padding (as we need to treat this on a per cell basis for tables)
     QFixed contentsWidth;
     QFixed contentsHeight;
+    QFixed oldContentsWidth;
 
     // accumulated margins
     QFixed effectiveTopMargin;
@@ -705,19 +721,21 @@ void QTextDocumentLayoutPrivate::drawBorder(QPainter *painter, const QRectF &rec
     Q_Q(const QTextDocumentLayout);
 
     const qreal pageHeight = q->document()->pageSize().height();
-    const int topPage = static_cast<int>(rect.top() / pageHeight);
-    const int bottomPage = static_cast<int>((rect.bottom() + border) / pageHeight);
+    const int topPage = pageHeight > 0 ? static_cast<int>(rect.top() / pageHeight) : 0;
+    const int bottomPage = pageHeight > 0 ? static_cast<int>((rect.bottom() + border) / pageHeight) : 0;
 
     QCss::BorderStyle cssStyle = static_cast<QCss::BorderStyle>(style + 1);
 
     for (int i = topPage; i <= bottomPage; ++i) {
         QRectF clipped = rect;
 
-        clipped.setTop(qMax(clipped.top(), i * pageHeight + topMargin - border));
-        clipped.setBottom(qMin(clipped.bottom(), (i + 1) * pageHeight - bottomMargin));
+        if (topPage != bottomPage) {
+            clipped.setTop(qMax(clipped.top(), i * pageHeight + topMargin - border));
+            clipped.setBottom(qMin(clipped.bottom(), (i + 1) * pageHeight - bottomMargin));
 
-        if (clipped.bottom() <= clipped.top())
-            continue;
+            if (clipped.bottom() <= clipped.top())
+                continue;
+        }
 
         qDrawEdge(painter, clipped.left(), clipped.top(), clipped.left() + border, clipped.bottom() + border, 0, 0, QCss::LeftEdge, cssStyle, brush);
         qDrawEdge(painter, clipped.left() + border, clipped.top(), clipped.right() + border, clipped.top() + border, 0, 0, QCss::TopEdge, cssStyle, brush);
@@ -1116,12 +1134,8 @@ void QTextDocumentLayoutPrivate::drawBlock(const QPointF &offset, QPainter *pain
     QTextBlockFormat blockFormat = bl.blockFormat();
 
     QBrush bg = blockFormat.background();
-    if (bg != Qt::NoBrush) {
-        // don't paint into the left margin. Right margin is already excluded by the line breaking
-        QRectF contentsRect = r;
-        contentsRect.setLeft(contentsRect.left() + bl.blockFormat().leftMargin());
-        fillBackground(painter, contentsRect, bg);
-    }
+    if (bg != Qt::NoBrush)
+        fillBackground(painter, r, bg);
 
     QVector<QTextLayout::FormatRange> selections;
     int blpos = bl.position();
@@ -1362,6 +1376,13 @@ QLayoutStruct QTextDocumentLayoutPrivate::layoutCell(QTextTable *t, const QTextT
     QFixed pageTop = currentPage * layoutStruct.pageHeight + layoutStruct.pageTopMargin - layoutStruct.frameY;
     layoutStruct.y = qMax(layoutStruct.y, pageTop);
 
+    const QList<QTextFrame *> childFrames = td->childFrameMap.values(cell.row() + cell.column() * t->rows());
+    for (int i = 0; i < childFrames.size(); ++i) {
+        QTextFrame *frame = childFrames.at(i);
+        QTextFrameData *cd = data(frame);
+        cd->sizeDirty = true;
+    }
+
     layoutFlow(cell.begin(), &layoutStruct, layoutFrom, layoutTo, width);
 
     QFixed floatMinWidth;
@@ -1370,7 +1391,6 @@ QLayoutStruct QTextDocumentLayoutPrivate::layoutCell(QTextTable *t, const QTextT
     // layoutFlow with regards to the cell height (layoutStruct->y), so for a safety measure we
     // do that here. For example with <td><img align="right" src="..." />blah</td>
     // when the image happens to be higher than the text
-    const QList<QTextFrame *> childFrames = td->childFrameMap.values(cell.row() + cell.column() * t->rows());
     for (int i = 0; i < childFrames.size(); ++i) {
         QTextFrame *frame = childFrames.at(i);
         QTextFrameData *cd = data(frame);
@@ -1876,7 +1896,6 @@ QRectF QTextDocumentLayoutPrivate::layoutFrame(QTextFrame *f, int layoutFrom, in
 //     qDebug("layouting frame (%d--%d), parent=%p", f->firstPosition(), f->lastPosition(), f->parentFrame());
 
     QTextFrameData *fd = data(f);
-    const QFixed oldContentsWidth = fd->contentsWidth;
     QFixed newContentsWidth;
 
     {
@@ -1951,10 +1970,11 @@ QRectF QTextDocumentLayoutPrivate::layoutFrame(QTextFrame *f, int layoutFrom, in
     layoutStruct.contentsWidth = 0;
     layoutStruct.minimumWidth = 0;
     layoutStruct.maximumWidth = QFIXED_MAX;
-    layoutStruct.fullLayout = oldContentsWidth != newContentsWidth;
+    layoutStruct.fullLayout = fd->oldContentsWidth != newContentsWidth;
     layoutStruct.updateRect = QRectF(QPointF(0, 0), QSizeF(INT_MAX, INT_MAX));
     LDEBUG << "layoutStruct: x_left" << layoutStruct.x_left << "x_right" << layoutStruct.x_right
            << "fullLayout" << layoutStruct.fullLayout;
+    fd->oldContentsWidth = newContentsWidth;
 
     layoutStruct.pageHeight = QFixed::fromReal(q->document()->pageSize().height());
     if (layoutStruct.pageHeight < 0)
@@ -1992,7 +2012,7 @@ QRectF QTextDocumentLayoutPrivate::layoutFrame(QTextFrame *f, int layoutFrom, in
     fd->maximumWidth = layoutStruct.maximumWidth;
 
     fd->size.height = fd->contentsHeight == -1
-                 ? layoutStruct.y + fd->border + fd->padding + fd->bottomMargin - parentY
+                 ? layoutStruct.y + fd->border + fd->padding + fd->bottomMargin
                  : fd->contentsHeight + 2*(fd->border + fd->padding) + fd->topMargin + fd->bottomMargin;
     fd->size.width = actualWidth + 2*(fd->border + fd->padding) + fd->leftMargin + fd->rightMargin;
     fd->sizeDirty = false;
@@ -2472,9 +2492,10 @@ void QTextDocumentLayoutPrivate::layoutBlock(const QTextBlock &bl, QLayoutStruct
     }
 
     // ### doesn't take floats into account. would need to do it per line. but how to retrieve then? (Simon)
-    layoutStruct->minimumWidth = qMax(layoutStruct->minimumWidth, QFixed::fromReal(tl->minimumWidth() + blockFormat.leftMargin()) + indent);
+    const qreal margins = blockFormat.leftMargin() + blockFormat.rightMargin();
+    layoutStruct->minimumWidth = qMax(layoutStruct->minimumWidth, QFixed::fromReal(tl->minimumWidth() + margins) + indent);
 
-    const QFixed maxW = QFixed::fromReal(tl->maximumWidth() + blockFormat.leftMargin()) + indent;
+    const QFixed maxW = QFixed::fromReal(tl->maximumWidth() + margins) + indent;
     if (maxW > 0) {
         if (layoutStruct->maximumWidth == QFIXED_MAX)
             layoutStruct->maximumWidth = maxW;

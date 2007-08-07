@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/corelib/plugin/qpluginloader.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/corelib/plugin/qpluginloader.cpp -->
 <head>
   <title>Qt 4.3: QPluginLoader Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -110,7 +110,7 @@
 <h3 class="fn"><a name="instance"></a><a href="qobject.html">QObject</a> * QPluginLoader::instance ()</h3>
 <p>Returns the root component object of the plugin. The plugin is loaded if necessary. The function returns 0 if the plugin could not be loaded or if the root component object could not be instantiated.</p>
 <p>If the root component object was destroyed, calling this function creates a new instance.</p>
-<p>The instance is not deleted when the <a href="qpluginloader.html">QPluginLoader</a> is destroyed.</p>
+<p>The root component, returned by this function, is not deleted when the <a href="qpluginloader.html">QPluginLoader</a> is destroyed.</p>
 <p>The component object is a <a href="qobject.html">QObject</a>. Use <a href="qobject.html#qobject_cast">qobject_cast</a>() to access interfaces you are interested in.</p>
 <p>See also <a href="qpluginloader.html#load">load</a>().</p>
 <a name="//apple_ref/cpp/instm/QPluginLoader/isLoaded" />
@@ -123,17 +123,18 @@
 <p>See also <a href="qpluginloader.html#unload">unload</a>().</p>
 <a name="//apple_ref/cpp/clm/QPluginLoader/staticInstances" />
 <h3 class="fn"><a name="staticInstances"></a><a href="qobject.html#QObjectList-typedef">QObjectList</a> QPluginLoader::staticInstances ()&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Returns a list of static plugin instances held by the plugin loader.</p>
+<p>Returns a list of static plugin instances (root components) held by the plugin loader.</p>
 <a name="//apple_ref/cpp/instm/QPluginLoader/unload" />
 <h3 class="fn"><a name="unload"></a>bool QPluginLoader::unload ()</h3>
 <p>Unloads the plugin and returns true if the plugin could be unloaded; otherwise returns false.</p>
 <p>This happens automatically on application termination, so you shouldn't normally need to call this function.</p>
 <p>If other instances of <a href="qpluginloader.html">QPluginLoader</a> are using the same plugin, the call will fail, and unloading will only happen when every instance has called unload().</p>
+<p><b>Warning:</b> The root component of a plugin, returned by the <a href="qpluginloader.html#instance">instance</a>() function, becomes invalid once the plugin is unloaded. Delete the root component before unloading the plugin. Attempting to access members of invalid root components will in most cases result in a segmentation fault.</p>
 <p>See also <a href="qpluginloader.html#instance">instance</a>() and <a href="qpluginloader.html#load">load</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

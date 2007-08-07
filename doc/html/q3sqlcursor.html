@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/qt3support/sql/q3sqlcursor.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/qt3support/sql/q3sqlcursor.cpp -->
 <head>
   <title>Qt 4.3: Q3SqlCursor Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -100,8 +100,8 @@
 <p>When positioned on a valid record, the browse buffer contains the values of the current record's fields from the database. The edit buffer is separate, and is used for editing existing records and inserting new records.</p>
 <p>For browsing data, a cursor must first <a href="q3sqlcursor.html#select">select</a>() data from the database. After a successful <a href="q3sqlcursor.html#select">select</a>() the cursor is active (<a href="qsqlquery.html#isActive">isActive</a>() returns true), but is initially not positioned on a valid record (<a href="qsqlquery.html#isValid">isValid</a>() returns false). To position the cursor on a valid record, use one of the navigation functions, next(), previous(), first(), last(), or seek(). Once positioned on a valid record, data can be retrieved from the browse buffer using <a href="q3sqlcursor.html#value">value</a>(). If a navigation function is not successful, it returns false, the cursor will no longer be positioned on a valid record and the values returned by <a href="q3sqlcursor.html#value">value</a>() are undefined.</p>
 <p>For example:</p>
-<pre> Q3SqlCursor cur( &quot;staff&quot; ); <span class="comment">// Specify the table/view name</span>
- cur.select(); <span class="comment">// We'll retrieve every record</span>
+<pre> Q3SqlCursor cur( &quot;staff&quot; ); <span class="comment">//</span> Specify the table/view name
+ cur.select(); <span class="comment">//</span> We'll retrieve every record
  while ( cur.next() ) {
      qDebug( cur.value( &quot;id&quot; ).toString() + &quot;: &quot; +
      cur.value( &quot;surname&quot; ).toString() + &quot; &quot; +
@@ -282,23 +282,23 @@
 <p>Selects all fields in the cursor from the database matching the filter criteria <i>filter</i>. The data is returned in the order specified by the index <i>sort</i>. Returns true if the data was successfully selected; otherwise returns false.</p>
 <p>The <i>filter</i> is a string containing a SQL <tt>WHERE</tt> clause but without the 'WHERE' keyword. The cursor is initially positioned at an invalid row after this function is called. To move to a valid row, use seek(), first(), last(), previous() or next().</p>
 <p>Example:</p>
-<pre> Q3SqlCursor cur(&quot;Employee&quot;); <span class="comment">// Use the Employee table or view</span>
- cur.select(&quot;deptno=10&quot;); <span class="comment">// select all records in department 10</span>
+<pre> Q3SqlCursor cur(&quot;Employee&quot;); <span class="comment">//</span> Use the Employee table or view
+ cur.select(&quot;deptno=10&quot;); <span class="comment">//</span> select all records in department 10
  while(cur.next()) {
-     ... <span class="comment">// process data</span>
+     ... <span class="comment">//</span> process data
  }
  ...
-<span class="comment"> // select records in other departments, ordered by department number</span>
+<span class="comment"> //</span> select records in other departments, ordered by department number
  cur.select(&quot;deptno&gt;10&quot;, cur.index(&quot;deptno&quot;));
  ...</pre>
 <p>The filter will apply to any subsequent select() calls that do not explicitly specify another filter. Similarly the sort will apply to any subsequent select() calls that do not explicitly specify another sort.</p>
 <pre> Q3SqlCursor cur(&quot;Employee&quot;);
- cur.select(&quot;deptno=10&quot;); <span class="comment">// select all records in department 10</span>
+ cur.select(&quot;deptno=10&quot;); <span class="comment">//</span> select all records in department 10
  while(cur.next()) {
-     ... <span class="comment">// process data</span>
+     ... <span class="comment">//</span> process data
  }
  ...
- cur.select(); <span class="comment">// re-selects all records in department 10</span>
+ cur.select(); <span class="comment">//</span> re-selects all records in department 10
  ...</pre>
 <h3 class="fn"><a name="select-2"></a>bool Q3SqlCursor::select ()</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
@@ -313,7 +313,7 @@
 <pre> Q3SqlCursor cur(&quot;Employee&quot;);
  QSqlIndex pk = cur.primaryIndex();
  cur.setValue(&quot;id&quot;, 10);
- cur.select(pk, pk); <span class="comment">// generates &quot;SELECT ... FROM Employee WHERE id=10 ORDER BY id&quot;</span>
+ cur.select(pk, pk); <span class="comment">//</span> generates &quot;SELECT ... FROM Employee WHERE id=10 ORDER BY id&quot;
  ...</pre>
 <p>In this example the <a href="qsqlindex.html">QSqlIndex</a>, pk, is used for two different purposes. When used as the filter (first) argument, the field names it contains are used to construct the WHERE clause, each set to the current cursor value, <tt>WHERE id=10</tt>, in this case. When used as the sort (second) argument the field names it contains are used for the ORDER BY clause, <tt>ORDER BY id</tt> in this example.</p>
 <a name="//apple_ref/cpp/instm/Q3SqlCursor/setCalculated" />
@@ -335,11 +335,11 @@
 <h3 class="fn"><a name="setMode"></a>void Q3SqlCursor::setMode ( int <i>mode</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Sets the cursor mode to <i>mode</i>. This value can be an OR'ed combination of <a href="q3sqlcursor.html#Mode-enum">Q3SqlCursor::Mode</a> values. The default mode for a cursor is <a href="q3sqlcursor.html#Mode-enum">Q3SqlCursor::Writable</a>.</p>
 <pre> Q3SqlCursor cur(&quot;Employee&quot;);
- cur.setMode(Q3SqlCursor::Writable); <span class="comment">// allow insert/update/delete</span>
+ cur.setMode(Q3SqlCursor::Writable); <span class="comment">//</span> allow insert/update/delete
  ...
- cur.setMode(Q3SqlCursor::Insert | Q3SqlCursor::Update); <span class="comment">// allow inserts and updates only</span>
+ cur.setMode(Q3SqlCursor::Insert | Q3SqlCursor::Update); <span class="comment">//</span> allow inserts and updates only
  ...
- cur.setMode(Q3SqlCursor::ReadOnly); <span class="comment">// no inserts/updates/deletes allowed</span></pre>
+ cur.setMode(Q3SqlCursor::ReadOnly); <span class="comment">//</span> no inserts/updates/deletes allowed</pre>
 <p>See also <a href="q3sqlcursor.html#mode">mode</a>().</p>
 <a name="//apple_ref/cpp/instm/Q3SqlCursor/setName" />
 <h3 class="fn"><a name="setName"></a>void Q3SqlCursor::setName ( const <a href="qstring.html">QString</a> &amp; <i>name</i>, bool <i>autopopulate</i> = true )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
@@ -412,6 +412,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

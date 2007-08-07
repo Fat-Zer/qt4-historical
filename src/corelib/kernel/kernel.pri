@@ -7,6 +7,7 @@ HEADERS += \
 	kernel/qbasictimer.h \
 	kernel/qeventloop.h\
 	kernel/qpointer.h \
+    kernel/qcorecmdlineargs_p.h \
 	kernel/qcoreapplication.h \
 	kernel/qcoreevent.h \
 	kernel/qmetaobject.h \
@@ -26,7 +27,7 @@ HEADERS += \
         kernel/qvariant_p.h \
         kernel/qmetaobject_p.h \
         kernel/qobject_p.h \
-        kernel/qcoreglobaldata_p.h
+        kernel/qcoreglobaldata_p.h 
 
 SOURCES += \
 	kernel/qabstracteventdispatcher.cpp \

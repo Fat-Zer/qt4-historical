@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/gui/itemviews/qsortfilterproxymodel.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/itemviews/qsortfilterproxymodel.cpp -->
 <head>
   <title>Qt 4.3: QSortFilterProxyModel Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -118,7 +118,7 @@
          treeView-&gt;setModel(proxyModel);</pre>
 <p>At this point, neither sorting nor filtering is enabled; the original data is displayed in the view. Any changes made through the QSortFilterProxyModel are applied to the original model.</p>
 <p>The QSortFilterProxyModel acts as a wrapper for the original model. If you need to convert source <a href="qmodelindex.html">QModelIndex</a>es to sorted/filtered model indexes or vice versa, use <a href="qsortfilterproxymodel.html#mapToSource">mapToSource</a>(), <a href="qsortfilterproxymodel.html#mapFromSource">mapFromSource</a>(), <a href="qabstractproxymodel.html#mapSelectionToSource">mapSelectionToSource</a>(), and <a href="qabstractproxymodel.html#mapSelectionFromSource">mapSelectionFromSource</a>().</p>
-<p>In Qt 4.1, sorting and filtering isn't dynamically reapplied whenever the data of the original model changes, as an optimization. Qt 4.2 is expected to offer a mechanism to enable dynamic sorting and filtering.</p>
+<p><b>Note:</b> By default, the model does not dynamically re-sort and re-filter data whenever the original model changes. This behavior can be changed by setting the <a href="qsortfilterproxymodel.html#dynamicSortFilter-prop">dynamicSortFilter</a> property.</p>
 <p>The <a href="itemviews-basicsortfiltermodel.html">Basic Sort/Filter Model</a> and <a href="itemviews-customsortfiltermodel.html">Custom Sort/Filter Model</a> examples illustrate how to use QSortFilterProxyModel to perform basic sorting and filtering and how to subclass it to implement custom behavior.</p>
 <a name="sorting"></a>
 <h3>Sorting</h3>
@@ -196,7 +196,7 @@
 <a name="//apple_ref/cpp/instm/QSortFilterProxyModel/setFilterCaseSensitivity" />
 <h3 class="fn"><a name="filterCaseSensitivity-prop"></a>filterCaseSensitivity : <a href="qt.html#CaseSensitivity-enum">Qt::CaseSensitivity</a></h3>
 <p>This property holds the case sensitivity of the QRegExp pattern used to filter the contents of the source model.</p>
-<p>By default, the filter is case sensistive.</p>
+<p>By default, the filter is case sensitive.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>Qt::CaseSensitivity filterCaseSensitivity () const</b></li>
@@ -253,7 +253,7 @@
 <a name="//apple_ref/cpp/instm/QSortFilterProxyModel/setSortCaseSensitivity" />
 <h3 class="fn"><a name="sortCaseSensitivity-prop"></a>sortCaseSensitivity : <a href="qt.html#CaseSensitivity-enum">Qt::CaseSensitivity</a></h3>
 <p>This property holds the case sensitivity setting used for comparing strings when sorting.</p>
-<p>By default, sorting is case sensistive.</p>
+<p>By default, sorting is case sensitive.</p>
 <p>This property was introduced in Qt 4.2.</p>
 <p>Access functions:</p>
 <ul>
@@ -344,6 +344,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

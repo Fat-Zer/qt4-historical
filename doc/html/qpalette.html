@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/gui/kernel/qpalette.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/kernel/qpalette.cpp -->
 <head>
   <title>Qt 4.3: QPalette Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -96,7 +96,7 @@
 <p>Both active and inactive windows can contain disabled widgets. (Disabled widgets are often called <i>inaccessible</i> or <i>grayed out</i>.)</p>
 <p>In most styles, Active and Inactive look the same.</p>
 <p>Colors and brushes can be set for particular roles in any of a palette's color groups with <a href="qpalette.html#setColor">setColor</a>() and <a href="qpalette.html#setBrush">setBrush</a>(). A color group contains a group of colors used by widgets for drawing themselves. We recommend that widgets use color group roles from the palette such as &quot;foreground&quot; and &quot;base&quot; rather than literal colors like &quot;red&quot; or &quot;turquoise&quot;. The color roles are enumerated and defined in the <a href="qpalette.html#ColorRole-enum">ColorRole</a> documentation.</p>
-<p>We strongly recommend that you use the default palette of the current style (returned by QApplication::standardPalette()) and modify that as necessary. This is done by Qt's widgets when they are drawn.</p>
+<p>We strongly recommend that you use the default palette of the current style (returned by <a href="qapplication.html#palette">QApplication::palette</a>()) and modify that as necessary. This is done by Qt's widgets when they are drawn.</p>
 <p>To modify a color group you call the functions <a href="qpalette.html#setColor">setColor</a>() and <a href="qpalette.html#setBrush">setBrush</a>(), depending on whether you want a pure color or a pixmap pattern.</p>
 <p>There are also corresponding <a href="qpalette.html#color">color</a>() and <a href="qpalette.html#brush">brush</a>() getters, and a commonly used convenience function to get the <a href="qpalette.html#ColorRole-enum">ColorRole</a> for the current <a href="qpalette.html#ColorGroup-enum">ColorGroup</a>: <a href="qpalette.html#window">window</a>(), <a href="qpalette.html#windowText">windowText</a>(), <a href="qpalette.html#base">base</a>(), etc.</p>
 <p>You can copy a palette using the copy constructor and test to see if two palettes are <i>identical</i> using <a href="qpalette.html#isCopyOf">isCopyOf</a>().</p>
@@ -359,46 +359,10 @@
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads a palette from the stream, <i>s</i> into the palette <i>p</i>, and returns a reference to the stream.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
-<hr />
-<h2>Member Function Documentation</h2>
-<h3 class="fn"><a name="QPalette-7"></a>QPalette::QPalette ( const <a href="qcolorgroup.html">QColorGroup</a> &amp; <i>active</i>, const <a href="qcolorgroup.html">QColorGroup</a> &amp; <i>disabled</i>, const <a href="qcolorgroup.html">QColorGroup</a> &amp; <i>inactive</i> )</h3>
-<p>Constructs a palette with the specified <i>active</i>, <i>disabled</i> and <i>inactive</i> color groups.</p>
-<a name="//apple_ref/cpp/instm/QPalette/active" />
-<h3 class="fn"><a name="active"></a><a href="qcolorgroup.html">QColorGroup</a> QPalette::active () const</h3>
-<p>See also <a href="qpalette-qt3.html#setActive">setActive</a>().</p>
-<a name="//apple_ref/cpp/instm/QPalette/copy" />
-<h3 class="fn"><a name="copy"></a>QPalette QPalette::copy () const</h3>
-<p>Use simple assignment instead.</p>
-<a name="//apple_ref/cpp/instm/QPalette/disabled" />
-<h3 class="fn"><a name="disabled"></a><a href="qcolorgroup.html">QColorGroup</a> QPalette::disabled () const</h3>
-<p>See also <a href="qpalette-qt3.html#setDisabled">setDisabled</a>().</p>
-<a name="//apple_ref/cpp/instm/QPalette/inactive" />
-<h3 class="fn"><a name="inactive"></a><a href="qcolorgroup.html">QColorGroup</a> QPalette::inactive () const</h3>
-<p>See also <a href="qpalette-qt3.html#setInactive">setInactive</a>().</p>
-<a name="//apple_ref/cpp/instm/QPalette/normal" />
-<h3 class="fn"><a name="normal"></a><a href="qcolorgroup.html">QColorGroup</a> QPalette::normal () const</h3>
-<p>Use createColorGroup(Active) instead.</p>
-<p>See also <a href="qpalette-qt3.html#setNormal">setNormal</a>().</p>
-<a name="//apple_ref/cpp/instm/QPalette/setActive" />
-<h3 class="fn"><a name="setActive"></a>void QPalette::setActive ( const <a href="qcolorgroup.html">QColorGroup</a> &amp; <i>colorGroup</i> )</h3>
-<p>Use setColorGroup(Active, colorGroup) instead.</p>
-<p>See also <a href="qpalette-qt3.html#active">active</a>().</p>
-<a name="//apple_ref/cpp/instm/QPalette/setDisabled" />
-<h3 class="fn"><a name="setDisabled"></a>void QPalette::setDisabled ( const <a href="qcolorgroup.html">QColorGroup</a> &amp; <i>colorGroup</i> )</h3>
-<p>Use setColorGroup(Disabled, colorGroup) instead.</p>
-<p>See also <a href="qpalette-qt3.html#disabled">disabled</a>().</p>
-<a name="//apple_ref/cpp/instm/QPalette/setInactive" />
-<h3 class="fn"><a name="setInactive"></a>void QPalette::setInactive ( const <a href="qcolorgroup.html">QColorGroup</a> &amp; <i>colorGroup</i> )</h3>
-<p>Use setColorGroup(Inactive, colorGroup) instead.</p>
-<p>See also <a href="qpalette-qt3.html#inactive">inactive</a>().</p>
-<a name="//apple_ref/cpp/instm/QPalette/setNormal" />
-<h3 class="fn"><a name="setNormal"></a>void QPalette::setNormal ( const <a href="qcolorgroup.html">QColorGroup</a> &amp; <i>colorGroup</i> )</h3>
-<p>Use setColorGroup(Active, colorGroup) instead.</p>
-<p>See also <a href="qpalette-qt3.html#normal">normal</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/doc/src/q3ptrlist.qdoc -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/doc/src/q3ptrlist.qdoc -->
 <head>
   <title>Qt 4.3: Q3PtrList Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -110,7 +110,7 @@
  };
 
  Q3PtrList&lt;Employee&gt; list;
- list.setAutoDelete( TRUE ); <span class="comment">// the list owns the objects</span>
+ list.setAutoDelete( TRUE ); <span class="comment">//</span> the list owns the objects
 
  list.append( new Employee(&quot;John&quot;, &quot;Doe&quot;, 50000) );
  list.append( new Employee(&quot;Jane&quot;, &quot;Williams&quot;, 80000) );
@@ -123,7 +123,7 @@
              employee-&gt;salary() &lt;&lt; endl;
  cout &lt;&lt; endl;
 
-<span class="comment"> // very inefficient for big lists</span>
+<span class="comment"> //</span> very inefficient for big lists
  for ( uint i = 0; i &lt; list.count(); ++i )
      if ( list.at(i) )
          cout &lt;&lt; list.at( i )-&gt;surname().latin1() &lt;&lt; endl;</pre>
@@ -421,6 +421,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

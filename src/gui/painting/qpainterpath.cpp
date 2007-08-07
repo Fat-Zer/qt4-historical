@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -1465,10 +1480,9 @@ QPainterPath QPainterPath::toReversed() const
     return rev;
 }
 
-
 /*!
-    Converts the path into a list of polygons using the given
-    transformation \a matrix, and returns the list.
+    Converts the path into a list of polygons using the QTransform
+    \a matrix, and returns the list.
 
     This function creates one polygon for each subpath regardless of
     intersecting subpaths (i.e. overlapping bounding rectangles). To
@@ -1478,29 +1492,57 @@ QPainterPath QPainterPath::toReversed() const
     \sa toFillPolygons(), toFillPolygon(), {QPainterPath#QPainterPath
     Conversion}{QPainterPath Conversion}
 */
-QList<QPolygonF> QPainterPath::toSubpathPolygons(const QMatrix &matrix) const
+QList<QPolygonF> QPainterPath::toSubpathPolygons(const QTransform &matrix) const
 {
-    return toSubpathPolygons(QTransform(matrix));
+
+    Q_D(const QPainterPath);
+    QList<QPolygonF> flatCurves;
+    if (isEmpty())
+        return flatCurves;
+
+    QPolygonF current;
+    for (int i=0; i<elementCount(); ++i) {
+        const QPainterPath::Element &e = d->elements.at(i);
+        switch (e.type) {
+        case QPainterPath::MoveToElement:
+            if (current.size() > 1)
+                flatCurves += current;
+            current.clear();
+            current.reserve(16);
+            current += QPointF(e.x, e.y) * matrix;
+            break;
+        case QPainterPath::LineToElement:
+            current += QPointF(e.x, e.y) * matrix;
+            break;
+        case QPainterPath::CurveToElement: {
+            Q_ASSERT(d->elements.at(i+1).type == QPainterPath::CurveToDataElement);
+            Q_ASSERT(d->elements.at(i+2).type == QPainterPath::CurveToDataElement);
+            QBezier bezier = QBezier::fromPoints(QPointF(d->elements.at(i-1).x, d->elements.at(i-1).y) * matrix,
+                                       QPointF(e.x, e.y) * matrix,
+                                       QPointF(d->elements.at(i+1).x, d->elements.at(i+1).y) * matrix,
+                                                 QPointF(d->elements.at(i+2).x, d->elements.at(i+2).y) * matrix);
+            bezier.addToPolygon(&current);
+            i+=2;
+            break;
+        }
+        case QPainterPath::CurveToDataElement:
+            Q_ASSERT(!"QPainterPath::toSubpathPolygons(), bad element type");
+            break;
+        }
+    }
+
+    if (current.size()>1)
+        flatCurves += current;
+
+    return flatCurves;
 }
 
 /*!
-    Converts the path into a polygon using the given transformation \a
-    matrix, and returns the polygon.
-
-    The polygon is created by first converting all subpaths to
-    polygons, then using a rewinding technique to make sure that
-    overlapping subpaths can be filled using the correct fill rule.
-
-    Note that rewinding inserts addition lines in the polygon so
-    the outline of the fill polygon does not match the outline of
-    the path.
-
-    \sa toSubpathPolygons(), toFillPolygons(),
-    {QPainterPath#QPainterPath Conversion}{QPainterPath Conversion}
-*/
-QPolygonF QPainterPath::toFillPolygon(const QMatrix &matrix) const
+  \overload
+ */
+QList<QPolygonF> QPainterPath::toSubpathPolygons(const QMatrix &matrix) const
 {
-    return toFillPolygon(QTransform(matrix));
+    return toSubpathPolygons(QTransform(matrix));
 }
 
 static inline bool rect_intersects(const QRectF &r1, const QRectF &r2)
@@ -1508,9 +1550,10 @@ static inline bool rect_intersects(const QRectF &r1, const QRectF &r2)
     return qMax(r1.left(), r2.left()) <= qMin(r1.right(), r2.right())
         && qMax(r1.top(), r2.top()) <= qMin(r1.bottom(), r2.bottom());
 }
+
 /*!
-    Converts the path into a list of polygons using the given
-    transformation \a matrix, and returns the list.
+    Converts the path into a list of polygons using the 
+    QTransform \a matrix, and returns the list.
 
     The function differs from the toFillPolygon() function in that it
     creates several polygons. It is provided because it is usually
@@ -1530,16 +1573,110 @@ static inline bool rect_intersects(const QRectF &r1, const QRectF &r2)
     \sa toSubpathPolygons(), toFillPolygon(),
     {QPainterPath#QPainterPath Conversion}{QPainterPath Conversion}
 */
+QList<QPolygonF> QPainterPath::toFillPolygons(const QTransform &matrix) const
+{
 
-// #define QPP_FILLPOLYGONS_DEBUG
+    QList<QPolygonF> polys;
 
+    QList<QPolygonF> subpaths = toSubpathPolygons(matrix);
+    int count = subpaths.size();
+
+    if (count == 0)
+        return polys;
+
+    QList<QRectF> bounds;
+    for (int i=0; i<count; ++i)
+        bounds += subpaths.at(i).boundingRect();
+
+#ifdef QPP_FILLPOLYGONS_DEBUG
+    printf("QPainterPath::toFillPolygons, subpathCount=%d\n", count);
+    for (int i=0; i<bounds.size(); ++i)
+        qDebug() << " bounds" << i << bounds.at(i);
+#endif
+
+    QVector< QList<int> > isects;
+    isects.resize(count);
+
+    // find all intersections
+    for (int j=0; j<count; ++j) {
+        if (subpaths.at(j).size() <= 2)
+            continue;
+        QRectF cbounds = bounds.at(j);
+        for (int i=0; i<count; ++i) {
+            if (rect_intersects(cbounds, bounds.at(i))) {
+                isects[j] << i;
+            }
+        }
+    }
+
+#ifdef QPP_FILLPOLYGONS_DEBUG
+    printf("Intersections before flattening:\n");
+    for (int i = 0; i < count; ++i) {
+        printf("%d: ", i);
+        for (int j = 0; j < isects[i].size(); ++j) {
+            printf("%d ", isects[i][j]);
+        }
+        printf("\n");
+    }
+#endif
+
+    // flatten the sets of intersections
+    for (int i=0; i<count; ++i) {
+        const QList<int> &current_isects = isects.at(i);
+        for (int j=0; j<current_isects.size(); ++j) {
+            int isect_j = current_isects.at(j);
+            if (isect_j == i)
+                continue;
+            for (int k=0; k<isects[isect_j].size(); ++k) {
+                int isect_k = isects[isect_j][k];
+                if (isect_k != i && !isects.at(i).contains(isect_k)) {
+                    isects[i] += isect_k;
+                }
+            }
+            isects[isect_j].clear();
+        }
+    }
+
+#ifdef QPP_FILLPOLYGONS_DEBUG
+    printf("Intersections after flattening:\n");
+    for (int i = 0; i < count; ++i) {
+        printf("%d: ", i);
+        for (int j = 0; j < isects[i].size(); ++j) {
+            printf("%d ", isects[i][j]);
+        }
+        printf("\n");
+    }
+#endif
+
+    // Join the intersected subpaths as rewinded polygons
+    for (int i=0; i<count; ++i) {
+        const QList<int> &subpath_list = isects[i];
+        if (!subpath_list.isEmpty()) {
+            QPolygonF buildUp;
+            for (int j=0; j<subpath_list.size(); ++j) {
+                buildUp += subpaths.at(subpath_list.at(j));
+                if (!buildUp.isClosed())
+                    buildUp += buildUp.first();
+            }
+            polys += buildUp;
+        }
+    }
+
+    return polys;
+}
+
+/*!
+  \overload
+ */
 QList<QPolygonF> QPainterPath::toFillPolygons(const QMatrix &matrix) const
 {
     return toFillPolygons(QTransform(matrix));
 }
 
 //same as qt_polygon_isect_line in qpolygon.cpp
-static void qt_painterpath_isect_line(const QPointF &p1, const QPointF &p2, const QPointF &pos,
+static void qt_painterpath_isect_line(const QPointF &p1,
+				      const QPointF &p2,
+				      const QPointF &pos,
                                       int *winding)
 {
     qreal x1 = p1.x();
@@ -2126,7 +2263,7 @@ void qt_path_stroke_cubic_to(qfixed c1x, qfixed c1y,
 
     In addition you can specify a curve's threshold, controlling the
     granularity with which a curve is drawn, using the
-    setCurveThreshold() fucntion. The default threshold is a well
+    setCurveThreshold() function. The default threshold is a well
     adjusted value (0.25), and normally you should not need to modify
     it. However, you can make the curve's appearance smoother by
     decreasing its value.
@@ -2367,143 +2504,21 @@ void QPainterPathStroker::setDashOffset(qreal offset)
     d_func()->dashOffset = offset;
 }
 
-QList<QPolygonF> QPainterPath::toSubpathPolygons(const QTransform &matrix) const
-{
-
-    Q_D(const QPainterPath);
-    QList<QPolygonF> flatCurves;
-    if (isEmpty())
-        return flatCurves;
-
-    QPolygonF current;
-    for (int i=0; i<elementCount(); ++i) {
-        const QPainterPath::Element &e = d->elements.at(i);
-        switch (e.type) {
-        case QPainterPath::MoveToElement:
-            if (current.size() > 1)
-                flatCurves += current;
-            current.clear();
-            current.reserve(16);
-            current += QPointF(e.x, e.y) * matrix;
-            break;
-        case QPainterPath::LineToElement:
-            current += QPointF(e.x, e.y) * matrix;
-            break;
-        case QPainterPath::CurveToElement: {
-            Q_ASSERT(d->elements.at(i+1).type == QPainterPath::CurveToDataElement);
-            Q_ASSERT(d->elements.at(i+2).type == QPainterPath::CurveToDataElement);
-            QBezier bezier = QBezier::fromPoints(QPointF(d->elements.at(i-1).x, d->elements.at(i-1).y) * matrix,
-                                       QPointF(e.x, e.y) * matrix,
-                                       QPointF(d->elements.at(i+1).x, d->elements.at(i+1).y) * matrix,
-                                                 QPointF(d->elements.at(i+2).x, d->elements.at(i+2).y) * matrix);
-            bezier.addToPolygon(&current);
-            i+=2;
-            break;
-        }
-        case QPainterPath::CurveToDataElement:
-            Q_ASSERT(!"QPainterPath::toSubpathPolygons(), bad element type");
-            break;
-        }
-    }
-
-    if (current.size()>1)
-        flatCurves += current;
-
-    return flatCurves;
-}
-
-QList<QPolygonF> QPainterPath::toFillPolygons(const QTransform &matrix) const
-{
-
-    QList<QPolygonF> polys;
-
-    QList<QPolygonF> subpaths = toSubpathPolygons(matrix);
-    int count = subpaths.size();
-
-    if (count == 0)
-        return polys;
-
-    QList<QRectF> bounds;
-    for (int i=0; i<count; ++i)
-        bounds += subpaths.at(i).boundingRect();
-
-#ifdef QPP_FILLPOLYGONS_DEBUG
-    printf("QPainterPath::toFillPolygons, subpathCount=%d\n", count);
-    for (int i=0; i<bounds.size(); ++i)
-        qDebug() << " bounds" << i << bounds.at(i);
-#endif
-
-    QVector< QList<int> > isects;
-    isects.resize(count);
-
-    // find all intersections
-    for (int j=0; j<count; ++j) {
-        if (subpaths.at(j).size() <= 2)
-            continue;
-        QRectF cbounds = bounds.at(j);
-        for (int i=0; i<count; ++i) {
-            if (rect_intersects(cbounds, bounds.at(i))) {
-                isects[j] << i;
-            }
-        }
-    }
-
-#ifdef QPP_FILLPOLYGONS_DEBUG
-    printf("Intersections before flattening:\n");
-    for (int i = 0; i < count; ++i) {
-        printf("%d: ", i);
-        for (int j = 0; j < isects[i].size(); ++j) {
-            printf("%d ", isects[i][j]);
-        }
-        printf("\n");
-    }
-#endif
-
-    // flatten the sets of intersections
-    for (int i=0; i<count; ++i) {
-        const QList<int> &current_isects = isects.at(i);
-        for (int j=0; j<current_isects.size(); ++j) {
-            int isect_j = current_isects.at(j);
-            if (isect_j == i)
-                continue;
-            for (int k=0; k<isects[isect_j].size(); ++k) {
-                int isect_k = isects[isect_j][k];
-                if (isect_k != i && !isects.at(i).contains(isect_k)) {
-                    isects[i] += isect_k;
-                }
-            }
-            isects[isect_j].clear();
-        }
-    }
-
-#ifdef QPP_FILLPOLYGONS_DEBUG
-    printf("Intersections after flattening:\n");
-    for (int i = 0; i < count; ++i) {
-        printf("%d: ", i);
-        for (int j = 0; j < isects[i].size(); ++j) {
-            printf("%d ", isects[i][j]);
-        }
-        printf("\n");
-    }
-#endif
-
-    // Join the intersected subpaths as rewinded polygons
-    for (int i=0; i<count; ++i) {
-        const QList<int> &subpath_list = isects[i];
-        if (!subpath_list.isEmpty()) {
-            QPolygonF buildUp;
-            for (int j=0; j<subpath_list.size(); ++j) {
-                buildUp += subpaths.at(subpath_list.at(j));
-                if (!buildUp.isClosed())
-                    buildUp += buildUp.first();
-            }
-            polys += buildUp;
-        }
-    }
-
-    return polys;
-}
-
+/*!
+  Converts the path into a polygon using the QTransform
+  \a matrix, and returns the polygon.
+  
+  The polygon is created by first converting all subpaths to
+  polygons, then using a rewinding technique to make sure that
+  overlapping subpaths can be filled using the correct fill rule.
+  
+  Note that rewinding inserts addition lines in the polygon so
+  the outline of the fill polygon does not match the outline of
+  the path.
+  
+  \sa toSubpathPolygons(), toFillPolygons(),
+  {QPainterPath#QPainterPath Conversion}{QPainterPath Conversion}
+*/
 QPolygonF QPainterPath::toFillPolygon(const QTransform &matrix) const
 {
 
@@ -2520,6 +2535,14 @@ QPolygonF QPainterPath::toFillPolygon(const QTransform &matrix) const
             polygon += first;
     }
     return polygon;
+}
+
+/*!
+  \overload
+*/
+QPolygonF QPainterPath::toFillPolygon(const QMatrix &matrix) const
+{
+    return toFillPolygon(QTransform(matrix));
 }
 
 
@@ -2819,44 +2842,15 @@ qreal QPainterPath::slopeAtPercent(qreal t) const
 }
 
 /*!
-    \fn bool QPainterPath::addRoundRect(const QRectF &rect, int roundness);
-    \since 4.3
+  Adds a rectangle \a r with rounded corners to the path.
 
-    Adds a rounded rectangle to the path.
+  The \a xRnd and \a yRnd arguments specify how rounded the corners
+  should be. 0 is angled corners, 99 is maximum roundedness.
 
-    The \a roundness argument specifies uniform roundness for the rectangle.
-    Vertical and horizontal roundness factors will be adjusted accordingly
-    to act uniformly around both axes. Use this method if you want a rectangle
-    equally rounded across both the X and Y axis.
+  A filled rectangle has a size of r.size(). A stroked rectangle has a
+  size of r.size() plus the pen width.
 
-    \sa addRoundRect()
-*/
-
-
-/*!
-    \fn bool QPainterPath::addRoundRect(qreal x, qreal y, qreal w, qreal h, int roundness);
-    \since 4.3
-
-    Adds a rounded rectangle to the path.
-
-    The \a roundness argument specifies uniform roundness for the rectangle.
-    Vertical and horizontal roundness factors will be adjusted accordingly
-    to act uniformly around both axes. Use this method if you want a rectangle
-    equally rounded across both the X and Y axis.
-
-    \sa addRoundRect()
-*/
-
-/*!
-    Adds a rectangle \a r with rounded corners to the path.
-
-    The \a xRnd and \a yRnd arguments specify how rounded the corners
-    should be. 0 is angled corners, 99 is maximum roundedness.
-
-    A filled rectangle has a size of r.size(). A stroked rectangle
-    has a size of r.size() plus the pen width.
-
-    \sa addRect(), QPen
+  \sa addRect(), QPen
 */
 void QPainterPath::addRoundRect(const QRectF &r, int xRnd, int yRnd)
 {
@@ -2900,6 +2894,51 @@ void QPainterPath::addRoundRect(const QRectF &r, int xRnd, int yRnd)
 
     d_func()->require_moveTo = true;
 }
+
+/*!
+  \fn bool QPainterPath::addRoundRect(const QRectF &rect, int roundness);
+  \since 4.3
+  \overload
+
+  Adds a rounded rectangle, \a rect, to the path.
+
+  The \a roundness argument specifies uniform roundness for the
+  rectangle.  Vertical and horizontal roundness factors will be
+  adjusted accordingly to act uniformly around both axes. Use this
+  method if you want a rectangle equally rounded across both the X and
+  Y axis.
+
+  \sa addRoundRect()
+*/
+
+/*!
+  \fn void QPainterPath::addRoundRect(qreal x, qreal y, qreal w, qreal h, int xRnd, int yRnd);
+  \overload
+
+  Adds a rectangle with rounded corners to the path. The rectangle
+  is constructed from \a x, \a y, and the width and height \a w
+  and \a h.
+  
+  The \a xRnd and \a yRnd arguments specify how rounded the corners
+  should be. 0 is angled corners, 99 is maximum roundedness.
+ */
+
+/*!
+  \fn bool QPainterPath::addRoundRect(qreal x, qreal y, qreal width, qreal height, int roundness);
+  \since 4.3
+  \overload
+
+  Adds a rounded rectangle to the path, defined by the coordinates \a
+  x and \a y with the specified \a width and \a height.
+
+  The \a roundness argument specifies uniform roundness for the
+  rectangle. Vertical and horizontal roundness factors will be
+  adjusted accordingly to act uniformly around both axes. Use this
+  method if you want a rectangle equally rounded across both the X and
+  Y axis.
+
+  \sa addRoundRect()
+*/
 
 /*!
     \since 4.3

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/qt3support/widgets/q3mainwindow.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/qt3support/widgets/q3mainwindow.cpp -->
 <head>
   <title>Qt 4.3: Q3MainWindow Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -169,7 +169,7 @@
  mw-&gt;show();</pre>
 <p>Q3MainWindows may be created in their own right as shown above. The central widget is set with <a href="q3mainwindow.html#setCentralWidget">setCentralWidget</a>(). Popup menus can be added to the default menu bar, widgets can be added to the status bar, toolbars and dock windows can be added to any of the dock areas.</p>
 <p>The main window will take care of the dock areas, and the geometry of the central widget, but all other aspects of the central widget are left to you. Q3MainWindow automatically detects the creation of a menu bar or status bar if you specify the Q3MainWindow as parent, or you can use the provided <a href="q3mainwindow.html#menuBar">menuBar</a>() and <a href="q3mainwindow.html#statusBar">statusBar</a>() functions. The functions <a href="q3mainwindow.html#menuBar">menuBar</a>() and <a href="q3mainwindow.html#statusBar">statusBar</a>() create a suitable widget if one doesn't exist, and update the window's layout to make space.</p>
-<p>New dock windows and toolbars can be added to a Q3MainWindow using <a href="q3mainwindow.html#addDockWindow">addDockWindow</a>(). <a href="qt.html#Dock-enum">Qt::Dock</a> windows can be moved using <a href="q3mainwindow.html#moveDockWindow">moveDockWindow</a>() and removed with <a href="q3mainwindow.html#removeDockWindow">removeDockWindow</a>(). Q3MainWindow allows default dock window (toolbar) docking in all its dock areas (<tt>Top</tt>, <tt>Left</tt>, <tt>Right</tt>, <tt>Bottom</tt>). You can use <a href="q3mainwindow.html#setDockEnabled">setDockEnabled</a>() to enable and disable docking areas for dock windows. When adding or moving dock windows you can specify their 'edge' (dock area). The currently available edges are: <tt>Top</tt>, <tt>Left</tt>, <tt>Right</tt>, <tt>Bottom</tt>, <tt>Minimized</tt> (effectively a 'hidden' dock area) and <tt>TornOff</tt> (floating). See <a href="qt.html#Dock-enum">Qt::Dock</a> for an explanation of these areas. Note that the *<a href="designer-creating-mainwindows.html#toolbars">ToolBar</a> functions are included for backward compatibility; all new code should use the *DockWindow functions. <a href="porting4.html#qtoolbar">QToolbar</a> is a subclass of <a href="q3dockwindow.html">Q3DockWindow</a> so all functions that work with dock windows work on toolbars in the same way.</p>
+<p>New dock windows and toolbars can be added to a Q3MainWindow using <a href="q3mainwindow.html#addDockWindow">addDockWindow</a>(). <a href="qt-qt3.html#Dock-enum">Qt::Dock</a> windows can be moved using <a href="q3mainwindow.html#moveDockWindow">moveDockWindow</a>() and removed with <a href="q3mainwindow.html#removeDockWindow">removeDockWindow</a>(). Q3MainWindow allows default dock window (toolbar) docking in all its dock areas (<tt>Top</tt>, <tt>Left</tt>, <tt>Right</tt>, <tt>Bottom</tt>). You can use <a href="q3mainwindow.html#setDockEnabled">setDockEnabled</a>() to enable and disable docking areas for dock windows. When adding or moving dock windows you can specify their 'edge' (dock area). The currently available edges are: <tt>Top</tt>, <tt>Left</tt>, <tt>Right</tt>, <tt>Bottom</tt>, <tt>Minimized</tt> (effectively a 'hidden' dock area) and <tt>TornOff</tt> (floating). See <a href="qt-qt3.html#Dock-enum">Qt::Dock</a> for an explanation of these areas. Note that the *<a href="designer-creating-mainwindows.html#toolbars">ToolBar</a> functions are included for backward compatibility; all new code should use the *DockWindow functions. <a href="porting4.html#qtoolbar">QToolbar</a> is a subclass of <a href="q3dockwindow.html">Q3DockWindow</a> so all functions that work with dock windows work on toolbars in the same way.</p>
 <a name="dwm"></a><p>If the user clicks the close button, then the dock window is hidden. A dock window can be hidden or unhidden by the user by right clicking a dock area and clicking the name of the relevant dock window on the pop up dock window menu. This menu lists the names of every dock window; visible dock windows have a tick beside their names. The dock window menu is created automatically as required by <a href="q3mainwindow.html#createDockWindowMenu">createDockWindowMenu</a>(). Since it may not always be appropriate for a dock window to appear on this menu the <a href="q3mainwindow.html#setAppropriate">setAppropriate</a>() function is used to inform the main window whether or not the dock window menu should include a particular dock window. Double clicking a dock window handle (usually on the left-hand side of the dock window) undocks (floats) the dock window. Double clicking a floating dock window's title bar will dock the floating dock window. (See also <a href="q3mainwindow.html#DockWindows-enum">Q3MainWindow::DockWindows</a>.)</p>
 <p>Some functions change the appearance of a Q3MainWindow globally:</p>
 <ul>
@@ -177,9 +177,9 @@
 <li><a href="q3mainwindow.html#usesBigPixmaps-prop">setUsesBigPixmaps</a>() is used to set whether tool buttons should draw small or large pixmaps (see <a href="qicon.html">QIcon</a> for more information).</li>
 <li><a href="q3mainwindow.html#usesTextLabel-prop">setUsesTextLabel</a>() is used to set whether tool buttons should display a textual label in addition to pixmaps (see <a href="qtoolbutton.html">QToolButton</a> for more information).</li>
 </ul>
-<p>The user can drag dock windows into any enabled docking area. <a href="qt.html#Dock-enum">Qt::Dock</a> windows can also be dragged <i>within</i> a docking area, for example to rearrange the order of some toolbars. <a href="qt.html#Dock-enum">Qt::Dock</a> windows can also be dragged outside any docking area (undocked or 'floated'). Being able to drag dock windows can be enabled (the default) and disabled using <a href="q3mainwindow.html#dockWindowsMovable-prop">setDockWindowsMovable</a>().</p>
+<p>The user can drag dock windows into any enabled docking area. <a href="qt-qt3.html#Dock-enum">Qt::Dock</a> windows can also be dragged <i>within</i> a docking area, for example to rearrange the order of some toolbars. <a href="qt-qt3.html#Dock-enum">Qt::Dock</a> windows can also be dragged outside any docking area (undocked or 'floated'). Being able to drag dock windows can be enabled (the default) and disabled using <a href="q3mainwindow.html#dockWindowsMovable-prop">setDockWindowsMovable</a>().</p>
 <p>The <tt>Minimized</tt> edge is a hidden dock area. If this dock area is enabled the user can hide (minimize) a dock window or show (restore) a minimized dock window by clicking the dock window handle. If the user hovers the mouse cursor over one of the handles, the caption of the dock window is displayed in a tool tip (see <a href="q3dockwindow.html#windowTitle">Q3DockWindow::windowTitle</a>() or <a href="q3toolbar.html#label-prop">Q3ToolBar::label</a>()), so if you enable the <tt>Minimized</tt> dock area, it is best to specify a meaningful caption or label for each dock window. To minimize a dock window programmatically use <a href="q3mainwindow.html#moveDockWindow">moveDockWindow</a>() with an edge of <tt>Minimized</tt>.</p>
-<p><a href="qt.html#Dock-enum">Qt::Dock</a> windows are moved transparently by default, i.e&#x2e; during the drag an outline rectangle is drawn on the screen representing the position of the dock window as it moves. If you want the dock window to be shown normally whilst it is moved use <a href="q3mainwindow.html#opaqueMoving-prop">setOpaqueMoving</a>().</p>
+<p><a href="qt-qt3.html#Dock-enum">Qt::Dock</a> windows are moved transparently by default, i.e&#x2e; during the drag an outline rectangle is drawn on the screen representing the position of the dock window as it moves. If you want the dock window to be shown normally whilst it is moved use <a href="q3mainwindow.html#opaqueMoving-prop">setOpaqueMoving</a>().</p>
 <p>The location of a dock window, i.e&#x2e; its dock area and position within the dock area, can be determined by calling <a href="q3mainwindow.html#getLocation">getLocation</a>(). Movable dock windows can be lined up to minimize wasted space with <a href="q3mainwindow.html#lineUpDockWindows">lineUpDockWindows</a>(). Pointers to the dock areas are available from <a href="q3mainwindow.html#topDock">topDock</a>(), <a href="q3mainwindow.html#leftDock">leftDock</a>(), <a href="q3mainwindow.html#rightDock">rightDock</a>() and <a href="q3mainwindow.html#bottomDock">bottomDock</a>(). A customize menu item is added to the pop up dock window menu if <a href="q3mainwindow.html#isCustomizable">isCustomizable</a>() returns true; it returns false by default. Reimplement <a href="q3mainwindow.html#isCustomizable">isCustomizable</a>() and <a href="q3mainwindow.html#customize">customize</a>() if you want to offer this extra menu item, for example, to allow the user to change settings relating to the main window and its toolbars and dock windows.</p>
 <p>The main window's menu bar is fixed (at the top) by default. If you want a movable menu bar, create a <a href="qmenubar.html">QMenuBar</a> as a stretchable widget inside its own movable dock window and restrict this dock window to only live within the <tt>Top</tt> or <tt>Bottom</tt> dock:</p>
 <pre> Q3ToolBar *tb = new Q3ToolBar(this);
@@ -293,19 +293,19 @@
 <h3 class="fn"><a name="dtor.Q3MainWindow"></a>Q3MainWindow::~Q3MainWindow ()</h3>
 <p>Destroys the object and frees any allocated resources.</p>
 <a name="//apple_ref/cpp/instm/Q3MainWindow/addDockWindow" />
-<h3 class="fn"><a name="addDockWindow"></a>void Q3MainWindow::addDockWindow ( <a href="q3dockwindow.html">Q3DockWindow</a> * <i>dockWindow</i>, <a href="qt.html#Dock-enum">Qt::Dock</a> <i>edge</i> = Qt::DockTop, bool <i>newLine</i> = false )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
+<h3 class="fn"><a name="addDockWindow"></a>void Q3MainWindow::addDockWindow ( <a href="q3dockwindow.html">Q3DockWindow</a> * <i>dockWindow</i>, <a href="qt-qt3.html#Dock-enum">Qt::Dock</a> <i>edge</i> = Qt::DockTop, bool <i>newLine</i> = false )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Adds <i>dockWindow</i> to the <i>edge</i> dock area.</p>
 <p>If <i>newLine</i> is false (the default) then the <i>dockWindow</i> is added at the end of the <i>edge</i>. For vertical edges the end is at the bottom, for horizontal edges (including <tt>Minimized</tt>) the end is at the right. If <i>newLine</i> is true a new line of dock windows is started with <i>dockWindow</i> as the first (left-most and top-most) dock window.</p>
 <p>If <i>dockWindow</i> is managed by another main window, it is first removed from that window.</p>
-<h3 class="fn"><a name="addDockWindow-2"></a>void Q3MainWindow::addDockWindow ( <a href="q3dockwindow.html">Q3DockWindow</a> * <i>dockWindow</i>, const <a href="qstring.html">QString</a> &amp; <i>label</i>, <a href="qt.html#Dock-enum">Qt::Dock</a> <i>edge</i> = Qt::DockTop, bool <i>newLine</i> = false )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
+<h3 class="fn"><a name="addDockWindow-2"></a>void Q3MainWindow::addDockWindow ( <a href="q3dockwindow.html">Q3DockWindow</a> * <i>dockWindow</i>, const <a href="qstring.html">QString</a> &amp; <i>label</i>, <a href="qt-qt3.html#Dock-enum">Qt::Dock</a> <i>edge</i> = Qt::DockTop, bool <i>newLine</i> = false )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Adds <i>dockWindow</i> to the dock area with label <i>label</i>.</p>
 <p>If <i>newLine</i> is false (the default) the <i>dockWindow</i> is added at the end of the <i>edge</i>. For vertical edges the end is at the bottom, for horizontal edges (including <tt>Minimized</tt>) the end is at the right. If <i>newLine</i> is true a new line of dock windows is started with <i>dockWindow</i> as the first (left-most and top-most) dock window.</p>
 <p>If <i>dockWindow</i> is managed by another main window, it is first removed from that window.</p>
 <a name="//apple_ref/cpp/instm/Q3MainWindow/addToolBar" />
-<h3 class="fn"><a name="addToolBar"></a>void Q3MainWindow::addToolBar ( <a href="q3dockwindow.html">Q3DockWindow</a> * <i>dockWindow</i>, <a href="qt.html#Dock-enum">Qt::Dock</a> <i>position</i> = Qt::DockTop, bool <i>newLine</i> = false )</h3>
+<h3 class="fn"><a name="addToolBar"></a>void Q3MainWindow::addToolBar ( <a href="q3dockwindow.html">Q3DockWindow</a> * <i>dockWindow</i>, <a href="qt-qt3.html#Dock-enum">Qt::Dock</a> <i>position</i> = Qt::DockTop, bool <i>newLine</i> = false )</h3>
 <p>Adds a new toolbar to the <i>dockWindow</i>. The toolbar is placed in the given <i>position</i>. If <i>newLine</i> is true the toolbar is put on a new line.</p>
-<h3 class="fn"><a name="addToolBar-2"></a>void Q3MainWindow::addToolBar ( <a href="q3dockwindow.html">Q3DockWindow</a> * <i>dockWindow</i>, const <a href="qstring.html">QString</a> &amp; <i>label</i>, <a href="qt.html#Dock-enum">Qt::Dock</a> <i>position</i> = Qt::DockTop, bool <i>newLine</i> = false )</h3>
+<h3 class="fn"><a name="addToolBar-2"></a>void Q3MainWindow::addToolBar ( <a href="q3dockwindow.html">Q3DockWindow</a> * <i>dockWindow</i>, const <a href="qstring.html">QString</a> &amp; <i>label</i>, <a href="qt-qt3.html#Dock-enum">Qt::Dock</a> <i>position</i> = Qt::DockTop, bool <i>newLine</i> = false )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>The toolbar has the caption <i>label</i> and is placed in the given <i>position</i>.</p>
 <a name="//apple_ref/cpp/instm/Q3MainWindow/appropriate" />
@@ -348,14 +348,14 @@
 <p>This signal is emitted when the <i>dockWindow</i> has changed its position. A change in position occurs when a dock window is moved within its dock area or moved to another dock area (including the <tt>Minimized</tt> and <tt>TearOff</tt> dock areas).</p>
 <p>See also <a href="q3mainwindow.html#getLocation">getLocation</a>().</p>
 <a name="//apple_ref/cpp/instm/Q3MainWindow/dockWindows" />
-<h3 class="fn"><a name="dockWindows"></a><a href="qlist.html">QList</a>&lt;<a href="q3dockwindow.html">Q3DockWindow</a> *&gt; Q3MainWindow::dockWindows ( <a href="qt.html#Dock-enum">Qt::Dock</a> <i>dock</i> ) const</h3>
+<h3 class="fn"><a name="dockWindows"></a><a href="qlist.html">QList</a>&lt;<a href="q3dockwindow.html">Q3DockWindow</a> *&gt; Q3MainWindow::dockWindows ( <a href="qt-qt3.html#Dock-enum">Qt::Dock</a> <i>dock</i> ) const</h3>
 <p>Returns a list of all the dock windows which are in the <i>dock</i> dock area, regardless of their state.</p>
-<p>For example, the <a href="qt.html#Dock-enum">Qt::DockTornOff</a> dock area may contain closed dock windows but these are returned along with the visible dock windows.</p>
+<p>For example, the <a href="qt-qt3.html#Dock-enum">Qt::DockTornOff</a> dock area may contain closed dock windows but these are returned along with the visible dock windows.</p>
 <h3 class="fn"><a name="dockWindows-2"></a><a href="qlist.html">QList</a>&lt;<a href="q3dockwindow.html">Q3DockWindow</a> *&gt; Q3MainWindow::dockWindows () const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns the list of dock windows which belong to this main window, regardless of which dock area they are in or what their state is, (e.g&#x2e; irrespective of whether they are visible or not).</p>
 <a name="//apple_ref/cpp/instm/Q3MainWindow/getLocation" />
-<h3 class="fn"><a name="getLocation"></a>bool Q3MainWindow::getLocation ( <a href="q3dockwindow.html">Q3DockWindow</a> * <i>dw</i>, <a href="qt.html#Dock-enum">Qt::Dock</a> &amp; <i>dock</i>, int &amp; <i>index</i>, bool &amp; <i>nl</i>, int &amp; <i>extraOffset</i> ) const</h3>
+<h3 class="fn"><a name="getLocation"></a>bool Q3MainWindow::getLocation ( <a href="q3dockwindow.html">Q3DockWindow</a> * <i>dw</i>, <a href="qt-qt3.html#Dock-enum">Qt::Dock</a> &amp; <i>dock</i>, int &amp; <i>index</i>, bool &amp; <i>nl</i>, int &amp; <i>extraOffset</i> ) const</h3>
 <p>Finds the location of the dock window <i>dw</i>.</p>
 <p>If the <i>dw</i> dock window is found in the main window the function returns true and populates the <i>dock</i> variable with the dw's dock area and the <i>index</i> with the dw's position within the dock area. It also sets <i>nl</i> to true if the <i>dw</i> begins a new line (otherwise false), and <i>extraOffset</i> with the dock window's offset.</p>
 <p>If the <i>dw</i> dock window is not found then the function returns false and the state of <i>dock</i>, <i>index</i>, <i>nl</i> and <i>extraOffset</i> is undefined.</p>
@@ -368,7 +368,7 @@
 <p>Returns true if the dock area dock window menu includes the Customize menu item (which calls <a href="q3mainwindow.html#customize">customize</a>() when clicked). Returns false by default, i.e&#x2e; the popup menu will not contain a Customize menu item. You will need to reimplement this function and set it to return true if you wish the user to be able to see the dock window menu.</p>
 <p>See also <a href="q3mainwindow.html#customize">customize</a>().</p>
 <a name="//apple_ref/cpp/instm/Q3MainWindow/isDockEnabled" />
-<h3 class="fn"><a name="isDockEnabled"></a>bool Q3MainWindow::isDockEnabled ( <a href="qt.html#Dock-enum">Qt::Dock</a> <i>dock</i> ) const</h3>
+<h3 class="fn"><a name="isDockEnabled"></a>bool Q3MainWindow::isDockEnabled ( <a href="qt-qt3.html#Dock-enum">Qt::Dock</a> <i>dock</i> ) const</h3>
 <p>Returns true if the <i>dock</i> dock area is enabled, i.e&#x2e; it can accept user dragged dock windows; otherwise returns false.</p>
 <p>See also <a href="q3mainwindow.html#setDockEnabled">setDockEnabled</a>().</p>
 <h3 class="fn"><a name="isDockEnabled-2"></a>bool Q3MainWindow::isDockEnabled ( <a href="q3dockarea.html">Q3DockArea</a> * <i>area</i> ) const</h3>
@@ -379,7 +379,7 @@
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns true if dock area <i>area</i> is enabled for the dock window <i>dw</i>; otherwise returns false.</p>
 <p>See also <a href="q3mainwindow.html#setDockEnabled">setDockEnabled</a>().</p>
-<h3 class="fn"><a name="isDockEnabled-4"></a>bool Q3MainWindow::isDockEnabled ( <a href="q3dockwindow.html">Q3DockWindow</a> * <i>tb</i>, <a href="qt.html#Dock-enum">Qt::Dock</a> <i>dock</i> ) const</h3>
+<h3 class="fn"><a name="isDockEnabled-4"></a>bool Q3MainWindow::isDockEnabled ( <a href="q3dockwindow.html">Q3DockWindow</a> * <i>tb</i>, <a href="qt-qt3.html#Dock-enum">Qt::Dock</a> <i>dock</i> ) const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns true if dock area <i>dock</i> is enabled for the dock window <i>tb</i>; otherwise returns false.</p>
 <p>See also <a href="q3mainwindow.html#setDockEnabled">setDockEnabled</a>().</p>
@@ -410,11 +410,11 @@
 <p>If there isn't one, then menuBar() creates an empty menu bar.</p>
 <p>See also <a href="q3mainwindow.html#statusBar">statusBar</a>().</p>
 <a name="//apple_ref/cpp/instm/Q3MainWindow/moveDockWindow" />
-<h3 class="fn"><a name="moveDockWindow"></a>void Q3MainWindow::moveDockWindow ( <a href="q3dockwindow.html">Q3DockWindow</a> * <i>dockWindow</i>, <a href="qt.html#Dock-enum">Qt::Dock</a> <i>edge</i> = Qt::DockTop )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
+<h3 class="fn"><a name="moveDockWindow"></a>void Q3MainWindow::moveDockWindow ( <a href="q3dockwindow.html">Q3DockWindow</a> * <i>dockWindow</i>, <a href="qt-qt3.html#Dock-enum">Qt::Dock</a> <i>edge</i> = Qt::DockTop )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Moves <i>dockWindow</i> to the end of the <i>edge</i>.</p>
 <p>For vertical edges the end is at the bottom, for horizontal edges (including <tt>Minimized</tt>) the end is at the right.</p>
 <p>If <i>dockWindow</i> is managed by another main window, it is first removed from that window.</p>
-<h3 class="fn"><a name="moveDockWindow-2"></a>void Q3MainWindow::moveDockWindow ( <a href="q3dockwindow.html">Q3DockWindow</a> * <i>dockWindow</i>, <a href="qt.html#Dock-enum">Qt::Dock</a> <i>edge</i>, bool <i>nl</i>, int <i>index</i>, int <i>extraOffset</i> = -1 )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
+<h3 class="fn"><a name="moveDockWindow-2"></a>void Q3MainWindow::moveDockWindow ( <a href="q3dockwindow.html">Q3DockWindow</a> * <i>dockWindow</i>, <a href="qt-qt3.html#Dock-enum">Qt::Dock</a> <i>edge</i>, bool <i>nl</i>, int <i>index</i>, int <i>extraOffset</i> = -1 )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Moves <i>dockWindow</i> to position <i>index</i> within the <i>edge</i> dock area.</p>
 <p>Any dock windows with positions <i>index</i> or higher have their position number incremented and any of these on the same line are moved right (down for vertical dock areas) to make room.</p>
@@ -422,9 +422,9 @@
 <p>The <i>extraOffset</i> is the space to put between the left side of the dock area (top side for vertical dock areas) and the dock window. (This is mostly used for restoring dock windows to the positions the user has dragged them to.)</p>
 <p>If <i>dockWindow</i> is managed by another main window, it is first removed from that window.</p>
 <a name="//apple_ref/cpp/instm/Q3MainWindow/moveToolBar" />
-<h3 class="fn"><a name="moveToolBar"></a>void Q3MainWindow::moveToolBar ( <a href="q3dockwindow.html">Q3DockWindow</a> * <i>dockWindow</i>, <a href="qt.html#Dock-enum">Qt::Dock</a> <i>position</i> = Qt::DockTop )</h3>
+<h3 class="fn"><a name="moveToolBar"></a>void Q3MainWindow::moveToolBar ( <a href="q3dockwindow.html">Q3DockWindow</a> * <i>dockWindow</i>, <a href="qt-qt3.html#Dock-enum">Qt::Dock</a> <i>position</i> = Qt::DockTop )</h3>
 <p>Moves the given <i>dockWindow</i> into the given <i>position</i>.</p>
-<h3 class="fn"><a name="moveToolBar-2"></a>void Q3MainWindow::moveToolBar ( <a href="q3dockwindow.html">Q3DockWindow</a> * <i>dockWindow</i>, <a href="qt.html#Dock-enum">Qt::Dock</a> <i>position</i>, bool <i>nl</i>, int <i>index</i>, int <i>extraOffset</i> = -1 )</h3>
+<h3 class="fn"><a name="moveToolBar-2"></a>void Q3MainWindow::moveToolBar ( <a href="q3dockwindow.html">Q3DockWindow</a> * <i>dockWindow</i>, <a href="qt-qt3.html#Dock-enum">Qt::Dock</a> <i>position</i>, bool <i>nl</i>, int <i>index</i>, int <i>extraOffset</i> = -1 )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>The <i>dockWindow</i> is made the <i>index</i>-th item in the toolbar, moved over by <i>extraOffset</i>. If <i>nl</i> is true, the dock window is put on a new line.</p>
 <a name="//apple_ref/cpp/instm/Q3MainWindow/pixmapSizeChanged" />
@@ -451,11 +451,11 @@
 <p>The central widget is surrounded by the left, top, right and bottom dock areas. The menu bar is above the top dock area.</p>
 <p>See also <a href="q3mainwindow.html#centralWidget">centralWidget</a>().</p>
 <a name="//apple_ref/cpp/instm/Q3MainWindow/setDockEnabled" />
-<h3 class="fn"><a name="setDockEnabled"></a>void Q3MainWindow::setDockEnabled ( <a href="qt.html#Dock-enum">Qt::Dock</a> <i>dock</i>, bool <i>enable</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
+<h3 class="fn"><a name="setDockEnabled"></a>void Q3MainWindow::setDockEnabled ( <a href="qt-qt3.html#Dock-enum">Qt::Dock</a> <i>dock</i>, bool <i>enable</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>If <i>enable</i> is true then users can dock windows in the <i>dock</i> area. If <i>enable</i> is false users cannot dock windows in the <i>dock</i> dock area.</p>
 <p>Users can dock (drag) dock windows into any enabled dock area.</p>
 <p>See also <a href="q3mainwindow.html#isDockEnabled">isDockEnabled</a>().</p>
-<h3 class="fn"><a name="setDockEnabled-2"></a>void Q3MainWindow::setDockEnabled ( <a href="q3dockwindow.html">Q3DockWindow</a> * <i>dw</i>, <a href="qt.html#Dock-enum">Qt::Dock</a> <i>dock</i>, bool <i>enable</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
+<h3 class="fn"><a name="setDockEnabled-2"></a>void Q3MainWindow::setDockEnabled ( <a href="q3dockwindow.html">Q3DockWindow</a> * <i>dw</i>, <a href="qt-qt3.html#Dock-enum">Qt::Dock</a> <i>dock</i>, bool <i>enable</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>If <i>enable</i> is true then users can dock the <i>dw</i> dock window in the <i>dock</i> area. If <i>enable</i> is false users cannot dock the <i>dw</i> dock window in the <i>dock</i> area.</p>
 <p>In general users can dock (drag) dock windows into any enabled dock area. Using this function particular dock areas can be enabled (or disabled) as docking points for particular dock windows.</p>
@@ -484,7 +484,7 @@
 <h3 class="fn"><a name="toolBarPositionChanged"></a>void Q3MainWindow::toolBarPositionChanged ( <a href="q3toolbar.html">Q3ToolBar</a> * <i>toolbar</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when a <i>toolbar</i> is moved.</p>
 <a name="//apple_ref/cpp/instm/Q3MainWindow/toolBars" />
-<h3 class="fn"><a name="toolBars"></a><a href="qlist.html">QList</a>&lt;<a href="q3toolbar.html">Q3ToolBar</a> *&gt; Q3MainWindow::toolBars ( <a href="qt.html#Dock-enum">Qt::Dock</a> <i>dock</i> ) const</h3>
+<h3 class="fn"><a name="toolBars"></a><a href="qlist.html">QList</a>&lt;<a href="q3toolbar.html">Q3ToolBar</a> *&gt; Q3MainWindow::toolBars ( <a href="qt-qt3.html#Dock-enum">Qt::Dock</a> <i>dock</i> ) const</h3>
 <p>Returns a list of all the toolbars which are in the <i>dock</i> dock area, regardless of their state.</p>
 <p>For example, the <tt>TornOff</tt> dock area may contain closed toolbars but these are returned along with the visible toolbars.</p>
 <p>See also <a href="q3mainwindow.html#dockWindows">dockWindows</a>().</p>
@@ -521,6 +521,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -185,7 +200,9 @@ static const int QGRAPHICSVIEW_REGION_RECT_THRESHOLD = 50;
     the exposed area). In some situations, however, the painter clip can slow
     down rendering; especially when all painting is restricted to inside
     exposed areas. By enabling this flag, QGraphicsView will completely
-    disable its implicit clipping.
+    disable its implicit clipping. Note that rendering artifacts from using a
+    semi-transparent foreground or background brush can occur if clipping is
+    disabled.
 
     \value DontSavePainterState When rendering, QGraphicsView protects the
     painter state (see QPainter::save()) when rendering the background or
@@ -391,17 +408,28 @@ void QGraphicsViewPrivate::recalculateContentSize()
     int height = maxSize.height();
     QRectF viewRect = matrix.mapRect(q->sceneRect());
 
+    bool frameOnlyAround = (q->style()->styleHint(QStyle::SH_ScrollView_FrameOnlyAroundContents, 0, q));
+    if (frameOnlyAround) {
+        if (hbarpolicy == Qt::ScrollBarAlwaysOn)
+            height -= frameWidth * 2;
+        if (vbarpolicy == Qt::ScrollBarAlwaysOn)
+            width -= frameWidth * 2;
+    }
+
     // Adjust the maximum width and height of the viewport based on the width
     // of visible scroll bars.
     int scrollBarExtent = q->style()->pixelMetric(QStyle::PM_ScrollBarExtent, 0, q);
-    bool useHorizontalScrollBar = (viewRect.width() > maxSize.width()) && hbarpolicy != Qt::ScrollBarAlwaysOff;
-    bool useVerticalScrollBar = (viewRect.height() > maxSize.height()) && vbarpolicy != Qt::ScrollBarAlwaysOff;
+    if (frameOnlyAround)
+        scrollBarExtent += frameWidth * 2;
+
+    bool useHorizontalScrollBar = (viewRect.width() > width) && hbarpolicy != Qt::ScrollBarAlwaysOff;
+    bool useVerticalScrollBar = (viewRect.height() > height) && vbarpolicy != Qt::ScrollBarAlwaysOff;
     if (useHorizontalScrollBar && !useVerticalScrollBar) {
-        if (viewRect.height() > maxSize.height() - scrollBarExtent)
+        if (viewRect.height() > height - scrollBarExtent)
             useVerticalScrollBar = true;
     }
     if (useVerticalScrollBar && !useHorizontalScrollBar) {
-        if (viewRect.width() > maxSize.width() - scrollBarExtent)
+        if (viewRect.width() > width - scrollBarExtent)
             useHorizontalScrollBar = true;
     }
     if (useHorizontalScrollBar && hbarpolicy != Qt::ScrollBarAlwaysOn)
@@ -420,7 +448,9 @@ void QGraphicsViewPrivate::recalculateContentSize()
 
     // If the whole scene fits horizontally, we center the scene horizontally,
     // and ignore the horizontal scroll bars.
-    if (!useHorizontalScrollBar) {
+    int left = int(qMax<qreal>(viewRect.left(), INT_MIN));
+    int right = int(qMin<qreal>(viewRect.right() - width, INT_MAX));
+    if (left >= right) {
         q->horizontalScrollBar()->setRange(0, 0);
 
         switch (alignment & Qt::AlignHorizontal_Mask) {
@@ -436,17 +466,17 @@ void QGraphicsViewPrivate::recalculateContentSize()
             break;
         }
     } else {
-        int left = int(qMax<qreal>(viewRect.left(), INT_MIN));
-        int right = int(qMin<qreal>(viewRect.right() - width + 1, INT_MAX));
         q->horizontalScrollBar()->setRange(left, right);
         q->horizontalScrollBar()->setPageStep(width);
         q->horizontalScrollBar()->setSingleStep(width / 20);
         leftIndent = 0;
     }
 
-    // If the whole scene fits vertical, we center the scene vertically, and
+    // If the whole scene fits vertically, we center the scene vertically, and
     // ignore the vertical scroll bars.
-    if (!useVerticalScrollBar) {
+    int top = int(qMax<qreal>(viewRect.top(), INT_MIN));
+    int bottom = int(qMin<qreal>(viewRect.bottom() - height, INT_MAX));
+    if (top >= bottom) {
         q->verticalScrollBar()->setRange(0, 0);
 
         switch (alignment & Qt::AlignVertical_Mask) {
@@ -462,8 +492,6 @@ void QGraphicsViewPrivate::recalculateContentSize()
             break;
         }
     } else {
-        int top = int(qMax<qreal>(viewRect.top(), INT_MIN));
-        int bottom = int(qMin<qreal>(viewRect.bottom() - height + 1, INT_MAX));
         q->verticalScrollBar()->setRange(top, bottom);
         q->verticalScrollBar()->setPageStep(height);
         q->verticalScrollBar()->setSingleStep(height / 20);
@@ -1099,7 +1127,7 @@ void QGraphicsView::resetCachedContent()
     You can call this function to notify QGraphicsView of changes to the
     background or the foreground of the scene. It is commonly used for scenes
     with tile-based backgrounds to notify changes when QGraphicsView has
-    enabled background cacheing.
+    enabled background caching.
 
     Note that QGraphicsView currently supports background caching only (see
     CachedBackground). This function is equivalent to calling update() if any
@@ -1186,6 +1214,7 @@ void QGraphicsView::setScene(QGraphicsScene *scene)
         d->keepLastCenterPoint = true;
     } else {
         viewport()->update();
+        d->recalculateContentSize();
     }
 }
 
@@ -1588,8 +1617,12 @@ void QGraphicsView::render(QPainter *painter, const QRectF &target, const QRect 
 
     // Default target rect = device rect
     QRectF targetRect = target;
-    if (target.isNull())
-        targetRect.setRect(0, 0, painter->device()->width(), painter->device()->height());
+    if (target.isNull()) {
+        if (painter->device()->devType() == QInternal::Picture)
+            targetRect = sourceRect;
+        else
+            targetRect.setRect(0, 0, painter->device()->width(), painter->device()->height());
+    }
 
     // Find the ideal x / y scaling ratio to fit \a source into \a target.
     qreal xratio = targetRect.width() / sourceRect.width();
@@ -1669,6 +1702,7 @@ void QGraphicsView::render(QPainter *painter, const QRectF &target, const QRect 
     painter->setClipRect(targetRect);
     QPainterPath path;
     path.addPolygon(sourceScenePoly);
+    path.closeSubpath();
     painter->setClipPath(painterMatrix.map(path), Qt::IntersectClip);
 
     // Transform the painter.
@@ -1855,6 +1889,7 @@ QList<QGraphicsItem *> QGraphicsView::items(const QPolygon &polygon, Qt::ItemSel
 
     QPainterPath path;
     path.addPolygon(polygon);
+    path.closeSubpath();
     return d->itemsInArea(path);
 }
 
@@ -2590,7 +2625,7 @@ void QGraphicsView::mousePressEvent(QMouseEvent *event)
     }
 
 #ifndef QT_NO_RUBBERBAND
-    if (d->dragMode == QGraphicsView::RubberBandDrag) {
+    if (d->dragMode == QGraphicsView::RubberBandDrag && !d->rubberBanding) {
         if (d->sceneInteractionAllowed) {
             // Rubberbanding is only allowed in interactive mode.
             d->rubberBanding = true;
@@ -2637,6 +2672,14 @@ void QGraphicsView::mouseMoveEvent(QMouseEvent *event)
                     viewport()->update();
             }
 
+            // Stop rubber banding if the user has let go of all buttons (even
+            // if we didn't get the release events).
+            if (!event->buttons()) {
+                d->rubberBanding = false;
+                d->rubberBandRect = QRect();
+                return;
+            }
+
             // Update rubberband position
             d->rubberBandRect = QRect(d->mousePressViewPoint, event->pos()).normalized();
 
@@ -2650,6 +2693,7 @@ void QGraphicsView::mouseMoveEvent(QMouseEvent *event)
             // Set the new selection area
             QPainterPath selectionArea;
             selectionArea.addPolygon(mapToScene(d->rubberBandRect));
+            selectionArea.closeSubpath();
             if (d->scene)
                 d->scene->setSelectionArea(selectionArea, d->rubberBandSelectionMode);
             return;
@@ -2742,7 +2786,7 @@ void QGraphicsView::mouseReleaseEvent(QMouseEvent *event)
     Q_D(QGraphicsView);
 
 #ifndef QT_NO_RUBBERBAND
-    if (d->dragMode == QGraphicsView::RubberBandDrag && d->sceneInteractionAllowed) {
+    if (d->dragMode == QGraphicsView::RubberBandDrag && d->sceneInteractionAllowed && !event->buttons()) {
         if (d->rubberBanding) {
             if (d->viewportUpdateMode != QGraphicsView::NoViewportUpdate){
                 if (d->viewportUpdateMode != FullViewportUpdate)
@@ -2751,6 +2795,7 @@ void QGraphicsView::mouseReleaseEvent(QMouseEvent *event)
                     viewport()->update();
             }
             d->rubberBanding = false;
+            d->rubberBandRect = QRect();
             return;
         }
     } else
@@ -2850,6 +2895,7 @@ void QGraphicsView::paintEvent(QPaintEvent *event)
     QRegion exposedRegion = event->region();
     if (!d->accelerateScrolling)
         exposedRegion = viewport()->rect();
+    QVector<QRect> clipRects = exposedRegion.rects();
 
     // Set up the painter
     QPainter painter(viewport());
@@ -2937,9 +2983,11 @@ void QGraphicsView::paintEvent(QPaintEvent *event)
             // Recreate the background pixmap, and flag the whole background as
             // exposed.
             d->backgroundPixmap = QPixmap(viewport()->size());
+            QBrush bgBrush = viewport()->palette().brush(viewport()->backgroundRole());
+            if (!bgBrush.isOpaque())
+                d->backgroundPixmap.fill(Qt::transparent);
             QPainter p(&d->backgroundPixmap);
-            p.fillRect(0, 0, d->backgroundPixmap.width(), d->backgroundPixmap.height(),
-                       viewport()->palette().brush(viewport()->backgroundRole()));
+            p.fillRect(0, 0, d->backgroundPixmap.width(), d->backgroundPixmap.height(), bgBrush);
             d->backgroundPixmapExposed = QRegion(viewport()->rect());
             d->mustResizeBackgroundPixmap = false;
         }
@@ -2947,16 +2995,19 @@ void QGraphicsView::paintEvent(QPaintEvent *event)
         // Redraw exposed areas
         if (!d->backgroundPixmapExposed.isEmpty()) {
             QPainter backgroundPainter(&d->backgroundPixmap);
-            backgroundPainter.setTransform(viewportTransform());
             foreach (QRect rect, d->backgroundPixmapExposed.rects()) {
+                QRectF exposedSceneRect = mapToScene(rect.adjusted(-1, -1, 1, 1)).boundingRect();
+
+                // Set the clip in device coordinates to avoid sub
+                // pixelation. This way we only redraw the pixels not
+                // already scrolled.
+                backgroundPainter.setTransform(QTransform());
+                backgroundPainter.setClipRect(rect, Qt::ReplaceClip);
+
+                backgroundPainter.setTransform(viewportTransform());
                 if (!(d->optimizationFlags & DontSavePainterState))
                     backgroundPainter.save();
-
-                QRectF exposedSceneRect = mapToScene(rect.adjusted(-1, -1, 1, 1)).boundingRect();
-                if (!(d->optimizationFlags & DontClipPainter))
-                    backgroundPainter.setClipRect(exposedSceneRect.adjusted(-1, -1, 1, 1));
                 drawBackground(&backgroundPainter, exposedSceneRect);
-
                 if (!(d->optimizationFlags & DontSavePainterState))
                     backgroundPainter.restore();
             }
@@ -2970,18 +3021,28 @@ void QGraphicsView::paintEvent(QPaintEvent *event)
             painter.drawPixmap(rect, d->backgroundPixmap, rect);
         painter.setTransform(oldMatrix);
     } else {
+        if (clipRects.size() > 1)
+            painter.save();
+
         // Draw the background directly
-        foreach (QRectF rect, exposedRects) {
+        for (int i = 0; i < exposedRects.size(); ++i) {
             if (!(d->optimizationFlags & DontSavePainterState))
                 painter.save();
 
-            if (!(d->optimizationFlags & DontClipPainter))
-                painter.setClipRect(rect.adjusted(-1, -1, 1, 1));
-            drawBackground(&painter, rect);
+            if (!(d->optimizationFlags & DontClipPainter) && clipRects.size() > 1) {
+                QTransform oldTransform = painter.worldTransform();
+                painter.setWorldTransform(QTransform());
+                painter.setClipRect(clipRects.at(i));
+                painter.setWorldTransform(oldTransform);
+            }
+            drawBackground(&painter, exposedRects.at(i));
 
             if (!(d->optimizationFlags & DontSavePainterState))
                 painter.restore();
         }
+
+        if (clipRects.size() > 1)
+            painter.restore();
     }
 
 #ifdef QGRAPHICSVIEW_DEBUG
@@ -3034,13 +3095,17 @@ void QGraphicsView::paintEvent(QPaintEvent *event)
 #endif
 
     // Foreground
-    foreach (QRectF rect, exposedRects) {
+    for (int i = 0; i < exposedRects.size(); ++i) {
         if (!(d->optimizationFlags & DontSavePainterState))
             painter.save();
 
-        if (!(d->optimizationFlags & DontClipPainter))
-            painter.setClipRect(rect.adjusted(-1, -1, 1, 1));
-        drawForeground(&painter, rect);
+        if (!(d->optimizationFlags & DontClipPainter) && clipRects.size() > 1) {
+            QTransform oldTransform = painter.worldTransform();
+            painter.setWorldTransform(QTransform());
+            painter.setClipRect(clipRects.at(i));
+            painter.setWorldTransform(oldTransform);
+        }
+        drawForeground(&painter, exposedRects.at(i));
 
         if (!(d->optimizationFlags & DontSavePainterState))
             painter.restore();
@@ -3124,6 +3189,16 @@ void QGraphicsView::scrollContentsBy(int dx, int dy)
     if (isRightToLeft())
         dx = -dx;
 
+#ifndef QT_NO_RUBBERBAND
+    // Update old rubberband
+    if (d->viewportUpdateMode != QGraphicsView::NoViewportUpdate && !d->rubberBandRect.isNull()) {
+        if (d->viewportUpdateMode != FullViewportUpdate)
+            viewport()->update(d->rubberBandRegion(viewport(), d->rubberBandRect));
+        else
+            viewport()->update();
+    }
+#endif
+
     if (d->viewportUpdateMode != QGraphicsView::NoViewportUpdate){
         if (d->accelerateScrolling && d->viewportUpdateMode != FullViewportUpdate)
             viewport()->scroll(dx, dy);
@@ -3145,20 +3220,18 @@ void QGraphicsView::scrollContentsBy(int dx, int dy)
         if (dy > 0) {
             d->backgroundPixmapExposed += QRect(0, 0, viewport()->width(), dy);
         } else if (dy < 0) {
-            d->backgroundPixmapExposed += QRect(0, viewport()->height() + dy - 1,
-                                                viewport()->width(), -dy + 1);
+            d->backgroundPixmapExposed += QRect(0, viewport()->height() + dy,
+                                                viewport()->width(), -dy);
         }
 
         // Scroll the background pixmap
         if (!d->backgroundPixmap.isNull()) {
-#if defined(Q_OS_WIN) || defined(Q_WS_QWS) || defined(Q_WS_MAC)
-            QPixmap tmp = d->backgroundPixmap;
+            QPixmap tmp = d->backgroundPixmap.copy();
+            QBrush bgBrush = viewport()->palette().brush(viewport()->backgroundRole());
+            if (!bgBrush.isOpaque())
+                d->backgroundPixmap.fill(Qt::transparent);
             QPainter painter(&d->backgroundPixmap);
             painter.drawPixmap(dx, dy, tmp);
-#else
-            QPainter painter(&d->backgroundPixmap);
-            painter.drawPixmap(dx, dy, d->backgroundPixmap);
-#endif
         }
     }
 }

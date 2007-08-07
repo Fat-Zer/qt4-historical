@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/network/qudpsocket.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/network/qudpsocket.cpp -->
 <head>
   <title>Qt 4.3: QUdpSocket Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -64,7 +64,7 @@
 <h2>Detailed Description</h2>
 <p>The QUdpSocket class provides a UDP socket.</p>
 <p>UDP (User Datagram Protocol) is a lightweight, unreliable, datagram-oriented, connectionless protocol. It can be used when reliability isn't important. QUdpSocket is a subclass of <a href="qabstractsocket.html">QAbstractSocket</a> that allows you to send and receive UDP datagrams.</p>
-<p>The most common way to use this class is to bind to an address and port using <a href="qudpsocket.html#bind">bind</a>(), then call <a href="qudpsocket.html#writeDatagram">writeDatagram</a>() and <a href="qudpsocket.html#readDatagram">readDatagram</a>() to transfer data.</p>
+<p>The most common way to use this class is to bind to an address and port using <a href="qudpsocket.html#bind">bind</a>(), then call <a href="qudpsocket.html#writeDatagram">writeDatagram</a>() and <a href="qudpsocket.html#readDatagram">readDatagram</a>() to transfer data. If you want to use the standard <a href="qiodevice.html">QIODevice</a> functions <a href="qiodevice.html#read">read</a>(), <a href="qiodevice.html#readLine">readLine</a>(), <a href="qiodevice.html#write">write</a>(), etc., you must first connect the socket directly to a peer by calling <a href="qabstractsocket.html#connectToHost">connectToHost</a>().</p>
 <p>The socket emits the <a href="qiodevice.html#bytesWritten">bytesWritten</a>() signal every time a datagram is written to the network. If you just want to send datagrams, you don't need to call <a href="qudpsocket.html#bind">bind</a>().</p>
 <p>The <a href="qiodevice.html#readyRead">readyRead</a>() signal is emitted whenever datagrams arrive. In that case, <a href="qudpsocket.html#hasPendingDatagrams">hasPendingDatagrams</a>() returns true. Call <a href="qudpsocket.html#pendingDatagramSize">pendingDatagramSize</a>() to obtain the size of the first pending datagram, and <a href="qudpsocket.html#readDatagram">readDatagram</a>() to read it.</p>
 <p>Example:</p>
@@ -169,6 +169,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

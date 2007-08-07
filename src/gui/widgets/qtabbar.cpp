@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -320,6 +335,8 @@ void QTabBarPrivate::layoutTabs()
     // Since tab widget is rather *ahem* strict about keeping the geometry of the
     // tab bar to its absolute minimum, this won't bleed through, but will show up
     // if you use tab bar on its own (a.k.a. not a bug, but a feature).
+    // Update: if squeezeTabs is true, we DO set a maximum size to prevent the tabs
+    // being wider than necessary.
     if (!vertTabs) {
         int minx = 0;
         int x = 0;
@@ -337,6 +354,9 @@ void QTabBarPrivate::layoutTabs()
             tabChain[tabChainIndex].minimumSize = sz.width();
             tabChain[tabChainIndex].empty = false;
             tabChain[tabChainIndex].expansive = true;
+
+            if (squeezeTabs)
+                tabChain[tabChainIndex].maximumSize = tabChain[tabChainIndex].sizeHint;
         }
 
         last = minx;
@@ -359,6 +379,9 @@ void QTabBarPrivate::layoutTabs()
             tabChain[tabChainIndex].minimumSize = sz.height();
             tabChain[tabChainIndex].empty = false;
             tabChain[tabChainIndex].expansive = true;
+
+            if (squeezeTabs)
+                tabChain[tabChainIndex].maximumSize = tabChain[tabChainIndex].sizeHint;
         }
 
         last = miny;
@@ -878,8 +901,10 @@ QRect QTabBar::tabRect(int index) const
     return QRect();
 }
 
-/*! Returns the index of the tab that covers \a position or -1 if no
-  tab covers \a position;
+/*!
+    \since 4.3
+    Returns the index of the tab that covers \a position or -1 if no
+    tab covers \a position;
 */
 
 int QTabBar::tabAt(const QPoint &position) const

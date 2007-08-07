@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/gui/itemviews/qtreeview.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/itemviews/qtreeview.cpp -->
 <head>
   <title>Qt 4.3: QTreeView Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -128,7 +128,6 @@
 <a name="protected-functions"></a>
 <h3>Protected Functions</h3>
 <ul>
-<li><div class="fn"/>virtual void <b><a href="qtreeview.html#currentChanged">currentChanged</a></b> ( const QModelIndex &amp; <i>current</i>, const QModelIndex &amp; <i>previous</i> )</li>
 <li><div class="fn"/>virtual void <b><a href="qtreeview.html#drawBranches">drawBranches</a></b> ( QPainter * <i>painter</i>, const QRect &amp; <i>rect</i>, const QModelIndex &amp; <i>index</i> ) const</li>
 <li><div class="fn"/>virtual void <b><a href="qtreeview.html#drawRow">drawRow</a></b> ( QPainter * <i>painter</i>, const QStyleOptionViewItem &amp; <i>option</i>, const QModelIndex &amp; <i>index</i> ) const</li>
 <li><div class="fn"/>void <b><a href="qtreeview.html#drawTree">drawTree</a></b> ( QPainter * <i>painter</i>, const QRegion &amp; <i>region</i> ) const</li>
@@ -139,7 +138,6 @@
 <li><div class="fn"/>virtual void <b><a href="qtreeview.html#rowsAboutToBeRemoved">rowsAboutToBeRemoved</a></b> ( const QModelIndex &amp; <i>parent</i>, int <i>start</i>, int <i>end</i> )</li>
 <li><div class="fn"/>virtual void <b><a href="qtreeview.html#rowsInserted">rowsInserted</a></b> ( const QModelIndex &amp; <i>parent</i>, int <i>start</i>, int <i>end</i> )</li>
 <li><div class="fn"/>virtual void <b><a href="qtreeview.html#scrollContentsBy">scrollContentsBy</a></b> ( int <i>dx</i>, int <i>dy</i> )</li>
-<li><div class="fn"/>virtual void <b><a href="qtreeview.html#selectionChanged">selectionChanged</a></b> ( const QItemSelection &amp; <i>selected</i>, const QItemSelection &amp; <i>deselected</i> )</li>
 <li><div class="fn"/>virtual void <b><a href="qtreeview.html#setSelection">setSelection</a></b> ( const QRect &amp; <i>rect</i>, QItemSelectionModel::SelectionFlags <i>command</i> )</li>
 <li><div class="fn"/>virtual int <b><a href="qtreeview.html#sizeHintForColumn">sizeHintForColumn</a></b> ( int <i>column</i> ) const</li>
 <li><div class="fn"/>virtual int <b><a href="qtreeview.html#verticalOffset">verticalOffset</a></b> () const</li>
@@ -207,6 +205,9 @@
 <tr valign="top" class="odd"><td><img src="images/windowsxp-treeview.png" alt="Screenshot of a Windows XP style tree view" /></td><td><img src="images/macintosh-treeview.png" alt="Screenshot of a Macintosh style tree view" /></td><td><img src="images/plastique-treeview.png" alt="Screenshot of a Plastique style tree view" /></td></tr>
 <tr valign="top" class="even"><td>A <a href="gallery-windowsxp.html">Windows XP style</a> tree view.</td><td>A <a href="gallery-macintosh.html">Macintosh style</a> tree view.</td><td>A <a href="gallery-plastique.html">Plastique style</a> tree view.</td></tr>
 </table></p>
+<a name="improving-performance"></a>
+<h3>Improving Performance</h3>
+<p>It is possible to give the view hints about the data it is handling in order to improve its performance when displaying large numbers of items. One approach that can be taken for views that are intended to display items with equal heights is to set the <a href="qtreeview.html#uniformRowHeights-prop">uniformRowHeights</a> property to true.</p>
 <p>See also <a href="qlistview.html">QListView</a>, <a href="qtreewidget.html">QTreeWidget</a>, <a href="model-view-view.html">View Classes</a>, <a href="qabstractitemmodel.html">QAbstractItemModel</a>, <a href="qabstractitemview.html">QAbstractItemView</a>, and <a href="itemviews-dirview.html">Dir View Example</a>.</p>
 <hr />
 <h2>Property Documentation</h2>
@@ -349,8 +350,6 @@
 <h3 class="fn"><a name="columnWidth"></a>int QTreeView::columnWidth ( int <i>column</i> ) const</h3>
 <p>Returns the width of the <i>column</i>.</p>
 <p>See also <a href="qtreeview.html#resizeColumnToContents">resizeColumnToContents</a>() and <a href="qtreeview.html#setColumnWidth">setColumnWidth</a>().</p>
-<a name="//apple_ref/cpp/instm/QTreeView/currentChanged" />
-<h3 class="fn"><a name="currentChanged"></a>void QTreeView::currentChanged ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>current</i>, const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>previous</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <a name="//apple_ref/cpp/instm/QTreeView/drawBranches" />
 <h3 class="fn"><a name="drawBranches"></a>void QTreeView::drawBranches ( <a href="qpainter.html">QPainter</a> * <i>painter</i>, const <a href="qrect.html">QRect</a> &amp; <i>rect</i>, const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>index</i> ) const&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>Draws the branches in the tree view on the same row as the model item <i>index</i>, using the <i>painter</i> given. The branches are drawn in the rectangle specified by <i>rect</i>.</p>
@@ -460,8 +459,6 @@
 <h3 class="fn"><a name="selectAll"></a>void QTreeView::selectAll ()&nbsp;&nbsp;<tt> [virtual slot]</tt></h3>
 <p>Selects all the items in the underlying model.</p>
 <p>Reimplemented from <a href="qabstractitemview.html#selectAll">QAbstractItemView</a>.</p>
-<a name="//apple_ref/cpp/instm/QTreeView/selectionChanged" />
-<h3 class="fn"><a name="selectionChanged"></a>void QTreeView::selectionChanged ( const <a href="qitemselection.html">QItemSelection</a> &amp; <i>selected</i>, const <a href="qitemselection.html">QItemSelection</a> &amp; <i>deselected</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <a name="//apple_ref/cpp/instm/QTreeView/setColumnHidden" />
 <h3 class="fn"><a name="setColumnHidden"></a>void QTreeView::setColumnHidden ( int <i>column</i>, bool <i>hide</i> )</h3>
 <p>If <i>hide</i> is true the <i>column</i> is hidden, otherwise the <i>column</i> is shown.</p>
@@ -527,6 +524,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

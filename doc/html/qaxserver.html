@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/doc/src/qaxserver.qdoc -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/doc/src/qaxserver.qdoc -->
 <head>
   <title>Qt 4.3: QAxServer Module</title>
   <link rel="prev" href="qaxcontainer.html" />
@@ -36,7 +36,7 @@
 <li><a href="qaxbindable.html">QAxBindable</a> provides an interface between the Qt widget and the COM object.</li>
 <li><a href="qaxaggregated.html">QAxAggregated</a> can be subclassed to implement additional COM interfaces.</li>
 </ul>
-<p>Some <a href="examples.html#activeqt-examples">example implementations</a> of ActiveX controls and COM objects are provided.</p>
+<p>Some <a href="examples.html#activeqt">example implementations</a> of ActiveX controls and COM objects are provided.</p>
 <p>The QAxServer module is part of the <a href="commercialeditions.html#qt-desktop-edition">Qt Desktop Edition</a> for Windows. It is <i>not</i> part of the <a href="opensourceedition.html">Qt Open Source Edition</a>.</p>
 <p>Topics:</p>
 <ul><li><a href="#using-the-library">Using the Library</a></li>
@@ -278,7 +278,7 @@
  {
      QApplication app(argc, argv);
      if (!QAxFactory::isServer()) {
-         <span class="comment">// create and show main window</span>
+         <span class="comment">//</span> create and show main window
      }
      return app.exec();
  }</pre>
@@ -329,7 +329,7 @@
  if (DllRegisterServer)
      res = DllRegisterServer();
  if (res != S_OK)
-     <span class="comment">// error handling</span></pre>
+     <span class="comment">//</span> error handling</pre>
 <a name="distributing-servers-over-the-internet"></a>
 <h5>Distributing Servers over the Internet</h5>
 <p>If you want to use controls in your server in web-pages you need to make the server available to the browser used to view your page, and you need to specify the location of the server package in your page.</p>
@@ -357,7 +357,7 @@
 <pre> &lt;object ID=...&gt;
      &lt;param name=&quot;name&quot; value=&quot;value&quot;&gt;
  &lt;\object&gt;</pre>
-<p>If the web browser supports scripting use JavaScript, VBScript and forms to script the control. The <a href="examples.html#activeqt-examples">ActiveQt examples</a> include demonstration HTML pages for the example controls.</p>
+<p>If the web browser supports scripting use JavaScript, VBScript and forms to script the control. The <a href="examples.html#activeqt">ActiveQt examples</a> include demonstration HTML pages for the example controls.</p>
 <a name="supported-and-unsupported-activex-clients"></a>
 <h4>Supported and Unsupported ActiveX Clients</h4>
 <p>The following is largly based on our own experiements with ActiveX controls and client applications, and is by no means complete.</p>
@@ -460,10 +460,10 @@
 
      long queryInterface(const QUuid &amp;iid, void **iface);
 
-     <span class="comment">// IUnknown</span>
+     <span class="comment">//</span> IUnknown
      QAXAGG_IUNKNOWN
 
-     <span class="comment">// ISomeCOMInterface</span>
+     <span class="comment">//</span> ISomeCOMInterface
      ...
  }</pre>
 <p>Reimplement the <a href="qaxaggregated.html#queryInterface">QAxAggregated::queryInterface</a>() function to support the additional COM interfaces.</p>
@@ -508,6 +508,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

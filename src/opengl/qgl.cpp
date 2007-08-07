@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -161,12 +176,7 @@ static pfn_glCompressedTexImage2DARB qt_glCompressedTexImage2DARB = 0;
     precedence than others.
 
     You create and tell a QGLFormat object what rendering options you
-    want from an OpenGL
-    \footnote
-        OpenGL is a trademark of Silicon Graphics, Inc. in the
-        United States and other countries.
-    \endfootnote
-    rendering context.
+    want from an OpenGL rendering context.
 
     OpenGL drivers or accelerated hardware may or may not support
     advanced features such as alpha channel or stereographic viewing.
@@ -207,6 +217,11 @@ static pfn_glCompressedTexImage2DARB qt_glCompressedTexImage2DARB = 0;
         }
     }
     \endcode
+
+    \legalese
+        OpenGL is a trademark of Silicon Graphics, Inc. in the
+        United States and other countries.
+    \endlegalese
 
     \sa QGLContext, QGLWidget
 */
@@ -1257,6 +1272,7 @@ void QGLContextPrivate::init(QPaintDevice *dev, const QGLFormat &format)
 #if defined(Q_WS_X11)
     pbuf = 0;
     gpm = 0;
+    screen = QX11Info::appScreen();
 #endif
 #if defined(Q_WS_WIN)
     dc = 0;
@@ -1379,19 +1395,14 @@ QGLShareRegister* qgl_share_reg()
 
     \ingroup multimedia
 
-    An OpenGL
-    \footnote
-        OpenGL is a trademark of Silicon Graphics, Inc. in the
-        United States and other countries.
-    \endfootnote
-    rendering context is a complete set of OpenGL state variables.
-
-    The context's \link QGL::FormatOption format\endlink is set in the
-    constructor or later with setFormat(). The format options that are
-    actually set are returned by format(); the options you asked for
-    are returned by requestedFormat(). Note that after a QGLContext
-    object has been constructed, the actual OpenGL context must be
-    created by explicitly calling the \link create() create()\endlink
+    An OpenGL rendering context is a complete set of OpenGL state
+    variables. The rendering context's \l {QGL::FormatOption} {format}
+    is set in the constructor, but it can also be set later with
+    setFormat(). The format options that are actually set are returned
+    by format(); the options you asked for are returned by
+    requestedFormat(). Note that after a QGLContext object has been
+    constructed, the actual OpenGL context must be created by
+    explicitly calling the \link create() create()\endlink
     function. The makeCurrent() function makes this context the
     current rendering context. You can make \e no context current
     using doneCurrent(). The reset() function will reset the context
@@ -3318,8 +3329,12 @@ int QGLWidget::fontDisplayListBase(const QFont & font, int listBase)
 static void qt_save_gl_state()
 {
 #ifndef Q_WS_QWS
+    glPushClientAttrib(GL_CLIENT_ALL_ATTRIB_BITS);
     glPushAttrib(GL_ALL_ATTRIB_BITS);
 #endif
+    glMatrixMode(GL_TEXTURE);
+    glPushMatrix();
+    glLoadIdentity();
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
     glMatrixMode(GL_MODELVIEW);
@@ -3335,12 +3350,15 @@ static void qt_save_gl_state()
 
 static void qt_restore_gl_state()
 {
+    glMatrixMode(GL_TEXTURE);
+    glPopMatrix();
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
     glMatrixMode(GL_MODELVIEW);
     glPopMatrix();
 #ifndef Q_WS_QWS
     glPopAttrib();
+    glPopClientAttrib();
 #endif
 }
 

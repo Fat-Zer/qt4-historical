@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/gui/painting/qpen.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/painting/qpen.cpp -->
 <head>
   <title>Qt 4.3: QPen Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -18,11 +18,6 @@
 <pre> #include &lt;QPen&gt;</pre><ul>
 <li><a href="qpen-members.html">List of all members, including inherited members</a></li>
 </ul>
-<a name="public-types"></a>
-<h3>Public Types</h3>
-<ul>
-<li><div class="fn"/>typedef <b><a href="qpen.html#DataPtr-typedef">DataPtr</a></b></li>
-</ul>
 <a name="public-functions"></a>
 <h3>Public Functions</h3>
 <ul>
@@ -37,7 +32,6 @@
 <li><div class="fn"/>QColor <b><a href="qpen.html#color">color</a></b> () const</li>
 <li><div class="fn"/>qreal <b><a href="qpen.html#dashOffset">dashOffset</a></b> () const</li>
 <li><div class="fn"/>QVector&lt;qreal&gt; <b><a href="qpen.html#dashPattern">dashPattern</a></b> () const</li>
-<li><div class="fn"/>DataPtr &amp; <b><a href="qpen.html#data_ptr">data_ptr</a></b> ()</li>
 <li><div class="fn"/>bool <b><a href="qpen.html#isCosmetic">isCosmetic</a></b> () const</li>
 <li><div class="fn"/>bool <b><a href="qpen.html#isSolid">isSolid</a></b> () const</li>
 <li><div class="fn"/>Qt::PenJoinStyle <b><a href="qpen.html#joinStyle">joinStyle</a></b> () const</li>
@@ -80,7 +74,7 @@
  painter.setPen(pen);</pre>
 <p>which is equivalent to</p>
 <pre> QPainter painter(this);
- QPen pen();  <span class="comment">// creates a default pen</span>
+ QPen pen();  <span class="comment">//</span> creates a default pen
 
  pen.setStyle(Qt::DashDotLine);
  pen.setWidth(3);
@@ -144,10 +138,6 @@
 </table></p>
 <p>See also <a href="qpainter.html">QPainter</a>, <a href="qbrush.html">QBrush</a>, <a href="demos-pathstroke.html">Path Stroking Demo</a>, and <a href="widgets-scribble.html">Scribble Example</a>.</p>
 <hr />
-<h2>Member Type Documentation</h2>
-<a name="//apple_ref/cpp/tdef/QPen/DataPtr" />
-<h3 class="fn"><a name="DataPtr-typedef"></a>typedef QPen::DataPtr</h3>
-<hr />
 <h2>Member Function Documentation</h2>
 <a name="//apple_ref/cpp/instm/QPen/QPen" />
 <h3 class="fn"><a name="QPen"></a>QPen::QPen ()</h3>
@@ -181,13 +171,11 @@
 <a name="//apple_ref/cpp/instm/QPen/dashOffset" />
 <h3 class="fn"><a name="dashOffset"></a><a href="qtglobal.html#qreal-typedef">qreal</a> QPen::dashOffset () const</h3>
 <p>Returns the dash offset for the pen.</p>
-<p>See also setDashOffset.</p>
+<p>See also <a href="qpen.html#setDashOffset">setDashOffset</a>().</p>
 <a name="//apple_ref/cpp/instm/QPen/dashPattern" />
 <h3 class="fn"><a name="dashPattern"></a><a href="qvector.html">QVector</a>&lt;<a href="qtglobal.html#qreal-typedef">qreal</a>&gt; QPen::dashPattern () const</h3>
 <p>Returns the dash pattern of this pen.</p>
 <p>See also <a href="qpen.html#setDashPattern">setDashPattern</a>(), <a href="qpen.html#style">style</a>(), and <a href="qpen.html#isSolid">isSolid</a>().</p>
-<a name="//apple_ref/cpp/instm/QPen/data_ptr" />
-<h3 class="fn"><a name="data_ptr"></a><a href="qpen.html#DataPtr-typedef">DataPtr</a> &amp; QPen::data_ptr ()</h3>
 <a name="//apple_ref/cpp/instm/QPen/isCosmetic" />
 <h3 class="fn"><a name="isCosmetic"></a>bool QPen::isCosmetic () const</h3>
 <p>Returns true if the pen is cosmetic; otherwise returns false.</p>
@@ -220,7 +208,7 @@
 <p>See also <a href="qpen.html#setBrush">setBrush</a>() and <a href="qpen.html#color">color</a>().</p>
 <a name="//apple_ref/cpp/instm/QPen/setCosmetic" />
 <h3 class="fn"><a name="setCosmetic"></a>void QPen::setCosmetic ( bool <i>cosmetic</i> )</h3>
-<p>Sets this pen to cosmetic.</p>
+<p>Sets this pen to cosmetic or non-cosmetic, depending on the value of <i>cosmetic</i>.</p>
 <p>See also <a href="qpen.html#isCosmetic">isCosmetic</a>().</p>
 <a name="//apple_ref/cpp/instm/QPen/setDashOffset" />
 <h3 class="fn"><a name="setDashOffset"></a>void QPen::setDashOffset ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>offset</i> )</h3>
@@ -309,6 +297,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

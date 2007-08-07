@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -132,6 +147,13 @@
          \o A \l{Plastique Style Widget Gallery}{Plastique style} tree view.
     \endtable
 
+    \section1 Improving Performance
+
+    It is possible to give the view hints about the data it is handling in order
+    to improve its performance when displaying large numbers of items. One approach
+    that can be taken for views that are intended to display items with equal heights
+    is to set the \l uniformRowHeights property to true.
+
     \sa QListView, QTreeWidget, {View Classes}, QAbstractItemModel, QAbstractItemView,
         {Dir View Example}
 */
@@ -191,6 +213,7 @@ void QTreeView::setModel(QAbstractItemModel *model)
                    d->model, SLOT(submit()));
         disconnect(d->model, SIGNAL(rowsRemoved(QModelIndex,int,int)),
                    this, SLOT(rowsRemoved(QModelIndex,int,int)));
+        disconnect(d->model, SIGNAL(modelAboutToBeReset()), this, SLOT(_q_modelAboutToBeReset()));
     }
     d->viewItems.clear();
     d->expandedIndexes.clear();
@@ -213,6 +236,8 @@ void QTreeView::setModel(QAbstractItemModel *model)
     connect(d->model, SIGNAL(columnsRemoved(QModelIndex,int,int)),
             this, SLOT(_q_columnsRemoved(QModelIndex,int,int)));
 
+    connect(d->model, SIGNAL(modelAboutToBeReset()), SLOT(_q_modelAboutToBeReset()));
+    
     if (d->sortingEnabled)
         sortByColumn(header()->sortIndicatorSection());
 }
@@ -980,10 +1005,11 @@ QRect QTreeView::visualRect(const QModelIndex &index) const
     if (spanning && index.column() > 0)
         return QRect();
 
-    int x = columnViewportPosition(index.column());
+    bool firstColumnMoved = (spanning && (d->header->logicalIndex(0) != 0));
+    int x = (firstColumnMoved? 0 : columnViewportPosition(index.column()));
     int w = (spanning ? d->header->length() : columnWidth(index.column()));
 
-    if (index.column() == 0) {
+    if (index.column() == 0 && !firstColumnMoved) {
         int i = d->indentationForItem(vi);
         x += i;
         w -= i;
@@ -1210,12 +1236,15 @@ void QTreeView::drawTree(QPainter *painter, const QRegion &region) const
     if (firstVisibleItem < 0)
         return;
 
+    const int viewportWidth = d->viewport->width();
+
     QVector<QRect> rects = region.rects();
     QVector<int> drawn;
     bool multipleRects = (rects.size() > 1);
     for (int a = 0; a < rects.size(); ++a) {
-
-        const QRect area = rects.at(a);
+        const QRect area = (multipleRects
+                            ? QRect(0, rects.at(a).y(), viewportWidth, rects.at(a).height())
+                            : rects.at(a));
         d->leftAndRight = d->startAndEndColumns(area);
 
         int i = firstVisibleItem; // the first item at the top of the viewport
@@ -1232,15 +1261,15 @@ void QTreeView::drawTree(QPainter *painter, const QRegion &region) const
         // paint the visible rows
         for (; i < viewItems.count() && y <= area.bottom(); ++i) {
             const int itemHeight = d->itemHeight(i);
-            option.rect.setRect(0, y, 0, itemHeight);
+            option.rect.setRect(0, y, viewportWidth, itemHeight);
             option.state = state | (viewItems.at(i).expanded
                                     ? QStyle::State_Open : QStyle::State_None);
             d->current = i;
             d->spanning = viewItems.at(i).spanning;
             if (!multipleRects || !drawn.contains(i)) {
                 drawRow(painter, option, viewItems.at(i).index);
-                if (multipleRects && area.contains(option.rect))
-                    drawn.append(i);
+                if (multipleRects)   // even if the rect only intersects the item,
+                    drawn.append(i); // the entire item will be painted
             }
             y += itemHeight;
         }
@@ -1300,8 +1329,9 @@ void QTreeView::drawRow(QPainter *painter, const QStyleOptionViewItem &option,
         }
     }
 
+    const bool widgetHasFocus = hasFocus();
     bool currentRowHasFocus = false;
-    if (allColumnsShowFocus && current.isValid()) { // check if the focus index is before or after the visible columns
+    if (allColumnsShowFocus && widgetHasFocus && current.isValid()) { // check if the focus index is before or after the visible columns
         const int r = index.row();
         for (int c = 0; c < left && !currentRowHasFocus; ++c)
             currentRowHasFocus = (index.sibling(r, c) == current);
@@ -1321,7 +1351,6 @@ void QTreeView::drawRow(QPainter *painter, const QStyleOptionViewItem &option,
     int headerSection;
     QModelIndex modelIndex;
 
-    const bool widgetHasFocus = hasFocus();
     for (int headerIndex = left; headerIndex <= right; ++headerIndex) {
         headerSection = header->logicalIndex(headerIndex);
         if (header->isSectionHidden(headerSection))
@@ -1355,8 +1384,10 @@ void QTreeView::drawRow(QPainter *painter, const QStyleOptionViewItem &option,
             if ((d->model->flags(index) & Qt::ItemIsEnabled) == 0) {
                 opt.state &= ~QStyle::State_Enabled;
                 cg = QPalette::Disabled;
-            } else {
+            } else if (isActiveWindow()) {
                 cg = QPalette::Active;
+            } else {
+                cg = QPalette::Inactive;
             }
             opt.palette.setCurrentColorGroup(cg);
         }
@@ -1380,13 +1411,8 @@ void QTreeView::drawRow(QPainter *painter, const QStyleOptionViewItem &option,
             opt.rect.setRect(reverse ? position : i + position, y, width - i, height);
             if (alternate && (d->current & 1))
                 painter->fillRect(opt.rect, opt.palette.alternateBase());
-            QPalette::ColorGroup cg = opt.state & QStyle::State_Enabled
-                              ? QPalette::Active : QPalette::Disabled;
-            if (cg == QPalette::Active && !(opt.state & QStyle::State_Active))
-                cg = QPalette::Inactive;
-
             if ((opt.state & QStyle::State_Selected) && option.showDecorationSelected)
-                painter->fillRect(branches, opt.palette.brush(cg, QPalette::Highlight));
+                painter->fillRect(branches, opt.palette.highlight());
             else if (alternate && (d->current & 1))
                 painter->fillRect(branches, opt.palette.alternateBase());
             drawBranches(painter, branches, index);
@@ -1417,11 +1443,18 @@ void QTreeView::drawRow(QPainter *painter, const QStyleOptionViewItem &option,
                                   ? QPalette::Normal : QPalette::Disabled;
         o.backgroundColor = option.palette.color(cg, d->selectionModel->isSelected(index)
                                                  ? QPalette::Highlight : QPalette::Background);
-        int x = header->sectionPosition(0); // not always 0
+        int x = 0;
         if (!option.showDecorationSelected)
-            x += d->indentationForItem(d->current);
+            x = header->sectionPosition(0) + d->indentationForItem(d->current);
         o.rect.setRect(x - header->offset(), y, header->length() - x, height);
         style()->drawPrimitive(QStyle::PE_FrameFocusRect, &o, painter);
+        // if we show focus on all columns and the first section is moved,
+        // we have to split the focus rect into two rects
+        if (allColumnsShowFocus && !option.showDecorationSelected
+            && header->sectionsMoved() && (header->visualIndex(0) != 0)) {
+            o.rect.setRect(0, y, header->sectionPosition(0), height);
+            style()->drawPrimitive(QStyle::PE_FrameFocusRect, &o, painter);
+        }
     }
 }
 
@@ -1992,6 +2025,9 @@ QModelIndexList QTreeView::selectedIndexes() const
 void QTreeView::scrollContentsBy(int dx, int dy)
 {
     Q_D(QTreeView);
+
+    d->delayedAutoScroll.stop(); // auto scroll was canceled by the user scrolling
+    
     dx = isRightToLeft() ? -dx : dx;
     if (dx) {
         if (horizontalScrollMode() == QAbstractItemView::ScrollPerItem) {
@@ -2643,6 +2679,11 @@ void QTreeViewPrivate::_q_currentChanged(const QModelIndex &current, const QMode
     }
 }
 
+void QTreeViewPrivate::_q_modelAboutToBeReset()
+{
+    viewItems.clear();
+}
+
 void QTreeViewPrivate::_q_columnsAboutToBeRemoved(const QModelIndex &parent, int start, int end)
 {
     Q_UNUSED(parent);
@@ -3258,6 +3299,9 @@ void QTreeViewPrivate::updateChildCount(const int parentItem, const int delta)
     }
 }
 
+/*!
+  \reimp
+ */
 void QTreeView::currentChanged(const QModelIndex &current, const QModelIndex &previous)
 {
 #ifndef QT_NO_ACCESSIBILITY
@@ -3269,6 +3313,9 @@ void QTreeView::currentChanged(const QModelIndex &current, const QModelIndex &pr
     QAbstractItemView::currentChanged(current, previous);
 }
 
+/*!
+  \reimp
+ */
 void QTreeView::selectionChanged(const QItemSelection &selected,
                                  const QItemSelection &deselected)
 {

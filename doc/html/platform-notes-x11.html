@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/doc/src/platform-notes.qdoc -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/doc/src/platform-notes.qdoc -->
 <head>
   <title>Qt 4.3: Platform Notes - X11</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -24,6 +24,10 @@
 <li><a href="#hp-ux-11-11">HP-UX 11.11</a></li>
 <li><a href="#libxmu">libXmu</a></li>
 <li><a href="#gcc-3-on-hp-ux">GCC 3.* on HP-UX</a></li>
+</ul>
+<li><a href="#irix-6-5-x">IRIX - 6.5&#x2e;x</a></li>
+<li><a href="#linux">Linux</a></li>
+<ul><li><a href="#installation-problems">Installation problems</a></li>
 </ul>
 <li><a href="#solaris-9-or-later">Solaris - 9 or later</a></li>
 <ul><li><a href="#cc-on-solaris">CC on Solaris</a></li>
@@ -76,43 +80,20 @@
 <a name="gcc-3-on-hp-ux"></a>
 <h3>GCC 3.* on HP-UX</h3>
 <p>This compiler gives compilation error</p>
-<pre> ANSI C++ forbids declaration ... with no type
- \encode
- on systems with old X11 header files. This is fixed by patches
- \l{http:<span class="comment">//www5.itrc.hp.com/service/patch/patchDetail.do?patchid=PHSS_31001}{PHSS_31001}</span>
- on HP-UX 11.11 and
- \l{http:<span class="comment">//www5.itrc.hp.com/service/patch/patchDetail.do?patchid=PHSS_30261}{PHSS_30261}</span>
- on HP-UX 11.00.
-
- \target IRIX
- \section1 IRIX - 6.5.x
-
- Unpackaging and IRIX tar:
- Because of long filenames some files will be cut off incorrectly with IRIX
- tar. Please use GNU tar to unpack Qt packages.
-
- \section1 Linux
-
- There are no known problems with using Qt on production versions of
- Linux/x86, Linux/ppc, Linux/amd64 and Linux/ia64 (including Altix(R)).
- We do our Unix development mainly on Linux/x86.
-
- For the gcc/g++ compiler, please also see the relevant
- \l{Compiler Notes#GCC}{compiler page}.
-
- \section2 Installation problems
-
- See also the
- \l{http:<span class="comment">//www.trolltech.com/developer/faqs/Qt/installation}{Installation FAQ}.</span>
-
- If you experience problems when installing new Qt Open Source Edition
- versions, try to use the Qt Open Source Edition archives (e.g. RPM)
- provided by your Linux provider. If you need to install the source (.tgz)
- archive, be aware that you will probably end up with two different
- versions of the Qt library installed on your system, which will probably
- lead to link errors, like this:
- \code
- undefined reference to `_vt.11QPushButton'</pre>
+<pre> ANSI C++ forbids declaration ... with no type</pre>
+<p>on systems with old X11 header files. This is fixed by patches <a href="http://www5.itrc.hp.com/service/patch/patchDetail.do?patchid=PHSS_31001">PHSS_31001</a> on HP-UX 11.11 and <a href="http://www5.itrc.hp.com/service/patch/patchDetail.do?patchid=PHSS_30261">PHSS_30261</a> on HP-UX 11.00.</p>
+<a name="irix"></a><a name="irix-6-5-x"></a>
+<h2>IRIX - 6.5&#x2e;x</h2>
+<p>Unpackaging and IRIX tar: Because of long filenames some files will be cut off incorrectly with IRIX tar. Please use GNU tar to unpack Qt packages.</p>
+<a name="linux"></a>
+<h2>Linux</h2>
+<p>There are no known problems with using Qt on production versions of Linux/x86, Linux/ppc, Linux/amd64 and Linux/ia64 (including Altix(R)). We do our Unix development mainly on Linux/x86.</p>
+<p>For the gcc/g++ compiler, please also see the relevant <a href="compiler-notes.html#gcc">compiler page</a>.</p>
+<a name="installation-problems"></a>
+<h3>Installation problems</h3>
+<p>See also the <a href="http://www.trolltech.com/developer/faqs/Qt/installation">Installation FAQ</a>.</p>
+<p>If you experience problems when installing new Qt Open Source Edition versions, try to use the Qt Open Source Edition archives (e.g&#x2e; RPM) provided by your Linux provider. If you need to install the source (.tgz) archive, be aware that you will probably end up with two different versions of the Qt library installed on your system, which will probably lead to link errors, like this:</p>
+<pre> undefined reference to `_vt.11QPushButton'</pre>
 <p>Fix this by removing the old version of the library.</p>
 <p>If you have problems installing a Qt Open Source Edition Linux archive (e.g&#x2e; RPM), please consult your Linux provider (who made it), not us.</p>
 <p>Some RPM versions have problems installing some of the Qt RPM archives where installation stops with an error message warning about a &quot;Failed Dependency&quot;. Use the <tt>--nodeps</tt> option to <tt>rpm</tt> to workaround this problem.</p>
@@ -135,6 +116,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

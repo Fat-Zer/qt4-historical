@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/qt3support/text/q3textstream.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/qt3support/text/q3textstream.cpp -->
 <head>
   <title>Qt 4.3: Q3TextStream Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -147,25 +147,25 @@
 <p>Example:</p>
 <pre> QString str;
  Q3TextStream ts( &amp;str, IO_WriteOnly );
- ts &lt;&lt; &quot;pi = &quot; &lt;&lt; 3.14; <span class="comment">// str == &quot;pi = 3.14&quot;</span></pre>
+ ts &lt;&lt; &quot;pi = &quot; &lt;&lt; 3.14; <span class="comment">//</span> str == &quot;pi = 3.14&quot;</pre>
 <p>Writing data to the text stream will modify the contents of the string. The string will be expanded when data is written beyond the end of the string. Note that the string will not be truncated:</p>
 <pre> QString str = &quot;pi = 3.14&quot;;
  Q3TextStream ts( &amp;str, IO_WriteOnly );
- ts &lt;&lt;  &quot;2+2 = &quot; &lt;&lt; 2+2; <span class="comment">// str == &quot;2+2 = 414&quot;</span></pre>
+ ts &lt;&lt;  &quot;2+2 = &quot; &lt;&lt; 2+2; <span class="comment">//</span> str == &quot;2+2 = 414&quot;</pre>
 <p>Note that because <a href="qstring.html">QString</a> is Unicode, you should not use <a href="q3textstream.html#readRawBytes">readRawBytes</a>() or <a href="q3textstream.html#writeRawBytes">writeRawBytes</a>() on such a stream.</p>
 <h3 class="fn"><a name="Q3TextStream-5"></a>Q3TextStream::Q3TextStream ( <a href="qbytearray.html">QByteArray</a> &amp; <i>a</i>, int <i>mode</i> )</h3>
 <p>Constructs a text stream that operates on the byte array, <i>a</i>, through an internal <a href="qbuffer.html">QBuffer</a> device. The <i>mode</i> argument is passed to the device's open() function; see <a href="qiodevice-qt3.html#mode">QIODevice::mode</a>().</p>
 <p>Example:</p>
 <pre> QByteArray array;
  Q3TextStream ts( array, IO_WriteOnly );
- ts &lt;&lt; &quot;pi = &quot; &lt;&lt; 3.14 &lt;&lt; '\0'; <span class="comment">// array == &quot;pi = 3.14&quot;</span></pre>
+ ts &lt;&lt; &quot;pi = &quot; &lt;&lt; 3.14 &lt;&lt; '\0'; <span class="comment">//</span> array == &quot;pi = 3.14&quot;</pre>
 <p>Writing data to the text stream will modify the contents of the array. The array will be expanded when data is written beyond the end of the string.</p>
 <p>Same example, using a <a href="qbuffer.html">QBuffer</a>:</p>
 <pre> QByteArray array;
  QBuffer buf( array );
  buf.open( IO_WriteOnly );
  Q3TextStream ts( &amp;buf );
- ts &lt;&lt; &quot;pi = &quot; &lt;&lt; 3.14 &lt;&lt; '\0'; <span class="comment">// array == &quot;pi = 3.14&quot;</span>
+ ts &lt;&lt; &quot;pi = &quot; &lt;&lt; 3.14 &lt;&lt; '\0'; <span class="comment">//</span> array == &quot;pi = 3.14&quot;
  buf.close();</pre>
 <h3 class="fn"><a name="Q3TextStream-6"></a>Q3TextStream::Q3TextStream ( FILE * <i>fh</i>, int <i>mode</i> )</h3>
 <p>Constructs a text stream that operates on an existing file handle <i>fh</i> through an internal <a href="qfile.html">QFile</a> device. The <i>mode</i> argument is passed to the device's open() function; see <a href="qiodevice-qt3.html#mode">QIODevice::mode</a>().</p>
@@ -435,6 +435,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

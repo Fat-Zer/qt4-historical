@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -103,6 +118,7 @@ QImage qt_imageForBrush(int brushStyle, bool invert)
 struct QTexturedBrushData : public QBrushData
 {
     QTexturedBrushData() {
+        m_has_pixmap_texture = false;
         m_pixmap = 0;
     }
     ~QTexturedBrushData() {
@@ -112,10 +128,13 @@ struct QTexturedBrushData : public QBrushData
     void setPixmap(const QPixmap &pm) {
         delete m_pixmap;
 
-        if (pm.isNull())
+        if (pm.isNull()) {
             m_pixmap = 0;
-        else
+            m_has_pixmap_texture = false;
+        } else {
             m_pixmap = new QPixmap(pm);
+            m_has_pixmap_texture = true;
+        }
 
         m_image = QImage();
     }
@@ -124,6 +143,7 @@ struct QTexturedBrushData : public QBrushData
         m_image = image;
         delete m_pixmap;
         m_pixmap = 0;
+        m_has_pixmap_texture = false;
     }
 
     QPixmap &pixmap() {
@@ -141,7 +161,16 @@ struct QTexturedBrushData : public QBrushData
 
     QPixmap *m_pixmap;
     QImage m_image;
+    bool m_has_pixmap_texture;
 };
+
+// returns true if the brush has a pixmap (or bitmap) set as the
+// brush texture, false otherwise
+bool hasPixmapTexture(const QBrush& brush)
+{
+    QTexturedBrushData *tx_data = static_cast<QTexturedBrushData *>(brush.d);
+    return tx_data->m_has_pixmap_texture;
+}
 
 struct QGradientBrushData : public QBrushData
 {
@@ -178,11 +207,20 @@ struct QGradientBrushData : public QBrushData
 
     The gradient() defines the gradient fill used when the current
     style is either Qt::LinearGradientPattern,
-    Qt::RadialGradientPattern or Qt::ConicalGradientPattern. The
-    gradient can only be set when constructing the brush, while the
-    texture() can be set using the appropriate constructor or by using
-    the setTexture() function. The texture() defines the pixmap used
-    when the current style is Qt::TexturePattern.
+    Qt::RadialGradientPattern or Qt::ConicalGradientPattern. Gradient
+    brushes are created by giving a QGradient as a constructor
+    argument when creating the QBrush. Qt provides three different
+    gradients: QLinearGradient, QConicalGradient, and QRadialGradient
+    - all of which inherit QGradient.
+
+    \quotefromfile snippets/brush/gradientcreationsnippet.cpp
+    \skipto QRadialGradient
+    \printuntil QBrush
+
+    The texture() defines the pixmap used when the current style is
+    Qt::TexturePattern.  You can create a brush with a texture by
+    providing the pixmap when the brush is created or by using
+    setTexture().
 
     Note that applying setTexture() makes style() ==
     Qt::TexturePattern, regardless of previous style
@@ -258,6 +296,7 @@ static QBrushData *nullBrushInstance()
         QBrushData *x = new QBrushData;
         x->ref = 1; x->style = Qt::BrushStyle(0); x->color = Qt::black;
         x->hasTransform = false;
+        x->forceTextureClamp = false;
         if (!q_atomic_test_and_set_ptr(&defaultBrush.pointer, 0, x))
             delete x;
     }
@@ -309,6 +348,7 @@ void QBrush::init(const QColor &color, Qt::BrushStyle style)
     d->style = style;
     d->color = color;
     d->hasTransform = false;
+    d->forceTextureClamp = false;
 }
 
 /*!
@@ -523,6 +563,7 @@ void QBrush::detach(Qt::BrushStyle newStyle)
     x->color = d->color;
     x->transform = d->transform;
     x->hasTransform = d->hasTransform;
+    x->forceTextureClamp = d->forceTextureClamp;
     x = qAtomicSetPtr(&d, x);
     if (!x->ref.deref())
         cleanUp(x);
@@ -786,6 +827,16 @@ void QBrush::setMatrix(const QMatrix &matrix)
 {
     setTransform(QTransform(matrix));
 }
+
+/*!
+    \since 4.3
+
+    Sets \a matrix as an explicit transformation matrix on the
+    current brush. The brush transformation matrix is merged with
+    QPainter transformation matrix to produce the final result.
+
+    \sa transform()
+*/
 void QBrush::setTransform(const QTransform &matrix)
 {
     detach(d->style);
@@ -1133,7 +1184,7 @@ QDataStream &operator>>(QDataStream &s, QBrush &b)
     \internal
 */
 QGradient::QGradient()
-    : dummy(0)
+    : m_type(NoGradient), dummy(0)
 {
 }
 
@@ -1954,4 +2005,29 @@ void QConicalGradient::setAngle(qreal angle)
     \relates QGradient
 
     Typedef for QVector<QGradientStop>.
+*/
+
+/*!
+    \typedef QBrush::DataPtr
+    \internal
+*/
+
+/*!
+    \fn DataPtr &QBrush::data_ptr()
+    \internal
+*/
+
+
+/*!
+    \fn bool QBrush::isDetached() const
+    \internal
+*/
+
+/*!
+    \fn QTransform QBrush::transform() const
+    \since 4.3
+
+    Returns the current transformation matrix for the brush.
+
+    \sa setTransform()
 */

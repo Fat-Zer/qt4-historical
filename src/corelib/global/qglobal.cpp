@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -2852,3 +2867,113 @@ bool QInternal::callFunction(InternalFunction func, void **args)
 
     return false;
 }
+
+/*!
+    \macro Q_BYTE_ORDER
+    \relates <QtGlobal>
+
+    This macro can be used to determine the byte order your system
+    uses for storing data in memory. i.e., whether your system is
+    little-endian or big-endian. It is set by Qt to one of the macros
+    Q_LITTLE_ENDIAN or Q_BIG_ENDIAN. You normally won't need to worry
+    about endian-ness, but you might, for example if you need to know
+    which byte of an integer or UTF-16 character is stored in the
+    lowest address. Endian-ness is important in networking, where
+    computers with different values for Q_BYTE_ORDER must pass data
+    back and forth.
+
+    Use this macro as in the following examples.
+
+    \code
+    #if Q_BYTE_ORDER == Q_BIG_ENDIAN
+    ...
+    #endif
+
+    or
+
+    #if Q_BYTE_ORDER == Q_LITTLE_ENDIAN
+    ...
+    #endif
+    
+    \endcode
+
+    \sa Q_BIG_ENDIAN, Q_LITTLE_ENDIAN
+*/
+
+/*!
+    \macro Q_LITTLE_ENDIAN
+    \relates <QtGlobal>
+
+    This macro represents a value you can compare to the macro
+    Q_BYTE_ORDER to determine the endian-ness of your system.  In a
+    little-endian system, the least significant byte is stored at the
+    lowest address. The other bytes follow in increasing order of
+    significance.
+
+    \code
+
+    #if Q_BYTE_ORDER == Q_LITTLE_ENDIAN
+    ...
+    #endif
+    
+    \endcode
+
+    \sa Q_BYTE_ORDER, Q_BIG_ENDIAN
+*/
+
+/*!
+    \macro Q_BIG_ENDIAN
+    \relates <QtGlobal>
+
+    This macro represents a value you can compare to the macro
+    Q_BYTE_ORDER to determine the endian-ness of your system.  In a
+    big-endian system, the most significant byte is stored at the
+    lowest address. The other bytes follow in decreasing order of
+    significance.
+
+    \code
+    #if Q_BYTE_ORDER == Q_BIG_ENDIAN
+    ...
+    #endif
+    
+    \endcode
+
+    \sa Q_BYTE_ORDER, Q_LITTLE_ENDIAN
+*/
+
+/*!
+    \macro Q_GLOBAL_STATIC(type, name)
+    \internal
+
+    Declares a global static variable with the given \a type and \a name.
+
+    Use this macro to instantiate an object in a thread-safe way, creating
+    a global pointer that can be used to refer to it.
+
+    \warning This macro is subject to a race condition that can cause the object
+    to be constructed twice. However, if this occurs, the second instance will
+    be immediately deleted.
+
+    See also
+    \l{http://www.aristeia.com/publications.html}{"C++ and the perils of Double-Checked Locking"}
+    by Scott Meyers and Andrei Alexandrescu.
+*/
+
+/*!
+    \macro Q_GLOBAL_STATIC_WITH_ARGS(type, name, arguments)
+    \internal
+
+    Declares a global static variable with the specified \a type and \a name.
+
+    Use this macro to instantiate an object using the \a arguments specified
+    in a thread-safe way, creating a global pointer that can be used to refer
+    to it.
+
+    \warning This macro is subject to a race condition that can cause the object
+    to be constructed twice. However, if this occurs, the second instance will
+    be immediately deleted.
+
+    See also
+    \l{http://www.aristeia.com/publications.html}{"C++ and the perils of Double-Checked Locking"}
+    by Scott Meyers and Andrei Alexandrescu.
+*/

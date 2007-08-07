@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/gui/kernel/qevent.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/kernel/qevent.cpp -->
 <head>
   <title>Qt 4.3: QWheelEvent Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -69,8 +69,8 @@
 <p>Returns the mouse state when the event occurred.</p>
 <a name="//apple_ref/cpp/instm/QWheelEvent/delta" />
 <h3 class="fn"><a name="delta"></a>int QWheelEvent::delta () const</h3>
-<p>Returns the distance that the wheel is rotated, in eights of a degree. A positive value indicates that the wheel was rotated forwards away from the user; a negative value indicates that the wheel was rotated backwards toward the user.</p>
-<p>Most mouse types work in steps of 15 degrees, in which case the delta value is a multiple of 120 (== 15 * 8).</p>
+<p>Returns the distance that the wheel is rotated, in eighths of a degree. A positive value indicates that the wheel was rotated forwards away from the user; a negative value indicates that the wheel was rotated backwards toward the user.</p>
+<p>Most mouse types work in steps of 15 degrees, in which case the delta value is a multiple of 120; i.e&#x2e;, 120 * 1/8 = 15.</p>
 <p>Example:</p>
 <pre> void MyWidget::wheelEvent(QWheelEvent *event)
  {
@@ -111,20 +111,10 @@
 <h3 class="fn"><a name="y"></a>int QWheelEvent::y () const</h3>
 <p>Returns the y position of the mouse cursor, relative to the widget that received the event.</p>
 <p>See also <a href="qwheelevent.html#x">x</a>() and <a href="qwheelevent.html#pos">pos</a>().</p>
-<hr />
-<h2>Member Function Documentation</h2>
-<h3 class="fn"><a name="QWheelEvent-3"></a>QWheelEvent::QWheelEvent ( const <a href="qpoint.html">QPoint</a> &amp; <i>pos</i>, int <i>delta</i>, int <i>state</i>, <a href="qt.html#Orientation-enum">Qt::Orientation</a> <i>orient</i> = Qt::Vertical )</h3>
-<p>Use one of the other constructors instead.</p>
-<h3 class="fn"><a name="QWheelEvent-4"></a>QWheelEvent::QWheelEvent ( const <a href="qpoint.html">QPoint</a> &amp; <i>pos</i>, const <a href="qpoint.html">QPoint</a> &amp; <i>globalPos</i>, int <i>delta</i>, int <i>state</i>, <a href="qt.html#Orientation-enum">Qt::Orientation</a> <i>orient</i> = Qt::Vertical )</h3>
-<p>Use one of the other constructors instead.</p>
-<a name="//apple_ref/cpp/instm/QWheelEvent/state" />
-<h3 class="fn"><a name="state"></a><a href="qt-qt3.html#ButtonState-typedef">Qt::ButtonState</a> QWheelEvent::state () const</h3>
-<p>Returns the keyboard modifier flags at the time of the event.</p>
-<p>The returned value is a selection of the following values, combined using the OR operator: <a href="qt-qt3.html#ButtonState_enum-enum">Qt::ShiftButton</a>, <a href="qt-qt3.html#ButtonState_enum-enum">Qt::ControlButton</a>, and <a href="qt-qt3.html#ButtonState_enum-enum">Qt::AltButton</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

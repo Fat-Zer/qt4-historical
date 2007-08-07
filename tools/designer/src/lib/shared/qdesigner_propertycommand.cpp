@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -25,6 +40,7 @@
 #include "qdesigner_utils_p.h"
 #include "dynamicpropertysheet.h"
 #include "qdesigner_propertyeditor_p.h"
+#include "qdesigner_integration_p.h"
 
 #include <QtDesigner/QDesignerFormEditorInterface>
 #include <QtDesigner/QDesignerFormWindowInterface>
@@ -80,6 +96,8 @@ void checkSizes(QDesignerFormWindowInterface *fw, const QSize &size, QSize *form
     newContainerSize = newContainerSize.expandedTo(container->minimumSize());
 
     newFormSize = newContainerSize - diff;
+
+    newContainerSize = checkSize(newContainerSize);
 
     if (formSize)
         *formSize = newFormSize;
@@ -167,9 +185,19 @@ unsigned compareSubProperties(const QPalette & p1, const QPalette & p2)
     unsigned rc = 0;
     unsigned maskBit = 1u;
     // generate a mask for each role
+    const unsigned p1Changed = p1.resolve();
+    const unsigned p2Changed = p2.resolve();
     for (int role = QPalette::WindowText;  role < QPalette::NColorRoles; role++, maskBit <<= 1u) {
-        if (roleColorChanged(p1, p2, static_cast<QPalette::ColorRole>(role)))
+        const bool p1RoleChanged = p1Changed & maskBit;
+        const bool p2RoleChanged = p2Changed & maskBit;
+        // Role has been set/reset in editor
+        if (p1RoleChanged != p2RoleChanged) {
             rc |= maskBit;
+        } else {
+            // Was modified in both palettes: Compare values.
+            if (p1RoleChanged && p2RoleChanged && roleColorChanged(p1, p2, static_cast<QPalette::ColorRole>(role)))
+                rc |= maskBit;
+        }
     }
     return rc;
 }
@@ -281,6 +309,14 @@ QPalette applyPaletteSubProperty(const QPalette &oldValue, const QPalette &newVa
                 const QPalette::ColorRole prole =  static_cast<QPalette::ColorRole>(role);
                 rc.setColor(pgroup, prole, newValue.color(pgroup, prole));
             }
+            // Set the resolve bit from NewValue in return value
+            uint r = rc.resolve();
+            const bool origFlag = newValue.resolve() & maskBit;
+            if (origFlag)
+                r |= maskBit;
+            else
+                r &= ~maskBit;
+            rc.resolve(r);
         }
     }
     return rc;
@@ -382,6 +418,11 @@ PropertyHelper::PropertyHelper(QObject* object,
 
     if(debugPropertyCommands)
         qDebug() << "PropertyHelper on " << m_object->objectName() << " index= " << m_index << " type = " << m_objectType;
+}
+
+QDesignerIntegration *PropertyHelper::integration(QDesignerFormWindowInterface *fw) const
+{
+    return qobject_cast<QDesignerIntegration *>(fw->core()->integration());
 }
 
 // Set widget value, apply corrections and checks in case of main window.
@@ -491,6 +532,11 @@ void PropertyHelper::updateObject(QDesignerFormWindowInterface *fw, const QVaria
         break;
     }
 
+    if (m_specialProperty == SP_ObjectName) {
+        QDesignerIntegration *integr = integration(fw);
+        if (integr)
+            integr->emitObjectNameChanged(fw, m_object, newValue.toString());
+    }
 }
 
 PropertyHelper::Value PropertyHelper::setValue(QDesignerFormWindowInterface *fw, const QVariant &value, bool changed, unsigned subPropertyMask)
@@ -548,6 +594,9 @@ QVariant PropertyHelper::findDefaultValue(QDesignerFormWindowInterface *fw) cons
     const QList<QVariant> default_prop_values = item->defaultPropertyValues();
     if (m_index < default_prop_values.size())
         return default_prop_values.at(m_index);
+
+    if (m_oldValue.first.type() == QVariant::Color)
+        return QColor();
 
     return m_oldValue.first; // Again, we just don't know
 }

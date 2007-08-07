@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/gui/embedded/qcopchannel_qws.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/embedded/qcopchannel_qws.cpp -->
 <head>
   <title>Qt 4.3: QCopChannel Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -94,7 +94,7 @@
 <a name="//apple_ref/cpp/instm/QCopChannel/receive" />
 <h3 class="fn"><a name="receive"></a>void QCopChannel::receive ( const <a href="qstring.html">QString</a> &amp; <i>message</i>, const <a href="qbytearray.html">QByteArray</a> &amp; <i>data</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Processes the incoming <i>message</i> and <i>data</i>.</p>
-<p>This function is called by the server when this object's channel receives new messages. Note that the default implementation simply emits the <a href="qcopchannel.html#received">received</a>() signal; reimplement this funtion to process the incoming <i>message</i> and <i>data</i>.</p>
+<p>This function is called by the server when this object's channel receives new messages. Note that the default implementation simply emits the <a href="qcopchannel.html#received">received</a>() signal; reimplement this function to process the incoming <i>message</i> and <i>data</i>.</p>
 <p>Note that the format of the given <i>data</i> has to be well defined in order to extract the information it contains. In addition, it is recommended to use the DCOP convention. This is not a requirement, but you must ensure that the sender and receiver agree on the argument types. For example:</p>
 <pre> void MyClass::receive(const QString &amp;message, const QByteArray &amp;data)
  {
@@ -131,14 +131,10 @@
 <p>See also <a href="qcopchannel.html#receive">receive</a>() and <a href="qcopchannel.html#isRegistered">isRegistered</a>().</p>
 <h3 class="fn"><a name="send-2"></a>bool QCopChannel::send ( const <a href="qstring.html">QString</a> &amp; <i>channel</i>, const <a href="qstring.html">QString</a> &amp; <i>message</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>This is an overloaded member function, provided for convenience.</p>
-<hr />
-<h2>Member Function Documentation</h2>
-<h3 class="fn"><a name="QCopChannel-2"></a>QCopChannel::QCopChannel ( const <a href="qstring.html">QString</a> &amp; <i>channel</i>, <a href="qobject.html">QObject</a> * <i>parent</i>, const char * <i>name</i> )</h3>
-<p>Use the two argument overload instead, and call the <a href="qobject.html#objectName-prop">QObject::setObjectName</a>() function to <i>name</i> the instance.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

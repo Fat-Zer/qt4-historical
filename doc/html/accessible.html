@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/doc/src/accessible.qdoc -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/doc/src/accessible.qdoc -->
 <head>
   <title>Qt 4.3: Accessibility</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -69,7 +69,7 @@
 <a name="the-static-qaccessible-functions"></a>
 <h3>The Static QAccessible Functions</h3>
 <p>The accessibility is managed by <a href="qaccessible.html">QAccessible</a>'s static functions, which we will examine shortly. They produce <a href="qaccessible.html">QAccessible</a> interfaces, build the object tree, and initiate the connection with MSAA or the other platform specific technologies. If you are only interested in learning how to make your application accessible, you can safely skip over this section to <a href="#implementing-accessibility">Implementing Accessibility</a>.</p>
-<p>The communication between clients and the server is initiated when setRootObject() is called. This is done when the <a href="qapplication.html">QApplication</a> instance is instantiated and you should not have to do this yourself.</p>
+<p>The communication between clients and the server is initiated when <a href="qaccessible.html#setRootObject">setRootObject()</a> is called. This is done when the <a href="qapplication.html">QApplication</a> instance is instantiated and you should not have to do this yourself.</p>
 <p>When a <a href="qobject.html">QObject</a> calls <a href="qaccessible.html#updateAccessibility">updateAccessibility()</a>, clients that are listening to events are notified of the change. The function is used to post events to the assistive technology, and accessible <a href="qaccessible.html#Event-enum">events</a> are posted by <a href="qaccessible.html#updateAccessibility">updateAccessibility()</a>.</p>
 <p><a href="qaccessible.html#queryAccessibleInterface">queryAccessibleInterface()</a> returns accessible interfaces for <a href="qobject.html">QObject</a>s. All widgets in Qt provide interfaces; if you need interfaces to control the behavior of other <a href="qobject.html">QObject</a> subclasses, you must implement the interfaces yourself, although the <a href="qaccessibleobject.html">QAccessibleObject</a> convenience class implements parts of the functionality for you.</p>
 <p>The factory that produces accessibility interfaces for QObjects is a function of type <a href="qaccessible.html#InterfaceFactory-typedef">QAccessible::InterfaceFactory</a>. It is possible to have several factories installed. The last factory installed will be the first to be asked for interfaces. <a href="qaccessible.html#queryAccessibleInterface">queryAccessibleInterface()</a> uses the factories to create interfaces for <a href="qobject.html">QObject</a>s. Normally, you need not be concerned about factories because you can implement plugins that produce interfaces. We will give examples of both approaches later.</p>
@@ -276,6 +276,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

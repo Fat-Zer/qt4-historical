@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -44,6 +59,8 @@
 #include <private/qt_mac_p.h>
 #include <qmacstyle_mac.h>
 #endif
+
+extern QString qt_setWindowTitle_helperHelper(const QString&, QWidget*); // qwidget.cpp
 
 static inline bool hasFeature(const QDockWidget *dockwidget, QDockWidget::DockWidgetFeature feature)
 { return (dockwidget->features() & feature) == feature; }
@@ -173,6 +190,11 @@ void QDockWidgetTitleButton::paintEvent(QPaintEvent *)
 QDockWidgetLayout::QDockWidgetLayout(QWidget *parent)
     : QLayout(parent), verticalTitleBar(false), item_list(RoleCount, 0)
 {
+}
+
+QDockWidgetLayout::~QDockWidgetLayout()
+{
+    qDeleteAll(item_list);
 }
 
 bool QDockWidgetLayout::nativeWindowDeco() const
@@ -537,7 +559,8 @@ void QDockWidgetPrivate::init()
 #ifndef QT_NO_ACTION
     toggleViewAction = new QAction(q);
     toggleViewAction->setCheckable(true);
-    toggleViewAction->setText(q->windowTitle());
+    fixedWindowTitle = qt_setWindowTitle_helperHelper(q->windowTitle(), q);
+    toggleViewAction->setText(fixedWindowTitle);
     QObject::connect(toggleViewAction, SIGNAL(triggered(bool)),
                         q, SLOT(_q_toggleView(bool)));
 #endif
@@ -554,13 +577,15 @@ void QDockWidgetPrivate::init()
 */
 void QDockWidget::initStyleOption(QStyleOptionDockWidget *option) const
 {
+    Q_D(const QDockWidget);
+
     if (!option)
         return;
     QDockWidgetLayout *dwlayout = qobject_cast<QDockWidgetLayout*>(layout());
 
     option->initFrom(this);
     option->rect = dwlayout->titleArea();
-    option->title = windowTitle();
+    option->title = d->fixedWindowTitle;
     option->closable = hasFeature(this, QDockWidget::DockWidgetClosable);
     option->movable = hasFeature(this, QDockWidget::DockWidgetMovable);
     option->floatable = hasFeature(this, QDockWidget::DockWidgetFloatable);
@@ -640,6 +665,7 @@ void QDockWidgetPrivate::initDrag(const QPoint &pos, bool nca)
     state->widgetItem = 0;
     state->ownWidgetItem = false;
     state->nca = nca;
+    state->ctrlDrag = false;
 }
 
 void QDockWidgetPrivate::startDrag()
@@ -662,6 +688,9 @@ void QDockWidgetPrivate::startDrag()
         state->widgetItem = new QDockWidgetItem(q);
         state->ownWidgetItem = true;
     }
+
+    if (state->ctrlDrag)
+        layout->restore();
 
     state->dragging = true;
 }
@@ -729,6 +758,7 @@ void QDockWidgetPrivate::mousePressEvent(QMouseEvent *event)
             return;
 
         initDrag(event->pos(), false);
+        state->ctrlDrag = event->modifiers() & Qt::ControlModifier;
     }
 
 #endif // !defined(QT_NO_MAINWINDOW)
@@ -783,7 +813,7 @@ void QDockWidgetPrivate::mouseMoveEvent(QMouseEvent *event)
         QPoint pos = event->globalPos() - state->pressPos;
         q->move(pos);
 
-        if (!(event->modifiers() & Qt::ControlModifier))
+        if (!state->ctrlDrag)
             mwlayout->hover(state->widgetItem, event->globalPos());
     }
 
@@ -828,6 +858,12 @@ void QDockWidgetPrivate::nonClientAreaMouseEvent(QMouseEvent *event)
             if (qobject_cast<QMainWindow*>(q->parentWidget()) == 0)
                 break;
             initDrag(event->pos(), true);
+#ifdef Q_OS_WIN
+            // On Windows, NCA mouse events don't contain modifier info
+            state->ctrlDrag = GetKeyState(VK_CONTROL) & 0x8000;
+#else
+            state->ctrlDrag = event->modifiers() & Qt::ControlModifier;
+#endif
             startDrag();
             break;
         case QEvent::NonClientAreaMouseMove:
@@ -843,7 +879,7 @@ void QDockWidgetPrivate::nonClientAreaMouseEvent(QMouseEvent *event)
                 Q_ASSERT(layout != 0);
 
                 q->move(event->globalPos() - state->pressPos);
-                if (!(event->modifiers() & Qt::ControlModifier))
+                if (!state->ctrlDrag)
                     layout->hover(state->widgetItem, event->globalPos());
             }
 #endif
@@ -866,11 +902,14 @@ void QDockWidgetPrivate::moveEvent(QMoveEvent *event)
 {
     Q_Q(QDockWidget);
 
-    if (state == 0 || !state->dragging || !state->nca)
+    if (state == 0 || !state->dragging || !state->nca || !q->isWindow())
         return;
 
     // When the native window frame is being dragged, all we get is these mouse
     // move events.
+
+    if (state->ctrlDrag)
+        return;
 
     QMainWindowLayout *layout
         = qobject_cast<QMainWindowLayout *>(q->parentWidget()->layout());
@@ -914,8 +953,13 @@ void QDockWidgetPrivate::setWindowState(bool floating, bool unplug, const QRect 
     nativeDeco = false;
 #endif
 
-    if (!nativeDeco)
+    if (nativeDeco) {
+        flags |= Qt::CustomizeWindowHint | Qt::WindowTitleHint;
+        if (hasFeature(q, QDockWidget::DockWidgetClosable))
+            flags |= Qt::WindowSystemMenuHint;
+    } else {
         flags |= Qt::FramelessWindowHint;
+    }
 
     if (unplug)
         flags |= Qt::X11BypassWindowManagerHint;
@@ -976,6 +1020,14 @@ void QDockWidgetPrivate::setWindowState(bool floating, bool unplug, const QRect 
     The visual appearance of the title bar and buttons is dependent
     on the \l{QStyle}{style} in use.
 
+    A QDockWidget acts as a wrapper for its child widget, set with setWidget().
+    Custom size hints, minimum and maximum sizes and size policies should be
+    implemented in the child widget. QDockWidget will respect them, adjusting
+    its own constraints to include the frame and title. Size constraints
+    should not be set on the QDockWidget itself, because they change depending
+    on wether it is docked; a docked QDockWidget has no frame and a smaller title
+    bar.
+
     \sa QMainWindow, {Dock Widgets Example}
 */
 
@@ -990,7 +1042,7 @@ void QDockWidgetPrivate::setWindowState(bool floating, bool unplug, const QRect 
                                 window.
     \value DockWidgetVerticalTitleBar The dock widget displays a vertical title
                                   bar on its left side. This can be used to
-                                  increase the ammount of vertical space in
+                                  increase the amount of vertical space in
                                   a QMainWindow.
     \value AllDockWidgetFeatures  (Deprecated) The dock widget can be closed, moved,
                                   and floated. Since new features might be added in future
@@ -1119,8 +1171,8 @@ void QDockWidget::setFloating(bool floating)
     if (floating && d->undockedGeometry.isNull()) {
         QDockWidgetLayout *layout = qobject_cast<QDockWidgetLayout*>(this->layout());
         QRect titleArea = layout->titleArea();
-
-        QPoint p = mapToGlobal(QPoint(titleArea.height(), titleArea.height()));
+        int h = layout->verticalTitleBar ? titleArea.width() : titleArea.height();
+        QPoint p = mapToGlobal(QPoint(h, h));
         d->undockedGeometry = QRect(p, size());
     }
 
@@ -1166,10 +1218,12 @@ void QDockWidget::changeEvent(QEvent *event)
     QDockWidgetLayout *layout = qobject_cast<QDockWidgetLayout*>(this->layout());
 
     switch (event->type()) {
+    case QEvent::ModifiedChange:
     case QEvent::WindowTitleChange:
         update(layout->titleArea());
 #ifndef QT_NO_ACTION
-        d->toggleViewAction->setText(windowTitle());
+        d->fixedWindowTitle = qt_setWindowTitle_helperHelper(windowTitle(), this);
+        d->toggleViewAction->setText(d->fixedWindowTitle);
 #endif
 #ifndef QT_NO_TABBAR
         {
@@ -1243,13 +1297,12 @@ bool QDockWidget::event(QEvent *event)
     case QEvent::Show:
         d->toggleViewAction->setChecked(true);
         emit visibilityChanged(true);
-        if (!isFloating() && layout != 0)
-            layout->raise(this);
         break;
 #endif
     case QEvent::ApplicationLayoutDirectionChange:
     case QEvent::LayoutDirectionChange:
     case QEvent::StyleChange:
+    case QEvent::ParentChange:
         d->updateButtons();
         break;
     case QEvent::ZOrderChange: {

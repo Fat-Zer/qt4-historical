@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -73,36 +88,97 @@ QRect QAccessibleItemRow::rect(int child) const
     return r.translated(view->viewport()->mapToGlobal(QPoint(0, 0)));
 }
 
+int QAccessibleItemRow::treeLevel() const
+{
+    int level = 0;
+    QModelIndex idx = row;
+    while (idx.isValid()) {
+        idx = idx.parent();
+        ++level;
+    }
+    return level;
+}
+
 QString QAccessibleItemRow::text(Text t, int child) const
 {
-    if (!child) {
-        if (children().count() >= 1)
-            child = 1;
-        else
-            return QString();
-    }
-
-    QModelIndex idx = childIndex(child);
-    if (!idx.isValid())
-        return QString();
-
     QString value;
+    if (t == Name) {
+        if (!child) {
+            if (children().count() >= 1)
+                child = 1;
+            else
+                return QString();
+        }
 
-    switch (t) {
-    case Description:
-        value = idx.model()->data(idx, Qt::AccessibleDescriptionRole).toString();
-        break;
-    case Name:
-    case Value:
+        QModelIndex idx = childIndex(child);
+        if (!idx.isValid())
+            return QString();
+
         value = idx.model()->data(idx, Qt::AccessibleTextRole).toString();
         if (value.isEmpty())
             value = idx.model()->data(idx, Qt::DisplayRole).toString();
-        break;
-    default:
-        break;
+    } else if (t == Value) {
+#ifndef QT_NO_TREEVIEW
+        if (qobject_cast<const QTreeView*>(view)) {
+            if (child == 0)
+                value = QString::number(treeLevel());
+        } else
+#endif
+        {
+            if (!child && children().count() >= 1)
+                child = 1;
+            if (child) {
+                QModelIndex idx = childIndex(child);
+                if (!idx.isValid())
+                    return QString();
+                value = idx.model()->data(idx, Qt::AccessibleTextRole).toString();
+                if (value.isEmpty())
+                    value = idx.model()->data(idx, Qt::DisplayRole).toString();
+            }
+        }
+    } else if (t == Description) {
+#ifndef QT_NO_TREEVIEW
+        if (child == 0 && qobject_cast<const QTreeView*>(view)) {
+            // We store the tree coordinates of the current item in the description.
+            // This enables some screen readers to report where the focus is
+            // in a tree view. (works in JAWS). Also, Firefox does the same thing.
+            // For instance the description "L2, 4 of 25 with 24" means
+            // "L2": Tree Level 2
+            // "4 of 25": We are item 4 out of in total 25 other siblings
+            // "with 24": We have 24 children. (JAWS does not read this number)
+
+            // level
+            int level = treeLevel();
+
+            QAbstractItemModel *m = view->model();
+            // totalSiblings and itemIndex
+            QModelIndex parent = row.parent();
+            int rowCount = m->rowCount(parent);
+            int itemIndex = -1;
+            int totalSiblings = 0;
+            for (int i = 0 ; i < rowCount; ++i) {
+                QModelIndex sibling = row.sibling(i, 0);
+                if (!view->isIndexHidden(sibling))
+                    ++totalSiblings;
+                if (row == sibling)
+                    itemIndex = totalSiblings;
+            }
+            int totalChildren = m->rowCount(row);   // JAWS does not report child count, so we do
+                                                    // this simple and efficient.
+                                                    // (don't check if they are all visible).
+            value = QString::fromAscii("L%1, %2 of %3 with %4").arg(level).arg(itemIndex).arg(totalSiblings).arg(totalChildren);
+        } else
+#endif // QT_NO_TREEVIEW
+        {
+            if (child == 0 && children().count() >= 1)
+                child = 1;
+            QModelIndex idx = childIndex(child);
+            value = idx.model()->data(idx, Qt::AccessibleDescriptionRole).toString();
+        }
     }
     return value;
 }
+
 
 void QAccessibleItemRow::setText(Text t, int child, const QString &text)
 {
@@ -461,15 +537,15 @@ public:
     bool isHidden() const {
         if (false) {
 #ifndef QT_NO_LISTVIEW
-        } else if (QListView *list = qobject_cast<QListView*>(m_view)) {
+        } else if (const QListView *list = qobject_cast<const QListView*>(m_view)) {
             return list->isRowHidden(m_current.row());
 #endif
 #ifndef QT_NO_TREEVIEW
-        } else if (QTreeView *tree = qobject_cast<QTreeView*>(m_view)) {
+        } else if (const QTreeView *tree = qobject_cast<const QTreeView*>(m_view)) {
             return tree->isRowHidden(m_current.row(), m_current.parent());
 #endif
 #ifndef QT_NO_TABLEVIEW
-        } else if (QTableView *table = qobject_cast<QTableView*>(m_view)) {
+        } else if (const QTableView *table = qobject_cast<const QTableView*>(m_view)) {
             return table->isRowHidden(m_current.row());
 #endif
         }
@@ -497,11 +573,11 @@ QAccessible::Role QAccessibleItemView::expectedRoleOfChildren() const
     if (atViewport()) {
         if (false) {
 #ifndef QT_NO_TREEVIEW
-        } else if (qobject_cast<QTreeView*>(itemView())) {
+        } else if (qobject_cast<const QTreeView*>(itemView())) {
             return TreeItem;
 #endif
 #ifndef QT_NO_LISTVIEW
-        } else if (qobject_cast<QListView*>(itemView())) {
+        } else if (qobject_cast<const QListView*>(itemView())) {
             return ListItem;
 #endif
         }
@@ -510,11 +586,11 @@ QAccessible::Role QAccessibleItemView::expectedRoleOfChildren() const
     } else {
         if (false) {
 #ifndef QT_NO_TREEVIEW
-        } else if (qobject_cast<QTreeView*>(itemView())) {
+        } else if (qobject_cast<const QTreeView*>(itemView())) {
             return Tree;
 #endif
 #ifndef QT_NO_LISTVIEW
-        } else if (qobject_cast<QListView*>(itemView())) {
+        } else if (qobject_cast<const QListView*>(itemView())) {
             return List;
 #endif
         }
@@ -528,7 +604,7 @@ QObject *QAccessibleItemView::object() const
     QObject *view = QAccessibleAbstractScrollArea::object();
     Q_ASSERT(qobject_cast<const QAbstractItemView *>(view));
     if (atViewport())
-        view = qobject_cast<QAbstractItemView *>(view)->viewport();
+        view = qobject_cast<const QAbstractItemView *>(view)->viewport();
     return view;
 }
 
@@ -1624,7 +1700,7 @@ int QAccessibleAbstractScrollArea::navigate(RelationFlag relation, int entry, QA
         return QAccessibleWidgetEx::navigate(relation, entry, target);
     }
 
-    if (qobject_cast<QScrollBar *>(targetWidget))
+    if (qobject_cast<const QScrollBar *>(targetWidget))
         targetWidget = targetWidget->parentWidget();
     *target = QAccessible::queryAccessibleInterface(targetWidget);
     return *target ? 0: -1;

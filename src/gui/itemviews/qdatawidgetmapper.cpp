@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -240,9 +255,14 @@ void QDataWidgetMapperPrivate::_q_modelDestroyed()
     them to sections of an item model. A section is a column of a model
     if the orientation is horizontal (the default), otherwise a row.
 
-    Every time the current index changes, all widgets are updated
-    with the contents from the model. If the user edits the contents of
-    the widget, the changes are written back to the model.
+    Every time the current index changes, each widget is updated with data
+    from the model via the property specified when its mapping was made.
+    If the user edits the contents of a widget, the changes are read using
+    the same property and written back to the model.
+    By default, each widget's \l{Q_PROPERTY()}{user property} is used to
+    transfer data between the model and the widget. Since Qt 4.3, an
+    additional addMapping() function enables a named property to be used
+    instead of the default user property.
 
     It is possible to set an item delegate to support custom widgets. By default,
     a QItemDelegate is used to synchronize the model with the widgets.
@@ -383,6 +403,11 @@ QAbstractItemModel *QDataWidgetMapper::model() const
 
     The delegate also decides when to apply data and when to change the editor,
     using QAbstractItemDelegate::commitData() and QAbstractItemDelegate::closeEditor().
+
+    \warning You should not share the same instance of a delegate between widget mappers
+    or views. Doing so can cause incorrect or unintuitive editing behavior since each
+    view connected to a given delegate may receive the \l{QAbstractItemDelegate::}{closeEditor()}
+    signal, and attempt to access, modify or close an editor that has already been closed.
  */
 void QDataWidgetMapper::setItemDelegate(QAbstractItemDelegate *delegate)
 {
@@ -479,7 +504,7 @@ void QDataWidgetMapper::addMapping(QWidget *widget, int section)
 /*!
   \since 4.3
 
-  Essentially the same as addMapping(), but adds the posibility to specify
+  Essentially the same as addMapping(), but adds the possibility to specify
   the property to use specifying \a propertyName.
 
   \sa addMapping()
@@ -716,8 +741,8 @@ int QDataWidgetMapper::currentIndex() const
     \c myTableView changes:
 
     \code
-    QDataWidgetMapper *mapper = new QDataWidgetMapper();
-    connect(myTableView->selectionModel(), SIGNAL(currentRowChanged(QModelIndex)),
+    QDataWidgetMapper *mapper = new QDataWidgetMapper(); 
+    connect(myTableView->selectionModel(), SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
             mapper, SLOT(setCurrentModelIndex(QModelIndex)));
     \endcode
 

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/doc/src/commercialeditions.qdoc -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/doc/src/commercialeditions.qdoc -->
 <head>
   <title>Qt 4.3: Qt Desktop Light Edition Classes</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -129,7 +129,7 @@
 <tr valign="top" class="odd"><th><a href="qabstractfileengine.html">QAbstractFileEngine</a></th><td>Abstraction for accessing the filesystem</td></tr>
 <tr valign="top" class="even"><th><a href="qabstractfileenginehandler.html">QAbstractFileEngineHandler</a></th><td>Way to register custom file engines with your application</td></tr>
 <tr valign="top" class="odd"><th><a href="qabstractfileengineiterator.html">QAbstractFileEngineIterator</a></th><td>Iterator interface for custom file engines</td></tr>
-<tr valign="top" class="even"><th><a href="qabstractfontengine.html">QAbstractFontEngine</a></th></tr>
+<tr valign="top" class="even"><th><a href="qabstractfontengine.html">QAbstractFontEngine</a></th><td>The base class for font engine plugins in Qtopia Core</td></tr>
 <tr valign="top" class="odd"><th><a href="qabstractgraphicsshapeitem.html">QAbstractGraphicsShapeItem</a></th><td>Common base for all path items</td></tr>
 <tr valign="top" class="even"><th><a href="qabstractitemdelegate.html">QAbstractItemDelegate</a></th><td>Used to display and edit data items from a model</td></tr>
 <tr valign="top" class="odd"><th><a href="qabstractitemmodel.html">QAbstractItemModel</a></th><td>The abstract interface for item model classes</td></tr>
@@ -179,7 +179,7 @@
 <tr valign="top" class="odd"><th><a href="qcolumnview.html">QColumnView</a></th><td>Model/view implementation of a column view</td></tr>
 <tr valign="top" class="even"><th><a href="qcombobox.html">QComboBox</a></th><td>Combined button and popup list</td></tr>
 <tr valign="top" class="odd"><th><a href="qcommonstyle.html">QCommonStyle</a></th><td>Encapsulates the common Look and Feel of a GUI</td></tr>
-<tr valign="top" class="even"><th><a href="qcompleter.html">QCompleter</a></th><td>Completions based on a item model</td></tr>
+<tr valign="top" class="even"><th><a href="qcompleter.html">QCompleter</a></th><td>Completions based on an item model</td></tr>
 <tr valign="top" class="odd"><th><a href="qconicalgradient.html">QConicalGradient</a></th><td>Used in combination with QBrush to specify a conical gradient brush</td></tr>
 <tr valign="top" class="even"><th><a href="qconststring.html">QConstString</a></th><td>Wrapper for constant Unicode string data</td></tr>
 <tr valign="top" class="odd"><th><a href="qcontextmenuevent.html">QContextMenuEvent</a></th><td>Parameters that describe a context menu event</td></tr>
@@ -235,7 +235,7 @@
 <tr valign="top" class="odd"><th><a href="qfontdatabase.html">QFontDatabase</a></th><td>Information about the fonts available in the underlying window system</td></tr>
 <tr valign="top" class="even"><th><a href="qfontdialog.html">QFontDialog</a></th><td>Dialog widget for selecting a font</td></tr>
 <tr valign="top" class="odd"><th><a href="qfontengineinfo.html">QFontEngineInfo</a></th><td>Describes a specific font provided by a font engine plugin</td></tr>
-<tr valign="top" class="even"><th><a href="qfontengineplugin.html">QFontEnginePlugin</a></th></tr>
+<tr valign="top" class="even"><th><a href="qfontengineplugin.html">QFontEnginePlugin</a></th><td>The base class for font engine factory plugins in Qtopia Core</td></tr>
 <tr valign="top" class="odd"><th><a href="qfontinfo.html">QFontInfo</a></th><td>General information about fonts</td></tr>
 <tr valign="top" class="even"><th><a href="qfontmetrics.html">QFontMetrics</a></th><td>Font metrics information</td></tr>
 <tr valign="top" class="odd"><th><a href="qfontmetricsf.html">QFontMetricsF</a></th><td>Font metrics information</td></tr>
@@ -546,7 +546,7 @@
 <tr valign="top" class="even"><th><a href="qtoolbar.html">QToolBar</a></th><td>Movable panel that contains a set of controls</td></tr>
 <tr valign="top" class="odd"><th><a href="qtoolbox.html">QToolBox</a></th><td>Column of tabbed widget items</td></tr>
 <tr valign="top" class="even"><th><a href="qtoolbutton.html">QToolButton</a></th><td>Quick-access button to commands or options, usually used inside a QToolBar</td></tr>
-<tr valign="top" class="odd"><th><a href="qtooltip.html">QToolTip</a></th><td>Tooltips (balloon help) for any widget</td></tr>
+<tr valign="top" class="odd"><th><a href="qtooltip.html">QToolTip</a></th><td>Tool tips (balloon help) for any widget</td></tr>
 <tr valign="top" class="even"><th><a href="qtransform.html">QTransform</a></th><td>2D transformations of a coordinate system</td></tr>
 <tr valign="top" class="odd"><th><a href="qtranslator.html">QTranslator</a></th><td>Internationalization support for text output</td></tr>
 <tr valign="top" class="even"><th><a href="qtreeview.html">QTreeView</a></th><td>Default model/view implementation of a tree view</td></tr>
@@ -560,47 +560,46 @@
 <tr valign="top" class="even"><th><a href="qurl.html">QUrl</a></th><td>Convenient interface for working with URLs</td></tr>
 <tr valign="top" class="odd"><th><a href="quuid.html">QUuid</a></th><td>Stores a Universally Unique Identifier (UUID)</td></tr>
 <tr valign="top" class="even"><th><a href="qvboxlayout.html">QVBoxLayout</a></th><td>Lines up widgets vertically</td></tr>
-<tr valign="top" class="odd"><th><a href="qvncscreen.html">QVNCScreen</a></th><td>Implements a screen driver for VNC servers</td></tr>
-<tr valign="top" class="even"><th><a href="qvalidator.html">QValidator</a></th><td>Validation of input text</td></tr>
-<tr valign="top" class="odd"><th><a href="qvarlengtharray.html">QVarLengthArray</a></th><td>Low-level variable-length array</td></tr>
-<tr valign="top" class="even"><th><a href="qvariant.html">QVariant</a></th><td>Acts like a union for the most common Qt data types</td></tr>
-<tr valign="top" class="odd"><th><a href="qvector.html">QVector</a></th><td>Template class that provides a dynamic array</td></tr>
-<tr valign="top" class="even"><th><a href="qvectoriterator.html">QVectorIterator</a></th><td>Java-style const iterator for QVector and QStack</td></tr>
-<tr valign="top" class="odd"><th><a href="qwscalibratedmousehandler.html">QWSCalibratedMouseHandler</a></th><td>Mouse calibration and noise reduction in Qtopia Core</td></tr>
-<tr valign="top" class="even"><th><a href="qwsclient.html">QWSClient</a></th><td>Encapsulates a client process in Qtopia Core</td></tr>
-<tr valign="top" class="odd"><th><a href="qwsembedwidget.html">QWSEmbedWidget</a></th><td>Enabels embedded top-level widgets in Qtopia Core</td></tr>
-<tr valign="top" class="even"><th><a href="qwsevent.html">QWSEvent</a></th><td>Encapsulates an event in Qtopia Core</td></tr>
-<tr valign="top" class="odd"><th><a href="qwsinputmethod.html">QWSInputMethod</a></th><td>International input methods in Qtopia Core</td></tr>
-<tr valign="top" class="even"><th><a href="qwskeyboardhandler.html">QWSKeyboardHandler</a></th><td>Base class for keyboard drivers in Qtopia Core</td></tr>
-<tr valign="top" class="odd"><th><a href="qwsmousehandler.html">QWSMouseHandler</a></th><td>Base class for mouse drivers in Qtopia Core</td></tr>
-<tr valign="top" class="even"><th><a href="qwspointercalibrationdata.html">QWSPointerCalibrationData</a></th><td>Container for mouse calibration data in Qtopia Core</td></tr>
-<tr valign="top" class="odd"><th><a href="qwsscreensaver.html">QWSScreenSaver</a></th><td>Base class for screensavers in Qtopia Core</td></tr>
-<tr valign="top" class="even"><th><a href="qwsserver.html">QWSServer</a></th><td>Encapsulates a server process in Qtopia Core</td></tr>
-<tr valign="top" class="odd"><th><a href="qwswindow.html">QWSWindow</a></th><td>Encapsulates a top-level window in Qtopia Core</td></tr>
-<tr valign="top" class="even"><th><a href="qwaitcondition.html">QWaitCondition</a></th><td>Condition variable for synchronizing threads</td></tr>
-<tr valign="top" class="odd"><th><a href="qwhatsthis.html">QWhatsThis</a></th><td>Simple description of any widget, i.e&#x2e; answering the question &quot;What's This?&quot;</td></tr>
-<tr valign="top" class="even"><th><a href="qwhatsthisclickedevent.html">QWhatsThisClickedEvent</a></th><td>Event that can be used to handle hyperlinks in a &quot;What's This?&quot; text</td></tr>
-<tr valign="top" class="odd"><th><a href="qwheelevent.html">QWheelEvent</a></th><td>Parameters that describe a wheel event</td></tr>
-<tr valign="top" class="even"><th><a href="qwidget.html">QWidget</a></th><td>The base class of all user interface objects</td></tr>
-<tr valign="top" class="odd"><th><a href="qwidgetaction.html">QWidgetAction</a></th><td>Extends QAction by an interface for inserting custom widgets into action based containers, such as toolbars</td></tr>
-<tr valign="top" class="even"><th><a href="qwidgetitem.html">QWidgetItem</a></th><td>Layout item that represents a widget</td></tr>
-<tr valign="top" class="odd"><th><a href="qwindowstatechangeevent.html">QWindowStateChangeEvent</a></th><td>The window state before a window state change</td></tr>
-<tr valign="top" class="even"><th><a href="qwindowsmime.html">QWindowsMime</a></th><td>Maps open-standard MIME to Window Clipboard formats</td></tr>
-<tr valign="top" class="odd"><th><a href="qwindowsstyle.html">QWindowsStyle</a></th><td>Microsoft Windows-like look and feel</td></tr>
-<tr valign="top" class="even"><th><a href="qwindowsvistastyle.html">QWindowsVistaStyle</a></th><td>Look and feel suitable for applications on Microsoft Windows Vista</td></tr>
-<tr valign="top" class="odd"><th><a href="qwindowsxpstyle.html">QWindowsXPStyle</a></th><td>Microsoft Windows XP-like look and feel</td></tr>
-<tr valign="top" class="even"><th><a href="qwizard.html">QWizard</a></th><td>Framework for wizards</td></tr>
-<tr valign="top" class="odd"><th><a href="qwizardpage.html">QWizardPage</a></th><td>The base class for wizard pages</td></tr>
-<tr valign="top" class="even"><th><a href="qworkspace.html">QWorkspace</a></th><td>Workspace window that can be used in an MDI application</td></tr>
-<tr valign="top" class="odd"><th><a href="qwritelocker.html">QWriteLocker</a></th><td>Convenience class that simplifies locking and unlocking read-write locks for write access</td></tr>
-<tr valign="top" class="even"><th><a href="qx11embedcontainer.html">QX11EmbedContainer</a></th><td>XEmbed container widget</td></tr>
-<tr valign="top" class="odd"><th><a href="qx11embedwidget.html">QX11EmbedWidget</a></th><td>XEmbed client widget</td></tr>
-<tr valign="top" class="even"><th><a href="qx11info.html">QX11Info</a></th><td>Information about the X display configuration</td></tr>
+<tr valign="top" class="odd"><th><a href="qvalidator.html">QValidator</a></th><td>Validation of input text</td></tr>
+<tr valign="top" class="even"><th><a href="qvarlengtharray.html">QVarLengthArray</a></th><td>Low-level variable-length array</td></tr>
+<tr valign="top" class="odd"><th><a href="qvariant.html">QVariant</a></th><td>Acts like a union for the most common Qt data types</td></tr>
+<tr valign="top" class="even"><th><a href="qvector.html">QVector</a></th><td>Template class that provides a dynamic array</td></tr>
+<tr valign="top" class="odd"><th><a href="qvectoriterator.html">QVectorIterator</a></th><td>Java-style const iterator for QVector and QStack</td></tr>
+<tr valign="top" class="even"><th><a href="qwscalibratedmousehandler.html">QWSCalibratedMouseHandler</a></th><td>Mouse calibration and noise reduction in Qtopia Core</td></tr>
+<tr valign="top" class="odd"><th><a href="qwsclient.html">QWSClient</a></th><td>Encapsulates a client process in Qtopia Core</td></tr>
+<tr valign="top" class="even"><th><a href="qwsembedwidget.html">QWSEmbedWidget</a></th><td>Enabels embedded top-level widgets in Qtopia Core</td></tr>
+<tr valign="top" class="odd"><th><a href="qwsevent.html">QWSEvent</a></th><td>Encapsulates an event in Qtopia Core</td></tr>
+<tr valign="top" class="even"><th><a href="qwsinputmethod.html">QWSInputMethod</a></th><td>International input methods in Qtopia Core</td></tr>
+<tr valign="top" class="odd"><th><a href="qwskeyboardhandler.html">QWSKeyboardHandler</a></th><td>Base class for keyboard drivers in Qtopia Core</td></tr>
+<tr valign="top" class="even"><th><a href="qwsmousehandler.html">QWSMouseHandler</a></th><td>Base class for mouse drivers in Qtopia Core</td></tr>
+<tr valign="top" class="odd"><th><a href="qwspointercalibrationdata.html">QWSPointerCalibrationData</a></th><td>Container for mouse calibration data in Qtopia Core</td></tr>
+<tr valign="top" class="even"><th><a href="qwsscreensaver.html">QWSScreenSaver</a></th><td>Base class for screensavers in Qtopia Core</td></tr>
+<tr valign="top" class="odd"><th><a href="qwsserver.html">QWSServer</a></th><td>Encapsulates a server process in Qtopia Core</td></tr>
+<tr valign="top" class="even"><th><a href="qwswindow.html">QWSWindow</a></th><td>Encapsulates a top-level window in Qtopia Core</td></tr>
+<tr valign="top" class="odd"><th><a href="qwaitcondition.html">QWaitCondition</a></th><td>Condition variable for synchronizing threads</td></tr>
+<tr valign="top" class="even"><th><a href="qwhatsthis.html">QWhatsThis</a></th><td>Simple description of any widget, i.e&#x2e; answering the question &quot;What's This?&quot;</td></tr>
+<tr valign="top" class="odd"><th><a href="qwhatsthisclickedevent.html">QWhatsThisClickedEvent</a></th><td>Event that can be used to handle hyperlinks in a &quot;What's This?&quot; text</td></tr>
+<tr valign="top" class="even"><th><a href="qwheelevent.html">QWheelEvent</a></th><td>Parameters that describe a wheel event</td></tr>
+<tr valign="top" class="odd"><th><a href="qwidget.html">QWidget</a></th><td>The base class of all user interface objects</td></tr>
+<tr valign="top" class="even"><th><a href="qwidgetaction.html">QWidgetAction</a></th><td>Extends QAction by an interface for inserting custom widgets into action based containers, such as toolbars</td></tr>
+<tr valign="top" class="odd"><th><a href="qwidgetitem.html">QWidgetItem</a></th><td>Layout item that represents a widget</td></tr>
+<tr valign="top" class="even"><th><a href="qwindowstatechangeevent.html">QWindowStateChangeEvent</a></th><td>The window state before a window state change</td></tr>
+<tr valign="top" class="odd"><th><a href="qwindowsmime.html">QWindowsMime</a></th><td>Maps open-standard MIME to Window Clipboard formats</td></tr>
+<tr valign="top" class="even"><th><a href="qwindowsstyle.html">QWindowsStyle</a></th><td>Microsoft Windows-like look and feel</td></tr>
+<tr valign="top" class="odd"><th><a href="qwindowsvistastyle.html">QWindowsVistaStyle</a></th><td>Look and feel suitable for applications on Microsoft Windows Vista</td></tr>
+<tr valign="top" class="even"><th><a href="qwindowsxpstyle.html">QWindowsXPStyle</a></th><td>Microsoft Windows XP-like look and feel</td></tr>
+<tr valign="top" class="odd"><th><a href="qwizard.html">QWizard</a></th><td>Framework for wizards</td></tr>
+<tr valign="top" class="even"><th><a href="qwizardpage.html">QWizardPage</a></th><td>The base class for wizard pages</td></tr>
+<tr valign="top" class="odd"><th><a href="qworkspace.html">QWorkspace</a></th><td>Workspace window that can be used in an MDI application</td></tr>
+<tr valign="top" class="even"><th><a href="qwritelocker.html">QWriteLocker</a></th><td>Convenience class that simplifies locking and unlocking read-write locks for write access</td></tr>
+<tr valign="top" class="odd"><th><a href="qx11embedcontainer.html">QX11EmbedContainer</a></th><td>XEmbed container widget</td></tr>
+<tr valign="top" class="even"><th><a href="qx11embedwidget.html">QX11EmbedWidget</a></th><td>XEmbed client widget</td></tr>
+<tr valign="top" class="odd"><th><a href="qx11info.html">QX11Info</a></th><td>Information about the X display configuration</td></tr>
 </table></p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/gui/itemviews/qabstractitemview.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/itemviews/qabstractitemview.cpp -->
 <head>
   <title>Qt 4.3: QAbstractItemView Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -746,7 +746,7 @@
 <p>See also <a href="qwidget.html#resizeEvent">QWidget::resizeEvent</a>().</p>
 <a name="//apple_ref/cpp/instm/QAbstractItemView/rootIndex" />
 <h3 class="fn"><a name="rootIndex"></a><a href="qmodelindex.html">QModelIndex</a> QAbstractItemView::rootIndex () const</h3>
-<p>Returns the model index of the model's root item. The root item is the parent item to the views toplevel items. The root can be invalid.</p>
+<p>Returns the model index of the model's root item. The root item is the parent item to the view's toplevel items. The root can be invalid.</p>
 <p>See also <a href="qabstractitemview.html#setRootIndex">setRootIndex</a>().</p>
 <a name="//apple_ref/cpp/instm/QAbstractItemView/rowsAboutToBeRemoved" />
 <h3 class="fn"><a name="rowsAboutToBeRemoved"></a>void QAbstractItemView::rowsAboutToBeRemoved ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>parent</i>, int <i>start</i>, int <i>end</i> )&nbsp;&nbsp;<tt> [virtual protected slot]</tt></h3>
@@ -825,19 +825,22 @@
 <h3 class="fn"><a name="setItemDelegate"></a>void QAbstractItemView::setItemDelegate ( <a href="qabstractitemdelegate.html">QAbstractItemDelegate</a> * <i>delegate</i> )</h3>
 <p>Sets the item delegate for this view and its model to <i>delegate</i>. This is useful if you want complete control over the editing and display of items.</p>
 <p>Any existing delegate will be removed, but not deleted. <a href="qabstractitemview.html">QAbstractItemView</a> does not take ownership of <i>delegate</i>.</p>
+<p><b>Warning:</b> You should not share the same instance of a delegate between views. Doing so can cause incorrect or unintuitive editing behavior since each view connected to a given delegate may receive the <a href="qabstractitemdelegate.html#closeEditor">closeEditor()</a> signal, and attempt to access, modify or close an editor that has already been closed.</p>
 <p>See also <a href="qabstractitemview.html#itemDelegate">itemDelegate</a>().</p>
 <a name="//apple_ref/cpp/instm/QAbstractItemView/setItemDelegateForColumn" />
 <h3 class="fn"><a name="setItemDelegateForColumn"></a>void QAbstractItemView::setItemDelegateForColumn ( int <i>column</i>, <a href="qabstractitemdelegate.html">QAbstractItemDelegate</a> * <i>delegate</i> )</h3>
 <p>Sets the given item <i>delegate</i> used by this view and model for the given <i>column</i>. All items on <i>column</i> will be drawn and managed by <i>delegate</i> instead of using the default delegate (i.e&#x2e;, <a href="qabstractitemview.html#itemDelegate">itemDelegate</a>()).</p>
 <p>Any existing column delegate for <i>column</i> will be removed, but not deleted. <a href="qabstractitemview.html">QAbstractItemView</a> does not take ownership of <i>delegate</i>.</p>
-<p>Note: If a delegate has been assigned to both a row and a column, the row delegate will take presedence and manage the intersecting cell index.</p>
+<p><b>Note:</b> If a delegate has been assigned to both a row and a column, the row delegate will take presedence and manage the intersecting cell index.</p>
+<p><b>Warning:</b> You should not share the same instance of a delegate between views. Doing so can cause incorrect or unintuitive editing behavior since each view connected to a given delegate may receive the <a href="qabstractitemdelegate.html#closeEditor">closeEditor()</a> signal, and attempt to access, modify or close an editor that has already been closed.</p>
 <p>This function was introduced in Qt 4.2.</p>
 <p>See also <a href="qabstractitemview.html#itemDelegateForColumn">itemDelegateForColumn</a>(), <a href="qabstractitemview.html#setItemDelegateForRow">setItemDelegateForRow</a>(), and <a href="qabstractitemview.html#itemDelegate">itemDelegate</a>().</p>
 <a name="//apple_ref/cpp/instm/QAbstractItemView/setItemDelegateForRow" />
 <h3 class="fn"><a name="setItemDelegateForRow"></a>void QAbstractItemView::setItemDelegateForRow ( int <i>row</i>, <a href="qabstractitemdelegate.html">QAbstractItemDelegate</a> * <i>delegate</i> )</h3>
 <p>Sets the given item <i>delegate</i> used by this view and model for the given <i>row</i>. All items on <i>row</i> will be drawn and managed by <i>delegate</i> instead of using the default delegate (i.e&#x2e;, <a href="qabstractitemview.html#itemDelegate">itemDelegate</a>()).</p>
 <p>Any existing row delegate for <i>row</i> will be removed, but not deleted. <a href="qabstractitemview.html">QAbstractItemView</a> does not take ownership of <i>delegate</i>.</p>
-<p>Note: If a delegate has been assigned to both a row and a column, the row delegate (i.e&#x2e;, this delegate) will take presedence and manage the intersecting cell index.</p>
+<p><b>Note:</b> If a delegate has been assigned to both a row and a column, the row delegate (i.e&#x2e;, this delegate) will take presedence and manage the intersecting cell index.</p>
+<p><b>Warning:</b> You should not share the same instance of a delegate between views. Doing so can cause incorrect or unintuitive editing behavior since each view connected to a given delegate may receive the <a href="qabstractitemdelegate.html#closeEditor">closeEditor()</a> signal, and attempt to access, modify or close an editor that has already been closed.</p>
 <p>This function was introduced in Qt 4.2.</p>
 <p>See also <a href="qabstractitemview.html#itemDelegateForRow">itemDelegateForRow</a>(), <a href="qabstractitemview.html#setItemDelegateForColumn">setItemDelegateForColumn</a>(), and <a href="qabstractitemview.html#itemDelegate">itemDelegate</a>().</p>
 <a name="//apple_ref/cpp/instm/QAbstractItemView/setModel" />
@@ -894,7 +897,6 @@
 <h3 class="fn"><a name="update"></a>void QAbstractItemView::update ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>index</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Updates the area occupied by the given <i>index</i>.</p>
 <p>This function was introduced in Qt 4.3.</p>
-<p>See also update().</p>
 <a name="//apple_ref/cpp/instm/QAbstractItemView/verticalOffset" />
 <h3 class="fn"><a name="verticalOffset"></a>int QAbstractItemView::verticalOffset () const&nbsp;&nbsp;<tt> [pure virtual protected]</tt></h3>
 <p>Returns the vertical offset of the view.</p>
@@ -926,6 +928,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

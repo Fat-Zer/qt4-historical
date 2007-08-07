@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -871,29 +886,24 @@ void WriteInitialization::writeProperties(const QString &varName,
 
     QString indent;
     if (!m_widgetChain.top()) {
-        indent = "    ";
+        indent = QLatin1String("    ");
         m_output << m_option.indent << "if (" << varName << "->objectName().isEmpty())\n";
     }
     m_output << m_option.indent << indent << varName << "->setObjectName(QString::fromUtf8(" << fixString(varName, m_option.indent) << "));\n";
 
     int leftMargin, topMargin, rightMargin, bottomMargin;
     leftMargin = topMargin = rightMargin = bottomMargin = -1;
+    bool frameShadowEncountered = false;
 
     for (int i=0; i<lst.size(); ++i) {
         const DomProperty *p = lst.at(i);
         const QString propertyName = p->attributeName();
         QString propertyValue;
 
-        // special case for the property `geometry'
+        // special case for the property `geometry': Do not use position
         if (isTopLevel && propertyName == QLatin1String("geometry") && p->elementRect()) {
             const DomRect *r = p->elementRect();
-            const int w = r->elementWidth();
-            const int h = r->elementHeight();
-            const QString tempName = m_driver->unique(QLatin1String("size"));
-            m_output << m_option.indent << "QSize " << tempName << '(' << w << ", " << h << ");\n"
-                      << m_option.indent << tempName << " = " << tempName << ".expandedTo("
-                      << varName << "->minimumSizeHint());\n"
-                      << m_option.indent << varName << "->resize(" << tempName << ");\n";
+            m_output << m_option.indent << varName << "->resize(" << r->elementWidth() << ", " << r->elementHeight() << ");\n";
             continue;
         } else if (propertyName == QLatin1String("buttonGroupId") && buttonGroupWidget) { // Q3ButtonGroup support
             m_output << m_option.indent << m_driver->findOrInsertWidget(buttonGroupWidget) << "->insert("
@@ -932,7 +942,9 @@ void WriteInitialization::writeProperties(const QString &varName,
                 shape = QLatin1String("QFrame::VLine");
 
             m_output << m_option.indent << varName << "->setFrameShape(" << shape << ");\n";
-            m_output << m_option.indent << varName << "->setFrameShadow(QFrame::Sunken);\n";
+            // QFrame Default is 'Plain'. Make the line 'Sunken' unless otherwise specified
+            if (!frameShadowEncountered)
+                m_output << m_option.indent << varName << "->setFrameShadow(QFrame::Sunken);\n";
             continue;
         } else if ((flags & WritePropertyIgnoreMargin)  && propertyName == QLatin1String("margin")) {
             continue;
@@ -950,7 +962,8 @@ void WriteInitialization::writeProperties(const QString &varName,
         } else if (propertyName == QLatin1String("bottomMargin") && p->kind() == DomProperty::Number) {
             bottomMargin = p->elementNumber();
             continue;
-        }
+        } else if (propertyName == QLatin1String("frameShadow"))
+            frameShadowEncountered = true;
 
         bool stdset = m_stdsetdef;
         if (p->hasAttributeStdset())

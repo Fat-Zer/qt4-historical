@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/gui/accessible/qaccessible.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/accessible/qaccessible.cpp -->
 <head>
   <title>Qt 4.3: QAccessible Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -41,6 +41,7 @@
 <li><div class="fn"/>bool <b><a href="qaccessible.html#isActive">isActive</a></b> ()</li>
 <li><div class="fn"/>QAccessibleInterface * <b><a href="qaccessible.html#queryAccessibleInterface">queryAccessibleInterface</a></b> ( QObject * <i>object</i> )</li>
 <li><div class="fn"/>void <b><a href="qaccessible.html#removeFactory">removeFactory</a></b> ( InterfaceFactory <i>factory</i> )</li>
+<li><div class="fn"/>void <b><a href="qaccessible.html#setRootObject">setRootObject</a></b> ( QObject * <i>object</i> )</li>
 <li><div class="fn"/>void <b><a href="qaccessible.html#updateAccessibility">updateAccessibility</a></b> ( QObject * <i>object</i>, int <i>child</i>, Event <i>reason</i> )</li>
 </ul>
 <a name="details"></a>
@@ -53,8 +54,8 @@
 <li><i>AT Servers</i> notify the clients about events through calls to the <a href="qaccessible.html#updateAccessibility">updateAccessibility</a>() function.</li>
 <li><i>AT Clients</i> request information about the objects in the server. The <a href="qaccessibleinterface.html">QAccessibleInterface</a> class is the core interface, and encapsulates this information in a pure virtual API. Implementations of the interface are provided by Qt through the <a href="qaccessible.html#queryAccessibleInterface">queryAccessibleInterface</a>() API.</li>
 </ul>
-<p>The communication between servers and clients is initialized by the setRootObject() function. Function pointers can be installed to replace or extend the default behavior of the static functions in QAccessible.</p>
-<p>Qt supports Microsoft Active Accessibility (MSAA), Mac OS X Accessibility, and the Unix/X11 AT-SPI standard. Other backends can be supported using QAccessibilityBridge.</p>
+<p>The communication between servers and clients is initialized by the <a href="qaccessible.html#setRootObject">setRootObject</a>() function. Function pointers can be installed to replace or extend the default behavior of the static functions in QAccessible.</p>
+<p>Qt supports Microsoft Active Accessibility (MSAA), Mac OS X Accessibility, and the Unix/X11 AT-SPI standard. Other backends can be supported using <a href="qaccessiblebridge.html">QAccessibleBridge</a>.</p>
 <p>In addition to QAccessible's static functions, Qt offers one generic interface, <a href="qaccessibleinterface.html">QAccessibleInterface</a>, that can be used to wrap all widgets and objects (e.g&#x2e;, <a href="qpushbutton.html">QPushButton</a>). This single interface provides all the metadata necessary for the assistive technologies. Qt provides implementations of this interface for its built-in widgets as plugins.</p>
 <p>When you develop custom widgets, you can create custom subclasses of <a href="qaccessibleinterface.html">QAccessibleInterface</a> and distribute them as plugins (using <a href="qaccessibleplugin.html">QAccessiblePlugin</a>) or compile them into the application. Likewise, Qt's predefined accessibility support can be built as plugin (the default) or directly into the Qt library. The main advantage of using plugins is that the accessibility classes are only loaded into memory if they are actually used; they don't slow down the common case where no assistive technology is being used.</p>
 <p>Qt also includes two convenience classes, <a href="qaccessibleobject.html">QAccessibleObject</a> and <a href="qaccessiblewidget.html">QAccessibleWidget</a>, that inherit from <a href="qaccessibleinterface.html">QAccessibleInterface</a> and provide the lowest common denominator of metadata (e.g&#x2e;, widget geometry, window title, basic help text). You can use them as base classes when wrapping your custom <a href="qobject.html">QObject</a> or <a href="qwidget.html">QWidget</a> subclasses.</p>
@@ -452,7 +453,7 @@
 <p>This enum specifies string information that an accessible object returns.</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
-<tr><td valign="top"><tt>QAccessible::Name</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The name of the object.</td></tr>
+<tr><td valign="top"><tt>QAccessible::Name</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The name of the object. This can be used both as an identifier or a short description by accessible clients.</td></tr>
 <tr><td valign="top"><tt>QAccessible::Description</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">A short text describing the object.</td></tr>
 <tr><td valign="top"><tt>QAccessible::Value</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">The value of the object.</td></tr>
 <tr><td valign="top"><tt>QAccessible::Help</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">A longer text giving information about how to use the object.</td></tr>
@@ -466,7 +467,7 @@
 <p>Installs the <a href="qaccessible.html#InterfaceFactory-typedef">InterfaceFactory</a> <i>factory</i>. The last factory added is the first one used by <a href="qaccessible.html#queryAccessibleInterface">queryAccessibleInterface</a>().</p>
 <a name="//apple_ref/cpp/clm/QAccessible/installRootObjectHandler" />
 <h3 class="fn"><a name="installRootObjectHandler"></a>RootObjectHandler QAccessible::installRootObjectHandler ( RootObjectHandler <i>handler</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Installs the given <i>handler</i> as the function to be used by setRootObject(), and returns the previously installed handler.</p>
+<p>Installs the given <i>handler</i> as the function to be used by <a href="qaccessible.html#setRootObject">setRootObject</a>(), and returns the previously installed handler.</p>
 <a name="//apple_ref/cpp/clm/QAccessible/isActive" />
 <h3 class="fn"><a name="isActive"></a>bool QAccessible::isActive ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns true if an accessibility implementation has been requested during the runtime of the application; otherwise returns false.</p>
@@ -480,6 +481,12 @@
 <a name="//apple_ref/cpp/clm/QAccessible/removeFactory" />
 <h3 class="fn"><a name="removeFactory"></a>void QAccessible::removeFactory ( <a href="qaccessible.html#InterfaceFactory-typedef">InterfaceFactory</a> <i>factory</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Removes <i>factory</i> from the list of installed InterfaceFactories.</p>
+<a name="//apple_ref/cpp/clm/QAccessible/setRootObject" />
+<h3 class="fn"><a name="setRootObject"></a>void QAccessible::setRootObject ( <a href="qobject.html">QObject</a> * <i>object</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
+<p>Sets the root accessible object of this application to <i>object</i>. All other accessible objects in the application can be reached by the client using object navigation.</p>
+<p>You should never need to call this function. Qt sets the <a href="qapplication.html">QApplication</a> object as the root object immediately before the event loop is entered in <a href="qapplication.html#exec">QApplication::exec</a>().</p>
+<p>Use <a href="qaccessible.html#installRootObjectHandler">QAccessible::installRootObjectHandler</a>() to redirect the function call to a customized handler function.</p>
+<p>See also <a href="qaccessible.html#queryAccessibleInterface">queryAccessibleInterface</a>().</p>
 <a name="//apple_ref/cpp/clm/QAccessible/updateAccessibility" />
 <h3 class="fn"><a name="updateAccessibility"></a>void QAccessible::updateAccessibility ( <a href="qobject.html">QObject</a> * <i>object</i>, int <i>child</i>, <a href="qaccessible.html#Event-enum">Event</a> <i>reason</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Notifies accessibility clients about a change in <i>object</i>'s accessibility information.</p>
@@ -490,6 +497,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

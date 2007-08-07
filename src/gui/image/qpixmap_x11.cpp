@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -428,6 +443,7 @@ void QPixmap::fill(const QColor &fillColor)
     if (fillColor.alpha() != 255) {
 #ifndef QT_NO_XRENDER
         if (data->picture && data->d == 32) {
+            detach();
             ::Picture src  = X11->getSolidFill(data->xinfo.screen(), fillColor);
             XRenderComposite(X11->display, PictOpSrc, src, 0, data->picture,
                              0, 0, width(), height(),
@@ -723,7 +739,7 @@ QImage QPixmap::toImage() const
     int            h  = height();
     int            d  = depth();
     Visual *visual = (Visual *) data->xinfo.visual();
-    bool    trucol = (visual->c_class >= TrueColor) && d > 8;
+    bool    trucol = (visual->c_class >= TrueColor) && d > 1;
 
     QImage::Format format = QImage::Format_Mono;
     if (d > 1 && d <= 8) {
@@ -1819,26 +1835,20 @@ QPixmap QPixmap::grabWindow(WId window, int x, int y, int w, int h)
     \sa trueMatrix(), {QPixmap#Pixmap Transformations}{Pixmap
     Transformations}
 */
-
-QPixmap QPixmap::transformed(const QMatrix &matrix, Qt::TransformationMode mode) const
+QPixmap QPixmap::transformed(const QTransform &matrix, Qt::TransformationMode mode) const
 {
-    return transformed(QTransform(matrix), mode);
-}
-
-QPixmap QPixmap::transformed(const QTransform &matrix, Qt::TransformationMode mode ) const
-{
-    uint          w = 0;
-    uint          h = 0;                                // size of target pixmap
-    uint          ws, hs;                                // size of source pixmap
+    uint   w = 0;
+    uint   h = 0;                               // size of target pixmap
+    uint   ws, hs;                              // size of source pixmap
     uchar *dptr;                                // data in target pixmap
-    uint          dbpl, dbytes;                        // bytes per line/bytes total
+    uint   dbpl, dbytes;                        // bytes per line/bytes total
     uchar *sptr;                                // data in original pixmap
-    int           sbpl;                                // bytes per line in original
-    int           bpp;                                        // bits per pixel
+    int    sbpl;                                // bytes per line in original
+    int    bpp;                                 // bits per pixel
     bool   depth1 = depth() == 1;
     Display *dpy = X11->display;
 
-    if (isNull())                                // this is a null pixmap
+    if (isNull())
         return copy();
 
     ws = width();
@@ -1872,10 +1882,11 @@ QPixmap QPixmap::transformed(const QTransform &matrix, Qt::TransformationMode mo
 
 
     bool invertible;
-    mat = mat.inverted(&invertible);                // invert matrix
+    mat = mat.inverted(&invertible);  // invert matrix
 
     if (h == 0 || w == 0 || !invertible
-        || qAbs(scaledWidth) >= 32768 || qAbs(scaledHeight) >= 32768 )	// error, return null pixmap
+        || qAbs(scaledWidth) >= 32768 || qAbs(scaledHeight) >= 32768 )
+	// error, return null pixmap
         return QPixmap();
 
     if (mode == Qt::SmoothTransformation) {
@@ -2020,6 +2031,18 @@ QPixmap QPixmap::transformed(const QTransform &matrix, Qt::TransformationMode mo
         return pm;
     }
 }
+
+/*!
+  \overload
+
+  This convenience function loads the \a matrix into a
+  QTransform and calls the overloaded function.
+ */
+QPixmap QPixmap::transformed(const QMatrix &matrix, Qt::TransformationMode mode) const
+{
+    return transformed(QTransform(matrix), mode);
+}
+
 
 /*!
   \internal

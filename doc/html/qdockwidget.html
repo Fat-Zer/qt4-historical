@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/gui/widgets/qdockwidget.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/widgets/qdockwidget.cpp -->
 <head>
   <title>Qt 4.3: QDockWidget Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -101,6 +101,7 @@
 <h3>Appearance</h3>
 <p>A QDockWidget consists of a title bar and the content area. The title bar displays the dock widgets <a href="qwidget.html#windowTitle-prop">window title</a>, a <i>float</i> button and a <i>close</i> button. Depending on the state of the QDockWidget, the <i>float</i> and <i>close</i> buttons may be either disabled or not shown at all.</p>
 <p>The visual appearance of the title bar and buttons is dependent on the <a href="qstyle.html">style</a> in use.</p>
+<p>A QDockWidget acts as a wrapper for its child widget, set with <a href="qdockwidget.html#setWidget">setWidget</a>(). Custom size hints, minimum and maximum sizes and size policies should be implemented in the child widget. QDockWidget will respect them, adjusting its own constraints to include the frame and title. Size constraints should not be set on the QDockWidget itself, because they change depending on wether it is docked; a docked QDockWidget has no frame and a smaller title bar.</p>
 <p>See also <a href="qmainwindow.html">QMainWindow</a> and <a href="mainwindows-dockwidgets.html">Dock Widgets Example</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
@@ -120,7 +121,7 @@
 <tr><td valign="top"><tt>QDockWidget::DockWidgetClosable</tt></td><td align="center" valign="top"><tt>0x01</tt></td><td valign="top">The dock widget can be closed.</td></tr>
 <tr><td valign="top"><tt>QDockWidget::DockWidgetMovable</tt></td><td align="center" valign="top"><tt>0x02</tt></td><td valign="top">The dock widget can be moved between docks by the user.</td></tr>
 <tr><td valign="top"><tt>QDockWidget::DockWidgetFloatable</tt></td><td align="center" valign="top"><tt>0x04</tt></td><td valign="top">The dock widget can be detached from the main window, and floated as an independent window.</td></tr>
-<tr><td valign="top"><tt>QDockWidget::DockWidgetVerticalTitleBar</tt></td><td align="center" valign="top"><tt>0x08</tt></td><td valign="top">The dock widget displays a vertical title bar on its left side. This can be used to increase the ammount of vertical space in a <a href="qmainwindow.html">QMainWindow</a>.</td></tr>
+<tr><td valign="top"><tt>QDockWidget::DockWidgetVerticalTitleBar</tt></td><td align="center" valign="top"><tt>0x08</tt></td><td valign="top">The dock widget displays a vertical title bar on its left side. This can be used to increase the amount of vertical space in a <a href="qmainwindow.html">QMainWindow</a>.</td></tr>
 <tr><td valign="top"><tt>QDockWidget::AllDockWidgetFeatures</tt></td><td align="center" valign="top"><tt>DockWidgetClosable | DockWidgetMovable | DockWidgetFloatable</tt></td><td valign="top">(Deprecated) The dock widget can be closed, moved, and floated. Since new features might be added in future releases, the look and behavior of dock widgets might change if you use this flag. Please specify individual flags instead.</td></tr>
 <tr><td valign="top"><tt>QDockWidget::NoDockWidgetFeatures</tt></td><td align="center" valign="top"><tt>0x00</tt></td><td valign="top">The dock widget cannot be closed, moved, or floated.</td></tr>
 </table></p>
@@ -197,9 +198,9 @@
 <li>Mouse events that are not explicitly handled by the title bar widget must be ignored by calling <a href="qevent.html#ignore">QMouseEvent::ignore</a>(). These events then propagate to the <a href="qdockwidget.html">QDockWidget</a> parent, which handles them in the usual manner, moving when the title bar is dragged, docking and undocking when it is double-clicked, etc.</li>
 <li>When <a href="qdockwidget.html#DockWidgetFeature-enum">DockWidgetVerticalTitleBar</a> is set on <a href="qdockwidget.html">QDockWidget</a>, the title bar widget is repositioned accordingly. In <a href="qwidget.html#resizeEvent">resizeEvent</a>(), the title bar should check what orientation it should assume:<pre> QDockWidget *dockWidget = qobject_cast&lt;QDockWidget*&gt;(parentWidget());
  if (dockWidget-&gt;features() &amp; QDockWidget::DockWidgetVerticalTitleBar) {
-     <span class="comment">// I need to be vertical</span>
+     <span class="comment">//</span> I need to be vertical
  } else {
-     <span class="comment">// I need to be horizontal</span>
+     <span class="comment">//</span> I need to be horizontal
  }</pre>
 </li>
 <li>The title bar widget must have a valid <a href="qwidget.html#sizeHint-prop">QWidget::sizeHint</a>() and <a href="qwidget.html#minimumSizeHint-prop">QWidget::minimumSizeHint</a>(). These functions should take into account the current orientation of the title bar.</li>
@@ -235,6 +236,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -929,19 +944,26 @@ void QDesignerWorkbench::updateWindowMenu(QDesignerFormWindowInterface *fwi)
 {
     bool minimizeChecked = false;
     bool minimizeEnabled = false;
+    QDesignerFormWindow *activeFormWindow = 0;
     do {
         if (!fwi)
         break;
-        QDesignerFormWindow *fw = qobject_cast<QDesignerFormWindow *>(fwi->parentWidget());
-        if (!fw)
+        activeFormWindow = qobject_cast<QDesignerFormWindow *>(fwi->parentWidget());
+        if (!activeFormWindow)
             break;
 
         minimizeEnabled = true;
-        minimizeChecked = isFormWindowMinimized(fw);
+        minimizeChecked = isFormWindowMinimized(activeFormWindow);
     } while (false) ;
 
     m_actionManager->minimizeAction()->setEnabled(minimizeEnabled);
     m_actionManager->minimizeAction()->setChecked(minimizeChecked);
+
+    if (!m_formWindows.empty()) {
+        const QList<QDesignerFormWindow*>::const_iterator cend = m_formWindows.constEnd();
+        for (QList<QDesignerFormWindow*>::const_iterator it = m_formWindows.constBegin(); it != cend; ++it)
+            (*it)->action()->setChecked(*it == activeFormWindow);
+    }
 }
 
 void QDesignerWorkbench::formWindowActionTriggered(QAction *a)

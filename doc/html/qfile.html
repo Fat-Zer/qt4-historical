@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/corelib/io/qfile.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/corelib/io/qfile.cpp -->
 <head>
   <title>Qt 4.3: QFile Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -311,6 +311,7 @@
 <a name="//apple_ref/cpp/instm/QFile/link" />
 <h3 class="fn"><a name="link"></a>bool QFile::link ( const <a href="qstring.html">QString</a> &amp; <i>linkName</i> )</h3>
 <p>Creates a link named <i>linkName</i> that points to the file currently specified by <a href="qfile.html#fileName">fileName</a>(). What a link is depends on the underlying filesystem (be it a shortcut on Windows or a symbolic link on Unix). Returns true if successful; otherwise returns false.</p>
+<p><b>Note:</b> To create a valid link on Windows, <i>linkName</i> must have a <tt>.lnk</tt> file extension.</p>
 <p>See also <a href="qfile.html#setFileName">setFileName</a>().</p>
 <h3 class="fn"><a name="link-2"></a>bool QFile::link ( const <a href="qstring.html">QString</a> &amp; <i>fileName</i>, const <a href="qstring.html">QString</a> &amp; <i>linkName</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>This is an overloaded member function, provided for convenience.</p>
@@ -334,13 +335,14 @@
  {
      QFile file;
      file.open(stderr, QIODevice::WriteOnly);
-     file.write(msg, qstrlen(msg));        <span class="comment">// write to stderr</span>
+     file.write(msg, qstrlen(msg));        <span class="comment">//</span> write to stderr
      file.close();
  }</pre>
 <p>When a <a href="qfile.html">QFile</a> is opened using this function, <a href="qiodevice.html#close">close</a>() does not actually close the file, but only flushes it.</p>
 <p><b>Warning:</b> If <i>fh</i> is <tt>stdin</tt>, <tt>stdout</tt>, or <tt>stderr</tt>, you may not be able to <a href="qiodevice.html#seek">seek</a>(). See <a href="qiodevice-qt3.html#isSequentialAccess">QIODevice::isSequentialAccess</a>() for more information.</p>
 <p><b>Note:</b> On Windows, you need to enable support for console applications in order to use the stdin, stdout and stderr streams at the console. To do this, add the following declaration to your application's project file:</p>
 <pre> CONFIG += console</pre>
+<p><b>Note:</b> On Windows, <i>fh</i> must be opened in binary mode (i.e&#x2e;, the mode string must contain 'b', as in &quot;rb&quot; or &quot;wb&quot;) when accessing files and other random-access devices. Qt will translate the end-of-line characters if you pass <a href="qiodevice.html#OpenModeFlag-enum">QIODevice::Text</a> to <i>mode</i>. Sequential devices, such as stdin and stdout, are unaffected by this limitation.</p>
 <p>See also <a href="qiodevice.html#close">close</a>() and <a href="qmake-variable-reference.html#config">qmake Variable Reference</a>.</p>
 <h3 class="fn"><a name="open-5"></a>bool QFile::open ( int <i>fd</i>, <a href="qiodevice.html#OpenModeFlag-enum">OpenMode</a> <i>mode</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
@@ -405,7 +407,7 @@
  QDir::setCurrent(&quot;/tmp&quot;);
  file.setFileName(&quot;readme.txt&quot;);
  QDir::setCurrent(&quot;/home&quot;);
- file.open(QIODevice::ReadOnly);      <span class="comment">// opens &quot;/home/readme.txt&quot; under Unix</span></pre>
+ file.open(QIODevice::ReadOnly);      <span class="comment">//</span> opens &quot;/home/readme.txt&quot; under Unix</pre>
 <p>Note that the directory separator &quot;/&quot; works for all operating systems supported by Qt.</p>
 <p>See also <a href="qfile.html#fileName">fileName</a>(), <a href="qfileinfo.html">QFileInfo</a>, and <a href="qdir.html">QDir</a>.</p>
 <a name="//apple_ref/cpp/instm/QFile/setPermissions" />
@@ -435,26 +437,10 @@
 <h3 class="fn"><a name="unsetError"></a>void QFile::unsetError ()</h3>
 <p>Sets the file's error to <a href="qfile.html#FileError-enum">QFile::NoError</a>.</p>
 <p>See also <a href="qfile.html#error">error</a>().</p>
-<hr />
-<h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QFile/name" />
-<h3 class="fn"><a name="name"></a><a href="qstring.html">QString</a> QFile::name () const</h3>
-<p>Use <a href="qfile.html#fileName">fileName</a>() instead.</p>
-<p>See also <a href="qfile-qt3.html#setName">setName</a>().</p>
-<h3 class="fn"><a name="open-2"></a>bool QFile::open ( <a href="qiodevice.html#OpenModeFlag-enum">OpenMode</a> <i>flags</i>, FILE * <i>f</i> )</h3>
-<p>This is an overloaded member function, provided for convenience.</p>
-<p>Use open(FILE *, <a href="qiodevice.html#OpenModeFlag-enum">OpenMode</a>) instead.</p>
-<h3 class="fn"><a name="open-3"></a>bool QFile::open ( <a href="qiodevice.html#OpenModeFlag-enum">OpenMode</a> <i>flags</i>, int <i>fd</i> )</h3>
-<p>This is an overloaded member function, provided for convenience.</p>
-<p>Use open(int, <a href="qiodevice.html#OpenModeFlag-enum">OpenMode</a>) instead.</p>
-<a name="//apple_ref/cpp/instm/QFile/setName" />
-<h3 class="fn"><a name="setName"></a>void QFile::setName ( const <a href="qstring.html">QString</a> &amp; <i>name</i> )</h3>
-<p>Use <a href="qfile.html#setFileName">setFileName</a>() instead.</p>
-<p>See also <a href="qfile-qt3.html#name">name</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

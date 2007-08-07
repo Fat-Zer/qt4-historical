@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/corelib/global/qglobal.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/corelib/global/qglobal.cpp -->
 <head>
   <title>Qt 4.3: &lt;QtGlobal&gt; - Global Qt Declarations</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -74,6 +74,8 @@
 <li><div class="fn"/><b><a href="qtglobal.html#QT_VERSION_STR">QT_VERSION_STR</a></b></li>
 <li><div class="fn"/>void <b><a href="qtglobal.html#Q_ASSERT">Q_ASSERT</a></b> ( bool <i>test</i> )</li>
 <li><div class="fn"/>void <b><a href="qtglobal.html#Q_ASSERT_X">Q_ASSERT_X</a></b> ( bool <i>test</i>, const char * <i>where</i>, const char * <i>what</i> )</li>
+<li><div class="fn"/><b><a href="qtglobal.html#Q_BIG_ENDIAN">Q_BIG_ENDIAN</a></b></li>
+<li><div class="fn"/><b><a href="qtglobal.html#Q_BYTE_ORDER">Q_BYTE_ORDER</a></b></li>
 <li><div class="fn"/><b><a href="qtglobal.html#Q_CC_BOR">Q_CC_BOR</a></b></li>
 <li><div class="fn"/><b><a href="qtglobal.html#Q_CC_CDS">Q_CC_CDS</a></b></li>
 <li><div class="fn"/><b><a href="qtglobal.html#Q_CC_COMEAU">Q_CC_COMEAU</a></b></li>
@@ -100,6 +102,7 @@
 <li><div class="fn"/><b><a href="qtglobal.html#Q_FOREVER">Q_FOREVER</a></b></li>
 <li><div class="fn"/>const char * <b><a href="qtglobal.html#Q_FUNC_INFO">Q_FUNC_INFO</a></b> ()</li>
 <li><div class="fn"/>qint64 <b><a href="qtglobal.html#Q_INT64_C">Q_INT64_C</a></b> (  <i>literal</i> )</li>
+<li><div class="fn"/><b><a href="qtglobal.html#Q_LITTLE_ENDIAN">Q_LITTLE_ENDIAN</a></b></li>
 <li><div class="fn"/><b><a href="qtglobal.html#Q_OS_AIX">Q_OS_AIX</a></b></li>
 <li><div class="fn"/><b><a href="qtglobal.html#Q_OS_BSD4">Q_OS_BSD4</a></b></li>
 <li><div class="fn"/><b><a href="qtglobal.html#Q_OS_BSDI">Q_OS_BSDI</a></b></li>
@@ -153,7 +156,7 @@
  int maxValue = 6;
 
  int boundedValue = qBound(minValue, myValue, maxValue);
-<span class="comment"> // boundedValue == 6</span></pre>
+<span class="comment"> //</span> boundedValue == 6</pre>
 <p>&lt;QtGlobal&gt; also contains functions that generate messages from the given string argument: <a href="qtglobal.html#qCritical">qCritical</a>(), <a href="qtglobal.html#qDebug">qDebug</a>(), <a href="qtglobal.html#qFatal">qFatal</a>() and <a href="qtglobal.html#qWarning">qWarning</a>(). These functions call the message handler with the given message. For example:</p>
 <pre> if (!driver()-&gt;isOpen() || driver()-&gt;isOpenError()) {
      qWarning(&quot;QSqlQuery::exec: database not open&quot;);
@@ -266,7 +269,7 @@
  int myValue = -4;
 
  absoluteValue = qAbs(myValue);
-<span class="comment"> // absoluteValue == 4</span></pre>
+<span class="comment"> //</span> absoluteValue == 4</pre>
 <a name="//apple_ref/cpp/func//qBound" />
 <h3 class="fn"><a name="qBound"></a>const T &amp; qBound ( const T &amp; <i>min</i>, const T &amp; <i>value</i>, const T &amp; <i>max</i> )</h3>
 <p>Returns <i>value</i> bounded by <i>min</i> and <i>max</i>. This is equivalent to qMax(<i>min</i>, qMin(<i>value</i>, <i>max</i>)). For example:</p>
@@ -275,7 +278,7 @@
  int maxValue = 6;
 
  int boundedValue = qBound(minValue, myValue, maxValue);
-<span class="comment"> // boundedValue == 6</span></pre>
+<span class="comment"> //</span> boundedValue == 6</pre>
 <p>See also <a href="qtglobal.html#qMin">qMin</a>() and <a href="qtglobal.html#qMax">qMax</a>().</p>
 <a name="//apple_ref/cpp/func//qCritical" />
 <h3 class="fn"><a name="qCritical"></a>void qCritical ( const char * <i>msg</i>, ... )</h3>
@@ -313,7 +316,7 @@
 <p>Example:</p>
 <pre> int divide(int a, int b)
  {
-     if (b == 0)                                <span class="comment">// program error</span>
+     if (b == 0)                                <span class="comment">//</span> program error
          qFatal(&quot;divide: cannot divide by zero&quot;);
      return a / b;
  }</pre>
@@ -390,7 +393,7 @@
  int yourValue = 4;
 
  int maxValue = qMax(myValue, yourValue);
-<span class="comment"> // maxValue == myValue</span></pre>
+<span class="comment"> //</span> maxValue == myValue</pre>
 <p>See also <a href="qtglobal.html#qMin">qMin</a>() and <a href="qtglobal.html#qBound">qBound</a>().</p>
 <a name="//apple_ref/cpp/func//qMin" />
 <h3 class="fn"><a name="qMin"></a>const T &amp; qMin ( const T &amp; <i>value1</i>, const T &amp; <i>value2</i> )</h3>
@@ -399,7 +402,7 @@
  int yourValue = 4;
 
  int minValue = qMin(myValue, yourValue);
-<span class="comment"> // minValue == yourValue</span></pre>
+<span class="comment"> //</span> minValue == yourValue</pre>
 <p>See also <a href="qtglobal.html#qMax">qMax</a>() and <a href="qtglobal.html#qBound">qBound</a>().</p>
 <a name="//apple_ref/cpp/func//qRound64" />
 <h3 class="fn"><a name="qRound64"></a><a href="qtglobal.html#qint64-typedef">qint64</a> qRound64 ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>value</i> )</h3>
@@ -541,7 +544,7 @@
 <p>Prints a warning message containing the source code file name and line number if <i>test</i> is false.</p>
 <p>Q_ASSERT() is useful for testing pre- and post-conditions during development. It does nothing if <tt>QT_NO_DEBUG</tt> was defined during compilation.</p>
 <p>Example:</p>
-<pre><span class="comment"> // File: div.cpp</span>
+<pre><span class="comment"> //</span> File: div.cpp
 
  #include &lt;QtGlobal&gt;
 
@@ -558,7 +561,7 @@
 <p>Prints the message <i>what</i> together with the location <i>where</i>, the source file name and line number if <i>test</i> is false.</p>
 <p>Q_ASSERT_X is useful for testing pre- and post-conditions during development. It does nothing if <tt>QT_NO_DEBUG</tt> was defined during compilation.</p>
 <p>Example:</p>
-<pre><span class="comment"> // File: div.cpp</span>
+<pre><span class="comment"> //</span> File: div.cpp
 
  #include &lt;QtGlobal&gt;
 
@@ -570,6 +573,27 @@
 <p>If <tt>b</tt> is zero, the Q_ASSERT_X statement will output the following message using the <a href="qtglobal.html#qFatal">qFatal</a>() function:</p>
 <pre> ASSERT failure in divide: &quot;division by zero&quot;, file div.cpp, line 7</pre>
 <p>See also <a href="qtglobal.html#Q_ASSERT">Q_ASSERT</a>(), <a href="qtglobal.html#qFatal">qFatal</a>(), and <a href="debug.html">Debugging Techniques</a>.</p>
+<a name="//apple_ref/cpp/macro//Q_BIG_ENDIAN" />
+<h3 class="fn"><a name="Q_BIG_ENDIAN"></a>Q_BIG_ENDIAN</h3>
+<p>This macro represents a value you can compare to the macro <a href="qtglobal.html#Q_BYTE_ORDER">Q_BYTE_ORDER</a> to determine the endian-ness of your system. In a big-endian system, the most significant byte is stored at the lowest address. The other bytes follow in decreasing order of significance.</p>
+<pre> #if Q_BYTE_ORDER == Q_BIG_ENDIAN
+ ...
+ #endif</pre>
+<p>See also <a href="qtglobal.html#Q_BYTE_ORDER">Q_BYTE_ORDER</a> and <a href="qtglobal.html#Q_LITTLE_ENDIAN">Q_LITTLE_ENDIAN</a>.</p>
+<a name="//apple_ref/cpp/macro//Q_BYTE_ORDER" />
+<h3 class="fn"><a name="Q_BYTE_ORDER"></a>Q_BYTE_ORDER</h3>
+<p>This macro can be used to determine the byte order your system uses for storing data in memory. i.e&#x2e;, whether your system is little-endian or big-endian. It is set by Qt to one of the macros <a href="qtglobal.html#Q_LITTLE_ENDIAN">Q_LITTLE_ENDIAN</a> or <a href="qtglobal.html#Q_BIG_ENDIAN">Q_BIG_ENDIAN</a>. You normally won't need to worry about endian-ness, but you might, for example if you need to know which byte of an integer or UTF-16 character is stored in the lowest address. Endian-ness is important in networking, where computers with different values for Q_BYTE_ORDER must pass data back and forth.</p>
+<p>Use this macro as in the following examples.</p>
+<pre> #if Q_BYTE_ORDER == Q_BIG_ENDIAN
+ ...
+ #endif
+
+ or
+
+ #if Q_BYTE_ORDER == Q_LITTLE_ENDIAN
+ ...
+ #endif</pre>
+<p>See also <a href="qtglobal.html#Q_BIG_ENDIAN">Q_BIG_ENDIAN</a> and <a href="qtglobal.html#Q_LITTLE_ENDIAN">Q_LITTLE_ENDIAN</a>.</p>
 <a name="//apple_ref/cpp/macro//Q_CC_BOR" />
 <h3 class="fn"><a name="Q_CC_BOR"></a>Q_CC_BOR</h3>
 <p>Defined if the application is compiled using Borland/Turbo C++.</p>
@@ -637,9 +661,9 @@
 <p>Example:</p>
 <pre> int *a;
 
- Q_CHECK_PTR(a = new int[80]);   <span class="comment">// WRONG!</span>
+ Q_CHECK_PTR(a = new int[80]);   <span class="comment">//</span> WRONG!
 
- a = new (nothrow) int[80];      <span class="comment">// Right</span>
+ a = new (nothrow) int[80];      <span class="comment">//</span> Right
  Q_CHECK_PTR(a);</pre>
 <p>See also <a href="qtglobal.html#qWarning">qWarning</a>() and <a href="debug.html">Debugging Techniques</a>.</p>
 <a name="//apple_ref/cpp/macro//Q_DECLARE_TYPEINFO" />
@@ -709,6 +733,13 @@
 <p>Wraps the signed 64-bit integer <i>literal</i> in a platform-independent way. For example:</p>
 <pre> qint64 value = Q_INT64_C(932838457459459);</pre>
 <p>See also <a href="qtglobal.html#qint64-typedef">qint64</a> and <a href="qtglobal.html#Q_UINT64_C">Q_UINT64_C</a>().</p>
+<a name="//apple_ref/cpp/macro//Q_LITTLE_ENDIAN" />
+<h3 class="fn"><a name="Q_LITTLE_ENDIAN"></a>Q_LITTLE_ENDIAN</h3>
+<p>This macro represents a value you can compare to the macro <a href="qtglobal.html#Q_BYTE_ORDER">Q_BYTE_ORDER</a> to determine the endian-ness of your system. In a little-endian system, the least significant byte is stored at the lowest address. The other bytes follow in increasing order of significance.</p>
+<pre> #if Q_BYTE_ORDER == Q_LITTLE_ENDIAN
+ ...
+ #endif</pre>
+<p>See also <a href="qtglobal.html#Q_BYTE_ORDER">Q_BYTE_ORDER</a> and <a href="qtglobal.html#Q_BIG_ENDIAN">Q_BIG_ENDIAN</a>.</p>
 <a name="//apple_ref/cpp/macro//Q_OS_AIX" />
 <h3 class="fn"><a name="Q_OS_AIX"></a>Q_OS_AIX</h3>
 <p>Defined on AIX.</p>
@@ -844,6 +875,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

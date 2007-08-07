@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -1071,6 +1086,11 @@ void QCommonStyle::drawControl(ControlElement element, const QStyleOption *opt,
                     rect.setLeft(rect.left() + pixw + 2);
                 else
                     rect.setRight(rect.right() - pixw - 2);
+            }
+            if (header->state & QStyle::State_On) {
+                QFont fnt = p->font();
+                fnt.setBold(true);
+                p->setFont(fnt);
             }
             drawItemText(p, rect, header->textAlignment, header->palette,
                          (header->state & State_Enabled), header->text, QPalette::ButtonText);
@@ -3566,21 +3586,44 @@ QRect QCommonStyle::subControlRect(ComplexControl cc, const QStyleOptionComplex 
 #ifndef QT_NO_WORKSPACE
     case CC_MdiControls:
     {
-        int buttonWidth = opt->rect.width()/3 - 1;
+        int numSubControls = 0;
+        if (opt->subControls & SC_MdiCloseButton)
+            ++numSubControls;
+        if (opt->subControls & SC_MdiMinButton)
+            ++numSubControls;
+        if (opt->subControls & SC_MdiNormalButton)
+            ++numSubControls;
+        if (numSubControls == 0)
+            break;
+
+        int buttonWidth = opt->rect.width()/ numSubControls - 1;
         int offset = 0;
         switch (sc) {
         case SC_MdiCloseButton:
+            // Only one sub control, no offset needed.
+            if (numSubControls == 1)
+                break;
             offset += buttonWidth + 2;
             //FALL THROUGH
         case SC_MdiNormalButton:
-            offset += buttonWidth;
-            //FALL THROUGH
-        case SC_MdiMinButton:
-            ret = QRect(offset, 2, buttonWidth, opt->rect.height() - 2);
+            // No offset needed if
+            // 1) There's only one sub control
+            // 2) We have a close button and a normal button (offset already added in SC_MdiClose)
+            if (numSubControls == 1 || (numSubControls == 2 && !(opt->subControls & SC_MdiMinButton)))
+                break;
+            if (opt->subControls & SC_MdiNormalButton)
+                offset += buttonWidth;
             break;
         default:
             break;
         }
+
+        // Subtract one pixel if we only have one sub control. At this point
+        // buttonWidth is the actual width + 1 pixel margin, but we don't want the
+        // margin when there are no other controllers.
+        if (numSubControls == 1)
+            --buttonWidth;
+        ret = QRect(offset, 0, buttonWidth, opt->rect.height());
         break;
     }
 #endif // QT_NO_WORKSPACE
@@ -4029,7 +4072,18 @@ QSize QCommonStyle::sizeFromContents(ContentsType ct, const QStyleOption *opt,
         break;
 #endif // QT_NO_GROUPBOX
     case CT_MdiControls:
-        sz = QSize(52, 16);
+        if (const QStyleOptionComplex *styleOpt = qstyleoption_cast<const QStyleOptionComplex *>(opt)) {
+            int width = 1;
+            if (styleOpt->subControls & SC_MdiMinButton)
+                width += 16 + 1;
+            if (styleOpt->subControls & SC_MdiNormalButton)
+                width += 16 + 1;
+            if (styleOpt->subControls & SC_MdiCloseButton)
+                width += 16 + 1;
+            sz = QSize(width, 16);
+        } else {
+            sz = QSize(52, 16);
+        }
         break;
     case CT_ScrollBar:
     case CT_MenuBar:

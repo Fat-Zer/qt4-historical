@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -69,10 +84,10 @@ bool RCCFileInfo::writeDataInfo(FILE *out, RCCResourceLibrary::Format format)
     //some info
     if(format == RCCResourceLibrary::C_Code) {
         if(language != QLocale::C)
-            fprintf(out, "  // %s [%d::%d]\n  ", resourceName().toLatin1().constData(),
+            fprintf(out, "  // %s [%d::%d]\n  ", resourceName().toLocal8Bit().constData(),
                     country, language);
         else
-            fprintf(out, "  // %s\n  ", resourceName().toLatin1().constData());
+            fprintf(out, "  // %s\n  ", resourceName().toLocal8Bit().constData());
     }
 
     //pointer data
@@ -129,7 +144,7 @@ qint64 RCCFileInfo::writeDataBlob(FILE *out, qint64 offset, RCCResourceLibrary::
     //find the data to be written
     QFile file(fileInfo.absoluteFilePath());
     if (!file.open(QFile::ReadOnly)) {
-        fprintf(stderr, "Couldn't open %s\n", fileInfo.absoluteFilePath().toLatin1().constData());
+        fprintf(stderr, "Couldn't open %s\n", fileInfo.absoluteFilePath().toLocal8Bit().constData());
         return false;
     }
     QByteArray data = file.readAll();
@@ -149,7 +164,7 @@ qint64 RCCFileInfo::writeDataBlob(FILE *out, qint64 offset, RCCResourceLibrary::
 
     //some info
     if(format == RCCResourceLibrary::C_Code)
-        fprintf(out, "  // %s\n  ", fileInfo.absoluteFilePath().toLatin1().constData());
+        fprintf(out, "  // %s\n  ", fileInfo.absoluteFilePath().toLocal8Bit().constData());
 
     //write the length
     qt_rcc_write_number(out, data.size(), 4, format);
@@ -181,7 +196,7 @@ qint64 RCCFileInfo::writeDataName(FILE *out, qint64 offset, RCCResourceLibrary::
 
     //some info
     if(format == RCCResourceLibrary::C_Code)
-        fprintf(out, "  // %s\n  ", name.toLatin1().constData());
+        fprintf(out, "  // %s\n  ", name.toLocal8Bit().constData());
 
     //write the length
     qt_rcc_write_number(out, name.length(), 2, format);
@@ -230,8 +245,9 @@ bool RCCResourceLibrary::interpretResourceFile(QIODevice *inputDevice, QString f
         if(!document.setContent(inputDevice, &errorMsg, &errorLine, &errorColumn)) {
             if(ignoreErrors)
                 return true;
-            fprintf(stderr, "RCC Parse Error: '%s' Line:%d Column:%d [%s]\n", fname.toLatin1().constData(),
-                    errorLine, errorColumn, errorMsg.toLatin1().constData());
+            fprintf(stderr, "RCC Parse Error: '%s' Line:%d Column:%d [%s]\n",
+                    qPrintable(fname), errorLine, errorColumn,
+                    qPrintable(errorMsg));
             return false;
         }
     }
@@ -303,7 +319,7 @@ bool RCCResourceLibrary::interpretResourceFile(QIODevice *inputDevice, QString f
                         if (!file.exists()) {
                             if(ignoreErrors)
                                 continue;
-                            fprintf(stderr, "RCC: Error: Cannot find file '%s'\n", fileName.toLatin1().constData());
+                            fprintf(stderr, "RCC: Error: Cannot find file '%s'\n", qPrintable(fileName));
                             return false;
                         } else if (file.isFile()) {
                             addFile(alias, RCCFileInfo(alias.section(QLatin1Char('/'), -1), file, language, country,
@@ -344,7 +360,7 @@ bool RCCResourceLibrary::addFile(const QString &alias, const RCCFileInfo &file)
 {
     if (file.fileInfo.size() > 0xffffffff) {
         fprintf(stderr, "File too big: %s",
-                file.fileInfo.absoluteFilePath().toLatin1().constData());
+                qPrintable(file.fileInfo.absoluteFilePath()));
         return false;
     }
     if(!root)
@@ -386,19 +402,19 @@ bool RCCResourceLibrary::readFiles(bool ignoreErrors)
             pwd = QDir::currentPath();
             fileIn.setFileName(fname);
             if (!fileIn.open(stdin, QIODevice::ReadOnly)) {
-                fprintf(stderr, "Unable to open file: %s\n", fname.toLatin1().constData());
+                fprintf(stderr, "Unable to open file: %s\n", qPrintable(fname));
                 return false;
             }
         } else {
             pwd = QFileInfo(fname).path();
             fileIn.setFileName(fname);
             if (!fileIn.open(QIODevice::ReadOnly)) {
-                fprintf(stderr, "Unable to open file: %s\n", fname.toLatin1().constData());
+                fprintf(stderr, "Unable to open file: %s\n", qPrintable(fname));
                 return false;
             }
         }
         if (mVerbose)
-            fprintf(stderr, "Interpreting %s\n", fname.toLatin1().constData());
+            fprintf(stderr, "Interpreting %s\n", qPrintable(fname));
 
         if (!interpretResourceFile(&fileIn, fname, pwd, ignoreErrors))
             return false;
@@ -466,7 +482,7 @@ RCCResourceLibrary::writeHeader(FILE *out)
         fprintf(out, "/****************************************************************************\n");
         fprintf(out, "** Resource object code\n");
         fprintf(out, "**\n");
-        fprintf(out, "** Created: %s\n", QDateTime::currentDateTime().toString().toLatin1().constData());
+        fprintf(out, "** Created: %s\n", qPrintable(QDateTime::currentDateTime().toString()));
         fprintf(out, "**      by: The Resource Compiler for Qt version %s\n", QT_VERSION_STR);
         fprintf(out, "**\n");
         fprintf(out, "** WARNING! All changes made in this file will be lost!\n");

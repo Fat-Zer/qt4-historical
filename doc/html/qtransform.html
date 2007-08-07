@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/gui/painting/qtransform.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/painting/qtransform.cpp -->
 <head>
   <title>Qt 4.3: QTransform Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -127,7 +127,7 @@
 <p>By default, <a href="qpainter.html">QPainter</a> operates on the associated device's own coordinate system. The standard coordinate system of a <a href="qpaintdevice.html">QPaintDevice</a> has its origin located at the top-left position. The <i>x</i> values increase to the right; <i>y</i> values increase downward. For a complete description, see the <a href="coordsys.html">coordinate system</a> documentation.</p>
 <p><a href="qpainter.html">QPainter</a> has functions to translate, scale, shear and rotate the coordinate system without using a QTransform. For example:</p>
 <p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" class="odd"><td><img src="images/qmatrix-simpletransformation.png" /></td><td><pre> void SimpleTransformation::paintEvent(QPaintEvent *)
+<tr valign="top" class="odd"><td><img src="images/qtransform-simpletransformation.png" /></td><td><pre> void SimpleTransformation::paintEvent(QPaintEvent *)
  {
      QPainter painter(this);
      painter.setPen(QPen(Qt::blue, 1, Qt::DashLine));
@@ -137,27 +137,27 @@
 
      painter.setFont(QFont(&quot;Helvetica&quot;, 24));
      painter.setPen(QPen(Qt::black, 1));
-     painter.drawText(20, 10, &quot;QMatrix&quot;);
+     painter.drawText(20, 10, &quot;QTransform&quot;);
  }</pre>
 </td></tr>
 </table></p>
-<p>Although these functions are very convenient, it can be more efficient to build a QTransform and call <a href="qpainter-obsolete.html#setMatrix">QPainter::setMatrix</a>() if you want to perform more than a single transform operation. For example:</p>
+<p>Although these functions are very convenient, it can be more efficient to build a QTransform and call <a href="qpainter.html#setTransform">QPainter::setTransform</a>() if you want to perform more than a single transform operation. For example:</p>
 <p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" class="odd"><td><img src="images/qmatrix-combinedtransformation.png" /></td><td><pre> void CombinedTransformation::paintEvent(QPaintEvent *)
+<tr valign="top" class="odd"><td><img src="images/qtransform-combinedtransformation.png" /></td><td><pre> void CombinedTransformation::paintEvent(QPaintEvent *)
  {
      QPainter painter(this);
      painter.setPen(QPen(Qt::blue, 1, Qt::DashLine));
      painter.drawRect(0, 0, 100, 100);
 
-     QMatrix matrix;
-     matrix.translate(50, 50);
-     matrix.rotate(45);
-     matrix.scale(0.5, 1.0);
-     painter.setMatrix(matrix);
+     QTransform transform;
+     transform.translate(50, 50);
+     transform.rotate(45);
+     transform.scale(0.5, 1.0);
+     painter.setTransform(transform);
 
      painter.setFont(QFont(&quot;Helvetica&quot;, 24));
      painter.setPen(QPen(Qt::black, 1));
-     painter.drawText(20, 10, &quot;QMatrix&quot;);
+     painter.drawText(20, 10, &quot;QTransform&quot;);
  }</pre>
 </td></tr>
 </table></p>
@@ -172,7 +172,7 @@
 <p>Translation is the simplest transformation. Setting <tt>dx</tt> and <tt>dy</tt> will move the coordinate system <tt>dx</tt> units along the X axis and <tt>dy</tt> units along the Y axis. Scaling can be done by setting <tt>m11</tt> and <tt>m22</tt>. For example, setting <tt>m11</tt> to 2 and <tt>m22</tt> to 1.5 will double the height and increase the width by 50%. The identity matrix has <tt>m11</tt> and <tt>m22</tt> set to 1 (all others are set to 0) mapping a point to itself. Shearing is controlled by <tt>m12</tt> and <tt>m21</tt>. Setting these elements to values different from zero will twist the coordinate system. Rotation is achieved by carefully setting both the shearing factors and the scaling factors.</p>
 <p>Here's the combined transformations example using basic matrix operations:</p>
 <p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" class="odd"><td><img src="images/qmatrix-combinedtransformation.png" /></td><td><pre> void BasicOperations::paintEvent(QPaintEvent *)
+<tr valign="top" class="odd"><td><img src="images/qtransform-combinedtransformation2.png" /></td><td><pre> void BasicOperations::paintEvent(QPaintEvent *)
  {
      double pi = 3.14;
 
@@ -180,22 +180,22 @@
      double sina = sin(a);
      double cosa = cos(a);
 
-     QMatrix translationMatrix(1, 0, 0, 1, 50.0, 50.0);
-     QMatrix rotationMatrix(cosa, sina, -sina, cosa, 0, 0);
-     QMatrix scalingMatrix(0.5, 0, 0, 1.0, 0, 0);
+     QTransform translationTransform(1, 0, 0, 1, 50.0, 50.0);
+     QTransform rotationTransform(cosa, sina, -sina, cosa, 0, 0);
+     QTransform scalingTransform(0.5, 0, 0, 1.0, 0, 0);
 
-     QMatrix matrix;
-     matrix =  scalingMatrix * rotationMatrix * translationMatrix;
+     QTransform transform;
+     transform = scalingTransform * rotationTransform * translationTransform;
 
      QPainter painter(this);
      painter.setPen(QPen(Qt::blue, 1, Qt::DashLine));
      painter.drawRect(0, 0, 100, 100);
 
-     painter.setMatrix(matrix);
+     painter.setTransform(transform);
 
      painter.setFont(QFont(&quot;Helvetica&quot;, 24));
      painter.setPen(QPen(Qt::black, 1));
-     painter.drawText(20, 10, &quot;QMatrix&quot;);
+     painter.drawText(20, 10, &quot;QTransform&quot;);
  }</pre>
 </td></tr>
 </table></p>
@@ -423,6 +423,7 @@
 <p>See also <a href="qtransform.html#quadToSquare">quadToSquare</a>() and <a href="qtransform.html#quadToQuad">quadToQuad</a>().</p>
 <a name="//apple_ref/cpp/instm/QTransform/toAffine" />
 <h3 class="fn"><a name="toAffine"></a>const <a href="qmatrix.html">QMatrix</a> &amp; QTransform::toAffine () const</h3>
+<p>Returns the <a href="qtransform.html">QTransform</a> cast to a <a href="qmatrix.html">QMatrix</a>.</p>
 <a name="//apple_ref/cpp/instm/QTransform/translate" />
 <h3 class="fn"><a name="translate"></a>QTransform &amp; QTransform::translate ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>dx</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>dy</i> )</h3>
 <p>Moves the coordinate system <i>dx</i> along the x axis and <i>dy</i> along the y axis, and returns a reference to the matrix.</p>
@@ -514,6 +515,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

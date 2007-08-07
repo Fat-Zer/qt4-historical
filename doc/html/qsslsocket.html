@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/network/qsslsocket.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/network/qsslsocket.cpp -->
 <head>
   <title>Qt 4.3: QSslSocket Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -137,7 +137,7 @@
          delete serverSocket;
      }
  }</pre>
-<p>If an error occurs, QSslSocket emits signal sslErrors. In this case, if no action is taken to ignore the error(s), the connection is dropped. To continue, despite the occurrance of an error, you can call <a href="qsslsocket.html#ignoreSslErrors">ignoreSslErrors</a>(), either from within this slot after the error occurs, or anytime after construction of the QSslSocket and before the connection is attempted. This will allow QSslSocket to ignore the errors it encounters when establishing the identity of the peer. Ignoring errors during an SSL handshake should be used with caution, since a fundamental characteristic of secure connections is that they should be established with a successful handshake.</p>
+<p>If an error occurs, QSslSocket emits signal sslErrors. In this case, if no action is taken to ignore the error(s), the connection is dropped. To continue, despite the occurrence of an error, you can call <a href="qsslsocket.html#ignoreSslErrors">ignoreSslErrors</a>(), either from within this slot after the error occurs, or anytime after construction of the QSslSocket and before the connection is attempted. This will allow QSslSocket to ignore the errors it encounters when establishing the identity of the peer. Ignoring errors during an SSL handshake should be used with caution, since a fundamental characteristic of secure connections is that they should be established with a successful handshake.</p>
 <p>Once encrypted, you use QSslSocket as a regular <a href="qtcpsocket.html">QTcpSocket</a>. When <a href="qiodevice.html#readyRead">readyRead</a>() is emitted, you can call <a href="qiodevice.html#read">read</a>(), <a href="qiodevice.html#canReadLine">canReadLine</a>() and <a href="qiodevice.html#readLine">readLine</a>(), or <a href="qiodevice.html#getChar">getChar</a>() to read decrypted data from QSslSocket's internal buffer, and you can call <a href="qiodevice.html#write">write</a>() or <a href="qiodevice.html#putChar">putChar</a>() to write data back to the peer. QSslSocket will automatically encrypt the written data for you, and emit <a href="qiodevice.html#bytesWritten">bytesWritten</a>() once the data has been written to the peer.</p>
 <p>As a convenience, QSslSocket supports <a href="qtcpsocket.html">QTcpSocket</a>'s blocking functions <a href="qsslsocket.html#waitForConnected">waitForConnected</a>(), <a href="qiodevice.html#waitForReadyRead">waitForReadyRead</a>(), <a href="qiodevice.html#waitForBytesWritten">waitForBytesWritten</a>(), and <a href="qsslsocket.html#waitForDisconnected">waitForDisconnected</a>(). It also provides <a href="qsslsocket.html#waitForEncrypted">waitForEncrypted</a>(), which will block the calling thread until an encrypted connection has been established.</p>
 <pre> QSslSocket socket;
@@ -324,9 +324,9 @@
 <p>See also <a href="qsslsocket.html#ciphers">ciphers</a>(), <a href="qsslsocket.html#setDefaultCiphers">setDefaultCiphers</a>(), and <a href="qsslsocket.html#supportedCiphers">supportedCiphers</a>().</p>
 <h3 class="fn"><a name="setCiphers-2"></a>void QSslSocket::setCiphers ( const <a href="qstring.html">QString</a> &amp; <i>ciphers</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
-<p>Sets the cryptographic cipher suite for this socket to <i>ciphers</i>, which is a colon-separated list of cipher names. The ciphers are listed in order of preference, starting with the most preferred cipher. For example:</p>
+<p>Sets the cryptographic cipher suite for this socket to <i>ciphers</i>, which is a colon-separated list of cipher suite names. The ciphers are listed in order of preference, starting with the most preferred cipher. For example:</p>
 <pre> QSslSocket socket;
- socket.setCiphers(&quot;!ADH:RC4+RSA:HIGH:MEDIUM:LOW:EXP:+SSLv2:+EXP&quot;);</pre>
+ socket.setCiphers(&quot;DHE-RSA-AES256-SHA:DHE-DSS-AES256-SHA:AES256-SHA&quot;);</pre>
 <p>Each cipher name in <i>ciphers</i> must be the name of a cipher in the list returned by <a href="qsslsocket.html#supportedCiphers">supportedCiphers</a>(). Restricting the cipher suite must be done before the handshake phase, where the session cipher is chosen.</p>
 <p>See also <a href="qsslsocket.html#ciphers">ciphers</a>(), <a href="qsslsocket.html#setDefaultCiphers">setDefaultCiphers</a>(), and <a href="qsslsocket.html#supportedCiphers">supportedCiphers</a>().</p>
 <a name="//apple_ref/cpp/clm/QSslSocket/setDefaultCaCertificates" />
@@ -420,6 +420,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

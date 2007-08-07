@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/doc/src/q3valuevector.qdoc -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/doc/src/q3valuevector.qdoc -->
 <head>
   <title>Qt 4.3: Q3ValueVector Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -80,14 +80,14 @@
  int main()
  {
      typedef Q3ValueVector&lt;Employee&gt; EmployeeVector;
-     EmployeeVector vec( 3 );  <span class="comment">// vector of 3 Employees</span>
+     EmployeeVector vec( 3 );  <span class="comment">//</span> vector of 3 Employees
 
      vec[0] = Employee( &quot;Bill&quot;, 50000 );
      vec[1] = Employee( &quot;Steve&quot;, 80000 );
      vec[2] = Employee( &quot;Ron&quot;, 60000 );
 
      Employee joe( &quot;Joe&quot;, 50000 );
-     vec.push_back( joe );  <span class="comment">// vector expands to accommodate 4 Employees</span>
+     vec.push_back( joe );  <span class="comment">//</span> vector expands to accommodate 4 Employees
      joe.setSalary( 70000 );
 
      EmployeeVector::iterator it;
@@ -105,16 +105,16 @@
 <p>Many Qt functions return const value vectors; to iterate over these you should make a copy and iterate over the copy.</p>
 <p>There are several ways to find items in the vector. The <a href="qvector.html#begin">begin</a>() and <a href="qvector.html#end">end</a>() functions return iterators to the beginning and end of the vector. The advantage of getting an iterator is that you can move forward or backward from this position by incrementing/decrementing the iterator. The iterator returned by <a href="qvector.html#end">end</a>() points to the element which is one past the last element in the container. The past-the-end iterator is still associated with the vector it belongs to, however it is <i>not</i> dereferenceable; operator*() will not return a well-defined value. If the vector is <a href="qvector.html#empty">empty</a>(), the iterator returned by <a href="qvector.html#begin">begin</a>() will equal the iterator returned by <a href="qvector.html#end">end</a>().</p>
 <p>The fastest way to access an element of a vector is by using operator[]. This function provides random access and will return a reference to the element located at the specified index. Thus, you can access every element directly, in constant time, providing you know the location of the element. It is undefined to access an element that does not exist (your application will probably crash). For example:</p>
-<pre> Q3ValueVector&lt;int&gt; vec1;  <span class="comment">// an empty vector</span>
- vec1[10] = 4;  <span class="comment">// WARNING: undefined, probably a crash</span>
+<pre> Q3ValueVector&lt;int&gt; vec1;  <span class="comment">//</span> an empty vector
+ vec1[10] = 4;  <span class="comment">//</span> WARNING: undefined, probably a crash
 
- Q3ValueVector&lt;QString&gt; vec2(25); <span class="comment">// initialize with 25 elements</span>
- vec2[10] = &quot;Dave&quot;;  <span class="comment">// OK</span></pre>
+ Q3ValueVector&lt;QString&gt; vec2(25); <span class="comment">//</span> initialize with 25 elements
+ vec2[10] = &quot;Dave&quot;;  <span class="comment">//</span> OK</pre>
 <p>Whenever inserting, removing or referencing elements in a vector, always make sure you are referring to valid positions. For example:</p>
 <pre> void func( Q3ValueVector&lt;int&gt;&amp; vec )
  {
      if ( vec.size() &gt; 10 ) {
-         vec[9] = 99; <span class="comment">// OK</span>
+         vec[9] = 99; <span class="comment">//</span> OK
      }
  };</pre>
 <p>The iterators provided by vector are random access iterators, therefore you can use them with many generic algorithms, for example, algorithms provided by the STL.</p>
@@ -125,13 +125,13 @@
  vec.push_back( 3 );
  ...
  if ( !vec.empty() ) {
-     <span class="comment">// OK: modify the first element</span>
+     <span class="comment">//</span> OK: modify the first element
      int&amp; i = vec.front();
      i = 18;
  }
  ...
  Q3ValueVector&lt;double&gt; dvec;
- double d = dvec.back(); <span class="comment">// undefined behavior</span></pre>
+ double d = dvec.back(); <span class="comment">//</span> undefined behavior</pre>
 <p>Because Q3ValueVector manages memory dynamically, it is recommended that you contruct a vector with an initial size. Inserting and removing elements happens fastest when:</p>
 <ul>
 <li>Inserting or removing elements happens at the <a href="qvector.html#end">end</a>() of the vector;</li>
@@ -177,6 +177,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

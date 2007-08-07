@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/corelib/thread/qwaitcondition_unix.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/corelib/thread/qwaitcondition_unix.cpp -->
 <head>
   <title>Qt 4.3: QWaitCondition Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -64,14 +64,14 @@
      getchar();
 
      mutex.lock();
-     <span class="comment">// Sleep until there are no busy worker threads</span>
+     <span class="comment">//</span> Sleep until there are no busy worker threads
      while (count &gt; 0) {
          mutex.unlock();
          sleep(1);
          mutex.lock();
      }
-     mutex.unlock();
      keyPressed.wakeAll();
+     mutex.unlock();
  }</pre>
 <p>The mutex is necessary because the results of two threads attempting to change the value of the same variable simultaneously are unpredictable.</p>
 <p>Wait conditions are a powerful thread synchronization primitive. The <a href="threads-waitconditions.html">Wait Conditions</a> example shows how to use QWaitCondition as an alternative to <a href="qsemaphore.html">QSemaphore</a> for controlling access to a circular buffer shared by a producer thread and a consumer thread.</p>
@@ -106,6 +106,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

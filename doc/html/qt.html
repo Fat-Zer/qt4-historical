@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/doc/src/qnamespace.qdoc -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/doc/src/qnamespace.qdoc -->
 <head>
   <title>Qt 4.3: Qt Namespace Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -38,7 +38,6 @@
 <li><div class="fn"/>enum <b><a href="qt.html#CursorShape-enum">CursorShape</a></b> { ArrowCursor, UpArrowCursor, CrossCursor, WaitCursor, ..., BitmapCursor }</li>
 <li><div class="fn"/>enum <b><a href="qt.html#DateFormat-enum">DateFormat</a></b> { TextDate, ISODate, LocalDate, SystemLocaleDate, LocaleDate }</li>
 <li><div class="fn"/>enum <b><a href="qt.html#DayOfWeek-enum">DayOfWeek</a></b> { Monday, Tuesday, Wednesday, Thursday, ..., Sunday }</li>
-<li><div class="fn"/>enum <b><a href="qt.html#Dock-enum">Dock</a></b> { DockUnmanaged, DockTornOff, DockTop, DockBottom, ..., DockMinimized }</li>
 <li><div class="fn"/>enum <b><a href="qt.html#DockWidgetArea-enum">DockWidgetArea</a></b> { LeftDockWidgetArea, RightDockWidgetArea, TopDockWidgetArea, BottomDockWidgetArea, AllDockWidgetAreas, NoDockWidgetArea }</li>
 <li><div class="fn"/>flags <b><a href="qt.html#DockWidgetArea-enum">DockWidgetAreas</a></b></li>
 <li><div class="fn"/>enum <b><a href="qt.html#DropAction-enum">DropAction</a></b> { CopyAction, MoveAction, LinkAction, ActionMask, IgnoreAction }</li>
@@ -432,7 +431,7 @@
 <tr><td valign="top"><tt>Qt::PointingHandCursor</tt></td><td align="center" valign="top"><tt>13</tt></td><td valign="top"><img src="images/cursor-hand.png" /> A pointing hand cursor that is typically used for clickable elements such as hyperlinks.</td></tr>
 <tr><td valign="top"><tt>Qt::ForbiddenCursor</tt></td><td align="center" valign="top"><tt>14</tt></td><td valign="top"><img src="images/cursor-forbidden.png" /> A slashed circle cursor, typically used during drag and drop operations to indicate that dragged content cannot be dropped on particular widgets or inside certain regions.</td></tr>
 <tr><td valign="top"><tt>Qt::OpenHandCursor</tt></td><td align="center" valign="top"><tt>17</tt></td><td valign="top"><img src="images/cursor-openhand.png" /> A cursor representing an open hand, typically used to indicate that the area under the cursor is the visible part of a canvas that the user can click and drag in order to scroll around.</td></tr>
-<tr><td valign="top"><tt>Qt::ClosedHandCursor</tt></td><td align="center" valign="top"><tt>18</tt></td><td valign="top"><img src="images/cursor-closedhand.png" /> A cursor representing an open hand, typically used to indicate that a dragging operation is in progress that involves scrolling.</td></tr>
+<tr><td valign="top"><tt>Qt::ClosedHandCursor</tt></td><td align="center" valign="top"><tt>18</tt></td><td valign="top"><img src="images/cursor-closedhand.png" /> A cursor representing a closed hand, typically used to indicate that a dragging operation is in progress that involves scrolling.</td></tr>
 <tr><td valign="top"><tt>Qt::WhatsThisCursor</tt></td><td align="center" valign="top"><tt>15</tt></td><td valign="top"><img src="images/cursor-whatsthis.png" /> An arrow with a question mark, typically used</td></tr>
 <tr><td valign="top"><tt>Qt::BusyCursor</tt></td><td align="center" valign="top"><tt>16</tt></td><td valign="top"><img src="images/cursor-wait.png" /> An hourglass or watch cursor, usually shown during operations that allow the user to interact with the application while they are performed in the background.</td></tr>
 <tr><td valign="top"><tt>Qt::BitmapCursor</tt></td><td align="center" valign="top"><tt>24</tt></td><td valign="top">&nbsp;</td></tr>
@@ -470,33 +469,6 @@
 <tr><td valign="top"><tt>Qt::Friday</tt></td><td align="center" valign="top"><tt>5</tt></td></tr>
 <tr><td valign="top"><tt>Qt::Saturday</tt></td><td align="center" valign="top"><tt>6</tt></td></tr>
 <tr><td valign="top"><tt>Qt::Sunday</tt></td><td align="center" valign="top"><tt>7</tt></td></tr>
-</table></p>
-<a name="//apple_ref/cpp/tag/Qt/Dock" />
-<a name="//apple_ref/cpp/econst/Qt/DockUnmanaged" />
-<a name="//apple_ref/cpp/econst/Qt/DockTornOff" />
-<a name="//apple_ref/cpp/econst/Qt/DockTop" />
-<a name="//apple_ref/cpp/econst/Qt/DockBottom" />
-<a name="//apple_ref/cpp/econst/Qt/DockRight" />
-<a name="//apple_ref/cpp/econst/Qt/DockLeft" />
-<a name="//apple_ref/cpp/econst/Qt/DockMinimized" />
-<a name="//apple_ref/cpp/econst/Qt/Bottom" />
-<a name="//apple_ref/cpp/econst/Qt/Left" />
-<a name="//apple_ref/cpp/econst/Qt/Minimized" />
-<a name="//apple_ref/cpp/econst/Qt/Right" />
-<a name="//apple_ref/cpp/econst/Qt/Top" />
-<a name="//apple_ref/cpp/econst/Qt/TornOff" />
-<a name="//apple_ref/cpp/econst/Qt/Unmanaged" />
-<h3 class="fn"><a name="Dock-enum"></a>enum Qt::Dock</h3>
-<p>Each dock window can be in one of the following positions:</p>
-<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
-<tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
-<tr><td valign="top"><tt>Qt::DockUnmanaged</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">not managed by a <a href="q3mainwindow.html">Q3MainWindow</a>.</td></tr>
-<tr><td valign="top"><tt>Qt::DockTornOff</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">the dock window floats as its own top level window which always stays on top of the main window.</td></tr>
-<tr><td valign="top"><tt>Qt::DockTop</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">above the central widget, below the menu bar.</td></tr>
-<tr><td valign="top"><tt>Qt::DockBottom</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">below the central widget, above the status bar.</td></tr>
-<tr><td valign="top"><tt>Qt::DockRight</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">to the right of the central widget.</td></tr>
-<tr><td valign="top"><tt>Qt::DockLeft</tt></td><td align="center" valign="top"><tt>5</tt></td><td valign="top">to the left of the central widget.</td></tr>
-<tr><td valign="top"><tt>Qt::DockMinimized</tt></td><td align="center" valign="top"><tt>6</tt></td><td valign="top">the dock window is not shown (this is effectively a 'hidden' dock area); the handles of all minimized dock windows are drawn in one row below the menu bar.</td></tr>
 </table></p>
 <a name="//apple_ref/cpp/tag/Qt/DockWidgetArea" />
 <a name="//apple_ref/cpp/econst/Qt/LeftDockWidgetArea" />
@@ -551,19 +523,19 @@
 <p>Note that these values are provided purely for convenience, since event priorities can be any value between <tt>INT_MAX</tt> and <tt>INT_MIN</tt>, inclusive. For example, you can define custom priorities as being relative to each other:</p>
 <pre> enum CustomEventPriority
  {
-     <span class="comment">// An important event</span>
+     <span class="comment">//</span> An important event
      ImportantEventPriority = Qt::HighEventPriority,
 
-     <span class="comment">// A more important event</span>
+     <span class="comment">//</span> A more important event
      MoreImportantEventPriority = ImportantEventPriority + 1,
 
-     <span class="comment">// A critical event</span>
+     <span class="comment">//</span> A critical event
      CriticalEventPriority = 100 * MoreImportantEventPriority,
 
-     <span class="comment">// Not that important</span>
+     <span class="comment">//</span> Not that important
      StatusEventPriority = Qt::LowEventPriority,
 
-     <span class="comment">// These are less important than Status events</span>
+     <span class="comment">//</span> These are less important than Status events
      IdleProcessingDoneEventPriority = StatusEventPriority - 1
  };</pre>
 <p>See also <a href="qcoreapplication.html#postEvent">QCoreApplication::postEvent</a>().</p>
@@ -1795,7 +1767,7 @@
 <tr><td valign="top"><tt>Qt::ElideNone</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">Ellipsis should NOT appear in the text.</td></tr>
 </table></p>
 <p>Qt::ElideMiddle is normally the most appropriate choice for URLs (e.g&#x2e;, &quot;<a href="http://www.trolltech.com/careers/movingto/beijing/">http://www.troll..&#x2e;ovingto/beijing/</a>&quot;), whereas Qt::ElideRight is appropriate for other strings (e.g&#x2e;, &quot;<a href="http://doc.trolltech.com/qq/qq09-mac-deployment.html">Deploying Applications on Ma..&#x2e;</a>&quot;).</p>
-<p>See also <a href="qabstractitemview.html#textElideMode-prop">QAbstractItemView::textElideMode</a>, <a href="qabstractitemdelegate-obsolete.html#elidedText">QAbstractItemDelegate::elidedText</a>(), <a href="qt.html#AlignmentFlag-enum">AlignmentFlag</a>, and <a href="qtabbar.html#elideMode-prop">QTabBar::elideMode</a>.</p>
+<p>See also <a href="qabstractitemview.html#textElideMode-prop">QAbstractItemView::textElideMode</a>, <a href="qfontmetrics.html#elidedText">QFontMetrics::elidedText</a>(), <a href="qt.html#AlignmentFlag-enum">AlignmentFlag</a>, and <a href="qtabbar.html#elideMode-prop">QTabBar::elideMode</a>.</p>
 <a name="//apple_ref/cpp/tag/Qt/TextFlag" />
 <a name="//apple_ref/cpp/econst/Qt/TextSingleLine" />
 <a name="//apple_ref/cpp/econst/Qt/TextDontClip" />
@@ -2017,6 +1989,7 @@
 <a name="//apple_ref/cpp/econst/Qt/WA_SetStyle" />
 <a name="//apple_ref/cpp/econst/Qt/WA_ShowModal" />
 <a name="//apple_ref/cpp/econst/Qt/WA_StaticContents" />
+<a name="//apple_ref/cpp/econst/Qt/WA_StyleSheet" />
 <a name="//apple_ref/cpp/econst/Qt/WA_UnderMouse" />
 <a name="//apple_ref/cpp/econst/Qt/WA_UpdatesDisabled" />
 <a name="//apple_ref/cpp/econst/Qt/WA_WindowModified" />
@@ -2048,7 +2021,6 @@
 <a name="//apple_ref/cpp/econst/Qt/WA_X11OpenGLOverlay" />
 <a name="//apple_ref/cpp/econst/Qt/WA_CanHostQMdiSubWindowTitleBar" />
 <a name="//apple_ref/cpp/econst/Qt/WA_AttributeCount" />
-<a name="//apple_ref/cpp/econst/Qt/WA_StyleSheet" />
 <h3 class="fn"><a name="WidgetAttribute-enum"></a>enum Qt::WidgetAttribute</h3>
 <a name="widget-attributes"></a><p>This enum type is used to specify various widget attributes. Attributes are set and cleared with <a href="qwidget.html#setAttribute">QWidget::setAttribute</a>(), and queried with <a href="qwidget.html#testAttribute">QWidget::testAttribute</a>(), although some have special convenience functions which are mentioned below.</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
@@ -2102,6 +2074,7 @@
 <tr><td valign="top"><tt>Qt::WA_SetStyle</tt></td><td align="center" valign="top"><tt>86</tt></td><td valign="top">Indicates that the widget has a style of its own. This is set/cleared by <a href="qwidget.html#setStyle">QWidget::setStyle</a>().</td></tr>
 <tr><td valign="top"><tt>Qt::WA_ShowModal</tt></td><td align="center" valign="top"><tt>70</tt></td><td valign="top"><i>This attribute has been deprecated.</i> Use <a href="qwidget.html#windowModality-prop">QWidget::windowModality</a> instead.</td></tr>
 <tr><td valign="top"><tt>Qt::WA_StaticContents</tt></td><td align="center" valign="top"><tt>5</tt></td><td valign="top">Indicates that the widget contents are north-west aligned and static. On resize, such a widget will receive paint events only for the newly visible part of itself. This is set/cleared by the widget's author.</td></tr>
+<tr><td valign="top"><tt>Qt::WA_StyleSheet</tt></td><td align="center" valign="top"><tt>97</tt></td><td valign="top">Indicates that the widget is styled using a <a href="stylesheet.html">style sheet</a>.</td></tr>
 <tr><td valign="top"><tt>Qt::WA_UnderMouse</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Indicates that the widget is under the mouse cursor. The value is not updated correctly during drag and drop operations. There is also a getter function <a href="qwidget.html#underMouse">QWidget::underMouse</a>(). This is set/cleared by the Qt kernel.</td></tr>
 <tr><td valign="top"><tt>Qt::WA_UpdatesDisabled</tt></td><td align="center" valign="top"><tt>10</tt></td><td valign="top">Indicates that updates are blocked (including the system background). This flag must never be set/cleared by the widget author. It is set/cleared by the Qt kernel.</td></tr>
 <tr><td valign="top"><tt>Qt::WA_WindowModified</tt></td><td align="center" valign="top"><tt>41</tt></td><td valign="top">Indicates that the window is marked as modified. On some platforms this will mean nothing, on others (including Mac OS X and Windows) the window will take a modified appearance. This is set/cleared by <a href="qwidget.html#windowModified-prop">QWidget::setWindowModified</a>().</td></tr>
@@ -2301,7 +2274,7 @@
 <p>Example:</p>
 <pre> QString plain = &quot;#include &lt;QtCore&gt;&quot;
  QString html = Qt::escape(plain);
-<span class="comment"> // html == &quot;#include &amp;lt;QtCore&amp;gt;&quot;</span></pre>
+<span class="comment"> //</span> html == &quot;#include &amp;lt;QtCore&amp;gt;&quot;</pre>
 <p>This function is defined in the <tt>&lt;QTextDocument&gt;</tt> header file.</p>
 <p>See also <a href="qt.html#convertFromPlainText">convertFromPlainText</a>() and <a href="qt.html#mightBeRichText">mightBeRichText</a>().</p>
 <a name="//apple_ref/cpp/instm/Qt/mightBeRichText" />
@@ -2309,187 +2282,10 @@
 <p>Returns true if the string <i>text</i> is likely to be rich text; otherwise returns false.</p>
 <p>This function uses a fast and therefore simple heuristic. It mainly checks whether there is something that looks like a tag before the first line break. Although the result may be correct for common cases, there is no guarantee.</p>
 <p>This function is defined in the <tt>&lt;QTextDocument&gt;</tt> header file.</p>
-<hr />
-<h2>Type Documentation</h2>
-<a name="//apple_ref/cpp/tag/Qt/BackgroundMode" />
-<a name="//apple_ref/cpp/econst/Qt/FixedColor" />
-<a name="//apple_ref/cpp/econst/Qt/FixedPixmap" />
-<a name="//apple_ref/cpp/econst/Qt/NoBackground" />
-<a name="//apple_ref/cpp/econst/Qt/PaletteForeground" />
-<a name="//apple_ref/cpp/econst/Qt/PaletteButton" />
-<a name="//apple_ref/cpp/econst/Qt/PaletteLight" />
-<a name="//apple_ref/cpp/econst/Qt/PaletteMidlight" />
-<a name="//apple_ref/cpp/econst/Qt/PaletteDark" />
-<a name="//apple_ref/cpp/econst/Qt/PaletteMid" />
-<a name="//apple_ref/cpp/econst/Qt/PaletteText" />
-<a name="//apple_ref/cpp/econst/Qt/PaletteBrightText" />
-<a name="//apple_ref/cpp/econst/Qt/PaletteBase" />
-<a name="//apple_ref/cpp/econst/Qt/PaletteBackground" />
-<a name="//apple_ref/cpp/econst/Qt/PaletteShadow" />
-<a name="//apple_ref/cpp/econst/Qt/PaletteHighlight" />
-<a name="//apple_ref/cpp/econst/Qt/PaletteHighlightedText" />
-<a name="//apple_ref/cpp/econst/Qt/PaletteButtonText" />
-<a name="//apple_ref/cpp/econst/Qt/PaletteLink" />
-<a name="//apple_ref/cpp/econst/Qt/PaletteLinkVisited" />
-<a name="//apple_ref/cpp/econst/Qt/X11ParentRelative" />
-<h3 class="fn"><a name="BackgroundMode-enum"></a>enum Qt::BackgroundMode</h3>
-<p><table border="1" cellpadding="2" cellspacing="1" width="40%">
-<tr><th width="60%">Constant</th><th width="40%">Value</th></tr>
-<tr><td valign="top"><tt>Qt::FixedColor</tt></td><td align="center" valign="top"><tt>0</tt></td></tr>
-<tr><td valign="top"><tt>Qt::FixedPixmap</tt></td><td align="center" valign="top"><tt>1</tt></td></tr>
-<tr><td valign="top"><tt>Qt::NoBackground</tt></td><td align="center" valign="top"><tt>2</tt></td></tr>
-<tr><td valign="top"><tt>Qt::PaletteForeground</tt></td><td align="center" valign="top"><tt>3</tt></td></tr>
-<tr><td valign="top"><tt>Qt::PaletteButton</tt></td><td align="center" valign="top"><tt>4</tt></td></tr>
-<tr><td valign="top"><tt>Qt::PaletteLight</tt></td><td align="center" valign="top"><tt>5</tt></td></tr>
-<tr><td valign="top"><tt>Qt::PaletteMidlight</tt></td><td align="center" valign="top"><tt>6</tt></td></tr>
-<tr><td valign="top"><tt>Qt::PaletteDark</tt></td><td align="center" valign="top"><tt>7</tt></td></tr>
-<tr><td valign="top"><tt>Qt::PaletteMid</tt></td><td align="center" valign="top"><tt>8</tt></td></tr>
-<tr><td valign="top"><tt>Qt::PaletteText</tt></td><td align="center" valign="top"><tt>9</tt></td></tr>
-<tr><td valign="top"><tt>Qt::PaletteBrightText</tt></td><td align="center" valign="top"><tt>10</tt></td></tr>
-<tr><td valign="top"><tt>Qt::PaletteBase</tt></td><td align="center" valign="top"><tt>11</tt></td></tr>
-<tr><td valign="top"><tt>Qt::PaletteBackground</tt></td><td align="center" valign="top"><tt>12</tt></td></tr>
-<tr><td valign="top"><tt>Qt::PaletteShadow</tt></td><td align="center" valign="top"><tt>13</tt></td></tr>
-<tr><td valign="top"><tt>Qt::PaletteHighlight</tt></td><td align="center" valign="top"><tt>14</tt></td></tr>
-<tr><td valign="top"><tt>Qt::PaletteHighlightedText</tt></td><td align="center" valign="top"><tt>15</tt></td></tr>
-<tr><td valign="top"><tt>Qt::PaletteButtonText</tt></td><td align="center" valign="top"><tt>16</tt></td></tr>
-<tr><td valign="top"><tt>Qt::PaletteLink</tt></td><td align="center" valign="top"><tt>17</tt></td></tr>
-<tr><td valign="top"><tt>Qt::PaletteLinkVisited</tt></td><td align="center" valign="top"><tt>18</tt></td></tr>
-<tr><td valign="top"><tt>Qt::X11ParentRelative</tt></td><td align="center" valign="top"><tt>19</tt></td></tr>
-</table></p>
-<a name="//apple_ref/cpp/tdef/Qt/ButtonState" />
-<h3 class="fn"><a name="ButtonState-typedef"></a>typedef Qt::ButtonState</h3>
-<p>Use <a href="qt.html#KeyboardModifier-enum">Qt::KeyboardModifier</a> instead.</p>
-<a name="//apple_ref/cpp/tag/Qt/ButtonState_enum" />
-<a name="//apple_ref/cpp/econst/Qt/ShiftButton" />
-<a name="//apple_ref/cpp/econst/Qt/ControlButton" />
-<a name="//apple_ref/cpp/econst/Qt/AltButton" />
-<a name="//apple_ref/cpp/econst/Qt/MetaButton" />
-<a name="//apple_ref/cpp/econst/Qt/Keypad" />
-<a name="//apple_ref/cpp/econst/Qt/KeyButtonMask" />
-<h3 class="fn"><a name="ButtonState_enum-enum"></a>enum Qt::ButtonState_enum</h3>
-<p><table border="1" cellpadding="2" cellspacing="1" width="40%">
-<tr><th width="60%">Constant</th><th width="40%">Value</th></tr>
-<tr><td valign="top"><tt>Qt::ShiftButton</tt></td><td align="center" valign="top"><tt>Qt::ShiftModifier</tt></td></tr>
-<tr><td valign="top"><tt>Qt::ControlButton</tt></td><td align="center" valign="top"><tt>Qt::ControlModifier</tt></td></tr>
-<tr><td valign="top"><tt>Qt::AltButton</tt></td><td align="center" valign="top"><tt>Qt::AltModifier</tt></td></tr>
-<tr><td valign="top"><tt>Qt::MetaButton</tt></td><td align="center" valign="top"><tt>Qt::MetaModifier</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Keypad</tt></td><td align="center" valign="top"><tt>Qt::KeypadModifier</tt></td></tr>
-<tr><td valign="top"><tt>Qt::KeyButtonMask</tt></td><td align="center" valign="top"><tt>Qt::KeyboardModifierMask</tt></td></tr>
-</table></p>
-<p>Use <a href="qt.html#KeyboardModifier-enum">Qt::KeyboardModifier</a> instead.</p>
-<a name="//apple_ref/cpp/tag/Qt/GUIStyle" />
-<a name="//apple_ref/cpp/econst/Qt/WindowsStyle" />
-<a name="//apple_ref/cpp/econst/Qt/MotifStyle" />
-<a name="//apple_ref/cpp/econst/Qt/MacStyle" />
-<a name="//apple_ref/cpp/econst/Qt/Win3Style" />
-<a name="//apple_ref/cpp/econst/Qt/PMStyle" />
-<h3 class="fn"><a name="GUIStyle-enum"></a>enum Qt::GUIStyle</h3>
-<p><table border="1" cellpadding="2" cellspacing="1" width="40%">
-<tr><th width="60%">Constant</th><th width="40%">Value</th></tr>
-<tr><td valign="top"><tt>Qt::WindowsStyle</tt></td><td align="center" valign="top"><tt>1</tt></td></tr>
-<tr><td valign="top"><tt>Qt::MotifStyle</tt></td><td align="center" valign="top"><tt>4</tt></td></tr>
-<tr><td valign="top"><tt>Qt::MacStyle</tt></td><td align="center" valign="top"><tt>0</tt></td></tr>
-<tr><td valign="top"><tt>Qt::Win3Style</tt></td><td align="center" valign="top"><tt>2</tt></td></tr>
-<tr><td valign="top"><tt>Qt::PMStyle</tt></td><td align="center" valign="top"><tt>3</tt></td></tr>
-</table></p>
-<a name="//apple_ref/cpp/tag/Qt/MacintoshVersion" />
-<a name="//apple_ref/cpp/econst/Qt/MV_Unknown" />
-<a name="//apple_ref/cpp/econst/Qt/MV_9" />
-<a name="//apple_ref/cpp/econst/Qt/MV_10_DOT_0" />
-<a name="//apple_ref/cpp/econst/Qt/MV_10_DOT_1" />
-<a name="//apple_ref/cpp/econst/Qt/MV_10_DOT_2" />
-<a name="//apple_ref/cpp/econst/Qt/MV_10_DOT_3" />
-<a name="//apple_ref/cpp/econst/Qt/MV_10_DOT_4" />
-<a name="//apple_ref/cpp/econst/Qt/MV_CHEETAH" />
-<a name="//apple_ref/cpp/econst/Qt/MV_PUMA" />
-<a name="//apple_ref/cpp/econst/Qt/MV_JAGUAR" />
-<a name="//apple_ref/cpp/econst/Qt/MV_PANTHER" />
-<a name="//apple_ref/cpp/econst/Qt/MV_TIGER" />
-<h3 class="fn"><a name="MacintoshVersion-enum"></a>enum Qt::MacintoshVersion</h3>
-<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
-<tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
-<tr><td valign="top"><tt>Qt::MV_Unknown</tt></td><td align="center" valign="top"><tt>0x0000</tt></td><td valign="top">Use <a href="qsysinfo.html#MacVersion-enum">QSysInfo::MV_Unknown</a> instead.</td></tr>
-<tr><td valign="top"><tt>Qt::MV_9</tt></td><td align="center" valign="top"><tt>QSysInfo::MV_9</tt></td><td valign="top">Use <a href="qsysinfo.html#MacVersion-enum">QSysInfo::MV_9</a> instead.</td></tr>
-<tr><td valign="top"><tt>Qt::MV_10_DOT_0</tt></td><td align="center" valign="top"><tt>QSysInfo::MV_10_0</tt></td><td valign="top">Use <a href="qsysinfo.html#MacVersion-enum">QSysInfo::MV_10_0</a> instead.</td></tr>
-<tr><td valign="top"><tt>Qt::MV_10_DOT_1</tt></td><td align="center" valign="top"><tt>QSysInfo::MV_10_1</tt></td><td valign="top">Use <a href="qsysinfo.html#MacVersion-enum">QSysInfo::MV_10_1</a> instead.</td></tr>
-<tr><td valign="top"><tt>Qt::MV_10_DOT_2</tt></td><td align="center" valign="top"><tt>QSysInfo::MV_10_2</tt></td><td valign="top">Use <a href="qsysinfo.html#MacVersion-enum">QSysInfo::MV_10_2</a> instead.</td></tr>
-<tr><td valign="top"><tt>Qt::MV_10_DOT_3</tt></td><td align="center" valign="top"><tt>QSysInfo::MV_10_3</tt></td><td valign="top">Use <a href="qsysinfo.html#MacVersion-enum">QSysInfo::MV_10_3</a> instead.</td></tr>
-<tr><td valign="top"><tt>Qt::MV_10_DOT_4</tt></td><td align="center" valign="top"><tt>QSysInfo::MV_10_4</tt></td><td valign="top">Use <a href="qsysinfo.html#MacVersion-enum">QSysInfo::MV_10_4</a> instead.</td></tr>
-<tr><td valign="top"><tt>Qt::MV_CHEETAH</tt></td><td align="center" valign="top"><tt>QSysInfo::MV_CHEETAH</tt></td><td valign="top">Use <a href="qsysinfo.html#MacVersion-enum">QSysInfo::MV_10_0</a> instead.</td></tr>
-<tr><td valign="top"><tt>Qt::MV_PUMA</tt></td><td align="center" valign="top"><tt>QSysInfo::MV_PUMA</tt></td><td valign="top">Use <a href="qsysinfo.html#MacVersion-enum">QSysInfo::MV_10_1</a> instead.</td></tr>
-<tr><td valign="top"><tt>Qt::MV_JAGUAR</tt></td><td align="center" valign="top"><tt>QSysInfo::MV_JAGUAR</tt></td><td valign="top">Use <a href="qsysinfo.html#MacVersion-enum">QSysInfo::MV_10_2</a> instead.</td></tr>
-<tr><td valign="top"><tt>Qt::MV_PANTHER</tt></td><td align="center" valign="top"><tt>QSysInfo::MV_PANTHER</tt></td><td valign="top">Use <a href="qsysinfo.html#MacVersion-enum">QSysInfo::MV_10_3</a> instead.</td></tr>
-<tr><td valign="top"><tt>Qt::MV_TIGER</tt></td><td align="center" valign="top"><tt>QSysInfo::MV_TIGER</tt></td><td valign="top">Use <a href="qsysinfo.html#MacVersion-enum">QSysInfo::MV_10_4</a> instead.</td></tr>
-</table></p>
-<p>See also <a href="qsysinfo.html#MacVersion-enum">QSysInfo::MacVersion</a>.</p>
-<a name="//apple_ref/cpp/tag/Qt/PaintUnit" />
-<a name="//apple_ref/cpp/econst/Qt/PixelUnit" />
-<a name="//apple_ref/cpp/econst/Qt/LoMetricUnit" />
-<a name="//apple_ref/cpp/econst/Qt/HiMetricUnit" />
-<a name="//apple_ref/cpp/econst/Qt/LoEnglishUnit" />
-<a name="//apple_ref/cpp/econst/Qt/HiEnglishUnit" />
-<a name="//apple_ref/cpp/econst/Qt/TwipsUnit" />
-<h3 class="fn"><a name="PaintUnit-enum"></a>enum Qt::PaintUnit</h3>
-<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
-<tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
-<tr><td valign="top"><tt>Qt::PixelUnit</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">&nbsp;</td></tr>
-<tr><td valign="top"><tt>Qt::LoMetricUnit</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Obsolete</td></tr>
-<tr><td valign="top"><tt>Qt::HiMetricUnit</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">Obsolete</td></tr>
-<tr><td valign="top"><tt>Qt::LoEnglishUnit</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">Obsolete</td></tr>
-<tr><td valign="top"><tt>Qt::HiEnglishUnit</tt></td><td align="center" valign="top"><tt>4</tt></td><td valign="top">Obsolete</td></tr>
-<tr><td valign="top"><tt>Qt::TwipsUnit</tt></td><td align="center" valign="top"><tt>5</tt></td><td valign="top">Obsolete</td></tr>
-</table></p>
-<a name="//apple_ref/cpp/tdef/Qt/ScaleMode" />
-<h3 class="fn"><a name="ScaleMode-typedef"></a>typedef Qt::ScaleMode</h3>
-<p>Use <a href="qt.html#AspectRatioMode-enum">Qt::AspectRatioMode</a> instead.</p>
-<p>The enum values have been renamed as follows:</p>
-<p><table align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" class="odd"><td>Old enum value</td><td>New enum value</td></tr>
-<tr valign="top" class="even"><td><a href="qt.html#AspectRatioMode-enum">Qt::ScaleFree</a></td><td><a href="qt.html#AspectRatioMode-enum">Qt::IgnoreAspectRatio</a></td></tr>
-<tr valign="top" class="odd"><td><a href="qt.html#AspectRatioMode-enum">Qt::ScaleMin</a></td><td><a href="qt.html#AspectRatioMode-enum">Qt::KeepAspectRatio</a></td></tr>
-<tr valign="top" class="even"><td><a href="qt.html#AspectRatioMode-enum">Qt::ScaleMax</a></td><td><a href="qt.html#AspectRatioMode-enum">Qt::KeepAspectRatioByExpanding</a></td></tr>
-</table></p>
-<a name="//apple_ref/cpp/tdef/Qt/TextFlags" />
-<h3 class="fn"><a name="TextFlags-typedef"></a>typedef Qt::TextFlags</h3>
-<p>Use <a href="qt.html#TextFlag-enum">Qt::TextFlag</a> instead.</p>
-<a name="//apple_ref/cpp/tdef/Qt/ToolBarDock" />
-<h3 class="fn"><a name="ToolBarDock-typedef"></a>typedef Qt::ToolBarDock</h3>
-<p>Use <a href="qt.html#Dock-enum">Qt::Dock</a> instead.</p>
-<a name="//apple_ref/cpp/tag/Qt/WindowsVersion" />
-<a name="//apple_ref/cpp/econst/Qt/WV_32s" />
-<a name="//apple_ref/cpp/econst/Qt/WV_95" />
-<a name="//apple_ref/cpp/econst/Qt/WV_98" />
-<a name="//apple_ref/cpp/econst/Qt/WV_Me" />
-<a name="//apple_ref/cpp/econst/Qt/WV_DOS_based" />
-<a name="//apple_ref/cpp/econst/Qt/WV_NT" />
-<a name="//apple_ref/cpp/econst/Qt/WV_2000" />
-<a name="//apple_ref/cpp/econst/Qt/WV_XP" />
-<a name="//apple_ref/cpp/econst/Qt/WV_2003" />
-<a name="//apple_ref/cpp/econst/Qt/WV_NT_based" />
-<a name="//apple_ref/cpp/econst/Qt/WV_CE" />
-<a name="//apple_ref/cpp/econst/Qt/WV_CENET" />
-<a name="//apple_ref/cpp/econst/Qt/WV_CE_based" />
-<h3 class="fn"><a name="WindowsVersion-enum"></a>enum Qt::WindowsVersion</h3>
-<p><table border="1" cellpadding="2" cellspacing="1" width="40%">
-<tr><th width="60%">Constant</th><th width="40%">Value</th></tr>
-<tr><td valign="top"><tt>Qt::WV_32s</tt></td><td align="center" valign="top"><tt>QSysInfo::WV_32s</tt></td></tr>
-<tr><td valign="top"><tt>Qt::WV_95</tt></td><td align="center" valign="top"><tt>QSysInfo::WV_95</tt></td></tr>
-<tr><td valign="top"><tt>Qt::WV_98</tt></td><td align="center" valign="top"><tt>QSysInfo::WV_98</tt></td></tr>
-<tr><td valign="top"><tt>Qt::WV_Me</tt></td><td align="center" valign="top"><tt>QSysInfo::WV_Me</tt></td></tr>
-<tr><td valign="top"><tt>Qt::WV_DOS_based</tt></td><td align="center" valign="top"><tt>QSysInfo::WV_DOS_based</tt></td></tr>
-<tr><td valign="top"><tt>Qt::WV_NT</tt></td><td align="center" valign="top"><tt>QSysInfo::WV_NT</tt></td></tr>
-<tr><td valign="top"><tt>Qt::WV_2000</tt></td><td align="center" valign="top"><tt>QSysInfo::WV_2000</tt></td></tr>
-<tr><td valign="top"><tt>Qt::WV_XP</tt></td><td align="center" valign="top"><tt>QSysInfo::WV_XP</tt></td></tr>
-<tr><td valign="top"><tt>Qt::WV_2003</tt></td><td align="center" valign="top"><tt>QSysInfo::WV_2003</tt></td></tr>
-<tr><td valign="top"><tt>Qt::WV_NT_based</tt></td><td align="center" valign="top"><tt>QSysInfo::WV_NT_based</tt></td></tr>
-<tr><td valign="top"><tt>Qt::WV_CE</tt></td><td align="center" valign="top"><tt>QSysInfo::WV_CE</tt></td></tr>
-<tr><td valign="top"><tt>Qt::WV_CENET</tt></td><td align="center" valign="top"><tt>QSysInfo::WV_CENET</tt></td></tr>
-<tr><td valign="top"><tt>Qt::WV_CE_based</tt></td><td align="center" valign="top"><tt>QSysInfo::WV_CE_based</tt></td></tr>
-</table></p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

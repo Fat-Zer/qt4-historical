@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -809,7 +824,7 @@ bool QMenuPrivate::mouseEventTaken(QMouseEvent *e)
         if (scroll && scroll->scrollFlags & QMenuPrivate::QMenuScroller::ScrollUp)
             tearRect.translate(0, q->style()->pixelMetric(QStyle::PM_MenuScrollerHeight, 0, q));
         q->update(tearRect);
-        if (tearRect.contains(pos) && motions > 6) {
+        if (tearRect.contains(pos) && hasMouseMoved(e->globalPos())) {
             setCurrentAction(0);
             tearoffHighlighted = 1;
             if (e->type() == QEvent::MouseButtonRelease) {
@@ -969,6 +984,16 @@ void QMenuPrivate::_q_actionHovered()
     }
 }
 
+bool QMenuPrivate::hasMouseMoved(const QPoint &globalPos)
+{
+    //determines if the mouse has moved (ie its intial position has 
+    //changed by more than QApplication::startDragDistance()
+    //or if there were at least 6 mouse motions)
+    return motions > 6 || 
+        QApplication::startDragDistance() < (mousePopupPos - globalPos).manhattanLength();
+}
+
+
 /*!
     Initialize \a option with the values from this menu and information from \a action. This method
     is useful for subclasses when they need a QStyleOptionMenuItem, but don't want
@@ -1040,7 +1065,7 @@ void QMenu::initStyleOption(QStyleOptionMenuItem *option, const QAction *action)
     \ingroup application
     \ingroup basicwidgets
     \mainclass
-
+    
     A menu widget is a selection menu. It can be either a pull-down
     menu in a menu bar or a standalone context menu. Pull-down menus
     are shown by the menu bar when the user clicks on the respective
@@ -1051,7 +1076,39 @@ void QMenu::initStyleOption(QStyleOptionMenuItem *option, const QAction *action)
     popup() or synchronously with exec(). Menus can also be invoked in
     response to button presses; these are just like context menus
     except for how they are invoked.
+    
+    \raw HTML
+    <table align="center" cellpadding="0">
+    <tr>
+        <td>
+            \endraw
+            \inlineimage plastique-menu.png
+            \raw HTML
+        </td>
+        <td>
+            \endraw
+            \inlineimage windowsxp-menu.png
+            \raw HTML
+        </td>
+        <td>
+            \endraw
+            \inlineimage macintosh-menu.png
+            \raw HTML
+        </td>
 
+    </tr>
+    <tr>
+        <td colspan="3">
+           \endraw
+           A menu shown in \l{Plastique Style Widget Gallery}{Plastique widget style}, 
+           \l{Windows XP Style Widget Gallery}{Windows XP widget style},
+           and \l{Macintosh Style Widget Gallery}{Macintosh widget style}. 
+           \raw HTML
+        </td>
+    </tr>
+    </table>
+    \endraw    
+    
     A menu consists of a list of action items. Actions are added with
     addAction(). An action is represented vertically and rendered by
     QStyle. In addition, actions can have a text label, an optional
@@ -1570,6 +1627,7 @@ void QMenu::popup(const QPoint &p, QAction *atAction)
     }
 
     QPoint mouse = QCursor::pos();
+    d->mousePopupPos = mouse;
     const bool snapToMouse = (QRect(p.x()-3, p.y()-3, 6, 6).contains(mouse));
 
     //handle popup falling "off screen"
@@ -1588,25 +1646,25 @@ void QMenu::popup(const QPoint &p, QAction *atAction)
         if (pos.x() < screen.left()+desktopFrame)
             pos.setX(qMax(p.x(), screen.left() + desktopFrame));
     }
-    if (pos.y() + size.height() > screen.bottom() - desktopFrame) {
+    if (pos.y() + size.height() - 1 > screen.bottom() - desktopFrame) {
         if(snapToMouse)
-            pos.setY(qMin(mouse.y() - (size.height() + desktopFrame), screen.bottom()-desktopFrame-size.height()));
+            pos.setY(qMin(mouse.y() - (size.height() + desktopFrame), screen.bottom()-desktopFrame-size.height()+1));
         else
-            pos.setY(qMax(p.y() - (size.height() + desktopFrame), screen.bottom()-desktopFrame-size.height()));
+            pos.setY(qMax(p.y() - (size.height() + desktopFrame), screen.bottom()-desktopFrame-size.height()+1));
     } else if (pos.y() < screen.top() + desktopFrame) {
         pos.setY(screen.top() + desktopFrame);
     }
 
     if (pos.y() < screen.top() + desktopFrame)
         pos.setY(screen.top() + desktopFrame);
-    if (pos.y()+size.height() > screen.bottom() - desktopFrame) {
+    if (pos.y()+size.height()-1 > screen.bottom() - desktopFrame) {
         if (d->scroll) {
             d->scroll->scrollFlags |= uint(QMenuPrivate::QMenuScroller::ScrollDown);
             int y = qMax(screen.y(),pos.y());
-            size.setHeight(screen.height()-(desktopFrame*2)-y);
+            size.setHeight(screen.bottom()-(desktopFrame*2)-y);
         } else {
             // Too big for screen, bias to see bottom of menu (for some reason)
-            pos.setY(screen.bottom()-size.height());
+            pos.setY(screen.bottom()-size.height()+1);
         }
     }
     setGeometry(QRect(pos, size));
@@ -1964,16 +2022,29 @@ void QMenu::mouseReleaseEvent(QMouseEvent *e)
     d->mouseDown = 0;
     d->setSyncAction();
     QAction *action = d->actionAt(e->pos());
+
     if (action && action == d->currentAction) {
         if (action->menu())
             action->menu()->d_func()->setFirstActionActive();
-        else
+        else {
 #ifdef Q_WS_WIN
-            if (e->button() == Qt::LeftButton)
+#ifndef QT_NO_MENUBAR
+            //On Windows only context menus can be activated with the right button
+            bool isContextMenu = true;
+            const QWidget *parent = parentWidget();
+            while (parent) {
+                if (qobject_cast<const QMenuBar *>(parent)) {
+                    isContextMenu = false;
+                    break;
+                }
+                parent = parent->parentWidget();
+            }
+            if (e->button() == Qt::LeftButton || (e->button() == Qt::RightButton && isContextMenu))
+#endif
 #endif
                 d->activateAction(action, QAction::Trigger);
-
-    } else if (d->motions > 6) {
+        }
+    } else if (d->hasMouseMoved(e->globalPos())) {
         d->hideUpToMenuBar();
     }
 }
@@ -2590,6 +2661,7 @@ void QMenu::internalDelayedPopup()
 
     QPoint pos(rightPos);
     QMenu *caused = qobject_cast<QMenu*>(d->activeMenu->d_func()->causedPopup.widget);
+    
     const QRect availGeometry(d->popupGeometry(QApplication::desktop()->screenNumber(caused)));
     if (isRightToLeft()) {
         pos = leftPos;

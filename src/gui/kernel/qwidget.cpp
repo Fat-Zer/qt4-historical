@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -94,6 +109,9 @@ QWidgetPrivate::QWidgetPrivate(int version) :
         ,fg_role(QPalette::NoRole)
         ,bg_role(QPalette::NoRole)
         ,hd(0)
+#ifdef Q_RATE_LIMIT_PAINTING
+        ,timerId(-1)
+#endif
 #if defined(Q_WS_X11)
         ,picture(0)
 #endif
@@ -1164,6 +1182,10 @@ QWidget::~QWidget()
 
     clearFocus();
 
+#ifdef Q_WIDGET_CACHE_OPAQUEREGIONS
+     d->setDirtyOpaqueRegion();
+#endif
+
     if (isWindow() && isVisible() && internalWinId())
         hide();
 
@@ -1845,6 +1867,9 @@ void QWidget::createWinId()
     \property QWidget::styleSheet
     \brief the widget's style sheet
     \since 4.2
+
+    The style sheet contains a textual description of customizations to the
+    widget's style, as described in the \l{Qt Style Sheets} document.
 
     \sa setStyle(), QApplication::styleSheet, {Qt Style Sheets}
 */
@@ -2746,12 +2771,13 @@ QPoint QWidget::pos() const
     visible, it is guaranteed to receive an event before it is shown.
 
     The size is adjusted if it lies outside the range defined by
-    minimumSize() and maximumSize(). For windows, the minimum size
-    is always at least QSize(1, 1), and it might be larger, depending on
-    the window manager.
+    minimumSize() and maximumSize().
 
     \warning Calling resize() or setGeometry() inside resizeEvent() can
     lead to infinite recursion.
+
+    Note that setting size to QSize(0, 0) will cause the widget to not
+    appear on screen. This also applies to windows.
 
     \sa pos, geometry, minimumSize, maximumSize, resizeEvent()
 */
@@ -3165,7 +3191,15 @@ void QWidget::setFixedSize(const QSize & s)
 void QWidget::setFixedSize(int w, int h)
 {
     Q_D(QWidget);
+#ifdef Q_WS_QWS
+    // temporary fix for 4.3.x.
+    // Should move the embedded spesific contraints in setMinimumSize_helper into QLayout
+    int tmpW = w;
+    int tmpH = h;
+    bool minSizeSet = d->setMinimumSize_helper(tmpW, tmpH);
+#else
     bool minSizeSet = d->setMinimumSize_helper(w, h);
+#endif
     bool maxSizeSet = d->setMaximumSize_helper(w, h);
     if (!minSizeSet && !maxSizeSet)
         return;
@@ -4462,7 +4496,7 @@ void QWidget::clearFocus()
     QWidget *w = this;
     while (w && w->d_func()->focus_child == this) {
         w->d_func()->focus_child = 0;
-        w = w->isWindow() ? 0 : w->parentWidget();
+	w = w->parentWidget();
     }
     if (hasFocus()) {
         QApplicationPrivate::setFocusWidget(0, Qt::OtherFocusReason);
@@ -6012,6 +6046,21 @@ bool QWidget::event(QEvent *event)
         }
     }
     switch (event->type()) {
+#ifdef Q_RATE_LIMIT_PAINTING
+    case QEvent::Timer: {
+        QTimerEvent *timerEvent = static_cast<QTimerEvent *>(event);
+        if (timerEvent->timerId() == d->timerId) {
+            killTimer(d->timerId);
+            QWidgetBackingStore *bs = d->maybeBackingStore();
+            if (bs)
+                bs->updateDirtyRegion(this);
+            d->timerId = -1;
+        } else {
+            this->timerEvent(timerEvent);
+        }
+        break;
+    }
+#endif
     case QEvent::MouseMove:
         mouseMoveEvent((QMouseEvent*)event);
         break;
@@ -6297,7 +6346,7 @@ bool QWidget::event(QEvent *event)
         changeEvent(event);
         break;
 
-#if defined(Q_WS_X11) || defined(Q_WS_QWS)
+#if defined(Q_WS_X11) || defined(Q_WS_QWS) || (defined(Q_WS_WIN) && defined(Q_WIN_USE_QT_UPDATE_EVENT))
     case QEvent::UpdateRequest: {
 #ifndef Q_WS_WIN
         extern void qt_syncBackingStore(QWidget *widget);
@@ -7054,6 +7103,9 @@ void QWidget::hideEvent(QHideEvent *)
 
     \warning This function is not portable.
 
+    \warning This function is not currently called, consider using QApplication::macEventFilter()
+    instead.
+
     \sa QApplication::macEventFilter()
 */
 
@@ -7384,7 +7436,9 @@ QWidget *QWidget::childAt(const QPoint &p) const
 
 void QWidget::updateGeometry()
 {
-    if (!isWindow() && !isHidden() && parentWidget()) {
+    Q_D(QWidget);
+    if (!isWindow() && !isHidden() && parentWidget()
+        && (!d->extra || d->extra->minw != d->extra->maxw || d->extra->minh != d->extra->maxh)) {
         if (parentWidget()->d_func()->layout)
             parentWidget()->d_func()->layout->invalidate();
         else if (parentWidget()->isVisible())
@@ -8176,6 +8230,9 @@ QString QWidget::whatsThis() const
 
   \brief the widget's name as seen by assistive technologies
 
+    It is be used by accessible clients to identify, find, or announce
+    the widget for accessible clients.
+
   \sa QAccessibleInterface::text()
 */
 void QWidget::setAccessibleName(const QString &name)
@@ -8383,11 +8440,13 @@ void QWidget::raise()
             return;
         const int from = p->d_func()->children.indexOf(this);
         Q_ASSERT(from >= 0);
-        if (from == parentChildCount - 1)
-            return;
-        p->d_func()->children.move(from, parentChildCount - 1);
+        // Do nothing if the widget is already in correct stacking order _and_ created.
+        if (from != parentChildCount -1)
+            p->d_func()->children.move(from, parentChildCount - 1);
         if (!testAttribute(Qt::WA_WState_Created) && p->testAttribute(Qt::WA_WState_Created))
             create();
+        else if (from == parentChildCount - 1)
+            return;
     }
     if (testAttribute(Qt::WA_WState_Created))
         d->raise_sys();
@@ -8415,11 +8474,13 @@ void QWidget::lower()
             return;
         const int from = p->d_func()->children.indexOf(this);
         Q_ASSERT(from >= 0);
-        if (from == 0)
-            return;
-        p->d_func()->children.move(from, 0);
+        // Do nothing if the widget is already in correct stacking order _and_ created.
+        if (from != 0)
+            p->d_func()->children.move(from, 0);
         if (!testAttribute(Qt::WA_WState_Created) && p->testAttribute(Qt::WA_WState_Created))
             create();
+        else if (from == 0)
+            return;
     }
     if (testAttribute(Qt::WA_WState_Created))
         d->lower_sys();
@@ -8449,11 +8510,13 @@ void QWidget::stackUnder(QWidget* w)
         Q_ASSERT(to >= 0);
         if (from < to)
             --to;
-        if (from == to)
-            return;
-        p->d_func()->children.move(from, to);
+        // Do nothing if the widget is already in correct stacking order _and_ created.
+        if (from != to)
+            p->d_func()->children.move(from, to);
         if (!testAttribute(Qt::WA_WState_Created) && p->testAttribute(Qt::WA_WState_Created))
             create();
+        else if (from == to)
+            return;
     }
     if (testAttribute(Qt::WA_WState_Created))
         d->stackUnder_sys(w);

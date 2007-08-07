@@ -23,12 +23,27 @@
  ** and appearing in the file LICENSE.GPL included in the packaging of
  ** this file.  Please review the following information to ensure GNU
  ** General Public Licensing requirements will be met:
- ** http://www.trolltech.com/products/qt/opensource.html
+ ** http://trolltech.com/products/qt/licenses/licensing/opensource/
  **
  ** If you are unsure which license is appropriate for your use, please
  ** review the following information:
- ** http://www.trolltech.com/products/qt/licensing.html or contact the
- ** sales department at sales@trolltech.com.
+ ** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+ ** or contact the sales department at sales@trolltech.com.
+ **
+ ** In addition, as a special exception, Trolltech gives you certain
+ ** additional rights. These rights are described in the Trolltech GPL
+ ** Exception version 1.0, which can be found at
+ ** http://www.trolltech.com/products/qt/gplexception/ and in the file
+ ** GPL_EXCEPTION.txt in this package.
+ **
+ ** In addition, as a special exception, Trolltech, as the sole copyright
+ ** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+ ** plug-in the right for the Qt/Eclipse Integration to link to
+ ** functionality provided by Qt Designer and its related libraries.
+ **
+ ** Trolltech reserves all rights not expressly granted herein.
+ **
+ ** Trolltech ASA (c) 2007
  **
  ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
  ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -40,6 +55,8 @@
  #include &lt;QApplication&gt;
  #include &lt;QPainterPath&gt;
  #include &lt;QPainter&gt;
+ #include &lt;QMap&gt;
+ #include &lt;qdebug.h&gt;
 
  void render_qt_text(QPainter *painter, int w, int h, const QColor &amp;color) {
      QPainterPath path;
@@ -110,10 +127,48 @@
      painter-&gt;drawPath(path);
  }
 
+ void usage()
+ {
+     qWarning() &lt;&lt; &quot;Usage: mainwindow [-SizeHint&lt;color&gt; &lt;width&gt;x&lt;height&gt;] ...&quot;;
+     exit(1);
+ }
+
+ QMap&lt;QString, QSize&gt; parseCustomSizeHints(int argc, char **argv)
+ {
+     QMap&lt;QString, QSize&gt; result;
+
+     for (int i = 1; i &lt; argc; ++i) {
+         QString arg = QString::fromLocal8Bit(argv[i]);
+
+         if (arg.startsWith(QLatin1String(&quot;-SizeHint&quot;))) {
+             QString name = arg.mid(9);
+             if (name.isEmpty())
+                 usage();
+             if (++i == argc)
+                 usage();
+             QString sizeStr = QString::fromLocal8Bit(argv[i]);
+             int idx = sizeStr.indexOf(QLatin1Char('x'));
+             if (idx == -1)
+                 usage();
+             bool ok;
+             int w = sizeStr.left(idx).toInt(&amp;ok);
+             if (!ok)
+                 usage();
+             int h = sizeStr.mid(idx + 1).toInt(&amp;ok);
+             if (!ok)
+                 usage();
+             result[name] = QSize(w, h);
+         }
+     }
+
+     return result;
+ }
+
  int main(int argc, char **argv)
  {
      QApplication app(argc, argv);
-     MainWindow mainWin;
+     QMap&lt;QString, QSize&gt; customSizeHints = parseCustomSizeHints(argc, argv);
+     MainWindow mainWin(customSizeHints);
      mainWin.resize(800, 600);
      mainWin.show();
      return app.exec();
@@ -122,6 +177,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -148,13 +163,14 @@ static void SetMWMHints(Display *display, Window window, const QtMWMHints &mwmhi
 // Returns true if we should set WM_TRANSIENT_FOR on \a w
 static inline bool isTransient(const QWidget *w)
 {
-    return ((w->windowType() == Qt::Dialog)
-            || (w->windowType() == Qt::Sheet)
-            || (w->windowFlags() & Qt::MSWindowsFixedSizeDialogHint)
-            || (w->windowType() == Qt::Tool)
-            || (w->windowType() == Qt::SplashScreen)
-            || (w->windowType() == Qt::ToolTip)
-            || (w->windowType() == Qt::Drawer));
+    return ((w->windowType() == Qt::Dialog
+             || w->windowType() == Qt::Sheet
+             || w->windowType() == Qt::Tool
+             || w->windowType() == Qt::SplashScreen
+             || w->windowType() == Qt::ToolTip
+             || w->windowType() == Qt::Drawer)
+            // In 4.4, Qt::WA_X11BypassTransientForHint = 99
+            && !w->testAttribute(Qt::WidgetAttribute(99)));
 }
 
 static void do_size_hints(QWidget* widget, QWExtra *x);
@@ -317,6 +333,42 @@ void qt_change_net_wm_state(const QWidget* w, bool set, Atom one, Atom two = 0)
     e.xclient.data.l[4] = 0;
     XSendEvent(X11->display, RootWindow(X11->display, w->x11Info().screen()),
                false, (SubstructureNotifyMask | SubstructureRedirectMask), &e);
+}
+
+static QVector<Atom> getNetWmState(QWidget *w)
+{
+    QVector<Atom> returnValue;
+
+    // Don't read anything, just get the size of the property data
+    Atom actualType;
+    int actualFormat;
+    ulong propertyLength;
+    ulong bytesLeft;
+    uchar *propertyData = 0;
+    if (XGetWindowProperty(X11->display, w->internalWinId(), ATOM(_NET_WM_STATE), 0, 0,
+                           False, XA_ATOM, &actualType, &actualFormat,
+                           &propertyLength, &bytesLeft, &propertyData) == Success
+        && actualType == XA_ATOM && actualFormat == 32) {
+        returnValue.resize(bytesLeft / 4);
+        XFree((char*) propertyData);
+
+        // fetch all data
+        if (XGetWindowProperty(X11->display, w->internalWinId(), ATOM(_NET_WM_STATE), 0,
+                               returnValue.size(), False, XA_ATOM, &actualType, &actualFormat,
+                               &propertyLength, &bytesLeft, &propertyData) != Success) {
+            returnValue.clear();
+        } else if (propertyLength != returnValue.size()) {
+            returnValue.resize(propertyLength);
+        }
+
+        // put it into netWmState
+        if (!returnValue.isEmpty()) {
+            memcpy(returnValue.data(), propertyData, returnValue.size() * sizeof(Atom));
+        }
+        XFree((char*) propertyData);
+    }
+
+    return returnValue;
 }
 
 void QWidgetPrivate::create_sys(WId window, bool initializeWindow, bool destroyOldWindow)
@@ -865,7 +917,7 @@ void QWidgetPrivate::setParent_sys(QWidget *parent, Qt::WindowFlags f)
     q->setAttribute(Qt::WA_WState_Hidden, false);
     adjustFlags(data.window_flags, q);
     // keep compatibility with previous versions, we need to preserve the created state
-    // (but we recreate the winId for the widget being reparented, again for compability)
+    // (but we recreate the winId for the widget being reparented, again for compatibility)
     if (wasCreated || (!q->isWindow() && parent->testAttribute(Qt::WA_WState_Created)))
         createWinId();
     if (q->isWindow() || (!parent || parent->isVisible()) || explicitlyHidden)
@@ -1628,29 +1680,29 @@ void QWidgetPrivate::show_sys()
 
         SetMWMHints(X11->display, q->internalWinId(), mwmhints);
 
-        // set _NET_WM_STATE
-        Atom net_winstates[6] = { 0, 0, 0, 0, 0, 0 };
-        int curr_winstate = 0;
+        // update _NET_WM_STATE
+        QVector<Atom> netWmState = getNetWmState(q);
 
         Qt::WindowFlags flags = q->windowFlags();
         if (flags & Qt::WindowStaysOnTopHint) {
-            net_winstates[curr_winstate++] = ATOM(_NET_WM_STATE_ABOVE);
-            net_winstates[curr_winstate++] = ATOM(_NET_WM_STATE_STAYS_ON_TOP);
+            netWmState.append(ATOM(_NET_WM_STATE_ABOVE));
+            netWmState.append(ATOM(_NET_WM_STATE_STAYS_ON_TOP));
         }
         if (q->isFullScreen()) {
-            net_winstates[curr_winstate++] = ATOM(_NET_WM_STATE_FULLSCREEN);
+            netWmState.append(ATOM(_NET_WM_STATE_FULLSCREEN));
         }
         if (q->isMaximized()) {
-            net_winstates[curr_winstate++] = ATOM(_NET_WM_STATE_MAXIMIZED_HORZ);
-            net_winstates[curr_winstate++] = ATOM(_NET_WM_STATE_MAXIMIZED_VERT);
+            netWmState.append(ATOM(_NET_WM_STATE_MAXIMIZED_HORZ));
+            netWmState.append(ATOM(_NET_WM_STATE_MAXIMIZED_VERT));
         }
         if (data.window_modality != Qt::NonModal) {
-            net_winstates[curr_winstate++] = ATOM(_NET_WM_STATE_MODAL);
+            netWmState.append(ATOM(_NET_WM_STATE_MODAL));
         }
 
-        if (curr_winstate > 0) {
-            XChangeProperty(X11->display, q->internalWinId(), ATOM(_NET_WM_STATE), XA_ATOM,
-                            32, PropModeReplace, (unsigned char *) net_winstates, curr_winstate);
+        if (!netWmState.isEmpty()) {
+            XChangeProperty(X11->display, q->internalWinId(),
+                            ATOM(_NET_WM_STATE), XA_ATOM, 32, PropModeReplace,
+                            (unsigned char *) netWmState.data(), netWmState.size());
         } else {
             XDeleteProperty(X11->display, q->internalWinId(), ATOM(_NET_WM_STATE));
         }
@@ -2081,7 +2133,7 @@ void QWidgetPrivate::setGeometry_sys(int x, int y, int w, int h, bool isMove)
                     // work around 4Dwm's incompliance with ICCCM 4.1.5
                     || X11->desktopEnvironment == DE_4DWM) {
                     XMoveResizeWindow(dpy, data.winid, x, y, w, h);
-                } else if (X11->isSupportedByWM(ATOM(_NET_MOVERESIZE_WINDOW))) {
+                } else if (!data.in_show && X11->isSupportedByWM(ATOM(_NET_MOVERESIZE_WINDOW))) {
                     XEvent e;
                     e.xclient.type = ClientMessage;
                     e.xclient.message_type = ATOM(_NET_MOVERESIZE_WINDOW);

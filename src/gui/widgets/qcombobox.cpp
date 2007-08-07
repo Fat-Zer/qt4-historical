@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -89,11 +104,21 @@ QStyleOptionMenuItem QComboMenuDelegate::getStyleOption(const QStyleOptionViewIt
     menuOption.checkType = QStyleOptionMenuItem::NonExclusive;
     menuOption.checked = mCombo->currentIndex() == index.row();
     menuOption.menuItemType = QStyleOptionMenuItem::Normal;
-    QVariant decoration = index.model()->data(index, Qt::DecorationRole);
-    if (decoration.type() == QVariant::Pixmap )
-        menuOption.icon = QIcon(qvariant_cast<QPixmap>(decoration));
-    else
-        menuOption.icon = qvariant_cast<QIcon>(decoration);
+
+    QVariant variant = index.model()->data(index, Qt::DecorationRole);
+    switch (variant.type()) {
+    case QVariant::Icon:
+        menuOption.icon = qvariant_cast<QIcon>(variant);
+        break;
+    case QVariant::Color: {
+        static QPixmap pixmap(option.decorationSize);
+        pixmap.fill(qvariant_cast<QColor>(variant));
+        menuOption.icon = pixmap;
+        break; }
+    default:
+        menuOption.icon = qvariant_cast<QPixmap>(variant);
+        break;
+    }
 
     menuOption.text = index.model()->data(index, Qt::DisplayRole).toString()
                            .replace(QLatin1Char('&'), QLatin1String("&&"));
@@ -135,7 +160,7 @@ void QComboBoxPrivate::updateArrow(QStyle::StateFlag state)
     arrowState = state;
     QStyleOptionComboBox opt;
     q->initStyleOption(&opt);
-    q->update(q->style()->subControlRect(QStyle::CC_ComboBox, &opt, QStyle::SC_ComboBoxArrow));
+    q->update(q->style()->subControlRect(QStyle::CC_ComboBox, &opt, QStyle::SC_ComboBoxArrow, q));
 }
 
 void QComboBoxPrivate::_q_modelReset()
@@ -316,7 +341,7 @@ void QComboBoxPrivateContainer::leaveEvent(QEvent *)
 // when the mouse moves outside the popup.
 #ifdef Q_WS_MAC
     QStyleOptionComboBox opt = comboStyleOption();
-    if (style()->styleHint(QStyle::SH_ComboBox_Popup, &opt, this))
+    if (combo->style()->styleHint(QStyle::SH_ComboBox_Popup, &opt, combo))
         view->clearSelection();
 #endif
 }
@@ -343,7 +368,7 @@ QComboBoxPrivateContainer::QComboBoxPrivateContainer(QAbstractItemView *itemView
 
     // add scroller arrows if style needs them
     QStyleOptionComboBox opt = comboStyleOption();
-    const bool usePopup = style()->styleHint(QStyle::SH_ComboBox_Popup, &opt, this);
+    const bool usePopup = combo->style()->styleHint(QStyle::SH_ComboBox_Popup, &opt, combo);
     if (usePopup) {
         top = new QComboBoxPrivateScroller(QAbstractSlider::SliderSingleStepSub, this);
         bottom = new QComboBoxPrivateScroller(QAbstractSlider::SliderSingleStepAdd, this);
@@ -353,7 +378,7 @@ QComboBoxPrivateContainer::QComboBoxPrivateContainer(QAbstractItemView *itemView
         setLineWidth(1);
     }
 
-    setFrameStyle(style()->styleHint(QStyle::SH_ComboBox_PopupFrameStyle, &opt, this));
+    setFrameStyle(combo->style()->styleHint(QStyle::SH_ComboBox_PopupFrameStyle, &opt, combo));
 
     if (top) {
         layout->insertWidget(0, top);
@@ -365,11 +390,9 @@ QComboBoxPrivateContainer::QComboBoxPrivateContainer(QAbstractItemView *itemView
     }
 
     // Some styles (Mac) have a margin at the top and bottom of the popup.
-    if (usePopup) {
-        const int verticalMargin = style()->pixelMetric(QStyle::PM_MenuVMargin, &opt, this);
-        layout->insertSpacing(0, verticalMargin);
-        layout->addSpacing(verticalMargin);
-    }
+    layout->insertSpacing(0, 0);
+    layout->addSpacing(0);
+    updateTopBottomMargin();
 }
 
 void QComboBoxPrivateContainer::scrollItemView(int action)
@@ -477,12 +500,12 @@ void QComboBoxPrivateContainer::setItemView(QAbstractItemView *itemView)
     view->viewport()->installEventFilter(this);
     view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     QStyleOptionComboBox opt = comboStyleOption();
-    const bool usePopup = style()->styleHint(QStyle::SH_ComboBox_Popup, &opt, combo);
+    const bool usePopup = combo->style()->styleHint(QStyle::SH_ComboBox_Popup, &opt, combo);
 #ifndef QT_NO_SCROLLBAR
     if (usePopup)
         view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 #endif
-    if (style()->styleHint(QStyle::SH_ComboBox_ListMouseTracking, &opt, combo) ||
+    if (combo->style()->styleHint(QStyle::SH_ComboBox_ListMouseTracking, &opt, combo) ||
         usePopup) {
         view->setMouseTracking(true);
     }
@@ -513,12 +536,37 @@ int QComboBoxPrivateContainer::spacing() const
     return 0;
 }
 
+void QComboBoxPrivateContainer::updateTopBottomMargin()
+{
+    if (!layout() || layout()->count() < 1)
+        return;
+
+    QBoxLayout *boxLayout = qobject_cast<QBoxLayout *>(layout());
+    if (!boxLayout)
+        return;
+
+    const QStyleOptionComboBox opt = comboStyleOption();
+    const bool usePopup = combo->style()->styleHint(QStyle::SH_ComboBox_Popup, &opt, combo);
+    const int margin = usePopup ? combo->style()->pixelMetric(QStyle::PM_MenuVMargin, &opt, combo) : 0;
+
+    QSpacerItem *topSpacer = boxLayout->itemAt(0)->spacerItem();
+    if (topSpacer)
+        topSpacer->changeSize(0, margin, QSizePolicy::Minimum, QSizePolicy::Fixed);
+
+    QSpacerItem *bottomSpacer = boxLayout->itemAt(boxLayout->count() - 1)->spacerItem();
+    if (bottomSpacer && bottomSpacer != topSpacer)
+        bottomSpacer->changeSize(0, margin, QSizePolicy::Minimum, QSizePolicy::Fixed);
+
+    boxLayout->invalidate();
+}
+
 void QComboBoxPrivateContainer::changeEvent(QEvent *e)
 {
     if (e->type() == QEvent::StyleChange) {
         QStyleOptionComboBox opt = comboStyleOption();
-        view->setMouseTracking(style()->styleHint(QStyle::SH_ComboBox_ListMouseTracking, &opt, combo) ||
-                               style()->styleHint(QStyle::SH_ComboBox_Popup, &opt, combo));
+        view->setMouseTracking(combo->style()->styleHint(QStyle::SH_ComboBox_ListMouseTracking, &opt, combo) ||
+                               combo->style()->styleHint(QStyle::SH_ComboBox_Popup, &opt, combo));
+        setFrameStyle(combo->style()->styleHint(QStyle::SH_ComboBox_PopupFrameStyle, &opt, combo));
     }
     QWidget::changeEvent(e);
 }
@@ -597,7 +645,7 @@ void QComboBoxPrivateContainer::mousePressEvent(QMouseEvent *e)
     QStyleOptionComboBox opt = comboStyleOption();
     opt.subControls = QStyle::SC_All;
     opt.activeSubControls = QStyle::SC_ComboBoxArrow;
-    QStyle::SubControl sc = style()->hitTestComplexControl(QStyle::CC_ComboBox, &opt,
+    QStyle::SubControl sc = combo->style()->hitTestComplexControl(QStyle::CC_ComboBox, &opt,
                                                            combo->mapFromGlobal(e->globalPos()),
                                                            combo);
     if ((combo->isEditable() && sc == QStyle::SC_ComboBoxArrow)
@@ -774,8 +822,8 @@ QComboBox::QComboBox(bool rw, QWidget *parent, const char *name)
     allowing the user to modify each item in the list.
 
     Comboboxes can contain pixmaps as well as strings; the
-    insertItem() and changeItem() functions are suitably overloaded.
-    For editable comboboxes, the function clearEdit() is provided,
+    insertItem() and setItemText() functions are suitably overloaded.
+    For editable comboboxes, the function clearEditText() is provided,
     to clear the displayed string without changing the combobox's
     contents.
 
@@ -801,8 +849,8 @@ QComboBox::QComboBox(bool rw, QWidget *parent, const char *name)
     accepted.
 
     A combobox can be populated using the insert functions,
-    insertStringList() and insertItem() for example. Items can be
-    changed with changeItem(). An item can be removed with
+    insertItem() and insertItems() for example. Items can be
+    changed with setItemText(). An item can be removed with
     removeItem() and all items can be removed with clear(). The text
     of the current item is returned by currentText(), and the text of
     a numbered item is returned with text(). The current item can be
@@ -1485,6 +1533,7 @@ void QComboBox::setEditable(bool editable)
         delete d->lineEdit;
         d->lineEdit = 0;
     }
+    d->viewContainer()->updateTopBottomMargin();
 }
 
 /*!
@@ -1531,7 +1580,7 @@ void QComboBox::setLineEdit(QLineEdit *edit)
         setAutoCompletion(true);
         if (d->completer) {
             d->completer->setCompletionMode(QCompleter::UnfilteredPopupCompletion);
-            connect(d->completer->popup(), SIGNAL(activated(QModelIndex)), this, SLOT(_q_completerActivated()));
+            connect(d->completer, SIGNAL(activated(QModelIndex)), this, SLOT(_q_completerActivated()));
         }
     }
 #endif
@@ -1636,6 +1685,12 @@ QAbstractItemDelegate *QComboBox::itemDelegate() const
 /*!
     Sets the item \a delegate for the popup list view.
     The combobox takes ownership of the delegate.
+
+    \warning You should not share the same instance of a delegate between comboboxes,
+    widget mappers or views. Doing so can cause incorrect or unintuitive editing behavior
+    since each view connected to a given delegate may receive the
+    \l{QAbstractItemDelegate::}{closeEditor()} signal, and attempt to access, modify or
+    close an editor that has already been closed.
 
     \sa itemDelegate()
 */

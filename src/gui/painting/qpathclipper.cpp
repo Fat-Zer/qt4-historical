@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -49,9 +64,10 @@
    with the findIntersections method which is quadratic atm.
  */
 
+#include <qdebug.h>
+
 //#define QDEBUG_CLIPPER
 #ifdef QDEBUG_CLIPPER
-#include <qdebug.h>
 static QDebug operator<<(QDebug str, const QBezier &b)
 {
     QString out = QString::fromLatin1("Bezier([%1, %2],[%3, %4],[%5, %6],[%7, %8])")
@@ -193,6 +209,12 @@ public:
     {
         return type;
     }
+    inline bool isMoveTo() const
+    {
+        return (type == PathVertex::MoveTo ||
+                type == PathVertex::MoveLineTo ||
+                type == PathVertex::MoveCurveTo);
+    }
 private:
     Type type;
 public:
@@ -201,6 +223,18 @@ public:
 };
 
 #ifdef QDEBUG_CLIPPER
+static QDebug operator<<(QDebug str, const PathVertex &b)
+{
+    QString out = QString::fromLatin1("Vertex(%1 - (%2, %3),inter=%4,tf=%5)")
+                  .arg(b.getRawType())
+                  .arg(b.x)
+                  .arg(b.y)
+                  .arg(b.intersect)
+                  .arg(b.code);
+    str.nospace()<<out;
+    return str;
+}
+
 static QDebug operator<<(QDebug str, const PathVertex::TraversalFlag &b)
 {
     QString out;
@@ -577,7 +611,7 @@ struct VertexListNavigate {
     inline void next()
     {
         prev = cur;
-        if (cur->getType(0) == PathVertex::MoveTo && !lastMove)
+        if (cur && cur->isMoveTo())
             lastMove = cur;
 	cur = cur ? cur->next : 0;
     }
@@ -585,6 +619,15 @@ struct VertexListNavigate {
     inline PathVertex *getNextNode() const
     {
 	PathVertex *nn = cur ? cur->next: 0;
+
+        if (nn && nn->isMoveTo())
+            return lastMove;
+        if (!nn && lastMove) {
+            if (lastMove->getRawType() == PathVertex::MoveLineTo ||
+                lastMove->getRawType() == PathVertex::MoveCurveTo)
+                return lastMove;
+        }
+
 	return nn;
     }
 
@@ -1520,27 +1563,47 @@ public:
         QRectF clipControl = clipPath.controlPointRect();
 
         bool intersects = false;
-        if (!subjControl.intersects(clipControl)) {
+        QRectF r1 = subjControl.normalized();
+        QRectF r2 = clipControl.normalized();
+        if (qMax(r1.x(), r2.x()) > qMin(r1.x() + r1.width(), r2.x() + r2.width()) ||
+            qMax(r1.y(), r2.y()) > qMin(r1.y() + r1.height(), r2.y() + r2.height())) {
             // no way we could intersect
+#ifdef QDEBUG_CLIPPER
+            qDebug()<<"Boundries not intersecting : " << subjControl <<clipControl;
+            qDebug()<<"max x = "<<qMax(r1.x(), r2.x())<< " < "
+                    <<qMin(r1.x() + r1.width(), r2.x() + r2.width());
+            qDebug()<<"max y = "<<qMax(r1.y(), r2.y()) << " < "
+                    <<qMin(r1.y() + r1.height(), r2.y() + r2.height());
+#endif
             return intersects;
         }
 
+#ifdef QDEBUG_CLIPPER
+        qDebug("---- Subject and clipper state ---");
+        subject->dump();
+        clipper->dump();
+        qDebug("---- end state info ----");
+#endif
         for (VertexListNavigate subj(*subject); subj ; subj.next()) {
             PathVertex *a = subj.getNode();
-            PathVertex *b = (subj.getNextNode())?subj.getNextNode():subj.getLastMove();
-            if (!b)
+            PathVertex *b = (subj.getNextNode());
+            if (!a || !b)
                 break;
 
             for (VertexListNavigate obj(*clipper); obj ; obj.next()) {
                 PathVertex *c = obj.getNode();
-                PathVertex *d = (obj.getNextNode())?obj.getNextNode():obj.getLastMove();;
-                if (!d)
+                PathVertex *d = (obj.getNextNode());
+                if (!c || !d)
                     break;
-
+                //qDebug()<<"intersecting = ";
+                //qDebug()<< "\t1) "<<(*a) << " and " << (*b);
+                //qDebug()<< "\t2) "<<(*c) << " and " << (*d);
                 intersects = doEdgesIntersect(a, b,
                                               c, d);
-                if (intersects)
+                if (intersects) {
+                    //qDebug()<<"-------- Found intersection";
                     return true;
+                }
             }
         }
         return intersects;
@@ -1718,10 +1781,10 @@ QPainterPath QPathClipper::clip(Operation op)
     d->op = op;
 
 #ifdef QDEBUG_CLIPPER
-    qDebug("xxxxxxxxxxxxxxxxxxxxxxxxx");
+    qDebug("--- subject clipper state ----");
     d->subject->dump();
     d->clipper->dump();
-    qDebug("uuuuuyyyyyyyyyyyyyyyyyyyyy");
+    qDebug("---- subject clipper state end ----");
 #endif
 
     d->findIntersections();

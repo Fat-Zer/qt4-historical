@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/qt3support/canvas/q3canvas.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/qt3support/canvas/q3canvas.cpp -->
 <head>
   <title>Qt 4.3: Q3CanvasView Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -88,12 +88,12 @@
 <p>The canvas view shows canvas <a href="q3canvasview.html#canvas">canvas</a>(); this can be changed using <a href="q3canvasview.html#setCanvas">setCanvas</a>().</p>
 <p>A transformation matrix can be used to transform the view of the canvas in various ways, for example, zooming in or out or rotating. For example:</p>
 <pre> QMatrix wm;
- wm.scale(2, 2);   <span class="comment">// Zooms in by 2 times</span>
- wm.rotate(90);    <span class="comment">// Rotates 90 degrees counter clockwise</span>
-                   <span class="comment">// around the origin.</span>
+ wm.scale(2, 2);   <span class="comment">//</span> Zooms in by 2 times
+ wm.rotate(90);    <span class="comment">//</span> Rotates 90 degrees counter clockwise
+                   <span class="comment">//</span> around the origin.
  wm.translate(0, -canvas-&gt;height());
-                   <span class="comment">// moves the canvas down so what was visible</span>
-                   <span class="comment">// before is still visible.</span>
+                   <span class="comment">//</span> moves the canvas down so what was visible
+                   <span class="comment">//</span> before is still visible.
  myCanvasView-&gt;setWorldMatrix(wm);</pre>
 <p>Use <a href="q3canvasview.html#setWorldMatrix">setWorldMatrix</a>() to set the canvas view's world matrix: you must ensure that the world matrix is invertible. The current world matrix is retrievable with <a href="q3canvasview.html#worldMatrix">worldMatrix</a>(), and its inversion is retrievable with <a href="q3canvasview.html#inverseWorldMatrix">inverseWorldMatrix</a>().</p>
 <p>Example:</p>
@@ -146,6 +146,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

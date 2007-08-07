@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/gui/embedded/qkbd_qws.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/embedded/qkbd_qws.cpp -->
 <head>
   <title>Qt 4.3: QWSKeyboardHandler Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -38,7 +38,7 @@
 <p>The QWSKeyboardHandler class is a base class for keyboard drivers in Qtopia Core.</p>
 <p>Note that this class is only available in <a href="qtopiacore.html">Qtopia Core</a>.</p>
 <p><a href="qtopiacore.html">Qtopia Core</a> provides ready-made drivers for several keyboard protocols, see the <a href="qtopiacore-charinput.html">character input</a> documentation for details. Custom keyboard drivers can be implemented by subclassing the QWSKeyboardHandler class and creating a keyboard driver plugin (derived from <a href="qkbddriverplugin.html">QKbdDriverPlugin</a>). <a href="qtopiacore.html">Qtopia Core</a>'s implementation of the <a href="qkbddriverfactory.html">QKbdDriverFactory</a> class will automatically detect the plugin, and load the driver into the server application at runtime using Qt's <a href="plugins-howto.html">plugin system</a>.</p>
-<p>The keyboard driver receives keyboard events from the system device and encapsulates each event with an instance of the <a href="qwsevent.html">QWSEvent</a> class which it then passes to the server application (the server is responsible for propagating the event to the appropiate client). To receive keyboard events, a QWSKeyboardHandler object will usually create a <a href="qsocketnotifier.html">QSocketNotifier</a> object for the given device. The <a href="qsocketnotifier.html">QSocketNotifier</a> class provides support for monitoring activity on a file descriptor. When the socket notifier receives data, it will call the keyboard driver's <a href="qwskeyboardhandler.html#processKeyEvent">processKeyEvent</a>() function to send the event to the <a href="qtopiacore.html">Qtopia Core</a> server application for relaying to clients.</p>
+<p>The keyboard driver receives keyboard events from the system device and encapsulates each event with an instance of the <a href="qwsevent.html">QWSEvent</a> class which it then passes to the server application (the server is responsible for propagating the event to the appropriate client). To receive keyboard events, a QWSKeyboardHandler object will usually create a <a href="qsocketnotifier.html">QSocketNotifier</a> object for the given device. The <a href="qsocketnotifier.html">QSocketNotifier</a> class provides support for monitoring activity on a file descriptor. When the socket notifier receives data, it will call the keyboard driver's <a href="qwskeyboardhandler.html#processKeyEvent">processKeyEvent</a>() function to send the event to the <a href="qtopiacore.html">Qtopia Core</a> server application for relaying to clients.</p>
 <p>QWSKeyboardHandler also provides functions to control auto-repetion of key sequences, <a href="qwskeyboardhandler.html#beginAutoRepeat">beginAutoRepeat</a>() and <a href="qwskeyboardhandler.html#endAutoRepeat">endAutoRepeat</a>(), and the <a href="qwskeyboardhandler.html#transformDirKey">transformDirKey</a>() function enabling transformation of arrow keys according to the display orientation.</p>
 <p>See also <a href="qkbddriverplugin.html">QKbdDriverPlugin</a>, <a href="qkbddriverfactory.html">QKbdDriverFactory</a>, and <a href="qtopiacore-charinput.html">Qtopia Core Character Input</a>.</p>
 <hr />
@@ -81,6 +81,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -331,6 +346,11 @@ void QStyle::polish(QWidget * /* widget */)
     every polished widget whenever the style is dynamically changed;
     the former style has to unpolish its settings before the new style
     can polish them again.
+
+    Note that unpolish() will only be called if the widget is
+    destroyed.  This can cause problems in some cases, e.g, if you
+    remove a widget from the UI, cache it, and then reinsert it after
+    the style has changed; some of Qt's classes cache their widgets.
 
     \sa polish()
 */
@@ -782,7 +802,7 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
 
     The \a widget argument is optional and can be used as aid in
     drawing the control. The \a option parameter is a pointer to a
-    QStyleOption object that can be casted to the correct subclass
+    QStyleOption object that can be cast to the correct subclass
     using the qstyleoption_cast() function.
 
     The table below is listing the control elements and their
@@ -957,7 +977,7 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
     screen coordinates.
 
     The \a widget argument is optional and can be used to aid
-    determining the area. The QStyleOption object can be casted to the
+    determining the area. The QStyleOption object can be cast to the
     appropriate type using the qstyleoption_cast() function. See the
     table below for the appropriate \a option casts:
 
@@ -1089,7 +1109,7 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
     drawing the control.
 
     The \a option parameter is a pointer to a QStyleOptionComplex
-    object that can be casted to the correct subclass using the
+    object that can be cast to the correct subclass using the
     qstyleoption_cast() function. Note that the \c rect member of the
     specified \a option must be in logical
     coordinates. Reimplementations of this function should use
@@ -1160,7 +1180,7 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
     option). The rectangle is defined in screen coordinates.
 
     The \a option argument is a pointer to QStyleOptionComplex or
-    one of its subclasses, and can be casted to the appropriate type
+    one of its subclasses, and can be cast to the appropriate type
     using the qstyleoption_cast() function. See drawComplexControl()
     for details. The \a widget is optional and can contain additional
     information for the function.
@@ -1180,7 +1200,7 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
     Note that the \a position is expressed in screen coordinates.
 
     The \a option argument is a pointer to a QStyleOptionComplex
-    object (or one of its subclasses). The object can be casted to the
+    object (or one of its subclasses). The object can be cast to the
     appropriate type using the qstyleoption_cast() function. See
     drawComplexControl() for details. The \a widget argument is
     optional and can contain additional information for the function.

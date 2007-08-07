@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/qt3support/itemviews/q3table.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/qt3support/itemviews/q3table.cpp -->
 <head>
   <title>Qt 4.3: Q3Table Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -552,7 +552,7 @@
 <p>If you are not using <a href="q3tableitem.html">Q3TableItem</a>s and you don't want to use a <a href="qlineedit.html">QLineEdit</a> as the default editor, subclass <a href="q3table.html">Q3Table</a> and reimplement this function with code like this:</p>
 <pre> Q3TableItem *i = item(row, col);
  if (initFromCell || (i &amp;&amp; !i-&gt;isReplaceable()))
-     <span class="comment">// If we had a Q3TableItem ask the base class to create the editor</span>
+     <span class="comment">//</span> If we had a Q3TableItem ask the base class to create the editor
      return Q3Table::createEditor(row, col, initFromCell);
  else
      return ...(create your own editor)</pre>
@@ -711,7 +711,7 @@
 <p>If you're using a <a href="q3tableitem.html">Q3TableItem</a> subclass, for example, to store a data structure, then reimplementing <a href="q3tableitem.html#paint">Q3TableItem::paint</a>() may be the best approach. For data you want to draw immediately, e.g&#x2e; data retrieved from a database, it is probably best to reimplement paintCell(). Note that if you reimplement paintCell(), i.e&#x2e; don't use <a href="q3tableitem.html">Q3TableItem</a>s, you must reimplement other functions: see the notes on large tables.</p>
 <p>Note that the painter is not clipped by default in order to get maximum efficiency. If you want clipping, use code like this:</p>
 <pre> p-&gt;setClipRect(cellRect(row, col), QPainter::CoordPainter);
-<span class="comment"> //... your drawing code</span>
+<span class="comment"> //</span>... your drawing code
  p-&gt;setClipping(false);</pre>
 <h3 class="fn"><a name="paintCell-2"></a>void Q3Table::paintCell ( <a href="qpainter.html">QPainter</a> * <i>p</i>, int <i>row</i>, int <i>col</i>, const <a href="qrect.html">QRect</a> &amp; <i>cr</i>, bool <i>selected</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>This is an overloaded member function, provided for convenience.</p>
@@ -957,6 +957,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

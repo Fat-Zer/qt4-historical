@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/corelib/tools/qvector.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/corelib/tools/qvector.cpp -->
 <head>
   <title>Qt 4.3: QVector Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -127,7 +127,7 @@
 <ul>
 <li>For most purposes, <a href="qlist.html">QList</a> is the right class to use. Operations like <a href="qvector.html#prepend">prepend</a>() and <a href="qvector.html#insert">insert</a>() are usually faster than with QVector because of the way <a href="qlist.html">QList</a> stores its items in memory (see <a href="containers.html#algorithmic-complexity">Algorithmic Complexity</a> for details), and its index-based API is more convenient than <a href="qlinkedlist.html">QLinkedList</a>'s iterator-based API. It also expands to less code in your executable.</li>
 <li>If you need a real linked list, with guarantees of <a href="containers.html#constant-time">constant time</a> insertions in the middle of the list and iterators to items rather than indexes, use <a href="qlinkedlist.html">QLinkedList</a>.</li>
-<li>If you want the items to occupy adjacent memory positions, use QVector.</li>
+<li>If you want the items to occupy adjacent memory positions, or if your items are larger than a pointer and you want to avoid the overhead of allocating them on the heap individually at insertion time, then use QVector.</li>
 <li>If you want a low-level variable-size array, <a href="qvarlengtharray.html">QVarLengthArray</a> may be sufficient.</li>
 </ul>
 <p>Here's an example of a QVector that stores integers and a QVector that stores <a href="qstring.html">QString</a> values:</p>
@@ -228,7 +228,7 @@
  vector.append(&quot;one&quot;);
  vector.append(&quot;two&quot;);
  vector.append(&quot;three&quot;);
-<span class="comment"> // vector: [&quot;one&quot;, &quot;two&quot;, three&quot;]</span></pre>
+<span class="comment"> //</span> vector: [&quot;one&quot;, &quot;two&quot;, three&quot;]</pre>
 <p>This is the same as calling resize(<a href="qvector.html#size">size</a>() + 1) and assigning <i>value</i> to the new last element in the vector.</p>
 <p>This operation is relatively fast, because <a href="qvector.html">QVector</a> typically allocates more memory than necessary, so it can grow without reallocating the entire vector each time.</p>
 <p>See also <a href="qvector.html#operator-lt-lt">operator&lt;&lt;</a>(), <a href="qvector.html#prepend">prepend</a>(), and <a href="qvector.html#insert">insert</a>().</p>
@@ -318,10 +318,10 @@
 <p>Example:</p>
 <pre> QVector&lt;QString&gt; vector(3);
  vector.fill(&quot;Yes&quot;);
-<span class="comment"> // vector: [&quot;Yes&quot;, &quot;Yes&quot;, &quot;Yes&quot;]</span>
+<span class="comment"> //</span> vector: [&quot;Yes&quot;, &quot;Yes&quot;, &quot;Yes&quot;]
 
  vector.fill(&quot;oh&quot;, 5);
-<span class="comment"> // vector: [&quot;oh&quot;, &quot;oh&quot;, &quot;oh&quot;, &quot;oh&quot;, &quot;oh&quot;]</span></pre>
+<span class="comment"> //</span> vector: [&quot;oh&quot;, &quot;oh&quot;, &quot;oh&quot;, &quot;oh&quot;, &quot;oh&quot;]</pre>
 <p>See also <a href="qvector.html#resize">resize</a>().</p>
 <a name="//apple_ref/cpp/instm/QVector/first" />
 <h3 class="fn"><a name="first"></a>T &amp; QVector::first ()</h3>
@@ -337,7 +337,7 @@
  list &lt;&lt; &quot;Sven&quot; &lt;&lt; &quot;Kim&quot; &lt;&lt; &quot;Ola&quot;;
 
  QVector&lt;QString&gt; vect = QVector&lt;QString&gt;::fromList(list);
-<span class="comment"> // vect: [&quot;Sven&quot;, &quot;Kim&quot;, &quot;Ola&quot;]</span></pre>
+<span class="comment"> //</span> vect: [&quot;Sven&quot;, &quot;Kim&quot;, &quot;Ola&quot;]</pre>
 <p>See also <a href="qvector.html#toList">toList</a>() and <a href="qlist.html#toVector">QList::toVector</a>().</p>
 <a name="//apple_ref/cpp/clm/QVector/fromStdVector" />
 <h3 class="fn"><a name="fromStdVector"></a>QVector&lt;T&gt; QVector::fromStdVector ( const std::vector&lt;T&gt; &amp; <i>vector</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
@@ -361,10 +361,10 @@
 <p>Example:</p>
 <pre> QVector&lt;QString&gt; vector;
  vector &lt;&lt; &quot;A&quot; &lt;&lt; &quot;B&quot; &lt;&lt; &quot;C&quot; &lt;&lt; &quot;B&quot; &lt;&lt; &quot;A&quot;;
- vector.indexOf(&quot;B&quot;);            <span class="comment">// returns 1</span>
- vector.indexOf(&quot;B&quot;, 1);         <span class="comment">// returns 1</span>
- vector.indexOf(&quot;B&quot;, 2);         <span class="comment">// returns 3</span>
- vector.indexOf(&quot;X&quot;);            <span class="comment">// returns -1</span></pre>
+ vector.indexOf(&quot;B&quot;);            <span class="comment">//</span> returns 1
+ vector.indexOf(&quot;B&quot;, 1);         <span class="comment">//</span> returns 1
+ vector.indexOf(&quot;B&quot;, 2);         <span class="comment">//</span> returns 3
+ vector.indexOf(&quot;X&quot;);            <span class="comment">//</span> returns -1</pre>
 <p>This function requires the value type to have an implementation of <tt>operator==()</tt>.</p>
 <p>See also <a href="qvector.html#lastIndexOf">lastIndexOf</a>() and <a href="qvector.html#contains">contains</a>().</p>
 <a name="//apple_ref/cpp/instm/QVector/insert" />
@@ -374,7 +374,7 @@
 <pre> QVector&lt;QString&gt; vector;
  vector &lt;&lt; &quot;alpha&quot; &lt;&lt; &quot;beta&quot; &lt;&lt; &quot;delta&quot;;
  vector.insert(2, &quot;gamma&quot;);
-<span class="comment"> // vector: [&quot;alpha&quot;, &quot;beta&quot;, &quot;gamma&quot;, &quot;delta&quot;]</span></pre>
+<span class="comment"> //</span> vector: [&quot;alpha&quot;, &quot;beta&quot;, &quot;gamma&quot;, &quot;delta&quot;]</pre>
 <p>For large vectors, this operation can be slow (<a href="containers.html#linear-time">linear time</a>), because it requires moving all the items at indexes <i>i</i> and above by one position further in memory. If you want a container class that provides a fast insert() function, use <a href="qlinkedlist.html">QLinkedList</a> instead.</p>
 <p>See also <a href="qvector.html#append">append</a>(), <a href="qvector.html#prepend">prepend</a>(), and <a href="qvector.html#remove">remove</a>().</p>
 <h3 class="fn"><a name="insert-2"></a><a href="qvector.html#iterator-typedefx">iterator</a> QVector::insert ( <a href="qvector.html#iterator-typedefx">iterator</a> <i>before</i>, int <i>count</i>, const T &amp; <i>value</i> )</h3>
@@ -387,7 +387,7 @@
 <pre> QVector&lt;double&gt; vector;
  vector &lt;&lt; 2.718 &lt;&lt; 1.442 &lt;&lt; 0.4342;
  vector.insert(1, 3, 9.9);
-<span class="comment"> // vector: [2.718, 9.9, 9.9, 9.9, 1.442, 0.4342]</span></pre>
+<span class="comment"> //</span> vector: [2.718, 9.9, 9.9, 9.9, 1.442, 0.4342]</pre>
 <h3 class="fn"><a name="insert-4"></a><a href="qvector.html#iterator-typedefx">iterator</a> QVector::insert ( <a href="qvector.html#iterator-typedefx">iterator</a> <i>before</i>, const T &amp; <i>value</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Inserts <i>value</i> in front of the item pointed to by the iterator <i>before</i>. Returns an iterator pointing at the inserted item.</p>
@@ -407,10 +407,10 @@
 <p>Example:</p>
 <pre> QList&lt;QString&gt; vector;
  vector &lt;&lt; &quot;A&quot; &lt;&lt; &quot;B&quot; &lt;&lt; &quot;C&quot; &lt;&lt; &quot;B&quot; &lt;&lt; &quot;A&quot;;
- vector.lastIndexOf(&quot;B&quot;);        <span class="comment">// returns 3</span>
- vector.lastIndexOf(&quot;B&quot;, 3);     <span class="comment">// returns 3</span>
- vector.lastIndexOf(&quot;B&quot;, 2);     <span class="comment">// returns 1</span>
- vector.lastIndexOf(&quot;X&quot;);        <span class="comment">// returns -1</span></pre>
+ vector.lastIndexOf(&quot;B&quot;);        <span class="comment">//</span> returns 3
+ vector.lastIndexOf(&quot;B&quot;, 3);     <span class="comment">//</span> returns 3
+ vector.lastIndexOf(&quot;B&quot;, 2);     <span class="comment">//</span> returns 1
+ vector.lastIndexOf(&quot;X&quot;);        <span class="comment">//</span> returns -1</pre>
 <p>This function requires the value type to have an implementation of <tt>operator==()</tt>.</p>
 <p>See also <a href="qvector.html#indexOf">indexOf</a>().</p>
 <a name="//apple_ref/cpp/instm/QVector/mid" />
@@ -430,7 +430,7 @@
  vector.prepend(&quot;one&quot;);
  vector.prepend(&quot;two&quot;);
  vector.prepend(&quot;three&quot;);
-<span class="comment"> // vector: [&quot;three&quot;, &quot;two&quot;, &quot;one&quot;]</span></pre>
+<span class="comment"> //</span> vector: [&quot;three&quot;, &quot;two&quot;, &quot;one&quot;]</pre>
 <p>This is the same as vector.insert(0, <i>value</i>).</p>
 <p>For large vectors, this operation can be slow (<a href="containers.html#linear-time">linear time</a>), because it requires moving all the items in the vector by one position further in memory. If you want a container class that provides a fast prepend() function, use <a href="qlist.html">QList</a> or <a href="qlinkedlist.html">QLinkedList</a> instead.</p>
 <p>See also <a href="qvector.html#append">append</a>() and <a href="qvector.html#insert">insert</a>().</p>
@@ -479,7 +479,7 @@
  vect &lt;&lt; &quot;red&quot; &lt;&lt; &quot;green&quot; &lt;&lt; &quot;blue&quot; &lt;&lt; &quot;black&quot;;
 
  QList&lt;double&gt; list = vect.toList();
-<span class="comment"> // list: [&quot;red&quot;, &quot;green&quot;, &quot;blue&quot;, &quot;black&quot;]</span></pre>
+<span class="comment"> //</span> list: [&quot;red&quot;, &quot;green&quot;, &quot;blue&quot;, &quot;black&quot;]</pre>
 <p>See also <a href="qvector.html#fromList">fromList</a>() and <a href="qlist.html#fromVector">QList::fromVector</a>().</p>
 <a name="//apple_ref/cpp/instm/QVector/toStdVector" />
 <h3 class="fn"><a name="toStdVector"></a>std::vector&lt;T&gt; QVector::toStdVector () const</h3>
@@ -555,6 +555,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

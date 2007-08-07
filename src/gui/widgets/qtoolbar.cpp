@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -75,6 +90,7 @@ void QToolBarPrivate::init()
     iconSize = QSize(e, e);
 
     layout = new QToolBarLayout(q);
+    layout->updateMarginAndSpacing();
 
 #ifdef Q_WS_MAC
     if (q->parentWidget() && q->parentWidget()->isWindow()) {
@@ -474,6 +490,12 @@ bool QToolBar::isMovable() const
     return d->movable;
 }
 
+/*!
+    \property QToolBar::floatable
+    \brief whether the toolbar can be dragged and dropped as an independent window.
+
+    The default is true.
+*/
 bool QToolBar::isFloatable() const
 {
     Q_D(const QToolBar);
@@ -486,6 +508,12 @@ void QToolBar::setFloatable(bool floatable)
     d->floatable = floatable;
 }
 
+/*!
+    \property QToolBar::floating
+    \brief whether the toolbar is an independent window.
+
+    \sa QWidget::isWindow()
+*/
 bool QToolBar::isFloating() const
 {
     return isWindow();
@@ -606,6 +634,10 @@ void QToolBar::setIconSize(const QSize &iconSize)
     \property QToolBar::toolButtonStyle
     \brief the style of toolbar buttons
 
+    This property defines the style of all tool buttons that are added
+    as \l{QAction}s. Note that if you add a QToolButton with the
+    addWidget() method, it will not get this button style.
+
     The default is Qt::ToolButtonIconOnly.
 */
 
@@ -725,6 +757,9 @@ QAction *QToolBar::insertSeparator(QAction *before)
 /*!
     Adds the given \a widget to the toolbar as the toolbar's last
     item.
+
+    If you add a QToolButton with this method, the tools bar's
+    Qt::ToolButtonStyle will not be respected.
 
     Note: You should use QAction::setVisible() to change the
     visibility of the widget. Using QWidget::setVisible(),
@@ -856,6 +891,12 @@ void QToolBar::changeEvent(QEvent *event)
         break;
     case QEvent::StyleChange:
         d->layout->invalidate();
+        if (!d->explicitIconSize)
+            setIconSize(QSize());
+        d->layout->updateMarginAndSpacing();
+        break;
+    case QEvent::LayoutDirectionChange:
+        d->layout->invalidate();
         break;
     default:
         break;
@@ -929,16 +970,26 @@ bool QToolBar::event(QEvent *event)
         // fallthrough intended
     case QEvent::Show:
         d->toggleViewAction->setChecked(event->type() == QEvent::Show);
+#ifdef Q_WS_MAC
+        // Fall through
+    case QEvent::LayoutRequest:
+        // There's currently no way to invalidate the size and let
+        // HIToolbar know about it. This forces a re-check.
+        if (QMainWindow *mainWindow = qobject_cast<QMainWindow *>(parentWidget())) {
+            WindowRef windowRef = qt_mac_window_for(this);
+            if (mainWindow->unifiedTitleAndToolBarOnMac()
+                    && mainWindow->toolBarArea(this) == Qt::TopToolBarArea
+                    && IsWindowToolbarVisible(windowRef))   {
+                DisableScreenUpdates();
+                ShowHideWindowToolbar(windowRef, false, false);
+                ShowHideWindowToolbar(windowRef, true, false);
+                EnableScreenUpdates();
+            }
+        }
+#endif
         break;
     case QEvent::ParentChange:
         d->layout->setUsePopupMenu(qobject_cast<QMainWindow*>(parentWidget()) == 0);
-        break;
-    case QEvent::StyleChange:
-        if (!d->explicitIconSize)
-            setIconSize(QSize());
-        break;
-    case QEvent::LayoutDirectionChange:
-        d->layout->invalidate();
         break;
     case QEvent::MouseButtonPress: {
         QMouseEvent *e = static_cast<QMouseEvent*>(event);

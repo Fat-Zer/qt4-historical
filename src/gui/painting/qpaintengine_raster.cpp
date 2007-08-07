@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -1123,8 +1138,8 @@ void QRasterPaintEngine::updateMatrix(const QTransform &matrix)
         d->tx_noshear = qFuzzyCompare(qAbs(d->matrix.m11()), qAbs(d->matrix.m22()));
     } else if (d->txop < QTransform::TxShear) {
         const qreal xAxis = d->matrix.m11() * d->matrix.m11() +
-                            d->matrix.m12() * d->matrix.m12();
-        const qreal yAxis = d->matrix.m21() * d->matrix.m21() +
+                            d->matrix.m21() * d->matrix.m21();
+        const qreal yAxis = d->matrix.m12() * d->matrix.m12() +
                             d->matrix.m22() * d->matrix.m22();
 
         d->tx_noshear = qFuzzyCompare(xAxis, yAxis);
@@ -1193,14 +1208,14 @@ void QRasterPaintEngine::updateState(const QPaintEngineState &state)
         update_fast_pen = true;
         updateMatrix(state.transform());
 
-		// the cliprect set on the dash stroker needs to be updated when the
-		// transform changes, if we have a pen that needs stroking
-		Qt::PenStyle pen_style = d->pen.style();
-		if (d->dashStroker && pen_style != Qt::SolidLine &&
-			pen_style != Qt::NoPen && d->pen.widthF() != 0.0f) {
+        // the cliprect set on the dash stroker needs to be updated when the
+        // transform changes, if we have a pen that needs stroking
+        Qt::PenStyle pen_style = d->pen.style();
+        if (d->dashStroker && pen_style != Qt::SolidLine &&
+            pen_style != Qt::NoPen && d->pen.widthF() != 0.0f) {
             QRectF clipRect = d->matrix.inverted().mapRect(QRectF(d->deviceRect));
             d->dashStroker->setClipRect(clipRect);
-		}
+        }
     }
 
     if (flags & DirtyOpacity) {
@@ -1257,6 +1272,8 @@ void QRasterPaintEngine::updateState(const QPaintEngineState &state)
             d->stroker = 0;
         }
         d->penData.setup(pen_style == Qt::NoPen ? QBrush() : d->pen.brush(), d->opacity);
+
+        d->updateMatrixData(&d->penData, d->pen.brush(), d->matrix);
     }
 
     if (flags & (DirtyBrush|DirtyBrushOrigin)) {
@@ -1305,7 +1322,6 @@ void QRasterPaintEngine::updateState(const QPaintEngineState &state)
                 d->disabledClipRegion = d->clipRegion;
                 updateClipRegion(QRegion(), Qt::NoClip);
             } else { // re-enable old clip
-                Q_ASSERT(d->rasterBuffer->disabled_clip);
                 d->rasterBuffer->resetClip();
                 d->rasterBuffer->clip = d->rasterBuffer->disabled_clip;
                 d->rasterBuffer->clipRegion = d->rasterBuffer->disabledClipRegion;
@@ -1639,8 +1655,8 @@ void QRasterPaintEngine::fastFillRect(const QRect &rect, const QBrush &brush)
     Q_D(QRasterPaintEngine);
     Q_ASSERT(!d->antialiased && d->txop <= QTransform::TxTranslate);
 
-//     int offset_x = int(d->matrix.dx());
-//     int offset_y = int(d->matrix.dy());
+    int offset_x = int(d->matrix.dx());
+    int offset_y = int(d->matrix.dy());
 
     QSpanData brushData;
     brushData.init(d->rasterBuffer, this);
@@ -1652,9 +1668,9 @@ void QRasterPaintEngine::fastFillRect(const QRect &rect, const QBrush &brush)
 
     resolveGradientBoundsConditional(rect, &brushData);
 
-//    QRect r = rect.translated(offset_x, offset_y);
+    QRect r = rect.translated(offset_x, offset_y);
 
-    fillRect(rect, &brushData, d);
+    fillRect(r, &brushData, d);
 }
 
 /*!
@@ -1836,6 +1852,9 @@ static bool splitPolygon(const QPointF *points, int pointCount, QVector<QPointF>
     return upper->size() < pointCount && lower->size() < pointCount;
 }
 
+/*!
+  \internal
+ */
 void QRasterPaintEngine::fillPolygon(const QPointF *points, int pointCount, PolygonDrawMode mode)
 {
     Q_D(QRasterPaintEngine);
@@ -2606,12 +2625,17 @@ bool QRasterPaintEngine::drawTextInFontBuffer(const QRect &devRect, int xmin, in
                     // we can set it to transparent so the background shines through instead.
                     switch (qAlpha(scanline[x - devRect.x()])) {
                     case 0x0:
-                        // Special case: If Windows has drawn on top of a transparent pixel, then
+                        // Special case: If Windows has drawn on top of a translucent pixel, then
                         // we bail out. This is an attempt at avoiding the problem where Windows
                         // has no background to use for composition, but also minimizing the
                         // number of cases hit by the fall back.
-                        // ### This is far from optimal.
-                        if (!brokenRasterBufferAlpha && qAlpha(rbScanline[x]) == 0) {
+                        //
+                        // This test could be done in the loop above, but because the bounding
+                        // box is very large (probably too big, because of kerning & italics)
+                        // we need to check only the "touched" pixels. If the kerning and
+                        // italics problems where fixed this code could be simplfied and
+                        // sped up by moving this check to the upper loop...
+                        if (!brokenRasterBufferAlpha && qAlpha(rbScanline[x]) < 255) {
                             return drawTextInFontBuffer(devRect, xmin, ymin, xmax, ymax, textItem,
                                 false, leftBearingReserve, topLeft);
                         }
@@ -2967,12 +2991,18 @@ void QRasterPaintEngine::drawTextItem(const QPointF &p, const QTextItem &textIte
             return;
 
         QFontEngineFT::GlyphFormat neededFormat = QFontEngineFT::Format_A8;
-        if (d->mono_surface)
+        if (d->mono_surface
+            || fe->isBitmapFont() // alphaPenBlt can handle mono, too
+           )
             neededFormat = QFontEngineFT::Format_Mono;
 
         QFontEngineFT::QGlyphSet *gset = fe->defaultGlyphs();
         if (d->txop >= QTransform::TxScale) {
-            gset = fe->loadTransformedGlyphSet(glyphs.data(), glyphs.size(), d->matrix, neededFormat);
+            if (d->matrix.isAffine())
+                gset = fe->loadTransformedGlyphSet(glyphs.data(), glyphs.size(), d->matrix, neededFormat);
+            else
+                gset = 0;
+
             if (!gset) {
                 QPaintEngine::drawTextItem(p, ti);
                 return;
@@ -2995,7 +3025,7 @@ void QRasterPaintEngine::drawTextItem(const QPointF &p, const QTextItem &textIte
             const int pitch = (neededFormat == QFontEngineFT::Format_Mono ? ((glyph->width + 31) & ~31) >> 3
                                : (glyph->width + 3) & ~3);
 
-            alphaPenBlt(glyph->data, pitch, d->mono_surface,
+            alphaPenBlt(glyph->data, pitch, neededFormat == QFontEngineFT::Format_Mono,
                         qRound(positions[i].x) + glyph->x,
                         qRound(positions[i].y) - glyph->y,
                         glyph->width, glyph->height);
@@ -3747,6 +3777,10 @@ void QRasterBuffer::init()
     clip = 0;
     format = QImage::Format_ARGB32_Premultiplied;
     drawHelper = qDrawHelper + QImage::Format_ARGB32_Premultiplied;
+
+    monoDestinationWithClut = false;
+    destColor0 = 0;
+    destColor1 = 0;
 }
 
 
@@ -3815,6 +3849,11 @@ void QRasterBuffer::prepare(QImage *image)
 
     format = image->format();
     drawHelper = qDrawHelper + format;
+    if (image->depth() == 1 && image->colorTable().size() == 2) {
+        monoDestinationWithClut = true;
+        destColor0 = image->colorTable()[0];
+        destColor1 = image->colorTable()[1];
+    }
 }
 
 void QRasterBuffer::resetBuffer(int val)
@@ -4312,6 +4351,8 @@ static int qt_intersect_spans(QT_FT_Span *spans, int numSpans,
             spans[n].x = spans[i].x;
             spans[n].len = qMin(spans[i].len, ushort(maxx - spans[n].x + 1));
         }
+        if (spans[n].len == 0)
+            continue;
         spans[n].y = spans[i].y;
         spans[n].coverage = spans[i].coverage;
 
@@ -4780,21 +4821,18 @@ void QSpanData::setup(const QBrush &brush, int alpha)
     case Qt::BDiagPattern:
     case Qt::FDiagPattern:
     case Qt::DiagCrossPattern:
+        type = Texture;
+        extern QImage qt_imageForBrush(int brushStyle, bool invert);
+        tempImage = rasterBuffer->colorizeBitmap(qt_imageForBrush(brushStyle, true), brush.color());
+        initTexture(&tempImage, alpha, TextureData::Tiled);
+        break;
     case Qt::TexturePattern:
-        {
-
-            type = Texture;
-            extern QImage qt_imageForBrush(int brushStyle, bool invert);
-            QImage texture = (brushStyle == Qt::TexturePattern)
-                             ? brush.textureImage()
-                             : qt_imageForBrush(brushStyle, true);
-
-            tempImage = (texture.depth() == 1)
-                        ? rasterBuffer->colorizeBitmap(texture, brush.color())
-                        : texture;
-
-            initTexture(&tempImage, alpha, TextureData::Tiled);
-        }
+        type = Texture;
+        if (hasPixmapTexture(brush) && brush.texture().isQBitmap())
+            tempImage = rasterBuffer->colorizeBitmap(brush.textureImage(), brush.color());
+        else
+            tempImage = brush.textureImage();
+        initTexture(&tempImage, alpha, brush.d->forceTextureClamp ? TextureData::Plain : TextureData::Tiled);
         break;
 
     case Qt::NoBrush:

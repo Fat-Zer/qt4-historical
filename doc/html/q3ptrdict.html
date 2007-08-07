@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/doc/src/q3ptrdict.qdoc -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/doc/src/q3ptrdict.qdoc -->
 <head>
   <title>Qt 4.3: Q3PtrDict Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -59,7 +59,7 @@
 <p>Q3PtrDict is implemented as a template class. Define a template instance Q3PtrDict&lt;X&gt; to create a dictionary that operates on pointers to X (X*).</p>
 <p>A dictionary is a collection of key-value pairs. The key is a void* used for insertion, removal and lookup. The value is a pointer. Dictionaries provide very fast insertion and lookup.</p>
 <p>Example:</p>
-<pre> Q3PtrDict&lt;char&gt; fields; <span class="comment">// void* keys, char* values</span>
+<pre> Q3PtrDict&lt;char&gt; fields; <span class="comment">//</span> void* keys, char* values
 
  QLineEdit *le1 = new QLineEdit( this );
  le1-&gt;setText( &quot;Simpson&quot; );
@@ -77,13 +77,13 @@
      cout &lt;&lt; it.current() &lt;&lt; endl;
  cout &lt;&lt; endl;
 
- if ( fields[le1] ) <span class="comment">// Prints &quot;Surname: Simpson&quot;</span>
+ if ( fields[le1] ) <span class="comment">//</span> Prints &quot;Surname: Simpson&quot;
      cout &lt;&lt; fields[le1] &lt;&lt; &quot;: &quot; &lt;&lt; le1-&gt;text() &lt;&lt; endl;
- if ( fields[le2] ) <span class="comment">// Prints &quot;Forename: Homer&quot;</span>
+ if ( fields[le2] ) <span class="comment">//</span> Prints &quot;Forename: Homer&quot;
      cout &lt;&lt; fields[le2] &lt;&lt; &quot;: &quot; &lt;&lt; le2-&gt;text() &lt;&lt; endl;
 
- fields.remove( le1 ); <span class="comment">// Removes le1 from the dictionary</span>
- cout &lt;&lt; le1-&gt;text() &lt;&lt; endl; <span class="comment">// Prints &quot;Simpson&quot;</span></pre>
+ fields.remove( le1 ); <span class="comment">//</span> Removes le1 from the dictionary
+ cout &lt;&lt; le1-&gt;text() &lt;&lt; endl; <span class="comment">//</span> Prints &quot;Simpson&quot;</pre>
 <p>In this example we use a dictionary to add an extra property (a char*) to the line edits we're using.</p>
 <p>See <a href="q3dict.html">Q3Dict</a> for full details, including the choice of dictionary size, and how deletions are handled.</p>
 <p>See also <a href="q3ptrdictiterator.html">Q3PtrDictIterator</a>, <a href="q3dict.html">Q3Dict</a>, <a href="q3asciidict.html">Q3AsciiDict</a>, and <a href="q3intdict.html">Q3IntDict</a>.</p>
@@ -188,6 +188,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

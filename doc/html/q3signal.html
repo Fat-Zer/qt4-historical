@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/qt3support/tools/q3signal.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/qt3support/tools/q3signal.cpp -->
 <head>
   <title>Qt 4.3: Q3Signal Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -80,8 +80,8 @@
 
  void MyClass::doSomething()
  {
-     <span class="comment">// ... does something</span>
-     sig-&gt;activate(); <span class="comment">// emits the signal</span>
+     <span class="comment">//</span> ... does something
+     sig-&gt;activate(); <span class="comment">//</span> emits the signal
  }
 
  void MyClass::connect(QObject *receiver, const char *member)
@@ -101,11 +101,11 @@
 <p>Emits the signal. If the platform supports <a href="qvariant.html">QVariant</a> and a parameter has been set with <a href="q3signal.html#setValue">setValue</a>(), this value is passed in the signal.</p>
 <a name="//apple_ref/cpp/instm/Q3Signal/connect" />
 <h3 class="fn"><a name="connect"></a>bool Q3Signal::connect ( const <a href="qobject.html">QObject</a> * <i>receiver</i>, const char * <i>member</i> )</h3>
-<p>Connects the signal to <i>member</i> in object <i>receiver</i>.</p>
+<p>Connects the signal to <i>member</i> in object <i>receiver</i>. Returns true if the connection is successful.</p>
 <p>See also <a href="q3signal.html#disconnect">disconnect</a>() and <a href="qobject.html#connect">QObject::connect</a>().</p>
 <a name="//apple_ref/cpp/instm/Q3Signal/disconnect" />
 <h3 class="fn"><a name="disconnect"></a>bool Q3Signal::disconnect ( const <a href="qobject.html">QObject</a> * <i>receiver</i>, const char * <i>member</i> = 0 )</h3>
-<p>Disonnects the signal from <i>member</i> in object <i>receiver</i>.</p>
+<p>Disonnects the signal from <i>member</i> in object <i>receiver</i>. Returns true if the connection existed and the disconnect was successful.</p>
 <p>See also <a href="q3signal.html#connect">connect</a>() and <a href="qobject.html#disconnect">QObject::disconnect</a>().</p>
 <a name="//apple_ref/cpp/instm/Q3Signal/setValue" />
 <h3 class="fn"><a name="setValue"></a>void Q3Signal::setValue ( const <a href="qvariant.html">QVariant</a> &amp; <i>value</i> )</h3>
@@ -119,6 +119,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

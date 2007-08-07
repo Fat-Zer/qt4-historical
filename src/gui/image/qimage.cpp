@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -141,6 +156,8 @@ const QVector<QRgb> *qt_image_colortable(const QImage &image)
 }
 
 extern int qt_defaultDpi();
+extern int qt_defaultDpiX();
+extern int qt_defaultDpiY();
 
 QBasicAtomic qimage_serial_number = Q_ATOMIC_INIT(1);
 
@@ -162,8 +179,14 @@ QImageData::QImageData()
     bytes_per_line = 0;
     format = QImage::Format_ARGB32;
 
+    // ### Qt 4.4: remove #ifdef
+#ifdef Q_WS_QWS
+    dpmx = qt_defaultDpiX()*100./2.54;
+    dpmy = qt_defaultDpiY()*100./2.54;
+#else
     dpmx = qt_defaultDpi()*100./2.54;
     dpmy = qt_defaultDpi()*100./2.54;
+#endif
     offset = QPoint(0,0);
 
     paintEngine = 0;
@@ -356,6 +379,7 @@ QImageData::~QImageData()
     \row    \o PBM    \o Portable Bitmap                  \o Read
     \row    \o PGM    \o Portable Graymap                 \o Read
     \row    \o PPM    \o Portable Pixmap                  \o Read/write
+    \row    \o TIFF   \o Tagged Image File Format         \o Read/write
     \row    \o XBM    \o X11 Bitmap                       \o Read/write
     \row    \o XPM    \o X11 Pixmap                       \o Read/write
     \endtable
@@ -611,6 +635,36 @@ QImageData::~QImageData()
 
     \endtable
 
+    \section1 Legal Information
+
+    For smooth scaling, the transformed() functions use code based on
+    smooth scaling algorithm by Daniel M. Duley.
+
+    \legalese
+     Copyright (C) 2004, 2005 Daniel M. Duley
+
+     Redistribution and use in source and binary forms, with or without
+        modification, are permitted provided that the following conditions
+        are met:
+
+     1. Redistributions of source code must retain the above copyright
+        notice, this list of conditions and the following disclaimer.
+     2. Redistributions in binary form must reproduce the above copyright
+        notice, this list of conditions and the following disclaimer in the
+        documentation and/or other materials provided with the distribution.
+
+     THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+     IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+     OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+     IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+     INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+     NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+     DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+     THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+     (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+     THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    \endlegalese
+
     \sa QImageReader, QImageWriter, QPixmap, QSvgRenderer, {Image Composition Example},
         {Image Viewer Example}, {Scribble Example}, {Pixelator Example}
 */
@@ -776,6 +830,7 @@ QImageData *QImageData::create(uchar *data, int width, int height,  int bpl, QIm
 
     const int depth = depthForFormat(format);
     const int calc_bytes_per_line = ((width * depth + 31)/32) * 4;
+    const int min_bytes_per_line = (width * depth + 7)/8;
 
     if (bpl <= 0)
         bpl = calc_bytes_per_line;
@@ -784,7 +839,7 @@ QImageData *QImageData::create(uchar *data, int width, int height,  int bpl, QIm
         || INT_MAX/sizeof(uchar *) < uint(height)
         || INT_MAX/uint(depth) < uint(width)
         || bpl <= 0
-        || bpl < calc_bytes_per_line
+        || bpl < min_bytes_per_line
         || INT_MAX/uint(bpl) < uint(height))
         return d;                                        // invalid parameter(s)
 
@@ -1258,7 +1313,6 @@ QImage::operator QVariant() const
 
     \sa copy(), isDetached(), {Implicit Data Sharing}
 */
-
 void QImage::detach()
 {
     if (d) {
@@ -1708,6 +1762,11 @@ const uchar *QImage::scanLine(int i) const
     Returns a pointer to the first pixel data. This is equivalent to
     scanLine(0).
 
+    Note that QImage uses \l{Implicit Data Sharing} {implicit data
+    sharing}. This function performs a deep copy of the shared pixel
+    data, thus ensuring that this QImage is the only one using the
+    current return value.
+
     \sa scanLine(), numBytes()
 */
 uchar *QImage::bits()
@@ -1720,6 +1779,10 @@ uchar *QImage::bits()
 
 /*!
     \overload
+
+    Note that QImage uses \l{Implicit Data Sharing} {implicit data
+    sharing}, but this function does \e not perform a deep copy of the
+    shared pixel data, because the returned data is const.
 */
 const uchar *QImage::bits() const
 {
@@ -3616,37 +3679,7 @@ QMatrix QImage::trueMatrix(const QMatrix &matrix, int w, int h)
     for unwanted translation; i.e. the image produced is the smallest
     image that contains all the transformed points of the original
     image. Use the trueMatrix() function to retrieve the actual matrix
-    used for transforming an image
-
-    For smooth scaling, this function uses code based on
-    smooth scaling algorithm by Daniel M. Duley.
-
-
-    \legalese
-
-     Copyright (C) 2004, 2005 Daniel M. Duley
-
-     Redistribution and use in source and binary forms, with or without
-        modification, are permitted provided that the following conditions
-        are met:
-
-     1. Redistributions of source code must retain the above copyright
-        notice, this list of conditions and the following disclaimer.
-     2. Redistributions in binary form must reproduce the above copyright
-        notice, this list of conditions and the following disclaimer in the
-        documentation and/or other materials provided with the distribution.
-
-     THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
-     IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-     OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-     IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
-     INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
-     NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-     DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-     THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-     (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
-     THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
+    used for transforming an image.
 
     \sa trueMatrix(), {QImage#Image Transformations}{Image
     Transformations}
@@ -5117,7 +5150,7 @@ void QImage::setAlphaChannel(const QImage &alphaChannel)
 
 
 /*!
-    Returns the alpha channel of the image as a new grayscale QPixmap in which
+    Returns the alpha channel of the image as a new grayscale QImage in which
     each pixel's red, green, and blue values are given the alpha value of the
     original image. The color depth of the returned image is 8-bit.
 
@@ -5343,6 +5376,23 @@ static QImage rotated270(const QImage &image) {
     return out;
 }
 
+/*!
+    Returns a copy of the image that is transformed using the given
+    transformation \a matrix and transformation \a mode.
+
+    The transformation \a matrix is internally adjusted to compensate
+    for unwanted translation; i.e. the image produced is the smallest
+    image that contains all the transformed points of the original
+    image. Use the trueMatrix() function to retrieve the actual matrix
+    used for transforming an image.
+
+    Unlike the other overload, this function can be used to perform perspective
+    transformations on images.
+
+    \sa trueMatrix(), {QImage#Image Transformations}{Image
+    Transformations}
+*/
+
 QImage QImage::transformed(const QTransform &matrix, Qt::TransformationMode mode ) const
 {
     if (!d)
@@ -5366,8 +5416,13 @@ QImage QImage::transformed(const QTransform &matrix, Qt::TransformationMode mode
         else if (mat.m11() == -1. && mat.m22() == -1.)
             return rotated180(*this);
 
-        hd = int(qAbs(mat.m22()) * hs + 0.9999);
-        wd = int(qAbs(mat.m11()) * ws + 0.9999);
+        if (mode == Qt::FastTransformation) {
+            hd = qRound(qAbs(mat.m22()) * hs);
+            wd = qRound(qAbs(mat.m11()) * ws);
+        } else {
+            hd = int(qAbs(mat.m22()) * hs + 0.9999);
+            wd = int(qAbs(mat.m11()) * ws + 0.9999);
+        }
         scale_xform = true;
     } else if (mat.m11() == 0. && mat.m22() == 0.
                && ((mat.m12() == 1. && mat.m21() == -1.)        // 90 degrees
@@ -5467,6 +5522,27 @@ QImage QImage::transformed(const QTransform &matrix, Qt::TransformationMode mode
     return dImage;
 }
 
+/*!
+    \fn QTransform QImage::trueMatrix(const QTransform &matrix, int width, int height)
+
+    Returns the actual matrix used for transforming an image with the
+    given \a width, \a height and \a matrix.
+
+    When transforming an image using the transformed() function, the
+    transformation matrix is internally adjusted to compensate for
+    unwanted translation, i.e. transformed() returns the smallest
+    image containing all transformed points of the original image.
+    This function returns the modified matrix, which maps points
+    correctly from the original image into the new image.
+
+    Unlike the other overload, this function creates transformation
+    matrices that can be used to perform perspective
+    transformations on images.
+
+    \sa transformed(), {QImage#Image Transformations}{Image
+    Transformations}
+*/
+
 QTransform QImage::trueMatrix(const QTransform &matrix, int w, int h)
 {
     const qreal dt = qreal(0.);
@@ -5506,3 +5582,14 @@ QTransform QImage::trueMatrix(const QTransform &matrix, int w, int h)
                   -xmin, -ymin, 1);
     return mat;
 }
+
+
+/*!
+    \typedef QImage::DataPtr
+    \internal
+*/
+
+/*!
+    \fn DataPtr & QImage::data_ptr()
+    \internal
+*/

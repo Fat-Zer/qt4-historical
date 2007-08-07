@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -109,7 +124,7 @@
     
     If an error occurs, QSslSocket emits signal sslErrors. In this
     case, if no action is taken to ignore the error(s), the connection
-    is dropped. To continue, despite the occurrance of an error, you
+    is dropped. To continue, despite the occurrence of an error, you
     can call ignoreSslErrors(), either from within this slot after the
     error occurs, or anytime after construction of the QSslSocket and
     before the connection is attempted. This will allow QSslSocket to
@@ -771,12 +786,12 @@ void QSslSocket::setCiphers(const QList<QSslCipher> &ciphers)
 
 /*!
     Sets the cryptographic cipher suite for this socket to \a ciphers, which
-    is a colon-separated list of cipher names. The ciphers are listed in order
-    of preference, starting with the most preferred cipher. For example:
+    is a colon-separated list of cipher suite names. The ciphers are listed in
+    order of preference, starting with the most preferred cipher. For example:
 
     \code
         QSslSocket socket;
-        socket.setCiphers("!ADH:RC4+RSA:HIGH:MEDIUM:LOW:EXP:+SSLv2:+EXP");
+        socket.setCiphers("DHE-RSA-AES256-SHA:DHE-DSS-AES256-SHA:AES256-SHA");
     \endcode
 
     Each cipher name in \a ciphers must be the name of a cipher in the
@@ -1400,7 +1415,7 @@ qint64 QSslSocket::writeData(const char *data, qint64 len)
     \internal
 */
 QSslSocketPrivate::QSslSocketPrivate()
-    : plainSocket(0)
+    : protocol(QSsl::SslV3), plainSocket(0)
 {
 }
 
@@ -1420,7 +1435,6 @@ void QSslSocketPrivate::init()
     autoStartHandshake = false;
     connectionEncrypted = false;
     ignoreSslErrors = false;
-    protocol = QSsl::SslV3;
     useLocalCaCertificatesOnly = false;
 
     readBuffer.clear();

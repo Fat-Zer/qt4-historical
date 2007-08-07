@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -62,6 +77,14 @@
 #ifndef QT_NO_ACCESSIBILITY
 #include "qaccessible.h"
 
+#include <oleacc.h>
+#ifndef WM_GETOBJECT
+#define WM_GETOBJECT                    0x003D
+#endif
+
+extern IAccessible *qt_createWindowsAccessible(QAccessibleInterface *object);
+#endif // QT_NO_ACCESSIBILITY
+
 #if WINVER >= 0x0600
 #include <winuser.h>
 #else
@@ -85,14 +108,6 @@ typedef struct {
 #endif /* FLASHW_STOP */
 typedef BOOL (WINAPI *PtrFlashWindowEx)(PFLASHWINFO pfwi);
 static PtrFlashWindowEx pFlashWindowEx = 0;
-
-#include <oleacc.h>
-#ifndef WM_GETOBJECT
-#define WM_GETOBJECT                    0x003D
-#endif
-
-extern IAccessible *qt_createWindowsAccessible(QAccessibleInterface *object);
-#endif // QT_NO_ACCESSIBILITY
 
 #include <windowsx.h>
 #include <limits.h>
@@ -321,8 +336,6 @@ static void        releaseAutoCapture();
 
 static void     unregWinClasses();
 
-static int        translateKeyCode(int);
-
 extern QCursor *qt_grab_cursor();
 
 #if defined(Q_WS_WIN)
@@ -459,7 +472,7 @@ static void qt_set_windows_resources()
     QFont statusFont;
     QFont titleFont;
     QFont smallTitleFont;
-
+    QFont iconTitleFont;
     QT_WA({
         NONCLIENTMETRICS ncm;
         ncm.cbSize = FIELD_OFFSET(NONCLIENTMETRICS, lfMessageFont) + sizeof(LOGFONTW);
@@ -469,6 +482,9 @@ static void qt_set_windows_resources()
         statusFont = qt_LOGFONTtoQFont(ncm.lfStatusFont,true);
         titleFont = qt_LOGFONTtoQFont(ncm.lfCaptionFont,true);
         smallTitleFont = qt_LOGFONTtoQFont(ncm.lfSmCaptionFont,true);
+        LOGFONTW lfIconTitleFont;
+        SystemParametersInfoW(SPI_GETICONTITLELOGFONT, sizeof(lfIconTitleFont), &lfIconTitleFont, 0);
+        iconTitleFont = qt_LOGFONTtoQFont(lfIconTitleFont,true);
     } , {
         // A version
         NONCLIENTMETRICSA ncm;
@@ -479,6 +495,9 @@ static void qt_set_windows_resources()
         statusFont = qt_LOGFONTtoQFont((LOGFONT&)ncm.lfStatusFont,true);
         titleFont = qt_LOGFONTtoQFont((LOGFONT&)ncm.lfCaptionFont,true);
         smallTitleFont = qt_LOGFONTtoQFont((LOGFONT&)ncm.lfSmCaptionFont,true);
+        LOGFONTA lfIconTitleFont;
+        SystemParametersInfoA(SPI_GETICONTITLELOGFONT, sizeof(lfIconTitleFont), &lfIconTitleFont, 0);
+        iconTitleFont = qt_LOGFONTtoQFont((LOGFONT&)lfIconTitleFont,true);
     });
 
     QApplication::setFont(menuFont, "QMenu");
@@ -488,7 +507,15 @@ static void qt_set_windows_resources()
     QApplication::setFont(statusFont, "QStatusBar");
     QApplication::setFont(titleFont, "Q3TitleBar");
     QApplication::setFont(titleFont, "QWorkspaceTitleBar");
-    QApplication::setFont(smallTitleFont, "QDockWidgetTitle");
+    
+    if (QSysInfo::WindowsVersion >= QSysInfo::WV_VISTA && QSysInfo::WindowsVersion < QSysInfo::WV_NT_based) {
+        QApplication::setFont(iconTitleFont, "QAbstractItemView");
+        QApplication::setFont(iconTitleFont, "QDockWidgetTitle");
+    } else {
+        //Preserve existing behavior for non-vista platforms in 4.3
+        QApplication::setFont(smallTitleFont, "QDockWidgetTitle");
+    }
+
 #else
     LOGFONT lf;
     HGDIOBJ stockFont = GetStockObject(SYSTEM_FONT);
@@ -1073,18 +1100,20 @@ void QApplication::beep()
 
 static void alert_widget(QWidget *widget, int duration)
 {
+    bool stopFlash = duration < 0;
+
     if (!pFlashWindowEx) {
         QLibrary themeLib(QLatin1String("user32"));
         pFlashWindowEx  = (PtrFlashWindowEx)themeLib.resolve("FlashWindowEx");
     }
 
-    if (pFlashWindowEx && widget && !widget->isActiveWindow()) {
+    if (pFlashWindowEx && widget && (!widget->isActiveWindow() || stopFlash)) {
         DWORD timeOut = GetCaretBlinkTime();
         if (timeOut <= 0)
             timeOut = 250;
 
         UINT flashCount;
-        if (duration <= 0)
+        if (duration == 0)
             flashCount = 10;
         else
             flashCount = duration/timeOut;
@@ -1092,7 +1121,7 @@ static void alert_widget(QWidget *widget, int duration)
         FLASHWINFO info;
         info.cbSize = sizeof(info);
         info.hwnd = widget->window()->winId();
-        info.dwFlags = FLASHW_TRAY;
+        info.dwFlags = stopFlash ? FLASHW_STOP : FLASHW_TRAY;
         info.dwTimeout = timeOut;
         info.uCount = flashCount;
 
@@ -1701,11 +1730,14 @@ LRESULT CALLBACK QtWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
                     popup->close();
             }
 
-            // WM_ACTIVATEAPP handles the "true" false case, as this is only when the application
-            // loses focus. Doing it here would result in the widget getting focus to not know
-            // where it got it from; it would simply get a 0 value as the old focus widget.
-            if (LOWORD(wParam) != WA_INACTIVE)
+            if (LOWORD(wParam) != WA_INACTIVE) {
+                // WM_ACTIVATEAPP handles the "true" false case, as this is only when the application
+                // loses focus. Doing it here would result in the widget getting focus to not know
+                // where it got it from; it would simply get a 0 value as the old focus widget.
                 qApp->winFocus(widget, true);
+                // reset any window alert flashes
+                alert_widget(widget, -1);
+            }
 
             // Windows tries to activate a modally blocked window.
             // This happens when restoring an application after "Show Desktop"
@@ -1713,10 +1745,6 @@ LRESULT CALLBACK QtWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
                 QWidget *top = 0;
                 if (!QApplicationPrivate::tryModalHelper(widget, &top) && top && widget != top && top->isVisible())
                     top->activateWindow();
-            }
-            if (LOWORD(wParam) == WA_INACTIVE){
-                // Ensure nothing gets consider an auto-repeat press later
-                qt_keymapper_private()->clearRecordedKeys();
             }
             break;
 
@@ -2796,7 +2824,7 @@ bool QETWidget::translateWheelEvent(const MSG &msg)
     int ret = 0;
     QWidget* w = QApplication::widgetAt(globalPos);
     if (!w || !qt_try_modal(w, (MSG*)&msg, ret)) {
-        //synaptics touchpad shows its own widget at this position 
+        //synaptics touchpad shows its own widget at this position
         //so widgetAt() will fail with that HWND, try child of this widget
         w = this->childAt(this->mapFromGlobal(globalPos));
         if (!w)

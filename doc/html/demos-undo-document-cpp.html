@@ -23,17 +23,32 @@
  ** and appearing in the file LICENSE.GPL included in the packaging of
  ** this file.  Please review the following information to ensure GNU
  ** General Public Licensing requirements will be met:
- ** http://www.trolltech.com/products/qt/opensource.html
+ ** http://trolltech.com/products/qt/licenses/licensing/opensource/
  **
  ** If you are unsure which license is appropriate for your use, please
  ** review the following information:
- ** http://www.trolltech.com/products/qt/licensing.html or contact the
- ** sales department at sales@trolltech.com.
+ ** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+ ** or contact the sales department at sales@trolltech.com.
+ **
+ ** In addition, as a special exception, Trolltech gives you certain
+ ** additional rights. These rights are described in the Trolltech GPL
+ ** Exception version 1.0, which can be found at
+ ** http://www.trolltech.com/products/qt/gplexception/ and in the file
+ ** GPL_EXCEPTION.txt in this package.
+ **
+ ** In addition, as a special exception, Trolltech, as the sole copyright
+ ** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+ ** plug-in the right for the Qt/Eclipse Integration to link to
+ ** functionality provided by Qt Designer and its related libraries.
+ **
+ ** Trolltech reserves all rights not expressly granted herein.
+ **
+ ** Trolltech ASA (c) 2007
  **
  ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
  ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  **
- ****************************************************************************/
+ ****************************************************************************/</span>
 
  #include &lt;math.h&gt;
  #include &lt;qevent.h&gt;
@@ -45,9 +60,9 @@
 
  static const int resizeHandleWidth = 6;
 
- /******************************************************************************
+<span class="comment"> /******************************************************************************
  ** Shape
- */
+ */</span>
 
  const QSize Shape::minSize(80, 50);
 
@@ -118,7 +133,7 @@
      return Rectangle;
  }
 
- /******************************************************************************
+<span class="comment"> /******************************************************************************
  ** Document
  */</span>
 
@@ -361,7 +376,7 @@
          QRect rect = shape.rect();
          rect.adjust(1, 1, -resizeHandleWidth/2, -resizeHandleWidth/2);
 
-         <span class="comment">// paint the shape</span>
+         <span class="comment">//</span> paint the shape
          switch (shape.type()) {
              case Shape::Rectangle:
                  painter.drawRect(rect);
@@ -378,12 +393,12 @@
                  break;
          }
 
-         <span class="comment">// paint the resize handle</span>
+         <span class="comment">//</span> paint the resize handle
          painter.setPen(pal.text().color());
          painter.setBrush(Qt::white);
          painter.drawRect(shape.resizeHandle().adjusted(0, 0, -1, -1));
 
-         <span class="comment">// paint the shape name</span>
+         <span class="comment">//</span> paint the shape name
          painter.setBrush(pal.text());
          if (shape.type() == Shape::Triangle)
              rect.adjust(0, rect.height()/2, 0, 0);
@@ -443,6 +458,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

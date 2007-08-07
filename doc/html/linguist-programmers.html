@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/doc/src/linguist-manual.qdoc -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/doc/src/linguist-manual.qdoc -->
 <head>
   <title>Qt 4.3: Qt Linguist Manual: Programmers</title>
   <link rel="prev" href="linguist-translators.html" />
@@ -66,6 +66,7 @@
      app.installTranslator(&amp;translator);</pre>
 <p>In production applications a more flexible approach, for example, loading translations according to locale, might be more appropriate. If the <tt>.ts</tt> files are all named according to a convention such as <i>appname_locale</i>, e.g&#x2e; <tt>tt2_fr</tt>, <tt>tt2_de</tt> etc, then the code above will load the current locale's translation at runtime.</p>
 <p>If there is no translation file for the current locale the application will fall back to using the original source text.</p>
+<p>Note that if you need to programatically add translations at runtime, you can reimplement <a href="qtranslator.html#translate">QTranslator::translate</a>().</p>
 <a name="making-the-application-translate-user-visible-strings"></a>
 <h3>Making the Application Translate User-Visible Strings</h3>
 <p>User-visible strings are marked as translation targets by wrapping them in a <tt>tr()</tt> call, for example:</p>
@@ -174,6 +175,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

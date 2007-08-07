@@ -2,19 +2,34 @@
 **
 ** Copyright (C) 1992-2007 Trolltech ASA. All rights reserved.
 **
-** This file is part of the $MODULE$ of the Qt Toolkit.
+** This file is part of the QtScript module of the Qt Toolkit.
 **
 ** This file may be used under the terms of the GNU General Public
 ** License version 2.0 as published by the Free Software Foundation
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -420,16 +435,19 @@ void QScriptValue::setScope(const QScriptValue &scope)
 
 /*!
   Returns true if this QScriptValue is an instance of
-  \a ctorValue; otherwise returns false.
+  \a other; otherwise returns false.
 
-  A QScriptValue A is considered to be an instance of
-  QScriptValue B if B is in the prototype chain of A.
+  This QScriptValue is considered to be an instance of \a other if
+  \a other is a function and the value of the \c{prototype}
+  property of \a other is in the prototype chain of this
+  QScriptValue.
 */
-bool QScriptValue::instanceOf(const QScriptValue &ctorValue) const
+bool QScriptValue::instanceOf(const QScriptValue &other) const
 {
-    if (!ctorValue.isValid())
+    if (!other.isValid())
         return false;
-    return QScriptValuePrivate::valueOf(*this).instanceOf(QScriptValuePrivate::valueOf(ctorValue));
+    return QScriptValuePrivate::valueOf(*this)
+        .instanceOf(QScriptValuePrivate::valueOf(other));
 }
 
 /*!
@@ -636,7 +654,7 @@ qsreal QScriptValue::toInteger() const
     \row    \o QObject Object \o A QVariant containing a pointer to the QObject.
     \row    \o Date Object \o A QVariant containing the date value (toDateTime()).
     \row    \o RegExp Object \o A QVariant containing the regular expression value (toRegExp()).
-    \row    \o Object     \o If toPrimitive() returns a primitive value, then the result is converted to a QVariant according to the above rules; otherwise, an invalid QVariant is returned.
+    \row    \o Object     \o If the value is primitive, then the result is converted to a QVariant according to the above rules; otherwise, an invalid QVariant is returned.
     \endtable
 
   \sa isVariant()
@@ -1023,10 +1041,10 @@ bool QScriptValue::isUndefined() const
   Returns true if this QScriptValue is of the Object type; otherwise
   returns false.
 
-  Note that function values, variant values and QObject values are
-  objects, so this function will return true for such values.
+  Note that function values, variant values, and QObject values are
+  objects, so this function returns true for such values.
 
-  \sa toObject(), toPrimitive(), QScriptEngine::newObject()
+  \sa toObject(), QScriptEngine::newObject()
 */
 bool QScriptValue::isObject() const
 {

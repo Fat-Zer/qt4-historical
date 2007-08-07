@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -28,6 +43,7 @@ TRANSLATOR qdesigner_internal::ConnectionModel
 #include "signalsloteditorwindow.h"
 #include "signalsloteditor_p.h"
 #include "signalsloteditor.h"
+#include "qdesigner_integration_p.h"
 
 #include <iconloader_p.h>
 #include <QtDesigner/QDesignerFormWindowInterface>
@@ -270,6 +286,11 @@ void ConnectionModel::connectionChanged(Connection *con)
         }
     }
     emit dataChanged(createIndex(idx, 0), createIndex(idx, 3));
+}
+
+void ConnectionModel::updateAll()
+{
+    emit dataChanged(index(0, 0), index(rowCount(), columnCount()));
 }
 
 /*******************************************************************************
@@ -564,11 +585,14 @@ SignalSlotEditorWindow::SignalSlotEditorWindow(QDesignerFormEditorInterface *cor
                 this, SLOT(setActiveFormWindow(QDesignerFormWindowInterface*)));
 
     updateUi();
+
+    m_core = core;
 }
 
 void SignalSlotEditorWindow::setActiveFormWindow(QDesignerFormWindowInterface *form)
 {
     m_view->setModel(0);
+    QDesignerIntegration *integration = qobject_cast<QDesignerIntegration *>(m_core->integration());
 
     if (!m_editor.isNull()) {
         disconnect(m_view->selectionModel(),
@@ -576,6 +600,10 @@ void SignalSlotEditorWindow::setActiveFormWindow(QDesignerFormWindowInterface *f
                     this, SLOT(updateEditorSelection(QModelIndex)));
         disconnect(m_editor, SIGNAL(connectionSelected(Connection*)),
                     this, SLOT(updateDialogSelection(Connection*)));
+        if (integration) {
+            disconnect(integration, SIGNAL(objectNameChanged(QDesignerFormWindowInterface *, QObject *, const QString &)),
+                    this, SLOT(objectNameChanged(QDesignerFormWindowInterface *, QObject *, const QString &)));
+        }
     }
 
     m_editor = qFindChild<SignalSlotEditor*>(form);
@@ -592,6 +620,10 @@ void SignalSlotEditorWindow::setActiveFormWindow(QDesignerFormWindowInterface *f
                 this, SLOT(updateEditorSelection(QModelIndex)));
         connect(m_editor, SIGNAL(connectionSelected(Connection*)),
                 this, SLOT(updateDialogSelection(Connection*)));
+        if (integration) {
+            connect(integration, SIGNAL(objectNameChanged(QDesignerFormWindowInterface *, QObject *, const QString &)),
+                    this, SLOT(objectNameChanged(QDesignerFormWindowInterface *, QObject *, const QString &)));
+        }
     }
 
     updateUi();
@@ -633,6 +665,14 @@ void SignalSlotEditorWindow::updateEditorSelection(const QModelIndex &index)
     m_handling_selection_change = false;
 
     updateUi();
+}
+
+void SignalSlotEditorWindow::objectNameChanged(QDesignerFormWindowInterface *, QObject *, const QString &)
+{
+    if (m_editor && m_editor->model()) {
+        ConnectionModel *model = qobject_cast<ConnectionModel*>(m_editor->model());
+        model->updateAll();
+    }
 }
 
 void SignalSlotEditorWindow::addConnection()

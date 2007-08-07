@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.0-qt-1180098257750/qt-all-opensource-src-4.3.0/src/gui/kernel/qdrag.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/kernel/qdrag.cpp -->
 <head>
   <title>Qt 4.3: QDrag Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -74,7 +74,7 @@
 <p><b>Note:</b> on X11, the pixmap may not be able to keep up with the mouse movements if the hot spot causes the pixmap to be displayed directly under the cursor.</p>
 <p>The source and target widgets can be found with <a href="qdrag.html#source">source</a>() and <a href="qdrag.html#target">target</a>(). These functions are often used to determine whether drag and drop operations started and finished at the same widget, so that special behavior can be implemented.</p>
 <p>QDrag only deals with the drag and drop operation itself. It is up to the developer to decide when a drag operation begins, and how a QDrag object should be constructed and used. For a given widget, it is often necessary to reimplement <a href="qwidget.html#mousePressEvent">mousePressEvent()</a> to determine whether the user has pressed a mouse button, and reimplement <a href="qwidget.html#mouseMoveEvent">mouseMoveEvent()</a> to check whether a QDrag is required.</p>
-<p>See also <a href="dnd.html">Drag and Drop</a>, <a href="qclipboard.html">QClipboard</a>, <a href="qmimedata.html">QMimeData</a>, <a href="qwindowsmime.html">QWindowsMime</a>, QMacPasteBoardMime, <a href="draganddrop-draggableicons.html">Draggable Icons Example</a>, <a href="draganddrop-draggabletext.html">Draggable Text Example</a>, <a href="draganddrop-dropsite.html">Drop Site Example</a>, and <a href="draganddrop-fridgemagnets.html">Fridge Magnets Example</a>.</p>
+<p>See also <a href="dnd.html">Drag and Drop</a>, <a href="qclipboard.html">QClipboard</a>, <a href="qmimedata.html">QMimeData</a>, <a href="qwindowsmime.html">QWindowsMime</a>, <a href="qmacpasteboardmime.html">QMacPasteboardMime</a>, <a href="draganddrop-draggableicons.html">Draggable Icons Example</a>, <a href="draganddrop-draggabletext.html">Draggable Text Example</a>, <a href="draganddrop-dropsite.html">Drop Site Example</a>, and <a href="draganddrop-fridgemagnets.html">Fridge Magnets Example</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
 <a name="//apple_ref/cpp/instm/QDrag/QDrag" />
@@ -141,6 +141,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>

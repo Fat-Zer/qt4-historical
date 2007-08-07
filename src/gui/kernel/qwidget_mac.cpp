@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -260,9 +275,14 @@ static void qt_mac_release_stays_on_top_group(WindowGroupRef group)
     }
 }
 
+static bool qt_isGenuineQWidget(HIViewRef ref) 
+{
+    return HIObjectIsOfClass(HIObjectRef(ref), kObjectQWidget);
+}
+
 static bool qt_isGenuineQWidget(const QWidget *window)
 {
-    return window && HIObjectIsOfClass(HIObjectRef(window->winId()), kObjectQWidget);
+    return window && qt_isGenuineQWidget(HIViewRef(window->winId()));
 }
 
 /* Use this function instead of ReleaseWindowGroup, this will be sure to release the
@@ -498,10 +518,14 @@ OSStatus QWidgetPrivate::qt_window_event(EventHandlerCallRef er, EventRef event,
             QApplication::sendSpontaneousEvent(widget, &ev);
             HIToolbarRef toolbar;
             if (GetWindowToolbar(wid, &toolbar) == noErr) {
-                if (toolbar)
-                    CallNextEventHandler(er, event); // Let HIToolbar do its thang.
+                if (toolbar) {
+                    // Let HIToolbar do its thang, but things like the OpenGL context
+                    // needs to know about it.
+                    CallNextEventHandler(er, event);
+                    qt_event_request_window_change();
+                    widget->data->fstrut_dirty = true;
+                }
             }
-
         } else if(ekind == kEventWindowGetRegion) {
             WindowRef window;
             GetEventParameter(event, kEventParamDirectObject, typeWindowRef, 0,
@@ -515,7 +539,7 @@ OSStatus QWidgetPrivate::qt_window_event(EventHandlerCallRef er, EventRef event,
             if (wcode != kWindowOpaqueRgn){
                 // If the region is kWindowOpaqueRgn, don't call next
                 // event handler cause this will make the shadow of
-                // masked windows become offset. Unfortunatly, we're not sure why.
+                // masked windows become offset. Unfortunately, we're not sure why.
                 CallNextEventHandler(er, event);
             }
             if(QWidgetPrivate::qt_widget_rgn(qt_mac_find_window(window), wcode, rgn, false))
@@ -737,7 +761,7 @@ OSStatus QWidgetPrivate::qt_widget_event(EventHandlerCallRef er, EventRef event,
                              0, sizeof(hiview), 0, &hiview) == noErr)
             widget = QWidget::find((WId)hiview);
         if(ekind == kEventControlDraw) {
-            if(widget) {
+            if(widget && qt_isGenuineQWidget(hiview)) {
                 QMacWindowChangeEvent::exec(true);
 
                 //requested rgn
@@ -1005,7 +1029,7 @@ OSStatus QWidgetPrivate::qt_widget_event(EventHandlerCallRef er, EventRef event,
             if (!widget || widget->isWindow() || widget->testAttribute(Qt::WA_Moved) || widget->testAttribute(Qt::WA_Resized)) {
                 handled_event = false;
             } else {
-                // Sync our view in case some other (non-Qt) view is controling us.
+                // Sync our view in case some other (non-Qt) view is controlling us.
                 handled_event = true;
                 Rect newBounds;
                 GetEventParameter(event, kEventParamCurrentBounds,
@@ -1695,15 +1719,12 @@ QWidget::macQDHandle() const
 }
 
 /*!
-    Returns the CoreGraphics handle of the widget. Use of this function is
-    not portable. This function will return 0 if no painter context can be
-    established, or if the handle could not be created.
+  Returns the CoreGraphics handle of the widget. Use of this function is
+  not portable. This function will return 0 if no painter context can be
+  established, or if the handle could not be created.
 
-    \warning This function is only available on Mac OS X.
-
-    \sa handle()
+  \warning This function is only available on Mac OS X.
 */
-
 Qt::HANDLE
 QWidget::macCGHandle() const
 {
@@ -1806,7 +1827,7 @@ void QWidgetPrivate::setParent_sys(QWidget *parent, Qt::WindowFlags f)
     q->setAttribute(Qt::WA_WState_Hidden, false);
     adjustFlags(data.window_flags, q);
     // keep compatibility with previous versions, we need to preserve the created state
-    // (but we recreate the winId for the widget being reparented, again for compability)
+    // (but we recreate the winId for the widget being reparented, again for compatibility)
     if (wasCreated || (!q->isWindow() && parent->testAttribute(Qt::WA_WState_Created)))
         createWinId();
     if (q->isWindow() || (!parent || parent->isVisible()) || explicitlyHidden)
@@ -2224,7 +2245,16 @@ void QWidget::setWindowState(Qt::WindowStates newstate)
             (oldstate & Qt::WindowMaximized) != (newstate & Qt::WindowMaximized))) {
             if(newstate & Qt::WindowMaximized) {
                 Rect bounds;
+                HIToolbarRef toolbarRef;
                 data->fstrut_dirty = true;
+                if (GetWindowToolbar(window, &toolbarRef) == noErr && toolbarRef
+                        && !isVisible() && !IsWindowToolbarVisible(window)) {
+                    // HIToolbar, needs to be shown so that it's in the structure window
+                    // Typically this is part of a main window and will get shown
+                    // during the show, but it's will make the maximize all wrong.
+                    ShowHideWindowToolbar(window, true, false);
+                    d->updateFrameStrut();  // In theory the dirty would work, but it's optimized out if the window is not visible :(
+                }
                 QDesktopWidget *dsk = QApplication::desktop();
                 QRect avail = dsk->availableGeometry(dsk->screenNumber(this));
                 SetRect(&bounds, avail.x(), avail.y(), avail.x() + avail.width(), avail.y() + avail.height());
@@ -2831,7 +2861,7 @@ void QWidgetPrivate::setModal_sys()
 {
     Q_Q(QWidget);
 
-    if (!q->testAttribute(Qt::WA_WState_Created))
+    if (!q->testAttribute(Qt::WA_WState_Created) || !q->isWindow())
         return;
 
     const QWidget * const windowParent = q->window()->parentWidget();

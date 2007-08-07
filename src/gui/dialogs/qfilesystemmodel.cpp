@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -191,11 +206,11 @@ QFileSystemModelPrivate::QFileSystemNode *QFileSystemModelPrivate::node(const QS
 	        row = -1;
 	}
 
+        bool alreadyExisted = (row != -1);
         if (row == -1) {
             // Someone might call ::index("file://cookie/monster/doesn't/like/veggies"),
             // a path that doesn't exists, I.E. don't blindly create directories.
-            QStringList currentPath = pathElements.mid(0, i + 1);
-            QFileInfo info(currentPath.join(QLatin1String("/")));
+            QFileInfo info(absolutePath);
             if (!info.exists())
                 return const_cast<QFileSystemModelPrivate::QFileSystemNode*>(&root);
             QFileSystemModelPrivate *p = const_cast<QFileSystemModelPrivate*>(this);
@@ -206,8 +221,13 @@ QFileSystemModelPrivate::QFileSystemNode *QFileSystemModelPrivate::node(const QS
             parent->children[row].populate(fileInfoGatherer.getInfo(info));
 #endif
         }
+
         Q_ASSERT(row >= 0);
         if (parent->visibleLocation(row) == -1) {
+            // It has been filtered out
+            if (alreadyExisted && parent->children.at(row).hasInformation() && !fetch)
+                return const_cast<QFileSystemModelPrivate::QFileSystemNode*>(&root);
+
             QFileSystemModelPrivate *p = const_cast<QFileSystemModelPrivate*>(this);
             p->addVisibleFiles(parent, QStringList(element));
             if (!p->bypassFilters.contains(&parent->children.at(row)))
@@ -550,23 +570,23 @@ QIcon QFileSystemModelPrivate::icon(const QModelIndex &index) const
 /*!
     \reimp
 */
-bool QFileSystemModel::setData(const QModelIndex &index, const QVariant &value, int role)
+bool QFileSystemModel::setData(const QModelIndex &idx, const QVariant &value, int role)
 {
     Q_D(QFileSystemModel);
-    if (!index.isValid()
-        || index.column() != 0
+    if (!idx.isValid()
+        || idx.column() != 0
         || role != Qt::EditRole
-        || (flags(index) & Qt::ItemIsEditable) == 0) {
+        || (flags(idx) & Qt::ItemIsEditable) == 0) {
         return false;
     }
 
     QString newName = value.toString();
-    if (newName == index.data().toString())
+    if (newName == idx.data().toString())
         return true;
 
     if (newName.isEmpty()
         || newName.contains(QDir::separator())
-        || !d->rootDir.rename(index.data().toString(), newName)) {
+        || !d->rootDir.rename(idx.data().toString(), newName)) {
 #ifndef QT_NO_MESSAGEBOX
         QMessageBox::information(0, QFileSystemModel::tr("Invalid filename"),
                                 QFileSystemModel::tr("<b>The name \"%1\" can not be used.</b><p>Try using another name, with fewer characters or no punctuations marks.")
@@ -575,17 +595,40 @@ bool QFileSystemModel::setData(const QModelIndex &index, const QVariant &value, 
 #endif // QT_NO_MESSAGEBOX
         return false;
     } else {
-        QFileSystemModelPrivate::QFileSystemNode *indexNode = d->node(index);
+        /*
+            *After re-naming something we don't want the selection to change*
+            - can't remove rows and later insert
+            - can't quickly remove and insert
+            - index pointer can't change because treeview doesn't use persistant index's
+
+            - if this get any more complicated think of changing it to just
+              use layoutChanged
+         */
+
+        QFileSystemModelPrivate::QFileSystemNode *indexNode = d->node(idx);
         QFileSystemModelPrivate::QFileSystemNode *parentNode = indexNode->parent;
-        int itemLocation = d->findChild(parentNode, *indexNode);
-        int visibleLocation = parentNode->visibleLocation(itemLocation);
+        int oldItemLocation = d->findChild(parentNode, *indexNode);
+        int visibleLocation = parentNode->visibleLocation(oldItemLocation);
 
         parentNode->visibleChildren.removeAt(visibleLocation);
-        d->removeNode(parentNode, itemLocation);
-        itemLocation = d->addNode(parentNode, newName);
+        // keep the old node and just move it around so any model index's that
+        // point to it don't cause segfaults
+        // swap will move the pointers, move will remove and insert.
+        int newItemLocation = d->addNode(parentNode, newName);
+        oldItemLocation = d->findChild(parentNode, *indexNode);
+        parentNode->children.swap(newItemLocation, oldItemLocation);
         QFileInfo info(d->rootDir, newName);
-        parentNode->children[itemLocation].populate(d->fileInfoGatherer.getInfo(info));
-        parentNode->visibleChildren.insert(visibleLocation, itemLocation);
+        parentNode->children[newItemLocation].fileName = newName;
+        parentNode->children[newItemLocation].parent = parentNode;
+        parentNode->children[newItemLocation].populate(d->fileInfoGatherer.getInfo(info));
+        parentNode->children.removeAt(oldItemLocation);
+        // remove from the visible children
+        for (int j = 0; j < parentNode->visibleChildren.count(); ++j)
+            if (parentNode->visibleChildren.at(j) > oldItemLocation)
+                --parentNode->visibleChildren[j];
+        if (oldItemLocation < newItemLocation)
+            --newItemLocation;
+        parentNode->visibleChildren.insert(visibleLocation, newItemLocation);
         d->delayedSort();
     }
     return true;
@@ -999,7 +1042,12 @@ QModelIndex QFileSystemModel::mkdir(const QModelIndex &parent, const QString &na
 QFile::Permissions QFileSystemModel::permissions(const QModelIndex &index) const
 {
     Q_D(const QFileSystemModel);
-    return d->node(index)->permissions();
+    QFile::Permissions p = d->node(index)->permissions();
+    if (d->readOnly) {
+        p ^= (QFile::WriteOwner | QFile::WriteUser
+            | QFile::WriteGroup | QFile::WriteOther);
+    }
+    return p;
 }
 
 
@@ -1168,7 +1216,7 @@ bool QFileSystemModel::nameFilterDisables() const
 }
 
 /*!
-    Sets the name \a filters to apply against the exisiting files.
+    Sets the name \a filters to apply against the existing files.
 */
 void QFileSystemModel::setNameFilters(const QStringList &filters)
 {
@@ -1218,12 +1266,8 @@ void QFileSystemModelPrivate::_q_directoryChanged(const QString &directory, cons
     // non-filtered files will be removed in a fileSystemChanged()
     for (int i = parentNode->children.count() - 1;  i >= 0; --i) {
         QStringList::const_iterator iterator;
-        if (parentNode->caseSensitive())
-            iterator = qBinaryFind(newFiles.begin(), newFiles.end(),
+        iterator = qBinaryFind(newFiles.begin(), newFiles.end(),
                        parentNode->children.at(i).fileName);
-        else
-            iterator = qBinaryFind(newFiles.begin(), newFiles.end(),
-                       parentNode->children.at(i).fileName, caseInsensitiveLessThan);
         if (iterator == newFiles.constEnd()) {
            removeNode(parentNode, i);
         }

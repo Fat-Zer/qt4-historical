@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -188,6 +203,19 @@ class QXmlAttributesPrivate
 {
 };
 
+/* \class QXmlInputSourcePrivate
+    \internal
+
+  There's a slight misdesign in this class that can
+  be worth to keep in mind: the `str' member is
+  a buffer which QXmlInputSource::next() returns from,
+  and which is populated from the input device or input
+  stream. However, when the input is a QString(the user called
+  QXmlInputSource::setData()), `str' has two roles: it's the
+  buffer, but also the source. This /seems/ to be no problem
+  because in the case of having no device or stream, the QString
+  is read in one go.
+ */
 class QXmlInputSourcePrivate
 {
 public:
@@ -207,7 +235,6 @@ public:
     QString encodingDeclChars;
     bool lookingForEncodingDecl;
 };
-
 class QXmlParseExceptionPrivate
 {
 public:
@@ -1415,32 +1442,13 @@ void QXmlInputSource::setData(const QByteArray& dat)
     \sa data() next() QXmlInputSource()
 */
 
-#define QSAX_BUFF_SIZE 1024
-#if 0
-static QByteArray escapeBuff(const QByteArray &arr)
-{
-    QByteArray result;
-    for (int i = 0; i < arr.count(); ++i) {
-        char c = arr.at(i);
-        if (c == '\\') {
-            result.append('\\');
-            result.append('\\');
-        } else if (c >= 32 && c <= 126) {
-            result.append(c);
-        } else {
-            result.append('\\');
-            QByteArray num = QByteArray::number((uchar)c);
-            while (num.length() < 3)
-                num.prepend('0');
-            result.append(num);
-        }
-    }
-    return result;
-}
-#endif
-
 void QXmlInputSource::fetchData()
 {
+    enum
+    {
+        BufferSize = 1024
+    };
+
     QByteArray rawData;
 
     if (d->inputDevice || d->inputStream) {
@@ -1452,15 +1460,15 @@ void QXmlInputSource::fetchData()
                 rawData = QByteArray((const char *) s->constData(), s->size() * sizeof(QChar));
             }
         } else if (device->isOpen() || device->open(QIODevice::ReadOnly)) {
-            rawData.resize(QSAX_BUFF_SIZE);
-            qint64 size = device->read(rawData.data(), QSAX_BUFF_SIZE);
+            rawData.resize(BufferSize);
+            qint64 size = device->read(rawData.data(), BufferSize);
 
             if (size != -1) {
                 // We don't want to give fromRawData() less than four bytes if we can avoid it.
                 while (size < 4) {
                     if (!device->waitForReadyRead(-1))
                         break;
-                    int ret = device->read(rawData.data() + size, QSAX_BUFF_SIZE - size);
+                    int ret = device->read(rawData.data() + size, BufferSize - size);
                     if (ret <= 0)
                         break;
                     size += ret;
@@ -1469,11 +1477,16 @@ void QXmlInputSource::fetchData()
 
             rawData.resize(qMax(qint64(0), size));
         }
-    }
 
-    setData(fromRawData(rawData));
+        /* We do this inside the "if (d->inputDevice ..." scope
+         * because if we're not using a stream or device, that is,
+         * the user set a QString manually, we don't want to set
+         * d->str. */
+        setData(fromRawData(rawData));
+    }
 }
 
+#ifndef QT_NO_TEXTCODEC
 static QString extractEncodingDecl(const QString &text, bool *needMoreText)
 {
     *needMoreText = false;
@@ -1515,6 +1528,7 @@ static QString extractEncodingDecl(const QString &text, bool *needMoreText)
 
     return encoding;
 }
+#endif // QT_NO_TEXTCODEC
 
 /*!
     This function reads the XML file from \a data and tries to
@@ -1531,7 +1545,7 @@ QString QXmlInputSource::fromRawData(const QByteArray &data, bool beginning)
 {
 #ifdef QT_NO_TEXTCODEC
     Q_UNUSED(beginning);
-    return QString(data);
+    return QString::fromAscii(data.constData(), data.size());
 #else
     if (data.size() == 0)
         return QString();

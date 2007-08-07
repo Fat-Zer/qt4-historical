@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -39,7 +54,7 @@
     This enum specifies the type of token the reader just read.
 
     \value NoToken The reader has not yet read anything.
-    \value Invalid An error has occured, reported in error() and errorString().
+    \value Invalid An error has occurred, reported in error() and errorString().
     \value StartDocument The reader reports the start of the
     document. If the document is declared standalone,
     isStandaloneDocument() returns true; otherwise it returns false.
@@ -68,7 +83,7 @@
 
     This enum specifies different error cases
 
-    \value NoError No error has occured.
+    \value NoError No error has occurred.
     \value CustomError A custom error has been raised with raiseError()
     \value NotWellFormedError The parser internally raised an error due to the read XML not being well-formed.
     \value PrematureEndOfDocumentError The input stream ended before the document was parsed completely. This error can be recovered from.
@@ -139,8 +154,8 @@
   DTD.
 
   If an error does occur while parsing, atEnd() returns true and
-  error() returns the kind of error that occured. hasError() can also
-  be used to check whether an error has occured. The functions
+  error() returns the kind of error that occurred. hasError() can also
+  be used to check whether an error has occurred. The functions
   errorString(), lineNumber(), columnNumber(), and characterOffset()
   make it possible to generate a verbose human-understandable error or
   warning message. In order to simplify application code,
@@ -285,7 +300,7 @@ QXmlStreamReader::~QXmlStreamReader()
 }
 
 /*! \fn bool QXmlStreamReader::hasError() const
-    Returns true an error has occured, otherwise false.
+    Returns \c true if an error has occurred, otherwise \c false.
 
     \sa errorString(), error()
  */
@@ -388,7 +403,7 @@ void QXmlStreamReader::clear()
 
 /*!
     Returns true if the reader has read until the end of the XML
-    document, or an error has occured and reading has been aborted;
+    document, or an error has occurred and reading has been aborted;
     otherwise returns false.
 
     Has reading been aborted with a PrematureEndOfDocumentError
@@ -489,7 +504,7 @@ static const char * QXmlStreamReader_tokenTypeString[] = {
     namespaces. If enabled, the reader processes namespaces, otherwise
     it does not.
 
-    By default, namespace-processing is disabled.
+    By default, namespace-processing is enabled.
 */
 
 
@@ -704,7 +719,7 @@ inline uint QXmlStreamReaderPrivate::peekChar()
   If \a tokenToInject is not less than zero, injectToken() is called with
   \a tokenToInject when \a str is found.
 
-  If any error occured, false is returned, otherwise true.
+  If any error occurred, false is returned, otherwise true.
   */
 bool QXmlStreamReaderPrivate::scanUntil(const char *str, short tokenToInject)
 {
@@ -1726,7 +1741,8 @@ QString QXmlStreamReader::readElementText()
             case Comment:
                 break;
             default:
-                d->raiseError(UnexpectedElementError, QXmlStream::tr("Expected character data."));
+                if (!d->error)
+                    d->raiseError(UnexpectedElementError, QXmlStream::tr("Expected character data."));
                 return result;
             }
         }
@@ -1757,7 +1773,7 @@ QString QXmlStreamReader::errorString() const
     return QString();
 }
 
-/*!  Returns the type of the current error, or NoError if no error occured.
+/*!  Returns the type of the current error, or NoError if no error occurred.
 
   \sa errorString(), raiseError()
  */
@@ -2414,21 +2430,21 @@ bool QXmlStreamReader::isStandaloneDocument() const
   XML. Like its related class, it operates on a QIODevice specified
   with setDevice(). The API is simple and straight forward: For every
   XML token or event you want to write, the writer provides a
-  specialised function.
+  specialized function.
 
   You start a document with writeStartDocument() and end it with
-  writeEndDocument(). This will implicitely close all remaining open
+  writeEndDocument(). This will implicitly close all remaining open
   tags.
 
   Element tags are opened with writeStartElement() followed by
   writeAttribute() or writeAttributes(), element content, and then
-  writeEndDocument(). A shorter form writeEmptyElement() can be used
+  writeEndElement(). A shorter form writeEmptyElement() can be used
   to write empty elements.
 
   Element content consists of either characters, entity references or
-  nested elements. It is written with writeCharacters() - which also
-  takes care of excaping all forbidden characters and character
-  sequences -, writeEntityReference(), or subsequent calls to
+  nested elements. It is written with writeCharacters(), which also
+  takes care of escaping all forbidden characters and character
+  sequences, writeEntityReference(), or subsequent calls to
   writeStartElement(). A convenience method writeTextElement() can be
   used for writing terminal elements that contain nothing but text.
 
@@ -2444,8 +2460,8 @@ bool QXmlStreamReader::isStandaloneDocument() const
 
   The stream writer can automatically format the generated XML data by
   adding line-breaks and indentation to empty sections between
-  elements, somethign that makes the XML data more readable for humans
-  and easier to work with for most source code management systems. The
+  elements, making the XML data more readable for humans and easier to
+  work with for most source code management systems. The
   feature can be turned on with the \l autoFormatting property.
 
   Other functions are writeCDATA(), writeComment(),
@@ -2455,7 +2471,7 @@ bool QXmlStreamReader::isStandaloneDocument() const
   By default, QXmlStreamWriter encodes XML in UTF-8. Different
   encodings can be enforced using setCodec().
 
-  The \l{QXmlStream Bookmarks Example} illustrates how to use the a
+  The \l{QXmlStream Bookmarks Example} illustrates how to use a
   subclassed stream writer to write an XML bookmark file (XBEL) that
   was previously read in by a QXmlStreamReader.
 

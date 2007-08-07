@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -183,13 +198,15 @@ void QDBusAbstractInterfacePrivate::_q_serviceOwnerChanged(const QString &name,
 
     \brief The QDBusAbstractInterface class is the base class for all D-Bus interfaces in the QtDBus binding, allowing access to remote interfaces
 
-    Generated-code classes also derive from QDBusAbstractInterface, all methods described here are also
-    valid for generated-code classes. In addition to those described here, generated-code classes
-    provide member functions for the remote methods, which allow for compile-time checking of the
-    correct parameters and return values, as well as property type-matching and signal
+    Generated-code classes also derive from QDBusAbstractInterface,
+    all methods described here are also valid for generated-code
+    classes. In addition to those described here, generated-code
+    classes provide member functions for the remote methods, which
+    allow for compile-time checking of the correct parameters and
+    return values, as well as property type-matching and signal
     parameter-matching.
 
-    \sa {dbusxml2cpp.html}{The dbusxml2cpp compiler}, QDBusInterface
+    \sa {qdbusxml2cpp.html}{The QDBus compiler}, QDBusInterface
 */
 
 /*!
@@ -359,10 +376,10 @@ QDBusMessage QDBusAbstractInterface::callWithArgumentList(QDBus::CallMode mode,
     not indicate that the executed call succeeded. If it fails,
     the \a errorMethod is called.
  
-    The \a returnMember member must have as its parameters the
-    types returned by the function call. Optionally, it may have
-    a QDBusMessage parameter as its last or as its only parameter.
-    The \a errorMethod must have a QDBusError as its only parameter.
+    The \a returnMethod must have as its parameters the types returned
+    by the function call. Optionally, it may have a QDBusMessage
+    parameter as its last or only parameter.  The \a errorMethod must
+    have a QDBusError as its only parameter.
 
     \since 4.3
     \sa QDBusError, QDBusMessage

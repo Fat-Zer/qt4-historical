@@ -9,12 +9,27 @@
 ** and appearing in the file LICENSE.GPL included in the packaging of
 ** this file.  Please review the following information to ensure GNU
 ** General Public Licensing requirements will be met:
-** http://www.trolltech.com/products/qt/opensource.html
+** http://trolltech.com/products/qt/licenses/licensing/opensource/
 **
 ** If you are unsure which license is appropriate for your use, please
 ** review the following information:
-** http://www.trolltech.com/products/qt/licensing.html or contact the
-** sales department at sales@trolltech.com.
+** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+** or contact the sales department at sales@trolltech.com.
+**
+** In addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.0, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
+**
+** In addition, as a special exception, Trolltech, as the sole copyright
+** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+** plug-in the right for the Qt/Eclipse Integration to link to
+** functionality provided by Qt Designer and its related libraries.
+**
+** Trolltech reserves all rights not expressly granted herein.
+** 
+** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -34,14 +49,10 @@
 #include <qlist.h>
 #include <qvector.h>
 #include <qtextcodec.h>
-#include <qdebug.h>
-
-#include <ibase.h>
-
 #include <stdlib.h>
 #include <limits.h>
 #include <math.h>
-
+    
 #define FBVERSION SQL_DIALECT_V6
 
 #ifndef SQLDA_CURRENT_VERSION
@@ -50,7 +61,7 @@
 
 enum { QIBaseChunkSize = SHRT_MAX / 2 };
 
-static bool getIBaseError(QString& msg, ISC_STATUS* status, long &sqlcode,
+static bool getIBaseError(QString& msg, ISC_STATUS* status, ISC_LONG &sqlcode,
                           QTextCodec *tc)
 {
     if (status[0] != 1 || status[1] <= 0)
@@ -269,7 +280,7 @@ public:
     bool isError(const char *msg, QSqlError::ErrorType typ = QSqlError::UnknownError)
     {
         QString imsg;
-        long sqlcode;
+        ISC_LONG sqlcode;
         if (!getIBaseError(imsg, status, sqlcode, tc))
             return false;
 
@@ -297,7 +308,7 @@ public:
     bool isError(const char *msg, QSqlError::ErrorType typ = QSqlError::UnknownError)
     {
         QString imsg;
-        long sqlcode;
+        ISC_LONG sqlcode;
         if (!getIBaseError(imsg, status, sqlcode, tc))
             return false;
 
@@ -391,10 +402,9 @@ QVariant QIBaseResultPrivate::fetchBlob(ISC_QUAD *bId)
     int read = 0;
     while (isc_get_segment(status, &handle, &len, chunkSize, ba.data() + read) == 0 || status[1] == isc_segment) {
         read += len;
-        if (status[1] != isc_segment && len < chunkSize)
-            break;
-        ba.resize(ba.size() + chunkSize);
+        ba.resize(read + chunkSize);
     }
+    ba.resize(read);
 
     bool isErr = (status[1] == isc_segstr_eof ? false : 
                     isError(QT_TRANSLATE_NOOP("QIBaseResult", 
@@ -986,9 +996,13 @@ bool QIBaseResult::exec()
         if (d->queryType == isc_info_sql_stmt_exec_procedure)
             isc_dsql_execute2(d->status, &d->trans, &d->stmt, FBVERSION, d->inda, d->sqlda);
         else
-        isc_dsql_execute(d->status, &d->trans, &d->stmt, FBVERSION, d->inda);
+            isc_dsql_execute(d->status, &d->trans, &d->stmt, FBVERSION, d->inda);
         if (d->isError(QT_TRANSLATE_NOOP("QIBaseResult", "Unable to execute query")))
             return false;
+
+        // Not all stored procedures necessarily return values.
+        if (d->queryType == isc_info_sql_stmt_exec_procedure && colCount() == 0)
+            delDA(d->sqlda);
 
         if (d->sqlda)
             init(d->sqlda->sqld);
@@ -1066,11 +1080,11 @@ bool QIBaseResult::gotoNext(QSqlCachedResult::ValueCache& row, int rowIdx)
         case SQL_LONG:
             if (d->sqlda->sqlvar[i].sqllen == 4)
                 if (d->sqlda->sqlvar[i].sqlscale < 0)
-                    row[idx] = QVariant(long((*(long*)buf)) * pow(10.0, d->sqlda->sqlvar[i].sqlscale));
+                    row[idx] = QVariant(*(qint32*)buf * pow(10.0, d->sqlda->sqlvar[i].sqlscale));
                 else
-                    row[idx] = QVariant(int((*(long*)buf)));
+                    row[idx] = QVariant(*(qint32*)buf);
             else
-                row[idx] = QVariant(qint64((*(long*)buf)));
+                row[idx] = QVariant(*(qint64*)buf);
             break;
         case SQL_SHORT:
             if (d->sqlda->sqlvar[i].sqlscale < 0)
@@ -1240,11 +1254,11 @@ QIBaseDriver::QIBaseDriver(QObject * parent)
     d = new QIBaseDriverPrivate(this);
 }
 
-QIBaseDriver::QIBaseDriver(void *connection, QObject *parent)
+QIBaseDriver::QIBaseDriver(isc_db_handle connection, QObject *parent)
     : QSqlDriver(parent)
 {
     d = new QIBaseDriverPrivate(this);
-    d->ibase = (isc_db_handle)connection;
+    d->ibase = connection;
     setOpen(true);
     setOpenError(false);
 }
@@ -1309,7 +1323,7 @@ bool QIBaseDriver::open(const QString & db,
     else {
         d->tc = QTextCodec::codecForName(encString.toLocal8Bit());
         if (!d->tc) {
-            qWarning("Unsupported encoding: %d. Using UNICODE_FFS for ISC_DPB_LC_CTYPE.", encString);
+            qWarning("Unsupported encoding: %s. Using UNICODE_FFS for ISC_DPB_LC_CTYPE.", encString.toLocal8Bit().constData());
             encString = QLatin1String("UNICODE_FSS"); // Fallback to UNICODE_FSS
         }
     }

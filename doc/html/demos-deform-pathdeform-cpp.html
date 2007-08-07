@@ -23,12 +23,27 @@
  ** and appearing in the file LICENSE.GPL included in the packaging of
  ** this file.  Please review the following information to ensure GNU
  ** General Public Licensing requirements will be met:
- ** http://www.trolltech.com/products/qt/opensource.html
+ ** http://trolltech.com/products/qt/licenses/licensing/opensource/
  **
  ** If you are unsure which license is appropriate for your use, please
  ** review the following information:
- ** http://www.trolltech.com/products/qt/licensing.html or contact the
- ** sales department at sales@trolltech.com.
+ ** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
+ ** or contact the sales department at sales@trolltech.com.
+ **
+ ** In addition, as a special exception, Trolltech gives you certain
+ ** additional rights. These rights are described in the Trolltech GPL
+ ** Exception version 1.0, which can be found at
+ ** http://www.trolltech.com/products/qt/gplexception/ and in the file
+ ** GPL_EXCEPTION.txt in this package.
+ **
+ ** In addition, as a special exception, Trolltech, as the sole copyright
+ ** holder for Qt Designer, grants users of the Qt/Eclipse Integration
+ ** plug-in the right for the Qt/Eclipse Integration to link to
+ ** functionality provided by Qt Designer and its related libraries.
+ **
+ ** Trolltech reserves all rights not expressly granted herein.
+ **
+ ** Trolltech ASA (c) 2007
  **
  ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
  ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -91,7 +106,7 @@
 
      QPushButton *showSourceButton = new QPushButton(mainGroup);
      showSourceButton-&gt;setText(&quot;Show Source&quot;);
-<span class="comment"> //     showSourceButton-&gt;setCheckable(true);</span>
+<span class="comment"> //</span>     showSourceButton-&gt;setCheckable(true);
  #ifdef QT_OPENGL_SUPPORT
      QPushButton *enableOpenGLButton = new QPushButton(mainGroup);
      enableOpenGLButton-&gt;setText(&quot;Use OpenGL&quot;);
@@ -104,7 +119,7 @@
      whatsThisButton-&gt;setText(&quot;What's This?&quot;);
      whatsThisButton-&gt;setCheckable(true);
 
-     <span class="comment">// Layouts</span>
+     <span class="comment">//</span> Layouts
      QHBoxLayout *mainLayout = new QHBoxLayout(this);
      mainLayout-&gt;addWidget(m_renderer);
      mainLayout-&gt;addWidget(mainGroup);
@@ -182,8 +197,8 @@
      m_repaintTracker.start();
      m_intensity = 100;
 
-<span class="comment"> //     m_fpsTimer.start(1000, this);</span>
-<span class="comment"> //     m_fpsCounter = 0;</span>
+<span class="comment"> //</span>     m_fpsTimer.start(1000, this);
+<span class="comment"> //</span>     m_fpsCounter = 0;
 
      generateLensPixmap();
  }
@@ -268,12 +283,12 @@
      m_animated = animated;
 
      if (m_animated) {
-<span class="comment"> //         m_fpsTimer.start(1000, this);</span>
-<span class="comment"> //         m_fpsCounter = 0;</span>
+<span class="comment"> //</span>         m_fpsTimer.start(1000, this);
+<span class="comment"> //</span>         m_fpsCounter = 0;
          m_repaintTimer.start(25, this);
          m_repaintTracker.start();
      } else {
-<span class="comment"> //         m_fpsTimer.stop();</span>
+<span class="comment"> //</span>         m_fpsTimer.stop();
          m_repaintTimer.stop();
      }
  }
@@ -325,12 +340,12 @@
              QApplication::syncX();
          }
      }
-<span class="comment"> //     else if (e-&gt;timerId() == m_fpsTimer.timerId()) {</span>
-<span class="comment"> //         printf(&quot;fps: %d\n&quot;, m_fpsCounter);</span>
-<span class="comment"> //         emit frameRate(m_fpsCounter);</span>
-<span class="comment"> //         m_fpsCounter = 0;</span>
+<span class="comment"> //</span>     else if (e-&gt;timerId() == m_fpsTimer.timerId()) {
+<span class="comment"> //</span>         printf(&quot;fps: %d\n&quot;, m_fpsCounter);
+<span class="comment"> //</span>         emit frameRate(m_fpsCounter);
+<span class="comment"> //</span>         m_fpsCounter = 0;
 
-<span class="comment"> //     }</span>
+<span class="comment"> //</span>     }
  }
 
  void PathDeformRenderer::mousePressEvent(QMouseEvent *e)
@@ -484,6 +499,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.0</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
 </tr></table></div></address></body>
 </html>
