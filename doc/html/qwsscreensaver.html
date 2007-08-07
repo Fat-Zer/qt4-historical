@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/embedded/qwindowsystem_qws.cpp -->
+<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-x11-opensource-src-4.3.1/src/gui/embedded/qwindowsystem_qws.cpp -->
 <head>
   <title>Qt 4.3: QWSScreenSaver Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//QWSScreenSaver" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
@@ -35,14 +34,11 @@
 <p>See also <a href="qwsserver.html">QWSServer</a>, <a href="qscreen.html">QScreen</a>, and <a href="qtopiacore.html">Qtopia Core</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QWSScreenSaver/~QWSScreenSaver" />
 <h3 class="fn"><a name="dtor.QWSScreenSaver"></a>QWSScreenSaver::~QWSScreenSaver ()&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Reimplement this function to destroy the screensaver.</p>
-<a name="//apple_ref/cpp/instm/QWSScreenSaver/restore" />
 <h3 class="fn"><a name="restore"></a>void QWSScreenSaver::restore ()&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Implement this function to deactivate the screensaver, restoring the previously saved screen.</p>
 <p>See also <a href="qwsscreensaver.html#save">save</a>() and <a href="qwsserver.html#screenSaverActivate">QWSServer::screenSaverActivate</a>().</p>
-<a name="//apple_ref/cpp/instm/QWSScreenSaver/save" />
 <h3 class="fn"><a name="save"></a>bool QWSScreenSaver::save ( int <i>level</i> )&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Implement this function to activate the screensaver, saving the current screen.</p>
 <p><a href="qtopiacore.html">Qtopia Core</a> supports multilevel screen saving, i.e&#x2e;, it is possible to specify several different levels of screen responsiveness. For example, you can choose to first turn off the light before you fully activate the screensaver. Use the <a href="qwsserver.html#setScreenSaverIntervals">QWSServer::setScreenSaverIntervals</a>() to specify the time intervals between the different levels.</p>
