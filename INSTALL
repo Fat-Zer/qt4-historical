@@ -1,0 +1,107 @@
+                          INSTALLING Qt/Mac Version 4.3.2
+
+Note for the binary package: If you have the binary package, simply double-click on the Qt.mpkg
+and follow the instructions to install Qt. You can later run the \c{uninstal-qt.py}
+script to uninstall the binary package. The script is located in /Developer/Tools and
+must be run as root.
+
+What follows is how to install Qt/Mac from the source package.
+
+1.  If you have the commercial edition of Qt, install your license
+    file as $HOME/.qt-license.
+
+    For the open source version you do not need a license file.
+
+2.  Unpack the archive if you have not done so already:
+
+        cd /tmp
+        gunzip qt-mac-opensource-src-4.3.2.tar.gz        # uncompress the archive
+        tar xvf qt-mac-opensource-src-4.3.2.tar          # unpack it
+
+    This creates the directory /tmp/qt-mac-opensource-src-4.3.2 containing the files
+    from the archive.
+
+3.  Building
+
+    To configure the Qt library for your machine type, run the
+    ./configure script in the package directory.
+
+    By default, Qt is configured for installation in the
+    /usr/local/Trolltech/Qt-4.3.2 directory, but this can be
+    changed by using the -prefix option. Alternatively, the
+    -prefix-install option can be used to specify a "local"
+    installation within the source directory.
+
+        cd /tmp/qt-mac-opensource-src-4.3.2
+        ./configure
+
+    Type "./configure -help" to get a list of all available options.
+
+    Note that you will need to specify -universal if you want to
+    build universal binaries, and also supply a path to the -sdk
+    option if your development machine has a PowerPC CPU. By default,
+    Qt is built as a framework, but you can built it as a set of
+    dynamic libraries (dylibs) by specifying the -no-framework option.
+
+    To create the library and compile all the demos, examples, tools,
+    and tutorials, type:
+
+        make
+
+    If you did not configure Qt using the -prefix-install option,
+    you need to install the library, demos, examples, tools, and
+    tutorials in the appropriate place. To do this, type:
+
+        sudo make install
+
+    and enter your password, this requires that you have administrator access
+    to your machine.
+
+    If you need to reconfigure and rebuild Qt from the same location,
+    ensure that all traces of the previous configuration are removed
+    by entering the build directory and typing
+
+        make confclean
+
+    before running the configure script again.
+
+    NOTE: If you encounter problems with header files having a size of zero and 
+    no permissions, remove these files and try building again. This is typically 
+    encountered when building with multiple jobs, so try running make -j1 instead.
+    This is a known issue, and should be fixed in an upcoming release.
+
+4.  Environment variables
+
+    In order to use Qt, some environment variables needs to be
+    extended.
+
+        PATH               - to locate qmake, moc and other Qt tools
+
+    This is done like this:
+
+    In .profile (if your shell is bash), add the following lines:
+
+        PATH=/usr/local/Trolltech/Qt-4.3.2/bin:$PATH
+        export PATH
+
+    In .login (in case your shell is csh or tcsh), add the following line:
+
+        setenv PATH /usr/local/Trolltech/Qt-4.3.2/bin:$PATH
+
+    If you use a different shell, please modify your environment
+    variables accordingly.
+
+5.  That's all. Qt is now installed.
+
+    If you are new to Qt, we suggest that you take a look at the demos and
+    examples to see Qt in action. Run the Qt Examples and Demos either by
+    typing 'open /usr/local/Trolltech/Qt-4.3.2/bin/qtdemo.app' on the
+    command line or by double-clicking on the 'qtdemo' icon in the Finder.
+
+    You might also want to try the following links:
+
+        http://doc.trolltech.com/4.3.2/how-to-learn-qt.html
+        http://doc.trolltech.com/4.3.2/tutorial.html
+        http://www.trolltech.com/developer
+
+    We hope you will enjoy using Qt. Good luck!
