@@ -51,6 +51,7 @@
  ****************************************************************************/</span>
 
  #include &lt;QApplication&gt;
+ #include &lt;QMessageBox&gt;
 
  #include &quot;sslclient.h&quot;
 
@@ -59,6 +60,12 @@
      Q_INIT_RESOURCE(securesocketclient);
 
      QApplication app(argc, argv);
+
+     if (!QSslSocket::supportsSsl()) {
+         QMessageBox::information(0, &quot;Secure Socket Client&quot;,
+                                  &quot;This system does not support OpenSSL.&quot;);
+         return -1;
+     }
 
      SslClient client;
      client.show();
@@ -69,6 +76,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

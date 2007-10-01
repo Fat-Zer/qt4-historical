@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/widgets/qabstractscrollarea.cpp -->
+<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/src/gui/widgets/qabstractscrollarea.cpp -->
 <head>
   <title>Qt 4.3: QAbstractScrollArea Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -106,7 +106,7 @@
 <p>The QAbstractScrollArea widget provides a scrolling area with on-demand scroll bars.</p>
 <p>QAbstractScrollArea is a low-level abstraction of a scrolling area. The area provides a central widget called the viewport, in which the contents of the area is to be scrolled (i.e, the visible parts of the contents are rendered in the viewport).</p>
 <p>Next to the viewport is a vertical scroll bar, and below is a horizontal scroll bar. When all of the area contents fits in the viewport, each scroll bar can be either visible or hidden depending on the scroll bar's <a href="qt.html#ScrollBarPolicy-enum">Qt::ScrollBarPolicy</a>. When a scroll bar is hidden, the viewport expands in order to cover all available space. When a scroll bar becomes visible again, the viewport shrinks in order to make room for the scroll bar.</p>
-<p>It is possible to reserve a margin area around the viewport, see <a href="qabstractscrollarea.html#setViewportMargins">setViewportMargins</a>(). The feature is mostly used to place a <a href="qheaderview.html">QHeaderView</a> widget above or beside the scrolling area.</p>
+<p>It is possible to reserve a margin area around the viewport, see <a href="qabstractscrollarea.html#setViewportMargins">setViewportMargins</a>(). The feature is mostly used to place a <a href="qheaderview.html">QHeaderView</a> widget above or beside the scrolling area. Subclasses of QAbstractScrollArea should implement margins.</p>
 <p>When inheriting QAbstractScrollArea, you need to do the following:</p>
 <ul>
 <li>Control the scroll bars by setting their range, value, page step, and tracking their movements.</li>
@@ -242,7 +242,7 @@
 <a name="//apple_ref/cpp/instm/QAbstractScrollArea/paintEvent" />
 <h3 class="fn"><a name="paintEvent"></a>void QAbstractScrollArea::paintEvent ( <a href="qpaintevent.html">QPaintEvent</a> * <i>event</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>This event handler can be reimplemented in a subclass to receive paint events (passed in <i>event</i>), for the <a href="qabstractscrollarea.html#viewport">viewport</a>() widget.</p>
-<p>Note: If you open a painter, make sure to open it on the <a href="qabstractscrollarea.html#viewport">viewport</a>().</p>
+<p><b>Note:</b> If you open a painter, make sure to open it on the <a href="qabstractscrollarea.html#viewport">viewport</a>().</p>
 <p>Reimplemented from <a href="qwidget.html#paintEvent">QWidget</a>.</p>
 <p>See also <a href="qwidget.html#paintEvent">QWidget::paintEvent</a>().</p>
 <a name="//apple_ref/cpp/instm/QAbstractScrollArea/resizeEvent" />
@@ -294,6 +294,7 @@
 <a name="//apple_ref/cpp/instm/QAbstractScrollArea/setViewportMargins" />
 <h3 class="fn"><a name="setViewportMargins"></a>void QAbstractScrollArea::setViewportMargins ( int <i>left</i>, int <i>top</i>, int <i>right</i>, int <i>bottom</i> )&nbsp;&nbsp;<tt> [protected]</tt></h3>
 <p>Sets the margins around the scrolling area to <i>left</i>, <i>top</i>, <i>right</i> and <i>bottom</i>. This is useful for applications such as spreadsheets with &quot;locked&quot; rows and columns. The marginal space is is left blank; put widgets in the unused area.</p>
+<p>Note that this function is frequently called by <a href="qtreeview.html">QTreeView</a> and <a href="qtableview.html">QTableView</a>, so margins must be implemented by <a href="qabstractscrollarea.html">QAbstractScrollArea</a> subclasses. Also, if the subclasses are to be used in item views, they should not call this function.</p>
 <p>By default all margins are zero.</p>
 <a name="//apple_ref/cpp/instm/QAbstractScrollArea/setupViewport" />
 <h3 class="fn"><a name="setupViewport"></a>void QAbstractScrollArea::setupViewport ( <a href="qwidget.html">QWidget</a> * <i>viewport</i> )&nbsp;&nbsp;<tt> [protected slot]</tt></h3>
@@ -323,6 +324,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

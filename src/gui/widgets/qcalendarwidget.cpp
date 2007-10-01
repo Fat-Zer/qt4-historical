@@ -1059,6 +1059,8 @@ QString QCalendarModel::dayName(Qt::DayOfWeek day) const
 {
     switch (horizontalHeaderFormat) {
         case QCalendarWidget::SingleLetterDayNames:
+            if (m_view->locale().language() == QLocale::Chinese)
+                return m_view->locale().dayName(day, QLocale::ShortFormat).right(1);
             return m_view->locale().dayName(day, QLocale::ShortFormat).left(1);
         case QCalendarWidget::ShortDayNames:
             return m_view->locale().dayName(day, QLocale::ShortFormat);
@@ -1347,8 +1349,7 @@ void QCalendarView::keyPressEvent(QKeyEvent *event)
     } else if (event->key() == Qt::Key_Back) {
         if (QApplication::keypadNavigationEnabled() && hasEditFocus()) {
             if (QCalendarModel *calendarModel = qobject_cast<QCalendarModel *>(model())) {
-                calendarModel->setDate(origDate);
-                emit editingFinished();
+                emit changeDate(origDate, true); //changes selection back to origDate, but doesn't activate
                 setEditFocus(false);
                 return;
             }

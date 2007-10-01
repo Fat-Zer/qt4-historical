@@ -64,6 +64,17 @@ static void translate_color(const QColor &color, QString *color_string,
     *opacity_string = QString::number(color.alphaF());
 }
 
+static void translate_dashPattern(QVector<qreal> pattern, const qreal& width, QString *pattern_string)
+{
+    Q_ASSERT(pattern_string);
+
+    // Note that SVG operates in absolute lengths, whereas Qt uses a length/width ratio.
+    foreach (qreal entry, pattern)
+        *pattern_string += QString::fromLatin1("%1,").arg(entry * width);
+
+    pattern_string->chop(1);
+}
+
 class QSvgPaintEnginePrivate : public QPaintEnginePrivate
 {
 public:
@@ -116,6 +127,7 @@ public:
         QString font_family;
         QString font_style;
         QString stroke, strokeOpacity;
+        QString dashPattern, dashOffset;
         QString fill, fillOpacity;
     } attributes;
 };
@@ -124,6 +136,7 @@ static inline QPaintEngine::PaintEngineFeatures svgEngineFeatures()
 {
     return QPaintEngine::PaintEngineFeatures(
         QPaintEngine::AllFeatures
+        & ~QPaintEngine::PatternBrush
         & ~QPaintEngine::PerspectiveTransform
         & ~QPaintEngine::ConicalGradientFill
         & ~QPaintEngine::PorterDuff);
@@ -209,10 +222,7 @@ public:
     {
         qWarning("svg's don't support conical gradients!");
     }
-    void saveTextureBrush(const QBrush &)
-    {
-        qWarning("texture brushes not yet supported");
-    }
+
     void saveGradientStops(QTextStream &str, const QGradient *g) {
         QGradientStops stops = g->stops();
         foreach(QGradientStop stop, stops) {
@@ -273,7 +283,28 @@ public:
         case Qt::DotLine:
         case Qt::DashDotLine:
         case Qt::DashDotDotLine:
-        case Qt::CustomDashLine:
+        case Qt::CustomDashLine: {
+            QString color, colorOpacity, dashPattern, dashOffset;
+
+            qreal penWidth = spen.width() == 0 ? qreal(1) : spen.widthF();
+
+            translate_color(spen.color(), &color, &colorOpacity);
+            translate_dashPattern(spen.dashPattern(), penWidth, &dashPattern);
+
+            // SVG uses absolute offset
+            dashOffset = QString::fromLatin1("%1").arg(spen.dashOffset() * penWidth);
+
+            d_func()->attributes.stroke = color;
+            d_func()->attributes.strokeOpacity = colorOpacity;
+            d_func()->attributes.dashPattern = dashPattern;
+            d_func()->attributes.dashOffset = dashOffset;
+
+            stream() << QLatin1String("stroke=\"")<<color<< QLatin1String("\" ");
+            stream() << QLatin1String("stroke-opacity=\"")<<colorOpacity<< QLatin1String("\" ");
+            stream() << QLatin1String("stroke-dasharray=\"")<<dashPattern<< QLatin1String("\" ");
+            stream() << QLatin1String("stroke-dashoffset=\"")<<dashOffset<< QLatin1String("\" ");
+            break;
+        }
         default:
             qWarning("Unsupported pen style");
             break;
@@ -351,9 +382,6 @@ public:
             d_func()->attributes.fillOpacity = QString();
             stream() << QLatin1String("fill=\"url(#") << d_func()->currentGradientName << QLatin1String(")\" ");
             break;
-        case Qt::TexturePattern:
-            saveTextureBrush(sbrush);
-            break;
         case Qt::NoBrush:
             stream() << QLatin1String("fill=\"none\" ");
             d_func()->attributes.fill = QLatin1String("none");
@@ -361,8 +389,7 @@ public:
             return;
             break;
         default:
-            qWarning("unhandled brush style");
-            break;
+           break;
         }
     }
     void qfontToSvg(const QFont &sfont)
@@ -540,9 +567,9 @@ int QSvgGenerator::metric(QPaintDevice::PaintDeviceMetric metric) const
     case QPaintDevice::PdmDpiY:
         return d->engine->resolution();
     case QPaintDevice::PdmHeightMM:
-        return int(d->engine->size().height() / d->engine->resolution() * 2.54);
+        return qRound(d->engine->size().height() * 25.4 / d->engine->resolution());
     case QPaintDevice::PdmWidthMM:
-        return int(d->engine->size().width() / d->engine->resolution() * 2.54);
+        return qRound(d->engine->size().width() * 25.4 / d->engine->resolution());
     case QPaintDevice::PdmNumColors:
         return 0xffffffff;
     case QPaintDevice::PdmPhysicalDpiX:
@@ -604,9 +631,14 @@ bool QSvgPaintEngine::begin(QPaintDevice *)
         return false;
     }
 
-    if (!d->outputDevice->isOpen() &&
-        !d->outputDevice->open(QIODevice::WriteOnly | QIODevice::Text)) {
-        qWarning("QSvgPaintEngine::begin(), could not open output device: '%s'",
+    if (!d->outputDevice->isOpen()) {
+        if (!d->outputDevice->open(QIODevice::WriteOnly | QIODevice::Text)) {
+            qWarning("QSvgPaintEngine::begin(), could not open output device: '%s'",
+                     qPrintable(d->outputDevice->errorString()));
+            return false;
+        }
+    } else if (!d->outputDevice->isWritable()) {
+        qWarning("QSvgPaintEngine::begin(), could not write to read-only output device: '%s'",
                  qPrintable(d->outputDevice->errorString()));
         return false;
     }
@@ -616,12 +648,12 @@ bool QSvgPaintEngine::begin(QPaintDevice *)
     int w = d->size.width();
     int h = d->size.height();
 
-    qreal wmm = w * 2.54 / d->resolution;
-    qreal hmm = h * 2.54 / d->resolution;
+    qreal wmm = w * 25.4 / d->resolution;
+    qreal hmm = h * 25.4 / d->resolution;
 
     // stream out the header...
     *d->stream << "<?xml version=\"1.0\" standalone=\"no\"?>" << endl;
-    *d->stream << "<svg width=\"" << wmm << "cm\" height=\"" << hmm << "cm\"" << endl;
+    *d->stream << "<svg width=\"" << wmm << "mm\" height=\"" << hmm << "mm\"" << endl;
     *d->stream << " viewBox=\"0 0 " << w << " " << h << "\"" << endl;
     *d->stream << " xmlns=\"http://www.w3.org/2000/svg\""
                << " xmlns:xlink=\"http://www.w3.org/1999/xlink\" "

@@ -425,7 +425,7 @@ int QScript::Lexer::lex()
     if (stackToken >= 0) {
         setDone(Other);
         token = stackToken;
-        stackToken = 0;
+        stackToken = -1;
     }
 
     while (!done) {
@@ -483,8 +483,16 @@ int QScript::Lexer::lex()
             } else {
                 recordStartPos();
                 token = matchPunctuator(current, next1, next2, next3);
-                if (token != -1)
+                if (token != -1) {
+                    if (terminator && !delimited
+                        && (token == QScriptGrammar::T_PLUS_PLUS
+                            || token == QScriptGrammar::T_MINUS_MINUS)) {
+                        // automatic semicolon insertion
+                        stackToken = token;
+                        token = QScriptGrammar::T_SEMICOLON;
+                    }
                     setDone(Other);
+                }
                 else {
                     setDone(Bad);
                     errmsg = QLatin1String("Illegal character");
@@ -707,11 +715,11 @@ int QScript::Lexer::lex()
     } else if (state == Hex) { // scan hex numbers
         quint64 i;
 #if defined(_MSC_VER) && _MSC_VER >= 1400
-        sscanf_s(buffer8, "%Lx", &i);
-#elif defined(Q_OS_MAC)
-        sscanf(buffer8, "%llx", &i);
+        sscanf_s(buffer8, "%llx", &i);
+#elif defined(Q_WS_WIN) && defined(Q_CC_MINGW)
+        sscanf(buffer8, "%I64x", &i);
 #else
-        sscanf(buffer8, "%Lx", &i);
+        sscanf(buffer8, "%llx", &i);
 #endif
 #if defined Q_CC_MSVC && !defined Q_CC_MSVC_NET
         dval = qint64(i);
@@ -722,9 +730,11 @@ int QScript::Lexer::lex()
     } else if (state == Octal) {   // scan octal number
         quint64 ui;
 #if defined(_MSC_VER) && _MSC_VER >= 1400
-        sscanf_s(buffer8, "%Lo", &ui);
+        sscanf_s(buffer8, "%llo", &ui);
+#elif defined(Q_WS_WIN) && defined(Q_CC_MINGW)
+        sscanf(buffer8, "%I64o", &ui);
 #else
-        sscanf(buffer8, "%Lo", &ui);
+        sscanf(buffer8, "%llo", &ui);
 #endif
 #if defined Q_CC_MSVC && !defined Q_CC_MSVC_NET
         dval = qint64(ui);

@@ -248,16 +248,18 @@ inline void QGLDrawable::doneCurrent()
 
 inline QSize QGLDrawable::size() const
 {
-    if (widget)
-        return widget->size();
-    else if (buffer)
+    if (widget) {
+        return QSize(widget->d_func()->glcx->device()->width(),
+                     widget->d_func()->glcx->device()->height());
+    } else if (buffer) {
         return buffer->size();
-    else if (fbo)
+    } else if (fbo) {
         return fbo->size();
 #ifdef Q_WS_QWS
-    else if (wsurf)
+    } else if (wsurf) {
         return wsurf->window()->frameSize();
 #endif
+    }
     return QSize();
 }
 
@@ -1224,6 +1226,7 @@ bool QOpenGLPaintEngine::begin(QPaintDevice *pdev)
     glMatrixMode(GL_TEXTURE);
     glPushMatrix();
     glLoadIdentity();
+    glDisableClientState(GL_COLOR_ARRAY);
 
     if (QGLExtensions::glExtensions & QGLExtensions::SampleBuffers)
         glDisable(GL_MULTISAMPLE);
@@ -3336,7 +3339,11 @@ void QOpenGLPaintEngine::drawPoints(const QPointF *points, int pointCount)
     d->setGradientOps(d->cpen.brush(), QRectF());
 
     if (!d->cpen.isCosmetic() || d->high_quality_antialiasing) {
+        Qt::PenCapStyle capStyle = d->cpen.capStyle();
+        if (capStyle == Qt::FlatCap)
+            d->cpen.setCapStyle(Qt::SquareCap);
         QPaintEngine::drawPoints(points, pointCount);
+        d->cpen.setCapStyle(capStyle);
         return;
     }
 
@@ -3973,7 +3980,7 @@ struct QGLFontTexture {
 typedef QHash<glyph_t, QGLGlyphCoord*>  QGLGlyphHash;
 typedef QHash<QFontEngine*, QGLGlyphHash*> QGLFontGlyphHash;
 typedef QHash<quint64, QGLFontTexture*> QGLFontTexHash;
-typedef QHash<QGLContext*, QGLFontGlyphHash*> QGLContextHash;
+typedef QHash<const QGLContext*, QGLFontGlyphHash*> QGLContextHash;
 
 class QGLGlyphCache : public QObject
 {
@@ -3985,9 +3992,9 @@ public:
     void cacheGlyphs(QGLContext *, const QTextItemInt &, const QVarLengthArray<glyph_t> &);
     void cleanCache();
     void allocTexture(int width, int height, GLuint texture);
-    void cleanupContext(QGLContext *);
 
 public slots:
+    void cleanupContext(const QGLContext *);
     void fontEngineDestroyed(QObject *);
     void widgetDestroyed(QObject *);
 
@@ -4007,8 +4014,8 @@ void QGLGlyphCache::fontEngineDestroyed(QObject *o)
 {
 //     qDebug() << "fontEngineDestroyed()";
     QFontEngine *fe = static_cast<QFontEngine *>(o); // safe, since only the type is used
-    QList<QGLContext *> keys = qt_context_cache.keys();
-    QGLContext *ctx = 0;
+    QList<const QGLContext *> keys = qt_context_cache.keys();
+    const QGLContext *ctx = 0;
 
     for (int i=0; i < keys.size(); ++i) {
         QGLFontGlyphHash *font_cache = qt_context_cache.value(keys.at(i));
@@ -4037,7 +4044,7 @@ void QGLGlyphCache::widgetDestroyed(QObject *)
     cleanCache(); // ###
 }
 
-void QGLGlyphCache::cleanupContext(QGLContext *ctx)
+void QGLGlyphCache::cleanupContext(const QGLContext *ctx)
 {
 //     qDebug() << "==> cleaning for: " << hex << ctx;
     QGLFontGlyphHash *font_cache = qt_context_cache.take(ctx);
@@ -4076,7 +4083,7 @@ void QGLGlyphCache::cleanCache()
     qDeleteAll(qt_font_textures);
     qt_font_textures.clear();
 
-    QList<QGLContext *> keys = qt_context_cache.keys();
+    QList<const QGLContext *> keys = qt_context_cache.keys();
     for (int i=0; i < keys.size(); ++i) {
         QGLFontGlyphHash *font_cache = qt_context_cache.value(keys.at(i));
         qDeleteAll(*font_cache);
@@ -4091,8 +4098,6 @@ void QGLGlyphCache::allocTexture(int width, int height, GLuint texture)
     uchar *tex_data = (uchar *) malloc(width*height*2);
     memset(tex_data, 0, width*height*2);
     glBindTexture(GL_TEXTURE_2D, texture);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 #ifndef Q_WS_QWS
     glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE8_ALPHA8,
                  width, height, 0, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, tex_data);
@@ -4125,13 +4130,13 @@ void QGLGlyphCache::cacheGlyphs(QGLContext *context, const QTextItemInt &ti,
 {
     QGLContextHash::const_iterator dev_it = qt_context_cache.constFind(context);
     QGLFontGlyphHash *font_cache = 0;
-    QGLContext *context_key = 0;
+    const QGLContext *context_key = 0;
 
     if (dev_it == qt_context_cache.constEnd()) {
         // check for shared contexts
-        QList<QGLContext *> contexts = qt_context_cache.keys();
+        QList<const QGLContext *> contexts = qt_context_cache.keys();
         for (int i=0; i<contexts.size(); ++i) {
-            QGLContext *ctx = contexts.at(i);
+            const QGLContext *ctx = contexts.at(i);
             if (ctx != context && qgl_share_reg()->checkSharing(context, ctx)) {
                 context_key = ctx;
                 dev_it = qt_context_cache.constFind(context_key);
@@ -4148,6 +4153,8 @@ void QGLGlyphCache::cacheGlyphs(QGLContext *context, const QTextItemInt &ti,
         if (context->isValid() && context->device()->devType() == QInternal::Widget) {
             QWidget *widget = static_cast<QWidget *>(context->device());
             connect(widget, SIGNAL(destroyed(QObject*)), SLOT(widgetDestroyed(QObject*)));
+            connect(QGLProxy::signalProxy(), SIGNAL(aboutToDestroyContext(const QGLContext*)),
+                    SLOT(cleanupContext(const QGLContext*)));
         }
     } else {
         font_cache = dev_it.value();
@@ -4260,8 +4267,9 @@ void QGLGlyphCache::cacheGlyphs(QGLContext *context, const QTextItemInt &ti,
                 for (int y=0; y<glyph_im.height(); ++y) {
                     uchar *s = (uchar *) glyph_im.scanLine(y);
                     for (int x=0; x<glyph_im.width(); ++x) {
-                        tex_data[idx] = *s;
-                        tex_data[idx+1] = *s;
+                        uchar alpha = qAlpha(glyph_im.color(*s));
+                        tex_data[idx] = alpha;
+                        tex_data[idx+1] = alpha;
                         ++s;
                         idx += 2;
                     }
@@ -4352,6 +4360,9 @@ void QOpenGLPaintEngine::drawTextItem(const QPointF &p, const QTextItem &textIte
 
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    bool antialias = !(ti.fontEngine->fontDef.styleStrategy & QFont::NoAntialias);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, antialias ? GL_LINEAR : GL_NEAREST);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, antialias ? GL_LINEAR : GL_NEAREST);
 
     for (int i=0; i< glyphs.size(); ++i) {
         QGLGlyphCoord *g = qt_glyph_cache()->lookup(ti.fontEngine, glyphs[i]);

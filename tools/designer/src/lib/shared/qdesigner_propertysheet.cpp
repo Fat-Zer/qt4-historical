@@ -58,6 +58,7 @@
 #include <QtGui/QGroupBox>
 #include <QtGui/QStyle>
 #include <QtGui/QApplication>
+#include <QtGui/QToolBar>
 
 static const QMetaObject *propertyIntroducedBy(const QMetaObject *meta, int index)
 {
@@ -204,6 +205,9 @@ QDesignerPropertySheet::QDesignerPropertySheet(QObject *object, QObject *parent)
         createFakeProperty(QLatin1String("acceptDrops"));
         createFakeProperty(QLatin1String("dragEnabled"));
         createFakeProperty(QLatin1String("windowModality"));
+        if (qobject_cast<const QToolBar *>(m_object)) // prevent toolbars from being dragged off
+            createFakeProperty(QLatin1String("floatable"), QVariant(true));
+
 
         if (m_canHaveLayoutAttributes) {
             static const QString layoutGroup = QLatin1String("Layout");
@@ -693,10 +697,10 @@ bool QDesignerPropertySheet::reset(int index)
                 widget = formWindow->parentWidget();
 
             if (widget != w && widget->parentWidget()) {
-                QApplication::processEvents();
+                QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
                 widget->parentWidget()->adjustSize();
             }
-            QApplication::processEvents();
+            QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
             widget->adjustSize();
             return true;
         }

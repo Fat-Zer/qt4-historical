@@ -9558,6 +9558,8 @@
         <keyword ref="qrasterpaintengine.html">QRasterPaintEngine</keyword>
         <keyword ref="qrasterpaintengine.html#drawBufferSpan">drawBufferSpan</keyword>
         <keyword ref="qrasterpaintengine.html#drawColorSpans">drawColorSpans</keyword>
+        <keyword ref="qrasterpaintengine.html#drawEllipse">drawEllipse</keyword>
+        <keyword ref="qrasterpaintengine.html#drawPoints">drawPoints</keyword>
         <keyword ref="qrasterpaintengine.html#QSpan-typedef">QSpan</keyword>
         <section ref="qrasterpaintengine-members.html" title="List of all members"/>
     </section>
@@ -10808,6 +10810,7 @@
         <keyword ref="qsqlquery.html#exec">exec</keyword>
         <keyword ref="qsqlquery.html#execBatch">execBatch</keyword>
         <keyword ref="qsqlquery.html#executedQuery">executedQuery</keyword>
+        <keyword ref="qsqlquery.html#finish">finish</keyword>
         <keyword ref="qsqlquery.html#first">first</keyword>
         <keyword ref="qsqlquery.html#isActive">isActive</keyword>
         <keyword ref="qsqlquery.html#isForwardOnly">isForwardOnly</keyword>
@@ -12210,6 +12213,7 @@
         <keyword ref="qstyleoptionframev2.html#StyleOptionVersion-enum">StyleOptionVersion</keyword>
         <keyword ref="qstyleoptionframev2.html#StyleOptionVersion-enum">QStyleOptionFrameV2::Version</keyword>
         <keyword ref="qstyleoptionframev2.html#operator-eq">operator=</keyword>
+        <keyword ref="qstyleoptionframev2.html#features-var">features</keyword>
         <section ref="qstyleoptionframev2-members.html" title="List of all members"/>
     </section>
     <section ref="qstyleoptiongraphicsitem.html" title="QStyleOptionGraphicsItem Class Reference">
@@ -19982,6 +19986,7 @@
     </section>
     <section ref="q3sqlselectcursor.html" title="Q3SqlSelectCursor Class Reference">
         <keyword ref="q3sqlselectcursor.html">Q3SqlSelectCursor</keyword>
+        <keyword ref="q3sqlselectcursor.html#update">update</keyword>
         <section ref="q3sqlselectcursor-members.html" title="List of all members"/>
     </section>
     <section ref="q3storeddrag.html" title="Q3StoredDrag Class Reference">
@@ -21007,6 +21012,9 @@
     <section ref="activeqt.html" title="ActiveQt Framework">
         <keyword ref="activeqt.html">ActiveQt Framework</keyword>
     </section>
+    <section ref="licenses-gpl-exceptions-addendum.html" title="Addendum to the Trolltech GPL Exception Version 1.0">
+        <keyword ref="licenses-gpl-exceptions-addendum.html">Addendum to the Trolltech GPL Exception Version 1.0</keyword>
+    </section>
     <section ref="qtopiacore-accel.html" title="Adding an Accelerated Graphics Driver in Qtopia Core">
         <keyword ref="qtopiacore-accel.html">Adding an Accelerated Graphics Driver in Qtopia Core</keyword>
     </section>
@@ -21018,6 +21026,9 @@
     </section>
     <section ref="overviews.html" title="All Overviews and HOWTOs">
         <keyword ref="overviews.html">All Overviews and HOWTOs</keyword>
+    </section>
+    <section ref="model-view-introduction.html" title="An Introduction to Model/View Programming">
+        <keyword ref="model-view-introduction.html">An Introduction to Model/View Programming</keyword>
     </section>
     <section ref="examples-overview.html" title="An Overview of Qt's Examples">
         <keyword ref="examples-overview.html">An Overview of Qt's Examples</keyword>
@@ -21205,6 +21216,9 @@
     <section ref="atomic-operations.html" title="Implementing Atomic Operations">
         <keyword ref="atomic-operations.html">Implementing Atomic Operations</keyword>
     </section>
+    <section ref="style-reference.html" title="Implementing Styles and Style Aware Widgets">
+        <keyword ref="style-reference.html">Implementing Styles and Style Aware Widgets</keyword>
+    </section>
     <section ref="shared.html" title="Implicitly Shared Classes">
         <keyword ref="shared.html">Implicitly Shared Classes</keyword>
     </section>
@@ -21241,8 +21255,8 @@
     <section ref="focus.html" title="Keyboard Focus">
         <keyword ref="focus.html">Keyboard Focus</keyword>
     </section>
-    <section ref="known-issues.html" title="Known Issues in 4.3&#x2e;1">
-        <keyword ref="known-issues.html">Known Issues in 4.3&#x2e;1</keyword>
+    <section ref="known-issues.html" title="Known Issues in 4.3&#x2e;2">
+        <keyword ref="known-issues.html">Known Issues in 4.3&#x2e;2</keyword>
     </section>
     <section ref="layout.html" title="Layout Classes">
         <keyword ref="layout.html">Layout Classes</keyword>
@@ -21294,6 +21308,9 @@
     </section>
     <section ref="gallery-motif.html" title="Motif Style Widget Gallery">
         <keyword ref="gallery-motif.html">Motif Style Widget Gallery</keyword>
+    </section>
+    <section ref="porting-qsa.html" title="Moving from QSA to Qt Script">
+        <keyword ref="porting-qsa.html">Moving from QSA to Qt Script</keyword>
     </section>
     <section ref="porting4-overview.html" title="Moving from Qt 3 to Qt 4">
         <keyword ref="porting4-overview.html">Moving from Qt 3 to Qt 4</keyword>
@@ -21702,6 +21719,9 @@
     </section>
     <section ref="trademarks.html" title="Trademarks">
         <keyword ref="trademarks.html">Trademarks</keyword>
+    </section>
+    <section ref="license-gpl-exceptions.html" title="Trolltech GPL Exception Version 1.1">
+        <keyword ref="license-gpl-exceptions.html">Trolltech GPL Exception Version 1.1</keyword>
     </section>
     <section ref="codec-tscii.html" title="TSCII Text Codec">
         <keyword ref="codec-tscii.html">TSCII Text Codec</keyword>

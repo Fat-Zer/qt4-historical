@@ -141,7 +141,7 @@ struct QBasicAtomic
         return fetchAndAdd(value);
     }
 
-    inline bool fetchAndAddRelease(int value)
+    inline int fetchAndAddRelease(int value)
     {
         return fetchAndAdd(value);
     }

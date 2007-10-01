@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/corelib/io/qfilesystemwatcher.cpp -->
+<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/src/corelib/io/qfilesystemwatcher.cpp -->
 <head>
   <title>Qt 4.3: QFileSystemWatcher Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -60,7 +60,7 @@
 <p>QFileSystemWatcher monitors the file system for changes to files and directories by watching a list of specified paths.</p>
 <p>Call <a href="qfilesystemwatcher.html#addPath">addPath</a>() to watch a particular file or directory. Multiple paths can be added using the <a href="qfilesystemwatcher.html#addPaths">addPaths</a>() function. Existing paths can be removed by using the <a href="qfilesystemwatcher.html#removePath">removePath</a>() and <a href="qfilesystemwatcher.html#removePaths">removePaths</a>() functions.</p>
 <p>QFileSystemWatcher examines each path added to it. Files that have been added to the QFileSystemWatcher can be accessed using the <a href="qfilesystemwatcher.html#files">files</a>() function, and directories using the <a href="qfilesystemwatcher.html#directories">directories</a>() function.</p>
-<p>The <a href="qfilesystemwatcher.html#fileChanged">fileChanged</a>() signal is emitted when a file has been modified or removed from disk. Similarly, the <a href="qfilesystemwatcher.html#directoryChanged">directoryChanged</a>() signal is emitted when a directory is modified or removed. Note that QFileSystemWatcher stops monitoring files and directories once they have been removed from disk.</p>
+<p>The <a href="qfilesystemwatcher.html#fileChanged">fileChanged</a>() signal is emitted when a file has been modified or removed from disk. Similarly, the <a href="qfilesystemwatcher.html#directoryChanged">directoryChanged</a>() signal is emitted when a directory or its contents is modified or removed. Note that QFileSystemWatcher stops monitoring files and directories once they have been removed from disk.</p>
 <p>See also <a href="qfile.html">QFile</a> and <a href="qdir.html">QDir</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
@@ -88,7 +88,7 @@
 <p>See also <a href="qfilesystemwatcher.html#files">files</a>().</p>
 <a name="//apple_ref/cpp/instm/QFileSystemWatcher/directoryChanged" />
 <h3 class="fn"><a name="directoryChanged"></a>void QFileSystemWatcher::directoryChanged ( const <a href="qstring.html">QString</a> &amp; <i>path</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This signal is emitted when the directory at the specified <i>path</i> is modified or removed from disk. Note that if there are several changes during a short period of time, some of the changes might not emit this signal. However, the last change in the sequence of changes will always generate this signal.</p>
+<p>This signal is emitted when the directory at a specified <i>path</i>, is modified (e.g&#x2e;, when a file is added, modified or deleted) or removed from disk. Note that if there are several changes during a short period of time, some of the changes might not emit this signal. However, the last change in the sequence of changes will always generate this signal.</p>
 <p>See also <a href="qfilesystemwatcher.html#fileChanged">fileChanged</a>().</p>
 <a name="//apple_ref/cpp/instm/QFileSystemWatcher/fileChanged" />
 <h3 class="fn"><a name="fileChanged"></a>void QFileSystemWatcher::fileChanged ( const <a href="qstring.html">QString</a> &amp; <i>path</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
@@ -110,6 +110,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

@@ -649,11 +649,14 @@ QCoreGraphicsPaintEngine::drawPoints(const QPointF *points, int pointCount)
     Q_D(QCoreGraphicsPaintEngine);
     Q_ASSERT(isActive());
 
+    if(d->current.pen.capStyle() == Qt::FlatCap)
+        CGContextSetLineCap(d->hd, kCGLineCapSquare);
+
     CGMutablePathRef path = CGPathCreateMutable();
     for(int i=0; i < pointCount; i++) {
         float x = points[i].x(), y = points[i].y();
         CGPathMoveToPoint(path, 0, x, y);
-        CGPathAddLineToPoint(path, 0, x, y);
+        CGPathAddLineToPoint(path, 0, x+0.001, y);
     }
 
     bool doRestore = false;
@@ -667,6 +670,8 @@ QCoreGraphicsPaintEngine::drawPoints(const QPointF *points, int pointCount)
     if (doRestore)
         CGContextRestoreGState(d->hd);
     CGPathRelease(path);
+    if (d->current.pen.capStyle() == Qt::FlatCap)
+        CGContextSetLineCap(d->hd, kCGLineCapButt);
 }
 
 void
@@ -959,6 +964,9 @@ QCoreGraphicsPaintEngine::updateCompositionMode(QPainter::CompositionMode mode)
     if (QSysInfo::MacintoshVersion >= QSysInfo::MV_10_4) {
         CGBlendMode cg_mode = kCGBlendModeNormal;
         switch(mode) {
+        case QPainter::CompositionMode_SourceOver:
+            cg_mode = kCGBlendModeNormal;
+            break;
         case QPainter::CompositionMode_Multiply:
             cg_mode = kCGBlendModeMultiply;
             break;
@@ -992,7 +1000,6 @@ QCoreGraphicsPaintEngine::updateCompositionMode(QPainter::CompositionMode mode)
         case QPainter::CompositionMode_Exclusion:
             cg_mode = kCGBlendModeExclusion;
             break;
-        case QPainter::CompositionMode_SourceOver:
         case QPainter::CompositionMode_DestinationOver:
         case QPainter::CompositionMode_Clear:
         case QPainter::CompositionMode_Source:
@@ -1043,7 +1050,7 @@ QPointF QCoreGraphicsPaintEnginePrivate::devicePixelSize(CGContextRef context)
         const CGPoint convertedP1 = CGPointApplyAffineTransform(p1, invertedCurrentTransform);
         const CGPoint convertedP2 = CGPointApplyAffineTransform(p2, invertedCurrentTransform);
         // The order of the points is switched in this case.
-        return QPointF(convertedP1.x - convertedP2.x, convertedP1.y - convertedP2.y);
+        return QPointF(qAbs(convertedP1.x - convertedP2.x), qAbs(convertedP1.y - convertedP2.y));
     }
 }
 
@@ -1322,13 +1329,14 @@ void QCoreGraphicsPaintEnginePrivate::drawPath(uchar ops, CGMutablePathRef path)
         // to make sure that primitives painted at pixel borders
         // fills the right pixel. This is needed since the y xais
         // in the Quartz coordinate system is inverted compared to Qt.
-        if (!(q->state->renderHints() & QPainter::Antialiasing))
+        if (!(q->state->renderHints() & QPainter::Antialiasing)) {
             if (current.pen.style() == Qt::SolidLine)
                 CGContextTranslateCTM(hd, double(pixelSize.x()) * 0.25, double(pixelSize.y()) * 0.25);
             else if (current.pen.style() == Qt::DotLine && QSysInfo::MacintoshVersion == QSysInfo::MV_10_3)
                 ; // Do nothing.
             else
                 CGContextTranslateCTM(hd, 0, double(pixelSize.y()) * 0.1);
+        }
 
         if (cosmeticPen != QCoreGraphicsPaintEnginePrivate::CosmeticNone) {
             // If antialiazing is enabled, use the cosmetic pen size directly.

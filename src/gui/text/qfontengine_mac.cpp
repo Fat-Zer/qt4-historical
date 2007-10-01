@@ -889,6 +889,11 @@ QImage QFontEngineMac::alphaMapForGlyph(glyph_t glyph)
     CGContextRelease(ctx);
 
     QImage indexed(im.width(), im.height(), QImage::Format_Indexed8);
+    QVector<QRgb> colors(256);
+    for (int i=0; i<256; ++i)
+        colors[i] = qRgba(0, 0, 0, i);
+    indexed.setColorTable(colors);
+
     for (int y=0; y<im.height(); ++y) {
         uint *src = (uint*) im.scanLine(y);
         uchar *dst = indexed.scanLine(y);
@@ -974,6 +979,7 @@ QFontEngine::FaceId QFontEngineMac::faceId() const
     if (ATSFontGetFileReference(FMGetATSFontRefFromFont(fontID), &ref) != noErr)
         return ret;
     ret.filename = QByteArray(128, 0);
+    ret.index = fontID;
     FSRefMakePath(&ref, (UInt8 *)ret.filename.data(), ret.filename.size());
 #else
     FSSpec spec;
@@ -983,6 +989,7 @@ QFontEngine::FaceId QFontEngineMac::faceId() const
     FSRef ref;
     FSpMakeFSRef(&spec, &ref);
     ret.filename = QByteArray(128, 0);
+    ret.index = fontID;
     FSRefMakePath(&ref, (UInt8 *)ret.filename.data(), ret.filename.size());
 #endif
     return ret;

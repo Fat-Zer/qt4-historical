@@ -91,8 +91,7 @@
 
  int Model::rowCount(const QModelIndex &amp;parent) const
  {
-     Q_UNUSED(parent);
-     return rc;
+     return (parent.isValid() &amp;&amp; parent.column() != 0) ? 0 : rc;
  }
 
  int Model::columnCount(const QModelIndex &amp;parent) const
@@ -103,6 +102,8 @@
 
  QVariant Model::data(const QModelIndex &amp;index, int role) const
  {
+     if (!index.isValid())
+         return QVariant();
      if (role == Qt::DisplayRole)
          return &quot;Item &quot; + QString::number(index.row()) + &quot;:&quot; + QString::number(index.column());
      if (role == Qt::DecorationRole) {
@@ -125,12 +126,15 @@
 
  bool Model::hasChildren(const QModelIndex &amp;parent) const
  {
-     Q_UNUSED(parent);
+     if (parent.isValid() &amp;&amp; parent.column() != 0)
+         return false;
      return rc &gt; 0 &amp;&amp; cc &gt; 0;
  }
 
- Qt::ItemFlags Model::flags(const QModelIndex &amp;) const
+ Qt::ItemFlags Model::flags(const QModelIndex &amp;index) const
  {
+     if (!index.isValid())
+         return 0;
      return (Qt::ItemIsDragEnabled|Qt::ItemIsSelectable|Qt::ItemIsEnabled);
  }
 
@@ -156,6 +160,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

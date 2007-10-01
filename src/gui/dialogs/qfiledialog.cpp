@@ -514,6 +514,10 @@ void QFileDialog::setDirectory(const QString &directory)
     Q_D(QFileDialog);
     if (d->rootPath() == directory)
         return;
+    QModelIndex idx = d->model->index(directory);
+#ifndef QT_NO_COMPLETER
+    d->completer->setCompletionPrefix(directory);
+#endif
     QModelIndex root = d->model->setRootPath(directory);
     d->qFileDialogUi->newFolderButton->setEnabled(d->model->flags(root) & Qt::ItemIsDropEnabled);
     d->setRootIndex(root);
@@ -928,7 +932,7 @@ bool QFileDialog::resolveSymlinks() const
 
     If this property is set to true and the accept mode is
     AcceptSave, the filedialog will ask whether the user wants to
-    overwrite the fike before accepting the file.
+    overwrite the file before accepting the file.
 */
 void QFileDialog::setConfirmOverwrite(bool enabled)
 {
@@ -1833,6 +1837,10 @@ void QFileDialogPrivate::_q_showHeader(QAction *action)
 void QFileDialog::setProxyModel(QAbstractProxyModel *proxyModel)
 {
     Q_D(QFileDialog);
+    if ((!proxyModel && !d->proxyModel)
+        || (proxyModel == d->proxyModel))
+        return;
+
     QModelIndex idx = d->rootIndex();
     if (d->proxyModel) {
         disconnect(d->proxyModel, SIGNAL(rowsInserted(const QModelIndex &, int, int)),

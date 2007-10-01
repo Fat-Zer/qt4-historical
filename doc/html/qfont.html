@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/text/qfont.cpp -->
+<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/src/gui/text/qfont.cpp -->
 <head>
   <title>Qt 4.3: QFont Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -114,7 +114,7 @@
 <p>Use <a href="qapplication.html#setFont">QApplication::setFont</a>() to set the application's default font.</p>
 <p>If a chosen font does not include all the characters that need to be displayed, QFont will try to find the characters in the nearest equivalent fonts. When a <a href="qpainter.html">QPainter</a> draws a character from a font the QFont will report whether or not it has the character; if it does not, <a href="qpainter.html">QPainter</a> will draw an unfilled square.</p>
 <p>Create QFonts like this:</p>
-<pre> QFont serifFont(&quot;Times&quot;, 10, Bold);
+<pre> QFont serifFont(&quot;Times&quot;, 10, QFont::Bold);
  QFont sansFont(&quot;Helvetica [Cronyx]&quot;, 12);</pre>
 <p>The attributes set in the constructor can also be set later, e.g&#x2e; <a href="qfont.html#setFamily">setFamily</a>(), <a href="qfont.html#setPointSize">setPointSize</a>(), <a href="qfont-qt3.html#setPointSizeFloat">setPointSizeFloat</a>(), <a href="qfont.html#setWeight">setWeight</a>() and <a href="qfont.html#setItalic">setItalic</a>(). The remaining attributes must be set after contstruction, e.g&#x2e; <a href="qfont.html#setBold">setBold</a>(), <a href="qfont.html#setUnderline">setUnderline</a>(), <a href="qfont.html#setOverline">setOverline</a>(), <a href="qfont.html#setStrikeOut">setStrikeOut</a>() and <a href="qfont.html#setFixedPitch">setFixedPitch</a>(). <a href="qfontinfo.html">QFontInfo</a> objects should be created <i>after</i> the font's attributes have been set. A <a href="qfontinfo.html">QFontInfo</a> object will not change, even if you change the font's attributes. The corresponding &quot;get&quot; functions, e.g&#x2e; <a href="qfont.html#family">family</a>(), <a href="qfont.html#pointSize">pointSize</a>(), etc., return the values that were set, even though the values used may differ. The actual values are available from a <a href="qfontinfo.html">QFontInfo</a> object.</p>
 <p>If the requested font family is unavailable you can influence the <a href="#fontmatching">font matching algorithm</a> by choosing a particular <a href="qfont.html#StyleHint-enum">QFont::StyleHint</a> and <a href="qfont.html#StyleStrategy-enum">QFont::StyleStrategy</a> with <a href="qfont.html#setStyleHint">setStyleHint</a>(). The default family (corresponding to the current style hint) is returned by <a href="qfont.html#defaultFamily">defaultFamily</a>().</p>
@@ -564,6 +564,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

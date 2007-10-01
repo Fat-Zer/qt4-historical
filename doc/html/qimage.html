@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/image/qimage.cpp -->
+<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/src/gui/image/qimage.cpp -->
 <head>
   <title>Qt 4.3: QImage Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -176,7 +176,7 @@
 <thead><tr valign="top" class="qt-style"><th></th><th>Available Functions</th></tr></thead>
 <tr valign="top" class="odd"><td>Geometry</td><td>The <a href="qimage.html#size">size</a>(), <a href="qimage.html#width">width</a>(), <a href="qimage.html#height">height</a>(), <a href="qimage.html#dotsPerMeterX">dotsPerMeterX</a>(), and <a href="qimage.html#dotsPerMeterY">dotsPerMeterY</a>() functions provide information about the image size and aspect ratio.<p>The <a href="qimage.html#rect">rect</a>() function returns the image's enclosing rectangle. The <a href="qimage.html#valid">valid</a>() function tells if a given pair of coordinates is within this rectangle. The <a href="qimage.html#offset">offset</a>() function returns the number of pixels by which the image is intended to be offset by when positioned relative to other images, which also can be manipulated using the <a href="qimage.html#setOffset">setOffset</a>() function.</p>
 </td></tr>
-<tr valign="top" class="even"><td>Colors</td><td>The color of a pixel can be retrieved by passing its coordinates to the <a href="qimage.html#pixel">pixel</a>() function. The <a href="qimage.html#pixel">pixel</a>() function returns the color as a <a href="qcolor.html#QRgb-typedef">QRgb</a> value indepedent of the image's format.<p>In case of monochrome and 8-bit images, the <a href="qimage.html#numColors">numColors</a>() and <a href="qimage.html#colorTable">colorTable</a>() functions provide information about the color components used to store the image data: The <a href="qimage.html#colorTable">colorTable</a>() function returns the image's entire color table. To obtain a single entry, use the <a href="qimage.html#pixelIndex">pixelIndex</a>() function to retrieve the pixel index for a given pair of coordinates, then use the <a href="qimage.html#color">color</a>() function to retrieve the color.</p>
+<tr valign="top" class="even"><td>Colors</td><td>The color of a pixel can be retrieved by passing its coordinates to the <a href="qimage.html#pixel">pixel</a>() function. The <a href="qimage.html#pixel">pixel</a>() function returns the color as a <a href="qcolor.html#QRgb-typedef">QRgb</a> value indepedent of the image's format.<p>In case of monochrome and 8-bit images, the <a href="qimage.html#numColors">numColors</a>() and <a href="qimage.html#colorTable">colorTable</a>() functions provide information about the color components used to store the image data: The <a href="qimage.html#colorTable">colorTable</a>() function returns the image's entire color table. To obtain a single entry, use the <a href="qimage.html#pixelIndex">pixelIndex</a>() function to retrieve the pixel index for a given pair of coordinates, then use the <a href="qimage.html#color">color</a>() function to retrieve the color. Note that if you create an 8-bit image manually, you have to set a valid color table on the image as well.</p>
 <p>The <a href="qimage.html#hasAlphaChannel">hasAlphaChannel</a>() function tells if the image's format respects the alpha channel, or not. The <a href="qimage.html#allGray">allGray</a>() and <a href="qimage.html#isGrayscale">isGrayscale</a>() functions tell whether an image's colors are all shades of gray.</p>
 <p>See also the <a href="#pixel-manipulation">Pixel Manipulation</a> and <a href="#image-transformations">Image Transformations</a> sections.</p>
 </td></tr>
@@ -727,6 +727,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

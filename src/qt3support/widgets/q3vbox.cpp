@@ -51,7 +51,7 @@
 
     \img qvbox-m.png Q3VBox
 
-    \sa QHBox
+    \sa Q3HBox
 */
 
 

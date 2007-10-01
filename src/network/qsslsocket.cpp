@@ -253,7 +253,7 @@
 
 class QSslSocketGlobalData
 {
-  public:
+public:
     QMutex mutex;
     QList<QSslCipher> ciphers;
     QList<QSslCipher> supportedCiphers;
@@ -283,9 +283,12 @@ QSslSocket::QSslSocket(QObject *parent)
 */
 QSslSocket::~QSslSocket()
 {
+    Q_D(QSslSocket);
 #ifdef QSSLSOCKET_DEBUG
     qDebug() << "QSslSocket::~QSslSocket(), this =" << (void *)this;
 #endif
+    delete d->plainSocket;
+    d->plainSocket = 0;
 }
 
 /*!
@@ -569,9 +572,8 @@ void QSslSocket::setLocalCertificate(const QSslCertificate &certificate)
     first one found in file \a path, which is parsed according to the 
     specified \a format.
 */
-void
-QSslSocket::setLocalCertificate(const QString &path,
-				QSsl::EncodingFormat format)
+void QSslSocket::setLocalCertificate(const QString &path,
+                                     QSsl::EncodingFormat format)
 {
     Q_D(QSslSocket);
     QFile file(path);
@@ -710,19 +712,14 @@ void QSslSocket::setPrivateKey(const QSslKey &key)
     
     \sa privateKey(), setLocalCertificate()
 */
-void QSslSocket::setPrivateKey(const QString &fileName,
-			       QSsl::KeyAlgorithm algorithm,
-                               QSsl::EncodingFormat format,
-                               const QByteArray &passPhrase)
+void QSslSocket::setPrivateKey(const QString &fileName, QSsl::KeyAlgorithm algorithm,
+                               QSsl::EncodingFormat format, const QByteArray &passPhrase)
 {
     Q_D(QSslSocket);
     QFile file(fileName);
     if (file.open(QIODevice::ReadOnly)) {
-        d->privateKey = QSslKey(file.readAll(),
-				algorithm,
-				format,
-                                QSsl::PrivateKey,
-				passPhrase);
+        d->privateKey = QSslKey(file.readAll(), algorithm,
+				format, QSsl::PrivateKey, passPhrase);
     }
 }
 
@@ -805,8 +802,7 @@ void QSslSocket::setCiphers(const QString &ciphers)
 {
     Q_D(QSslSocket);
     d->ciphers.clear();
-    foreach (QString cipherName,
-	     ciphers.split(QLatin1String(":"),QString::SkipEmptyParts)) {
+    foreach (QString cipherName, ciphers.split(QLatin1String(":"),QString::SkipEmptyParts)) {
         for (int i = 0; i < 3; ++i) {
             // ### Crude
             QSslCipher cipher(cipherName, QSsl::SslProtocol(i));
@@ -878,12 +874,11 @@ QList<QSslCipher> QSslSocket::supportedCiphers()
 
   \sa addCaCertificate(), QSslCertificate::fromPath()
 */
-bool QSslSocket::addCaCertificates(const QString &path,
-				   QSsl::EncodingFormat format,
+bool QSslSocket::addCaCertificates(const QString &path, QSsl::EncodingFormat format,
                                    QRegExp::PatternSyntax syntax)
 {
     Q_D(QSslSocket);
-    QList<QSslCertificate> certs = QSslCertificate::fromPath(path,format,syntax);
+    QList<QSslCertificate> certs = QSslCertificate::fromPath(path, format, syntax);
     if (certs.isEmpty())
         return false;
 
@@ -969,8 +964,7 @@ QList<QSslCertificate> QSslSocket::caCertificates() const
 
     \sa defaultCaCertificates(), addCaCertificates(), addDefaultCaCertificate()
 */
-bool QSslSocket::addDefaultCaCertificates(const QString &path,
-					  QSsl::EncodingFormat encoding,
+bool QSslSocket::addDefaultCaCertificates(const QString &path, QSsl::EncodingFormat encoding,
                                           QRegExp::PatternSyntax syntax)
 {
     return QSslSocketPrivate::addDefaultCaCertificates(path, encoding, syntax);
@@ -995,8 +989,7 @@ void QSslSocket::addDefaultCaCertificate(const QSslCertificate &certificate)
 
     \sa defaultCaCertificates(), addCaCertificates()
 */
-void
-QSslSocket::addDefaultCaCertificates(const QList<QSslCertificate> &certificates)
+void QSslSocket::addDefaultCaCertificates(const QList<QSslCertificate> &certificates)
 {
     QSslSocketPrivate::addDefaultCaCertificates(certificates);
 }
@@ -1014,8 +1007,7 @@ QSslSocket::addDefaultCaCertificates(const QList<QSslCertificate> &certificates)
 
     \sa addDefaultCaCertificate()
 */
-void
-QSslSocket::setDefaultCaCertificates(const QList<QSslCertificate> &certificates)
+void QSslSocket::setDefaultCaCertificates(const QList<QSslCertificate> &certificates)
 {
     QSslSocketPrivate::setDefaultCaCertificates(certificates);
 }
@@ -1323,8 +1315,7 @@ void QSslSocket::ignoreSslErrors()
 /*!
     \internal
 */
-void QSslSocket::connectToHostImplementation(const QString &hostName,
-					     quint16 port,
+void QSslSocket::connectToHostImplementation(const QString &hostName, quint16 port,
                                              OpenMode openMode)
 {
     Q_D(QSslSocket);
@@ -1473,8 +1464,7 @@ void QSslSocketPrivate::setDefaultCiphers(const QList<QSslCipher> &ciphers)
 /*!
     \internal
 */
-void
-QSslSocketPrivate::setDefaultSupportedCiphers(const QList<QSslCipher> &ciphers)
+void QSslSocketPrivate::setDefaultSupportedCiphers(const QList<QSslCipher> &ciphers)
 {
     QMutexLocker locker(&globalData()->mutex);
     globalData()->supportedCiphers = ciphers;
@@ -1493,8 +1483,7 @@ QList<QSslCertificate> QSslSocketPrivate::defaultCaCertificates()
 /*!
     \internal
 */
-void
-QSslSocketPrivate::setDefaultCaCertificates(const QList<QSslCertificate> &certs)
+void QSslSocketPrivate::setDefaultCaCertificates(const QList<QSslCertificate> &certs)
 {
     QSslSocketPrivate::ensureInitialized();
     QMutexLocker locker(&globalData()->mutex);
@@ -1504,13 +1493,11 @@ QSslSocketPrivate::setDefaultCaCertificates(const QList<QSslCertificate> &certs)
 /*!
     \internal
 */
-bool
-QSslSocketPrivate::addDefaultCaCertificates(const QString &path,
-					    QSsl::EncodingFormat format,
-					    QRegExp::PatternSyntax syntax)
+bool QSslSocketPrivate::addDefaultCaCertificates(const QString &path, QSsl::EncodingFormat format,
+                                                 QRegExp::PatternSyntax syntax)
 {
     QSslSocketPrivate::ensureInitialized();
-    QList<QSslCertificate> certs=QSslCertificate::fromPath(path,format,syntax);
+    QList<QSslCertificate> certs = QSslCertificate::fromPath(path, format, syntax);
     if (certs.isEmpty())
         return false;
 
@@ -1532,8 +1519,7 @@ void QSslSocketPrivate::addDefaultCaCertificate(const QSslCertificate &cert)
 /*!
     \internal
 */
-void
-QSslSocketPrivate::addDefaultCaCertificates(const QList<QSslCertificate> &certs)
+void QSslSocketPrivate::addDefaultCaCertificates(const QList<QSslCertificate> &certs)
 {
     QSslSocketPrivate::ensureInitialized();
     QMutexLocker locker(&globalData()->mutex);
@@ -1570,7 +1556,9 @@ void QSslSocketPrivate::createPlainSocket(QIODevice::OpenMode openMode)
                q, SLOT(_q_readyReadSlot()));
     q->connect(plainSocket, SIGNAL(bytesWritten(qint64)),
                q, SLOT(_q_bytesWrittenSlot(qint64)));
-    
+    q->connect(plainSocket, SIGNAL(proxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)),
+               q, SIGNAL(proxyAuthenticationRequired(QNetworkProxy,QAuthenticator*)));
+
     readBuffer.clear();
     writeBuffer.clear();
     connectionEncrypted = false;

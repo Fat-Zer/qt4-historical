@@ -233,7 +233,7 @@ void Q3ToolBarSeparator::paintEvent(QPaintEvent *)
     represented by small icons. It's purpose is to provide quick
     access to frequently used commands or options. Within a
     Q3MainWindow the user can drag toolbars within and between the
-    \link QDockArea dock areas\endlink. Toolbars can also be dragged
+    \link Q3DockArea dock areas\endlink. Toolbars can also be dragged
     out of any dock area to float freely as top-level windows.
 
     Q3ToolBar is a specialization of QDockWindow, and so provides all
@@ -256,8 +256,8 @@ void Q3ToolBarSeparator::paintEvent(QPaintEvent *)
     recommend calling show() anyway since we hope to fix this anomaly
     in a future release.)
 
-    Q3ToolBars, like QDockWindows, are located in \l{QDockArea}s or
-    float as top-level windows. Q3MainWindow provides four QDockAreas
+    Q3ToolBars, like QDockWindows, are located in \l{Q3DockArea}s or
+    float as top-level windows. Q3MainWindow provides four Q3DockAreas
     (top, left, right and bottom). When you create a new toolbar (as
     in the example above) as a child of a Q3MainWindow the toolbar will
     be added to the top dock area. You can move it to another dock
@@ -280,7 +280,7 @@ void Q3ToolBarSeparator::paintEvent(QPaintEvent *)
     toolbar to fill all available space in the specified orientation.
 
     The toolbar arranges its buttons either horizontally or vertically
-    (see orientation() for details). Generally, QDockArea will set the
+    (see orientation() for details). Generally, Q3DockArea will set the
     orientation correctly for you, but you can set it yourself with
     setOrientation() and track any changes by connecting to the
     orientationChanged() signal.
@@ -489,8 +489,9 @@ bool Q3ToolBar::event(QEvent * e)
         if (child && child->isWidgetType() && !((QWidget*)child)->isWindow()
              && child->parent() == this
             && QLatin1String("qt_dockwidget_internal") != child->objectName()) {
-            boxLayout()->addWidget((QWidget*)child);
+            QWidgetItem *item = new QWidgetItem((QWidget*)child);
             if (QToolButton *button = qobject_cast<QToolButton*>(child)) {
+                item->setAlignment(Qt::AlignHCenter);
                 button->setFocusPolicy(Qt::NoFocus);
                 if (mw) {
                     QObject::connect(mw, SIGNAL(pixmapSizeChanged(bool)),
@@ -502,6 +503,7 @@ bool Q3ToolBar::event(QEvent * e)
                 }
                 button->setAutoRaise(true);
             }
+            boxLayout()->addItem(item);
             if (isVisible()) {
                 // toolbar compatibility: we auto show widgets that
                 // are not explicitly hidden

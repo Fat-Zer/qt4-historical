@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/painting/qpaintengine_raster.cpp -->
+<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/src/gui/painting/qpaintengine_raster.cpp -->
 <head>
   <title>Qt 4.3: QRasterPaintEngine Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -28,6 +28,8 @@
 <li><div class="fn"/><b><a href="qrasterpaintengine.html#dtor.QRasterPaintEngine">~QRasterPaintEngine</a></b> ()</li>
 <li><div class="fn"/>virtual void <b><a href="qrasterpaintengine.html#drawBufferSpan">drawBufferSpan</a></b> ( const uint * <i>buffer</i>, int <i>size</i>, int <i>x</i>, int <i>y</i>, int <i>length</i>, uint <i>alpha</i> )</li>
 <li><div class="fn"/>virtual void <b><a href="qrasterpaintengine.html#drawColorSpans">drawColorSpans</a></b> ( const QSpan * <i>spans</i>, int <i>count</i>, uint <i>color</i> )</li>
+<li><div class="fn"/>virtual void <b><a href="qrasterpaintengine.html#drawEllipse">drawEllipse</a></b> ( const QRect &amp; <i>rect</i> )</li>
+<li><div class="fn"/>virtual void <b><a href="qrasterpaintengine.html#drawPoints">drawPoints</a></b> ( const QPoint * <i>points</i>, int <i>pointCount</i> )</li>
 </ul>
 <ul>
 <li><div class="fn"/>24 public functions inherited from <a href="qpaintengine.html#public-functions">QPaintEngine</a></li>
@@ -66,6 +68,15 @@
 <p>Draws the given color <i>spans</i> with the specified <i>color</i>. The <i>count</i> parameter specifies the number of spans.</p>
 <p>The default implementation does nothing; reimplement this function to draw the given color <i>spans</i> with the specified <i>color</i>. Note that this function <i>must</i> be reimplemented if the framebuffer is not memory-mapped.</p>
 <p>See also <a href="qrasterpaintengine.html#drawBufferSpan">drawBufferSpan</a>().</p>
+<a name="//apple_ref/cpp/instm/QRasterPaintEngine/drawEllipse" />
+<h3 class="fn"><a name="drawEllipse"></a>void QRasterPaintEngine::drawEllipse ( const <a href="qrect.html">QRect</a> &amp; <i>rect</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
+<p>Reimplement this function to draw the largest ellipse that can be contained within rectangle <i>rect</i>.</p>
+<p>Reimplemented from <a href="qpaintengine.html#drawEllipse-2">QPaintEngine</a>.</p>
+<a name="//apple_ref/cpp/instm/QRasterPaintEngine/drawPoints" />
+<h3 class="fn"><a name="drawPoints"></a>void QRasterPaintEngine::drawPoints ( const <a href="qpoint.html">QPoint</a> * <i>points</i>, int <i>pointCount</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
+<p>Draws the first <i>pointCount</i> points in the buffer <i>points</i></p>
+<p>The default implementation converts the first <i>pointCount</i> QPoints in <i>points</i> to QPointFs and calls the floating point version of drawPoints.</p>
+<p>Reimplemented from <a href="qpaintengine.html#drawPoints-2">QPaintEngine</a>.</p>
 <hr />
 <h2>Related Non-Members</h2>
 <a name="//apple_ref/cpp/tdef//QSpan" />
@@ -75,6 +86,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

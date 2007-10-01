@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/corelib/kernel/qcoreapplication.cpp -->
+<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/src/corelib/kernel/qcoreapplication.cpp -->
 <head>
   <title>Qt 4.3: QCoreApplication Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -273,6 +273,7 @@
 <a name="//apple_ref/cpp/clm/QCoreApplication/libraryPaths" />
 <h3 class="fn"><a name="libraryPaths"></a><a href="qstringlist.html">QStringList</a> QCoreApplication::libraryPaths ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns a list of paths that the application will search when dynamically loading libraries.</p>
+<p>Qt provides default library paths, but they can also be set using a <a href="qt-conf.html">qt.conf</a> file. Paths specified in this file will override default values.</p>
 <p>This list will include the installation directory for plugins if it exists (the default installation directory for plugins is <tt>INSTALL/plugins</tt>, where <tt>INSTALL</tt> is the directory where Qt was installed). The directory of the application executable (NOT the working directory) is always added, as well as the colon separated entries of the QT_PLUGIN_PATH environment variable.</p>
 <p>If you want to iterate over the list, you can use the <a href="containers.html#foreach">foreach</a> pseudo-keyword:</p>
 <pre> foreach (QString path, app.libraryPaths())
@@ -312,6 +313,7 @@
 <h3 class="fn"><a name="processEvents"></a>void QCoreApplication::processEvents ( <a href="qeventloop.html#ProcessEventsFlag-enum">QEventLoop::ProcessEventsFlags</a> <i>flags</i> = QEventLoop::AllEvents )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Processes all pending events for the calling thread according to the specified <i>flags</i> until there are no more events to process.</p>
 <p>You can call this function occasionally when your program is busy performing a long operation (e.g&#x2e; copying a file).</p>
+<p>In event you are running a local loop which calls this function continuously, without an event loop, the <a href="qevent.html#Type-enum">DeferredDelete</a> events will not be processed. This can affect the behaviour of widgets, e.g&#x2e; <a href="qtooltip.html">QToolTip</a>, that rely on <a href="qevent.html#Type-enum">DeferredDelete</a> events to function properly. An alternative would be to call <a href="qcoreapplication.html#sendPostedEvents">sendPostedEvents()</a> from within that local loop.</p>
 <p>Calling this function processes events only for the calling thread.</p>
 <p><b>Note:</b> This function is <a href="threads.html#thread-safe">thread-safe</a>.</p>
 <p>See also <a href="qcoreapplication.html#exec">exec</a>(), <a href="qtimer.html">QTimer</a>, <a href="qeventloop.html#processEvents">QEventLoop::processEvents</a>(), <a href="qcoreapplication.html#flush">flush</a>(), and <a href="qcoreapplication.html#sendPostedEvents">sendPostedEvents</a>().</p>
@@ -479,6 +481,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

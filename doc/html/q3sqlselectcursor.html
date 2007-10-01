@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/qt3support/sql/q3sqlselectcursor.cpp -->
+<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/src/qt3support/sql/q3sqlselectcursor.cpp -->
 <head>
   <title>Qt 4.3: Q3SqlSelectCursor Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -31,9 +31,13 @@
 <ul>
 <li><div class="fn"/>43 public functions inherited from <a href="q3sqlcursor.html#public-functions">Q3SqlCursor</a></li>
 <li><div class="fn"/>28 public functions inherited from <a href="qsqlrecord.html#public-functions">QSqlRecord</a></li>
-<li><div class="fn"/>36 public functions inherited from <a href="qsqlquery.html#public-functions">QSqlQuery</a></li>
+<li><div class="fn"/>37 public functions inherited from <a href="qsqlquery.html#public-functions">QSqlQuery</a></li>
 </ul>
-<h3>Additional Inherited Members</h3>
+<a name="protected-functions"></a>
+<h3>Protected Functions</h3>
+<ul>
+<li><div class="fn"/>virtual int <b><a href="q3sqlselectcursor.html#update">update</a></b> ( const QString &amp; <i>filter</i>, bool <i>invalidate</i> = true )</li>
+</ul>
 <ul>
 <li><div class="fn"/>7 protected functions inherited from <a href="q3sqlcursor.html#protected-functions">Q3SqlCursor</a></li>
 </ul>
@@ -63,10 +67,17 @@
 <a name="//apple_ref/cpp/instm/Q3SqlSelectCursor/~Q3SqlSelectCursor" />
 <h3 class="fn"><a name="dtor.Q3SqlSelectCursor"></a>Q3SqlSelectCursor::~Q3SqlSelectCursor ()</h3>
 <p>Destroys the object and frees any allocated resources</p>
+<a name="//apple_ref/cpp/instm/Q3SqlSelectCursor/update" />
+<h3 class="fn"><a name="update"></a>int Q3SqlSelectCursor::update ( const <a href="qstring.html">QString</a> &amp; <i>filter</i>, bool <i>invalidate</i> = true )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
+<p>Updates the database with the current contents of the cursor edit buffer using the specified <i>filter</i>. Returns the number of records which were updated. For error information, use <a href="qsqlquery.html#lastError">lastError</a>().</p>
+<p>Only records which meet the filter criteria are updated, otherwise all records in the table are updated.</p>
+<p>If <i>invalidate</i> is true (the default), the cursor can no longer be navigated. A new select() call must be made before you can move to a valid record.</p>
+<p>Reimplemented from <a href="q3sqlcursor.html#update-2">Q3SqlCursor</a>.</p>
+<p>See also <a href="q3sqlcursor.html#update">Q3SqlCursor::update</a>(), <a href="q3sqlcursor.html#primeUpdate">primeUpdate</a>(), <a href="q3sqlcursor.html#setMode">setMode</a>(), and <a href="qsqlquery.html#lastError">lastError</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

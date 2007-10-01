@@ -103,30 +103,24 @@
      }
  }
 
- void DragWidget::dragMoveEvent(QDragMoveEvent *event)
- {
-     if (event-&gt;mimeData()-&gt;hasText()) {
-         if (children().contains(event-&gt;source())) {
-             event-&gt;setDropAction(Qt::MoveAction);
-             event-&gt;accept();
-         } else {
-             event-&gt;acceptProposedAction();
-         }
-     } else {
-         event-&gt;ignore();
-     }
- }
-
  void DragWidget::dropEvent(QDropEvent *event)
  {
      if (event-&gt;mimeData()-&gt;hasText()) {
-         QStringList pieces = event-&gt;mimeData()-&gt;text().split(QRegExp(&quot;\\s+&quot;),
+         const QMimeData *mime = event-&gt;mimeData();
+         QStringList pieces = mime-&gt;text().split(QRegExp(&quot;\\s+&quot;),
                               QString::SkipEmptyParts);
          QPoint position = event-&gt;pos();
+         QPoint hotSpot;
+
+         QList&lt;QByteArray&gt; hotSpotPos = mime-&gt;data(&quot;application/x-hotspot&quot;).split(' ');
+         if (hotSpotPos.size() == 2) {
+             hotSpot.setX(hotSpotPos.first().toInt());
+             hotSpot.setY(hotSpotPos.last().toInt());
+         }
 
          foreach (QString piece, pieces) {
              DragLabel *newLabel = new DragLabel(piece, this);
-             newLabel-&gt;move(position);
+             newLabel-&gt;move(position - hotSpot);
              newLabel-&gt;show();
 
              position += QPoint(newLabel-&gt;width(), 0);
@@ -146,6 +140,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

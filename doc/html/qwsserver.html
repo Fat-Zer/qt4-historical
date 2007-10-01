@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/embedded/qwindowsystem_qws.cpp -->
+<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/src/gui/embedded/qwindowsystem_qws.cpp -->
 <head>
   <title>Qt 4.3: QWSServer Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -247,7 +247,7 @@
 <p>See also <a href="qwsserver.html#closeKeyboard">closeKeyboard</a>() and <a href="qwsserver.html#keyboardHandler">keyboardHandler</a>().</p>
 <a name="//apple_ref/cpp/instm/QWSServer/openMouse" />
 <h3 class="fn"><a name="openMouse"></a>void QWSServer::openMouse ()</h3>
-<p>Opens the mouse devices specified by the <a href="qtopiacore-envvars.html#qws-mouse-proto">QWS_MOUSE_PROTO</a> environment variable.</p>
+<p>Opens the mouse devices specified by the <a href="qtopiacore-envvars.html#qws-mouse-proto">QWS_MOUSE_PROTO</a> environment variable. Be advised that <a href="qwsserver.html#closeMouse">closeMouse</a>() is called first to delete all the existing mouse handlers. This behaviour could be the cause of problems if you were not expecting it.</p>
 <p>See also <a href="qwsserver.html#closeMouse">closeMouse</a>() and <a href="qwsserver.html#mouseHandler">mouseHandler</a>().</p>
 <a name="//apple_ref/cpp/clm/QWSServer/processKeyEvent" />
 <h3 class="fn"><a name="processKeyEvent"></a>void QWSServer::processKeyEvent ( int <i>unicode</i>, int <i>keycode</i>, <a href="qt.html#KeyboardModifier-enum">Qt::KeyboardModifiers</a> <i>modifiers</i>, bool <i>isPress</i>, bool <i>autoRepeat</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
@@ -431,6 +431,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

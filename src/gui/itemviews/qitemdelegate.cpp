@@ -843,6 +843,7 @@ void QItemDelegate::doLayout(const QStyleOptionViewItem &option,
     const bool hasText = textRect->isValid();
     const int textMargin = hasText ? style->pixelMetric(QStyle::PM_FocusFrameHMargin, 0, widget) + 1 : 0;
     const int pixmapMargin = hasPixmap ? style->pixelMetric(QStyle::PM_FocusFrameHMargin, 0, widget) + 1 : 0;
+    const int checkMargin = hasCheck ? style->pixelMetric(QStyle::PM_FocusFrameHMargin, 0, widget) + 1 : 0;
     int x = option.rect.left();
     int y = option.rect.top();
     int w, h;
@@ -872,12 +873,12 @@ void QItemDelegate::doLayout(const QStyleOptionViewItem &option,
     int cw = 0;
     QRect check;
     if (hasCheck) {
-        cw = checkRect->width() + 2 * textMargin;
+        cw = checkRect->width() + 2 * checkMargin;
         if (hint) w += cw;
         if (option.direction == Qt::RightToLeft) {
             check.setRect(x + w - cw, y, cw, h);
         } else {
-            check.setRect(x, y, cw, h);
+            check.setRect(x + checkMargin, y, cw, h);
         }
     }
 
@@ -1211,7 +1212,8 @@ bool QItemDelegate::editorEvent(QEvent *event,
 
     // make sure that the item is checkable
     Qt::ItemFlags flags = model->flags(index);
-    if (!(flags & Qt::ItemIsUserCheckable) || !(option.state & QStyle::State_Enabled))
+    if (!(flags & Qt::ItemIsUserCheckable) || !(option.state & QStyle::State_Enabled) 
+        || !(flags & Qt::ItemIsEnabled))
         return false;
 
     // make sure that we have a check state

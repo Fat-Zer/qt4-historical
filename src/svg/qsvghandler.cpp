@@ -983,14 +983,14 @@ static void parsePen(QSvgNode *node,
                     if (dummy)
                         group = static_cast<QSvgStructureNode*>(dummy);
                     if (group) {
-                        QSvgStyleProperty *style =
-                            group->scopeStyle(id);
-                        if (style->type() == QSvgStyleProperty::GRADIENT) {
-                            QBrush b(*((QSvgGradientStyle*)style)->qgradient());
-                            pen.setBrush(b);
-                        } else if (style->type() == QSvgStyleProperty::GRADIENT) {
-                            pen.setColor(
-                                ((QSvgSolidColorStyle*)style)->qcolor());
+                        if (QSvgStyleProperty *style = group->scopeStyle(id)) {
+                            if (style->type() == QSvgStyleProperty::GRADIENT) {
+                                QBrush b(*((QSvgGradientStyle*)style)->qgradient());
+                                pen.setBrush(b);
+                            } else if (style->type() == QSvgStyleProperty::SOLID_COLOR) {
+                                pen.setColor(
+                                    ((QSvgSolidColorStyle*)style)->qcolor());
+                            }
                         }
                     } else {
                         qDebug()<<"QSvgHandler::parsePen no parent group?";
@@ -1043,10 +1043,18 @@ static void parsePen(QSvgNode *node,
                         *d /= penw;
                         ++d;
                     }
+
+                // if the dash count is odd the dashes should be duplicated
+                if (dashes.size() % 2 != 0)
+                    dashes << QVector<qreal>(dashes);
+
                 pen.setDashPattern(dashes);
             }
             if (!dashOffset.isEmpty()) {
-                pen.setDashOffset(::toDouble(dashOffset));
+                qreal doffset = ::toDouble(dashOffset);
+                if (penw != 0)
+                    doffset /= penw;
+                pen.setDashOffset(doffset);
             }
             if (!miterlimit.isEmpty())
                 pen.setMiterLimit(::toDouble(miterlimit));
@@ -2696,9 +2704,7 @@ static QSvgStyleProperty *createLinearGradientNode(QSvgNode *node,
     qreal ny2 = convertToNumber(y2, handler);
     bool  needsResolving = true;
 
-    if (qFuzzyCompare(nx2, qreal(0.))) {
-        nx2 = 1;
-    } else if (units == QLatin1String("userSpaceOnUse")) {
+    if (units == QLatin1String("userSpaceOnUse")) {
         needsResolving = false;
     }
 

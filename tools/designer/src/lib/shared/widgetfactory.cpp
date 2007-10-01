@@ -429,12 +429,14 @@ void WidgetFactory::initialize(QObject *object) const
         widget->setAttribute(Qt::WA_TransparentForMouseEvents, false);
     }
 
-    if (qobject_cast<QDockWidget*>(object) || qobject_cast<QToolBar*>(object)) {
+    if (QToolBar *toolBar = qobject_cast<QToolBar*>(object)) {
         sheet->setVisible(sheet->indexOf(QLatin1String("windowTitle")), true);
+        toolBar->setFloatable(false);  // prevent toolbars from being dragged off
+    }
 
-        if (qobject_cast<QDockWidget*>(object)) {
-            sheet->setVisible(sheet->indexOf(QLatin1String("windowIcon")), true);
-        }
+    if (qobject_cast<QDockWidget*>(object)) {
+        sheet->setVisible(sheet->indexOf(QLatin1String("windowTitle")), true);
+        sheet->setVisible(sheet->indexOf(QLatin1String("windowIcon")), true);
     }
 
     if (qobject_cast<QAction*>(object)) {

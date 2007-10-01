@@ -2447,16 +2447,15 @@ void QHttpPrivate::_q_slotSendRequest()
 #ifndef QT_NO_OPENSSL
         if (sslSocket && mode == QHttp::ConnectionModeHttps) {
 #ifndef QT_NO_NETWORKPROXY
+            // Disallow use of cacheing proxy with HTTPS; instead fall back to
+            // transparent HTTP CONNECT proxying.
             if (proxy.type() == QNetworkProxy::HttpProxy && !proxy.hostName().isEmpty())
                 socket->setProxy(proxy);
 #endif
-            sslSocket->connectToHostEncrypted(connectionHost, connectionPort);
+            sslSocket->connectToHostEncrypted(hostName, port);
         } else
 #endif
         {
-#ifndef QT_NO_NETWORKPROXY
-            socket->setProxy(QNetworkProxy::DefaultProxy);
-#endif
             socket->connectToHost(connectionHost, connectionPort);
         }
     } else {
@@ -2502,8 +2501,6 @@ void QHttpPrivate::finishedWithError(const QString &detail, int errorCode)
 void QHttpPrivate::_q_slotClosed()
 {
     Q_Q(QHttp);
-    if (state == QHttp::Closing)
-        return;
 
     if (state == QHttp::Reading) {
         if (response.hasKey(QLatin1String("content-length"))) {
@@ -2517,7 +2514,8 @@ void QHttpPrivate::_q_slotClosed()
     }
 
     postDevice = 0;
-    setState(QHttp::Closing);
+    if (state != QHttp::Closing)
+        setState(QHttp::Closing);
     QMetaObject::invokeMethod(q, "_q_slotDoFinished", Qt::QueuedConnection);
 }
 
@@ -2628,7 +2626,7 @@ void QHttpPrivate::_q_slotReadyRead()
         QString tmp;
         while (!end && socket->canReadLine()) {
             tmp = QString::fromAscii(socket->readLine());
-            if (tmp == QLatin1String("\r\n") || tmp == QLatin1String("\n"))
+            if (tmp == QLatin1String("\r\n") || tmp == QLatin1String("\n") || tmp.isEmpty())
                 end = true;
             else
                 headerStr += tmp;
@@ -2801,6 +2799,11 @@ void QHttpPrivate::_q_slotReadyRead()
                 }
             }
         } else if (response.hasContentLength()) {
+            if (repost && (n < response.contentLength())) {
+                // wait for the content to be available fully 
+                // if repost is required, the content is ignored
+                return;
+            }
             n = qMin(qint64(response.contentLength() - bytesDone), n);
             if (n > 0) {
                 arr = new QByteArray;
@@ -2938,12 +2941,6 @@ void QHttpPrivate::closeConn()
     } else {
         // Close now.
         socket->close();
-
-        // Did close succeed immediately ?
-        if (socket->state() == QTcpSocket::UnconnectedState) {
-            // Prepare to emit the requestFinished() signal.
-            QMetaObject::invokeMethod(q, "_q_slotDoFinished", Qt::QueuedConnection);
-        }
     }
 }
 

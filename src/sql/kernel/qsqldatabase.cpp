@@ -69,7 +69,15 @@
 #include "../drivers/sqlite2/qsql_sqlite2.h"
 #endif
 #ifdef QT_SQL_IBASE
+#undef SQL_FLOAT  // avoid clash with ODBC
+#undef SQL_DOUBLE
+#undef SQL_TIMESTAMP
+#undef SQL_TYPE_TIME
+#undef SQL_TYPE_DATE
+#undef SQL_DATE
+#define SCHAR IBASE_SCHAR  // avoid clash with ODBC (older versions of ibase.h with Firebird)
 #include "../drivers/ibase/qsql_ibase.h"
+#undef SCHAR
 #endif
 
 #include "qdebug.h"
@@ -1393,7 +1401,7 @@ bool QSqlDatabase::isDriverAvailable(const QString& name)
     The host name (or service name) is needed when constructing
     the QTDSDriver for creating new connections for internal
     queries. This is to prevent the simultaneous usage of several
-    QSqlQuery/\l{QSqlCursor} objects from blocking each other.
+    QSqlQuery objects from blocking each other.
 
     \warning If you add a database with the same name as an
     existing database, the new database will replace the old one.

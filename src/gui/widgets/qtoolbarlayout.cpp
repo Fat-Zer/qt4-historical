@@ -391,6 +391,9 @@ bool QToolBarLayout::layoutActions(const QSize &size)
     bool extensionMenuContainsOnlyWidgetActions = true;
 
     int space = pick(o, rect.size()) - 2*margin - handleExtent;
+    if (space <= 0)
+        return false;  // nothing to do.
+
     bool ranOutOfSpace = false;
     int rows = 0;
     int rowPos = perp(o, rect.topLeft()) + margin;
@@ -626,6 +629,7 @@ QSize QToolBarLayout::sizeHint() const
 QToolBarItem *QToolBarLayout::createItem(QAction *action)
 {
     bool customWidget = false;
+    bool standardButtonWidget = false;
     QWidget *widget = 0;
     QToolBar *tb = qobject_cast<QToolBar*>(parentWidget());
 
@@ -653,10 +657,13 @@ QToolBarItem *QToolBarLayout::createItem(QAction *action)
         button->setDefaultAction(action);
         QObject::connect(button, SIGNAL(triggered(QAction*)), tb, SIGNAL(actionTriggered(QAction*)));
         widget = button;
+        standardButtonWidget = true;
     }
 
     widget->hide();
     QToolBarItem *result = new QToolBarItem(widget);
+    if (standardButtonWidget)
+        result->setAlignment(Qt::AlignJustify);
     result->customWidget = customWidget;
     result->action = action;
     return result;

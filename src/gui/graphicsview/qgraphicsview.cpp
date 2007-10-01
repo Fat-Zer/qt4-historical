@@ -1062,7 +1062,7 @@ void QGraphicsView::setRubberBandSelectionMode(Qt::ItemSelectionMode mode)
 
     \code
         QGraphicsView view;
-        view.setBackgroundBrush(":/images/backgroundtile.png");
+        view.setBackgroundBrush(QImage(":/images/backgroundtile.png"));
         view.setCacheMode(QGraphicsView::CacheBackground);
     \endcode
 
@@ -1371,6 +1371,9 @@ void QGraphicsView::translate(qreal dx, qreal dy)
 
     Because \a pos is a floating point coordinate, and the scroll bars operate
     on integer coordinates, the centering is only an approximation.
+
+    \note If the item is close to or outside the border, it will be visible
+    in the view, but not centered.
 
     \sa ensureVisible()
 */
@@ -2921,7 +2924,12 @@ void QGraphicsView::paintEvent(QPaintEvent *event)
     foreach (QRect rect, exposedRegion.rects()) {
         QPolygonF exposedPoly = mapToScene(rect.adjusted(-1, -1, 1, 1));
         exposedPolys << exposedPoly;
+#ifdef Q_WS_X11
+        // ### Workaround for rounding error on X11
+        exposedRects << exposedPoly.boundingRect().adjusted(-0.5, -0.5, 0.5, 0.5);
+#else
         exposedRects << exposedPoly.boundingRect();
+#endif
     }
 
     // Find all exposed items

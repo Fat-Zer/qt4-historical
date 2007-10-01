@@ -157,9 +157,15 @@ inline int q_atomic_test_and_set_int(volatile int *ptr, int expected, int newval
 
 inline int q_atomic_test_and_set_ptr(volatile void *ptr, void *expected, void *newval)
 {
+#ifndef __LP64__
+    _Asm_mov_to_ar((_Asm_app_reg)_AREG_CCV, (quint32)expected, FENCE);
+    void *ret = (void *)_Asm_cmpxchg((_Asm_sz)_SZ_W, (_Asm_sem)_SEM_ACQ,
+                                     ptr, (quint32)newval, (_Asm_ldhint)_LDHINT_NONE);
+#else
     _Asm_mov_to_ar((_Asm_app_reg)_AREG_CCV, (quint64)expected, FENCE);
     void *ret = (void *)_Asm_cmpxchg((_Asm_sz)_SZ_D, (_Asm_sem)_SEM_ACQ,
                                      ptr, (quint64)newval, (_Asm_ldhint)_LDHINT_NONE);
+#endif
     return ret == expected;
 }
 

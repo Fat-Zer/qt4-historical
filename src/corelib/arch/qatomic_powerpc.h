@@ -44,7 +44,7 @@
 QT_BEGIN_HEADER
 
 #if defined(Q_CC_GNU)
-#ifdef __64BIT__
+#if defined(__64BIT__) || defined(__powerpc64__)
 #  define LPARX "ldarx"
 #  define CMPP  "cmpd"
 #  define STPCX "stdcx."

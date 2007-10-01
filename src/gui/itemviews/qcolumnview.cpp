@@ -70,6 +70,8 @@
     QAbstractItemView class to allow it to display data provided by
     models derived from the QAbstractItemModel class.
 
+    \image qcolumnview.png
+
     \sa \link model-view-programming.html Model/View Programming\endlink
 */
 
@@ -83,12 +85,7 @@ QColumnView::QColumnView(QWidget * parent)
 :  QAbstractItemView(*new QColumnViewPrivate, parent)
 {
     Q_D(QColumnView);
-    setTextElideMode(Qt::ElideMiddle);
-    connect(&(d->currentAnimation), SIGNAL(frameChanged(int)),
-            horizontalScrollBar(), SLOT(setValue(int)));
-    connect(&(d->currentAnimation), SIGNAL(finished()), this, SLOT(_q_changeCurrentColumn()));
-    delete d->itemDelegate;
-    setItemDelegate(new QColumnViewDelegate(this));
+    d->initialize();
 }
 
 /*!
@@ -97,6 +94,19 @@ QColumnView::QColumnView(QWidget * parent)
 QColumnView::QColumnView(QColumnViewPrivate & dd, QWidget * parent)
 :  QAbstractItemView(dd, parent)
 {
+    Q_D(QColumnView);
+    d->initialize();
+}
+
+void QColumnViewPrivate::initialize()
+{
+    Q_Q(QColumnView);
+    q->setTextElideMode(Qt::ElideMiddle);
+    q->connect(&currentAnimation, SIGNAL(frameChanged(int)),
+            q->horizontalScrollBar(), SLOT(setValue(int)));
+    q->connect(&currentAnimation, SIGNAL(finished()), q, SLOT(_q_changeCurrentColumn()));
+    delete itemDelegate;
+    q->setItemDelegate(new QColumnViewDelegate(q));
 }
 
 /*!
@@ -237,7 +247,7 @@ void QColumnView::scrollTo(const QModelIndex &index, ScrollHint hint)
 {
     Q_D(QColumnView);
     Q_UNUSED(hint);
-    if (!model() || !index.isValid() || d->columns.isEmpty())
+    if (!index.isValid() || d->columns.isEmpty())
         return;
 
     if (d->currentAnimation.state() == QTimeLine::Running)
@@ -281,8 +291,7 @@ void QColumnView::scrollTo(const QModelIndex &index, ScrollHint hint)
 
     // If it is already visible don't animate
     if (leftEdge > -horizontalOffset()
-        && rightEdge
-           <= ( -horizontalOffset() + viewport()->size().width())) {
+        && rightEdge <= ( -horizontalOffset() + viewport()->size().width())) {
             d->columns.at(indexColumn)->scrollTo(index);
             d->_q_changeCurrentColumn();
             return;
@@ -354,7 +363,7 @@ QModelIndex QColumnView::moveCursor(CursorAction cursorAction, Qt::KeyboardModif
         break;
 
     case MoveRight:
-        if (current.isValid() && model()->hasChildren(current))
+        if (model()->hasChildren(current))
             return model()->index(0, 0, current);
         else
             return current.sibling(current.row() + 1, current.column());
@@ -370,7 +379,7 @@ QModelIndex QColumnView::moveCursor(CursorAction cursorAction, Qt::KeyboardModif
 /*!
     \reimp
 */
-void QColumnView::resizeEvent( QResizeEvent *event )
+void QColumnView::resizeEvent(QResizeEvent *event)
 {
     Q_D(QColumnView);
     d->doLayout();
@@ -457,16 +466,14 @@ QRegion QColumnView::visualRegionForSelection(const QItemSelection &selection) c
         lastRow = qMax(lastRow, selection.at(i).bottom());
     }
 
-    QModelIndex firstItem =
-        model()->index(qMin(firstRow, lastRow), 0, rootIndex());
-    QModelIndex lastItem =
-        model()->index(qMax(firstRow, lastRow), 0, rootIndex());
+    QModelIndex firstIdx = model()->index(qMin(firstRow, lastRow), 0, rootIndex());
+    QModelIndex lastIdx = model()->index(qMax(firstRow, lastRow), 0, rootIndex());
 
-    if (firstItem == lastItem)
-        return visualRect(firstItem);
+    if (firstIdx == lastIdx)
+        return visualRect(firstIdx);
 
-    QRegion firstRegion = visualRect(firstItem);
-    QRegion lastRegion = visualRect(lastItem);
+    QRegion firstRegion = visualRect(firstIdx);
+    QRegion lastRegion = visualRect(lastIdx);
     return firstRegion.unite(lastRegion);
 }
 
@@ -487,8 +494,6 @@ void QColumnView::setSelectionModel(QItemSelectionModel * newSelectionModel)
     Q_D(const QColumnView);
     for (int i = 0; i < d->columns.size(); ++i) {
         if (d->columns.at(i)->selectionModel() == selectionModel()) {
-            if (d->columns.at(i)->selectionModel() != selectionModel())
-                d->columns.at(i)->selectionModel()->deleteLater();
             d->columns.at(i)->setSelectionModel(newSelectionModel);
             break;
         }
@@ -518,8 +523,7 @@ void QColumnViewPrivate::_q_gripMoved(int offset)
     Q_Q(QColumnView);
 
     QObject *grip = q->sender();
-    if (!grip)
-        return;
+    Q_ASSERT(grip);
 
     if (q->isRightToLeft())
         offset = -1 * offset;
@@ -629,8 +633,6 @@ void QColumnViewPrivate::closeColumns(const QModelIndex &parent, bool build)
 void QColumnViewPrivate::_q_clicked(const QModelIndex &index)
 {
     Q_Q(QColumnView);
-    if (!index.isValid())
-        return;
     QModelIndex parent = index.parent();
     QAbstractItemView *columnClicked = 0;
     for (int column = 0; column < columns.count(); ++column) {
@@ -665,8 +667,7 @@ QAbstractItemView *QColumnViewPrivate::createColumn(const QModelIndex &index, bo
         view = q->createColumn(index);
         q->connect(view, SIGNAL(clicked(const QModelIndex &)),
                    q, SLOT(_q_clicked(const QModelIndex &)));
-    }
-    else {
+    } else {
         if (!previewColumn)
             setPreviewWidget(new QWidget(q));
         view = previewColumn;
@@ -874,9 +875,6 @@ QList<int> QColumnView::columnWidths() const
 void QColumnView::currentChanged(const QModelIndex &current, const QModelIndex &previous)
 {
     Q_D(QColumnView);
-    if (!model())
-        return;
-
     if (!current.isValid()) {
         QAbstractItemView::currentChanged(current, previous);
         return;
@@ -1000,9 +998,9 @@ void QColumnView::selectAll()
     }
 
     QModelIndex tl = model()->index(0, 0, parent);
-    QModelIndex br = model()->index(model()->rowCount(rootIndex()) - 1,
-                                    model()->columnCount(rootIndex()) - 1,
-                                    rootIndex());
+    QModelIndex br = model()->index(model()->rowCount(parent) - 1,
+                                    model()->columnCount(parent) - 1,
+                                    parent);
     selection.append(QItemSelectionRange(tl, br));
     selectionModel()->select(selection, QItemSelectionModel::ClearAndSelect);
 }

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/graphicsview/qgraphicsitem.cpp -->
+<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/src/gui/graphicsview/qgraphicsitem.cpp -->
 <head>
   <title>Qt 4.3: QGraphicsItem Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -393,7 +393,6 @@
      <span class="comment">//</span> ...
  }</pre>
 <p>The default implementation does nothing.</p>
-<p><b>Note:</b> Items only receive context menu events if the view they are displayed in is configured to ignore context menu events; i.e&#x2e;, its <a href="qwidget.html#contextMenuPolicy-prop">contextMenuPolicy</a> property is set to <a href="qt.html#ContextMenuPolicy-enum">Qt::ContextMenuPolicy</a>.</p>
 <p>See also <a href="qgraphicsitem.html#sceneEvent">sceneEvent</a>().</p>
 <a name="//apple_ref/cpp/instm/QGraphicsItem/cursor" />
 <h3 class="fn"><a name="cursor"></a><a href="qcursor.html">QCursor</a> QGraphicsItem::cursor () const</h3>
@@ -855,11 +854,23 @@
 <p>See also <a href="qgraphicsitem.html#setTransform">setTransform</a>() and <a href="qgraphicsitem.html#transform">transform</a>().</p>
 <a name="//apple_ref/cpp/instm/QGraphicsItem/rotate" />
 <h3 class="fn"><a name="rotate"></a>void QGraphicsItem::rotate ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>angle</i> )</h3>
-<p>Rotates the current item transformation <i>angle</i> degrees clockwise.</p>
+<p>Rotates the current item transformation <i>angle</i> degrees clockwise around its origin. To translate around an arbitrary point (x, y), you need to combine translation and rotation with <a href="qgraphicsitem.html#setTransform">setTransform</a>().</p>
+<p>Example:</p>
+<pre><span class="comment"> //</span> Rotate an item 45 degrees around (0, 0).
+ item-&gt;rotate(45);
+
+<span class="comment"> //</span> Rotate an item 45 degrees around (x, y).
+ item-&gt;setTransform(QTransform().translate(x, y).rotate(45).translate(-x, -y));</pre>
 <p>See also <a href="qgraphicsitem.html#setTransform">setTransform</a>(), <a href="qgraphicsitem.html#transform">transform</a>(), <a href="qgraphicsitem.html#scale">scale</a>(), <a href="qgraphicsitem.html#shear">shear</a>(), and <a href="qgraphicsitem.html#translate">translate</a>().</p>
 <a name="//apple_ref/cpp/instm/QGraphicsItem/scale" />
 <h3 class="fn"><a name="scale"></a>void QGraphicsItem::scale ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>sx</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>sy</i> )</h3>
-<p>Scales the current item transformation by (<i>sx</i>, <i>sy</i>).</p>
+<p>Scales the current item transformation by (<i>sx</i>, <i>sy</i>) around its origin. To scale from an arbitrary point (x, y), you need to combine translation and scaling with <a href="qgraphicsitem.html#setTransform">setTransform</a>().</p>
+<p>Example:</p>
+<pre><span class="comment"> //</span> Scale an item by 3x2 from its origin
+ item-&gt;scale(3, 2);
+
+<span class="comment"> //</span> Scale an item by 3x2 from (x, y)
+ item-&gt;setTransform(QTransform().translate(x, y).scale(3, 2).translate(-x, -y));</pre>
 <p>See also <a href="qgraphicsitem.html#setTransform">setTransform</a>(), <a href="qgraphicsitem.html#transform">transform</a>(), <a href="qgraphicsitem.html#rotate">rotate</a>(), <a href="qgraphicsitem.html#shear">shear</a>(), and <a href="qgraphicsitem.html#translate">translate</a>().</p>
 <a name="//apple_ref/cpp/instm/QGraphicsItem/scene" />
 <h3 class="fn"><a name="scene"></a><a href="qgraphicsscene.html">QGraphicsScene</a> * QGraphicsItem::scene () const</h3>
@@ -1113,6 +1124,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

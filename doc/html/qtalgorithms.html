@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/doc/src/qalgorithms.qdoc -->
+<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/doc/src/qalgorithms.qdoc -->
 <head>
   <title>Qt 4.3: &lt;QtAlgorithms&gt; - Generic Algorithms</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -324,7 +324,7 @@
 <p>This is the same as qLowerBound(<i>container</i>.begin(), <i>container</i>.end(), value);</p>
 <a name="//apple_ref/cpp/func//qSort" />
 <h3 class="fn"><a name="qSort"></a>void qSort ( RandomAccessIterator <i>begin</i>, RandomAccessIterator <i>end</i> )</h3>
-<p>Sorts the items in range [<i>begin</i>, <i>end</i>) in ascending order using the heap sort algorithm.</p>
+<p>Sorts the items in range [<i>begin</i>, <i>end</i>) in ascending order using the quicksort algorithm.</p>
 <p>Example:</p>
 <pre> QList&lt;int&gt; list;
  list &lt;&lt; 33 &lt;&lt; 12 &lt;&lt; 68 &lt;&lt; 6 &lt;&lt; 12;
@@ -371,7 +371,8 @@
 <p>This is the same as qSort(<i>container</i>.begin(), <i>container</i>.end());</p>
 <a name="//apple_ref/cpp/func//qStableSort" />
 <h3 class="fn"><a name="qStableSort"></a>void qStableSort ( RandomAccessIterator <i>begin</i>, RandomAccessIterator <i>end</i> )</h3>
-<p>Sorts the items in range [<i>begin</i>, <i>end</i>) in ascending order using the heap sort algorithm.</p>
+<p>Sorts the items in range [<i>begin</i>, <i>end</i>) in ascending order using a stable sorting algorithm.</p>
+<p>If of two items neither is less than the other, the items are taken to be equal. The item that appeared before the other in the original container will still appear first after the sort. This property is often useful when sorting user-visible data.</p>
 <p>Example:</p>
 <pre> QList&lt;int&gt; list;
  list &lt;&lt; 33 &lt;&lt; 12 &lt;&lt; 68 &lt;&lt; 6 &lt;&lt; 12;
@@ -379,7 +380,6 @@
 <span class="comment"> //</span> list: [ 6, 12, 12, 33, 68 ]</pre>
 <p>The sort algorithm is efficient on large data sets. It operates in <a href="containers.html#linear-logarithmic-time">linear-logarithmic time</a>, O(<i>n</i> log <i>n</i>).</p>
 <p>This function requires the item type (in the example above, <tt>int</tt>) to implement <tt>operator&lt;()</tt>.</p>
-<p>If of two items neither is less than the other, the items are taken to be equal. The item that appeared before the other in the original container will still appear first after the sort. This property is often useful when sorting user-visible data.</p>
 <p>See also <a href="qtalgorithms.html#qSort">qSort</a>() and <a href="qtalgorithms.html#random-access-iterators">random access iterators</a>.</p>
 <h3 class="fn"><a name="qStableSort-2"></a>void qStableSort ( RandomAccessIterator <i>begin</i>, RandomAccessIterator <i>end</i>, LessThan <i>lessThan</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
@@ -458,6 +458,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

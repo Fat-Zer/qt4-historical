@@ -46,6 +46,7 @@
 #include "ratecontroller.h"
 
 #include <QtCore>
+#include <QNetworkInterface>
 
 extern "C" {
 #include "3rdparty/sha1.h"
@@ -473,8 +474,11 @@ void TorrentClient::stop()
     }
 
     // Abort all existing connections
-    foreach (PeerWireClient *client, d->connections)
+    foreach (PeerWireClient *client, d->connections) {
+        RateController::instance()->removeSocket(client);
+        ConnectionManager::instance()->removeConnection(client);
         client->abort();
+    }
     d->connections.clear();
 
     // Perhaps stop the tracker
@@ -1458,10 +1462,14 @@ void TorrentClient::peerUnchoked()
 void TorrentClient::addToPeerList(const QList<TorrentPeer> &peerList)
 {
     // Add peers we don't already know of to our list of peers.
+    QList<QHostAddress> addresses =  QNetworkInterface::allAddresses();
     foreach (TorrentPeer peer, peerList) {
-        if (peer.address == TorrentServer::instance()->serverAddress()
-            && peer.port == TorrentServer::instance()->serverPort())
+        if (addresses.contains(peer.address)
+            && peer.port == TorrentServer::instance()->serverPort()) {
+            // Skip our own server.
             continue;
+        }
+		
         bool known = false;
         foreach (TorrentPeer *knownPeer, d->peers) {
             if (knownPeer->port == peer.port

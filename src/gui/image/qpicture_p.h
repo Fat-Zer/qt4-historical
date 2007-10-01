@@ -54,6 +54,7 @@
 #include "QtCore/qbuffer.h"
 #include "QtCore/qobjectdefs.h"
 #include "QtGui/qpicture.h"
+#include "QtGui/qpixmap.h"
 #include "QtCore/qrect.h"
 #include "private/qobject_p.h"
 
@@ -135,7 +136,7 @@ public:
         PdcReservedStop = 199 //   for Qt
     };
 
-    inline QPicturePrivate() : q_ptr(0) { ref = 1; }
+    inline QPicturePrivate() : dont_stream_pixmaps(false), q_ptr(0) { ref = 1; }
     QAtomic ref;
 
     bool checkFormat();
@@ -149,6 +150,8 @@ public:
     QRect brect;
     QRect override_rect;
     QPaintEngine *paintEngine;
+    bool dont_stream_pixmaps;
+    QList<QPixmap> pixmap_list;
 
     QPicture *q_ptr;
 };

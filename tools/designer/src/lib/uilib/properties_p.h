@@ -57,6 +57,8 @@
 #include <QtCore/QLocale>
 #include <QtGui/QWidget>
 
+#include "formbuilderextra_p.h"
+
 #ifdef QFORMINTERNAL_NAMESPACE
 namespace QFormInternal
 {
@@ -112,7 +114,14 @@ public:
 template <class EnumType>
 inline EnumType enumKeyToValue(const QMetaEnum &metaEnum,const char *key, const EnumType* = 0)
 {
-    return static_cast<EnumType>(metaEnum.keyToValue(key));
+    int val = metaEnum.keyToValue(key);
+    if (val == -1) {
+
+        uiLibWarning(QObject::tr("The enumeration-value \"%1\" is invalid. The default value \"%2\" will be used instead.")
+                    .arg(QString::fromUtf8(key)).arg(QString::fromUtf8(metaEnum.key(0))));
+        val = metaEnum.value(0);
+    }
+    return static_cast<EnumType>(val);
 }
 
 // Access meta enumeration object of a qobject

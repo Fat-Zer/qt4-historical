@@ -753,7 +753,11 @@ void QX11PaintEngine::drawPoints(const QPoint *points, int pointCount)
         || d->has_alpha_brush
         || d->has_alpha_pen
         || d->has_custom_pen
-        || (d->render_hints & QPainter::Antialiasing)) {
+        || (d->render_hints & QPainter::Antialiasing))
+    {
+        Qt::PenCapStyle capStyle = d->cpen.capStyle();
+        if (capStyle == Qt::FlatCap)
+            d->cpen.setCapStyle(Qt::SquareCap);
         const QPoint *end = points + pointCount;
         while (points < end) {
             QPainterPath path;
@@ -762,6 +766,7 @@ void QX11PaintEngine::drawPoints(const QPoint *points, int pointCount)
             drawPath(path);
             ++points;
         }
+        d->cpen.setCapStyle(capStyle);
         return;
     }
 
@@ -800,7 +805,11 @@ void QX11PaintEngine::drawPoints(const QPointF *points, int pointCount)
         || d->has_alpha_brush
         || d->has_alpha_pen
         || d->has_custom_pen
-        || (d->render_hints & QPainter::Antialiasing)) {
+        || (d->render_hints & QPainter::Antialiasing))
+    {
+        Qt::PenCapStyle capStyle = d->cpen.capStyle();
+        if (capStyle == Qt::FlatCap)
+            d->cpen.setCapStyle(Qt::SquareCap);
         const QPointF *end = points + pointCount;
         while (points < end) {
             QPainterPath path;
@@ -809,6 +818,7 @@ void QX11PaintEngine::drawPoints(const QPointF *points, int pointCount)
             drawPath(path);
             ++points;
         }
+        d->cpen.setCapStyle(capStyle);
         return;
     }
 
@@ -879,7 +889,12 @@ void QX11PaintEngine::updateState(const QPaintEngineState &state)
         updateClipRegion_dev(QRegion(clipped_poly_dev.toPolygon(), state.clipPath().fillRule()),
                              state.clipOperation());
     } else if (flags & DirtyClipRegion) {
-        updateClipRegion_dev(d->matrix.map(state.clipRegion()), state.clipOperation());
+        QPainterPath clip_path;
+        clip_path.addRegion(state.clipRegion());
+        QPolygonF clip_poly_dev(d->matrix.map(clip_path.toFillPolygon()));
+        QPolygonF clipped_poly_dev;
+        d->clipPolygon_dev(clip_poly_dev, &clipped_poly_dev);
+        updateClipRegion_dev(QRegion(clipped_poly_dev.toPolygon()), state.clipOperation());
     }
     if (flags & DirtyHints) updateRenderHints(state.renderHints());
 #if !defined(QT_NO_XRENDER)
@@ -1775,6 +1790,7 @@ void QX11PaintEngine::drawTiledPixmap(const QRectF &r, const QPixmap &pixmap, co
     int sx = qRound(p.x());
     int sy = qRound(p.y());
 
+    bool mono_src = pixmap.depth() == 1;
     Q_D(QX11PaintEngine);
 #ifndef QT_NO_XRENDER
     if (X11->use_xrender && d->picture && pixmap.x11PictureHandle()) {
@@ -1784,7 +1800,7 @@ void QX11PaintEngine::drawTiledPixmap(const QRectF &r, const QPixmap &pixmap, co
         attrs.repeat = true;
         XRenderChangePicture(d->dpy, pixmap.x11PictureHandle(), CPRepeat, &attrs);
 
-        if (pixmap.depth() == 1) {
+        if (mono_src) {
             qt_render_bitmap(d->dpy, d->scrn, pixmap.x11PictureHandle(), d->picture,
                              sx, sy, x, y, w, h, d->cpen);
         } else {
@@ -1810,7 +1826,7 @@ void QX11PaintEngine::drawTiledPixmap(const QRectF &r, const QPixmap &pixmap, co
                     drawW = pixmap.width() - xOff; // Cropping first column
                     if (xPos + drawW > x + w)    // Cropping last column
                         drawW = x + w - xPos;
-                    if (pixmap.depth() == 1) {
+                    if (mono_src) {
                         qt_render_bitmap(d->dpy, d->scrn, pixmap.x11PictureHandle(), d->picture,
                                          xOff, yOff, xPos, yPos, drawW, drawH, d->cpen);
                     } else {
@@ -1831,7 +1847,8 @@ void QX11PaintEngine::drawTiledPixmap(const QRectF &r, const QPixmap &pixmap, co
             const int pw = w + sx;
             const int ph = h + sy;
             QPixmap pm(pw, ph);
-            pm.fill(pixmap.hasAlpha() ? Qt::transparent : Qt::black);
+            if (pixmap.hasAlpha() || mono_src)
+                pm.fill(Qt::transparent);
 
             const int mode = pixmap.hasAlpha() ? PictOpOver : PictOpSrc;
             const ::Picture pmPicture = pm.x11PictureHandle();
@@ -1864,7 +1881,7 @@ void QX11PaintEngine::drawTiledPixmap(const QRectF &r, const QPixmap &pixmap, co
             }
 
             // composite
-            if (pixmap.depth() == 1)
+            if (mono_src)
                 qt_render_bitmap(d->dpy, d->scrn, pmPicture, d->picture,
                                  sx, sy, x, y, w, h, d->cpen);
             else

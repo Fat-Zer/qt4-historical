@@ -395,7 +395,7 @@ void PropertyEditor::updatePropertySheet()
 
     const int count = m_prop_sheet->count();
     for (int i = 0; i < count; ++i) {
-        const IndexToPropertyMap::const_iterator it = m_indexToProperty.constFind(i);
+        IndexToPropertyMap::const_iterator it = m_indexToProperty.constFind(i);
         if (it !=  m_indexToProperty.constEnd()) {
             IProperty *p = it.value();
             p->setValue(m_prop_sheet->property(i));
@@ -563,7 +563,7 @@ void PropertyEditor::slotResetProperty(const QString &prop_name)
 QString PropertyEditor::currentPropertyName() const
 {
     const QModelIndex index = m_editor->selectionModel()->currentIndex();
-    if (!index.isValid()) {
+    if (index.isValid()) {
         IProperty *property = static_cast<IProperty*>(index.internalPointer());
 
         while (property && property->isFake())

@@ -92,6 +92,8 @@
      abortButton-&gt;setEnabled(false);
 
      treeWidget = new QTreeWidget(this);
+     connect(treeWidget, SIGNAL(itemActivated(QTreeWidgetItem*, int)),
+             this, SLOT(itemActivated(QTreeWidgetItem*)));
      QStringList headerLabels;
      headerLabels &lt;&lt; tr(&quot;Title&quot;) &lt;&lt; tr(&quot;Link&quot;);
      treeWidget-&gt;setHeaderLabels(headerLabels);
@@ -234,11 +236,19 @@
          qWarning() &lt;&lt; &quot;XML ERROR:&quot; &lt;&lt; xml.lineNumber() &lt;&lt; &quot;: &quot; &lt;&lt; xml.errorString();
          http.abort();
      }
+ }
+
+<span class="comment"> /*
+     Open the link in the browser
+ */</span>
+ void RSSListing::itemActivated(QTreeWidgetItem * item)
+ {
+     QDesktopServices::openUrl(QUrl(item-&gt;text(1)));
  }</pre>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

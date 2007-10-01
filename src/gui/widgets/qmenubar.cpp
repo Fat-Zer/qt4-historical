@@ -1844,6 +1844,15 @@ int QMenuBar::findIdForAction(QAction *act) const
 */
 
 /*!
+    \fn void QMenuBar::addAction(QAction *action)
+    \overload
+
+    Appends the action \a action to the menu bar's list of actions.
+
+    \sa QMenu::addAction(), QWidget::addAction()
+*/
+
+/*!
     \fn uint QMenuBar::count() const
 
     Use actions().count() instead.

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/corelib/kernel/qvariant.cpp -->
+<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/src/corelib/kernel/qvariant.cpp -->
 <head>
   <title>Qt 4.3: QVariant Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -168,6 +168,10 @@
 <p>The inverse conversion (e.g&#x2e;, from <a href="qcolor.html">QColor</a> to QVariant) is automatic for all data types supported by QVariant, including GUI-related types:</p>
 <pre> QColor color = palette().background().color();
  QVariant variant = color;</pre>
+<a name="using-canconvert-and-convert-consecutively"></a>
+<h3>Using canConvert() and convert() Consecutively</h3>
+<p>When using <a href="qvariant.html#canConvert">canConvert</a>() and <a href="qvariant.html#convert">convert</a>() consecutively, it is possible for <a href="qvariant.html#canConvert">canConvert</a>() to return true, but <a href="qvariant.html#convert">convert</a>() to return false. This is typically because <a href="qvariant.html#canConvert">canConvert</a>() only reports the general ability of QVariant to convert between types given suitable data; it is still possible to supply data which cannot actually be converted.</p>
+<p>For example, <a href="qvariant.html#canConvert">canConvert</a>() would return true when called on a variant containing a string because, in principle, QVariant is able to convert strings of numbers to integers. However, if the string contains non-numeric characters, it cannot be converted to an integer, and any attempt to convert it will fail. Hence, it is important to have both functions return true for a successful conversion.</p>
 <p>See also <a href="qmetatype.html">QMetaType</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
@@ -658,6 +662,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/corelib/kernel/qeventloop.cpp -->
+<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/src/corelib/kernel/qeventloop.cpp -->
 <head>
   <title>Qt 4.3: QEventLoop Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -77,7 +77,7 @@
 <p>This enum controls the types of events processed by the <a href="qeventloop.html#processEvents">processEvents</a>() functions.</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
-<tr><td valign="top"><tt>QEventLoop::AllEvents</tt></td><td align="center" valign="top"><tt>0x00</tt></td><td valign="top">All events are processed</td></tr>
+<tr><td valign="top"><tt>QEventLoop::AllEvents</tt></td><td align="center" valign="top"><tt>0x00</tt></td><td valign="top">All events except <a href="qevent.html#Type-enum">DeferredDelete</a> are processed.</td></tr>
 <tr><td valign="top"><tt>QEventLoop::ExcludeUserInputEvents</tt></td><td align="center" valign="top"><tt>0x01</tt></td><td valign="top">Do not process user input events, such as ButtonPress and KeyPress. Note that the events are not discarded; they will be delivered the next time <a href="qeventloop.html#processEvents">processEvents</a>() is called without the ExcludeUserInputEvents flag.</td></tr>
 <tr><td valign="top"><tt>QEventLoop::ExcludeSocketNotifiers</tt></td><td align="center" valign="top"><tt>0x02</tt></td><td valign="top">Do not process socket notifier events. Note that the events are not discarded; they will be delivered the next time <a href="qeventloop.html#processEvents">processEvents</a>() is called without the ExcludeSocketNotifiers flag.</td></tr>
 <tr><td valign="top"><tt>QEventLoop::WaitForMoreEvents</tt></td><td align="center" valign="top"><tt>0x04</tt></td><td valign="top">Wait for events if no pending events are available.</td></tr>
@@ -139,6 +139,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

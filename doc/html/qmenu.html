@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/widgets/qmenu.cpp -->
+<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/src/gui/widgets/qmenu.cpp -->
 <head>
   <title>Qt 4.3: QMenu Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -46,6 +46,7 @@
 <li><div class="fn"/>QAction * <b><a href="qmenu.html#addAction-2">addAction</a></b> ( const QIcon &amp; <i>icon</i>, const QString &amp; <i>text</i> )</li>
 <li><div class="fn"/>QAction * <b><a href="qmenu.html#addAction-3">addAction</a></b> ( const QString &amp; <i>text</i>, const QObject * <i>receiver</i>, const char * <i>member</i>, const QKeySequence &amp; <i>shortcut</i> = 0 )</li>
 <li><div class="fn"/>QAction * <b><a href="qmenu.html#addAction-4">addAction</a></b> ( const QIcon &amp; <i>icon</i>, const QString &amp; <i>text</i>, const QObject * <i>receiver</i>, const char * <i>member</i>, const QKeySequence &amp; <i>shortcut</i> = 0 )</li>
+<li><div class="fn"/>void <b><a href="qmenu.html#addAction-5">addAction</a></b> ( QAction * <i>action</i> )</li>
 <li><div class="fn"/>QAction * <b><a href="qmenu.html#addMenu">addMenu</a></b> ( QMenu * <i>menu</i> )</li>
 <li><div class="fn"/>QMenu * <b><a href="qmenu.html#addMenu-2">addMenu</a></b> ( const QString &amp; <i>title</i> )</li>
 <li><div class="fn"/>QMenu * <b><a href="qmenu.html#addMenu-3">addMenu</a></b> ( const QIcon &amp; <i>icon</i>, const QString &amp; <i>title</i> )</li>
@@ -238,6 +239,10 @@
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>This convenience function creates a new action with an <i>icon</i> and some <i>text</i> and an optional shortcut <i>shortcut</i>. The action's <a href="qaction.html#triggered">triggered()</a> signal is connected to the <i>member</i> slot of the <i>receiver</i> object. The function adds the newly created action to the menu's list of actions, and returns it.</p>
 <p>See also <a href="qwidget.html#addAction">QWidget::addAction</a>().</p>
+<h3 class="fn"><a name="addAction-5"></a>void QMenu::addAction ( <a href="qaction.html">QAction</a> * <i>action</i> )</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p>Appends the action <i>action</i> to the menu's list of actions.</p>
+<p>See also <a href="qmenubar.html#addAction">QMenuBar::addAction</a>() and <a href="qwidget.html#addAction">QWidget::addAction</a>().</p>
 <a name="//apple_ref/cpp/instm/QMenu/addMenu" />
 <h3 class="fn"><a name="addMenu"></a><a href="qaction.html">QAction</a> * QMenu::addMenu ( QMenu * <i>menu</i> )</h3>
 <p>This convenience function adds <i>menu</i> as a submenu to this menu. It returns the menus <a href="qmenu.html#menuAction">menuAction</a>().</p>
@@ -358,6 +363,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

@@ -142,8 +142,6 @@ void QSQLiteResultPrivate::finalize()
 
 void QSQLiteResultPrivate::initColumns(bool emptyResultset)
 {
-    rInf.clear();
-
     int nCols = sqlite3_column_count(stmt);
     if (nCols <= 0)
         return;
@@ -306,6 +304,7 @@ bool QSQLiteResult::exec()
 
     d->skippedStatus = false;
     d->skipRow = false;
+    d->rInf.clear();
     clearValues();
     setLastError(QSqlError());
 

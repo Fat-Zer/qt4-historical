@@ -843,10 +843,11 @@ void QFontEngineWin::addGlyphsToPath(glyph_t *glyphs, QFixedPoint *positions, in
                                      QPainterPath *path, QTextItem::RenderFlags)
 {
     LOGFONT lf = logfont;
-    lf.lfHeight = unitsPerEm;
-    int flags = synthesized();
-    if(flags & SynthesizedItalic)
-        lf.lfItalic = false;
+    // The sign must be negative here to make sure we match against character height instead of
+    // hinted cell height. This ensures that we get linear matching, and we need this for
+    // paths since we later on apply a scaling transform to the glyph outline to get the
+    // font at the correct pixel size.
+    lf.lfHeight = -unitsPerEm;
     lf.lfWidth = 0;
     HFONT hf;
     QT_WA({

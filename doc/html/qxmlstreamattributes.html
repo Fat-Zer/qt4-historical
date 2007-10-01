@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/xml/qxmlstream.cpp -->
+<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/src/xml/qxmlstream.cpp -->
 <head>
   <title>Qt 4.3: QXmlStreamAttributes Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -25,7 +25,8 @@
 <h3>Public Functions</h3>
 <ul>
 <li><div class="fn"/>void <b><a href="qxmlstreamattributes.html#append">append</a></b> ( const QString &amp; <i>namespaceUri</i>, const QString &amp; <i>name</i>, const QString &amp; <i>value</i> )</li>
-<li><div class="fn"/>void <b><a href="qxmlstreamattributes.html#append-2">append</a></b> ( const QString &amp; <i>qualifiedName</i>, const QString &amp; <i>value</i> )</li>
+<li><div class="fn"/>void <b><a href="qxmlstreamattributes.html#append-2">append</a></b> ( const QXmlStreamAttribute &amp; <i>attribute</i> )</li>
+<li><div class="fn"/>void <b><a href="qxmlstreamattributes.html#append-3">append</a></b> ( const QString &amp; <i>qualifiedName</i>, const QString &amp; <i>value</i> )</li>
 <li><div class="fn"/>QStringRef <b><a href="qxmlstreamattributes.html#value">value</a></b> ( const QString &amp; <i>namespaceUri</i>, const QString &amp; <i>name</i> ) const</li>
 <li><div class="fn"/>QStringRef <b><a href="qxmlstreamattributes.html#value-2">value</a></b> ( const QString &amp; <i>namespaceUri</i>, const QLatin1String &amp; <i>name</i> ) const</li>
 <li><div class="fn"/>QStringRef <b><a href="qxmlstreamattributes.html#value-3">value</a></b> ( const QLatin1String &amp; <i>namespaceUri</i>, const QLatin1String &amp; <i>name</i> ) const</li>
@@ -51,7 +52,11 @@
 <a name="//apple_ref/cpp/instm/QXmlStreamAttributes/append" />
 <h3 class="fn"><a name="append"></a>void QXmlStreamAttributes::append ( const <a href="qstring.html">QString</a> &amp; <i>namespaceUri</i>, const <a href="qstring.html">QString</a> &amp; <i>name</i>, const <a href="qstring.html">QString</a> &amp; <i>value</i> )</h3>
 <p>Appends a new attribute with <i>name</i> in the namespace described with <i>namespaceUri</i>, and value <i>value</i>. The <i>namespaceUri</i> can be empty.</p>
-<h3 class="fn"><a name="append-2"></a>void QXmlStreamAttributes::append ( const <a href="qstring.html">QString</a> &amp; <i>qualifiedName</i>, const <a href="qstring.html">QString</a> &amp; <i>value</i> )</h3>
+<h3 class="fn"><a name="append-2"></a>void QXmlStreamAttributes::append ( const <a href="qxmlstreamattribute.html">QXmlStreamAttribute</a> &amp; <i>attribute</i> )</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p>Appends the given <i>attribute</i> to the end of the vector.</p>
+<p>See also <a href="qvector.html#append">QVector::append</a>().</p>
+<h3 class="fn"><a name="append-3"></a>void QXmlStreamAttributes::append ( const <a href="qstring.html">QString</a> &amp; <i>qualifiedName</i>, const <a href="qstring.html">QString</a> &amp; <i>value</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Appends a new attribute with qualified name <i>qualifiedName</i> and value <i>value</i>.</p>
 <a name="//apple_ref/cpp/instm/QXmlStreamAttributes/value" />
@@ -73,6 +78,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/kernel/qwidget.cpp -->
+<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/src/gui/kernel/qwidget.cpp -->
 <head>
   <title>Qt 4.3: QWidget Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -845,7 +845,7 @@
 <h3 class="fn"><a name="minimumSize-prop"></a>minimumSize : <a href="qsize.html">QSize</a></h3>
 <p>This property holds the widget's minimum size.</p>
 <p>The widget cannot be resized to a smaller size than the minimum widget size. The widget's size is forced to the minimum size if the current size is smaller.</p>
-<p>The minimum size set by this function will override the minimum size defined by <a href="qlayout.html">QLayout</a>.</p>
+<p>The minimum size set by this function will override the minimum size defined by <a href="qlayout.html">QLayout</a>. In order to unset the minimum size, use <a href="qsize.html">QSize</a>(0, 0).</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>QSize minimumSize () const</b></li>
@@ -1087,6 +1087,7 @@
 <h3 class="fn"><a name="windowFlags-prop"></a>windowFlags : <a href="qt.html#WindowType-enum">Qt::WindowFlags</a></h3>
 <p>Window flags are a combination of a type (e.g&#x2e; <a href="qt.html#WindowType-enum">Qt::Dialog</a>) and zero or more hints to the window system (e.g&#x2e; <a href="qt.html#WindowType-enum">Qt::FramelessWindowHint</a>).</p>
 <p>If the widget had type <a href="qt.html#WindowType-enum">Qt::Widget</a> or <a href="qt.html#WindowType-enum">Qt::SubWindow</a> and becomes a window (<a href="qt.html#WindowType-enum">Qt::Window</a>, <a href="qt.html#WindowType-enum">Qt::Dialog</a>, etc.), it is put at position (0, 0) on the desktop. If the widget is a window and becomes a <a href="qt.html#WindowType-enum">Qt::Widget</a> or <a href="qt.html#WindowType-enum">Qt::SubWindow</a>, it is put at position (0, 0) relative to its parent widget.</p>
+<p><b>Note:</b> This function calls <a href="qwidget.html#setParent">setParent</a>() when changing the flags for a window, and the side effects documented in <a href="qwidget.html#setParent">setParent</a>() also apply.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>Qt::WindowFlags windowFlags () const</b></li>
@@ -1296,22 +1297,22 @@
 <p>This event handler is called when a drag is in progress and the mouse enters this widget. The event is passed in the <i>event</i> parameter.</p>
 <p>If the event is ignored, the widget won't receive any <a href="qwidget.html#dragMoveEvent">drag move events</a>.</p>
 <p>See the <a href="dnd.html">Drag-and-drop documentation</a> for an overview of how to provide drag-and-drop in your application.</p>
-<p>See also <a href="porting4.html#qtextdrag">QTextDrag</a>, <a href="porting4.html#qimagedrag">QImageDrag</a>, and <a href="qdragenterevent.html">QDragEnterEvent</a>.</p>
+<p>See also <a href="qdrag.html">QDrag</a> and <a href="qdragenterevent.html">QDragEnterEvent</a>.</p>
 <a name="//apple_ref/cpp/instm/QWidget/dragLeaveEvent" />
 <h3 class="fn"><a name="dragLeaveEvent"></a>void QWidget::dragLeaveEvent ( <a href="qdragleaveevent.html">QDragLeaveEvent</a> * <i>event</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>This event handler is called when a drag is in progress and the mouse leaves this widget. The event is passed in the <i>event</i> parameter.</p>
 <p>See the <a href="dnd.html">Drag-and-drop documentation</a> for an overview of how to provide drag-and-drop in your application.</p>
-<p>See also <a href="porting4.html#qtextdrag">QTextDrag</a>, <a href="porting4.html#qimagedrag">QImageDrag</a>, and <a href="qdragleaveevent.html">QDragLeaveEvent</a>.</p>
+<p>See also <a href="qdrag.html">QDrag</a> and <a href="qdragleaveevent.html">QDragLeaveEvent</a>.</p>
 <a name="//apple_ref/cpp/instm/QWidget/dragMoveEvent" />
 <h3 class="fn"><a name="dragMoveEvent"></a>void QWidget::dragMoveEvent ( <a href="qdragmoveevent.html">QDragMoveEvent</a> * <i>event</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>This event handler is called if a drag is in progress, and when any of the following conditions occurs: the cursor enters this widget, the cursor moves within this widget, or a modifier key is pressed on the keyboard while this widget has the focus. The event is passed in the <i>event</i> parameter.</p>
 <p>See the <a href="dnd.html">Drag-and-drop documentation</a> for an overview of how to provide drag-and-drop in your application.</p>
-<p>See also <a href="porting4.html#qtextdrag">QTextDrag</a>, <a href="porting4.html#qimagedrag">QImageDrag</a>, and <a href="qdragmoveevent.html">QDragMoveEvent</a>.</p>
+<p>See also <a href="qdrag.html">QDrag</a> and <a href="qdragmoveevent.html">QDragMoveEvent</a>.</p>
 <a name="//apple_ref/cpp/instm/QWidget/dropEvent" />
 <h3 class="fn"><a name="dropEvent"></a>void QWidget::dropEvent ( <a href="qdropevent.html">QDropEvent</a> * <i>event</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>This event handler is called when the drag is dropped on this widget which are passed in the <i>event</i> parameter.</p>
 <p>See the <a href="dnd.html">Drag-and-drop documentation</a> for an overview of how to provide drag-and-drop in your application.</p>
-<p>See also <a href="porting4.html#qtextdrag">QTextDrag</a>, <a href="porting4.html#qimagedrag">QImageDrag</a>, and <a href="qdropevent.html">QDropEvent</a>.</p>
+<p>See also <a href="qdrag.html">QDrag</a> and <a href="qdropevent.html">QDropEvent</a>.</p>
 <a name="//apple_ref/cpp/instm/QWidget/ensurePolished" />
 <h3 class="fn"><a name="ensurePolished"></a>void QWidget::ensurePolished () const</h3>
 <p>Ensures that the widget has been polished by <a href="qstyle.html">QStyle</a> (i.e&#x2e;, has a proper font and palette).</p>
@@ -1858,6 +1859,7 @@
 <p>If the new parent widget is in a different window, the reparented widget and its children are appended to the end of the <a href="qwidget.html#focusPolicy-prop">tab chain</a> of the new parent widget, in the same internal order as before. If one of the moved widgets had keyboard focus, setParent() calls <a href="qwidget.html#clearFocus">clearFocus</a>() for that widget.</p>
 <p>If the new parent widget is in the same window as the old parent, setting the parent doesn't change the tab order or keyboard focus.</p>
 <p>If the &quot;new&quot; parent widget is the old parent widget, this function does nothing.</p>
+<p><b>Note:</b> The widget becomes invisible as part of changing its parent, even if it was previously visible. You must call <a href="qwidget.html#show">show</a>() to make the widget visible again.</p>
 <p><b>Warning:</b> It is very unlikely that you will ever need this function. If you have a widget that changes its content dynamically, it is far easier to use <a href="qstackedwidget.html">QStackedWidget</a>.</p>
 <p>See also <a href="qwidget.html#windowFlags-prop">setWindowFlags</a>().</p>
 <h3 class="fn"><a name="setParent-2"></a>void QWidget::setParent ( QWidget * <i>parent</i>, <a href="qt.html#WindowType-enum">Qt::WindowFlags</a> <i>f</i> )</h3>
@@ -1901,7 +1903,7 @@
 <a name="//apple_ref/cpp/instm/QWidget/setWindowState" />
 <h3 class="fn"><a name="setWindowState"></a>void QWidget::setWindowState ( <a href="qt.html#WindowState-enum">Qt::WindowStates</a> <i>windowState</i> )</h3>
 <p>Sets the window state to <i>windowState</i>. The window state is a OR'ed combination of <a href="qt.html#WindowState-enum">Qt::WindowState</a>: <a href="qt.html#WindowState-enum">Qt::WindowMinimized</a>, <a href="qt.html#WindowState-enum">Qt::WindowMaximized</a>, <a href="qt.html#WindowState-enum">Qt::WindowFullScreen</a>, and <a href="qt.html#WindowState-enum">Qt::WindowActive</a>.</p>
-<p>If the window is not visible (i.e&#x2e; <a href="qwidget.html#visible-prop">isVisible</a>() returns false), the window state will take effect when <a href="qwidget.html#show">show</a>() is called. For visible windows, the change is immediate. For example, to toggle between full-screen and mormal mode, use the following code:</p>
+<p>If the window is not visible (i.e&#x2e; <a href="qwidget.html#visible-prop">isVisible</a>() returns false), the window state will take effect when <a href="qwidget.html#show">show</a>() is called. For visible windows, the change is immediate. For example, to toggle between full-screen and normal mode, use the following code:</p>
 <pre> w-&gt;setWindowState(w-&gt;windowState() ^ Qt::WindowFullScreen);</pre>
 <p>In order to restore and activate a minimized window (while preserving its maximized and/or full-screen state), use the following:</p>
 <pre> w-&gt;setWindowState(w-&gt;windowState() &amp; ~Qt::WindowMinimized | Qt::WindowActive);</pre>
@@ -2076,6 +2078,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

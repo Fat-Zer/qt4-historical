@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/corelib/tools/qbytearray.cpp -->
+<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/src/corelib/tools/qbytearray.cpp -->
 <head>
   <title>Qt 4.3: QByteArray Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -237,7 +237,7 @@
  x.append(&quot; roll&quot;);          <span class="comment">//</span> x == &quot;rock and roll&quot;
  x.replace(5, 3, &quot;&amp;&quot;);       <span class="comment">//</span> x == &quot;rock &amp; roll&quot;</pre>
 <p>The <a href="qbytearray.html#replace">replace</a>() and <a href="qbytearray.html#remove">remove</a>() functions' first two arguments are the position from which to start erasing and the number of bytes that should be erased.</p>
-<p>If you are building a QByteArray gradually and know in advance approximately how many bytes the QByteArray will contain, you can call <a href="qbytearray.html#reserve">reserve</a>(), asking QByteArray to preallocate a certain amount of memory. You can also call <a href="qbytearray.html#capacity">capacity</a>() to find out how much memory QByteArray actually allocated.</p>
+<p>When you <a href="qbytearray.html#append">append</a>() data to a non-empty array, the array will be reallocated and the new data copied to it. You can avoid this behavior by calling <a href="qbytearray.html#reserve">reserve</a>(), which preallocates a certain amount of memory. You can also call <a href="qbytearray.html#capacity">capacity</a>() to find out how much memory QByteArray actually allocated. Data appended to an empty array is not copied.</p>
 <p>A frequent requirement is to remove whitespace characters from a byte array ('\n', '\t', ' ', etc.)&#x2e; If you want to remove whitespace from both ends of a QByteArray, use <a href="qbytearray.html#trimmed">trimmed</a>(). If you want to remove whitespace from both ends and replace multiple consecutive whitespaces with a single space character within the byte array, use <a href="qbytearray.html#simplified">simplified</a>().</p>
 <p>If you want to find all occurrences of a particular character or substring in a QByteArray, use <a href="qbytearray.html#indexOf">indexOf</a>() or <a href="qbytearray.html#lastIndexOf">lastIndexOf</a>(). The former searches forward starting from a given index position, the latter searches backward. Both return the index position of the character or substring if they find it; otherwise, they return -1. For example, here's a typical loop that finds all occurrences of a particular substring:</p>
 <pre> QByteArray ba(&quot;We must be &lt;b&gt;bold&lt;/b&gt;, very &lt;b&gt;bold&lt;/b&gt;&quot;);
@@ -1046,7 +1046,7 @@
 <p>A safe <tt>strcmp()</tt> function.</p>
 <p>Compares <i>str1</i> and <i>str2</i>. Returns a negative value if <i>str1</i> is less than <i>str2</i>, 0 if <i>str1</i> is equal to <i>str2</i> or a positive value if <i>str1</i> is greater than <i>str2</i>.</p>
 <p>Special case 1: Returns 0 if <i>str1</i> and <i>str2</i> are both 0.</p>
-<p>Special case 2: Returns a random non-zero value if <i>str1</i> is 0 or <i>str2</i> is 0 (but not both).</p>
+<p>Special case 2: Returns an arbitrary non-zero value if <i>str1</i> is 0 or <i>str2</i> is 0 (but not both).</p>
 <p>See also <a href="qbytearray.html#qstrncmp">qstrncmp</a>(), <a href="qbytearray.html#qstricmp">qstricmp</a>(), <a href="qbytearray.html#qstrnicmp">qstrnicmp</a>(), and <a href="qbytearray.html#note-on-8-bit-character-comparisons">Note on 8-bit character comparisons</a>.</p>
 <a name="//apple_ref/cpp/func//qstrcpy" />
 <h3 class="fn"><a name="qstrcpy"></a>char * qstrcpy ( char * <i>dst</i>, const char * <i>src</i> )</h3>
@@ -1189,6 +1189,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

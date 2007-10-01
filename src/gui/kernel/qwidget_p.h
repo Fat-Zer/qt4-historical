@@ -286,6 +286,10 @@ public:
     QRegion getOpaqueChildren() const;
     void setDirtyOpaqueRegion();
 
+#if defined(Q_WIDGET_USE_DIRTYLIST) || (QT_VERSION >= 0x040400)
+    QRegion getOpaqueSiblings() const;
+#endif
+
     QRegion opaqueChildren;
     bool dirtyOpaqueChildren;
 #endif
@@ -381,6 +385,7 @@ public:
     bool setMinimumSize_helper(int &minw, int &minh);
     bool setMaximumSize_helper(int &maxw, int &maxh);
     void setConstraints_sys();
+    void updateGeometry_helper(bool forceUpdate);
 
     void getLayoutItemMargins(int *left, int *top, int *right, int *bottom) const;
     void setLayoutItemMargins(int left, int top, int right, int bottom);
@@ -488,6 +493,7 @@ public:
     uint clp_serial : 8;
     inline QRegion clippedRegion(bool = true) { return clp; }
     inline uint clippedSerial(bool =true) { return clp_serial; }
+    uint needWindowChange : 1;
 #endif
 
 #if defined(Q_WS_X11) || defined (Q_WS_WIN) || defined(Q_WS_MAC)

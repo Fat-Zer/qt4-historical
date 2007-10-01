@@ -61,18 +61,15 @@
 
 static const char *designerApplicationName = "Designer";
 static const char *designerWarningPrefix = "Designer: ";
-static void defaultMessageOutput(const char *msg)
-{
-    fputs(msg, stderr);
-    fputc('\n', stderr);
-}
 
 static void designerMessageHandler(QtMsgType type, const char *msg)
 {
     // Only Designer warnings are displayed as box
     QDesigner *designerApp = qDesigner;
     if (type != QtWarningMsg || !designerApp || qstrncmp(designerWarningPrefix, msg, qstrlen(designerWarningPrefix))) {
-        defaultMessageOutput(msg);
+        qInstallMsgHandler(0);
+        qt_message_output(type, msg);
+        qInstallMsgHandler (designerMessageHandler);
         return;
     }
     designerApp->showErrorMessage(msg);
@@ -113,7 +110,9 @@ void QDesigner::showErrorMessage(const char *message)
     if (m_mainWindow) {
         showErrorMessageBox(qMessage);
     } else {
-        defaultMessageOutput(message); // just in case we crash
+        qInstallMsgHandler(0);
+        qt_message_output(QtWarningMsg, message); // just in case we crash
+        qInstallMsgHandler (designerMessageHandler);
         m_initializationErrors += qMessage;
         m_initializationErrors += QLatin1Char('\n');
     }

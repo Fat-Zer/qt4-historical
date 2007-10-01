@@ -41,17 +41,17 @@
 
 #include <stddef.h>
 
-#define QT_VERSION_STR   "4.3.1"
+#define QT_VERSION_STR   "4.3.2"
 /*
    QT_VERSION is (major << 16) + (minor << 8) + patch.
 */
-#define QT_VERSION 0x040301
+#define QT_VERSION 0x040302
 /*
    can be used like #if (QT_VERSION >= QT_VERSION_CHECK(4, 3, 0))
 */
 #define QT_VERSION_CHECK(major, minor, patch) ((major<<16)|(minor<<8)|(patch))
 
-#define QT_PACKAGEDATE_STR "2007-08-07"
+#define QT_PACKAGEDATE_STR "2007-10-01"
 
 #if !defined(QT_BUILD_MOC)
 #include <QtCore/qconfig.h>

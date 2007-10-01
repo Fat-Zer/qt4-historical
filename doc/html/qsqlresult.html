@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/sql/kernel/qsqlresult.cpp -->
+<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/src/sql/kernel/qsqlresult.cpp -->
 <head>
   <title>Qt 4.3: QSqlResult Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -205,7 +205,7 @@
 <p>This example retrieves the handle for a sqlite result:</p>
 <pre> QSqlQuery query = ...
  QVariant v = query.result()-&gt;handle();
- if (v.isValid() &amp;&amp; v.typeName() == &quot;sqlite3_stmt*&quot;) {
+ if (v.isValid() &amp;&amp; qstrcmp(v.typeName(), &quot;sqlite3_stmt*&quot;)) {
      <span class="comment">//</span> v.data() returns a pointer to the handle
      sqlite3_stmt *handle = *static_cast&lt;sqlite3_stmt **&gt;(v.data());
      if (handle != 0) { <span class="comment">//</span> check that it is not NULL
@@ -312,6 +312,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

@@ -119,6 +119,11 @@ static QActionGroup *createActionGroup(QObject *parent, bool exclusive = false) 
     return rc;
 }
 
+static inline QString savedMessage(const QString &fileName)
+{
+    return QDesignerActions::tr("Saved %1.").arg(fileName);
+}
+
 QDesignerActions::QDesignerActions(QDesignerWorkbench *workbench)
     : QObject(workbench),
       m_workbench(workbench),
@@ -153,7 +158,7 @@ QDesignerActions::QDesignerActions(QDesignerWorkbench *workbench)
 
     m_core = m_workbench->core();
     Q_ASSERT(m_core != 0);
-    
+
     m_helpActions = createHelpActions();
 
     QDesignerFormWindowManagerInterface *formWindowManager = m_core->formWindowManager();
@@ -511,7 +516,7 @@ void QDesignerActions::saveForm()
 {
     if (QDesignerFormWindowInterface *fw = core()->formWindowManager()->activeFormWindow()) {
         if (saveForm(fw))
-            showStatusBarMessage(tr("Form %1 successful saved...").arg(fw->fileName()));
+            showStatusBarMessage(savedMessage(fw->fileName()));
     }
 }
 
@@ -537,7 +542,7 @@ void QDesignerActions::saveAllForms()
     }
 
     if (!fileNames.isEmpty()) {
-        showStatusBarMessage(tr("Form %1 successful saved...").arg(fileNames));
+        showStatusBarMessage(savedMessage(fileNames));
     }
 }
 
@@ -572,8 +577,7 @@ void QDesignerActions::saveFormAs()
 {
     if (QDesignerFormWindowInterface *fw = core()->formWindowManager()->activeFormWindow()) {
         if (saveFormAs(fw))
-            showStatusBarMessage(tr("Form %1 successful saved...").arg(fw->fileName()));
-
+            showStatusBarMessage(savedMessage(fw->fileName()));
     }
 }
 
@@ -939,7 +943,11 @@ void QDesignerActions::addRecentFile(const QString &fileName)
     updateRecentFileActions();
 }
 
-
+QAction *QDesignerActions::closeFormAction() const
+{
+    return m_closeFormAction;
+}
+ 
 QAction *QDesignerActions::minimizeAction() const
 {
     return m_minimizeAction;

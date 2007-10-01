@@ -969,10 +969,11 @@ void QAbstractItemModelPrivate::reset()
 
     Custom models need to create model indexes for other components to use.
     To do this, call createIndex() with suitable row and column numbers for
-    the item, and supply a unique identifier for the item, either as a
-    pointer or as an integer value. Custom models typically use these
-    unique identifiers in other reimplemented functions to retrieve item
-    data and access information about the item's parents and children.
+    the item, and an identifier for it, either as a pointer or as an
+    integer value. The combination of these values must be unique for each
+    item. Custom models typically use these unique identifiers in other
+    reimplemented functions to retrieve item data and access information
+    about the item's parents and children.
     See the \l{itemviews/simpletreemodel}{Simple Tree Model} example for
     more information about unique identifiers.
 
@@ -1055,16 +1056,19 @@ void QAbstractItemModelPrivate::reset()
 */
 
 /*!
+    \fn QObject *QAbstractItemModel::parent() const
+    \internal
+*/
+
+/*!
     \fn QModelIndex QAbstractItemModel::parent(const QModelIndex &index) const = 0
 
     Returns the parent of the model item with the given \a index, or QModelIndex()
     if it has no parent.
 
     A common convention used in models that expose tree data structures is that
-    only items in the first column have children. When reimplementing this function
-    in a subclass that provides a tree model, you should return a model index
-    corresponding to an item in the first column by calling createIndex() with a
-    value of 0 for the column number.
+    only items in the first column have children. For that case, when reimplementing
+    this function in a subclass the column of the returned QModelIndex would be 0.
 
     \sa createIndex()
 */
@@ -1180,7 +1184,8 @@ QAbstractItemModel::~QAbstractItemModel()
 /*!
     \fn int QAbstractItemModel::rowCount(const QModelIndex &parent) const
 
-    Returns the number of rows under the given \a parent.
+    Returns the number of rows under the given \a parent.   When the parent
+    is valid it means that rowCount is returning the number of children of parent.
 
     \bold{Tip:} When implementing a table based model, rowCount() should return 0 when
     the parent is valid.
@@ -1192,6 +1197,8 @@ QAbstractItemModel::~QAbstractItemModel()
     \fn int QAbstractItemModel::columnCount(const QModelIndex &parent) const
 
     Returns the number of columns for the children of the given \a parent.
+    When the parent is valid it means that rowCount is returning the number
+    of children of parent.
 
     In most subclasses, the number of columns is independent of the
     \a parent. For example:
@@ -1724,11 +1731,15 @@ QModelIndex QAbstractItemModel::buddy(const QModelIndex &index) const
     The search starts from the \a start index, and continues until the
     number of matching data items equals \a hits, the search reaches
     the last row, or the search reaches \a start again, depending on
-    whether \c MatchWrap is specified in \a flags.
+    whether \c MatchWrap is specified in \a flags. If you want to search
+    for all matching items, use \a hits = -1.
 
     By default, this function will perform a wrapping, string-based comparison
     on all items, searching for items that begin with the search term specified
     by \a value.
+    
+    \note The default implementation of this function only searches columns,
+    This function can be reimplemented to include other search behavior.
 */
 QModelIndexList QAbstractItemModel::match(const QModelIndex &start, int role,
                                           const QVariant &value, int hits,

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/painting/qcolor.cpp -->
+<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/src/gui/painting/qcolor.cpp -->
 <head>
   <title>Qt 4.3: QColor Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -142,7 +142,7 @@
 <p>The color components can be retrieved individually, e.g with <a href="qcolor.html#red">red</a>(), <a href="qcolor.html#hue">hue</a>() and <a href="qcolor.html#cyan">cyan</a>(). The values of the color components can also be retrieved in one go using the <a href="qcolor.html#getRgb">getRgb</a>(), <a href="qcolor.html#getHsv">getHsv</a>() and <a href="qcolor.html#getCmyk">getCmyk</a>() functions. Using the RGB color model, the color components can in addition be accessed with <a href="qcolor.html#rgb">rgb</a>().</p>
 <p>There are several related non-members: <a href="qcolor.html#QRgb-typedef">QRgb</a> is a typdef for an unsigned int representing the RGB value triplet (r, g, b). Note that it also can hold a value for the alpha-channel (for more information, see the <a href="#alpha-blended-drawing">Alpha-Blended Drawing</a> section). The <a href="qcolor.html#qRed">qRed</a>(), <a href="qcolor.html#qBlue">qBlue</a>() and <a href="qcolor.html#qGreen">qGreen</a>() functions return the respective component of the given <a href="qcolor.html#QRgb-typedef">QRgb</a> value, while the <a href="qcolor.html#qRgb">qRgb</a>() and <a href="qcolor.html#qRgba">qRgba</a>() functions create and return the <a href="qcolor.html#QRgb-typedef">QRgb</a> triplet based on the given component values. Finally, the <a href="qcolor.html#qAlpha">qAlpha</a>() function returns the alpha component of the provided <a href="qcolor.html#QRgb-typedef">QRgb</a>, and the <a href="qcolor.html#qGray">qGray</a>() function calculates and return a gray value based on the given value.</p>
 <p>QColor is platform and device independent. The <a href="qcolormap.html">QColormap</a> class maps the color to the hardware.</p>
-<p>For more information about painting in general, see {The Paint System} documentation.</p>
+<p>For more information about painting in general, see <a href="paintsystem.html">The Paint System</a> documentation.</p>
 <ul><li><a href="#integer-vs-floating-point-precision">Integer vs. Floating Point Precision</a></li>
 <li><a href="#alpha-blended-drawing">Alpha-Blended Drawing</a></li>
 <li><a href="#predefined-colors">Predefined Colors</a></li>
@@ -152,7 +152,7 @@
 <a name="integer-vs-floating-point-precision"></a>
 <h3>Integer vs. Floating Point Precision</h3>
 <p>QColor supports floating point precision and provides floating point versions of all the color components functions, e.g&#x2e; <a href="qcolor.html#getRgbF">getRgbF</a>(), <a href="qcolor.html#hueF">hueF</a>() and <a href="qcolor.html#fromCmykF">fromCmykF</a>(). Note that since the components are stored using 16-bit integers, there might be minor deviations between the values set using, for example, <a href="qcolor.html#setRgbF">setRgbF</a>() and the values returned by the <a href="qcolor.html#getRgbF">getRgbF</a>() function due to rounding.</p>
-<p>While the integer based functions take values in the range 0-255 (except <a href="qcolor.html#hue">hue</a>() which must can be specified within the range 0-359), the floating point functions accept values in the range 0.0 - 1.0&#x2e;</p>
+<p>While the integer based functions take values in the range 0-255 (except <a href="qcolor.html#hue">hue</a>() which must have values within the range 0-359), the floating point functions accept values in the range 0.0 - 1.0&#x2e;</p>
 <a name="alpha-blended-drawing"></a>
 <h3>Alpha-Blended Drawing</h3>
 <p>QColor also support alpha-blended outlining and filling. The alpha channel of a color specifies the transparency effect, 0 represents a fully transparent color, while 255 represents a fully opaque color. For example:</p>
@@ -607,6 +607,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

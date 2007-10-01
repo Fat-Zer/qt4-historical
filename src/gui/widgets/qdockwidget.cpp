@@ -349,6 +349,7 @@ void QDockWidgetLayout::setWidget(Role r, QWidget *w)
     if (w != 0) {
         addChildWidget(w);
         item_list[r] = new QWidgetItem(w);
+        w->show();
     } else {
         item_list[r] = 0;
     }
@@ -713,8 +714,12 @@ void QDockWidgetPrivate::endDrag(bool abort)
                     delete state->widgetItem;
                 layout->restore();
 #ifdef Q_WS_X11
-                setWindowState(true); // gets rid of the X11BypassWindowManager window flag
-                                      // and activates the resizer
+                // get rid of the X11BypassWindowManager window flag and activate the resizer
+                Qt::WindowFlags flags = q->windowFlags();
+                flags &= ~Qt::X11BypassWindowManagerHint;
+                q->setWindowFlags(flags);
+                resizer->setActive(QWidgetResizeHandler::Resize, true);
+                q->show();
 #else
                 QDockWidgetLayout *myLayout
                     = qobject_cast<QDockWidgetLayout*>(q->layout());
@@ -730,6 +735,22 @@ void QDockWidgetPrivate::endDrag(bool abort)
     }
     delete state;
     state = 0;
+}
+
+bool QDockWidgetPrivate::isAnimating() const
+{
+    Q_Q(const QDockWidget);
+
+    QMainWindow *mainWin = qobject_cast<QMainWindow*>(q->parentWidget());
+    if (mainWin == 0)
+        return false;
+
+    QMainWindowLayout *mainWinLayout
+        = qobject_cast<QMainWindowLayout*>(mainWin->layout());
+    if (mainWinLayout == 0)
+        return false;
+
+    return (void*)mainWinLayout->pluggingWidget == (void*)q;
 }
 
 void QDockWidgetPrivate::mousePressEvent(QMouseEvent *event)
@@ -752,6 +773,9 @@ void QDockWidgetPrivate::mousePressEvent(QMouseEvent *event)
             return;
 
         if (qobject_cast<QMainWindow*>(q->parentWidget()) == 0)
+            return;
+
+        if (isAnimating())
             return;
 
         if (state != 0)
@@ -857,6 +881,8 @@ void QDockWidgetPrivate::nonClientAreaMouseEvent(QMouseEvent *event)
                 break;
             if (qobject_cast<QMainWindow*>(q->parentWidget()) == 0)
                 break;
+            if (isAnimating())
+                break;
             initDrag(event->pos(), true);
 #ifdef Q_OS_WIN
             // On Windows, NCA mouse events don't contain modifier info
@@ -943,7 +969,8 @@ void QDockWidgetPrivate::setWindowState(bool floating, bool unplug, const QRect 
     bool wasFloating = q->isFloating();
     bool hidden = q->isHidden();
 
-    q->hide();
+    if (q->isVisible())
+        q->hide();
 
     Qt::WindowFlags flags = floating ? Qt::Tool : Qt::Widget;
 
@@ -1168,15 +1195,17 @@ void QDockWidget::setFloating(bool floating)
     if (d->state != 0)
         d->endDrag(true);
 
-    if (floating && d->undockedGeometry.isNull()) {
+    QRect r = d->undockedGeometry;
+
+    if (floating && r.isNull()) {
         QDockWidgetLayout *layout = qobject_cast<QDockWidgetLayout*>(this->layout());
         QRect titleArea = layout->titleArea();
         int h = layout->verticalTitleBar ? titleArea.width() : titleArea.height();
         QPoint p = mapToGlobal(QPoint(h, h));
-        d->undockedGeometry = QRect(p, size());
+        r = QRect(p, size());
     }
 
-    d->setWindowState(floating, false, floating ? d->undockedGeometry : QRect());
+    d->setWindowState(floating, false, floating ? r : QRect());
 }
 
 /*!
@@ -1306,7 +1335,12 @@ bool QDockWidget::event(QEvent *event)
         d->updateButtons();
         break;
     case QEvent::ZOrderChange: {
-        if (!isFloating() && layout != 0)
+        bool onTop = false;
+        if (win != 0) {
+            const QObjectList &siblings = win->children();
+            onTop = siblings.count() > 0 && siblings.last() == (QObject*)this;
+        }
+        if (!isFloating() && layout != 0 && onTop)
             layout->raise(this);
         break;
     }
@@ -1353,6 +1387,11 @@ bool QDockWidget::event(QEvent *event)
         return true;
     case QEvent::Move:
         d->moveEvent(static_cast<QMoveEvent*>(event));
+        break;
+    case QEvent::Resize:
+        // if the mainwindow is plugging us, we don't want to update undocked geometry
+        if (isFloating() && layout != 0 && layout->pluggingWidget != this)
+            d->undockedGeometry = geometry();
         break;
     default:
         break;
@@ -1417,7 +1456,7 @@ QAction * QDockWidget::toggleViewAction() const
     This signal is emitted when the dock widget is moved to another
     dock \a area, or is moved to a different location in its current
     dock area. This happens when the dock widget is moved
-    programatically or is dragged to a new location by the user.
+    programmatically or is dragged to a new location by the user.
 */
 
 /*!

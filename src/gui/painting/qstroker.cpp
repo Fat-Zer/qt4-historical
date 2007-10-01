@@ -897,8 +897,15 @@ void QDashStroker::processCurrentSubpath()
 {
     int dashCount = qMin(m_dashPattern.size(), 32);
     qfixed dashes[32];
-    for (int i=0; i<dashCount; ++i)
-        dashes[i] = m_dashPattern.at(i) * m_stroker->strokeWidth();
+
+    qreal sumLength = 0;
+    for (int i=0; i<dashCount; ++i) {
+        dashes[i] = qMax(m_dashPattern.at(i), qreal(0)) * m_stroker->strokeWidth();
+        sumLength += dashes[i];
+    }
+
+    if (qFuzzyCompare(sumLength, qreal(0)))
+        return;
 
     Q_ASSERT(dashes);
     Q_ASSERT(dashCount > 0);
@@ -908,7 +915,15 @@ void QDashStroker::processCurrentSubpath()
     int idash = 0; // Index to current dash
     qreal pos = 0; // The position on the curve, 0 <= pos <= path.length
     qreal elen = 0; // element length
-    qreal doffset = m_dashOffset;
+    qreal doffset = m_dashOffset * m_stroker->strokeWidth();
+
+    // make sure doffset is in range [0..sumLength)
+    doffset -= qFloor(doffset / sumLength) * sumLength;
+
+    while (doffset >= dashes[idash]) {
+        doffset -= dashes[idash];
+        idash = (idash + 1) % dashCount;
+    }
 
     qreal estart = 0; // The elements starting position
     qreal estop = 0; // The element stop position
@@ -931,6 +946,7 @@ void QDashStroker::processCurrentSubpath()
     qfixed2d clip_br = { qt_real_to_fixed(m_clip_rect.right()) + padding ,
                          qt_real_to_fixed(m_clip_rect.bottom()) + padding };
 
+    bool hasMoveTo = false;
     while (it.hasNext()) {
         QStrokerOps::Element e = it.next();
 
@@ -972,8 +988,10 @@ void QDashStroker::processCurrentSubpath()
                 // from a previous element and should only
                 // continue the current dash, without starting a
                 // new subpath.
-                if (!has_offset)
+                if (!has_offset || !hasMoveTo) {
                     m_stroker->moveTo(move_to_pos.x, move_to_pos.y);
+                    hasMoveTo = true;
+                }
 
                 if (!clipping
                     // if move_to is inside...

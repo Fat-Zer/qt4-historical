@@ -2833,6 +2833,11 @@ void QStandardItemModel::sort(int column, Qt::SortOrder order)
     d->root->sortChildren(column, order);
 }
 
+/*!
+  \fn QObject *QStandardItemModel::parent() const
+  \internal
+*/
+
 #include "moc_qstandarditemmodel.cpp"
 
 #endif // QT_NO_STANDARDITEMMODEL

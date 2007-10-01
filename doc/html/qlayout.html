@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/kernel/qlayout.cpp -->
+<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/src/gui/kernel/qlayout.cpp -->
 <head>
   <title>Qt 4.3: QLayout Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -58,7 +58,8 @@
 <li><div class="fn"/>void <b><a href="qlayout.html#removeItem">removeItem</a></b> ( QLayoutItem * <i>item</i> )</li>
 <li><div class="fn"/>void <b><a href="qlayout.html#removeWidget">removeWidget</a></b> ( QWidget * <i>widget</i> )</li>
 <li><div class="fn"/>bool <b><a href="qlayout.html#setAlignment">setAlignment</a></b> ( QWidget * <i>w</i>, Qt::Alignment <i>alignment</i> )</li>
-<li><div class="fn"/>bool <b><a href="qlayout.html#setAlignment-2">setAlignment</a></b> ( QLayout * <i>l</i>, Qt::Alignment <i>alignment</i> )</li>
+<li><div class="fn"/>void <b><a href="qlayout.html#setAlignment-2">setAlignment</a></b> ( Qt::Alignment <i>alignment</i> )</li>
+<li><div class="fn"/>bool <b><a href="qlayout.html#setAlignment-3">setAlignment</a></b> ( QLayout * <i>l</i>, Qt::Alignment <i>alignment</i> )</li>
 <li><div class="fn"/>void <b><a href="qlayout.html#setContentsMargins">setContentsMargins</a></b> ( int <i>left</i>, int <i>top</i>, int <i>right</i>, int <i>bottom</i> )</li>
 <li><div class="fn"/>void <b><a href="qlayout.html#setEnabled">setEnabled</a></b> ( bool <i>enable</i> )</li>
 <li><div class="fn"/>void <b><a href="qlayout.html#setMenuBar">setMenuBar</a></b> ( QWidget * <i>widget</i> )</li>
@@ -278,7 +279,11 @@
 <a name="//apple_ref/cpp/instm/QLayout/setAlignment" />
 <h3 class="fn"><a name="setAlignment"></a>bool QLayout::setAlignment ( <a href="qwidget.html">QWidget</a> * <i>w</i>, <a href="qt.html#AlignmentFlag-enum">Qt::Alignment</a> <i>alignment</i> )</h3>
 <p>Sets the alignment for widget <i>w</i> to <i>alignment</i> and returns true if <i>w</i> is found in this layout (not including child layouts); otherwise returns false.</p>
-<h3 class="fn"><a name="setAlignment-2"></a>bool QLayout::setAlignment ( QLayout * <i>l</i>, <a href="qt.html#AlignmentFlag-enum">Qt::Alignment</a> <i>alignment</i> )</h3>
+<h3 class="fn"><a name="setAlignment-2"></a>void QLayout::setAlignment ( <a href="qt.html#AlignmentFlag-enum">Qt::Alignment</a> <i>alignment</i> )</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p>Sets the alignment of this item to <i>alignment</i>.</p>
+<p>See also <a href="qlayoutitem.html#setAlignment">QLayoutItem::setAlignment</a>().</p>
+<h3 class="fn"><a name="setAlignment-3"></a>bool QLayout::setAlignment ( QLayout * <i>l</i>, <a href="qt.html#AlignmentFlag-enum">Qt::Alignment</a> <i>alignment</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Sets the alignment for the layout <i>l</i> to <i>alignment</i> and returns true if <i>l</i> is found in this layout (not including child layouts); otherwise returns false.</p>
 <a name="//apple_ref/cpp/instm/QLayout/setContentsMargins" />
@@ -316,6 +321,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

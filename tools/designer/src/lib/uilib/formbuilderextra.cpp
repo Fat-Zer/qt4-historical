@@ -48,9 +48,7 @@ namespace QFormInternal {
 #endif
 
 void uiLibWarning(const QString &message) {
-    QString prefixedMessage = QLatin1String("Designer: ");
-    prefixedMessage += message;
-    qWarning(prefixedMessage.toUtf8().constData());
+    qWarning("Designer: %s", qPrintable(message));
 }
 
 QFormBuilderExtra::QFormBuilderExtra() :

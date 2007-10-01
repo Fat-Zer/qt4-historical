@@ -453,6 +453,11 @@ void QAbstractItemViewPrivate::init()
 */
 
 /*!
+    \fn void QAbstractItemView::update()
+    \internal
+*/
+
+/*!
     Constructs an abstract item view with the given \a parent.
 */
 QAbstractItemView::QAbstractItemView(QWidget *parent)
@@ -1298,10 +1303,6 @@ bool QAbstractItemView::event(QEvent *event)
     case QEvent::FocusOut:
         d->checkPersistentEditorFocus();
         break;
-    case QEvent::Show:
-        // the paint event sometimes comes before the layout
-        d->executePostedLayout();
-        break;
     default:
         break;
     }
@@ -1515,8 +1516,10 @@ void QAbstractItemView::mouseMoveEvent(QMouseEvent *event)
 }
 
 /*!
-    This function is called with the given \a event when a mouse button is released
-    while the cursor is inside the widget. It will emit the clicked() signal if an
+    This function is called with the given \a event when a mouse button is released,
+    after a mouse press event on the widget. If a user presses the mouse inside your
+    widget and then drags the mouse to another location before releasing the mouse button,
+    your widget receives the release event. The function will emit the clicked() signal if an
     item was being pressed.
 */
 void QAbstractItemView::mouseReleaseEvent(QMouseEvent *event)
@@ -1693,7 +1696,7 @@ bool QAbstractItemViewPrivate::droppingOnItself(QDropEvent *event, const QModelI
         && dropAction == Qt::MoveAction) {
         QModelIndexList selectedIndexes = q->selectedIndexes();
         QModelIndex child = index;
-        while (child != root) {
+        while (child.isValid() && child != root) {
             if (selectedIndexes.contains(child))
                 return true;
             child = child.parent();
@@ -2807,14 +2810,11 @@ void QAbstractItemView::rowsAboutToBeRemoved(const QModelIndex &parent, int star
     }
 
     // Remove all affected editors; this is more efficient than waiting for updateGeometries() to clean out editors for invalid indexes
-    _q_abstractitemview_editor_iterator it = d->editors.begin();
-    while (it != d->editors.end()) {
-        QModelIndex index = d->indexForIterator(it);
-        if (index.row() <= start && index.row() >= end && d->model->parent(index) == parent) {
-            d->releaseEditor(d->editorForIterator(it));
-            it = d->editors.erase(it);
-        } else {
-            ++it;
+    for (int i = d->editors.size() - 1; i >= 0; --i) { 
+        const QModelIndex index = d->editors.at(i).first; 
+        if (index.row() >= start && index.row() <= end && d->model->parent(index) == parent) { 
+            d->releaseEditor(d->editors.at(i).second); 
+            d->editors.removeAt(i);
         }
     }
 }

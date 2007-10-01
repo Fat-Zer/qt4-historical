@@ -95,7 +95,7 @@ QByteArray combinePath(const char *infile, const char *outfile)
 
   \sa createFormImpl()
 */
-void Ui3Reader::createFormDecl(const QDomElement &e)
+void Ui3Reader::createFormDecl(const QDomElement &e, bool implicitIncludes)
 {
     QDomElement body = e;
 
@@ -252,9 +252,10 @@ void Ui3Reader::createFormDecl(const QDomElement &e)
     d.option().copyrightHeader = false;
     d.option().extractImages = m_extractImages;
     d.option().qrcOutputFile = m_qrcOutputFile;
+    d.option().implicitIncludes = implicitIncludes;
     if (trmacro.size())
         d.option().translateFunction = trmacro;
-    DomUI *ui = generateUi4(e);
+    DomUI *ui = generateUi4(e, implicitIncludes);
     d.uic(fileName, ui, &out);
     delete ui;
 

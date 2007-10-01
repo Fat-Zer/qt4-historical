@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/graphicsview/qgraphicsview.cpp -->
+<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/src/gui/graphicsview/qgraphicsview.cpp -->
 <head>
   <title>Qt 4.3: QGraphicsView Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -306,7 +306,7 @@
 <p>This property holds which parts of the view are cached.</p>
 <p><a href="qgraphicsview.html">QGraphicsView</a> can cache pre-rendered content in a <a href="qpixmap.html">QPixmap</a>, which is then drawn onto the viewport. The purpose of such caching is to speed up the total rendering time for areas that are slow to render. Texture, gradient and alpha blended backgrounds, for example, can be notibly slow to render; especially with a transformed view. The <a href="qgraphicsview.html#CacheModeFlag-enum">CacheBackground</a> flag enables caching of the view's background. For example:</p>
 <pre> QGraphicsView view;
- view.setBackgroundBrush(&quot;:/images/backgroundtile.png&quot;);
+ view.setBackgroundBrush(QImage(&quot;:/images/backgroundtile.png&quot;));
  view.setCacheMode(QGraphicsView::CacheBackground);</pre>
 <p>The cache is invalidated every time the view is transformed. However, when scrolling, only partial invalidation is required.</p>
 <p>By default, nothing is cached.</p>
@@ -458,6 +458,7 @@
 <h3 class="fn"><a name="centerOn"></a>void QGraphicsView::centerOn ( const <a href="qpointf.html">QPointF</a> &amp; <i>pos</i> )</h3>
 <p>Scrolls the contents of the viewport to ensure that the scene coordinate <i>pos</i>, is centered in the view.</p>
 <p>Because <i>pos</i> is a floating point coordinate, and the scroll bars operate on integer coordinates, the centering is only an approximation.</p>
+<p><b>Note:</b> If the item is close to or outside the border, it will be visible in the view, but not centered.</p>
 <p>See also <a href="qgraphicsview.html#ensureVisible">ensureVisible</a>().</p>
 <h3 class="fn"><a name="centerOn-2"></a>void QGraphicsView::centerOn ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>x</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>y</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
@@ -741,6 +742,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

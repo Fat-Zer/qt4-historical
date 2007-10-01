@@ -79,6 +79,8 @@ public:
     QAction *preferencesAction() const;
     QActionGroup *styleActions() const;
 
+    // file actions
+    QAction *closeFormAction() const;
     // window actions
     QAction *minimizeAction() const;
     // edit mode actions

@@ -64,6 +64,19 @@
 #define SECURITY_WIN32
 #include <security.h>
 
+#ifndef _INTPTR_T_DEFINED
+#ifdef  _WIN64
+typedef __int64             intptr_t;
+#else
+#ifdef _W64
+typedef _W64 int            intptr_t;
+#else
+typedef INT_PTR intptr_t;
+#endif
+#endif
+#define _INTPTR_T_DEFINED
+#endif
+
 #ifndef INVALID_FILE_ATTRIBUTES
 #  define INVALID_FILE_ATTRIBUTES (DWORD (-1))
 #endif
@@ -443,7 +456,7 @@ void QFSFileEnginePrivate::nativeInitFileName()
         nativeFilePath = QByteArray((const char *)path.utf16(), path.size() * 2 + 1);
     }, {
         QString path = fixIfRelativeUncPath(filePath);
-        nativeFilePath = win95Name(QDir::toNativeSeparators(path));
+        nativeFilePath = win95Name(path).replace('/', '\\');        
     });
 }
 
@@ -823,7 +836,12 @@ int QFSFileEnginePrivate::nativeHandle() const
 {
     if (fh || fd != -1)
         return fh ? QT_FILENO(fh) : fd;
-    return -1;
+    int flags = 0;
+    if (openMode & QIODevice::Append)
+        flags |= _O_APPEND;
+    if (!(openMode & QIODevice::WriteOnly))
+        flags |= _O_RDONLY;
+    return _open_osfhandle((intptr_t) fileHandle, flags);
 }
 
 /*
@@ -1912,12 +1930,32 @@ bool QFSFileEngine::setSize(qint64 size)
 static inline QDateTime fileTimeToQDateTime(const FILETIME *time)
 {
     QDateTime ret;
-    FILETIME localtime;
-    SYSTEMTIME lTime;
-    FileTimeToLocalFileTime(time, &localtime);
-    FileTimeToSystemTime(&localtime, &lTime);
-    ret.setDate(QDate(lTime.wYear, lTime.wMonth, lTime.wDay));
-    ret.setTime(QTime(lTime.wHour, lTime.wMinute, lTime.wSecond, lTime.wMilliseconds));
+    if (QSysInfo::WindowsVersion & QSysInfo::WV_DOS_based) {
+        // SystemTimeToTzSpecificLocalTime is not available on Win98/ME so we have to pull it off ourselves.
+        SYSTEMTIME systime;
+        FILETIME ftime;
+        systime.wYear = 1970;
+        systime.wMonth = 1;
+        systime.wDay = 1;
+        systime.wHour = 0;
+        systime.wMinute = 0;
+        systime.wSecond = 0;
+        systime.wMilliseconds = 0;
+        systime.wDayOfWeek = 4;
+        SystemTimeToFileTime(&systime, &ftime);
+        unsigned __int64 acttime = (unsigned __int64)time->dwHighDateTime << 32 | time->dwLowDateTime;
+        FileTimeToSystemTime(time, &systime);
+        unsigned __int64 time1970 = (unsigned __int64)ftime.dwHighDateTime << 32 | ftime.dwLowDateTime;
+        unsigned __int64 difftime = acttime - time1970;
+        difftime /= 10000000;
+        ret.setTime_t((unsigned int)difftime);
+    } else {
+        SYSTEMTIME sTime, lTime;
+        FileTimeToSystemTime(time, &sTime);
+        SystemTimeToTzSpecificLocalTime(0, &sTime, &lTime);
+        ret.setDate(QDate(lTime.wYear, lTime.wMonth, lTime.wDay));
+        ret.setTime(QTime(lTime.wHour, lTime.wMinute, lTime.wSecond, lTime.wMilliseconds));
+    }
     return ret;
 }
 

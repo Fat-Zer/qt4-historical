@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/doc/src/qsizepolicy.qdoc -->
+<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/doc/src/qsizepolicy.qdoc -->
 <head>
   <title>Qt 4.3: QSizePolicy Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -126,8 +126,8 @@
 <tr><td valign="top"><tt>QSizePolicy::Minimum</tt></td><td align="center" valign="top"><tt>GrowFlag</tt></td><td valign="top">The sizeHint() is minimal, and sufficient. The widget can be expanded, but there is no advantage to it being larger (e.g&#x2e; the horizontal direction of a push button). It cannot be smaller than the size provided by sizeHint().</td></tr>
 <tr><td valign="top"><tt>QSizePolicy::Maximum</tt></td><td align="center" valign="top"><tt>ShrinkFlag</tt></td><td valign="top">The sizeHint() is a maximum. The widget can be shrunk any amount without detriment if other widgets need the space (e.g&#x2e; a separator line). It cannot be larger than the size provided by sizeHint().</td></tr>
 <tr><td valign="top"><tt>QSizePolicy::Preferred</tt></td><td align="center" valign="top"><tt>GrowFlag | ShrinkFlag</tt></td><td valign="top">The sizeHint() is best, but the widget can be shrunk and still be useful. The widget can be expanded, but there is no advantage to it being larger than sizeHint() (the default <a href="qwidget.html">QWidget</a> policy).</td></tr>
-<tr><td valign="top"><tt>QSizePolicy::Expanding</tt></td><td align="center" valign="top"><tt>GrowFlag | ShrinkFlag | ExpandFlag</tt></td><td valign="top">The sizeHint() is a sensible size, but the widget can be shrunk and still be useful. The widget can make use of extra space, so it should get as much space as possible (e.g&#x2e; the horizontal direction of a slider).</td></tr>
-<tr><td valign="top"><tt>QSizePolicy::MinimumExpanding</tt></td><td align="center" valign="top"><tt>GrowFlag | ExpandFlag</tt></td><td valign="top">The sizeHint() is minimal, and sufficient. The widget can make use of extra space, so it should get as much space as possible (e.g&#x2e; the horizontal direction of a slider).</td></tr>
+<tr><td valign="top"><tt>QSizePolicy::Expanding</tt></td><td align="center" valign="top"><tt>GrowFlag | ShrinkFlag | ExpandFlag</tt></td><td valign="top">The sizeHint() is a sensible size, but the widget can be shrunk and still be useful. The widget can make use of extra space, so it should get as much space as possible (e.g&#x2e; the horizontal direction of a horizontal slider).</td></tr>
+<tr><td valign="top"><tt>QSizePolicy::MinimumExpanding</tt></td><td align="center" valign="top"><tt>GrowFlag | ExpandFlag</tt></td><td valign="top">The sizeHint() is minimal, and sufficient. The widget can make use of extra space, so it should get as much space as possible (e.g&#x2e; the horizontal direction of a horizontal slider).</td></tr>
 <tr><td valign="top"><tt>QSizePolicy::Ignored</tt></td><td align="center" valign="top"><tt>ShrinkFlag | GrowFlag | IgnoreFlag</tt></td><td valign="top">The sizeHint() is ignored. The widget will get as much space as possible.</td></tr>
 </table></p>
 <p>See also <a href="qsizepolicy.html#PolicyFlag-enum">PolicyFlag</a>, <a href="qsizepolicy.html#setHorizontalPolicy">setHorizontalPolicy</a>(), and <a href="qsizepolicy.html#setVerticalPolicy">setVerticalPolicy</a>().</p>
@@ -248,6 +248,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

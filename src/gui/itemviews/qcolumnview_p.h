@@ -128,13 +128,14 @@ private:
     QWidget *previewWidget;
 };
 
-class QColumnViewPrivate : public QAbstractItemViewPrivate
+class Q_AUTOTEST_EXPORT QColumnViewPrivate : public QAbstractItemViewPrivate
 {
     Q_DECLARE_PUBLIC(QColumnView)
 
 public:
     QColumnViewPrivate();
     ~QColumnViewPrivate();
+    void initialize();
 
     QAbstractItemView *createColumn(const QModelIndex &index, bool show);
 

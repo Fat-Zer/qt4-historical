@@ -1341,7 +1341,7 @@ void QComboBox::setAutoCompletionCaseSensitivity(Qt::CaseSensitivity sensitivity
     \property QComboBox::duplicatesEnabled
     \brief whether the user can enter duplicate items into the combobox
 
-    Note that it is always possible to programatically insert duplicate items into the
+    Note that it is always possible to programmatically insert duplicate items into the
     combobox.
 */
 bool QComboBox::duplicatesEnabled() const
@@ -2145,6 +2145,8 @@ void QComboBox::showPopup()
     else
         listRect.setHeight(itemHeight * qMin(d->maxVisibleItems, count()));
 
+    // ### Adjusting by PM_DefaultFrameWidth is not enough. Since QFrame supports
+    // SE_FrameContents, QFrame needs API to return the frameWidths
     listRect.setHeight(listRect.height() + 2*container->spacing()
                        + style()->pixelMetric(QStyle::PM_DefaultFrameWidth, &opt, this) * 2);
 

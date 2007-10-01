@@ -48,6 +48,7 @@
 #include <QUrl>
 #include <QTextCodec>
 #include <ctype.h>
+#include <QTextDocument>
 
 struct Term {
     Term() : frequency(-1) {}
@@ -195,7 +196,7 @@ void Index::parseDocument( const QString &filename, int docNum )
 {
     QFile file( filename );
     if ( !file.open(QFile::ReadOnly) ) {
-        qWarning( (QLatin1String("can not open file ") + filename).toAscii().constData() );
+        qWarning( "can not open file %s", qPrintable(filename) );
         return;
     }
 
@@ -367,7 +368,7 @@ QString Index::getDocumentTitle( const QString &fullFileName )
 
     QFile file( fileName );
     if ( !file.open( QFile::ReadOnly ) ) {
-        qWarning( (QLatin1String("cannot open file ") + fileName).toAscii().constData() );
+        qWarning( "cannot open file %s", qPrintable(fileName) );
         return fileName;
     }
     QTextStream s( &file );
@@ -376,7 +377,15 @@ QString Index::getDocumentTitle( const QString &fullFileName )
     int start = text.indexOf(QLatin1String("<title>"), 0, Qt::CaseInsensitive) + 7;
     int end = text.indexOf(QLatin1String("</title>"), 0, Qt::CaseInsensitive);
 
-    QString title = ( end - start <= 0 ? tr("Untitled") : text.mid( start, end - start ) );
+    QString title = tr("Untitled");
+    if (end - start > 0) {
+        title = text.mid(start, end - start);
+        if (Qt::mightBeRichText(title)) {
+            QTextDocument doc;
+            doc.setHtml(title);
+            title = doc.toPlainText();
+        }
+    }
     documentTitleCache.insert(fileName, title);
     return title;
 }
@@ -489,7 +498,7 @@ bool Index::searchForPattern( const QStringList &patterns, const QStringList &wo
     QString fName = url.toLocalFile();
     QFile file( fName );
     if ( !file.open( QFile::ReadOnly ) ) {
-        qWarning( (QLatin1String("cannot open file ") + fName).toAscii().constData() );
+        qWarning( "cannot open file %s", qPrintable(fName) );
         return false;
     }
 

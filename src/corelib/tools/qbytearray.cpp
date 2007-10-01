@@ -176,7 +176,8 @@ char *qstrncpy(char *dst, const char *src, uint len)
     \sa qstrlen()
 */
 
-/*! \relates QByteArray
+/*! 
+    \relates QByteArray
 
     A safe \c strcmp() function.
 
@@ -186,7 +187,7 @@ char *qstrncpy(char *dst, const char *src, uint len)
 
     Special case 1: Returns 0 if \a str1 and \a str2 are both 0.
 
-    Special case 2: Returns a random non-zero value if \a str1 is 0
+    Special case 2: Returns an arbitrary non-zero value if \a str1 is 0
     or \a str2 is 0 (but not both).
 
     \sa qstrncmp(), qstricmp(), qstrnicmp(), {Note on 8-bit character comparisons}
@@ -624,11 +625,12 @@ QByteArray::Data QByteArray::shared_empty = { Q_ATOMIC_INIT(1), 0, 0, shared_emp
     position from which to start erasing and the number of bytes that
     should be erased.
 
-    If you are building a QByteArray gradually and know in advance
-    approximately how many bytes the QByteArray will contain,
-    you can call reserve(), asking QByteArray to preallocate a
-    certain amount of memory. You can also call capacity() to find
-    out how much memory QByteArray actually allocated.
+    When you append() data to a non-empty array, the array will be
+    reallocated and the new data copied to it. You can avoid this
+    behavior by calling reserve(), which preallocates a certain amount
+    of memory. You can also call capacity() to find out how much
+    memory QByteArray actually allocated. Data appended to an empty
+    array is not copied.
 
     A frequent requirement is to remove whitespace characters from a
     byte array ('\\n', '\\t', ' ', etc.). If you want to remove

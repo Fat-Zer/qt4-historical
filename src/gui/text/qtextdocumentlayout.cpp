@@ -394,6 +394,7 @@ public:
 
     int lastPageCount;
     qreal idealWidth;
+    bool contentHasAlignment;
 
     qreal indent(QTextBlock bl) const;
 
@@ -472,6 +473,7 @@ QTextDocumentLayoutPrivate::QTextDocumentLayoutPrivate()
     showLayoutProgress = true;
     insideDocumentChange = false;
     idealWidth = 0;
+    contentHasAlignment = false;
 }
 
 QTextFrame::Iterator QTextDocumentLayoutPrivate::frameIteratorForYPosition(QFixed y) const
@@ -553,8 +555,54 @@ QTextDocumentLayoutPrivate::hitTest(QTextFrame *frame, const QFixedPoint &point,
         }
     }
 
-    if (QTextTable *table = qobject_cast<QTextTable *>(frame))
+    if (isFrameFromInlineObject(frame)) {
+        *position = frame->firstPosition() - 1;
+        return PointExact;
+    }
+
+    if (QTextTable *table = qobject_cast<QTextTable *>(frame)) {
+        const int rows = table->rows();
+        const int columns = table->columns();
+        QTextTableData *td = static_cast<QTextTableData *>(data(table));
+
+        if (!td->childFrameMap.isEmpty()) {
+            for (int r = 0; r < rows; ++r) {
+                for (int c = 0; c < columns; ++c) {
+                    QTextTableCell cell = table->cellAt(r, c);
+                    if (cell.row() != r || cell.column() != c)
+                        continue;
+
+                    QRectF cellRect = td->cellRect(cell);
+                    const QFixedPoint cellPos = QFixedPoint::fromPointF(cellRect.topLeft());
+                    const QFixedPoint pointInCell = relativePoint - cellPos;
+
+                    const QList<QTextFrame *> childFrames = td->childFrameMap.values(r + c * rows);
+                    for (int i = 0; i < childFrames.size(); ++i) {
+                        QTextFrame *child = childFrames.at(i);
+                        if (isFrameFromInlineObject(child)
+                            && child->frameFormat().position() != QTextFrameFormat::InFlow
+                            && hitTest(child, pointInCell, position, l, accuracy) == PointExact)
+                        {
+                            return PointExact;
+                        }
+                    }
+                }
+            }
+        }
+
         return hitTest(table, relativePoint, position, l, accuracy);
+    }
+
+    const QList<QTextFrame *> childFrames = frame->childFrames();
+    for (int i = 0; i < childFrames.size(); ++i) {
+        QTextFrame *child = childFrames.at(i);
+        if (isFrameFromInlineObject(child)
+            && child->frameFormat().position() != QTextFrameFormat::InFlow
+            && hitTest(child, relativePoint, position, l, accuracy) == PointExact)
+        {
+            return PointExact;
+        }
+    }
 
     QTextFrame::Iterator it = frame->begin();
 
@@ -2140,6 +2188,11 @@ void QTextDocumentLayoutPrivate::layoutFlow(QTextFrame::Iterator it, QLayoutStru
                 if (table)
                     align = table->format().alignment() & Qt::AlignHorizontal_Mask;
 
+                // detect whether we have any alignment in the document that disallows optimizations,
+                // such as not laying out the document again in a textedit with wrapping disabled.
+                if (inRootFrame && !(align & Qt::AlignLeft))
+                    contentHasAlignment = true;
+
                 cd->position = pos;
 
                 if (q->document()->pageSize().height() > 0.0f)
@@ -2218,6 +2271,11 @@ void QTextDocumentLayoutPrivate::layoutFlow(QTextFrame::Iterator it, QLayoutStru
             // layout and position child block
             layoutBlock(block, layoutStruct, layoutFrom, layoutTo, lastIt.currentBlock());
 
+            // detect whether we have any alignment in the document that disallows optimizations,
+            // such as not laying out the document again in a textedit with wrapping disabled.
+            if (inRootFrame && !(block.layout()->textOption().alignment() & Qt::AlignLeft))
+                contentHasAlignment = true;
+
             // if the block right before a table is empty 'hide' it by
             // positioning it into the table border
             if (isEmptyBlockBeforeTable(block, it)) {
@@ -2288,6 +2346,11 @@ void QTextDocumentLayoutPrivate::layoutFlow(QTextFrame::Iterator it, QLayoutStru
     }
 
     if (inRootFrame) {
+        // we assume that any float is aligned in a way that disallows the optimizations that rely
+        // on unaligned content.
+        if (!fd->floats.isEmpty())
+            contentHasAlignment = true;
+
         if (it.atEnd()) {
             //qDebug() << "layout done!";
             currentLazyLayoutPosition = -1;
@@ -2633,6 +2696,7 @@ void QTextDocumentLayout::documentChanged(int from, int oldLength, int length)
         d->showLayoutProgress = true;
 
     if (fullLayout) {
+        d->contentHasAlignment = false;
         d->currentLazyLayoutPosition = 0;
         d->checkPoints.clear();
         d->layoutStep();
@@ -2966,6 +3030,12 @@ qreal QTextDocumentLayout::idealWidth() const
     Q_D(const QTextDocumentLayout);
     d->ensureLayoutFinished();
     return d->idealWidth;
+}
+
+bool QTextDocumentLayout::contentHasAlignment() const
+{
+    Q_D(const QTextDocumentLayout);
+    return d->contentHasAlignment;
 }
 
 qreal QTextDocumentLayoutPrivate::scaleToDevice(qreal value) const

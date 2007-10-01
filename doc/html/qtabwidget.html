@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/widgets/qtabwidget.cpp -->
+<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/src/gui/widgets/qtabwidget.cpp -->
 <head>
   <title>Qt 4.3: QTabWidget Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -50,8 +50,8 @@
 <ul>
 <li><div class="fn"/><b><a href="qtabwidget.html#QTabWidget">QTabWidget</a></b> ( QWidget * <i>parent</i> = 0 )</li>
 <li><div class="fn"/><b><a href="qtabwidget.html#dtor.QTabWidget">~QTabWidget</a></b> ()</li>
-<li><div class="fn"/>int <b><a href="qtabwidget.html#addTab">addTab</a></b> ( QWidget * <i>child</i>, const QString &amp; <i>label</i> )</li>
-<li><div class="fn"/>int <b><a href="qtabwidget.html#addTab-2">addTab</a></b> ( QWidget * <i>child</i>, const QIcon &amp; <i>icon</i>, const QString &amp; <i>label</i> )</li>
+<li><div class="fn"/>int <b><a href="qtabwidget.html#addTab">addTab</a></b> ( QWidget * <i>page</i>, const QString &amp; <i>label</i> )</li>
+<li><div class="fn"/>int <b><a href="qtabwidget.html#addTab-2">addTab</a></b> ( QWidget * <i>page</i>, const QIcon &amp; <i>icon</i>, const QString &amp; <i>label</i> )</li>
 <li><div class="fn"/>void <b><a href="qtabwidget.html#clear">clear</a></b> ()</li>
 <li><div class="fn"/>QWidget * <b><a href="qtabwidget.html#cornerWidget">cornerWidget</a></b> ( Qt::Corner <i>corner</i> = Qt::TopRightCorner ) const</li>
 <li><div class="fn"/>int <b><a href="qtabwidget.html#count-prop">count</a></b> () const</li>
@@ -60,8 +60,8 @@
 <li><div class="fn"/>Qt::TextElideMode <b><a href="qtabwidget.html#elideMode-prop">elideMode</a></b> () const</li>
 <li><div class="fn"/>QSize <b><a href="qtabwidget.html#iconSize-prop">iconSize</a></b> () const</li>
 <li><div class="fn"/>int <b><a href="qtabwidget.html#indexOf">indexOf</a></b> ( QWidget * <i>w</i> ) const</li>
-<li><div class="fn"/>int <b><a href="qtabwidget.html#insertTab">insertTab</a></b> ( int <i>index</i>, QWidget * <i>widget</i>, const QString &amp; <i>label</i> )</li>
-<li><div class="fn"/>int <b><a href="qtabwidget.html#insertTab-4">insertTab</a></b> ( int <i>index</i>, QWidget * <i>widget</i>, const QIcon &amp; <i>icon</i>, const QString &amp; <i>label</i> )</li>
+<li><div class="fn"/>int <b><a href="qtabwidget.html#insertTab">insertTab</a></b> ( int <i>index</i>, QWidget * <i>page</i>, const QString &amp; <i>label</i> )</li>
+<li><div class="fn"/>int <b><a href="qtabwidget.html#insertTab-4">insertTab</a></b> ( int <i>index</i>, QWidget * <i>page</i>, const QIcon &amp; <i>icon</i>, const QString &amp; <i>label</i> )</li>
 <li><div class="fn"/>bool <b><a href="qtabwidget.html#isTabEnabled">isTabEnabled</a></b> ( int <i>index</i> ) const</li>
 <li><div class="fn"/>void <b><a href="qtabwidget.html#removeTab">removeTab</a></b> ( int <i>index</i> )</li>
 <li><div class="fn"/>void <b><a href="qtabwidget.html#setCornerWidget">setCornerWidget</a></b> ( QWidget * <i>widget</i>, Qt::Corner <i>corner</i> = Qt::TopRightCorner )</li>
@@ -268,15 +268,14 @@
 <h3 class="fn"><a name="dtor.QTabWidget"></a>QTabWidget::~QTabWidget ()</h3>
 <p>Destroys the tabbed widget.</p>
 <a name="//apple_ref/cpp/instm/QTabWidget/addTab" />
-<h3 class="fn"><a name="addTab"></a>int QTabWidget::addTab ( <a href="qwidget.html">QWidget</a> * <i>child</i>, const <a href="qstring.html">QString</a> &amp; <i>label</i> )</h3>
-<p>Adds another tab and page to the tab view.</p>
-<p>The new page is <i>child</i>; the tab's label is <i>label</i>.</p>
+<h3 class="fn"><a name="addTab"></a>int QTabWidget::addTab ( <a href="qwidget.html">QWidget</a> * <i>page</i>, const <a href="qstring.html">QString</a> &amp; <i>label</i> )</h3>
+<p>Adds a tab with the given <i>page</i> and <i>label</i> to the tab widget, and returns the index of the tab in the tab bar.</p>
 <p>If the tab's <i>label</i> contains an ampersand, the letter following the ampersand is used as a shortcut for the tab, e.g&#x2e; if the label is &quot;Bro&amp;wse&quot; then Alt+W becomes a shortcut which will move the focus to this tab.</p>
-<p>If you call addTab() after <a href="qwidget.html#show">show</a>(), the layout system will try to adjust to the changes in it's widgets hierarchy and may cause flicker. To prevent this, you can set the <a href="qwidget.html#updatesEnabled-prop">QWidget::updatesEnabled</a> property to false prior to changes; remember to set the property to true when the changes are done, making the widget receive paint events again.</p>
+<p><b>Note:</b> If you call addTab() after <a href="qwidget.html#show">show</a>(), the layout system will try to adjust to the changes in it's widgets hierarchy and may cause flicker. To prevent this, you can set the <a href="qwidget.html#updatesEnabled-prop">QWidget::updatesEnabled</a> property to false prior to changes; remember to set the property to true when the changes are done, making the widget receive paint events again.</p>
 <p>See also <a href="qtabwidget.html#insertTab">insertTab</a>().</p>
-<h3 class="fn"><a name="addTab-2"></a>int QTabWidget::addTab ( <a href="qwidget.html">QWidget</a> * <i>child</i>, const <a href="qicon.html">QIcon</a> &amp; <i>icon</i>, const <a href="qstring.html">QString</a> &amp; <i>label</i> )</h3>
+<h3 class="fn"><a name="addTab-2"></a>int QTabWidget::addTab ( <a href="qwidget.html">QWidget</a> * <i>page</i>, const <a href="qicon.html">QIcon</a> &amp; <i>icon</i>, const <a href="qstring.html">QString</a> &amp; <i>label</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
-<p>Adds another tab and page to the tab view.</p>
+<p>Adds a tab with the given <i>page</i>, <i>icon</i>, and <i>label</i> to the tab widget, and returns the index of the tab in the tab bar.</p>
 <p>This function is the same as <a href="qtabwidget.html#addTab">addTab</a>(), but with an additional <i>icon</i>.</p>
 <a name="//apple_ref/cpp/instm/QTabWidget/clear" />
 <h3 class="fn"><a name="clear"></a>void QTabWidget::clear ()</h3>
@@ -301,17 +300,17 @@
 <p>Initialize <i>option</i> with the values from this <a href="qtabwidget.html">QTabWidget</a>. This method is useful for subclasses when they need a <a href="qstyleoptiontabwidgetframe.html">QStyleOptionTabWidgetFrame</a>, but don't want to fill in all the information themselves.</p>
 <p>See also <a href="qstyleoption.html#initFrom">QStyleOption::initFrom</a>() and <a href="qtabbar.html#initStyleOption">QTabBar::initStyleOption</a>().</p>
 <a name="//apple_ref/cpp/instm/QTabWidget/insertTab" />
-<h3 class="fn"><a name="insertTab"></a>int QTabWidget::insertTab ( int <i>index</i>, <a href="qwidget.html">QWidget</a> * <i>widget</i>, const <a href="qstring.html">QString</a> &amp; <i>label</i> )</h3>
-<p>Inserts another tab and page to the tab view.</p>
-<p>The given <i>widget</i> is the new page, and the tab's label is specified by <i>label</i>. Note the difference between the widget name and the tab label: The name is internal to the program and invariant, whereas the label is shown on-screen and may vary according to language and other factors.</p>
+<h3 class="fn"><a name="insertTab"></a>int QTabWidget::insertTab ( int <i>index</i>, <a href="qwidget.html">QWidget</a> * <i>page</i>, const <a href="qstring.html">QString</a> &amp; <i>label</i> )</h3>
+<p>Inserts a tab with the given <i>label</i> and <i>page</i> into the tab widget at the specified <i>index</i>, and returns the index of the inserted tab in the tab bar.</p>
+<p>The label is displayed in the tab and may vary in appearance depending on the configuration of the tab widget.</p>
 <p>If the tab's <i>label</i> contains an ampersand, the letter following the ampersand is used as a shortcut for the tab, e.g&#x2e; if the label is &quot;Bro&amp;wse&quot; then Alt+W becomes a shortcut which will move the focus to this tab.</p>
 <p>If <i>index</i> is out of range, the tab is simply appended. Otherwise it is inserted at the specified position.</p>
 <p>If the <a href="qtabwidget.html">QTabWidget</a> was empty before this function is called, the new page becomes the current page. Inserting a new tab at an index less than or equal to the current index will increment the current index, but keep the current page.</p>
-<p>If you call insertTab() after <a href="qwidget.html#show">show</a>(), the layout system will try to adjust to the changes in it's widgets hierarchy and may cause flicker. To prevent this, you can set the <a href="qwidget.html#updatesEnabled-prop">QWidget::updatesEnabled</a> property to false prior to changes; remember to set the property to true when the changes are done, making the widget receive paint events again.</p>
+<p><b>Note:</b> If you call insertTab() after <a href="qwidget.html#show">show</a>(), the layout system will try to adjust to the changes in it's widgets hierarchy and may cause flicker. To prevent this, you can set the <a href="qwidget.html#updatesEnabled-prop">QWidget::updatesEnabled</a> property to false prior to changes; remember to set the property to true when the changes are done, making the widget receive paint events again.</p>
 <p>See also <a href="qtabwidget.html#addTab">addTab</a>().</p>
-<h3 class="fn"><a name="insertTab-4"></a>int QTabWidget::insertTab ( int <i>index</i>, <a href="qwidget.html">QWidget</a> * <i>widget</i>, const <a href="qicon.html">QIcon</a> &amp; <i>icon</i>, const <a href="qstring.html">QString</a> &amp; <i>label</i> )</h3>
+<h3 class="fn"><a name="insertTab-4"></a>int QTabWidget::insertTab ( int <i>index</i>, <a href="qwidget.html">QWidget</a> * <i>page</i>, const <a href="qicon.html">QIcon</a> &amp; <i>icon</i>, const <a href="qstring.html">QString</a> &amp; <i>label</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
-<p>Inserts another tab and page to the tab view.</p>
+<p>Inserts a tab with the given <i>label</i>, <i>page</i>, and <i>icon</i> into the tab widget at the specified <i>index</i>, and returns the index of the inserted tab in the tab bar.</p>
 <p>This function is the same as <a href="qtabwidget.html#insertTab">insertTab</a>(), but with an additional <i>icon</i>.</p>
 <a name="//apple_ref/cpp/instm/QTabWidget/isTabEnabled" />
 <h3 class="fn"><a name="isTabEnabled"></a>bool QTabWidget::isTabEnabled ( int <i>index</i> ) const</h3>
@@ -323,7 +322,8 @@
 <p>Reimplemented from <a href="qwidget.html#paintEvent">QWidget</a>.</p>
 <a name="//apple_ref/cpp/instm/QTabWidget/removeTab" />
 <h3 class="fn"><a name="removeTab"></a>void QTabWidget::removeTab ( int <i>index</i> )</h3>
-<p>Removes the page at position <i>index</i> from this stack of widgets. Does not delete the page widget.</p>
+<p>Removes the tab at position <i>index</i> from this stack of widgets. The page widget itself is not deleted.</p>
+<p>See also <a href="qtabwidget.html#addTab">addTab</a>() and <a href="qtabwidget.html#insertTab">insertTab</a>().</p>
 <a name="//apple_ref/cpp/instm/QTabWidget/setCornerWidget" />
 <h3 class="fn"><a name="setCornerWidget"></a>void QTabWidget::setCornerWidget ( <a href="qwidget.html">QWidget</a> * <i>widget</i>, <a href="qt.html#Corner-enum">Qt::Corner</a> <i>corner</i> = Qt::TopRightCorner )</h3>
 <p>Sets the given <i>widget</i> to be shown in the specified <i>corner</i> of the tab widget. The geometry of the widget is determined based on the widget's <a href="qwidget.html#sizeHint-prop">sizeHint</a>() and the <a href="qwidget.html#style">style</a>().</p>
@@ -401,6 +401,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

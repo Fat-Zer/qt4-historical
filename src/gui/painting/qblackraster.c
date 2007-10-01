@@ -1493,8 +1493,8 @@ Fail:
 /*    SUCCESS on success, FAILURE on error.                              */
 /*                                                                       */
 static Bool
-Decompose_Curve( TRaster_Instance*  raster, UShort  first,
-                 UShort  last,
+Decompose_Curve( TRaster_Instance*  raster, UInt first,
+                 UInt last,
                  int     flipped )
 {
     QT_FT_Vector   v_last;
@@ -1735,8 +1735,8 @@ Convert_Glyph( TRaster_Instance*  raster, int  flipped )
         ras.state    = Unknown_State;
         ras.gProfile = NULL;
 
-        if ( Decompose_Curve( raster, (unsigned short)start,
-                              (unsigned short)ras.outline.contours[i],
+        if ( Decompose_Curve( raster, start,
+                              ras.outline.contours[i],
                               flipped ) )
             return FAILURE;
 

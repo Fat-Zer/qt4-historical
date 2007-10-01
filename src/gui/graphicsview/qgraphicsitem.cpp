@@ -1910,7 +1910,19 @@ void QGraphicsItem::resetTransform()
 }
 
 /*!
-    Rotates the current item transformation \a angle degrees clockwise.
+    Rotates the current item transformation \a angle degrees clockwise around
+    its origin. To translate around an arbitrary point (x, y), you need to
+    combine translation and rotation with setTransform().
+
+    Example:
+
+    \code
+        // Rotate an item 45 degrees around (0, 0).
+        item->rotate(45);
+
+        // Rotate an item 45 degrees around (x, y).
+        item->setTransform(QTransform().translate(x, y).rotate(45).translate(-x, -y));
+    \endcode
 
     \sa setTransform(), transform(), scale(), shear(), translate()
 */
@@ -1920,7 +1932,19 @@ void QGraphicsItem::rotate(qreal angle)
 }
 
 /*!
-    Scales the current item transformation by (\a sx, \a sy).
+    Scales the current item transformation by (\a sx, \a sy) around its
+    origin. To scale from an arbitrary point (x, y), you need to combine
+    translation and scaling with setTransform().
+
+    Example:
+
+    \code
+        // Scale an item by 3x2 from its origin
+        item->scale(3, 2);
+
+        // Scale an item by 3x2 from (x, y)
+        item->setTransform(QTransform().translate(x, y).scale(3, 2).translate(-x, -y));
+    \endcode
 
     \sa setTransform(), transform(), rotate(), shear(), translate()
 */
@@ -3122,10 +3146,6 @@ bool QGraphicsItem::sceneEvent(QEvent *event)
 
     The default implementation does nothing.
 
-    \note Items only receive context menu events if the view they are
-    displayed in is configured to ignore context menu events; i.e., its
-    \l{QWidget::}{contextMenuPolicy} property is set to Qt::ContextMenuPolicy.
-
     \sa sceneEvent()
 */
 void QGraphicsItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
@@ -4046,8 +4066,9 @@ QRectF QGraphicsPathItem::boundingRect() const
         qreal pw = pen().widthF();
         if (pw == 0.0)
             d->boundingRect = d->path.controlPointRect();
-        else
-            d->boundingRect = shape().controlPointRect().adjusted(-pw/2, -pw/2, pw, pw);
+        else {
+            d->boundingRect = shape().controlPointRect();
+        }
     }
     return d->boundingRect;
 }
@@ -4283,7 +4304,7 @@ QRectF QGraphicsRectItem::boundingRect() const
         if (pw == 0.0)
             d->boundingRect = d->rect;
         else
-            d->boundingRect = shape().controlPointRect().adjusted(-pw/2, -pw/2, pw, pw);
+            d->boundingRect = shape().controlPointRect();
     }
     return d->boundingRect;
 }
@@ -4583,7 +4604,7 @@ QRectF QGraphicsEllipseItem::boundingRect() const
         if (pw == 0.0)
             d->boundingRect = d->rect;
         else
-            d->boundingRect = shape().controlPointRect().adjusted(-pw/2, -pw/2, pw, pw);
+            d->boundingRect = shape().controlPointRect();
     }
     return d->boundingRect;
 }
@@ -4829,7 +4850,7 @@ QRectF QGraphicsPolygonItem::boundingRect() const
         if (pw == 0.0)
             d->boundingRect = d->polygon.boundingRect();
         else
-            d->boundingRect = shape().controlPointRect().adjusted(-pw/2, -pw/2, pw, pw);
+            d->boundingRect = shape().controlPointRect();
     }
     return d->boundingRect;
 }
@@ -5420,7 +5441,7 @@ QRectF QGraphicsPixmapItem::boundingRect() const
     qreal pw = 1.0;
     if (d->pixmap.isNull())
         return QRectF();
-    return QRectF(d->offset, d->pixmap.size()).adjusted(-pw/2, -pw/2, pw, pw);
+    return QRectF(d->offset, d->pixmap.size()).adjusted(-pw/2, -pw/2, pw/2, pw/2);
 }
 
 /*!
@@ -5552,6 +5573,11 @@ QVariant QGraphicsPixmapItem::extension(const QVariant &variant) const
 
     It is possible to make the item editable by setting the Qt::TextEditable flag
     using setTextInteractionFlags().
+    
+    The item's preferred text width can be set using setTextWidth() and obtained
+    using textWidth().
+
+    \note In order to align HTML text in the center, the item's text width must be set.
 
     \img graphicsview-textitem.png
 
@@ -5889,13 +5915,13 @@ void QGraphicsTextItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 */
 void QGraphicsTextItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
-    if ((event->buttons() & Qt::LeftButton) == 0)
-        dd->moving = false;
-
-    if (!hasFocus()) {
+    if (!hasFocus() || dd->moving) {
         QGraphicsItem::mouseReleaseEvent(event);
         return;
     }
+
+    if ((event->buttons() & Qt::LeftButton) == 0)
+        dd->moving = false;
 
     dd->sendControlEvent(event);
 }

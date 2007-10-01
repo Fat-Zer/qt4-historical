@@ -298,10 +298,10 @@ void QTextBrowserPrivate::setSource(const QUrl &url)
         home = url;
 
     if (doSetText) {
+        q->QTextEdit::setHtml(txt);
 #ifdef QT_KEYPAD_NAVIGATION
         prevFocus.movePosition(QTextCursor::Start);
 #endif
-        q->QTextEdit::setHtml(txt);
     }
 
     forceLoadOnSourceChange = false;
@@ -312,6 +312,9 @@ void QTextBrowserPrivate::setSource(const QUrl &url)
         hbar->setValue(0);
         vbar->setValue(0);
     }
+#ifdef QT_KEYPAD_NAVIGATION 
+    lastKeypadScrollValue = vbar->value(); 
+#endif 
 
 #ifndef QT_NO_CURSOR
     if (q->isVisible())
@@ -340,6 +343,15 @@ void QTextBrowserPrivate::keypadMove(bool next)
     QRectF viewRect = QRectF(0, yOffset, control->size().width(), height);
     QRectF newViewRect = QRectF(0, scrollYOffset, control->size().width(), height);
     QRectF bothViewRects = viewRect.united(newViewRect);
+
+    // If we don't have a previous anchor, pretend that we had the first/last character
+    // on the screen selected.
+    if (prevFocus.isNull()) {
+        if (next)
+            prevFocus = control->cursorForPosition(QPointF(0, yOffset));
+        else
+            prevFocus = control->cursorForPosition(QPointF(control->size().width(), yOffset + height));
+    }
 
     // First, check to see if someone has moved the scroll bars independently
     if (lastKeypadScrollValue != yOffset) {
@@ -527,6 +539,10 @@ void QTextBrowserPrivate::restoreHistoryEntry(const HistoryEntry entry)
         control->setCursorIsFocusIndicator(true);
         control->setTextCursor(cursor);
     }
+#ifdef QT_KEYPAD_NAVIGATION 
+    lastKeypadScrollValue = vbar->value(); 
+    prevFocus = control->textCursor(); 
+#endif 
 }
 
 /*!
@@ -800,10 +816,11 @@ void QTextBrowser::backward()
     Q_D(QTextBrowser);
     if (d->stack.count() <= 1)
         return;
-    d->forwardStack.push(d->stack.pop());
-    d->forwardStack.top().hpos = d->hbar->value();
-    d->forwardStack.top().vpos = d->vbar->value();
-    d->restoreHistoryEntry(d->stack.top());
+
+    // Update the history entry
+    d->forwardStack.push(d->createHistoryEntry());
+    d->stack.pop(); // throw away the old version of the current entry
+    d->restoreHistoryEntry(d->stack.top()); // previous entry
     emit backwardAvailable(d->stack.count() > 1);
     emit forwardAvailable(true);
 }
@@ -821,8 +838,8 @@ void QTextBrowser::forward()
     if (d->forwardStack.isEmpty())
         return;
     if (!d->stack.isEmpty()) {
-        d->stack.top().hpos = d->hbar->value();
-        d->stack.top().vpos = d->vbar->value();
+        // Update the history entry
+        d->stack.top() = d->createHistoryEntry();
     }
     d->stack.push(d->forwardStack.pop());
     d->restoreHistoryEntry(d->stack.top());

@@ -183,7 +183,6 @@ void MainWindow::setup()
     connect(new QShortcut(tr("Ctrl+I"), this), SIGNAL(activated()), helpDock, SLOT(toggleIndex()));
     connect(new QShortcut(tr("Ctrl+B"), this), SIGNAL(activated()), helpDock, SLOT(toggleBookmarks()));
     connect(new QShortcut(tr("Ctrl+S"), this), SIGNAL(activated()), helpDock, SLOT(toggleSearch()));
-    connect(new QShortcut(tr("Ctrl+W"), this), SIGNAL(activated()), tabs, SLOT(closeTab()));
     connect(new QShortcut(tr("Ctrl+]"), this), SIGNAL(activated()), tabs, SLOT(nextTab()));
     connect(new QShortcut(tr("Ctrl+["), this), SIGNAL(activated()), tabs, SLOT(previousTab()));
 
@@ -354,6 +353,11 @@ void MainWindow::on_actionAboutApplication_triggered()
     if(text.isNull())
         text = tr("Failed to open about application contents in file: '%1'").arg(url);
 
+    QFileInfo fi(file);
+    QString path = QDir::cleanPath(fi.absolutePath());
+    if (!QDir::searchPaths("aboutImages").contains(path))
+        QDir::addSearchPath("aboutImages", path);
+    
     QMessageBox box(this);
     box.setText(text);
     box.setWindowTitle(Config::configuration()->aboutApplicationMenuText());

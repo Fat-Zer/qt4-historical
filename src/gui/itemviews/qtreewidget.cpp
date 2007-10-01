@@ -972,6 +972,7 @@ void QTreeModel::sortItems(QList<QTreeWidgetItem*> *items, int column, Qt::SortO
   \since 4.2
 
   Expands the item if \a expand is true, otherwise collapses the item.
+  \warning The QTreeWidgetItem must be added to the QTreeWidget before calling this function.
 
   \sa isExpanded()
 */
@@ -1336,6 +1337,7 @@ QTreeWidgetItem::QTreeWidgetItem(QTreeWidget *view, const QStringList &strings, 
         QTreeModel *model = ::qobject_cast<QTreeModel*>(view->model());
         model->rootItem->addChild(this);
         values.reserve(model->headerItem->columnCount());
+        model->executePendingSort();
     }
 }
 
@@ -1361,6 +1363,7 @@ QTreeWidgetItem::QTreeWidgetItem(QTreeWidget *view, QTreeWidgetItem *after, int 
             int i = model->rootItem->indexOfChild(after) + 1;
             model->rootItem->insertChild(i, this);
             values.reserve(model->headerItem->columnCount());
+            model->executePendingSort();
         }
     }
 }
@@ -1380,6 +1383,12 @@ QTreeWidgetItem::QTreeWidgetItem(QTreeWidgetItem *parent, int type)
 {
     if (parent)
         parent->addChild(this);
+     if (view) {
+        QTreeModel *model = ::qobject_cast<QTreeModel*>(view->model());
+        if (model) {
+            model->executePendingSort();
+        }
+    }
 }
 
 /*!
@@ -1400,7 +1409,12 @@ QTreeWidgetItem::QTreeWidgetItem(QTreeWidgetItem *parent, const QStringList &str
         setText(i, strings.at(i));
     if (parent)
         parent->addChild(this);
-
+     if (view) {
+        QTreeModel *model = ::qobject_cast<QTreeModel*>(view->model());
+        if (model) {
+            model->executePendingSort();
+        }
+    }
 }
 
 /*!
@@ -1422,6 +1436,12 @@ QTreeWidgetItem::QTreeWidgetItem(QTreeWidgetItem *parent, QTreeWidgetItem *after
     if (parent) {
         int i = parent->indexOfChild(after) + 1;
         parent->insertChild(i, this);
+    }
+    if (view) {
+        QTreeModel *model = ::qobject_cast<QTreeModel*>(view->model());
+        if (model) {
+            model->executePendingSort();
+        }
     }
 }
 
@@ -3047,7 +3067,7 @@ QTreeWidgetItem *QTreeWidget::itemAbove(const QTreeWidgetItem *item) const
         return 0;
     const QModelIndex index = d->index(item);
     const QModelIndex above = indexAbove(index);
-    return d->item(index);
+    return d->item(above);
 }
 
 /*!
@@ -3062,7 +3082,7 @@ QTreeWidgetItem *QTreeWidget::itemBelow(const QTreeWidgetItem *item) const
         return 0;
     const QModelIndex index = d->index(item);
     const QModelIndex below = indexBelow(index);
-    return d->item(index);
+    return d->item(below);
 }
 
 /*!

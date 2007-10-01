@@ -103,6 +103,10 @@
 #  endif
 #endif
 
+#if defined(QT_NO_FPU) || (_MSC_VER >= 1300 && _MSC_VER < 1400)
+#  define FLOATING_POINT_BUGGY_OR_NO_FPU
+#endif
+
 #define qreal_to_fixed_26_6(f) (int(f * 64))
 #define qt_swap_int(x, y) { int tmp = (x); (x) = (y); (y) = tmp; }
 #define qt_swap_qreal(x, y) { qreal tmp = (x); (x) = (y); (y) = tmp; }
@@ -1413,7 +1417,8 @@ void QRasterPaintEngine::updateClipRegion(const QRegion &r, Qt::ClipOperation op
     if (d->paint_unclipped)
         return;
 
-    if (!d->rasterBuffer->clip || op == Qt::NoClip || op == Qt::ReplaceClip) {
+    if (d->txop <= QTransform::TxScale
+        && (!d->rasterBuffer->clip || op == Qt::NoClip || op == Qt::ReplaceClip)) {
         switch (op) {
         case Qt::NoClip:
             d->clipRegion = d->deviceRect;
@@ -3269,16 +3274,20 @@ void QRasterPaintEngine::drawEllipse(const QRectF &rect)
 
     if (d->fast_pen
         && (d->pen.style() == Qt::SolidLine || d->pen.style() == Qt::NoPen)
+#ifdef FLOATING_POINT_BUGGY_OR_NO_FPU
         && qMax(r.width(), r.height()) < 128 // integer math breakdown
+#endif
         && d->txop <= QTransform::TxScale) // no shear
     {
         const QRect devRect(0, 0, d->deviceRect.width(), d->deviceRect.height());
         const QRect brect = QRect(int(r.x()), int(r.y()),
                                   int_dim(r.x(), r.width()),
                                   int_dim(r.y(), r.height()));
-        drawEllipse_midpoint_i(brect, devRect, penBlend, brushBlend,
-                               &d->penData, &d->brushData);
-        return;
+        if (brect == rect) {
+            drawEllipse_midpoint_i(brect, devRect, penBlend, brushBlend,
+                                   &d->penData, &d->brushData);
+            return;
+        }
     }
 
     if (d->brushData.blend) {
@@ -3453,7 +3462,7 @@ void QRasterPaintEnginePrivate::drawBitmap(const QPointF &pos, const QPixmap &pm
                 int src_x = x + x_offset;
                 uchar pixel = src[src_x >> 3];
                 if (!pixel) {
-                    x += 7 - (x%8);
+                    x += 7 - (src_x%8);
                     continue;
                 }
                 if (pixel & (0x1 << (src_x & 7))) {
@@ -3480,7 +3489,7 @@ void QRasterPaintEnginePrivate::drawBitmap(const QPointF &pos, const QPixmap &pm
                 int src_x = x + x_offset;
                 uchar pixel = src[src_x >> 3];
                 if (!pixel) {
-                    x += 7 - (x%8);
+                    x += 7 - (src_x%8);
                     continue;
                 }
                 if (pixel & (0x80 >> (x & 7))) {
@@ -4916,7 +4925,7 @@ void QSpanData::initTexture(const QImage *image, int alpha, TextureData::Type _t
     texture.bytesPerLine = image->bytesPerLine();
     texture.format = image->format();
     texture.colorTable = qt_image_colortable(*image);
-    texture.hasAlpha = image->format() != QImage::Format_RGB32 || alpha != 256;
+    texture.hasAlpha = image->hasAlphaChannel() || alpha != 256;
     texture.const_alpha = alpha;
     texture.type = _type;
 
@@ -5869,9 +5878,6 @@ static inline void drawEllipsePoints(int x, int y, int length,
     }
 }
 
-#if defined(QT_NO_FPU) || (_MSC_VER >= 1300 && _MSC_VER < 1400)
-#  define FLOATING_POINT_BUGGY_OR_NO_FPU
-#endif
 /*!
     \internal
     Draws an ellipse using the integer point midpoint algorithm.
@@ -5931,3 +5937,20 @@ static void drawEllipse_midpoint_i(const QRect &rect, const QRect &clip,
     }
 }
 
+/*!
+    \fn void QRasterPaintEngine::drawPoints(const QPoint *points, int pointCount)
+    \overload
+
+    Draws the first \a pointCount points in the buffer \a points
+
+    The default implementation converts the first \a pointCount QPoints in \a points
+    to QPointFs and calls the floating point version of drawPoints.
+*/
+
+/*!
+    \fn void QRasterPaintEngine::drawEllipse(const QRect &rect)
+    \overload
+
+    Reimplement this function to draw the largest ellipse that can be
+    contained within rectangle \a rect.
+*/

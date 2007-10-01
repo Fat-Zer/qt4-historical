@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/doc/src/stylesheet.qdoc -->
+<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/doc/src/stylesheet.qdoc -->
 <head>
   <title>Qt 4.3: Qt Style Sheets Reference</title>
   <link rel="prev" href="stylesheet-customizing.html" />
@@ -129,37 +129,41 @@
 <tr valign="top" class="even"><td><a href="qtabwidget.html">QTabWidget</a> <a name="qtabwidget-widget"></a></td><td>The frame of the tab widget is styled using the <a href="#pane-sub">::pane</a> subcontrol. The left and right corners are styled using the <a href="#left-corner-sub">::left-corner</a> and <a href="#right-corner-sub">::right-corner</a> respectively. The position of the the tab bar is controlled using the <a href="#tab-bar-sub">::tab-bar</a> subcontrol.<p>By default, the subcontrols have positions of a <a href="qtabwidget.html">QTabWidget</a> in the <a href="qwindowsstyle.html">QWindowsStyle</a>. To place the <a href="qtabbar.html">QTabBar</a> in the center, set the subcontrol-position of the tab-bar subcontrol.</p>
 <p>The <a href="#top-ps">:top</a>, <a href="#left-ps">:left</a>, <a href="#right-ps">:right</a>, <a href="#bottom-ps">:bottom</a> pseudo states depending on the orientation of the tabs.</p>
 <p>See <a href="stylesheet-examples.html#customizing-qtabwidget-and-qtabbar">Customizing QTabWidget</a> for an example.</p>
-</td><td><a href="qtableview.html">QTableView</a> <a name="qtableview-widget"></a></td><td>Supports the <a href="stylesheet-customizing.html#box-model">box model</a>. When <a href="qabstractitemview.html#alternatingRowColors-prop">alternating row colors</a> is enabled, the alternating colors can be styled using the <a href="#alternate-background-color-prop">alternate-background-color</a> property.<p>The color and background of the selected item is styled using <a href="#selection-color-prop">selection-color</a> and <a href="#selection-background-color-prop">selection-background-color</a> respectively.</p>
+</td></tr>
+<tr valign="top" class="odd"><td><a href="qtableview.html">QTableView</a> <a name="qtableview-widget"></a></td><td>Supports the <a href="stylesheet-customizing.html#box-model">box model</a>. When <a href="qabstractitemview.html#alternatingRowColors-prop">alternating row colors</a> is enabled, the alternating colors can be styled using the <a href="#alternate-background-color-prop">alternate-background-color</a> property.<p>The color and background of the selected item is styled using <a href="#selection-color-prop">selection-color</a> and <a href="#selection-background-color-prop">selection-background-color</a> respectively.</p>
+<p>The corner widget in a <a href="qtableview.html">QTableView</a> is implemented as a <a href="qabstractbutton.html">QAbstractButton</a> and can be styled using the &quot;<a href="qtableview.html">QTableView</a> QTableCornerButton::section&quot; selector.</p>
 <p>The color of the grid can be specified using the <a href="#gridline-color-prop">gridline-color</a> property.</p>
 <p>See <a href="#qabstractscrollarea-widget">QAbsractScrollArea</a> to style scrollable backgrounds.</p>
 </td></tr>
-<tr valign="top" class="odd"><td><a href="qtablewidget.html">QTableWidget</a> <a name="qtablewidget-widget"></a></td><td>See <a href="#qtableview-widget">QTableView</a>.</td></tr>
-<tr valign="top" class="even"><td><a href="qtextedit.html">QTextEdit</a> <a name="qtextedit-widget"></a></td><td>Supports the <a href="stylesheet-customizing.html#box-model">box model</a>.<p>The color and background of selected text is styled using <a href="#selection-color-prop">selection-color</a> and <a href="#selection-background-color-prop">selection-background-color</a> respectively.</p>
+<tr valign="top" class="even"><td><a href="qtablewidget.html">QTableWidget</a> <a name="qtablewidget-widget"></a></td><td>See <a href="#qtableview-widget">QTableView</a>.</td></tr>
+<tr valign="top" class="odd"><td><a href="qtextedit.html">QTextEdit</a> <a name="qtextedit-widget"></a></td><td>Supports the <a href="stylesheet-customizing.html#box-model">box model</a>.<p>The color and background of selected text is styled using <a href="#selection-color-prop">selection-color</a> and <a href="#selection-background-color-prop">selection-background-color</a> respectively.</p>
 <p>See <a href="#qabstractscrollarea-widget">QAbsractScrollArea</a> to style scrollable backgrounds.</p>
 </td></tr>
-<tr valign="top" class="odd"><td><a href="qtimeedit.html">QTimeEdit</a> <a name="qtimeedit-widget"></a></td><td>See <a href="#qspinbox-widget">QSpinBox</a>.</td></tr>
-<tr valign="top" class="even"><td><a href="qtoolbar.html">QToolBar</a> <a name="qtoolbar-widget"></a></td><td>Supports the <a href="stylesheet-customizing.html#box-model">box model</a>.<p>The <a href="#top-ps">:top</a>, <a href="#left-ps">:left</a>, <a href="#right-ps">:right</a>, <a href="#bottom-ps">:bottom</a> pseudo states depending on the area in which the tool bar is grouped.</p>
+<tr valign="top" class="even"><td><a href="qtimeedit.html">QTimeEdit</a> <a name="qtimeedit-widget"></a></td><td>See <a href="#qspinbox-widget">QSpinBox</a>.</td></tr>
+<tr valign="top" class="odd"><td><a href="qtoolbar.html">QToolBar</a> <a name="qtoolbar-widget"></a></td><td>Supports the <a href="stylesheet-customizing.html#box-model">box model</a>.<p>The <a href="#top-ps">:top</a>, <a href="#left-ps">:left</a>, <a href="#right-ps">:right</a>, <a href="#bottom-ps">:bottom</a> pseudo states depending on the area in which the tool bar is grouped.</p>
 <p>The <a href="#first-ps">:first</a>, <a href="#last-ps">:last</a>, <a href="#middle-ps">:middle</a>, <a href="#only-one-ps">:only-one</a> pseudo states indicator the position of the tool bar within a line group (See <a href="qstyleoptiontoolbar.html#positionWithinLine-var">QStyleOptionToolBar::positionWithinLine</a>).</p>
 <p>The separator of a <a href="qtoolbar.html">QToolBar</a> is styled using the <a href="#separator-sub">::separator</a> subcontrol.</p>
 <p>The handle (to move the toolbar) is styled using the <a href="#handle-sub">::handle</a> subcontrol.</p>
 <p>See <a href="stylesheet-examples.html#customizing-qtoolbar">Customizing QToolBar</a> for an example.</p>
 </td></tr>
-<tr valign="top" class="odd"><td><a href="qtoolbutton.html">QToolButton</a> <a name="qtoolbutton-widget"></a></td><td>Supports the <a href="stylesheet-customizing.html#box-model">box model</a>.<p>If the <a href="qtoolbutton.html">QToolButton</a> has a menu, is <a href="#menu-indicator-sub">::menu-indicator</a> subcontrol can be used to style the indicator. By default, the menu-indicator is positioned at the bottom right of the Padding rectangle of the widget.</p>
+<tr valign="top" class="even"><td><a href="qtoolbutton.html">QToolButton</a> <a name="qtoolbutton-widget"></a></td><td>Supports the <a href="stylesheet-customizing.html#box-model">box model</a>.<p>If the <a href="qtoolbutton.html">QToolButton</a> has a menu, is <a href="#menu-indicator-sub">::menu-indicator</a> subcontrol can be used to style the indicator. By default, the menu-indicator is positioned at the bottom right of the Padding rectangle of the widget.</p>
 <p>If the <a href="qtoolbutton.html">QToolButton</a> is in <a href="qtoolbutton.html#ToolButtonPopupMode-enum">QToolButton::MenuButtonPopup</a> mode, the <a href="#menu-button-sub">::menu-button</a> subcontrol is used to draw the menu button. <a href="#menu-arrow-sub">::menu-arrow</a> subcontrol is used to draw the menu arrow inside the menu-button. By default, it is positioned in the center of the Contents rectangle of the the menu-button subcontrol.</p>
 <p>When the <a href="qtoolbutton.html">QToolButton</a> displays arrows, the <a href="#up-arrow-sub">::up-arrow</a>, <a href="#down-arrow-sub">::down-arrow</a>, <a href="#left-arrow-sub">::left-arrow</a> and <a href="#right-arrow-sub">::right-arrow</a> subcontrols are used.</p>
+<p><b>Warning:</b> If you only set a background-color on a <a href="qtoolbutton.html">QToolButton</a>, the background will not appear unless you set the border property to some value. This is because, by default, the <a href="qtoolbutton.html">QToolButton</a> draws a native border which completely overlaps the background-color. For example,</p>
+<pre>  QToolButton { background-color: red; border: none; }</pre>
 <p>See <a href="stylesheet-examples.html#customizing-qtoolbutton">Customizing QToolButton</a> for an example.</p>
 </td></tr>
-<tr valign="top" class="even"><td><a href="qtoolbox.html">QToolBox</a> <a name="qtoolbox-widget"></a></td><td>Supports the <a href="stylesheet-customizing.html#box-model">box model</a>.<p>The individual tabs can by styled using the <a href="#tab-sub">::tab</a> subcontrol. The tabs support the <a href="#only-one-ps">:only-one</a>, <a href="#first-ps">:first</a>, <a href="#last-ps">:last</a>, <a href="#middle-ps">:middle</a>, <a href="#previous-selected-ps">:previous-selected</a>, <a href="#next-selected-ps">:next-selected</a>, <a href="#selected-ps">:selected</a> pseudo states.</p>
+<tr valign="top" class="odd"><td><a href="qtoolbox.html">QToolBox</a> <a name="qtoolbox-widget"></a></td><td>Supports the <a href="stylesheet-customizing.html#box-model">box model</a>.<p>The individual tabs can by styled using the <a href="#tab-sub">::tab</a> subcontrol. The tabs support the <a href="#only-one-ps">:only-one</a>, <a href="#first-ps">:first</a>, <a href="#last-ps">:last</a>, <a href="#middle-ps">:middle</a>, <a href="#previous-selected-ps">:previous-selected</a>, <a href="#next-selected-ps">:next-selected</a>, <a href="#selected-ps">:selected</a> pseudo states.</p>
 </td></tr>
-<tr valign="top" class="odd"><td><a href="qtooltip.html">QToolTip</a> <a name="qtooltip-widget"></a></td><td>Supports the <a href="stylesheet-customizing.html#box-model">box model</a>. The <a href="#opacity-prop">opacity</a> property controls the opacity of the tooltip.<p>See <a href="stylesheet-examples.html#customizing-qframe">Customizing QFrame</a> for an example (a <a href="qtooltip.html">QToolTip</a> is a <a href="qframe.html">QFrame</a>).</p>
+<tr valign="top" class="even"><td><a href="qtooltip.html">QToolTip</a> <a name="qtooltip-widget"></a></td><td>Supports the <a href="stylesheet-customizing.html#box-model">box model</a>. The <a href="#opacity-prop">opacity</a> property controls the opacity of the tooltip.<p>See <a href="stylesheet-examples.html#customizing-qframe">Customizing QFrame</a> for an example (a <a href="qtooltip.html">QToolTip</a> is a <a href="qframe.html">QFrame</a>).</p>
 </td></tr>
-<tr valign="top" class="even"><td><a href="qtreeview.html">QTreeView</a> <a name="qtreeview-widget"></a></td><td>Supports the <a href="stylesheet-customizing.html#box-model">box model</a>. When <a href="qabstractitemview.html#alternatingRowColors-prop">alternating row colors</a> is enabled, the alternating colors can be styled using the <a href="#alternate-background-color-prop">alternate-background-color</a> property.<p>The color and background of the selected item is styled using <a href="#selection-color-prop">selection-color</a> and <a href="#selection-background-color-prop">selection-background-color</a> respectively.</p>
+<tr valign="top" class="odd"><td><a href="qtreeview.html">QTreeView</a> <a name="qtreeview-widget"></a></td><td>Supports the <a href="stylesheet-customizing.html#box-model">box model</a>. When <a href="qabstractitemview.html#alternatingRowColors-prop">alternating row colors</a> is enabled, the alternating colors can be styled using the <a href="#alternate-background-color-prop">alternate-background-color</a> property.<p>The color and background of the selected item is styled using <a href="#selection-color-prop">selection-color</a> and <a href="#selection-background-color-prop">selection-background-color</a> respectively.</p>
 <p>The branches of the tree view can be styled using the <a href="#branch-sub">::branch</a> subcontrol. The ::branch Sub-control supports the <a href="#open-ps">:open</a>, <a href="#closed-ps">:closed</a>, <a href="#has-siblings-ps">:has-sibling</a> and <a href="#has-children-ps">:has-children</a> pseudo states.</p>
 <p>See <a href="#qabstractscrollarea-widget">QAbsractScrollArea</a> to style scrollable backgrounds.</p>
 <p>See <a href="stylesheet-examples.html#customizing-qtreeview">Customizing QTreeView</a> for an example to style the branches.</p>
 </td></tr>
-<tr valign="top" class="odd"><td><a href="qtreewidget.html">QTreeWidget</a> <a name="qtreewidget-widget"></a></td><td>See <a href="#qtreeview-widget">QTreeView</a>.</td></tr>
-<tr valign="top" class="even"><td><a href="qwidget.html">QWidget</a> <a name="qwidget-widget"></a></td><td>Supports only the <a href="#background-prop">background</a>, <a href="#background-clip-prop">backgorund-clip</a> and <a href="#background-origin-prop">background-origin</a> properties.<p>If you subclass from <a href="qwidget.html">QWidget</a>, you need to provide a paintEvent for your custom <a href="qwidget.html">QWidget</a> as below:</p>
+<tr valign="top" class="even"><td><a href="qtreewidget.html">QTreeWidget</a> <a name="qtreewidget-widget"></a></td><td>See <a href="#qtreeview-widget">QTreeView</a>.</td></tr>
+<tr valign="top" class="odd"><td><a href="qwidget.html">QWidget</a> <a name="qwidget-widget"></a></td><td>Supports only the <a href="#background-prop">background</a>, <a href="#background-clip-prop">backgorund-clip</a> and <a href="#background-origin-prop">background-origin</a> properties.<p>If you subclass from <a href="qwidget.html">QWidget</a>, you need to provide a paintEvent for your custom <a href="qwidget.html">QWidget</a> as below:</p>
 <pre> void CustomWidget::paintEvent(QPaintEvent *)
  {
      QStyleOption opt;
@@ -184,9 +188,14 @@
 <p>See also <a href="#background-prop">background</a> and <a href="#selection-background-color-prop">selection-background-color</a>.</p>
 </td></tr>
 <tr valign="top" class="even"><td><b><tt>background</tt></b> <a name="background-prop"></a></td><td><a href="#background">Background</a></td><td>Shorthand notation for setting the background. Equivalent to specifying <tt>background-color</tt>, <tt>background-image</tt>, <tt>background-repeat</tt>, and/or <tt>background-position</tt>.<p>This property is supported by <a href="qabstractitemview.html">QAbstractItemView</a> subclasses, <a href="qabstractspinbox.html">QAbstractSpinBox</a> subclasses, <a href="qcheckbox.html">QCheckBox</a>, <a href="qcombobox.html">QComboBox</a>, <a href="qdialog.html">QDialog</a>, <a href="qframe.html">QFrame</a>, <a href="qgroupbox.html">QGroupBox</a>, <a href="qlabel.html">QLabel</a>, <a href="qlineedit.html">QLineEdit</a>, <a href="qmenu.html">QMenu</a>, <a href="qmenubar.html">QMenuBar</a>, <a href="qpushbutton.html">QPushButton</a>, <a href="qradiobutton.html">QRadioButton</a>, <a href="qsplitter.html">QSplitter</a>, <a href="qtextedit.html">QTextEdit</a>, <a href="qtooltip.html">QToolTip</a>, and plain <a href="qwidget.html">QWidget</a>s.</p>
-<p>For <a href="qframe.html">QFrame</a> and its subclasses, you must set the QFrame::frameStyle property to <a href="qframe.html#Shape-enum">QFrame::StyledPanel</a>; otherwise, the <tt>background</tt> property will not be respected.</p>
 <p>Example:</p>
 <pre>  QTextEdit { background: yellow }</pre>
+<p>Often, it is required to set a fill pattern similar to the styles in <a href="qt.html#BrushStyle-enum">Qt::BrushStyle</a>. You can use the background-color property for <a href="qt.html#BrushStyle-enum">Qt::SolidPattern</a>, <a href="qt.html#BrushStyle-enum">Qt::RadialGradientPattern</a>, <a href="qt.html#BrushStyle-enum">Qt::LinearGradientPattern</a> and <a href="qt.html#BrushStyle-enum">Qt::ConicalGradientPattern</a>. The other patterns are easily achieved by creating a background image that contains the pattern.</p>
+<p>Example:</p>
+<pre>  QLabel {
+      background-image: url(dense6pattern.png);
+      background-repeat: repeat-xy;
+  }</pre>
 <p>See also <a href="#background-origin-prop">background-origin</a>, <a href="#selection-background-color-prop">selection-background-color</a>, <a href="#background-clip-prop">background-clip</a>, <a href="#background-attachment-prop">background-attachment</a> and <a href="#alternate-background-color-prop">alternate-background-color</a>.</p>
 </td></tr>
 <tr valign="top" class="odd"><td><tt>background-color</tt> <a name="background-color-prop"></a></td><td><a href="#brush">Brush</a> <br /></td><td>The background color used for the widget.<p>Examples:</p>
@@ -347,7 +356,7 @@
 <pre>  QSpinBox::down-button { height: 10px }</pre>
 <p>See also <a href="#width-prop">width</a>.</p>
 </td></tr>
-<tr valign="top" class="even"><td><b><tt>image</tt></b>* <a name="image-prop"></a></td><td><a href="#url">Url</a>+</td><td>The image that is drawn in the contents rectangle of a <a href="#subcontrols">subcontrol</a>.<p>The image property accepts a list of <a href="#url">Url</a>s or an <tt>svg</tt>. The actual image that is drawn is determined using the same algorithm as <a href="qicon.html">QIcon</a>. If a <tt>svg</tt> is specified, the image is scaled to the size of the contents rectangle.</p>
+<tr valign="top" class="even"><td><b><tt>image</tt></b>* <a name="image-prop"></a></td><td><a href="#url">Url</a>+</td><td>The image that is drawn in the contents rectangle of a <a href="#subcontrols">subcontrol</a>.<p>The image property accepts a list of <a href="#url">Url</a>s or an <tt>svg</tt>. The actual image that is drawn is determined using the same algorithm as <a href="qicon.html">QIcon</a> (i.e) the image is never scaled up but always scaled down if necessary. If a <tt>svg</tt> is specified, the image is scaled to the size of the contents rectangle.</p>
 <p>Setting the image property on sub controls implicitly sets the width and height of the sub-control (unless the image in a SVG).</p>
 <p>In Qt 4.3 and later, the alignment of the image within the rectangle can be specified using <a href="#image-position-prop">image-position</a>.</p>
 <p><b>Warning:</b> The <a href="qicon.html">QIcon</a> SVG plugin is needed to render SVG images.</p>
@@ -679,6 +688,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

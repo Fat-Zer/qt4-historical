@@ -89,7 +89,7 @@ QFixed QFontEngine::xHeight() const
     QGlyphLayout glyphs[8];
     int nglyphs = 7;
     QChar x((ushort)'x');
-    stringToCMap(&x, 1, glyphs, &nglyphs, 0);
+    stringToCMap(&x, 1, glyphs, &nglyphs, QTextEngine::GlyphIndicesOnly);
 
     glyph_metrics_t bb = const_cast<QFontEngine *>(this)->boundingBox(glyphs[0].glyph);
     return bb.height;
@@ -100,7 +100,7 @@ QFixed QFontEngine::averageCharWidth() const
     QGlyphLayout glyphs[8];
     int nglyphs = 7;
     QChar x((ushort)'x');
-    stringToCMap(&x, 1, glyphs, &nglyphs, 0);
+    stringToCMap(&x, 1, glyphs, &nglyphs, QTextEngine::GlyphIndicesOnly);
 
     glyph_metrics_t bb = const_cast<QFontEngine *>(this)->boundingBox(glyphs[0].glyph);
     return bb.xoff;
@@ -637,16 +637,19 @@ const uchar *QFontEngine::getCMap(const uchar *table, uint tableSize, bool *isSy
         const quint16 platformSpecificId = qFromBigEndian<quint16>(maps + 8 * n + 2);
         switch (platformId) {
         case 0: // Unicode
-            if (score < 3 &&
+            if (score < 4 &&
                 (platformSpecificId == 0 ||
                  platformSpecificId == 2 ||
                  platformSpecificId == 3)) {
                 tableToUse = n;
+                score = 4;
+            } else if (score < 3 && platformSpecificId == 1) {
+                tableToUse = n;
                 score = 3;
-            }
+	    }
             break;
         case 1: // Apple
-            if (score < 2 && platformSpecificId == 1) { // Apple Roman
+            if (score < 2 && platformSpecificId == 0) { // Apple Roman
                 tableToUse = n;
                 score = 2;
             }
@@ -660,15 +663,15 @@ const uchar *QFontEngine::getCMap(const uchar *table, uint tableSize, bool *isSy
                 }
                 break;
             case 1:
-                if (score < 4) {
-                    tableToUse = n;
-                    score = 4;
-                }
-                break;
-            case 0xa:
                 if (score < 5) {
                     tableToUse = n;
                     score = 5;
+                }
+                break;
+            case 0xa:
+                if (score < 6) {
+                    tableToUse = n;
+                    score = 6;
                 }
                 break;
             default:
@@ -1274,9 +1277,9 @@ bool QFontEngineMulti::canRender(const QChar *string, int len)
 
     QVarLengthArray<QGlyphLayout, 256> glyphs(len);
     int nglyphs = len;
-    if (stringToCMap(string, len, glyphs.data(), &nglyphs, 0) == false) {
+    if (stringToCMap(string, len, glyphs.data(), &nglyphs, QTextEngine::GlyphIndicesOnly) == false) {
         glyphs.resize(nglyphs);
-        stringToCMap(string, len, glyphs.data(), &nglyphs, 0);
+        stringToCMap(string, len, glyphs.data(), &nglyphs, QTextEngine::GlyphIndicesOnly);
     }
 
     bool allExist = true;

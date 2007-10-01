@@ -62,6 +62,9 @@
 
 #ifdef Q_WS_QWS
 #include "QtGui/qscreen_qws.h"
+#define Q_GUI_QWS_EXPORT Q_GUI_EXPORT
+#else
+#define Q_GUI_QWS_EXPORT
 #endif
 
 #define QT_ROTATION_CACHEDREAD 1
@@ -508,9 +511,9 @@ do {                                          \
 } while (0)
 
 #define QT_DECL_MEMROTATE(srctype, desttype)                            \
-    void qt_memrotate90(const srctype*, int, int, int, desttype*, int); \
-    void qt_memrotate180(const srctype*, int, int, int, desttype*, int); \
-    void qt_memrotate270(const srctype*, int, int, int, desttype*, int)
+    void Q_GUI_QWS_EXPORT qt_memrotate90(const srctype*, int, int, int, desttype*, int); \
+    void Q_GUI_QWS_EXPORT qt_memrotate180(const srctype*, int, int, int, desttype*, int); \
+    void Q_GUI_QWS_EXPORT qt_memrotate270(const srctype*, int, int, int, desttype*, int)
 
 QT_DECL_MEMROTATE(quint32, quint32);
 QT_DECL_MEMROTATE(quint32, quint16);

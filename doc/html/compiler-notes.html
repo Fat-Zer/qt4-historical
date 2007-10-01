@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/doc/src/compiler-notes.qdoc -->
+<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/doc/src/compiler-notes.qdoc -->
 <head>
   <title>Qt 4.3: Compiler Notes</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -22,7 +22,7 @@
 <li><a href="#mac-os-x">Mac OS X</a></li>
 <li><a href="#gcc-gcc-3-4-6-debian-3-4-6-5-on-amd64-x86-64">gcc (GCC) 3.4&#x2e;6 (Debian 3.4&#x2e;6-5) on AMD64 (x86_64)</a></li>
 </ul>
-<li><a href="#hp-ac-hp-ux">HP aC++ (HP-UX)</a></li>
+<li><a href="#hp-ansi-c-acc">HP ANSI C++ (aCC)</a></li>
 <li><a href="#intel-c-compiler">Intel C++ Compiler</a></li>
 <ul><li><a href="#intel-c-compiler-for-linux">Intel C++ Compiler for Linux</a></li>
 <li><a href="#known-issues-with-intel-c-compiler-for-linux">Known issues with Intel C++ Compiler for Linux</a></li>
@@ -58,7 +58,7 @@
 <p>The released package of the compiler has some bugs that lead to miscompilations. We recommend using gcc 4.0&#x2e;1 or later, or to use a recent CVS snapshot of the gcc 4.0 branch. The version of gcc 4.0&#x2e;0 that is shipped with Mac OS X 10.4 &quot;Tiger&quot; is known to work with Qt/Mac.</p>
 <a name="hp-ux"></a>
 <h4>HP-UX</h4>
-<p>Please use gcc 3.2&#x2e;3 or better.</p>
+<p>The hpux-g++ platform is tested with gcc 3.4&#x2e;3&#x2e;</p>
 <a name="solaris"></a>
 <h4>Solaris</h4>
 <p>Please use gcc 3.3&#x2e;0 or better.</p>
@@ -73,28 +73,24 @@
 <li>For each miscompilation encountered, recompile the file, removing the -O2 option.</li>
 <li>Add -fno-gcse to the <a href="qmake-variable-reference.html#qmake-cxxflags-release">QMAKE_CXXFLAGS_RELEASE</a>.</li>
 </ol>
-<a name="hp-ac-hp-ux"></a>
-<h3>HP aC++ (HP-UX)</h3>
-<p>If you are using an aCC earlier then aCC 3.3x you have to change the <tt>QMAKE_CC</tt> in the following way when configuring Qt:</p>
-<pre> QMAKE_CC = cc</pre>
-<p>It maybe also be necessary to modify <tt>QMAKE_CFLAGS</tt>.</p>
-<p>Earlier versions of aCC do not support the <tt>-Ae</tt> option (this enables the ANSI C c89 mode) and therefore you need to use <tt>cc</tt> instead.</p>
+<a name="hp-ansi-c-acc"></a>
+<h3>HP ANSI C++ (aCC)</h3>
+<p>The hpux-acc-32 and hpux-acc-64 platforms are tested with aCC A.03.57. The hpuxi-acc-32 and hpuxi-acc-64 platforms are tested with aCC A.06.12.</p>
 <a name="intel-c-compiler"></a>
 <h3>Intel C++ Compiler</h3>
 <a name="intel-c-compiler-for-linux"></a>
 <h4>Intel C++ Compiler for Linux</h4>
 <p>Trolltech currently tests the following compilers:</p>
 <ul>
-<li>Intel(R) C++ Compiler for applications running on IA-32, Version 10.0 Build 20070613 Package ID: l_cc_c_10.0.025</li>
-<li>Intel(R) C++ Compiler for applications running on Intel(R) 64, Version 10.0 Build 20070613 Package ID: l_cc_c_10.0.025</li>
+<li>Intel(R) C++ Compiler for applications running on IA-32, Version 10.0 Build 20070809 Package ID: l_cc_c_10.0.026</li>
+<li>Intel(R) C++ Compiler for applications running on Intel(R) 64, Version 10.0 Build 20070809 Package ID: l_cc_c_10.0.026</li>
 </ul>
 <a name="known-issues-with-intel-c-compiler-for-linux"></a>
 <h4>Known issues with Intel C++ Compiler for Linux</h4>
 <ul>
-<li>Precompiled header support does not work with version 10.0&#x2e;025 of this compiler. For now, configure Qt with -no-pch.</li>
-<li>Version 10.0&#x2e;025 for Intel 64 is known to miscompile qmake when building in release mode. For now, configure Qt with -debug.</li>
+<li>Precompiled header support does not work prior in version 10.0&#x2e;025 and older. For these compilers, you should configure Qt with -no-pch. Precompiled header support works properly in version 10.0&#x2e;026.</li>
+<li>Version 10.0&#x2e;026 for Intel 64 is known to miscompile qmake when building in release mode. For now, configure Qt with -debug. This issue has been reported to Intel and is awaiting resolution.</li>
 </ul>
-<p>These issues have been reported to Intel and are awaiting resolution.</p>
 <a name="intel-c-compiler-windows-altix"></a>
 <h4>Intel C++ Compiler (Windows, Altix)</h4>
 <p>Qt 4 has been tested successfully with:</p>
@@ -142,6 +138,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

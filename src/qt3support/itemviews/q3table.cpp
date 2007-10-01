@@ -1467,6 +1467,15 @@ QSize Q3ComboTableItem::sizeHint() const
 }
 
 /*!
+    \fn QString Q3ComboTableItem::text() const
+
+    Returns the text of the table item or an empty string if there is
+    no text.
+
+    \sa Q3TableItem::text()
+*/
+
+/*!
     \class Q3CheckTableItem
     \brief The Q3CheckTableItem class provides checkboxes in Q3Tables.
 
@@ -2324,7 +2333,7 @@ Q3Table::FocusStyle Q3Table::focusStyle() const
 /*!
     This functions updates all the header states to be in sync with
     the current selections. This should be called after
-    programatically changing, adding or removing selections, so that
+    programmatically changing, adding or removing selections, so that
     the headers are updated.
 */
 

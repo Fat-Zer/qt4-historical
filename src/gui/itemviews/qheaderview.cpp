@@ -96,9 +96,11 @@ QDataStream &operator>>(QDataStream &in, QHeaderViewPrivate::SectionSpan &span)
     by using QAbstractItemModel::setHeaderData().
 
     Each header has an orientation() and a number of sections, given by
-    the count() function. Sections can be moved and resized using
-    moveSection() and resizeSection(); they can be hidden and shown
-    with hideSection() and showSection().
+    the count() function. A section refers to a part of the header - either
+    a row or a column, depending on the orientation. 
+    
+    Sections can be moved and resized using moveSection() and resizeSection();
+    they can also be hidden and shown with hideSection() and showSection().
 
     Each section of a header is described by a section ID, specified by
     its section(), and can be located at a particular visualIndex() in the
@@ -1727,12 +1729,11 @@ void QHeaderViewPrivate::_q_layoutChanged()
     bool sectionCountChanged = false;
     for (int i = 0; i < persistentHiddenSections.count(); ++i) {
         QModelIndex index = persistentHiddenSections.at(i);
-        int logical = (orientation == Qt::Horizontal
-                       ? persistentHiddenSections.at(i).column()
-                       : persistentHiddenSections.at(i).row());
-        int visual = visualIndex(logical);
         if (index.isValid()) {
-            sectionHidden.setBit(visual);
+            const int logical = (orientation == Qt::Horizontal
+                                 ? index.column()
+                                 : index.row());
+            sectionHidden.setBit(visualIndex(logical));
         } else if (!sectionCountChanged && (modelSectionCount() != sectionCount)) {
             sectionCountChanged = true;
             break;
@@ -1780,6 +1781,7 @@ void QHeaderView::initializeSections(int start, int end)
     Q_ASSERT(start >= 0);
     Q_ASSERT(end >= 0);
 
+    d->executePostedLayout();
     d->invalidateCachedSizeHint();
 
     if (end < d->sectionCount) {
@@ -1824,7 +1826,8 @@ void QHeaderView::initializeSections(int start, int end)
         d->createSectionSpan(start, end, (end - start + 1) * d->defaultSectionSize, d->globalResizeMode);
     //Q_ASSERT(d->headerLength() == d->length);
 
-    emit sectionCountChanged(oldCount,  d->sectionCount);
+    if (d->sectionCount != oldCount)
+        emit sectionCountChanged(oldCount,  d->sectionCount);
     d->viewport->update();
 }
 
@@ -2771,7 +2774,7 @@ int QHeaderViewPrivate::lastVisibleVisualIndex() const
   The different resize modes are:
   Interactive - the user decides the size
   Stretch - take up whatever space is left
-  Fixed - the size is set programatically outside the header
+  Fixed - the size is set programmatically outside the header
   ResizeToContentes - the size is set based on the contents of the row or column in the parent view
 
   The resize mode will not affect the last section if stretchLastSection is true.

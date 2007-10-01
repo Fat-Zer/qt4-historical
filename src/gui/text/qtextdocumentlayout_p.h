@@ -64,6 +64,7 @@ class Q_AUTOTEST_EXPORT QTextDocumentLayout : public QAbstractTextDocumentLayout
     Q_OBJECT
     Q_PROPERTY(int cursorWidth READ cursorWidth WRITE setCursorWidth)
     Q_PROPERTY(qreal idealWidth READ idealWidth)
+    Q_PROPERTY(bool contentHasAlignment READ contentHasAlignment)
 public:
     explicit QTextDocumentLayout(QTextDocument *doc);
 
@@ -90,6 +91,8 @@ public:
     void ensureLayouted(qreal);
 
     qreal idealWidth() const;
+
+    bool contentHasAlignment() const;
 
 protected:
     void documentChanged(int from, int oldLength, int length);

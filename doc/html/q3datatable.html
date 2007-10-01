@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/qt3support/sql/q3datatable.cpp -->
+<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/src/qt3support/sql/q3datatable.cpp -->
 <head>
   <title>Qt 4.3: Q3DataTable Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -193,7 +193,7 @@
 <p>Since the data table can perform edits, it must be able to uniquely identify every record so that edits are correctly applied. Because of this the underlying cursor must have a valid primary index to ensure that a unique record is inserted, updated or deleted within the database otherwise the database may be changed to an inconsistent state.</p>
 <p>Q3DataTable creates editors using the default <a href="q3sqleditorfactory.html">Q3SqlEditorFactory</a>. Different editor factories can be used by calling <a href="q3datatable.html#installEditorFactory">installEditorFactory</a>(). A property map is used to map between the cell's value and the editor. You can use your own property map with <a href="q3datatable.html#installPropertyMap">installPropertyMap</a>().</p>
 <p>The contents of a cell is available as a <a href="qstring.html">QString</a> with <a href="q3datatable.html#text">text</a>() or as a <a href="qvariant.html">QVariant</a> with <a href="q3datatable.html#value">value</a>(). The current record is returned by <a href="q3datatable.html#currentRecord">currentRecord</a>(). Use the <a href="q3datatable.html#find">find</a>() function to search for a string in the table.</p>
-<p>Editing actions can be applied programatically. For example, the <a href="q3datatable.html#insertCurrent">insertCurrent</a>() function reads the fields from the current record into the cursor and performs the insert. The <a href="q3datatable.html#updateCurrent">updateCurrent</a>() and <a href="q3datatable.html#deleteCurrent">deleteCurrent</a>() functions perform similarly to update and delete the current record respectively.</p>
+<p>Editing actions can be applied programmatically. For example, the <a href="q3datatable.html#insertCurrent">insertCurrent</a>() function reads the fields from the current record into the cursor and performs the insert. The <a href="q3datatable.html#updateCurrent">updateCurrent</a>() and <a href="q3datatable.html#deleteCurrent">deleteCurrent</a>() functions perform similarly to update and delete the current record respectively.</p>
 <p>Columns in the table can be created automatically based on the cursor (see <a href="q3datatable.html#setSqlCursor">setSqlCursor</a>()). Columns can be manipulated manually using <a href="q3datatable.html#addColumn">addColumn</a>(), <a href="q3datatable.html#removeColumn">removeColumn</a>() and <a href="q3datatable.html#setColumn">setColumn</a>().</p>
 <p>The table automatically copies many of the properties of the cursor to format the display of data within cells (alignment, visibility, etc.)&#x2e; The cursor can be changed with <a href="q3datatable.html#setSqlCursor">setSqlCursor</a>(). The filter (see <a href="q3datatable.html#filter-prop">setFilter</a>()) and sort defined within the table are used instead of the filter and sort set on the cursor. For sorting options see <a href="q3datatable.html#sort-prop">setSort</a>(), <a href="q3datatable.html#sortColumn">sortColumn</a>(), <a href="q3datatable.html#sortAscending">sortAscending</a>() and <a href="q3datatable.html#sortDescending">sortDescending</a>(). Note that sorting operations will not behave as expected if you are using a <a href="porting4.html#qsqlselectcursor">QSqlSelectCursor</a> because it uses user-defined SQL queries to obtain data.</p>
 <p>The text used to represent NULL, true and false values can be changed with <a href="q3datatable.html#nullText-prop">setNullText</a>(), <a href="q3datatable.html#trueText-prop">setTrueText</a>() and <a href="q3datatable.html#falseText-prop">setFalseText</a>() respectively. You can change the appearance of cells by reimplementing <a href="q3datatable.html#paintField">paintField</a>().</p>
@@ -548,6 +548,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

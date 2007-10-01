@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/qt3support/itemviews/q3table.cpp -->
+<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/src/qt3support/itemviews/q3table.cpp -->
 <head>
   <title>Qt 4.3: Q3ComboTableItem Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -35,7 +35,8 @@
 <li><div class="fn"/>virtual void <b><a href="q3combotableitem.html#setCurrentItem-2">setCurrentItem</a></b> ( const QString &amp; <i>s</i> )</li>
 <li><div class="fn"/>virtual void <b><a href="q3combotableitem.html#setEditable">setEditable</a></b> ( bool <i>b</i> )</li>
 <li><div class="fn"/>virtual void <b><a href="q3combotableitem.html#setStringList">setStringList</a></b> ( const QStringList &amp; <i>l</i> )</li>
-<li><div class="fn"/>QString <b><a href="q3combotableitem.html#text">text</a></b> ( int <i>i</i> ) const</li>
+<li><div class="fn"/>virtual QString <b><a href="q3combotableitem.html#text">text</a></b> () const</li>
+<li><div class="fn"/>QString <b><a href="q3combotableitem.html#text-2">text</a></b> ( int <i>i</i> ) const</li>
 </ul>
 <ul>
 <li><div class="fn"/>26 public functions inherited from <a href="q3tableitem.html#public-functions">Q3TableItem</a></li>
@@ -99,13 +100,18 @@
 <h3 class="fn"><a name="setStringList"></a>void Q3ComboTableItem::setStringList ( const <a href="qstringlist.html">QStringList</a> &amp; <i>l</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Sets the list items of this <a href="q3combotableitem.html">Q3ComboTableItem</a> to the strings in the string list <i>l</i>.</p>
 <a name="//apple_ref/cpp/instm/Q3ComboTableItem/text" />
-<h3 class="fn"><a name="text"></a><a href="qstring.html">QString</a> Q3ComboTableItem::text ( int <i>i</i> ) const</h3>
+<h3 class="fn"><a name="text"></a><a href="qstring.html">QString</a> Q3ComboTableItem::text () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
+<p>Returns the text of the table item or an empty string if there is no text.</p>
+<p>Reimplemented from <a href="q3tableitem.html#text">Q3TableItem</a>.</p>
+<p>See also <a href="q3tableitem.html#text">Q3TableItem::text</a>().</p>
+<h3 class="fn"><a name="text-2"></a><a href="qstring.html">QString</a> Q3ComboTableItem::text ( int <i>i</i> ) const</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns the text of the combo's list item at index <i>i</i>.</p>
 <p>See also <a href="q3combotableitem.html#currentText">currentText</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

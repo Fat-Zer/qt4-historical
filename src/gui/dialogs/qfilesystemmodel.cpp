@@ -385,6 +385,8 @@ bool QFileSystemModel::canFetchMore(const QModelIndex &parent) const
 void QFileSystemModel::fetchMore(const QModelIndex &parent)
 {
     Q_D(QFileSystemModel);
+    if (!d->setRootPath)
+        return;
     QFileSystemModelPrivate::QFileSystemNode *indexNode = d->node(parent);
     if (indexNode->populatedChildren)
         return;
@@ -1006,7 +1008,9 @@ QString QFileSystemModel::filePath(const QModelIndex &index) const
     QStringList path;
     QModelIndex idx = index;
     while (idx.isValid()) {
-        path.prepend(d->name(idx));
+        QFileSystemModelPrivate::QFileSystemNode *dirNode = d->node(idx);
+        if (dirNode)
+            path.prepend(dirNode->fileName);
         idx = idx.parent();
     }
     QString fullPath = path.join(QDir::separator());
@@ -1058,6 +1062,7 @@ QFile::Permissions QFileSystemModel::permissions(const QModelIndex &index) const
 QModelIndex QFileSystemModel::setRootPath(const QString &newPath)
 {
     Q_D(QFileSystemModel);
+    d->setRootPath = true;
     if (d->rootDir.path() == newPath)
         return d->index(rootPath());
 

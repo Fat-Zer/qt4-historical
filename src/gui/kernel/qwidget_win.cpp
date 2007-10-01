@@ -753,8 +753,10 @@ HICON qt_createIcon(QIcon icon, int xSize, int ySize, QPixmap **cache)
         ii.yHotspot = 0;
         result = CreateIconIndirect(&ii);
 
-        if (cache)
+        if (cache) {
+            delete *cache;
             *cache = new QPixmap(pm);;
+        }
         DeleteObject(ii.hbmColor);
         DeleteObject(im);
     }
@@ -774,6 +776,8 @@ void QWidgetPrivate::setWindowIcon_sys(bool forceReset)
     if (x->winIconBig) {
         DestroyIcon(x->winIconBig);
         x->winIconBig = 0;
+    }
+    if (x->winIconSmall) {
         DestroyIcon(x->winIconSmall);
         x->winIconSmall = 0;
     }
@@ -784,11 +788,13 @@ void QWidgetPrivate::setWindowIcon_sys(bool forceReset)
     x->winIconBig = qt_createIcon(q->windowIcon(),
                                   GetSystemMetrics(SM_CXICON), GetSystemMetrics(SM_CYICON),
                                   &(x->iconPixmap));
-    if (!x->winIconBig)
-        x->winIconBig = x->winIconSmall;
-
-    SendMessageA(q->internalWinId(), WM_SETICON, 0 /* ICON_SMALL */, (LPARAM)x->winIconSmall);
-    SendMessageA(q->internalWinId(), WM_SETICON, 1 /* ICON_BIG */, (LPARAM)x->winIconBig);
+    if (x->winIconBig) {
+        SendMessageA(q->internalWinId(), WM_SETICON, 0 /* ICON_SMALL */, (LPARAM)x->winIconSmall);
+        SendMessageA(q->internalWinId(), WM_SETICON, 1 /* ICON_BIG */, (LPARAM)x->winIconBig);
+    } else {
+        SendMessageA(q->internalWinId(), WM_SETICON, 0 /* ICON_SMALL */, (LPARAM)x->winIconSmall);
+        SendMessageA(q->internalWinId(), WM_SETICON, 1 /* ICON_BIG */, (LPARAM)x->winIconSmall);
+    }
 }
 
 

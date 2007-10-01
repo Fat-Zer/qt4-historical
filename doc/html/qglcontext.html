@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/opengl/qgl.cpp -->
+<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/src/opengl/qgl.cpp -->
 <head>
   <title>Qt 4.3: QGLContext Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -122,7 +122,7 @@
 <h3 class="fn"><a name="create"></a>bool QGLContext::create ( const QGLContext * <i>shareContext</i> = 0 )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Creates the GL context. Returns true if it was successful in creating a valid GL rendering context on the paint device specified in the constructor; otherwise returns false (i.e&#x2e; the context is invalid).</p>
 <p>After successful creation, <a href="qglcontext.html#format">format</a>() returns the set of features of the created GL rendering context.</p>
-<p>If <i>shareContext</i> points to a valid <a href="qglcontext.html">QGLContext</a>, this method will try to establish OpenGL display list sharing between this context and the <i>shareContext</i>. Note that this may fail if the two contexts have different formats. Use <a href="qglcontext.html#isSharing">isSharing</a>() to see if sharing succeeded.</p>
+<p>If <i>shareContext</i> points to a valid <a href="qglcontext.html">QGLContext</a>, this method will try to establish OpenGL display list and texture object sharing between this context and the <i>shareContext</i>. Note that this may fail if the two contexts have different <a href="qglcontext.html#format">formats</a>. Use <a href="qglcontext.html#isSharing">isSharing</a>() to see if sharing is in effect.</p>
 <p><b>Warning:</b> Implementation note: initialization of C++ class members usually takes place in the class constructor. <a href="qglcontext.html">QGLContext</a> is an exception because it must be simple to customize. The virtual functions <a href="qglcontext.html#chooseContext">chooseContext</a>() (and <a href="qglcontext.html#chooseVisual">chooseVisual</a>() for X11) can be reimplemented in a subclass to select a particular context. The problem is that virtual functions are not properly called during construction (even though this is correct C++) because C++ constructs class hierarchies from the bottom up. For this reason we need a create() function.</p>
 <p>See also <a href="qglcontext.html#chooseContext">chooseContext</a>(), <a href="qglcontext.html#format">format</a>(), and <a href="qglcontext.html#isValid">isValid</a>().</p>
 <a name="//apple_ref/cpp/clm/QGLContext/currentContext" />
@@ -220,6 +220,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

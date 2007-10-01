@@ -58,19 +58,6 @@
 
  #include &lt;QtCore&gt;
 
- quint32 qntoh(quint32 source)
- {
- #if Q_BYTE_ORDER == Q_BIG_ENDIAN
-     return source;
- #else
-     return 0
-         | ((source &amp; 0x000000ff) &lt;&lt; 24)
-         | ((source &amp; 0x0000ff00) &lt;&lt; 8)
-         | ((source &amp; 0x00ff0000) &gt;&gt; 8)
-         | ((source &amp; 0xff000000) &gt;&gt; 24);
- #endif
- }
-
  TrackerClient::TrackerClient(TorrentClient *downloader, QObject *parent)
      : QObject(parent), torrentDownloader(downloader)
  {
@@ -121,41 +108,12 @@
      <span class="comment">//</span> Prepare connection details
      QUrl url(metaInfo.announceUrl());
 
-     QByteArray infoHash = torrentDownloader-&gt;infoHash();
-     unsigned int *messageDigest = (unsigned int *)infoHash.constData();
-
      <span class="comment">//</span> Percent encode the hash
-     QByteArray encodedSum;
-     const char hex[] = &quot;0123456789ABCDEF&quot;;
-     unsigned char chars[4];
-
-     for (int i = 0; i &lt; 5; ++i) {
-         unsigned int digest = qntoh(messageDigest[i]);
-         chars[0] = (digest &amp; 0xff000000) &gt;&gt; 24;
-         chars[1] = (digest &amp; 0x00ff0000) &gt;&gt; 16;
-         chars[2] = (digest &amp; 0x0000ff00) &gt;&gt; 8;
-         chars[3] = (digest &amp; 0x000000ff);
-
-         for (int j = 0; j &lt; 4; ++j) {
-             unsigned char c = chars[j];
-             if ((c &gt;= '0' &amp;&amp; c &lt;= '9')
-                 || (c &gt;= 'a' &amp;&amp; c &lt;= 'z')
-                 || (c &gt;= 'A' &amp;&amp; c &lt;= 'Z'))
-                 encodedSum += c;
-             else switch (c) {
-             case '$': case '-': case '_': case '.':
-             case '+': case '!': case '*': case '\'':
-             case '(': case ')':
-                 encodedSum += c;
-                 break;
-             default: {
-                 encodedSum += &quot;%&quot;;
-                 encodedSum += hex[(c &amp; 0xf0) &gt;&gt; 4];
-                 encodedSum += hex[c &amp; 0xf];
-                 break;
-             }
-             }
-         }
+     QByteArray infoHash = torrentDownloader-&gt;infoHash();
+     QString encodedSum;
+     for (int i = 0; i &lt; infoHash.size(); ++i) {
+         encodedSum += '%';
+         encodedSum += QString::number(infoHash[i], 16).right(2).rightJustified(2, '0');
      }
 
      bool seeding = (torrentDownloader-&gt;state() == TorrentClient::Seeding);
@@ -271,6 +229,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

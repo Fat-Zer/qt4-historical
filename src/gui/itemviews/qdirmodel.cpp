@@ -992,8 +992,14 @@ QModelIndex QDirModel::mkdir(const QModelIndex &parent, const QString &name)
 
 /*!
   Removes the directory corresponding to the model item \a index in the
-  directory model, returning true if successful. If the directory
-  cannot be removed, false is returned.
+  directory model and \bold{deletes the corresponding directory from the
+  file system}, returning true if successful. If the directory cannot be
+  removed, false is returned.
+
+  \warning This function deletes directories from the file system; it does
+  \bold{not} move them to a location where they can be recovered.
+
+  \sa remove()
 */
 
 bool QDirModel::rmdir(const QModelIndex &index)
@@ -1021,8 +1027,14 @@ bool QDirModel::rmdir(const QModelIndex &index)
 }
 
 /*!
-  Removes the model item \a index from the directory model, returning
-  true if successful. If the item cannot be removed, false is returned.
+  Removes the model item \a index from the directory model and \bold{deletes the
+  corresponding file from the file system}, returning true if successful. If the
+  item cannot be removed, false is returned.
+
+  \warning This function deletes files from the file system; it does \bold{not}
+  move them to a location where they can be recovered.
+
+  \sa rmdir()
 */
 
 bool QDirModel::remove(const QModelIndex &index)
@@ -1119,6 +1131,11 @@ QFileInfo QDirModel::fileInfo(const QModelIndex &index) const
     QDirModelPrivate::QDirNode *node = d->node(index);
     return node->info;
 }
+
+/*!
+  \fn QObject *QDirModel::parent() const
+  \internal
+*/
 
 /*
   The root node is never seen outside the model.

@@ -55,7 +55,7 @@
 
  #include &lt;QGraphicsItem&gt;
 
- class AnimatedPixmapItem : public QGraphicsPixmapItem
+ class AnimatedPixmapItem : public QGraphicsItem
  {
  public:
      AnimatedPixmapItem(const QList&lt;QPixmap&gt; &amp;animation, QGraphicsScene *scene = 0);
@@ -66,7 +66,7 @@
      inline int frameCount() const
      { return frames.size(); }
      inline QPixmap image(int frame) const
-     { return frames.isEmpty() ? QPixmap() : frames.at(frame % frames.size()); }
+     { return frames.isEmpty() ? QPixmap() : frames.at(frame % frames.size()).pixmap; }
      inline void setVelocity(qreal xvel, qreal yvel)
      { vx = xvel; vy = yvel; }
      inline qreal xVelocity() const
@@ -74,13 +74,21 @@
      inline qreal yVelocity() const
      { return vy; }
 
+     QRectF boundingRect() const;
      QPainterPath shape() const;
+     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
      void advance(int phase);
 
  private:
+     struct Frame {
+         QPixmap pixmap;
+         QPainterPath shape;
+         QRectF boundingRect;
+     };
+
      int currentFrame;
-     QList&lt;QPixmap&gt; frames;
+     QList&lt;Frame&gt; frames;
      qreal vx, vy;
  };
 
@@ -89,6 +97,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

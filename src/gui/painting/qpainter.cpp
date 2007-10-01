@@ -1436,6 +1436,8 @@ bool QPainter::end()
 
     bool ended = true;
 
+    d->fillrect_func = 0;
+
     if (d->engine->isActive()) {
         ended = d->engine->end();
         d->updateState(0);
@@ -1971,7 +1973,7 @@ void QPainter::setClipRect(const QRect &rect, Qt::ClipOperation op)
 
     Q_D(QPainter);
 
-    if (!d->state->clipEnabled && (op == Qt::IntersectClip || op == Qt::UniteClip))
+    if (!hasClipping() && (op == Qt::IntersectClip || op == Qt::UniteClip))
         op = Qt::ReplaceClip;
 
     d->state->clipRegion = rect;
@@ -2016,7 +2018,7 @@ void QPainter::setClipRegion(const QRegion &r, Qt::ClipOperation op)
         return;
     }
 
-    if (!d->state->clipEnabled && (op == Qt::IntersectClip || op == Qt::UniteClip))
+    if (!hasClipping() && (op == Qt::IntersectClip || op == Qt::UniteClip))
         op = Qt::ReplaceClip;
 
     d->state->clipRegion = r;
@@ -2376,7 +2378,7 @@ void QPainter::setClipPath(const QPainterPath &path, Qt::ClipOperation op)
 
     Q_D(QPainter);
 
-    if (!d->state->clipEnabled && (op == Qt::IntersectClip || op == Qt::UniteClip))
+    if (!hasClipping() && (op == Qt::IntersectClip || op == Qt::UniteClip))
         op = Qt::ReplaceClip;
 
     d->state->clipPath = path;
@@ -4547,14 +4549,15 @@ void QPainter::drawText(const QRect &r, int flags, const QString &str, QRect *br
     \endcode
     \endtable
 
-    The \a boundingRect (if not null) is set to the actual bounding
-    rectangle of the output.  The \a flags argument is a bitwise OR of
-    the following flags:
+    The \a boundingRect (if not null) is set to the what the bounding rectangle
+    should be in order to enclose the whole text. The \a flags argument is a bitwise
+    OR of the following flags:
 
     \list
     \o Qt::AlignLeft
     \o Qt::AlignRight
     \o Qt::AlignHCenter
+    \o Qt::AlignJustify
     \o Qt::AlignTop
     \o Qt::AlignBottom
     \o Qt::AlignVCenter
@@ -4589,8 +4592,8 @@ void QPainter::drawText(const QRectF &r, int flags, const QString &str, QRectF *
     \overload
 
     Draws the given \a text within the provided \a rectangle according
-    to the specified \a flags.  The \a boundingRect (if not null) is
-    set to the actual bounding rectangle of the output.
+    to the specified \a flags. The \a boundingRect (if not null) is set to
+    the what the bounding rectangle should be in order to enclose the whole text. 
 */
 
 /*!
@@ -4619,6 +4622,7 @@ void QPainter::drawText(const QRectF &r, int flags, const QString &str, QRectF *
     \o Qt::AlignLeft
     \o Qt::AlignRight
     \o Qt::AlignHCenter
+    \o Qt::AlignJustify
     \o Qt::AlignTop
     \o Qt::AlignBottom
     \o Qt::AlignVCenter
@@ -4656,8 +4660,10 @@ void QPainter::drawText(const QRectF &r, const QString &text, const QTextOption 
 
     QTextOption opt = o;
     int flags = opt.alignment();
-    // avoid doing the alignment twice since qt_format_text does it, too
-    opt.setAlignment(Qt::AlignLeft);
+    if (!(opt.alignment() & Qt::AlignJustify)) { // justify is like left. In that case, don't touch.
+        // avoid doing the alignment twice since qt_format_text does it, too
+        opt.setAlignment(Qt::AlignLeft);
+    }
 
     if (opt.wrapMode() == QTextOption::WordWrap)
         flags |= Qt::TextWordWrap;
@@ -6091,6 +6097,8 @@ void qt_format_text(const QFont &fnt, const QRectF &_r,
     if (option)
         engine.option = *option;
     engine.option.setTextDirection(layout_direction);
+    if (tf & Qt::AlignJustify)
+        engine.option.setAlignment(Qt::AlignJustify);
     if (tf & Qt::TextWrapAnywhere)
         engine.option.setWrapMode(QTextOption::WrapAnywhere);
     if (tf & Qt::TextJustificationForced)

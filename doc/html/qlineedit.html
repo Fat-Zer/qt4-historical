@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/widgets/qlineedit.cpp -->
+<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/src/gui/widgets/qlineedit.cpp -->
 <head>
   <title>Qt 4.3: QLineEdit Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -307,7 +307,7 @@
 <p>If no mask is set, inputMask() returns an empty string.</p>
 <p>Sets the <a href="qlineedit.html">QLineEdit</a>'s validation mask. Validators can be used instead of, or in conjunction with masks; see <a href="qlineedit.html#setValidator">setValidator</a>().</p>
 <p>Unset the mask and return to normal <a href="qlineedit.html">QLineEdit</a> operation by passing an empty string (&quot;&quot;) or just calling setInputMask() with no arguments.</p>
-<p>The mask format understands these mask characters:</p>
+<p>The table below shows the characters that can be used in an input mask. A space character, the default character for a blank, is needed for cases where a character is <i>permitted but not required</i>.</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <thead><tr valign="top" class="qt-style"><th>Character</th><th>Meaning</th></tr></thead>
 <tr valign="top" class="odd"><td><tt>A</tt></td><td>ASCII alphabetic character required. A-Z, a-z.</td></tr>
@@ -330,7 +330,7 @@
 <tr valign="top" class="even"><td><tt>!</tt></td><td>Switch off case conversion.</td></tr>
 <tr valign="top" class="odd"><td><tt>\</tt></td><td>Use <tt>\</tt> to escape the special characters listed above to use them as separators.</td></tr>
 </table></p>
-<p>The mask consists of a string of mask characters and separators, optionally followed by a semicolon and the character used for blanks: the blank characters are always removed from the text after editing. The default blank character is space.</p>
+<p>The mask consists of a string of mask characters and separators, optionally followed by a semicolon and the character used for blanks. The blank characters are always removed from the text after editing.</p>
 <p>Examples:</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <thead><tr valign="top" class="qt-style"><th>Mask</th><th>Notes</th></tr></thead>
@@ -598,6 +598,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

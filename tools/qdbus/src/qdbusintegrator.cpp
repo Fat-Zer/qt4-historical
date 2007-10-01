@@ -1424,7 +1424,7 @@ static dbus_int32_t server_slot = -1;
 
 void QDBusConnectionPrivate::setServer(DBusServer *s, const QDBusErrorInternal &error)
 {
-    if (!server) {
+    if (!s) {
         handleError(error);
         return;
     }

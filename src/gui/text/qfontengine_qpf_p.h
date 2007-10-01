@@ -52,6 +52,7 @@
 
 #include "qfontengine_p.h"
 #include <qendian.h>
+#include <qbuffer.h>
 
 #ifndef QT_NO_QWS_QPF
 
@@ -242,7 +243,7 @@ private:
 
 struct QPFGenerator
 {
-    QPFGenerator(QIODevice *device, QFontEngine *engine)
+    QPFGenerator(QBuffer *device, QFontEngine *engine)
         : dev(device), fe(engine) {}
 
     void generate();
@@ -262,7 +263,7 @@ struct QPFGenerator
 
     void align4() { while (dev->pos() & 3) { dev->putChar('\0'); } }
 
-    QIODevice *dev;
+    QBuffer *dev;
     QFontEngine *fe;
 };
 

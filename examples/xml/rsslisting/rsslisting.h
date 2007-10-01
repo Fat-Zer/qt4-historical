@@ -58,6 +58,7 @@ public slots:
     void fetch();
     void finished(int id, bool error);
     void readData(const QHttpResponseHeader &);
+    void itemActivated(QTreeWidgetItem * item);
 
 private:
     void parseXml();

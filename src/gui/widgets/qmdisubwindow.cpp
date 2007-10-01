@@ -1358,11 +1358,6 @@ void QMdiSubWindowPrivate::processClickedSubControl()
 {
     Q_Q(QMdiSubWindow);
     switch (activeSubControl) {
-#ifndef QT_NO_MENU
-    case QStyle::SC_TitleBarSysMenu:
-        q->showSystemMenu();
-        break;
-#endif
     case QStyle::SC_TitleBarContextHelpButton:
 #ifndef QT_NO_WHATSTHIS
         QWhatsThis::enterWhatsThisMode();
@@ -2093,6 +2088,7 @@ void QMdiSubWindowPrivate::updateInternalWindowTitle()
     } else {
         windowTitle = qt_setWindowTitle_helperHelper(q->windowTitle(), q);
     }
+    q->update(0, 0, q->width(), titleBarHeight());
 }
 
 /*!
@@ -2426,6 +2422,7 @@ void QMdiSubWindow::showSystemMenu()
     // Adjust x() with -menuwidth in reverse mode.
     if (isRightToLeft())
         globalPopupPos -= QPoint(d->systemMenu->sizeHint().width(), 0);
+    d->systemMenu->installEventFilter(this);
     d->systemMenu->popup(globalPopupPos);
 }
 #endif // QT_NO_MENU
@@ -2530,6 +2527,23 @@ bool QMdiSubWindow::eventFilter(QObject *object, QEvent *event)
     Q_D(QMdiSubWindow);
     if (!object)
         return QWidget::eventFilter(object, event);
+
+#ifndef QT_NO_MENU
+    // System menu events.
+    if (d->systemMenu && d->systemMenu == object) {
+        if (event->type() == QEvent::MouseButtonDblClick) {
+            close();
+        } else if (event->type() == QEvent::MouseMove) {
+            QMouseEvent *mouseEvent = static_cast<QMouseEvent *>(event);
+            d->hoveredSubControl = d->getSubControl(mapFromGlobal(mouseEvent->globalPos()));
+        } else if (event->type() == QEvent::Hide) {
+            d->systemMenu->removeEventFilter(this);
+            d->activeSubControl = QStyle::SC_None;
+            update(QRegion(0, 0, width(), d->titleBarHeight()));
+        }
+        return QWidget::eventFilter(object, event);
+    }
+#endif
 
 #ifndef QT_NO_SIZEGRIP
     if (object != d->baseWidget && parent() && qobject_cast<QSizeGrip *>(object)) {
@@ -2707,7 +2721,6 @@ bool QMdiSubWindow::event(QEvent *event)
         }
 #endif // QT_NO_MENUBAR
         d->updateInternalWindowTitle();
-        update(0, 0, width(), d->titleBarHeight());
         break;
     case QEvent::LayoutDirectionChange:
         d->updateDirtyRegions();
@@ -2726,6 +2739,9 @@ bool QMdiSubWindow::event(QEvent *event)
         break;
     case QEvent::PaletteChange:
         d->titleBarPalette = d->desktopPalette();
+        break;
+    case QEvent::FontChange:
+        d->font = font();
         break;
     default:
         break;
@@ -3023,7 +3039,13 @@ void QMdiSubWindow::mousePressEvent(QMouseEvent *mouseEvent)
 #endif
         return;
     }
+
     d->activeSubControl = d->hoveredSubControl;
+#ifndef QT_NO_MENU
+    if (d->activeSubControl == QStyle::SC_TitleBarSysMenu)
+        showSystemMenu();
+    else
+#endif
     update(QRegion(0, 0, width(), d->titleBarHeight()));
 }
 
@@ -3042,8 +3064,12 @@ void QMdiSubWindow::mouseDoubleClickEvent(QMouseEvent *mouseEvent)
         return;
     }
 
-    if (!d_func()->isMoveOperation()) {
-        mouseEvent->ignore();
+    Q_D(QMdiSubWindow);
+    if (!d->isMoveOperation()) {
+#ifndef QT_NO_MENU
+        if (d->hoveredSubControl == QStyle::SC_TitleBarSysMenu)
+            close();
+#endif
         return;
     }
 

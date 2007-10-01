@@ -1174,6 +1174,22 @@ const QVariant::Handler *QVariant::handler = &qt_kernel_variant_handler;
         QVariant variant = color;
     \endcode
 
+    \section1 Using canConvert() and convert() Consecutively
+
+    When using canConvert() and convert() consecutively, it is possible for
+    canConvert() to return true, but convert() to return false. This
+    is typically because canConvert() only reports the general ability of
+    QVariant to convert between types given suitable data; it is still
+    possible to supply data which cannot actually be converted.
+
+    For example, canConvert() would return true when called on a variant
+    containing a string because, in principle, QVariant is able to convert
+    strings of numbers to integers.
+    However, if the string contains non-numeric characters, it cannot be
+    converted to an integer, and any attempt to convert it will fail.
+    Hence, it is important to have both functions return true for a
+    successful conversion.
+
     \sa QMetaType
 */
 

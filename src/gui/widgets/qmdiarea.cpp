@@ -91,7 +91,9 @@
     slots and are easily connected to menu entries.
 
     \img qmdiarea-arrange.png
-
+    
+    \note The default scroll bar property for QMdiArea is Qt::ScrollBarAlwaysOff.
+    
     \sa QMdiSubWindow
 */
 
@@ -197,6 +199,19 @@ static void setIndex(int *index, int candidate, int min, int max, bool isIncreas
         else
             *index = candidate;
     }
+}
+
+static inline bool useScrollBar(const QRect &childrenRect, const QSize &maxViewportSize,
+                                Qt::Orientation orientation)
+{
+    if (orientation == Qt::Horizontal)
+        return  childrenRect.width() > maxViewportSize.width()
+                || childrenRect.left() < 0
+                || childrenRect.right() >= maxViewportSize.width();
+    else
+        return childrenRect.height() > maxViewportSize.height()
+               || childrenRect.top() < 0
+               || childrenRect.bottom() >= maxViewportSize.height();
 }
 
 /*!
@@ -579,12 +594,12 @@ void QMdiAreaPrivate::appendChild(QMdiSubWindow *child)
         placer = new MinOverlapPlacer;
     place(placer, child);
 
-    if (q->horizontalScrollBarPolicy() != Qt::ScrollBarAlwaysOff)
+    if (hbarpolicy != Qt::ScrollBarAlwaysOff)
         child->setOption(QMdiSubWindow::AllowOutsideAreaHorizontally, true);
     else
         child->setOption(QMdiSubWindow::AllowOutsideAreaHorizontally, false);
 
-    if (q->verticalScrollBarPolicy() != Qt::ScrollBarAlwaysOff)
+    if (vbarpolicy != Qt::ScrollBarAlwaysOff)
         child->setOption(QMdiSubWindow::AllowOutsideAreaVertically, true);
     else
         child->setOption(QMdiSubWindow::AllowOutsideAreaVertically, false);
@@ -736,8 +751,10 @@ void QMdiAreaPrivate::activateWindow(QMdiSubWindow *child)
 void QMdiAreaPrivate::activateCurrentWindow()
 {
     QMdiSubWindow *current = q_func()->currentSubWindow();
-    if (current && !isExplicitlyDeactivated(current))
+    if (current && !isExplicitlyDeactivated(current)) {
+        current->d_func()->activationEnabled = true;
         current->d_func()->setActive(true);
+    }
 }
 
 /*!
@@ -801,7 +818,7 @@ void QMdiAreaPrivate::resetActiveWindow(QMdiSubWindow *deactivatedWindow)
             return;
         active = 0;
         if ((aboutToBecomeActive || isActivated || lastWindowAboutToBeDestroyed())
-                && !isExplicitlyDeactivated(deactivatedWindow)) {
+            && !isExplicitlyDeactivated(deactivatedWindow) && !q->window()->isMinimized()) {
             return;
         }
         emit q->subWindowActivated(0);
@@ -864,32 +881,62 @@ void QMdiAreaPrivate::updateActiveWindow(int removedIndex)
 */
 void QMdiAreaPrivate::updateScrollBars()
 {
-    Q_Q(QMdiArea);
-    if (ignoreGeometryChange || (q->horizontalScrollBarPolicy() == Qt::ScrollBarAlwaysOff
-                                 && q->verticalScrollBarPolicy() == Qt::ScrollBarAlwaysOff)) {
+    if (ignoreGeometryChange || !scrollBarsEnabled())
         return;
+
+    Q_Q(QMdiArea);
+    QSize maxSize = q->maximumViewportSize();
+    QSize hbarExtent = hbar->sizeHint();
+    QSize vbarExtent = vbar->sizeHint();
+
+    if (q->style()->styleHint(QStyle::SH_ScrollView_FrameOnlyAroundContents, 0, q)) {
+        const int doubleFrameWidth = frameWidth * 2;
+        if (hbarpolicy == Qt::ScrollBarAlwaysOn)
+            maxSize.rheight() -= doubleFrameWidth;
+        if (vbarpolicy == Qt::ScrollBarAlwaysOn)
+            maxSize.rwidth() -= doubleFrameWidth;
+        hbarExtent.rheight() += doubleFrameWidth;
+        vbarExtent.rwidth() += doubleFrameWidth;
     }
 
-    QRect viewportRect = q->viewport()->rect();
-    QRect childrenRect = active && active->isMaximized() ? active->geometry()
-                                                         : q->viewport()->childrenRect();
+    const QRect childrenRect = active && active->isMaximized()
+                               ? active->geometry() : viewport->childrenRect();
 
-    QScrollBar *hBar = q->horizontalScrollBar();
-    int startX = q->isLeftToRight() ? childrenRect.left() : viewportRect.right()
-                                                            - childrenRect.right();
-    int xOffset = startX + hBar->value();
-    int minX = qMin(0, xOffset);
-    int maxX = qMax(0, xOffset + childrenRect.width() - viewportRect.width());
-    hBar->setRange(minX, maxX);
-    hBar->setPageStep(childrenRect.width());
-    hBar->setSingleStep(childrenRect.width() / 20);
+    bool useHorizontalScrollBar = useScrollBar(childrenRect, maxSize, Qt::Horizontal);
+    bool useVerticalScrollBar = useScrollBar(childrenRect, maxSize, Qt::Vertical);
 
-    QScrollBar *vBar = q->verticalScrollBar();
-    int yOffset = childrenRect.top() + vBar->value();
-    vBar->setRange(qMin(0, yOffset),
+    if (useHorizontalScrollBar && !useVerticalScrollBar) {
+        const QSize max = maxSize - QSize(0, hbarExtent.height());
+        useVerticalScrollBar = useScrollBar(childrenRect, max, Qt::Vertical);
+    }
+
+    if (useVerticalScrollBar && !useHorizontalScrollBar) {
+        const QSize max = maxSize - QSize(vbarExtent.width(), 0);
+        useHorizontalScrollBar = useScrollBar(childrenRect, max, Qt::Horizontal);
+    }
+
+    if (useHorizontalScrollBar && hbarpolicy != Qt::ScrollBarAlwaysOn)
+        maxSize.rheight() -= hbarExtent.height();
+    if (useVerticalScrollBar && vbarpolicy != Qt::ScrollBarAlwaysOn)
+        maxSize.rwidth() -= vbarExtent.width();
+
+    QRect viewportRect(QPoint(0, 0), maxSize);
+    const int startX = q->isLeftToRight() ? childrenRect.left() : viewportRect.right()
+                                                                  - childrenRect.right();
+
+    // Horizontal scroll bar.
+    const int xOffset = startX + hbar->value();
+    hbar->setRange(qMin(0, xOffset),
+                   qMax(0, xOffset + childrenRect.width() - viewportRect.width()));
+    hbar->setPageStep(childrenRect.width());
+    hbar->setSingleStep(childrenRect.width() / 20);
+
+    // Vertical scroll bar.
+    const int yOffset = childrenRect.top() + vbar->value();
+    vbar->setRange(qMin(0, yOffset),
                    qMax(0, yOffset + childrenRect.height() - viewportRect.height()));
-    vBar->setPageStep(childrenRect.height());
-    vBar->setSingleStep(childrenRect.height() / 20);
+    vbar->setPageStep(childrenRect.height());
+    vbar->setSingleStep(childrenRect.height() / 20);
 }
 
 /*!
@@ -927,9 +974,7 @@ void QMdiAreaPrivate::internalRaise(QMdiSubWindow *mdiChild) const
 */
 bool QMdiAreaPrivate::scrollBarsEnabled() const
 {
-    Q_Q(const QMdiArea);
-    return (q->horizontalScrollBarPolicy() != Qt::ScrollBarAlwaysOff)
-           && (q->verticalScrollBarPolicy() != Qt::ScrollBarAlwaysOff);
+    return hbarpolicy != Qt::ScrollBarAlwaysOff || vbarpolicy != Qt::ScrollBarAlwaysOff;
 }
 
 /*!
@@ -1113,7 +1158,7 @@ QMdiSubWindow *QMdiArea::currentSubWindow() const
     if (d->active)
         return d->active;
 
-    if (d->isActivated)
+    if (d->isActivated && !window()->isMinimized())
         return 0;
 
     Q_ASSERT(d->indicesToStackedChildren.count() > 0);
@@ -1218,6 +1263,8 @@ void QMdiArea::closeAllSubWindows()
             continue;
         child->close();
     }
+
+    d->updateScrollBars();
 }
 
 /*!
@@ -1685,10 +1732,12 @@ bool QMdiArea::eventFilter(QObject *object, QEvent *event)
     Q_D(QMdiArea);
     if (!qobject_cast<QMdiSubWindow *>(object)) {
         // QApplication events:
-        if (event->type() == QEvent::ApplicationActivate && !d->active)
+        if (event->type() == QEvent::ApplicationActivate && !d->active
+            && isVisible() && !window()->isMinimized()) {
             d->activateCurrentWindow();
-        else if (event->type() == QEvent::ApplicationDeactivate && d->active)
+        } else if (event->type() == QEvent::ApplicationDeactivate && d->active) {
             d->setActive(d->active, false);
+        }
         return QAbstractScrollArea::eventFilter(object, event);
     }
 

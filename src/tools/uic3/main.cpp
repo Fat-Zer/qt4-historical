@@ -76,6 +76,7 @@ int main(int argc, char * argv[])
     bool nofwd = false;
     bool fix = false;
     bool deps = false;
+    bool implicitIncludes = true;
     QByteArray pchFile;
 
 
@@ -139,6 +140,8 @@ int main(int argc, char * argv[])
                 }
             } else if (opt == "d") {
                 deps = true;
+            } else if (opt == "no-implicit-includes") {
+                implicitIncludes = false;
             } else if (opt == "nofwd") {
                 nofwd = true;
             } else if (opt == "nounload") {
@@ -245,6 +248,7 @@ int main(int argc, char * argv[])
                  "\t-extract qrcFile   Create resource file and extract embedded images into \"image\" dir\n"
                  "\t-pch file          Add #include \"file\" as the first statement in implementation\n"
                  "\t-nofwd             Omit forward declarations of custom classes\n"
+                 "\t-no-implicit-includes Do not generate #include-directives for custom classes\n"
                  "\t-nounload          Don't unload plugins after processing\n"
                  "\t-tr func           Use func() instead of tr() for i18n\n"
                  "\t-L path            Additional plugin search path\n"
@@ -340,7 +344,7 @@ int main(int argc, char * argv[])
 
         return 0;
     } else if (convert) {
-        ui3.generateUi4(QFile::decodeName(fileName), QFile::decodeName(outputFile), doc);
+        ui3.generateUi4(QFile::decodeName(fileName), QFile::decodeName(outputFile), doc, implicitIncludes);
         return 0;
     }
 
@@ -380,6 +384,7 @@ int main(int argc, char * argv[])
         QString::fromUtf8(trmacro),
         QString::fromUtf8(className),
         nofwd,
+        implicitIncludes, 
         convertedUi);
 
     if (!protector.isEmpty()) {

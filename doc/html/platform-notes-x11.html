@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/doc/src/platform-notes.qdoc -->
+<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/doc/src/platform-notes.qdoc -->
 <head>
   <title>Qt 4.3: Platform Notes - X11</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -16,14 +16,9 @@
 <p>This page contains information about the X11 platforms Qt is currently known to run on, with links to platform-specific notes.</p>
 <ul><li><a href="#aix-5-1-or-later">AIX - 5.1 or later</a></li>
 <li><a href="#freebsd-6-0-release">FreeBSD - 6.0-RELEASE</a></li>
-<li><a href="#hp-ux-pa-risc-b-11-xx-or-later">HP-UX PA-RISC - B.11.xx or later</a></li>
-<ul><li><a href="#64-bit">64 bit</a></li>
-<li><a href="#hp-ux-11">HP-UX 11.*</a></li>
-<li><a href="#hp-ux-11">HP-UX 11.*</a></li>
-<li><a href="#hp-ux-11-designer-crash-when-using-exceptions">HP-UX 11.* designer crash when using exceptions</a></li>
-<li><a href="#hp-ux-11-11">HP-UX 11.11</a></li>
-<li><a href="#libxmu">libXmu</a></li>
-<li><a href="#gcc-3-on-hp-ux">GCC 3.* on HP-UX</a></li>
+<li><a href="#hp-ux">HP-UX</a></li>
+<ul><li><a href="#pa-risc-b-11-11-or-later">PA-RISC - B.11.11 or later</a></li>
+<li><a href="#itanium-b-11-23-or-later">Itanium - B.11.23 or later</a></li>
 </ul>
 <li><a href="#irix-6-5-x">IRIX - 6.5&#x2e;x</a></li>
 <li><a href="#linux">Linux</a></li>
@@ -48,40 +43,15 @@
 <p>The system compiler on <a href="#freebsd">FreeBSD</a> 4.x is gcc 2.95.4, which is not officially supported by Qt 4. We develop using and recommend ports/lang/gcc34. You will need to run configure with the <tt>-platform freebsd-g++34</tt> arguments. Optionally, you may use ports/lang/icc.</p>
 <p>The system compiler on <a href="#freebsd">FreeBSD</a> 5.x and 6.x is gcc 3.4&#x2e;4, which is officially supported by Qt. You do not need to add any special arguments when running configure. Optionally, you may use ports/lang/icc.</p>
 <p>Note that we do not actively test <a href="#freebsd">FreeBSD</a> 4.x and 5.x&#x2e; Our developers migrated to 6.x after the Qt 4 launch. <a href="#freebsd">FreeBSD</a>-CURRENT is not supported.</p>
-<a name="hp-ux"></a><a name="hp-ux-pa-risc-b-11-xx-or-later"></a>
-<h2>HP-UX PA-RISC - B.11.xx or later</h2>
-<a name="64-bit"></a>
-<h3>64 bit</h3>
-<p>We do not support GCC to make 64 bit binaries on PA-RISC. Please consider using aCC or producing 32 bit binaries. This is due to a bug in the compiler toolchain - there seems to be a mismatch between GCC and the HP-UX native 64 bit linker.</p>
-<a name="hp-ux-11"></a>
-<h3>HP-UX 11.*</h3>
-<p>You may need linker patch <a href="http://www5.itrc.hp.com/service/patch/patchDetail.do?patchid=PHSS_33032">PHSS_33032</a> (HP-UX 11.00) or <a href="http://www5.itrc.hp.com/service/patch/patchDetail.do?patchid=PHSS_33033">PHSS_33033</a> (HP-UX 11.11).</p>
-<a name="hp-ux-11"></a>
-<h3>HP-UX 11.*</h3>
-<p>This ships with a faulty /usr/include/resolv.h, which results in a linker error involving getres(). HP has released patches for it, <a href="http://www5.itrc.hp.com/service/patch/patchDetail.do?patchid=PHCO_26111">PHCO_26111</a> (HP-UX 11.00) and <a href="http://www5.itrc.hp.com/service/patch/patchDetail.do?patchid=PHCO_31923">PHCO_31923</a> (HP-UX 11.11).</p>
-<a name="hp-ux-11-designer-crash-when-using-exceptions"></a>
-<h3>HP-UX 11.* designer crash when using exceptions</h3>
-<p>If you encounter problems with designer on this platform either:</p>
-<ul>
-<li>disable exceptions using the -no-exceptions option to configure, or</li>
-<li>disable optimizations by editing $QTDIR/mkspecs/hpux-g++/qmake.conf and changing the line<br /><pre> QMAKE_CFLAGS_RELEASE    = -O2</pre>
-<p>to</p>
-<pre> QMAKE_CFLAGS_RELEASE    =</pre>
-</li>
-</ul>
-<a name="hp-ux-11-11"></a>
-<h3>HP-UX 11.11</h3>
-<p>This ships with a faulty /usr/include/sys/socket.h, which makes many C++ programs fail to compile. HP has released a patch for it, <a href="http://www5.itrc.hp.com/service/patch/patchDetail.do?patchid=PHNE_33159">PHNE_33159</a>.</p>
-<a name="libxmu"></a>
-<h3>libXmu</h3>
-<p>This library is needed for OpenGL support. If you get the error message</p>
-<pre> /usr/ccs/bin/ld: DP relative code in file ....</pre>
-<p>when linking a shared Qt library you have to install the shared versions of <a href="#libxmu">libXmu</a> and libXaw. HP have released patches for it, <a href="http://www5.itrc.hp.com/service/patch/patchDetail.do?patchid=PHSS_29369">PHSS_29369</a>/ <a href="http://www5.itrc.hp.com/service/patch/patchDetail.do?patchid=PHSS_29370">PHSS_29370</a> on HP-UX 11.00 (64-bit), <a href="http://www5.itrc.hp.com/service/patch/patchDetail.do?patchid=PHSS_33130">PHSS_33130</a>/ <a href="http://www5.itrc.hp.com/service/patch/patchDetail.do?patchid=PHSS_31001">PHSS_31001</a> on HP-UX 11.11, and <a href="http://www5.itrc.hp.com/service/patch/patchDetail.do?patchid=PHSS_33550">PHSS_33550</a> on HP-UX 11.23.</p>
-<a name="gcc-3-on-hp-ux"></a>
-<h3>GCC 3.* on HP-UX</h3>
-<p>This compiler gives compilation error</p>
-<pre> ANSI C++ forbids declaration ... with no type</pre>
-<p>on systems with old X11 header files. This is fixed by patches <a href="http://www5.itrc.hp.com/service/patch/patchDetail.do?patchid=PHSS_31001">PHSS_31001</a> on HP-UX 11.11 and <a href="http://www5.itrc.hp.com/service/patch/patchDetail.do?patchid=PHSS_30261">PHSS_30261</a> on HP-UX 11.00.</p>
+<a name="hp-ux"></a><a name="hp-ux"></a>
+<h2>HP-UX</h2>
+<p>Qt supports HP-UX on both PA-RISC and the Itanium (IA64) architectures.</p>
+<a name="pa-risc-b-11-11-or-later"></a>
+<h3>PA-RISC - B.11.11 or later</h3>
+<p>You can configure Qt for aCC in 32 and 64 bit mode (hpux-acc-64 or hpux-acc-32), or gcc in 32 bit mode (hpux-g++). The default platform is hpux-acc-32. The minimum required version for aCC (HP ANSI C++) on PA-RISC is A.03.57. The supported gcc compiler is gcc 3.4&#x2e;3&#x2e;</p>
+<a name="itanium-b-11-23-or-later"></a>
+<h3>Itanium - B.11.23 or later</h3>
+<p>You can configure Qt for aCC in 32 and 64 bit mode (hpuxi-acc-64 or hpuxi-acc-32). gcc is currently unsupported. The default platform is hpuxi-acc-64. The minimum required version for aCC (HP ANSI C++) on Itanium is A.06.12.</p>
 <a name="irix"></a><a name="irix-6-5-x"></a>
 <h2>IRIX - 6.5&#x2e;x</h2>
 <p>Unpackaging and IRIX tar: Because of long filenames some files will be cut off incorrectly with IRIX tar. Please use GNU tar to unpack Qt packages.</p>
@@ -116,6 +86,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

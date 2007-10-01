@@ -342,11 +342,15 @@ bool QDirIteratorPrivate::matchesFilters(const QAbstractFileEngineIterator *it) 
     bool isHidden = !dotOrDotDot && fi.isHidden();
     if (!includeHidden && isHidden)
         return false;
-    
+
+    bool isSystem = (!fi.isFile() && !fi.isDir() && !fi.isSymLink())
+                    || (!fi.exists() && fi.isSymLink());
+    if (!includeSystem && isSystem)
+        return false;
+
     bool alwaysShow = (filters & QDir::TypeMask) == 0
         && ((isHidden && includeHidden)
-            || (includeSystem && ((fi.exists() && !fi.isFile() && !fi.isDir() && !fi.isSymLink())
-                                  || (!fi.exists() && fi.isSymLink()))));
+            || (includeSystem && isSystem));
 
     // Skip files and directories
     if ((filters & QDir::AllDirs) == 0 && skipDirs && fi.isDir()) {

@@ -1382,7 +1382,6 @@ void QWindowsVistaStyle::drawComplexControl(ComplexControl control, const QStyle
                     anim->paint(&startPainter, option);
                     t->setStartImage(startImage);
                 }
-                d->stopAnimation(w);
                 d->startAnimation(t);
                 endImage.fill(0);
                 QPainter endPainter(&endImage);
@@ -2259,13 +2258,7 @@ void QWindowsVistaStylePrivate::stopAnimation(const QWidget *w)
 void QWindowsVistaStylePrivate::startAnimation(Animation *t)
 {
     Q_Q(QWindowsVistaStyle);
-    for (int i = animations.size() - 1 ; i >= 0 ; --i) {
-        if (animations[i]->widget() == t->widget()) {
-            Animation *a = animations.takeAt(i);
-            a->setRunning(false);
-            break;
-        }
-    }
+    stopAnimation(t->widget());
     animations.append(t);
     if (animations.size() > 0 && !animationTimer.isActive()) {
         animationTimer.start(45, q);

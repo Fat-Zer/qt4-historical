@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/doc/src/stylesheet.qdoc -->
+<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/doc/src/stylesheet.qdoc -->
 <head>
   <title>Qt 4.3: Qt Style Sheets Examples</title>
   <link rel="prev" href="stylesheet-reference.html" />
@@ -47,7 +47,9 @@
 <li><a href="#customizing-qtabwidget-and-qtabbar">Customizing QTabWidget and QTabBar</a></li>
 <li><a href="#customizing-qtablewidget">Customizing QTableWidget</a></li>
 <li><a href="#customizing-qtoolbar">Customizing QToolBar</a></li>
+<li><a href="#customizing-qtoolbox">Customizing QToolBox</a></li>
 <li><a href="#customizing-qtoolbutton">Customizing QToolButton</a></li>
+<li><a href="#customizing-qtooltip">Customizing QToolTip</a></li>
 <li><a href="#customizing-qtreeview">Customizing QTreeView</a></li>
 </ul>
 </ul>
@@ -430,6 +432,77 @@
 
  QMenu::item:selected { <span class="comment">/* when user selects item using mouse or keyboard */</span>
      background-color: #654321;
+ }</pre>
+<p>For a more advanced customization, use a style sheet as follows:</p>
+<pre> QMenu {
+     background-color: white;
+     margin: 2px; <span class="comment">/* some spacing around the menu */</span>
+ }
+
+ QMenu::item {
+     padding: 2px 25px 2px 20px;
+     border: 1px solid transparent; <span class="comment">/* reserve space for selection border */</span>
+ }
+
+ QMenu::item:selected {
+     border-color: darkblue;
+     background: rgba(100, 100, 100, 150);
+ }
+
+ QMenu::icon:checked { <span class="comment">/* appearance of a 'checked' icon */</span>
+     background: gray;
+     border: 1px inset gray;
+     position: absolute;
+     top: 1px;
+     right: 1px;
+     bottom: 1px;
+     left: 1px;
+ }
+
+ QMenu::separator {
+     height: 2px;
+     background: lightblue;
+     margin-left: 10px;
+     margin-right: 5px;
+ }
+
+ QMenu::indicator {
+     width: 13px;
+     height: 13px;
+ }
+
+<span class="comment"> /* non-exclusive indicator = check box style indicator (see QActionGroup::setExclusive) */</span>
+ QMenu::indicator:non-exclusive:unchecked {
+     image: url(:/images/checkbox_unchecked.png);
+ }
+
+ QMenu::indicator:non-exclusive:unchecked:selected {
+     image: url(:/images/checkbox_unchecked_hover.png);
+ }
+
+ QMenu::indicator:non-exclusive:checked {
+     image: url(:/images/checkbox_checked.png);
+ }
+
+ QMenu::indicator:non-exclusive:checked:selected {
+     image: url(:/images/checkbox_checked_hover.png);
+ }
+
+<span class="comment"> /* exclusive indicator = radio button style indicator (see QActionGroup::setExclusive) */</span>
+ QMenu::indicator:exclusive:unchecked {
+     image: url(:/images/radiobutton_unchecked.png);
+ }
+
+ QMenu::indicator:exclusive:unchecked:selected {
+     image: url(:/images/radiobutton_unchecked_hover.png);
+ }
+
+ QMenu::indicator:exclusive:checked {
+     image: url(:/images/radiobutton_checked.png);
+ }
+
+ QMenu::indicator:exclusive:checked:selected {
+     image: url(:/images/radiobutton_checked_hover.png);
  }</pre>
 <a name="customizing-qmenubar"></a>
 <h3>Customizing QMenuBar</h3>
@@ -864,6 +937,11 @@
          selection-background-color: qlineargradient(x1: 0, y1: 0, x2: 0.5, y2: 0.5,
                                      stop: 0 #FF92BB, stop: 1 white);
      }</pre>
+<p>The corner widget can be customized using the following style sheet</p>
+<pre>     QTableWidget QTableCornerButton::section {
+         background: red;
+         border: 2px outset red;
+     }</pre>
 <a name="customizing-qtoolbar"></a>
 <h3>Customizing QToolBar</h3>
 <p>The background and the handle of a <a href="qtoolbar.html">QToolBar</a> is customized as below:</p>
@@ -874,6 +952,21 @@
 
      QToolBar::handle {
          image: url(handle.png);
+     }</pre>
+<a name="customizing-qtoolbox"></a>
+<h3>Customizing QToolBox</h3>
+<p>The tabs of the <a href="qtoolbox.html">QToolBox</a> are customized using the 'tab' subcontrol.</p>
+<pre>     QToolBox::tab {
+         background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                     stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,
+                                     stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);
+         border-radius: 5px;
+         color: darkgray;
+     }
+
+     QToolBox::tab:selected { <span class="comment">/* italicize selected tabs */</span>
+         font: italic;
+         color: white;
      }</pre>
 <a name="customizing-qtoolbutton"></a>
 <h3>Customizing QToolButton</h3>
@@ -915,6 +1008,16 @@
          }</pre>
 </li>
 </ul>
+<a name="customizing-qtooltip"></a>
+<h3>Customizing QToolTip</h3>
+<p><a href="qtooltip.html">QToolTip</a> is customized exactly like a <a href="qlabel.html">QLabel</a>. In addition, for platforms that support it, the opacity property may be set to adjust the opacity.</p>
+<p>For example,</p>
+<pre>     QToolTip {
+         border: 2px solid darkkhaki;
+         padding: 5px;
+         border-radius: 3px;
+         opacity: 200;
+     }</pre>
 <a name="customizing-qtreeview"></a>
 <h3>Customizing QTreeView</h3>
 <p>The branches of a <a href="qtreeview.html">QTreeView</a> are styled using the <a href="stylesheet-reference.html#branch-sub">::branch</a> subcontrol. The following stylesheet color codes the various states when drawing a branch.</p>
@@ -987,6 +1090,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/image/qimagereader.cpp -->
+<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/src/gui/image/qimagereader.cpp -->
 <head>
   <title>Qt 4.3: QImageReader Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -80,10 +80,7 @@
 <p>To read an image, you start by constructing a QImageReader object. Pass either a file name or a device pointer, and the image format to QImageReader's constructor. You can then set several options, such as the clip rect (by calling <a href="qimagereader.html#setClipRect">setClipRect</a>()) and scaled size (by calling <a href="qimagereader.html#setScaledSize">setScaledSize</a>()). <a href="qimagereader.html#canRead">canRead</a>() returns the image if the QImageReader can read the image (i.e&#x2e;, the image format is supported and the device is open for reading). Call <a href="qimagereader.html#read">read</a>() to read the image.</p>
 <p>If any error occurs when reading the image, <a href="qimagereader.html#read">read</a>() will return a null <a href="qimage.html">QImage</a>. You can then call <a href="qimagereader.html#error">error</a>() to find the type of error that occurred, or <a href="qimagereader.html#errorString">errorString</a>() to get a human readable description of what went wrong.</p>
 <p>Call <a href="qimagereader.html#supportedImageFormats">supportedImageFormats</a>() for a list of formats that QImageReader can read. QImageReader supports all built-in image formats, in addition to any image format plugins that support reading.</p>
-<div style="padding: 0.5em; background: #e0e0e0; color: black"><p>Qt supports GIF reading if it is configured that way during installation. If it is, we are required to state that &quot;The Graphics Interchange Format(c) is the Copyright property of CompuServe Incorporated. GIF(sm) is a Service Mark property of CompuServe Incorporated.&quot;</p>
-<p><b>Warning:</b> If you are in a country that recognizes software patents and in which Unisys holds a patent on LZW compression and/or decompression and you want to use GIF, Unisys may require you to license that technology. Such countries include Canada, Japan, the US, France, Germany, Italy and the UK.</p>
-<p>GIF support may be removed completely in a future version of Qt. We recommend using the MNG or PNG format.</p>
-</div><p>See also <a href="qimagewriter.html">QImageWriter</a>, <a href="qimageiohandler.html">QImageIOHandler</a>, and <a href="qimageioplugin.html">QImageIOPlugin</a>.</p>
+<p>See also <a href="qimagewriter.html">QImageWriter</a>, <a href="qimageiohandler.html">QImageIOHandler</a>, and <a href="qimageioplugin.html">QImageIOPlugin</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
 <a name="//apple_ref/cpp/tag/QImageReader/ImageReaderError" />
@@ -316,6 +313,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

@@ -54,6 +54,8 @@
 #include "qsslsocket_openssl_symbols_p.h"
 
 #include <QtCore/qlibrary.h>
+#include <QtCore/qmutex.h>
+#include <private/qmutexpool_p.h>
 
 #ifdef SSLEAY_MACROS
 DEFINEFUNC3(void *, ASN1_dup, i2d_of_void *a, a, d2i_of_void *b, b, char *c, c, return 0, return)
@@ -73,9 +75,9 @@ DEFINEFUNC(void, CRYPTO_set_locking_callback, void (*a)(int, int, const char *, 
 DEFINEFUNC(void, CRYPTO_set_id_callback, unsigned long (*a)(), a, return, DUMMYARG)
 DEFINEFUNC(void, CRYPTO_free, void *a, a, return, DUMMYARG)
 DEFINEFUNC(void, DSA_free, DSA *a, a, return, DUMMYARG)
-#if OPENSSL_VERSION_NUMBER < 0x00908000L
+#if  OPENSSL_VERSION_NUMBER < 0x00908000L
 DEFINEFUNC3(X509 *, d2i_X509, X509 **a, a, unsigned char **b, b, long c, c, return 0, return)
-#else // 0.9.8 broke SC and BC by changing this function's signature.
+#else // 0.9.8 broke SC and BC by changing this signature.
 DEFINEFUNC3(X509 *, d2i_X509, X509 **a, a, const unsigned char **b, b, long c, c, return 0, return)
 #endif
 DEFINEFUNC2(char *, ERR_error_string, unsigned long a, a, char *b, b, return 0, return)
@@ -219,10 +221,17 @@ bool q_resolveOpenSslSymbols()
 
 bool q_resolveOpenSslSymbols()
 {
-    // ### This is non-reentrant
-    static bool symbolsResolved = false;
+    static volatile bool symbolsResolved = false;
+    static volatile bool triedToResolveSymbols = false;
+#ifndef QT_NO_THREAD
+    QMutexLocker locker(QMutexPool::globalInstanceGet((void *)&q_SSL_library_init));
+#endif
     if (symbolsResolved)
         return true;
+    if (triedToResolveSymbols)
+        return false;
+    triedToResolveSymbols = true;
+
 #ifdef Q_OS_WIN
     QLibrary ssleay32(QLatin1String("ssleay32"));
     if (!ssleay32.load()) {

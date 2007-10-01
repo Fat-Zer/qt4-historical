@@ -98,11 +98,11 @@ QVariant FlagBoxModel::data(const QModelIndex &index, int role) const
     } // end switch
 }
 
-bool FlagBoxModel::setData(const QModelIndex &index, const QVariant &value, int role)
+bool FlagBoxModel::setData(const QModelIndex &modelIndex, const QVariant &value, int role)
 {
-    Q_ASSERT(index.row() != -1);
+    Q_ASSERT(modelIndex.row() != -1);
 
-    FlagBoxModelItem &item = m_items[index.row()];
+    FlagBoxModelItem &item = m_items[modelIndex.row()];
 
     switch (role) {
     case Qt::EditRole:
@@ -111,9 +111,11 @@ bool FlagBoxModel::setData(const QModelIndex &index, const QVariant &value, int 
     } return true;
 
     case Qt::CheckStateRole: {
-        Qt::CheckState state = static_cast<Qt::CheckState>(value.toInt());
+        const Qt::CheckState state = static_cast<Qt::CheckState>(value.toInt());
         item.setChecked(state == Qt::Unchecked ? false : true);
-        emit dataChanged(index, index);
+        // There are special flags like QDialogButtonBox::NoButton[AtAll]
+        // that affect others. Invalidate the whole model.
+        emit dataChanged(index(0, 0, QModelIndex()), index(m_items.size() - 1, 0, QModelIndex()));
     } return true;
 
     default: break;

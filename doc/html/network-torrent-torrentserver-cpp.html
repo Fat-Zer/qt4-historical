@@ -79,8 +79,8 @@
      if (clients.isEmpty())
          client-&gt;abort();
 
-     if (ConnectionManager::instance()-&gt;canAddConnection()) {
-         if (client-&gt;setSocketDescriptor(socketDescriptor)) {
+     if (client-&gt;setSocketDescriptor(socketDescriptor)) {
+         if (ConnectionManager::instance()-&gt;canAddConnection()) {
              connect(client, SIGNAL(infoHashReceived(const QByteArray &amp;)),
                      this, SLOT(processInfoHash(const QByteArray &amp;)));
              connect(client, SIGNAL(error(QAbstractSocket::SocketError)),
@@ -122,6 +122,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

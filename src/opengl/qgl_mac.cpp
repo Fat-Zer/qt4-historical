@@ -95,7 +95,7 @@ bool QGLFormat::hasOpenGL()
 
 bool QGLFormat::hasOpenGLOverlays()
 {
-    return true;
+    return false;
 }
 
 
@@ -546,67 +546,6 @@ void *QGLContext::getProcAddress(const QString &proc) const
 /****************************************************************************
   Hacks to glue AGL to an HIView
   ***************************************************************************/
-static EventTypeSpec glwindow_change_events[] = {
-    { kEventClassControl, kEventControlOwningWindowChanged },
-#if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3)
-    { kEventClassControl, kEventControlVisibilityChanged },
-#endif
-    { kEventClassControl, kEventControlBoundsChanged }
-};
-static EventHandlerUPP glwindow_change_handlerUPP = 0;
-static void qt_clean_glwindow_change_handler()
-{
-    DisposeEventHandlerUPP(glwindow_change_handlerUPP);
-}
-class QMacGLWindowChangeEvent : public QMacWindowChangeEvent
-{
-    EventHandlerRef event_handler;
-    QGLWidget *context;
-public:
-    QMacGLWindowChangeEvent(QGLWidget *w) : context(w) {
-        if(!glwindow_change_handlerUPP) {
-            glwindow_change_handlerUPP = NewEventHandlerUPP(QMacGLWindowChangeEvent::globalEventProcessor);
-            qAddPostRoutine(qt_clean_glwindow_change_handler);
-        }
-        InstallControlEventHandler(reinterpret_cast<HIViewRef>(w->winId()),
-                                   glwindow_change_handlerUPP, GetEventTypeCount(glwindow_change_events),
-                                   glwindow_change_events, (void *)this, &event_handler);
-    }
-    ~QMacGLWindowChangeEvent() {
-        RemoveEventHandler(event_handler);
-    }
-protected:
-    static OSStatus globalEventProcessor(EventHandlerCallRef, EventRef, void *);
-    void windowChanged() { context->d_func()->glcx->d_func()->update = true; }
-    void flushWindowChanged() {
-        if(context->d_func()->glcx->d_func()->update) {
-            context->d_func()->glcx->updatePaintDevice();
-            context->update();
-        }
-    }
-};
-OSStatus QMacGLWindowChangeEvent::globalEventProcessor(EventHandlerCallRef er, EventRef event, void *)
-{
-#if 0 //not really needed right now, but just so I remember
-    QMacGLWindowChangeEvent *change = static_cast<QMacGLWindowChangeEvent*>(data);
-#endif
-    UInt32 ekind = GetEventKind(event), eclass = GetEventClass(event);
-    switch(eclass) {
-    case kEventClassControl:
-        if(ekind == kEventControlOwningWindowChanged
-#if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3)
-           || ekind == kEventControlVisibilityChanged
-#endif
-           || ekind == kEventControlBoundsChanged) {
-            extern void qt_event_request_window_change(); //qapplication_mac.cpp
-            qt_event_request_window_change();
-        }
-        break;
-    default:
-        break;
-    }
-    return CallNextEventHandler(er, event);
-}
 QRegion qt_mac_get_widget_rgn(const QWidget *widget)
 {
     if(!widget->isVisible() || widget->isMinimized())
@@ -662,6 +601,19 @@ QRegion qt_mac_get_widget_rgn(const QWidget *widget)
 
 bool QGLWidget::event(QEvent *e)
 {
+    Q_D(QGLWidget);
+    if (e->type() == QEvent::MacGLWindowChange
+#if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5)
+           && QSysInfo::MacintoshVersion < QSysInfo::MV_10_5
+#endif
+        ) {
+        if (d->needWindowChange) {
+            d->needWindowChange = false;
+            d->glcx->updatePaintDevice();
+            update();
+        }
+        return true;
+    }
     return QWidget::event(e);
 }
 
@@ -743,13 +695,12 @@ void QGLWidget::setContext(QGLContext *context, const QGLContext* shareContext, 
 
 void QGLWidgetPrivate::init(QGLContext *context, const QGLWidget* shareWidget)
 {
-    Q_Q(QGLWidget);
     initContext(context, shareWidget);
-#if (MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_5)
-    watcher = new QMacGLWindowChangeEvent(q);
-#endif
     olcx = 0;
 
+#if 0
+    // overlays are not supported by the GL drivers on the Mac..
+    // ### remove all overlay code for Qt 5.0
     if(q->isValid() && glcx->format().hasOverlay()) {
         olcx = new QGLContext(QGLFormat::defaultOverlayFormat(), q);
         if(!olcx->create(shareWidget ? shareWidget->overlayContext() : 0)) {
@@ -758,6 +709,7 @@ void QGLWidgetPrivate::init(QGLContext *context, const QGLWidget* shareWidget)
             glcx->d_func()->glFormat.setOverlay(false);
         }
     }
+#endif    
     //updatePaintDevice();
 }
 

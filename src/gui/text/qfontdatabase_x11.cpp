@@ -501,6 +501,7 @@ bool qt_fillFontDef(const QByteArray &xlfd, QFontDef *fd, int dpi)
     capitalize(tokens[Family]);
     capitalize(tokens[Foundry]);
 
+    fd->styleStrategy |= QFont::NoAntialias;
     fd->family = QString::fromLatin1(tokens[Family]);
     QString foundry = QString::fromLatin1(tokens[Foundry]);
     if (! foundry.isEmpty() && foundry != QString::fromLatin1("*"))
@@ -734,6 +735,7 @@ static int getFCWeight(int fc_weight)
 QFontDef qt_FcPatternToQFontDef(FcPattern *pattern, const QFontDef &request)
 {
     QFontDef fontDef;
+    fontDef.styleStrategy = request.styleStrategy;
 
     FcChar8 *value = 0;
     if (FcPatternGetString(pattern, FC_FAMILY, 0, &value) == FcResultMatch) {
@@ -759,7 +761,6 @@ QFontDef qt_FcPatternToQFontDef(FcPattern *pattern, const QFontDef &request)
     fontDef.pointSize = qt_pointSize(fontDef.pixelSize, qRound(dpi));
 
     /* ###
-       fontDef.styleStrategy
        fontDef.styleHint
     */
 

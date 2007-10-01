@@ -694,31 +694,17 @@ void qt_event_request_showsheet(QWidget *w)
 
 /* window changing. This is a hack around Apple's missing functionality, pending the toolbox
    team fix. --Sam */
-static EventRef request_window_change_pending = 0;
+Q_GUI_EXPORT void qt_event_request_window_change(QWidget *widget)
+{
+    if (!widget)
+        return;
+    widget->d_func()->needWindowChange = true;
+    QEvent *glWindowChangeEvent = new QEvent(QEvent::MacGLWindowChange);
+    QApplication::postEvent(widget, glWindowChangeEvent);
+}
+
 Q_GUI_EXPORT void qt_event_request_window_change()
 {
-    if(request_window_change_pending) {
-        if(IsEventInQueue(GetMainEventQueue(), request_window_change_pending))
-            return;
-#ifdef DEBUG_DROPPED_EVENTS
-        qDebug("%s:%d Whoa, we dropped an event on the floor!", __FILE__, __LINE__);
-#endif
-    }
-
-    CreateEvent(0, kEventClassQt, kEventQtRequestWindowChange, GetCurrentEventTime(),
-                kEventAttributeUserEvent, &request_window_change_pending);
-    PostEventToQueue(GetMainEventQueue(), request_window_change_pending,
-                     kEventPriorityHigh);
-}
-bool qt_event_remove_window_change()
-{
-    if(request_window_change_pending) {
-        if (IsEventInQueue(GetMainEventQueue(), request_window_change_pending))
-            RemoveEventFromQueue(GetMainEventQueue(), request_window_change_pending);
-        qt_mac_event_release(request_window_change_pending);
-        return true;
-    }
-    return false;
 }
 
 /* activation */
@@ -884,7 +870,6 @@ struct QMacAppleEventTypeSpec {
 /* watched events */
 static EventTypeSpec app_events[] = {
     { kEventClassQt, kEventQtRequestTimer },
-    { kEventClassQt, kEventQtRequestWindowChange },
     { kEventClassQt, kEventQtRequestSelect },
     { kEventClassQt, kEventQtRequestShowSheet },
     { kEventClassQt, kEventQtRequestContext },
@@ -1323,9 +1308,6 @@ QApplicationPrivate::globalEventProcessor(EventHandlerCallRef er, EventRef event
                 if(just_show) //at least the window will be visible, but the sheet flag doesn't work sadly (probalby too many sheets)
                     ShowHide(window, true);
             }
-        } else if(ekind == kEventQtRequestWindowChange) {
-            qt_mac_event_release(request_window_change_pending);
-            QMacWindowChangeEvent::exec(false);
         } else if(ekind == kEventQtRequestMenubarUpdate) {
             qt_mac_event_release(request_menubarupdate_pending);
             QMenuBar::macUpdateMenuBar();
@@ -1600,14 +1582,18 @@ QApplicationPrivate::globalEventProcessor(EventHandlerCallRef er, EventRef event
                 && (wpc != inContent && wpc != inStructure)) {
             inNonClientArea = true;
             switch (etype) {
-            case QEvent::MouseButtonPress:
-                etype = QEvent::NonClientAreaMouseButtonPress;
-                break;
+            case QEvent::MouseButtonPress: {
+                UInt32 count = 0;
+                GetEventParameter(event, kEventParamClickCount, typeUInt32, 0,
+                                      sizeof(count), 0, &count);
+                
+                if(count % 2 || count == 0) {
+                    etype = QEvent::NonClientAreaMouseButtonPress;
+                } else {
+                    etype = QEvent::NonClientAreaMouseButtonDblClick;
+                }} break;
             case QEvent::MouseButtonRelease:
                 etype = QEvent::NonClientAreaMouseButtonRelease;
-                break;
-            case QEvent::MouseButtonDblClick:
-                etype = QEvent::NonClientAreaMouseButtonDblClick;
                 break;
             case QEvent::MouseMove:
                 if (widget == 0 || widget->hasMouseTracking())

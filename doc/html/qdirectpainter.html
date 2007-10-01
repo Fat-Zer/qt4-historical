@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/embedded/qdirectpainter_qws.cpp -->
+<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/src/gui/embedded/qdirectpainter_qws.cpp -->
 <head>
   <title>Qt 4.3: QDirectPainter Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -173,10 +173,11 @@
 <p>See also <a href="qdirectpainter.html#lower">lower</a>() and <a href="qdirectpainter.html#requestedRegion">requestedRegion</a>().</p>
 <a name="//apple_ref/cpp/instm/QDirectPainter/regionChanged" />
 <h3 class="fn"><a name="regionChanged"></a>void QDirectPainter::regionChanged ( const <a href="qregion.html">QRegion</a> &amp; <i>newRegion</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p>This function is called whenever the allocated region changes.</p>
-<p>Note that the default implementation does nothing; reimplement this function to adjust the currently running processes according to the given <i>newRegion</i>.</p>
+<p>This function is called when the allocated region changes.</p>
+<p>This function is not called for region changes that happen while the <a href="qdirectpainter.html#startPainting">startPainting</a>() function is executing.</p>
+<p>Note that the given region, <i>newRegion</i>, is not guaranteed to be correct at the time you access the display. To prevent reentrancy problems you should always call <a href="qdirectpainter.html#startPainting">startPainting</a>() before updating the display and then use <a href="qdirectpainter.html#allocatedRegion">allocatedRegion</a>() to retrieve the correct region.</p>
 <p>This function was introduced in Qt 4.2.</p>
-<p>See also <a href="qdirectpainter.html#allocatedRegion">allocatedRegion</a>() and <a href="qdirectpainter.html#dynamic-allocation">Dynamic Allocation</a>.</p>
+<p>See also <a href="qdirectpainter.html#allocatedRegion">allocatedRegion</a>(), <a href="qdirectpainter.html#startPainting">startPainting</a>(), and <a href="qdirectpainter.html#dynamic-allocation">Dynamic Allocation</a>.</p>
 <a name="//apple_ref/cpp/instm/QDirectPainter/requestedRegion" />
 <h3 class="fn"><a name="requestedRegion"></a><a href="qregion.html">QRegion</a> QDirectPainter::requestedRegion () const</h3>
 <p>Returns the region requested by this <a href="qdirectpainter.html">QDirectPainter</a>.</p>
@@ -212,6 +213,8 @@
 <p><b>This function is under development and is subject to change.</b></p>
 <p>Call this function before you start updating the pixels in the allocated region. The hardware will be notified, if necessary, that you are about to start painting operations.</p>
 <p>Set <i>lockDisplay</i> if you want startPainting() and <a href="qdirectpainter.html#endPainting">endPainting</a>() to <a href="qdirectpainter.html#lock">lock</a>() and <a href="qdirectpainter.html#unlock">unlock</a>() the display automatically.</p>
+<p>Note that for a <a href="qdirectpainter.html#SurfaceFlag-enum">NonReserved</a> direct painter, you must call <a href="qdirectpainter.html#allocatedRegion">allocatedRegion</a>() after calling this function, since the allocated region is only guaranteed to be correct after this function has returned.</p>
+<p>The <a href="qdirectpainter.html#regionChanged">regionChanged</a>() function will not be called between startPainting() and <a href="qdirectpainter.html#endPainting">endPainting</a>().</p>
 <p>This function was introduced in Qt 4.2.</p>
 <p>See also <a href="qdirectpainter.html#endPainting">endPainting</a>() and <a href="qdirectpainter.html#flush">flush</a>().</p>
 <a name="//apple_ref/cpp/clm/QDirectPainter/unlock" />
@@ -227,6 +230,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

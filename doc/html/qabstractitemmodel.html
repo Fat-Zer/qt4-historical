@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/corelib/kernel/qabstractitemmodel.cpp -->
+<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/src/corelib/kernel/qabstractitemmodel.cpp -->
 <head>
   <title>Qt 4.3: QAbstractItemModel Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -144,7 +144,7 @@
 <p>You can also reimplement <a href="qabstractitemmodel.html#hasChildren">hasChildren</a>() to provide special behavior for models where the implementation of <a href="qabstractitemmodel.html#rowCount">rowCount</a>() is expensive. This makes it possible for models to restrict the amount of data requested by views, and can be used as a way to implement lazy population of model data.</p>
 <p>To enable editing in your model, you must also implement <a href="qabstractitemmodel.html#setData">setData</a>(), and reimplement <a href="qabstractitemmodel.html#flags">flags</a>() to ensure that <tt>ItemIsEditable</tt> is returned. You can also reimplement <a href="qabstractitemmodel.html#headerData">headerData</a>() and <a href="qabstractitemmodel.html#setHeaderData">setHeaderData</a>() to control the way the headers for your model are presented.</p>
 <p>Note that the <a href="qabstractitemmodel.html#dataChanged">dataChanged</a>() and <a href="qabstractitemmodel.html#headerDataChanged">headerDataChanged</a>() signals must be emitted explicitly when reimplementing the <a href="qabstractitemmodel.html#setData">setData</a>() and <a href="qabstractitemmodel.html#setHeaderData">setHeaderData</a>() functions, respectively.</p>
-<p>Custom models need to create model indexes for other components to use. To do this, call <a href="qabstractitemmodel.html#createIndex">createIndex</a>() with suitable row and column numbers for the item, and supply a unique identifier for the item, either as a pointer or as an integer value. Custom models typically use these unique identifiers in other reimplemented functions to retrieve item data and access information about the item's parents and children. See the <a href="itemviews-simpletreemodel.html">Simple Tree Model</a> example for more information about unique identifiers.</p>
+<p>Custom models need to create model indexes for other components to use. To do this, call <a href="qabstractitemmodel.html#createIndex">createIndex</a>() with suitable row and column numbers for the item, and an identifier for it, either as a pointer or as an integer value. The combination of these values must be unique for each item. Custom models typically use these unique identifiers in other reimplemented functions to retrieve item data and access information about the item's parents and children. See the <a href="itemviews-simpletreemodel.html">Simple Tree Model</a> example for more information about unique identifiers.</p>
 <p>It is not necessary to support every role defined in <a href="qt.html#ItemDataRole-enum">Qt::ItemDataRole</a>. Depending on the type of data contained within a model, it may only be useful to implement the <a href="qabstractitemmodel.html#data">data</a>() function to return valid information for some of the more common roles. Most models provide at least a textual representation of item data for the <a href="qt.html#ItemDataRole-enum">Qt::DisplayRole</a>, and well-behaved models should also provide valid information for the <a href="qt.html#ItemDataRole-enum">Qt::ToolTipRole</a> and <a href="qt.html#ItemDataRole-enum">Qt::WhatsThisRole</a>. Supporting these roles enables models to be used with standard Qt views. However, for some models that handle highly-specialized data, it may be appropriate to provide data only for user-defined roles.</p>
 <p>Models that provide interfaces to resizable data structures can provide implementations of <a href="qabstractitemmodel.html#insertRows">insertRows</a>(), <a href="qabstractitemmodel.html#removeRows">removeRows</a>(), <a href="qabstractitemmodel.html#insertColumns">insertColumns</a>(), and <a href="qabstractitemmodel.html#removeColumns">removeColumns</a>(). When implementing these functions, it is important to notify any connected views about changes to the model's dimensions both <i>before</i> and <i>after</i> they occur:</p>
 <ul>
@@ -239,7 +239,7 @@
 <p>See also <a href="qabstractitemmodel.html#persistentIndexList">persistentIndexList</a>() and <a href="qabstractitemmodel.html#changePersistentIndex">changePersistentIndex</a>().</p>
 <a name="//apple_ref/cpp/instm/QAbstractItemModel/columnCount" />
 <h3 class="fn"><a name="columnCount"></a>int QAbstractItemModel::columnCount ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>parent</i> = QModelIndex() ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
-<p>Returns the number of columns for the children of the given <i>parent</i>.</p>
+<p>Returns the number of columns for the children of the given <i>parent</i>. When the parent is valid it means that rowCount is returning the number of children of parent.</p>
 <p>In most subclasses, the number of columns is independent of the <i>parent</i>. For example:</p>
 <pre> int DomModel::columnCount(const QModelIndex &amp;<span class="comment">/*parent*/</span>) const
  {
@@ -390,8 +390,9 @@
 <a name="//apple_ref/cpp/instm/QAbstractItemModel/match" />
 <h3 class="fn"><a name="match"></a><a href="qmodelindex.html#QModelIndexList-typedef">QModelIndexList</a> QAbstractItemModel::match ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>start</i>, int <i>role</i>, const <a href="qvariant.html">QVariant</a> &amp; <i>value</i>, int <i>hits</i> = 1, <a href="qt.html#MatchFlag-enum">Qt::MatchFlags</a> <i>flags</i> = Qt::MatchFlags( Qt::MatchStartsWith | Qt::MatchWrap ) ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns a list of indexes for the items in the column of the <i>start</i> index where the data stored under the given <i>role</i> matches the specified <i>value</i>. The way the search is performed is defined by the <i>flags</i> given. The list that is returned may be empty.</p>
-<p>The search starts from the <i>start</i> index, and continues until the number of matching data items equals <i>hits</i>, the search reaches the last row, or the search reaches <i>start</i> again, depending on whether <tt>MatchWrap</tt> is specified in <i>flags</i>.</p>
+<p>The search starts from the <i>start</i> index, and continues until the number of matching data items equals <i>hits</i>, the search reaches the last row, or the search reaches <i>start</i> again, depending on whether <tt>MatchWrap</tt> is specified in <i>flags</i>. If you want to search for all matching items, use <i>hits</i> = -1.</p>
 <p>By default, this function will perform a wrapping, string-based comparison on all items, searching for items that begin with the search term specified by <i>value</i>.</p>
+<p><b>Note:</b> The default implementation of this function only searches columns, This function can be reimplemented to include other search behavior.</p>
 <a name="//apple_ref/cpp/instm/QAbstractItemModel/mimeData" />
 <h3 class="fn"><a name="mimeData"></a><a href="qmimedata.html">QMimeData</a> * QAbstractItemModel::mimeData ( const <a href="qmodelindex.html#QModelIndexList-typedef">QModelIndexList</a> &amp; <i>indexes</i> ) const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Returns an object that contains serialized items of data corresponding to the list of <i>indexes</i> specified. The formats used to describe the encoded data is obtained from the <a href="qabstractitemmodel.html#mimeTypes">mimeTypes</a>() function.</p>
@@ -414,7 +415,7 @@
 <a name="//apple_ref/cpp/instm/QAbstractItemModel/parent" />
 <h3 class="fn"><a name="parent"></a><a href="qmodelindex.html">QModelIndex</a> QAbstractItemModel::parent ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>index</i> ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Returns the parent of the model item with the given <i>index</i>, or QModelIndex() if it has no parent.</p>
-<p>A common convention used in models that expose tree data structures is that only items in the first column have children. When reimplementing this function in a subclass that provides a tree model, you should return a model index corresponding to an item in the first column by calling <a href="qabstractitemmodel.html#createIndex">createIndex</a>() with a value of 0 for the column number.</p>
+<p>A common convention used in models that expose tree data structures is that only items in the first column have children. For that case, when reimplementing this function in a subclass the column of the returned <a href="qmodelindex.html">QModelIndex</a> would be 0.</p>
 <p>See also <a href="qabstractitemmodel.html#createIndex">createIndex</a>().</p>
 <a name="//apple_ref/cpp/instm/QAbstractItemModel/persistentIndexList" />
 <h3 class="fn"><a name="persistentIndexList"></a><a href="qmodelindex.html#QModelIndexList-typedef">QModelIndexList</a> QAbstractItemModel::persistentIndexList () const&nbsp;&nbsp;<tt> [protected]</tt></h3>
@@ -452,7 +453,7 @@
 <p>Called to let the model know that it should discard whatever it has cached. Typically used for row editing.</p>
 <a name="//apple_ref/cpp/instm/QAbstractItemModel/rowCount" />
 <h3 class="fn"><a name="rowCount"></a>int QAbstractItemModel::rowCount ( const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>parent</i> = QModelIndex() ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
-<p>Returns the number of rows under the given <i>parent</i>.</p>
+<p>Returns the number of rows under the given <i>parent</i>. When the parent is valid it means that rowCount is returning the number of children of parent.</p>
 <p><b>Tip:</b> When implementing a table based model, rowCount() should return 0 when the parent is valid.</p>
 <p>See also <a href="qabstractitemmodel.html#columnCount">columnCount</a>().</p>
 <a name="//apple_ref/cpp/instm/QAbstractItemModel/rowsAboutToBeInserted" />
@@ -528,6 +529,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

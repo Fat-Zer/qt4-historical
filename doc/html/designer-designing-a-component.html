@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/doc/src/designer-manual.qdoc -->
+<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/doc/src/designer-manual.qdoc -->
 <head>
   <title>Qt 4.3: Designing a Component with Qt Designer</title>
   <link rel="prev" href="designer-getting-started.html" />
@@ -57,7 +57,7 @@
 <p>We ensure that <i>Qt Designer</i> is in widget editing mode by opening the <b>Edit</b> menu and selecting <b>Edit Widgets</b>. This makes it possible for widgets to be dragged from the widget box onto the form.</p>
 <p>For our example, we will develop a dialog that lets the user create an image with a given size and color depth - these properties can be represented by spinboxes and a combobox. We will also provide a line edit so that the user can specify a name for the image if they want.</p>
 <p>Before we begin adding widgets to the form, it is useful to resize it to give us the required amount of space to work with. We can make the form larger than necessary because it can be resized later.</p>
-<p>We start composing the dialog by placing some text labels onto the form. This is achieved by dragging each <b>Label</b> from the <b>Display Widgets</b> section of the widget box onto the form. We add some <b>Spin Box</b>es and a <b>Combo Box</b> from the <b>Input Widgets</b> section of the widget box, one <b>Vertical Spacer</b> and one <b>Horizontal Spacer</b> from the <b>Spacers</b> section (represented on the form as blue springs), and two <b>Push Button</b>s from the <b>Buttons</b> section. Note that a <b>Dialog Button Box</b> should be used to ensure that the dialog buttons are positioned correctly on each platform. For explanatory reasons, we use single buttons throughout the example.</p>
+<p>We start composing the dialog by placing some text labels onto the form. This is achieved by dragging each <b>Label</b> from the <b>Display Widgets</b> section of the widget box onto the form. We add a <b>Line Edit</b>, some <b>Spin Box</b>es and a <b>Combo Box</b> from the <b>Input Widgets</b> section of the widget box, one <b>Vertical Spacer</b> and one <b>Horizontal Spacer</b> from the <b>Spacers</b> section (represented on the form as blue springs), and two <b>Push Button</b>s from the <b>Buttons</b> section. Note that a <b>Dialog Button Box</b> should be used to ensure that the dialog buttons are positioned correctly on each platform. For explanatory reasons, we use single buttons throughout the example.</p>
 <p>Widgets and spacers can be moved around on the form by dragging them, or by using the cursor keys. A widget can be resized by dragging the resize handles that appear when it is selected - click the left mouse button over the widget to select it. It can be helpful to resize <b>Label</b> widgets so that all of their text is displayed, but this is not necessary as they will be displayed fully when we add them to a layout. It is useful to place the widgets where they are needed on the form because it helps visualize how it will appear when it is finished, but we do not need to fine tune the positions of widgets - this task is the responsibility of the form's layout objects which we will add later.</p>
 <a name="addingwidgetstoaform"></a><p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" class="odd"><td><img src="images/designer-dialog-initial.png" /></td><td><b>Adding Widgets to a Form</b><p>The dialog initially contains standard widgets and spacers. All the objects on the form can be freely positioned. The spacers have no effect since they have not yet been included in any layouts.</p>
@@ -108,6 +108,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

@@ -47,6 +47,10 @@
 
 #ifndef QT_NO_FILESYSTEMWATCHER
 
+#if defined Q_AUTOTEST_EXPORT
+    Q_AUTOTEST_EXPORT bool QFileInfoGatherer_fetchedRoot = false;
+#endif
+
 /*!
     Creates thread
 */
@@ -66,14 +70,14 @@ QFileInfoGatherer::QFileInfoGatherer(QObject *parent) : QThread(parent)
 }
 
 /*!
-    Distroys thread
+    Destroys thread
 */
 QFileInfoGatherer::~QFileInfoGatherer()
 {
     mutex.lock();
     abort = true;
-    mutex.unlock();
     condition.wakeOne();
+    mutex.unlock();
     wait();
 }
 
@@ -123,8 +127,8 @@ void QFileInfoGatherer::fetchExtendedInformation(const QString &path, const QStr
     }
     this->path.push(path);
     this->files.push(files);
-    mutex.unlock();
     condition.wakeAll();
+    mutex.unlock();
 }
 
 /*!
@@ -203,9 +207,9 @@ QFile::Permissions QFileInfoGatherer::translatePermissions(const QFileInfo &file
     return permissions;
 #else
     QFile::Permissions p = permissions;
-    p ^= QFile::ReadUser;
-    p ^= QFile::WriteUser;
-    p ^= QFile::ExeUser;
+    p ^= !QFile::ReadUser;
+    p ^= !QFile::WriteUser;
+    p ^= !QFile::ExeUser;
     if (                                     permissions & QFile::ReadOther
         || (fileInfo.ownerId() == userId  && permissions & QFile::ReadOwner)
         || (fileInfo.groupId() == groupId && permissions & QFile::ReadGroup))
@@ -297,6 +301,9 @@ void QFileInfoGatherer::getFileInfos(const QString &path, const QStringList &fil
 
     // List drives
     if (path.isEmpty()) {
+#if defined Q_AUTOTEST_EXPORT
+        QFileInfoGatherer_fetchedRoot = true;
+#endif
         QFileInfoList infoList;
         if (files.isEmpty()) {
             infoList = QDir::drives();

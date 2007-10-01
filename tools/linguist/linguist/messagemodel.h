@@ -182,6 +182,7 @@ class MessageModel : public QAbstractItemModel
     Q_OBJECT
 public:
     MessageModel(QObject *parent = 0);
+    void init();
 
     class iterator
     {

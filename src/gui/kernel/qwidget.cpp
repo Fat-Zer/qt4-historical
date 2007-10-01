@@ -1305,6 +1305,11 @@ void QWidgetPrivate::deleteExtra()
         delete extra->curs;
 #endif
         deleteSysExtra();
+#ifndef QT_NO_STYLE_STYLESHEET
+        // dereference the stylesheet style
+        if (QStyleSheetStyle *proxy = qobject_cast<QStyleSheetStyle *>(extra->style))
+            proxy->deref();
+#endif
         if (extra->topextra) {
             deleteTLSysExtra();
             delete extra->topextra->icon;
@@ -1525,6 +1530,8 @@ QRegion QWidgetPrivate::getOpaqueRegion() const
     QRegion r = isOpaque() ? q->rect() : getOpaqueChildren();
     if (extra && !extra->mask.isEmpty())
         r &= extra->mask;
+    if (r.isEmpty())
+        return r;
     return r & clipRect();
 }
 
@@ -1556,10 +1563,41 @@ void QWidgetPrivate::subtractOpaqueChildren(QRegion &rgn, const QRegion &clipRgn
 {
     Q_UNUSED(startIdx);
 
+    if (clipRgn.isEmpty())
+        return;
+
     const QRegion r = getOpaqueChildren();
     if (!r.isEmpty())
         rgn -= (r.translated(offset) & clipRgn);
 }
+
+#if defined(Q_WIDGET_USE_DIRTYLIST) || (QT_VERSION >= 0x040400)
+QRegion QWidgetPrivate::getOpaqueSiblings() const
+{
+    Q_Q(const QWidget);
+
+    if (q->isWindow()) // no siblings
+        return QRegion();
+
+    const QPoint myOffset = -q->data->crect.topLeft();
+    const QWidgetPrivate *pd = q->parentWidget()->d_func();
+
+    QRegion opaqueSiblings = pd->getOpaqueSiblings();
+
+    const int startIdx = pd->children.indexOf(const_cast<QWidget*>(q)) + 1;
+    for (int i = startIdx; i < pd->children.size(); ++i) {
+        const QWidget *sibling = qobject_cast<QWidget *>(pd->children.at(i));
+        if (!sibling || !sibling->isVisible() || sibling->isWindow())
+            continue;
+
+        const QPoint offset = sibling->geometry().topLeft();
+        const QWidgetPrivate *sd = sibling->d_func();
+        opaqueSiblings += sd->getOpaqueRegion().translated(offset);
+    }
+
+    return opaqueSiblings.translated(myOffset);
+}
+#endif
 
 //subtract any relatives that are higher up than me --- this is too expensive !!!
 void QWidgetPrivate::subtractOpaqueSiblings(QRegion &rgn, const QPoint &offset) const
@@ -1568,6 +1606,9 @@ void QWidgetPrivate::subtractOpaqueSiblings(QRegion &rgn, const QPoint &offset) 
     if (disableSubtractOpaqueSiblings)
         return;
 
+#if defined(Q_WIDGET_USE_DIRTYLIST) || (QT_VERSION >= 0x040400)
+    rgn -= getOpaqueSiblings().translated(offset);
+#else
     Q_Q(const QWidget);
 
     if (q->isWindow())
@@ -1588,6 +1629,7 @@ void QWidgetPrivate::subtractOpaqueSiblings(QRegion &rgn, const QPoint &offset) 
         sd->subtractOpaqueChildren(rgn, childRgn,
                                    myOffset + sibling->geometry().topLeft());
     }
+#endif
 }
 
 #else // Q_WIDGET_CACHE_OPAQUEREGIONS
@@ -2229,7 +2271,7 @@ void QWidget::overrideWindowState(Qt::WindowStates newstate)
   If the window is not visible (i.e. isVisible() returns false), the
   window state will take effect when show() is called. For visible
   windows, the change is immediate. For example, to toggle between
-  full-screen and mormal mode, use the following code:
+  full-screen and normal mode, use the following code:
 
   \code
         w->setWindowState(w->windowState() ^ Qt::WindowFullScreen);
@@ -2886,7 +2928,8 @@ QRegion QWidget::childrenRegion() const
     the current size is smaller.
 
     The minimum size set by this function will override the minimum size defined by QLayout.
-
+    In order to unset the minimum size, use QSize(0, 0).
+    
     \sa minimumWidth, minimumHeight, maximumSize, sizeIncrement
 */
 
@@ -3071,7 +3114,7 @@ void QWidget::setMinimumSize(int minw, int minh)
             data->window_state = data->window_state | Qt::WindowMaximized;
     }
 
-    updateGeometry();
+    d->updateGeometry_helper(d->extra->minw == d->extra->maxw && d->extra->minh == d->extra->maxh);
 }
 
 bool QWidgetPrivate::setMaximumSize_helper(int &maxw, int &maxh)
@@ -3121,7 +3164,7 @@ void QWidget::setMaximumSize(int maxw, int maxh)
         setAttribute(Qt::WA_Resized, resized); //not a user resize
     }
 
-    updateGeometry();
+    d->updateGeometry_helper(d->extra->minw == d->extra->maxw && d->extra->minh == d->extra->maxh);
 }
 
 /*!
@@ -3206,6 +3249,8 @@ void QWidget::setFixedSize(int w, int h)
 
     if (isWindow())
         d->setConstraints_sys();
+    else
+        d->updateGeometry_helper(true);
 
     resize(w, h);
 }
@@ -5520,7 +5565,7 @@ void QWidget::setVisible(bool visible)
         setAttribute(Qt::WA_WState_Hidden, false);
 
         if (needUpdateGeometry)
-            updateGeometry();
+            d->updateGeometry_helper(true);
 
 #ifdef QT3_SUPPORT
         QApplication::sendPostedEvents(this, QEvent::ChildInserted);
@@ -5573,7 +5618,11 @@ void QWidget::setVisible(bool visible)
         Q_D(QWidget);
 
 #ifdef Q_WIDGET_CACHE_OPAQUEREGIONS
-        if (!isWindow() && parentWidget() && !d->getOpaqueRegion().isEmpty())
+        // hw: The test on getOpaqueRegion() needs to be more intelligent
+        // currently it doesn't work if the widget is hidden (the region will
+        // be clipped). The real check should be testing the cached region
+        // (and dirty flag) directly.
+        if (!isWindow() && parentWidget()) // && !d->getOpaqueRegion().isEmpty())
             parentWidget()->d_func()->setDirtyOpaqueRegion();
 #endif
 
@@ -6443,7 +6492,11 @@ bool QWidget::event(QEvent *event)
             }
             break;
         }
-
+#ifdef Q_WS_MAC
+    case QEvent::MacGLWindowChange:
+        d->needWindowChange = false;
+        break;
+#endif
     default:
         return QObject::event(event);
     }
@@ -6968,7 +7021,7 @@ QVariant QWidget::inputMethodQuery(Qt::InputMethodQuery query) const
     See the \link dnd.html Drag-and-drop documentation\endlink for an
     overview of how to provide drag-and-drop in your application.
 
-    \sa QTextDrag, QImageDrag, QDragEnterEvent
+    \sa QDrag, QDragEnterEvent
 */
 void QWidget::dragEnterEvent(QDragEnterEvent *)
 {
@@ -6986,7 +7039,7 @@ void QWidget::dragEnterEvent(QDragEnterEvent *)
     See the \link dnd.html Drag-and-drop documentation\endlink for an
     overview of how to provide drag-and-drop in your application.
 
-    \sa QTextDrag, QImageDrag, QDragMoveEvent
+    \sa QDrag, QDragMoveEvent
 */
 void QWidget::dragMoveEvent(QDragMoveEvent *)
 {
@@ -7002,7 +7055,7 @@ void QWidget::dragMoveEvent(QDragMoveEvent *)
     See the \link dnd.html Drag-and-drop documentation\endlink for an
     overview of how to provide drag-and-drop in your application.
 
-    \sa QTextDrag, QImageDrag, QDragLeaveEvent
+    \sa QDrag, QDragLeaveEvent
 */
 void QWidget::dragLeaveEvent(QDragLeaveEvent *)
 {
@@ -7017,7 +7070,7 @@ void QWidget::dragLeaveEvent(QDragLeaveEvent *)
     See the \link dnd.html Drag-and-drop documentation\endlink for an
     overview of how to provide drag-and-drop in your application.
 
-    \sa QTextDrag, QImageDrag, QDropEvent
+    \sa QDrag, QDropEvent
 */
 void QWidget::dropEvent(QDropEvent *)
 {
@@ -7423,6 +7476,19 @@ QWidget *QWidget::childAt(const QPoint &p) const
     return 0;
 }
 
+void QWidgetPrivate::updateGeometry_helper(bool forceUpdate)
+{
+    Q_Q(QWidget);
+    QWidget *parent;
+    if (forceUpdate || !extra || extra->minw != extra->maxw || extra->minh != extra->maxh) {
+        if (!q->isWindow() && !q->isHidden() && (parent = q->parentWidget())) {
+            if (parent->d_func()->layout)
+                parent->d_func()->layout->invalidate();
+            else if (parent->isVisible())
+                QApplication::postEvent(parent, new QEvent(QEvent::LayoutRequest));
+        }
+    }
+}
 
 /*!
     Notifies the layout system that this widget has changed and may
@@ -7437,13 +7503,7 @@ QWidget *QWidget::childAt(const QPoint &p) const
 void QWidget::updateGeometry()
 {
     Q_D(QWidget);
-    if (!isWindow() && !isHidden() && parentWidget()
-        && (!d->extra || d->extra->minw != d->extra->maxw || d->extra->minh != d->extra->maxh)) {
-        if (parentWidget()->d_func()->layout)
-            parentWidget()->d_func()->layout->invalidate();
-        else if (parentWidget()->isVisible())
-            QApplication::postEvent(parentWidget(), new QEvent(QEvent::LayoutRequest));
-    }
+    d->updateGeometry_helper(false);
 }
 
 /*! \property QWidget::windowFlags
@@ -7458,6 +7518,9 @@ void QWidget::updateGeometry()
     Qt::Widget or Qt::SubWindow, it is put at position (0, 0)
     relative to its parent widget.
 
+    \note This function calls setParent() when changing the flags for 
+    a window, and the side effects documented in setParent() also apply.
+    
     \sa windowType(), {Window Flags Example}
 */
 void QWidget::setWindowFlags(Qt::WindowFlags flags)
@@ -7519,6 +7582,10 @@ void QWidget::overrideWindowFlags(Qt::WindowFlags flags)
 
     If the "new" parent widget is the old parent widget, this function
     does nothing.
+    
+    \note The widget becomes invisible as part of changing its parent,
+    even if it was previously visible. You must call show() to make the
+    widget visible again.
 
     \warning It is very unlikely that you will ever need this
     function. If you have a widget that changes its content

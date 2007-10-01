@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/sql/kernel/qsqlquery.cpp -->
+<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/src/sql/kernel/qsqlquery.cpp -->
 <head>
   <title>Qt 4.3: QSqlQuery Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -46,6 +46,7 @@
 <li><div class="fn"/>bool <b><a href="qsqlquery.html#exec-2">exec</a></b> ()</li>
 <li><div class="fn"/>bool <b><a href="qsqlquery.html#execBatch">execBatch</a></b> ( BatchExecutionMode <i>mode</i> = ValuesAsRows )</li>
 <li><div class="fn"/>QString <b><a href="qsqlquery.html#executedQuery">executedQuery</a></b> () const</li>
+<li><div class="fn"/>void <b><a href="qsqlquery.html#finish">finish</a></b> ()&nbsp;&nbsp;<tt> (preliminary)</tt></li>
 <li><div class="fn"/>bool <b><a href="qsqlquery.html#first">first</a></b> ()</li>
 <li><div class="fn"/>bool <b><a href="qsqlquery.html#isActive">isActive</a></b> () const</li>
 <li><div class="fn"/>bool <b><a href="qsqlquery.html#isForwardOnly">isForwardOnly</a></b> () const</li>
@@ -269,9 +270,17 @@
 <p>See also <a href="qsqlquery.html#prepare">prepare</a>(), <a href="qsqlquery.html#bindValue">bindValue</a>(), and <a href="qsqlquery.html#addBindValue">addBindValue</a>().</p>
 <a name="//apple_ref/cpp/instm/QSqlQuery/executedQuery" />
 <h3 class="fn"><a name="executedQuery"></a><a href="qstring.html">QString</a> QSqlQuery::executedQuery () const</h3>
-<p>Returns the last query that was executed.</p>
+<p>Returns the last query that was successfully executed.</p>
 <p>In most cases this function returns the same string as <a href="qsqlquery.html#lastQuery">lastQuery</a>(). If a prepared query with placeholders is executed on a DBMS that does not support it, the preparation of this query is emulated. The placeholders in the original query are replaced with their bound values to form a new query. This function returns the modified query. It is mostly useful for debugging purposes.</p>
 <p>See also <a href="qsqlquery.html#lastQuery">lastQuery</a>().</p>
+<a name="//apple_ref/cpp/instm/QSqlQuery/finish" />
+<h3 class="fn"><a name="finish"></a>void QSqlQuery::finish ()</h3>
+<p><b>This function is under development and is subject to change.</b></p>
+<p>Instruct the database driver that no more data will be fetched from this query until it is re-executed. There is normally no need to call this function, but it may be helpful in order to free resources such as locks or cursors if you intend to re-use the query at a later time.</p>
+<p>Sets the query to inactive. Bound values retain their values.</p>
+<p>This function is new in Qt 4.3&#x2e;2 and requires that QT_44_API_QSQLQUERY_FINISH is defined when compiling your application. It is expected to become part of the public API in Qt 4.4&#x2e;</p>
+<p>This function was introduced in Qt 4.3&#x2e;2.</p>
+<p>See also <a href="qsqlquery.html#prepare">prepare</a>(), <a href="qsqlquery.html#exec">exec</a>(), and <a href="qsqlquery.html#isActive">isActive</a>().</p>
 <a name="//apple_ref/cpp/instm/QSqlQuery/first" />
 <h3 class="fn"><a name="first"></a>bool QSqlQuery::first ()</h3>
 <p>Retrieves the first record in the result, if available, and positions the query on the retrieved record. Note that the result must be in an active state and <a href="qsqlquery.html#isSelect">isSelect</a>() must return true before calling this function or it will do nothing and return false. Returns true if successful. If unsuccessful the query position is set to an invalid position and false is returned.</p>
@@ -412,6 +421,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

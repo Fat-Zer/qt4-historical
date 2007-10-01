@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/doc/src/porting4.qdoc -->
+<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/doc/src/porting4.qdoc -->
 <head>
   <title>Qt 4.3: Porting to Qt 4</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -14,6 +14,13 @@
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 align="center">Porting to Qt 4<br /><small></small></h1>
 <p>This document describes the process of porting applications from Qt 3 to Qt 4. If you haven't yet made the decision about porting, or are unsure about whether it is worth it, take a look at the <a href="qt4-intro.html">key features</a> offered by Qt 4. See also <a href="porting4-overview.html">Moving from Qt 3 to Qt 4</a> for tips on how to write Qt 3 code that is easy to port to Qt 4.</p>
+<p><b>Other porting guides:</b></p>
+<ul>
+<li><a href="porting4-dnd.html">Porting to Qt 4 (Drag and Drop)</a></li>
+<li><a href="porting4-designer.html">Porting .ui Files to Qt 4</a></li>
+<li><a href="graphicsview-porting.html">Porting to Graphics View</a></li>
+<li><a href="qt3to4.html">qt3to4 - The Qt 3 to 4 Porting Tool</a></li>
+</ul>
 <p>The Qt 4 series is not binary compatible with the 3 series. This means programs compiled for Qt 3 must be recompiled to work with Qt 4. Qt 4 is also not completely <i>source</i> compatible with 3, however nearly all points of incompatibility cause compiler errors or run-time messages (rather than mysterious results). Qt 4 includes many additional features and discards obsolete functionality. Porting from Qt 3 to Qt 4 requires some effort, but once completed the considerable additional power and flexibility of Qt 4 is available for use in your applications.</p>
 <p>To port code from Qt 3 to Qt 4:</p>
 <ol type="1">
@@ -1148,6 +1155,7 @@
 <h2>QDockWindow</h2>
 <p>The old <tt>QDockWindow</tt> class has been renamed <a href="q3dockwindow.html">Q3DockWindow</a> and moved to the <a href="qt3support.html">Qt3Support</a> library. In Qt 4, there is a new <a href="qdockwidget.html">QDockWidget</a> class with a different API. See the class documentation for details.</p>
 <p>See <a href="#virtual-functions">Virtual Functions</a> for a list of <a href="qdockwidget.html">QDockWidget</a> virtual member functions in Qt 3 that are no longer virtual in Qt 4.</p>
+<p><b>Note:</b> <a href="q3dockwindow.html">Q3DockWindow</a>'s <a href="q3dockwindow.html#horizontallyStretchable-prop">horizontallyStretchable</a> property can be achieved in <a href="qdockwidget.html">QDockWidget</a> with <a href="qwidget.html#size-hints-and-size-policies">size policies</a>.</p>
 <a name="qdragobject"></a>
 <h2>QDragObject</h2>
 <p>The <tt>QDragObject</tt> class has been renamed <a href="q3dragobject.html">Q3DragObject</a> and moved to the <a href="qt3support.html">Qt3Support</a> library. In Qt 4, it has been replaced by the <a href="qmimedata.html">QMimeData</a> class. See the class documentation for details.</p>
@@ -2287,6 +2295,7 @@
 <h2>QToolBar</h2>
 <p>The old <tt>QToolBar</tt> class, which worked with the old <tt>QMainWindow</tt> and <tt>QDockArea</tt> classes and inherited from <tt>QDockWindow</tt>, has been renamed <a href="q3toolbar.html">Q3ToolBar</a> and moved to <a href="qt3support.html">Qt3Support</a>. Note that, when using <a href="q3toolbar.html">Q3ToolBar</a>, the toolbar's actions must be <a href="q3action.html">Q3Action</a>s.</p>
 <p>Use the new <a href="qtoolbar.html">QToolBar</a> class in new applications.</p>
+<p><b>Note:</b> <a href="q3toolbar.html">Q3ToolBar</a>'s <a href="q3dockwindow.html#horizontallyStretchable-prop">horizontallyStretchable</a> property can be achieved in <a href="qtoolbar.html">QToolBar</a> with <a href="qwidget.html#size-hints-and-size-policies">size policies</a>.</p>
 <a name="qtoolbutton"></a>
 <h2>QToolButton</h2>
 <p>See <a href="#properties">Properties</a> for a list of <a href="qtoolbar.html">QToolBar</a> properties in Qt 3 that have changed in Qt 4.</p>
@@ -3193,6 +3202,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

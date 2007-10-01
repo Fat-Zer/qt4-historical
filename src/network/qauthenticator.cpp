@@ -248,12 +248,14 @@ void QAuthenticatorPrivate::parseHttpResponse(const QHttpResponseHeader &header,
         }
     }
 
-    challenge = headerVal.toLatin1();
+    challenge = headerVal.trimmed().toLatin1();
     QHash<QByteArray, QByteArray> options = parseDigestAuthenticationChallenge(challenge);
 
     switch(method) {
     case Basic:
         realm = QString::fromLatin1(options.value("realm"));
+        if (user.isEmpty())
+            phase = Done;
         break;
     case Ntlm:
         // #### extract from header
@@ -263,6 +265,8 @@ void QAuthenticatorPrivate::parseHttpResponse(const QHttpResponseHeader &header,
         realm = QString::fromLatin1(options.value("realm"));
         if (options.value("stale").toLower() == "true")
             phase = Start;
+        if (user.isEmpty())
+            phase = Done;
         break;
     }
     default:
@@ -309,9 +313,12 @@ QByteArray QAuthenticatorPrivate::calculateResponse(const QByteArray &requestMet
         break;
     case QAuthenticatorPrivate::Ntlm:
         methodString = "NTLM ";
-        if (phase == Start) {
+        if (challenge.isEmpty()) {
             response = qNtlmPhase1().toBase64();
-            phase = Phase2;
+            if (user.isEmpty())
+                phase = Done;
+            else
+                phase = Phase2;
         } else {
             response = qNtlmPhase3(this, QByteArray::fromBase64(challenge)).toBase64();
             phase = Done;
@@ -490,6 +497,8 @@ QByteArray QAuthenticatorPrivate::digestMd5Response(const QByteArray &challenge,
     if (!opaque.isEmpty())
         credentials += "opaque=\"" + opaque + "\", ";
     credentials += "response=\"" + response + "\"";
+    if (!options.value("algorithm").isEmpty())
+        credentials += ", algorithm=" + options.value("algorithm");
     if (!options.value("qop").isEmpty()) {
         credentials += ", qop=" + qop + ", ";
         credentials += "nc=" + nonceCountString + ", ";
@@ -947,7 +956,7 @@ static bool qNtlmDecodePhase2(const QByteArray& data, QNtlmPhase2Block& ch)
         if (ch.targetName.len + ch.targetName.offset >= (unsigned)data.size()) 
             return false;
 
-        ch.targetNameStr = qStringFromUcs2Le(data.mid(ch.targetName.offset));
+        ch.targetNameStr = qStringFromUcs2Le(data.mid(ch.targetName.offset, ch.targetName.len));
     }
 
     if (ch.targetInfo.len > 0) {
@@ -983,12 +992,12 @@ static QByteArray qNtlmPhase3(QAuthenticatorPrivate *ctx, const QByteArray& phas
     int offset = QNtlmPhase3BlockBase::Size;
     Q_ASSERT(QNtlmPhase3BlockBase::Size == sizeof(QNtlmPhase3BlockBase));
     
-    offset = qEncodeNtlmString(pb.user, offset, ctx->user, unicode);
-    pb.userStr = ctx->user;
-    
     offset = qEncodeNtlmString(pb.domain, offset, ctx->realm, unicode);
     pb.domainStr = ctx->realm;
     
+    offset = qEncodeNtlmString(pb.user, offset, ctx->user, unicode);
+    pb.userStr = ctx->user;
+
     offset = qEncodeNtlmString(pb.workstation, offset, ctx->workstation, unicode);
     pb.workstationStr = ctx->workstation;
 

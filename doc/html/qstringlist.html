@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/corelib/tools/qstringlist.cpp -->
+<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/src/corelib/tools/qstringlist.cpp -->
 <head>
   <title>Qt 4.3: QStringList Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -32,8 +32,10 @@
 <li><div class="fn"/>QStringList <b><a href="qstringlist.html#filter">filter</a></b> ( const QString &amp; <i>str</i>, Qt::CaseSensitivity <i>cs</i> = Qt::CaseSensitive ) const</li>
 <li><div class="fn"/>QStringList <b><a href="qstringlist.html#filter-2">filter</a></b> ( const QRegExp &amp; <i>rx</i> ) const</li>
 <li><div class="fn"/>int <b><a href="qstringlist.html#indexOf">indexOf</a></b> ( const QRegExp &amp; <i>rx</i>, int <i>from</i> = 0 ) const</li>
+<li><div class="fn"/>int <b><a href="qstringlist.html#indexOf-2">indexOf</a></b> ( const QString &amp; <i>value</i>, int <i>from</i> = 0 ) const</li>
 <li><div class="fn"/>QString <b><a href="qstringlist.html#join">join</a></b> ( const QString &amp; <i>separator</i> ) const</li>
 <li><div class="fn"/>int <b><a href="qstringlist.html#lastIndexOf">lastIndexOf</a></b> ( const QRegExp &amp; <i>rx</i>, int <i>from</i> = -1 ) const</li>
+<li><div class="fn"/>int <b><a href="qstringlist.html#lastIndexOf-2">lastIndexOf</a></b> ( const QString &amp; <i>value</i>, int <i>from</i> = -1 ) const</li>
 <li><div class="fn"/>QStringList &amp; <b><a href="qstringlist.html#replaceInStrings">replaceInStrings</a></b> ( const QString &amp; <i>before</i>, const QString &amp; <i>after</i>, Qt::CaseSensitivity <i>cs</i> = Qt::CaseSensitive )</li>
 <li><div class="fn"/>QStringList &amp; <b><a href="qstringlist.html#replaceInStrings-2">replaceInStrings</a></b> ( const QRegExp &amp; <i>rx</i>, const QString &amp; <i>after</i> )</li>
 <li><div class="fn"/>void <b><a href="qstringlist.html#sort">sort</a></b> ()</li>
@@ -155,6 +157,10 @@
 <h3 class="fn"><a name="indexOf"></a>int QStringList::indexOf ( const <a href="qregexp.html">QRegExp</a> &amp; <i>rx</i>, int <i>from</i> = 0 ) const</h3>
 <p>Returns the index position of the first exact match of <i>rx</i> in the list, searching forward from index position <i>from</i>. Returns -1 if no item matched.</p>
 <p>See also <a href="qstringlist.html#lastIndexOf">lastIndexOf</a>(), <a href="qstringlist.html#contains">contains</a>(), and <a href="qregexp.html#exactMatch">QRegExp::exactMatch</a>().</p>
+<h3 class="fn"><a name="indexOf-2"></a>int QStringList::indexOf ( const <a href="qstring.html">QString</a> &amp; <i>value</i>, int <i>from</i> = 0 ) const</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p>Returns the index position of the first occurrence of <i>value</i> in the list, searching forward from index position <i>from</i>. Returns -1 if no item matched.</p>
+<p>See also <a href="qstringlist.html#lastIndexOf">lastIndexOf</a>(), <a href="qstringlist.html#contains">contains</a>(), and <a href="qlist.html#indexOf">QList::indexOf</a>().</p>
 <a name="//apple_ref/cpp/instm/QStringList/join" />
 <h3 class="fn"><a name="join"></a><a href="qstring.html">QString</a> QStringList::join ( const <a href="qstring.html">QString</a> &amp; <i>separator</i> ) const</h3>
 <p>Joins all the string list's strings into a single string with each element separated by the the given <i>separator</i> (which can be an empty string).</p>
@@ -163,6 +169,10 @@
 <h3 class="fn"><a name="lastIndexOf"></a>int QStringList::lastIndexOf ( const <a href="qregexp.html">QRegExp</a> &amp; <i>rx</i>, int <i>from</i> = -1 ) const</h3>
 <p>Returns the index position of the last exact match of <i>rx</i> in the list, searching backward from index position <i>from</i>. If <i>from</i> is -1 (the default), the search starts at the last item. Returns -1 if no item matched.</p>
 <p>See also <a href="qstringlist.html#indexOf">indexOf</a>(), <a href="qstringlist.html#contains">contains</a>(), and <a href="qregexp.html#exactMatch">QRegExp::exactMatch</a>().</p>
+<h3 class="fn"><a name="lastIndexOf-2"></a>int QStringList::lastIndexOf ( const <a href="qstring.html">QString</a> &amp; <i>value</i>, int <i>from</i> = -1 ) const</h3>
+<p>This is an overloaded member function, provided for convenience.</p>
+<p>Returns the index position of the last occurrence of <i>value</i> in the list, searching backward from index position <i>from</i>. If <i>from</i> is -1 (the default), the search starts at the last item. Returns -1 if no item matched.</p>
+<p>See also <a href="qstringlist.html#indexOf">indexOf</a>() and <a href="qlist.html#lastIndexOf">QList::lastIndexOf</a>().</p>
 <a name="//apple_ref/cpp/instm/QStringList/replaceInStrings" />
 <h3 class="fn"><a name="replaceInStrings"></a>QStringList &amp; QStringList::replaceInStrings ( const <a href="qstring.html">QString</a> &amp; <i>before</i>, const <a href="qstring.html">QString</a> &amp; <i>after</i>, <a href="qt.html#CaseSensitivity-enum">Qt::CaseSensitivity</a> <i>cs</i> = Qt::CaseSensitive )</h3>
 <p>Returns a string list where every string has had the <i>before</i> text replaced with the <i>after</i> text wherever the <i>before</i> text is found. The <i>before</i> text is matched case-sensitively or not depending on the <i>cs</i> flag.</p>
@@ -227,6 +237,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

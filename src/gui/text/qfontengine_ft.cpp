@@ -595,9 +595,9 @@ QFontEngineFT::Glyph *QFontEngineFT::loadGlyph(QGlyphSet *set, uint glyph, Glyph
     if (err != FT_Err_Ok)
         qWarning("load glyph failed err=%x face=%p, glyph=%d", err, face, glyph);
 
-    if (outline_drawing) 
+    if (outline_drawing)
         return 0;
-    
+
     FT_GlyphSlot slot = face->glyph;
 
     FT_Matrix matrix = freetype->matrix;
@@ -716,7 +716,8 @@ QFontEngineFT::Glyph *QFontEngineFT::loadGlyph(QGlyphSet *set, uint glyph, Glyph
                         uint red = src[x];
                         uint green = src[x+1];
                         uint blue = src[x+2];
-                        uint res = (red << 16) + (green << 8) + blue;
+                        uint alpha = green;
+                        uint res = (alpha << 24) + (red << 16) + (green << 8) + blue;
                         *dd = res;
                         ++dd;
                     }
@@ -730,7 +731,8 @@ QFontEngineFT::Glyph *QFontEngineFT::loadGlyph(QGlyphSet *set, uint glyph, Glyph
                         uint blue = src[x];
                         uint green = src[x+1];
                         uint red = src[x+2];
-                        uint res = (red << 16) + (green << 8) + blue;
+                        uint alpha = green;
+                        uint res = (alpha << 24) + (red << 16) + (green << 8) + blue;
                         *dd = res;
                         ++dd;
                     }
@@ -754,7 +756,7 @@ QFontEngineFT::Glyph *QFontEngineFT::loadGlyph(QGlyphSet *set, uint glyph, Glyph
                         uint high = (red*subpixel_filter[0][0] + green*subpixel_filter[0][1] + blue*subpixel_filter[0][2]) >> 8;
                         uint mid = (red*subpixel_filter[1][0] + green*subpixel_filter[1][1] + blue*subpixel_filter[1][2]) >> 8;
                         uint low = (red*subpixel_filter[2][0] + green*subpixel_filter[2][1] + blue*subpixel_filter[2][2]) >> 8;
-                        uint res = (high << 16) + (mid << 8) + low;
+                        uint res = (mid << 24) + (high << 16) + (mid << 8) + low;
                         dst[x] = res;
                     }
                     dst += info.width;
@@ -769,7 +771,7 @@ QFontEngineFT::Glyph *QFontEngineFT::loadGlyph(QGlyphSet *set, uint glyph, Glyph
                         uint high = (red*subpixel_filter[0][0] + green*subpixel_filter[0][1] + blue*subpixel_filter[0][2]) >> 8;
                         uint mid = (red*subpixel_filter[1][0] + green*subpixel_filter[1][1] + blue*subpixel_filter[1][2]) >> 8;
                         uint low = (red*subpixel_filter[2][0] + green*subpixel_filter[2][1] + blue*subpixel_filter[2][2]) >> 8;
-                        uint res = (high << 16) + (mid << 8) + low;
+                        uint res = (mid << 24) + (high << 16) + (mid << 8) + low;
                         dst[x] = res;
                     }
                     dst += info.width;
@@ -985,7 +987,7 @@ qreal QFontEngineFT::minRightBearing() const
         const QChar *ch = (const QChar *)(const void*)char_table;
         QGlyphLayout glyphs[char_table_entries];
         int ng = char_table_entries;
-        stringToCMap(ch, char_table_entries, glyphs, &ng, 0);
+        stringToCMap(ch, char_table_entries, glyphs, &ng, QTextEngine::GlyphIndicesOnly);
         while (--ng) {
             if (glyphs[ng].glyph) {
                 glyph_metrics_t gi = const_cast<QFontEngineFT *>(this)->boundingBox(glyphs[ng].glyph);
@@ -1042,6 +1044,10 @@ QOpenType *QFontEngineFT::openType() const
 QFontEngineFT::QGlyphSet *QFontEngineFT::loadTransformedGlyphSet(glyph_t *glyphs, int num_glyphs, const QTransform &matrix,
                                                                  GlyphFormat format)
 {
+    // FT_Set_Transform only supports scalable fonts
+    if (!FT_IS_SCALABLE(freetype->face))
+        return 0;
+
     // don't try to load huge fonts
     if (fontDef.pixelSize * qSqrt(matrix.det()) >= 64)
         return 0;
@@ -1136,9 +1142,9 @@ void QFontEngineFT::getUnscaledGlyph(glyph_t glyph, QPainterPath *path, glyph_me
     metrics->y = QFixed::fromFixed(-top);
     metrics->xoff = QFixed::fromFixed(face->glyph->advance.x);
 
-    if (!FT_IS_SCALABLE(freetype->face)) 
+    if (!FT_IS_SCALABLE(freetype->face))
         QFreetypeFace::addBitmapToPath(face->glyph, p, path);
-    else 
+    else
         QFreetypeFace::addGlyphToPath(face, face->glyph, p, path, face->units_per_EM << 6, face->units_per_EM << 6);
 
     FT_Set_Transform(face, &freetype->matrix, 0);
@@ -1409,22 +1415,29 @@ QImage QFontEngineFT::alphaMapForGlyph(glyph_t g)
 {
     lockFace();
 
-    Glyph *glyph = loadGlyph(g, Format_A8);
+    GlyphFormat glyph_format = antialias ? Format_A8 : Format_Mono;
+
+    Glyph *glyph = loadGlyph(g, glyph_format);
     if (!glyph) {
         unlockFace();
         return QFontEngine::alphaMapForGlyph(g);
     }
 
-    Q_ASSERT(glyph->format == QFontEngineFT::Format_A8);
+    const int pitch = antialias ? (glyph->width + 3) & ~3 : ((glyph->width + 31)/32) * 4;
 
-    const int pitch = (glyph->width + 3) & ~3;
-
-    QImage img(glyph->width, glyph->height, QImage::Format_Indexed8);
-    QVector<QRgb> colors(256);
-    for (int i=0; i<256; ++i)
-        colors[i] = qRgba(0, 0, 0, i);
-    img.setColorTable(colors);
-
+    QImage img(glyph->width, glyph->height, antialias ? QImage::Format_Indexed8 : QImage::Format_Mono);
+    if (antialias) {
+        QVector<QRgb> colors(256);
+        for (int i=0; i<256; ++i)
+            colors[i] = qRgba(0, 0, 0, i);
+        img.setColorTable(colors);
+    } else {
+        QVector<QRgb> colors(2);
+        colors[0] = qRgba(0, 0, 0, 0);
+        colors[1] = qRgba(0, 0, 0, 255);
+        img.setColorTable(colors);
+    }
+    Q_ASSERT(img.bytesPerLine() == pitch);
     for (int y = 0; y < glyph->height; ++y)
         memcpy(img.scanLine(y), &glyph->data[y * pitch], pitch);
     unlockFace();

@@ -1519,8 +1519,6 @@ void QXmlStreamReaderPrivate::startDocument(const QStringRef &version)
                 QTextCodec *const newCodec = QTextCodec::codecForName(name.toLatin1());
                 if (!newCodec)
                     err = QXmlStream::tr("Encoding %1 is unsupported").arg(name);
-                else if (newCodec->name().toLower() != name.toLatin1().toLower())
-                    err = QXmlStream::tr("Invalid XML encoding name.");
                 else if (newCodec != codec && !lockEncoding) {
                     codec = newCodec;
                     delete decoder;
@@ -1994,6 +1992,14 @@ QXmlStreamAttribute& QXmlStreamAttribute::operator=(const QXmlStreamAttribute &o
 
     \module XML
     \ingroup xml-tools
+*/
+
+/*!
+    \fn void QXmlStreamAttributes::append(const QXmlStreamAttribute &attribute)
+
+    Appends the given \a attribute to the end of the vector.
+
+    \sa QVector::append()
 */
 
 

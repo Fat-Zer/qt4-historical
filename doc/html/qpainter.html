@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/painting/qpainter.cpp -->
+<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/src/gui/painting/qpainter.cpp -->
 <head>
   <title>Qt 4.3: QPainter Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -961,11 +961,12 @@
  painter.drawText(rect, Qt::AlignCenter, tr(&quot;Qt by\nTrolltech&quot;));</pre>
 </td></tr>
 </table></p>
-<p>The <i>boundingRect</i> (if not null) is set to the actual bounding rectangle of the output. The <i>flags</i> argument is a bitwise OR of the following flags:</p>
+<p>The <i>boundingRect</i> (if not null) is set to the what the bounding rectangle should be in order to enclose the whole text. The <i>flags</i> argument is a bitwise OR of the following flags:</p>
 <ul>
 <li><a href="qt.html#AlignmentFlag-enum">Qt::AlignLeft</a></li>
 <li><a href="qt.html#AlignmentFlag-enum">Qt::AlignRight</a></li>
 <li><a href="qt.html#AlignmentFlag-enum">Qt::AlignHCenter</a></li>
+<li><a href="qt.html#AlignmentFlag-enum">Qt::AlignJustify</a></li>
 <li><a href="qt.html#AlignmentFlag-enum">Qt::AlignTop</a></li>
 <li><a href="qt.html#AlignmentFlag-enum">Qt::AlignBottom</a></li>
 <li><a href="qt.html#AlignmentFlag-enum">Qt::AlignVCenter</a></li>
@@ -978,7 +979,7 @@
 <p>See also <a href="qt.html#AlignmentFlag-enum">Qt::AlignmentFlag</a>, <a href="qt.html#TextFlag-enum">Qt::TextFlag</a>, <a href="qpainter.html#boundingRect">boundingRect</a>(), and <a href="qpainter.html#layoutDirection">layoutDirection</a>().</p>
 <h3 class="fn"><a name="drawText-10"></a>void QPainter::drawText ( const <a href="qrect.html">QRect</a> &amp; <i>rectangle</i>, int <i>flags</i>, const <a href="qstring.html">QString</a> &amp; <i>text</i>, <a href="qrect.html">QRect</a> * <i>boundingRect</i> = 0 )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
-<p>Draws the given <i>text</i> within the provided <i>rectangle</i> according to the specified <i>flags</i>. The <i>boundingRect</i> (if not null) is set to the actual bounding rectangle of the output.</p>
+<p>Draws the given <i>text</i> within the provided <i>rectangle</i> according to the specified <i>flags</i>. The <i>boundingRect</i> (if not null) is set to the what the bounding rectangle should be in order to enclose the whole text.</p>
 <h3 class="fn"><a name="drawText-11"></a>void QPainter::drawText ( int <i>x</i>, int <i>y</i>, const <a href="qstring.html">QString</a> &amp; <i>text</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Draws the given <i>text</i> at position (<i>x</i>, <i>y</i>), using the painter's currently defined text direction.</p>
@@ -990,6 +991,7 @@
 <li><a href="qt.html#AlignmentFlag-enum">Qt::AlignLeft</a></li>
 <li><a href="qt.html#AlignmentFlag-enum">Qt::AlignRight</a></li>
 <li><a href="qt.html#AlignmentFlag-enum">Qt::AlignHCenter</a></li>
+<li><a href="qt.html#AlignmentFlag-enum">Qt::AlignJustify</a></li>
 <li><a href="qt.html#AlignmentFlag-enum">Qt::AlignTop</a></li>
 <li><a href="qt.html#AlignmentFlag-enum">Qt::AlignBottom</a></li>
 <li><a href="qt.html#AlignmentFlag-enum">Qt::AlignVCenter</a></li>
@@ -1448,6 +1450,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

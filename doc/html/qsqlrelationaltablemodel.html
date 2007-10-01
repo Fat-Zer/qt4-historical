@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/sql/models/qsqlrelationaltablemodel.cpp -->
+<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/src/sql/models/qsqlrelationaltablemodel.cpp -->
 <head>
   <title>Qt 4.3: QSqlRelationalTableModel Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -76,6 +76,7 @@
 <li>The table must have a primary key declared.</li>
 <li>The table's primary key may not contain a relation to another table.</li>
 <li>If a relational table contains keys that refer to non-existent rows in the referenced table, the rows containing the invalid keys will not be exposed through the model. The user or the database is responsible for keeping referential integrity.</li>
+<li>If a relation's display column name is also used as a column name in the main table, or if it is used as display column name in more than one relation it will be aliased. The alias is is the relation's table name and display column name joined by an underscore (e.g&#x2e; tablename_columnname). All occurances of the duplicate display column name are aliased when duplication is detected, but no aliasing is done to the column names in the main table. The aliasing doesn't affect <a href="qsqlrelation.html">QSqlRelation</a>, so <a href="qsqlrelation.html#displayColumn">QSqlRelation::displayColumn</a>() will return the original display column name, but <a href="qsqlrecord.html#fieldName">QSqlRecord::fieldName</a>() will return aliases.</li>
 </ul>
 <p>See also <a href="qsqlrelation.html">QSqlRelation</a>, <a href="qsqlrelationaldelegate.html">QSqlRelationalDelegate</a>, and <a href="sql-relationaltablemodel.html">Relational Table Model Example</a>.</p>
 <hr />
@@ -116,6 +117,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

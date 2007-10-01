@@ -124,9 +124,7 @@
 
 #include <QtCore/qatomic.h>
 #include <QtCore/qdatetime.h>
-#ifndef QT_NO_DEBUG_STREAM
 #include <QtCore/qdebug.h>
-#endif
 #include <QtCore/qdir.h>
 #include <QtCore/qdiriterator.h>
 #include <QtCore/qfile.h>
@@ -134,8 +132,6 @@
 #include <QtCore/qmap.h>
 #include <QtCore/qstring.h>
 #include <QtCore/qstringlist.h>
-
-#include <QtCore/qdebug.h>
 
 /*!
     Constructs a QSslCertificate by reading \a format encoded data
@@ -363,8 +359,7 @@ QString QSslCertificate::subjectInfo(const QByteArray &tag) const
   
   \sa subjectInfo()
 */
-QMultiMap<QSsl::AlternateNameEntryType, QString>
-QSslCertificate::alternateSubjectNames() const
+QMultiMap<QSsl::AlternateNameEntryType, QString> QSslCertificate::alternateSubjectNames() const
 {
     QMultiMap<QSsl::AlternateNameEntryType, QString> result;
 
@@ -373,8 +368,7 @@ QSslCertificate::alternateSubjectNames() const
     if (altNames) {
         for (int i = 0; i < q_sk_GENERAL_NAME_num(altNames); ++i) {
             const GENERAL_NAME *genName = q_sk_GENERAL_NAME_value(altNames, i);
-            const QString altName = QLatin1String(
-                    QByteArray(reinterpret_cast<const char *>(q_ASN1_STRING_data(genName->d.ia5)),
+            const QString altName = QLatin1String(QByteArray(reinterpret_cast<const char *>(q_ASN1_STRING_data(genName->d.ia5)),
                     q_ASN1_STRING_length(genName->d.ia5)));
             if (genName->type == GEN_DNS)
                 result.insert(QSsl::DnsEntry, altName);
@@ -488,15 +482,14 @@ QByteArray QSslCertificate::toDer() const
 
     \sa fromData()
 */
-QList<QSslCertificate>
-QSslCertificate::fromPath(const QString &path,
-			  QSsl::EncodingFormat format,
-			  QRegExp::PatternSyntax syntax)
+QList<QSslCertificate> QSslCertificate::fromPath(const QString &path,
+                                                 QSsl::EncodingFormat format,
+                                                 QRegExp::PatternSyntax syntax)
 {
     if (syntax == QRegExp::FixedString) {
         QFile file(path);
         if (file.open(QIODevice::ReadOnly | QIODevice::Text))
-            return QSslCertificate::fromData(file.readAll(),format);
+             return QSslCertificate::fromData(file.readAll(),format);
         return QList<QSslCertificate>();
     }
 
@@ -510,7 +503,7 @@ QSslCertificate::fromPath(const QString &path,
 
         QFile file(it.filePath());
         if (file.open(QIODevice::ReadOnly | QIODevice::Text))
-            certs += QSslCertificate::fromData(file.readAll(),format);
+             certs += QSslCertificate::fromData(file.readAll(),format);
     }
     return certs;
 }
@@ -522,8 +515,7 @@ QSslCertificate::fromPath(const QString &path,
 
     \sa fromData()
 */
-QList<QSslCertificate>
-QSslCertificate::fromDevice(QIODevice *device, QSsl::EncodingFormat format)
+QList<QSslCertificate> QSslCertificate::fromDevice(QIODevice *device, QSsl::EncodingFormat format)
 {
     if (!device) {
         qWarning("QSslCertificate::fromDevice: cannot read from a null device");
@@ -539,16 +531,14 @@ QSslCertificate::fromDevice(QIODevice *device, QSsl::EncodingFormat format)
 
     \sa fromDevice()
 */
-QList<QSslCertificate>
-QSslCertificate::fromData(const QByteArray &data, QSsl::EncodingFormat format)
+QList<QSslCertificate> QSslCertificate::fromData(const QByteArray &data, QSsl::EncodingFormat format)
 {
     return (format == QSsl::Pem)
         ? QSslCertificatePrivate::certificatesFromPem(data)
         : QSslCertificatePrivate::certificatesFromDer(data);
 }
 
-void QSslCertificatePrivate::init(const QByteArray &data,
-				  QSsl::EncodingFormat format)
+void QSslCertificatePrivate::init(const QByteArray &data, QSsl::EncodingFormat format)
 {
     if (!data.isEmpty()) {
         QList<QSslCertificate> certs = (format == QSsl::Pem)
@@ -656,8 +646,7 @@ QSslCertificate QSslCertificatePrivate::QSslCertificate_from_X509(X509 *x509)
     return certificate;
 }
 
-QList<QSslCertificate>
-QSslCertificatePrivate::certificatesFromPem(const QByteArray &pem, int count)
+QList<QSslCertificate> QSslCertificatePrivate::certificatesFromPem(const QByteArray &pem, int count)
 {
     QList<QSslCertificate> certificates;
     QSslSocketPrivate::ensureInitialized();
@@ -692,8 +681,7 @@ QSslCertificatePrivate::certificatesFromPem(const QByteArray &pem, int count)
     return certificates;
 }
 
-QList<QSslCertificate>
-QSslCertificatePrivate::certificatesFromDer(const QByteArray &der, int count)
+QList<QSslCertificate> QSslCertificatePrivate::certificatesFromDer(const QByteArray &der, int count)
 {
     QList<QSslCertificate> certificates;
     QSslSocketPrivate::ensureInitialized();

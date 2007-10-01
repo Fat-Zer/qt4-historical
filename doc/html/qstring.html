@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/corelib/tools/qstring.cpp -->
+<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/src/corelib/tools/qstring.cpp -->
 <head>
   <title>Qt 4.3: QString Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -1322,7 +1322,6 @@
 <p>Due to the ambiguity between the decimal point and thousands group separator in various locales, this function does not handle thousands group separators. If you need to convert such numbers, see <a href="qlocale.html#toDouble">QLocale::toDouble</a>().</p>
 <pre>     QLocale::setDefault(QLocale::C);
      d = QString( &quot;1234,56&quot; ).toDouble(&amp;ok); <span class="comment">//</span> ok == false</pre>
-<p><b>Warning:</b> If the string contains trailing whitespace this function will fail, and set <tt>*</tt><i>ok</i> to false if <i>ok</i> is not 0. Leading whitespace is ignored.</p>
 <p>See also <a href="qstring.html#number">number</a>(), <a href="qlocale.html#setDefault">QLocale::setDefault</a>(), <a href="qlocale.html#toDouble">QLocale::toDouble</a>(), and <a href="qstring.html#trimmed">trimmed</a>().</p>
 <a name="//apple_ref/cpp/instm/QString/toFloat" />
 <h3 class="fn"><a name="toFloat"></a>float QString::toFloat ( bool * <i>ok</i> = 0 ) const</h3>
@@ -1733,6 +1732,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

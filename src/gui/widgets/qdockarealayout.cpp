@@ -1448,9 +1448,10 @@ void QDockAreaLayoutInfo::apply(bool animate)
 
         QRect geo = w->geometry();
         widgetAnimator->animate(w, r, animate);
-        if (w->isVisible()) {
+        if (!w->isHidden()) {
             QDockWidget *dw = qobject_cast<QDockWidget*>(w);
             if (!r.isValid() && geo.right() >= 0 && geo.bottom() >= 0) {
+                dw->lower();
                 emit dw->visibilityChanged(false);
             } else if (r.isValid()
                         && (geo.right() < 0 || geo.bottom() < 0)) {
@@ -1791,15 +1792,15 @@ bool QDockAreaLayoutInfo::restoreState(QDataStream &stream, QList<QDockWidget*> 
                     widget->setFloating(true);
                 int x, y, w, h;
                 stream >> x >> y >> w >> h;
-                
+
 #ifdef Q_WS_MAC // drawer support
                 if (drawer) {
                     mainWindow->window()->createWinId();
                     widget->window()->createWinId();
                     qt_mac_set_drawer_preferred_edge(widget, toDockWidgetArea(dockPos));
-                } else 
-#endif                
-                {                
+                } else
+#endif
+                {
                     widget->move(x, y);
                     widget->resize(w, h);
                 }

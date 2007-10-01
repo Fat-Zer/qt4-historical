@@ -91,9 +91,7 @@
      form-&gt;hostNameLabel-&gt;setEnabled(unconnected);
      form-&gt;portBox-&gt;setEnabled(unconnected);
      form-&gt;portLabel-&gt;setEnabled(unconnected);
-     form-&gt;connectButton-&gt;setEnabled(unconnected
-                                     &amp;&amp; !form-&gt;hostNameEdit-&gt;text().isEmpty()
-                                     &amp;&amp; form-&gt;hostNameEdit-&gt;text() != &quot;imap.example.com&quot;);
+     form-&gt;connectButton-&gt;setEnabled(unconnected &amp;&amp; !form-&gt;hostNameEdit-&gt;text().isEmpty());
 
      bool connected = socket &amp;&amp; socket-&gt;state() == QAbstractSocket::ConnectedState;
      form-&gt;sessionBox-&gt;setEnabled(connected);
@@ -221,6 +219,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

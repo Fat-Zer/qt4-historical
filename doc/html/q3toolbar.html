@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/qt3support/widgets/q3toolbar.cpp -->
+<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/src/qt3support/widgets/q3toolbar.cpp -->
 <head>
   <title>Qt 4.3: Q3ToolBar Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -74,15 +74,15 @@
 <hr />
 <h2>Detailed Description</h2>
 <p>The Q3ToolBar class provides a movable panel containing widgets such as tool buttons.</p>
-<p>A toolbar is a panel that contains a set of controls, usually represented by small icons. It's purpose is to provide quick access to frequently used commands or options. Within a <a href="q3mainwindow.html">Q3MainWindow</a> the user can drag toolbars within and between the <a href="porting4.html#qdockarea">dock areas</a>. Toolbars can also be dragged out of any dock area to float freely as top-level windows.</p>
+<p>A toolbar is a panel that contains a set of controls, usually represented by small icons. It's purpose is to provide quick access to frequently used commands or options. Within a <a href="q3mainwindow.html">Q3MainWindow</a> the user can drag toolbars within and between the <a href="q3dockarea.html">dock areas</a>. Toolbars can also be dragged out of any dock area to float freely as top-level windows.</p>
 <p>Q3ToolBar is a specialization of <a href="porting4.html#qdockwindow">QDockWindow</a>, and so provides all the functionality of a <a href="porting4.html#qdockwindow">QDockWindow</a>.</p>
 <p>To use Q3ToolBar you simply create a Q3ToolBar as a child of a <a href="q3mainwindow.html">Q3MainWindow</a>, create a number of <a href="qtoolbutton.html">QToolButton</a> widgets (or other widgets) in left to right (or top to bottom) order and call <a href="q3toolbar.html#addSeparator">addSeparator</a>() when you want a separator. When a toolbar is floated the caption used is the label given in the constructor call. This can be changed with <a href="q3toolbar.html#label-prop">setLabel</a>().</p>
 <p>You may use most widgets within a toolbar, with <a href="qtoolbutton.html">QToolButton</a> and <a href="qcombobox.html">QComboBox</a> being the most common. But note that the toolbar's actions must be <a href="q3action.html">Q3Action</a>s.</p>
 <p>If you create a new widget on an already visible Q3ToolBar, this widget will automatically become visible without needing a <a href="qwidget.html#show">show</a>() call. (This differs from every other Qt widget container. We recommend calling <a href="qwidget.html#show">show</a>() anyway since we hope to fix this anomaly in a future release.)</p>
-<p>Q3ToolBars, like QDockWindows, are located in <a href="porting4.html#qdockarea">QDockArea</a>s or float as top-level windows. <a href="q3mainwindow.html">Q3MainWindow</a> provides four QDockAreas (top, left, right and bottom). When you create a new toolbar (as in the example above) as a child of a <a href="q3mainwindow.html">Q3MainWindow</a> the toolbar will be added to the top dock area. You can move it to another dock area (or float it) by calling <a href="q3mainwindow.html#moveDockWindow">Q3MainWindow::moveDockWindow</a>(). Dock areas lay out their windows in lines.</p>
+<p>Q3ToolBars, like QDockWindows, are located in <a href="q3dockarea.html">Q3DockArea</a>s or float as top-level windows. <a href="q3mainwindow.html">Q3MainWindow</a> provides four Q3DockAreas (top, left, right and bottom). When you create a new toolbar (as in the example above) as a child of a <a href="q3mainwindow.html">Q3MainWindow</a> the toolbar will be added to the top dock area. You can move it to another dock area (or float it) by calling <a href="q3mainwindow.html#moveDockWindow">Q3MainWindow::moveDockWindow</a>(). Dock areas lay out their windows in lines.</p>
 <p>If the main window is resized so that the area occupied by the toolbar is too small to show all its widgets a little arrow button (which looks like a right-pointing chevron, '&amp;#187;') will appear at the right or bottom of the toolbar depending on its orientation. Clicking this button pops up a menu that shows the 'overflowing' items. QToolButtons are represented in the menu using their textLabel property, other <a href="qabstractbutton.html">QAbstractButton</a> subclasses are represented using their text property, and QComboBoxes are represented as submenus, with the caption text being used in the submenu item.</p>
 <p>Usually a toolbar will get precisely the space it needs. However, with <a href="q3dockwindow.html#setHorizontalStretchable">setHorizontalStretchable</a>(), <a href="q3dockwindow.html#setVerticalStretchable">setVerticalStretchable</a>() or <a href="q3toolbar.html#setStretchableWidget">setStretchableWidget</a>() you can tell the main window to expand the toolbar to fill all available space in the specified orientation.</p>
-<p>The toolbar arranges its buttons either horizontally or vertically (see <a href="q3dockwindow.html#orientation">orientation</a>() for details). Generally, <a href="porting4.html#qdockarea">QDockArea</a> will set the orientation correctly for you, but you can set it yourself with <a href="q3dockwindow.html#setOrientation">setOrientation</a>() and track any changes by connecting to the <a href="q3dockwindow.html#orientationChanged">orientationChanged</a>() signal.</p>
+<p>The toolbar arranges its buttons either horizontally or vertically (see <a href="q3dockwindow.html#orientation">orientation</a>() for details). Generally, <a href="q3dockarea.html">Q3DockArea</a> will set the orientation correctly for you, but you can set it yourself with <a href="q3dockwindow.html#setOrientation">setOrientation</a>() and track any changes by connecting to the <a href="q3dockwindow.html#orientationChanged">orientationChanged</a>() signal.</p>
 <p>You can use the <a href="q3toolbar.html#clear">clear</a>() method to remove all items from a toolbar.</p>
 <p align="center"><img src="images/qdockwindow.png" alt="Toolbar (dock window)" /></p><p>A floating <a href="porting4.html#qtoolbar">QToolbar</a> (dock window)</p>
 <p>See also <a href="qtoolbutton.html">QToolButton</a> and <a href="q3mainwindow.html">Q3MainWindow</a>.</p>
@@ -132,6 +132,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

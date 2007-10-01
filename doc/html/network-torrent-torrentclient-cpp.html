@@ -60,6 +60,7 @@
  #include &quot;ratecontroller.h&quot;
 
  #include &lt;QtCore&gt;
+ #include &lt;QNetworkInterface&gt;
 
  extern &quot;C&quot; {
  #include &quot;3rdparty/sha1.h&quot;
@@ -487,8 +488,11 @@
      }
 
      <span class="comment">//</span> Abort all existing connections
-     foreach (PeerWireClient *client, d-&gt;connections)
+     foreach (PeerWireClient *client, d-&gt;connections) {
+         RateController::instance()-&gt;removeSocket(client);
+         ConnectionManager::instance()-&gt;removeConnection(client);
          client-&gt;abort();
+     }
      d-&gt;connections.clear();
 
      <span class="comment">//</span> Perhaps stop the tracker
@@ -1472,10 +1476,14 @@
  void TorrentClient::addToPeerList(const QList&lt;TorrentPeer&gt; &amp;peerList)
  {
      <span class="comment">//</span> Add peers we don't already know of to our list of peers.
+     QList&lt;QHostAddress&gt; addresses =  QNetworkInterface::allAddresses();
      foreach (TorrentPeer peer, peerList) {
-         if (peer.address == TorrentServer::instance()-&gt;serverAddress()
-             &amp;&amp; peer.port == TorrentServer::instance()-&gt;serverPort())
+         if (addresses.contains(peer.address)
+             &amp;&amp; peer.port == TorrentServer::instance()-&gt;serverPort()) {
+             <span class="comment">//</span> Skip our own server.
              continue;
+         }
+
          bool known = false;
          foreach (TorrentPeer *knownPeer, d-&gt;peers) {
              if (knownPeer-&gt;port == peer.port
@@ -1559,6 +1567,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>

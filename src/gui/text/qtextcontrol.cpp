@@ -1591,8 +1591,9 @@ void QTextControlPrivate::mouseReleaseEvent(Qt::MouseButton button, const QPoint
             if (anchorPos != -1) {
                 cursor.setPosition(anchorPos);
 
-                activateLinkUnderCursor(anchorOnMousePress);
+                QString anchor = anchorOnMousePress;
                 anchorOnMousePress = QString();
+                activateLinkUnderCursor(anchor);
             }
         }
     }
@@ -2636,7 +2637,7 @@ void QTextControl::drawContents(QPainter *p, const QRectF &rect, QWidget *widget
     p->save();
     QAbstractTextDocumentLayout::PaintContext ctx;
     if (rect.isValid())
-        p->setClipRect(rect);
+        p->setClipRect(rect, Qt::IntersectClip);
     ctx.clip = rect;
     ctx.selections = d->extraSelections;
 

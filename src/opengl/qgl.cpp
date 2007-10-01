@@ -241,9 +241,9 @@ static inline void transform_point(GLdouble out[4], const GLdouble m[16], const 
 }
 
 static inline GLint qgluProject(GLdouble objx, GLdouble objy, GLdouble objz,
-	   const GLdouble model[16], const GLdouble proj[16],
-	   const GLint viewport[4],
-	   GLdouble * winx, GLdouble * winy, GLdouble * winz)
+           const GLdouble model[16], const GLdouble proj[16],
+           const GLint viewport[4],
+           GLdouble * winx, GLdouble * winy, GLdouble * winz)
 {
    GLdouble in[4], out[4];
 
@@ -2079,10 +2079,10 @@ void QGLContext::setDevice(QPaintDevice *pDev)
     the created GL rendering context.
 
     If \a shareContext points to a valid QGLContext, this method will
-    try to establish OpenGL display list sharing between this context
-    and the \a shareContext. Note that this may fail if the two
-    contexts have different formats. Use isSharing() to see if sharing
-    succeeded.
+    try to establish OpenGL display list and texture object sharing
+    between this context and the \a shareContext. Note that this may
+    fail if the two contexts have different \l {format()} {formats}.
+    Use isSharing() to see if sharing is in effect.
 
     \warning Implementation note: initialization of C++ class
     members usually takes place in the class constructor. QGLContext
@@ -2422,11 +2422,11 @@ const QGLContext* QGLContext::currentContext()
     The \a parent and widget flag, \a f, arguments are passed
     to the QWidget constructor.
 
-    If the \a shareWidget parameter points to a valid QGLWidget, this
-    widget will share OpenGL display lists with \a shareWidget. If
-    this widget and \a shareWidget have different \link format()
-    formats\endlink, display list sharing may fail. You can check
-    whether display list sharing succeeded by calling isSharing().
+    If \a shareWidget is a valid QGLWidget, this widget will share
+    OpenGL display lists and texture objects with \a shareWidget. But
+    if \a shareWidget and this widget have different \l {format()}
+    {formats}, sharing might not be possible. You can check whether
+    sharing is in effect by calling isSharing().
 
     The initialization of OpenGL rendering state, etc. should be done
     by overriding the initializeGL() function, rather than in the
@@ -2461,11 +2461,11 @@ QGLWidget::QGLWidget(QWidget *parent, const QGLWidget* shareWidget, Qt::WindowFl
     The \a parent and widget flag, \a f, arguments are passed
     to the QWidget constructor.
 
-    If the \a shareWidget parameter points to a valid QGLWidget, this
-    widget will share OpenGL display lists with \a shareWidget. If
-    this widget and \a shareWidget have different \link format()
-    formats\endlink, display list sharing may fail. You can check
-    whether display list sharing succeeded by calling isSharing().
+    If \a shareWidget is a valid QGLWidget, this widget will share
+    OpenGL display lists and texture objects with \a shareWidget. But
+    if \a shareWidget and this widget have different \l {format()}
+    {formats}, sharing might not be possible. You can check whether
+    sharing is in effect by calling isSharing().
 
     The initialization of OpenGL rendering state, etc. should be done
     by overriding the initializeGL() function, rather than in the
@@ -2498,11 +2498,11 @@ QGLWidget::QGLWidget(const QGLFormat &format, QWidget *parent, const QGLWidget* 
     The \a parent and widget flag, \a f, arguments are passed
     to the QWidget constructor.
 
-    If the \a shareWidget parameter points to a valid QGLWidget, this
-    widget will share OpenGL display lists with \a shareWidget. If
-    this widget and \a shareWidget have different \link format()
-    formats\endlink, display list sharing may fail. You can check
-    whether display list sharing succeeded by calling isSharing().
+    If \a shareWidget is a valid QGLWidget, this widget will share
+    OpenGL display lists and texture objects with \a shareWidget. But
+    if \a shareWidget and this widget have different \l {format()}
+    {formats}, sharing might not be possible. You can check whether
+    sharing is in effect by calling isSharing().
 
     The initialization of OpenGL rendering state, etc. should be done
     by overriding the initializeGL() function, rather than in the
@@ -2534,10 +2534,6 @@ QGLWidget::~QGLWidget()
     delete d->glcx;
 #if defined(Q_WGL)
     delete d->olcx;
-#endif
-#if defined(Q_WS_MAC) && (MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_5)
-    delete d->watcher;
-    d->watcher = 0;
 #endif
 #if defined(GLX_MESA_release_buffers) && defined(QGL_USE_MESA_EXT)
     if (doRelease)
@@ -2603,9 +2599,8 @@ bool QGLWidget::isValid() const
     \fn bool QGLWidget::isSharing() const
 
     Returns true if this widget's GL context is shared with another GL
-    context, otherwise false is returned. The GL system may fail to
-    provide context sharing if the two QGLWidgets use different
-    formats.
+    context, otherwise false is returned. Context sharing might not be
+    possible if the QGLWidgets use different formats.
 
     \sa format()
 */
@@ -2702,8 +2697,10 @@ void QGLWidget::swapBuffers()
   function will be executed for this new context before the first
   resizeGL() or paintGL().
 
-  This method will try to keep any existing display list sharing with
-  other QGLWidgets, but it may fail. Use isSharing() to test.
+  This method will try to keep display list and texture object sharing
+  in effect with other QGLWidgets, but changing the format might make
+  sharing impossible. Use isSharing() to see if sharing is still in
+  effect.
 
   \sa format(), isSharing(), isValid()
 */
@@ -2741,11 +2738,12 @@ void QGLWidget::setFormat(const QGLFormat &format)
   it. The initializeGL() function will then be executed for the new
   context before the first resizeGL() or paintGL().
 
-  If \a context is invalid, this method will try to keep any existing
-  display list sharing with other QGLWidgets this widget currently
-  has, or (if \a shareContext points to a valid context) start display
-  list sharing with that context, but it may fail. Use isSharing() to
-  test.
+  If \a context is invalid, this method will try to keep display list
+  and texture object sharing in effect, or (if \a shareContext points
+  to a valid context) start display list and texture object sharing
+  with that context, but sharing might be impossible if the two
+  contexts have different \l {format()} {formats}. Use isSharing() to
+  see whether sharing is in effect.
 
   If \a deleteOldContext is true (the default), the existing context
   will be deleted. You may use false here if you have kept a pointer
@@ -3400,9 +3398,11 @@ static void qt_gl_draw_text(QPainter *p, int x, int y, const QString &str,
 void QGLWidget::renderText(int x, int y, const QString &str, const QFont &font, int)
 {
     Q_D(QGLWidget);
-    if (str.isEmpty())
+    if (str.isEmpty() || !isValid())
         return;
 
+    int width = d->glcx->device()->width();
+    int height = d->glcx->device()->height();
     bool auto_swap = autoBufferSwap();
 
     QPaintEngine *engine = paintEngine();
@@ -3414,13 +3414,13 @@ void QGLWidget::renderText(int x, int y, const QString &str, const QFont &font, 
         qt_save_gl_state();
 
         glDisable(GL_DEPTH_TEST);
-        glViewport(0, 0, width(), height());
+        glViewport(0, 0, width, height);
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
 #ifndef Q_WS_QWS
-        glOrtho(0, width(), height(), 0, 0, 1);
+        glOrtho(0, width, height, 0, 0, 1);
 #else
-        glOrthof(0, width(), height(), 0, 0, 1);
+        glOrthof(0, width, height, 0, 0, 1);
 #endif
         glMatrixMode(GL_MODELVIEW);
 
@@ -3457,11 +3457,13 @@ void QGLWidget::renderText(int x, int y, const QString &str, const QFont &font, 
 void QGLWidget::renderText(double x, double y, double z, const QString &str, const QFont &font, int)
 {
     Q_D(QGLWidget);
-    if (str.isEmpty())
+    if (str.isEmpty() || !isValid())
         return;
 
     bool auto_swap = autoBufferSwap();
 
+    int width = d->glcx->device()->width();
+    int height = d->glcx->device()->height();
     GLdouble model[4][4], proj[4][4];
     GLint view[4];
 #ifndef Q_WS_QWS
@@ -3472,7 +3474,7 @@ void QGLWidget::renderText(double x, double y, double z, const QString &str, con
     GLdouble win_x = 0, win_y = 0, win_z = 0;
     qgluProject(x, y, z, &model[0][0], &proj[0][0], &view[0],
                 &win_x, &win_y, &win_z);
-    win_y = height() - win_y; // y is inverted
+    win_y = height - win_y; // y is inverted
 
     QPaintEngine *engine = paintEngine();
     QPainter *p;
@@ -3490,11 +3492,11 @@ void QGLWidget::renderText(double x, double y, double z, const QString &str, con
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glViewport(0, 0, width(), height());
+    glViewport(0, 0, width, height);
 #ifndef Q_WS_QWS
-    glOrtho(0, width(), height(), 0, 0, 1);
+    glOrtho(0, width, height, 0, 0, 1);
 #else
-    glOrthof(0, width(), height(), 0, 0, 1);
+    glOrthof(0, width, height, 0, 0, 1);
 #endif
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();

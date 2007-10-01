@@ -1021,8 +1021,8 @@ ProjectBuilderMakefileGenerator::writeMakeParts(QTextStream &t)
           << "\t\t\t" << writeSettings("buildActionMask", "2147483647", SettingsNoQuote) << ";" << "\n"
           << "\t\t\t" << writeSettings("dstPath", escapeFilePath(destDir)) << ";" << "\n"
           << "\t\t\t" << writeSettings("dstSubfolderSpec", "0", SettingsNoQuote) << ";" << "\n"
-          << "\t\t\t" << writeSettings("files", project->values("QMAKE_PBX_TARGET_COPY_FILE"), SettingsAsList, 4) << ";" << "\n"
-          << "\t\t\t" << writeSettings("isa", "PBXResourcesBuildPhase", SettingsNoQuote) << ";" << "\n"
+          << "\t\t\t" << writeSettings("files", keyFor("QMAKE_PBX_TARGET_COPY_FILE"), SettingsAsList, 4) << ";" << "\n"
+          << "\t\t\t" << writeSettings("isa", "PBXCopyFilesBuildPhase", SettingsNoQuote) << ";" << "\n"
           << "\t\t\t" << writeSettings("runOnlyForDeploymentPostprocessing", "0", SettingsNoQuote) << ";" << "\n"
           << "\t\t" << "};\n"
           << "\t\t" << keyFor("QMAKE_PBX_TARGET_COPY_FILE")  << " = {\n"
@@ -1201,10 +1201,17 @@ ProjectBuilderMakefileGenerator::writeMakeParts(QTextStream &t)
     t << "\t\t" << target_key << " = {" << "\n"
       << "\t\t\t" << writeSettings("buildPhases", project->values("QMAKE_PBX_PRESCRIPT_BUILDPHASES") + project->values("QMAKE_PBX_BUILDPHASES"),
                                    SettingsAsList, 4) << ";" << "\n"
-      << "\t\t\t" << "buildSettings = {" << "\n"
-      << "\t\t\t\t" << writeSettings("CC", fixForOutput(findProgram(project->first("QMAKE_CC")))) << ";" << "\n"
-      << "\t\t\t\t" << writeSettings("CPLUSPLUS", fixForOutput(findProgram(project->first("QMAKE_CXX")))) << ";" << "\n"
-      << "\t\t\t\t" << writeSettings("HEADER_SEARCH_PATHS", fixListForOutput("INCLUDEPATH") + QStringList(fixForOutput(specdir())), SettingsAsList, 5) << ";" << "\n"
+      << "\t\t\t" << "buildSettings = {" << "\n";
+    QString cCompiler = project->first("QMAKE_CC");
+    if (!cCompiler.isEmpty()) {
+        t << "\t\t\t\t" << writeSettings("CC", fixForOutput(findProgram(cCompiler))) << ";" << "\n";
+    }
+    cCompiler = project->first("QMAKE_CXX");
+    if (!cCompiler.isEmpty()) {
+        t << "\t\t\t\t" << writeSettings("CPLUSPLUS", fixForOutput(findProgram(cCompiler))) << ";" << "\n";
+    }
+
+    t << "\t\t\t\t" << writeSettings("HEADER_SEARCH_PATHS", fixListForOutput("INCLUDEPATH") + QStringList(fixForOutput(specdir())), SettingsAsList, 5) << ";" << "\n"
       << "\t\t\t\t" << writeSettings("LIBRARY_SEARCH_PATHS", fixListForOutput("QMAKE_PBX_LIBPATHS"), SettingsAsList, 5) << ";" << "\n"
       << "\t\t\t\t" << writeSettings("OPTIMIZATION_CFLAGS", QStringList(), SettingsAsList, 5) << ";" << "\n";
     {

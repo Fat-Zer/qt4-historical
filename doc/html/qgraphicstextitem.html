@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.1-qt-1186491764734/qt-all-opensource-src-4.3.1/src/gui/graphicsview/qgraphicsitem.cpp -->
+<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/src/gui/graphicsview/qgraphicsitem.cpp -->
 <head>
   <title>Qt 4.3: QGraphicsTextItem Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -83,6 +83,8 @@
 <p>To set the item's text, pass a <a href="qstring.html">QString</a> to QGraphicsTextItem's constructor, or call <a href="qgraphicstextitem.html#setHtml">setHtml</a>()/<a href="qgraphicstextitem.html#setPlainText">setPlainText</a>().</p>
 <p>QGraphicsTextItem uses the text's formatted size and the associated font to provide a reasonable implementation of <a href="qgraphicsitem.html#boundingRect">boundingRect</a>(), <a href="qgraphicsitem.html#shape">shape</a>(), and <a href="qgraphicsitem.html#contains">contains</a>(). You can set the font by calling <a href="qgraphicstextitem.html#setFont">setFont</a>().</p>
 <p>It is possible to make the item editable by setting the <a href="qt.html#TextInteractionFlag-enum">Qt::TextEditable</a> flag using <a href="qgraphicstextitem.html#setTextInteractionFlags">setTextInteractionFlags</a>().</p>
+<p>The item's preferred text width can be set using <a href="qgraphicstextitem.html#setTextWidth">setTextWidth</a>() and obtained using <a href="qgraphicstextitem.html#textWidth">textWidth</a>().</p>
+<p><b>Note:</b> In order to align HTML text in the center, the item's text width must be set.</p>
 <p align="center"><img src="images/graphicsview-textitem.png" /></p><p>See also <a href="qgraphicssimpletextitem.html">QGraphicsSimpleTextItem</a>, <a href="qgraphicspathitem.html">QGraphicsPathItem</a>, <a href="qgraphicsrectitem.html">QGraphicsRectItem</a>, <a href="qgraphicsellipseitem.html">QGraphicsEllipseItem</a>, <a href="qgraphicspixmapitem.html">QGraphicsPixmapItem</a>, <a href="qgraphicspolygonitem.html">QGraphicsPolygonItem</a>, <a href="qgraphicslineitem.html">QGraphicsLineItem</a>, and <a href="graphicsview.html">The Graphics View Framework</a>.</p>
 <hr />
 <h2>Property Documentation</h2>
@@ -192,6 +194,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
 </tr></table></div></address></body>
 </html>
