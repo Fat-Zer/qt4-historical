@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/src/gui/text/qtextdocumentfragment.cpp -->
+<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-x11-opensource-src-4.3.2/src/gui/text/qtextdocumentfragment.cpp -->
 <head>
   <title>Qt 4.3: QTextDocumentFragment Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//QTextDocumentFragment" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
@@ -47,7 +46,6 @@
 <p>The contents of a document fragment can be obtained as plain text by using the <a href="qtextdocumentfragment.html#toPlainText">toPlainText</a>() function, or it can be obtained as HTML with <a href="qtextdocumentfragment.html#toHtml">toHtml</a>().</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QTextDocumentFragment/QTextDocumentFragment" />
 <h3 class="fn"><a name="QTextDocumentFragment"></a>QTextDocumentFragment::QTextDocumentFragment ()</h3>
 <p>Constructs an empty <a href="qtextdocumentfragment.html">QTextDocumentFragment</a>.</p>
 <p>See also <a href="qtextdocumentfragment.html#isEmpty">isEmpty</a>().</p>
@@ -58,10 +56,8 @@
 <p>See also <a href="qtextdocumentfragment.html#isEmpty">isEmpty</a>() and <a href="qtextcursor.html#selection">QTextCursor::selection</a>().</p>
 <h3 class="fn"><a name="QTextDocumentFragment-4"></a>QTextDocumentFragment::QTextDocumentFragment ( const QTextDocumentFragment &amp; <i>other</i> )</h3>
 <p>Copy constructor. Creates a copy of the <i>other</i> fragment.</p>
-<a name="//apple_ref/cpp/instm/QTextDocumentFragment/~QTextDocumentFragment" />
 <h3 class="fn"><a name="dtor.QTextDocumentFragment"></a>QTextDocumentFragment::~QTextDocumentFragment ()</h3>
 <p>Destroys the document fragment.</p>
-<a name="//apple_ref/cpp/clm/QTextDocumentFragment/fromHtml" />
 <h3 class="fn"><a name="fromHtml"></a>QTextDocumentFragment QTextDocumentFragment::fromHtml ( const <a href="qstring.html">QString</a> &amp; <i>text</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns a <a href="qtextdocumentfragment.html">QTextDocumentFragment</a> based on the arbitrary piece of HTML in the given <i>text</i>. The formatting is preserved as much as possible; for example, &quot;&lt;b&gt;bold&lt;/b&gt;&quot; will become a document fragment with the text &quot;bold&quot; with a bold character format.</p>
 <h3 class="fn"><a name="fromHtml-2"></a>QTextDocumentFragment QTextDocumentFragment::fromHtml ( const <a href="qstring.html">QString</a> &amp; <i>text</i>, const <a href="qtextdocument.html">QTextDocument</a> * <i>resourceProvider</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
@@ -69,25 +65,20 @@
 <p>Returns a <a href="qtextdocumentfragment.html">QTextDocumentFragment</a> based on the arbitrary piece of HTML in the given <i>text</i>. The formatting is preserved as much as possible; for example, &quot;&lt;b&gt;bold&lt;/b&gt;&quot; will become a document fragment with the text &quot;bold&quot; with a bold character format.</p>
 <p>If the provided HTML contains references to external resources such as imported style sheets, then they will be loaded through the <i>resourceProvider</i>.</p>
 <p>This function was introduced in Qt 4.2.</p>
-<a name="//apple_ref/cpp/clm/QTextDocumentFragment/fromPlainText" />
 <h3 class="fn"><a name="fromPlainText"></a>QTextDocumentFragment QTextDocumentFragment::fromPlainText ( const <a href="qstring.html">QString</a> &amp; <i>plainText</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns a document fragment that contains the given <i>plainText</i>.</p>
 <p>When inserting such a fragment into a <a href="qtextdocument.html">QTextDocument</a> the current char format of the <a href="qtextcursor.html">QTextCursor</a> used for insertion is used as format for the text.</p>
-<a name="//apple_ref/cpp/instm/QTextDocumentFragment/isEmpty" />
 <h3 class="fn"><a name="isEmpty"></a>bool QTextDocumentFragment::isEmpty () const</h3>
 <p>Returns true if the fragment is empty; otherwise returns false.</p>
-<a name="//apple_ref/cpp/instm/QTextDocumentFragment/toHtml" />
 <h3 class="fn"><a name="toHtml"></a><a href="qstring.html">QString</a> QTextDocumentFragment::toHtml ( const <a href="qbytearray.html">QByteArray</a> &amp; <i>encoding</i> ) const</h3>
 <p>Returns the contents of the document fragment as HTML, using the specified <i>encoding</i> (e.g&#x2e;, &quot;UTF-8&quot;, &quot;ISO 8859-1&quot;).</p>
 <p>This function was introduced in Qt 4.2.</p>
 <p>See also <a href="qtextdocumentfragment.html#toPlainText">toPlainText</a>(), <a href="qtextdocument.html#toHtml">QTextDocument::toHtml</a>(), and <a href="qtextcodec.html">QTextCodec</a>.</p>
 <h3 class="fn"><a name="toHtml-2"></a><a href="qstring.html">QString</a> QTextDocumentFragment::toHtml () const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
-<a name="//apple_ref/cpp/instm/QTextDocumentFragment/toPlainText" />
 <h3 class="fn"><a name="toPlainText"></a><a href="qstring.html">QString</a> QTextDocumentFragment::toPlainText () const</h3>
 <p>Returns the document fragment's text as plain text (i.e&#x2e; with no formatting information).</p>
 <p>See also <a href="qtextdocumentfragment.html#toHtml">toHtml</a>().</p>
-<a name="//apple_ref/cpp/instm/QTextDocumentFragment/operator=" />
 <h3 class="fn"><a name="operator-eq"></a>QTextDocumentFragment &amp; QTextDocumentFragment::operator= ( const QTextDocumentFragment &amp; <i>other</i> )</h3>
 <p>Assigns the <i>other</i> fragment to this fragment.</p>
 <p /><address><hr /><div align="center">

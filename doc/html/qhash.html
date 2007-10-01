@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/src/corelib/tools/qhash.cpp -->
+<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-x11-opensource-src-4.3.2/src/corelib/tools/qhash.cpp -->
 <head>
   <title>Qt 4.3: QHash Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//QHash" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
@@ -208,27 +207,20 @@
 <p>See also <a href="qhashiterator.html">QHashIterator</a>, <a href="qmutablehashiterator.html">QMutableHashIterator</a>, <a href="qmap.html">QMap</a>, and <a href="qset.html">QSet</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
-<a name="//apple_ref/cpp/tdef/QHash/ConstIterator" />
 <h3 class="fn"><a name="ConstIterator-typedef"></a>typedef QHash::ConstIterator</h3>
 <p>Qt-style synonym for <a href="qhash-const-iterator.html">QHash::const_iterator</a>.</p>
-<a name="//apple_ref/cpp/tdef/QHash/Iterator" />
 <h3 class="fn"><a name="Iterator-typedef"></a>typedef QHash::Iterator</h3>
 <p>Qt-style synonym for <a href="qhash-iterator.html">QHash::iterator</a>.</p>
-<a name="//apple_ref/cpp/tdef/QHash/difference_type" />
 <h3 class="fn"><a name="difference_type-typedef"></a>typedef QHash::difference_type</h3>
 <p>Typedef for ptrdiff_t. Provided for STL compatibility.</p>
-<a name="//apple_ref/cpp/tdef/QHash/key_type" />
 <h3 class="fn"><a name="key_type-typedef"></a>typedef QHash::key_type</h3>
 <p>Typedef for Key. Provided for STL compatibility.</p>
-<a name="//apple_ref/cpp/tdef/QHash/mapped_type" />
 <h3 class="fn"><a name="mapped_type-typedef"></a>typedef QHash::mapped_type</h3>
 <p>Typedef for T. Provided for STL compatibility.</p>
-<a name="//apple_ref/cpp/tdef/QHash/size_type" />
 <h3 class="fn"><a name="size_type-typedef"></a>typedef QHash::size_type</h3>
 <p>Typedef for int. Provided for STL compatibility.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QHash/QHash" />
 <h3 class="fn"><a name="QHash"></a>QHash::QHash ()</h3>
 <p>Constructs an empty hash.</p>
 <p>See also <a href="qhash.html#clear">clear</a>().</p>
@@ -236,59 +228,47 @@
 <p>Constructs a copy of <i>other</i>.</p>
 <p>This operation occurs in <a href="containers.html#constant-time">constant time</a>, because <a href="qhash.html">QHash</a> is <a href="shared.html#implicitly-shared">implicitly shared</a>. This makes returning a <a href="qhash.html">QHash</a> from a function very fast. If a shared instance is modified, it will be copied (copy-on-write), and this takes <a href="containers.html#linear-time">linear time</a>.</p>
 <p>See also <a href="qhash.html#operator-eq">operator=</a>().</p>
-<a name="//apple_ref/cpp/instm/QHash/~QHash" />
 <h3 class="fn"><a name="dtor.QHash"></a>QHash::~QHash ()</h3>
 <p>Destroys the hash. References to the values in the hash and all iterators of this hash become invalid.</p>
-<a name="//apple_ref/cpp/instm/QHash/begin" />
 <h3 class="fn"><a name="begin"></a><a href="qhash-iterator.html">iterator</a> QHash::begin ()</h3>
 <p>Returns an <a href="containers.html#stl-style-iterators">STL-style iterator</a> pointing to the first item in the hash.</p>
 <p>See also <a href="qhash.html#constBegin">constBegin</a>() and <a href="qhash.html#end">end</a>().</p>
 <h3 class="fn"><a name="begin-2"></a><a href="qhash-const-iterator.html">const_iterator</a> QHash::begin () const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
-<a name="//apple_ref/cpp/instm/QHash/capacity" />
 <h3 class="fn"><a name="capacity"></a>int QHash::capacity () const</h3>
 <p>Returns the number of buckets in the <a href="qhash.html">QHash</a>'s internal hash table.</p>
 <p>The sole purpose of this function is to provide a means of fine tuning <a href="qhash.html">QHash</a>'s memory usage. In general, you will rarely ever need to call this function. If you want to know how many items are in the hash, call <a href="qhash.html#size">size</a>().</p>
 <p>See also <a href="qhash.html#reserve">reserve</a>() and <a href="qhash.html#squeeze">squeeze</a>().</p>
-<a name="//apple_ref/cpp/instm/QHash/clear" />
 <h3 class="fn"><a name="clear"></a>void QHash::clear ()</h3>
 <p>Removes all items from the hash.</p>
 <p>See also <a href="qhash.html#remove">remove</a>().</p>
-<a name="//apple_ref/cpp/instm/QHash/constBegin" />
 <h3 class="fn"><a name="constBegin"></a><a href="qhash-const-iterator.html">const_iterator</a> QHash::constBegin () const</h3>
 <p>Returns a const <a href="containers.html#stl-style-iterators">STL-style iterator</a> pointing to the first item in the hash.</p>
 <p>See also <a href="qhash.html#begin">begin</a>() and <a href="qhash.html#constEnd">constEnd</a>().</p>
-<a name="//apple_ref/cpp/instm/QHash/constEnd" />
 <h3 class="fn"><a name="constEnd"></a><a href="qhash-const-iterator.html">const_iterator</a> QHash::constEnd () const</h3>
 <p>Returns a const <a href="containers.html#stl-style-iterators">STL-style iterator</a> pointing to the imaginary item after the last item in the hash.</p>
 <p>See also <a href="qhash.html#constBegin">constBegin</a>() and <a href="qhash.html#end">end</a>().</p>
-<a name="//apple_ref/cpp/instm/QHash/constFind" />
 <h3 class="fn"><a name="constFind"></a><a href="qhash-const-iterator.html">const_iterator</a> QHash::constFind ( const Key &amp; <i>key</i> ) const</h3>
 <p>Returns an iterator pointing to the item with key <i>key</i> in the hash.</p>
 <p>If the hash contains no item with key <i>key</i>, the function returns <a href="qhash.html#constEnd">constEnd</a>().</p>
 <p>This function was introduced in Qt 4.1.</p>
 <p>See also <a href="qhash.html#find">find</a>() and <a href="qmultihash.html#constFind">QMultiHash::constFind</a>().</p>
-<a name="//apple_ref/cpp/instm/QHash/contains" />
 <h3 class="fn"><a name="contains"></a>bool QHash::contains ( const Key &amp; <i>key</i> ) const</h3>
 <p>Returns true if the hash contains an item with key <i>key</i>; otherwise returns false.</p>
 <p>See also <a href="qhash.html#count">count</a>() and <a href="qmultihash.html#contains">QMultiHash::contains</a>().</p>
-<a name="//apple_ref/cpp/instm/QHash/count" />
 <h3 class="fn"><a name="count"></a>int QHash::count ( const Key &amp; <i>key</i> ) const</h3>
 <p>Returns the number of items associated with key <i>key</i>.</p>
 <p>See also <a href="qhash.html#contains">contains</a>() and <a href="qhash.html#insertMulti">insertMulti</a>().</p>
 <h3 class="fn"><a name="count-2"></a>int QHash::count () const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Same as <a href="qhash.html#size">size</a>().</p>
-<a name="//apple_ref/cpp/instm/QHash/empty" />
 <h3 class="fn"><a name="empty"></a>bool QHash::empty () const</h3>
 <p>This function is provided for STL compatibility. It is equivalent to <a href="qhash.html#isEmpty">isEmpty</a>(), returning true if the hash is empty; otherwise returns false.</p>
-<a name="//apple_ref/cpp/instm/QHash/end" />
 <h3 class="fn"><a name="end"></a><a href="qhash-iterator.html">iterator</a> QHash::end ()</h3>
 <p>Returns an <a href="containers.html#stl-style-iterators">STL-style iterator</a> pointing to the imaginary item after the last item in the hash.</p>
 <p>See also <a href="qhash.html#begin">begin</a>() and <a href="qhash.html#constEnd">constEnd</a>().</p>
 <h3 class="fn"><a name="end-2"></a><a href="qhash-const-iterator.html">const_iterator</a> QHash::end () const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
-<a name="//apple_ref/cpp/instm/QHash/erase" />
 <h3 class="fn"><a name="erase"></a><a href="qhash-iterator.html">iterator</a> QHash::erase ( <a href="qhash-iterator.html">iterator</a> <i>pos</i> )</h3>
 <p>Removes the (key, value) pair associated with the iterator <i>pos</i> from the hash, and returns an iterator to the next item in the hash.</p>
 <p>Unlike <a href="qhash.html#remove">remove</a>() and <a href="qhash.html#take">take</a>(), this function never causes <a href="qhash.html">QHash</a> to rehash its internal data structure. This means that it can safely be called while iterating, and won't affect the order of items in the hash. For example:</p>
@@ -303,7 +283,6 @@
      }
  }</pre>
 <p>See also <a href="qhash.html#remove">remove</a>(), <a href="qhash.html#take">take</a>(), and <a href="qhash.html#find">find</a>().</p>
-<a name="//apple_ref/cpp/instm/QHash/find" />
 <h3 class="fn"><a name="find"></a><a href="qhash-iterator.html">iterator</a> QHash::find ( const Key &amp; <i>key</i> )</h3>
 <p>Returns an iterator pointing to the item with key <i>key</i> in the hash.</p>
 <p>If the hash contains no item with key <i>key</i>, the function returns <a href="qhash.html#end">end</a>().</p>
@@ -318,22 +297,18 @@
 <p>See also <a href="qhash.html#value">value</a>(), <a href="qhash.html#values">values</a>(), and <a href="qmultihash.html#find">QMultiHash::find</a>().</p>
 <h3 class="fn"><a name="find-2"></a><a href="qhash-const-iterator.html">const_iterator</a> QHash::find ( const Key &amp; <i>key</i> ) const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
-<a name="//apple_ref/cpp/instm/QHash/insert" />
 <h3 class="fn"><a name="insert"></a><a href="qhash-iterator.html">iterator</a> QHash::insert ( const Key &amp; <i>key</i>, const T &amp; <i>value</i> )</h3>
 <p>Inserts a new item with the key <i>key</i> and a value of <i>value</i>.</p>
 <p>If there is already an item with the key <i>key</i>, that item's value is replaced with <i>value</i>.</p>
 <p>If there are multiple items with the key <i>key</i>, the most recently inserted item's value is replaced with <i>value</i>.</p>
 <p>See also <a href="qhash.html#insertMulti">insertMulti</a>().</p>
-<a name="//apple_ref/cpp/instm/QHash/insertMulti" />
 <h3 class="fn"><a name="insertMulti"></a><a href="qhash-iterator.html">iterator</a> QHash::insertMulti ( const Key &amp; <i>key</i>, const T &amp; <i>value</i> )</h3>
 <p>Inserts a new item with the key <i>key</i> and a value of <i>value</i>.</p>
 <p>If there is already an item with the same key in the hash, this function will simply create a new one. (This behavior is different from <a href="qhash.html#insert">insert</a>(), which overwrites the value of an existing item.)</p>
 <p>See also <a href="qhash.html#insert">insert</a>() and <a href="qhash.html#values">values</a>().</p>
-<a name="//apple_ref/cpp/instm/QHash/isEmpty" />
 <h3 class="fn"><a name="isEmpty"></a>bool QHash::isEmpty () const</h3>
 <p>Returns true if the hash contains no items; otherwise returns false.</p>
 <p>See also <a href="qhash.html#size">size</a>().</p>
-<a name="//apple_ref/cpp/instm/QHash/key" />
 <h3 class="fn"><a name="key"></a>const Key QHash::key ( const T &amp; <i>value</i> ) const</h3>
 <p>Returns the first key with value <i>value</i>.</p>
 <p>If the hash contains no item with value <i>value</i>, the function returns a <a href="containers.html#default-constructed-values">default-constructed key</a>.</p>
@@ -344,7 +319,6 @@
 <p>Returns the first key with value <i>value</i>, or <i>defaultKey</i> if the hash contains no item with value <i>value</i>.</p>
 <p>This function can be slow (<a href="containers.html#linear-time">linear time</a>), because <a href="qhash.html">QHash</a>'s internal data structure is optimized for fast lookup by key, not by value.</p>
 <p>This function was introduced in Qt 4.3.</p>
-<a name="//apple_ref/cpp/instm/QHash/keys" />
 <h3 class="fn"><a name="keys"></a><a href="qlist.html">QList</a>&lt;Key&gt; QHash::keys () const</h3>
 <p>Returns a list containing all the keys in the hash, in an arbitrary order. Keys that occur multiple times in the hash (because items were inserted with <a href="qhash.html#insertMulti">insertMulti</a>(), or <a href="qhash.html#unite">unite</a>() was used) also occur multiple times in the list.</p>
 <p>To obtain a list of unique keys, where each key from the map only occurs once, use <a href="qhash.html#uniqueKeys">uniqueKeys</a>().</p>
@@ -354,11 +328,9 @@
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns a list containing all the keys associated with value <i>value</i>, in an arbitrary order.</p>
 <p>This function can be slow (<a href="containers.html#linear-time">linear time</a>), because <a href="qhash.html">QHash</a>'s internal data structure is optimized for fast lookup by key, not by value.</p>
-<a name="//apple_ref/cpp/instm/QHash/remove" />
 <h3 class="fn"><a name="remove"></a>int QHash::remove ( const Key &amp; <i>key</i> )</h3>
 <p>Removes all the items that have the key <i>key</i> from the hash. Returns the number of items removed which is usually 1 but will be 0 if the key isn't in the hash, or greater than 1 if <a href="qhash.html#insertMulti">insertMulti</a>() has been used with the <i>key</i>.</p>
 <p>See also <a href="qhash.html#clear">clear</a>(), <a href="qhash.html#take">take</a>(), and <a href="qmultihash.html#remove">QMultiHash::remove</a>().</p>
-<a name="//apple_ref/cpp/instm/QHash/reserve" />
 <h3 class="fn"><a name="reserve"></a>void QHash::reserve ( int <i>size</i> )</h3>
 <p>Ensures that the <a href="qhash.html">QHash</a>'s internal hash table consists of at least <i>size</i> buckets.</p>
 <p>This function is useful for code that needs to build a huge hash and wants to avoid repeated reallocation. For example:</p>
@@ -369,31 +341,25 @@
 <p>Ideally, <i>size</i> should be slightly more than the maximum number of items expected in the hash. <i>size</i> doesn't have to be prime, because <a href="qhash.html">QHash</a> will use a prime number internally anyway. If <i>size</i> is an underestimate, the worst that will happen is that the <a href="qhash.html">QHash</a> will be a bit slower.</p>
 <p>In general, you will rarely ever need to call this function. <a href="qhash.html">QHash</a>'s internal hash table automatically shrinks or grows to provide good performance without wasting too much memory.</p>
 <p>See also <a href="qhash.html#squeeze">squeeze</a>() and <a href="qhash.html#capacity">capacity</a>().</p>
-<a name="//apple_ref/cpp/instm/QHash/size" />
 <h3 class="fn"><a name="size"></a>int QHash::size () const</h3>
 <p>Returns the number of items in the hash.</p>
 <p>See also <a href="qhash.html#isEmpty">isEmpty</a>() and <a href="qhash.html#count">count</a>().</p>
-<a name="//apple_ref/cpp/instm/QHash/squeeze" />
 <h3 class="fn"><a name="squeeze"></a>void QHash::squeeze ()</h3>
 <p>Reduces the size of the <a href="qhash.html">QHash</a>'s internal hash table to save memory.</p>
 <p>The sole purpose of this function is to provide a means of fine tuning <a href="qhash.html">QHash</a>'s memory usage. In general, you will rarely ever need to call this function.</p>
 <p>See also <a href="qhash.html#reserve">reserve</a>() and <a href="qhash.html#capacity">capacity</a>().</p>
-<a name="//apple_ref/cpp/instm/QHash/take" />
 <h3 class="fn"><a name="take"></a>T QHash::take ( const Key &amp; <i>key</i> )</h3>
 <p>Removes the item with the key <i>key</i> from the hash and returns the value associated with it.</p>
 <p>If the item does not exist in the hash, the function simply returns a <a href="containers.html#default-constructed-values">default-constructed value</a>. If there are multiple items for <i>key</i> in the hash, only the most recently inserted one is removed.</p>
 <p>If you don't use the return value, <a href="qhash.html#remove">remove</a>() is more efficient.</p>
 <p>See also <a href="qhash.html#remove">remove</a>().</p>
-<a name="//apple_ref/cpp/instm/QHash/uniqueKeys" />
 <h3 class="fn"><a name="uniqueKeys"></a><a href="qlist.html">QList</a>&lt;Key&gt; QHash::uniqueKeys () const</h3>
 <p>Returns a list containing all the keys in the map in ascending order. Keys that occur multiple times in the map (because items were inserted with <a href="qhash.html#insertMulti">insertMulti</a>(), or <a href="qhash.html#unite">unite</a>() was used) occur only once in the returned list.</p>
 <p>This function was introduced in Qt 4.2.</p>
 <p>See also <a href="qhash.html#keys">keys</a>() and <a href="qhash.html#values">values</a>().</p>
-<a name="//apple_ref/cpp/instm/QHash/unite" />
 <h3 class="fn"><a name="unite"></a>QHash&lt;Key, T&gt; &amp; QHash::unite ( const QHash&lt;Key, T&gt; &amp; <i>other</i> )</h3>
 <p>Inserts all the items in the <i>other</i> hash into this hash. If a key is common to both hashes, the resulting hash will contain the key multiple times.</p>
 <p>See also <a href="qhash.html#insertMulti">insertMulti</a>().</p>
-<a name="//apple_ref/cpp/instm/QHash/value" />
 <h3 class="fn"><a name="value"></a>const T QHash::value ( const Key &amp; <i>key</i> ) const</h3>
 <p>Returns the value associated with the key <i>key</i>.</p>
 <p>If the hash contains no item with key <i>key</i>, the function returns a <a href="containers.html#default-constructed-values">default-constructed value</a>. If there are multiple items for <i>key</i> in the hash, the value of the most recently inserted one is returned.</p>
@@ -401,7 +367,6 @@
 <h3 class="fn"><a name="value-2"></a>const T QHash::value ( const Key &amp; <i>key</i>, const T &amp; <i>defaultValue</i> ) const</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>If the hash contains no item with the given <i>key</i>, the function returns <i>defaultValue</i>.</p>
-<a name="//apple_ref/cpp/instm/QHash/values" />
 <h3 class="fn"><a name="values"></a><a href="qlist.html">QList</a>&lt;T&gt; QHash::values () const</h3>
 <p>Returns a list containing all the values in the hash, in an arbitrary order. If a key is associated multiple values, all of its values will be in the list, and not just the most recently inserted one.</p>
 <p>The order is guaranteed to be the same as that used by <a href="qhash.html#keys">keys</a>().</p>
@@ -410,22 +375,18 @@
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns a list of all the values associated with key <i>key</i>, from the most recently inserted to the least recently inserted.</p>
 <p>See also <a href="qhash.html#count">count</a>() and <a href="qhash.html#insertMulti">insertMulti</a>().</p>
-<a name="//apple_ref/cpp/instm/QHash/operator!=" />
 <h3 class="fn"><a name="operator-not-eq"></a>bool QHash::operator!= ( const QHash&lt;Key, T&gt; &amp; <i>other</i> ) const</h3>
 <p>Returns true if <i>other</i> is not equal to this hash; otherwise returns false.</p>
 <p>Two hashes are considered equal if they contain the same (key, value) pairs.</p>
 <p>This function requires the value type to implement <tt>operator==()</tt>.</p>
 <p>See also <a href="qhash.html#operator-eq-eq">operator==</a>().</p>
-<a name="//apple_ref/cpp/instm/QHash/operator=" />
 <h3 class="fn"><a name="operator-eq"></a>QHash&lt;Key, T&gt; &amp; QHash::operator= ( const QHash&lt;Key, T&gt; &amp; <i>other</i> )</h3>
 <p>Assigns <i>other</i> to this hash and returns a reference to this hash.</p>
-<a name="//apple_ref/cpp/instm/QHash/operator==" />
 <h3 class="fn"><a name="operator-eq-eq"></a>bool QHash::operator== ( const QHash&lt;Key, T&gt; &amp; <i>other</i> ) const</h3>
 <p>Returns true if <i>other</i> is equal to this hash; otherwise returns false.</p>
 <p>Two hashes are considered equal if they contain the same (key, value) pairs.</p>
 <p>This function requires the value type to implement <tt>operator==()</tt>.</p>
 <p>See also <a href="qhash.html#operator-not-eq">operator!=</a>().</p>
-<a name="//apple_ref/cpp/instm/QHash/operator[]" />
 <h3 class="fn"><a name="operator-5b-5d"></a>T &amp; QHash::operator[] ( const Key &amp; <i>key</i> )</h3>
 <p>Returns the value associated with the key <i>key</i> as a modifiable reference.</p>
 <p>If the hash contains no item with key <i>key</i>, the function inserts a <a href="containers.html#default-constructed-values">default-constructed value</a> into the hash with key <i>key</i>, and returns a reference to it. If the hash contains multiple items with key <i>key</i>, this function returns a reference to the most recently inserted value.</p>
@@ -435,7 +396,6 @@
 <p>Same as <a href="qhash.html#value">value</a>().</p>
 <hr />
 <h2>Related Non-Members</h2>
-<a name="//apple_ref/cpp/func//qHash" />
 <h3 class="fn"><a name="qHashx"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( char <i>key</i> )</h3>
 <p>Returns the hash value for <i>key</i>.</p>
 <h3 class="fn"><a name="qHash-4"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( const <a href="qpair.html">QPair</a>&lt;T1, T2&gt; &amp; <i>key</i> )</h3>
