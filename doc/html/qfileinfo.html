@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/src/corelib/io/qfileinfo.cpp -->
+<!-- /tmp/qt-4.3.3-qt-1196785887335/qt-all-opensource-src-4.3.3/src/corelib/io/qfileinfo.cpp -->
 <head>
   <title>Qt 4.3: QFileInfo Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -97,9 +97,6 @@
 <p>QFileInfo provides information about a file's name and position (path) in the file system, its access rights and whether it is a directory or symbolic link, etc. The file's size and last modified/read times are also available. QFileInfo can also be used to obtain information about a Qt <a href="resources.html#resource-system">resource</a>.</p>
 <p>A QFileInfo can point to a file with either a relative or an absolute file path. Absolute file paths begin with the directory separator &quot;/&quot; (or with a drive specification on Windows). Relative file names begin with a directory name or a file name and specify a path relative to the current working directory. An example of an absolute path is the string &quot;/tmp/quartz&quot;. A relative path might look like &quot;src/fatlib&quot;. You can use the function <a href="qfileinfo.html#isRelative">isRelative</a>() to check whether a QFileInfo is using a relative or an absolute file path. You can call the function <a href="qfileinfo.html#makeAbsolute">makeAbsolute</a>() to convert a relative QFileInfo's path to an absolute path.</p>
 <p>The file that the QFileInfo works on is set in the constructor or later with <a href="qfileinfo.html#setFile">setFile</a>(). Use <a href="qfileinfo.html#exists">exists</a>() to see if the file exists and <a href="qfileinfo.html#size">size</a>() to get its size.</p>
-<p>Some of QFileInfo's functions query the file system, but for performance reasons, some functions only operate on the file name itself. For example: To return the absolute path of a relative file name, <a href="qfileinfo.html#absolutePath">absolutePath</a>() has to query the file system. The <a href="qfileinfo.html#path">path</a>() function, however, can work on the file name directly, and so it is faster. By convention, QFileInfo interprets any path that ends with a slash '/' as a directory (e.g&#x2e;, &quot;C:/WINDOWS/&quot;), and those without a trailing slash (e.g&#x2e;, &quot;C:/WINDOWS/hosts.txt&quot;) are treated as files.</p>
-<p><b>Note:</b> To speed up performance, QFileInfo caches information about the file.</p>
-<p>Because files can be changed by other users or programs, or even by other parts of the same program, there is a function that refreshes the file information: <a href="qfileinfo.html#refresh">refresh</a>(). If you want to switch off a QFileInfo's caching and force it to access the file system every time you request information from it call setCaching(false).</p>
 <p>The file's type is obtained with <a href="qfileinfo.html#isFile">isFile</a>(), <a href="qfileinfo.html#isDir">isDir</a>() and <a href="qfileinfo.html#isSymLink">isSymLink</a>(). The <a href="qfileinfo.html#symLinkTarget">symLinkTarget</a>() function provides the name of the file the symlink points to.</p>
 <p>On Unix (including Mac OS X), the symlink has the same <a href="qfileinfo.html#size">size</a>() has the file it points to, because Unix handles symlinks transparently; similarly, opening a symlink using <a href="qfile.html">QFile</a> effectively opens the link's target. For example:</p>
 <pre> #ifdef Q_OS_UNIX
@@ -131,8 +128,13 @@
  info1.size();               <span class="comment">//</span> returns 63942
 
  #endif</pre>
-<p>Elements of the file's name can be extracted with <a href="qfileinfo.html#path">path</a>() and <a href="qfileinfo.html#fileName">fileName</a>(). The <a href="qfileinfo.html#fileName">fileName</a>()'s parts can be extracted with <a href="qfileinfo.html#baseName">baseName</a>() and <a href="qfileinfo-qt3.html#extension">extension</a>().</p>
+<p>Elements of the file's name can be extracted with <a href="qfileinfo.html#path">path</a>() and <a href="qfileinfo.html#fileName">fileName</a>(). The <a href="qfileinfo.html#fileName">fileName</a>()'s parts can be extracted with <a href="qfileinfo.html#baseName">baseName</a>() and <a href="qfileinfo-qt3.html#extension">extension</a>(). QFileInfo objects to directories created by Qt classes will not have a trailing file separator. If you wish to use trailing separators in your own file info objects, just append one to the file name given to the constructors or <a href="qfileinfo.html#setFile">setFile</a>().</p>
 <p>The file's dates are returned by <a href="qfileinfo.html#created">created</a>(), <a href="qfileinfo.html#lastModified">lastModified</a>() and <a href="qfileinfo.html#lastRead">lastRead</a>(). Information about the file's access permissions is obtained with <a href="qfileinfo.html#isReadable">isReadable</a>(), <a href="qfileinfo.html#isWritable">isWritable</a>() and <a href="qfileinfo.html#isExecutable">isExecutable</a>(). The file's ownership is available from <a href="qfileinfo.html#owner">owner</a>(), <a href="qfileinfo.html#ownerId">ownerId</a>(), <a href="qfileinfo.html#group">group</a>() and <a href="qfileinfo.html#groupId">groupId</a>(). You can examine a file's permissions and ownership in a single statement using the <a href="qfileinfo.html#permission">permission</a>() function.</p>
+<a name="performance-issues"></a>
+<h3>Performance Issues</h3>
+<p>Some of QFileInfo's functions query the file system, but for performance reasons, some functions only operate on the file name itself. For example: To return the absolute path of a relative file name, <a href="qfileinfo.html#absolutePath">absolutePath</a>() has to query the file system. The <a href="qfileinfo.html#path">path</a>() function, however, can work on the file name directly, and so it is faster.</p>
+<p><b>Note:</b> To speed up performance, QFileInfo caches information about the file.</p>
+<p>To speed up performance, QFileInfo caches information about the file. Because files can be changed by other users or programs, or even by other parts of the same program, there is a function that refreshes the file information: <a href="qfileinfo.html#refresh">refresh</a>(). If you want to switch off a QFileInfo's caching and force it to access the file system every time you request information from it call setCaching(false).</p>
 <p>See also <a href="qdir.html">QDir</a> and <a href="qfile.html">QFile</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
@@ -428,6 +430,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.3</div></td>
 </tr></table></div></address></body>
 </html>

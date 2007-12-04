@@ -28,8 +28,6 @@
 ** functionality provided by Qt Designer and its related libraries.
 **
 ** Trolltech reserves all rights not expressly granted herein.
-** 
-** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -105,18 +103,4 @@ void DropArea::clear()
     setBackgroundRole(QPalette::Dark);
 
     emit changed();
-}
-
-QPixmap DropArea::extractPixmap(const QByteArray &data, const QString &format)
-{
-    QList<QByteArray> imageFormats = QImageReader::supportedImageFormats();
-    QPixmap pixmap;
-
-    foreach (QByteArray imageFormat, imageFormats) {
-        if (format.mid(6) == QString(imageFormat)) {
-            pixmap.loadFromData(data, imageFormat);
-            break;
-        }
-    }
-    return pixmap;
 }

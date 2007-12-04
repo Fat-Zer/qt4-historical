@@ -85,7 +85,9 @@ RULESXML.files = q3porting.xml
 RULESXML.path = $$[QT_INSTALL_DATA]
 INSTALLS += RULESXML
 
-win32-msvc.net {
-    QMAKE_CXXFLAGS += /Zm1000
-    QMAKE_CFLAGS += /Zm1000
+win32-msvc.net|win32-msvc2005 {
+    QMAKE_CXXFLAGS -= -Zm200 -Zm300
+    QMAKE_CXXFLAGS += -Zm1000
+    QMAKE_CFLAGS   -= -Zm200 -Zm300
+    QMAKE_CFLAGS   += -Zm1000
 }

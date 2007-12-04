@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/doc/src/porting4.qdoc -->
+<!-- /tmp/qt-4.3.3-qt-1196785887335/qt-all-opensource-src-4.3.3/doc/src/porting4.qdoc -->
 <head>
   <title>Qt 4.3: Porting to Qt 4</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -84,8 +84,8 @@
 <li><a href="#qdns">QDns</a></li>
 <li><a href="#qdockarea">QDockArea</a></li>
 <li><a href="#qdockwindow">QDockWindow</a></li>
-</ul></td><td width="25%"><ul>
 <li><a href="#qdragobject">QDragObject</a></li>
+</ul></td><td width="25%"><ul>
 <li><a href="#qdropsite">QDropSite</a></li>
 <li><a href="#qeditorfactory">QEditorFactory</a></li>
 <li><a href="#qeventloop">QEventLoop</a></li>
@@ -130,9 +130,9 @@
 <li><a href="#qmultilineedit">QMultiLineEdit</a></li>
 <li><a href="#qnetworkprotocol">QNetworkProtocol</a></li>
 <li><a href="#qobject">QObject</a></li>
-</ul></td><td width="25%"><ul>
 <li><a href="#qobjectdictionary">QObjectDictionary</a></li>
 <li><a href="#qobjectlist">QObjectList</a></li>
+</ul></td><td width="25%"><ul>
 <li><a href="#qpaintdevice">QPaintDevice</a></li>
 <li><a href="#qpaintdevicemetrics">QPaintDeviceMetrics</a></li>
 <li><a href="#qpainter">QPainter</a></li>
@@ -176,10 +176,10 @@
 <li><a href="#qsqlpropertymap">QSqlPropertyMap</a></li>
 <li><a href="#qsqlquery">QSqlQuery</a></li>
 <li><a href="#qsqlrecord">QSqlRecord</a></li>
-</ul></td><td width="25%"><ul>
 <li><a href="#qsqlrecordinfo">QSqlRecordInfo</a></li>
 <li><a href="#qsqlselectcursor">QSqlSelectCursor</a></li>
 <li><a href="#qstoreddrag">QStoredDrag</a></li>
+</ul></td><td width="25%"><ul>
 <li><a href="#qstr-i-list">QStr(I)List</a></li>
 <li><a href="#qstr-i-vec">QStr(I)Vec</a></li>
 <li><a href="#qstring">QString</a></li>
@@ -191,6 +191,7 @@
 <li><a href="#qtabdialog">QTabDialog</a></li>
 <li><a href="#qtabwidget">QTabWidget</a></li>
 <li><a href="#qtable">QTable</a></li>
+<li><a href="#qtextcodec">QTextCodec</a></li>
 <li><a href="#qtextdrag">QTextDrag</a></li>
 <li><a href="#qtextedit">QTextEdit</a></li>
 <li><a href="#qtextistream">QTextIStream</a></li>
@@ -2253,6 +2254,9 @@
 <p>The <tt>QTable</tt>, <tt>QTableItem</tt>, <tt>QComboTableItem</tt>, <tt>QCheckTableItem</tt>, and <tt>QTableSelection</tt> classes have been renamed <a href="q3table.html">Q3Table</a>, <a href="q3tableitem.html">Q3TableItem</a>, <a href="q3combotableitem.html">Q3ComboTableItem</a>, <a href="q3checktableitem.html">Q3CheckTableItem</a>, and <a href="q3tableselection.html">Q3TableSelection</a> and moved to the <a href="qt3support.html">Qt3Support</a> library. New Qt applications should use the new <a href="qtablewidget.html">QTableWidget</a> or <a href="qtableview.html">QTableView</a> class instead.</p>
 <p>Some of these classes behave differently with respect to the way they handle <tt>NULL</tt> pointers. For example, <a href="q3tableitem.html#setPixmap">Q3TableItem::setPixmap</a>() no longer accepts <tt>NULL</tt> or 0 to indicate that the item should contain a null pixmap; in this case, a null pixmap should be constructed and passed explicitly to the function.</p>
 <p>See <a href="model-view-programming.html">Model/View Programming</a> for an overview of the new item view classes.</p>
+<a name="qtextcodec"></a>
+<h2>QTextCodec</h2>
+<p>The loadCharmap() and loadCharmapFromFile() functions are no longer available in Qt 4. You need to create your own codec if you want to create a codec based on a POSIX2 charmap definition.</p>
 <a name="qtextdrag"></a>
 <h2>QTextDrag</h2>
 <p>The <tt>QTextDrag</tt> class has been renamed <a href="q3textdrag.html">Q3TextDrag</a> and moved to the <a href="qt3support.html">Qt3Support</a> library. In Qt 4, use <a href="qmimedata.html">QMimeData</a> instead and call <a href="qmimedata.html#setText">QMimeData::setText</a>() to set the data.</p>
@@ -2489,6 +2493,7 @@
 <li>QWidget::setSizePolicy(<a href="qsizepolicy.html">QSizePolicy</a>)</li>
 <li>QWidget::setUpdatesEnabled(bool enable)</li>
 <li>QWidget::setWState(uint)</li>
+<li><a href="qwidget.html#show">QWidget::show</a>()</li>
 <li><a href="qwidget.html#showFullScreen">QWidget::showFullScreen</a>()</li>
 <li><a href="qwidget.html#showMaximized">QWidget::showMaximized</a>()</li>
 <li><a href="qwidget.html#showMinimized">QWidget::showMinimized</a>()</li>
@@ -3191,17 +3196,18 @@
 <tr valign="top" class="even"><td>void QWidget::setSizePolicy(<a href="qsizepolicy.html">QSizePolicy</a>)</td><td>Setter.</td></tr>
 <tr valign="top" class="odd"><td>void QWidget::setUpdatesEnabled(bool)</td><td>Setter.</td></tr>
 <tr valign="top" class="even"><td>void QWidget::setWFlags(WFlags)</td><td>Setter.</td></tr>
-<tr valign="top" class="odd"><td>void <a href="qwidget.html#showMaximized">QWidget::showMaximized</a>()</td><td>Reimplement <a href="qwidget.html#changeEvent">QWidget::changeEvent</a>() and handle <a href="qevent.html#Type-enum">QEvent::WindowStateChange</a>.</td></tr>
-<tr valign="top" class="even"><td>void <a href="qwidget.html#showMinimized">QWidget::showMinimized</a>()</td><td>Reimplement <a href="qwidget.html#changeEvent">QWidget::changeEvent</a>() and handle <a href="qevent.html#Type-enum">QEvent::WindowStateChange</a>.</td></tr>
-<tr valign="top" class="odd"><td>void <a href="qwidget.html#showNormal">QWidget::showNormal</a>()</td><td>Reimplement <a href="qwidget.html#changeEvent">QWidget::changeEvent</a>() and handle <a href="qevent.html#Type-enum">QEvent::WindowStateChange</a>.</td></tr>
-<tr valign="top" class="even"><td>void QWidget::styleChange(<a href="qstyle.html">QStyle</a> &amp;)</td><td>Reimplement <a href="qwidget.html#changeEvent">QWidget::changeEvent</a>() and handle <a href="qevent.html#Type-enum">QEvent::StyleChange</a>.</td></tr>
-<tr valign="top" class="odd"><td>void <a href="qwidget.html#cursor-prop">QWidget::unsetCursor</a>()</td><td>Setter.</td></tr>
-<tr valign="top" class="even"><td>void QWidget::windowActivationChange(bool)</td><td>Reimplement <a href="qwidget.html#changeEvent">QWidget::changeEvent</a>() and handle <a href="qevent.html#Type-enum">QEvent::ActivationChange</a>.</td></tr>
+<tr valign="top" class="odd"><td>void <a href="qwidget.html#show">QWidget::show</a>()</td><td>Reimplement <a href="qwidget.html#showEvent">QWidget::showEvent</a>().</td></tr>
+<tr valign="top" class="even"><td>void <a href="qwidget.html#showMaximized">QWidget::showMaximized</a>()</td><td>Reimplement <a href="qwidget.html#changeEvent">QWidget::changeEvent</a>() and handle <a href="qevent.html#Type-enum">QEvent::WindowStateChange</a>.</td></tr>
+<tr valign="top" class="odd"><td>void <a href="qwidget.html#showMinimized">QWidget::showMinimized</a>()</td><td>Reimplement <a href="qwidget.html#changeEvent">QWidget::changeEvent</a>() and handle <a href="qevent.html#Type-enum">QEvent::WindowStateChange</a>.</td></tr>
+<tr valign="top" class="even"><td>void <a href="qwidget.html#showNormal">QWidget::showNormal</a>()</td><td>Reimplement <a href="qwidget.html#changeEvent">QWidget::changeEvent</a>() and handle <a href="qevent.html#Type-enum">QEvent::WindowStateChange</a>.</td></tr>
+<tr valign="top" class="odd"><td>void QWidget::styleChange(<a href="qstyle.html">QStyle</a> &amp;)</td><td>Reimplement <a href="qwidget.html#changeEvent">QWidget::changeEvent</a>() and handle <a href="qevent.html#Type-enum">QEvent::StyleChange</a>.</td></tr>
+<tr valign="top" class="even"><td>void <a href="qwidget.html#cursor-prop">QWidget::unsetCursor</a>()</td><td>Setter.</td></tr>
+<tr valign="top" class="odd"><td>void QWidget::windowActivationChange(bool)</td><td>Reimplement <a href="qwidget.html#changeEvent">QWidget::changeEvent</a>() and handle <a href="qevent.html#Type-enum">QEvent::ActivationChange</a>.</td></tr>
 </table></p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.3</div></td>
 </tr></table></div></address></body>
 </html>

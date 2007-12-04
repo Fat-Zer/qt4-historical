@@ -28,8 +28,6 @@
 ** functionality provided by Qt Designer and its related libraries.
 **
 ** Trolltech reserves all rights not expressly granted herein.
-** 
-** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -1442,6 +1440,13 @@ void QLineEdit::copy() const
 
 void QLineEdit::paste()
 {
+    if(echoMode() == PasswordEchoOnEdit)
+    {
+        Q_D(QLineEdit);
+        setEchoMode(Normal);
+        clear();
+        d->resumePassword = true;
+    }
     insert(QApplication::clipboard()->text(QClipboard::Clipboard));
 }
 
@@ -2108,7 +2113,12 @@ void QLineEdit::inputMethodEvent(QInputMethodEvent *e)
 
 
 #ifdef QT_KEYPAD_NAVIGATION
-    if (QApplication::keypadNavigationEnabled() && !hasEditFocus()) {
+    // Focus in if currently in navigation focus on the widget
+    // Only focus in on preedits, to allow input methods to
+    // commit text as they focus out without interfering with focus
+    if (QApplication::keypadNavigationEnabled() && 
+            hasFocus() && !hasEditFocus()
+            && !e->preeditString().isEmpty()) {
         setEditFocus(true);
         selectAll();        // so text is replaced rather than appended to
     }

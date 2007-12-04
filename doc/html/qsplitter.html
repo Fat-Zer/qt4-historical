@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/src/gui/widgets/qsplitter.cpp -->
+<!-- /tmp/qt-4.3.3-qt-1196785887335/qt-all-opensource-src-4.3.3/src/gui/widgets/qsplitter.cpp -->
 <head>
   <title>Qt 4.3: QSplitter Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -251,7 +251,7 @@
 <h3 class="fn"><a name="setSizes"></a>void QSplitter::setSizes ( const <a href="qlist.html">QList</a>&lt;int&gt; &amp; <i>list</i> )</h3>
 <p>Sets the size parameters to the values given in the <i>list</i>. If the splitter is horizontal, the values set the widths of each widget going from left to right. If the splitter is vertical, the values set the heights of each widget going from top to bottom. Extra values in the <i>list</i> are ignored.</p>
 <p>If <i>list</i> contains too few values, the result is undefined but the program will still be well-behaved.</p>
-<p>The values in <i>list</i> should be the height or width (depending on <a href="qsplitter.html#orientation-prop">orientation</a>()) that the widgets should be resized to.</p>
+<p>The values in <i>list</i> should be the height or width (depending on <a href="qsplitter.html#orientation-prop">orientation</a>()) that the widgets should be resized to. If you specify a size of 0, the widget will be invisible.</p>
 <p>See also <a href="qsplitter.html#sizes">sizes</a>().</p>
 <a name="//apple_ref/cpp/instm/QSplitter/setStretchFactor" />
 <h3 class="fn"><a name="setStretchFactor"></a>void QSplitter::setStretchFactor ( int <i>index</i>, int <i>stretch</i> )</h3>
@@ -268,6 +268,7 @@
 <p>Returns a list of the size parameters of all the widgets in this splitter.</p>
 <p>If the splitter's orientation is horizontal, the list is a list of widget widths; if the orientation is vertical, the list is a list of widget heights.</p>
 <p>Giving the values to another splitter's <a href="qsplitter.html#setSizes">setSizes</a>() function will produce a splitter with the same layout as this one.</p>
+<p>Note that invisible widgets have a size of 0.</p>
 <p>The easiest way to iterate over the list is to use the Java-style iterators.</p>
 <pre>     QListIterator&lt;int&gt; it(splitter-&gt;sizes());
      while (it.hasNext())
@@ -286,6 +287,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.3</div></td>
 </tr></table></div></address></body>
 </html>

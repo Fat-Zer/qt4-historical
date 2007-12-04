@@ -28,8 +28,6 @@
 ** functionality provided by Qt Designer and its related libraries.
 **
 ** Trolltech reserves all rights not expressly granted herein.
-** 
-** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -349,7 +347,7 @@ QListView::LayoutMode QListView::layoutMode() const
 
     \sa viewMode
 */
-// Qt5: Use same semantic as layouts (spacing is the size of space 
+// ### Qt5: Use same semantic as layouts (spacing is the size of space 
 // *between* items)
 void QListView::setSpacing(int space)
 {
@@ -986,10 +984,12 @@ void QListView::internalDrag(Qt::DropActions supportedActions)
     // We need these items to draw the drag items
     QModelIndexList indexes = d->selectionModel->selectedIndexes();
     if (indexes.count() > 0 ) {
-        QModelIndexList::ConstIterator it = indexes.constBegin();
-        for (; it != indexes.constEnd(); ++it)
-            if (d->model->flags(*it) & Qt::ItemIsDragEnabled)
-                d->dynamicListView->draggedItems.push_back(*it);
+        if (d->viewport->acceptDrops()) {
+            QModelIndexList::ConstIterator it = indexes.constBegin();
+            for (; it != indexes.constEnd(); ++it)
+                if (d->model->flags(*it) & Qt::ItemIsDragEnabled)
+                    d->dynamicListView->draggedItems.push_back(*it);
+        }
         QDrag *drag = new QDrag(this);
         drag->setMimeData(d->model->mimeData(indexes));
         Qt::DropAction action = drag->start(supportedActions);
@@ -1710,11 +1710,15 @@ void QListView::updateGeometries()
     if (d->movement == Static && !d->isWrapping()) {
         d->layoutChildren(); // we need the viewport size to be updated
         if (d->flow == TopToBottom) {
-            if (horizontalScrollBarPolicy() == Qt::ScrollBarAlwaysOff)
+            if (horizontalScrollBarPolicy() == Qt::ScrollBarAlwaysOff) {
                 d->setContentsSize(viewport()->width(), contentsSize().height());
+                horizontalScrollBar()->setRange(0, 0); // we see all the contents anyway
+            }
         } else { // LeftToRight
-            if (verticalScrollBarPolicy() == Qt::ScrollBarAlwaysOff)
+            if (verticalScrollBarPolicy() == Qt::ScrollBarAlwaysOff) {
                 d->setContentsSize(contentsSize().width(), viewport()->height());
+                verticalScrollBar()->setRange(0, 0); // we see all the contents anyway
+            }
         }
     }
 }

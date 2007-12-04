@@ -433,9 +433,6 @@
     Inserts a new item \a value. If \a value already exists in the
     set, nothing happens.
 
-    For historical reasons, the return type is a non-const iterator.
-    This might change in a future version.
-
     \sa operator<<(), remove(), contains()
 */
 

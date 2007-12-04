@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/src/gui/kernel/qwidget.cpp -->
+<!-- /tmp/qt-4.3.3-qt-1196785887335/qt-all-opensource-src-4.3.3/src/gui/kernel/qwidget.cpp -->
 <head>
   <title>Qt 4.3: QWidget Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -1012,6 +1012,7 @@
 <h3 class="fn"><a name="styleSheet-prop"></a>styleSheet : <a href="qstring.html">QString</a></h3>
 <p>This property holds the widget's style sheet.</p>
 <p>The style sheet contains a textual description of customizations to the widget's style, as described in the <a href="stylesheet.html">Qt Style Sheets</a> document.</p>
+<p><b>Note:</b> Qt style sheets are currently not supported for <a href="qmacstyle.html">QMacStyle</a> (the default style on Mac OS X). We plan to address this in some future release.</p>
 <p>This property was introduced in Qt 4.2.</p>
 <p>Access functions:</p>
 <ul>
@@ -1305,12 +1306,12 @@
 <p>See also <a href="qdrag.html">QDrag</a> and <a href="qdragleaveevent.html">QDragLeaveEvent</a>.</p>
 <a name="//apple_ref/cpp/instm/QWidget/dragMoveEvent" />
 <h3 class="fn"><a name="dragMoveEvent"></a>void QWidget::dragMoveEvent ( <a href="qdragmoveevent.html">QDragMoveEvent</a> * <i>event</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
-<p>This event handler is called if a drag is in progress, and when any of the following conditions occurs: the cursor enters this widget, the cursor moves within this widget, or a modifier key is pressed on the keyboard while this widget has the focus. The event is passed in the <i>event</i> parameter.</p>
+<p>This event handler is called if a drag is in progress, and when any of the following conditions occur: the cursor enters this widget, the cursor moves within this widget, or a modifier key is pressed on the keyboard while this widget has the focus. The event is passed in the <i>event</i> parameter.</p>
 <p>See the <a href="dnd.html">Drag-and-drop documentation</a> for an overview of how to provide drag-and-drop in your application.</p>
 <p>See also <a href="qdrag.html">QDrag</a> and <a href="qdragmoveevent.html">QDragMoveEvent</a>.</p>
 <a name="//apple_ref/cpp/instm/QWidget/dropEvent" />
 <h3 class="fn"><a name="dropEvent"></a>void QWidget::dropEvent ( <a href="qdropevent.html">QDropEvent</a> * <i>event</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
-<p>This event handler is called when the drag is dropped on this widget which are passed in the <i>event</i> parameter.</p>
+<p>This event handler is called when the drag is dropped on this widget. The event is passed in the <i>event</i> parameter.</p>
 <p>See the <a href="dnd.html">Drag-and-drop documentation</a> for an overview of how to provide drag-and-drop in your application.</p>
 <p>See also <a href="qdrag.html">QDrag</a> and <a href="qdropevent.html">QDropEvent</a>.</p>
 <a name="//apple_ref/cpp/instm/QWidget/ensurePolished" />
@@ -1436,6 +1437,7 @@
 <a name="//apple_ref/cpp/instm/QWidget/hide" />
 <h3 class="fn"><a name="hide"></a>void QWidget::hide ()&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Hides the widget. This function is equivalent to setVisible(false).</p>
+<p><b>Note:</b> If you are working with <a href="qdialog.html">QDialog</a> or its subclasses and you invoke the <a href="qwidget.html#show">show</a>() function after this function, the dialog will be displayed in its original position.</p>
 <p>See also <a href="qwidget.html#hideEvent">hideEvent</a>(), <a href="qwidget.html#isHidden">isHidden</a>(), <a href="qwidget.html#show">show</a>(), <a href="qwidget.html#visible-prop">setVisible</a>(), <a href="qwidget.html#visible-prop">isVisible</a>(), and <a href="qwidget.html#close">close</a>().</p>
 <a name="//apple_ref/cpp/instm/QWidget/hideEvent" />
 <h3 class="fn"><a name="hideEvent"></a>void QWidget::hideEvent ( <a href="qhideevent.html">QHideEvent</a> * <i>event</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
@@ -2078,6 +2080,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.3</div></td>
 </tr></table></div></address></body>
 </html>

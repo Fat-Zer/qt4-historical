@@ -28,8 +28,6 @@
 ** functionality provided by Qt Designer and its related libraries.
 **
 ** Trolltech reserves all rights not expressly granted herein.
-** 
-** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -301,6 +299,35 @@ void drawRect_rgb32(int x0, int y0, int width, int height, int color)
     }
 }
 
+void drawRect_rgb18(int x0, int y0, int width, int height, int color)
+{
+    const int bytesPerPixel = 3;
+    const int stride = finfo.line_length - width * bytesPerPixel;
+    const int red = (color & 0xff0000) >> 16;
+    const int green = (color & 0xff00) >> 8;
+    const int blue = (color & 0xff);
+    const unsigned int packed = (blue >> 2) |
+				((green >> 2) << 6) |
+				((red >> 2) << 12);
+    const char color18[3] = { packed & 0xff,
+			      (packed & 0xff00) >> 8,
+			      (packed & 0xff0000) >> 16 };
+
+    char *dest = (char*)(frameBuffer)
+		 + (y0 + vinfo.yoffset) * stride
+		 + (x0 + vinfo.xoffset);
+
+    int x, y;
+    for (y = 0; y < height; ++y) {
+        for (x = 0; x < width; ++x) {
+	    *dest++ = color18[0];
+	    *dest++ = color18[1];
+	    *dest++ = color18[2];
+        }
+        dest += stride;
+    }
+}
+
 void drawRect_rgb16(int x0, int y0, int width, int height, int color)
 {
     const int bytesPerPixel = 2;
@@ -347,6 +374,9 @@ void drawRect(int x0, int y0, int width, int height, int color)
     switch (vinfo.bits_per_pixel) {
     case 32:
         drawRect_rgb32(x0, y0, width, height, color);
+        break;
+    case 18:
+        drawRect_rgb18(x0, y0, width, height, color);
         break;
     case 16:
         drawRect_rgb16(x0, y0, width, height, color);

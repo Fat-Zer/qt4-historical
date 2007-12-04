@@ -236,16 +236,20 @@
     the Qt library installed side by side.
 
     \list
-    \o Plugins linked with a Qt library that has a higher major and/or
-       minor version number will not be loaded by a library with a lower
-       major and/or minor version number.
+    \o Plugins linked with a Qt library that has a higher version number
+       will not be loaded by a library with a lower version number.
 
-       \e {Rationale:}
-       A plugin linked against a newer Qt library may use new
-       features that are not available in older versions. Trolltech
-       has a policy of adding new features and APIs only between minor
-       releases, which is why this test only looks at the major and minor
-       version numbers, and not at the patch version number.
+      \br
+      \bold{Example:} Qt 4.3.0 will \e{not} load a plugin built with Qt 4.3.1.
+
+    \o Plugins linked with a Qt library that has a lower major version
+       number will not be loaded by a library with a higher major version
+       number.
+
+      \br
+      \bold{Example:} Qt 4.3.1 will \e{not} load a plugin built with Qt 3.3.1.
+      \br
+      \bold{Example:} Qt 4.3.1 will load plugins built with Qt 4.3.0 and Qt 4.2.3.
 
     \o The Qt library and all plugins are built using a \e {build
        key}. The build key in the Qt library is examined against the build
@@ -253,8 +257,7 @@
        build keys do not match, then the Qt library refuses to load the
        plugin.
 
-       \e {Rationale:}
-       See the Rationale for the build key below.
+      \br \bold{Rationale:} See the \l{#The Build Key}{The Build Key} section below.
     \endlist
 
     When building plugins to extend an application, it is important to ensure

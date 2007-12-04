@@ -28,8 +28,6 @@
 ** functionality provided by Qt Designer and its related libraries.
 **
 ** Trolltech reserves all rights not expressly granted herein.
-** 
-** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -341,23 +339,31 @@ QFontEngineQPF::QFontEngineQPF(const QFontDef &def, int fileDescriptor, QFontEng
                    + QLatin1String(".qsf");
         fileName.replace(QLatin1Char(' '), QLatin1Char('_'));
         fileName.prepend(qws_fontCacheDir());
-        fd = ::open(QFile::encodeName(fileName), O_RDWR | O_EXCL | O_CREAT, 0644);
-        if (fd >= 0) {
-#if defined(DEBUG_FONTENGINE)
-            qDebug() << "creating qpf on the fly:" << fileName;
-#endif
-            QBuffer buffer;
-            buffer.open(QIODevice::ReadWrite);
-            QPFGenerator generator(&buffer, renderingFontEngine);
-            generator.generate();
-            buffer.close();
-            const QByteArray &data = buffer.data();
-            ::write(fd, data.constData(), data.size());
-        } else {
+
+        const QByteArray encodedName = QFile::encodeName(fileName);
+        if (::access(encodedName, F_OK) == 0) {
 #if defined(DEBUG_FONTENGINE)
             qDebug() << "found existing qpf:" << fileName;
 #endif
-            fd = ::open(QFile::encodeName(fileName), O_RDWR);
+            if (::access(encodedName, W_OK | R_OK) == 0)
+                fd = ::open(encodedName, O_RDWR);
+            else if (::access(encodedName, R_OK) == 0)
+                fd = ::open(encodedName, O_RDONLY);
+        } else {
+#if defined(DEBUG_FONTENGINE)
+            qDebug() << "creating qpf on the fly:" << fileName;
+#endif
+            if (::access(QFile::encodeName(qws_fontCacheDir()), W_OK) == 0) {
+                fd = ::open(encodedName, O_RDWR | O_EXCL | O_CREAT, 0644);
+
+                QBuffer buffer;
+                buffer.open(QIODevice::ReadWrite);
+                QPFGenerator generator(&buffer, renderingFontEngine);
+                generator.generate();
+                buffer.close();
+                const QByteArray &data = buffer.data();
+                ::write(fd, data.constData(), data.size());
+            }
         }
     }
 
@@ -369,6 +375,7 @@ QFontEngineQPF::QFontEngineQPF(const QFontDef &def, int fileDescriptor, QFontEng
         return;
     }
     dataSize = st.st_size;
+
 
     fontData = (const uchar *)::mmap(0, st.st_size, PROT_READ | (renderingFontEngine ? PROT_WRITE : 0), MAP_SHARED, fd, 0);
     if (!fontData || fontData == (const uchar *)MAP_FAILED) {

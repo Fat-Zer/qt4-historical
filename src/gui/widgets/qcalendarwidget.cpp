@@ -28,8 +28,6 @@
 ** functionality provided by Qt Designer and its related libraries.
 **
 ** Trolltech reserves all rights not expressly granted herein.
-** 
-** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -2964,8 +2962,13 @@ void QCalendarWidget::mousePressEvent(QMouseEvent *event)
 void QCalendarWidget::resizeEvent(QResizeEvent * event)
 {
     Q_D(QCalendarWidget);
-    if(d->yearEdit->isVisible())
+
+    // XXX Should really use a QWidgetStack for yearEdit and yearButton,
+    // XXX here we hide the year edit when the layout is likely to break
+    // XXX the manual positioning of the yearEdit over the yearButton.
+    if(d->yearEdit->isVisible() && event->size().width() != event->oldSize().width())
         d->_q_yearEditingFinished();
+
     QWidget::resizeEvent(event);
 }
 
@@ -2981,7 +2984,7 @@ void QCalendarWidget::keyPressEvent(QKeyEvent * event)
         d->_q_yearEditingFinished();
         return;
     }
-    QWidget::keyReleaseEvent(event);
+    QWidget::keyPressEvent(event);
 }
 
 #include "qcalendarwidget.moc"

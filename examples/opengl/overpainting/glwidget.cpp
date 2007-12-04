@@ -28,8 +28,6 @@
 ** functionality provided by Qt Designer and its related libraries.
 **
 ** Trolltech reserves all rights not expressly granted herein.
-** 
-** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -67,7 +65,7 @@ GLWidget::GLWidget(QWidget *parent)
     connect(&animationTimer, SIGNAL(timeout()), this, SLOT(animate()));
     animationTimer.start(25);
 
-    setAttribute(Qt::WA_NoSystemBackground);
+    setAutoFillBackground(false);
     setMinimumSize(200, 200);
     setWindowTitle(tr("Overpainting a Scene"));
 }
@@ -81,28 +79,22 @@ GLWidget::~GLWidget()
 void GLWidget::setXRotation(int angle)
 {
     normalizeAngle(&angle);
-    if (angle != xRot) {
+    if (angle != xRot)
         xRot = angle;
-        emit xRotationChanged(angle);
-    }
 }
 
 void GLWidget::setYRotation(int angle)
 {
     normalizeAngle(&angle);
-    if (angle != yRot) {
+    if (angle != yRot)
         yRot = angle;
-        emit yRotationChanged(angle);
-    }
 }
 
 void GLWidget::setZRotation(int angle)
 {
     normalizeAngle(&angle);
-    if (angle != zRot) {
+    if (angle != zRot)
         zRot = angle;
-        emit zRotationChanged(angle);
-    }
 }
 
 void GLWidget::initializeGL()
@@ -132,13 +124,7 @@ void GLWidget::mouseMoveEvent(QMouseEvent *event)
 
 void GLWidget::paintEvent(QPaintEvent *event)
 {
-    QPainter painter;
-    painter.begin(this);
-    painter.setRenderHint(QPainter::Antialiasing);
-
-    glPushAttrib(GL_ALL_ATTRIB_BITS);
-    glMatrixMode(GL_PROJECTION);
-    glPushMatrix();
+    makeCurrent();
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
 
@@ -162,25 +148,23 @@ void GLWidget::paintEvent(QPaintEvent *event)
     glRotated(zRot / 16.0, 0.0, 0.0, 1.0);
     glCallList(object);
 
-    glPopAttrib();
     glMatrixMode(GL_MODELVIEW);
     glPopMatrix();
-    glMatrixMode(GL_PROJECTION);
-    glPopMatrix();
 
+    QPainter painter;
+    painter.begin(this);
+    painter.setRenderHint(QPainter::Antialiasing);
     foreach (Bubble *bubble, bubbles) {
         if (bubble->rect().intersects(event->rect()))
             bubble->drawBubble(&painter);
     }
-
-    painter.drawImage((width() - image.width())/2, 0, image);
+    drawInstructions(&painter);
     painter.end();
 }
 
 void GLWidget::resizeGL(int width, int height)
 {
     setupViewport(width, height);
-    formatInstructions(width, height);
 }
 
 void GLWidget::showEvent(QShowEvent *event)
@@ -325,24 +309,20 @@ void GLWidget::setupViewport(int width, int height)
     glMatrixMode(GL_MODELVIEW);
 }
 
-void GLWidget::formatInstructions(int width, int height)
+void GLWidget::drawInstructions(QPainter *painter)
 {
     QString text = tr("Click and drag with the left mouse button "
                       "to rotate the Qt logo.");
     QFontMetrics metrics = QFontMetrics(font());
     int border = qMax(4, metrics.leading());
 
-    QRect rect = metrics.boundingRect(0, 0, width - 2*border, int(height*0.125),
-        Qt::AlignCenter | Qt::TextWordWrap, text);
-    image = QImage(width, rect.height() + 2*border, QImage::Format_ARGB32_Premultiplied);
-    image.fill(qRgba(0, 0, 0, 127));
-
-    QPainter painter;
-    painter.begin(&image);
-    painter.setRenderHint(QPainter::TextAntialiasing);
-    painter.setPen(Qt::white);
-    painter.drawText((width - rect.width())/2, border,
-                     rect.width(), rect.height(),
-                     Qt::AlignCenter | Qt::TextWordWrap, text);
-    painter.end();
+    QRect rect = metrics.boundingRect(0, 0, width() - 2*border, int(height()*0.125),
+                                      Qt::AlignCenter | Qt::TextWordWrap, text);
+    painter->setRenderHint(QPainter::TextAntialiasing);
+    painter->setPen(Qt::white);
+    painter->fillRect(QRect(0, 0, width(), rect.height() + 2*border),
+                      QColor(0, 0, 0, 127));
+    painter->drawText((width() - rect.width())/2, border,
+                      rect.width(), rect.height(),
+                      Qt::AlignCenter | Qt::TextWordWrap, text);
 }

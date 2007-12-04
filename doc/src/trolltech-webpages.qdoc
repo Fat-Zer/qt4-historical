@@ -157,3 +157,13 @@
     \externalpage http://doc.trolltech.com/qtcanvas
     \title QtCanvas
 */
+
+/*!
+    \externalpage http://labs.trolltech.com/page/Projects/Itemview/Modeltest
+    \title ModelTest
+*/
+
+/*!
+    \externalpage http://trolltech.com/products/qt/addon/qsa
+    \title Qt Script for Applications (QSA)
+*/

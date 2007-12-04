@@ -21255,8 +21255,8 @@
     <section ref="focus.html" title="Keyboard Focus">
         <keyword ref="focus.html">Keyboard Focus</keyword>
     </section>
-    <section ref="known-issues.html" title="Known Issues in 4.3&#x2e;2">
-        <keyword ref="known-issues.html">Known Issues in 4.3&#x2e;2</keyword>
+    <section ref="known-issues.html" title="Known Issues in 4.3&#x2e;3">
+        <keyword ref="known-issues.html">Known Issues in 4.3&#x2e;3</keyword>
     </section>
     <section ref="layout.html" title="Layout Classes">
         <keyword ref="layout.html">Layout Classes</keyword>
@@ -21955,6 +21955,9 @@
     </section>
     <section ref="tools-echoplugin.html" title="Echo Plugin Example">
         <keyword ref="tools-echoplugin.html">Echo Plugin Example</keyword>
+    </section>
+    <section ref="itemviews-editabletreemodel.html" title="Editable Tree Model">
+        <keyword ref="itemviews-editabletreemodel.html">Editable Tree Model</keyword>
     </section>
     <section ref="graphicsview-elasticnodes.html" title="Elastic Nodes Example">
         <keyword ref="graphicsview-elasticnodes.html">Elastic Nodes Example</keyword>

@@ -55,6 +55,7 @@
 /*!
     \group accessibility
     \ingroup groups
+    \ingroup topics
 
     \title Accessibility Classes
     \brief Classes that provide support for accessibility.

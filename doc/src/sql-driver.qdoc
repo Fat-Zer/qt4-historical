@@ -679,7 +679,7 @@
         make
     \endcode
 
-    If you are using Firebird, the Firebird library has to be set explicitely:
+    If you are using Firebird, the Firebird library has to be set explicitly:
 
     \code
         cd $QTDIR/src/plugins/sqldrivers/ibase

@@ -44,7 +44,7 @@
     \skipto private slots:
     \printuntil animate
     \skipto private
-    \printuntil formatInstructions
+    \printuntil drawInstructions
     \dots
     \skipto bubbles
     \printuntil /^\};/
@@ -103,19 +103,14 @@
     our scene. When drawing on a QGLWidget, the paint engine used by QPainter
     performs certain operations that change the states of the OpenGL
     implementation's matrix and property stacks. Therefore, it is necessary to
-    construct a QPainter for use on the widget before making any OpenGL calls.
+    make all the OpenGL calls to display the 3D graphics before we construct
+    a QPainter to draw the 2D overlay.
+
+    We render a 3D scene by setting up model and projection transformations
+    and other attributes. We use an OpenGL stack operation to preserve the
+    original matrix state, allowing us to recover it later:
 
     \skipto ::paintEvent
-    \printuntil setRenderHint
-
-    After these calls, the OpenGL implementation is in the correct state for
-    drawing 2D graphics. However, we first need to render a 3D scene by setting
-    up model and projection transformations and other attributes. We use OpenGL
-    stack operations to preserve the original state, allowing us to recover it
-    later:
-
-    \skipto glPushAttrib
-    \printuntil GL_MODELVIEW
     \printuntil glPushMatrix
 
     We define a color to use for the widget's background, and set up various
@@ -137,19 +132,19 @@
     \skipto glClear
     \printuntil glCallList
 
-    Once the list containing the object has been executed, the matrix and
-    attribute stacks need to be restored before we can begin overpainting:
+    Once the list containing the object has been executed, the matrix stack
+    needs to be restored to its original state at the start of this function
+    before we can begin overpainting:
 
-    \skipto glPopAttrib
-    \printuntil GL_PROJECTION
+    \skipto glMatrixMode
     \printuntil glPopMatrix
 
-    With the original state set by QPainter restored, we simply overpaint the
-    widget with 2D graphics; in this case, using a helper class to draw a
-    number of translucent bubbles onto the widget, and calling
-    QPainter::drawImage() to overlay some instructions:
+    With the 3D graphics done, we construct a QPainter for use on the widget
+    and simply overpaint the widget with 2D graphics; in this case, using a
+    helper class to draw a number of translucent bubbles onto the widget,
+    and calling \c drawInstructions() to overlay some instructions:
 
-    \skipto foreach
+    \skipto QPainter
     \printuntil /^\}/
 
     When QPainter::end() is called, suitable OpenGL-specific calls are made to
@@ -192,15 +187,15 @@
     \skipto ::setupViewport
     \printuntil /^\}/
 
-    The \c formatInstructions() function is used to prepare some basic instructions
-    that will be painted with the other 2D graphics over the 3D scene.
+    The \c drawInstructions() function is used to prepare some basic
+    instructions that will be painted with the other 2D graphics over
+    the 3D scene.
 
-    \skipto ::formatInstructions
+    \skipto ::drawInstructions
     \printuntil /^\}/
 
-    The instructions are painted onto a suitably-sized semi-transparent image that
-    can be rendered using QPainter in the widget's
-    \l{QWidget::paintEvent()}{paintEvent()} handler function.
+    The instructions are painted directly onto the widget using the QPainter
+    supplied by the \l{QWidget::paintEvent()}{paintEvent()} handler function.
 
     \section1 Summary
 
@@ -224,18 +219,16 @@
     following tasks:
 
     \list
-    \o Construct a QPainter object.
-    \o Initialize it for use on the widget with the QPainter::begin() function.
-    \o Push the current OpenGL projection and modelview matrices onto their
-       respective stacks.
-    \o Push the current OpenGL attributes onto the attribute stack.
+    \o Push the current OpenGL modelview matrix onto a stack.
     \o Perform initialization tasks usually done in the
        \l{QGLWidget::initializeGL()}{initializeGL()} function.
-    \o Call the widget's \l{QGLWidget::resizeGL()}{resizeGL()} function to set
-       the correct perspective transformation and set up the viewport.
+    \o Perform code that would normally be located in the widget's
+       \l{QGLWidget::resizeGL()}{resizeGL()} function to set the correct
+       perspective transformation and set up the viewport.
     \o Render the scene using OpenGL calls.
-    \o Pop the OpenGL projection and modelview matrices off their respective stacks.
-    \o Pop the OpenGL attributes off the attribute stack.
+    \o Pop the OpenGL modelview matrix off the stack.
+    \o Construct a QPainter object.
+    \o Initialize it for use on the widget with the QPainter::begin() function.
     \o Draw primitives using QPainter's member functions.
     \o Call QPainter::end() to finish painting.
     \endlist

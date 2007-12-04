@@ -28,8 +28,6 @@
 ** functionality provided by Qt Designer and its related libraries.
 **
 ** Trolltech reserves all rights not expressly granted herein.
-** 
-** Trolltech ASA (c) 2007
  **
  ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
  ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -71,15 +69,15 @@
 
     \code
         cd <anywhere>
-        gunzip qtopia-core-commercial-src-4.3.2.tar.gz
-        tar xf qtopia-core-commercial-src-4.3.2.tar
+        gunzip qtopia-core-commercial-src-4.3.3.tar.gz
+        tar xf qtopia-core-commercial-src-4.3.3.tar
     \endcode
 
     This document assumes that the archive is unpacked in the
     following directory:
 
     \code
-        ~/qtopia-core-commercial-src-4.3.2
+        ~/qtopia-core-commercial-src-4.3.3
     \endcode
 
     \section1 Step 3: Building the Library
@@ -90,7 +88,7 @@
     options by typing \c {./configure -help}.
 
     Note that by default, \l {Qtopia Core} is configured for
-    installation in the \c{/usr/local/Trolltech/QtopiaCore-4.3.2}
+    installation in the \c{/usr/local/Trolltech/QtopiaCore-4.3.3}
     directory, but this can be changed by using the \c{-prefix}
     option. Alternatively, the \c{-prefix-install} option can be used
     to specify a "local" installation within the source directory.
@@ -99,7 +97,7 @@
     your platform architecture:
 
     \code
-        cd  ~/qtopia-core-commercial-src-4.3.2
+        cd  ~/qtopia-core-commercial-src-4.3.3
         ./configure -embedded [architecture]
     \endcode
 
@@ -142,7 +140,7 @@
     .profile file if your shell is bash, ksh, zsh or sh:
 
     \code
-        PATH=/usr/local/Trolltech/QtopiaCore-4.3.2/bin:$PATH
+        PATH=/usr/local/Trolltech/QtopiaCore-4.3.3/bin:$PATH
         export PATH
     \endcode
 
@@ -150,7 +148,7 @@
     \c .login file instead:
 
     \code
-        setenv PATH /usr/local/Trolltech/QtopiaCore-4.3.2/bin:$PATH
+        setenv PATH /usr/local/Trolltech/QtopiaCore-4.3.3/bin:$PATH
     \endcode
 
     If you use a different shell, please modify your environment
@@ -158,7 +156,7 @@
 
     For compilers that do not support \c rpath you must also extend
     the \c LD_LIBRARY_PATH environment variable to include
-    \c /usr/local/Trolltech/QtopiaCore-4.3.2/lib. Note that on Linux
+    \c /usr/local/Trolltech/QtopiaCore-4.3.3/lib. Note that on Linux
     with GCC, this step is not needed.
 
     \section1 Step 5: Enabling Framebuffer Support

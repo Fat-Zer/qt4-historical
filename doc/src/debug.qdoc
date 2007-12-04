@@ -97,9 +97,10 @@
     \endcode
 
     The Qt implementation of these functions prints the text to the
-    \c stderr output under Unix/X11 and Mac OS X, and to the debugger
-    under Windows. You can take over these functions by installing a
-    message handler using qInstallMsgHandler().
+    \c stderr output under Unix/X11 and Mac OS X. With Windows, if it
+    is a console application, the text is sent to console; otherwise, it
+    is sent to the debugger. You can take over these functions by
+    installing a message handler using qInstallMsgHandler().
 
     If the \c QT_FATAL_WARNINGS environment variable is set,
     qWarning() exits after printing the warning message. This makes

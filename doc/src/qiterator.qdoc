@@ -1102,7 +1102,7 @@
     \code
         QHash<int, QWidget *> hash;
         ...
-        QHashIterator<QString, QWidget *> i(hash);
+        QHashIterator<int, QWidget *> i(hash);
         while (i.hasNext()) {
 	    i.next();
 	    qDebug() << i.key() << ": " << i.value();

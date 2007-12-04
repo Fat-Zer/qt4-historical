@@ -17,7 +17,7 @@
     accelerating the explicit painting operations. The first is done
     in the graphics driver implementation, the latter is performed by
     the paint engine implementation. Typically, both the pixel copying
-    and the painting operations are accelerted using the following
+    and the painting operations are accelerated using the following
     approach:
 
     \list 1

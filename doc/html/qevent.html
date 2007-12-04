@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.2-qt-1191242837684/qt-all-opensource-src-4.3.2/src/corelib/kernel/qcoreevent.cpp -->
+<!-- /tmp/qt-4.3.3-qt-1196785887335/qt-all-opensource-src-4.3.3/src/corelib/kernel/qcoreevent.cpp -->
 <head>
   <title>Qt 4.3: QEvent Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -63,12 +63,14 @@
 <a name="//apple_ref/cpp/econst/QEvent/ActionRemoved" />
 <a name="//apple_ref/cpp/econst/QEvent/ActivationChange" />
 <a name="//apple_ref/cpp/econst/QEvent/ApplicationActivate" />
+<a name="//apple_ref/cpp/econst/QEvent/ApplicationActivated" />
 <a name="//apple_ref/cpp/econst/QEvent/ApplicationDeactivate" />
 <a name="//apple_ref/cpp/econst/QEvent/ApplicationFontChange" />
 <a name="//apple_ref/cpp/econst/QEvent/ApplicationLayoutDirectionChange" />
 <a name="//apple_ref/cpp/econst/QEvent/ApplicationPaletteChange" />
 <a name="//apple_ref/cpp/econst/QEvent/ApplicationWindowIconChange" />
 <a name="//apple_ref/cpp/econst/QEvent/ChildAdded" />
+<a name="//apple_ref/cpp/econst/QEvent/ChildInserted" />
 <a name="//apple_ref/cpp/econst/QEvent/ChildPolished" />
 <a name="//apple_ref/cpp/econst/QEvent/ChildRemoved" />
 <a name="//apple_ref/cpp/econst/QEvent/Clipboard" />
@@ -181,7 +183,6 @@
 <a name="//apple_ref/cpp/econst/QEvent/ActivateControl" />
 <a name="//apple_ref/cpp/econst/QEvent/CaptionChange" />
 <a name="//apple_ref/cpp/econst/QEvent/ChildInsertedRequest" />
-<a name="//apple_ref/cpp/econst/QEvent/ChildInserted" />
 <a name="//apple_ref/cpp/econst/QEvent/Create" />
 <a name="//apple_ref/cpp/econst/QEvent/DeactivateControl" />
 <a name="//apple_ref/cpp/econst/QEvent/Destroy" />
@@ -198,7 +199,6 @@
 <a name="//apple_ref/cpp/econst/QEvent/Style" />
 <a name="//apple_ref/cpp/econst/QEvent/ThreadChange" />
 <a name="//apple_ref/cpp/econst/QEvent/ZeroTimerEvent" />
-<a name="//apple_ref/cpp/econst/QEvent/ApplicationActivated" />
 <a name="//apple_ref/cpp/econst/QEvent/ApplicationDeactivated" />
 <a name="//apple_ref/cpp/econst/QEvent/MacGLWindowChange" />
 <h3 class="fn"><a name="Type-enum"></a>enum QEvent::Type</h3>
@@ -214,12 +214,14 @@
 <tr><td valign="top"><tt>QEvent::ActionRemoved</tt></td><td align="center" valign="top"><tt>115</tt></td><td valign="top">An action has been removed (<a href="qactionevent.html">QActionEvent</a>).</td></tr>
 <tr><td valign="top"><tt>QEvent::ActivationChange</tt></td><td align="center" valign="top"><tt>99</tt></td><td valign="top">A widget's top-level window activation state has changed.</td></tr>
 <tr><td valign="top"><tt>QEvent::ApplicationActivate</tt></td><td align="center" valign="top"><tt>121</tt></td><td valign="top">The application has been made available to the user.</td></tr>
+<tr><td valign="top"><tt>QEvent::ApplicationActivated</tt></td><td align="center" valign="top"><tt>ApplicationActivate</tt></td><td valign="top">This enum has been deprecated. Use ApplicationActivate instead.</td></tr>
 <tr><td valign="top"><tt>QEvent::ApplicationDeactivate</tt></td><td align="center" valign="top"><tt>122</tt></td><td valign="top">The application has been suspended, and is unavailable to the user.</td></tr>
 <tr><td valign="top"><tt>QEvent::ApplicationFontChange</tt></td><td align="center" valign="top"><tt>36</tt></td><td valign="top">The default application font has changed.</td></tr>
 <tr><td valign="top"><tt>QEvent::ApplicationLayoutDirectionChange</tt></td><td align="center" valign="top"><tt>37</tt></td><td valign="top">The default application layout direction has changed.</td></tr>
 <tr><td valign="top"><tt>QEvent::ApplicationPaletteChange</tt></td><td align="center" valign="top"><tt>38</tt></td><td valign="top">The default application palette has changed.</td></tr>
 <tr><td valign="top"><tt>QEvent::ApplicationWindowIconChange</tt></td><td align="center" valign="top"><tt>35</tt></td><td valign="top">The application's icon has changed.</td></tr>
 <tr><td valign="top"><tt>QEvent::ChildAdded</tt></td><td align="center" valign="top"><tt>68</tt></td><td valign="top">An object gets a child (<a href="qchildevent.html">QChildEvent</a>).</td></tr>
+<tr><td valign="top"><tt>QEvent::ChildInserted</tt></td><td align="center" valign="top"><tt>70</tt></td><td valign="top">An object gets a child (<a href="qchildevent.html">QChildEvent</a>). <a href="qt3support.html">Qt3Support</a> only, use ChildAdded instead.</td></tr>
 <tr><td valign="top"><tt>QEvent::ChildPolished</tt></td><td align="center" valign="top"><tt>69</tt></td><td valign="top">A widget child gets polished (<a href="qchildevent.html">QChildEvent</a>).</td></tr>
 <tr><td valign="top"><tt>QEvent::ChildRemoved</tt></td><td align="center" valign="top"><tt>71</tt></td><td valign="top">An object loses a child (<a href="qchildevent.html">QChildEvent</a>).</td></tr>
 <tr><td valign="top"><tt>QEvent::Clipboard</tt></td><td align="center" valign="top"><tt>40</tt></td><td valign="top">The clipboard contents have changed (QClipboardEvent).</td></tr>
@@ -372,6 +374,6 @@
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.3</div></td>
 </tr></table></div></address></body>
 </html>

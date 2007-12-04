@@ -3819,6 +3819,12 @@
     See \l{Model/View Programming} for an overview of the new item
     view classes.
 
+    \section1 QTextCodec
+
+    The loadCharmap() and loadCharmapFromFile() functions are no longer
+    available in Qt 4. You need to create your own codec if you want to
+    create a codec based on a POSIX2 charmap definition.
+
     \section1 QTextDrag
 
     The \c QTextDrag class has been renamed Q3TextDrag and moved to
@@ -4239,6 +4245,7 @@
     \o QWidget::setSizePolicy(QSizePolicy)
     \o QWidget::setUpdatesEnabled(bool enable)
     \o QWidget::setWState(uint)
+    \o QWidget::show()
     \o QWidget::showFullScreen()
     \o QWidget::showMaximized()
     \o QWidget::showMinimized()

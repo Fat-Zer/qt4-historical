@@ -437,15 +437,15 @@
 
     \list
 
+    \o \l{qt-conf.html}{Using \c qt.conf}. This is the recommended
+    approach since it provides the most flexibility.
+
     \o Using QApplication::addLibraryPath() or
     QApplication::setLibraryPaths().
 
     \o Using a third party installation utility or the target system's
     package manager to change the hard-coded paths in the QtCore
     library.
-
-    \o \l{qt-conf.html}{Using \c qt.conf}. This is the recommended
-    approach since it provides the most flexibility.
 
     \endlist
 */
@@ -840,14 +840,14 @@
 
     \list
 
+    \o \l{qt-conf.html}{Using \c qt.conf}. This is the recommended
+    approach since it provides the most flexibility.
+
     \o Using QApplication::addLibraryPath() or
     QApplication::setLibraryPaths().
 
     \o Using a third party installation utility to change the
     hard-coded paths in the QtCore library.
-
-    \o \l{qt-conf.html}{Using \c qt.conf}. This is the recommended
-    approach since it provides the most flexibility.
 
     \endlist
 */
@@ -1378,14 +1378,14 @@
 
     \list
 
+    \o \l{qt-conf.html}{Using \c qt.conf}. This is the recommended
+    approach since it provides the most flexibility.
+
     \o Using QApplication::addLibraryPath() or
     QApplication::setLibraryPaths().
 
     \o Using a third party installation utility to change the
     hard-coded paths in the QtCore library.
-
-    \o \l{qt-conf.html}{Using \c qt.conf}. This is the recommended
-    approach since it provides the most flexibility.
 
     \endlist
 

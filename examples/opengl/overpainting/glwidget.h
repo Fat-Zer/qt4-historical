@@ -28,8 +28,6 @@
 ** functionality provided by Qt Designer and its related libraries.
 **
 ** Trolltech reserves all rights not expressly granted herein.
-** 
-** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -68,11 +66,6 @@ public slots:
     void setYRotation(int angle);
     void setZRotation(int angle);
 
-signals:
-    void xRotationChanged(int angle);
-    void yRotationChanged(int angle);
-    void zRotationChanged(int angle);
-
 protected:
     void initializeGL();
     void paintEvent(QPaintEvent *event);
@@ -87,7 +80,7 @@ private slots:
 private:
     GLuint makeObject();
     void createBubbles(int number);
-    void formatInstructions(int width, int height);
+    void drawInstructions(QPainter *painter);
     void extrude(GLdouble x1, GLdouble y1, GLdouble x2, GLdouble y2);
     void normalizeAngle(int *angle);
     void quad(GLdouble x1, GLdouble y1, GLdouble x2, GLdouble y2,
@@ -101,7 +94,6 @@ private:
     QPoint lastPos;
     QColor trolltechGreen;
     QColor trolltechPurple;
-    QImage image;
     QList<Bubble*> bubbles;
     QTimer animationTimer;
 };

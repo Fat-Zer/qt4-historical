@@ -1,5 +1,5 @@
 
-AccessibleSlider::QAccessibleSlider(QWidget *w)
+QAccessibleSlider::QAccessibleSlider(QWidget *w)
 : QAccessibleAbstractSlider(w)
 {
     Q_ASSERT(slider());

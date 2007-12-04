@@ -28,8 +28,6 @@
 ** functionality provided by Qt Designer and its related libraries.
 **
 ** Trolltech reserves all rights not expressly granted herein.
-** 
-** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -63,10 +61,26 @@
     screens. Run the \c configure script to list the available
     drivers:
 
+    \if defined(QTOPIA_DOCS)
+    \code
+        $QPEDIR/qtopiacore/qt/configure -help
+    \endcode
+    \else
     \code
         ./configure -help
     \endcode
+    \endif
 
+    \if defined(QTOPIA_DOCS)
+    In the default Qtopia configuration, only an unaccelerated Linux
+    framebuffer driver (\c /dev/fb0) is enabled. The various drivers
+    can be enabled and disabled using the \c configure script. For
+    example:
+
+    \code
+        ./configure -extra-qtopiacore-config "-qt-gfx-transformed"
+    \endcode
+    \else
     In the default Qt configuration, only an unaccelerated Linux
     framebuffer driver (\c /dev/fb0) is enabled. The various drivers
     can be enabled and disabled using the \c configure script. For
@@ -75,6 +89,7 @@
     \code
         ./configure -qt-gfx-transformed
     \endcode
+    \endif
 
     Custom screen drivers can be implemented by subclassing the
     QScreen class and creating a screen driver plugin (derived from

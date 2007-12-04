@@ -28,8 +28,6 @@
 ** functionality provided by Qt Designer and its related libraries.
 **
 ** Trolltech reserves all rights not expressly granted herein.
-** 
-** Trolltech ASA (c) 2007
 **
 ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -87,5 +85,4 @@ QScreen* QAhiGLScreenPlugin::create(const QString& driver, int displayId)
     return new QAhiGLScreen(displayId);
 }
 
-Q_EXPORT_STATIC_PLUGIN(QAhiGLScreen)
 Q_EXPORT_PLUGIN2(qahiglscreen, QAhiGLScreenPlugin)

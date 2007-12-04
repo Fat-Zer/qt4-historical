@@ -22,7 +22,7 @@
     One more valuable source for examples and explanations of Qt
     features is the archive of the \l {http://doc.trolltech.com/qq}
     {Qt Quarterly}.
-    
+
     In the list below, examples marked with an asterisk (*) are fully
     documented. Eventually, all the examples will be fully documented,
     but sometimes we include an example before we have time to write
@@ -95,6 +95,7 @@
     \o \l{itemviews/chart}{Chart}
     \o \l{itemviews/coloreditorfactory}{Color Editor Factory}\raisedaster
     \o \l{itemviews/customsortfiltermodel}{Custom Sort/Filter Model}\raisedaster
+    \o \l{itemviews/editabletreemodel}{Editable Tree Model}\raisedaster
     \o \l{itemviews/dirview}{Dir View}
     \o \l{itemviews/pixelator}{Pixelator}\raisedaster
     \o \l{itemviews/puzzle}{Puzzle}
@@ -161,7 +162,7 @@
     \o \l{painting/basicdrawing}{Basic Drawing}\raisedaster
     \o \l{painting/concentriccircles}{Concentric Circles}\raisedaster
     \o \l{painting/fontsampler}{Font Sampler}
-    \o \l{painting/imagecomposition}{Image Composition}
+    \o \l{painting/imagecomposition}{Image Composition}\raisedaster
     \o \l{painting/painterpaths}{Painter Paths}\raisedaster
     \o \l{painting/svgviewer}{SVG Viewer}
     \o \l{painting/transformations}{Transformations}\raisedaster
@@ -241,8 +242,8 @@
 
     \list
     \o \l{tools/codecs}{Codecs}
-    \o \l{tools/completer}{Completer}
-    \o \l{tools/customcompleter}{Custom Completer}
+    \o \l{tools/completer}{Completer}\raisedaster
+    \o \l{tools/customcompleter}{Custom Completer}\raisedaster
     \o \l{tools/echoplugin}{Echo Plugin}\raisedaster
     \o \l{tools/i18n}{I18N}
     \o \l{tools/plugandpaint}{Plug & Paint}\raisedaster
@@ -251,7 +252,7 @@
     \o \l{tools/regexp}{RegExp}
     \o \l{tools/settingseditor}{Settings Editor}
     \o \l{tools/styleplugin}{Style Plugin}\raisedaster
-    \o \l{tools/treemodelcompleter}{Tree Model Completer}
+    \o \l{tools/treemodelcompleter}{Tree Model Completer}\raisedaster
     \o \l{tools/undoframework}{Undo Framework}\raisedaster
     \endlist
 

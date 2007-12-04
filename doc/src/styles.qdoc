@@ -92,7 +92,7 @@
     There are three element types: primitive elements, control
     elements, and complex control elements. The elements are defined
     by the \l{QStyle::}{ComplexControl}, \l{QStyle::}{ControlElement},
-    and \l{QStyle::}{PrimitiveElement} enums.  The values of
+    and \l{QStyle::}{PrimitiveElement} enums. The values of
     each element enum has a prefix to identify their type: \c{CC_} for
     complex elements, \c{CE_} for control elements, and \c{PE_} for
     primitive elements. We will in the following three sections see what
@@ -448,13 +448,13 @@
     As an example, we will examine the styling of check boxes in the
     java style. We describe the complete process and print all code in
     both the java style and Qt classes involved. In the rest of this
-    document we will not examine the source code of the individual
+    document, we will not examine the source code of the individual
     widgets. Hopefully, this will give you an idea on how to search
     through the code if you need to check specific implementation
     details; most widgets follow the same structure as the check
     boxes. We have edited the QCommonStyle code somewhat to remove
     code that is not directly relevant for check box styling.
-
+ 
     We start with a look at how QCheckBox builds it style option,
     which is QStyleOptionButton for checkboxes:
 
@@ -478,19 +478,18 @@
     opt.iconSize = q->iconSize();
     \endcode
 
-    First we let QStyleOption set up the option with the
-    information that is common for all widgets with \c init().
-    We will look at this shortly.
+    First we let QStyleOption set up the option with the information
+    that is common for all widgets with \c init().  We will look at
+    this shortly.
 
-    The down boolean is true when the user press the box down;
-    this is true whether the box is checked or not of the checkbox.
-    The State_NoChange state is set when we have a tristate checkbox
-    and it is partially checked. It has State_On if the box is checked
-    and State_Off if it is unchecked. State_MouseOver is set if the
-    mouse hovers over the checkbox and the widget has attribute
-    Qt::WA_Hover set - you set this in QStyle::polish(). In addition,
-    the style option also contains the text, icon, and icon size of
-    the button.
+    The down boolean is true when the user press the box down; this is
+    true whether the box is checked or not of the checkbox.  The
+    State_NoChange state is set when we have a tristate checkbox and
+    it is partially checked. It has State_On if the box is checked and
+    State_Off if it is unchecked. State_MouseOver is set if the mouse
+    hovers over the checkbox and the widget has attribute Qt::WA_Hover
+    set - you set this in QStyle::polish(). In addition, the style
+    option also contains the text, icon, and icon size of the button.
 
     \l{QStyleOption::}{init()} sets up the style option with the
     attributes that are common for all widgets. We print its
@@ -676,8 +675,7 @@
     over the checkbox. If it is, we draw the frame java checkboxes
     have when the box is not pressed down and the mouse is over it.
     You may note that java does not handle tristate boxes, so we have
-    not implemented it (I should do that actually; I say myself that
-    we style Qt's widgets and  not Java's).
+    not implemented it.
 
     Here we use a png image for our indicator. We could also check
     here if the widget is disabled. We would then have to use
