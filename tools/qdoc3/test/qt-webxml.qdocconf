@@ -1,4 +1,0 @@
-include(qt.qdocconf)
-
-outputdir               = $QTDIR/doc/webxml
-outputformats           = WebXML
