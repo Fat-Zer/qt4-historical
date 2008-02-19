@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.4-qt-1203442408707/qt-all-opensource-src-4.3.4/src/gui/dialogs/qerrormessage.cpp -->
+<!-- /tmp/qt-4.3.4-qt-1203442408707/qt-x11-opensource-src-4.3.4/src/gui/dialogs/qerrormessage.cpp -->
 <head>
   <title>Qt 4.3: QErrorMessage Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//QErrorMessage" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
@@ -76,16 +75,12 @@
 <p align="center"><img src="images/qerrormessage.png" /></p><p>See also <a href="qmessagebox.html">QMessageBox</a>, <a href="qstatusbar.html#showMessage">QStatusBar::showMessage</a>(), and <a href="dialogs-standarddialogs.html">Standard Dialogs Example</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QErrorMessage/QErrorMessage" />
 <h3 class="fn"><a name="QErrorMessage"></a>QErrorMessage::QErrorMessage ( <a href="qwidget.html">QWidget</a> * <i>parent</i> = 0 )</h3>
 <p>Constructs and installs an error handler window with the given <i>parent</i>.</p>
-<a name="//apple_ref/cpp/instm/QErrorMessage/~QErrorMessage" />
 <h3 class="fn"><a name="dtor.QErrorMessage"></a>QErrorMessage::~QErrorMessage ()</h3>
 <p>Destroys the error message dialog.</p>
-<a name="//apple_ref/cpp/clm/QErrorMessage/qtHandler" />
 <h3 class="fn"><a name="qtHandler"></a>QErrorMessage * QErrorMessage::qtHandler ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns a pointer to a <a href="qerrormessage.html">QErrorMessage</a> object that outputs the default Qt messages. This function creates such an object, if there isn't one already.</p>
-<a name="//apple_ref/cpp/instm/QErrorMessage/showMessage" />
 <h3 class="fn"><a name="showMessage"></a>void QErrorMessage::showMessage ( const <a href="qstring.html">QString</a> &amp; <i>message</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Shows the given <i>message</i>, and returns immediately. This function does nothing if the user has requested that <i>message</i> should not be shown again.</p>
 <p>Normally, <i>message</i> is shown at once, but if there are pending messages, <i>message</i> is queued for later display.</p>

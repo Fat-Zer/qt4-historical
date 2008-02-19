@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.4-qt-1203442408707/qt-all-opensource-src-4.3.4/src/corelib/thread/qreadwritelock.cpp -->
+<!-- /tmp/qt-4.3.4-qt-1203442408707/qt-x11-opensource-src-4.3.4/src/corelib/thread/qreadwritelock.cpp -->
 <head>
   <title>Qt 4.3: QReadLocker Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//QReadLocker" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
@@ -56,22 +55,17 @@
 <p>See also <a href="qwritelocker.html">QWriteLocker</a> and <a href="qreadwritelock.html">QReadWriteLock</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QReadLocker/QReadLocker" />
 <h3 class="fn"><a name="QReadLocker"></a>QReadLocker::QReadLocker ( <a href="qreadwritelock.html">QReadWriteLock</a> * <i>lock</i> )</h3>
 <p>Constructs a <a href="qreadlocker.html">QReadLocker</a> and locks <i>lock</i> for reading. The lock will be unlocked when the <a href="qreadlocker.html">QReadLocker</a> is destroyed. If <tt>lock</tt> is zero, <a href="qreadlocker.html">QReadLocker</a> does nothing.</p>
 <p>See also <a href="qreadwritelock.html#lockForRead">QReadWriteLock::lockForRead</a>().</p>
-<a name="//apple_ref/cpp/instm/QReadLocker/~QReadLocker" />
 <h3 class="fn"><a name="dtor.QReadLocker"></a>QReadLocker::~QReadLocker ()</h3>
 <p>Destroys the <a href="qreadlocker.html">QReadLocker</a> and unlocks the lock that was passed to the constructor.</p>
 <p>See also <a href="qreadwritelock.html#unlock">QReadWriteLock::unlock</a>().</p>
-<a name="//apple_ref/cpp/instm/QReadLocker/readWriteLock" />
 <h3 class="fn"><a name="readWriteLock"></a><a href="qreadwritelock.html">QReadWriteLock</a> * QReadLocker::readWriteLock () const</h3>
 <p>Returns a pointer to the read-write lock that was passed to the constructor.</p>
-<a name="//apple_ref/cpp/instm/QReadLocker/relock" />
 <h3 class="fn"><a name="relock"></a>void QReadLocker::relock ()</h3>
 <p>Relocks an unlocked lock.</p>
 <p>See also <a href="qreadlocker.html#unlock">unlock</a>().</p>
-<a name="//apple_ref/cpp/instm/QReadLocker/unlock" />
 <h3 class="fn"><a name="unlock"></a>void QReadLocker::unlock ()</h3>
 <p>Unlocks the lock associated with this locker.</p>
 <p>See also <a href="qreadwritelock.html#unlock">QReadWriteLock::unlock</a>().</p>

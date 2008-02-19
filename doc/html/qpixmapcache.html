@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.4-qt-1203442408707/qt-all-opensource-src-4.3.4/src/gui/image/qpixmapcache.cpp -->
+<!-- /tmp/qt-4.3.4-qt-1203442408707/qt-x11-opensource-src-4.3.4/src/gui/image/qpixmapcache.cpp -->
 <head>
   <title>Qt 4.3: QPixmapCache Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//QPixmapCache" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
@@ -41,15 +40,12 @@
 <p>See also <a href="qcache.html">QCache</a> and <a href="qpixmap.html">QPixmap</a>.</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/clm/QPixmapCache/cacheLimit" />
 <h3 class="fn"><a name="cacheLimit"></a>int QPixmapCache::cacheLimit ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns the cache limit (in kilobytes).</p>
 <p>The default setting is 1024 kilobytes.</p>
 <p>See also <a href="qpixmapcache.html#setCacheLimit">setCacheLimit</a>().</p>
-<a name="//apple_ref/cpp/clm/QPixmapCache/clear" />
 <h3 class="fn"><a name="clear"></a>void QPixmapCache::clear ()&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Removes all pixmaps from the cache.</p>
-<a name="//apple_ref/cpp/clm/QPixmapCache/find" />
 <h3 class="fn"><a name="find"></a>bool QPixmapCache::find ( const <a href="qstring.html">QString</a> &amp; <i>key</i>, <a href="qpixmap.html">QPixmap</a> &amp; <i>pm</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Looks for a cached pixmap associated with the <i>key</i> in the cache. If the pixmap is found, the function sets <i>pm</i> to that pixmap and returns true; otherwise it leaves <i>pm</i> alone and returns false.</p>
 <p>Example:</p>
@@ -59,7 +55,6 @@
      QPixmapCache::insert(&quot;my_big_image&quot;, pm);
  }
  painter-&gt;drawPixmap(0, 0, pm);</pre>
-<a name="//apple_ref/cpp/clm/QPixmapCache/insert" />
 <h3 class="fn"><a name="insert"></a>bool QPixmapCache::insert ( const <a href="qstring.html">QString</a> &amp; <i>key</i>, const <a href="qpixmap.html">QPixmap</a> &amp; <i>pm</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Inserts a copy of the pixmap <i>pm</i> associated with the <i>key</i> into the cache.</p>
 <p>All pixmaps inserted by the Qt library have a key starting with &quot;$qt&quot;, so your own pixmap keys should never begin &quot;$qt&quot;.</p>
@@ -67,10 +62,8 @@
 <p>The oldest pixmaps (least recently accessed in the cache) are deleted when more space is needed.</p>
 <p>The function returns true if the object was inserted into the cache; otherwise it returns false.</p>
 <p>See also <a href="qpixmapcache.html#setCacheLimit">setCacheLimit</a>().</p>
-<a name="//apple_ref/cpp/clm/QPixmapCache/remove" />
 <h3 class="fn"><a name="remove"></a>void QPixmapCache::remove ( const <a href="qstring.html">QString</a> &amp; <i>key</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Removes the pixmap associated with <i>key</i> from the cache.</p>
-<a name="//apple_ref/cpp/clm/QPixmapCache/setCacheLimit" />
 <h3 class="fn"><a name="setCacheLimit"></a>void QPixmapCache::setCacheLimit ( int <i>n</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Sets the cache limit to <i>n</i> kilobytes.</p>
 <p>The default setting is 1024 kilobytes.</p>
