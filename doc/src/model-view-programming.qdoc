@@ -1838,7 +1838,8 @@
     \o To enable item dragging, set the view's
        \l{QAbstractItemView::dragEnabled}{dragEnabled} property to \c true.
     \o To allow the user to drop either internal or external items within the view,
-       set the view's \l{QWidget::acceptDrops}{acceptDrops} property to \c true.
+       set the view's \l{QAbstractScrollArea::}{viewport()}'s
+       \l{QWidget::acceptDrops}{acceptDrops} property to \c true.
     \o To show the user where the item currently being dragged will be placed if
        dropped, set the view's \l{QAbstractItemView::showDropIndicator}{showDropIndicator}
        property. This provides the user with continuously updating information about

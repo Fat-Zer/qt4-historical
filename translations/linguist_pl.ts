@@ -181,6 +181,12 @@
         <source>Type in the text to search for.</source>
         <translation>Wprowadź tekst do wyszukania.</translation>
     </message>
+    <message>
+        <location filename="../../../../data/depot/qt/4.3/tools/linguist/linguist/finddialog.cpp" line="14"/>
+        <source></source>
+        <comment>Choose Edit|Find from the menu bar or press Ctrl+F to pop up the Find dialog</comment>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>FormHolder</name>
@@ -903,6 +909,15 @@
     </message>
 </context>
 <context>
+    <name>MsgEdit</name>
+    <message>
+        <location filename="../../../../data/depot/qt/4.3/tools/linguist/linguist/msgedit.cpp" line="14"/>
+        <source></source>
+        <comment>This is the right panel of the main window.</comment>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>PageCurl</name>
     <message>
         <location filename="../../../../data/depot/qt/4.3/tools/linguist/linguist/msgedit.h" line="140"/>
@@ -1006,6 +1021,12 @@
         <location filename="../../../../data/depot/qt/4.3/tools/linguist/linguist/phrasebookbox.ui" line="53"/>
         <source>&amp;Translation:</source>
         <translation>&amp;Tłumaczenie:</translation>
+    </message>
+    <message>
+        <location filename="../../../../data/depot/qt/4.3/tools/linguist/linguist/phrasebookbox.cpp" line="14"/>
+        <source></source>
+        <comment>Go to Phrase &gt; Edit Phrase Book... The dialog that pops up is a PhraseBookBox.</comment>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1329,7 +1350,7 @@
     </message>
     <message>
         <location filename="../../../../data/depot/qt/4.3/tools/linguist/linguist/trwindow.cpp" line="943"/>
-        <source>&lt;center&gt;&lt;img src=&quot;:/images/splash.png&quot;/&gt;&lt;/img&gt;&lt;p&gt;%1&lt;/p&gt;&lt;/center&gt;&lt;p&gt;Qt Linguist is a tool for adding translations to Qt applications.&lt;/p&gt;&lt;p&gt;%2&lt;/p&gt;&lt;p&gt;Copyright (C) 2000-2007 Trolltech ASA. All rights reserved.&lt;/p&gt;&lt;p&gt;The program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.&lt;/p&gt;</source>
+        <source>&lt;center&gt;&lt;img src=&quot;:/images/splash.png&quot;/&gt;&lt;/img&gt;&lt;p&gt;%1&lt;/p&gt;&lt;/center&gt;&lt;p&gt;Qt Linguist is a tool for adding translations to Qt applications.&lt;/p&gt;&lt;p&gt;%2&lt;/p&gt;&lt;p&gt;Copyright (C) 2000-2008 Trolltech ASA. All rights reserved.&lt;/p&gt;&lt;p&gt;The program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1628,6 +1649,12 @@ All files (*)</source>
         <source>Existing %1 translation</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../../../../data/depot/qt/4.3/tools/linguist/linguist/trwindow.cpp" line="14"/>
+        <source></source>
+        <comment>This is the application&apos;s main window.</comment>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>TranslateDialog</name>
@@ -1712,7 +1739,7 @@ All files (*)</source>
     <message>
         <location filename="../../../../data/depot/qt/4.3/tools/linguist/linguist/translationsettings.ui" line="53"/>
         <source>Country</source>
-        <translation>Kraj</translation>
+        <translation type="obsolete">Kraj</translation>
     </message>
     <message>
         <location filename="../../../../data/depot/qt/4.3/tools/linguist/linguist/translationsettings.ui" line="40"/>
@@ -1728,6 +1755,11 @@ All files (*)</source>
         <location filename="../../../../data/depot/qt/4.3/tools/linguist/linguist/translationsettings.ui" line="25"/>
         <source>Target language</source>
         <translation>Język docelowy</translation>
+    </message>
+    <message>
+        <location filename="../../../../data/depot/qt/4.3/tools/linguist/linguist/translationsettings.ui" line="53"/>
+        <source>Country/Region</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

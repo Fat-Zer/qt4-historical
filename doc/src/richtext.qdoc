@@ -329,7 +329,7 @@ document editing software. Rich text documents can have multiple cursors
 associated with them, and each of these contains information about their
 position in the document and any selections that they may hold. This
 cursor-based paradigm makes common operations, such as cutting and pasting
-text, simple to implement programatically, yet it also allows more complex
+text, simple to implement programmatically, yet it also allows more complex
 editing operations to be performed on the document.
 
 This chapter describes most of the common editing operations that you
@@ -1078,6 +1078,9 @@ Ideas for other sections:
     \row    \o \c page-break-after
             \o [ auto | always ]
             \o Make it possible to enforce a page break after the paragraph/table
+    \row    \o float
+            \o [ left | right | none ]
+            \o Specifies where an image or a text will be placed in another element.
     \endtable
 
     \section1 Supported CSS Selectors

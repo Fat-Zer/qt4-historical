@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.3-qt-1196785887335/qt-all-opensource-src-4.3.3/src/gui/dialogs/qabstractprintdialog.cpp -->
+<!-- /tmp/qt-4.3.4-qt-1203442408707/qt-all-opensource-src-4.3.4/src/gui/dialogs/qabstractprintdialog.cpp -->
 <head>
   <title>Qt 4.3: QAbstractPrintDialog Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -127,16 +127,16 @@
 <p>This virtual function is called to pop up the dialog. It must be reimplemented in subclasses.</p>
 <a name="//apple_ref/cpp/instm/QAbstractPrintDialog/fromPage" />
 <h3 class="fn"><a name="fromPage"></a>int QAbstractPrintDialog::fromPage () const</h3>
-<p>Returns the first page to be printed</p>
+<p>Returns the first page to be printed By default, this value is set to 0.</p>
 <a name="//apple_ref/cpp/instm/QAbstractPrintDialog/isOptionEnabled" />
 <h3 class="fn"><a name="isOptionEnabled"></a>bool QAbstractPrintDialog::isOptionEnabled ( <a href="qabstractprintdialog.html#PrintDialogOption-enum">PrintDialogOption</a> <i>option</i> ) const</h3>
 <p>Returns true if the specified <i>option</i> is enabled; otherwise returns false</p>
 <a name="//apple_ref/cpp/instm/QAbstractPrintDialog/maxPage" />
 <h3 class="fn"><a name="maxPage"></a>int QAbstractPrintDialog::maxPage () const</h3>
-<p>Returns the maximum page in the page range.</p>
+<p>Returns the maximum page in the page range. By default, this value is set to 1.</p>
 <a name="//apple_ref/cpp/instm/QAbstractPrintDialog/minPage" />
 <h3 class="fn"><a name="minPage"></a>int QAbstractPrintDialog::minPage () const</h3>
-<p>Returns the minimum page in the page range.</p>
+<p>Returns the minimum page in the page range. By default, this value is set to 1.</p>
 <a name="//apple_ref/cpp/instm/QAbstractPrintDialog/printRange" />
 <h3 class="fn"><a name="printRange"></a><a href="qabstractprintdialog.html#PrintRange-enum">PrintRange</a> QAbstractPrintDialog::printRange () const</h3>
 <p>Returns the print range.</p>
@@ -161,11 +161,11 @@
 <p>See also <a href="qabstractprintdialog.html#printRange">printRange</a>().</p>
 <a name="//apple_ref/cpp/instm/QAbstractPrintDialog/toPage" />
 <h3 class="fn"><a name="toPage"></a>int QAbstractPrintDialog::toPage () const</h3>
-<p>Returns the last page to be printed.</p>
+<p>Returns the last page to be printed. By default, this value is set to 0.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.4</div></td>
 </tr></table></div></address></body>
 </html>

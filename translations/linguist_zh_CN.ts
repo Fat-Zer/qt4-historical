@@ -23,7 +23,7 @@
         <location filename="../../../../data/depot/qt/4.3/tools/linguist/linguist/batchtranslationdialog.cpp" line="119"/>
         <source>Batch translated %n entries</source>
         <translation>
-            <numerusform>批翻译 %1 项</numerusform>
+            <numerusform>批翻译 %n 项</numerusform>
         </translation>
     </message>
     <message>
@@ -161,12 +161,6 @@
         <location filename="../../../../data/depot/qt/4.3/tools/linguist/linguist/finddialog.ui" line="76"/>
         <source>Type in the text to search for.</source>
         <translation>输入要搜索的文本。</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/linguist/linguist/finddialog.cpp" line="14"/>
-        <source></source>
-        <comment>Choose Edit|Find from the menu bar or press Ctrl+F to pop up the Find dialog</comment>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -838,16 +832,6 @@
         <translation>制表符</translation>
     </message>
     <message>
-        <location filename="linguist/msgedit.cpp" line="899"/>
-        <source>This area shows a comment that may guide you, and the context in which the text occurs.</source>
-        <translation type="obsolete">这个区域显示也许可以指导您的注释，以及这个文本出现时的上下文。</translation>
-    </message>
-    <message>
-        <location filename="linguist/msgedit.cpp" line="896"/>
-        <source>This area shows the source text.</source>
-        <translation type="obsolete">这个区域显示源文。</translation>
-    </message>
-    <message>
         <location filename="../../../../data/depot/qt/4.3/tools/linguist/linguist/msgedit.cpp" line="1185"/>
         <source>This is where you can enter or modify the translation of some source text.</source>
         <translation>这里您可以输入或者修改一些源文的译文。</translation>
@@ -887,15 +871,6 @@
         <location filename="../../../../data/depot/qt/4.3/tools/linguist/linguist/messagestreeview.cpp" line="65"/>
         <source>Done</source>
         <translation>完成</translation>
-    </message>
-</context>
-<context>
-    <name>MsgEdit</name>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/linguist/linguist/msgedit.cpp" line="14"/>
-        <source></source>
-        <comment>This is the right panel of the main window.</comment>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1002,12 +977,6 @@
         <location filename="../../../../data/depot/qt/4.3/tools/linguist/linguist/phrasebookbox.ui" line="53"/>
         <source>&amp;Translation:</source>
         <translation>译文(&amp;T)：</translation>
-    </message>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/linguist/linguist/phrasebookbox.cpp" line="14"/>
-        <source></source>
-        <comment>Go to Phrase &gt; Edit Phrase Book... The dialog that pops up is a PhraseBookBox.</comment>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1326,8 +1295,8 @@
     </message>
     <message>
         <location filename="../../../../data/depot/qt/4.3/tools/linguist/linguist/trwindow.cpp" line="943"/>
-        <source>&lt;center&gt;&lt;img src=&quot;:/images/splash.png&quot;/&gt;&lt;/img&gt;&lt;p&gt;%1&lt;/p&gt;&lt;/center&gt;&lt;p&gt;Qt Linguist is a tool for adding translations to Qt applications.&lt;/p&gt;&lt;p&gt;%2&lt;/p&gt;&lt;p&gt;Copyright (C) 2000-2007 Trolltech ASA. All rights reserved.&lt;/p&gt;&lt;p&gt;The program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.&lt;/p&gt;</source>
-        <translation>&lt;center&gt;&lt;img src=&quot;:/images/splash.png&quot;/&gt;&lt;/img&gt;&lt;p&gt;%1&lt;/p&gt;&lt;/center&gt;&lt;p&gt;Qt 语言家是一个用于为 Qt 应用程序添加翻译的工具。&lt;/p&gt;&lt;p&gt;%2&lt;/p&gt;&lt;p&gt;版权所有 (C) 2000-2007 Trolltech ASA。所有权利已被保留。&lt;/p&gt;&lt;p&gt;本程序是在&lt;b&gt;没有任何担保（其中包括任何特定目的的设计、商业和适当性的担保）&lt;/b&gt;的条件下提供的。&lt;/p&gt;</translation>
+        <source>&lt;center&gt;&lt;img src=&quot;:/images/splash.png&quot;/&gt;&lt;/img&gt;&lt;p&gt;%1&lt;/p&gt;&lt;/center&gt;&lt;p&gt;Qt Linguist is a tool for adding translations to Qt applications.&lt;/p&gt;&lt;p&gt;%2&lt;/p&gt;&lt;p&gt;Copyright (C) 2000-2008 Trolltech ASA. All rights reserved.&lt;/p&gt;&lt;p&gt;The program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.&lt;/p&gt;</source>
+        <translation>&lt;center&gt;&lt;img src=&quot;:/images/splash.png&quot;/&gt;&lt;/img&gt;&lt;p&gt;%1&lt;/p&gt;&lt;/center&gt;&lt;p&gt;Qt 语言家是一个用于为 Qt 应用程序添加翻译的工具。&lt;/p&gt;&lt;p&gt;%2&lt;/p&gt;&lt;p&gt;版权所有 (C) 2000-2008 Trolltech ASA。所有权利已被保留。&lt;/p&gt;&lt;p&gt;本程序是在&lt;b&gt;没有任何担保（其中包括任何特定目的的设计、商业和适当性的担保）&lt;/b&gt;的条件下提供的。&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../../../../data/depot/qt/4.3/tools/linguist/linguist/trwindow.cpp" line="1620"/>
@@ -1589,12 +1558,6 @@ XLIFF 本地化文件 (*.xlf)
         <translation>窗口(&amp;W)</translation>
     </message>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/linguist/linguist/trwindow.cpp" line="14"/>
-        <source></source>
-        <comment>This is the application&apos;s main window.</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../../../../data/depot/qt/4.3/tools/linguist/linguist/trwindow.cpp" line="302"/>
         <source>%1 translation</source>
         <translation>%1 翻译</translation>
@@ -1707,11 +1670,6 @@ XLIFF 本地化文件 (*.xlf)
 <context>
     <name>TranslationSettings</name>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/linguist/linguist/translationsettings.ui" line="53"/>
-        <source>Country</source>
-        <translation>国家</translation>
-    </message>
-    <message>
         <location filename="../../../../data/depot/qt/4.3/tools/linguist/linguist/translationsettings.ui" line="40"/>
         <source>Language</source>
         <translation>语言</translation>
@@ -1725,6 +1683,11 @@ XLIFF 本地化文件 (*.xlf)
         <location filename="../../../../data/depot/qt/4.3/tools/linguist/linguist/translationsettings.ui" line="25"/>
         <source>Target language</source>
         <translation>目标语言</translation>
+    </message>
+    <message>
+        <location filename="../../../../data/depot/qt/4.3/tools/linguist/linguist/translationsettings.ui" line="53"/>
+        <source>Country/Region</source>
+        <translation>国家/地区</translation>
     </message>
 </context>
 <context>

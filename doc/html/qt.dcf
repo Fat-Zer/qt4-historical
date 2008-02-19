@@ -1715,7 +1715,6 @@
         <keyword ref="qcalendarwidget.html#selectionChanged">selectionChanged</keyword>
         <keyword ref="qcalendarwidget.html#setCurrentPage">setCurrentPage</keyword>
         <keyword ref="qcalendarwidget.html#setDateRange">setDateRange</keyword>
-        <keyword ref="qcalendarwidget.html#setDateTextFormat">setDateTextFormat</keyword>
         <keyword ref="qcalendarwidget.html#setHeaderTextFormat">setHeaderTextFormat</keyword>
         <keyword ref="qcalendarwidget.html#setWeekdayTextFormat">setWeekdayTextFormat</keyword>
         <keyword ref="qcalendarwidget.html#showNextMonth">showNextMonth</keyword>
@@ -21255,8 +21254,8 @@
     <section ref="focus.html" title="Keyboard Focus">
         <keyword ref="focus.html">Keyboard Focus</keyword>
     </section>
-    <section ref="known-issues.html" title="Known Issues in 4.3&#x2e;3">
-        <keyword ref="known-issues.html">Known Issues in 4.3&#x2e;3</keyword>
+    <section ref="known-issues.html" title="Known Issues in 4.3&#x2e;4">
+        <keyword ref="known-issues.html">Known Issues in 4.3&#x2e;4</keyword>
     </section>
     <section ref="layout.html" title="Layout Classes">
         <keyword ref="layout.html">Layout Classes</keyword>

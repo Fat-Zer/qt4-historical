@@ -1219,7 +1219,6 @@
         \row
             \o notchTarget
             \o this is the number of pixels between each notch
-               (assuming the reader knows what a notch is ...)
         \row
             \o orientation
             \o a Qt::Orientation enum value that gives whether the

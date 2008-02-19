@@ -1908,8 +1908,8 @@ Do you want overwrite the template?</source>
     </message>
     <message>
         <location filename="../../../../data/depot/qt/4.3/tools/designer/src/designer/versiondialog.cpp" line="169"/>
-        <source>%1&lt;br/&gt;%2&lt;br/&gt;Copyright 2000-2007 Trolltech ASA. All rights reserved.&lt;br/&gt;&lt;br/&gt;The program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.&lt;br/&gt; </source>
-        <translation>%1&lt;br/&gt;%2&lt;br/&gt;Copyright 2000-2007 Trolltech ASA. 全ての権利は保護されています。&lt;br/&gt;&lt;br/&gt;プログラムは「設計」、「市場性」および「特定の目的への適合性」も含む、あらゆる種類の「保証がなく」、「そのままで」提供されます。&lt;br/&gt;</translation>
+        <source>%1&lt;br/&gt;%2&lt;br/&gt;Copyright 2000-2008 Trolltech ASA. All rights reserved.&lt;br/&gt;&lt;br/&gt;The program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.&lt;br/&gt; </source>
+        <translation>%1&lt;br/&gt;%2&lt;br/&gt;Copyright 2000-2008 Trolltech ASA. 全ての権利は保護されています。&lt;br/&gt;&lt;br/&gt;プログラムは「設計」、「市場性」および「特定の目的への適合性」も含む、あらゆる種類の「保証がなく」、「そのままで」提供されます。&lt;br/&gt;</translation>
     </message>
 </context>
 <context>

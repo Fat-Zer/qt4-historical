@@ -240,7 +240,7 @@ void Widget::dataFunction()
 {
     QString str = "Hello world";
     QChar *data = str.data();
-    while (data) {
+    while (data->unicode()) {
         qDebug() << data->unicode();
         ++data;
     }

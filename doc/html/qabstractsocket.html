@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /tmp/qt-4.3.3-qt-1196785887335/qt-all-opensource-src-4.3.3/src/network/qabstractsocket.cpp -->
+<!-- /tmp/qt-4.3.4-qt-1203442408707/qt-all-opensource-src-4.3.4/src/network/qabstractsocket.cpp -->
 <head>
   <title>Qt 4.3: QAbstractSocket Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -448,6 +448,7 @@
  if (socket-&gt;waitForConnected(1000))
      qDebug(&quot;Connected!&quot;);</pre>
 <p>If msecs is -1, this function will not time out.</p>
+<p>Note: This function may wait slightly longer than <i>msecs</i>, depending on the time it takes to complete the host lookup.</p>
 <p>See also <a href="qabstractsocket.html#connectToHost">connectToHost</a>() and <a href="qabstractsocket.html#connected">connected</a>().</p>
 <a name="//apple_ref/cpp/instm/QAbstractSocket/waitForDisconnected" />
 <h3 class="fn"><a name="waitForDisconnected"></a>bool QAbstractSocket::waitForDisconnected ( int <i>msecs</i> = 30000 )</h3>
@@ -467,8 +468,8 @@
 <p>See also <a href="qiodevice.html#waitForBytesWritten">waitForBytesWritten</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2007 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.3.3</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.3.4</div></td>
 </tr></table></div></address></body>
 </html>

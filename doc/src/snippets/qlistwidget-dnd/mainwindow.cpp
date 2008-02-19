@@ -15,7 +15,7 @@ MainWindow::MainWindow()
 QListWidget *listWidget = new QListWidget(this);
 listWidget->setSelectionMode(QAbstractItemView::SingleSelection);
 listWidget->setDragEnabled(true);
-listWidget->setAcceptDrops(true);
+listWidget->viewport()->setAcceptDrops(true);
 listWidget->setDropIndicatorShown(true);
 listWidget->setDragDropMode(QAbstractItemView::InternalMove);
 

@@ -77,12 +77,6 @@
 <context>
     <name>FindDialog</name>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/linguist/linguist/finddialog.cpp" line="14"/>
-        <source></source>
-        <comment>Choose Edit|Find from the menu bar or press Ctrl+F to pop up the Find dialog</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../../../../data/depot/qt/4.3/tools/linguist/linguist/finddialog.ui" line="35"/>
         <source>Qt Linguist</source>
         <translation type="unfinished"></translation>
@@ -879,15 +873,6 @@
     </message>
 </context>
 <context>
-    <name>MsgEdit</name>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/linguist/linguist/msgedit.cpp" line="14"/>
-        <source></source>
-        <comment>This is the right panel of the main window.</comment>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>PageCurl</name>
     <message>
         <location filename="../../../../data/depot/qt/4.3/tools/linguist/linguist/msgedit.h" line="140"/>
@@ -902,12 +887,6 @@
 </context>
 <context>
     <name>PhraseBookBox</name>
-    <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/linguist/linguist/phrasebookbox.cpp" line="14"/>
-        <source></source>
-        <comment>Go to Phrase &gt; Edit Phrase Book... The dialog that pops up is a PhraseBookBox.</comment>
-        <translation type="unfinished"></translation>
-    </message>
     <message>
         <location filename="../../../../data/depot/qt/4.3/tools/linguist/linguist/phrasebookbox.cpp" line="107"/>
         <source>Qt Linguist</source>
@@ -1251,12 +1230,6 @@
 <context>
     <name>TrWindow</name>
     <message>
-        <location filename="../../../../data/depot/qt/4.3/tools/linguist/linguist/trwindow.cpp" line="14"/>
-        <source></source>
-        <comment>This is the application&apos;s main window.</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../../../../data/depot/qt/4.3/tools/linguist/linguist/trwindow.cpp" line="197"/>
         <source>Context</source>
         <translation type="unfinished"></translation>
@@ -1482,7 +1455,7 @@ All files (*)</source>
     </message>
     <message>
         <location filename="../../../../data/depot/qt/4.3/tools/linguist/linguist/trwindow.cpp" line="943"/>
-        <source>&lt;center&gt;&lt;img src=&quot;:/images/splash.png&quot;/&gt;&lt;/img&gt;&lt;p&gt;%1&lt;/p&gt;&lt;/center&gt;&lt;p&gt;Qt Linguist is a tool for adding translations to Qt applications.&lt;/p&gt;&lt;p&gt;%2&lt;/p&gt;&lt;p&gt;Copyright (C) 2000-2007 Trolltech ASA. All rights reserved.&lt;/p&gt;&lt;p&gt;The program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.&lt;/p&gt;</source>
+        <source>&lt;center&gt;&lt;img src=&quot;:/images/splash.png&quot;/&gt;&lt;/img&gt;&lt;p&gt;%1&lt;/p&gt;&lt;/center&gt;&lt;p&gt;Qt Linguist is a tool for adding translations to Qt applications.&lt;/p&gt;&lt;p&gt;%2&lt;/p&gt;&lt;p&gt;Copyright (C) 2000-2008 Trolltech ASA. All rights reserved.&lt;/p&gt;&lt;p&gt;The program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1703,7 +1676,7 @@ All files (*)</source>
     </message>
     <message>
         <location filename="../../../../data/depot/qt/4.3/tools/linguist/linguist/translationsettings.ui" line="53"/>
-        <source>Country</source>
+        <source>Country/Region</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

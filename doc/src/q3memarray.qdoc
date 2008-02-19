@@ -25,7 +25,7 @@
 
     Example:
     \code
-    #include <qmemarray.h>
+    #include <q3memarray.h>
     #include <stdio.h>
 
     Q3MemArray<int> fib( int num ) // returns fibonacci array

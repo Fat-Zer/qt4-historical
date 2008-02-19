@@ -1,33 +1,40 @@
 /****************************************************************************
  **
- ** Copyright (C) 2006-2007 Trolltech ASA. All rights reserved.
+ ** Copyright (C) 2006-2008 Trolltech ASA. All rights reserved.
  **
  ** This file is part of the documentation of the Qt Toolkit.
  **
  ** This file may be used under the terms of the GNU General Public
-** License version 2.0 as published by the Free Software Foundation
-** and appearing in the file LICENSE.GPL included in the packaging of
-** this file.  Please review the following information to ensure GNU
-** General Public Licensing requirements will be met:
-** http://trolltech.com/products/qt/licenses/licensing/opensource/
+** License versions 2.0 or 3.0 as published by the Free Software
+** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+** included in the packaging of this file.  Alternatively you may (at
+** your option) use any later version of the GNU General Public
+** License if such license has been publicly approved by Trolltech ASA
+** (or its successors, if any) and the KDE Free Qt Foundation. In
+** addition, as a special exception, Trolltech gives you certain
+** additional rights. These rights are described in the Trolltech GPL
+** Exception version 1.1, which can be found at
+** http://www.trolltech.com/products/qt/gplexception/ and in the file
+** GPL_EXCEPTION.txt in this package.
 **
-** If you are unsure which license is appropriate for your use, please
+** Please review the following information to ensure GNU General
+** Public Licensing requirements will be met:
+** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
+** you are unsure which license is appropriate for your use, please
 ** review the following information:
 ** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
 ** or contact the sales department at sales@trolltech.com.
 **
-** In addition, as a special exception, Trolltech gives you certain
-** additional rights. These rights are described in the Trolltech GPL
-** Exception version 1.0, which can be found at
-** http://www.trolltech.com/products/qt/gplexception/ and in the file
-** GPL_EXCEPTION.txt in this package.
+** In addition, as a special exception, Trolltech, as the sole
+** copyright holder for Qt Designer, grants users of the Qt/Eclipse
+** Integration plug-in the right for the Qt/Eclipse Integration to
+** link to functionality provided by Qt Designer and its related
+** libraries.
 **
-** In addition, as a special exception, Trolltech, as the sole copyright
-** holder for Qt Designer, grants users of the Qt/Eclipse Integration
-** plug-in the right for the Qt/Eclipse Integration to link to
-** functionality provided by Qt Designer and its related libraries.
-**
-** Trolltech reserves all rights not expressly granted herein.
+** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
+** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
+** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
+** granted herein.
  **
  ** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
  ** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -69,15 +76,15 @@
 
     \code
         cd <anywhere>
-        gunzip qtopia-core-commercial-src-4.3.3.tar.gz
-        tar xf qtopia-core-commercial-src-4.3.3.tar
+        gunzip qtopia-core-commercial-src-4.3.4.tar.gz
+        tar xf qtopia-core-commercial-src-4.3.4.tar
     \endcode
 
     This document assumes that the archive is unpacked in the
     following directory:
 
     \code
-        ~/qtopia-core-commercial-src-4.3.3
+        ~/qtopia-core-commercial-src-4.3.4
     \endcode
 
     \section1 Step 3: Building the Library
@@ -88,7 +95,7 @@
     options by typing \c {./configure -help}.
 
     Note that by default, \l {Qtopia Core} is configured for
-    installation in the \c{/usr/local/Trolltech/QtopiaCore-4.3.3}
+    installation in the \c{/usr/local/Trolltech/QtopiaCore-4.3.4}
     directory, but this can be changed by using the \c{-prefix}
     option. Alternatively, the \c{-prefix-install} option can be used
     to specify a "local" installation within the source directory.
@@ -97,7 +104,7 @@
     your platform architecture:
 
     \code
-        cd  ~/qtopia-core-commercial-src-4.3.3
+        cd  ~/qtopia-core-commercial-src-4.3.4
         ./configure -embedded [architecture]
     \endcode
 
@@ -140,7 +147,7 @@
     .profile file if your shell is bash, ksh, zsh or sh:
 
     \code
-        PATH=/usr/local/Trolltech/QtopiaCore-4.3.3/bin:$PATH
+        PATH=/usr/local/Trolltech/QtopiaCore-4.3.4/bin:$PATH
         export PATH
     \endcode
 
@@ -148,7 +155,7 @@
     \c .login file instead:
 
     \code
-        setenv PATH /usr/local/Trolltech/QtopiaCore-4.3.3/bin:$PATH
+        setenv PATH /usr/local/Trolltech/QtopiaCore-4.3.4/bin:$PATH
     \endcode
 
     If you use a different shell, please modify your environment
@@ -156,7 +163,7 @@
 
     For compilers that do not support \c rpath you must also extend
     the \c LD_LIBRARY_PATH environment variable to include
-    \c /usr/local/Trolltech/QtopiaCore-4.3.3/lib. Note that on Linux
+    \c /usr/local/Trolltech/QtopiaCore-4.3.4/lib. Note that on Linux
     with GCC, this step is not needed.
 
     \section1 Step 5: Enabling Framebuffer Support

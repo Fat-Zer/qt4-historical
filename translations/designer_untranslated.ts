@@ -1819,7 +1819,7 @@ Do you want overwrite the template?</source>
     </message>
     <message>
         <location filename="../../../../data/depot/qt/4.3/tools/designer/src/designer/versiondialog.cpp" line="169"/>
-        <source>%1&lt;br/&gt;%2&lt;br/&gt;Copyright 2000-2007 Trolltech ASA. All rights reserved.&lt;br/&gt;&lt;br/&gt;The program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.&lt;br/&gt; </source>
+        <source>%1&lt;br/&gt;%2&lt;br/&gt;Copyright 2000-2008 Trolltech ASA. All rights reserved.&lt;br/&gt;&lt;br/&gt;The program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.&lt;br/&gt; </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
